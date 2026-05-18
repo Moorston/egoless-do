@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@egoless/core": ["../../packages/core/src/index.ts"],
+      "@egoless/ui": ["../../packages/ui/src/index.ts"]
+    }
+  }
+}
