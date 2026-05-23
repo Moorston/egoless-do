@@ -1,0 +1,56 @@
+{
+  "_collections": [
+    {
+      "id": "checkins",
+      "name": "checkins",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",     "type": "text",   "required": true },
+        { "name": "habit_type",  "type": "text",   "required": true },
+        { "name": "lat_blur",    "type": "number", "required": false },
+        { "name": "lng_blur",    "type": "number", "required": false },
+        { "name": "insight",     "type": "text",   "required": false, "max": 20 },
+        { "name": "checked_at",  "type": "date",   "required": true }
+      ],
+      "listRule":   "@request.auth.id != ''",
+      "viewRule":   "@request.auth.id != ''",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": null,
+      "deleteRule": null
+    },
+    {
+      "id": "map_pins",
+      "name": "map_pins",
+      "type": "base",
+      "fields": [
+        { "name": "habit_type", "type": "text",   "required": true },
+        { "name": "lat",        "type": "number", "required": true },
+        { "name": "lng",        "type": "number", "required": true },
+        { "name": "insight",    "type": "text",   "required": false, "max": 20 },
+        { "name": "pinned_at",  "type": "date",   "required": true }
+      ],
+      "listRule":   "",
+      "viewRule":   "",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": null,
+      "deleteRule": null
+    },
+    {
+      "id": "published_minds",
+      "name": "published_minds",
+      "type": "base",
+      "fields": [
+        { "name": "anon_id",    "type": "text", "required": true },
+        { "name": "content",    "type": "text", "required": true },
+        { "name": "tags",       "type": "json", "required": false },
+        { "name": "mood",       "type": "text", "required": false },
+        { "name": "card_theme", "type": "text", "required": false }
+      ],
+      "listRule":   "",
+      "viewRule":   "",
+      "createRule": "@request.auth.id != ''",
+      "updateRule": null,
+      "deleteRule": null
+    }
+  ]
+}

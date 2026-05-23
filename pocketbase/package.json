@@ -1,0 +1,10 @@
+{
+  "name": "egoless-do-pocketbase",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "powershell -ExecutionPolicy Bypass -File setup.ps1",
+    "start": "pocketbase.exe serve --http=0.0.0.0:8090",
+    "start:dev": "pocketbase.exe serve --http=0.0.0.0:8090 --dev"
+  }
+}

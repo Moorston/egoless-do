@@ -1,0 +1,67 @@
+{
+  "expo": {
+    "name": "心流纪",
+    "slug": "egoless-do",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F0A1E"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.egolessdo.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "用于记录运动轨迹和全球打卡地图",
+        "NSHealthShareUsageDescription": "用于读取健康数据，追踪运动目标",
+        "NSHealthUpdateUsageDescription": "用于将运动记录写入 Health",
+        "NSMotionUsageDescription": "用于计步和运动检测",
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F0A1E"
+      },
+      "package": "com.egolessdo.app",
+      "versionCode": 1,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACTIVITY_RECOGNITION",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-notifications",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "允许心流纪访问您的位置以记录运动轨迹"
+        }
+      ],
+      "expo-audio"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}

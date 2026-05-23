@@ -1,0 +1,16 @@
+{
+  "name": "心流纪 · Egoless Do",
+  "short_name": "心流纪",
+  "description": "离线优先的习惯追踪与感念记录应用",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F0A1E",
+  "theme_color": "#0F0A1E",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["health", "lifestyle"],
+  "lang": "zh"
+}

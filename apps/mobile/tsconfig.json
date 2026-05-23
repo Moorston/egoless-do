@@ -1,0 +1,12 @@
+{
+  "extends": "../../packages/config/tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "lib": ["ES2020"],
+    "paths": {
+      "@egoless-do/core": ["../../packages/core/src/index.ts"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "App.tsx", "app.json"]
+}

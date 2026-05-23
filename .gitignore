@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+
+# Miniprogram (Taro)
+miniprogram/dist/
+miniprogram/.turbo/
+
+# Mobile (Expo/RN)
+.expo/
+apps/mobile/.expo/
+apps/mobile/android/app/build/
+apps/mobile/android/.gradle/
+apps/mobile/ios/Pods/
+apps/mobile/ios/build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+.envrc
+
+# PocketBase
+pocketbase/pb_data/
+pocketbase/pocketbase.exe
+backend/pb_data/
+
+# SQLite / runtime data
+apps/web/data/
+*.db
+*.db-shm
+*.db-wal
+
+# CI / coverage
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# AI assistant context
+.claude/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

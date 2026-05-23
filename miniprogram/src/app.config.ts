@@ -1,0 +1,48 @@
+export default {
+  pages: [
+    'pages/login/index',
+    'pages/register/index',
+    'pages/home/index',
+    'pages/home/checkin',
+    'pages/home/checkin-history',
+    'pages/home/checkin-detail',
+    'pages/home/foodlog',
+    'pages/home/grace',
+    'pages/home/globalmap',
+    'pages/fasting/index',
+    'pages/fasting/history',
+    'pages/meditation/index',
+    'pages/meditation/history',
+    'pages/exercise/index',
+    'pages/exercise/sport',
+    'pages/reflections/index',
+    'pages/habits/index',
+    'pages/stats/index',
+    'pages/settings/index',
+  ],
+  tabBar: {
+    color: 'rgba(255,255,255,.4)',
+    selectedColor: '#7C3AED',
+    backgroundColor: 'rgba(15,10,30,.97)',
+    borderStyle: 'black',
+    list: [
+      { pagePath: 'pages/home/index',       text: '🏠 主页' },
+      { pagePath: 'pages/fasting/index',    text: '⏱ 禁食' },
+      { pagePath: 'pages/meditation/index', text: '☯ 冥想' },
+      { pagePath: 'pages/exercise/index',   text: '🏃 锻炼' },
+      { pagePath: 'pages/settings/index',   text: '⚙ 设置' },
+    ],
+  },
+  window: {
+    backgroundTextStyle: 'dark',
+    navigationBarBackgroundColor: '#0F0A1E',
+    navigationBarTitleText: '心流纪',
+    navigationBarTextStyle: 'white',
+  },
+  permission: {
+    'scope.userLocation': { desc: '用于记录运动轨迹和全球打卡地图' },
+  },
+  requiredPrivateInfos: ['getLocation'],
+  cloud: true,
+};
+
