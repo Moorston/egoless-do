@@ -5,8 +5,10 @@ import { SPORT_GROUPS, THEMES } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useOverlay } from './useOverlay';
 
-export default function ExerciseTab({ onOpenGlobalMap, onOpenSport }: { onOpenGlobalMap?: () => void; onOpenSport?: (s: SportItem) => void }) {
+export default function ExerciseTab() {
+  const overlay = useOverlay();
   const store = useWebStore();
   const TH = THEMES[store.theme];
   const P = TH.primary;
@@ -17,12 +19,12 @@ export default function ExerciseTab({ onOpenGlobalMap, onOpenSport }: { onOpenGl
     <>
       <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 12, color: TH.sub }}>{T('exerciseSelect')}</div>
       {[
-        { icon: '🚶', label: T('exerciseWalk'), sport: '行走' },
-        { icon: '🏃', label: T('exerciseRun'), sport: '跑步' },
-        { icon: '🚴', label: T('exerciseCycle'), sport: '骑行' },
+        { icon: '🚶', label: T('exerciseWalk'), sport: T('exerciseWalk') },
+        { icon: '🏃', label: T('exerciseRun'), sport: T('exerciseRun') },
+        { icon: '🚴', label: T('exerciseCycle'), sport: T('exerciseCycle') },
         { icon: '🏋', label: T('exerciseOther'), more: true },
       ].map(({ icon, label, sport: sn, more }) => (
-        <div key={label} onClick={() => more ? setShowOther(true) : onOpenSport?.({ key: sn ?? '', icon, color: P })}
+        <div key={label} onClick={() => more ? setShowOther(true) : overlay.open('sport', { sport: { key: sn ?? '', icon, color: P } })}
           style={{
             background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 16,
             display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', cursor: 'pointer', marginBottom: 8
@@ -35,7 +37,7 @@ export default function ExerciseTab({ onOpenGlobalMap, onOpenSport }: { onOpenGl
         </div>
       ))}
 
-      <button onClick={() => onOpenGlobalMap?.()} style={{
+      <button onClick={() => overlay.open('globalMap')} style={{
         width: '100%', marginTop: 12, padding: 14, borderRadius: 12, border: 'none',
         background: P, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer'
       }}>
@@ -54,7 +56,7 @@ export default function ExerciseTab({ onOpenGlobalMap, onOpenSport }: { onOpenGl
               <div key={g.group}>
                 <div style={{ fontSize: 16, color: TH.sub, fontWeight: 600, padding: '12px 0 6px' }}>{g.group}</div>
                 {g.items.map((s) => (
-                  <div key={s.key} onClick={() => { onOpenSport?.(s); setShowOther(false); }}
+                  <div key={s.key} onClick={() => { overlay.open('sport', { sport: s }); setShowOther(false); }}
                     style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 0', borderBottom: `1px solid ${TH.border}`, cursor: 'pointer' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <span style={{ fontSize: 24, width: 36, textAlign: 'center' }}>{s.icon}</span>

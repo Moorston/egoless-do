@@ -1,10 +1,10 @@
 // ─── Dexie (IndexedDB) – mirrors mobile SQLite schema ────────────
 import Dexie, { type Table } from 'dexie';
 import type {
-  Habit, MindReflection, FoodEntry, CheckinRecord, FastingSession,
+  Habit, MindReflection, FoodEntry, CheckinRecord, FastingSession, ExerciseEntry,
 } from '@egoless-do/core';
 
-export type SyncEntity = 'habit' | 'reflection' | 'fasting' | 'food' | 'checkin' | 'meditation' | 'profile';
+export type SyncEntity = 'habit' | 'reflection' | 'fasting' | 'food' | 'checkin' | 'meditation' | 'profile' | 'exercise';
 export type SyncOperation = 'upsert' | 'delete';
 
 export interface SyncQueueItem {
@@ -22,6 +22,7 @@ export class EgolessDB extends Dexie {
   fastingSessions!:Table<FastingSession, string>;
   foodEntries!:    Table<FoodEntry,      string>;
   checkins!:       Table<CheckinRecord,  string>;
+  exerciseEntries!:Table<ExerciseEntry,  string>;
   syncQueue!:      Table<SyncQueueItem,  number>;
 
   constructor() {
@@ -39,6 +40,15 @@ export class EgolessDB extends Dexie {
       fastingSessions: 'id, started_at',
       foodEntries:     'id, ts',
       checkins:        'date',
+      syncQueue:       '++_id, entity, entityId, operation, createdAt',
+    });
+    this.version(3).stores({
+      habits:          'id, status, startDate',
+      reflections:     'id, created_at, *tags',
+      fastingSessions: 'id, started_at',
+      foodEntries:     'id, ts',
+      checkins:        'date',
+      exerciseEntries: 'id, sportKey, timestamp',
       syncQueue:       '++_id, entity, entityId, operation, createdAt',
     });
   }

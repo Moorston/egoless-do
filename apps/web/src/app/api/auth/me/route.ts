@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAuth } from '../../_auth';
 
 export async function GET(req: NextRequest) {
-  const auth = verifyAuth(req.headers.get('authorization'));
+  const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
   try {

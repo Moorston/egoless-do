@@ -136,6 +136,17 @@ export default function HomeScreen() {
           ))}
         </View>
 
+        {/* Weight card */}
+        <Card>
+          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center' }}>
+            <Text style={{ color: TH.text, fontWeight: '600', fontSize: 15 }}>⚖️ {T('todayWeight')}</Text>
+            <Text style={{ fontSize:22, fontWeight:'700', color:P }}>
+              {todayWeight != null ? `${todayWeight}` : '—'}
+            </Text>
+            <Text style={{ color:TH.sub, fontSize:16 }}>{T('checkinKg')}</Text>
+          </View>
+        </Card>
+
         {/* Water card */}
         <Card>
           <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
@@ -153,34 +164,6 @@ export default function HomeScreen() {
             style={{ backgroundColor:COLORS.BLUE, borderRadius:10, padding:12, alignItems:'center' }}>
             <Text style={{ color:'#fff', fontWeight:'600', fontSize:16 }}>+ 250ml</Text>
           </TouchableOpacity>
-        </Card>
-
-        {/* Calorie card */}
-        <Card>
-          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:4 }}>
-            <Text style={{ color: COLORS.ORANGE, fontWeight: '600', fontSize: 15 }}>🍽 {T('addFood')}</Text>
-          </View>
-          <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-            <Text style={{ fontSize:22, fontWeight:'700', color:COLORS.ORANGE }}>{totalCal}</Text>
-            <Text style={{ color:TH.sub, fontSize:16 }}>/ {store.calGoal} kcal</Text>
-            <TouchableOpacity onPress={() => { setCgi(String(store.calGoal)); setShowCG(true); }}>
-              <Text style={{ fontSize:16 }}>✏️</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{ marginTop:8 }}>
-            <ProgressBar pct={totalCal / store.calGoal * 100} color={COLORS.ORANGE} height={4} />
-          </View>
-        </Card>
-
-        {/* Weight card */}
-        <Card>
-          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center' }}>
-            <Text style={{ color: TH.text, fontWeight: '600', fontSize: 15 }}>⚖️ {T('todayWeight')}</Text>
-            <Text style={{ fontSize:22, fontWeight:'700', color:P }}>
-              {todayWeight != null ? `${todayWeight}` : '—'}
-            </Text>
-            <Text style={{ color:TH.sub, fontSize:16 }}>{T('checkinKg')}</Text>
-          </View>
         </Card>
 
         {/* Add food button */}

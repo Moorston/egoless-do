@@ -96,7 +96,7 @@ export async function apiLogin(email: string, password: string): Promise<AuthRes
   return handleRes(res);
 }
 
-// ── WeChat login (miniprogram) ────────────────────────────────────
+// ── WeChat login ─────────────────────────────────────────────────
 export async function apiWechatLogin(code: string): Promise<AuthResponse> {
   const res = await fetchWithTimeout(`${apiBase}/api/auth/wechat`, {
     method: 'POST',

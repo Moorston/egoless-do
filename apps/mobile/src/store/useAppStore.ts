@@ -11,6 +11,7 @@ import {
   createHabitFromForm, createReflection, createFastingSession,
   defaultAppState, defaultAuthState, defaultDataState,
   apiLogin, apiRegister, apiRefreshToken, apiLogout, apiSyncPull, setApiBase,
+  DAILY_RESET_KEY, getDailyResetPatch,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { markForDeletion } from '../features/sync/SyncService';
@@ -21,7 +22,6 @@ const devHost = hostUri?.split(':')[0] ?? 'localhost';
 const DEV_API = `http://${devHost}:3000`;
 const apiBase = __DEV__ ? DEV_API : 'https://your-production-domain.com';
 setApiBase(apiBase);
-console.log('[Auth] API base:', apiBase);
 
 interface MedHistoryEntry { date: string; dur: string; mood: string; }
 
@@ -64,6 +64,14 @@ interface AppStore extends AppState {
   setRemindTime: (t: string) => void;
   setTheme: (t: ThemeName) => void;
   setLanguage: (l: string) => void;
+  customTags: string[];
+  customMoods: string[];
+  addCustomTag: (tag: string) => void;
+  removeCustomTag: (tag: string) => void;
+  updateCustomTag: (oldTag: string, newTag: string) => void;
+  addCustomMood: (mood: string) => void;
+  removeCustomMood: (mood: string) => void;
+  updateCustomMood: (oldMood: string, newMood: string) => void;
 }
 
 export const useAppStore = create<AppStore>()(
@@ -78,6 +86,7 @@ export const useAppStore = create<AppStore>()(
       totalMedMinutes: 0, medHistory: [],
       foodLog: [], checkinHistory: [],
       remindEnabled: false, remindTime: '21:00',
+      customTags: [], customMoods: [],
 
       async login(email, password) {
         set(s => ({ auth: { ...s.auth, isLoading: true } }));
@@ -238,10 +247,60 @@ export const useAppStore = create<AppStore>()(
       setRemindTime(t) { set({ remindTime: t }); },
       setTheme(theme) { set({ theme }); },
       setLanguage(language) { set({ language }); },
+
+      addCustomTag(tag) {
+        if (!tag.trim()) return;
+        set(s => ({
+          customTags: (s.customTags ?? []).includes(tag) ? s.customTags : [...(s.customTags ?? []), tag],
+        }));
+      },
+      removeCustomTag(tag) {
+        set(s => ({
+          customTags: (s.customTags ?? []).filter(t => t !== tag),
+        }));
+      },
+      updateCustomTag(oldTag, newTag) {
+        if (!newTag.trim()) return;
+        set(s => ({
+          customTags: (s.customTags ?? []).map(t => t === oldTag ? newTag : t),
+        }));
+      },
+      addCustomMood(mood) {
+        if (!mood.trim()) return;
+        set(s => ({
+          customMoods: (s.customMoods ?? []).includes(mood) ? s.customMoods : [...(s.customMoods ?? []), mood],
+        }));
+      },
+      removeCustomMood(mood) {
+        set(s => ({
+          customMoods: (s.customMoods ?? []).filter(m => m !== mood),
+        }));
+      },
+      updateCustomMood(oldMood, newMood) {
+        if (!newMood.trim()) return;
+        set(s => ({
+          customMoods: (s.customMoods ?? []).map(m => m === oldMood ? newMood : m),
+        }));
+      },
     }),
     {
       name: 'egoless-do-mobile',
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => async (state) => {
+        if (!state) return;
+        // Check and perform daily reset on app load
+        try {
+          const lastReset = await AsyncStorage.getItem(DAILY_RESET_KEY);
+          const patch = getDailyResetPatch(lastReset);
+          if (patch) {
+            // Use the store's setState method directly
+            useAppStore.setState(patch);
+            await AsyncStorage.setItem(DAILY_RESET_KEY, dateStr());
+          }
+        } catch (err) {
+          console.error('[DailyReset] Error:', err);
+        }
+      },
     }
   )
 );

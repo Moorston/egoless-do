@@ -6,6 +6,7 @@ import { THEMES, LANG_LIST, COLORS } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
 import { Toggle, useTheme, useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useOverlay } from './useOverlay';
 import type { SyncState } from '../db/syncService';
 
 interface SettingsRow {
@@ -17,7 +18,8 @@ interface SettingsRow {
   last?: boolean;
 }
 
-export default function SettingsTab({ onOpenStats, onOpenHistory, onOpenFoodLog, onOpenGrace, syncState }: { onOpenStats?: () => void; onOpenHistory?: () => void; onOpenFoodLog?: () => void; onOpenGrace?: () => void; syncState?: SyncState & { triggerSync: () => Promise<void> } }) {
+export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: () => void; syncState?: SyncState & { triggerSync: () => Promise<void> } }) {
+  const overlay = useOverlay();
   const store = useWebStore();
   const { TH, P } = useTheme();
   const T = useT();
@@ -40,10 +42,10 @@ export default function SettingsTab({ onOpenStats, onOpenHistory, onOpenFoodLog,
     ]},
     { title: T('settingsData'), rows: [
       { label: T('settingsStats'), icon: '📊', right: <span style={{ color: TH.sub }}>›</span>, onClick: onOpenStats },
-      { label: T('settingsHistory'), icon: '📅', right: <span style={{ color: TH.sub }}>›</span>, onClick: onOpenHistory },
-      { label: T('settingsFoodLog'), icon: '🍽', right: <span style={{ color: TH.sub }}>›</span>, onClick: onOpenFoodLog },
+      { label: T('settingsHistory'), icon: '📅', right: <span style={{ color: TH.sub }}>›</span>, onClick: () => overlay.open('history') },
+      { label: T('settingsFoodLog'), icon: '🍽', right: <span style={{ color: TH.sub }}>›</span>, onClick: () => overlay.open('foodLog') },
       { label: T('settingsFreeze'), icon: '❄️', sub: T('settingsFreezeDesc'), right: <span style={{ color: TH.sub }}>›</span> },
-      { label: T('settingsGrace'), icon: '🛡', sub: T('settingsGraceDesc'), right: <span style={{ color: TH.sub }}>›</span>, onClick: onOpenGrace },
+      { label: T('settingsGrace'), icon: '🛡', sub: T('settingsGraceDesc'), right: <span style={{ color: TH.sub }}>›</span>, onClick: () => overlay.open('grace') },
       { label: T('settingsStreakBreak'), icon: '❤️', sub: T('settingsStreakBreakDesc'), right: <span style={{ color: TH.sub }}>›</span>, last: true },
     ]},
     { title: T('settingsGeneral'), rows: [

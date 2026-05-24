@@ -23,22 +23,49 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
   const record = store.checkinHistory.find((c: CheckinRecord) => c.date === date);
 
   const parsed = useMemo(() => {
-    if (!record) return { userNote: '', practices: [] as string[], customs: [] as string[] };
+    if (!record) return { userNote: '', practices: [] as { key: string; icon: string; label: string }[], customs: [] as string[], fasted: false, water: '', habits: [] as string[] };
     const raw = record.note || '';
+    const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
+    const PRACTICE_ICONS: Record<string, string> = { sit: '🧘', stand: '🧍', chant: '📿' };
+
+    // Try JSON format first (new format)
+    try {
+      const data = JSON.parse(raw);
+      if (typeof data === 'object' && data !== null) {
+        const practices = (data.practices as string[] ?? []).map((k: string) => ({
+          key: k,
+          icon: PRACTICE_ICONS[k] ?? k,
+          label: T(PRACTICE_LABELS[k] ?? k),
+        }));
+        return {
+          userNote: data.note ?? '',
+          practices,
+          customs: (data.customs as string[]) ?? [],
+          fasted: !!data.fasted,
+          water: data.water ?? '',
+          habits: (data.habits as string[]) ?? [],
+        };
+      }
+    } catch {
+      // Not JSON — fall back to legacy emoji+delimiter format
+    }
+
+    // Legacy format: emoji prefixes + ' · ' delimiter
     const parts = raw.split(' · ');
-    const practices: string[] = [];
+    const practices: { key: string; icon: string; label: string }[] = [];
     const customs: string[] = [];
     const noteParts: string[] = [];
     for (const p of parts) {
       if (p.startsWith('🧘') || p.startsWith('🧍') || p.startsWith('📿')) {
-        practices.push(p);
+        const entry = Object.entries(PRACTICE_ICONS).find(([, icon]) => p.startsWith(icon));
+        practices.push(entry ? { key: entry[0], icon: entry[1], label: T(PRACTICE_LABELS[entry[0]] ?? entry[0]) } : { key: p, icon: p, label: p });
       } else if (p.startsWith('✓')) {
         customs.push(p.slice(1));
       } else if (p) {
         noteParts.push(p);
       }
     }
-    return { userNote: noteParts.join(' · '), practices, customs };
+    return { userNote: noteParts.join(' · '), practices, customs, fasted: false, water: '', habits: [] };
   }, [record]);
 
   if (!record) {
@@ -75,6 +102,15 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
           <div style={{ fontSize: 16, color: TH.sub, marginTop: 4 }}>{formatTime(record.timestamp, record.date)}</div>
         </div>
 
+        {/* Streak */}
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: '13px 0', borderBottom: `1px solid ${TH.border}`, marginBottom: 12,
+        }}>
+          <span style={{ fontSize: 16, color: TH.sub }}>{T('checkinStreak')}</span>
+          <span style={{ fontSize: 16, fontWeight: 600, color: TH.text }}>{record.streak} {T('days')}</span>
+        </div>
+
         {/* Weight */}
         {record.weight != null && (
           <div style={{ marginBottom: 12 }}>
@@ -85,6 +121,22 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
             </div>
           </div>
         )}
+
+        {/* Fasted & Water */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          {parsed.fasted && (
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(16,185,129,.12)', borderRadius: 10 }}>
+              <span>🙏</span>
+              <span style={{ fontSize: 16, color: COLORS.GREEN, fontWeight: 600 }}>{T('checkinAbstinence')}</span>
+            </div>
+          )}
+          {parsed.water && (
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(59,130,246,.12)', borderRadius: 10 }}>
+              <span>💧</span>
+              <span style={{ fontSize: 16, color: COLORS.BLUE, fontWeight: 600 }}>{parsed.water}</span>
+            </div>
+          )}
+        </div>
 
         {/* Practices */}
         {parsed.practices.length > 0 && (
@@ -98,7 +150,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '10px 0', borderBottom: i === parsed.practices.length - 1 ? 'none' : `1px solid ${TH.border}`,
               }}>
-                <span style={{ fontSize: 16, color: TH.text }}>{p}</span>
+                <span style={{ fontSize: 16, color: TH.text }}>{p.icon} {p.label}</span>
                 <span style={{ color: COLORS.GREEN, fontWeight: 700, fontSize: 16 }}>✓</span>
               </div>
             ))}
@@ -124,14 +176,24 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
           </div>
         )}
 
-        {/* Streak */}
-        <div style={{
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '13px 0', borderBottom: `1px solid ${TH.border}`,
-        }}>
-          <span style={{ fontSize: 16, color: TH.sub }}>{T('checkinStreak')}</span>
-          <span style={{ fontSize: 16, fontWeight: 600, color: TH.text }}>{record.streak} {T('days')}</span>
-        </div>
+        {/* Habits */}
+        {parsed.habits.length > 0 && (
+          <div style={{ padding: '13px 0', borderBottom: `1px solid ${TH.border}` }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: 18 }}>◇</span>
+              <span style={{ fontWeight: 600, color: TH.text }}>{T('checkinHabitCheck')}</span>
+            </div>
+            {parsed.habits.map((name, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 0', borderBottom: i === parsed.habits.length - 1 ? 'none' : `1px solid ${TH.border}`,
+              }}>
+                <span style={{ fontSize: 16, color: TH.text }}>{name}</span>
+                <span style={{ color: COLORS.GREEN, fontWeight: 700, fontSize: 16 }}>✓</span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Note */}
         {parsed.userNote && (

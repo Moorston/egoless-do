@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, Component } from 'react';
+import React, { useState, useEffect, useMemo, Component, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { THEMES, t } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 
@@ -94,8 +95,8 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-export class ErrorBoundary extends Component<
-  { children: React.ReactNode; fallback?: React.ReactNode },
+export class ErrorBoundaryInner extends Component<
+  { children: React.ReactNode; fallback?: React.ReactNode; lang?: string },
   ErrorBoundaryState
 > {
   state: ErrorBoundaryState = { hasError: false };
@@ -113,7 +114,7 @@ export class ErrorBoundary extends Component<
       return this.props.fallback ?? (
         <div style={{ padding: 20, textAlign: 'center', color: '#EF4444' }}>
           <div style={{ fontSize: 24, marginBottom: 8 }}>⚠️</div>
-          <div>出现了一些问题，请刷新页面重试</div>
+          <div>{t('errorBoundary', this.props.lang)}</div>
         </div>
       );
     }
@@ -121,6 +122,61 @@ export class ErrorBoundary extends Component<
   }
 }
 
+export function ErrorBoundary({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+  const lang = useWebStore((s) => s.language);
+  return <ErrorBoundaryInner lang={lang} fallback={fallback}>{children}</ErrorBoundaryInner>;
+}
+
 export function useCachedStyle<T>(factory: () => T, deps: React.DependencyList): T {
   return useMemo(factory, deps);
+}
+
+// ── Shared Modal Component ───────────────────────────────────────
+
+export interface ModalProps {
+  open: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  /** Max width of the modal content (default 390) */
+  maxWidth?: number;
+  /** z-index (default 500) */
+  zIndex?: number;
+}
+
+export function Modal({ open, onClose, children, maxWidth = 390, zIndex = 500 }: ModalProps) {
+  const theme = useWebStore((s) => s.theme);
+  const TH = THEMES[theme];
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleBackdrop = useCallback((e: React.MouseEvent) => {
+    if (contentRef.current && !contentRef.current.contains(e.target as Node)) {
+      onClose();
+    }
+  }, [onClose]);
+
+  if (!open || typeof document === 'undefined') return null;
+
+  return createPortal(
+    <div
+      onClick={handleBackdrop}
+      style={{
+        position: 'fixed', inset: 0, zIndex,
+        background: 'rgba(0,0,0,.55)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 16,
+      }}
+    >
+      <div
+        ref={contentRef}
+        style={{
+          background: TH.bg, borderRadius: 20, width: '100%', maxWidth,
+          maxHeight: '85vh', overflowY: 'auto', WebkitOverflowScrolling: 'touch',
+          boxShadow: '0 8px 40px rgba(0,0,0,.4)',
+        }}
+      >
+        {children}
+      </div>
+    </div>,
+    document.body,
+  );
 }

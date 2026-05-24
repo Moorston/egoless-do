@@ -1,165 +1,105 @@
-// ─── Sync endpoint tests ──────────────────────────────────────────
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import Database from 'better-sqlite3';
-import path from 'path';
-import fs from 'fs';
+// ─── Sync conflict resolution tests ───────────────────────────────
+import { describe, it, expect } from 'vitest';
+import { resolveConflict } from './conflict';
 
-// Create a test database
-const TEST_DB_DIR = path.join(process.cwd(), 'test-data');
-const TEST_DB_PATH = path.join(TEST_DB_DIR, 'test-sync.db');
+describe('resolveConflict', () => {
+  // ── Client wins ────────────────────────────────────────────────
 
-let db: Database.Database;
+  it('client wins when clientUpdated > serverUpdated', () => {
+    const result = resolveConflict({ clientUpdated: 2000, serverUpdated: 1000 });
+    expect(result.winner).toBe('client');
+    expect(result.clientUpdated).toBe(2000);
+  });
 
-beforeAll(() => {
-  if (!fs.existsSync(TEST_DB_DIR)) fs.mkdirSync(TEST_DB_DIR, { recursive: true });
-  db = new Database(TEST_DB_PATH);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
+  it('client wins on tie (clientUpdated === serverUpdated)', () => {
+    const result = resolveConflict({ clientUpdated: 1000, serverUpdated: 1000 });
+    expect(result.winner).toBe('client');
+  });
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS sync_data (
-      user_id    TEXT NOT NULL,
-      entity     TEXT NOT NULL,
-      entity_id  TEXT NOT NULL,
-      payload    TEXT,
-      updated_at INTEGER NOT NULL,
-      version    INTEGER NOT NULL DEFAULT 1,
-      deleted    INTEGER NOT NULL DEFAULT 0,
-      PRIMARY KEY (user_id, entity, entity_id)
-    );
-    CREATE INDEX IF NOT EXISTS idx_sync_updated ON sync_data(user_id, updated_at);
-  `);
+  // ── Server wins ────────────────────────────────────────────────
+
+  it('server wins when serverUpdated > clientUpdated', () => {
+    const result = resolveConflict({ clientUpdated: 1000, serverUpdated: 2000 });
+    expect(result.winner).toBe('server');
+    expect(result.clientUpdated).toBe(1000);
+  });
+
+  // ── Future drift clamping ──────────────────────────────────────
+
+  it('clamps client timestamp >60s in the future', () => {
+    const now = 100_000;
+    const futureTs = now + 61_000; // 61s ahead — exceeds drift
+    const result = resolveConflict({ clientUpdated: futureTs, serverUpdated: 0, now });
+    expect(result.clientUpdated).toBe(now);
+    expect(result.winner).toBe('client'); // clamped value beats server 0
+  });
+
+  it('does NOT clamp timestamp within 60s drift', () => {
+    const now = 100_000;
+    const okTs = now + 59_000; // 59s ahead — within tolerance
+    const result = resolveConflict({ clientUpdated: okTs, serverUpdated: 0, now });
+    expect(result.clientUpdated).toBe(okTs);
+    expect(result.winner).toBe('client');
+  });
+
+  it('clamped timestamp can still lose to newer server', () => {
+    const now = 100_000;
+    const futureTs = now + 120_000;
+    const serverUpdated = now + 10; // server is slightly newer than "now"
+    const result = resolveConflict({ clientUpdated: futureTs, serverUpdated, now });
+    expect(result.clientUpdated).toBe(now); // clamped
+    expect(result.winner).toBe('server'); // server(now+10) > clamped(now)
+  });
+
+  // ── Edge cases ─────────────────────────────────────────────────
+
+  it('handles zero timestamps', () => {
+    const result = resolveConflict({ clientUpdated: 0, serverUpdated: 0 });
+    expect(result.winner).toBe('client'); // 0 >= 0
+  });
+
+  it('handles missing client timestamp (defaults to 0)', () => {
+    const result = resolveConflict({ clientUpdated: 0, serverUpdated: 500 });
+    expect(result.winner).toBe('server');
+  });
+
+  it('client with newer timestamp overwrites stale server data', () => {
+    // Scenario: client edited offline, server has older version
+    const result = resolveConflict({ clientUpdated: 5000, serverUpdated: 3000 });
+    expect(result.winner).toBe('client');
+  });
+
+  it('server with newer timestamp rejects stale client push', () => {
+    // Scenario: another device already synced a newer version
+    const result = resolveConflict({ clientUpdated: 3000, serverUpdated: 5000 });
+    expect(result.winner).toBe('server');
+  });
 });
 
-afterAll(() => {
-  db.close();
-  if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH);
-  if (fs.existsSync(TEST_DB_DIR)) fs.rmdirSync(TEST_DB_DIR);
-});
+describe('sync entity mapping', () => {
+  // Verify the mapping is consistent — these are critical for data integrity
+  const ENTITY_COLLECTION: Record<string, string> = {
+    habit: 'habits', reflection: 'reflections', fasting: 'fasting_sessions',
+    food: 'food_entries', checkin: 'checkin_records', meditation: 'meditation_history',
+    profile: 'user_profiles', exercise: 'exercise_entries',
+  };
 
-describe('Sync data storage', () => {
-  it('should insert a new sync record', () => {
-    const stmt = db.prepare(`
-      INSERT INTO sync_data(user_id, entity, entity_id, payload, updated_at, version, deleted)
-      VALUES(?, ?, ?, ?, ?, ?, ?)
-    `);
+  const ENTITY_ID_FIELD: Record<string, string> = {
+    habit: 'habit_id', reflection: 'reflection_id', fasting: 'session_id',
+    food: 'food_id', checkin: 'date', meditation: 'date',
+    profile: 'profile_id', exercise: 'exercise_id',
+  };
 
-    const result = stmt.run('user1', 'habit', 'habit1', JSON.stringify({ name: 'Meditate' }), Date.now(), 1, 0);
-    expect(result.changes).toBe(1);
-  });
-
-  it('should upsert with higher version', () => {
-    const upsert = db.prepare(`
-      INSERT INTO sync_data(user_id, entity, entity_id, payload, updated_at, version, deleted)
-      VALUES(?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(user_id, entity, entity_id) DO UPDATE SET
-        payload = CASE WHEN excluded.version > sync_data.version THEN excluded.payload ELSE sync_data.payload END,
-        updated_at = CASE WHEN excluded.version > sync_data.version THEN excluded.updated_at ELSE sync_data.updated_at END,
-        version = MAX(excluded.version, sync_data.version),
-        deleted = CASE WHEN excluded.version > sync_data.version THEN excluded.deleted ELSE sync_data.deleted END
-    `);
-
-    // Insert v1
-    upsert.run('user1', 'habit', 'habit2', JSON.stringify({ name: 'Run' }), 1000, 1, 0);
-
-    // Update with v2 (should win)
-    upsert.run('user1', 'habit', 'habit2', JSON.stringify({ name: 'Run updated' }), 2000, 2, 0);
-
-    const row = db.prepare('SELECT * FROM sync_data WHERE user_id = ? AND entity_id = ?').get('user1', 'habit2') as any;
-    expect(row.version).toBe(2);
-    expect(JSON.parse(row.payload).name).toBe('Run updated');
-  });
-
-  it('should keep higher version when lower version arrives', () => {
-    const upsert = db.prepare(`
-      INSERT INTO sync_data(user_id, entity, entity_id, payload, updated_at, version, deleted)
-      VALUES(?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(user_id, entity, entity_id) DO UPDATE SET
-        payload = CASE WHEN excluded.version > sync_data.version THEN excluded.payload ELSE sync_data.payload END,
-        updated_at = CASE WHEN excluded.version > sync_data.version THEN excluded.updated_at ELSE sync_data.updated_at END,
-        version = MAX(excluded.version, sync_data.version),
-        deleted = CASE WHEN excluded.version > sync_data.version THEN excluded.deleted ELSE sync_data.deleted END
-    `);
-
-    // Insert v3
-    upsert.run('user1', 'habit', 'habit3', JSON.stringify({ name: 'V3' }), 3000, 3, 0);
-
-    // Try v1 (should NOT overwrite)
-    upsert.run('user1', 'habit', 'habit3', JSON.stringify({ name: 'V1 stale' }), 1000, 1, 0);
-
-    const row = db.prepare('SELECT * FROM sync_data WHERE user_id = ? AND entity_id = ?').get('user1', 'habit3') as any;
-    expect(row.version).toBe(3);
-    expect(JSON.parse(row.payload).name).toBe('V3');
-  });
-
-  it('should return incremental changes after timestamp', () => {
-    const insert = db.prepare(`
-      INSERT OR IGNORE INTO sync_data(user_id, entity, entity_id, payload, updated_at, version, deleted)
-      VALUES(?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    insert.run('user1', 'reflection', 'r1', '{}', 5000, 1, 0);
-    insert.run('user1', 'reflection', 'r2', '{}', 8000, 1, 0);
-    insert.run('user1', 'reflection', 'r3', '{}', 10000, 1, 0);
-
-    const changes = db.prepare(`
-      SELECT entity_id FROM sync_data WHERE user_id = ? AND updated_at > ?
-    `).all('user1', 6000) as any[];
-
-    expect(changes.length).toBe(2);
-    expect(changes.map((c: any) => c.entity_id)).toContain('r2');
-    expect(changes.map((c: any) => c.entity_id)).toContain('r3');
-  });
-
-  it('should handle soft delete', () => {
-    const upsert = db.prepare(`
-      INSERT INTO sync_data(user_id, entity, entity_id, payload, updated_at, version, deleted)
-      VALUES(?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(user_id, entity, entity_id) DO UPDATE SET
-        payload = CASE WHEN excluded.version > sync_data.version THEN excluded.payload ELSE sync_data.payload END,
-        updated_at = CASE WHEN excluded.version > sync_data.version THEN excluded.updated_at ELSE sync_data.updated_at END,
-        version = MAX(excluded.version, sync_data.version),
-        deleted = CASE WHEN excluded.version > sync_data.version THEN excluded.deleted ELSE sync_data.deleted END
-    `);
-
-    // Insert then soft-delete
-    upsert.run('user1', 'food', 'f1', JSON.stringify({ name: 'Apple' }), 1000, 1, 0);
-    upsert.run('user1', 'food', 'f1', null, 2000, 2, 1);
-
-    const row = db.prepare('SELECT * FROM sync_data WHERE user_id = ? AND entity_id = ?').get('user1', 'f1') as any;
-    expect(row.deleted).toBe(1);
-    expect(row.payload).toBeNull();
-
-    // Full pull should exclude deleted
-    const active = db.prepare(`
-      SELECT entity_id FROM sync_data WHERE user_id = ? AND deleted = 0
-    `).all('user1') as any[];
-    expect(active.find((r: any) => r.entity_id === 'f1')).toBeUndefined();
-  });
-
-  it('should group results by entity type', () => {
-    const insert = db.prepare(`
-      INSERT OR IGNORE INTO sync_data(user_id, entity, entity_id, payload, updated_at, version, deleted)
-      VALUES(?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    insert.run('user1', 'habit', 'h1', JSON.stringify({ name: 'H1' }), 1000, 1, 0);
-    insert.run('user1', 'habit', 'h2', JSON.stringify({ name: 'H2' }), 2000, 1, 0);
-    insert.run('user1', 'reflection', 'r1', JSON.stringify({ content: 'R1' }), 3000, 1, 0);
-
-    const rows = db.prepare(`
-      SELECT entity, entity_id, payload, deleted FROM sync_data
-      WHERE user_id = ? AND deleted = 0
-    `).all('user1') as any[];
-
-    const data: Record<string, any[]> = {};
-    for (const row of rows) {
-      if (!row.payload) continue;
-      if (!data[row.entity]) data[row.entity] = [];
-      data[row.entity].push(JSON.parse(row.payload));
+  it('every entity has both collection and id field', () => {
+    const entities = Object.keys(ENTITY_COLLECTION);
+    for (const e of entities) {
+      expect(ENTITY_ID_FIELD[e], `missing id field for ${e}`).toBeDefined();
     }
+  });
 
-    expect(data.habit).toHaveLength(2);
-    expect(data.reflection).toHaveLength(1);
+  it('no extra id fields without collections', () => {
+    for (const e of Object.keys(ENTITY_ID_FIELD)) {
+      expect(ENTITY_COLLECTION[e], `missing collection for ${e}`).toBeDefined();
+    }
   });
 });

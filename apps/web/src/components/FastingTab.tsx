@@ -4,8 +4,10 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { COLORS } from '@egoless-do/core';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useOverlay } from './useOverlay';
 
-export default function FastingTab({ onOpenGlobalMap, onOpenFastHistory }: { onOpenGlobalMap?: () => void; onOpenFastHistory?: () => void }) {
+export default function FastingTab() {
+  const overlay = useOverlay();
   const store = useWebStore();
   const { TH, P } = useTheme();
   const T = useT();
@@ -100,9 +102,9 @@ export default function FastingTab({ onOpenGlobalMap, onOpenFastHistory }: { onO
         )}
       </div>
 
-      <LinkWorldBtn label={T('globalFasting')} onClick={() => onOpenGlobalMap?.()} />
+      <LinkWorldBtn label={T('globalFasting')} onClick={() => overlay.open('globalMap')} />
 
-      <div onClick={onOpenFastHistory} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
+      <div onClick={() => overlay.open('fastHistory')} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
         <span style={{ fontSize: 18 }}>⏱</span>
         <span style={{ fontSize: 16, color: TH.text }}>{T('fastingHistory')}</span>
         <span style={{ marginLeft: 'auto', color: TH.sub }}>›</span>

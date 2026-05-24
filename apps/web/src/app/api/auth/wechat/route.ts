@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPb } from '../../_pb';
+import { getPb, escapeFilter } from '../../_pb';
 import crypto from 'crypto';
+import { TOKEN_EXPIRES_IN } from '../../constants';
+import { sanitizeError } from '../../_errors';
 
 function wechatPassword(openid: string) {
-  const salt = process.env.WECHAT_SECRET ?? 'egoless-wechat';
+  const salt = process.env.WECHAT_SECRET;
+  if (!salt) throw new Error('WECHAT_SECRET 未配置');
   return crypto.createHash('sha256').update(openid + salt).digest('hex').slice(0, 20);
 }
 
@@ -28,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     let user;
     try {
-      user = await pb.collection('users').getFirstListItem(`wechat_openid = "${openid}"`);
+      user = await pb.collection('users').getFirstListItem(`wechat_openid = "${escapeFilter(openid)}"`);
     } catch {
       user = await pb.collection('users').create({
         email: `wechat_${openid}@egoless.do`,
@@ -40,13 +43,14 @@ export async function POST(req: NextRequest) {
 
     const authData = await pb.collection('users').authWithPassword(user.email, password);
 
+    // Note: refreshToken === token is a PocketBase limitation (no separate refresh token mechanism).
     return NextResponse.json({
       user: { id: user.id, name: user.name, avatar: user.avatar },
       token: authData.token,
       refreshToken: authData.token,
-      expiresAt: Date.now() + 86400000,
+      expiresAt: Date.now() + TOKEN_EXPIRES_IN,
     });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : '微信登录失败' }, { status: 500 });
+    return NextResponse.json({ error: sanitizeError(err, '微信登录失败') }, { status: 500 });
   }
 }

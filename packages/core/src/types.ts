@@ -33,7 +33,7 @@ export const defaultAuthState: AuthState = {
 // @egoless-do/core — Shared TypeScript types
 // ─────────────────────────────────────────────────────────────────
 
-export type Mood = '平静' | '活力' | '沉思' | '感恩';
+export type Mood = '平静' | '开心';
 export type HabitStatus = 'notStarted' | 'inProgress' | 'paused' | 'abandoned' | 'completed';
 export type ThemeName = 'dark' | 'light' | 'ocean' | 'forest' | 'rose' | 'cosmos';
 
@@ -117,6 +117,16 @@ export interface FoodEntry {
   // mobile legacy fields
   cal?: number;
   ts?: number;
+}
+
+export interface ExerciseEntry {
+  id: string;
+  sportKey: string;
+  sportIcon: string;
+  durationSec: number;
+  timestamp: number;
+  updatedAt?: number;
+  deleted?: boolean;
 }
 
 export interface CheckinEntry {

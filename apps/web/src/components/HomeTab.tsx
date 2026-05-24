@@ -5,6 +5,7 @@ import { COLORS, QUICK_FOODS } from '@egoless-do/core';
 import type { CheckinRecord } from '@egoless-do/core';
 import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useOverlay } from './useOverlay';
 
 function computeLongestStreak(history: CheckinRecord[]): number {
   const doneDates = history.filter(c => c.done).map(c => c.date).sort();
@@ -20,10 +21,11 @@ function computeLongestStreak(history: CheckinRecord[]): number {
   return max;
 }
 
-export default function HomeTab({ onOpenCheckin }: { onOpenCheckin?: () => void }) {
+export default function HomeTab() {
   const store = useWebStore();
   const { TH, P } = useTheme();
   const T = useT();
+  const overlay = useOverlay();
 
   const [showFood, setShowFood] = useState(false);
   const [fn, setFn] = useState('');
@@ -87,7 +89,7 @@ export default function HomeTab({ onOpenCheckin }: { onOpenCheckin?: () => void 
       <div style={{ borderRadius: 16, background: bannerConfig.bg, padding: '18px 20px', marginBottom: 12, color: '#fff' }}>
         <div style={{ fontWeight: 700, fontSize: 17, textAlign: 'center' }}>{T('todayCheckin')}</div>
         <div style={{ textAlign: 'center', fontSize: 16, opacity: 0.8, marginTop: 3, marginBottom: 14 }}>{bannerConfig.sub}</div>
-        <button onClick={() => { if (bannerState !== 'done') onOpenCheckin?.(); }}
+        <button onClick={() => { if (bannerState !== 'done') overlay.open('checkin'); }}
           style={{ width: '100%', padding: '11px 0', borderRadius: 12, border: '2px solid rgba(255,255,255,.6)', background: 'rgba(255,255,255,.18)', color: '#fff', fontWeight: 700, fontSize: 16, cursor: bannerState === 'done' ? 'default' : 'pointer', opacity: bannerState === 'done' ? 0.7 : 1 }}>
           {bannerConfig.btn}
         </button>
@@ -109,6 +111,16 @@ export default function HomeTab({ onOpenCheckin }: { onOpenCheckin?: () => void 
             <div style={{ fontWeight: 700, color: '#fff', fontSize: 17 }}>{item.value}<span style={{ fontSize: 16, fontWeight: 400 }}> {item.unit}</span></div>
           </div>
         ))}
+      </div>
+
+      <div style={cardStyle}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: 16, fontWeight: 600 }}>⚖️ {T('todayWeight')}</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+            <span style={{ fontSize: 22, fontWeight: 700, color: P }}>{todayWeight != null ? todayWeight : '—'}</span>
+            <span style={{ color: TH.sub, fontSize: 16 }}>{T('checkinKg')}</span>
+          </div>
+        </div>
       </div>
 
       <div style={cardStyle}>
@@ -135,16 +147,6 @@ export default function HomeTab({ onOpenCheckin }: { onOpenCheckin?: () => void 
         </div>
         <div style={{ height: 4, background: TH.border, borderRadius: 2, marginTop: 8, overflow: 'hidden' }}>
           <div style={calProgress} />
-        </div>
-      </div>
-
-      <div style={cardStyle}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: 16, fontWeight: 600 }}>⚖️ {T('todayWeight')}</span>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-            <span style={{ fontSize: 22, fontWeight: 700, color: P }}>{todayWeight != null ? todayWeight : '—'}</span>
-            <span style={{ color: TH.sub, fontSize: 16 }}>{T('checkinKg')}</span>
-          </div>
         </div>
       </div>
 

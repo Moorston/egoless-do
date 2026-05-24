@@ -82,6 +82,13 @@ export const zh: Record<string, string> = {
   reflTopTag:'最高频标签', reflStreak:'连续天数', reflEmpty:'暂无感念记录',
   reflNewTitle:'新建感念', reflPlaceholder:'记录此刻的感悟与灵感...',
   reflAddTag:'添加标签', reflMood:'心情', reflDeleteConfirm:'确认删除这条感念？',
+  tagManager:'标签管理', moodManager:'心情管理',
+  newTagPlaceholder:'输入新标签...', newMoodPlaceholder:'输入新心情...',
+  presetTags:'预设标签', customTags:'自定义标签',
+  presetMoods:'预设心情', customMoods:'自定义心情',
+  preset:'预设', add:'添加',
+  tagTooLong:'标签最多4个词', moodTooLong:'心情最多4个词',
+  maxTagsReached:'最多只能添加10个自定义标签', maxMoodsReached:'最多只能添加10个自定义心情',
 
   // Fasting
   fastTotal:'总次数', fastTotalHours:'总禁食', fastStreak:'连续天数',
@@ -114,7 +121,7 @@ export const zh: Record<string, string> = {
   // Checkin
   checkinTitle:'今日打卡', checkinSubtitle:'诚实记录，养成习惯',
   checkinWeight:'今日体重', checkinKg:'公斤', checkinAbstinence:'今日禁欲',
-  checkinWater:'今日饮水', checkinPractice:'修行记录',
+  checkinWater:'今日饮水', checkinFood:'今日饮食', checkinPractice:'修行记录',
   checkinSit:'打坐', checkinStand:'站桩', checkinSutra:'诵经',
   checkinHabitCheck:'习惯打卡', checkinFree:'自由打卡',
   checkinCustom:'自定义项目', checkinNote:'备注',
@@ -214,6 +221,23 @@ export const zh: Record<string, string> = {
   // Share
   settingsShareFriend:'分享给好友', settingsShareDesc:'推荐心流纪给你的朋友',
   shareUrl:'https://egoless-do.app',
+
+  // Sounds
+  soundOcean:'海潮', soundRain:'雨声', soundBowl:'钵音', soundBirds:'鸟鸣',
+  soundStream:'溪流', soundChimes:'风铃', soundNone:'静音',
+
+  // Calendar weekdays
+  weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',
+  weekdayThu:'四', weekdayFri:'五', weekdaySat:'六',
+
+  // Errors
+  errorDisconnected:'连接断开',
+
+  // Reminder
+  reminderBody:'该打卡了！记录今天的禁食、冥想和运动吧',
+
+  // Time ago
+  timeAgoJustNow:'刚刚', timeAgoMinutes:'{n}分钟前', timeAgoHours:'{n}小时前', timeAgoDays:'{n}天前',
 };
 
 export const en: Record<string, string> = {
@@ -299,6 +323,13 @@ export const en: Record<string, string> = {
   reflTopTag:'Top Tag', reflStreak:'Streak', reflEmpty:'No reflections yet',
   reflNewTitle:'New Reflection', reflPlaceholder:'Record your thoughts...',
   reflAddTag:'Add Tag', reflMood:'Mood', reflDeleteConfirm:'Delete this reflection?',
+  tagManager:'Tag Manager', moodManager:'Mood Manager',
+  newTagPlaceholder:'Enter new tag...', newMoodPlaceholder:'Enter new mood...',
+  presetTags:'Preset Tags', customTags:'Custom Tags',
+  presetMoods:'Preset Moods', customMoods:'Custom Moods',
+  preset:'Preset', add:'Add',
+  tagTooLong:'Tag max 4 words', moodTooLong:'Mood max 4 words',
+  maxTagsReached:'Max 10 custom tags reached', maxMoodsReached:'Max 10 custom moods reached',
 
   // Fasting
   fastTotal:'Total', fastTotalHours:'Total Fasting', fastStreak:'Streak',
@@ -331,7 +362,7 @@ export const en: Record<string, string> = {
   // Checkin
   checkinTitle:"Today's Check-in", checkinSubtitle:'Be honest, build habits',
   checkinWeight:"Today's Weight", checkinKg:'kg', checkinAbstinence:'Abstinence',
-  checkinWater:'Water Intake', checkinPractice:'Practice',
+  checkinWater:'Water Intake', checkinFood:'Food Intake', checkinPractice:'Practice',
   checkinSit:'Meditate', checkinStand:'Stand', checkinSutra:'Chant',
   checkinHabitCheck:'Habit Check', checkinFree:'Free Check',
   checkinCustom:'Custom Item', checkinNote:'Note',
@@ -431,8 +462,27 @@ export const en: Record<string, string> = {
   // Share
   settingsShareFriend:'Share with Friends', settingsShareDesc:'Recommend Flow Journal to friends',
   shareUrl:'https://egoless-do.app',
+
+  // Sounds
+  soundOcean:'Ocean', soundRain:'Rain', soundBowl:'Singing Bowl', soundBirds:'Birds',
+  soundStream:'Stream', soundChimes:'Wind Chimes', soundNone:'Silent',
+
+  // Calendar weekdays
+  weekdaySun:'Sun', weekdayMon:'Mon', weekdayTue:'Tue', weekdayWed:'Wed',
+  weekdayThu:'Thu', weekdayFri:'Fri', weekdaySat:'Sat',
+
+  // Errors
+  errorDisconnected:'Disconnected',
+
+  // Reminder
+  reminderBody:"Time to check in! Record today's fasting, meditation and exercise.",
+
+  // Time ago
+  timeAgoJustNow:'just now', timeAgoMinutes:'{n}m ago', timeAgoHours:'{n}h ago', timeAgoDays:'{n}d ago',
 };
 
-export const translations: Record<string, Record<string, string>> = { zh, en };
+// zh-Hant reuses zh as base; add Traditional Chinese overrides here when available
+export const zhHant: Record<string, string> = { ...zh };
+export const translations: Record<string, Record<string, string>> = { zh, 'zh-Hant': zhHant, en };
 export const getT = (lang: string) => translations[lang] ?? zh;
 export const t = (key: string, lang: string = 'zh'): string => translations[lang]?.[key] ?? translations['zh']?.[key] ?? key;

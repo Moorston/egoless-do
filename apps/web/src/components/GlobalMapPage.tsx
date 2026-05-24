@@ -1,22 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { THEMES, GLOBAL_USERS } from '@egoless-do/core';
+import { GLOBAL_USERS } from '@egoless-do/core';
 import type { GlobalUser } from '@egoless-do/core';
-import { useT } from './helpers';
+import { useT, useTheme } from './helpers';
 
 const USERS_WITH_STREAK = GLOBAL_USERS.map((u) => ({
   ...u,
   streak: Math.round(u.days * (0.6 + Math.random() * 0.35)),
 }));
 
-export default function GlobalMapPage({ TH, P, onClose }: { TH: (typeof THEMES)[keyof typeof THEMES]; P: string; onClose: () => void }) {
+export default function GlobalMapPage({ onClose }: { onClose: () => void }) {
+  const { TH, P } = useTheme();
   const [sel, setSel] = useState<GlobalUser | null>(null);
   const [showBoard, setShowBoard] = useState(false);
   const T = useT();
 
   if (showBoard) {
-    return <LeaderboardPage users={USERS_WITH_STREAK} TH={TH} P={P} onClose={() => setShowBoard(false)} />;
+    return <LeaderboardPage users={USERS_WITH_STREAK} onClose={() => setShowBoard(false)} />;
   }
 
   return (
@@ -67,9 +68,10 @@ export default function GlobalMapPage({ TH, P, onClose }: { TH: (typeof THEMES)[
   );
 }
 
-function LeaderboardPage({ users, TH, P, onClose }: { users: (GlobalUser & { streak: number })[]; TH: (typeof THEMES)[keyof typeof THEMES]; P: string; onClose: () => void }) {
+function LeaderboardPage({ users, onClose }: { users: (GlobalUser & { streak: number })[]; onClose: () => void }) {
   const [tab, setTab] = useState(0);
   const T = useT();
+  const { TH, P } = useTheme();
 
   const sorted = tab === 0
     ? [...users].sort((a, b) => b.streak - a.streak)

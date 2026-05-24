@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./realtimeSync": "./dist/realtimeSync.js",
+    "./push": "./dist/push.js"
+  },
   "scripts": {
     "build": "tsc",
     "type-check": "tsc --noEmit",

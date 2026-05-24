@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View, Text, Modal, ScrollView, TouchableOpacity, TextInput,
   KeyboardAvoidingView, Platform,
@@ -13,9 +13,23 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
   const P     = TH.primary;
   const store = useAppStore();
 
+  // Calculate today's total calories from foodLog
+  const totalCal = useMemo(
+    () => (store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? f.cal ?? 0), 0),
+    [store.foodLog],
+  );
+
   const [weight, setWeight]       = useState('65');
   const [fasted, setFasted]       = useState(false);
-  const [water, setWater]         = useState('');
+  const [water, setWater]         = useState(() => {
+    const waterMl = store.waterMl ?? 0;
+    if (waterMl >= 2000) return '>2000ml';
+    if (waterMl >= 1500) return '2000ml';
+    if (waterMl >= 1000) return '1500ml';
+    if (waterMl >= 500) return '1000ml';
+    if (waterMl > 0) return '500ml';
+    return '';
+  });
   const [practices, setPractices] = useState({ sit:false, stand:false, chant:false });
   const [note, setNote]           = useState('');
   const [freeItems, setFreeItems] = useState<{ id:string; name:string }[]>([]);
@@ -30,9 +44,13 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
     Object.entries(habitCheckins).forEach(([id, checked]) => {
       if (checked) store.checkinHabit(id, today);
     });
-    // Add water if selected
+    // Set water amount (not add, but set to the selected value)
     const waterMap: Record<string, number> = { '500ml': 500, '1000ml': 1000, '1500ml': 1500, '2000ml': 2000, '>2000ml': 2500 };
-    if (water && waterMap[water]) store.addWater(waterMap[water]);
+    if (water && waterMap[water]) {
+      // Reset water first, then add the selected amount
+      store.resetWater();
+      store.addWater(waterMap[water]);
+    }
     // Build enhanced note with practices and free items
     const parts = [note];
     if (practices.sit) parts.push(`🧘${T('checkinSit')}`);
@@ -92,8 +110,22 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
             </View>
 
             {/* Fasted */}
-            <RowItem label={T('checkinAbstinence')} icon="🙏" last
+            <RowItem label={T('checkinAbstinence')} icon="🙏"
               right={<Toggle on={fasted} onChange={() => setFasted(v => !v)} />} />
+
+            {/* Today's food calories display */}
+            <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>
+              <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+                  <Text style={{ fontSize:18 }}>🍽</Text>
+                  <Text style={{ color:TH.text }}>{T('checkinFood')}</Text>
+                </View>
+                <View style={{ flexDirection:'row', alignItems:'baseline', gap:4 }}>
+                  <Text style={{ fontSize:18, fontWeight:'600', color:P }}>{totalCal}</Text>
+                  <Text style={{ color:TH.sub, fontSize:14 }}>kcal</Text>
+                </View>
+              </View>
+            </View>
 
             {/* Water */}
             <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>

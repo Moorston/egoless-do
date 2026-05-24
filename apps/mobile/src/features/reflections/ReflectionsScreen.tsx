@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
@@ -26,6 +26,16 @@ export default function ReflectionsScreen() {
   const [mood, setMood]           = useState('');
   const [colorIdx, setColorIdx]   = useState(0);
   const [confirmDel, setConfirmDel] = useState<string|null>(null);
+
+  // Tag management state
+  const [showTagManager, setShowTagManager] = useState(false);
+  const [newTag, setNewTag] = useState('');
+  const [editingTag, setEditingTag] = useState<{ old: string; new: string } | null>(null);
+
+  // Mood management state
+  const [showMoodManager, setShowMoodManager] = useState(false);
+  const [newMood, setNewMood] = useState('');
+  const [editingMood, setEditingMood] = useState<{ old: string; new: string } | null>(null);
 
   const allTags  = [...new Set((store.reflections ?? []).flatMap(r => r.tags))];
   const filtered = filterTag ? (store.reflections ?? []).filter(r => r.tags.includes(filterTag)) : (store.reflections ?? []);
@@ -61,12 +71,78 @@ export default function ReflectionsScreen() {
   }, [filtered]);
 
   const habitTags = (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`);
+  const allTagOptions = useMemo(() => [...TAGS_PRESET, ...habitTags, ...(store.customTags ?? [])], [habitTags, store.customTags]);
+  const allMoodOptions = useMemo(() => [...MOODS, ...(store.customMoods ?? [])], [store.customMoods]);
 
   const saveReflection = () => {
     if (!content.trim()) return;
     store.addReflection({ content, tags, mood, colorIdx });
     setContent(''); setTags([]); setMood(''); setColorIdx(0);
     setShowNew(false);
+  };
+
+  const handleAddTag = () => {
+    if (newTag.trim()) {
+      const tag = newTag.startsWith('#') ? newTag : `#${newTag}`;
+      // Check tag length (max 4 words)
+      const words = tag.replace('#', '').trim().split(/\s+/);
+      if (words.length > 4) {
+        alert(T('tagTooLong'));
+        return;
+      }
+      // Check max custom tags (10)
+      if ((store.customTags ?? []).length >= 10) {
+        alert(T('maxTagsReached'));
+        return;
+      }
+      store.addCustomTag(tag);
+      setNewTag('');
+    }
+  };
+
+  const handleUpdateTag = () => {
+    if (editingTag && editingTag.new.trim()) {
+      const newTagValue = editingTag.new.startsWith('#') ? editingTag.new : `#${editingTag.new}`;
+      // Check tag length (max 4 words)
+      const words = newTagValue.replace('#', '').trim().split(/\s+/);
+      if (words.length > 4) {
+        alert(T('tagTooLong'));
+        return;
+      }
+      store.updateCustomTag(editingTag.old, newTagValue);
+      setEditingTag(null);
+    }
+  };
+
+  const handleAddMood = () => {
+    if (newMood.trim()) {
+      // Check mood length (max 4 words)
+      const words = newMood.trim().split(/\s+/);
+      if (words.length > 4) {
+        alert(T('moodTooLong'));
+        return;
+      }
+      // Check max custom moods (10)
+      if ((store.customMoods ?? []).length >= 10) {
+        alert(T('maxMoodsReached'));
+        return;
+      }
+      store.addCustomMood(newMood);
+      setNewMood('');
+    }
+  };
+
+  const handleUpdateMood = () => {
+    if (editingMood && editingMood.new.trim()) {
+      // Check mood length (max 4 words)
+      const words = editingMood.new.trim().split(/\s+/);
+      if (words.length > 4) {
+        alert(T('moodTooLong'));
+        return;
+      }
+      store.updateCustomMood(editingMood.old, editingMood.new);
+      setEditingMood(null);
+    }
   };
 
   return (
@@ -186,18 +262,26 @@ export default function ReflectionsScreen() {
               {/* Tags */}
               <Text style={{ color:TH.sub, fontSize:16, marginBottom:8 }}>{T('reflAddTag')}</Text>
               <View style={{ flexDirection:'row', flexWrap:'wrap', marginBottom:16 }}>
-                {[...TAGS_PRESET, ...habitTags].map(t => (
+                {allTagOptions.map(t => (
                   <TagPill key={t} label={t} active={tags.includes(t)}
                     onPress={() => setTags(ts => ts.includes(t) ? ts.filter(x=>x!==t) : [...ts,t])} />
                 ))}
+                <TouchableOpacity onPress={() => setShowTagManager(true)}
+                  style={{ paddingHorizontal:12, paddingVertical:6, borderRadius:16, borderWidth:1, borderColor:TH.border, borderStyle:'dashed' }}>
+                  <Text style={{ color:TH.sub, fontSize:16 }}>⚙️</Text>
+                </TouchableOpacity>
               </View>
 
               {/* Mood */}
               <Text style={{ color:TH.sub, fontSize:16, marginBottom:8 }}>{T('reflMood')}</Text>
               <View style={{ flexDirection:'row', flexWrap:'wrap', marginBottom:24 }}>
-                {MOODS.map(m => (
+                {allMoodOptions.map(m => (
                   <TagPill key={m} label={m} active={mood===m} onPress={() => setMood(mood===m ? '' : m)} />
                 ))}
+                <TouchableOpacity onPress={() => setShowMoodManager(true)}
+                  style={{ paddingHorizontal:12, paddingVertical:6, borderRadius:16, borderWidth:1, borderColor:TH.border, borderStyle:'dashed' }}>
+                  <Text style={{ color:TH.sub, fontSize:16 }}>⚙️</Text>
+                </TouchableOpacity>
               </View>
 
               <PrimaryButton label={T('saveReflection')} onPress={saveReflection} />
@@ -217,6 +301,144 @@ export default function ReflectionsScreen() {
             </View>
           </View>
         </View>
+      </Modal>
+
+      {/* Tag Manager Modal */}
+      <Modal visible={showTagManager} animationType="slide" transparent>
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'center', padding:24 }}>
+          <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24, maxHeight:'80%' }}>
+            <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+              <Text style={{ fontWeight:'700', fontSize:18, color:TH.text }}>{T('tagManager')}</Text>
+              <TouchableOpacity onPress={() => setShowTagManager(false)}><Text style={{ color:TH.sub, fontSize:26 }}>×</Text></TouchableOpacity>
+            </View>
+            
+            {/* Add new tag */}
+            <View style={{ flexDirection:'row', gap:8, marginBottom:16 }}>
+              <TextInput value={newTag} onChangeText={setNewTag} placeholder={T('newTagPlaceholder')}
+                placeholderTextColor={TH.sub}
+                style={{ flex:1, padding:10, borderRadius:8, borderWidth:1, borderColor:TH.border, backgroundColor:TH.card, color:TH.text, fontSize:16 }} />
+              <TouchableOpacity onPress={handleAddTag}
+                style={{ paddingHorizontal:16, paddingVertical:10, borderRadius:8, backgroundColor:P }}>
+                <Text style={{ color:'#fff', fontSize:16 }}>{T('add')}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView>
+              {/* Preset tags */}
+              <Text style={{ color:TH.sub, fontSize:16, marginBottom:8 }}>{T('presetTags')}</Text>
+              {TAGS_PRESET.map((tag) => (
+                <View key={tag} style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border }}>
+                  <Text style={{ color:TH.text, fontSize:16 }}>{tag}</Text>
+                  <Text style={{ color:TH.sub, fontSize:14 }}>{T('preset')}</Text>
+                </View>
+              ))}
+
+              {/* Custom tags */}
+              {(store.customTags ?? []).length > 0 && (
+                <>
+                  <Text style={{ color:TH.sub, fontSize:16, marginTop:16, marginBottom:8 }}>{T('customTags')}</Text>
+                  {(store.customTags ?? []).map((tag) => (
+                    <View key={tag} style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border }}>
+                      {editingTag?.old === tag ? (
+                        <View style={{ flexDirection:'row', gap:8, flex:1 }}>
+                          <TextInput value={editingTag.new} onChangeText={(v) => setEditingTag({ ...editingTag, new: v })}
+                            style={{ flex:1, padding:6, borderRadius:4, borderWidth:1, borderColor:TH.border, backgroundColor:TH.card, color:TH.text, fontSize:16 }} />
+                          <TouchableOpacity onPress={handleUpdateTag} style={{ padding:6, borderRadius:4, backgroundColor:COLORS.GREEN }}>
+                            <Text style={{ color:'#fff', fontSize:14 }}>✓</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => setEditingTag(null)} style={{ padding:6, borderRadius:4, backgroundColor:COLORS.RED }}>
+                            <Text style={{ color:'#fff', fontSize:14 }}>×</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ) : (
+                        <>
+                          <Text style={{ color:TH.text, fontSize:16 }}>{tag}</Text>
+                          <View style={{ flexDirection:'row', gap:8 }}>
+                            <TouchableOpacity onPress={() => setEditingTag({ old: tag, new: tag })} style={{ padding:6 }}>
+                              <Text style={{ color:P, fontSize:14 }}>✏️</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => store.removeCustomTag(tag)} style={{ padding:6 }}>
+                              <Text style={{ color:COLORS.RED, fontSize:14 }}>🗑</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </>
+                      )}
+                    </View>
+                  ))}
+                </>
+              )}
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Mood Manager Modal */}
+      <Modal visible={showMoodManager} animationType="slide" transparent>
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'center', padding:24 }}>
+          <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24, maxHeight:'80%' }}>
+            <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+              <Text style={{ fontWeight:'700', fontSize:18, color:TH.text }}>{T('moodManager')}</Text>
+              <TouchableOpacity onPress={() => setShowMoodManager(false)}><Text style={{ color:TH.sub, fontSize:26 }}>×</Text></TouchableOpacity>
+            </View>
+            
+            {/* Add new mood */}
+            <View style={{ flexDirection:'row', gap:8, marginBottom:16 }}>
+              <TextInput value={newMood} onChangeText={setNewMood} placeholder={T('newMoodPlaceholder')}
+                placeholderTextColor={TH.sub}
+                style={{ flex:1, padding:10, borderRadius:8, borderWidth:1, borderColor:TH.border, backgroundColor:TH.card, color:TH.text, fontSize:16 }} />
+              <TouchableOpacity onPress={handleAddMood}
+                style={{ paddingHorizontal:16, paddingVertical:10, borderRadius:8, backgroundColor:P }}>
+                <Text style={{ color:'#fff', fontSize:16 }}>{T('add')}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView>
+              {/* Preset moods */}
+              <Text style={{ color:TH.sub, fontSize:16, marginBottom:8 }}>{T('presetMoods')}</Text>
+              {MOODS.map((mood) => (
+                <View key={mood} style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border }}>
+                  <Text style={{ color:TH.text, fontSize:16 }}>{mood}</Text>
+                  <Text style={{ color:TH.sub, fontSize:14 }}>{T('preset')}</Text>
+                </View>
+              ))}
+
+              {/* Custom moods */}
+              {(store.customMoods ?? []).length > 0 && (
+                <>
+                  <Text style={{ color:TH.sub, fontSize:16, marginTop:16, marginBottom:8 }}>{T('customMoods')}</Text>
+                  {(store.customMoods ?? []).map((mood) => (
+                    <View key={mood} style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border }}>
+                      {editingMood?.old === mood ? (
+                        <View style={{ flexDirection:'row', gap:8, flex:1 }}>
+                          <TextInput value={editingMood.new} onChangeText={(v) => setEditingMood({ ...editingMood, new: v })}
+                            style={{ flex:1, padding:6, borderRadius:4, borderWidth:1, borderColor:TH.border, backgroundColor:TH.card, color:TH.text, fontSize:16 }} />
+                          <TouchableOpacity onPress={handleUpdateMood} style={{ padding:6, borderRadius:4, backgroundColor:COLORS.GREEN }}>
+                            <Text style={{ color:'#fff', fontSize:14 }}>✓</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => setEditingMood(null)} style={{ padding:6, borderRadius:4, backgroundColor:COLORS.RED }}>
+                            <Text style={{ color:'#fff', fontSize:14 }}>×</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ) : (
+                        <>
+                          <Text style={{ color:TH.text, fontSize:16 }}>{mood}</Text>
+                          <View style={{ flexDirection:'row', gap:8 }}>
+                            <TouchableOpacity onPress={() => setEditingMood({ old: mood, new: mood })} style={{ padding:6 }}>
+                              <Text style={{ color:P, fontSize:14 }}>✏️</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => store.removeCustomMood(mood)} style={{ padding:6 }}>
+                              <Text style={{ color:COLORS.RED, fontSize:14 }}>🗑</Text>
+                            </TouchableOpacity>
+                          </View>
+                        </>
+                      )}
+                    </View>
+                  ))}
+                </>
+              )}
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

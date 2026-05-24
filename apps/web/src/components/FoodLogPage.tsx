@@ -90,7 +90,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
                 <button key={f.name} onClick={() => { setFn(f.name); setFc(String(f.cal)); }}
                   style={{ padding: '8px 10px', borderRadius: 8, border: `1px solid ${TH.border}`, background: 'transparent', cursor: 'pointer', textAlign: 'left' }}>
                   <div style={{ fontSize: 16, color: TH.text }}>{f.name}</div>
-                  <div style={{ fontSize: 16, color: P, marginTop: 2 }}>{f.calories ?? 0}</div>
+                  <div style={{ fontSize: 16, color: P, marginTop: 2 }}>{f.cal ?? 0}</div>
                 </button>
               ))}
             </div>

@@ -1,23 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { COLORS, dateStr } from '@egoless-do/core';
+import type { CheckinRecord } from '@egoless-do/core';
 import { RowItem, Toggle, useTheme, useT, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+
+function parseExistingNote(raw: string): { userNote: string; practices: string[]; customs: string[]; fasted: boolean; water: string; habits: string[] } {
+  if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, water: '', habits: [] };
+  try {
+    const data = JSON.parse(raw);
+    if (typeof data === 'object' && data !== null) {
+      return {
+        userNote: data.note ?? '',
+        practices: data.practices ?? [],
+        customs: data.customs ?? [],
+        fasted: !!data.fasted,
+        water: data.water ?? '',
+        habits: data.habits ?? [],
+      };
+    }
+  } catch {
+    // legacy format
+  }
+  return { userNote: raw, practices: [], customs: [], fasted: false, water: '', habits: [] };
+}
 
 export default function CheckinPage({ onClose }: { onClose: () => void }) {
   const store = useWebStore();
   const { TH, P } = useTheme();
   const T = useT();
 
-  const [weight, setWeight] = useState('65');
-  const [fasted, setFasted] = useState(false);
-  const [water, setWater] = useState('');
-  const [practices, setPractices] = useState({ sit: false, stand: false, chant: false });
-  const [note, setNote] = useState('');
-  const [freeItems, setFreeItems] = useState<{ id: string; name: string }[]>([]);
-  const [freeCheckins, setFreeCheckins] = useState<Record<string, boolean>>({});
-  const [localDone, setLocalDone] = useState<boolean | null>(null);
+  const today = dateStr();
+  const existing = useMemo(() =>
+    store.checkinHistory.find((c: CheckinRecord) => c.date === today),
+    [store.checkinHistory, today],
+  );
+  const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
+
+  // Calculate today's total calories from foodLog
+  const totalCal = useMemo(() => store.foodLog.reduce((a, f) => a + f.calories, 0), [store.foodLog]);
+
+  const [weight, setWeight] = useState(() => existing?.weight != null ? String(existing.weight) : '65');
+  const [fasted, setFasted] = useState(() => parsed.fasted);
+  const [water, setWater] = useState(() => parsed.water || (store.waterMl >= 2000 ? '>2000ml' : store.waterMl >= 1500 ? '2000ml' : store.waterMl >= 1000 ? '1500ml' : store.waterMl >= 500 ? '1000ml' : store.waterMl > 0 ? '500ml' : ''));
+  const [practices, setPractices] = useState(() => ({
+    sit: parsed.practices.includes('sit'),
+    stand: parsed.practices.includes('stand'),
+    chant: parsed.practices.includes('chant'),
+  }));
+  const [note, setNote] = useState(() => parsed.userNote);
+  const [freeItems, setFreeItems] = useState<{ id: string; name: string }[]>(
+    () => parsed.customs.map((name, i) => ({ id: `existing-${i}`, name })),
+  );
+  const [freeCheckins, setFreeCheckins] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(parsed.customs.map((_, i) => [`existing-${i}`, true])),
+  );
+  const [localDone, setLocalDone] = useState<boolean | null>(() => existing?.done ?? null);
   const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>({});
 
   return (
@@ -39,6 +78,20 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
         </div>
 
         <RowItem label={T('checkinAbstinence')} icon="🙏" right={<Toggle on={fasted} onChange={() => setFasted((v) => !v)} />} />
+        
+        {/* Today's food calories display */}
+        <div style={{ padding: '13px 0', borderBottom: `1px solid ${TH.border}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18 }}>🍽</span><span style={{ color: TH.text }}>{T('checkinFood')}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+              <span style={{ fontSize: 18, fontWeight: 600, color: P }}>{totalCal}</span>
+              <span style={{ color: TH.sub, fontSize: 14 }}>kcal</span>
+            </div>
+          </div>
+        </div>
+
         <div style={{ padding: '13px 0', borderBottom: `1px solid ${TH.border}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
             <span style={{ fontSize: 18 }}>💧</span><span style={{ color: TH.text }}>{T('checkinWater')}</span>
@@ -123,19 +176,32 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
           Object.entries(habitCheckins).forEach(([id, checked]) => {
             if (checked) store.checkinHabit(id, today);
           });
-          // Add water if selected
+          // Set water amount (not add, but set to the selected value)
           const waterMap: Record<string, number> = { '500ml': 500, '1000ml': 1000, '1500ml': 1500, '2000ml': 2000, '>2000ml': 2500 };
-          if (water && waterMap[water]) store.addWater(waterMap[water]);
-          // Build enhanced note
-          const parts = [note];
-          if (practices.sit) parts.push(`🧘${T('checkinSit')}`);
-          if (practices.stand) parts.push(`🧍${T('checkinStand')}`);
-          if (practices.chant) parts.push(`📿${T('checkinSutra')}`);
-          freeItems.forEach(item => {
-            if (freeCheckins[item.id] && item.name) parts.push(`✓${item.name}`);
-          });
+          if (water && waterMap[water]) {
+            // Reset water first, then add the selected amount
+            store.resetWater();
+            store.addWater(waterMap[water]);
+          }
+          // Build structured note (JSON for new format, fallback-compatible)
+          const noteData: Record<string, unknown> = {};
+          if (note) noteData.note = note;
+          if (fasted) noteData.fasted = true;
+          if (water) noteData.water = water;
+          const pr: string[] = [];
+          if (practices.sit) pr.push('sit');
+          if (practices.stand) pr.push('stand');
+          if (practices.chant) pr.push('chant');
+          if (pr.length) noteData.practices = pr;
+          const customs = freeItems.filter(item => freeCheckins[item.id] && item.name).map(item => item.name);
+          if (customs.length) noteData.customs = customs;
+          const checkedHabits = Object.entries(habitCheckins)
+            .filter(([, checked]) => checked)
+            .map(([id]) => store.habits.find(h => h.id === id)?.name)
+            .filter(Boolean);
+          if (checkedHabits.length) noteData.habits = checkedHabits;
           const weightNum = weight ? parseFloat(weight) : undefined;
-          store.submitCheckin(localDone, parts.filter(Boolean).join(' · '), undefined, weightNum);
+          store.submitCheckin(localDone, JSON.stringify(noteData), undefined, weightNum);
           onClose();
         }}
           style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', marginBottom: 10, background: localDone === true ? COLORS.GREEN : localDone === false ? COLORS.RED : P, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>

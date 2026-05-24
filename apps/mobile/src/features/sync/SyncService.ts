@@ -8,6 +8,11 @@ let _tokenProvider: (() => string | null) | null = null;
 let _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
 let _lastSyncAt = 0;
 
+// Short polling for near real-time updates (React Native doesn't support EventSource)
+const SHORT_POLL_INTERVAL = 30 * 1000; // 30 seconds
+let _pollTimer: ReturnType<typeof setInterval> | null = null;
+let _realtimeListeners: Array<(event: any) => void> = [];
+
 // ── Configure ─────────────────────────────────────────────────────
 export function setSyncTokenProvider(fn: () => string | null) {
   _tokenProvider = fn;
@@ -19,6 +24,76 @@ export function setSyncChangeHandler(fn: (patch: Record<string, unknown>) => voi
 
 export function setLastSyncAt(ts: number) {
   _lastSyncAt = ts;
+}
+
+// ── Real-time sync (short polling for React Native) ──────────────
+
+export function connectRealtime(pbUrl: string): void {
+  const token = _tokenProvider?.();
+  if (!token) return;
+
+  // Stop any existing polling
+  disconnectRealtime();
+
+  // Initial poll
+  pollForChanges(token);
+
+  // Start polling timer
+  _pollTimer = setInterval(() => {
+    const currentToken = _tokenProvider?.();
+    if (currentToken) {
+      pollForChanges(currentToken);
+    }
+  }, SHORT_POLL_INTERVAL);
+
+  console.log('[Realtime] Short polling started');
+}
+
+export function disconnectRealtime(): void {
+  if (_pollTimer) {
+    clearInterval(_pollTimer);
+    _pollTimer = null;
+  }
+}
+
+export function onRealtimeEvent(listener: (event: any) => void): () => void {
+  _realtimeListeners.push(listener);
+  return () => {
+    _realtimeListeners = _realtimeListeners.filter(l => l !== listener);
+  };
+}
+
+export function isRealtimeConnected(): boolean {
+  return _pollTimer !== null;
+}
+
+async function pollForChanges(token: string): Promise<void> {
+  try {
+    const result = await apiSyncPull(token);
+
+    if (result.data && Object.keys(result.data).length > 0) {
+      // Apply changes to local DB
+      const patch = await applyServerChanges(result.data);
+
+      if (Object.keys(patch).length > 0) {
+        // Notify listeners
+        for (const listener of _realtimeListeners) {
+          try {
+            listener(patch);
+          } catch {}
+        }
+
+        // Notify store
+        if (_onChanges) {
+          _onChanges(patch);
+        }
+      }
+    }
+
+    _lastSyncAt = result.serverTime;
+  } catch (err) {
+    console.error('[Realtime] Poll error:', err);
+  }
 }
 
 // ── Table/pkey whitelist (prevents SQL injection via string interpolation) ──

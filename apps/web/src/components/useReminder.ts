@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { t } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 
 export function useReminder() {
   const remindEnabled = useWebStore((s) => s.remindEnabled);
   const remindTime = useWebStore((s) => s.remindTime);
+  const lang = useWebStore((s) => s.language);
   const lastNotified = useRef('');
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export function useReminder() {
       if (hm === remindTime && lastNotified.current !== key) {
         lastNotified.current = key;
         new Notification('Egoless Do', {
-          body: '该打卡了！记录今天的禁食、冥想和运动吧 🧘',
+          body: t('reminderBody', lang) + ' 🧘',
           icon: '/favicon.ico',
         });
       }
@@ -33,5 +35,5 @@ export function useReminder() {
     check();
     const id = setInterval(check, 30000);
     return () => clearInterval(id);
-  }, [remindEnabled, remindTime]);
+  }, [remindEnabled, remindTime, lang]);
 }

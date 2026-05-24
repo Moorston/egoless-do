@@ -4,10 +4,12 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useWebStore } from '../store/useWebStore';
 import { THEMES, t, setPocketbaseUrl } from '@egoless-do/core';
-import type { ThemeName, SportItem } from '@egoless-do/core';
 import { useReminder } from './useReminder';
 import { ErrorBoundary, useResponsive } from './helpers';
 import { useSync } from './useSync';
+import { OverlayContext, useOverlayState } from './useOverlay';
+import AppHeader from './AppHeader';
+import BottomNav from './BottomNav';
 import HomeTab from './HomeTab';
 import FastingTab from './FastingTab';
 import MeditateTab from './MeditateTab';
@@ -37,34 +39,17 @@ const TABS = [
   { key: 'settings',    icon: '⚙', labelKey: 'settings'    },
 ];
 
-const BOTTOM_NAV_KEYS = ['home', 'fasting', 'meditation', 'exercise', 'settings'];
-
 export default function AppShell() {
   const store = useWebStore();
   const router = useRouter();
   const isSignedIn = store.auth.isSignedIn;
-  const TH    = THEMES[store.theme];
-  const P     = TH.primary;
-  const lang  = store.language;
-  const T     = (k: string) => t(k, lang);
+  const TH = THEMES[store.theme];
+  const lang = store.language;
+  const T = (k: string) => t(k, lang);
 
-  const [tab,           setTab]          = useState(0);
-  const [showGlobalMap, setShowGlobalMap] = useState(false);
-  const [showCheckin,   setShowCheckin]   = useState(false);
-  const [showSport,     setShowSport]     = useState<SportItem | null>(null);
-  const [showFastHistory, setShowFastHistory] = useState(false);
-  const [showMedHistory, setShowMedHistory] = useState(false);
-  const [showHistory,   setShowHistory]   = useState(false);
-  const [showCheckinDetail, setShowCheckinDetail] = useState(false);
-  const [checkinDetailDate, setCheckinDetailDate] = useState('');
-  const [showFoodLog,   setShowFoodLog]   = useState(false);
-  const [showGrace,     setShowGrace]     = useState(false);
-  const [showNewMind,   setShowNewMind]   = useState(false);
-  const [mindContent,   setMindContent]   = useState('');
-  const [mindSelTags,   setMindSelTags]   = useState<string[]>([]);
-  const [mindMood,      setMindMood]      = useState('');
-  const [mindColorIdx,  setMindColorIdx]  = useState(0);
-
+  const [tab, setTab] = useState(0);
+  const [newMindTrigger, setNewMindTrigger] = useState(0);
+  const overlayState = useOverlayState();
   const { maxWidth } = useResponsive();
   const sync = useSync();
   useReminder();
@@ -75,134 +60,103 @@ export default function AppShell() {
     if (pbUrl) setPocketbaseUrl(pbUrl);
   }, []);
 
+  // Sync theme CSS variables
+  useEffect(() => {
+    document.documentElement.dataset.theme = store.theme;
+  }, [store.theme]);
+
   // Auth expiry check on startup
   useEffect(() => {
     if (!isSignedIn) return;
     const expiresAt = store.auth.expiresAt;
     if (!expiresAt || expiresAt < Date.now()) {
-      // Token already expired — try refresh, else logout
       store.refreshAuth().catch(() => store.logout());
     } else if (expiresAt - Date.now() < 3600000) {
-      // Expires within 1 hour — proactively refresh
       store.refreshAuth().catch((e) => console.error('[err]', e));
     }
   }, []);
 
-  // Auth guard: redirect to login if not signed in
+  // Auth guard
   useEffect(() => {
-    if (!isSignedIn) {
-      router.push('/login');
-    }
+    if (!isSignedIn) router.push('/login');
   }, [isSignedIn, router]);
 
-  if (!isSignedIn) {
-    return null; // Don't render anything while redirecting
-  }
+  const handleFabClick = useCallback(() => {
+    setNewMindTrigger(n => n + 1);
+    setTab(3);
+  }, []);
 
-  const BTN_TABS = TABS.filter(t => BOTTOM_NAV_KEYS.includes(t.key));
+  if (!isSignedIn) return null;
 
-  if (showGlobalMap) {
-    return <GlobalMapPage TH={TH} P={P} onClose={() => setShowGlobalMap(false)} />;
-  }
-  if (showCheckin) {
-    return <CheckinPage onClose={() => setShowCheckin(false)} />;
-  }
-  if (showSport) {
-    return <SportPage sport={showSport} onClose={() => setShowSport(null)} />;
-  }
-  if (showFastHistory) {
-    return <FastHistoryPage onClose={() => setShowFastHistory(false)} />;
-  }
-  if (showMedHistory) {
-    return <MedHistoryPage onClose={() => setShowMedHistory(false)} />;
-  }
-  if (showCheckinDetail) {
-    return <CheckinDetailPage date={checkinDetailDate} onClose={() => setShowCheckinDetail(false)} />;
-  }
-  if (showHistory) {
-    return <HistoryPage onClose={() => setShowHistory(false)} onOpenDetail={(date) => { setCheckinDetailDate(date); setShowCheckinDetail(true); }} />;
-  }
-  if (showFoodLog) {
-    return <FoodLogPage onClose={() => setShowFoodLog(false)} />;
-  }
-  if (showGrace) {
-    return <GracePage onClose={() => setShowGrace(false)} />;
-  }
+  // Render overlay pages
+  const renderOverlay = () => {
+    const { overlay, overlayProps } = overlayState;
+    switch (overlay) {
+      case 'globalMap':
+        return <GlobalMapPage onClose={overlayState.close} />;
+      case 'checkin':
+        return <CheckinPage onClose={overlayState.close} />;
+      case 'sport':
+        return overlayProps.sport ? <SportPage sport={overlayProps.sport} onClose={overlayState.close} /> : null;
+      case 'fastHistory':
+        return <FastHistoryPage onClose={overlayState.close} />;
+      case 'medHistory':
+        return <MedHistoryPage onClose={overlayState.close} />;
+      case 'checkinDetail':
+        return overlayProps.checkinDetailDate
+          ? <CheckinDetailPage date={overlayProps.checkinDetailDate} onClose={overlayState.close} />
+          : null;
+      case 'history':
+        return <HistoryPage onClose={overlayState.close} />;
+      case 'foodLog':
+        return <FoodLogPage onClose={overlayState.close} />;
+      case 'grace':
+        return <GracePage onClose={overlayState.close} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <ErrorBoundary>
-      <div style={{ maxWidth, margin: '0 auto', fontFamily: '-apple-system,system-ui,sans-serif', background: TH.bg, minHeight: '100dvh', color: TH.text, fontSize: 16, position: 'relative', paddingBottom: 80 }}>
-        {/* Header */}
-        <div style={{ padding: '20px 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexShrink: 0, position: 'relative', zIndex: 1 }}>
-          <div>
-            <div style={{ fontSize: 16, color: TH.sub, letterSpacing: 3, textTransform: 'uppercase', fontWeight: 500 }}>Egoless Do</div>
-            <div style={{ fontSize: 24, fontWeight: 700, marginTop: 2 }}>{T('appName')}</div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 16, color: TH.sub }}>{T('streak')}</div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: P, lineHeight: 1.2 }}>{store.streak} <span style={{ fontSize: 16 }}>{T('days')} 🔥</span></div>
-          </div>
-        </div>
+    <OverlayContext.Provider value={overlayState}>
+      <ErrorBoundary>
+        <div style={{ maxWidth, margin: '0 auto', fontFamily: '-apple-system,system-ui,sans-serif', background: TH.bg, minHeight: '100dvh', color: TH.text, fontSize: 16, position: 'relative', paddingBottom: 80 }}>
+          <AppHeader />
 
-        {/* Header Tabs */}
-        <div style={{ display: 'flex', padding: '12px 12px 0', gap: 4, flexShrink: 0, overflowX: 'auto', position: 'relative', zIndex: 1 }}>
-          {TABS.map((t, i) => (
-            <button key={t.key} onClick={() => setTab(i)}
-              style={{ flexShrink: 0, padding: '7px 18px', border: 'none', borderRadius: 12, fontSize: 15, cursor: 'pointer',
-                background: tab === i ? P : TH.card, color: tab === i ? '#fff' : TH.sub, whiteSpace: 'nowrap' as const }}>
-              {t.icon} {T(t.labelKey)}
-            </button>
-          ))}
-        </div>
-        <div style={{ padding: '8px 16px 0', fontSize: 16, color: TH.sub, flexShrink: 0, position: 'relative', zIndex: 1 }}>
-          {T('today')} · {new Date().toLocaleDateString(store.language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
-        </div>
-
-        {/* Content */}
-        <div style={{ padding: '12px 16px', position: 'relative', zIndex: 1 }}>
-          {tab === 0 && <HomeTab onOpenCheckin={() => setShowCheckin(true)} />}
-          {tab === 1 && <FastingTab onOpenGlobalMap={() => setShowGlobalMap(true)} onOpenFastHistory={() => setShowFastHistory(true)} />}
-          {tab === 2 && <MeditateTab onOpenGlobalMap={() => setShowGlobalMap(true)} onOpenMedHistory={() => setShowMedHistory(true)} />}
-          {tab === 3 && <ReflectionsTab
-            showNew={showNewMind}
-            setShowNew={setShowNewMind}
-            content={mindContent}
-            setContent={setMindContent}
-            selTags={mindSelTags}
-            setSelTags={setMindSelTags}
-            mood={mindMood}
-            setMood={setMindMood}
-            colorIdx={mindColorIdx}
-            setColorIdx={setMindColorIdx}
-          />}
-          {tab === 4 && <ExerciseTab onOpenGlobalMap={() => setShowGlobalMap(true)} onOpenSport={(s) => setShowSport(s)} />}
-          {tab === 5 && <HabitsTab />}
-          {tab === 6 && <StatsTab />}
-          {tab === 7 && <SettingsTab onOpenStats={() => setTab(6)} onOpenHistory={() => setShowHistory(true)} onOpenFoodLog={() => setShowFoodLog(true)} onOpenGrace={() => setShowGrace(true)} syncState={sync} />}
-        </div>
-
-        {/* Bottom Nav */}
-        <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth,
-          background: TH.navBg, backdropFilter: 'blur(20px)', borderTop: `1px solid ${TH.border}`,
-          display: 'flex', padding: '8px 0 18px', zIndex: 50 }}>
-          {BTN_TABS.map((t) => {
-            const idx = TABS.findIndex(x => x.key === t.key);
-            return (
-              <button key={t.key} onClick={() => setTab(idx)}
-                style={{ flex: 1, border: 'none', background: 'transparent', cursor: 'pointer',
-                  color: tab === idx ? P : TH.sub,
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '4px 0' }}>
-                <span style={{ fontSize: 20 }}>{t.icon}</span>
-                <span style={{ fontSize: 15 }}>{T(t.labelKey)}</span>
+          {/* Header Tabs */}
+          <div style={{ display: 'flex', padding: '12px 12px 0', gap: 4, flexShrink: 0, overflowX: 'auto', position: 'relative', zIndex: 1 }}>
+            {TABS.map((t, i) => (
+              <button key={t.key} onClick={() => setTab(i)}
+                style={{ flexShrink: 0, padding: '7px 18px', border: 'none', borderRadius: 12, fontSize: 15, cursor: 'pointer',
+                  background: tab === i ? TH.primary : TH.card, color: tab === i ? '#fff' : TH.sub, whiteSpace: 'nowrap' as const }}>
+                {t.icon} {T(t.labelKey)}
               </button>
-            );
-          })}
+            ))}
+          </div>
+          <div style={{ padding: '8px 16px 0', fontSize: 16, color: TH.sub, flexShrink: 0, position: 'relative', zIndex: 1 }}>
+            {T('today')} · {new Date().toLocaleDateString(store.language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
+          </div>
+
+          {/* Content */}
+          <div style={{ padding: '12px 16px', position: 'relative', zIndex: 1 }}>
+            {tab === 0 && <HomeTab />}
+            {tab === 1 && <FastingTab />}
+            {tab === 2 && <MeditateTab />}
+            {tab === 3 && <ReflectionsTab newMindTrigger={newMindTrigger} />}
+            {tab === 4 && <ExerciseTab />}
+            {tab === 5 && <HabitsTab />}
+            {tab === 6 && <StatsTab />}
+            {tab === 7 && <SettingsTab onOpenStats={() => setTab(6)} syncState={sync} />}
+          </div>
+
+          <BottomNav tabs={TABS} activeTab={tab} onTabChange={setTab} />
+          <FabButton onClick={handleFabClick} />
         </div>
 
-        {/* FAB */}
-        <FabButton onClick={() => { setShowNewMind(true); setTab(3); }} />
-      </div>
-    </ErrorBoundary>
+        {/* Overlay layer — renders on top without unmounting tab content */}
+        {overlayState.overlay && renderOverlay()}
+      </ErrorBoundary>
+    </OverlayContext.Provider>
   );
 }
 

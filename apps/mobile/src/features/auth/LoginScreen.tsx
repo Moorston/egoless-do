@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from 're
 import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
+import { registerPushToken } from '@egoless-do/core';
+import * as Notifications from 'expo-notifications';
 
 export default function LoginScreen() {
   const TH = useTheme();
@@ -22,6 +24,42 @@ export default function LoginScreen() {
     }
     try {
       await login(email.trim(), password);
+
+      // Register push token after login
+      const token = useAppStore.getState().auth.token;
+      if (token) {
+        const getExpoPushToken = async () => {
+          try {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+
+            if (existingStatus !== 'granted') {
+              const { status } = await Notifications.requestPermissionsAsync();
+              finalStatus = status;
+            }
+
+            if (finalStatus !== 'granted') {
+              console.log('[Push] Permission denied');
+              return null;
+            }
+
+            const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
+            if (!projectId) {
+              console.log('[Push] No project ID configured');
+              return null;
+            }
+
+            const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
+            return tokenData.data;
+          } catch (err) {
+            console.error('[Push] Failed to get push token:', err);
+            return null;
+          }
+        };
+
+        registerPushToken(token, 'ios', getExpoPushToken);
+      }
+
       nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
     } catch (e: any) {
       setError(e.message || '登录失败');

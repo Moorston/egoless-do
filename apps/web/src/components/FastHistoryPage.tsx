@@ -23,8 +23,8 @@ export default function FastHistoryPage({ onClose }: { onClose: () => void }) {
             <div style={{ textAlign: 'center', color: TH.sub, padding: '40px 0', fontSize: 16 }}>{T('noHistory')}</div>
           )}
           {fastHistory.map((f, i) => {
-            const started = f.startedAt ?? f.started_at ?? 0;
-            const ended = f.endedAt ?? f.ended_at ?? Date.now();
+            const started = f.startedAt ?? 0;
+            const ended = f.endedAt ?? Date.now();
             const durSec = Math.floor((ended - started) / 1000);
             const h = Math.floor(durSec / 3600);
             const m = Math.floor((durSec % 3600) / 60);

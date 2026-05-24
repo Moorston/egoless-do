@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { THEMES, COLORS } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useOverlay } from './useOverlay';
 
 function formatTime(ts?: number, date?: string): string {
   if (ts) {
@@ -14,10 +15,11 @@ function formatTime(ts?: number, date?: string): string {
   return date ?? '';
 }
 
-export default function HistoryPage({ onClose, onOpenDetail }: { onClose: () => void; onOpenDetail?: (date: string) => void }) {
+export default function HistoryPage({ onClose }: { onClose: () => void }) {
   const store = useWebStore();
   const TH = THEMES[store.theme];
   const T = useT();
+  const overlay = useOverlay();
   const checkinHistory = store.checkinHistory || [];
 
   return (
@@ -32,7 +34,7 @@ export default function HistoryPage({ onClose, onOpenDetail }: { onClose: () => 
             <div style={{ textAlign: 'center', color: TH.sub, padding: '40px 0', fontSize: 16 }}>{T('checkinNoRecords')}</div>
           )}
           {checkinHistory.map((h, i) => (
-            <div key={i} onClick={() => onOpenDetail?.(h.date)} style={{
+            <div key={i} onClick={() => overlay.open('checkinDetail', { checkinDetailDate: h.date })} style={{
               background: TH.card, borderRadius: 16, padding: 14, marginBottom: 10,
               border: `1px solid ${TH.border}`, cursor: 'pointer',
             }}>

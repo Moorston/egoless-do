@@ -67,10 +67,8 @@ export default function SettingsScreen() {
     if (syncing) return;
     setSyncing(true);
     try {
-      // TODO: Implement PocketBase sync when backend is ready
-      // const pb = new PocketBase(POCKETBASE_URL);
-      // await pb.collection('habits').create(...);
-      await new Promise(r => setTimeout(r, 500)); // simulate
+      const { runSync: runSyncService } = await import('../sync/SyncService');
+      await runSyncService();
       setLastSyncAt(Date.now());
       setPendingCount(0);
     } catch (e) {

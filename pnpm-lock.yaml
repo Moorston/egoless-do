@@ -194,6 +194,9 @@ importers:
       '@types/react':
         specifier: ^19.1.0
         version: 19.1.17
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.1.17)
       autoprefixer:
         specifier: ^10.4.0
         version: 10.5.0(postcss@8.5.15)
@@ -2022,6 +2025,11 @@ packages:
 
   '@types/nodemailer@8.0.0':
     resolution: {integrity: sha512-fyf8jWULsCo0d0BuoQ75i6IeoHs47qcqxWc7yUdUcV0pOZGjUTTOvwdG1PRXUDqN/8A64yQdQdnA2pZgcdi+cA==}
+
+  '@types/react-dom@19.2.3':
+    resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
+    peerDependencies:
+      '@types/react': ^19.2.0
 
   '@types/react@19.1.17':
     resolution: {integrity: sha512-Qec1E3mhALmaspIrhWt9jkQMNdw6bReVu64mjvhbhq2NFPftLPVr+l1SZgmw/66WwBNpDh7ao5AT6gF5v41PFA==}
@@ -7867,6 +7875,10 @@ snapshots:
   '@types/nodemailer@8.0.0':
     dependencies:
       '@types/node': 22.19.19
+
+  '@types/react-dom@19.2.3(@types/react@19.1.17)':
+    dependencies:
+      '@types/react': 19.1.17
 
   '@types/react@19.1.17':
     dependencies:

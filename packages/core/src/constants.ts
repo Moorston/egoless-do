@@ -26,16 +26,14 @@ export const MIND_COLORS = [
   ['#1C1917','#78716C'],
 ] as const;
 
-export const TAGS_PRESET = ['#感恩','#觉察','#压力释放','#创意灵感','#健康感悟','#跑步心得','#内心独白'];
-export const TAGS_PRESET_EN = ['#Gratitude','#Awareness','#Stress','#Creativity','#Health','#Running','#Inner Voice'];
+export const TAGS_PRESET = ['#觉察','#灵感','#内心独白'];
+export const TAGS_PRESET_EN = ['#Awareness','#Inspiration','#Inner Voice'];
 export const MOOD_DISPLAY: Record<Mood, string> = {
   '平静': '🌿 平静',
-  '活力': '⚡ 活力',
-  '沉思': '🌙 沉思',
-  '感恩': '🌸 感恩',
+  '开心': '😊 开心',
 };
-export const MOODS: Mood[] = ['平静','活力','沉思','感恩'];
-export const MOODS_EN = ['Calm','Energetic','Contemplative','Grateful'] as const;
+export const MOODS: Mood[] = ['平静','开心'];
+export const MOODS_EN = ['Calm','Happy'] as const;
 
 export const FASTING_DURATIONS = [8,12,14,16,18,20,24] as const;
 export const MEDITATION_DURATIONS_MIN = [1,5,10,15,20,30,45,60,120,180,300] as const;
@@ -86,20 +84,10 @@ export const GLOBAL_USERS: GlobalUser[] = [
   { id: 10,name: 'Kwame',  lat: 5.6,  lng: -0.2,  days: 120, sport: '跑步',   since: '2026-02', duration: '3个月' },
 ];
 
+// Only include languages with actual translations in i18n.ts.
+// To add a new language: add its dictionary to i18n.ts, then add an entry here.
 export const LANG_LIST: { code: string; flag: string; name: string }[] = [
   { code:'zh',      flag:'🇨🇳', name:'简体中文' },
   { code:'zh-Hant', flag:'🇹🇼', name:'繁體中文' },
   { code:'en',      flag:'🇺🇸', name:'English'  },
-  { code:'es',      flag:'🇪🇸', name:'Español'  },
-  { code:'ja',      flag:'🇯🇵', name:'日本語'   },
-  { code:'ko',      flag:'🇰🇷', name:'한국어'   },
-  { code:'fr',      flag:'🇫🇷', name:'Français' },
-  { code:'de',      flag:'🇩🇪', name:'Deutsch'  },
-  { code:'pt',      flag:'🇧🇷', name:'Português' },
-  { code:'ru',      flag:'🇷🇺', name:'Русский'  },
-  { code:'ar',      flag:'🇸🇦', name:'العربية'  },
-  { code:'it',      flag:'🇮🇹', name:'Italiano' },
-  { code:'hi',      flag:'🇮🇳', name:'हिन्दी'    },
-  { code:'vi',      flag:'🇻🇳', name:'Tiếng Việt' },
-  { code:'th',      flag:'🇹🇭', name:'ไทย'      },
 ];

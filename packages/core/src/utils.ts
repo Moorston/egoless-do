@@ -38,14 +38,18 @@ export const tmr = tomorrow;
 
 export const daysInMonth = (y: number, m: number) => new Date(y, m + 1, 0).getDate();
 
-export const formatAgo = (ts: number) => {
+export const formatAgoT = (ts: number, T: (key: string) => string) => {
   const d = Math.floor((Date.now() - ts) / 60000);
-  if (d < 0) return '即将';
-  if (d < 1) return '刚刚';
-  if (d < 60) return `${d}分钟前`;
-  if (d < 1440) return `${Math.floor(d / 60)}小时前`;
-  return `${Math.floor(d / 1440)}天前`;
+  if (d < 1) return T('timeAgoJustNow');
+  if (d < 60) return T('timeAgoMinutes').replace('{n}', String(d));
+  if (d < 1440) return T('timeAgoHours').replace('{n}', String(Math.floor(d / 60)));
+  return T('timeAgoDays').replace('{n}', String(Math.floor(d / 1440)));
 };
+
+export const formatAgo = (ts: number) => formatAgoT(ts, (k) => {
+  const zh: Record<string, string> = { timeAgoJustNow: '刚刚', timeAgoMinutes: '{n}分钟前', timeAgoHours: '{n}小时前', timeAgoDays: '{n}天前' };
+  return zh[k] ?? k;
+});
 
 export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
@@ -130,3 +134,24 @@ export const estimateFastingKcal = (
     : 10 * weight + 6.25 * height - 5 * age - 161;
   return Math.round((bmr / 24) * durationHours);
 };
+
+// ── Mobile legacy field normalization ────────────────────────────
+
+const FIELD_MAPPING: Record<string, string> = {
+  target_hours: 'targetHours',
+  started_at: 'startedAt',
+  ended_at: 'endedAt',
+  estimated_kcal: 'estimatedKcal',
+  created_at: 'timestamp',
+  is_pinned: 'isPinned',
+  is_published: 'isPublished',
+};
+
+/** Normalize mobile legacy snake_case fields to camelCase. */
+export function normalizeEntity<T>(raw: Record<string, unknown>): T {
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    result[FIELD_MAPPING[key] ?? key] = value;
+  }
+  return result as T;
+}

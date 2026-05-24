@@ -14,7 +14,7 @@ export function getPb(): PocketBase {
 }
 
 // ── Types ─────────────────────────────────────────────────────────
-export interface CheckinRecord {
+export interface PbCheckinRecord {
   id: string;
   user_id: string;
   habit_type: string;
@@ -45,17 +45,17 @@ export interface PublishedMind {
 // ── Checkins ──────────────────────────────────────────────────────
 export async function pbCreateCheckin(
   token: string,
-  data: Omit<CheckinRecord, 'id'>
-): Promise<CheckinRecord> {
+  data: Omit<PbCheckinRecord, 'id'>
+): Promise<PbCheckinRecord> {
   const pb = getPb();
   pb.authStore.save(token, null);
-  return pb.collection('checkins').create<CheckinRecord>(data);
+  return pb.collection('checkins').create<PbCheckinRecord>(data);
 }
 
-export async function pbListCheckins(token: string): Promise<CheckinRecord[]> {
+export async function pbListCheckins(token: string): Promise<PbCheckinRecord[]> {
   const pb = getPb();
   pb.authStore.save(token, null);
-  const result = await pb.collection('checkins').getList<CheckinRecord>(1, 50, {
+  const result = await pb.collection('checkins').getList<PbCheckinRecord>(1, 50, {
     sort: '-checked_at',
   });
   return result.items;

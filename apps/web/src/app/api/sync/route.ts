@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAuth } from '../_auth';
-import { getPb } from '../_pb';
+import { getPb, escapeFilter } from '../_pb';
+import { resolveConflict } from './conflict';
 
 // ── Entity → PocketBase collection mapping ───────────────────────
 const ENTITY_COLLECTION: Record<string, string> = {
@@ -11,6 +12,7 @@ const ENTITY_COLLECTION: Record<string, string> = {
   checkin:    'checkin_records',
   meditation: 'meditation_history',
   profile:    'user_profiles',
+  exercise:   'exercise_entries',
 };
 
 const ENTITY_ID_FIELD: Record<string, string> = {
@@ -21,6 +23,7 @@ const ENTITY_ID_FIELD: Record<string, string> = {
   checkin:    'date',
   meditation: 'date',
   profile:    'profile_id',
+  exercise:   'exercise_id',
 };
 
 /** Safely read the JSON `data` field from a PocketBase record.
@@ -37,7 +40,7 @@ function getEntityId(record: any, field: string): string {
 
 // ── POST: incremental sync (push + pull) ─────────────────────────
 export async function POST(req: NextRequest) {
-  const auth = verifyAuth(req.headers.get('authorization'));
+  const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
   try {
@@ -46,48 +49,61 @@ export async function POST(req: NextRequest) {
     const { lastSyncAt, changes } = await req.json();
 
     // Apply client changes to PocketBase
+    const rejected: Array<{ entity: string; entityId: string; payload: Record<string, unknown>; deleted?: boolean }> = [];
+
     for (const change of changes ?? []) {
       const collection = ENTITY_COLLECTION[change.entity];
       const idField = ENTITY_ID_FIELD[change.entity];
       if (!collection || !idField) continue;
 
       const clientPayload = change.payload ?? {};
-      const clientUpdated = clientPayload.updatedAt ?? 0;
+      const clientUpdated = Number(clientPayload.updatedAt ?? 0);
+
+      // Always stamp with server time for the actual write
+      const serverTimestamp = Date.now();
 
       if (change.op === 'delete') {
         try {
           const existing = await pb.collection(collection).getFirstListItem(
-            `${idField} = "${change.entityId}" && user_id = "${userId}"`
+            `${idField} = "${escapeFilter(change.entityId)}" && user_id = "${escapeFilter(userId)}"`
           );
           const existingPayload = getPayload(existing);
-          const serverUpdated = existingPayload.updatedAt ?? 0;
-          if (clientUpdated >= serverUpdated) {
+          const serverUpdated = Number(existingPayload.updatedAt ?? 0);
+          const { winner } = resolveConflict({ clientUpdated, serverUpdated });
+          if (winner === 'client') {
             await pb.collection(collection).update(existing.id, {
-              data: { ...existingPayload, deleted: true, updatedAt: clientUpdated || Date.now() },
+              data: { ...existingPayload, deleted: true, updatedAt: serverTimestamp },
             });
+          } else {
+            rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload, deleted: existingPayload.deleted === true });
           }
         } catch {
           await pb.collection(collection).create({
             user_id: userId,
             [idField]: change.entityId,
-            data: { deleted: true, updatedAt: clientUpdated || Date.now() },
+            data: { deleted: true, updatedAt: serverTimestamp },
           });
         }
       } else {
         try {
           const existing = await pb.collection(collection).getFirstListItem(
-            `${idField} = "${change.entityId}" && user_id = "${userId}"`
+            `${idField} = "${escapeFilter(change.entityId)}" && user_id = "${escapeFilter(userId)}"`
           );
           const existingPayload = getPayload(existing);
-          const serverUpdated = existingPayload.updatedAt ?? 0;
-          if (clientUpdated >= serverUpdated) {
-            await pb.collection(collection).update(existing.id, { data: clientPayload });
+          const serverUpdated = Number(existingPayload.updatedAt ?? 0);
+          const { winner } = resolveConflict({ clientUpdated, serverUpdated });
+          if (winner === 'client') {
+            await pb.collection(collection).update(existing.id, {
+              data: { ...clientPayload, updatedAt: serverTimestamp },
+            });
+          } else {
+            rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload });
           }
         } catch {
           await pb.collection(collection).create({
             user_id: userId,
             [idField]: change.entityId,
-            data: clientPayload,
+            data: { ...clientPayload, updatedAt: serverTimestamp },
           });
         }
       }
@@ -100,7 +116,7 @@ export async function POST(req: NextRequest) {
     for (const [entity, collection] of Object.entries(ENTITY_COLLECTION)) {
       try {
         const records = await pb.collection(collection).getFullList({
-          filter: `user_id = "${userId}" && updated >= "${new Date(syncTimestamp).toISOString()}"`,
+          filter: `user_id = "${escapeFilter(userId)}" && updated >= "${new Date(syncTimestamp).toISOString()}"`,
         });
         for (const record of records) {
           serverChanges.push({
@@ -117,6 +133,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       changes: serverChanges,
+      rejected,
       serverTime: Date.now(),
     });
   } catch (err: unknown) {
@@ -126,7 +143,7 @@ export async function POST(req: NextRequest) {
 
 // ── GET: full pull (all user data, after login) ──────────────────
 export async function GET(req: NextRequest) {
-  const auth = verifyAuth(req.headers.get('authorization'));
+  const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
   try {
@@ -134,21 +151,39 @@ export async function GET(req: NextRequest) {
     const userId = auth.userId;
     const data: Record<string, unknown[]> = {};
 
+    console.log('[Sync GET] Pulling data for user:', userId);
+
+    const PAGE_SIZE = 500;
     for (const [entity, collection] of Object.entries(ENTITY_COLLECTION)) {
       try {
-        const records = await pb.collection(collection).getFullList({
-          filter: `user_id = "${userId}"`,
-        });
-        data[entity] = records
+        const allRecords: any[] = [];
+        let page = 1;
+        while (true) {
+          const result = await pb.collection(collection).getList(page, PAGE_SIZE, {
+            filter: `user_id = "${escapeFilter(userId)}"`,
+          });
+          allRecords.push(...result.items);
+          if (result.items.length < PAGE_SIZE || page * PAGE_SIZE >= result.totalItems) break;
+          page++;
+        }
+        data[entity] = allRecords
           .map(r => getPayload(r))
           .filter(d => d && d.deleted !== true);
-      } catch {
+        
+        console.log(`[Sync GET] ${entity}: ${data[entity].length} records`);
+      } catch (err: any) {
+        if (err?.status === 404) {
+          console.warn(`[Sync GET] Collection not found for ${entity} (${collection}), skipping`);
+        } else {
+          console.error(`[Sync GET] Error fetching ${entity}:`, err);
+        }
         data[entity] = [];
       }
     }
 
     return NextResponse.json({ data, serverTime: Date.now() });
   } catch (err: unknown) {
+    console.error('[Sync GET] Error:', err);
     return NextResponse.json({ error: err instanceof Error ? err.message : '拉取失败' }, { status: 500 });
   }
 }

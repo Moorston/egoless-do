@@ -3,16 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-
-const SOUNDS = [
-  { label: '海潮', file: 'ocean.mp3' },
-  { label: '雨声', file: 'rain.mp3' },
-  { label: '钵声', file: 'bowl.mp3' },
-  { label: '鸟叫', file: 'birds.mp3' },
-  { label: '流水', file: 'flowing-stream.mp3' },
-  { label: '风铃', file: 'wind-chimes.mp3' },
-  { label: '无', file: '' },
-];
+import { useOverlay } from './useOverlay';
 
 function useAudio() {
   const ctxRef = useRef<AudioContext | null>(null);
@@ -86,10 +77,20 @@ function useAudio() {
   return { playBg, stopBg, playBell, audioError };
 }
 
-export default function MeditateTab({ onOpenGlobalMap, onOpenMedHistory }: { onOpenGlobalMap?: () => void; onOpenMedHistory?: () => void }) {
+export default function MeditateTab() {
+  const overlay = useOverlay();
   const store = useWebStore();
   const { TH, P } = useTheme();
   const T = useT();
+  const SOUNDS = useMemo(() => [
+    { label: T('soundOcean'), file: 'ocean.mp3' },
+    { label: T('soundRain'), file: 'rain.mp3' },
+    { label: T('soundBowl'), file: 'bowl.mp3' },
+    { label: T('soundBirds'), file: 'birds.mp3' },
+    { label: T('soundStream'), file: 'flowing-stream.mp3' },
+    { label: T('soundChimes'), file: 'wind-chimes.mp3' },
+    { label: T('soundNone'), file: '' },
+  ], [T]);
   const [dur, setDur] = useState(5);
   const [soundIdx, setSoundIdx] = useState(0);
   const [running, setRunning] = useState(false);
@@ -174,7 +175,7 @@ export default function MeditateTab({ onOpenGlobalMap, onOpenMedHistory }: { onO
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <div style={timerDisplay}>
               <div style={{ fontSize: 50, fontWeight: 800, color: P, letterSpacing: 2 }}>{Math.floor(remain / 60)}:{String(remain % 60).padStart(2, '0')}</div>
-              <div style={{ color: TH.sub, fontSize: 16, marginTop: 6 }}>{T('medActive')} {currentSound.label !== '无' ? `🎵 ${currentSound.label}` : ''}</div>
+              <div style={{ color: TH.sub, fontSize: 16, marginTop: 6 }}>{T('medActive')} {currentSound.file ? `🎵 ${currentSound.label}` : ''}</div>
             </div>
             <button onClick={handleStop} style={{ padding: '12px 48px', borderRadius: 12, border: 'none', background: '#EF4444', color: '#fff', fontWeight: 600, fontSize: 16, cursor: 'pointer' }}>{T('stopMed')}</button>
           </div>
@@ -208,9 +209,9 @@ export default function MeditateTab({ onOpenGlobalMap, onOpenMedHistory }: { onO
         </div>
       </div>
 
-      <LinkWorldBtn label={T('globalMeditators')} onClick={() => onOpenGlobalMap?.()} />
+      <LinkWorldBtn label={T('globalMeditators')} onClick={() => overlay.open('globalMap')} />
 
-      <div onClick={onOpenMedHistory} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
+      <div onClick={() => overlay.open('medHistory')} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
         <span style={{ fontSize: 18 }}>☯</span>
         <span style={{ fontSize: 16, color: TH.text }}>{T('meditationHistory')}</span>
         <span style={{ marginLeft: 'auto', color: TH.sub }}>›</span>

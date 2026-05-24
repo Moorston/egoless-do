@@ -199,7 +199,7 @@ function HabitCalendarModal({ habitId, onClose }: { habitId: string; onClose: ()
             style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: 22, cursor: 'pointer' }}>›</button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 3, marginBottom: 4 }}>
-            {['日', '一', '二', '三', '四', '五', '六'].map((d) => (
+            {[T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')].map((d) => (
             <div key={d} style={{ textAlign: 'center', fontSize: 16, color: TH.sub }}>{d}</div>
           ))}
         </div>

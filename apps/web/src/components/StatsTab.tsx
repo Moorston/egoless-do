@@ -50,7 +50,7 @@ export default function StatsTab() {
               const dateStr = d.toISOString().slice(0, 10);
               const record = store.checkinHistory.find(c => c.date === dateStr);
               const v = record?.done ? 1 : 0;
-              const label = d.toLocaleDateString('zh-CN', { weekday: 'narrow' });
+              const label = d.toLocaleDateString(store.language === 'zh' ? 'zh-CN' : 'en-US', { weekday: 'narrow' });
               items.push(
                 <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                   <div style={{ width: '100%', background: v === 1 ? P : `${P}40`, height: v * 50, borderRadius: 4 }} />

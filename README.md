@@ -11,7 +11,6 @@ Egoless Do (心流纪) 是一款跨平台间歇性禁食 + 正念修行 + 运动
 | 📱 iOS | React Native + Expo SDK 54 | ✅ MVP |
 | 🤖 Android | React Native + Expo SDK 54 | ✅ MVP |
 | 🌐 Web PWA | Next.js 15 + PocketBase | ✅ MVP |
-| 💬 微信小程序 | Taro 4 + 微信云开发 | ✅ MVP |
 
 ## 功能模块
 
@@ -34,7 +33,6 @@ egoless-do/ (Turborepo + pnpm workspaces)
 ├── apps/
 │   ├── mobile/             # React Native + Expo (iOS/Android)
 │   └── web/                # Next.js 15 PWA
-├── miniprogram/            # Taro 4 → 微信小程序
 ├── packages/
 │   ├── core/               # 共享类型 + 常量 + i18n + store + auth
 │   ├── ui/                 # 共享 UI 组件
@@ -91,9 +89,6 @@ pnpm web
 pnpm mobile           # Expo Go 预览
 pnpm mobile:android   # Android 模拟器
 pnpm mobile:ios       # iOS 模拟器 (macOS)
-
-# 微信小程序
-pnpm --filter miniprogram dev  # 生成 dist/ → 微信开发者工具导入
 ```
 
 ### 后端 (PocketBase)
@@ -108,6 +103,7 @@ pnpm pb:setup
 pnpm pb
 
 # Admin UI: http://localhost:8090/_/
+# admin@egoless.do/admin123456
 ```
 
 **Linux / Docker 部署：**

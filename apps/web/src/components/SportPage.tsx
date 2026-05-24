@@ -6,8 +6,6 @@ import type { SportItem } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 import { useT } from './helpers';
 
-const GPS_SPORTS = new Set(['行走', '跑步', '骑行']);
-
 export default function SportPage({ sport, onClose }: { sport: SportItem; onClose: () => void }) {
   const store = useWebStore();
   const TH = THEMES[store.theme];
@@ -70,7 +68,17 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
             <button onClick={() => setActive((v) => !v)} style={{ width: 76, height: 76, borderRadius: 38, background: '#fff', border: 'none', fontSize: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>
               {active ? '⏸' : '▶'}
             </button>
-            <button onClick={onClose} style={{ width: 52, height: 52, borderRadius: 26, background: 'rgba(255,255,255,.1)', border: 'none', color: '#fff', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            <button onClick={() => {
+              if (sec > 0) {
+                store.addExercise({
+                  sportKey: sport.key,
+                  sportIcon: sport.icon,
+                  durationSec: sec,
+                  timestamp: Date.now(),
+                });
+              }
+              onClose();
+            }} style={{ width: 52, height: 52, borderRadius: 26, background: 'rgba(255,255,255,.1)', border: 'none', color: '#fff', fontSize: 20, cursor: 'pointer' }}>✕</button>
           </div>
         </div>
       </div>

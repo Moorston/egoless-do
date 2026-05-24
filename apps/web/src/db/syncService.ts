@@ -1,6 +1,7 @@
 // ─── Background sync engine: local IndexedDB → self-hosted API ────
 import { drainQueue, removeQueueItems, getQueueCount, type SyncQueueItem } from './syncQueue';
 import { db } from './webDb';
+import { getRealtimeSyncService, normalizeEntity, type RealtimeEvent } from '@egoless-do/core';
 
 const SYNC_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
 const MAX_RETRY = 3;
@@ -30,6 +31,7 @@ const listeners = new Set<Listener>();
 let timerHandle: ReturnType<typeof setInterval> | null = null;
 let syncing = false;
 let getToken: (() => string | null) | null = null;
+let storeUpdater: ((changes: Array<{ entity: string; payload: any }>) => void) | null = null;
 
 function emit() {
   for (const fn of listeners) fn(state);
@@ -46,9 +48,13 @@ export function setSyncTokenProvider(provider: () => string | null) {
   getToken = provider;
 }
 
+export function setSyncStoreUpdater(updater: (changes: Array<{ entity: string; payload: any }>) => void) {
+  storeUpdater = updater;
+}
+
 // ── Self-hosted API sync ──────────────────────────────────────────
 
-async function apiSync(changes: SyncQueueItem[]): Promise<{ changes: any[]; serverTime: number }> {
+async function apiSync(changes: SyncQueueItem[]): Promise<{ changes: any[]; rejected?: any[]; serverTime: number }> {
   const token = getToken?.();
   if (!token) throw new Error('未登录');
 
@@ -84,7 +90,7 @@ async function applyChangesToIndexedDB(changes: Array<{ entity: string; entityId
   const dbChanges = changes.filter(c => c.entity !== 'meditation' && c.entity !== 'profile');
   if (!dbChanges.length) return;
 
-  await db.transaction('rw', db.habits, db.reflections, db.fastingSessions, db.foodEntries, db.checkins, async () => {
+  await db.transaction('rw', [db.habits, db.reflections, db.fastingSessions, db.foodEntries, db.checkins], async () => {
     for (const c of dbChanges) {
       if (c.deleted) {
         switch (c.entity) {
@@ -93,14 +99,18 @@ async function applyChangesToIndexedDB(changes: Array<{ entity: string; entityId
           case 'fasting':    await db.fastingSessions.delete(c.entityId); break;
           case 'food':       await db.foodEntries.delete(c.entityId); break;
           case 'checkin':    await db.checkins.delete(c.entityId); break;
+          case 'exercise':   await db.exerciseEntries.delete(c.entityId); break;
         }
       } else {
+        // Normalize mobile legacy snake_case fields to camelCase
+        const normalized = normalizeEntity(c.payload as Record<string, unknown>);
         switch (c.entity) {
-          case 'habit':      await db.habits.put(c.payload); break;
-          case 'reflection': await db.reflections.put(c.payload); break;
-          case 'fasting':    await db.fastingSessions.put(c.payload); break;
-          case 'food':       await db.foodEntries.put(c.payload); break;
-          case 'checkin':    await db.checkins.put(c.payload); break;
+          case 'habit':      await db.habits.put(normalized as any); break;
+          case 'reflection': await db.reflections.put(normalized as any); break;
+          case 'fasting':    await db.fastingSessions.put(normalized as any); break;
+          case 'food':       await db.foodEntries.put(normalized as any); break;
+          case 'checkin':    await db.checkins.put(normalized as any); break;
+          case 'exercise':   await db.exerciseEntries.put(normalized as any); break;
         }
       }
     }
@@ -119,6 +129,17 @@ async function attemptDrain(): Promise<void> {
     // Apply server changes returned by push
     if (result.changes?.length) {
       await applyChangesToIndexedDB(result.changes);
+    }
+
+    // Apply rejected changes (server won conflict) to IndexedDB + Zustand
+    if (result.rejected?.length) {
+      await applyChangesToIndexedDB(result.rejected);
+      storeUpdater?.(result.rejected);
+    }
+
+    // Also notify Zustand about server changes
+    if (result.changes?.length && storeUpdater) {
+      storeUpdater(result.changes);
     }
 
     // Remove synced items from queue
@@ -143,7 +164,7 @@ async function attemptDrain(): Promise<void> {
 
   const flatChanges: Array<{ entity: string; entityId: string; payload: any }> = [];
   const idFieldMap: Record<string, string> = {
-    habit: 'id', reflection: 'id', fasting: 'id', food: 'id', checkin: 'date',
+    habit: 'id', reflection: 'id', fasting: 'id', food: 'id', checkin: 'date', exercise: 'id',
   };
   for (const [entity, records] of Object.entries(data as Record<string, any[]>)) {
     const idField = idFieldMap[entity];
@@ -154,6 +175,7 @@ async function attemptDrain(): Promise<void> {
   }
   if (flatChanges.length) {
     await applyChangesToIndexedDB(flatChanges);
+    if (storeUpdater) storeUpdater(flatChanges);
   }
 
   patch({ lastSyncAt: Date.now() });
@@ -216,6 +238,7 @@ export function initSync(): () => void {
   const onOnline = () => {
     patch({ online: true });
     triggerSync();
+    connectRealtime();
   };
   const onOffline = () => {
     patch({ online: false });
@@ -244,13 +267,57 @@ export function initSync(): () => void {
   // Initial pending count
   refreshPendingCount();
 
+  // Connect to real-time sync if token is available
+  connectRealtime();
+
   // Cleanup
   return () => {
     window.removeEventListener('online', onOnline);
     window.removeEventListener('offline', onOffline);
     navigator.serviceWorker?.removeEventListener('message', onMessage);
     if (timerHandle) clearInterval(timerHandle);
+    disconnectRealtime();
   };
+}
+
+// ── Real-time sync ───────────────────────────────────────────────
+
+let realtimeService: ReturnType<typeof getRealtimeSyncService> | null = null;
+
+function connectRealtime() {
+  const token = getToken?.();
+  if (!token) return;
+
+  const apiBase = window.location.origin;
+  realtimeService = getRealtimeSyncService(apiBase);
+  realtimeService.setToken(token);
+
+  // Subscribe to real-time events
+  realtimeService.subscribe((event: RealtimeEvent) => {
+    handleRealtimeEvent(event);
+  });
+}
+
+function disconnectRealtime() {
+  if (realtimeService) {
+    realtimeService.disconnect();
+    realtimeService = null;
+  }
+}
+
+async function handleRealtimeEvent(event: RealtimeEvent) {
+  // Apply real-time changes to local IndexedDB
+  const change = {
+    entity: event.entity,
+    entityId: event.entityId,
+    payload: event.payload,
+    deleted: event.deleted,
+  };
+
+  await applyChangesToIndexedDB([change]);
+
+  // Update pending count
+  refreshPendingCount();
 }
 
 async function registerBgSync(): Promise<void> {

@@ -9,12 +9,6 @@ config.watchFolders = [
   path.resolve(__dirname, '../..'),  // monorepo root
 ];
 
-// Exclude miniprogram directory from Metro's watch scope
-const { mergeConfig } = require('metro-config');
-config.resolver.blockList = [
-  /miniprogram\/.*/,
-];
-
 // Ensure Metro can resolve packages from root node_modules
 config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, 'node_modules'),

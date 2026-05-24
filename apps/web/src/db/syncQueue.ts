@@ -1,6 +1,8 @@
 // ─── Sync queue operations (Dexie-backed) ────────────────────────
 import { db, type SyncEntity, type SyncOperation, type SyncQueueItem } from './webDb';
 
+export type { SyncQueueItem };
+
 export async function enqueueChange(
   entity: SyncEntity,
   entityId: string,

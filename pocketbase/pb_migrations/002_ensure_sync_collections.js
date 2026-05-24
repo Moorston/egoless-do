@@ -12,6 +12,25 @@ const COLLECTIONS = [
   { name: 'user_profiles',     idField: 'profile_id'    },
 ];
 
+// Push tokens collection for push notifications
+const PUSH_TOKENS_COLLECTION = {
+  name: 'push_tokens',
+  schema: [
+    { name: 'user_id',  type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
+    { name: 'platform', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
+    { name: 'token',    type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
+  ],
+  indexes: [
+    'CREATE INDEX idx_push_tokens_user ON push_tokens (user_id)',
+    'CREATE UNIQUE INDEX idx_push_tokens_token ON push_tokens (token)',
+  ],
+  listRule:   '@request.auth.id = user_id',
+  viewRule:   '@request.auth.id = user_id',
+  createRule: '@request.auth.id = user_id',
+  updateRule: '@request.auth.id = user_id',
+  deleteRule: '@request.auth.id = user_id',
+};
+
 migrate((db) => {
   const dao = new Dao(db);
 
@@ -55,6 +74,27 @@ migrate((db) => {
     });
     dao.saveCollection(collection);
   }
+
+  // 4. Create push_tokens collection
+  try {
+    const existing = dao.findCollectionByNameOrId('push_tokens');
+    if (existing) dao.deleteCollection(existing);
+  } catch {}
+
+  const pushTokensCollection = new Collection({
+    name: PUSH_TOKENS_COLLECTION.name,
+    type: 'base',
+    system: false,
+    schema: PUSH_TOKENS_COLLECTION.schema,
+    indexes: PUSH_TOKENS_COLLECTION.indexes,
+    listRule: PUSH_TOKENS_COLLECTION.listRule,
+    viewRule: PUSH_TOKENS_COLLECTION.viewRule,
+    createRule: PUSH_TOKENS_COLLECTION.createRule,
+    updateRule: PUSH_TOKENS_COLLECTION.updateRule,
+    deleteRule: PUSH_TOKENS_COLLECTION.deleteRule,
+    options: {},
+  });
+  dao.saveCollection(pushTokensCollection);
 }, (db) => {
   // rollback — delete all created collections
   const dao = new Dao(db);
@@ -64,4 +104,10 @@ migrate((db) => {
       if (c) dao.deleteCollection(c);
     } catch {}
   }
+
+  // Delete push_tokens collection
+  try {
+    const c = dao.findCollectionByNameOrId('push_tokens');
+    if (c) dao.deleteCollection(c);
+  } catch {}
 });
