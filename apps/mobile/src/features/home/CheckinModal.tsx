@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT, Toggle, ThemedInput, PrimaryButton, OutlineButton } from '../../components/UI';
-import { COLORS, dateStr } from '@egoless-do/core';
+import { COLORS, dateStr, getTodayFoodLog } from '@egoless-do/core';
 
 export default function CheckinModal({ onClose }: { onClose: () => void }) {
   const TH    = useTheme();
@@ -15,7 +15,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
 
   // Calculate today's total calories from foodLog
   const totalCal = useMemo(
-    () => (store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? f.cal ?? 0), 0),
+    () => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? f.cal ?? 0), 0),
     [store.foodLog],
   );
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { COLORS, dateStr } from '@egoless-do/core';
+import { COLORS, dateStr, getTodayFoodLog } from '@egoless-do/core';
 import type { CheckinRecord } from '@egoless-do/core';
 import { RowItem, Toggle, useTheme, useT, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -39,7 +39,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
   const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
 
   // Calculate today's total calories from foodLog
-  const totalCal = useMemo(() => store.foodLog.reduce((a, f) => a + f.calories, 0), [store.foodLog]);
+  const totalCal = useMemo(() => getTodayFoodLog(store.foodLog).reduce((a, f) => a + f.calories, 0), [store.foodLog]);
 
   const [weight, setWeight] = useState(() => existing?.weight != null ? String(existing.weight) : '65');
   const [fasted, setFasted] = useState(() => parsed.fasted);

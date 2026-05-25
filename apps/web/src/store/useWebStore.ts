@@ -1,7 +1,7 @@
 // ─── Zustand store for web (localStorage backed) ─────────────────
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { setApiBase, dateStr, DAILY_RESET_KEY, getDailyResetPatch } from '@egoless-do/core';
+import { setApiBase, dateStr, DAILY_RESET_KEY, getDailyResetPatch, msUntilMidnight } from '@egoless-do/core';
 import { createAuthSlice, type AuthSlice } from './slices/authSlice';
 import { createHabitSlice, type HabitSlice } from './slices/habitSlice';
 import { createReflectionSlice, type ReflectionSlice } from './slices/reflectionSlice';
@@ -39,17 +39,33 @@ export const useWebStore = create<WebStore>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        // Check and perform daily reset on app load
-        const lastReset = localStorage.getItem(DAILY_RESET_KEY);
-        const patch = getDailyResetPatch(lastReset);
-        if (patch) {
-          const store = useWebStore.getState();
-          if (patch.waterMl !== undefined) store.resetWater();
-          if (patch.foodLog !== undefined) {
-            useWebStore.setState({ foodLog: [] });
+        // Extracted reset check function
+        const checkAndReset = () => {
+          const lastReset = localStorage.getItem(DAILY_RESET_KEY);
+          const patch = getDailyResetPatch(lastReset);
+          if (patch) {
+            const store = useWebStore.getState();
+            if (patch.waterMl !== undefined) store.resetWater();
+            if (patch.foodLog !== undefined) useWebStore.setState({ foodLog: [] });
+            localStorage.setItem(DAILY_RESET_KEY, dateStr());
           }
-          localStorage.setItem(DAILY_RESET_KEY, dateStr());
+        };
+        // Check on load
+        checkAndReset();
+        // Check when user returns to the page (handles background tab / sleep)
+        if (typeof document !== 'undefined') {
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') checkAndReset();
+          });
         }
+        // Schedule midnight reset for when the page stays open across days
+        const scheduleNext = () => {
+          setTimeout(() => {
+            checkAndReset();
+            scheduleNext();
+          }, msUntilMidnight() + 1000);
+        };
+        scheduleNext();
       },
     }
   )

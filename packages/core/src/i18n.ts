@@ -151,7 +151,7 @@ export const zh: Record<string, string> = {
   // Settings
   settingsRemind:'打卡提醒', settingsRemindOn:'启用每日提醒', settingsRemindTime:'提醒时间',
   settingsData:'数据记录', settingsStats:'统计数据', settingsHistory:'打卡历史',
-  settingsFoodLog:'饮食日志', settingsFreeze:'冻结连胜',
+  settingsFoodLog:'饮食记录', settingsFreeze:'冻结连胜',
   settingsFreezeDesc:'今天和昨天都没打卡', settingsGrace:'宽限期恢复',
   settingsGraceDesc:'昨天没打卡，今天补卡', settingsStreakBreak:'连胜中断',
   settingsStreakBreakDesc:'连续两天未打卡', settingsGeneral:'通用设置',

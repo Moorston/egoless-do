@@ -32,10 +32,14 @@ export function checkDailyReset(
 }
 
 /** Get today's food log from full foodLog array */
-export function getTodayFoodLog(foodLog: Array<{ timestamp: number }>): Array<{ timestamp: number }> {
+export function getTodayFoodLog<T extends { timestamp: number }>(foodLog: T[]): T[] {
   const today = dateStr();
-  return foodLog.filter(f => {
-    const fDate = new Date(f.timestamp).toISOString().slice(0, 10);
-    return fDate === today;
-  });
+  return foodLog.filter(f => dateStr(new Date(f.timestamp)) === today);
+}
+
+/** Get milliseconds until next local midnight */
+export function msUntilMidnight(): number {
+  const now = new Date();
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  return next.getTime() - now.getTime();
 }

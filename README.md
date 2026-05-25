@@ -56,7 +56,7 @@ Web 端通过 `/api/sync` 路由与 PocketBase 双向同步，使用 7 个按实
 | `habits` | `habit_id` | 习惯定义与进度 |
 | `reflections` | `reflection_id` | 感念内容 |
 | `fasting_sessions` | `session_id` | 禁食记录 |
-| `food_entries` | `food_id` | 饮食日志 |
+| `food_entries` | `food_id` | 饮食记录 |
 | `checkin_records` | `date` | 每日打卡 |
 | `meditation_history` | `date` | 冥想记录 |
 | `user_profiles` | `profile_id` | 用户资料 |

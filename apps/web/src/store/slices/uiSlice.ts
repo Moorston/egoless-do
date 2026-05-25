@@ -93,11 +93,13 @@ export const createUiSlice: StateCreator<WebStore, [], [], UiSlice> = (set, get)
 
   submitCheckin(done, note, dateOverride, weight) {
     const today = dateOverride ?? dateStr();
-    const record: CheckinRecord = { date: today, done, note, streak: get().streak, weight, timestamp: Date.now(), updatedAt: Date.now() };
-    const newHistory = [record, ...get().checkinHistory.filter(c => c.date !== today)];
+    const tempRecord: CheckinRecord = { date: today, done, note, streak: 0, weight, timestamp: Date.now(), updatedAt: Date.now() };
+    const newHistory = [tempRecord, ...get().checkinHistory.filter(c => c.date !== today)];
     const newStreak = calculateCheckinStreak(newHistory);
-    set({ checkinHistory: newHistory, streak: newStreak });
-    q('checkin', record.date, 'upsert', { ...record, streak: newStreak });
+    const record: CheckinRecord = { ...tempRecord, streak: newStreak };
+    const finalHistory = [record, ...get().checkinHistory.filter(c => c.date !== today)];
+    set({ checkinHistory: finalHistory, streak: newStreak });
+    q('checkin', record.date, 'upsert', record);
   },
 
   updateUserProfile(profile) {

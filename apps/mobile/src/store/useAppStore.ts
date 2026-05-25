@@ -2,16 +2,17 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppState } from 'react-native';
 import type {
   Habit, MindReflection, FoodEntry, CheckinRecord, FastingSession,
   ThemeName, AppState, AuthState,
 } from '@egoless-do/core';
 import {
-  uid, dateStr, computeStreak, estimateFastKcal,
+  uid, dateStr, computeStreak, estimateFastKcal, calculateCheckinStreak,
   createHabitFromForm, createReflection, createFastingSession,
   defaultAppState, defaultAuthState, defaultDataState,
   apiLogin, apiRegister, apiRefreshToken, apiLogout, apiSyncPull, setApiBase,
-  DAILY_RESET_KEY, getDailyResetPatch,
+  DAILY_RESET_KEY, getDailyResetPatch, msUntilMidnight,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { markForDeletion } from '../features/sync/SyncService';
@@ -131,17 +132,23 @@ export const useAppStore = create<AppStore>()(
         const token = tokenOverride ?? get().auth.token;
         if (!token) return;
         try {
-          const { data } = await apiSyncPull(token);
-          if (!data) return;
+          const result = await apiSyncPull(token);
+          if (!result.data) return;
+          const data = result.data;
           const patch: Record<string, unknown> = {};
           if (data.habit)      patch.habits = data.habit;
           if (data.reflection) patch.reflections = data.reflection;
           if (data.fasting)    patch.fastingHistory = data.fasting;
           if (data.food)       patch.foodLog = data.food;
           if (data.checkin)    patch.checkinHistory = data.checkin;
-          if (Object.keys(patch).length) set(patch as any);
-        } catch {
-          // 拉取失败不阻断登录流程
+          if (Object.keys(patch).length) {
+            set(patch as any);
+            if (patch.checkinHistory) {
+              set({ streak: calculateCheckinStreak(patch.checkinHistory as CheckinRecord[]) });
+            }
+          }
+        } catch (err) {
+          console.error('[pullServerData] Error:', err);
         }
       },
       resetData() {
@@ -233,11 +240,13 @@ export const useAppStore = create<AppStore>()(
       },
       checkinHistory: [],
       submitCheckin(done, note, dateOverride, weight) {
-        const record: CheckinRecord = { date: dateOverride ?? dateStr(), done, note, streak: get().streak, weight, timestamp: Date.now(), updatedAt: Date.now() };
-        set(s => ({
-          checkinHistory: [record, ...(s.checkinHistory ?? []).filter(c => c.date !== record.date)],
-          streak: done ? s.streak + 1 : 0,
-        }));
+        const today = dateOverride ?? dateStr();
+        const tempRecord: CheckinRecord = { date: today, done, note, streak: 0, weight, timestamp: Date.now(), updatedAt: Date.now() };
+        const newHistory = [tempRecord, ...(get().checkinHistory ?? []).filter(c => c.date !== today)];
+        const newStreak = calculateCheckinStreak(newHistory);
+        const record: CheckinRecord = { ...tempRecord, streak: newStreak };
+        const finalHistory = [record, ...(get().checkinHistory ?? []).filter(c => c.date !== today)];
+        set({ checkinHistory: finalHistory, streak: newStreak });
       },
       addWater(ml) { set(s => ({ waterMl: Math.min(s.waterMl + ml, s.waterGoal) })); },
       resetWater() { set({ waterMl: 0 }); },
@@ -288,18 +297,29 @@ export const useAppStore = create<AppStore>()(
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => async (state) => {
         if (!state) return;
-        // Check and perform daily reset on app load
-        try {
-          const lastReset = await AsyncStorage.getItem(DAILY_RESET_KEY);
-          const patch = getDailyResetPatch(lastReset);
-          if (patch) {
-            // Use the store's setState method directly
-            useAppStore.setState(patch);
-            await AsyncStorage.setItem(DAILY_RESET_KEY, dateStr());
+        const checkAndReset = async () => {
+          try {
+            const lastReset = await AsyncStorage.getItem(DAILY_RESET_KEY);
+            const patch = getDailyResetPatch(lastReset);
+            if (patch) {
+              useAppStore.setState(patch);
+              await AsyncStorage.setItem(DAILY_RESET_KEY, dateStr());
+            }
+          } catch (err) {
+            console.error('[DailyReset] Error:', err);
           }
-        } catch (err) {
-          console.error('[DailyReset] Error:', err);
-        }
+        };
+        // Check on load
+        await checkAndReset();
+        // Check when app comes to foreground (handles background / sleep)
+        const sub = AppState.addEventListener('change', (s) => {
+          if (s === 'active') checkAndReset();
+        });
+        // Schedule midnight reset for when the app stays open across days
+        const scheduleNext = () => {
+          setTimeout(() => { checkAndReset(); scheduleNext(); }, msUntilMidnight() + 1000);
+        };
+        scheduleNext();
       },
     }
   )

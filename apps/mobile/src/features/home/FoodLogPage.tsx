@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader, ThemedInput, PrimaryButton, OutlineButton } from '../../components/UI';
-import { COLORS, QUICK_FOODS } from '@egoless-do/core';
+import { COLORS, QUICK_FOODS, getTodayFoodLog } from '@egoless-do/core';
 
 export default function FoodLogPage() {
   const nav   = useNavigation();
@@ -17,7 +17,7 @@ export default function FoodLogPage() {
   const [fc, setFc]     = useState('');
   const [fnote, setFnote] = useState('');
 
-  const totalCal = useMemo(() => (store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? 0), 0), [store.foodLog]);
+  const totalCal = useMemo(() => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? 0), 0), [store.foodLog]);
 
   const addFoodItem = () => {
     if (!fn.trim()) return;

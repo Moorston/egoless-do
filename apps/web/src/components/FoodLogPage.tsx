@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { THEMES, COLORS, QUICK_FOODS } from '@egoless-do/core';
+import { THEMES, COLORS, QUICK_FOODS, getTodayFoodLog } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 
@@ -10,7 +10,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
-  const foodLog = store.foodLog || [];
+  const foodLog = getTodayFoodLog(store.foodLog || []);
   const totalCal = foodLog.reduce((a, f) => a + f.calories, 0);
   const [showAdd, setShowAdd] = useState(false);
   const [fn, setFn] = useState('');

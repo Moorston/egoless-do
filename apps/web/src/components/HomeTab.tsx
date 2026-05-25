@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { COLORS, QUICK_FOODS } from '@egoless-do/core';
+import { COLORS, QUICK_FOODS, dateStr, getTodayFoodLog } from '@egoless-do/core';
 import type { CheckinRecord } from '@egoless-do/core';
 import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -36,10 +36,10 @@ export default function HomeTab() {
   const [showCG, setShowCG] = useState(false);
   const [cgi, setCgi] = useState(String(store.calGoal));
 
-  const totalCal = useMemo(() => store.foodLog.reduce((a, f) => a + f.calories, 0), [store.foodLog]);
+  const totalCal = useMemo(() => getTodayFoodLog(store.foodLog).reduce((a, f) => a + f.calories, 0), [store.foodLog]);
 
   const todayWeight = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = dateStr();
     const todayCheckin = store.checkinHistory.find((c: CheckinRecord) => c.date === today);
     return todayCheckin?.weight;
   }, [store.checkinHistory]);
@@ -74,7 +74,7 @@ export default function HomeTab() {
     { icon: '🍽', label: T('savedMeals'), value: savedMeals, unit: T('mealUnit'), bg: COLORS.BLUE },
   ], [totalCompleted, longestStreak, savedKcal, savedMeals, T]);
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = dateStr();
   const todayRecord = store.checkinHistory.find((c: CheckinRecord) => c.date === today);
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
 

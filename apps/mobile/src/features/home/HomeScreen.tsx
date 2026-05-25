@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
-import { THEMES, COLORS, QUICK_FOODS } from '@egoless-do/core';
+import { THEMES, COLORS, QUICK_FOODS, dateStr, getTodayFoodLog } from '@egoless-do/core';
 import type { CheckinRecord } from '@egoless-do/core';
 import { Card, useTheme, useT, ProgressBar, ThemedInput } from '../../components/UI';
 import CheckinModal from './CheckinModal';
@@ -40,12 +40,12 @@ export default function HomeScreen() {
   const [cgi, setCgi]             = useState(String(store.calGoal));
 
   const totalCal = useMemo(
-    () => (store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? f.cal ?? 0), 0),
+    () => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? f.cal ?? 0), 0),
     [store.foodLog],
   );
 
   const todayWeight = useMemo(() => {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = dateStr();
     const todayCheckin = (store.checkinHistory ?? []).find((c: CheckinRecord) => c.date === today);
     return todayCheckin?.weight;
   }, [store.checkinHistory]);
@@ -65,7 +65,7 @@ export default function HomeScreen() {
 
   const resetFoodForm = () => { setFn(''); setFc(''); setFnote(''); };
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = dateStr();
   const todayRecord = (store.checkinHistory ?? []).find((c: CheckinRecord) => c.date === todayStr);
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
   const bannerColors: Record<string, string> = { notChecked: '#16A34A', notDone: '#F59E0B', done: '#3B82F6' };
