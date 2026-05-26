@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { COLORS } from '@egoless-do/core';
+import { COLORS, calculateCheckinStreak } from '@egoless-do/core';
 import type { CheckinRecord } from '@egoless-do/core';
 import type { RootStackParamList } from '../../navigation';
 
@@ -41,10 +41,12 @@ export default function CheckinDetailScreen() {
     );
   }
 
+  const streak = record.done ? calculateCheckinStreak(store.checkinHistory ?? [], date) : 0;
+
   const detailRows: { label: string; value: string; color?: string }[] = [
     { label: T('checkinTime'), value: formatTime(record.timestamp, record.date) },
     { label: T('checkinStatus'), value: record.done ? T('checkinDone') : T('checkinNotDone'), color: record.done ? COLORS.GREEN : COLORS.RED },
-    { label: T('checkinStreak'), value: `${record.streak} ${T('days')}` },
+    { label: T('checkinStreak'), value: `${streak} ${T('days')}` },
     ...(record.weight != null ? [{ label: T('todayWeight'), value: `${record.weight} ${T('checkinKg')}` }] : []),
   ];
 

@@ -51,6 +51,15 @@ export class EgolessDB extends Dexie {
       exerciseEntries: 'id, sportKey, timestamp',
       syncQueue:       '++_id, entity, entityId, operation, createdAt',
     });
+    this.version(4).stores({
+      habits:          'id, status, startDate',
+      reflections:     'id, created_at, *tags',
+      fastingSessions: 'id, started_at',
+      foodEntries:     'id, ts',
+      checkins:        'date',
+      exerciseEntries: 'id, sportKey, timestamp, isGpsSport',
+      syncQueue:       '++_id, entity, entityId, operation, createdAt',
+    });
   }
 }
 

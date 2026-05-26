@@ -2,9 +2,12 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useAudioPlayer } from 'expo-audio';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, OutlineButton, ScreenHeader, useT } from '../../components/UI';
 import { fmt, estimateFastKcal, FASTING_DURATIONS, COLORS } from '@egoless-do/core';
+
+const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
 export default function FastingScreen() {
   const TH    = useTheme();
@@ -18,9 +21,13 @@ export default function FastingScreen() {
   const [tmpDur, setTmpDur]     = useState(8);
   const [agreed, setAgreed]     = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const bellPlayedRef = useRef(false);
+  const bellPlayer = useAudioPlayer(BELL_FILE);
+  bellPlayer.volume = 0.5;
 
   useEffect(() => {
     if (store.activeFasting) {
+      bellPlayedRef.current = false;
       const el = Math.floor((Date.now() - store.activeFasting.startedAt) / 1000);
       setElapsed(el);
       timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
@@ -34,6 +41,13 @@ export default function FastingScreen() {
   const pct  = useMemo(() => store.activeFasting ? Math.min(elapsed / (store.activeFasting.targetHours * 3600), 1) : 0, [store.activeFasting, elapsed]);
   const kcal = useMemo(() => estimateFastKcal(elapsed), [elapsed]);
 
+  useEffect(() => {
+    if (pct >= 1 && !bellPlayedRef.current) {
+      bellPlayedRef.current = true;
+      try { bellPlayer.seekTo(0); bellPlayer.play(); } catch {}
+    }
+  }, [pct]);
+
   const totalFastHours = useMemo(() => {
     const totalSec = (store.fastingHistory ?? []).reduce((sum, f) => {
       const s = f.startedAt ?? 0;
@@ -43,35 +57,48 @@ export default function FastingScreen() {
     return Math.round(totalSec / 3600);
   }, [store.fastingHistory]);
 
-  const longestStreak = useMemo(() => {
+  const fastingDates = useMemo(() => {
     const history = store.fastingHistory ?? [];
-    if (!history.length) return 0;
-    const dates = [...new Set(history.map(f => {
+    if (!history.length) return [] as string[];
+    return [...new Set(history.map(f => {
       const d = new Date(f.startedAt ?? 0);
       return d.toISOString().slice(0, 10);
     }))].sort();
-    let maxStreak = 1;
-    let currentStreak = 1;
-    for (let i = 1; i < dates.length; i++) {
-      const prev = new Date(dates[i - 1]);
-      const curr = new Date(dates[i]);
-      const diffDays = Math.round((curr.getTime() - prev.getTime()) / 86400000);
-      if (diffDays === 1) {
-        currentStreak++;
-        maxStreak = Math.max(maxStreak, currentStreak);
-      } else if (diffDays > 1) {
-        currentStreak = 1;
-      }
-    }
-    return maxStreak;
   }, [store.fastingHistory]);
+
+  const currentFastingStreak = useMemo(() => {
+    if (!fastingDates.length) return 0;
+    const reversed = [...fastingDates].reverse();
+    let streak = 1;
+    for (let i = 1; i < reversed.length; i++) {
+      const prev = new Date(reversed[i - 1]);
+      const curr = new Date(reversed[i]);
+      const diff = (prev.getTime() - curr.getTime()) / 86400000;
+      if (Math.abs(diff - 1) < 0.1) streak++;
+      else break;
+    }
+    return streak;
+  }, [fastingDates]);
+
+  const longestStreak = useMemo(() => {
+    if (fastingDates.length === 0) return 0;
+    let max = 1, cur = 1;
+    for (let i = 1; i < fastingDates.length; i++) {
+      const prev = new Date(fastingDates[i - 1]);
+      const curr = new Date(fastingDates[i]);
+      const diffDays = Math.round((curr.getTime() - prev.getTime()) / 86400000);
+      if (diffDays === 1) { cur++; max = Math.max(max, cur); }
+      else if (diffDays > 1) cur = 1;
+    }
+    return max;
+  }, [fastingDates]);
 
   const statsData = useMemo(() => [
     { icon:'⏳', label:T('fastTotal'),    value:`${(store.fastingHistory ?? []).length} ${T('fastTimes')}`, bg:'#EF9A9A' },
     { icon:'⏰', label:T('fastTotalHours'),    value:`${totalFastHours} ${T('fastHours')}`,         bg:COLORS.GREEN },
-    { icon:'🔥', label:T('fastStreak'),  value:`${store.streak} ${T('days')}`,             bg:'#FF8A65' },
+    { icon:'🔥', label:T('fastStreak'),  value:`${currentFastingStreak} ${T('days')}`,             bg:'#FF8A65' },
     { icon:'🏆', label:T('fastLongest'),  value:`${longestStreak} ${T('days')}`,            bg:'#9C27B0' },
-  ], [(store.fastingHistory ?? []).length, store.streak, totalFastHours, longestStreak]);
+  ], [(store.fastingHistory ?? []).length, currentFastingStreak, totalFastHours, longestStreak]);
 
   const isActive = !!store.activeFasting;
 
@@ -122,10 +149,10 @@ export default function FastingScreen() {
         </Card>
 
         {/* Global fasting */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap')}
+        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('globalFasting')}` })}
           style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
           <Text style={{ fontSize:18 }}>🌍</Text>
-          <Text style={{ fontSize:16, color:TH.text }}>{T('globalFasting')}</Text>
+          <Text style={{ fontSize:16, color:TH.text }}>{T('linkWorld')} — {T('globalFasting')}</Text>
           <Text style={{ marginLeft:'auto', color:TH.sub }}>›</Text>
         </TouchableOpacity>
 

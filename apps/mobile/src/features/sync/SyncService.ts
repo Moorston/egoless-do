@@ -103,6 +103,7 @@ const ENTITY_CONFIG: Record<string, { table: string; pk: string }> = {
   fasting:   { table: 'fasting_sessions',    pk: 'id'   },
   food:      { table: 'food_entries',        pk: 'id'   },
   checkin:   { table: 'checkin_records',     pk: 'date' },
+  exercise:  { table: 'exercise_entries',    pk: 'id'   },
 };
 
 function entityTable(entity: string): string {
@@ -124,14 +125,15 @@ async function getPending(entity: string): Promise<Record<string, unknown>[]> {
 
 async function getUnsynced() {
   const db = await openDatabase();
-  const [habits, reflections, fastingSessions, foodLog, checkins] = await Promise.all([
+  const [habits, reflections, fastingSessions, foodLog, checkins, exercises] = await Promise.all([
     getPending('habit'),
     getPending('reflection'),
     getPending('fasting'),
     getPending('food'),
     getPending('checkin'),
+    getPending('exercise'),
   ]);
-  return { habits, reflections, fastingSessions, foodLog, checkins };
+  return { habits, reflections, fastingSessions, foodLog, checkins, exercises };
 }
 
 // Mark a record as deleted in SQLite (synced=2) so SyncService can push the delete
@@ -206,6 +208,17 @@ function checkinToSync(r: Record<string, unknown>) {
   };
 }
 
+function exerciseToSync(r: Record<string, unknown>) {
+  return {
+    id: r.id, sportKey: r.sport_key, sportIcon: r.sport_icon,
+    durationSec: r.duration_sec, distanceKm: r.distance_km,
+    calories: r.calories, avgPace: r.avg_pace,
+    trackPoints: JSON.parse((r.track_points as string) ?? '[]'),
+    isGpsSport: (r.is_gps_sport as number) === 1,
+    timestamp: r.ts,
+  };
+}
+
 // ── Build changes array from local unsynced rows ──────────────────
 function buildChanges(unsynced: Awaited<ReturnType<typeof getUnsynced>>) {
   const changes: { entity: string; entityId: string; payload: Record<string, unknown>; op?: 'upsert' | 'delete' }[] = [];
@@ -229,6 +242,10 @@ function buildChanges(unsynced: Awaited<ReturnType<typeof getUnsynced>>) {
   for (const r of unsynced.checkins) {
     if (r.synced === 2) { changes.push({ entity: 'checkin', entityId: r.date as string, payload: {}, op: 'delete' }); continue; }
     changes.push({ entity: 'checkin', entityId: r.date as string, payload: checkinToSync(r) });
+  }
+  for (const r of unsynced.exercises) {
+    if (r.synced === 2) { changes.push({ entity: 'exercise', entityId: r.id as string, payload: {}, op: 'delete' }); continue; }
+    changes.push({ entity: 'exercise', entityId: r.id as string, payload: exerciseToSync(r) });
   }
 
   return changes;
@@ -330,6 +347,28 @@ async function applyServerChanges(data: Record<string, unknown[]>): Promise<Reco
       await db.runAsync('DELETE FROM checkin_records WHERE date = ?', [c.date]);
     }
     patch.checkinHistory = alive;
+  }
+
+  if (data.exercise?.length) {
+    const alive = data.exercise.filter(e => !e.deleted);
+    const dead = data.exercise.filter(e => e.deleted);
+    for (const e of alive) {
+      await db.runAsync(`
+        INSERT OR REPLACE INTO exercise_entries
+        (id,sport_key,sport_icon,duration_sec,distance_km,calories,avg_pace,track_points,is_gps_sport,ts,synced)
+        VALUES (?,?,?,?,?,?,?,?,?,?,1)`,
+        [e.id, e.sportKey ?? e.sport_key, e.sportIcon ?? e.sport_icon,
+         e.durationSec ?? e.duration_sec ?? 0, e.distanceKm ?? e.distance_km ?? 0,
+         e.calories ?? 0, e.avgPace ?? e.avg_pace ?? 0,
+         JSON.stringify(e.trackPoints ?? e.track_points ?? []),
+         (e.isGpsSport ?? e.is_gps_sport) ? 1 : 0,
+         e.timestamp ?? e.ts]
+      );
+    }
+    for (const e of dead) {
+      await db.runAsync('DELETE FROM exercise_entries WHERE id = ?', [e.id]);
+    }
+    patch.exerciseLog = alive;
   }
 
   return patch;

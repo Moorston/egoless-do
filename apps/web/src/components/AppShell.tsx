@@ -27,6 +27,7 @@ import HistoryPage from './HistoryPage';
 import CheckinDetailPage from './CheckinDetailPage';
 import FoodLogPage from './FoodLogPage';
 import GracePage from './GracePage';
+import ExerciseHistoryPage from './ExerciseHistoryPage';
 
 const TABS = [
   { key: 'home',        icon: '🏠', labelKey: 'home'       },
@@ -93,7 +94,7 @@ export default function AppShell() {
     const { overlay, overlayProps } = overlayState;
     switch (overlay) {
       case 'globalMap':
-        return <GlobalMapPage onClose={overlayState.close} />;
+        return <GlobalMapPage onClose={overlayState.close} title={overlayState.overlayProps.globalMapTitle} icon={overlayState.overlayProps.globalMapIcon} />;
       case 'checkin':
         return <CheckinPage onClose={overlayState.close} />;
       case 'sport':
@@ -112,6 +113,8 @@ export default function AppShell() {
         return <FoodLogPage onClose={overlayState.close} />;
       case 'grace':
         return <GracePage onClose={overlayState.close} />;
+      case 'exerciseHistory':
+        return <ExerciseHistoryPage onClose={overlayState.close} />;
       default:
         return null;
     }

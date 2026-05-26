@@ -119,12 +119,30 @@ export interface FoodEntry {
   ts?: number;
 }
 
+export interface GeoPoint {
+  lat: number;
+  lng: number;
+  ts: number;
+  altitude?: number;
+  speed?: number;
+}
+
 export interface ExerciseEntry {
   id: string;
   sportKey: string;
   sportIcon: string;
   durationSec: number;
   timestamp: number;
+  distanceKm?: number;
+  calories?: number;
+  avgPace?: number;
+  trackPoints?: GeoPoint[];
+  isGpsSport?: boolean;
+  mode?: 'free' | 'target';
+  target?: { type: 'distance' | 'time' | 'calories'; value: number };
+  segmentPaces?: number[];
+  elevationGain?: number;
+  pausedDuration?: number;
   updatedAt?: number;
   deleted?: boolean;
 }
@@ -170,6 +188,7 @@ export interface SportItem {
   keyEn?: string;
   icon: string;
   color: string;
+  gps?: boolean;
 }
 
 export interface SportGroup {
@@ -202,6 +221,7 @@ export interface AppState {
   medHistory: MedHistoryEntry[];
   checkinHistory: CheckinEntry[];
   foodLog: FoodEntry[];
+  exerciseLog: ExerciseEntry[];
   reflections: MindReflection[];
   habits: Habit[];
   activeFasting: FastingSession | null;

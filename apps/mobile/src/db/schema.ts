@@ -92,6 +92,20 @@ CREATE TABLE IF NOT EXISTS checkin_records (
   synced    INTEGER NOT NULL DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS exercise_entries (
+  id            TEXT PRIMARY KEY,
+  sport_key     TEXT    NOT NULL,
+  sport_icon    TEXT    NOT NULL DEFAULT '',
+  duration_sec  INTEGER NOT NULL DEFAULT 0,
+  distance_km   REAL    DEFAULT 0,
+  calories      INTEGER DEFAULT 0,
+  avg_pace      REAL    DEFAULT 0,
+  track_points  TEXT    DEFAULT '[]',
+  is_gps_sport  INTEGER NOT NULL DEFAULT 0,
+  ts            INTEGER NOT NULL,
+  synced        INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS app_state (
   key   TEXT PRIMARY KEY,
   value TEXT NOT NULL
@@ -117,6 +131,20 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   }
   if (!checkinInfo.some(col => col.name === 'weight')) {
     await db.execAsync('ALTER TABLE checkin_records ADD COLUMN weight REAL');
+  }
+
+  // Ensure exercise_entries table exists
+  const exerciseTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='exercise_entries'"
+  );
+  if (!exerciseTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS exercise_entries (
+      id TEXT PRIMARY KEY, sport_key TEXT NOT NULL, sport_icon TEXT NOT NULL DEFAULT '',
+      duration_sec INTEGER NOT NULL DEFAULT 0, distance_km REAL DEFAULT 0,
+      calories INTEGER DEFAULT 0, avg_pace REAL DEFAULT 0,
+      track_points TEXT DEFAULT '[]', is_gps_sport INTEGER NOT NULL DEFAULT 0,
+      ts INTEGER NOT NULL, synced INTEGER NOT NULL DEFAULT 0
+    )`);
   }
 }
 

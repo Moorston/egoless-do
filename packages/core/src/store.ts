@@ -1,7 +1,7 @@
 // ─── Shared Zustand store (platform-agnostic logic) ──────────────
 import { uid, dateStr, tomorrow, computeStreak, estimateFastingKcal } from './utils';
 import { MIND_COLORS } from './constants';
-import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, Mood, AppState, FastingSession } from './types';
+import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, Mood, AppState, FastingSession, ExerciseEntry } from './types';
 import { defaultAuthState } from './types';
 
 // ── Initial seed data ─────────────────────────────────────────────
@@ -63,6 +63,7 @@ export const defaultAppState: AppState = {
   medHistory: [],
   checkinHistory: [],
   foodLog: [],
+  exerciseLog: [],
   reflections: [],
   habits: [],
   activeFasting: null,
@@ -82,6 +83,7 @@ export const defaultDataState = {
   medHistory: [] as MedHistoryEntry[],
   checkinHistory: [] as CheckinEntry[],
   foodLog: [] as FoodEntry[],
+  exerciseLog: [] as ExerciseEntry[],
   reflections: [] as MindReflection[],
   habits: [] as Habit[],
   activeFasting: null as FastingSession | null,

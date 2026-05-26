@@ -170,11 +170,12 @@ export function ScreenHeader({
 
 // ── ThemedInput ──────────────────────────────────────────────────
 export function ThemedInput({
-  value, onChangeText, placeholder, multiline, numberOfLines, keyboardType, style,
+  value, onChangeText, placeholder, multiline, numberOfLines, keyboardType, secureTextEntry, maxLength, onBlur, style,
 }: {
   value: string; onChangeText: (t: string) => void;
   placeholder?: string; multiline?: boolean; numberOfLines?: number;
-  keyboardType?: 'default' | 'numeric'; style?: TextStyle;
+  keyboardType?: 'default' | 'numeric' | 'number-pad'; secureTextEntry?: boolean;
+  maxLength?: number; onBlur?: () => void; style?: TextStyle;
 }) {
   const TH = useTheme();
   return (
@@ -186,6 +187,9 @@ export function ThemedInput({
       multiline={multiline}
       numberOfLines={numberOfLines}
       keyboardType={keyboardType}
+      secureTextEntry={secureTextEntry}
+      maxLength={maxLength}
+      onBlur={onBlur}
       style={[{
         backgroundColor: TH.card,
         borderWidth: 1, borderColor: TH.border,

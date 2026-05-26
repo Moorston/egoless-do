@@ -48,19 +48,19 @@ export const QUICK_FOODS: { name: string; nameEn: string; cal: number }[] = [
 
 export const SPORT_GROUPS: SportGroup[] = [
   { group:'我的运动', groupEn:'My Sports', items:[
-    { key:'户外骑行', keyEn:'Outdoor Cycling', icon:'🚴', color:'#4CAF50' },
-    { key:'室内跑步', keyEn:'Indoor Running',  icon:'🏃', color:'#2196F3' },
-    { key:'爬楼梯',   keyEn:'Stair Climbing',  icon:'🧗', color:'#9C27B0' },
+    { key:'户外骑行', keyEn:'Outdoor Cycling', icon:'🚴', color:'#4CAF50', gps:true },
+    { key:'室内跑步', keyEn:'Indoor Running',  icon:'🏃', color:'#2196F3', gps:false },
+    { key:'爬楼梯',   keyEn:'Stair Climbing',  icon:'🧗', color:'#9C27B0', gps:false },
   ]},
   { group:'更多运动', groupEn:'More Sports', items:[
-    { key:'跳绳',   keyEn:'Jump Rope',    icon:'⚡', color:'#FF9800' },
-    { key:'羽毛球', keyEn:'Badminton',     icon:'🏸', color:'#4CAF50' },
-    { key:'足球',   keyEn:'Football',      icon:'⚽', color:'#2196F3' },
-    { key:'篮球',   keyEn:'Basketball',    icon:'🏀', color:'#FF5722' },
-    { key:'乒乓球', keyEn:'Table Tennis',  icon:'🏓', color:'#009688' },
-    { key:'网球',   keyEn:'Tennis',        icon:'🎾', color:'#8BC34A' },
-    { key:'瑜伽',   keyEn:'Yoga',          icon:'🧘', color:'#9C27B0' },
-    { key:'游泳',   keyEn:'Swimming',      icon:'🏊', color:'#00BCD4' },
+    { key:'跳绳',   keyEn:'Jump Rope',    icon:'⚡', color:'#FF9800', gps:false },
+    { key:'羽毛球', keyEn:'Badminton',     icon:'🏸', color:'#4CAF50', gps:false },
+    { key:'足球',   keyEn:'Football',      icon:'⚽', color:'#2196F3', gps:false },
+    { key:'篮球',   keyEn:'Basketball',    icon:'🏀', color:'#FF5722', gps:false },
+    { key:'乒乓球', keyEn:'Table Tennis',  icon:'🏓', color:'#009688', gps:false },
+    { key:'网球',   keyEn:'Tennis',        icon:'🎾', color:'#8BC34A', gps:false },
+    { key:'瑜伽',   keyEn:'Yoga',          icon:'🧘', color:'#9C27B0', gps:false },
+    { key:'游泳',   keyEn:'Swimming',      icon:'🏊', color:'#00BCD4', gps:false },
   ]},
 ];
 
@@ -69,6 +69,7 @@ export const ALL_SPORTS = SPORT_GROUPS.flatMap(g => g.items);
 export const SPORT_BG_COLORS: Record<string, string> = {
   爬楼梯: '#4CAF50', 跳绳: '#FF9800', 游泳: '#00BCD4',
   瑜伽: '#9C27B0', 篮球: '#FF5722', 足球: '#4CAF50', 羽毛球: '#2196F3',
+  户外骑行: '#4CAF50', 室内跑步: '#2196F3', 乒乓球: '#009688', 网球: '#8BC34A',
 };
 
 export const GLOBAL_USERS: GlobalUser[] = [

@@ -51,6 +51,21 @@
       "createRule": "@request.auth.id != ''",
       "updateRule": null,
       "deleteRule": null
+    },
+    {
+      "id": "exercise_entries",
+      "name": "exercise_entries",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",     "type": "text",   "required": true },
+        { "name": "exercise_id", "type": "text",   "required": true },
+        { "name": "data",        "type": "json",   "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
     }
   ]
 }

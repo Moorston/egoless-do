@@ -103,6 +103,7 @@ export default function LoginScreen() {
             value={password}
             onChangeText={setPassword}
             placeholder="密码"
+            secureTextEntry
             style={{ marginBottom: 4 }}
           />
         </Card>

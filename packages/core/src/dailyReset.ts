@@ -12,7 +12,7 @@ export function getDailyResetPatch(lastResetDate: string | null): Partial<AppSta
 
   return {
     waterMl: 0,         // Reset daily water intake
-    foodLog: [],        // Clear daily food log
+    // foodLog is NOT cleared — history is preserved for FoodLogPage
     // Note: Do NOT reset activeFasting, streak, totalMedMinutes, etc.
   };
 }
@@ -35,6 +35,14 @@ export function checkDailyReset(
 export function getTodayFoodLog<T extends { timestamp: number }>(foodLog: T[]): T[] {
   const today = dateStr();
   return foodLog.filter(f => dateStr(new Date(f.timestamp)) === today);
+}
+
+/** Get today's total meditation minutes from medHistory */
+export function getTodayMedMinutes(medHistory: Array<{ date: string; dur: string }>): number {
+  const today = dateStr();
+  return medHistory
+    .filter(e => e.date === today)
+    .reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
 }
 
 /** Get milliseconds until next local midnight */

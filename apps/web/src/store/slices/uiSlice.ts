@@ -35,6 +35,7 @@ export interface UiSlice {
   addFood: (entry: Omit<FoodEntry, 'id'>) => void;
   deleteFood: (id: string) => void;
   addExercise: (entry: Omit<ExerciseEntry, 'id'>) => void;
+  deleteExercise: (id: string) => void;
   submitCheckin: (done: boolean, note: string, date?: string, weight?: number) => void;
   updateUserProfile: (profile: Partial<UserProfile>) => void;
   setRemindEnabled: (v: boolean) => void;
@@ -89,6 +90,11 @@ export const createUiSlice: StateCreator<WebStore, [], [], UiSlice> = (set, get)
     const e: ExerciseEntry = { ...entry, id: uid(), updatedAt: Date.now() };
     set(s => ({ exerciseLog: [e, ...s.exerciseLog] }));
     q('exercise', e.id, 'upsert', e);
+  },
+
+  deleteExercise(id) {
+    set(s => ({ exerciseLog: s.exerciseLog.filter(e => e.id !== id) }));
+    q('exercise', id, 'delete', { updatedAt: Date.now() });
   },
 
   submitCheckin(done, note, dateOverride, weight) {

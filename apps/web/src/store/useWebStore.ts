@@ -29,24 +29,23 @@ export const useWebStore = create<WebStore>()(
       ),
       partialize: s => ({
         auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
-        waterGoal: s.waterGoal, calGoal: s.calGoal, waterMl: s.waterMl,
-        habits: s.habits, reflections: s.reflections,
+        waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
+        foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
         activeFasting: s.activeFasting,
         fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,
-        medHistory: s.medHistory, foodLog: s.foodLog, checkinHistory: s.checkinHistory,
+        medHistory: s.medHistory, checkinHistory: s.checkinHistory,
         userProfile: s.userProfile, remindEnabled: s.remindEnabled, remindTime: s.remindTime,
         weightUnit: s.weightUnit, customTags: s.customTags, customMoods: s.customMoods,
+        exerciseLog: s.exerciseLog,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        // Extracted reset check function
+        // Daily reset check
         const checkAndReset = () => {
           const lastReset = localStorage.getItem(DAILY_RESET_KEY);
           const patch = getDailyResetPatch(lastReset);
           if (patch) {
-            const store = useWebStore.getState();
-            if (patch.waterMl !== undefined) store.resetWater();
-            if (patch.foodLog !== undefined) useWebStore.setState({ foodLog: [] });
+            useWebStore.setState(patch);
             localStorage.setItem(DAILY_RESET_KEY, dateStr());
           }
         };

@@ -12,8 +12,6 @@ body {
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
 .scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; }
 .scroll-x::-webkit-scrollbar { display: none; }
-.leaflet-control-zoom { border-radius: 12px !important; box-shadow: 0 2px 8px rgba(0,0,0,.3) !important; border: none !important; }
-.leaflet-control-zoom a { border-radius: 12px !important; width: 36px !important; height: 36px !important; line-height: 36px !important; font-size: 18px !important; }
 
 /* ── Theme CSS variables ────────────────────────────────────────── */
 [data-theme="dark"]   { --bg:#0F0A1E; --card:rgba(255,255,255,.07); --card-solid:#1A1030; --text:#fff; --sub:rgba(255,255,255,.45); --border:rgba(255,255,255,.09); --primary:#7C3AED; --nav-bg:rgba(15,10,30,.97); }

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { THEMES, COLORS, QUICK_FOODS, getTodayFoodLog } from '@egoless-do/core';
+import { useState, useMemo } from 'react';
+import { THEMES, COLORS, QUICK_FOODS, getTodayFoodLog, dateStr } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 
@@ -10,12 +10,28 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
-  const foodLog = getTodayFoodLog(store.foodLog || []);
-  const totalCal = foodLog.reduce((a, f) => a + f.calories, 0);
+  const foodLog = store.foodLog || [];
+  const todayLog = getTodayFoodLog(foodLog);
+  const totalCal = todayLog.reduce((a, f) => a + f.calories, 0);
   const [showAdd, setShowAdd] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [fn, setFn] = useState('');
   const [fc, setFc] = useState('');
   const [fnote, setFnote] = useState('');
+
+  const historyGroups = useMemo(() => {
+    const today = dateStr();
+    const past = foodLog.filter(f => dateStr(new Date(f.timestamp)) !== today);
+    const groups: Record<string, typeof past> = {};
+    for (const f of past) {
+      const d = dateStr(new Date(f.timestamp));
+      (groups[d] ??= []).push(f);
+    }
+    return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]));
+  }, [foodLog]);
+
+  const totalHistoryCal = useMemo(() => historyGroups.reduce((sum, [, entries]) => sum + entries.reduce((a, f) => a + f.calories, 0), 0), [historyGroups]);
+  const totalRecords = useMemo(() => historyGroups.reduce((sum, [, entries]) => sum + entries.length, 0), [historyGroups]);
 
   function addFoodItem() {
     if (!fn.trim()) return;
@@ -49,19 +65,21 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
           </div>
 
           <div style={{ background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 16, marginTop: 12 }}>
-            {foodLog.length === 0 ? (
+            {todayLog.length === 0 ? (
               <div style={{ color: TH.sub, fontSize: 16, textAlign: 'center', padding: 24 }}>{T('foodEmpty')}</div>
             ) : (
-              foodLog.map((f, i) => (
-                <div key={i} style={{
-                  display: 'flex', justifyContent: 'space-between', padding: '8px 0',
-                  borderBottom: i < foodLog.length - 1 ? `1px solid ${TH.border}` : 'none'
+              todayLog.map((f, i) => (
+                <div key={f.id} style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px',
+                  borderBottom: i < todayLog.length - 1 ? `1px solid ${TH.border}` : 'none'
                 }}>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: 16, color: TH.text }}>{f.name}</div>
                     {f.note && <div style={{ fontSize: 16, color: TH.sub }}>{f.note}</div>}
                   </div>
-                  <div style={{ fontWeight: 700, color: P }}>{f.calories} kcal</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontWeight: 700, color: P }}>{f.calories} kcal</span>
+                  </div>
                 </div>
               ))
             )}
@@ -69,8 +87,89 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
 
           <button onClick={() => setShowAdd(true)}
             style={{ width: '100%', marginTop: 12, padding: 14, borderRadius: 12, border: 'none', background: COLORS.ORANGE, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>
-            + {T('foodAdd')}
+            {T('foodAdd')}
           </button>
+
+          {/* ── History ── */}
+          <div style={{ marginTop: 24, marginBottom: 24 }}>
+            <div onClick={() => setShowHistory(v => !v)}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', marginBottom: showHistory ? 12 : 0 }}>
+              <span style={{ fontWeight: 700, fontSize: 18, color: TH.text }}>{T('foodHistory')} {showHistory ? '▾' : '▸'}</span>
+            </div>
+            {showHistory && (
+              <>
+                {/* Summary stats */}
+                {historyGroups.length > 0 && (
+                  <div style={{
+                    display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16,
+                    background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 14, padding: '14px 8px',
+                  }}>
+                    {[
+                      { value: String(historyGroups.length), label: '天' },
+                      { value: String(totalRecords), label: '条记录' },
+                      { value: String(totalHistoryCal), label: 'kcal' },
+                    ].map(s => (
+                      <div key={s.label} style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: 22, fontWeight: 800, color: P }}>{s.value}</div>
+                        <div style={{ fontSize: 13, color: TH.sub, marginTop: 2 }}>{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {historyGroups.length === 0 ? (
+                  <div style={{ color: TH.sub, fontSize: 16, textAlign: 'center', padding: 24 }}>{T('foodNoHistory')}</div>
+                ) : (
+                  <div style={{ position: 'relative', paddingLeft: 20 }}>
+                    {/* Timeline vertical line */}
+                    <div style={{
+                      position: 'absolute', left: 6, top: 6, bottom: 6,
+                      width: 2, background: TH.border, borderRadius: 1,
+                    }} />
+                    {historyGroups.map(([date, entries]) => {
+                      const dayCal = entries.reduce((a, f) => a + f.calories, 0);
+                      return (
+                        <div key={date} style={{ position: 'relative', marginBottom: 16 }}>
+                          {/* Timeline dot */}
+                          <div style={{
+                            position: 'absolute', left: -17, top: 14,
+                            width: 10, height: 10, borderRadius: '50%',
+                            background: P, border: `2px solid ${TH.bg}`,
+                          }} />
+                          {/* Card */}
+                          <div style={{ background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 12, overflow: 'hidden' }}>
+                            <div style={{
+                              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                              padding: '10px 14px', borderBottom: `1px solid ${TH.border}`,
+                              background: `${P}08`,
+                            }}>
+                              <span style={{ fontSize: 15, fontWeight: 600, color: TH.text }}>{date}</span>
+                              <span style={{ fontSize: 15, color: P, fontWeight: 700 }}>{dayCal} kcal</span>
+                            </div>
+                            {entries.map((f, i) => (
+                              <div key={f.id} style={{
+                                display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 14px',
+                                borderTop: i > 0 ? `1px solid ${TH.border}` : 'none',
+                              }}>
+                                <div style={{ flex: 1 }}>
+                                  <span style={{ fontWeight: 600, fontSize: 15, color: TH.text }}>{f.name}</span>
+                                  {f.note && <span style={{ fontSize: 14, color: TH.sub, marginLeft: 8 }}>{f.note}</span>}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <span style={{ fontWeight: 700, color: P, fontSize: 15 }}>{f.calories} kcal</span>
+                                  <button onClick={() => { if (confirm(T('foodDeleteConfirm'))) store.deleteFood(f.id); }}
+                                    style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,.3)', fontSize: 18, cursor: 'pointer', padding: '0 4px' }}>×</button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
 

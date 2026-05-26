@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { THEMES, COLORS } from '@egoless-do/core';
+import { THEMES, COLORS, calculateCheckinStreak } from '@egoless-do/core';
 import type { CheckinRecord } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -23,7 +23,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
   const record = store.checkinHistory.find((c: CheckinRecord) => c.date === date);
 
   const parsed = useMemo(() => {
-    if (!record) return { userNote: '', practices: [] as { key: string; icon: string; label: string }[], customs: [] as string[], fasted: false, water: '', habits: [] as string[] };
+    if (!record) return { userNote: '', practices: [] as { key: string; icon: string; label: string }[], customs: [] as string[], fasted: false, water: '', habits: [] as string[], food: 0 };
     const raw = record.note || '';
     const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
     const PRACTICE_ICONS: Record<string, string> = { sit: '🧘', stand: '🧍', chant: '📿' };
@@ -44,6 +44,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
           fasted: !!data.fasted,
           water: data.water ?? '',
           habits: (data.habits as string[]) ?? [],
+          food: (data.food as number) ?? 0,
         };
       }
     } catch {
@@ -65,7 +66,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
         noteParts.push(p);
       }
     }
-    return { userNote: noteParts.join(' · '), practices, customs, fasted: false, water: '', habits: [] };
+    return { userNote: noteParts.join(' · '), practices, customs, fasted: false, water: '', habits: [], food: 0 };
   }, [record]);
 
   if (!record) {
@@ -78,6 +79,8 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
       </div>
     );
   }
+
+  const streak = record.done ? calculateCheckinStreak(store.checkinHistory, date) : 0;
 
   const statusBg = record.done ? 'rgba(16,185,129,.12)' : 'rgba(239,68,68,.08)';
   const statusColor = record.done ? COLORS.GREEN : COLORS.RED;
@@ -108,7 +111,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
           padding: '13px 0', borderBottom: `1px solid ${TH.border}`, marginBottom: 12,
         }}>
           <span style={{ fontSize: 16, color: TH.sub }}>{T('checkinStreak')}</span>
-          <span style={{ fontSize: 16, fontWeight: 600, color: TH.text }}>{record.streak} {T('days')}</span>
+          <span style={{ fontSize: 16, fontWeight: 600, color: TH.text }}>{streak} {T('days')}</span>
         </div>
 
         {/* Weight */}
@@ -122,18 +125,24 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
           </div>
         )}
 
-        {/* Fasted & Water */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        {/* Fasted & Water & Food */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
           {parsed.fasted && (
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(16,185,129,.12)', borderRadius: 10 }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(16,185,129,.12)', borderRadius: 10, minWidth: 100 }}>
               <span>🙏</span>
               <span style={{ fontSize: 16, color: COLORS.GREEN, fontWeight: 600 }}>{T('checkinAbstinence')}</span>
             </div>
           )}
           {parsed.water && (
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(59,130,246,.12)', borderRadius: 10 }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(59,130,246,.12)', borderRadius: 10, minWidth: 100 }}>
               <span>💧</span>
               <span style={{ fontSize: 16, color: COLORS.BLUE, fontWeight: 600 }}>{parsed.water}</span>
+            </div>
+          )}
+          {parsed.food > 0 && (
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(245,158,11,.12)', borderRadius: 10, minWidth: 100 }}>
+              <span>🍽</span>
+              <span style={{ fontSize: 16, color: COLORS.ORANGE, fontWeight: 600 }}>{parsed.food} kcal</span>
             </div>
           )}
         </div>

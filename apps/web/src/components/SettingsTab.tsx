@@ -104,12 +104,24 @@ export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: 
             {store.streak} {T('checkinStreak')} · {store.auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
           </div>
         </div>
-        <div style={{
-          padding: '6px 12px',
-          borderRadius: 12, background: `${P}20`,
-        }}>
-          <span style={{ color: P, fontSize: 11, fontWeight: '600' }}>{T('settingsFreePlan')}</span>
-        </div>
+        {store.auth.isSignedIn ? (
+          <div style={{
+            padding: '6px 12px',
+            borderRadius: 12, background: `${P}20`,
+          }}>
+            <span style={{ color: P, fontSize: 11, fontWeight: '600' }}>{T('settingsFreePlan')}</span>
+          </div>
+        ) : (
+          <div
+            onClick={() => { window.location.href = '/login'; }}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 12, background: P,
+              cursor: 'pointer',
+            }}>
+            <span style={{ color: '#fff', fontSize: 13, fontWeight: '700' }}>{T('settingsLogin')}</span>
+          </div>
+        )}
       </div>
 
       {sections.map(({ title, rows }) => (

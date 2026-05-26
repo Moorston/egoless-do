@@ -200,6 +200,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
             .map(([id]) => store.habits.find(h => h.id === id)?.name)
             .filter(Boolean);
           if (checkedHabits.length) noteData.habits = checkedHabits;
+          if (totalCal > 0) noteData.food = totalCal;
           const weightNum = weight ? parseFloat(weight) : undefined;
           store.submitCheckin(localDone, JSON.stringify(noteData), undefined, weightNum);
           onClose();

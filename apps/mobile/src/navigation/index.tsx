@@ -22,8 +22,8 @@ import ReflectionsScreen from '../features/reflections/ReflectionsScreen';
 import HabitsScreen      from '../features/habits/HabitsScreen';
 import StatsScreen       from '../features/stats/StatsScreen';
 import GlobalMapPage     from '../features/home/GlobalMapPage';
-import RunTrackScreen    from '../features/exercise/RunTrackScreen';
 import SportPage         from '../features/exercise/SportPage';
+import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
 import FastHistoryPage   from '../features/fasting/FastHistoryPage';
 import MedHistoryPage    from '../features/meditation/MedHistoryPage';
 import FoodLogPage       from '../features/home/FoodLogPage';
@@ -38,15 +38,15 @@ export type RootStackParamList = {
   MainTabs: undefined;
   Login: undefined;
   Register: undefined;
-  GlobalMap: undefined;
-  RunTrack: { sport: string; icon: string; color: string };
-  Sport: { key: string; icon: string; color: string };
+  GlobalMap: { icon?: string; title?: string } | undefined;
+  Sport: { key: string; icon: string; color: string; gps?: boolean };
   FastHistory: undefined;
   MedHistory: undefined;
   FoodLog: undefined;
   Grace: undefined;
   CheckinHistory: undefined;
   CheckinDetail: { date: string };
+  ExerciseHistory: undefined;
 };
 
 export type MainTabParamList = {
@@ -266,7 +266,6 @@ export default function AppNavigator() {
         <Stack.Screen name="Register"     component={RegisterScreen} />
         <Stack.Screen name="MainTabs"     component={MainTabs} />
         <Stack.Screen name="GlobalMap"    component={GlobalMapPage} />
-        <Stack.Screen name="RunTrack"     component={RunTrackScreen} />
         <Stack.Screen name="Sport"        component={SportPage} />
         <Stack.Screen name="FastHistory"  component={FastHistoryPage} />
         <Stack.Screen name="MedHistory"   component={MedHistoryPage} />
@@ -274,6 +273,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Grace"        component={GracePage} />
         <Stack.Screen name="CheckinHistory" component={CheckinHistoryScreen} />
         <Stack.Screen name="CheckinDetail" component={CheckinDetailScreen} />
+        <Stack.Screen name="ExerciseHistory" component={ExerciseHistoryScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

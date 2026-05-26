@@ -40,13 +40,26 @@ function getEntityId(record: any, field: string): string {
 
 // ── POST: incremental sync (push + pull) ─────────────────────────
 export async function POST(req: NextRequest) {
+  const token = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
   try {
     const pb = getPb();
+    pb.authStore.save(token!, null);
     const userId = auth.userId;
-    const { lastSyncAt, changes } = await req.json();
+    const body = await req.json();
+    const { lastSyncAt, changes } = body;
+
+    console.log(`[Sync POST] userId=${userId}, changes=${changes?.length ?? 0}, lastSyncAt=${lastSyncAt}`);
+
+    // Verify PocketBase connection
+    try {
+      await pb.health.check();
+    } catch {
+      console.error('[Sync POST] PocketBase is not reachable');
+      return NextResponse.json({ error: '数据库服务不可用，请检查 PocketBase 是否运行' }, { status: 503 });
+    }
 
     // Apply client changes to PocketBase
     const rejected: Array<{ entity: string; entityId: string; payload: Record<string, unknown>; deleted?: boolean }> = [];
@@ -54,7 +67,10 @@ export async function POST(req: NextRequest) {
     for (const change of changes ?? []) {
       const collection = ENTITY_COLLECTION[change.entity];
       const idField = ENTITY_ID_FIELD[change.entity];
-      if (!collection || !idField) continue;
+      if (!collection || !idField) {
+        console.warn(`[Sync POST] Unknown entity: ${change.entity}`);
+        continue;
+      }
 
       const clientPayload = change.payload ?? {};
       const clientUpdated = Number(clientPayload.updatedAt ?? 0);
@@ -62,50 +78,55 @@ export async function POST(req: NextRequest) {
       // Always stamp with server time for the actual write
       const serverTimestamp = Date.now();
 
-      if (change.op === 'delete') {
-        try {
-          const existing = await pb.collection(collection).getFirstListItem(
-            `${idField} = "${escapeFilter(change.entityId)}" && user_id = "${escapeFilter(userId)}"`
-          );
-          const existingPayload = getPayload(existing);
-          const serverUpdated = Number(existingPayload.updatedAt ?? 0);
-          const { winner } = resolveConflict({ clientUpdated, serverUpdated });
-          if (winner === 'client') {
-            await pb.collection(collection).update(existing.id, {
-              data: { ...existingPayload, deleted: true, updatedAt: serverTimestamp },
+      try {
+        if (change.op === 'delete') {
+          try {
+            const existing = await pb.collection(collection).getFirstListItem(
+              `${idField} = "${escapeFilter(change.entityId)}" && user_id = "${escapeFilter(userId)}"`
+            );
+            const existingPayload = getPayload(existing);
+            const serverUpdated = Number(existingPayload.updatedAt ?? 0);
+            const { winner } = resolveConflict({ clientUpdated, serverUpdated });
+            if (winner === 'client') {
+              await pb.collection(collection).update(existing.id, {
+                data: { ...existingPayload, deleted: true, updatedAt: serverTimestamp },
+              });
+            } else {
+              rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload, deleted: existingPayload.deleted === true });
+            }
+          } catch {
+            await pb.collection(collection).create({
+              user_id: userId,
+              [idField]: change.entityId,
+              data: { deleted: true, updatedAt: serverTimestamp },
             });
-          } else {
-            rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload, deleted: existingPayload.deleted === true });
           }
-        } catch {
-          await pb.collection(collection).create({
-            user_id: userId,
-            [idField]: change.entityId,
-            data: { deleted: true, updatedAt: serverTimestamp },
-          });
-        }
-      } else {
-        try {
-          const existing = await pb.collection(collection).getFirstListItem(
-            `${idField} = "${escapeFilter(change.entityId)}" && user_id = "${escapeFilter(userId)}"`
-          );
-          const existingPayload = getPayload(existing);
-          const serverUpdated = Number(existingPayload.updatedAt ?? 0);
-          const { winner } = resolveConflict({ clientUpdated, serverUpdated });
-          if (winner === 'client') {
-            await pb.collection(collection).update(existing.id, {
+        } else {
+          try {
+            const existing = await pb.collection(collection).getFirstListItem(
+              `${idField} = "${escapeFilter(change.entityId)}" && user_id = "${escapeFilter(userId)}"`
+            );
+            const existingPayload = getPayload(existing);
+            const serverUpdated = Number(existingPayload.updatedAt ?? 0);
+            const { winner } = resolveConflict({ clientUpdated, serverUpdated });
+            if (winner === 'client') {
+              await pb.collection(collection).update(existing.id, {
+                data: { ...clientPayload, updatedAt: serverTimestamp },
+              });
+            } else {
+              rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload });
+            }
+          } catch {
+            await pb.collection(collection).create({
+              user_id: userId,
+              [idField]: change.entityId,
               data: { ...clientPayload, updatedAt: serverTimestamp },
             });
-          } else {
-            rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload });
           }
-        } catch {
-          await pb.collection(collection).create({
-            user_id: userId,
-            [idField]: change.entityId,
-            data: { ...clientPayload, updatedAt: serverTimestamp },
-          });
         }
+      } catch (err) {
+        console.error(`[Sync POST] Error processing ${change.entity}/${change.entityId}:`, err);
+        // Continue processing other changes instead of failing the entire sync
       }
     }
 
@@ -137,17 +158,20 @@ export async function POST(req: NextRequest) {
       serverTime: Date.now(),
     });
   } catch (err: unknown) {
+    console.error('[Sync POST] Error:', err);
     return NextResponse.json({ error: err instanceof Error ? err.message : '同步失败' }, { status: 500 });
   }
 }
 
 // ── GET: full pull (all user data, after login) ──────────────────
 export async function GET(req: NextRequest) {
+  const token = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
   try {
     const pb = getPb();
+    pb.authStore.save(token!, null);
     const userId = auth.userId;
     const data: Record<string, unknown[]> = {};
 

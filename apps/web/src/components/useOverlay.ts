@@ -13,11 +13,14 @@ export type OverlayKey =
   | 'history'
   | 'checkinDetail'
   | 'foodLog'
-  | 'grace';
+  | 'grace'
+  | 'exerciseHistory';
 
 export interface OverlayProps {
   sport?: SportItem;
   checkinDetailDate?: string;
+  globalMapTitle?: string;
+  globalMapIcon?: string;
 }
 
 interface OverlayContextValue {

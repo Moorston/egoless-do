@@ -286,12 +286,23 @@ export default function SettingsScreen() {
               {store.streak} {T('checkinStreak')} · {store.auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
             </Text>
           </View>
-          <View style={{
-            paddingHorizontal: 12, paddingVertical: 6,
-            borderRadius: 12, backgroundColor: `${P}20`,
-          }}>
-            <Text style={{ color: P, fontSize: 14, fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
-          </View>
+          {store.auth.isSignedIn ? (
+            <View style={{
+              paddingHorizontal: 12, paddingVertical: 6,
+              borderRadius: 12, backgroundColor: `${P}20`,
+            }}>
+              <Text style={{ color: P, fontSize: 14, fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={() => (nav as any).navigate('Login')}
+              style={{
+                paddingHorizontal: 16, paddingVertical: 8,
+                borderRadius: 12, backgroundColor: P,
+              }}>
+              <Text style={{ color: '#fff', fontSize: 14, fontWeight: '700' }}>{T('settingsLogin')}</Text>
+            </TouchableOpacity>
+          )}
         </Card>
 
         {sections.map(({ title, rows }) => (

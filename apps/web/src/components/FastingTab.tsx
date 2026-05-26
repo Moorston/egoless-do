@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { COLORS } from '@egoless-do/core';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -16,19 +16,46 @@ export default function FastingTab() {
   const [tmpDur, setTmpDur] = useState(8);
   const [agreed, setAgreed] = useState(false);
   const ref = useRef<number | null>(null);
+  const bellPlayedRef = useRef(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const playBell = useCallback(async () => {
+    try {
+      if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') await ctx.resume();
+      const res = await fetch('/sounds/temple_bell.mp3');
+      const buf = await ctx.decodeAudioData(await res.arrayBuffer());
+      const gain = ctx.createGain();
+      gain.gain.value = 0.5;
+      gain.connect(ctx.destination);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(gain);
+      src.start();
+    } catch (e) { console.warn('Bell sound failed:', e); }
+  }, []);
 
   useEffect(() => {
     if (store.activeFasting) {
+      bellPlayedRef.current = false;
       const startedAt = store.activeFasting.startedAt;
       ref.current = window.setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000);
     } else { if (ref.current !== null) window.clearInterval(ref.current); ref.current = null; setElapsed(0); }
     return () => { if (ref.current !== null) window.clearInterval(ref.current); };
   }, [store.activeFasting]);
 
-  const pct = useMemo(() => 
+  const pct = useMemo(() =>
     store.activeFasting ? Math.min(elapsed / (store.activeFasting.targetHours * 3600), 1) : 0,
     [store.activeFasting, elapsed]
   );
+
+  useEffect(() => {
+    if (pct >= 1 && !bellPlayedRef.current) {
+      bellPlayedRef.current = true;
+      playBell();
+    }
+  }, [pct, playBell]);
   
   const kcal = useMemo(() => {
     const hours = elapsed / 3600;
@@ -45,29 +72,47 @@ export default function FastingTab() {
     return Math.round(totalSec / 3600);
   }, [store.fastingHistory]);
 
-  const longestStreak = useMemo(() => {
-    if (!store.fastingHistory.length) return 0;
-    const dates = [...new Set(store.fastingHistory.map(f => {
+  const fastingDates = useMemo(() => {
+    if (!store.fastingHistory.length) return [] as string[];
+    return [...new Set(store.fastingHistory.map(f => {
       const d = new Date(f.startedAt);
       return d.toISOString().slice(0, 10);
-    }))].sort().reverse();
+    }))].sort();
+  }, [store.fastingHistory]);
+
+  const currentFastingStreak = useMemo(() => {
+    if (!fastingDates.length) return 0;
+    const reversed = [...fastingDates].reverse();
     let streak = 1;
-    for (let i = 1; i < dates.length; i++) {
-      const prev = new Date(dates[i - 1]);
-      const curr = new Date(dates[i]);
+    for (let i = 1; i < reversed.length; i++) {
+      const prev = new Date(reversed[i - 1]);
+      const curr = new Date(reversed[i]);
       const diff = (prev.getTime() - curr.getTime()) / 86400000;
       if (Math.abs(diff - 1) < 0.1) streak++;
       else break;
     }
     return streak;
-  }, [store.fastingHistory]);
+  }, [fastingDates]);
+
+  const longestStreak = useMemo(() => {
+    if (fastingDates.length === 0) return 0;
+    let max = 1, cur = 1;
+    for (let i = 1; i < fastingDates.length; i++) {
+      const prev = new Date(fastingDates[i - 1]);
+      const curr = new Date(fastingDates[i]);
+      const diff = (curr.getTime() - prev.getTime()) / 86400000;
+      if (Math.abs(diff - 1) < 0.1) { cur++; max = Math.max(max, cur); }
+      else if (diff > 1) cur = 1;
+    }
+    return max;
+  }, [fastingDates]);
 
   const statsData = useMemo(() => [
     { icon: '⏳', label: T('fastTotal'), value: `${store.fastingHistory.length} ${T('fastTimes')}`, bg: '#EF9A9A' },
     { icon: '⏰', label: T('fastTotalHours'), value: `${totalFastHours} ${T('fastHours')}`, bg: COLORS.GREEN },
-    { icon: '🔥', label: T('fastStreak'), value: `${store.streak} ${T('days')}`, bg: '#FF8A65' },
+    { icon: '🔥', label: T('fastStreak'), value: `${currentFastingStreak} ${T('days')}`, bg: '#FF8A65' },
     { icon: '🏆', label: T('fastLongest'), value: `${longestStreak} ${T('days')}`, bg: '#9C27B0' },
-  ], [store.fastingHistory.length, store.streak, T, totalFastHours, longestStreak]);
+  ], [store.fastingHistory.length, currentFastingStreak, T, totalFastHours, longestStreak]);
 
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
 
@@ -102,7 +147,7 @@ export default function FastingTab() {
         )}
       </div>
 
-      <LinkWorldBtn label={T('globalFasting')} onClick={() => overlay.open('globalMap')} />
+      <LinkWorldBtn label={T('globalFasting')} onClick={() => overlay.open('globalMap', { globalMapTitle: `${T('linkWorld')} — ${T('globalFasting')}` })} />
 
       <div onClick={() => overlay.open('fastHistory')} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
         <span style={{ fontSize: 18 }}>⏱</span>

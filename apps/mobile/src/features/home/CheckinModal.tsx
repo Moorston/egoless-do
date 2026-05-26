@@ -59,6 +59,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
     freeItems.forEach(item => {
       if (freeCheckins[item.id] && item.name) parts.push(`✓${item.name}`);
     });
+    if (totalCal > 0) parts.push(`🍽${totalCal}kcal`);
     const weightNum = weight ? parseFloat(weight) : undefined;
     store.submitCheckin(localDone, parts.filter(Boolean).join(' · '), undefined, weightNum);
     onClose();

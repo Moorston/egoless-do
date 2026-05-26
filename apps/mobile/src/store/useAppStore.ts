@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
 import type {
   Habit, MindReflection, FoodEntry, CheckinRecord, FastingSession,
-  ThemeName, AppState, AuthState,
+  ThemeName, AppState as CoreAppState, AuthState, ExerciseEntry,
 } from '@egoless-do/core';
 import {
   uid, dateStr, computeStreak, estimateFastKcal, calculateCheckinStreak,
@@ -16,6 +16,7 @@ import {
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { markForDeletion } from '../features/sync/SyncService';
+import { openDatabase } from '../db/schema';
 
 // 移动端必须用完整地址（localhost 在真机上不可用，需用电脑局域网 IP）
 const hostUri = Constants.expoConfig?.hostUri ?? Constants.experienceUrl?.split('?')[0]?.split('://')[1];
@@ -26,7 +27,7 @@ setApiBase(apiBase);
 
 interface MedHistoryEntry { date: string; dur: string; mood: string; }
 
-interface AppStore extends AppState {
+interface AppStore extends CoreAppState {
   habits: Habit[];
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string, code: string) => Promise<void>;
@@ -53,6 +54,9 @@ interface AppStore extends AppState {
   foodLog: FoodEntry[];
   addFoodEntry: (name: string, cal: number, note: string) => void;
   deleteFood: (id: string) => void;
+  exerciseLog: ExerciseEntry[];
+  addExercise: (entry: Omit<ExerciseEntry, 'id' | 'updatedAt'>) => void;
+  deleteExercise: (id: string) => void;
   checkinHistory: CheckinRecord[];
   submitCheckin: (done: boolean, note: string, dateOverride?: string, weight?: number) => void;
   addWater: (ml: number) => void;
@@ -85,7 +89,7 @@ export const useAppStore = create<AppStore>()(
       habits: [], reflections: [],
       activeFasting: null, fastingHistory: [],
       totalMedMinutes: 0, medHistory: [],
-      foodLog: [], checkinHistory: [],
+      foodLog: [], exerciseLog: [], checkinHistory: [],
       remindEnabled: false, remindTime: '21:00',
       customTags: [], customMoods: [],
 
@@ -141,6 +145,17 @@ export const useAppStore = create<AppStore>()(
           if (data.fasting)    patch.fastingHistory = data.fasting;
           if (data.food)       patch.foodLog = data.food;
           if (data.checkin)    patch.checkinHistory = data.checkin;
+          if (data.exercise) {
+            const local = get().exerciseLog ?? [];
+            const server = data.exercise as ExerciseEntry[];
+            const map = new Map<string, ExerciseEntry>();
+            for (const e of local) map.set(e.id, e);
+            for (const e of server) {
+              const existing = map.get(e.id);
+              if (!existing || (e.updatedAt ?? 0) > (existing.updatedAt ?? 0)) map.set(e.id, e);
+            }
+            patch.exerciseLog = [...map.values()].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
+          }
           if (Object.keys(patch).length) {
             set(patch as any);
             if (patch.checkinHistory) {
@@ -238,6 +253,28 @@ export const useAppStore = create<AppStore>()(
         set(s => ({ foodLog: (s.foodLog ?? []).filter(f => f.id !== id) }));
         markForDeletion('food', id).catch((e) => console.error('[err]', e));
       },
+      exerciseLog: [],
+      addExercise(entry) {
+        const e: ExerciseEntry = { ...entry, id: uid(), updatedAt: Date.now() };
+        set(s => ({ exerciseLog: [e, ...(s.exerciseLog ?? [])] }));
+        (async () => {
+          try {
+            const db = await openDatabase();
+            await db.runAsync(
+              `INSERT OR REPLACE INTO exercise_entries
+               (id,sport_key,sport_icon,duration_sec,distance_km,calories,avg_pace,track_points,is_gps_sport,ts,synced)
+               VALUES (?,?,?,?,?,?,?,?,?,?,0)`,
+              [e.id, e.sportKey, e.sportIcon, e.durationSec,
+               e.distanceKm ?? 0, e.calories ?? 0, e.avgPace ?? 0,
+               JSON.stringify(e.trackPoints ?? []), e.isGpsSport ? 1 : 0, e.timestamp]
+            );
+          } catch (err) { console.error('[addExercise] SQLite error:', err); }
+        })();
+      },
+      deleteExercise(id) {
+        set(s => ({ exerciseLog: (s.exerciseLog ?? []).filter(e => e.id !== id) }));
+        markForDeletion('exercise', id).catch((e) => console.error('[err]', e));
+      },
       checkinHistory: [],
       submitCheckin(done, note, dateOverride, weight) {
         const today = dateOverride ?? dateStr();
@@ -295,24 +332,21 @@ export const useAppStore = create<AppStore>()(
     {
       name: 'egoless-do-mobile',
       storage: createJSONStorage(() => AsyncStorage),
-      onRehydrateStorage: () => async (state) => {
+      onRehydrateStorage: () => (state) => {
         if (!state) return;
-        const checkAndReset = async () => {
-          try {
-            const lastReset = await AsyncStorage.getItem(DAILY_RESET_KEY);
+        const checkAndReset = () => {
+          AsyncStorage.getItem(DAILY_RESET_KEY).then(lastReset => {
             const patch = getDailyResetPatch(lastReset);
             if (patch) {
               useAppStore.setState(patch);
-              await AsyncStorage.setItem(DAILY_RESET_KEY, dateStr());
+              AsyncStorage.setItem(DAILY_RESET_KEY, dateStr()).catch(() => {});
             }
-          } catch (err) {
-            console.error('[DailyReset] Error:', err);
-          }
+          }).catch(() => {});
         };
         // Check on load
-        await checkAndReset();
+        checkAndReset();
         // Check when app comes to foreground (handles background / sleep)
-        const sub = AppState.addEventListener('change', (s) => {
+        AppState.addEventListener('change', (s) => {
           if (s === 'active') checkAndReset();
         });
         // Schedule midnight reset for when the app stays open across days

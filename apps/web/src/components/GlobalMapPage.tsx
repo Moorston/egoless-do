@@ -1,74 +1,202 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { GLOBAL_USERS } from '@egoless-do/core';
-import type { GlobalUser } from '@egoless-do/core';
 import { useT, useTheme } from './helpers';
+import AmapContainer from './AmapContainer';
 
 const USERS_WITH_STREAK = GLOBAL_USERS.map((u) => ({
   ...u,
   streak: Math.round(u.days * (0.6 + Math.random() * 0.35)),
+  online: Math.random() > 0.4,
 }));
 
-export default function GlobalMapPage({ onClose }: { onClose: () => void }) {
+export default function GlobalMapPage({ onClose, title, icon }: { onClose: () => void; title?: string; icon?: string }) {
   const { TH, P } = useTheme();
-  const [sel, setSel] = useState<GlobalUser | null>(null);
+  const [sel, setSel] = useState<typeof USERS_WITH_STREAK[0] | null>(null);
   const [showBoard, setShowBoard] = useState(false);
   const T = useT();
+  const pageTitle = title ?? T('globalPulse');
+  const pageIcon = icon ?? '🌍';
+
+  const onlineCount = USERS_WITH_STREAK.filter(u => u.online).length;
+
+  const handleMapReady = useCallback((map: any) => {
+    GLOBAL_USERS.forEach((u) => {
+      const color = u.id === 1 ? P : 'rgba(255,107,53,.9)';
+      const isOnline = USERS_WITH_STREAK.find(x => x.id === u.id)?.online;
+
+      // Pulse ring
+      const pulse = new (window as any).AMap.CircleMarker({
+        center: [u.lng, u.lat],
+        radius: 20,
+        fillColor: color,
+        fillOpacity: 0.3,
+        strokeColor: 'transparent',
+        cursor: 'pointer',
+        zIndex: 1,
+      });
+      map.add(pulse);
+
+      // Animate pulse with CSS
+      const pulseEl = pulse.getExtData?.() || pulse.getContent?.();
+      // Use DOM-based animation after marker renders
+      setTimeout(() => {
+        const els = document.querySelectorAll('.amap-marker');
+        // We'll use the main marker click instead
+      }, 500);
+
+      // Main marker
+      const marker = new (window as any).AMap.CircleMarker({
+        center: [u.lng, u.lat],
+        radius: 10,
+        fillColor: color,
+        fillOpacity: 0.9,
+        strokeColor: '#fff',
+        strokeWeight: 2,
+        cursor: 'pointer',
+        zIndex: 2,
+      });
+      marker.on('click', () => setSel({ ...u, streak: USERS_WITH_STREAK.find(x => x.id === u.id)?.streak ?? u.days, online: isOnline ?? false }));
+      map.add(marker);
+
+      // Online indicator
+      if (isOnline) {
+        const onlineDot = new (window as any).AMap.CircleMarker({
+          center: [u.lng, u.lat],
+          radius: 4,
+          fillColor: '#22C55E',
+          fillOpacity: 1,
+          strokeColor: '#fff',
+          strokeWeight: 1,
+          zIndex: 3,
+        });
+        map.add(onlineDot);
+      }
+    });
+
+    // Add connecting arcs between nearby users
+    for (let i = 0; i < GLOBAL_USERS.length; i++) {
+      for (let j = i + 1; j < GLOBAL_USERS.length; j++) {
+        const a = GLOBAL_USERS[i], b = GLOBAL_USERS[j];
+        const dist = Math.sqrt((a.lng - b.lng) ** 2 + (a.lat - b.lat) ** 2);
+        if (dist < 50) {
+          const midLng = (a.lng + b.lng) / 2;
+          const midLat = (a.lat + b.lat) / 2 + dist * 0.15;
+          const polyline = new (window as any).AMap.Polyline({
+            path: [[a.lng, a.lat], [midLng, midLat], [b.lng, b.lat]],
+            strokeColor: `${P}30`,
+            strokeWeight: 1.5,
+            lineJoin: 'round',
+            lineCap: 'round',
+            zIndex: 0,
+          });
+          map.add(polyline);
+        }
+      }
+    }
+  }, [P]);
 
   if (showBoard) {
     return <LeaderboardPage users={USERS_WITH_STREAK} onClose={() => setShowBoard(false)} />;
   }
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: '#000', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: '#0a0f1e', display: 'flex', flexDirection: 'column' }}>
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
-        <iframe title="gmap" src="https://www.openstreetmap.org/export/embed.html?bbox=-180,-85,180,85&layer=mapnik"
-          style={{ width: '100%', height: '100%', border: 'none', position: 'absolute', inset: 0 }} scrolling="no" />
-        {GLOBAL_USERS.map((u) => (
-          <button key={u.id} onClick={() => setSel(u)}
-            style={{ position: 'absolute', left: `${((u.lng + 180) / 360) * 100}%`, top: `${((90 - u.lat) / 180) * 100}%`,
-              transform: 'translate(-50%,-50%)', width: 26, height: 26, borderRadius: 13,
-              background: u.id === 1 ? P : 'rgba(255,107,53,.9)', border: '2px solid #fff', cursor: 'pointer',
-              fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, zIndex: 2 }}>
-            {u.name[0]}
-          </button>
-        ))}
+        <AmapContainer
+          center={[105, 20]}
+          zoom={2}
+          style={{ position: 'absolute', inset: 0 }}
+          onMapReady={handleMapReady}
+        />
+
+        {/* Selected user card */}
         {sel && (
-          <div style={{ position: 'absolute', bottom: 80, left: 16, right: 16, background: 'rgba(0,0,0,.85)', borderRadius: 12, padding: 12, zIndex: 3 }}>
+          <div style={{
+            position: 'absolute', bottom: 100, left: 16, right: 16, maxWidth: 390, margin: '0 auto',
+            background: 'rgba(10,15,30,.92)', borderRadius: 16, padding: 16, zIndex: 3,
+            border: '1px solid rgba(255,255,255,.1)', backdropFilter: 'blur(12px)',
+          }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>{sel.name}</div>
-                <div style={{ fontSize: 16, color: 'rgba(255,255,255,.6)', marginTop: 3 }}>{T('checkinHistory')} {sel.days} {T('days')} · {sel.sport}</div>
-                <div style={{ fontSize: 16, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{sel.since} {T('startDate')} · {sel.duration}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
+                <div style={{
+                  width: 44, height: 44, borderRadius: 22,
+                  background: sel.id === 1 ? P : 'rgba(255,107,53,.9)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <span style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>{sel.name[0]}</span>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontWeight: 700, fontSize: 18, color: '#fff' }}>{sel.name}</span>
+                    {sel.online && <span style={{ width: 8, height: 8, borderRadius: 4, background: '#22C55E', display: 'inline-block' }} />}
+                  </div>
+                  <div style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', marginTop: 3 }}>{sel.sport} · {sel.duration}</div>
+                </div>
               </div>
               <button onClick={() => setSel(null)} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,.5)', fontSize: 18, cursor: 'pointer' }}>×</button>
+            </div>
+            <div style={{ display: 'flex', marginTop: 14, gap: 8 }}>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, textAlign: 'center' }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: '#FF6B35' }}>{sel.streak}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalCurrentStreak')}</div>
+              </div>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, textAlign: 'center' }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: P }}>{sel.days}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalDaysTotal')}</div>
+              </div>
+              <div style={{ flex: 1, background: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, textAlign: 'center' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,.7)' }}>{sel.since}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('startDate')}</div>
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12, background: 'linear-gradient(180deg,rgba(0,0,0,.6),transparent)', zIndex: 10 }}>
-        <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: 20, cursor: 'pointer' }}>←</button>
-        <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M2 12h20" />
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-        </svg>
-        <span style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>{T('globalPulse')}</span>
+      {/* Top bar */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0, right: 0,
+        padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: 'linear-gradient(180deg,rgba(10,15,30,.85),transparent)', zIndex: 10,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: 20, cursor: 'pointer' }}>←</button>
+          <span style={{ fontSize: 20 }}>{pageIcon}</span>
+          <span style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>{pageTitle}</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,.15)', borderRadius: 12, padding: '5px 10px' }}>
+          <span style={{ width: 7, height: 7, borderRadius: 3.5, background: '#22C55E', display: 'inline-block' }} />
+          <span style={{ fontSize: 13, color: '#22C55E', fontWeight: 600 }}>{onlineCount} online</span>
+        </div>
       </div>
 
-      <div style={{ position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
+      {/* Bottom button */}
+      <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
         <button onClick={() => setShowBoard(true)}
-          style={{ padding: '12px 28px', borderRadius: 24, border: 'none', background: `${P}E0`, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: `0 4px 20px ${P}60`, backdropFilter: 'blur(8px)' }}>
+          style={{
+            padding: '14px 28px', borderRadius: 28, border: 'none',
+            background: `${P}E0`, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer',
+            boxShadow: `0 4px 20px ${P}60`, backdropFilter: 'blur(8px)',
+          }}>
           🏆 {T('globalLeaderboard')}
         </button>
       </div>
+
+      {/* CSS pulse animation */}
+      <style>{`
+        @keyframes pulse-ring {
+          0% { transform: scale(1); opacity: 0.4; }
+          100% { transform: scale(2.5); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }
 
-function LeaderboardPage({ users, onClose }: { users: (GlobalUser & { streak: number })[]; onClose: () => void }) {
+// ── Leaderboard ──
+function LeaderboardPage({ users, onClose }: { users: typeof USERS_WITH_STREAK; onClose: () => void }) {
   const [tab, setTab] = useState(0);
   const T = useT();
   const { TH, P } = useTheme();
@@ -77,36 +205,94 @@ function LeaderboardPage({ users, onClose }: { users: (GlobalUser & { streak: nu
     ? [...users].sort((a, b) => b.streak - a.streak)
     : [...users].sort((a, b) => b.days - a.days);
 
+  const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
+
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 400, background: TH.bg, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ padding: '16px 16px 10px', display: 'flex', alignItems: 'center', gap: 12, position: 'relative', zIndex: 1, flexShrink: 0 }}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 400, background: TH.bg, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+      {/* Header */}
+      <div style={{ padding: '16px 16px 10px', display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
         <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: 20, cursor: 'pointer' }}>←</button>
-        <div style={{ fontWeight: 700, fontSize: 18, color: TH.text }}>{T('globalLeaderboard')}</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: TH.text }}>🏆 {T('globalLeaderboard')}</div>
       </div>
 
-      <div style={{ display: 'flex', gap: 0, padding: '0 16px', marginBottom: 12, flexShrink: 0, position: 'relative', zIndex: 1 }}>
-        {[T('globalCurrentStreak'), T('globalTotalDays')].map((l, i) => (
+      {/* Top 3 podium */}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', padding: '16px 16px 20px', gap: 8 }}>
+        {[1, 0, 2].map(rank => {
+          const u = sorted[rank];
+          if (!u) return null;
+          const isFirst = rank === 0;
+          const heights = [140, 110, 90];
+          const sizes = [56, 44, 40];
+          return (
+            <div key={u.id} style={{ textAlign: 'center', flex: isFirst ? 1.2 : 1 }}>
+              <div style={{
+                width: sizes[rank], height: sizes[rank], borderRadius: sizes[rank] / 2,
+                background: medalColors[rank],
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '3px solid rgba(255,255,255,.3)', margin: '0 auto 8px',
+              }}>
+                <span style={{ color: '#fff', fontWeight: 900, fontSize: isFirst ? 22 : 18 }}>{u.name[0]}</span>
+              </div>
+              <div style={{ fontWeight: 700, fontSize: isFirst ? 16 : 14, color: TH.text }} title={u.name}>
+                {u.name}
+              </div>
+              <div style={{ fontSize: 12, color: TH.sub, marginTop: 2 }}>
+                {tab === 0 ? `${u.streak} 🔥` : `${u.days} ${T('days')}`}
+              </div>
+              <div style={{
+                width: '100%', height: heights[rank], borderRadius: 12,
+                background: `${medalColors[rank]}30`,
+                marginTop: 8, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', paddingBottom: 10,
+              }}>
+                <span style={{ fontSize: 28, fontWeight: 900, color: medalColors[rank] }}>{rank + 1}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Tab switch */}
+      <div style={{ display: 'flex', padding: '0 16px', marginBottom: 12, gap: 8, flexShrink: 0 }}>
+        {[T('globalCurrentStreak'), T('globalDaysTotal')].map((l, i) => (
           <button key={l} onClick={() => setTab(i)}
-            style={{ flex: 1, padding: '10px 0', borderRadius: 10, border: 'none', cursor: 'pointer',
-              background: tab === i ? P : 'transparent', color: tab === i ? '#fff' : TH.sub, fontWeight: tab === i ? 700 : 400, fontSize: 16 }}>
+            style={{
+              flex: 1, padding: '10px 0', borderRadius: 12, border: 'none', cursor: 'pointer',
+              background: tab === i ? P : TH.card, color: tab === i ? '#fff' : TH.sub,
+              fontWeight: tab === i ? 700 : 500, fontSize: 15,
+              outline: tab === i ? 'none' : `1px solid ${TH.border}`,
+            }}>
             {l}
           </button>
         ))}
       </div>
 
-      <div style={{ padding: '0 16px', flex: 1, overflowY: 'auto', position: 'relative', zIndex: 1 }}>
+      {/* List */}
+      <div style={{ padding: '0 16px 30px', flex: 1 }}>
         {sorted.map((u, i) => (
-          <div key={u.id} style={{ background: TH.card, borderRadius: 16, marginBottom: 10, border: `1px solid ${TH.border}`, display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px' }}>
-            <div style={{ width: 30, height: 30, borderRadius: 15,
-              background: i === 0 ? '#FFD700' : i === 1 ? '#C0C0C0' : i === 2 ? '#CD7F32' : P,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 16, flexShrink: 0 }}>{i + 1}</div>
+          <div key={u.id} style={{
+            background: TH.card, borderRadius: 14, marginBottom: 8,
+            border: `1px solid ${TH.border}`,
+            display: 'flex', alignItems: 'center', gap: 12, padding: 14,
+          }}>
+            <div style={{
+              width: 28, height: 28, borderRadius: 14,
+              background: i < 3 ? medalColors[i] : P,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <span style={{ color: '#fff', fontWeight: 800, fontSize: 14 }}>{i + 1}</span>
+            </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 600, fontSize: 16, color: TH.text }}>{u.name}</div>
-              <div style={{ fontSize: 16, color: TH.sub, marginTop: 2 }}>{u.sport} · {u.since}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontWeight: 600, fontSize: 15, color: TH.text }}>{u.name}</span>
+                {u.online && <span style={{ width: 6, height: 6, borderRadius: 3, background: '#22C55E', display: 'inline-block' }} />}
+              </div>
+              <div style={{ fontSize: 13, color: TH.sub, marginTop: 2 }}>{u.sport} · {u.since}</div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontWeight: 800, fontSize: 18, color: P }}>{tab === 0 ? u.streak : u.days}</div>
-              <div style={{ fontSize: 16, color: TH.sub }}>{tab === 0 ? T('globalDaysCurrent') : T('globalDaysTotal')}</div>
+              <div style={{ fontWeight: 800, fontSize: 18, color: i < 3 ? medalColors[i] : P }}>
+                {tab === 0 ? u.streak : u.days}
+              </div>
+              <div style={{ fontSize: 12, color: TH.sub }}>{tab === 0 ? T('globalDaysCurrent') : T('globalDaysTotal')}</div>
             </div>
           </div>
         ))}

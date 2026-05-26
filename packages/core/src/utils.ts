@@ -82,28 +82,30 @@ export const calculateStreak = computeStreak;
 export const estimateFastKcal = (seconds: number) =>
   Math.round((seconds / 3600) * 35);
 
-/** Calculate streak from checkin history (allows 1-day gap for today) */
-export const calculateCheckinStreak = (history: Array<{ date: string; done: boolean }>): number => {
+/** Calculate streak from checkin history (allows 1-day gap for reference date) */
+export const calculateCheckinStreak = (history: Array<{ date: string; done: boolean }>, refDate?: string): number => {
   if (!history.length) return 0;
+  const ref = refDate ?? dateStr();
   const sorted = [...history]
-    .filter(e => e.done)
+    .filter(e => e.done && e.date <= ref)
     .sort((a, b) => b.date.localeCompare(a.date));
   if (!sorted.length) return 0;
 
   let streak = 0;
-  const today = dateStr();
-  const yest = yesterday();
+  const d0 = new Date(ref);
+  d0.setDate(d0.getDate() - 1);
+  const prev = dateStr(d0);
   let expectedDate: string | null = null;
 
-  // Start from most recent: must be today or yesterday
-  if (sorted[0].date === today) {
+  // Start from most recent: must be refDate or the day before
+  if (sorted[0].date === ref) {
     streak = 1;
-    const d = new Date(today);
+    const d = new Date(ref);
     d.setDate(d.getDate() - 1);
     expectedDate = dateStr(d);
-  } else if (sorted[0].date === yest) {
+  } else if (sorted[0].date === prev) {
     streak = 1;
-    const d = new Date(yest);
+    const d = new Date(prev);
     d.setDate(d.getDate() - 1);
     expectedDate = dateStr(d);
   } else {
@@ -133,6 +135,94 @@ export const estimateFastingKcal = (
     ? 10 * weight + 6.25 * height - 5 * age + 5
     : 10 * weight + 6.25 * height - 5 * age - 161;
   return Math.round((bmr / 24) * durationHours);
+};
+
+// ── Chart data aggregation helpers ──────────────────────────────
+
+/** Aggregate weight data from check-in history (last N days). */
+export const aggregateWeightData = (
+  history: Array<{ date: string; weight?: number }>,
+  days: number = 30,
+): { date: string; value: number }[] => {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  const cutoffStr = dateStr(cutoff);
+  return history
+    .filter(e => e.weight != null && e.date >= cutoffStr)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .map(e => ({ date: e.date.slice(5), value: e.weight! }));
+};
+
+/** Aggregate daily calories from food log (last N days). */
+export const aggregateDailyCalories = (
+  foodLog: Array<{ timestamp: number; calories?: number }>,
+  days: number = 7,
+): { label: string; value: number }[] => {
+  const map = new Map<string, number>();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    map.set(dateStr(d), 0);
+  }
+  for (const f of foodLog) {
+    const key = dateStr(new Date(f.timestamp));
+    if (map.has(key)) map.set(key, (map.get(key) ?? 0) + (f.calories ?? 0));
+  }
+  return Array.from(map.entries()).map(([k, v]) => ({
+    label: k.slice(5),
+    value: Math.round(v),
+  }));
+};
+
+/** Aggregate weekly km from exercise log (last N weeks). */
+export const aggregateWeeklyKm = (
+  exerciseLog: Array<{ timestamp: number; distanceKm?: number }>,
+  weeks: number = 8,
+): { label: string; value: number }[] => {
+  const now = new Date();
+  const result: { label: string; value: number }[] = [];
+  for (let w = weeks - 1; w >= 0; w--) {
+    const weekEnd = new Date(now);
+    weekEnd.setDate(weekEnd.getDate() - w * 7);
+    const weekStart = new Date(weekEnd);
+    weekStart.setDate(weekStart.getDate() - 7);
+    const sum = exerciseLog
+      .filter(e => e.timestamp >= weekStart.getTime() && e.timestamp < weekEnd.getTime())
+      .reduce((s, e) => s + (e.distanceKm ?? 0), 0);
+    const label = `${weekStart.getMonth() + 1}/${weekStart.getDate()}`;
+    result.push({ label, value: Math.round(sum * 10) / 10 });
+  }
+  return result;
+};
+
+/** Build a heatmap grid for check-in history (last N weeks, Mon-Sun rows). */
+export const buildHeatmapGrid = (
+  history: Array<{ date: string; done: boolean }>,
+  weeks: number = 4,
+): { date: string; done: boolean; isToday: boolean }[][] => {
+  const doneSet = new Set(history.filter(e => e.done).map(e => e.date));
+  const today = dateStr();
+  const todayDate = new Date();
+  const dayOfWeek = todayDate.getDay(); // 0=Sun, 1=Mon...
+  const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // days since last Monday
+
+  const grid: { date: string; done: boolean; isToday: boolean }[][] = [];
+  // Build from oldest week to newest
+  const totalDays = weeks * 7;
+  const startDate = new Date(todayDate);
+  startDate.setDate(startDate.getDate() - mondayOffset - (weeks - 1) * 7);
+
+  for (let w = 0; w < weeks; w++) {
+    const row: { date: string; done: boolean; isToday: boolean }[] = [];
+    for (let d = 0; d < 7; d++) {
+      const cellDate = new Date(startDate);
+      cellDate.setDate(cellDate.getDate() + w * 7 + d);
+      const ds = dateStr(cellDate);
+      row.push({ date: ds, done: doneSet.has(ds), isToday: ds === today });
+    }
+    grid.push(row);
+  }
+  return grid;
 };
 
 // ── Mobile legacy field normalization ────────────────────────────

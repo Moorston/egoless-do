@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { getTodayMedMinutes } from '@egoless-do/core';
 import { useOverlay } from './useOverlay';
 
 function useAudio() {
@@ -157,6 +158,68 @@ export default function MeditateTab() {
   }), [P]);
 
   const durationButtons = useMemo(() => [1, 5, 10, 15, 30, 60, 120, 180, 300], []);
+  const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory || []), [store.medHistory]);
+
+  const handleShare = useCallback(() => {
+    const W = 750, H = 1000;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d')!;
+    // Gradient background
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#1a1040');
+    grad.addColorStop(0.5, '#2d1b69');
+    grad.addColorStop(1, '#0f0c29');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+    // Decorative circles
+    ctx.globalAlpha = 0.08;
+    ctx.fillStyle = '#a78bfa';
+    ctx.beginPath(); ctx.arc(600, 150, 200, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#6366f1';
+    ctx.beginPath(); ctx.arc(150, 800, 180, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+    // Title
+    ctx.fillStyle = '#e2d9f3';
+    ctx.font = '600 36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(T('shareCardTitle'), W / 2, 120);
+    // ☯ icon
+    ctx.font = '120px sans-serif';
+    ctx.fillText('☯', W / 2, 310);
+    // Date
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '28px sans-serif';
+    ctx.fillText(new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }), W / 2, 400);
+    // Divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(120, 440); ctx.lineTo(W - 120, 440); ctx.stroke();
+    // Stats
+    const stats = [
+      { value: String(store.totalMedMinutes), label: T('accMed').replace(/\s*\(.*\)/, '') },
+      { value: String(todayMedMin), label: T('medTitle') },
+      { value: String((store.medHistory || []).length), label: T('shareCardSession') },
+    ];
+    const statY = [530, 680, 830];
+    stats.forEach((s, i) => {
+      ctx.fillStyle = '#a78bfa';
+      ctx.font = '800 72px sans-serif';
+      ctx.fillText(s.value, W / 2, statY[i]);
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '28px sans-serif';
+      ctx.fillText(s.label, W / 2, statY[i] + 45);
+    });
+    // Footer
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '22px sans-serif';
+    ctx.fillText('egoless-do.app', W / 2, 950);
+    // Download
+    const a = document.createElement('a');
+    a.download = 'meditation-share.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }, [store.totalMedMinutes, store.medHistory, todayMedMin, T]);
 
   return (
     <>
@@ -205,11 +268,11 @@ export default function MeditateTab() {
       <div style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ color: TH.text }}>{T('medTitle')}</span>
-          <span style={{ color: P, fontWeight: 600 }}>{store.totalMedMinutes} {T('medMinutes')}</span>
+          <span style={{ color: P, fontWeight: 600 }}>{todayMedMin} {T('medMinutes')}</span>
         </div>
       </div>
 
-      <LinkWorldBtn label={T('globalMeditators')} onClick={() => overlay.open('globalMap')} />
+      <LinkWorldBtn label={T('globalMeditators')} onClick={() => overlay.open('globalMap', { globalMapTitle: `${T('linkWorld')} — ${T('globalMeditators')}` })} />
 
       <div onClick={() => overlay.open('medHistory')} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
         <span style={{ fontSize: 18 }}>☯</span>
@@ -217,7 +280,7 @@ export default function MeditateTab() {
         <span style={{ marginLeft: 'auto', color: TH.sub }}>›</span>
       </div>
 
-      <button style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer', marginBottom: 8 }}>{T('shareMed')}</button>
+      <button onClick={handleShare} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer', marginBottom: 8 }}>{T('shareMed')}</button>
       <div style={{ textAlign: 'center', fontSize: 16, color: TH.sub }}>{T('medAttribution')}</div>
     </>
   );

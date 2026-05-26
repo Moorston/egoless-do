@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
+import ViewShot from 'react-native-view-shot';
+import * as Sharing from 'expo-sharing';
 import { useAppStore } from '../../store/useAppStore';
-import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, useT } from '../../components/UI';
-import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS } from '@egoless-do/core';
+import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
+import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes } from '@egoless-do/core';
 
 // Local sound files
 const SOUND_FILES: Record<string, number> = {
@@ -30,12 +32,15 @@ export default function MeditationScreen() {
   const [active, setActive]       = useState(false);
   const [sound, setSound]         = useState('海潮');
   const [audioError, setAudioError] = useState<string | null>(null);
+  const [showShare, setShowShare]   = useState(false);
   const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
   const completedRef = useRef(false);
+  const shareCardRef = useRef<ViewShot>(null);
 
   const targetSec = durMin * 60;
   const remaining = targetSec - sec;
   const pct = sec / targetSec * 100;
+  const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory ?? []), [store.medHistory]);
 
   // Background sound player (looping, 30% volume)
   const bgSource = SOUND_FILES[sound];
@@ -120,6 +125,16 @@ export default function MeditationScreen() {
     playBell();
   };
 
+  const handleShare = useCallback(async () => {
+    try {
+      if (shareCardRef.current?.capture) {
+        const uri = await shareCardRef.current.capture();
+        await Sharing.shareAsync(uri, { dialogTitle: T('shareMed'), mimeType: 'image/png' });
+      }
+    } catch (e) { console.warn('Share failed:', e); }
+    setShowShare(false);
+  }, [T]);
+
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
@@ -183,15 +198,15 @@ export default function MeditationScreen() {
         <Card>
           <View style={{ flexDirection:'row', justifyContent:'space-between' }}>
             <Text style={{ color:TH.text }}>{T('medTitle')}</Text>
-            <Text style={{ color:P, fontWeight:'600' }}>{store.totalMedMinutes} {T('medMinutes')}</Text>
+            <Text style={{ color:P, fontWeight:'600' }}>{todayMedMin} {T('medMinutes')}</Text>
           </View>
         </Card>
 
         {/* Global meditators */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap')}
+        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
           style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
           <Text style={{ fontSize:18 }}>🌍</Text>
-          <Text style={{ fontSize:16, color:TH.text }}>{T('globalMeditators')}</Text>
+          <Text style={{ fontSize:16, color:TH.text }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
           <Text style={{ marginLeft:'auto', color:TH.sub }}>›</Text>
         </TouchableOpacity>
 
@@ -204,10 +219,45 @@ export default function MeditationScreen() {
         </TouchableOpacity>
 
         {/* Share */}
-        <PrimaryButton label={T('shareMed')} onPress={() => {}} />
+        <PrimaryButton label={T('shareMed')} onPress={() => setShowShare(true)} />
 
         <Text style={{ textAlign:'center', fontSize:16, color:TH.sub, marginTop:12 }}>{T('medAttribution')}</Text>
       </ScrollView>
+
+      {/* Share Card Modal */}
+      <Modal visible={showShare} transparent animationType="fade" onRequestClose={() => setShowShare(false)}>
+        <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.75)', justifyContent:'center', alignItems:'center', padding:24 }}>
+          <ViewShot ref={shareCardRef} options={{ format:'png', quality:1 }} style={{ width:300, borderRadius:20, overflow:'hidden' }}>
+            <View style={{ backgroundColor:'#1a1040', paddingVertical:40, paddingHorizontal:24, alignItems:'center' }}>
+              <Text style={{ color:'#e2d9f3', fontSize:18, fontWeight:'600', marginBottom:20 }}>{T('shareCardTitle')}</Text>
+              <Text style={{ fontSize:64, marginBottom:12 }}>☯</Text>
+              <Text style={{ color:'rgba(255,255,255,0.5)', fontSize:14, marginBottom:20 }}>
+                {new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric' })}
+              </Text>
+              <View style={{ width:'100%', height:1, backgroundColor:'rgba(255,255,255,0.15)', marginBottom:28 }} />
+              <View style={{ width:'100%', gap:28, alignItems:'center' }}>
+                <View style={{ alignItems:'center' }}>
+                  <Text style={{ color:'#a78bfa', fontSize:42, fontWeight:'800' }}>{store.totalMedMinutes}</Text>
+                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:14 }}>{T('accMed').replace(/\s*\(.*\)/, '')}</Text>
+                </View>
+                <View style={{ alignItems:'center' }}>
+                  <Text style={{ color:'#a78bfa', fontSize:42, fontWeight:'800' }}>{todayMedMin}</Text>
+                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:14 }}>{T('medTitle')}</Text>
+                </View>
+                <View style={{ alignItems:'center' }}>
+                  <Text style={{ color:'#a78bfa', fontSize:42, fontWeight:'800' }}>{(store.medHistory ?? []).length}</Text>
+                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:14 }}>{T('shareCardSession')}</Text>
+                </View>
+              </View>
+              <Text style={{ color:'rgba(255,255,255,0.3)', fontSize:11, marginTop:32 }}>egoless-do.app</Text>
+            </View>
+          </ViewShot>
+          <View style={{ flexDirection:'row', gap:12, marginTop:20, width:300 }}>
+            <OutlineButton label={T('cancel')} onPress={() => setShowShare(false)} style={{ flex:1 }} />
+            <PrimaryButton label={T('shareCardDownload')} onPress={handleShare} color={P} style={{ flex:1 }} />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

@@ -168,12 +168,14 @@ export default function RegisterScreen() {
             value={password}
             onChangeText={setPassword}
             placeholder="密码"
+            secureTextEntry
             style={{ marginBottom: 12 }}
           />
           <ThemedInput
             value={confirm}
             onChangeText={setConfirm}
             placeholder="确认密码"
+            secureTextEntry
             style={{ marginBottom: 4 }}
           />
         </Card>
