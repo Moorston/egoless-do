@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useMemo, Component, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { THEMES, t } from '@egoless-do/core';
+import { THEMES, t, FONT_BODY, FONT_SUB, FONT_TITLE, FONT_CLOSE } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
+import { AlertTriangle, ChevronRight } from 'lucide-react';
 
 export function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
   const theme = useWebStore((s) => s.theme);
@@ -15,19 +16,19 @@ export function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) 
   );
 }
 
-export function RowItem({ label, right, sub, icon, last, onClick }: { label: string; right: React.ReactNode; sub?: string; icon?: string; last?: boolean; onClick?: () => void }) {
+export function RowItem({ label, right, sub, icon, last, onClick }: { label: string; right: React.ReactNode; sub?: string; icon?: React.ReactNode; last?: boolean; onClick?: () => void }) {
   const theme = useWebStore((s) => s.theme);
   const TH = THEMES[theme];
   return (
     <div onClick={onClick} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 0', borderBottom: last ? 'none' : `1px solid ${TH.border}`, cursor: onClick ? 'pointer' : 'default' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        {icon && <span style={{ fontSize: 18 }}>{icon}</span>}
+        {icon && <span style={{ fontSize: FONT_TITLE }}>{icon}</span>}
         <div>
-          <div style={{ fontSize: 16, color: TH.text }}>{label}</div>
-          {sub && <div style={{ fontSize: 16, color: TH.sub, marginTop: 1 }}>{sub}</div>}
+          <div style={{ fontSize: FONT_BODY, color: TH.text }}>{label}</div>
+          {sub && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 1 }}>{sub}</div>}
         </div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: TH.sub, fontSize: 16 }}>{right}</div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: TH.sub, fontSize: FONT_BODY }}>{right}</div>
     </div>
   );
 }
@@ -44,8 +45,8 @@ export function LinkWorldBtn({ label, onClick }: { label?: string; onClick: () =
         <path d="M2 12h20" />
         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
       </svg>
-      <span style={{ fontSize: 16, color: TH.text }}>{t('linkWorld', language)}{label ? ` — ${label}` : ''}</span>
-      <span style={{ marginLeft: 'auto', color: TH.sub }}>›</span>
+      <span style={{ fontSize: FONT_BODY, color: TH.text }}>{t('linkWorld', language)}{label ? ` — ${label}` : ''}</span>
+      <span style={{ marginLeft: 'auto', color: TH.sub }}><ChevronRight size={16} style={{verticalAlign:'middle'}} /></span>
     </div>
   );
 }
@@ -67,7 +68,7 @@ export const cs = (TH: (typeof THEMES)[keyof typeof THEMES]): React.CSSPropertie
 });
 
 export const inp = (TH: (typeof THEMES)[keyof typeof THEMES]): React.CSSProperties => ({
-  width: '100%', background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 10, padding: '10px 12px', color: TH.text, fontSize: 16, outline: 'none', boxSizing: 'border-box',
+  width: '100%', background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 10, padding: '10px 12px', color: TH.text, fontSize: FONT_BODY, outline: 'none', boxSizing: 'border-box',
 });
 
 export function useResponsive() {
@@ -113,7 +114,7 @@ export class ErrorBoundaryInner extends Component<
     if (this.state.hasError) {
       return this.props.fallback ?? (
         <div style={{ padding: 20, textAlign: 'center', color: '#EF4444' }}>
-          <div style={{ fontSize: 24, marginBottom: 8 }}>⚠️</div>
+          <div style={{ fontSize: FONT_CLOSE, marginBottom: 8 }}><AlertTriangle size={24} /></div>
           <div>{t('errorBoundary', this.props.lang)}</div>
         </div>
       );

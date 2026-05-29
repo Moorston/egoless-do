@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { COLORS } from '@egoless-do/core';
+import { COLORS, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
+import { Hourglass, Clock, Flame, Trophy, Timer, Scale, AlertTriangle, ChevronRight, Check } from 'lucide-react';
 
 export default function FastingTab() {
   const overlay = useOverlay();
@@ -108,16 +109,16 @@ export default function FastingTab() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { icon: '⏳', label: T('fastTotal'), value: `${store.fastingHistory.length} ${T('fastTimes')}`, bg: '#EF9A9A' },
-    { icon: '⏰', label: T('fastTotalHours'), value: `${totalFastHours} ${T('fastHours')}`, bg: COLORS.GREEN },
-    { icon: '🔥', label: T('fastStreak'), value: `${currentFastingStreak} ${T('days')}`, bg: '#FF8A65' },
-    { icon: '🏆', label: T('fastLongest'), value: `${longestStreak} ${T('days')}`, bg: '#9C27B0' },
+    { Icon: Hourglass, label: T('fastTotal'), value: `${store.fastingHistory.length} ${T('fastTimes')}`, bg: '#EF9A9A' },
+    { Icon: Clock, label: T('fastTotalHours'), value: `${totalFastHours} ${T('fastHours')}`, bg: COLORS.GREEN },
+    { Icon: Flame, label: T('fastStreak'), value: `${currentFastingStreak} ${T('days')}`, bg: '#FF8A65' },
+    { Icon: Trophy, label: T('fastLongest'), value: `${longestStreak} ${T('days')}`, bg: '#9C27B0' },
   ], [store.fastingHistory.length, currentFastingStreak, T, totalFastHours, longestStreak]);
 
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
 
   const handleStopFasting = () => {
-    store.stopFasting(store.userProfile.weight, store.userProfile.gender, store.userProfile.age);
+    store.stopFasting({ weight: store.userProfile.weight, gender: store.userProfile.gender, age: store.userProfile.age });
   };
 
   return (
@@ -132,17 +133,17 @@ export default function FastingTab() {
                   strokeDasharray={2 * Math.PI * 68} strokeDashoffset={2 * Math.PI * 68 * (1 - pct)} style={{ transition: 'stroke-dashoffset 1s' }} />
               </svg>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ fontSize: 24, fontWeight: 800, color: P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</div>
-                <div style={{ fontSize: 16, color: TH.sub }}>{T('fastTarget')} {store.activeFasting.targetHours}h</div>
+                <div style={{ fontSize: FONT_STAT_CARD, fontWeight: 800, color: P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</div>
+                <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('fastTarget')} {store.activeFasting.targetHours}h</div>
               </div>
             </div>
-            <div style={{ fontSize: 16, color: TH.sub, marginBottom: 16 }}>{T('fastActive')} 🔥 {Math.round(pct * 100)}%</div>
-            <button onClick={handleStopFasting} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: COLORS.RED, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>{T('stopFasting')}</button>
+            <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>{T('fastActive')} <Flame size={16} style={{verticalAlign:'middle'}} /> {Math.round(pct * 100)}%</div>
+            <button onClick={handleStopFasting} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: COLORS.RED, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('stopFasting')}</button>
           </>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <button onClick={() => { setTmpDur(8); setAgreed(false); setShowDur(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>{T('startFasting')}</button>
-            <button onClick={() => store.startFasting(8)} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: COLORS.GREEN, color: '#fff', fontWeight: 600, fontSize: 16, cursor: 'pointer' }}>{T('quickStart')}</button>
+            <button onClick={() => { setTmpDur(8); setAgreed(false); setShowDur(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('startFasting')}</button>
+            <button onClick={() => store.startFasting(8)} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: COLORS.GREEN, color: '#fff', fontWeight: 600, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('quickStart')}</button>
           </div>
         )}
       </div>
@@ -150,44 +151,44 @@ export default function FastingTab() {
       <LinkWorldBtn label={T('globalFasting')} onClick={() => overlay.open('globalMap', { globalMapTitle: `${T('linkWorld')} — ${T('globalFasting')}` })} />
 
       <div onClick={() => overlay.open('fastHistory')} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
-        <span style={{ fontSize: 18 }}>⏱</span>
-        <span style={{ fontSize: 16, color: TH.text }}>{T('fastingHistory')}</span>
-        <span style={{ marginLeft: 'auto', color: TH.sub }}>›</span>
+        <Clock size={18} style={{verticalAlign:'middle'}} />
+        <span style={{ fontSize: FONT_BODY, color: TH.text }}>{T('fastingHistory')}</span>
+        <ChevronRight size={18} style={{marginLeft:'auto',verticalAlign:'middle'}} color={TH.sub} />
       </div>
 
-      <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 10, color: TH.text }}>{T('fastYourStats')}</div>
+      <div style={{ fontWeight: 600, fontSize: FONT_BODY, marginBottom: 10, color: TH.text }}>{T('fastYourStats')}</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
         {statsData.map((s) => (
           <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            <div style={{ fontSize: 26 }}>{s.icon}</div>
-            <div style={{ fontSize: 16, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{s.label}</div>
-            <div style={{ fontWeight: 700, color: '#fff', fontSize: 18 }}>{s.value}</div>
+            <div style={{ fontSize: FONT_STAT_CARD }}><s.Icon size={26} style={{verticalAlign:'middle'}} /></div>
+            <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{s.label}</div>
+            <div style={{ fontWeight: 700, color: '#fff', fontSize: FONT_TITLE }}>{s.value}</div>
           </div>
         ))}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
         <div style={{ background: COLORS.ORANGE, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-          <div style={{ fontSize: 26 }}>🔥</div>
-          <div style={{ fontSize: 16, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastKcalSaved')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: 18 }}>{kcal} <span style={{ fontSize: 16, fontWeight: 400 }}>kcal</span></div>
+          <div style={{ fontSize: FONT_STAT_CARD }}><Flame size={26} style={{verticalAlign:'middle'}} /></div>
+          <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastKcalSaved')}</div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: FONT_TITLE }}>{kcal} <span style={{ fontSize: FONT_BODY, fontWeight: 400 }}>kcal</span></div>
         </div>
         <div style={{ background: COLORS.GREEN, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-          <div style={{ fontSize: 26 }}>⚖️</div>
-          <div style={{ fontSize: 16, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastWeightLoss')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: 18 }}>{kg} <span style={{ fontSize: 16, fontWeight: 400 }}>{T('fastKg')}</span></div>
+          <div style={{ fontSize: FONT_STAT_CARD }}><Scale size={26} style={{verticalAlign:'middle'}} /></div>
+          <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastWeightLoss')}</div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: FONT_TITLE }}>{kg} <span style={{ fontSize: FONT_BODY, fontWeight: 400 }}>{T('fastKg')}</span></div>
         </div>
       </div>
 
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-          <span style={{ fontSize: 18 }}>⚠️</span>
-          <span style={{ fontWeight: 700, fontSize: 16, color: COLORS.YELLOW }}>{T('healthWarning')}</span>
+          <AlertTriangle size={18} style={{verticalAlign:'middle'}} />
+          <span style={{ fontWeight: 700, fontSize: FONT_BODY, color: COLORS.YELLOW }}>{T('healthWarning')}</span>
         </div>
         {[T('fastTips'), T('fastTip2'), T('fastTip3'), T('fastTip4')].map((tip, i) => (
           <div key={i} style={{ display: 'flex', gap: 8, marginBottom: i < 3 ? 8 : 0 }}>
-            <span style={{ color: TH.sub, fontSize: 16 }}>•</span>
-            <span style={{ fontSize: 16, color: TH.sub, lineHeight: 1.5 }}>{tip.trim()}</span>
+            <span style={{ color: TH.sub, fontSize: FONT_BODY }}>•</span>
+            <span style={{ fontSize: FONT_BODY, color: TH.sub, lineHeight: 1.5 }}>{tip.trim()}</span>
           </div>
         ))}
       </div>
@@ -195,30 +196,30 @@ export default function FastingTab() {
       {showDur && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <div style={{ background: TH.cardSolid, borderRadius: 20, padding: 24, width: '100%', maxWidth: 340 }}>
-            <div style={{ fontWeight: 700, fontSize: 18, textAlign: 'center', marginBottom: 20, color: TH.text }}>{T('durationSelect')}</div>
+            <div style={{ fontWeight: 700, fontSize: FONT_TITLE, textAlign: 'center', marginBottom: 20, color: TH.text }}>{T('durationSelect')}</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', marginBottom: 20 }}>
               {[1, 2, 4, 6, 8, 10, 12].map((d) => (
                 <button key={d} onClick={() => setTmpDur(d)}
-                  style={{ width: 72, padding: '12px 0', borderRadius: 12, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 16, background: tmpDur === d ? P : TH.card, color: tmpDur === d ? '#fff' : TH.text }}>{d}h</button>
+                  style={{ width: 72, padding: '12px 0', borderRadius: 12, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: FONT_BODY, background: tmpDur === d ? P : TH.card, color: tmpDur === d ? '#fff' : TH.text }}>{d}h</button>
               ))}
             </div>
             <div style={{ background: 'rgba(255,248,200,.08)', borderRadius: 12, padding: 12, marginBottom: 16, display: 'flex', gap: 8 }}>
-              <span>⚠️</span>
+              <AlertTriangle size={16} style={{verticalAlign:'middle'}} />
               <div>
-                <div style={{ fontWeight: 600, fontSize: 16, color: '#FCD34D', marginBottom: 4 }}>{T('warmReminder')}</div>
-                <div style={{ fontSize: 16, color: TH.sub }}>{T('bodyWarning')}</div>
+                <div style={{ fontWeight: 600, fontSize: FONT_BODY, color: '#FCD34D', marginBottom: 4 }}>{T('warmReminder')}</div>
+                <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('bodyWarning')}</div>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, cursor: 'pointer' }} onClick={() => setAgreed((v) => !v)}>
               <div style={{ width: 18, height: 18, border: `2px solid ${agreed ? P : TH.border}`, borderRadius: 4, background: agreed ? P : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {agreed && <span style={{ color: '#fff', fontSize: 16 }}>✓</span>}
+                {agreed && <Check size={16} color="#fff" />}
               </div>
-              <span style={{ fontSize: 16, color: TH.text }}>{T('understand')}</span>
+              <span style={{ fontSize: FONT_BODY, color: TH.text }}>{T('understand')}</span>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => setShowDur(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: 16, cursor: 'pointer' }}>{T('cancel')}</button>
+              <button onClick={() => setShowDur(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('cancel')}</button>
               <button disabled={!agreed} onClick={() => { store.startFasting(tmpDur); setShowDur(false); }}
-                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', cursor: agreed ? 'pointer' : 'not-allowed', background: agreed ? P : 'rgba(128,128,128,.2)', color: '#fff', fontWeight: 600, fontSize: 16 }}>{T('start')}</button>
+                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', cursor: agreed ? 'pointer' : 'not-allowed', background: agreed ? P : 'rgba(128,128,128,.2)', color: '#fff', fontWeight: 600, fontSize: FONT_BODY }}>{T('start')}</button>
             </div>
           </div>
         </div>

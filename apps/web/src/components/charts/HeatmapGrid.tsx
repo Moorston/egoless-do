@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from '../helpers';
+import { FONT_CHART_AXIS } from '@egoless-do/core';
 
 export interface HeatmapCell {
   date: string;
@@ -32,7 +33,7 @@ export default function HeatmapGrid({
         {DAY_LABELS.map(d => (
           <div key={d} style={{
             width: 16, height: cellSize, display: 'flex', alignItems: 'center',
-            justifyContent: 'center', fontSize: 10, color: 'rgba(128,128,128,.5)',
+            justifyContent: 'center', fontSize: FONT_CHART_AXIS, color: 'rgba(128,128,128,.5)',
           }}>{d}</div>
         ))}
       </div>
@@ -45,7 +46,7 @@ export default function HeatmapGrid({
             {/* Week header */}
             <div style={{
               height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 10, color: 'rgba(128,128,128,.4)',
+              fontSize: FONT_CHART_AXIS, color: 'rgba(128,128,128,.4)',
             }}>
               {wi < grid.length - 1 ? `W${wi + 1}` : '本周'}
             </div>
@@ -55,7 +56,7 @@ export default function HeatmapGrid({
                 width: cellSize, height: cellSize, borderRadius: 6,
                 background: cell.done ? activeColor : inactiveColor,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 10, color: cell.done ? '#fff' : 'rgba(128,128,128,.4)',
+                fontSize: FONT_CHART_AXIS, color: cell.done ? '#fff' : 'rgba(128,128,128,.4)',
                 border: cell.isToday ? `2px solid ${TH.primary}` : '2px solid transparent',
                 fontWeight: cell.isToday ? 700 : 400,
                 transition: 'background .2s',

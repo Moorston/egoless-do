@@ -51,7 +51,8 @@ export const formatAgo = (ts: number) => formatAgoT(ts, (k) => {
   return zh[k] ?? k;
 });
 
-export const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+let _uidCounter = 0;
+export const uid = () => Date.now().toString(36) + (_uidCounter++).toString(36) + Math.random().toString(36).slice(2, 6);
 
 /** Blur GPS coordinate by ±500m random offset */
 export const blurCoord = (coord: number) => coord + (Math.random() - 0.5) * 0.009;
@@ -223,6 +224,52 @@ export const buildHeatmapGrid = (
     grid.push(row);
   }
   return grid;
+};
+
+// ── Streak break detection ──────────────────────────────────────
+
+export interface StreakBreakEntry {
+  breakDate: string;
+  lostStreak: number;
+  startDate: string;
+}
+
+/** Detect streak breaks from checkin history (gaps of ≥2 consecutive missed days). */
+export const detectStreakBreaks = (
+  history: Array<{ date: string; done: boolean }>,
+): StreakBreakEntry[] => {
+  const doneDates = history.filter(e => e.done).map(e => e.date).sort();
+  if (doneDates.length < 2) return [];
+
+  const breaks: StreakBreakEntry[] = [];
+  let streakStart = doneDates[0];
+  let streakLen = 1;
+
+  for (let i = 1; i < doneDates.length; i++) {
+    const prev = new Date(doneDates[i - 1]);
+    const curr = new Date(doneDates[i]);
+    const diff = (curr.getTime() - prev.getTime()) / 86400000;
+
+    if (diff === 1) {
+      streakLen++;
+    } else if (diff >= 2) {
+      // Gap found — this is a streak break
+      const breakDate = new Date(prev);
+      breakDate.setDate(breakDate.getDate() + 1);
+      breaks.push({
+        breakDate: dateStr(breakDate),
+        lostStreak: streakLen,
+        startDate: streakStart,
+      });
+      streakStart = doneDates[i];
+      streakLen = 1;
+    } else {
+      streakStart = doneDates[i];
+      streakLen = 1;
+    }
+  }
+
+  return breaks.reverse(); // newest first
 };
 
 // ── Mobile legacy field normalization ────────────────────────────

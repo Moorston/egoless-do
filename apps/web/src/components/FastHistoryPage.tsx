@@ -1,8 +1,9 @@
 'use client';
 
-import { THEMES } from '@egoless-do/core';
+import { THEMES, FONT_BODY, FONT_TITLE, FONT_BACK } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 import { useT } from './helpers';
+import { ChevronLeft } from 'lucide-react';
 
 export default function FastHistoryPage({ onClose }: { onClose: () => void }) {
   const store = useWebStore();
@@ -15,12 +16,12 @@ export default function FastHistoryPage({ onClose }: { onClose: () => void }) {
     <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: TH.bg, overflowY: 'auto' }}>
       <div style={{ maxWidth: 390, margin: '0 auto' }}>
         <div style={{ padding: '20px 16px 10px', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: 20, cursor: 'pointer' }}>←</button>
-          <div style={{ fontWeight: 700, fontSize: 18, color: TH.text }}>{T('fastingHistory')}</div>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_BACK, cursor: 'pointer' }}><ChevronLeft size={20} /></button>
+          <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('fastingHistory')}</div>
         </div>
         <div style={{ padding: '0 16px' }}>
           {fastHistory.length === 0 && (
-            <div style={{ textAlign: 'center', color: TH.sub, padding: '40px 0', fontSize: 16 }}>{T('noHistory')}</div>
+            <div style={{ textAlign: 'center', color: TH.sub, padding: '40px 0', fontSize: FONT_BODY }}>{T('noHistory')}</div>
           )}
           {fastHistory.map((f, i) => {
             const started = f.startedAt ?? 0;
@@ -34,14 +35,14 @@ export default function FastHistoryPage({ onClose }: { onClose: () => void }) {
                 border: `1px solid ${TH.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center'
               }}>
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: 16, color: TH.text }}>
+                  <div style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>
                     {new Date(started).toLocaleDateString('zh-CN')}
                   </div>
-                  <div style={{ fontSize: 16, color: TH.sub, marginTop: 2 }}>
-                    ~{f.estimatedKcal ?? f.estimated_kcal ?? 0} kcal
+                  <div style={{ fontSize: FONT_BODY, color: TH.sub, marginTop: 2 }}>
+                    ~{f.estimatedKcal ?? 0} kcal
                   </div>
                 </div>
-                <div style={{ fontWeight: 700, color: P, fontSize: 16 }}>{h}h {m}m</div>
+                <div style={{ fontWeight: 700, color: P, fontSize: FONT_BODY }}>{h}h {m}m</div>
               </div>
             );
           })}

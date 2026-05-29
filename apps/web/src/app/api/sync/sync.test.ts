@@ -1,6 +1,6 @@
 // ─── Sync conflict resolution tests ───────────────────────────────
 import { describe, it, expect } from 'vitest';
-import { resolveConflict } from './conflict';
+import { resolveConflict, ENTITY_COLLECTION, ENTITY_ID_FIELD } from '@egoless-do/core';
 
 describe('resolveConflict', () => {
   // ── Client wins ────────────────────────────────────────────────
@@ -77,29 +77,16 @@ describe('resolveConflict', () => {
 });
 
 describe('sync entity mapping', () => {
-  // Verify the mapping is consistent — these are critical for data integrity
-  const ENTITY_COLLECTION: Record<string, string> = {
-    habit: 'habits', reflection: 'reflections', fasting: 'fasting_sessions',
-    food: 'food_entries', checkin: 'checkin_records', meditation: 'meditation_history',
-    profile: 'user_profiles', exercise: 'exercise_entries',
-  };
-
-  const ENTITY_ID_FIELD: Record<string, string> = {
-    habit: 'habit_id', reflection: 'reflection_id', fasting: 'session_id',
-    food: 'food_id', checkin: 'date', meditation: 'date',
-    profile: 'profile_id', exercise: 'exercise_id',
-  };
-
   it('every entity has both collection and id field', () => {
     const entities = Object.keys(ENTITY_COLLECTION);
     for (const e of entities) {
-      expect(ENTITY_ID_FIELD[e], `missing id field for ${e}`).toBeDefined();
+      expect(ENTITY_ID_FIELD[e as keyof typeof ENTITY_ID_FIELD], `missing id field for ${e}`).toBeDefined();
     }
   });
 
   it('no extra id fields without collections', () => {
     for (const e of Object.keys(ENTITY_ID_FIELD)) {
-      expect(ENTITY_COLLECTION[e], `missing collection for ${e}`).toBeDefined();
+      expect(ENTITY_COLLECTION[e as keyof typeof ENTITY_COLLECTION], `missing collection for ${e}`).toBeDefined();
     }
   });
 });

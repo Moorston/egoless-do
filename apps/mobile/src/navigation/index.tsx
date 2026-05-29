@@ -4,11 +4,16 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
-  Text, View, TouchableOpacity, Animated, PanResponder, StyleSheet, Dimensions,
+  View, TouchableOpacity, Animated, PanResponder, StyleSheet, Dimensions,
 } from 'react-native';
+import {
+  Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
+  Sparkles, Target, BarChart3, Plus,
+} from 'lucide-react-native';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES } from '@egoless-do/core';
+import { THEMES, TAB_ICONS, ACTION_ICONS, FONT_BODY } from '@egoless-do/core';
 import AppHeader from '../components/AppHeader';
+import StarfieldBackground from '../components/StarfieldBackground';
 
 // Tab screens
 import HomeScreen       from '../features/home/HomeScreen';
@@ -28,11 +33,18 @@ import FastHistoryPage   from '../features/fasting/FastHistoryPage';
 import MedHistoryPage    from '../features/meditation/MedHistoryPage';
 import FoodLogPage       from '../features/home/FoodLogPage';
 import GracePage         from '../features/home/GracePage';
+import StreakBreakScreen from '../features/home/StreakBreakScreen';
 import CheckinHistoryScreen from '../features/home/CheckinHistoryScreen';
 import CheckinDetailScreen from '../features/home/CheckinDetailScreen';
+import PlanScreen from '../features/plan/PlanScreen';
+import PlanCreateScreen from '../features/plan/PlanCreateScreen';
+import PlanDetailScreen from '../features/plan/PlanDetailScreen';
+import PlanHistoryScreen from '../features/plan/PlanHistoryScreen';
 import LoginScreen       from '../features/auth/LoginScreen';
 import RegisterScreen    from '../features/auth/RegisterScreen';
+import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
 import { useSync }       from '../features/sync/useSync';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export type RootStackParamList = {
   MainTabs: undefined;
@@ -44,13 +56,19 @@ export type RootStackParamList = {
   MedHistory: undefined;
   FoodLog: undefined;
   Grace: undefined;
+  StreakBreak: undefined;
   CheckinHistory: undefined;
   CheckinDetail: { date: string };
   ExerciseHistory: undefined;
+  PlanCreate: { planId?: string } | undefined;
+  PlanDetail: { planId: string };
+  PlanHistory: undefined;
+  RecycleBin: undefined;
 };
 
 export type MainTabParamList = {
   Home: undefined;
+  Plan: undefined;
   Fasting: undefined;
   Meditation: undefined;
   Exercise: undefined;
@@ -65,6 +83,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 // ─── Floating Action Button ───────────────────────────────────────
 const FAB_SIZE = 52;
+const FAB_HIDE_OFFSET = 30; // How much of the FAB is visible when hidden
 const TabNavContext = createContext<any>(null);
 
 function FabButton({ primaryColor }: { primaryColor: string }) {
@@ -75,6 +94,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
   const pos = useRef({ x: vw - FAB_SIZE - 20, y: vh - 85 - FAB_SIZE - 20 }).current;
   const animPos = useRef(new Animated.ValueXY({ x: pos.x, y: pos.y })).current;
   const moved = useRef(false);
+  const isHidden = useRef(false);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -90,10 +110,54 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
       }),
       onPanResponderRelease() {
         animPos.flattenOffset();
-        const nav = tabNavRef.current;
-        if (!moved.current && nav) {
-          nav.navigate('Reflections', { showNew: true });
+        
+        if (!moved.current) {
+          if (isHidden.current) {
+            // If hidden, tap to show
+            isHidden.current = false;
+            const targetX = vw - FAB_SIZE - 20;
+            Animated.spring(animPos, {
+              toValue: { x: targetX, y: animPos.y.__getValue() },
+              useNativeDriver: false,
+              bounciness: 8,
+            }).start();
+          } else {
+            // If visible, tap to navigate
+            const nav = tabNavRef.current;
+            if (nav) nav.navigate('Reflections', { showNew: true });
+          }
+          return;
         }
+
+        // Get current position
+        const currentX = animPos.x.__getValue();
+        const currentY = animPos.y.__getValue();
+        
+        // Snap to nearest horizontal edge
+        const distToLeft = currentX;
+        const distToRight = vw - currentX - FAB_SIZE;
+        
+        let targetX: number;
+        if (distToLeft < distToRight) {
+          // Snap to left (hide partially)
+          targetX = -FAB_HIDE_OFFSET;
+          isHidden.current = true;
+        } else {
+          // Snap to right (hide partially)
+          targetX = vw - FAB_SIZE + FAB_HIDE_OFFSET;
+          isHidden.current = true;
+        }
+
+        // Clamp Y position
+        const minY = 100;
+        const maxY = vh - 85 - FAB_SIZE - 10;
+        const targetY = Math.max(minY, Math.min(maxY, currentY));
+
+        Animated.spring(animPos, {
+          toValue: { x: targetX, y: targetY },
+          useNativeDriver: false,
+          bounciness: 8,
+        }).start();
       },
     }),
   ).current;
@@ -107,7 +171,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
         transform: animPos.getTranslateTransform(),
       }]}
     >
-      <Text style={styles.fabText}>✦</Text>
+      <Sparkles size={24} color="#fff" strokeWidth={2.5} />
     </Animated.View>
   );
 }
@@ -126,12 +190,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 10,
   },
-  fabText: { color: '#fff', fontSize: 24 },
+  fabText: { color: '#fff' },
 });
 
 // All Tab routes
 const TAB_ROUTES: Record<string, string> = {
   home: 'Home',
+  plan: 'Plan',
   fasting: 'Fasting',
   meditation: 'Meditation',
   exercise: 'Exercise',
@@ -144,6 +209,7 @@ const TAB_ROUTES: Record<string, string> = {
 // Route name → tab key mapping
 const ROUTE_TO_TAB: Record<string, string> = {
   Home: 'home',
+  Plan: 'plan',
   Fasting: 'fasting',
   Meditation: 'meditation',
   Exercise: 'exercise',
@@ -162,16 +228,15 @@ function MainTabs() {
   // Trigger one re-render after mount so Provider gets the navigator from screenOptions
   useEffect(() => { forceUpdate(n => n + 1); }, []);
 
+  const iconMap: Record<string, React.ComponentType<any>> = {
+    Home, Plan: ClipboardList, Fasting: Timer, Meditation: Binary,
+    Exercise: Dumbbell, Settings, Reflections: Sparkles,
+    Habits: Target, Stats: BarChart3,
+  };
+
   const tabIcon = (name: string, focused: boolean) => {
-    const icons: Record<string, string> = {
-      Home: '🏠', Fasting: '⏱', Meditation: '☯', Exercise: '🏃',
-      Settings: '⚙', Reflections: '✦', Habits: '◇', Stats: '◈',
-    };
-    return (
-      <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.6 }}>
-        {icons[name] || '◎'}
-      </Text>
-    );
+    const Icon = iconMap[name] ?? Home;
+    return <Icon size={22} color={focused ? TH.primary : TH.sub} strokeWidth={focused ? 2.2 : 1.5} />;
   };
 
   return (
@@ -185,7 +250,7 @@ function MainTabs() {
           const tabKey = ROUTE_TO_TAB[route.name] || 'home';
           const handleTabChange = (key: string) => {
             const tabRoute = TAB_ROUTES[key];
-            if (tabRoute) {
+            if (tabRoute && tabRoute !== route.name) {
               navigation.navigate(tabRoute as never);
             }
           };
@@ -203,11 +268,12 @@ function MainTabs() {
           paddingBottom: 6,
           paddingTop: 6,
         },
-        tabBarLabelStyle: { fontSize: 15, fontWeight: '500' },
+        tabBarLabelStyle: { fontSize: FONT_BODY, fontWeight: '500' },
         };
       }}
     >
       <Tab.Screen name="Home"        component={HomeScreen}        options={{ title:'主页', tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title:'计划', tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Fasting"     component={FastingScreen}     options={{ title:'禁食', tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title:'冥想', tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Exercise"    component={ExerciseScreen}    options={{ title:'锻炼', tabBarItemStyle: { flex: 1 } }} />
@@ -242,6 +308,9 @@ export default function AppNavigator() {
   }, [isSignedIn]);
 
   return (
+    <ErrorBoundary theme={theme}>
+    <View style={{ flex: 1, backgroundColor: TH.bg }}>
+    {TH.starfield && <StarfieldBackground />}
     <NavigationContainer
       theme={{
         dark: theme !== 'light',
@@ -271,10 +340,17 @@ export default function AppNavigator() {
         <Stack.Screen name="MedHistory"   component={MedHistoryPage} />
         <Stack.Screen name="FoodLog"      component={FoodLogPage} />
         <Stack.Screen name="Grace"        component={GracePage} />
+        <Stack.Screen name="StreakBreak" component={StreakBreakScreen} />
         <Stack.Screen name="CheckinHistory" component={CheckinHistoryScreen} />
         <Stack.Screen name="CheckinDetail" component={CheckinDetailScreen} />
         <Stack.Screen name="ExerciseHistory" component={ExerciseHistoryScreen} />
+        <Stack.Screen name="PlanCreate"     component={PlanCreateScreen} />
+        <Stack.Screen name="PlanDetail"     component={PlanDetailScreen} />
+        <Stack.Screen name="PlanHistory"    component={PlanHistoryScreen} />
+        <Stack.Screen name="RecycleBin"    component={RecycleBinScreen} />
       </Stack.Navigator>
     </NavigationContainer>
+    </View>
+    </ErrorBoundary>
   );
 }

@@ -33,7 +33,7 @@ export const defaultAuthState: AuthState = {
 // @egoless-do/core — Shared TypeScript types
 // ─────────────────────────────────────────────────────────────────
 
-export type Mood = '平静' | '开心';
+export type Mood = string;
 export type HabitStatus = 'notStarted' | 'inProgress' | 'paused' | 'abandoned' | 'completed';
 export type ThemeName = 'dark' | 'light' | 'ocean' | 'forest' | 'rose' | 'cosmos';
 
@@ -57,6 +57,7 @@ export interface MindReflection {
   content: string;
   tags: string[];
   mood: Mood;
+  link?: string;
   linkedHabitId?: string;
   cardTheme?: string;
   colors: readonly [string, string];
@@ -64,11 +65,6 @@ export interface MindReflection {
   isPublished: boolean;
   updatedAt?: number;
   deleted?: boolean;
-  // mobile legacy fields
-  created_at?: number;
-  is_pinned?: boolean;
-  is_published?: boolean;
-  synced?: number;
 }
 
 export interface FastingSession {
@@ -80,11 +76,6 @@ export interface FastingSession {
   insight?: string;
   updatedAt?: number;
   deleted?: boolean;
-  // mobile legacy fields
-  target_hours?: number;
-  started_at?: number;
-  ended_at?: number;
-  estimated_kcal?: number;
 }
 
 export interface Habit {
@@ -114,9 +105,6 @@ export interface FoodEntry {
   timestamp: number;
   updatedAt?: number;
   deleted?: boolean;
-  // mobile legacy fields
-  cal?: number;
-  ts?: number;
 }
 
 export interface GeoPoint {
@@ -125,6 +113,11 @@ export interface GeoPoint {
   ts: number;
   altitude?: number;
   speed?: number;
+}
+
+export interface ExerciseSet {
+  reps: number;
+  restSec?: number;
 }
 
 export interface ExerciseEntry {
@@ -139,10 +132,13 @@ export interface ExerciseEntry {
   trackPoints?: GeoPoint[];
   isGpsSport?: boolean;
   mode?: 'free' | 'target';
-  target?: { type: 'distance' | 'time' | 'calories'; value: number };
+  target?: { type: 'distance' | 'time' | 'calories' | 'reps'; value: number };
   segmentPaces?: number[];
   elevationGain?: number;
   pausedDuration?: number;
+  reps?: number;
+  sets?: ExerciseSet[];
+  met?: number;
   updatedAt?: number;
   deleted?: boolean;
 }
@@ -205,8 +201,160 @@ export interface UserProfile {
   updatedAt?: number;
 }
 
-// CheckinRecord is now an alias for CheckinEntry (was a duplicate)
-export type CheckinRecord = CheckinEntry;
+export interface FoodPreset {
+  name: string;
+  nameEn: string;
+  cal: number;
+  unit: string;
+  unitEn: string;
+}
+
+export interface FoodCategory {
+  key: string;
+  label: string;
+  labelEn: string;
+  icon: string;
+  items: FoodPreset[];
+}
+
+export interface CustomFoodPreset {
+  id: string;
+  name: string;
+  calories: number;
+  note?: string;
+}
+
+// CheckinRecord removed — use CheckinEntry directly
+
+// ── Plan Goal types (deprecated — kept for migration) ────────────
+
+/** @deprecated Use PlanStatus instead */
+export type GoalLevel = 'year' | 'quarter' | 'month' | 'week';
+/** @deprecated Use PlanStatus instead */
+export type GoalStatus = 'active' | 'paused' | 'completed' | 'abandoned';
+
+/** @deprecated Use Plan instead */
+export interface Goal {
+  id: string;
+  parentId: string | null;
+  level: GoalLevel;
+  name: string;
+  description: string;
+  icon: string;
+  startDate: string;
+  endDate: string;
+  status: GoalStatus;
+  progress: number;
+  tags: string[];
+  order: number;
+  updatedAt?: number;
+  deleted?: boolean;
+}
+
+/** @deprecated */
+export type TaskSchedule =
+  | { type: 'daily' }
+  | { type: 'weekdays'; days: number[] }
+  | { type: 'interval'; every: number }
+  | { type: 'specific'; days: number[] }
+  | { type: 'once'; date: string };
+
+/** @deprecated */
+export type TaskLink =
+  | { kind: 'none' }
+  | { kind: 'habit'; habitId: string }
+  | { kind: 'fasting'; targetHours: number }
+  | { kind: 'meditation'; minMinutes: number }
+  | { kind: 'exercise'; sportKey?: string; minMinutes: number }
+  | { kind: 'checkin' }
+  | { kind: 'water'; targetMl: number }
+  | { kind: 'goalProgress'; targetGoalId: string };
+
+/** @deprecated Use PlanItem instead */
+export interface DailyTask {
+  id: string;
+  goalId: string | null;
+  name: string;
+  icon: string;
+  schedule: TaskSchedule;
+  required: boolean;
+  link: TaskLink;
+  order: number;
+  updatedAt?: number;
+  deleted?: boolean;
+}
+
+/** @deprecated Use PlanItemCheckin instead */
+export interface TaskLog {
+  id: string;
+  taskId: string;
+  date: string;
+  done: boolean;
+  note?: string;
+  updatedAt?: number;
+  deleted?: boolean;
+}
+
+// ── Plan types (new) ────────────────────────────────────────────
+
+export type PlanStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'cancelled' | 'delayed';
+export type PlanItemStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'delayed';
+export type PlanItemLink = 'manual' | 'checkin' | 'fasting' | 'meditation' | 'exercise' | 'habit';
+
+export interface Plan {
+  id: string;
+  name: string;
+  goal: string;
+  slogan: string;
+  startDate: string;
+  endDate: string;
+  status: PlanStatus;
+  progress: number;
+  updatedAt?: number;
+  deleted?: boolean;
+}
+
+export interface PlanItem {
+  id: string;
+  planId: string;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  contentUrl: string;
+  totalCheckinDays: number;
+  status: PlanItemStatus;
+  progress: number;
+  link: PlanItemLink;
+  linkConfig?: {
+    habitId?: string;
+    targetMinutes?: number;
+    targetHours?: number;
+  };
+  order: number;
+  updatedAt?: number;
+  deleted?: boolean;
+}
+
+export interface PlanItemCheckin {
+  id: string;
+  planItemId: string;
+  date: string;
+  done: boolean;
+  note?: string;
+  linkedModule?: string;
+  updatedAt?: number;
+  deleted?: boolean;
+}
+
+export type RecycleBinEntityType = 'habit' | 'reflection' | 'food' | 'exercise' | 'plan';
+
+export interface RecycleBinItem {
+  id: string;
+  entityType: RecycleBinEntityType;
+  data: Habit | MindReflection | FoodEntry | ExerciseEntry | Plan;
+  deletedAt: number;
+}
 
 export interface AppState {
   auth: AuthState;
@@ -226,6 +374,16 @@ export interface AppState {
   habits: Habit[];
   activeFasting: FastingSession | null;
   userProfile: UserProfile;
+  /** @deprecated Use plans instead */
+  goals: Goal[];
+  /** @deprecated Use planItems instead */
+  dailyTasks: DailyTask[];
+  /** @deprecated Use planItemCheckins instead */
+  taskLogs: TaskLog[];
+  plans: Plan[];
+  planItems: PlanItem[];
+  planItemCheckins: PlanItemCheckin[];
+  recycleBin: RecycleBinItem[];
   remindEnabled: boolean;
   remindTime: string;
 }

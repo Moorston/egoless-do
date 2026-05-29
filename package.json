@@ -16,7 +16,8 @@
     "build:mobile": "pnpm --filter mobile build",
     "build:web": "pnpm --filter web build",
     "lint": "turbo run lint",
-    "type-check": "turbo run type-check"
+    "type-check": "turbo run type-check",
+    "test": "turbo run test"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",

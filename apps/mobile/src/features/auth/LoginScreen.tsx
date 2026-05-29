@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
-import { registerPushToken } from '@egoless-do/core';
+import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
 import * as Notifications from 'expo-notifications';
 
 export default function LoginScreen() {
@@ -68,64 +68,62 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{ flex: 1, backgroundColor: TH.bg }}
     >
-      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
-        <Text style={{
-          color: TH.primary, fontSize: 36, fontWeight: '800',
-          textAlign: 'center', marginBottom: 4,
-        }}>
-          心流纪
-        </Text>
-        <Text style={{
-          color: TH.primary, fontSize: 13,
-          textAlign: 'center', marginBottom: 4, letterSpacing: 1, opacity: 0.7,
-        }}>
-          Egoless Do
-        </Text>
-        <Text style={{
-          color: TH.sub, fontSize: 14,
-          textAlign: 'center', marginBottom: 40,
-        }}>
-          记录每一份觉知
-        </Text>
-
-        <Card style={{ marginBottom: 16 }}>
-          <ThemedInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="邮箱"
-            keyboardType="default"
-            style={{ marginBottom: 12 }}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{ paddingHorizontal: 24 }}>
+          <Image
+            source={require('../../../assets/sign-logo.png')}
+            style={{
+              width: 320,
+              height: 128,
+              alignSelf: 'center',
+              marginBottom: 40,
+            }}
+            resizeMode="contain"
           />
-          <ThemedInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="密码"
-            secureTextEntry
-            style={{ marginBottom: 4 }}
+
+          <Card style={{ marginBottom: 16 }}>
+            <ThemedInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="邮箱"
+              keyboardType="default"
+              style={{ marginBottom: 12 }}
+            />
+            <ThemedInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="密码"
+              secureTextEntry
+              style={{ marginBottom: 4 }}
+            />
+          </Card>
+
+          {error !== '' && (
+            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR, textAlign: 'center', marginBottom: 12 }}>
+              {error}
+            </Text>
+          )}
+
+          <PrimaryButton
+            label={isLoading ? '登录中...' : '登录'}
+            onPress={handleLogin}
+            style={{ marginBottom: 16, opacity: isLoading ? 0.7 : 1 }}
           />
-        </Card>
 
-        {error !== '' && (
-          <Text style={{ color: '#ff6b6b', fontSize: 13, textAlign: 'center', marginBottom: 12 }}>
-            {error}
-          </Text>
-        )}
-
-        <PrimaryButton
-          label={isLoading ? '登录中...' : '登录'}
-          onPress={handleLogin}
-          style={{ marginBottom: 16, opacity: isLoading ? 0.7 : 1 }}
-        />
-
-        <TouchableOpacity onPress={() => nav.navigate('Register')} activeOpacity={0.7}>
-          <Text style={{ color: TH.sub, fontSize: 13, textAlign: 'center' }}>
-            没有账号？<Text style={{ color: TH.primary }}>去注册</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={() => nav.navigate('Register')} activeOpacity={0.7}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
+              没有账号？<Text style={{ color: TH.primary }}>去注册</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

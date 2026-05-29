@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { getTodayMedMinutes } from '@egoless-do/core';
+import { getTodayMedMinutes, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
 import { useOverlay } from './useOverlay';
+import { CircleDot, Music, ChevronRight } from 'lucide-react';
 
 function useAudio() {
   const ctxRef = useRef<AudioContext | null>(null);
@@ -224,43 +225,43 @@ export default function MeditateTab() {
   return (
     <>
       {audioError && (
-        <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', background: '#F59E0B', color: '#fff', padding: '12px 24px', borderRadius: 12, zIndex: 400, fontSize: 16 }}>
+        <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', background: '#F59E0B', color: '#fff', padding: '12px 24px', borderRadius: 12, zIndex: 400, fontSize: FONT_BODY }}>
           {T(audioError)}
         </div>
       )}
       
       <div style={{ ...cardStyle, textAlign: 'center', padding: '20px 16px' } as React.CSSProperties}>
-        <div style={{ fontSize: 36, fontWeight: 800, color: P }}>{store.totalMedMinutes}</div>
-        <div style={{ color: TH.sub, fontSize: 16 }}>{T('accMed')}</div>
+        <div style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, color: P }}>{store.totalMedMinutes}</div>
+        <div style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('accMed')}</div>
       </div>
       <div style={cardStyle}>
         {running ? (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <div style={timerDisplay}>
-              <div style={{ fontSize: 50, fontWeight: 800, color: P, letterSpacing: 2 }}>{Math.floor(remain / 60)}:{String(remain % 60).padStart(2, '0')}</div>
-              <div style={{ color: TH.sub, fontSize: 16, marginTop: 6 }}>{T('medActive')} {currentSound.file ? `🎵 ${currentSound.label}` : ''}</div>
+              <div style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, color: P, letterSpacing: 2 }}>{Math.floor(remain / 60)}:{String(remain % 60).padStart(2, '0')}</div>
+              <div style={{ color: TH.sub, fontSize: FONT_BODY, marginTop: 6 }}>{T('medActive')} {currentSound.file ? <><Music size={16} style={{verticalAlign:'middle',marginRight:4}} />{currentSound.label}</> : ''}</div>
             </div>
-            <button onClick={handleStop} style={{ padding: '12px 48px', borderRadius: 12, border: 'none', background: '#EF4444', color: '#fff', fontWeight: 600, fontSize: 16, cursor: 'pointer' }}>{T('stopMed')}</button>
+            <button onClick={handleStop} style={{ padding: '12px 48px', borderRadius: 12, border: 'none', background: '#EF4444', color: '#fff', fontWeight: 600, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('stopMed')}</button>
           </div>
         ) : (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${TH.border}`, marginBottom: 12 }}>
-              <span style={{ fontSize: 16, color: TH.sub }}>{T('bgMusic')}</span>
-              <span style={{ color: P, cursor: 'pointer', fontSize: 16 }}>🎵 {currentSound.label} ›</span>
+              <span style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('bgMusic')}</span>
+              <span style={{ color: P, cursor: 'pointer', fontSize: FONT_BODY }}><Music size={16} style={{verticalAlign:'middle',marginRight:4}} />{currentSound.label} <ChevronRight size={16} style={{verticalAlign:'middle'}} /></span>
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
               {SOUNDS.map((s, i) => (
                 <button key={s.label} onClick={() => setSoundIdx(i)}
-                  style={{ padding: '5px 12px', borderRadius: 8, border: `1px solid ${soundIdx === i ? P : TH.border}`, background: soundIdx === i ? `${P}30` : 'transparent', color: soundIdx === i ? '#fff' : TH.sub, fontSize: 16, cursor: 'pointer' }}>{s.label}</button>
+                  style={{ padding: '5px 12px', borderRadius: 8, border: `1px solid ${soundIdx === i ? P : TH.border}`, background: soundIdx === i ? `${P}30` : 'transparent', color: soundIdx === i ? '#fff' : TH.sub, fontSize: FONT_BODY, cursor: 'pointer' }}>{s.label}</button>
               ))}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 16 }}>
               {durationButtons.map((d) => (
                 <button key={d} onClick={() => setDur(d)}
-                  style={{ padding: '10px 0', borderRadius: 10, border: `1px solid ${dur === d ? P : TH.border}`, background: dur === d ? P : 'transparent', color: dur === d ? '#fff' : TH.sub, fontWeight: dur === d ? 700 : 400, fontSize: 16, cursor: 'pointer' }}>{d}{T('medMinutes')}</button>
+                  style={{ padding: '10px 0', borderRadius: 10, border: `1px solid ${dur === d ? P : TH.border}`, background: dur === d ? P : 'transparent', color: dur === d ? '#fff' : TH.sub, fontWeight: dur === d ? 700 : 400, fontSize: FONT_BODY, cursor: 'pointer' }}>{d}{T('medMinutes')}</button>
               ))}
             </div>
-            <button onClick={() => { setRemain(dur * 60); setRunning(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer' }}>{T('startMed')}</button>
+            <button onClick={() => { setRemain(dur * 60); setRunning(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('startMed')}</button>
           </>
         )}
       </div>
@@ -275,13 +276,12 @@ export default function MeditateTab() {
       <LinkWorldBtn label={T('globalMeditators')} onClick={() => overlay.open('globalMap', { globalMapTitle: `${T('linkWorld')} — ${T('globalMeditators')}` })} />
 
       <div onClick={() => overlay.open('medHistory')} style={{ background: TH.card, borderRadius: 16, marginBottom: 12, border: `1px solid ${TH.border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px' }}>
-        <span style={{ fontSize: 18 }}>☯</span>
-        <span style={{ fontSize: 16, color: TH.text }}>{T('meditationHistory')}</span>
-        <span style={{ marginLeft: 'auto', color: TH.sub }}>›</span>
+        <CircleDot size={18} style={{verticalAlign:'middle'}} />
+        <span style={{ fontSize: FONT_BODY, color: TH.text }}>{T('meditationHistory')}</span>
+        <ChevronRight size={18} style={{marginLeft:'auto',verticalAlign:'middle'}} color={TH.sub} />
       </div>
 
-      <button onClick={handleShare} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: 16, cursor: 'pointer', marginBottom: 8 }}>{T('shareMed')}</button>
-      <div style={{ textAlign: 'center', fontSize: 16, color: TH.sub }}>{T('medAttribution')}</div>
+      <div style={{ textAlign: 'center', fontSize: FONT_BODY, color: TH.sub }}>{T('medAttribution')}</div>
     </>
   );
 }

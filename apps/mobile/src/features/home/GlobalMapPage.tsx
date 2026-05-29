@@ -3,7 +3,8 @@ import { View, Text, ScrollView, TouchableOpacity, Animated } from 'react-native
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme, useT } from '../../components/UI';
-import { GLOBAL_USERS } from '@egoless-do/core';
+import { GLOBAL_USERS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK } from '@egoless-do/core';
+import { Globe, X, Trophy, Flame, ChevronLeft } from 'lucide-react-native';
 
 const USERS_WITH_STREAK = GLOBAL_USERS.map(u => ({
   ...u,
@@ -59,7 +60,7 @@ function PulseMarker({ u, primaryColor, onPress }: { u: typeof USERS_WITH_STREAK
         shadowColor: color, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.6, shadowRadius: 6,
         elevation: 4,
       }}>
-        <Text style={{ color: '#fff', fontWeight: '800', fontSize: 13 }}>{u.name[0]}</Text>
+        <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_SUB }}>{u.name[0]}</Text>
       </Animated.View>
       {/* Online dot */}
       {u.online && (
@@ -78,7 +79,7 @@ export default function GlobalMapPage({ route }: { route?: { params?: { icon?: s
   const TH  = useTheme();
   const T   = useT();
   const P   = TH.primary;
-  const pageIcon  = route?.params?.icon ?? '🌍';
+  const pageIconName = route?.params?.icon ?? 'Globe';
   const pageTitle = route?.params?.title ?? T('globalPulse');
   const [sel, setSel]         = useState<typeof USERS_WITH_STREAK[0] | null>(null);
   const [showBoard, setShowBoard] = useState(false);
@@ -131,34 +132,34 @@ export default function GlobalMapPage({ route }: { route?: { params?: { icon?: s
                     backgroundColor: sel.id === 1 ? P : 'rgba(255,107,53,.9)',
                     alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: 18 }}>{sel.name[0]}</Text>
+                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_TITLE }}>{sel.name[0]}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Text style={{ fontWeight: '700', fontSize: 18, color: '#fff' }}>{sel.name}</Text>
+                      <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: '#fff' }}>{sel.name}</Text>
                       {sel.online && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#22C55E' }} />}
                     </View>
-                    <Text style={{ fontSize: 14, color: 'rgba(255,255,255,.5)', marginTop: 3 }}>
+                    <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 3 }}>
                       {sel.sport} · {sel.duration}
                     </Text>
                   </View>
                 </View>
                 <TouchableOpacity onPress={() => setSel(null)} style={{ padding: 4 }}>
-                  <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: 18 }}>×</Text>
+                  <X size={18} color="rgba(255,255,255,.5)" />
                 </TouchableOpacity>
               </View>
               <View style={{ flexDirection: 'row', marginTop: 14, gap: 8 }}>
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, alignItems: 'center' }}>
-                  <Text style={{ fontSize: 20, fontWeight: '800', color: '#FF6B35' }}>{sel.streak}</Text>
-                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalCurrentStreak')}</Text>
+                  <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#FF6B35' }}>{sel.streak}</Text>
+                  <Text style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalCurrentStreak')}</Text>
                 </View>
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, alignItems: 'center' }}>
-                  <Text style={{ fontSize: 20, fontWeight: '800', color: P }}>{sel.days}</Text>
-                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalDaysTotal')}</Text>
+                  <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{sel.days}</Text>
+                  <Text style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalDaysTotal')}</Text>
                 </View>
                 <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, alignItems: 'center' }}>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: 'rgba(255,255,255,.7)' }}>{sel.since}</Text>
-                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('startDate')}</Text>
+                  <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: 'rgba(255,255,255,.7)' }}>{sel.since}</Text>
+                  <Text style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('startDate')}</Text>
                 </View>
               </View>
             </View>
@@ -174,14 +175,14 @@ export default function GlobalMapPage({ route }: { route?: { params?: { icon?: s
         }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <TouchableOpacity onPress={() => nav.goBack()} style={{ padding: 4 }}>
-              <Text style={{ color: '#fff', fontSize: 20 }}>←</Text>
+              <ChevronLeft size={20} color="#fff" />
             </TouchableOpacity>
-            <Text style={{ fontSize: 20 }}>{pageIcon}</Text>
-            <Text style={{ fontWeight: '700', fontSize: 16, color: '#fff' }}>{pageTitle}</Text>
+            <Globe size={20} color="#fff" />
+            <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: '#fff' }}>{pageTitle}</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(34,197,94,.15)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 5 }}>
             <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: '#22C55E' }} />
-            <Text style={{ fontSize: 13, color: '#22C55E', fontWeight: '600' }}>{onlineCount} online</Text>
+            <Text style={{ fontSize: FONT_SUB, color: '#22C55E', fontWeight: '600' }}>{onlineCount} online</Text>
           </View>
         </View>
 
@@ -195,7 +196,10 @@ export default function GlobalMapPage({ route }: { route?: { params?: { icon?: s
                 shadowColor: P, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.5, shadowRadius: 12,
                 elevation: 6,
               }}>
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: 16 }}>🏆 {T('globalLeaderboard')}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Trophy size={18} color="#fff" />
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('globalLeaderboard')}</Text>
+              </View>
             </TouchableOpacity>
           </Animated.View>
         </View>
@@ -225,9 +229,12 @@ function LeaderboardPage({ users, TH, P, onClose, nav }: {
       {/* Header */}
       <View style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
-          <Text style={{ color: TH.text, fontSize: 20 }}>←</Text>
+          <ChevronLeft size={20} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: 20, color: TH.text }}>🏆 {T('globalLeaderboard')}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Trophy size={20} color={TH.text} />
+          <Text style={{ fontWeight: '700', fontSize: FONT_BACK, color: TH.text }}>{T('globalLeaderboard')}</Text>
+        </View>
       </View>
 
       {/* Top 3 podium */}
@@ -247,16 +254,19 @@ function LeaderboardPage({ users, TH, P, onClose, nav }: {
                 borderWidth: 3, borderColor: 'rgba(255,255,255,.3)',
                 marginBottom: 8,
               }}>
-                <Text style={{ color: '#fff', fontWeight: '900', fontSize: isFirst ? 22 : 18 }}>{u.name[0]}</Text>
+                <Text style={{ color: '#fff', fontWeight: '900', fontSize: isFirst ? FONT_STAT_CARD : FONT_TITLE }}>{u.name[0]}</Text>
               </View>
-              <Text style={{ fontWeight: '700', fontSize: isFirst ? 16 : 14, color: TH.text, textAlign: 'center' }} numberOfLines={1}>{u.name}</Text>
-              <Text style={{ fontSize: 12, color: TH.sub, marginTop: 2 }}>{tab === 0 ? `${u.streak} 🔥` : `${u.days} ${T('days')}`}</Text>
+              <Text style={{ fontWeight: '700', fontSize: isFirst ? FONT_BODY : FONT_SUB, color: TH.text, textAlign: 'center' }} numberOfLines={1}>{u.name}</Text>
+              <View style={{ flexDirection:'row', alignItems:'center', gap:2, marginTop:2 }}>
+                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{tab === 0 ? u.streak : `${u.days} ${T('days')}`}</Text>
+                {tab === 0 && <Flame size={12} color={TH.sub} />}
+              </View>
               <View style={{
                 width: '100%', height: heights[rank], borderRadius: 12,
                 backgroundColor: medalColors[rank] + '30',
                 marginTop: 8, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 10,
               }}>
-                <Text style={{ fontSize: 28, fontWeight: '900', color: medalColors[rank] }}>{rank + 1}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: medalColors[rank] }}>{rank + 1}</Text>
               </View>
             </View>
           );
@@ -273,7 +283,7 @@ function LeaderboardPage({ users, TH, P, onClose, nav }: {
               alignItems: 'center',
               borderWidth: tab === i ? 0 : 1, borderColor: TH.border,
             }}>
-            <Text style={{ color: tab === i ? '#fff' : TH.sub, fontWeight: tab === i ? '700' : '500', fontSize: 15 }}>{l}</Text>
+            <Text style={{ color: tab === i ? '#fff' : TH.sub, fontWeight: tab === i ? '700' : '500', fontSize: FONT_BODY }}>{l}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -291,20 +301,20 @@ function LeaderboardPage({ users, TH, P, onClose, nav }: {
               backgroundColor: i < 3 ? medalColors[i] : P,
               alignItems: 'center', justifyContent: 'center',
             }}>
-              <Text style={{ color: '#fff', fontWeight: '800', fontSize: 14 }}>{i + 1}</Text>
+              <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_SUB }}>{i + 1}</Text>
             </View>
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text style={{ fontWeight: '600', fontSize: 15, color: TH.text }}>{u.name}</Text>
+                <Text style={{ fontWeight: '600', fontSize: FONT_BODY, color: TH.text }}>{u.name}</Text>
                 {u.online && <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#22C55E' }} />}
               </View>
-              <Text style={{ fontSize: 13, color: TH.sub, marginTop: 2 }}>{u.sport} · {u.since}</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{u.sport} · {u.since}</Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ fontWeight: '800', fontSize: 18, color: i < 3 ? medalColors[i] : P }}>
+              <Text style={{ fontWeight: '800', fontSize: FONT_TITLE, color: i < 3 ? medalColors[i] : P }}>
                 {tab === 0 ? u.streak : u.days}
               </Text>
-              <Text style={{ fontSize: 12, color: TH.sub }}>{tab === 0 ? T('globalDaysCurrent') : T('globalDaysTotal')}</Text>
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{tab === 0 ? T('globalDaysCurrent') : T('globalDaysTotal')}</Text>
             </View>
           </View>
         ))}

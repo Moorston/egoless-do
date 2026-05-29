@@ -14,13 +14,18 @@ export type OverlayKey =
   | 'checkinDetail'
   | 'foodLog'
   | 'grace'
-  | 'exerciseHistory';
+  | 'exerciseHistory'
+  | 'streakBreak'
+  | 'planCreate'
+  | 'planDetail'
+  | 'planHistory';
 
 export interface OverlayProps {
   sport?: SportItem;
   checkinDetailDate?: string;
   globalMapTitle?: string;
   globalMapIcon?: string;
+  planId?: string;
 }
 
 interface OverlayContextValue {

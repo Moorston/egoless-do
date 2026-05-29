@@ -3,7 +3,8 @@ import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useWebStore } from '../../../store/useWebStore';
-import { apiSendCode, apiCheckEmail, validatePassword } from '@egoless-do/core';
+import { apiSendCode, apiCheckEmail, validatePassword, FONT_BODY, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';
+import { Check, X } from 'lucide-react';
 
 const COOLDOWN = 60;
 
@@ -90,9 +91,9 @@ export default function RegisterPage() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0F0A1E' }}>
       <form onSubmit={handleSubmit} style={{ width: 380, padding: 40, background: 'rgba(255,255,255,.04)', borderRadius: 20, border: '1px solid rgba(255,255,255,.08)' }}>
-        <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 4, textAlign: 'center' }}>心流纪</h1>
-        <p style={{ fontSize: 16, color: '#818cf8', textAlign: 'center', marginBottom: 8, letterSpacing: 1 }}>Egoless Do</p>
-        <p style={{ fontSize: 16, color: '#888', textAlign: 'center', marginBottom: 32 }}>创建新账号</p>
+        <h1 style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, marginBottom: 4, textAlign: 'center' }}>心流纪</h1>
+        <p style={{ fontSize: FONT_BODY, color: '#818cf8', textAlign: 'center', marginBottom: 8, letterSpacing: 1 }}>Egoless Do</p>
+        <p style={{ fontSize: FONT_BODY, color: '#888', textAlign: 'center', marginBottom: 32 }}>创建新账号</p>
 
         <input type="text" placeholder="昵称" value={name} onChange={e => setName(e.target.value)} required
           style={inputStyle} />
@@ -101,8 +102,8 @@ export default function RegisterPage() {
             onChange={e => { setEmail(e.target.value); setEmailStatus('idle'); }}
             onBlur={handleEmailBlur} required style={inputStyle} />
           {emailStatus === 'checking' && <span style={statusStyle}>检查中...</span>}
-          {emailStatus === 'ok' && <span style={{ ...statusStyle, color: '#10b981' }}>✓ 可用</span>}
-          {emailStatus === 'taken' && <span style={{ ...statusStyle, color: '#ef4444' }}>✗ 已注册</span>}
+          {emailStatus === 'ok' && <span style={{ ...statusStyle, color: '#10b981' }}><Check size={16} style={{verticalAlign:'middle',marginRight:2}} />可用</span>}
+          {emailStatus === 'taken' && <span style={{ ...statusStyle, color: '#ef4444' }}><X size={16} style={{verticalAlign:'middle',marginRight:2}} />已注册</span>}
         </div>
 
         <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
@@ -123,7 +124,7 @@ export default function RegisterPage() {
         <input type="password" placeholder="确认密码" value={confirm} onChange={e => setConfirm(e.target.value)} required
           style={inputStyle} />
 
-        {error && <p style={{ color: '#ef4444', fontSize: 16, marginBottom: 12 }}>{error}</p>}
+        {error && <p style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>{error}</p>}
 
         <button type="submit" disabled={loading || emailStatus === 'taken'} style={{
           ...btnStyle, opacity: (loading || emailStatus === 'taken') ? 0.6 : 1,
@@ -131,7 +132,7 @@ export default function RegisterPage() {
           {loading ? '注册中...' : '注册'}
         </button>
 
-        <p style={{ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#888' }}>
+        <p style={{ textAlign: 'center', marginTop: 20, fontSize: FONT_BODY, color: '#888' }}>
           已有账号？{' '}
           <Link href="/login" style={{ color: '#818cf8', textDecoration: 'none' }}>登录</Link>
         </p>
@@ -143,22 +144,22 @@ export default function RegisterPage() {
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '14px 16px', marginBottom: 14, borderRadius: 10,
   border: '1px solid rgba(255,255,255,.12)', background: 'rgba(255,255,255,.06)',
-  color: '#fff', fontSize: 16, outline: 'none', boxSizing: 'border-box',
+  color: '#fff', fontSize: FONT_BODY, outline: 'none', boxSizing: 'border-box',
 };
 
 const btnStyle: React.CSSProperties = {
   width: '100%', padding: 14, borderRadius: 10, border: 'none',
-  background: '#6366f1', color: '#fff', fontSize: 16, fontWeight: 600,
+  background: '#6366f1', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600,
   cursor: 'pointer', marginTop: 8,
 };
 
 const sendBtnStyle: React.CSSProperties = {
   padding: '14px 16px', borderRadius: 10, border: 'none',
-  background: '#818cf8', color: '#fff', fontSize: 16, fontWeight: 600,
+  background: '#818cf8', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600,
   whiteSpace: 'nowrap', flexShrink: 0,
 };
 
 const statusStyle: React.CSSProperties = {
   position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
-  fontSize: 16, pointerEvents: 'none',
+  fontSize: FONT_SUB, pointerEvents: 'none',
 };

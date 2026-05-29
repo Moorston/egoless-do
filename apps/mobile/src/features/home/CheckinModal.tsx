@@ -1,69 +1,138 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View, Text, Modal, ScrollView, TouchableOpacity, TextInput,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT, Toggle, ThemedInput, PrimaryButton, OutlineButton } from '../../components/UI';
-import { COLORS, dateStr, getTodayFoodLog } from '@egoless-do/core';
+import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_LABEL } from '@egoless-do/core';
+import type { CheckinEntry } from '@egoless-do/core';
+import {
+  Hand, Utensils, Droplets, Star, PersonStanding, Sparkles,
+  ClipboardList, CheckCircle2, Circle, Pencil, X, Check,
+} from 'lucide-react-native';
+
+function parseExistingNote(raw: string): { userNote: string; practices: string[]; customs: string[]; fasted: boolean; waterMl: number; habits: string[] } {
+  if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
+  try {
+    const data = JSON.parse(raw);
+    if (typeof data === 'object' && data !== null) {
+      return {
+        userNote: data.note ?? '',
+        practices: data.practices ?? [],
+        customs: data.customs ?? [],
+        fasted: !!data.fasted,
+        waterMl: typeof data.water === 'number' ? data.water : 0,
+        habits: data.habits ?? [],
+      };
+    }
+  } catch {
+    // legacy format
+  }
+  return { userNote: raw, practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
+}
 
 export default function CheckinModal({ onClose }: { onClose: () => void }) {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
   const store = useAppStore();
+  const weightUnit = useAppStore(s => s.weightUnit);
+  const today = dateStr();
 
-  // Calculate today's total calories from foodLog
+  // Load existing checkin for re-edit support
+  const existing = useMemo(() =>
+    (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === today),
+    [store.checkinHistory, today],
+  );
+  const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
+
   const totalCal = useMemo(
-    () => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? f.cal ?? 0), 0),
+    () => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + f.calories, 0),
     [store.foodLog],
   );
 
-  const [weight, setWeight]       = useState('65');
-  const [fasted, setFasted]       = useState(false);
-  const [water, setWater]         = useState(() => {
-    const waterMl = store.waterMl ?? 0;
-    if (waterMl >= 2000) return '>2000ml';
-    if (waterMl >= 1500) return '2000ml';
-    if (waterMl >= 1000) return '1500ml';
-    if (waterMl >= 500) return '1000ml';
-    if (waterMl > 0) return '500ml';
-    return '';
+  // Today's plan items
+  const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
+  const todayPlanItems = useMemo(() => {
+    if (!activePlan) return [];
+    return getTodayItems(store.planItems ?? [], activePlan, today);
+  }, [store.planItems, activePlan, today]);
+  const planCheckins = store.planItemCheckins ?? [];
+  const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    if (!activePlan) return initial;
+    const items = (store.planItems ?? []).filter(i => !i.deleted && i.planId === activePlan.id);
+    items.forEach(item => {
+      if (item.link === 'manual') {
+        initial[item.id] = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
+      }
+    });
+    return initial;
   });
-  const [practices, setPractices] = useState({ sit:false, stand:false, chant:false });
-  const [note, setNote]           = useState('');
-  const [freeItems, setFreeItems] = useState<{ id:string; name:string }[]>([]);
-  const [freeCheckins, setFreeCheckins] = useState<Record<string, boolean>>({});
-  const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>({});
-  const [localDone, setLocalDone] = useState<boolean | null>(null);
 
-  const submit = () => {
+  // Pre-fill from existing checkin
+  const [weight, setWeight] = useState(() => existing?.weight != null ? String(existing.weight) : '65');
+  const [fasted, setFasted] = useState(() => parsed.fasted);
+  const [waterMl, setWaterMl] = useState(() => parsed.waterMl || (store.waterMl ?? 0));
+  const [showFoodAdd, setShowFoodAdd] = useState(false);
+  const [foodName, setFoodName] = useState('');
+  const [foodCal, setFoodCal] = useState('');
+  const [foodNote, setFoodNote] = useState('');
+  const [practices, setPractices] = useState(() => ({
+    sit: parsed.practices.includes('sit'),
+    stand: parsed.practices.includes('stand'),
+    chant: parsed.practices.includes('chant'),
+  }));
+  const [note, setNote] = useState(() => parsed.userNote);
+  const [freeItems, setFreeItems] = useState<{ id: string; name: string }[]>(
+    () => parsed.customs.map((name, i) => ({ id: `existing-${i}`, name })),
+  );
+  const [freeCheckins, setFreeCheckins] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(parsed.customs.map((_, i) => [`existing-${i}`, true])),
+  );
+  const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>({});
+  const [localDone, setLocalDone] = useState<boolean | null>(() => existing?.done ?? null);
+
+  const submit = useCallback(() => {
     if (localDone === null) return;
-    const today = dateStr();
     // Process habit checkins
     Object.entries(habitCheckins).forEach(([id, checked]) => {
       if (checked) store.checkinHabit(id, today);
     });
-    // Set water amount (not add, but set to the selected value)
-    const waterMap: Record<string, number> = { '500ml': 500, '1000ml': 1000, '1500ml': 1500, '2000ml': 2000, '>2000ml': 2500 };
-    if (water && waterMap[water]) {
-      // Reset water first, then add the selected amount
-      store.resetWater();
-      store.addWater(waterMap[water]);
-    }
-    // Build enhanced note with practices and free items
-    const parts = [note];
-    if (practices.sit) parts.push(`🧘${T('checkinSit')}`);
-    if (practices.stand) parts.push(`🧍${T('checkinStand')}`);
-    if (practices.chant) parts.push(`📿${T('checkinSutra')}`);
-    freeItems.forEach(item => {
-      if (freeCheckins[item.id] && item.name) parts.push(`✓${item.name}`);
+    // Save plan item toggles
+    Object.entries(planToggles).forEach(([itemId, desired]) => {
+      const current = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
+      if (desired && !current) store.checkinPlanItem(itemId);
+      if (!desired && current) store.uncheckinPlanItem(itemId);
     });
-    if (totalCal > 0) parts.push(`🍽${totalCal}kcal`);
+    // Set water amount directly
+    if (waterMl > 0) {
+      store.resetWater();
+      store.addWater(waterMl);
+    }
+    // Build structured JSON note (same format as web)
+    const noteData: Record<string, unknown> = {};
+    if (note) noteData.note = note;
+    if (fasted) noteData.fasted = true;
+    if (waterMl > 0) noteData.water = waterMl;
+    const pr: string[] = [];
+    if (practices.sit) pr.push('sit');
+    if (practices.stand) pr.push('stand');
+    if (practices.chant) pr.push('chant');
+    if (pr.length) noteData.practices = pr;
+    const customs = freeItems.filter(item => freeCheckins[item.id] && item.name).map(item => item.name);
+    if (customs.length) noteData.customs = customs;
+    const checkedHabits = Object.entries(habitCheckins)
+      .filter(([, checked]) => checked)
+      .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
+      .filter(Boolean);
+    if (checkedHabits.length) noteData.habits = checkedHabits;
+    if (totalCal > 0) noteData.food = totalCal;
     const weightNum = weight ? parseFloat(weight) : undefined;
-    store.submitCheckin(localDone, parts.filter(Boolean).join(' · '), undefined, weightNum);
+    store.submitCheckin(localDone, JSON.stringify(noteData), undefined, weightNum);
     onClose();
-  };
+  }, [localDone, habitCheckins, planToggles, planCheckins, today, waterMl, note, fasted, practices, freeItems, freeCheckins, totalCal, weight, store, onClose]);
 
   return (
     <Modal visible animationType="slide" transparent>
@@ -80,18 +149,18 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
             flexDirection:'row', justifyContent:'space-between',
             alignItems:'center', paddingTop:20, paddingBottom:4,
           }}>
-            <Text style={{ color:TH.text, fontWeight:'700', fontSize:18 }}>{T('checkinTitle')}</Text>
+            <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('checkinTitle')}</Text>
             <TouchableOpacity onPress={onClose}>
-              <Text style={{ color:TH.sub, fontSize:26 }}>×</Text>
+              <X size={26} color={TH.sub} />
             </TouchableOpacity>
           </View>
-          <Text style={{ color:TH.sub, fontSize:16, textAlign:'center', marginBottom:20 }}>
+          <Text style={{ color:TH.sub, fontSize:FONT_BODY, textAlign:'center', marginBottom:20 }}>
             {T('checkinSubtitle')}
           </Text>
           <ScrollView showsVerticalScrollIndicator={false}>
 
             {/* Weight */}
-            <Text style={{ color:TH.sub, fontSize:16, marginBottom:6 }}>{T('checkinWeight')}</Text>
+            <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:6 }}>{T('checkinWeight')}</Text>
             <View style={{
               flexDirection:'row', alignItems:'center',
               borderWidth:1, borderColor:TH.border, borderRadius:10,
@@ -103,61 +172,88 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                 placeholder="..."
                 placeholderTextColor={TH.sub}
                 keyboardType="numeric"
-                style={{ flex:1, alignItems:'center', paddingVertical:8, color:TH.text, fontWeight:'600', fontSize:16, textAlign:'center' }}
+                style={{ flex:1, alignItems:'center', paddingVertical:8, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, textAlign:'center' }}
               />
               <View style={{ flex:1, alignItems:'center', paddingVertical:8 }}>
-                <Text style={{ color:TH.sub, fontSize:16 }}>{T('checkinKg')}</Text>
+                <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
               </View>
             </View>
 
             {/* Fasted */}
-            <RowItem label={T('checkinAbstinence')} icon="🙏"
+            <RowItem label={T('checkinAbstinence')} icon={<Hand size={18} color={TH.text} />}
               right={<Toggle on={fasted} onChange={() => setFasted(v => !v)} />} />
 
-            {/* Today's food calories display */}
+            {/* Today's food calories display + add */}
             <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>
               <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                  <Text style={{ fontSize:18 }}>🍽</Text>
+                  <Utensils size={18} color={TH.text} />
                   <Text style={{ color:TH.text }}>{T('checkinFood')}</Text>
                 </View>
-                <View style={{ flexDirection:'row', alignItems:'baseline', gap:4 }}>
-                  <Text style={{ fontSize:18, fontWeight:'600', color:P }}>{totalCal}</Text>
-                  <Text style={{ color:TH.sub, fontSize:14 }}>kcal</Text>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+                  <Text style={{ fontSize:FONT_TITLE, fontWeight:'600', color:P }}>{totalCal}</Text>
+                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>kcal</Text>
+                  <TouchableOpacity onPress={() => setShowFoodAdd(!showFoodAdd)}
+                    style={{ width:24, height:24, borderRadius:12, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
+                    <Text style={{ color:'#fff', fontSize:FONT_BUTTON }}>+</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
+              {showFoodAdd && (
+                <View style={{ marginTop:10, padding:10, backgroundColor:TH.card, borderRadius:10, borderWidth:1, borderColor:TH.border }}>
+                  <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
+                    <ThemedInput value={foodName} onChangeText={setFoodName} placeholder={T('foodName')} style={{ flex:2, padding:7 }} />
+                    <ThemedInput value={foodCal} onChangeText={setFoodCal} placeholder={T('calories2')} keyboardType="numeric" style={{ flex:1, padding:7 }} />
+                  </View>
+                  <View style={{ flexDirection:'row', gap:8 }}>
+                    <TouchableOpacity onPress={() => { if (foodName.trim()) { store.addFood({ name: foodName, calories: +foodCal || 0, note: foodNote, timestamp: Date.now() }); setFoodName(''); setFoodCal(''); setFoodNote(''); setShowFoodAdd(false); } }}
+                      style={{ flex:1, padding:8, borderRadius:8, backgroundColor:COLORS.ORANGE, alignItems:'center' }}>
+                      <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON }}>{T('confirm')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
+                      style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor:TH.border, alignItems:'center' }}>
+                      <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{T('commonCancel')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
             </View>
 
             {/* Water */}
             <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>
               <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
-                <Text style={{ fontSize:18 }}>💧</Text>
+                <Droplets size={18} color={TH.text} />
                 <Text style={{ color:TH.text }}>{T('checkinWater')}</Text>
               </View>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:6 }}>
-                {['500ml','1000ml','1500ml','2000ml','>2000ml'].map(v => (
-                  <TouchableOpacity key={v} onPress={() => setWater(v)}
-                    style={{
-                      paddingHorizontal:10, paddingVertical:6, borderRadius:8,
-                      borderWidth:1, borderColor: water===v ? P : TH.border,
-                      backgroundColor: water===v ? `${P}30` : 'transparent',
-                    }}>
-                    <Text style={{ color: water===v ? '#fff' : TH.sub, fontSize:16 }}>{v}</Text>
-                  </TouchableOpacity>
-                ))}
+              <View style={{
+                flexDirection:'row', alignItems:'center',
+                borderWidth:1, borderColor:TH.border, borderRadius:10,
+                backgroundColor:TH.card,
+              }}>
+                <TextInput
+                  value={waterMl ? String(waterMl) : ''}
+                  onChangeText={v => setWaterMl(Math.max(0, parseInt(v) || 0))}
+                  placeholder="0"
+                  placeholderTextColor={TH.sub}
+                  keyboardType="numeric"
+                  style={{ flex:1, alignItems:'center', paddingVertical:8, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, textAlign:'center' }}
+                />
+                <View style={{ flex:1, alignItems:'center', paddingVertical:8 }}>
+                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>ml</Text>
+                </View>
               </View>
             </View>
 
             {/* Practices */}
             <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>
               <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
-                <Text style={{ fontSize:18 }}>⭐</Text>
-                <Text style={{ fontWeight:'600', color:TH.text }}>{T('checkinPractice')}</Text>
+                <Star size={18} color={TH.text} />
+                <Text style={{ fontWeight:'600', color:TH.text, fontSize:FONT_LABEL }}>{T('checkinPractice')}</Text>
               </View>
               {([
-                { key:'sit' as const,   icon:'🧘', label:T('checkinSit') },
-                { key:'stand' as const, icon:'🧍', label:T('checkinStand') },
-                { key:'chant' as const, icon:'📿', label:T('checkinSutra') },
+                { key:'sit' as const,   icon:<PersonStanding size={20} color={TH.text} />, label:T('checkinSit') },
+                { key:'stand' as const, icon:<PersonStanding size={20} color={TH.text} />, label:T('checkinStand') },
+                { key:'chant' as const, icon:<Sparkles size={20} color={TH.text} />, label:T('checkinSutra') },
               ]).map(({ key, icon, label }) => (
                 <View key={key} style={{
                   flexDirection:'row', alignItems:'center',
@@ -165,18 +261,54 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                   borderBottomWidth:1, borderBottomColor:TH.border,
                 }}>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
-                    <Text style={{ fontSize:20 }}>{icon}</Text>
-                    <Text style={{ color:TH.text, fontSize:16 }}>{label}</Text>
+                    {icon}
+                    <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{label}</Text>
                   </View>
                   <Toggle on={practices[key]} onChange={() => setPractices(p => ({ ...p, [key]:!p[key] }))} />
                 </View>
               ))}
             </View>
 
+            {/* Today's plan items */}
+            {todayPlanItems.length > 0 && (
+              <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
+                  <ClipboardList size={18} color={TH.text} />
+                  <Text style={{ fontWeight:'600', color:TH.text, fontSize:FONT_LABEL }}>{T('planTodoList')}</Text>
+                </View>
+                {todayPlanItems.map(item => {
+                  const done = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
+                  const isManual = item.link === 'manual';
+                  return (
+                    <View key={item.id} style={{
+                      flexDirection:'row', alignItems:'center',
+                      justifyContent:'space-between', paddingVertical:10,
+                      borderBottomWidth:1, borderBottomColor:TH.border,
+                    }}>
+                      <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
+                        <ClipboardList size={16} color={TH.text} />
+                        <View>
+                          <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{item.name}</Text>
+                          <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>
+                            {isManual ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
+                          </Text>
+                        </View>
+                      </View>
+                      {isManual ? (
+                        <Toggle on={!!planToggles[item.id]} onChange={() => setPlanToggles(c => ({ ...c, [item.id]: !c[item.id] }))} />
+                      ) : (
+                        done ? <CheckCircle2 size={16} color={COLORS.GREEN} /> : <Circle size={16} color={TH.sub} />
+                      )}
+                    </View>
+                  );
+                })}
+              </View>
+            )}
+
             {/* Habit checkin */}
             {(store.habits ?? []).filter(h => h.status==='inProgress').length > 0 && (
               <>
-                <Text style={{ color:TH.sub, fontSize:16, fontWeight:'600', marginTop:16, marginBottom:8 }}>
+                <Text style={{ color:TH.sub, fontSize:FONT_LABEL, fontWeight:'600', marginTop:16, marginBottom:8 }}>
                   {T('checkinHabitCheck')}
                 </Text>
                 {(store.habits ?? []).filter(h => h.status==='inProgress').map(h => (
@@ -186,10 +318,10 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                     borderBottomWidth:1, borderBottomColor:TH.border,
                   }}>
                     <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
-                      <Text style={{ fontSize:16 }}>◇</Text>
+                      <Star size={16} color={TH.text} />
                       <View>
-                        <Text style={{ color:TH.text, fontSize:16 }}>{h.name}</Text>
-                        <Text style={{ color:TH.sub, fontSize:16 }}>{h.streak} {T('checkinStreak')}</Text>
+                        <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{h.name}</Text>
+                        <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
                       </View>
                     </View>
                     <Toggle on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins(c => ({ ...c, [h.id]:!c[h.id] }))} />
@@ -202,12 +334,12 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
             <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>
               <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginBottom:10 }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                  <Text style={{ fontSize:18 }}>✎</Text>
-                  <Text style={{ fontWeight:'600', color:TH.text }}>{T('checkinCustom')}</Text>
+                  <Pencil size={18} color={TH.text} />
+                  <Text style={{ fontWeight:'600', color:TH.text, fontSize:FONT_LABEL }}>{T('checkinCustom')}</Text>
                 </View>
                 <TouchableOpacity onPress={() => setFreeItems(f => [...f, { id:String(Date.now()), name:'' }])}
                   style={{ width:28, height:28, borderRadius:14, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
-                  <Text style={{ color:'#fff', fontSize:18 }}>+</Text>
+                  <Text style={{ color:'#fff', fontSize:FONT_TITLE }}>+</Text>
                 </TouchableOpacity>
               </View>
               {freeItems.map((item, idx) => (
@@ -225,7 +357,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
 
             {/* Note */}
             <View style={{ paddingVertical:14 }}>
-              <Text style={{ color:TH.sub, fontSize:16, marginBottom:8 }}>{T('checkinNote')}</Text>
+              <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:8 }}>{T('checkinNote')}</Text>
               <ThemedInput value={note} onChangeText={setNote} placeholder={T('checkinNotePlaceholder')} multiline numberOfLines={3} />
             </View>
 
@@ -238,7 +370,10 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                   borderColor: localDone===false ? COLORS.RED : TH.border,
                   backgroundColor: localDone===false ? 'rgba(239,68,68,.15)' : 'transparent',
                 }}>
-                <Text style={{ fontWeight:'700', fontSize:16, color: localDone===false ? COLORS.RED : TH.sub }}>✗ {T('checkinNotDone')}</Text>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                  <X size={16} color={localDone===false ? COLORS.RED : TH.sub} />
+                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===false ? COLORS.RED : TH.sub }}>{T('checkinNotDone')}</Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setLocalDone(true)}
                 style={{
@@ -247,7 +382,10 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                   borderColor: localDone===true ? COLORS.GREEN : TH.border,
                   backgroundColor: localDone===true ? 'rgba(16,185,129,.15)' : 'transparent',
                 }}>
-                <Text style={{ fontWeight:'700', fontSize:16, color: localDone===true ? COLORS.GREEN : TH.sub }}>✓ {T('checkinDone')}</Text>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                  <Check size={16} color={localDone===true ? COLORS.GREEN : TH.sub} />
+                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===true ? COLORS.GREEN : TH.sub }}>{T('checkinDone')}</Text>
+                </View>
               </TouchableOpacity>
             </View>
 
@@ -264,7 +402,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-function RowItem({ label, icon, right, last }: { label:string; icon:string; right:React.ReactNode; last?:boolean }) {
+function RowItem({ label, icon, right, last }: { label:string; icon:React.ReactNode; right:React.ReactNode; last?:boolean }) {
   const TH = useTheme();
   return (
     <View style={{
@@ -273,8 +411,8 @@ function RowItem({ label, icon, right, last }: { label:string; icon:string; righ
       borderBottomWidth: last ? 0 : 1, borderBottomColor: TH.border,
     }}>
       <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
-        <Text style={{ fontSize:18 }}>{icon}</Text>
-        <Text style={{ color:TH.text, fontSize:16 }}>{label}</Text>
+        {typeof icon === 'string' ? <Text style={{ fontSize:FONT_TITLE }}>{icon}</Text> : icon}
+        <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{label}</Text>
       </View>
       {right}
     </View>

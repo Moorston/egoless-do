@@ -1,6 +1,6 @@
 // ─── All SQL query helpers ────────────────────────────────────────
 import type { SQLiteDatabase } from 'expo-sqlite';
-import type { Habit, MindReflection, FoodEntry, CheckinRecord, FastingSession } from '@egoless-do/core';
+import type { Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession } from '@egoless-do/core';
 
 // ── Habits ────────────────────────────────────────────────────────
 export async function dbGetAllHabits(db: SQLiteDatabase): Promise<Habit[]> {
@@ -37,9 +37,9 @@ export async function dbInsertReflection(db: SQLiteDatabase, r: MindReflection):
     INSERT OR IGNORE INTO mind_reflections
     (id,created_at,content,tags,mood,card_theme,linked_habit_id,is_pinned,is_published,synced)
     VALUES (?,?,?,?,?,?,?,?,?,?)`,
-    [r.id, r.created_at, r.content, JSON.stringify(r.tags), r.mood ?? null,
-     r.card_theme ?? null, r.linked_habit_id ?? null,
-     r.is_pinned ? 1 : 0, r.is_published ? 1 : 0, r.synced]
+    [r.id, r.timestamp, r.content, JSON.stringify(r.tags), r.mood ?? null,
+     r.cardTheme ?? null, r.linkedHabitId ?? null,
+     r.isPinned ? 1 : 0, r.isPublished ? 1 : 0, 0]
   );
 }
 
@@ -50,10 +50,10 @@ export async function dbGetFastingSessions(db: SQLiteDatabase): Promise<FastingS
   );
   return rows.map(r => ({
     id: r.id as string,
-    target_hours: r.target_hours as number,
-    started_at: r.started_at as number,
-    ended_at: r.ended_at as number | undefined,
-    estimated_kcal: r.estimated_kcal as number | undefined,
+    targetHours: r.target_hours as number,
+    startedAt: r.started_at as number,
+    endedAt: r.ended_at as number | undefined,
+    estimatedKcal: r.estimated_kcal as number | undefined,
     insight: r.insight as string | undefined,
   }));
 }
@@ -63,8 +63,8 @@ export async function dbUpsertFastingSession(db: SQLiteDatabase, s: FastingSessi
     INSERT OR REPLACE INTO fasting_sessions
     (id,target_hours,started_at,ended_at,estimated_kcal,insight)
     VALUES (?,?,?,?,?,?)`,
-    [s.id, s.target_hours, s.started_at, s.ended_at ?? null,
-     s.estimated_kcal ?? null, s.insight ?? null]
+    [s.id, s.targetHours, s.startedAt, s.endedAt ?? null,
+     s.estimatedKcal ?? null, s.insight ?? null]
   );
 }
 
@@ -75,28 +75,38 @@ export async function dbGetFoodEntries(db: SQLiteDatabase, date: string): Promis
   );
   return rows.map(r => ({
     id: r.id as string, name: r.name as string,
-    cal: r.cal as number, note: r.note as string, ts: r.ts as number,
+    calories: r.cal as number, note: r.note as string, timestamp: r.ts as number,
+  }));
+}
+
+export async function dbGetAllFoodEntries(db: SQLiteDatabase): Promise<FoodEntry[]> {
+  const rows = await db.getAllAsync<Record<string, unknown>>(
+    'SELECT * FROM food_entries ORDER BY ts DESC'
+  );
+  return rows.map(r => ({
+    id: r.id as string, name: r.name as string,
+    calories: r.cal as number, note: r.note as string, timestamp: r.ts as number,
   }));
 }
 
 export async function dbInsertFoodEntry(db: SQLiteDatabase, f: FoodEntry, date: string): Promise<void> {
   await db.runAsync(
     'INSERT OR IGNORE INTO food_entries(id,name,cal,note,entry_date,ts) VALUES(?,?,?,?,?,?)',
-    [f.id, f.name, f.cal, f.note, date, f.ts]
+    [f.id, f.name, f.calories, f.note, date, f.timestamp]
   );
 }
 
 // ── Checkins ──────────────────────────────────────────────────────
-export async function dbGetCheckins(db: SQLiteDatabase): Promise<CheckinRecord[]> {
-  return db.getAllAsync<CheckinRecord>(
-    'SELECT date,done,note,streak FROM checkin_records ORDER BY date DESC'
+export async function dbGetCheckins(db: SQLiteDatabase): Promise<CheckinEntry[]> {
+  return db.getAllAsync<CheckinEntry>(
+    'SELECT date,done,note,streak,weight,timestamp FROM checkin_records ORDER BY date DESC'
   );
 }
 
-export async function dbUpsertCheckin(db: SQLiteDatabase, c: CheckinRecord): Promise<void> {
+export async function dbUpsertCheckin(db: SQLiteDatabase, c: CheckinEntry): Promise<void> {
   await db.runAsync(
-    'INSERT OR REPLACE INTO checkin_records(date,done,note,streak) VALUES(?,?,?,?)',
-    [c.date, c.done ? 1 : 0, c.note, c.streak]
+    'INSERT OR REPLACE INTO checkin_records(date,done,note,streak,weight,timestamp) VALUES(?,?,?,?,?,?)',
+    [c.date, c.done ? 1 : 0, c.note, c.streak, c.weight ?? null, c.timestamp ?? null]
   );
 }
 
@@ -122,14 +132,14 @@ function rowToHabit(r: Record<string, unknown>): Habit {
 function rowToReflection(r: Record<string, unknown>): MindReflection {
   return {
     id: r.id as string,
-    created_at: r.created_at as number,
+    timestamp: r.created_at as number,
     content: r.content as string,
     tags: JSON.parse((r.tags as string) ?? '[]'),
     mood: r.mood as MindReflection['mood'],
-    card_theme: r.card_theme as string | undefined,
-    linked_habit_id: r.linked_habit_id as string | undefined,
-    is_pinned: (r.is_pinned as number) === 1,
-    is_published: (r.is_published as number) === 1,
-    synced: (r.synced as number) as 0 | 1,
+    cardTheme: r.card_theme as string | undefined,
+    linkedHabitId: r.linked_habit_id as string | undefined,
+    isPinned: (r.is_pinned as number) === 1,
+    isPublished: (r.is_published as number) === 1,
+    colors: ['#6366f1', '#8b5cf6'],
   };
 }

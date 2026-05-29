@@ -21,6 +21,10 @@ export function useSync() {
     setSyncTokenProvider(() => useAppStore.getState().auth.token);
     setSyncChangeHandler((patch) => {
       useAppStore.setState(patch);
+      // Recalculate streak after syncing checkin records
+      if (patch.checkinHistory) {
+        useAppStore.getState().calculateStreak();
+      }
     });
   }, []);
 

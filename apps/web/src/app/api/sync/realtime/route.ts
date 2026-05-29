@@ -1,29 +1,7 @@
 import { NextRequest } from 'next/server';
 import { verifyAuth } from '../../_auth';
 import { getPb } from '../../_pb';
-
-// ── Entity → PocketBase collection mapping ───────────────────────
-const ENTITY_COLLECTION: Record<string, string> = {
-  habit:      'habits',
-  reflection: 'reflections',
-  fasting:    'fasting_sessions',
-  food:       'food_entries',
-  checkin:    'checkin_records',
-  meditation: 'meditation_history',
-  profile:    'user_profiles',
-  exercise:   'exercise_entries',
-};
-
-const ENTITY_ID_FIELD: Record<string, string> = {
-  habit:      'habit_id',
-  reflection: 'reflection_id',
-  fasting:    'session_id',
-  food:       'food_id',
-  checkin:    'date',
-  meditation: 'date',
-  profile:    'profile_id',
-  exercise:   'exercise_id',
-};
+import { ENTITY_COLLECTION, ENTITY_ID_FIELD, type SyncEntity } from '@egoless-do/core';
 
 /** Safely read the JSON `data` field from a PocketBase record. */
 function getPayload(record: any): Record<string, unknown> {
@@ -66,7 +44,8 @@ export async function GET(req: NextRequest) {
         try {
           const changes: any[] = [];
 
-          for (const [entity, collection] of Object.entries(ENTITY_COLLECTION)) {
+          for (const [entityKey, collection] of Object.entries(ENTITY_COLLECTION)) {
+            const entity = entityKey as SyncEntity;
             try {
               const records = await pb.collection(collection).getFullList({
                 filter: `user_id = "${userId}" && updated >= "${lastPollTime}"`,

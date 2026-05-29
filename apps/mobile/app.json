@@ -21,6 +21,7 @@
       "bundleIdentifier": "com.egolessdo.app",
       "buildNumber": "1",
       "infoPlist": {
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "允许心流纪在后台访问位置以记录运动轨迹",
         "NSLocationWhenInUseUsageDescription": "用于记录运动轨迹和全球打卡地图",
         "NSHealthShareUsageDescription": "用于读取健康数据，追踪运动目标",
         "NSHealthUpdateUsageDescription": "用于将运动记录写入 Health",
@@ -43,7 +44,10 @@
         "ACCESS_COARSE_LOCATION",
         "ACTIVITY_RECOGNITION",
         "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE"
+        "VIBRATE",
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.READ_WEIGHT",
+        "android.permission.health.WRITE_EXERCISE"
       ]
     },
     "web": {

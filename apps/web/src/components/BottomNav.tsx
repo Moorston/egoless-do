@@ -1,11 +1,11 @@
 'use client';
 
-import { THEMES, t } from '@egoless-do/core';
+import { THEMES, t, FONT_BUTTON } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 
 interface TabDef {
   key: string;
-  icon: string;
+  Icon: React.ComponentType<{ size?: number; color?: string }>;
   labelKey: string;
 }
 
@@ -35,8 +35,8 @@ export default function BottomNav({ tabs, activeTab, onTabChange }: {
             style={{ flex: 1, border: 'none', background: 'transparent', cursor: 'pointer',
               color: activeTab === idx ? P : TH.sub,
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '4px 0' }}>
-            <span style={{ fontSize: 20 }}>{t.icon}</span>
-            <span style={{ fontSize: 15 }}>{T(t.labelKey)}</span>
+            <t.Icon size={20} />
+            <span style={{ fontSize: FONT_BUTTON }}>{T(t.labelKey)}</span>
           </button>
         );
       })}

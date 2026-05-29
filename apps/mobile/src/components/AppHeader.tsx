@@ -1,18 +1,27 @@
-import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useMemo, useRef, useEffect } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, t } from '@egoless-do/core';
+import { THEMES, t, COLORS, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
+import {
+  Home, ClipboardList, Timer, Binary, Sparkles, Dumbbell,
+  Target, BarChart3, Settings, Flame,
+} from 'lucide-react-native';
+
+const TAB_ICONS_MAP: Record<string, React.ComponentType<any>> = {
+  home: Home, plan: ClipboardList, fasting: Timer, meditation: Binary,
+  reflections: Sparkles, exercise: Dumbbell, habits: Target,
+  stats: BarChart3, settings: Settings,
+};
 
 const TABS = [
-  { key: 'home',        icon: '🏠', labelKey: 'home' },
-  { key: 'fasting',     icon: '⏱', labelKey: 'fasting' },
-  { key: 'meditation',  icon: '☯', labelKey: 'meditation' },
-  { key: 'reflections', icon: '✦', labelKey: 'reflections' },
-  { key: 'exercise',    icon: '🏃', labelKey: 'exercise' },
-  { key: 'habits',      icon: '◇', labelKey: 'habits' },
-  { key: 'stats',       icon: '◈', labelKey: 'stats' },
-  { key: 'settings',    icon: '⚙', labelKey: 'settings' },
+  { key: 'home',        labelKey: 'home' },
+  { key: 'plan',        labelKey: 'plan' },
+  { key: 'fasting',     labelKey: 'fasting' },
+  { key: 'meditation',  labelKey: 'meditation' },
+  { key: 'reflections', labelKey: 'reflections' },
+  { key: 'exercise',    labelKey: 'exercise' },
+  { key: 'habits',      labelKey: 'habits' },
 ];
 
 interface AppHeaderProps {
@@ -25,6 +34,8 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
   const streak = useAppStore(s => s.streak);
   const language = useAppStore(s => s.language);
   const insets = useSafeAreaInsets();
+  const scrollRef = useRef<ScrollView>(null);
+  const tabPositions = useRef<Record<string, number>>({});
 
   const TH = THEMES[theme];
   const P = TH.primary;
@@ -34,24 +45,38 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
     month: 'long', day: 'numeric', weekday: 'short',
   }), []);
 
+  // Scroll to active tab when it changes
+  useEffect(() => {
+    if (activeTab && tabPositions.current[activeTab] !== undefined) {
+      const x = tabPositions.current[activeTab];
+      scrollRef.current?.scrollTo({ x: Math.max(0, x - 50), animated: true });
+    }
+  }, [activeTab]);
+
+  const handleTabLayout = (key: string, x: number) => {
+    tabPositions.current[key] = x;
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: TH.bg, paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <View>
-          <Text style={[styles.brand, { color: TH.sub }]}>Egoless Do</Text>
-          <Text style={[styles.appName, { color: TH.text }]}>{T('appName')}</Text>
-        </View>
+        <Image
+          source={require('../../assets/header-logo.png')}
+          style={{ width: 108, height: 54 }}
+          resizeMode="contain"
+        />
         <View style={styles.streakBox}>
           <Text style={[styles.streakLabel, { color: TH.sub }]}>{T('streak')}</Text>
-          <Text style={[styles.streakValue, { color: P }]}>
-            {streak} <Text style={styles.streakUnit}>{T('days')} 🔥</Text>
+          <Text style={[styles.streakValue, { color: COLORS.ORANGE }]}>
+            {streak} <Text style={styles.streakUnit}>{T('days')} </Text><Flame size={20} color={COLORS.ORANGE} />
           </Text>
         </View>
       </View>
 
       {/* Header Tabs */}
       <ScrollView
+        ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.tabsContainer}
@@ -61,6 +86,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
           <TouchableOpacity
             key={tab.key}
             onPress={() => onTabChange?.(tab.key)}
+            onLayout={(e) => handleTabLayout(tab.key, e.nativeEvent.layout.x)}
             activeOpacity={0.7}
             hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
             style={[
@@ -68,13 +94,20 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
               { backgroundColor: activeTab === tab.key ? P : TH.card },
             ]}
           >
-            <Text style={[
-              styles.tabText,
-              { color: activeTab === tab.key ? '#fff' : TH.sub },
-              activeTab === tab.key && styles.tabTextActive,
-            ]}>
-              {tab.icon} {T(tab.labelKey)}
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              {(() => {
+                const Icon = TAB_ICONS_MAP[tab.key];
+                const isActive = activeTab === tab.key;
+                return Icon ? <Icon size={14} color={isActive ? '#fff' : TH.sub} strokeWidth={isActive ? 2.2 : 1.5} /> : null;
+              })()}
+              <Text style={[
+                styles.tabText,
+                { color: activeTab === tab.key ? '#fff' : TH.sub },
+                activeTab === tab.key && styles.tabTextActive,
+              ]}>
+                {T(tab.labelKey)}
+              </Text>
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -102,29 +135,29 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   brand: {
-    fontSize: 13,
+    fontSize: FONT_BODY,
     letterSpacing: 3,
     textTransform: 'uppercase',
     fontWeight: '500',
   },
   appName: {
     fontWeight: '700',
-    fontSize: 22,
+    fontSize: FONT_STAT_SECTION,
     marginTop: 2,
   },
   streakBox: {
     alignItems: 'flex-end',
   },
   streakLabel: {
-    fontSize: 13,
+    fontSize: FONT_SUB,
   },
   streakValue: {
     fontWeight: '800',
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: FONT_STAT_SECTION,
+    lineHeight: 42,
   },
   streakUnit: {
-    fontSize: 14,
+    fontSize: FONT_LABEL,
   },
   tabsContainer: {
     paddingHorizontal: 12,
@@ -139,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabText: {
-    fontSize: 15,
+    fontSize: FONT_BODY,
     fontWeight: '500',
   },
   tabTextActive: {
@@ -152,6 +185,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   dateText: {
-    fontSize: 14,
+    fontSize: FONT_SUB,
   },
 });

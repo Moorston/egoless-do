@@ -1,43 +1,55 @@
 'use client';
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useWebStore } from '../store/useWebStore';
-import { THEMES, t, setPocketbaseUrl } from '@egoless-do/core';
+import { THEMES, t, setPocketbaseUrl, FONT_BODY, FONT_BUTTON, FONT_CLOSE } from '@egoless-do/core';
 import { useReminder } from './useReminder';
 import { ErrorBoundary, useResponsive } from './helpers';
+import {
+  Home, ClipboardList, Timer, Brain, Sparkles, Dumbbell,
+  Target, BarChart3, Settings, Plus,
+} from 'lucide-react';
 import { useSync } from './useSync';
 import { OverlayContext, useOverlayState } from './useOverlay';
 import AppHeader from './AppHeader';
 import BottomNav from './BottomNav';
+import StarfieldBackground from './StarfieldBackground';
 import HomeTab from './HomeTab';
 import FastingTab from './FastingTab';
 import MeditateTab from './MeditateTab';
 import ReflectionsTab from './ReflectionsTab';
 import ExerciseTab from './ExerciseTab';
 import HabitsTab from './HabitsTab';
-import StatsTab from './StatsTab';
 import SettingsTab from './SettingsTab';
-import GlobalMapPage from './GlobalMapPage';
-import CheckinPage from './CheckinPage';
-import SportPage from './SportPage';
-import FastHistoryPage from './FastHistoryPage';
-import MedHistoryPage from './MedHistoryPage';
-import HistoryPage from './HistoryPage';
-import CheckinDetailPage from './CheckinDetailPage';
-import FoodLogPage from './FoodLogPage';
-import GracePage from './GracePage';
-import ExerciseHistoryPage from './ExerciseHistoryPage';
+
+// Lazy-loaded overlay pages (not needed on initial render)
+const GlobalMapPage = dynamic(() => import('./GlobalMapPage'), { ssr: false });
+const CheckinPage = dynamic(() => import('./CheckinPage'), { ssr: false });
+const SportPage = dynamic(() => import('./SportPage'), { ssr: false });
+const FastHistoryPage = dynamic(() => import('./FastHistoryPage'), { ssr: false });
+const MedHistoryPage = dynamic(() => import('./MedHistoryPage'), { ssr: false });
+const HistoryPage = dynamic(() => import('./HistoryPage'), { ssr: false });
+const CheckinDetailPage = dynamic(() => import('./CheckinDetailPage'), { ssr: false });
+const FoodLogPage = dynamic(() => import('./FoodLogPage'), { ssr: false });
+const GracePage = dynamic(() => import('./GracePage'), { ssr: false });
+const ExerciseHistoryPage = dynamic(() => import('./ExerciseHistoryPage'), { ssr: false });
+const StreakBreakPage = dynamic(() => import('./StreakBreakPage'), { ssr: false });
+const PlanCreatePage = dynamic(() => import('./PlanCreatePage'), { ssr: false });
+const PlanDetailPage = dynamic(() => import('./PlanDetailPage'), { ssr: false });
+const PlanHistoryPage = dynamic(() => import('./PlanHistoryPage'), { ssr: false });
+import PlanTab from './PlanTab';
 
 const TABS = [
-  { key: 'home',        icon: '🏠', labelKey: 'home'       },
-  { key: 'fasting',     icon: '⏱', labelKey: 'fasting'     },
-  { key: 'meditation',  icon: '☯', labelKey: 'meditation'  },
-  { key: 'reflections', icon: '✦', labelKey: 'reflections' },
-  { key: 'exercise',    icon: '🏃', labelKey: 'exercise'    },
-  { key: 'habits',      icon: '◇', labelKey: 'habits'      },
-  { key: 'stats',       icon: '◈', labelKey: 'stats'       },
-  { key: 'settings',    icon: '⚙', labelKey: 'settings'    },
+  { key: 'home',        Icon: Home,          labelKey: 'home'       },
+  { key: 'plan',        Icon: ClipboardList,  labelKey: 'plan'       },
+  { key: 'fasting',     Icon: Timer,          labelKey: 'fasting'     },
+  { key: 'meditation',  Icon: Brain,          labelKey: 'meditation'  },
+  { key: 'reflections', Icon: Sparkles,       labelKey: 'reflections' },
+  { key: 'exercise',    Icon: Dumbbell,       labelKey: 'exercise'    },
+  { key: 'habits',      Icon: Target,         labelKey: 'habits'      },
+  { key: 'settings',    Icon: Settings,       labelKey: 'settings'    },
 ];
 
 export default function AppShell() {
@@ -115,6 +127,16 @@ export default function AppShell() {
         return <GracePage onClose={overlayState.close} />;
       case 'exerciseHistory':
         return <ExerciseHistoryPage onClose={overlayState.close} />;
+      case 'streakBreak':
+        return <StreakBreakPage onClose={overlayState.close} />;
+      case 'planCreate':
+        return <PlanCreatePage planId={overlayProps.planId} onClose={overlayState.close} />;
+      case 'planDetail':
+        return overlayProps.planId
+          ? <PlanDetailPage planId={overlayProps.planId} onClose={overlayState.close} />
+          : null;
+      case 'planHistory':
+        return <PlanHistoryPage onClose={overlayState.close} />;
       default:
         return null;
     }
@@ -123,33 +145,39 @@ export default function AppShell() {
   return (
     <OverlayContext.Provider value={overlayState}>
       <ErrorBoundary>
-        <div style={{ maxWidth, margin: '0 auto', fontFamily: '-apple-system,system-ui,sans-serif', background: TH.bg, minHeight: '100dvh', color: TH.text, fontSize: 16, position: 'relative', paddingBottom: 80 }}>
+        <div style={{ maxWidth, margin: '0 auto', fontFamily: '-apple-system,system-ui,sans-serif', background: TH.bg, minHeight: '100dvh', color: TH.text, fontSize: FONT_BODY, position: 'relative', paddingBottom: 80 }}>
+          {TH.starfield && <StarfieldBackground />}
           <AppHeader />
 
           {/* Header Tabs */}
           <div style={{ display: 'flex', padding: '12px 12px 0', gap: 4, flexShrink: 0, overflowX: 'auto', position: 'relative', zIndex: 1 }}>
-            {TABS.map((t, i) => (
-              <button key={t.key} onClick={() => setTab(i)}
-                style={{ flexShrink: 0, padding: '7px 18px', border: 'none', borderRadius: 12, fontSize: 15, cursor: 'pointer',
+            {TABS.filter(t => t.key !== 'stats' && t.key !== 'settings').map((t) => {
+              const i = TABS.indexOf(t);
+              return (
+              <button key={t.key} onClick={() => {
+                setTab(i);
+              }}
+                style={{ flexShrink: 0, padding: '7px 18px', border: 'none', borderRadius: 12, fontSize: FONT_BUTTON, cursor: 'pointer',
                   background: tab === i ? TH.primary : TH.card, color: tab === i ? '#fff' : TH.sub, whiteSpace: 'nowrap' as const }}>
-                {t.icon} {T(t.labelKey)}
+                <t.Icon size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} /> {T(t.labelKey)}
               </button>
-            ))}
+              );
+            })}
           </div>
-          <div style={{ padding: '8px 16px 0', fontSize: 16, color: TH.sub, flexShrink: 0, position: 'relative', zIndex: 1 }}>
+          <div style={{ padding: '8px 16px 0', fontSize: FONT_BODY, color: TH.sub, flexShrink: 0, position: 'relative', zIndex: 1 }}>
             {T('today')} · {new Date().toLocaleDateString(store.language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
           </div>
 
           {/* Content */}
           <div style={{ padding: '12px 16px', position: 'relative', zIndex: 1 }}>
             {tab === 0 && <HomeTab />}
-            {tab === 1 && <FastingTab />}
-            {tab === 2 && <MeditateTab />}
-            {tab === 3 && <ReflectionsTab newMindTrigger={newMindTrigger} />}
-            {tab === 4 && <ExerciseTab />}
-            {tab === 5 && <HabitsTab />}
-            {tab === 6 && <StatsTab />}
-            {tab === 7 && <SettingsTab onOpenStats={() => setTab(6)} syncState={sync} />}
+            {tab === 1 && <PlanTab />}
+            {tab === 2 && <FastingTab />}
+            {tab === 3 && <MeditateTab />}
+            {tab === 4 && <ReflectionsTab newMindTrigger={newMindTrigger} />}
+            {tab === 5 && <ExerciseTab />}
+            {tab === 6 && <HabitsTab />}
+            {tab === 7 && <SettingsTab syncState={sync} />}
           </div>
 
           <BottomNav tabs={TABS} activeTab={tab} onTabChange={setTab} />
@@ -185,11 +213,11 @@ function FabButton({ onClick }: { onClick: () => void }) {
 
   const fabStyle: React.CSSProperties = pos
     ? { position: 'fixed', left: pos.x, top: pos.y, right: 'auto', bottom: 'auto', width: 52, height: 52, borderRadius: 26,
-        border: 'none', background: `linear-gradient(135deg,${P}99,${P})`, color: '#fff', fontSize: 24, cursor: 'pointer',
+        border: 'none', background: `linear-gradient(135deg,${P}99,${P})`, color: '#fff', fontSize: FONT_CLOSE, cursor: 'pointer',
         zIndex: 60, boxShadow: `0 4px 20px ${P}80`, display: 'flex', alignItems: 'center', justifyContent: 'center',
         touchAction: 'none' }
     : { position: 'fixed', bottom: 80, right: 'max(16px, calc((100% - 390px) / 2 + 16px))', width: 52, height: 52, borderRadius: 26,
-        border: 'none', background: `linear-gradient(135deg,${P}99,${P})`, color: '#fff', fontSize: 24, cursor: 'pointer',
+        border: 'none', background: `linear-gradient(135deg,${P}99,${P})`, color: '#fff', fontSize: FONT_CLOSE, cursor: 'pointer',
         zIndex: 60, boxShadow: `0 4px 20px ${P}80`, display: 'flex', alignItems: 'center', justifyContent: 'center',
         touchAction: 'none' };
 
@@ -204,7 +232,7 @@ function FabButton({ onClick }: { onClick: () => void }) {
       onTouchEnd={(e) => { if (!drag.current) onClick(); onEnd(); }}
       onClick={(e) => { if (drag.current) { e.preventDefault(); return; } onClick(); }}
       style={fabStyle}>
-      ✦
+      <Plus size={24} />
     </button>
   );
 }

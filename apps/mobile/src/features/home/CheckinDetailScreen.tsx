@@ -4,9 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { COLORS, calculateCheckinStreak } from '@egoless-do/core';
-import type { CheckinRecord } from '@egoless-do/core';
+import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_SUB, FONT_BACK } from '@egoless-do/core';
+import type { CheckinEntry } from '@egoless-do/core';
 import type { RootStackParamList } from '../../navigation';
+import { ChevronLeft, CheckCircle2, PenLine } from 'lucide-react-native';
 
 function formatTime(ts?: number, date?: string): string {
   if (ts) {
@@ -26,17 +27,17 @@ export default function CheckinDetailScreen() {
   const nav = useNavigation();
   const route = useRoute<DetailRoute>();
   const date = route.params?.date ?? '';
-  const record = (store.checkinHistory ?? []).find((c: CheckinRecord) => c.date === date);
+  const record = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === date);
 
   if (!record) {
     return (
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 }}>
           <TouchableOpacity onPress={() => nav.goBack()}>
-            <Text style={{ color: TH.text, fontSize: 20 }}>←</Text>
+            <ChevronLeft size={24} color={TH.text} />
           </TouchableOpacity>
         </View>
-        <Text style={{ textAlign: 'center', color: TH.sub, padding: 40, fontSize: 14 }}>{T('checkinNoRecords')}</Text>
+        <Text style={{ textAlign: 'center', color: TH.sub, padding: 40, fontSize: FONT_SUB }}>{T('checkinNoRecords')}</Text>
       </SafeAreaView>
     );
   }
@@ -54,9 +55,9 @@ export default function CheckinDetailScreen() {
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14 }}>
         <TouchableOpacity onPress={() => nav.goBack()}>
-          <Text style={{ color: TH.text, fontSize: 20 }}>←</Text>
+          <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ color: TH.text, fontWeight: '700', fontSize: 18, marginLeft: 12 }}>{T('checkinDetailTitle')}</Text>
+        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE, marginLeft: 12 }}>{T('checkinDetailTitle')}</Text>
       </View>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
         {/* Status card */}
@@ -64,11 +65,14 @@ export default function CheckinDetailScreen() {
           backgroundColor: record.done ? 'rgba(16,185,129,.12)' : 'rgba(239,68,68,.08)',
           borderRadius: 16, padding: 20, marginBottom: 12, alignItems: 'center',
         }}>
-          <Text style={{ fontSize: 36, marginBottom: 8 }}>{record.done ? '✅' : '📝'}</Text>
-          <Text style={{ fontWeight: '700', fontSize: 18, color: record.done ? COLORS.GREEN : COLORS.RED }}>
+          {record.done
+            ? <CheckCircle2 size={36} color={COLORS.GREEN} style={{ marginBottom: 8 }} />
+            : <PenLine size={36} color={COLORS.RED} style={{ marginBottom: 8 }} />
+          }
+          <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: record.done ? COLORS.GREEN : COLORS.RED }}>
             {record.done ? T('checkinDone') : T('checkinNotDone')}
           </Text>
-          <Text style={{ fontSize: 13, color: TH.sub, marginTop: 4 }}>{formatTime(record.timestamp, record.date)}</Text>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{formatTime(record.timestamp, record.date)}</Text>
         </View>
 
         {/* Detail rows */}
@@ -78,8 +82,8 @@ export default function CheckinDetailScreen() {
               flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
               paddingVertical: 13, borderBottomWidth: i === detailRows.length - 1 ? 0 : 1, borderBottomColor: TH.border,
             }}>
-              <Text style={{ fontSize: 14, color: TH.sub }}>{r.label}</Text>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: r.color ?? TH.text }}>{r.value}</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{r.label}</Text>
+              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: r.color ?? TH.text }}>{r.value}</Text>
             </View>
           ))}
         </View>
@@ -87,8 +91,8 @@ export default function CheckinDetailScreen() {
         {/* Note */}
         {record.note ? (
           <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: TH.border }}>
-            <Text style={{ fontSize: 13, color: TH.sub, marginBottom: 8 }}>{T('checkinContent')}</Text>
-            <Text style={{ fontSize: 14, color: TH.text, lineHeight: 22 }}>{record.note}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('checkinContent')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.text, lineHeight: 22 }}>{record.note}</Text>
           </View>
         ) : null}
       </ScrollView>

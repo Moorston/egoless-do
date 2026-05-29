@@ -1,9 +1,10 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
-import { apiSendCode, apiCheckEmail, validatePassword } from '@egoless-do/core';
+import { apiSendCode, apiCheckEmail, validatePassword, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
+import { Check, X } from 'lucide-react-native';
 
 const COOLDOWN = 60;
 
@@ -96,108 +97,106 @@ export default function RegisterScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{ flex: 1, backgroundColor: TH.bg }}
     >
-      <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 24 }}>
-        <Text style={{
-          color: TH.primary, fontSize: 36, fontWeight: '800',
-          textAlign: 'center', marginBottom: 4,
-        }}>
-          心流纪
-        </Text>
-        <Text style={{
-          color: TH.primary, fontSize: 13,
-          textAlign: 'center', marginBottom: 4, letterSpacing: 1, opacity: 0.7,
-        }}>
-          Egoless Do
-        </Text>
-        <Text style={{
-          color: TH.sub, fontSize: 14,
-          textAlign: 'center', marginBottom: 40,
-        }}>
-          创建你的账号
-        </Text>
-
-        <Card style={{ marginBottom: 16 }}>
-          <ThemedInput
-            value={name}
-            onChangeText={setName}
-            placeholder="昵称"
-            style={{ marginBottom: 12 }}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{ paddingHorizontal: 24 }}>
+          <Image
+            source={require('../../../assets/sign-logo.png')}
+            style={{
+              width: 320,
+              height: 128,
+              alignSelf: 'center',
+              marginBottom: 40,
+            }}
+            resizeMode="contain"
           />
-          <View style={{ position: 'relative', marginBottom: 12 }}>
+
+          <Card style={{ marginBottom: 16 }}>
             <ThemedInput
-              value={email}
-              onChangeText={v => { setEmail(v); setEmailStatus('idle'); }}
-              onBlur={handleEmailBlur}
-              placeholder="邮箱"
-              keyboardType="default"
-              style={{ marginBottom: 0, paddingRight: 80 }}
+              value={name}
+              onChangeText={setName}
+              placeholder="昵称"
+              style={{ marginBottom: 12 }}
             />
-            {emailStatus === 'checking' && <Text style={{ position: 'absolute', right: 14, top: 14, fontSize: 14, color: TH.sub }}>检查中...</Text>}
-            {emailStatus === 'ok' && <Text style={{ position: 'absolute', right: 14, top: 14, fontSize: 14, color: '#10b981' }}>✓ 可用</Text>}
-            {emailStatus === 'taken' && <Text style={{ position: 'absolute', right: 14, top: 14, fontSize: 14, color: '#ef4444' }}>✗ 已注册</Text>}
-          </View>
-          <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
-            <View style={{ flex: 1 }}>
+            <View style={{ position: 'relative', marginBottom: 12 }}>
               <ThemedInput
-                value={code}
-                onChangeText={setCode}
-                placeholder="邮箱验证码"
-                keyboardType="number-pad"
-                maxLength={6}
-                style={{ marginBottom: 0 }}
+                value={email}
+                onChangeText={v => { setEmail(v); setEmailStatus('idle'); }}
+                onBlur={handleEmailBlur}
+                placeholder="邮箱"
+                keyboardType="default"
+                style={{ marginBottom: 0, paddingRight: 80 }}
               />
+              {emailStatus === 'checking' && <Text style={{ position: 'absolute', right: 14, top: 14, fontSize: FONT_SUB, color: TH.sub }}>检查中...</Text>}
+              {emailStatus === 'ok' && <View style={{ position: 'absolute', right: 14, top: 14, flexDirection: 'row', alignItems: 'center', gap: 4 }}><Check size={14} color="#10b981" /><Text style={{ fontSize: FONT_SUB, color: '#10b981' }}>可用</Text></View>}
+              {emailStatus === 'taken' && <View style={{ position: 'absolute', right: 14, top: 14, flexDirection: 'row', alignItems: 'center', gap: 4 }}><X size={14} color="#ef4444" /><Text style={{ fontSize: FONT_SUB, color: '#ef4444' }}>已注册</Text></View>}
             </View>
-            <TouchableOpacity
-              onPress={handleSendCode}
-              disabled={sending || cooldown > 0}
-              style={{
-                paddingHorizontal: 16, borderRadius: 10,
-                backgroundColor: sending || cooldown > 0 ? 'rgba(129,140,248,.3)' : TH.primary,
-                justifyContent: 'center', alignItems: 'center', opacity: sending || cooldown > 0 ? 0.6 : 1,
-              }}
-            >
-              <Text style={{ color: '#fff', fontSize: 13, fontWeight: '600' }}>
-                {cooldown > 0 ? `${cooldown}s` : sending ? '发送中' : '获取验证码'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <ThemedInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="密码"
-            secureTextEntry
-            style={{ marginBottom: 12 }}
+            <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
+              <View style={{ flex: 1 }}>
+                <ThemedInput
+                  value={code}
+                  onChangeText={setCode}
+                  placeholder="邮箱验证码"
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  style={{ marginBottom: 0 }}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={handleSendCode}
+                disabled={sending || cooldown > 0}
+                style={{
+                  paddingHorizontal: 16, borderRadius: 10,
+                  backgroundColor: sending || cooldown > 0 ? 'rgba(129,140,248,.3)' : TH.primary,
+                  justifyContent: 'center', alignItems: 'center', opacity: sending || cooldown > 0 ? 0.6 : 1,
+                }}
+              >
+                <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: '600' }}>
+                  {cooldown > 0 ? `${cooldown}s` : sending ? '发送中' : '获取验证码'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <ThemedInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="密码"
+              secureTextEntry
+              style={{ marginBottom: 12 }}
+            />
+            <ThemedInput
+              value={confirm}
+              onChangeText={setConfirm}
+              placeholder="确认密码"
+              secureTextEntry
+              style={{ marginBottom: 4 }}
+            />
+          </Card>
+
+          {error !== '' && (
+            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR, textAlign: 'center', marginBottom: 12 }}>
+              {error}
+            </Text>
+          )}
+
+          <PrimaryButton
+            label={isLoading ? '注册中...' : '注册'}
+            onPress={handleRegister}
+            style={{ marginBottom: 16, opacity: isLoading ? 0.7 : 1 }}
           />
-          <ThemedInput
-            value={confirm}
-            onChangeText={setConfirm}
-            placeholder="确认密码"
-            secureTextEntry
-            style={{ marginBottom: 4 }}
-          />
-        </Card>
 
-        {error !== '' && (
-          <Text style={{ color: '#ff6b6b', fontSize: 13, textAlign: 'center', marginBottom: 12 }}>
-            {error}
-          </Text>
-        )}
-
-        <PrimaryButton
-          label={isLoading ? '注册中...' : '注册'}
-          onPress={handleRegister}
-          style={{ marginBottom: 16, opacity: isLoading ? 0.7 : 1 }}
-        />
-
-        <TouchableOpacity onPress={() => nav.navigate('Login')} activeOpacity={0.7}>
-          <Text style={{ color: TH.sub, fontSize: 13, textAlign: 'center' }}>
-            已有账号？<Text style={{ color: TH.primary }}>去登录</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={() => nav.navigate('Login')} activeOpacity={0.7}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
+              已有账号？<Text style={{ color: TH.primary }}>去登录</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

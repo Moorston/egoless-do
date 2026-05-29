@@ -90,27 +90,47 @@ async function applyChangesToIndexedDB(changes: Array<{ entity: string; entityId
   const dbChanges = changes.filter(c => c.entity !== 'meditation' && c.entity !== 'profile');
   if (!dbChanges.length) return;
 
-  await db.transaction('rw', [db.habits, db.reflections, db.fastingSessions, db.foodEntries, db.checkins], async () => {
+  await db.transaction('rw', [db.habits, db.reflections, db.fastingSessions, db.foodEntries, db.checkins, db.exerciseEntries, db.plans, db.planItems, db.planItemCheckins], async () => {
     for (const c of dbChanges) {
       if (c.deleted) {
         switch (c.entity) {
-          case 'habit':      await db.habits.delete(c.entityId); break;
-          case 'reflection': await db.reflections.delete(c.entityId); break;
-          case 'fasting':    await db.fastingSessions.delete(c.entityId); break;
-          case 'food':       await db.foodEntries.delete(c.entityId); break;
-          case 'checkin':    await db.checkins.delete(c.entityId); break;
-          case 'exercise':   await db.exerciseEntries.delete(c.entityId); break;
+          case 'habit':           await db.habits.delete(c.entityId); break;
+          case 'reflection':      await db.reflections.delete(c.entityId); break;
+          case 'fasting':         await db.fastingSessions.delete(c.entityId); break;
+          case 'food':            await db.foodEntries.delete(c.entityId); break;
+          case 'checkin':         await db.checkins.delete(c.entityId); break;
+          case 'exercise':        await db.exerciseEntries.delete(c.entityId); break;
+          case 'plan':            await db.plans.delete(c.entityId); break;
+          case 'planItem':        await db.planItems.delete(c.entityId); break;
+          case 'planItemCheckin': await db.planItemCheckins.delete(c.entityId); break;
         }
       } else {
         // Normalize mobile legacy snake_case fields to camelCase
         const normalized = normalizeEntity(c.payload as Record<string, unknown>);
+        const serverTs = Number((normalized as any).updatedAt ?? 0);
+
+        // Timestamp-aware merge: skip if local record is newer
+        const storeMap: Record<string, any> = {
+          habit: db.habits, reflection: db.reflections, fasting: db.fastingSessions,
+          food: db.foodEntries, checkin: db.checkins, exercise: db.exerciseEntries,
+          plan: db.plans, planItem: db.planItems, planItemCheckin: db.planItemCheckins,
+        };
+        const store = storeMap[c.entity];
+        if (store && serverTs > 0) {
+          const local = await store.get(c.entityId);
+          if (local && (local.updatedAt ?? 0) > serverTs) continue; // local is newer, skip
+        }
+
         switch (c.entity) {
-          case 'habit':      await db.habits.put(normalized as any); break;
-          case 'reflection': await db.reflections.put(normalized as any); break;
-          case 'fasting':    await db.fastingSessions.put(normalized as any); break;
-          case 'food':       await db.foodEntries.put(normalized as any); break;
-          case 'checkin':    await db.checkins.put(normalized as any); break;
-          case 'exercise':   await db.exerciseEntries.put(normalized as any); break;
+          case 'habit':           await db.habits.put(normalized as any); break;
+          case 'reflection':      await db.reflections.put(normalized as any); break;
+          case 'fasting':         await db.fastingSessions.put(normalized as any); break;
+          case 'food':            await db.foodEntries.put(normalized as any); break;
+          case 'checkin':         await db.checkins.put(normalized as any); break;
+          case 'exercise':        await db.exerciseEntries.put(normalized as any); break;
+          case 'plan':            await db.plans.put(normalized as any); break;
+          case 'planItem':        await db.planItems.put(normalized as any); break;
+          case 'planItemCheckin': await db.planItemCheckins.put(normalized as any); break;
         }
       }
     }
@@ -165,6 +185,7 @@ async function attemptDrain(): Promise<void> {
   const flatChanges: Array<{ entity: string; entityId: string; payload: any }> = [];
   const idFieldMap: Record<string, string> = {
     habit: 'id', reflection: 'id', fasting: 'id', food: 'id', checkin: 'date', exercise: 'id',
+    plan: 'id', planItem: 'id', planItemCheckin: 'id',
   };
   for (const [entity, records] of Object.entries(data as Record<string, any[]>)) {
     const idField = idFieldMap[entity];

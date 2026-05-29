@@ -7,7 +7,8 @@ import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
-import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes } from '@egoless-do/core';
+import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
+import { Music, Globe, Binary, ChevronRight, Clock } from 'lucide-react-native';
 
 // Local sound files
 const SOUND_FILES: Record<string, number> = {
@@ -67,26 +68,34 @@ export default function MeditationScreen() {
     } catch {
       setAudioError('medLoadError');
     }
-  }, [bgSource]);
+  }, [bgSource, bgPlayer]);
 
   const stopBgSound = useCallback(() => {
     try {
-      bgPlayer.pause();
-      bgPlayer.seekTo(0);
+      if (bgPlayer.playing) {
+        bgPlayer.pause();
+        bgPlayer.seekTo(0);
+      }
     } catch {}
-  }, []);
+  }, [bgPlayer]);
 
   const playBell = useCallback(() => {
     try {
       bellPlayer.seekTo(0);
       bellPlayer.play();
     } catch {}
-  }, []);
+  }, [bellPlayer]);
 
-  // Cleanup timer on unmount
+  // Cleanup timer and audio on unmount
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
-  }, []);
+    try {
+      if (bgPlayer.playing) {
+        bgPlayer.pause();
+        bgPlayer.seekTo(0);
+      }
+    } catch {}
+  }, [bgPlayer]);
 
   useEffect(() => {
     if (active) {
@@ -110,9 +119,12 @@ export default function MeditationScreen() {
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
+      stopBgSound();
     }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [active, targetSec]);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [active, targetSec, playBgSound, stopBgSound, playBell]);
 
   const handleStop = () => {
     if (active && !completedRef.current) {
@@ -141,14 +153,14 @@ export default function MeditationScreen() {
 
         {audioError && (
           <View style={{ backgroundColor:'#F59E0B', borderRadius:12, padding:12, marginBottom:12, alignItems:'center' }}>
-            <Text style={{ color:'#fff', fontSize:16 }}>{T(audioError)}</Text>
+            <Text style={{ color:'#fff', fontSize:FONT_BODY }}>{T(audioError)}</Text>
           </View>
         )}
 
         {/* Accumulated */}
         <Card style={{ alignItems:'center', paddingVertical:20 }}>
-          <Text style={{ fontSize:36, fontWeight:'800', color:P }}>{store.totalMedMinutes}</Text>
-          <Text style={{ color:TH.sub, fontSize:16 }}>{T('accMed')}</Text>
+          <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:P }}>{store.totalMedMinutes}</Text>
+          <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>{T('accMed')}</Text>
         </Card>
 
         {/* Main card */}
@@ -156,11 +168,11 @@ export default function MeditationScreen() {
           {active ? (
             <View style={{ alignItems:'center' }}>
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
-                <Text style={{ fontSize:56, fontWeight:'800', color:P, letterSpacing:2 }}>
+                <Text style={{ fontSize:FONT_HERO, fontWeight:'800', color:P, letterSpacing:2 }}>
                   {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
                 </Text>
-                <Text style={{ color:TH.sub, fontSize:16, marginTop:6 }}>
-                  {T('medActive')} {sound !== '无' ? `🎵 ${sound}` : ''}
+                <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginTop:6 }}>
+                  {T('medActive')} {sound !== '无' ? <><Music size={14} color={TH.sub} /> {sound}</> : ''}
                 </Text>
               </View>
               <View style={{ width:'80%', marginBottom:16 }}>
@@ -172,8 +184,12 @@ export default function MeditationScreen() {
             <>
               {/* Sound selector */}
               <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border, marginBottom:12 }}>
-                <Text style={{ fontSize:16, color:TH.sub }}>{T('bgMusic')}</Text>
-                <Text style={{ color:P, fontSize:16 }}>🎵 {sound} ›</Text>
+                <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T('bgMusic')}</Text>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                  <Music size={16} color={P} />
+                  <Text style={{ color:P, fontSize:FONT_BODY }}>{sound}</Text>
+                  <ChevronRight size={16} color={P} />
+                </View>
               </View>
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:6, marginBottom:14 }}>
                 {MED_SOUNDS.map(s => (
@@ -196,32 +212,32 @@ export default function MeditationScreen() {
 
         {/* Today card */}
         <Card>
-          <View style={{ flexDirection:'row', justifyContent:'space-between' }}>
-            <Text style={{ color:TH.text }}>{T('medTitle')}</Text>
+          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center' }}>
+            <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+              <Clock size={18} color={P} />
+              <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('medTitle')}</Text>
+            </View>
             <Text style={{ color:P, fontWeight:'600' }}>{todayMedMin} {T('medMinutes')}</Text>
           </View>
         </Card>
 
         {/* Global meditators */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
+        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
           style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Text style={{ fontSize:18 }}>🌍</Text>
-          <Text style={{ fontSize:16, color:TH.text }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
-          <Text style={{ marginLeft:'auto', color:TH.sub }}>›</Text>
+          <Globe size={18} color={P} />
+          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
+          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
         </TouchableOpacity>
 
         {/* History entry */}
         <TouchableOpacity onPress={() => (nav as any).navigate('MedHistory')}
           style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Text style={{ fontSize:18 }}>☯</Text>
-          <Text style={{ fontSize:16, color:TH.text }}>{T('meditationHistory')}</Text>
-          <Text style={{ marginLeft:'auto', color:TH.sub }}>›</Text>
+          <Binary size={18} color={P} />
+          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('meditationHistory')}</Text>
+          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
         </TouchableOpacity>
 
-        {/* Share */}
-        <PrimaryButton label={T('shareMed')} onPress={() => setShowShare(true)} />
-
-        <Text style={{ textAlign:'center', fontSize:16, color:TH.sub, marginTop:12 }}>{T('medAttribution')}</Text>
+        <Text style={{ textAlign:'center', fontSize:FONT_BODY, color:TH.sub, marginTop:12 }}>{T('medAttribution')}</Text>
       </ScrollView>
 
       {/* Share Card Modal */}
@@ -229,27 +245,27 @@ export default function MeditationScreen() {
         <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.75)', justifyContent:'center', alignItems:'center', padding:24 }}>
           <ViewShot ref={shareCardRef} options={{ format:'png', quality:1 }} style={{ width:300, borderRadius:20, overflow:'hidden' }}>
             <View style={{ backgroundColor:'#1a1040', paddingVertical:40, paddingHorizontal:24, alignItems:'center' }}>
-              <Text style={{ color:'#e2d9f3', fontSize:18, fontWeight:'600', marginBottom:20 }}>{T('shareCardTitle')}</Text>
-              <Text style={{ fontSize:64, marginBottom:12 }}>☯</Text>
-              <Text style={{ color:'rgba(255,255,255,0.5)', fontSize:14, marginBottom:20 }}>
+              <Text style={{ color:'#e2d9f3', fontSize:FONT_TITLE, fontWeight:'600', marginBottom:20 }}>{T('shareCardTitle')}</Text>
+              <Binary size={64} color="#e2d9f3" style={{ marginBottom:12 }} />
+              <Text style={{ color:'rgba(255,255,255,0.5)', fontSize:FONT_SUB, marginBottom:20 }}>
                 {new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric' })}
               </Text>
               <View style={{ width:'100%', height:1, backgroundColor:'rgba(255,255,255,0.15)', marginBottom:28 }} />
               <View style={{ width:'100%', gap:28, alignItems:'center' }}>
                 <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:42, fontWeight:'800' }}>{store.totalMedMinutes}</Text>
-                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:14 }}>{T('accMed').replace(/\s*\(.*\)/, '')}</Text>
+                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{store.totalMedMinutes}</Text>
+                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('accMed').replace(/\s*\(.*\)/, '')}</Text>
                 </View>
                 <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:42, fontWeight:'800' }}>{todayMedMin}</Text>
-                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:14 }}>{T('medTitle')}</Text>
+                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{todayMedMin}</Text>
+                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('medTitle')}</Text>
                 </View>
                 <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:42, fontWeight:'800' }}>{(store.medHistory ?? []).length}</Text>
-                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:14 }}>{T('shareCardSession')}</Text>
+                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{(store.medHistory ?? []).length}</Text>
+                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('shareCardSession')}</Text>
                 </View>
               </View>
-              <Text style={{ color:'rgba(255,255,255,0.3)', fontSize:11, marginTop:32 }}>egoless-do.app</Text>
+              <Text style={{ color:'rgba(255,255,255,0.3)', fontSize:FONT_BADGE, marginTop:32 }}>egoless-do.app</Text>
             </View>
           </ViewShot>
           <View style={{ flexDirection:'row', gap:12, marginTop:20, width:300 }}>

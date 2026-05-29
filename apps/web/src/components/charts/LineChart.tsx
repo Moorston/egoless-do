@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from '../helpers';
+import { FONT_CHART_AXIS, FONT_CHART_TOOLTIP } from '@egoless-do/core';
 import {
   ResponsiveContainer, LineChart as ReLineChart,
   Line, XAxis, YAxis, Tooltip, Area, CartesianGrid,
@@ -26,10 +27,10 @@ export default function LineChart({
     <ResponsiveContainer width="100%" height={height}>
       <ReLineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -16 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={TH.border} vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 11, fill: TH.sub }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 11, fill: TH.sub }} axisLine={false} tickLine={false} />
+        <XAxis dataKey="label" tick={{ fontSize: FONT_CHART_AXIS, fill: TH.sub }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: FONT_CHART_AXIS, fill: TH.sub }} axisLine={false} tickLine={false} />
         <Tooltip
-          contentStyle={{ background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 10, fontSize: 13 }}
+          contentStyle={{ background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 10, fontSize: FONT_CHART_TOOLTIP }}
           labelStyle={{ color: TH.sub }}
           formatter={(v: number) => [`${Math.round(v * 10) / 10}${suffix ?? ''}`, '']}
         />

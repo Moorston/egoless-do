@@ -5,7 +5,8 @@ import {
   StyleSheet, ViewStyle, TextStyle,
 } from 'react-native';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, COLORS, t } from '@egoless-do/core';
+import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
+import { ChevronLeft } from 'lucide-react-native';
 
 // ── useTheme ──────────────────────────────────────────────────────
 export function useTheme() {
@@ -51,7 +52,7 @@ export function PrimaryButton({
         alignItems: 'center',
       }, style]}
     >
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: 16 }}>{label}</Text>
+      <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -72,7 +73,7 @@ export function OutlineButton({
         alignItems: 'center',
       }, style]}
     >
-      <Text style={{ color: c, fontWeight: '600', fontSize: 15 }}>{label}</Text>
+      <Text style={{ color: c, fontWeight: '600', fontSize: FONT_BUTTON }}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -102,7 +103,7 @@ export function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) 
 export function RowItem({
   label, sub, icon, right, last, onPress,
 }: {
-  label: string; sub?: string; icon?: string;
+  label: string; sub?: string; icon?: React.ReactNode;
   right?: React.ReactNode; last?: boolean;
   onPress?: () => void;
 }) {
@@ -119,10 +120,10 @@ export function RowItem({
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
-        {icon && <Text style={{ fontSize: 20 }}>{icon}</Text>}
+        {icon && (typeof icon === 'string' ? <Text style={{ fontSize: FONT_BACK }}>{icon}</Text> : icon)}
         <View>
-          <Text style={{ color: TH.text, fontSize: 14 }}>{label}</Text>
-          {sub && <Text style={{ color: TH.sub, fontSize: 13, marginTop: 2 }}>{sub}</Text>}
+          <Text style={{ color: TH.text, fontSize: FONT_LABEL }}>{label}</Text>
+          {sub && <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 2 }}>{sub}</Text>}
         </View>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -155,12 +156,12 @@ export function ScreenHeader({
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         {onBack && (
           <TouchableOpacity onPress={onBack}>
-            <Text style={{ color: TH.text, fontSize: 20 }}>←</Text>
+            <ChevronLeft size={20} color={TH.text} />
           </TouchableOpacity>
         )}
         <View>
-          <Text style={{ color: TH.text, fontWeight: '800', fontSize: 22 }}>{title}</Text>
-          {subtitle && <Text style={{ color: TH.sub, fontSize: 14, marginTop: 2 }}>{subtitle}</Text>}
+          <Text style={{ color: TH.text, fontWeight: '800', fontSize: FONT_STAT_CARD }}>{title}</Text>
+          {subtitle && <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 2 }}>{subtitle}</Text>}
         </View>
       </View>
       {right}
@@ -194,7 +195,7 @@ export function ThemedInput({
         backgroundColor: TH.card,
         borderWidth: 1, borderColor: TH.border,
         borderRadius: 10, padding: 12,
-        color: TH.text, fontSize: 14,
+        color: TH.text, fontSize: FONT_LABEL,
         textAlignVertical: multiline ? 'top' : 'center',
       }, style]}
     />
@@ -203,21 +204,22 @@ export function ThemedInput({
 
 // ── TagPill ───────────────────────────────────────────────────────
 export function TagPill({
-  label, active, onPress, color,
-}: { label: string; active: boolean; onPress: () => void; color?: string }) {
+  label, active, onPress, color, style, textStyle,
+}: { label: string; active: boolean; onPress: () => void; color?: string; style?: ViewStyle; textStyle?: TextStyle }) {
   const TH = useTheme();
   const c = color ?? TH.primary;
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}
       style={{
-        paddingHorizontal: 14, paddingVertical: 6,
+        paddingHorizontal: 16, paddingVertical: 8,
         borderRadius: 20, borderWidth: 1,
         borderColor: active ? c : TH.border,
         backgroundColor: active ? `${c}30` : 'transparent',
         marginRight: 6, marginBottom: 6,
+        ...style,
       }}
     >
-      <Text style={{ color: active ? '#fff' : TH.sub, fontSize: 13 }}>{label}</Text>
+      <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_BODY, ...textStyle }}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -242,7 +244,7 @@ export function ProgressBar({ pct, color, height = 6 }: {
 export function BigTimer({ text, color }: { text: string; color: string }) {
   return (
     <Text style={{
-      fontSize: 56, fontWeight: '800', color,
+      fontSize: FONT_HERO, fontWeight: '800', color,
       fontVariant: ['tabular-nums'], textAlign: 'center',
       letterSpacing: -1,
     }}>

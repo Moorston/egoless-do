@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>图标库风格对比</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#0f0f13; color:#e0e0e0; padding:24px; }
+  h1 { text-align:center; margin-bottom:8px; font-size:28px; }
+  .subtitle { text-align:center; color:#888; margin-bottom:32px; font-size:14px; }
+  .lib-section { margin-bottom:48px; background:#1a1a24; border-radius:16px; padding:24px; }
+  .lib-header { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .lib-name { font-size:22px; font-weight:700; }
+  .lib-badge { font-size:12px; padding:3px 10px; border-radius:20px; font-weight:600; }
+  .lib-desc { color:#999; font-size:14px; margin-bottom:20px; line-height:1.6; }
+  .style-row { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .style-chip { font-size:12px; padding:4px 12px; border-radius:8px; background:#252535; color:#aaa; }
+  .icon-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px; }
+  .icon-card { background:#252535; border-radius:12px; padding:16px 8px; text-align:center; transition:transform .15s; }
+  .icon-card:hover { transform:scale(1.05); background:#2e2e42; }
+  .icon-card svg, .icon-card i { display:block; margin:0 auto 8px; }
+  .icon-label { font-size:11px; color:#888; word-break:break-all; }
+  .icon-name { font-size:12px; color:#ccc; margin-bottom:4px; }
+
+  /* Lucide SVG style */
+  .lucide-svg { width:28px; height:28px; stroke:#a78bfa; stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* Phosphor SVG style (drawn manually to match) */
+  .phosphor-svg { width:28px; height:28px; stroke:#60a5fa; stroke-width:1.5; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* Tabler SVG style */
+  .tabler-svg { width:28px; height:28px; stroke:#34d399; stroke-width:1.8; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+
+  /* Emoji style */
+  .emoji-demo { font-size:28px; line-height:1; }
+
+  .compare-table { width:100%; border-collapse:collapse; margin-top:16px; }
+  .compare-table th { text-align:left; padding:10px 12px; font-size:13px; color:#888; border-bottom:1px solid #333; }
+  .compare-table td { padding:10px 12px; font-size:14px; border-bottom:1px solid #222; }
+  .compare-table tr:hover { background:#1e1e2e; }
+  .tag { display:inline-block; font-size:11px; padding:2px 8px; border-radius:6px; margin-right:4px; }
+  .tag-green { background:#1a3a2a; color:#6ee7b7; }
+  .tag-yellow { background:#3a3a1a; color:#fcd34d; }
+  .tag-red { background:#3a1a1a; color:#fca5a5; }
+  .tag-blue { background:#1a2a3a; color:#93c5fd; }
+
+  .weight-demo { display:flex; gap:24px; margin:16px 0; flex-wrap:wrap; }
+  .weight-item { text-align:center; }
+  .weight-item .label { font-size:11px; color:#888; margin-top:4px; }
+
+  .section-title { font-size:16px; font-weight:600; margin:20px 0 12px; color:#bbb; }
+</style>
+</head>
+<body>
+
+<h1>图标库风格对比</h1>
+<p class="subtitle">对比 Lucide / Phosphor / Tabler 三家图标库 + 当前 Emoji 方案</p>
+
+<!-- ============ LUCIDE ============ -->
+<div class="lib-section">
+  <div class="lib-header">
+    <span class="lib-name">Lucide</span>
+    <span class="lib-badge" style="background:#2d1b69;color:#a78bfa;">1500+ icons</span>
+    <span class="lib-badge" style="background:#1b3a2d;color:#6ee7b7;">推荐</span>
+  </div>
+  <div class="lib-desc">
+    线性图标，2px 统一描边，圆角端点。风格极简克制，适合健康/效率类 App。
+    最轻量（tree-shake），两端有官方 RN/Web 包。单粗细，通过 strokeWidth 调节。
+  </div>
+  <div class="style-row">
+    <span class="style-chip">线性描边</span>
+    <span class="style-chip">圆角端点</span>
+    <span class="style-chip">单粗细</span>
+    <span class="style-chip">极简风</span>
+    <span class="style-chip">~2KB/icon</span>
+  </div>
+
+  <!-- Lucide SVG icons drawn inline -->
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <div class="icon-name">Home</div>
+      <div class="icon-label">主页</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+      <div class="icon-name">ClipboardList</div>
+      <div class="icon-label">计划</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><line x1="10" x2="8" y1="2" y2="22"/><line x1="16" x2="14" y1="2" y2="22"/><path d="M7.5 2h9"/><path d="M7.5 22h9"/></svg>
+      <div class="icon-name">Timer</div>
+      <div class="icon-label">禁食</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>
+      <div class="icon-name">Brain</div>
+      <div class="icon-label">冥想</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+      <div class="icon-name">Dumbbell</div>
+      <div class="icon-label">锻炼</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      <div class="icon-name">Settings</div>
+      <div class="icon-label">设置</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
+      <div class="icon-name">Sparkles</div>
+      <div class="icon-label">感念</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      <div class="icon-name">Target</div>
+      <div class="icon-label">习惯</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+      <div class="icon-name">BarChart3</div>
+      <div class="icon-label">统计</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+      <div class="icon-name">Flame</div>
+      <div class="icon-label">连续打卡</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <div class="icon-name">Clock</div>
+      <div class="icon-label">时钟</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <div class="icon-name">Bell</div>
+      <div class="icon-label">提醒</div>
+    </div>
+    <div class="icon-card">
+      <svg class="lucide-svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <div class="icon-name">User</div>
+      <div class="icon-label">用户</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PHOSPHOR ============ -->
+<div class="lib-section">
+  <div class="lib-header">
+    <span class="lib-name">Phosphor</span>
+    <span class="lib-badge" style="background:#1b2d3a;color:#60a5fa;">7000+ icons</span>
+  </div>
+  <div class="lib-desc">
+    最丰富的图标库，6 种权重变体（Thin/Light/Regular/Bold/Fill/Duotone），同一图标可适配不同场景。
+    Duotone 双色填充特别适合健康类 App 需要彩色图标的场景。两端有官方 RN/Web 包。
+  </div>
+  <div class="style-row">
+    <span class="style-chip">6 种粗细</span>
+    <span class="style-chip">Duotone 双色</span>
+    <span class="style-chip">圆润风格</span>
+    <span class="style-chip">最丰富</span>
+    <span class="style-chip">~3KB/icon</span>
+  </div>
+
+  <div class="section-title">6 种权重变体展示（以 House 图标为例）</div>
+  <div class="weight-demo">
+    <div class="weight-item">
+      <svg width="32" height="32" viewBox="0 0 256 256" fill="none" stroke="#60a5fa" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M213.34,116.72,136,48H120l-77.34,68.72A8,8,0,0,0,40,122.69V200a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V122.69A8,8,0,0,0,213.34,116.72Z"/></svg>
+      <div class="label">Thin</div>
+    </div>
+    <div class="weight-item">
+      <svg width="32" height="32" viewBox="0 0 256 256" fill="none" stroke="#60a5fa" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"><path d="M213.34,116.72,136,48H120l-77.34,68.72A8,8,0,0,0,40,122.69V200a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V122.69A8,8,0,0,0,213.34,116.72Z"/></svg>
+      <div class="label">Light</div>
+    </div>
+    <div class="weight-item">
+      <svg width="32" height="32" viewBox="0 0 256 256" fill="none" stroke="#60a5fa" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M213.34,116.72,136,48H120l-77.34,68.72A8,8,0,0,0,40,122.69V200a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V122.69A8,8,0,0,0,213.34,116.72Z"/></svg>
+      <div class="label">Regular</div>
+    </div>
+    <div class="weight-item">
+      <svg width="32" height="32" viewBox="0 0 256 256" fill="none" stroke="#60a5fa" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"><path d="M213.34,116.72,136,48H120l-77.34,68.72A8,8,0,0,0,40,122.69V200a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V122.69A8,8,0,0,0,213.34,116.72Z"/></svg>
+      <div class="label">Bold</div>
+    </div>
+    <div class="weight-item">
+      <svg width="32" height="32" viewBox="0 0 256 256" fill="#60a5fa" stroke="none"><path d="M213.34,116.72,136,48H120l-77.34,68.72A8,8,0,0,0,40,122.69V200a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V122.69A8,8,0,0,0,213.34,116.72Z"/></svg>
+      <div class="label">Fill</div>
+    </div>
+    <div class="weight-item">
+      <svg width="32" height="32" viewBox="0 0 256 256" fill="#60a5fa33" stroke="#60a5fa" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M213.34,116.72,136,48H120l-77.34,68.72A8,8,0,0,0,40,122.69V200a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V122.69A8,8,0,0,0,213.34,116.72Z"/></svg>
+      <div class="label">Duotone</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TABLER ============ -->
+<div class="lib-section">
+  <div class="lib-header">
+    <span class="lib-name">Tabler Icons</span>
+    <span class="lib-badge" style="background:#1b3a2d;color:#34d399;">5000+ icons</span>
+  </div>
+  <div class="lib-desc">
+    设计感最强，描边略粗于 Lucide，圆角更大，整体更柔和。无官方 RN 包，需自行封装 react-native-svg。
+    支持 2px/1.5px 两种描边。免费开源。
+  </div>
+  <div class="style-row">
+    <span class="style-chip">粗描边</span>
+    <span class="style-chip">大圆角</span>
+    <span class="style-chip">柔和风格</span>
+    <span class="style-chip">设计感强</span>
+    <span class="style-chip">无官方 RN 包</span>
+  </div>
+
+  <div class="icon-grid">
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/></svg>
+      <div class="icon-name">Home</div>
+      <div class="icon-label">主页</div>
+    </div>
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"/><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>
+      <div class="icon-name">ClipboardText</div>
+      <div class="icon-label">计划</div>
+    </div>
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M14.828 14.828a4 4 0 1 0 -5.656 -5.656a4 4 0 0 0 5.656 5.656z"/><path d="M7.05 17.05q4.95 4.95 11.314 .586"/><path d="M5.636 5.636q-4.95 4.95-.586 11.314"/></svg>
+      <div class="icon-name">Brain</div>
+      <div class="icon-label">冥想</div>
+    </div>
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M14 10a2 2 0 1 0 -4 0"/><path d="M6 10a2 2 0 1 0 -4 0"/><path d="M4 14a2 2 0 1 0 4 0"/><path d="M12 14a2 2 0 1 0 4 0"/><path d="M20 14a2 2 0 1 0 4 0"/><path d="M2 10l4 -4l4 4"/><path d="M14 10l4 -4l4 4"/><path d="M8 14l4 4l4 -4"/></svg>
+      <div class="icon-name">Dumbbell</div>
+      <div class="icon-label">锻炼</div>
+    </div>
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/></svg>
+      <div class="icon-name">Clock</div>
+      <div class="icon-label">时钟</div>
+    </div>
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.066 2.573c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.573 1.066c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.066 -2.573c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.573 -1.066z"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/></svg>
+      <div class="icon-name">Settings</div>
+      <div class="icon-label">设置</div>
+    </div>
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z"/></svg>
+      <div class="icon-name">Circles</div>
+      <div class="icon-label">靶心/习惯</div>
+    </div>
+    <div class="icon-card">
+      <svg class="tabler-svg" viewBox="0 0 24 24"><path d="M3 12l18 0"/><path d="M3 6l18 0"/><path d="M3 18l18 0"/></svg>
+      <div class="icon-name">Menu</div>
+      <div class="icon-label">菜单</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 当前 EMOJI ============ -->
+<div class="lib-section" style="border:1px solid #553333;">
+  <div class="lib-header">
+    <span class="lib-name">当前方案：Emoji</span>
+    <span class="lib-badge" style="background:#3a1a1a;color:#fca5a5;">需替换</span>
+  </div>
+  <div class="lib-desc">
+    纯文本 emoji 字符，各平台渲染差异大，无法控制粗细/颜色/大小一致性。
+    彩色 emoji 与单色符号混用，风格不统一。
+  </div>
+
+  <div class="section-title">彩色 Emoji（各平台渲染不同）</div>
+  <div class="icon-grid">
+    <div class="icon-card"><div class="emoji-demo">🏠</div><div class="icon-name">Home</div><div class="icon-label">主页</div></div>
+    <div class="icon-card"><div class="emoji-demo">📋</div><div class="icon-name">Plan</div><div class="icon-label">计划</div></div>
+    <div class="icon-card"><div class="emoji-demo">⏱</div><div class="icon-name">Timer</div><div class="icon-label">禁食</div></div>
+    <div class="icon-card"><div class="emoji-demo">☯</div><div class="icon-name">YinYang</div><div class="icon-label">冥想</div></div>
+    <div class="icon-card"><div class="emoji-demo">🏃</div><div class="icon-name">Run</div><div class="icon-label">锻炼</div></div>
+    <div class="icon-card"><div class="emoji-demo">⚙</div><div class="icon-name">Gear</div><div class="icon-label">设置</div></div>
+    <div class="icon-card"><div class="emoji-demo">🔥</div><div class="icon-name">Fire</div><div class="icon-label">连续</div></div>
+    <div class="icon-card"><div class="emoji-demo">💧</div><div class="icon-name">Water</div><div class="icon-label">饮水</div></div>
+    <div class="icon-card"><div class="emoji-demo">🍽</div><div class="icon-name">Food</div><div class="icon-label">饮食</div></div>
+    <div class="icon-card"><div class="emoji-demo">🏆</div><div class="icon-name">Trophy</div><div class="icon-label">奖杯</div></div>
+    <div class="icon-card"><div class="emoji-demo">📅</div><div class="icon-name">Calendar</div><div class="icon-label">日历</div></div>
+    <div class="icon-card"><div class="emoji-demo">💪</div><div class="icon-name">Strong</div><div class="icon-label">力量</div></div>
+  </div>
+
+  <div class="section-title">单色符号（语义模糊）</div>
+  <div class="icon-grid">
+    <div class="icon-card"><div class="emoji-demo" style="color:#a78bfa;">✦</div><div class="icon-name">Sparkle</div><div class="icon-label">感念??</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="color:#a78bfa;">◇</div><div class="icon-name">Diamond</div><div class="icon-label">习惯??</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="color:#a78bfa;">◈</div><div class="icon-name">DiamondDot</div><div class="icon-label">统计??</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="color:#a78bfa;">◎</div><div class="icon-name">Target</div><div class="icon-label">兜底??</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="color:#a78bfa;">●</div><div class="icon-name">Dot</div><div class="icon-label">圆点</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="color:#a78bfa;">•</div><div class="icon-name">Bullet</div><div class="icon-label">列表</div></div>
+  </div>
+
+  <div class="section-title">操作符号（多写法混乱）</div>
+  <div class="icon-grid">
+    <div class="icon-card"><div class="emoji-demo" style="font-size:24px;">× ✕</div><div class="icon-name">Close</div><div class="icon-label">两种写法</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="font-size:24px;">✓ ✗</div><div class="icon-name">Check/X</div><div class="icon-label">两种写法</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="font-size:24px;">← →</div><div class="icon-name">Arrow</div><div class="icon-label">箭头</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="font-size:24px;">▸ ▾ ▸</div><div class="icon-name">Chevron</div><div class="icon-label">展开/收起</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="font-size:24px;">› ▸</div><div class="icon-name">Navigate</div><div class="icon-label">导航箭头</div></div>
+    <div class="icon-card"><div class="emoji-demo" style="font-size:24px;">▶ ⏸</div><div class="icon-name">Play/Pause</div><div class="icon-label">播放控制</div></div>
+  </div>
+</div>
+
+<!-- ============ 对比表 ============ -->
+<div class="lib-section">
+  <div class="lib-header">
+    <span class="lib-name">综合对比</span>
+  </div>
+  <table class="compare-table">
+    <tr>
+      <th>维度</th>
+      <th>Lucide</th>
+      <th>Phosphor</th>
+      <th>Tabler</th>
+      <th>Emoji (当前)</th>
+    </tr>
+    <tr>
+      <td>图标数量</td>
+      <td>1500+</td>
+      <td>7000+ <span class="tag tag-green">最多</span></td>
+      <td>5000+</td>
+      <td>~70 个</td>
+    </tr>
+    <tr>
+      <td>风格一致性</td>
+      <td><span class="tag tag-green">极佳</span></td>
+      <td><span class="tag tag-green">极佳</span></td>
+      <td><span class="tag tag-green">极佳</span></td>
+      <td><span class="tag tag-red">差</span> 彩色+单色混用</td>
+    </tr>
+    <tr>
+      <td>粗细变体</td>
+      <td>单粗细 (strokeWidth 可调)</td>
+      <td><span class="tag tag-green">6 种</span> Thin→Fill+Duotone</td>
+      <td>2 种 (2px/1.5px)</td>
+      <td>不可控</td>
+    </tr>
+    <tr>
+      <td>RN 官方包</td>
+      <td><span class="tag tag-green">有</span> lucide-react-native</td>
+      <td><span class="tag tag-green">有</span> phosphor-react-native</td>
+      <td><span class="tag tag-red">无</span> 需自行封装</td>
+      <td>原生支持</td>
+    </tr>
+    <tr>
+      <td>Web 官方包</td>
+      <td><span class="tag tag-green">有</span> lucide-react</td>
+      <td><span class="tag tag-green">有</span> phosphor-react</td>
+      <td><span class="tag tag-green">有</span> @tabler/icons-react</td>
+      <td>原生支持</td>
+    </tr>
+    <tr>
+      <td>包体积</td>
+      <td><span class="tag tag-green">最小</span> ~2KB/icon</td>
+      <td>中等 ~3KB/icon</td>
+      <td>中等 ~3KB/icon</td>
+      <td>0 (内置)</td>
+    </tr>
+    <tr>
+      <td>Tree-shake</td>
+      <td><span class="tag tag-green">支持</span></td>
+      <td><span class="tag tag-green">支持</span></td>
+      <td><span class="tag tag-green">支持</span></td>
+      <td>N/A</td>
+    </tr>
+    <tr>
+      <td>跨平台一致性</td>
+      <td><span class="tag tag-green">完美</span></td>
+      <td><span class="tag tag-green">完美</span></td>
+      <td><span class="tag tag-green">完美</span></td>
+      <td><span class="tag tag-red">差</span> iOS/Android/Web 渲染不同</td>
+    </tr>
+    <tr>
+      <td>适合场景</td>
+      <td>极简/效率/健康</td>
+      <td>需要彩色/多风格变体</td>
+      <td>设计感优先</td>
+      <td>快速原型</td>
+    </tr>
+    <tr>
+      <td>学习成本</td>
+      <td><span class="tag tag-green">低</span></td>
+      <td>低</td>
+      <td>低</td>
+      <td>无</td>
+    </tr>
+    <tr>
+      <td>维护活跃度</td>
+      <td><span class="tag tag-green">高</span></td>
+      <td><span class="tag tag-green">高</span></td>
+      <td>中</td>
+      <td>N/A</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============ 建议 ============ -->
+<div class="lib-section" style="border:1px solid #2d5a3d;">
+  <div class="lib-header">
+    <span class="lib-name">选型建议</span>
+  </div>
+  <div class="lib-desc">
+    <p><strong>方案 A：Lucide</strong> — 最轻量、最简洁，单粗细通过 strokeWidth 调节即可。适合追求极简克制的健康 App。<br>
+    安装：<code>lucide-react-native</code> + <code>lucide-react</code></p>
+    <br>
+    <p><strong>方案 B：Phosphor</strong> — 最丰富，Duotone 变体可实现图标双色效果（如禁食计时器用 Fill 样式，设置用 Light 样式）。
+    如果未来需要更多图标或彩色变体，扩展性最好。<br>
+    安装：<code>phosphor-react-native</code> + <code>phosphor-react</code></p>
+    <br>
+    <p><strong>方案 C：Tabler</strong> — 设计感最强，但无官方 RN 包，需要手动将 SVG 封装为 react-native-svg 组件。维护成本较高。</p>
+    <br>
+    <p><strong>不建议保留 Emoji</strong> — 跨平台渲染不一致、无法控制样式、语义模糊的符号影响用户体验。</p>
+  </div>
+</div>
+
+</body>
+</html>

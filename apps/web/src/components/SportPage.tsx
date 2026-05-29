@@ -1,32 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { SPORT_BG_COLORS, THEMES, COLORS } from '@egoless-do/core';
-import type { SportItem } from '@egoless-do/core';
+import { SPORT_BG_COLORS, THEMES, COLORS, getSportType, TARGET_PRESETS as ALL_TARGET_PRESETS, estimateCalories, MET_MAP, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_CARD, FONT_BODY, FONT_BUTTON, FONT_HERO, FONT_STAT_SECTION, FONT_CLOSE, FONT_BADGE, FONT_ERROR } from '@egoless-do/core';
+import type { SportItem, SportType, ExerciseSet } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 import { useT } from './helpers';
 import { loadAMap } from '../lib/amapLoader';
-
-const TARGET_PRESETS = {
-  distance: [
-    { label: '5 km', value: 5 },
-    { label: '10 km', value: 10 },
-  ],
-  time: [
-    { label: '30 min', value: 30 * 60 },
-    { label: '60 min', value: 60 * 60 },
-  ],
-  calories: [
-    { label: '300 kcal', value: 300 },
-    { label: '500 kcal', value: 500 },
-  ],
-};
-
-function estimateCalories(sportKey: string, durationSec: number, weight = 70): number {
-  const metMap: Record<string, number> = { '行走': 3.5, '跑步': 7, '骑行': 6, '户外骑行': 6, 'Walk': 3.5, 'Run': 7, 'Cycle': 6 };
-  const met = metMap[sportKey] ?? 4;
-  return Math.round(met * weight * (durationSec / 3600));
-}
+import { X, Play, Pause, Minus, Plus } from 'lucide-react';
 
 function computeDistance(coords: { lat: number; lng: number }[]): number {
   if (coords.length < 2) return 0;
@@ -67,12 +47,16 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   const isGpsSport = sport.gps ?? false;
   const weight = store.userProfile?.weight ?? 70;
   const bg = SPORT_BG_COLORS[sport.key] || sport.color || '#4CAF50';
+  const sportType = getSportType(sport.key, isGpsSport);
+  const presets = ALL_TARGET_PRESETS[sportType];
+  const availableTargetTypes = Object.keys(presets) as Array<'distance' | 'time' | 'calories' | 'reps'>;
+  const hasModeToggle = true;
 
   // ── State ──
   const [page, setPage]             = useState<Page>('prep');
   const [mode, setMode]             = useState<'free' | 'target'>('free');
-  const [targetType, setTargetType] = useState<'distance' | 'time' | 'calories'>('distance');
-  const [targetValue, setTargetValue] = useState(5);
+  const [targetType, setTargetType] = useState<string>(availableTargetTypes[0]);
+  const [targetValue, setTargetValue] = useState(presets[availableTargetTypes[0] as keyof typeof presets]?.[0]?.value ?? 0);
   const [sec, setSec]               = useState(0);
   const [active, setActive]         = useState(false);
   const [coords, setCoords]         = useState<{ lat: number; lng: number; ts: number }[]>([]);
@@ -81,6 +65,11 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   const [lastKmMark, setLastKmMark] = useState(0);
   const [lastKmTs, setLastKmTs]     = useState(0);
   const [holdProgress, setHoldProgress] = useState(0);
+  const [reps, setReps]             = useState(0);
+  const [sets, setSets]             = useState<ExerciseSet[]>([]);
+  const [currentSetReps, setCurrentSetReps] = useState(0);
+  const [isResting, setIsResting]   = useState(false);
+  const [restSec, setRestSec]       = useState(0);
 
   const timerRef      = useRef<ReturnType<typeof setInterval> | null>(null);
   const watchRef      = useRef<number | null>(null);
@@ -178,15 +167,28 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
     }
   }, [distKm]);
 
+  // ── Rest timer ──
+  useEffect(() => {
+    if (!isResting) return;
+    if (restSec <= 0) {
+      setIsResting(false);
+      return;
+    }
+    const t = setTimeout(() => setRestSec(s => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [isResting, restSec]);
+
   // ── Target progress check ──
   useEffect(() => {
     if (mode !== 'target' || page !== 'active' || !active) return;
+    const totalReps = reps || sets.reduce((s, set) => s + set.reps, 0) + currentSetReps;
     let reached = false;
     if (targetType === 'distance' && distKm >= targetValue) reached = true;
     if (targetType === 'time' && sec >= targetValue) reached = true;
     if (targetType === 'calories' && calories >= targetValue) reached = true;
+    if (targetType === 'reps' && totalReps >= targetValue) reached = true;
     if (reached && navigator.vibrate) navigator.vibrate([100, 50, 100]);
-  }, [sec, distKm, calories]);
+  }, [sec, distKm, calories, reps, currentSetReps, sets]);
 
   // ── GPS tracking ──
   const startGpsTracking = useCallback(() => {
@@ -253,7 +255,8 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
 
   const handleSave = () => {
     stopGpsTracking();
-    if (sec > 0) {
+    const finalReps = sportType === 'repetition' ? (reps || sets.reduce((s, set) => s + set.reps, 0) + currentSetReps) : undefined;
+    if (sec > 0 || (finalReps && finalReps > 0)) {
       store.addExercise({
         sportKey: sport.key,
         sportIcon: sport.icon,
@@ -266,16 +269,21 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
         trackPoints: isGpsSport ? coords.map(c => ({ lat: c.lat, lng: c.lng, ts: c.ts })) : undefined,
         segmentPaces: segmentPaces.length > 0 ? segmentPaces : undefined,
         mode,
-        target: mode === 'target' ? { type: targetType, value: targetValue } : undefined,
+        target: mode === 'target' ? { type: targetType as 'distance' | 'time' | 'calories' | 'reps', value: targetValue } : undefined,
+        reps: finalReps,
+        sets: sets.length > 0 ? sets : undefined,
+        met: MET_MAP[sport.key],
       });
     }
     onClose();
   };
 
+  const totalRepsForProgress = reps || sets.reduce((s, set) => s + set.reps, 0) + currentSetReps;
   const targetProgress = mode === 'target' ? (() => {
     if (targetType === 'distance') return Math.min(distKm / targetValue, 1);
     if (targetType === 'time') return Math.min(sec / targetValue, 1);
     if (targetType === 'calories') return Math.min(calories / targetValue, 1);
+    if (targetType === 'reps') return Math.min(totalRepsForProgress / targetValue, 1);
     return 0;
   })() : 0;
 
@@ -288,17 +296,19 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
       <div style={{ ...overlayStyle, background: bg }}>
         <div style={{ maxWidth: 390, margin: '0 auto', padding: '14px 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0' }}>
-            <span style={{ fontWeight: 700, fontSize: 22, color: '#fff' }}>{sport.key}</span>
-            <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,.6)', fontSize: 20, cursor: 'pointer' }}>✕</button>
+            <span style={{ fontWeight: 700, fontSize: FONT_STAT_CARD, color: '#fff' }}>{sport.key}</span>
+            <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,.6)', fontSize: FONT_BACK, cursor: 'pointer' }}><X size={20} /></button>
           </div>
 
-          {/* Mode toggle */}
+          {/* Mode toggle — available for all sport types */}
           <div style={{ display: 'flex', marginTop: 16, background: 'rgba(0,0,0,.2)', borderRadius: 12, padding: 3 }}>
             {(['free', 'target'] as const).map(m => (
               <button key={m} onClick={() => setMode(m)}
                 style={{ flex: 1, padding: '10px 0', borderRadius: 10, border: 'none', cursor: 'pointer', transition: 'all .2s',
-                  background: mode === m ? 'rgba(255,255,255,.25)' : 'transparent', color: '#fff', fontWeight: mode === m ? 700 : 400, fontSize: 15 }}>
-                {m === 'free' ? T('exerciseFreeRun') : T('exerciseTargetRun')}
+                  background: mode === m ? 'rgba(255,255,255,.25)' : 'transparent', color: '#fff', fontWeight: mode === m ? 700 : 400, fontSize: FONT_BODY }}>
+                {m === 'free'
+                  ? (sportType === 'repetition' ? T('exerciseFreeReps') : sportType === 'timed' ? T('exerciseFreeSport') : T('exerciseFreeRun'))
+                  : (sportType === 'repetition' ? T('exerciseTargetReps') : sportType === 'timed' ? T('exerciseTargetSport') : T('exerciseTargetRun'))}
               </button>
             ))}
           </div>
@@ -306,19 +316,19 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
           {/* Target selection */}
           {mode === 'target' && (
             <div style={{ marginTop: 16 }}>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                {(['distance', 'time', 'calories'] as const).map(t => (
-                  <button key={t} onClick={() => { setTargetType(t); setTargetValue(TARGET_PRESETS[t][0].value); }}
-                    style={{ padding: '8px 14px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: 13, transition: 'all .2s',
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+                {availableTargetTypes.map(t => (
+                  <button key={t} onClick={() => { setTargetType(t); setTargetValue((presets[t as keyof typeof presets] as any)?.[0]?.value ?? 0); }}
+                    style={{ padding: '8px 14px', borderRadius: 20, border: 'none', cursor: 'pointer', fontSize: FONT_SUB, transition: 'all .2s',
                       background: targetType === t ? 'rgba(255,255,255,.3)' : 'rgba(255,255,255,.1)', color: '#fff', fontWeight: targetType === t ? 700 : 400 }}>
-                    {t === 'distance' ? T('exerciseDistanceGoal') : t === 'time' ? T('exerciseTimeGoal') : T('exerciseCalGoal')}
+                    {t === 'distance' ? T('exerciseDistanceGoal') : t === 'time' ? T('exerciseTimeGoal') : t === 'calories' ? T('exerciseCalGoal') : T('exerciseRepsGoal')}
                   </button>
                 ))}
               </div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {TARGET_PRESETS[targetType].map(p => (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {((presets[targetType as keyof typeof presets] as any) ?? []).map((p: { label: string; labelEn: string; value: number }) => (
                   <button key={p.label} onClick={() => setTargetValue(p.value)}
-                    style={{ padding: '10px 16px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 15, transition: 'all .2s',
+                    style={{ padding: '10px 16px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: FONT_BODY, transition: 'all .2s',
                       background: targetValue === p.value ? 'rgba(255,255,255,.3)' : 'rgba(255,255,255,.1)', color: '#fff', fontWeight: targetValue === p.value ? 700 : 400 }}>
                     {p.label}
                   </button>
@@ -330,14 +340,28 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
           {/* Big circle */}
           <div style={{ display: 'flex', justifyContent: 'center', margin: '48px 0' }}>
             <div style={{ width: 180, height: 180, borderRadius: 90, border: '4px solid rgba(255,255,255,.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: 52, fontWeight: 900, color: '#fff' }}>0.00</div>
-              <div style={{ fontSize: 14, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>km</div>
+              {sportType === 'repetition' ? (
+                <>
+                  <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>0</div>
+                  <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>{T('exerciseReps')}</div>
+                </>
+              ) : sportType === 'timed' ? (
+                <>
+                  <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>0:00</div>
+                  <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>{T('exerciseMin')}</div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>0.00</div>
+                  <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>km</div>
+                </>
+              )}
             </div>
           </div>
 
           {/* GO button */}
           <button onClick={handleGo}
-            style={{ width: '100%', height: 64, borderRadius: 32, border: 'none', background: '#fff', color: bg, fontWeight: 900, fontSize: 28, cursor: 'pointer', letterSpacing: 4 }}>
+            style={{ width: '100%', height: 64, borderRadius: 32, border: 'none', background: '#fff', color: bg, fontWeight: 900, fontSize: FONT_STAT_SECTION, cursor: 'pointer', letterSpacing: 4 }}>
             GO
           </button>
         </div>
@@ -349,8 +373,8 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   if (page === 'countdown') {
     return (
       <div style={{ ...overlayStyle, background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ fontSize: 120, fontWeight: 900, color: '#fff' }}>{countdown}</div>
-        <div style={{ fontSize: 18, color: 'rgba(255,255,255,.5)', marginTop: 16 }}>{T('exerciseCountdown')}</div>
+        <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>{countdown}</div>
+        <div style={{ fontSize: FONT_TITLE, color: 'rgba(255,255,255,.5)', marginTop: 16 }}>{T('exerciseCountdown')}</div>
       </div>
     );
   }
@@ -359,17 +383,18 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   if (page === 'paused') {
     const circumference = 2 * Math.PI * 40;
     const dashOffset = circumference * (1 - holdProgress);
+    const pausedReps = reps || sets.reduce((s, set) => s + set.reps, 0) + currentSetReps;
     return (
       <div style={{ ...overlayStyle, background: '#1a1a2e', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px' }}>
-        <div style={{ fontSize: 48, fontWeight: 900, color: '#fff' }}>{isGpsSport ? distKm.toFixed(2) : Math.floor(sec / 60)}</div>
-        <div style={{ fontSize: 16, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>{isGpsSport ? 'km' : 'min'}</div>
-        <div style={{ fontSize: 20, color: 'rgba(255,255,255,.7)', marginTop: 16 }}>{fmt(sec)}</div>
+        <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>{isGpsSport ? distKm.toFixed(2) : sportType === 'repetition' ? pausedReps : Math.floor(sec / 60)}</div>
+        <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>{isGpsSport ? 'km' : sportType === 'repetition' ? T('exerciseReps') : 'min'}</div>
+        <div style={{ fontSize: FONT_STAT_CARD, color: 'rgba(255,255,255,.7)', marginTop: 16 }}>{fmt(sec)}</div>
 
         <div style={{ display: 'flex', marginTop: 60, gap: 20, alignItems: 'center' }}>
           {/* Continue */}
           <button onClick={handleContinue}
-            style={{ width: 64, height: 64, borderRadius: 32, background: COLORS.GREEN, border: 'none', color: '#fff', fontSize: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            ▶
+            style={{ width: 64, height: 64, borderRadius: 32, background: COLORS.GREEN, border: 'none', color: '#fff', fontSize: FONT_CLOSE, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Play size={24} />
           </button>
 
           {/* Hold to finish */}
@@ -386,13 +411,13 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
                 strokeDasharray={circumference} strokeDashoffset={dashOffset} strokeLinecap="round"
                 style={{ transition: 'stroke-dashoffset 0.05s linear' }} />
             </svg>
-            <span style={{ fontSize: 13, color: COLORS.RED, fontWeight: 700, textAlign: 'center', lineHeight: 1.2 }}>{T('exerciseFinishConfirm')}</span>
+            <span style={{ fontSize: FONT_ERROR, color: COLORS.RED, fontWeight: 700, textAlign: 'center', lineHeight: 1.2 }}>{T('exerciseFinishConfirm')}</span>
           </button>
 
           {/* Cancel */}
           <button onClick={() => { stopGpsTracking(); onClose(); }}
-            style={{ width: 64, height: 64, borderRadius: 32, background: 'rgba(255,255,255,.1)', border: 'none', color: '#fff', fontSize: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            ✕
+            style={{ width: 64, height: 64, borderRadius: 32, background: 'rgba(255,255,255,.1)', border: 'none', color: '#fff', fontSize: FONT_BACK, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <X size={20} />
           </button>
         </div>
       </div>
@@ -406,8 +431,8 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
       <div style={{ ...overlayStyle, background: '#f5f5f5' }}>
         <div style={{ maxWidth: 390, margin: '0 auto' }}>
           <div style={{ padding: '20px 20px 16px', background: '#fff' }}>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#333' }}>{T('exerciseReport')}</div>
-            <div style={{ fontSize: 14, color: '#888', marginTop: 4 }}>{sport.key} · {new Date().toLocaleDateString('zh-CN')}</div>
+            <div style={{ fontSize: FONT_TITLE, fontWeight: 700, color: '#333' }}>{T('exerciseReport')}</div>
+            <div style={{ fontSize: FONT_SUB, color: '#888', marginTop: 4 }}>{sport.key} · {new Date().toLocaleDateString('zh-CN')}</div>
           </div>
 
           {/* Static map */}
@@ -415,33 +440,49 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
             <div ref={mapContainerRef} style={{ height: 200, margin: 16, borderRadius: 16, overflow: 'hidden', background: '#ddd' }} />
           )}
 
-          {/* Data cards */}
+          {/* Data cards — dynamic based on sport type */}
           <div style={{ display: 'flex', flexWrap: 'wrap', padding: 16, gap: 12 }}>
             {[
-              { label: T('exerciseDistance'), value: `${distKm.toFixed(2)} km` },
+              ...(sportType === 'gps' ? [{ label: T('exerciseDistance'), value: `${distKm.toFixed(2)} km` }] : []),
+              ...(sportType === 'repetition' ? [{ label: T('exerciseTotalReps'), value: `${displayReps}` }] : []),
               { label: T('exerciseTime'), value: fmt(sec) },
-              { label: T('exercisePace'), value: formatPace(distKm > 0 ? sec / distKm : 0) },
+              ...(sportType === 'gps' ? [{ label: T('exercisePace'), value: formatPace(distKm > 0 ? sec / distKm : 0) }] : []),
               { label: T('exerciseTotalCal'), value: `${calories} kcal` },
             ].map(d => (
               <div key={d.label} style={{ width: 'calc(50% - 6px)', background: '#fff', borderRadius: 12, padding: 16 }}>
-                <div style={{ fontSize: 13, color: '#888' }}>{d.label}</div>
-                <div style={{ fontSize: 24, fontWeight: 800, color: '#333', marginTop: 4 }}>{d.value}</div>
+                <div style={{ fontSize: FONT_SUB, color: '#888' }}>{d.label}</div>
+                <div style={{ fontSize: FONT_CLOSE, fontWeight: 800, color: '#333', marginTop: 4 }}>{d.value}</div>
               </div>
             ))}
           </div>
 
+          {/* Sets breakdown for repetition sports */}
+          {sets.length > 0 && (
+            <div style={{ padding: '0 16px 16px' }}>
+              <div style={{ fontSize: FONT_BODY, fontWeight: 700, color: '#333', marginBottom: 8 }}>{T('exerciseSets')}</div>
+              <div style={{ background: '#fff', borderRadius: 12, padding: 12 }}>
+                {sets.map((s, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: i < sets.length - 1 ? '1px solid #eee' : 'none' }}>
+                    <span style={{ fontSize: FONT_BODY, color: '#333' }}>{T('exerciseSet').replace('{n}', String(i + 1))}</span>
+                    <span style={{ fontSize: FONT_BODY, fontWeight: 700, color: '#333' }}>{s.reps} {T('exerciseReps')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Segment paces */}
           {segmentPaces.length > 0 && (
             <div style={{ padding: '0 16px 16px' }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#333', marginBottom: 8 }}>{T('exerciseSegmentPace')}</div>
+              <div style={{ fontSize: FONT_BODY, fontWeight: 700, color: '#333', marginBottom: 8 }}>{T('exerciseSegmentPace')}</div>
               <div style={{ background: '#fff', borderRadius: 12, padding: 12 }}>
                 {segmentPaces.map((p, i) => {
                   const isBest = p === bestPace;
                   const c = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
                   return (
                     <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: i < segmentPaces.length - 1 ? '1px solid #eee' : 'none' }}>
-                      <span style={{ fontSize: 15, color: '#333' }}>{i + 1} km</span>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: c }}>{formatPace(p)}</span>
+                      <span style={{ fontSize: FONT_BODY, color: '#333' }}>{i + 1} km</span>
+                      <span style={{ fontSize: FONT_BODY, fontWeight: 700, color: c }}>{formatPace(p)}</span>
                     </div>
                   );
                 })}
@@ -452,7 +493,7 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
           {/* Save button */}
           <div style={{ padding: 16 }}>
             <button onClick={handleSave}
-              style={{ width: '100%', height: 56, borderRadius: 28, background: COLORS.GREEN, border: 'none', color: '#fff', fontWeight: 700, fontSize: 18, cursor: 'pointer' }}>
+              style={{ width: '100%', height: 56, borderRadius: 28, background: COLORS.GREEN, border: 'none', color: '#fff', fontWeight: 700, fontSize: FONT_TITLE, cursor: 'pointer' }}>
               {T('exerciseSave')}
             </button>
           </div>
@@ -477,7 +518,7 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
                 <div style={{ height: 6, background: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{ height: 6, width: `${targetProgress * 100}%`, background: COLORS.GREEN, borderRadius: 3, transition: 'width .5s' }} />
                 </div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>
+                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>
                   {T('exerciseProgress')}: {Math.round(targetProgress * 100)}%
                 </div>
               </div>
@@ -486,29 +527,29 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
             {/* Main data row */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, flex: 1, alignItems: 'center' }}>
               <div style={{ textAlign: 'center', flex: 1 }}>
-                <div style={{ fontSize: 42, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{distKm.toFixed(2)}</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>km</div>
+                <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{distKm.toFixed(2)}</div>
+                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>km</div>
               </div>
               <div style={{ textAlign: 'center', flex: 1 }}>
-                <div style={{ fontSize: 42, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseTime')}</div>
+                <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</div>
+                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseTime')}</div>
               </div>
               <div style={{ textAlign: 'center', flex: 1 }}>
-                <div style={{ fontSize: 42, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{formatPace(distKm > 0 ? sec / distKm : 0)}</div>
-                <div style={{ fontSize: 13, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exercisePace')}</div>
+                <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{formatPace(distKm > 0 ? sec / distKm : 0)}</div>
+                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exercisePace')}</div>
               </div>
             </div>
 
             {/* Calories */}
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <span style={{ fontSize: 18, color: COLORS.ORANGE, fontWeight: 700 }}>{calories} kcal</span>
+              <span style={{ fontSize: FONT_TITLE, color: COLORS.ORANGE, fontWeight: 700 }}>{calories} kcal</span>
             </div>
 
             {/* Pause button */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <button onClick={handlePause}
-                style={{ width: 80, height: 80, borderRadius: 40, background: '#fff', border: 'none', fontSize: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>
-                ⏸
+                style={{ width: 80, height: 80, borderRadius: 40, background: '#fff', border: 'none', fontSize: FONT_STAT_SECTION, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>
+                <Pause size={32} />
               </button>
             </div>
           </div>
@@ -518,37 +559,120 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   }
 
   // ── ACTIVE PAGE (Non-GPS) ──
+  const currentSet = sets.length + 1;
+  const displayReps = reps || (sets.reduce((s, set) => s + set.reps, 0) + currentSetReps);
+
   return (
     <div style={{ ...overlayStyle, background: '#1a1a2e' }}>
       <div style={{ maxWidth: 390, margin: '0 auto', padding: '14px 20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 24 }}>{sport.icon}</span>
-            <span style={{ fontSize: 16, fontWeight: 600, color: '#bbb' }}>{sport.key}</span>
+            <span style={{ fontSize: FONT_CLOSE }}>{sport.icon}</span>
+            <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: '#bbb' }}>{sport.key}</span>
           </div>
+          {sportType === 'repetition' && (
+            <span style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>
+              {T('exerciseSet').replace('{n}', String(currentSet))} · {sets.reduce((s, set) => s + set.reps, 0)} {T('exerciseReps')}
+            </span>
+          )}
         </div>
       </div>
 
+      {/* Rest timer overlay */}
+      {isResting && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 310, background: 'rgba(0,0,0,.7)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: COLORS.ORANGE }}>{restSec}</div>
+          <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.7)', marginTop: 8 }}>{T('exerciseRestTime')}</div>
+          <button onClick={() => { setIsResting(false); setRestSec(0); }}
+            style={{ marginTop: 24, padding: '12px 24px', borderRadius: 20, background: 'rgba(255,255,255,.15)', border: 'none', color: '#fff', fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>
+            {T('exerciseSkip')}
+          </button>
+        </div>
+      )}
+
       <div style={{ maxWidth: 390, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 28px', minHeight: 'calc(100vh - 200px)' }}>
-        <div style={{ fontSize: 96, fontWeight: 900, color: '#fff' }}>{Math.floor(sec / 60) || 0}</div>
-        <div style={{ fontSize: 16, color: 'rgba(255,255,255,.45)', marginTop: 6 }}>{T('exerciseTotalBurn')}</div>
-        <div style={{ fontSize: 20, color: COLORS.ORANGE, marginTop: 8 }}>{calories} kcal</div>
+        {/* Main display */}
+        {sportType === 'repetition' ? (
+          <>
+            <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>{currentSetReps}</div>
+            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.45)', marginTop: 6 }}>{T('exerciseReps')}</div>
+            {/* Rep controls */}
+            <div style={{ display: 'flex', marginTop: 20, gap: 16, alignItems: 'center' }}>
+              <button onClick={() => setCurrentSetReps(r => Math.max(0, r - 1))}
+                style={{ width: 56, height: 56, borderRadius: 28, background: 'rgba(255,255,255,.15)', border: 'none', color: '#fff', fontSize: FONT_TITLE, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Minus size={24} />
+              </button>
+              <button onClick={() => setCurrentSetReps(r => r + 1)}
+                style={{ width: 72, height: 72, borderRadius: 36, background: COLORS.GREEN, border: 'none', color: '#fff', fontSize: FONT_HERO, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Plus size={32} />
+              </button>
+              <button onClick={() => setCurrentSetReps(r => r + 5)}
+                style={{ width: 56, height: 56, borderRadius: 28, background: 'rgba(255,255,255,.15)', border: 'none', color: '#fff', fontWeight: 700, fontSize: FONT_TITLE, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                +5
+              </button>
+            </div>
+            {/* Complete set button */}
+            {currentSetReps > 0 && (
+              <button onClick={() => {
+                setSets(prev => [...prev, { reps: currentSetReps, restSec: 60 }]);
+                setCurrentSetReps(0);
+                setIsResting(true);
+                setRestSec(60);
+              }}
+                style={{ marginTop: 20, padding: '14px 32px', borderRadius: 24, background: `${COLORS.GREEN}30`, border: `1px solid ${COLORS.GREEN}`, color: COLORS.GREEN, fontSize: FONT_BODY, fontWeight: 700, cursor: 'pointer' }}>
+                {T('exerciseSetComplete')}
+              </button>
+            )}
+            {/* Target progress for reps */}
+            {mode === 'target' && targetType === 'reps' && (
+              <div style={{ marginTop: 16, width: '100%', maxWidth: 300 }}>
+                <div style={{ height: 6, background: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{ height: 6, width: `${targetProgress * 100}%`, background: COLORS.GREEN, borderRadius: 3, transition: 'width .5s' }} />
+                </div>
+                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4, textAlign: 'center' }}>
+                  {displayReps} / {targetValue} {T('exerciseReps')}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>{Math.floor(sec / 60) || 0}</div>
+            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.45)', marginTop: 6 }}>{T('exerciseTotalBurn')}</div>
+            <div style={{ fontSize: FONT_STAT_CARD, color: COLORS.ORANGE, marginTop: 8 }}>{calories} kcal</div>
+            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.3)', marginTop: 6 }}>{MET_MAP[sport.key] ?? 4} {T('exerciseMet')}</div>
+            {mode === 'target' && targetType === 'time' && sec < targetValue && (
+              <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseEstRemaining')} {fmt(targetValue - sec)}</div>
+            )}
+          </>
+        )}
 
         <div style={{ display: 'flex', marginTop: 40, gap: 40 }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 38, fontWeight: 800, color: '#fff' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</div>
-            <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginTop: 4 }}>{T('exerciseTotalDuration')}</div>
+            <div style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, color: '#fff' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</div>
+            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.45)', marginTop: 4 }}>{T('exerciseTotalDuration')}</div>
           </div>
         </div>
+
+        {/* Target progress for time/calories */}
+        {mode === 'target' && targetType !== 'reps' && (
+          <div style={{ marginTop: 16, width: '100%', maxWidth: 300 }}>
+            <div style={{ height: 6, background: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
+              <div style={{ height: 6, width: `${targetProgress * 100}%`, background: COLORS.GREEN, borderRadius: 3, transition: 'width .5s' }} />
+            </div>
+            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4, textAlign: 'center' }}>
+              {T('exerciseProgress')}: {Math.round(targetProgress * 100)}%
+            </div>
+          </div>
+        )}
       </div>
 
-      <div style={{ position: 'fixed', bottom: 48, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 24 }}>
-        <button onClick={() => setActive(v => !v)}
-          style={{ width: 76, height: 76, borderRadius: 38, background: '#fff', border: 'none', fontSize: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>
-          {active ? '⏸' : '▶'}
+      {/* Pause button — routes to paused page with hold-to-finish confirmation */}
+      <div style={{ position: 'fixed', bottom: 48, left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+        <button onClick={handlePause}
+          style={{ width: 80, height: 80, borderRadius: 40, background: '#fff', border: 'none', fontSize: FONT_STAT_SECTION, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>
+          <Pause size={32} />
         </button>
-        <button onClick={handleSave}
-          style={{ width: 52, height: 52, borderRadius: 26, background: 'rgba(255,255,255,.1)', border: 'none', color: '#fff', fontSize: 20, cursor: 'pointer' }}>✕</button>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import { useWebStore } from '../store/useWebStore';
 const ENTITY_STATE_MAP: Record<string, string> = {
   habit: 'habits', reflection: 'reflections', fasting: 'fastingHistory',
   food: 'foodLog', checkin: 'checkinHistory', exercise: 'exerciseLog',
+  meditation: 'medHistory', profile: 'userProfile',
 };
 
 export function useSync(): SyncState & { triggerSync: () => Promise<void> } {
@@ -29,8 +30,17 @@ export function useSync(): SyncState & { triggerSync: () => Promise<void> } {
       }
       if (Object.keys(grouped).length) {
         // Merge: for each entity type, replace matching items by id/date
-        const patch: Record<string, any[]> = {};
+        const patch: Record<string, any> = {};
         for (const [stateKey, serverItems] of Object.entries(grouped)) {
+          // userProfile is a single object, not an array
+          if (stateKey === 'userProfile') {
+            const merged = { ...(store.userProfile ?? {}), ...serverItems[serverItems.length - 1] };
+            patch.userProfile = merged;
+            // Extract water fields from profile sync
+            if (merged.waterMl !== undefined) patch.waterMl = merged.waterMl;
+            if (merged.waterGoal !== undefined) patch.waterGoal = merged.waterGoal;
+            continue;
+          }
           const existing = (store as any)[stateKey] as any[] ?? [];
           const merged = [...existing];
           for (const item of serverItems) {
@@ -42,6 +52,10 @@ export function useSync(): SyncState & { triggerSync: () => Promise<void> } {
           patch[stateKey] = merged;
         }
         useWebStore.setState(patch);
+        // Recalculate streak after syncing checkin records
+        if (patch.checkinHistory) {
+          useWebStore.getState().calculateStreak();
+        }
       }
     });
 

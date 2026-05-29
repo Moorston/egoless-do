@@ -1,30 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAuth } from '../_auth';
 import { getPb, escapeFilter } from '../_pb';
-import { resolveConflict } from './conflict';
-
-// ── Entity → PocketBase collection mapping ───────────────────────
-const ENTITY_COLLECTION: Record<string, string> = {
-  habit:      'habits',
-  reflection: 'reflections',
-  fasting:    'fasting_sessions',
-  food:       'food_entries',
-  checkin:    'checkin_records',
-  meditation: 'meditation_history',
-  profile:    'user_profiles',
-  exercise:   'exercise_entries',
-};
-
-const ENTITY_ID_FIELD: Record<string, string> = {
-  habit:      'habit_id',
-  reflection: 'reflection_id',
-  fasting:    'session_id',
-  food:       'food_id',
-  checkin:    'date',
-  meditation: 'date',
-  profile:    'profile_id',
-  exercise:   'exercise_id',
-};
+import { resolveConflict, ENTITY_COLLECTION, ENTITY_ID_FIELD, type SyncEntity } from '@egoless-do/core';
 
 /** Safely read the JSON `data` field from a PocketBase record.
  *  Use `record.get('data')` instead of `record.data` because
@@ -65,8 +42,9 @@ export async function POST(req: NextRequest) {
     const rejected: Array<{ entity: string; entityId: string; payload: Record<string, unknown>; deleted?: boolean }> = [];
 
     for (const change of changes ?? []) {
-      const collection = ENTITY_COLLECTION[change.entity];
-      const idField = ENTITY_ID_FIELD[change.entity];
+      const entity = change.entity as SyncEntity;
+      const collection = ENTITY_COLLECTION[entity];
+      const idField = ENTITY_ID_FIELD[entity];
       if (!collection || !idField) {
         console.warn(`[Sync POST] Unknown entity: ${change.entity}`);
         continue;
@@ -134,7 +112,8 @@ export async function POST(req: NextRequest) {
     const serverChanges: unknown[] = [];
     const syncTimestamp = lastSyncAt ?? 0;
 
-    for (const [entity, collection] of Object.entries(ENTITY_COLLECTION)) {
+    for (const [entityKey, collection] of Object.entries(ENTITY_COLLECTION)) {
+      const entity = entityKey as SyncEntity;
       try {
         const records = await pb.collection(collection).getFullList({
           filter: `user_id = "${escapeFilter(userId)}" && updated >= "${new Date(syncTimestamp).toISOString()}"`,

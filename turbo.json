@@ -8,6 +8,7 @@
     },
     "lint": { "outputs": [] },
     "type-check": { "outputs": [] },
+    "test": { "outputs": [] },
     "dev": { "cache": false, "persistent": true }
   }
 }

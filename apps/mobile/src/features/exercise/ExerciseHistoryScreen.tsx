@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MapView, Polyline } from 'react-native-amap3d';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
-import { COLORS } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, getSportType } from '@egoless-do/core';
 import type { ExerciseEntry } from '@egoless-do/core';
 
 function formatPace(secPerKm: number): string {
@@ -19,6 +19,7 @@ function DetailCard({ e, TH, P, T }: { e: ExerciseEntry; TH: any; P: string; T: 
   const trackCoords = (e.trackPoints ?? []).map(p => ({ latitude: p.lat, longitude: p.lng }));
   const center = trackCoords.length > 0 ? trackCoords[0] : { latitude: 39.9042, longitude: 116.4074 };
   const bestPace = (e.segmentPaces ?? []).length > 0 ? Math.min(...(e.segmentPaces ?? [])) : 0;
+  const sportType = e.isGpsSport ? 'gps' as const : getSportType(e.sportKey, false);
 
   return (
     <View style={{ marginTop: 12, borderTopWidth: 1, borderTopColor: TH.border, paddingTop: 12 }}>
@@ -37,44 +38,65 @@ function DetailCard({ e, TH, P, T }: { e: ExerciseEntry; TH: any; P: string; T: 
         </View>
       )}
 
-      {/* Data cards */}
+      {/* Data cards — dynamic based on sport type */}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
-        {e.distanceKm ? (
+        {sportType === 'gps' && e.distanceKm ? (
           <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: 12, color: TH.sub }}>{T('exerciseDistance')}</Text>
-            <Text style={{ fontSize: 18, fontWeight: '800', color: TH.text }}>{e.distanceKm.toFixed(2)} km</Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseDistance')}</Text>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{e.distanceKm.toFixed(2)} km</Text>
+          </View>
+        ) : null}
+        {sportType === 'repetition' && e.reps != null ? (
+          <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseTotalReps')}</Text>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{e.reps}</Text>
           </View>
         ) : null}
         <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-          <Text style={{ fontSize: 12, color: TH.sub }}>{T('exerciseTime')}</Text>
-          <Text style={{ fontSize: 18, fontWeight: '800', color: TH.text }}>{Math.floor(e.durationSec / 60)}:{String(e.durationSec % 60).padStart(2, '0')}</Text>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseTime')}</Text>
+          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{Math.floor(e.durationSec / 60)}:{String(e.durationSec % 60).padStart(2, '0')}</Text>
         </View>
-        {e.avgPace ? (
+        {sportType === 'gps' && e.avgPace ? (
           <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: 12, color: TH.sub }}>{T('exerciseAvgPace')}</Text>
-            <Text style={{ fontSize: 18, fontWeight: '800', color: TH.text }}>{formatPace(e.avgPace)}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseAvgPace')}</Text>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{formatPace(e.avgPace)}</Text>
           </View>
         ) : null}
         {e.calories ? (
           <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: 12, color: TH.sub }}>{T('exerciseTotalCal')}</Text>
-            <Text style={{ fontSize: 18, fontWeight: '800', color: TH.text }}>{e.calories} kcal</Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseTotalCal')}</Text>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{e.calories} kcal</Text>
           </View>
         ) : null}
       </View>
 
+      {/* Sets breakdown for repetition sports */}
+      {(e.sets ?? []).length > 0 && (
+        <View style={{ marginTop: 4 }}>
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 6 }}>{T('exerciseSets')}</Text>
+          <View style={{ backgroundColor: `${P}10`, borderRadius: 10, padding: 10 }}>
+            {(e.sets ?? []).map((s, i) => (
+              <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4, borderBottomWidth: i < (e.sets ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
+                <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
+                <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{s.reps} {T('exerciseReps')}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+
       {/* Segment paces */}
       {(e.segmentPaces ?? []).length > 0 && (
         <View style={{ marginTop: 4 }}>
-          <Text style={{ fontSize: 14, fontWeight: '700', color: TH.text, marginBottom: 6 }}>{T('exerciseSegmentPace')}</Text>
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 6 }}>{T('exerciseSegmentPace')}</Text>
           <View style={{ backgroundColor: `${P}10`, borderRadius: 10, padding: 10 }}>
             {(e.segmentPaces ?? []).map((p, i) => {
               const isBest = p === bestPace;
               const c = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
               return (
                 <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4, borderBottomWidth: i < (e.segmentPaces ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                  <Text style={{ fontSize: 14, color: TH.text }}>{i + 1} km</Text>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: c }}>{formatPace(p)}</Text>
+                  <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{i + 1} km</Text>
+                  <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: c }}>{formatPace(p)}</Text>
                 </View>
               );
             })}
@@ -104,17 +126,17 @@ export default function ExerciseHistoryScreen() {
 
         <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
           <Card style={{ flex: 1, alignItems: 'center', padding: 14 }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: P }}>{totalMin}</Text>
-            <Text style={{ color: TH.sub, fontSize: 14 }}>{T('exerciseMin')}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{totalMin}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('exerciseMin')}</Text>
           </Card>
           <Card style={{ flex: 1, alignItems: 'center', padding: 14 }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: P }}>{totalCount}</Text>
-            <Text style={{ color: TH.sub, fontSize: 14 }}>{T('exerciseTotalCount')}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{totalCount}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('exerciseTotalCount')}</Text>
           </Card>
         </View>
 
         {log.length === 0 && (
-          <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: 16 }}>
+          <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_BODY }}>
             {T('exerciseNoHistory')}
           </Text>
         )}
@@ -127,23 +149,25 @@ export default function ExerciseHistoryScreen() {
               <Card style={{ paddingVertical: 12 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                    <Text style={{ fontSize: 28 }}>{e.sportIcon}</Text>
+                    <Text style={{ fontSize: FONT_STAT_SECTION }}>{e.sportIcon}</Text>
                     <View>
                       <Text style={{ color: TH.text, fontWeight: '600' }}>{e.sportKey}</Text>
-                      <Text style={{ color: TH.sub, fontSize: 14, marginTop: 2 }}>
+                      <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 2 }}>
                         {new Date(e.timestamp).toLocaleDateString('zh-CN')}
                       </Text>
                     </View>
                   </View>
                   <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={{ color: P, fontWeight: '700', fontSize: 16 }}>
+                    <Text style={{ color: P, fontWeight: '700', fontSize: FONT_BODY }}>
                       {Math.floor(e.durationSec / 60)}:{String(e.durationSec % 60).padStart(2, '0')}
                     </Text>
-                    {e.distanceKm ? (
-                      <Text style={{ color: TH.sub, fontSize: 14 }}>{e.distanceKm.toFixed(2)} km</Text>
+                    {e.reps != null ? (
+                      <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{e.reps} {T('exerciseReps')}</Text>
+                    ) : e.distanceKm ? (
+                      <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{e.distanceKm.toFixed(2)} km</Text>
                     ) : null}
                     {e.calories ? (
-                      <Text style={{ color: TH.sub, fontSize: 14 }}>{e.calories} kcal</Text>
+                      <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{e.calories} kcal</Text>
                     ) : null}
                   </View>
                 </View>
@@ -157,7 +181,7 @@ export default function ExerciseHistoryScreen() {
                   }}
                   style={{ position: 'absolute', top: 8, right: 8 }}
                 >
-                  <Text style={{ color: TH.sub, fontSize: 16 }}>x</Text>
+                  <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>x</Text>
                 </TouchableOpacity>
               </Card>
             </TouchableOpacity>

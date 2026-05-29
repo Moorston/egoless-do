@@ -4,7 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader, PrimaryButton } from '../../components/UI';
-import { COLORS, yesterday } from '@egoless-do/core';
+import { COLORS, yesterday, FONT_BODY } from '@egoless-do/core';
+import { CheckCircle2 } from 'lucide-react-native';
 
 export default function GracePage() {
   const nav   = useNavigation();
@@ -28,17 +29,20 @@ export default function GracePage() {
         <ScreenHeader title={T('graceTitle')} onBack={() => nav.goBack()} />
 
         <Card style={{ padding:16 }}>
-          <Text style={{ color:TH.sub, fontSize:16, lineHeight:24, marginBottom:16 }}>
+          <Text style={{ color:TH.sub, fontSize:FONT_BODY, lineHeight:24, marginBottom:16 }}>
             {T('graceDesc')}
           </Text>
 
           <View style={{ paddingVertical:12, borderBottomWidth:1, borderBottomColor:TH.border, marginBottom:12 }}>
-            <Text style={{ fontSize:16, fontWeight:'600', color:TH.text, marginBottom:4 }}>{yStr}（{T('graceYesterday')}）</Text>
-            <Text style={{ fontSize:16, color:TH.sub }}>{T('checkinSelectStatus')}：{missed ? T('graceNotDone') : T('graceDone')}</Text>
+            <Text style={{ fontSize:FONT_BODY, fontWeight:'600', color:TH.text, marginBottom:4 }}>{yStr}（{T('graceYesterday')}）</Text>
+            <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T('checkinSelectStatus')}：{missed ? T('graceNotDone') : T('graceDone')}</Text>
           </View>
 
           {done ? (
-            <Text style={{ textAlign:'center', padding:12, fontSize:16, color:COLORS.GREEN, fontWeight:'600' }}>✅ {T('graceSuccess')}</Text>
+            <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', padding:12, gap:6 }}>
+              <CheckCircle2 size={18} color={COLORS.GREEN} />
+              <Text style={{ fontSize:FONT_BODY, color:COLORS.GREEN, fontWeight:'600' }}>{T('graceSuccess')}</Text>
+            </View>
           ) : (
             <PrimaryButton
               label={T('graceButton')}
