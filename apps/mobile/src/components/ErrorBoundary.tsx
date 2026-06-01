@@ -4,7 +4,7 @@ import { THEMES, FONT_HERO, FONT_BACK, FONT_ERROR, FONT_BUTTON } from '@egoless-
 
 interface Props {
   children: ReactNode;
-  theme?: 'dark' | 'light' | 'ocean' | 'forest' | 'rose' | 'cosmos';
+  theme?: 'dark' | 'light' | 'ocean' | 'rose' | 'cosmos';
 }
 
 interface State {

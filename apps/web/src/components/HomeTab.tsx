@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { COLORS, FOOD_PRESETS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_HERO, FONT_STAT_CARD, FONT_CLOSE, FONT_LABEL, FONT_EMPTY, FONT_STAT_SECTION } from '@egoless-do/core';
+import { COLORS, BANNER_COLORS, STATS_GRADIENT, FOOD_PRESETS, dateStr, yesterday, getTodayFoodLog, getActivePlan, getTodayItems, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_HERO, FONT_STAT_CARD, FONT_CLOSE, FONT_LABEL, FONT_EMPTY, FONT_STAT_SECTION } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -80,10 +80,10 @@ export default function HomeTab() {
   const savedMeals = useMemo(() => (store.fastingHistory ?? []).length, [store.fastingHistory]);
 
   const statsData = useMemo(() => [
-    { Icon: CalendarCheck, label: T('totalCompleted'), value: totalCompleted, unit: T('days'), bg: COLORS.ORANGE },
-    { Icon: Trophy, label: T('longestStreak'), value: longestStreak, unit: T('days'), bg: COLORS.YELLOW },
-    { Icon: Zap, label: T('savedCalories'), value: savedKcal, unit: T('kcalUnit'), bg: '#FF8A65' },
-    { Icon: Utensils, label: T('savedMeals'), value: savedMeals, unit: T('mealUnit'), bg: COLORS.BLUE },
+    { Icon: CalendarCheck, label: T('totalCompleted'), value: totalCompleted, unit: T('days'), colors: STATS_GRADIENT[0] },
+    { Icon: Trophy, label: T('longestStreak'), value: longestStreak, unit: T('days'), colors: STATS_GRADIENT[1] },
+    { Icon: Zap, label: T('savedCalories'), value: savedKcal, unit: T('kcalUnit'), colors: STATS_GRADIENT[2] },
+    { Icon: Utensils, label: T('savedMeals'), value: savedMeals, unit: T('mealUnit'), colors: STATS_GRADIENT[3] },
   ], [totalCompleted, longestStreak, savedKcal, savedMeals, T]);
 
   const today = dateStr();
@@ -124,9 +124,9 @@ export default function HomeTab() {
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
 
   const bannerConfig = {
-    notChecked: { bg: 'linear-gradient(135deg,#16A34A,#15803D)', sub: T('checkinDoneToday'), btn: T('openCheckin'), BtnIcon: ClipboardList },
-    notDone:    { bg: 'linear-gradient(135deg,#F59E0B,#D97706)', sub: T('checkinModifyNotDone'), btn: T('checkinModify'), BtnIcon: Pencil },
-    done:       { bg: 'linear-gradient(135deg,#3B82F6,#2563EB)', sub: T('checkinDoneBanner'), btn: T('checkinDoneBanner'), BtnIcon: Check },
+    notChecked: { bg: `linear-gradient(135deg,${BANNER_COLORS.CHECKED},#6D28D9)`, sub: T('checkinDoneToday'), btn: T('openCheckin'), BtnIcon: ClipboardList },
+    notDone:    { bg: `linear-gradient(135deg,${BANNER_COLORS.NOT_DONE},#D97706)`, sub: T('checkinModifyNotDone'), btn: T('checkinModify'), BtnIcon: Pencil },
+    done:       { bg: `linear-gradient(135deg,${BANNER_COLORS.DONE},#4338CA)`, sub: T('checkinDoneBanner'), btn: T('checkinDoneBanner'), BtnIcon: Check },
   }[bannerState];
 
   return (
@@ -177,20 +177,46 @@ export default function HomeTab() {
         </div>
       )}
 
-      <div style={{ ...cardStyle, textAlign: 'center', padding: '20px 16px' } as React.CSSProperties}>
-        <div style={{ fontSize: FONT_STAT_SECTION }}><Shield size={40} /></div>
-        <div style={{ color: TH.sub, fontSize: FONT_BODY, marginTop: 6 }}>{T('streak')}</div>
-        <div style={{ fontSize: FONT_HERO, fontWeight: 800, color: COLORS.ORANGE, lineHeight: 1.1 }}>{store.streak}</div>
-        <div style={{ color: TH.sub, fontSize: FONT_BODY, marginTop: 4 }}>{T('days')}</div>
-        <div style={{ fontSize: FONT_BODY, color: TH.sub, marginTop: 8 }}>{T('gracePeriodHint')}</div>
+      {/* Grace reminder banner */}
+      {(() => {
+        const yStr = yesterday();
+        const yesterdayRecord = (store.checkinHistory ?? []).find((h: CheckinEntry) => h.date === yStr);
+        const yesterdayDone = yesterdayRecord?.done === true;
+        if (yesterdayDone) return null;
+        return (
+          <div onClick={() => overlay.open('grace')} style={{
+            borderRadius: 14, background: `linear-gradient(135deg, #F59E0B, #EF4444)`,
+            padding: '12px 14px', marginBottom: 12, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 10,
+          }}>
+            <Shield size={20} color="#fff" />
+            <div style={{ flex: 1 }}>
+              <div style={{ color: '#fff', fontWeight: 700, fontSize: FONT_BODY }}>{T('graceRemindTitle')}</div>
+              <div style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SUB, marginTop: 2 }}>{T('graceRemindDesc')}</div>
+            </div>
+            <span style={{ color: '#fff', fontSize: FONT_SUB }}>→</span>
+          </div>
+        );
+      })()}
+
+      {/* Streak card */}
+      <div onClick={() => overlay.open('grace')} style={{
+        borderRadius: 16, background: `linear-gradient(135deg, ${COLORS.VIOLET}, ${COLORS.INDIGO})`,
+        padding: '20px 16px', textAlign: 'center', color: '#fff', marginBottom: 12, cursor: 'pointer',
+      } as React.CSSProperties}>
+        <div style={{ fontSize: FONT_STAT_SECTION }}><Shield size={40} color="#fff" /></div>
+        <div style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_BODY, marginTop: 6 }}>{T('streak')}</div>
+        <div style={{ fontSize: FONT_HERO, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>{store.streak}</div>
+        <div style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_BODY, marginTop: 4 }}>{T('days')}</div>
+        <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.5)', marginTop: 8 }}>{T('gracePeriodHint')}</div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
         {statsData.map((item) => (
-          <div key={item.label} style={{ background: item.bg, borderRadius: 14, padding: '14px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-            <div style={{ fontSize: FONT_STAT_CARD }}><item.Icon size={22} style={{verticalAlign:'middle'}} /></div>
-            <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.78)' }}>{item.label}</div>
-            <div style={{ fontWeight: 700, color: '#fff', fontSize: FONT_TITLE }}>{item.value}<span style={{ fontSize: FONT_BODY, fontWeight: 400 }}> {item.unit}</span></div>
+          <div key={item.label} style={{ background: `linear-gradient(135deg, ${item.colors[0]}, ${item.colors[1]})`, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <div style={{ fontSize: 26, color: '#fff' }}><item.Icon size={26} style={{verticalAlign:'middle'}} /></div>
+            <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{item.label}</div>
+            <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{item.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {item.unit}</span></div>
           </div>
         ))}
       </div>
@@ -215,7 +241,7 @@ export default function HomeTab() {
         <div style={{ height: 6, background: TH.border, borderRadius: 3, marginBottom: 12, overflow: 'hidden' }}>
           <div style={waterProgress} />
         </div>
-        <button onClick={() => store.addWater(250)} style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: COLORS.BLUE, color: '#fff', fontWeight: 600, fontSize: FONT_BUTTON, cursor: 'pointer' }}>+ 250ml</button>
+        <button onClick={() => store.addWater(250)} style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 600, fontSize: FONT_BUTTON, cursor: 'pointer' }}>+ 250ml</button>
       </div>
 
       <div style={cardStyle}>
@@ -233,7 +259,7 @@ export default function HomeTab() {
       </div>
 
       <button onClick={() => { resetFoodForm(); setShowFood(true); }}
-        style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: COLORS.ORANGE, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer', marginBottom: 12, position: 'relative', zIndex: 1 }}>
+        style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer', marginBottom: 12, position: 'relative', zIndex: 1 }}>
         {T('addFoodBtn')}
       </button>
 
@@ -304,7 +330,7 @@ export default function HomeTab() {
                   style={{ width: '100%', background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 10, padding: '10px 12px', color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box', marginBottom: 10 }} />
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={() => { if (fn.trim()) { store.addFood({ name: fn, calories: +fc || 0, note: fnote, timestamp: Date.now() }); setShowFood(false); resetFoodForm(); } }}
-                    style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: COLORS.ORANGE, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('confirm')}</button>
+                    style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('confirm')}</button>
                   <button onClick={() => { if (fn.trim()) store.addCustomFoodPreset(fn, +fc || 0, fnote); }}
                     style={{ padding: '12px 16px', borderRadius: 12, border: `1px solid ${P}`, background: 'transparent', color: P, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('foodSavePreset')}</button>
                 </div>
@@ -332,7 +358,7 @@ export default function HomeTab() {
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setShowWG(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('cancel')}</button>
               <button onClick={() => { store.setWaterGoal(Math.max(500, Math.min(3000, +wgi || 2000))); setShowWG(false); }}
-                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: COLORS.BLUE, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
+                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
             </div>
           </div>
         </div>
@@ -348,7 +374,7 @@ export default function HomeTab() {
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setShowCG(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('cancel')}</button>
               <button onClick={() => { store.setCalGoal(Math.max(500, Math.min(10000, +cgi || 2000))); setShowCG(false); }}
-                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: COLORS.GREEN, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
+                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: '#18CEFF', color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
             </div>
           </div>
         </div>

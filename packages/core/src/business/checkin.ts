@@ -34,3 +34,56 @@ export function computeLongestStreak(history: CheckinEntry[]): number {
   }
   return max;
 }
+
+/** Parsed checkin note structure */
+export interface ParsedCheckinNote {
+  userNote: string;
+  practices: string[];
+  customs: string[];
+  fasted: boolean;
+  waterMl: number;
+  habits: string[];
+  food: number;
+}
+
+/** Parse checkin note from JSON or legacy format */
+export function parseCheckinNote(raw: string): ParsedCheckinNote {
+  if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [], food: 0 };
+  
+  try {
+    const data = JSON.parse(raw);
+    if (typeof data === 'object' && data !== null) {
+      return {
+        userNote: data.note ?? '',
+        practices: data.practices ?? [],
+        customs: data.customs ?? [],
+        fasted: !!data.fasted,
+        waterMl: typeof data.water === 'number' ? data.water : 0,
+        habits: data.habits ?? [],
+        food: typeof data.food === 'number' ? data.food : 0,
+      };
+    }
+  } catch {
+    // Not JSON — fall back to legacy emoji+delimiter format
+  }
+  
+  // Legacy format: emoji prefixes + ' · ' delimiter
+  const parts = raw.split(' · ');
+  const practices: string[] = [];
+  const customs: string[] = [];
+  const noteParts: string[] = [];
+  const EMOJI_TO_KEY: Record<string, string> = { '🧘': 'sit', '🧍': 'stand', '📿': 'chant' };
+  
+  for (const p of parts) {
+    const matchedEmoji = Object.keys(EMOJI_TO_KEY).find(e => p.startsWith(e));
+    if (matchedEmoji) {
+      practices.push(EMOJI_TO_KEY[matchedEmoji]);
+    } else if (p.startsWith('✓')) {
+      customs.push(p.slice(1));
+    } else if (p) {
+      noteParts.push(p);
+    }
+  }
+  
+  return { userNote: noteParts.join(' · '), practices, customs, fasted: false, waterMl: 0, habits: [], food: 0 };
+}

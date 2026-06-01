@@ -3,6 +3,7 @@ import {
   View, Text, Modal, ScrollView, TouchableOpacity, TextInput,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT, Toggle, ThemedInput, PrimaryButton, OutlineButton } from '../../components/UI';
 import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_LABEL } from '@egoless-do/core';
@@ -207,7 +208,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                   </View>
                   <View style={{ flexDirection:'row', gap:8 }}>
                     <TouchableOpacity onPress={() => { if (foodName.trim()) { store.addFood({ name: foodName, calories: +foodCal || 0, note: foodNote, timestamp: Date.now() }); setFoodName(''); setFoodCal(''); setFoodNote(''); setShowFoodAdd(false); } }}
-                      style={{ flex:1, padding:8, borderRadius:8, backgroundColor:COLORS.ORANGE, alignItems:'center' }}>
+                      style={{ flex:1, padding:8, borderRadius:8, backgroundColor:P, alignItems:'center' }}>
                       <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON }}>{T('confirm')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
@@ -367,33 +368,57 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                 style={{
                   flex:1, padding:13, borderRadius:12, alignItems:'center',
                   borderWidth:2,
-                  borderColor: localDone===false ? COLORS.RED : TH.border,
-                  backgroundColor: localDone===false ? 'rgba(239,68,68,.15)' : 'transparent',
+                  borderColor: localDone===false ? '#C53364' : TH.border,
+                  backgroundColor: 'transparent',
                 }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                  <X size={16} color={localDone===false ? COLORS.RED : TH.sub} />
-                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===false ? COLORS.RED : TH.sub }}>{T('checkinNotDone')}</Text>
+                  <X size={16} color={localDone===false ? '#C53364' : TH.sub} />
+                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===false ? '#C53364' : TH.sub }}>{T('checkinNotDone')}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setLocalDone(true)}
                 style={{
                   flex:1, padding:13, borderRadius:12, alignItems:'center',
                   borderWidth:2,
-                  borderColor: localDone===true ? COLORS.GREEN : TH.border,
-                  backgroundColor: localDone===true ? 'rgba(16,185,129,.15)' : 'transparent',
+                  borderColor: localDone===true ? '#17EAD9' : TH.border,
+                  backgroundColor: 'transparent',
                 }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                  <Check size={16} color={localDone===true ? COLORS.GREEN : TH.sub} />
-                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===true ? COLORS.GREEN : TH.sub }}>{T('checkinDone')}</Text>
+                  <Check size={16} color={localDone===true ? '#17EAD9' : TH.sub} />
+                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===true ? '#17EAD9' : TH.sub }}>{T('checkinDone')}</Text>
                 </View>
               </TouchableOpacity>
             </View>
 
-            <PrimaryButton
-              label={localDone===true ? T('checkinSubmit') : localDone===false ? T('checkinSave') : T('checkinSelectStatus')}
-              onPress={submit}
-              color={localDone===true ? COLORS.GREEN : localDone===false ? COLORS.RED : P}
-            />
+            {localDone===false ? (
+              <TouchableOpacity onPress={submit} activeOpacity={0.8}>
+                <LinearGradient
+                  colors={['#622774', '#C53364']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ borderRadius: 12, padding: 15, alignItems: 'center' }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('checkinSave')}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ) : localDone===true ? (
+              <TouchableOpacity onPress={submit} activeOpacity={0.8}>
+                <LinearGradient
+                  colors={['#17EAD9', '#6078EA']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ borderRadius: 12, padding: 15, alignItems: 'center' }}
+                >
+                  <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('checkinSubmit')}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ) : (
+              <PrimaryButton
+                label={T('checkinSelectStatus')}
+                onPress={submit}
+                color={P}
+              />
+            )}
             <OutlineButton label={T('commonCancel')} onPress={onClose} style={{ marginTop:10 }} />
           </ScrollView>
         </View>

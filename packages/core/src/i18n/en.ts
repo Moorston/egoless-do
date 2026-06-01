@@ -6,7 +6,7 @@ export const en: Record<string, string> = {
   done:'Done', notDone:'Not Done', cancel:'Cancel', save:'Save',
   submit:'Submit', note:'Reflection', freeCheckin:'Free Check-in',
   startFasting:'⏰ Start Fast', quickStart:'⚡ Quick 8h Fast',
-  stopFasting:'⏹ Stop Fast', accMed:'Total Meditation (min)', bgMusic:'Ambient Sound',
+  stopFasting:'Stop Fast', accMed:'Total Meditation (min)', bgMusic:'Ambient Sound',
   startMed:'Start Session', stopMed:'Stop', shareMed:'☯ Share Session',
   shareCardTitle:'Flow Journal · Meditation', shareCardSession:'Sessions', shareCardDownload:'Save Image',
   mindPulse:'Mind Timeline', newReflection:'New Reflection', saveReflection:'Save ✦',
@@ -241,7 +241,7 @@ export const en: Record<string, string> = {
   planStatusCancelled:'Cancelled', planStatusDelayed:'Delayed',
   planStart:'Start Plan', planPause:'Pause', planResume:'Resume',
   planComplete:'Complete', planCancelPlan:'Cancel', planEdit:'Edit', planDelete:'Delete',
-  planName:'Plan Name', planGoal:'Plan Goal', planSlogan:'Slogan',
+  planName:'Plan Name', planGoal:'Plan Goal', planSlogan:'My Vision',
   planStartDate:'Start Date', planEndDate:'End Date',
   planItems:'Items', planAddItem:'Add Item', planDeleteItem:'Delete Item',
   planItemName:'Item Name', planItemDesc:'Description',
@@ -267,9 +267,15 @@ export const en: Record<string, string> = {
   // Grace
   graceTitle:'Grace Restore',
   graceDesc:'Catch up within 1 day to keep your streak.',
-  graceYesterday:'Missed yesterday, catch up today:',
+  graceYesterday:'Yesterday',
   graceNotDone:'Not Done', graceDone:'Done', graceSuccess:'✅ Caught up!',
   graceButton:'✓ Catch Up (1-day grace)', graceNote:'Grace catch-up',
+  graceNeedRestore:'Missed yesterday? Catch up to keep your streak',
+  graceRemindTitle:'Grace Reminder',
+  graceRemindDesc:'Missed yesterday? Catch up to keep your streak alive',
+  graceUsedCount:'Grace used', graceUsedTimes:'times',
+  graceStatsTitle:'Grace Usage', graceAlreadyDone:'Already checked in yesterday',
+  graceNoNeed:'No catch-up needed', graceHistory:'Catch-up History', graceHistoryEmpty:'No catch-up records',
 
   // Premium
   premiumUpgrade:'Upgrade Premium', premiumDesc:'Unlock premium templates & AI insights',
@@ -322,4 +328,20 @@ export const en: Record<string, string> = {
 
   // Time ago
   timeAgoJustNow:'just now', timeAgoMinutes:'{n}m ago', timeAgoHours:'{n}h ago', timeAgoDays:'{n}d ago',
+
+  // Privacy Policy
+  privacyTitle:'Privacy Policy',
+  privacyLastUpdated:'Last updated: May 2026',
+  privacyIntroTitle:'About This App',
+  privacyIntro:'Egoless Do is an open-source self-awareness and habit-building app that helps users record reflections, manage fasting, meditation, exercise, and daily check-ins. We respect and protect your privacy.',
+  privacyCollectTitle:'Data Collection',
+  privacyCollect:'This app does not actively collect any personally identifiable information. We do not track your location, contacts, browsing history, or other sensitive data. All data required by the app is voluntarily entered by the user.',
+  privacyStorageTitle:'Data Storage',
+  privacyStorage:'All your data (reflection records, check-in data, food logs, etc.) is stored locally on your device by default. If you choose to sign in and enable cloud sync, data will be synced to our servers over an encrypted connection for multi-device access. You can clear local data at any time in Settings.',
+  privacyThirdPartyTitle:'Third-Party Services',
+  privacyThirdParty:'This app may use the following third-party services:\n• PocketBase — for account authentication and cloud data sync\n• Apple Health / Health Connect — for reading step count and other health data (requires user authorization)\nEach service has its own privacy policy; please review their terms.',
+  privacyRightsTitle:'Your Rights',
+  privacyRights:'You have the following rights:\n• View, edit, or delete all your data at any time\n• Clear all local data in Settings\n• Sign out and stop cloud syncing\n• Uninstall the app to completely remove local data',
+  privacyContactTitle:'Contact Us',
+  privacyContact:'If you have any questions about this privacy policy, please contact us at:\nEmail: privacy@egoless-do.app',
 };

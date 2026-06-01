@@ -35,7 +35,7 @@ export const defaultAuthState: AuthState = {
 
 export type Mood = string;
 export type HabitStatus = 'notStarted' | 'inProgress' | 'paused' | 'abandoned' | 'completed';
-export type ThemeName = 'dark' | 'light' | 'ocean' | 'forest' | 'rose' | 'cosmos';
+export type ThemeName = 'dark' | 'light' | 'ocean' | 'rose' | 'cosmos';
 
 export interface Theme {
   name: string;
@@ -384,6 +384,12 @@ export interface AppState {
   planItems: PlanItem[];
   planItemCheckins: PlanItemCheckin[];
   recycleBin: RecycleBinItem[];
+  graceHistory: GraceHistoryEntry[];
   remindEnabled: boolean;
   remindTime: string;
+}
+
+export interface GraceHistoryEntry {
+  date: string;
+  restoredAt: number;
 }

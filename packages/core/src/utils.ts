@@ -292,3 +292,13 @@ export function normalizeEntity<T>(raw: Record<string, unknown>): T {
   }
   return result as T;
 }
+
+/** Format timestamp or date string to readable date-time format */
+export const formatTime = (ts?: number, date?: string): string => {
+  if (ts) {
+    const d = new Date(ts);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  return date ?? '';
+};

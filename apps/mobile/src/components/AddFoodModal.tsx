@@ -246,7 +246,7 @@ export default function AddFoodModal({ visible, onClose }: Props) {
 
               {/* Action buttons */}
               <TouchableOpacity onPress={handleConfirmEdit}
-                style={{ backgroundColor: COLORS.ORANGE, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 10 }}>
+                style={{ backgroundColor: P, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 10 }}>
                 <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('foodConfirm')}</Text>
               </TouchableOpacity>
 
@@ -270,7 +270,7 @@ export default function AddFoodModal({ visible, onClose }: Props) {
               <ThemedInput value={fc} onChangeText={setFc} placeholder={T('foodCal')} keyboardType="numeric" style={{ marginBottom: 8 }} />
               <ThemedInput value={fnote} onChangeText={setFnote} placeholder={T('foodInsight')} style={{ marginBottom: 16 }} />
               <TouchableOpacity onPress={handleConfirmManual}
-                style={{ backgroundColor: COLORS.ORANGE, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 10 }}>
+                style={{ backgroundColor: P, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 10 }}>
                 <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('foodConfirm')}</Text>
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', gap: 10 }}>

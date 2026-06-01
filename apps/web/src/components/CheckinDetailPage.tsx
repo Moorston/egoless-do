@@ -1,20 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import { THEMES, COLORS, calculateCheckinStreak, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_SECTION } from '@egoless-do/core';
+import { THEMES, COLORS, calculateCheckinStreak, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_SECTION, formatTime, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { ChevronLeft, CheckCircle2, PenLine, Star, Circle, Check, PersonStanding, BookOpen, Hand, Droplets, Utensils } from 'lucide-react';
-
-function formatTime(ts?: number, date?: string): string {
-  if (ts) {
-    const d = new Date(ts);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-  return date ?? '';
-}
 
 export default function CheckinDetailPage({ date, onClose }: { date: string; onClose: () => void }) {
   const store = useWebStore();
@@ -23,53 +14,19 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
   const T = useT();
   const record = store.checkinHistory.find((c: CheckinEntry) => c.date === date);
 
+  const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
+  const PRACTICE_ICONS: Record<string, React.ReactNode> = { sit: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, stand: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, chant: <BookOpen size={16} style={{verticalAlign:'middle'}} /> };
+
   const parsed = useMemo(() => {
-    if (!record) return { userNote: '', practices: [] as { key: string; icon: React.ReactNode; label: string }[], customs: [] as string[], fasted: false, water: '', habits: [] as string[], food: 0 };
+    if (!record) return { userNote: '', practices: [] as { key: string; icon: React.ReactNode; label: string }[], customs: [] as string[], fasted: false, waterMl: 0, habits: [] as string[], food: 0 };
     const raw = record.note || '';
-    const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
-    const PRACTICE_ICONS: Record<string, React.ReactNode> = { sit: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, stand: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, chant: <BookOpen size={16} style={{verticalAlign:'middle'}} /> };
-
-    // Try JSON format first (new format)
-    try {
-      const data = JSON.parse(raw);
-      if (typeof data === 'object' && data !== null) {
-        const practices = (data.practices as string[] ?? []).map((k: string) => ({
-          key: k,
-          icon: PRACTICE_ICONS[k] ?? k,
-          label: T(PRACTICE_LABELS[k] ?? k),
-        }));
-        return {
-          userNote: data.note ?? '',
-          practices,
-          customs: (data.customs as string[]) ?? [],
-          fasted: !!data.fasted,
-          water: data.water ?? '',
-          habits: (data.habits as string[]) ?? [],
-          food: (data.food as number) ?? 0,
-        };
-      }
-    } catch {
-      // Not JSON — fall back to legacy emoji+delimiter format
-    }
-
-    // Legacy format: emoji prefixes + ' · ' delimiter
-    const parts = raw.split(' · ');
-    const practices: { key: string; icon: React.ReactNode; label: string }[] = [];
-    const customs: string[] = [];
-    const noteParts: string[] = [];
-    const EMOJI_TO_KEY: Record<string, string> = { '🧘': 'sit', '🧍': 'stand', '📿': 'chant' };
-    for (const p of parts) {
-      const matchedEmoji = Object.keys(EMOJI_TO_KEY).find(e => p.startsWith(e));
-      if (matchedEmoji) {
-        const key = EMOJI_TO_KEY[matchedEmoji];
-        practices.push({ key, icon: PRACTICE_ICONS[key], label: T(PRACTICE_LABELS[key] ?? key) });
-      } else if (p.startsWith('✓')) {
-        customs.push(p.slice(1));
-      } else if (p) {
-        noteParts.push(p);
-      }
-    }
-    return { userNote: noteParts.join(' · '), practices, customs, fasted: false, water: '', habits: [], food: 0 };
+    const result = parseCheckinNote(raw);
+    const practices = result.practices.map((k: string) => ({
+      key: k,
+      icon: PRACTICE_ICONS[k] ?? k,
+      label: T(PRACTICE_LABELS[k] ?? k),
+    }));
+    return { ...result, practices };
   }, [record]);
 
   if (!record) {
@@ -136,10 +93,10 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
               <span style={{ fontSize: FONT_BODY, color: COLORS.GREEN, fontWeight: 600 }}>{T('checkinAbstinence')}</span>
             </div>
           )}
-          {parsed.water && (
+          {parsed.waterMl > 0 && (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'rgba(59,130,246,.12)', borderRadius: 10, minWidth: 100 }}>
               <span><Droplets size={16} style={{verticalAlign:'middle'}} /></span>
-              <span style={{ fontSize: FONT_BODY, color: COLORS.BLUE, fontWeight: 600 }}>{parsed.water}</span>
+              <span style={{ fontSize: FONT_BODY, color: COLORS.BLUE, fontWeight: 600 }}>{parsed.waterMl}ml</span>
             </div>
           )}
           {parsed.food > 0 && (

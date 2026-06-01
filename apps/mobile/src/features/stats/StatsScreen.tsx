@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
-import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import { COLORS, STATS_GRADIENT, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
 import {
-  Flame, Sparkles, Target, Star, Utensils, Droplets,
+  Flame, Sparkles, Target, Star, Utensils, Droplets, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
 } from 'lucide-react-native';
 import LineChart from '../../components/charts/LineChart';
@@ -39,22 +40,23 @@ export default function StatsScreen() {
   const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLog, 8), [exerciseLog]);
 
   // Key metrics
+  const graceCount = (store.graceHistory ?? []).length;
   const keyMetrics = [
-    { label: T('streak'), value: `${store.streak}`, unit: T('days'), icon: Flame, bg: COLORS.ORANGE },
-    { label: T('statsReflections'), value: `${(store.reflections ?? []).length}`, unit: T('fastTimes'), icon: Sparkles, bg: P },
-    { label: T('statsMeditation'), value: `${store.totalMedMinutes}`, unit: T('medMinutes'), icon: Target, bg: COLORS.GREEN },
-    { label: T('statsActiveHabits'), value: `${activeHabits}`, unit: T('habitDays'), icon: Star, bg: COLORS.BLUE },
-    { label: T('foodTodayKcal'), value: `${totalCal}`, unit: 'kcal', icon: Utensils, bg: '#F59E0B' },
-    { label: T('checkinWater'), value: `${Math.round(store.waterMl / store.waterGoal * 100)}`, unit: '%', icon: Droplets, bg: COLORS.BLUE },
+    { label: T('streak'), value: `${store.streak}`, unit: T('days'), icon: Flame, colors: STATS_GRADIENT[0] },
+    { label: T('statsReflections'), value: `${(store.reflections ?? []).length}`, unit: T('fastTimes'), icon: Sparkles, colors: STATS_GRADIENT[1] },
+    { label: T('statsMeditation'), value: `${store.totalMedMinutes}`, unit: T('medMinutes'), icon: Target, colors: STATS_GRADIENT[2] },
+    { label: T('statsActiveHabits'), value: `${activeHabits}`, unit: T('habitDays'), icon: Star, colors: STATS_GRADIENT[3] },
+    { label: T('foodTodayKcal'), value: `${totalCal}`, unit: 'kcal', icon: Utensils, colors: STATS_GRADIENT[0] },
+    { label: T('graceStatsTitle'), value: `${graceCount}`, unit: T('graceUsedTimes'), icon: Shield, colors: STATS_GRADIENT[1] },
   ];
 
   // Exercise metrics
   const exerciseMetrics = [
-    { label: T('exerciseWeekKm'), value: `${weekKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, bg: '#00897B' },
-    { label: T('exerciseMonthKm'), value: `${monthKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, bg: '#5C6BC0' },
-    { label: T('exerciseBestPace'), value: bestPace > 0 ? `${Math.floor(bestPace / 60)}:${String(Math.floor(bestPace % 60)).padStart(2, '0')}` : '--', unit: '/km', icon: Zap, bg: '#FF6F00' },
-    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60)}`, unit: T('exerciseMin'), icon: Dumbbell, bg: '#E91E63' },
-    { label: T('exerciseTotalCount'), value: `${exerciseLog.length}`, unit: T('fastTimes'), icon: Dumbbell, bg: '#9C27B0' },
+    { label: T('exerciseWeekKm'), value: `${weekKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, colors: STATS_GRADIENT[2] },
+    { label: T('exerciseMonthKm'), value: `${monthKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, colors: STATS_GRADIENT[3] },
+    { label: T('exerciseBestPace'), value: bestPace > 0 ? `${Math.floor(bestPace / 60)}:${String(Math.floor(bestPace % 60)).padStart(2, '0')}` : '--', unit: '/km', icon: Zap, colors: STATS_GRADIENT[0] },
+    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60)}`, unit: T('exerciseMin'), icon: Dumbbell, colors: STATS_GRADIENT[1] },
+    { label: T('exerciseTotalCount'), value: `${exerciseLog.length}`, unit: T('fastTimes'), icon: Dumbbell, colors: STATS_GRADIENT[2] },
   ];
 
   return (
@@ -75,32 +77,24 @@ export default function StatsScreen() {
 
         {/* ── Key Metrics ── */}
         <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.sub, marginBottom: 10 }}>{T('statsKeyMetrics')}</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
           {keyMetrics.map(s => (
-            <View key={s.label} style={{
-              width: '47%', backgroundColor: s.bg, borderRadius: 14,
-              padding: 14, gap: 3,
-            }}>
-              <s.icon size={20} color="#fff" />
-              <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff' }}>
-                {s.value}<Text style={{ fontSize: FONT_SUB, fontWeight: '400' }}> {s.unit}</Text>
-              </Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.75)' }}>{s.label}</Text>
+            <View key={s.label} style={{ width: '48%', borderRadius: 14, overflow: 'hidden' }}>
+              <LinearGradient
+                colors={s.colors}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ padding: 16, alignItems: 'center', gap: 6 }}
+              >
+                <s.icon size={26} color="#fff" />
+                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{s.label}</Text>
+                <Text style={{ fontWeight: '700', color: '#fff', fontSize: 26 }}>
+                  {s.value}<Text style={{ fontSize: FONT_SUB, fontWeight: '400' }}> {s.unit}</Text>
+                </Text>
+              </LinearGradient>
             </View>
           ))}
         </View>
-
-        {/* ── Weight Trend (conditional) ── */}
-        {weightData.length >= 2 && (
-          <Card>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-              <TrendingUp size={15} color={TH.text} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('statsWeightTrend')}</Text>
-            </View>
-            <LineChart data={weightData.map(d => d.value)} labels={weightData.map(d => d.date)}
-              width={CHART_W} height={160} color="#E91E63" showArea suffix={T('statsKg')} />
-          </Card>
-        )}
 
         {/* ── Exercise Trend (conditional) ── */}
         {exerciseTrendData.some(d => d.value > 0) && (
@@ -116,20 +110,36 @@ export default function StatsScreen() {
 
         {/* ── Exercise Stats Grid ── */}
         <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.sub, marginBottom: 10, marginTop: 4 }}>{T('statsExerciseStats')}</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 12 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
           {exerciseMetrics.map(s => (
-            <View key={s.label} style={{
-              width: '47%', backgroundColor: s.bg, borderRadius: 14,
-              padding: 14, gap: 3,
-            }}>
-              <s.icon size={20} color="#fff" />
-              <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff' }}>
-                {s.value}<Text style={{ fontSize: FONT_SUB, fontWeight: '400' }}> {s.unit}</Text>
-              </Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.75)' }}>{s.label}</Text>
+            <View key={s.label} style={{ width: '48%', borderRadius: 14, overflow: 'hidden' }}>
+              <LinearGradient
+                colors={s.colors}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ padding: 16, alignItems: 'center', gap: 6 }}
+              >
+                <s.icon size={26} color="#fff" />
+                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{s.label}</Text>
+                <Text style={{ fontWeight: '700', color: '#fff', fontSize: 26 }}>
+                  {s.value}<Text style={{ fontSize: FONT_SUB, fontWeight: '400' }}> {s.unit}</Text>
+                </Text>
+              </LinearGradient>
             </View>
           ))}
         </View>
+
+        {/* ── Weight Trend (conditional) ── */}
+        {weightData.length >= 2 && (
+          <Card>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+              <TrendingUp size={15} color={TH.text} />
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('statsWeightTrend')}</Text>
+            </View>
+            <LineChart data={weightData.map(d => d.value)} labels={weightData.map(d => d.date)}
+              width={CHART_W} height={160} color="#E91E63" showArea suffix={T('statsKg')} />
+          </Card>
+        )}
 
         {/* ── Daily Calories (conditional) ── */}
         {caloriesData.some(d => d.value > 0) && (

@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useEffect } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, t, COLORS, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
+import { THEMES, t, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
 import {
   Home, ClipboardList, Timer, Binary, Sparkles, Dumbbell,
   Target, BarChart3, Settings, Flame,
@@ -68,8 +68,8 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
         />
         <View style={styles.streakBox}>
           <Text style={[styles.streakLabel, { color: TH.sub }]}>{T('streak')}</Text>
-          <Text style={[styles.streakValue, { color: COLORS.ORANGE }]}>
-            {streak} <Text style={styles.streakUnit}>{T('days')} </Text><Flame size={20} color={COLORS.ORANGE} />
+          <Text style={styles.streakValue}>
+            {streak} <Text style={styles.streakUnit}>{T('days')} </Text><Flame size={20} color="#EA6060" />
           </Text>
         </View>
       </View>
@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     fontSize: FONT_STAT_SECTION,
     lineHeight: 42,
+    color: '#EA6060',
   },
   streakUnit: {
     fontSize: FONT_LABEL,

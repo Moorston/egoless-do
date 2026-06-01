@@ -42,6 +42,7 @@ export const useWebStore = create<WebStore>()(
         customFoodPresets: s.customFoodPresets,
         exerciseLog: s.exerciseLog,
         plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
+        graceHistory: s.graceHistory,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

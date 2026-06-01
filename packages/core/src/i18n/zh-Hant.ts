@@ -6,7 +6,7 @@ export const zhHant: Record<string, string> = {
   done:'已完成', notDone:'未完成', cancel:'取消', save:'保存',
   submit:'提交打卡', note:'感念', freeCheckin:'自由打卡',
   startFasting:'⏰ 開始禁食', quickStart:'⚡ 快速開始 8小時',
-  stopFasting:'⏹ 停止禁食', accMed:'累計打坐 (分鐘)', bgMusic:'背景音樂',
+  stopFasting:'停止禁食', accMed:'累計打坐 (分鐘)', bgMusic:'背景音樂',
   startMed:'開始打坐', stopMed:'停止', shareMed:'☯ 分享我的打坐',
   shareCardTitle:'心流紀 · 打坐', shareCardSession:'打坐次數', shareCardDownload:'保存圖片',
   mindPulse:'感念脈絡', newReflection:'新建感念', saveReflection:'保存感念 ✦',
@@ -241,7 +241,7 @@ export const zhHant: Record<string, string> = {
   planStatusCancelled:'已作廢', planStatusDelayed:'已延期',
   planStart:'開始計劃', planPause:'暫停', planResume:'恢復',
   planComplete:'完成目標', planCancelPlan:'作廢', planEdit:'編輯', planDelete:'刪除',
-  planName:'計劃名稱', planGoal:'計劃目標', planSlogan:'感召口號',
+  planName:'計劃名稱', planGoal:'計劃目標', planSlogan:'我的願景',
   planStartDate:'開始日期', planEndDate:'結束日期',
   planItems:'項目列表', planAddItem:'添加項目', planDeleteItem:'刪除項目',
   planItemName:'項目名稱', planItemDesc:'項目描述',
@@ -267,9 +267,15 @@ export const zhHant: Record<string, string> = {
   // Grace
   graceTitle:'寬限期恢復',
   graceDesc:'寬限期機制：中斷1天內補打卡，連勝不斷。',
-  graceYesterday:'昨天未打卡，今天可以補卡：',
+  graceYesterday:'昨天',
   graceNotDone:'未打卡', graceDone:'已打卡', graceSuccess:'✅ 已補卡成功！',
   graceButton:'✓ 補打卡（1天寬限期）', graceNote:'寬限期補卡',
+  graceNeedRestore:'昨天忘記打卡了？點擊補卡保持連勝',
+  graceRemindTitle:'寬限期提醒',
+  graceRemindDesc:'昨天忘記打卡了？補卡保持連勝不斷',
+  graceUsedCount:'已使用寬限期', graceUsedTimes:'次',
+  graceStatsTitle:'寬限期使用', graceAlreadyDone:'昨天已打卡，無需補卡',
+  graceNoNeed:'無需補卡', graceHistory:'補卡記錄', graceHistoryEmpty:'暫無補卡記錄',
 
   // Premium
   premiumUpgrade:'升級 Premium', premiumDesc:'解鎖高級模板與 AI 感悟總結',
@@ -322,4 +328,20 @@ export const zhHant: Record<string, string> = {
 
   // Time ago
   timeAgoJustNow:'剛剛', timeAgoMinutes:'{n}分鐘前', timeAgoHours:'{n}小時前', timeAgoDays:'{n}天前',
+
+  // Privacy Policy
+  privacyTitle:'隱私政策',
+  privacyLastUpdated:'最後更新：2026年5月',
+  privacyIntroTitle:'項目簡介',
+  privacyIntro:'心流紀（Egoless Do）是一款開源的自我覺察與習慣養成應用，幫助用戶記錄感念、管理禁食、冥想、運動和日常打卡。本應用尊重並保護用戶的隱私。',
+  privacyCollectTitle:'數據收集說明',
+  privacyCollect:'本應用不主動收集任何個人身份資訊。我們不會追蹤您的位置、聯絡人、瀏覽歷史或其他敏感資料。應用運行所需的全部數據均由用戶主動輸入。',
+  privacyStorageTitle:'數據存儲說明',
+  privacyStorage:'您的所有數據（感念記錄、打卡數據、飲食日誌等）優先存儲在本地裝置中。如果您選擇登入帳號並啟用雲端同步功能，數據將透過加密連線同步至伺服器，以便在多裝置間共享。您可以隨時在設定中清除本地數據。',
+  privacyThirdPartyTitle:'第三方服務',
+  privacyThirdParty:'本應用可能使用以下第三方服務：\n• PocketBase — 用於帳號認證與雲端數據同步\n• Apple Health / Health Connect — 用於讀取步數等健康數據（需用戶授權）\n以上服務均有獨立的隱私政策，建議您查閱相關條款。',
+  privacyRightsTitle:'用戶權利',
+  privacyRights:'您享有以下權利：\n• 隨時查看、編輯或刪除您的所有數據\n• 在設定中清除全部本地數據\n• 登出並停止雲端同步\n• 解除安裝應用以完全刪除本地數據',
+  privacyContactTitle:'聯絡我們',
+  privacyContact:'如您對本隱私政策有任何疑問，請透過以下方式聯絡我們：\n電郵：privacy@egoless-do.app',
 };

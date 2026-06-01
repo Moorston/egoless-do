@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, Platform,
+  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import { useAppStore } from '../../store/useAppStore';
 import {
   Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
 } from '../../components/UI';
+import TimePickerModal from '../../components/TimePickerModal';
 import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
 import {
@@ -300,6 +301,7 @@ export default function SettingsScreen() {
         {
           label: T('settingsPrivacy'), icon: <Lock size={20} color={TH.text} />,
           right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('PrivacyPolicy' as never),
         },
         {
           label: T('settingsResetWelcome'), icon: <RefreshCw size={20} color={TH.text} />,
@@ -412,42 +414,19 @@ export default function SettingsScreen() {
       </ScrollView>
 
       {/* Time picker modal */}
-      <Modal visible={showTimePicker} transparent animationType="fade">
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, alignItems: 'center' }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, marginBottom: 16 }}>{T('settingsSetReminder')}</Text>
-            <TextInput
-              value={timeEdit}
-              onChangeText={setTimeEdit}
-              placeholder="HH:MM"
-              style={{
-                width: '100%', padding: 14, borderRadius: 12,
-                borderWidth: 1, borderColor: TH.border,
-                backgroundColor: TH.card, color: TH.text,
-                fontSize: FONT_STAT_CARD, fontWeight: '700', textAlign: 'center',
-                marginBottom: 20,
-              }}
-            />
-            <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>
-              <TouchableOpacity onPress={() => setShowTimePicker(false)}
-                style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('commonCancel')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={async () => {
-                store.setRemindTime(timeEdit);
-                setShowTimePicker(false);
-                if (store.remindEnabled) {
-                  const [h, m] = timeEdit.split(':').map(Number);
-                  await scheduleDailyReminder(h, m);
-                }
-              }}
-                style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('commonSave')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <TimePickerModal
+        visible={showTimePicker}
+        value={timeEdit}
+        onConfirm={async (time) => {
+          store.setRemindTime(time);
+          setShowTimePicker(false);
+          if (store.remindEnabled) {
+            const [h, m] = time.split(':').map(Number);
+            await scheduleDailyReminder(h, m);
+          }
+        }}
+        onClose={() => setShowTimePicker(false)}
+      />
 
       {/* Theme picker */}
       <Modal visible={showTheme} transparent animationType="slide">

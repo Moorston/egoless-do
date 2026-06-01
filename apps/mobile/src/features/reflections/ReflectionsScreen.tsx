@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
   KeyboardAvoidingView, Platform, TextInput, Linking, Alert,
+  PanResponder, GestureResponderEvent, PanResponderGestureState,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -16,6 +17,47 @@ import {
 } from 'lucide-react-native';
 
 // ── TagManagerPanel ──────────────────────────────────────────────
+const ROW_HEIGHT = 48;
+
+function useDragReorder(
+  orderedItems: string[],
+  onReorder: (from: number, to: number) => void,
+) {
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const dragStartIdx = useRef(0);
+  const gestureStartY = useRef(0);
+
+  const panResponder = useMemo(() => PanResponder.create({
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponder: (_: GestureResponderEvent, g: PanResponderGestureState) => {
+      if (!draggedId) return false;
+      return Math.abs(g.dy) > 5;
+    },
+    onPanResponderGrant: () => {},
+    onPanResponderMove: (_: GestureResponderEvent, g: PanResponderGestureState) => {
+      if (!draggedId) return;
+      const currentIdx = orderedItems.indexOf(draggedId);
+      if (currentIdx < 0) return;
+      const offset = Math.round((gestureStartY.current + g.dy) / ROW_HEIGHT);
+      const target = Math.max(0, Math.min(orderedItems.length - 1, dragStartIdx.current + offset));
+      if (target !== currentIdx) {
+        onReorder(currentIdx, target);
+      }
+    },
+    onPanResponderRelease: () => { setDraggedId(null); },
+    onPanResponderTerminate: () => { setDraggedId(null); },
+  }), [draggedId, orderedItems, onReorder]);
+
+  const onDragStart = useCallback((id: string) => {
+    const idx = orderedItems.indexOf(id);
+    setDraggedId(id);
+    dragStartIdx.current = idx;
+    gestureStartY.current = 0;
+  }, [orderedItems]);
+
+  return { draggedId, panResponder, onDragStart };
+}
+
 function TagManagerPanel({ onBack }: { onBack: () => void }) {
   const TH = useTheme();
   const P = TH.primary;
@@ -35,6 +77,12 @@ function TagManagerPanel({ onBack }: { onBack: () => void }) {
     const order = store.allTagsOrder ?? [];
     return order.length > 0 ? ensureOrderContains(order, required) : required;
   }, [store.allTagsOrder, store.customTags, habitTags]);
+
+  const handleReorder = useCallback((from: number, to: number) => {
+    store.reorderAllTag(from, to);
+  }, [store]);
+
+  const { draggedId, panResponder, onDragStart } = useDragReorder(orderedManagerTags, handleReorder);
 
   const presetTags = useMemo(() => orderedManagerTags.filter(t => TAGS_PRESET.includes(t)), [orderedManagerTags]);
   const customTagsList = useMemo(() => orderedManagerTags.filter(t => (store.customTags ?? []).includes(t)), [orderedManagerTags, store.customTags]);
@@ -88,8 +136,16 @@ function TagManagerPanel({ onBack }: { onBack: () => void }) {
 
   const renderTagRow = (tag: string, isPreset: boolean, isHabit: boolean, canEditDelete: boolean) => {
     const fullIdx = orderedManagerTags.indexOf(tag);
+    const isDragging = draggedId === tag;
     return (
-      <View key={tag} style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border }}>
+      <View key={tag} {...panResponder.panHandlers}
+        style={{
+          flexDirection:'row', justifyContent:'space-between', alignItems:'center',
+          paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border,
+          borderLeftWidth: isDragging ? 3 : 0, borderLeftColor: P,
+          backgroundColor: isDragging ? `${P}10` : 'transparent',
+          minHeight: ROW_HEIGHT,
+        }}>
         {editingTag?.old === tag ? (
           <View style={{ flexDirection:'row', gap:8, flex:1 }}>
             <TextInput value={editingTag.new} onChangeText={(v) => setEditingTag({ ...editingTag, new: v })}
@@ -109,23 +165,28 @@ function TagManagerPanel({ onBack }: { onBack: () => void }) {
               {isHabit && <Text style={{ color:TH.sub, fontSize:FONT_BADGE }}>{T('habitTag')}</Text>}
             </View>
             <View style={{ flexDirection:'row', gap:4, alignItems:'center' }}>
-              {canEditDelete && (
-                <TouchableOpacity onPress={() => { if (fullIdx > 0) store.reorderAllTag(fullIdx, 0); }} style={{ paddingHorizontal:8, paddingVertical:4, borderRadius:4, backgroundColor:`${P}15` }}>
-                  <Text style={{ fontSize:FONT_SUB, color:P, fontWeight:'600' }}>顶</Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity onPress={() => store.reorderAllTag(fullIdx, fullIdx - 1)} style={{ padding:6 }} disabled={fullIdx === 0}>
+              <TouchableOpacity
+                delayLongPress={300}
+                onLongPress={() => onDragStart(tag)}
+                onPress={() => store.reorderAllTag(fullIdx, fullIdx - 1)}
+                disabled={fullIdx === 0}
+                style={{ padding:8, minWidth:32, minHeight:32, alignItems:'center', justifyContent:'center' }}>
                 <ChevronUp size={16} color={fullIdx === 0 ? TH.border : P} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => store.reorderAllTag(fullIdx, fullIdx + 1)} style={{ padding:6 }} disabled={fullIdx === orderedManagerTags.length - 1}>
+              <TouchableOpacity
+                delayLongPress={300}
+                onLongPress={() => onDragStart(tag)}
+                onPress={() => store.reorderAllTag(fullIdx, fullIdx + 1)}
+                disabled={fullIdx === orderedManagerTags.length - 1}
+                style={{ padding:8, minWidth:32, minHeight:32, alignItems:'center', justifyContent:'center' }}>
                 <ChevronDown size={16} color={fullIdx === orderedManagerTags.length - 1 ? TH.border : P} />
               </TouchableOpacity>
               {canEditDelete && (
                 <>
-                  <TouchableOpacity onPress={() => setEditingTag({ old: tag, new: tag })} style={{ padding:6 }}>
+                  <TouchableOpacity onPress={() => setEditingTag({ old: tag, new: tag })} style={{ padding:8, minWidth:32, minHeight:32, alignItems:'center', justifyContent:'center' }}>
                     <Pencil size={14} color={P} />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDeleteTag(tag)} style={{ padding:6 }}>
+                  <TouchableOpacity onPress={() => handleDeleteTag(tag)} style={{ padding:8, minWidth:44, minHeight:44, alignItems:'center', justifyContent:'center' }}>
                     <Trash2 size={14} color={COLORS.RED} />
                   </TouchableOpacity>
                 </>
@@ -138,51 +199,53 @@ function TagManagerPanel({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <View>
-      <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-        <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>{T('tagManager')}</Text>
-        <TouchableOpacity onPress={onBack} style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-          <ChevronLeft size={20} color={TH.sub} />
-          <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>{T('reflBack')}</Text>
-        </TouchableOpacity>
+    <ScrollView scrollEnabled={!draggedId} keyboardShouldPersistTaps="handled">
+      <View>
+        <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+          <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>{T('tagManager')}</Text>
+          <TouchableOpacity onPress={onBack} style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+            <ChevronLeft size={20} color={TH.sub} />
+            <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>{T('reflBack')}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
+          <TextInput value={newTag} onChangeText={setNewTag} placeholder={T('newTagPlaceholder')}
+            placeholderTextColor={TH.sub}
+            style={{ flex:1, padding:10, borderRadius:8, borderWidth:1, borderColor: inputHasError ? COLORS.RED : TH.border, backgroundColor:TH.card, color:TH.text, fontSize:FONT_BODY }} />
+          <TouchableOpacity onPress={handleAddTag}
+            style={{ paddingHorizontal:16, paddingVertical:10, borderRadius:8, backgroundColor:P }}>
+            <Text style={{ color:'#fff', fontSize:FONT_BUTTON }}>{T('add')}</Text>
+          </TouchableOpacity>
+        </View>
+        {inputHasError && (
+          <Text style={{ color:COLORS.RED, fontSize:FONT_SUB, marginBottom:16 }}>
+            {isTooManyWords ? T('tagTooLong') : T('maxTagsReached')}
+          </Text>
+        )}
+
+        {presetTags.length > 0 && (
+          <>
+            {sectionHeader(T('tagSectionPreset'))}
+            {presetTags.map(tag => renderTagRow(tag, true, false, false))}
+          </>
+        )}
+
+        {customTagsList.length > 0 && (
+          <>
+            {sectionHeader(T('tagSectionCustom'))}
+            {customTagsList.map(tag => renderTagRow(tag, false, false, true))}
+          </>
+        )}
+
+        {habitTagsFiltered.length > 0 && (
+          <>
+            {sectionHeader(T('tagSectionHabit'))}
+            {habitTagsFiltered.map(tag => renderTagRow(tag, false, true, false))}
+          </>
+        )}
       </View>
-
-      <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
-        <TextInput value={newTag} onChangeText={setNewTag} placeholder={T('newTagPlaceholder')}
-          placeholderTextColor={TH.sub}
-          style={{ flex:1, padding:10, borderRadius:8, borderWidth:1, borderColor: inputHasError ? COLORS.RED : TH.border, backgroundColor:TH.card, color:TH.text, fontSize:FONT_BODY }} />
-        <TouchableOpacity onPress={handleAddTag}
-          style={{ paddingHorizontal:16, paddingVertical:10, borderRadius:8, backgroundColor:P }}>
-          <Text style={{ color:'#fff', fontSize:FONT_BUTTON }}>{T('add')}</Text>
-        </TouchableOpacity>
-      </View>
-      {inputHasError && (
-        <Text style={{ color:COLORS.RED, fontSize:FONT_SUB, marginBottom:16 }}>
-          {isTooManyWords ? T('tagTooLong') : T('maxTagsReached')}
-        </Text>
-      )}
-
-      {presetTags.length > 0 && (
-        <>
-          {sectionHeader(T('tagSectionPreset'))}
-          {presetTags.map(tag => renderTagRow(tag, true, false, false))}
-        </>
-      )}
-
-      {customTagsList.length > 0 && (
-        <>
-          {sectionHeader(T('tagSectionCustom'))}
-          {customTagsList.map(tag => renderTagRow(tag, false, false, true))}
-        </>
-      )}
-
-      {habitTagsFiltered.length > 0 && (
-        <>
-          {sectionHeader(T('tagSectionHabit'))}
-          {habitTagsFiltered.map(tag => renderTagRow(tag, false, true, false))}
-        </>
-      )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -201,6 +264,12 @@ function MoodManagerPanel({ onBack }: { onBack: () => void }) {
     const order = store.allMoodsOrder ?? [];
     return order.length > 0 ? ensureOrderContains(order, required) : required;
   }, [store.allMoodsOrder, store.customMoods]);
+
+  const handleReorder = useCallback((from: number, to: number) => {
+    store.reorderAllMood(from, to);
+  }, [store]);
+
+  const { draggedId, panResponder, onDragStart } = useDragReorder(orderedManagerMoods, handleReorder);
 
   const presetMoods = useMemo(() => orderedManagerMoods.filter(m => (MOODS as string[]).includes(m)), [orderedManagerMoods]);
   const customMoodsList = useMemo(() => orderedManagerMoods.filter(m => (store.customMoods ?? []).includes(m)), [orderedManagerMoods, store.customMoods]);
@@ -251,8 +320,16 @@ function MoodManagerPanel({ onBack }: { onBack: () => void }) {
 
   const renderMoodRow = (mood: string, isPreset: boolean, canEditDelete: boolean) => {
     const fullIdx = orderedManagerMoods.indexOf(mood);
+    const isDragging = draggedId === mood;
     return (
-      <View key={mood} style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border }}>
+      <View key={mood} {...panResponder.panHandlers}
+        style={{
+          flexDirection:'row', justifyContent:'space-between', alignItems:'center',
+          paddingVertical:8, borderBottomWidth:1, borderBottomColor:TH.border,
+          borderLeftWidth: isDragging ? 3 : 0, borderLeftColor: P,
+          backgroundColor: isDragging ? `${P}10` : 'transparent',
+          minHeight: ROW_HEIGHT,
+        }}>
         {editingMood?.old === mood ? (
           <View style={{ flexDirection:'row', gap:8, flex:1 }}>
             <TextInput value={editingMood.new} onChangeText={(v) => setEditingMood({ ...editingMood, new: v })}
@@ -271,23 +348,28 @@ function MoodManagerPanel({ onBack }: { onBack: () => void }) {
               {isPreset && <Text style={{ color:TH.sub, fontSize:FONT_BADGE }}>{T('preset')}</Text>}
             </View>
             <View style={{ flexDirection:'row', gap:4, alignItems:'center' }}>
-              {canEditDelete && (
-                <TouchableOpacity onPress={() => { if (fullIdx > 0) store.reorderAllMood(fullIdx, 0); }} style={{ paddingHorizontal:8, paddingVertical:4, borderRadius:4, backgroundColor:`${P}15` }}>
-                  <Text style={{ fontSize:FONT_SUB, color:P, fontWeight:'600' }}>顶</Text>
-                </TouchableOpacity>
-              )}
-              <TouchableOpacity onPress={() => store.reorderAllMood(fullIdx, fullIdx - 1)} style={{ padding:6 }} disabled={fullIdx === 0}>
+              <TouchableOpacity
+                delayLongPress={300}
+                onLongPress={() => onDragStart(mood)}
+                onPress={() => store.reorderAllMood(fullIdx, fullIdx - 1)}
+                disabled={fullIdx === 0}
+                style={{ padding:8, minWidth:32, minHeight:32, alignItems:'center', justifyContent:'center' }}>
                 <ChevronUp size={16} color={fullIdx === 0 ? TH.border : P} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => store.reorderAllMood(fullIdx, fullIdx + 1)} style={{ padding:6 }} disabled={fullIdx === orderedManagerMoods.length - 1}>
+              <TouchableOpacity
+                delayLongPress={300}
+                onLongPress={() => onDragStart(mood)}
+                onPress={() => store.reorderAllMood(fullIdx, fullIdx + 1)}
+                disabled={fullIdx === orderedManagerMoods.length - 1}
+                style={{ padding:8, minWidth:32, minHeight:32, alignItems:'center', justifyContent:'center' }}>
                 <ChevronDown size={16} color={fullIdx === orderedManagerMoods.length - 1 ? TH.border : P} />
               </TouchableOpacity>
               {canEditDelete && (
                 <>
-                  <TouchableOpacity onPress={() => setEditingMood({ old: mood, new: mood })} style={{ padding:6 }}>
+                  <TouchableOpacity onPress={() => setEditingMood({ old: mood, new: mood })} style={{ padding:8, minWidth:32, minHeight:32, alignItems:'center', justifyContent:'center' }}>
                     <Pencil size={14} color={P} />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDeleteMood(mood)} style={{ padding:6 }}>
+                  <TouchableOpacity onPress={() => handleDeleteMood(mood)} style={{ padding:8, minWidth:44, minHeight:44, alignItems:'center', justifyContent:'center' }}>
                     <Trash2 size={14} color={COLORS.RED} />
                   </TouchableOpacity>
                 </>
@@ -300,44 +382,46 @@ function MoodManagerPanel({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <View>
-      <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-        <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>{T('moodManager')}</Text>
-        <TouchableOpacity onPress={onBack} style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-          <ChevronLeft size={20} color={TH.sub} />
-          <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>{T('reflBack')}</Text>
-        </TouchableOpacity>
+    <ScrollView scrollEnabled={!draggedId} keyboardShouldPersistTaps="handled">
+      <View>
+        <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+          <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>{T('moodManager')}</Text>
+          <TouchableOpacity onPress={onBack} style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+            <ChevronLeft size={20} color={TH.sub} />
+            <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>{T('reflBack')}</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
+          <TextInput value={newMood} onChangeText={setNewMood} placeholder={T('newMoodPlaceholder')}
+            placeholderTextColor={TH.sub}
+            style={{ flex:1, padding:10, borderRadius:8, borderWidth:1, borderColor: inputHasError ? COLORS.RED : TH.border, backgroundColor:TH.card, color:TH.text, fontSize:FONT_BODY }} />
+          <TouchableOpacity onPress={handleAddMood}
+            style={{ paddingHorizontal:16, paddingVertical:10, borderRadius:8, backgroundColor:P }}>
+            <Text style={{ color:'#fff', fontSize:FONT_BUTTON }}>{T('add')}</Text>
+          </TouchableOpacity>
+        </View>
+        {inputHasError && (
+          <Text style={{ color:COLORS.RED, fontSize:FONT_SUB, marginBottom:16 }}>
+            {isTooManyWords ? T('moodTooLong') : T('maxMoodsReached')}
+          </Text>
+        )}
+
+        {presetMoods.length > 0 && (
+          <>
+            {sectionHeader(T('moodSectionPreset'))}
+            {presetMoods.map(mood => renderMoodRow(mood, true, false))}
+          </>
+        )}
+
+        {customMoodsList.length > 0 && (
+          <>
+            {sectionHeader(T('moodSectionCustom'))}
+            {customMoodsList.map(mood => renderMoodRow(mood, false, true))}
+          </>
+        )}
       </View>
-
-      <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
-        <TextInput value={newMood} onChangeText={setNewMood} placeholder={T('newMoodPlaceholder')}
-          placeholderTextColor={TH.sub}
-          style={{ flex:1, padding:10, borderRadius:8, borderWidth:1, borderColor: inputHasError ? COLORS.RED : TH.border, backgroundColor:TH.card, color:TH.text, fontSize:FONT_BODY }} />
-        <TouchableOpacity onPress={handleAddMood}
-          style={{ paddingHorizontal:16, paddingVertical:10, borderRadius:8, backgroundColor:P }}>
-          <Text style={{ color:'#fff', fontSize:FONT_BUTTON }}>{T('add')}</Text>
-        </TouchableOpacity>
-      </View>
-      {inputHasError && (
-        <Text style={{ color:COLORS.RED, fontSize:FONT_SUB, marginBottom:16 }}>
-          {isTooManyWords ? T('moodTooLong') : T('maxMoodsReached')}
-        </Text>
-      )}
-
-      {presetMoods.length > 0 && (
-        <>
-          {sectionHeader(T('moodSectionPreset'))}
-          {presetMoods.map(mood => renderMoodRow(mood, true, false))}
-        </>
-      )}
-
-      {customMoodsList.length > 0 && (
-        <>
-          {sectionHeader(T('moodSectionCustom'))}
-          {customMoodsList.map(mood => renderMoodRow(mood, false, true))}
-        </>
-      )}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -633,7 +717,12 @@ export default function ReflectionsScreen() {
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflNewTitle')}</Text>
               <TouchableOpacity onPress={() => { setShowNew(false); setShowTagManager(false); setShowMoodManager(false); }}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
-            <ScrollView>
+            {showTagManager ? (
+              <TagManagerPanel onBack={() => setShowTagManager(false)} />
+            ) : showMoodManager ? (
+              <MoodManagerPanel onBack={() => setShowMoodManager(false)} />
+            ) : (
+            <ScrollView keyboardShouldPersistTaps="handled">
               {/* Color palette */}
               <View style={{ flexDirection:'row', gap:10, marginBottom:16 }}>
                 {MIND_COLORS.map((c,i) => (
@@ -679,24 +768,7 @@ export default function ReflectionsScreen() {
 
               <PrimaryButton label={T('saveReflection')} onPress={saveReflection} />
             </ScrollView>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
-
-      {/* Tag Manager Modal */}
-      <Modal visible={showTagManager} animationType="slide" transparent>
-        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end' }}>
-          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
-            <TagManagerPanel onBack={() => setShowTagManager(false)} />
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
-
-      {/* Mood Manager Modal */}
-      <Modal visible={showMoodManager} animationType="slide" transparent>
-        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end' }}>
-          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
-            <MoodManagerPanel onBack={() => setShowMoodManager(false)} />
+            )}
           </View>
         </KeyboardAvoidingView>
       </Modal>
@@ -764,7 +836,12 @@ export default function ReflectionsScreen() {
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflEditTitle')}</Text>
               <TouchableOpacity onPress={cancelEdit}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
-            <ScrollView>
+            {showTagManager ? (
+              <TagManagerPanel onBack={() => setShowTagManager(false)} />
+            ) : showMoodManager ? (
+              <MoodManagerPanel onBack={() => setShowMoodManager(false)} />
+            ) : (
+            <ScrollView keyboardShouldPersistTaps="handled">
               {/* Color palette */}
               <View style={{ flexDirection:'row', gap:10, marginBottom:16 }}>
                 {MIND_COLORS.map((c,i) => (
@@ -810,9 +887,11 @@ export default function ReflectionsScreen() {
 
               <PrimaryButton label={T('reflSaveEdit')} onPress={saveEdit} />
             </ScrollView>
+            )}
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
     </SafeAreaView>
   );
 }

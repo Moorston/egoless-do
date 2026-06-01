@@ -39,6 +39,8 @@ const StreakBreakPage = dynamic(() => import('./StreakBreakPage'), { ssr: false 
 const PlanCreatePage = dynamic(() => import('./PlanCreatePage'), { ssr: false });
 const PlanDetailPage = dynamic(() => import('./PlanDetailPage'), { ssr: false });
 const PlanHistoryPage = dynamic(() => import('./PlanHistoryPage'), { ssr: false });
+const PrivacyPolicyPage = dynamic(() => import('./PrivacyPolicyPage'), { ssr: false });
+const StatsPage = dynamic(() => import('./StatsPage'), { ssr: false });
 import PlanTab from './PlanTab';
 
 const TABS = [
@@ -137,6 +139,10 @@ export default function AppShell() {
           : null;
       case 'planHistory':
         return <PlanHistoryPage onClose={overlayState.close} />;
+      case 'privacyPolicy':
+        return <PrivacyPolicyPage onClose={overlayState.close} />;
+      case 'stats':
+        return <StatsPage onClose={overlayState.close} />;
       default:
         return null;
     }
@@ -177,7 +183,7 @@ export default function AppShell() {
             {tab === 4 && <ReflectionsTab newMindTrigger={newMindTrigger} />}
             {tab === 5 && <ExerciseTab />}
             {tab === 6 && <HabitsTab />}
-            {tab === 7 && <SettingsTab syncState={sync} />}
+            {tab === 7 && <SettingsTab syncState={sync} onOpenStats={() => overlayState.open('stats')} />}
           </div>
 
           <BottomNav tabs={TABS} activeTab={tab} onTabChange={setTab} />
@@ -232,7 +238,7 @@ function FabButton({ onClick }: { onClick: () => void }) {
       onTouchEnd={(e) => { if (!drag.current) onClick(); onEnd(); }}
       onClick={(e) => { if (drag.current) { e.preventDefault(); return; } onClick(); }}
       style={fabStyle}>
-      <Plus size={24} />
+      <Plus size={24} color="#fff" />
     </button>
   );
 }

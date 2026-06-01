@@ -1,10 +1,75 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { MIND_COLORS, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE } from '@egoless-do/core';
 import { useTheme, useT, cs, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { Link, X, Settings, Check, Pencil, Trash2, ChevronUp, ChevronDown, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Link, X, Settings, Check, Pencil, Trash2, ChevronUp, ChevronDown, Eye, EyeOff, AlertCircle, GripVertical } from 'lucide-react';
+
+// ─── Confirm Dialog ─────────────────────────────────────────────
+function ConfirmDialog({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
+  const { TH, P } = useTheme();
+  const T = useT();
+  return (
+    <div onClick={onCancel} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 340, background: TH.cardSolid, borderRadius: 16, padding: 24, boxShadow: '0 8px 32px rgba(0,0,0,.3)' }}>
+        <div style={{ fontSize: FONT_BODY, color: TH.text, marginBottom: 20, lineHeight: 1.6 }}>{message}</div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button onClick={onCancel} style={{ flex: 1, padding: '10px 16px', borderRadius: 10, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>{T('cancel')}</button>
+          <button onClick={onConfirm} style={{ flex: 1, padding: '10px 16px', borderRadius: 10, border: 'none', background: COLORS.RED, color: '#fff', fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>{T('confirm')}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── useDragReorder (Web) ──────────────────────────────────────
+function useWebDragReorder(
+  orderedItems: string[],
+  onReorder: (from: number, to: number) => void,
+) {
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const startIdx = useRef(0);
+  const startY = useRef(0);
+  const rowHeight = 44;
+
+  const handleMouseDown = useCallback((e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const idx = orderedItems.indexOf(id);
+    setDraggedId(id);
+    setDragOverIdx(idx);
+    startIdx.current = idx;
+    startY.current = e.clientY;
+  }, [orderedItems]);
+
+  useEffect(() => {
+    if (!draggedId) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      const offset = Math.round((e.clientY - startY.current) / rowHeight);
+      const target = Math.max(0, Math.min(orderedItems.length - 1, startIdx.current + offset));
+      setDragOverIdx(target);
+    };
+    const handleMouseUp = () => {
+      if (dragOverIdx !== null) {
+        const currentIdx = orderedItems.indexOf(draggedId);
+        if (currentIdx >= 0 && currentIdx !== dragOverIdx) {
+          onReorder(currentIdx, dragOverIdx);
+        }
+      }
+      setDraggedId(null);
+      setDragOverIdx(null);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [draggedId, dragOverIdx, orderedItems, onReorder]);
+
+  return { draggedId, dragOverIdx, handleMouseDown };
+}
 
 // ─── Tag Manager Panel ────────────────────────────────────────────
 function TagManagerPanel({ onClose }: { onClose: () => void }) {
@@ -13,6 +78,7 @@ function TagManagerPanel({ onClose }: { onClose: () => void }) {
   const T = useT();
   const [newTag, setNewTag] = useState('');
   const [editingTag, setEditingTag] = useState<{ old: string; new: string } | null>(null);
+  const [confirmDel, setConfirmDel] = useState<string | null>(null);
 
   const habitTagsList = useMemo(() => store.habits.filter(h => h.createTag).map(h => `#${h.name}`), [store.habits]);
 
@@ -21,6 +87,12 @@ function TagManagerPanel({ onClose }: { onClose: () => void }) {
     const order = store.allTagsOrder ?? [];
     return order.length > 0 ? ensureOrderContains(order, required) : required;
   }, [store.allTagsOrder, store.customTags, habitTagsList]);
+
+  const handleReorder = useCallback((from: number, to: number) => {
+    store.reorderAllTag(from, to);
+  }, [store]);
+
+  const { draggedId, dragOverIdx, handleMouseDown } = useWebDragReorder(orderedTags, handleReorder);
 
   const customTags = store.customTags ?? [];
   const presetSet = new Set(TAGS_PRESET);
@@ -58,13 +130,22 @@ function TagManagerPanel({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const doDeleteTag = (tag: string) => {
+    store.removeCustomTag(tag);
+    setConfirmDel(null);
+  };
+
   const handleDeleteTag = (tag: string) => {
-    const usedCount = store.reflections.filter(r => r.tags.includes(tag)).length;
-    const message = usedCount > 0
+    setConfirmDel(tag);
+  };
+
+  const confirmMessage = useMemo(() => {
+    if (!confirmDel) return '';
+    const usedCount = store.reflections.filter(r => r.tags.includes(confirmDel)).length;
+    return usedCount > 0
       ? `${T('tagDeleteConfirm')} ${T('tagUsedBy').replace('{count}', String(usedCount))}`
       : T('tagDeleteConfirm');
-    if (confirm(message)) store.removeCustomTag(tag);
-  };
+  }, [confirmDel, store.reflections, T]);
 
   return (
     <div onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -97,6 +178,8 @@ function TagManagerPanel({ onClose }: { onClose: () => void }) {
           const isCustom = section === 'custom';
           const isHabit = section === 'habit';
           const canEditDelete = isCustom;
+          const isDragging = draggedId === tag;
+          const isDropTarget = dragOverIdx === idx && draggedId !== tag;
 
           return (
             <div key={tag}>
@@ -109,7 +192,14 @@ function TagManagerPanel({ onClose }: { onClose: () => void }) {
                   <div style={{ flex: 1, height: 1, background: TH.border }} />
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: `1px solid ${TH.border}` }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0',
+                borderBottom: `1px solid ${TH.border}`,
+                borderLeft: isDragging ? `3px solid ${P}` : isDropTarget ? `3px solid ${P}40` : '3px solid transparent',
+                background: isDragging ? `${P}10` : isDropTarget ? `${P}08` : 'transparent',
+                opacity: isDragging ? 0.7 : 1,
+                transition: 'background 0.15s, border-color 0.15s',
+              }}>
                 {editingTag?.old === tag ? (
                   <div style={{ display: 'flex', gap: 8, flex: 1 }}>
                     <input value={editingTag.new} onChange={(e) => setEditingTag({ ...editingTag, new: e.target.value })}
@@ -120,23 +210,20 @@ function TagManagerPanel({ onClose }: { onClose: () => void }) {
                 ) : (
                   <>
                     <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: 6 }}>
+                      <span onMouseDown={(e) => handleMouseDown(e, tag)} style={{ cursor: 'grab', display: 'flex', alignItems: 'center', color: TH.sub }} title={T('moveToTop')}>
+                        <GripVertical size={14} />
+                      </span>
                       <span style={{ color: TH.text, fontSize: FONT_BODY }}>{tag}</span>
                       {isPreset && <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('preset')}</span>}
                       {isHabit && <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('habitTag')}</span>}
                     </div>
                     <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                      {isCustom && (
-                        <button onClick={() => store.reorderAllTag(idx, 0)} title={T('moveToTop')}
-                          style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: P, fontSize: FONT_SUB, cursor: 'pointer' }}>
-                          <ChevronUp size={16} />
-                        </button>
-                      )}
                       <button onClick={() => store.reorderAllTag(idx, idx - 1)} disabled={idx === 0} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === 0 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === 0 ? 'default' : 'pointer' }}><ChevronUp size={16} /></button>
                       <button onClick={() => store.reorderAllTag(idx, idx + 1)} disabled={idx === arr.length - 1} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === arr.length - 1 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === arr.length - 1 ? 'default' : 'pointer' }}><ChevronDown size={16} /></button>
                       {canEditDelete && (
                         <>
                           <button onClick={() => setEditingTag({ old: tag, new: tag })} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: P, fontSize: FONT_SUB, cursor: 'pointer' }}><Pencil size={14} /></button>
-                          <button onClick={() => handleDeleteTag(tag)} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: COLORS.RED, fontSize: FONT_SUB, cursor: 'pointer' }}><Trash2 size={14} /></button>
+                          <button onClick={(e) => { e.stopPropagation(); handleDeleteTag(tag); }} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: COLORS.RED, fontSize: FONT_SUB, cursor: 'pointer' }}><Trash2 size={14} /></button>
                         </>
                       )}
                     </div>
@@ -147,6 +234,11 @@ function TagManagerPanel({ onClose }: { onClose: () => void }) {
           );
         })}
       </div>
+
+      {/* Custom confirm dialog */}
+      {confirmDel && (
+        <ConfirmDialog message={confirmMessage} onConfirm={() => doDeleteTag(confirmDel)} onCancel={() => setConfirmDel(null)} />
+      )}
     </div>
   );
 }
@@ -158,12 +250,19 @@ function MoodManagerPanel({ onClose }: { onClose: () => void }) {
   const T = useT();
   const [newMood, setNewMood] = useState('');
   const [editingMood, setEditingMood] = useState<{ old: string; new: string } | null>(null);
+  const [confirmDel, setConfirmDel] = useState<string | null>(null);
 
   const orderedMoods = useMemo(() => {
     const required = [...MOODS, ...(store.customMoods ?? [])];
     const order = store.allMoodsOrder ?? [];
     return order.length > 0 ? ensureOrderContains(order, required) : required;
   }, [store.allMoodsOrder, store.customMoods]);
+
+  const handleReorder = useCallback((from: number, to: number) => {
+    store.reorderAllMood(from, to);
+  }, [store]);
+
+  const { draggedId, dragOverIdx, handleMouseDown } = useWebDragReorder(orderedMoods, handleReorder);
 
   const customMoods = store.customMoods ?? [];
   const presetSet = new Set(MOODS as string[]);
@@ -196,13 +295,22 @@ function MoodManagerPanel({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const doDeleteMood = (mood: string) => {
+    store.removeCustomMood(mood);
+    setConfirmDel(null);
+  };
+
   const handleDeleteMood = (mood: string) => {
-    const usedCount = store.reflections.filter(r => r.mood === mood).length;
-    const message = usedCount > 0
+    setConfirmDel(mood);
+  };
+
+  const confirmMessage = useMemo(() => {
+    if (!confirmDel) return '';
+    const usedCount = store.reflections.filter(r => r.mood === confirmDel).length;
+    return usedCount > 0
       ? `${T('moodDeleteConfirm')} ${T('moodUsedBy').replace('{count}', String(usedCount))}`
       : T('moodDeleteConfirm');
-    if (confirm(message)) store.removeCustomMood(mood);
-  };
+  }, [confirmDel, store.reflections, T]);
 
   return (
     <div onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -233,6 +341,8 @@ function MoodManagerPanel({ onClose }: { onClose: () => void }) {
           const showHeader = section !== prevSection;
           const isPreset = section === 'preset';
           const isCustom = section === 'custom';
+          const isDragging = draggedId === mood;
+          const isDropTarget = dragOverIdx === idx && draggedId !== mood;
 
           return (
             <div key={mood}>
@@ -245,7 +355,14 @@ function MoodManagerPanel({ onClose }: { onClose: () => void }) {
                   <div style={{ flex: 1, height: 1, background: TH.border }} />
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: `1px solid ${TH.border}` }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0',
+                borderBottom: `1px solid ${TH.border}`,
+                borderLeft: isDragging ? `3px solid ${P}` : isDropTarget ? `3px solid ${P}40` : '3px solid transparent',
+                background: isDragging ? `${P}10` : isDropTarget ? `${P}08` : 'transparent',
+                opacity: isDragging ? 0.7 : 1,
+                transition: 'background 0.15s, border-color 0.15s',
+              }}>
                 {editingMood?.old === mood ? (
                   <div style={{ display: 'flex', gap: 8, flex: 1 }}>
                     <input value={editingMood.new} onChange={(e) => setEditingMood({ ...editingMood, new: e.target.value })}
@@ -256,22 +373,19 @@ function MoodManagerPanel({ onClose }: { onClose: () => void }) {
                 ) : (
                   <>
                     <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: 6 }}>
+                      <span onMouseDown={(e) => handleMouseDown(e, mood)} style={{ cursor: 'grab', display: 'flex', alignItems: 'center', color: TH.sub }} title={T('moveToTop')}>
+                        <GripVertical size={14} />
+                      </span>
                       <span style={{ color: TH.text, fontSize: FONT_BODY }}>{mood}</span>
                       {isPreset && <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('preset')}</span>}
                     </div>
                     <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                      {isCustom && (
-                        <button onClick={() => store.reorderAllMood(idx, 0)} title={T('moveToTop')}
-                          style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: P, fontSize: FONT_SUB, cursor: 'pointer' }}>
-                          <ChevronUp size={16} />
-                        </button>
-                      )}
                       <button onClick={() => store.reorderAllMood(idx, idx - 1)} disabled={idx === 0} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === 0 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === 0 ? 'default' : 'pointer' }}><ChevronUp size={16} /></button>
                       <button onClick={() => store.reorderAllMood(idx, idx + 1)} disabled={idx === arr.length - 1} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === arr.length - 1 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === arr.length - 1 ? 'default' : 'pointer' }}><ChevronDown size={16} /></button>
                       {isCustom && (
                         <>
                           <button onClick={() => setEditingMood({ old: mood, new: mood })} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: P, fontSize: FONT_SUB, cursor: 'pointer' }}><Pencil size={14} /></button>
-                          <button onClick={() => handleDeleteMood(mood)} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: COLORS.RED, fontSize: FONT_SUB, cursor: 'pointer' }}><Trash2 size={14} /></button>
+                          <button onClick={(e) => { e.stopPropagation(); handleDeleteMood(mood); }} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: COLORS.RED, fontSize: FONT_SUB, cursor: 'pointer' }}><Trash2 size={14} /></button>
                         </>
                       )}
                     </div>
@@ -282,6 +396,11 @@ function MoodManagerPanel({ onClose }: { onClose: () => void }) {
           );
         })}
       </div>
+
+      {/* Custom confirm dialog */}
+      {confirmDel && (
+        <ConfirmDialog message={confirmMessage} onConfirm={() => doDeleteMood(confirmDel)} onCancel={() => setConfirmDel(null)} />
+      )}
     </div>
   );
 }

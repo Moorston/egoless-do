@@ -3,7 +3,7 @@ import type {
   AuthState, ThemeName, Habit, MindReflection, FastingSession,
   MedHistoryEntry, FoodEntry, ExerciseEntry, CheckinEntry,
   UserProfile, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, PlanItemLink,
-  RecycleBinItem, RecycleBinEntityType,
+  RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry,
 } from '../types';
 import type { CreateHabitForm } from '../business/habits';
 import type { CreateReflectionParams } from '../business/reflections';
@@ -74,6 +74,8 @@ export interface UiSlice {
   addExercise: (entry: Omit<ExerciseEntry, 'id'>) => void;
   deleteExercise: (id: string) => void;
   submitCheckin: (done: boolean, note: string, date?: string, weight?: number) => void;
+  addGraceRecord: (date: string) => void;
+  graceHistory: GraceHistoryEntry[];
   updateUserProfile: (profile: Partial<UserProfile>) => void;
   setRemindEnabled: (v: boolean) => void;
   setRemindTime: (t: string) => void;

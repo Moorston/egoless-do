@@ -78,7 +78,7 @@ export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: 
         } catch { /* cancelled */ }
       }},
       { label: T('settingsVersion'), icon: <Info size={18} />, right: <span style={{ color: TH.sub }}>1.0.0</span> },
-      { label: T('settingsPrivacy'), icon: <Lock size={18} />, right: <ChevronRight size={18} color={TH.sub} /> },
+      { label: T('settingsPrivacy'), icon: <Lock size={18} />, right: <ChevronRight size={18} color={TH.sub} />, onClick: () => overlay.open('privacyPolicy') },
       { label: T('settingsResetWelcome'), icon: <RefreshCw size={18} />, sub: T('settingsResetWelcomeDesc'), right: <ChevronRight size={18} color={TH.sub} />, last: true },
     ]},
     { title: T('settingsAccount'), rows: [

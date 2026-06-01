@@ -98,7 +98,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
           }}>
             <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('foodTodayKcal')}</div>
             <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
-              <span style={{ fontSize: FONT_HERO, fontWeight: 800, color: COLORS.ORANGE }}>{totalCal}</span>
+              <span style={{ fontSize: FONT_HERO, fontWeight: 800, color: P }}>{totalCal}</span>
               <span style={{ fontSize: FONT_BACK, color: TH.sub }}>/ {store.calGoal}</span>
             </div>
             <div style={{ fontSize: FONT_BODY, color: '#10B981', marginTop: 6 }}>{T('foodRemaining')}: {Math.max(0, store.calGoal - totalCal)} kcal</div>
@@ -126,7 +126,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
           </div>
 
           <button onClick={() => setShowAdd(true)}
-            style={{ width: '100%', marginTop: 12, padding: 14, borderRadius: 12, border: 'none', background: COLORS.ORANGE, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
+            style={{ width: '100%', marginTop: 12, padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
             {T('foodAdd')}
           </button>
 
@@ -283,7 +283,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
                   style={{ width: '100%', background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 10, padding: '10px 12px', color: TH.text, fontSize: FONT_LABEL, resize: 'none', outline: 'none', boxSizing: 'border-box', marginBottom: 10 }} />
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={addFoodItem}
-                    style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: COLORS.ORANGE, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
+                    style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
                     {T('foodConfirm')}
                   </button>
                   <button onClick={handleSaveAsPreset}

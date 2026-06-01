@@ -1,20 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_BACK } from '@egoless-do/core';
+import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_BACK, formatTime } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
 import { ChevronLeft } from 'lucide-react';
-
-function formatTime(ts?: number, date?: string): string {
-  if (ts) {
-    const d = new Date(ts);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-  return date ?? '';
-}
 
 export default function HistoryPage({ onClose }: { onClose: () => void }) {
   const store = useWebStore();

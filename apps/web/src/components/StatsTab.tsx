@@ -7,7 +7,7 @@ import { useWebStore } from '../store/useWebStore';
 import LineChart from './charts/LineChart';
 import BarChart from './charts/BarChart';
 import CalendarGrid from './charts/CalendarGrid';
-import { Flame, Sparkles, Brain, Circle, Timer, Utensils, CalendarCheck, CalendarDays, Zap, PersonStanding, Dumbbell, BarChart3, TrendingUp } from 'lucide-react';
+import { Flame, Sparkles, Brain, Circle, Timer, Utensils, CalendarCheck, CalendarDays, Zap, PersonStanding, Dumbbell, BarChart3, TrendingUp, Shield } from 'lucide-react';
 
 export default function StatsTab() {
   const store = useWebStore();
@@ -39,13 +39,14 @@ export default function StatsTab() {
   const caloriesData = useMemo(() => aggregateDailyCalories(store.foodLog ?? [], 7), [store.foodLog]);
   const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLog, 8), [exerciseLog]);
 
+  const graceCount = (store.graceHistory ?? []).length;
   const keyMetrics = [
     { label: T('streak'), value: `${store.streak} ${T('days')}`, Icon: Flame, bg: '#F97316' },
     { label: T('statsReflections'), value: `${store.reflections.length} ${T('fastTimes')}`, Icon: Sparkles, bg: P },
     { label: T('statsMeditation'), value: `${store.totalMedMinutes} ${T('medMinutes')}`, Icon: Brain, bg: '#22C55E' },
     { label: T('statsActiveHabits'), value: `${activeHabits} ${T('habitDays')}`, Icon: Circle, bg: '#3B82F6' },
     { label: T('totalFasting'), value: `${totalFastHours}h`, Icon: Timer, bg: '#8B5CF6' },
-    { label: T('statsFoodLog'), value: `${store.foodLog.length} ${T('fastTimes')}`, Icon: Utensils, bg: '#F59E0B' },
+    { label: T('graceStatsTitle'), value: `${graceCount} ${T('graceUsedTimes')}`, Icon: Shield, bg: '#F59E0B' },
   ];
 
   const exerciseMetrics = [
@@ -76,23 +77,27 @@ export default function StatsTab() {
             background: s.bg, borderRadius: 14, padding: 14,
             display: 'flex', flexDirection: 'column', gap: 3,
           } as React.CSSProperties}>
-            <div style={{ fontSize: FONT_BACK }}><s.Icon size={20} /></div>
+            <div style={{ fontSize: FONT_BACK, color: '#fff' }}><s.Icon size={20} /></div>
             <div style={{ fontSize: FONT_TITLE, fontWeight: 800, color: '#fff', marginTop: 2 }}>{s.value}</div>
             <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.75)' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
-      {/* ── Weight Trend (conditional) ── */}
-      {weightData.length >= 2 && (
-        <div style={cardStyle}>
-          <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.text, marginBottom: 12 }}>
-            <TrendingUp size={15} style={{verticalAlign:'middle',marginRight:4}} />{T('statsWeightTrend')}
+      {/* ── Exercise Stats Grid ── */}
+      <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.sub, marginBottom: 10 }}>{T('statsExerciseStats')}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
+        {exerciseMetrics.map((s, i) => (
+          <div key={i} style={{
+            background: s.bg, borderRadius: 14, padding: 14,
+            display: 'flex', flexDirection: 'column', gap: 3,
+          } as React.CSSProperties}>
+            <div style={{ fontSize: FONT_BACK, color: '#fff' }}><s.Icon size={20} /></div>
+            <div style={{ fontSize: FONT_TITLE, fontWeight: 800, color: '#fff', marginTop: 2 }}>{s.value}</div>
+            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.75)' }}>{s.label}</div>
           </div>
-          <LineChart data={weightData.map(d => ({ label: d.date, value: d.value }))}
-            color="#E91E63" showArea suffix={` ${T('statsKg')}`} />
-        </div>
-      )}
+        ))}
+      </div>
 
       {/* ── Exercise Trend (conditional) ── */}
       {exerciseTrendData.some(d => d.value > 0) && (
@@ -104,20 +109,16 @@ export default function StatsTab() {
         </div>
       )}
 
-      {/* ── Exercise Stats Grid ── */}
-      <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.sub, marginBottom: 10 }}>{T('statsExerciseStats')}</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
-        {exerciseMetrics.map((s, i) => (
-          <div key={i} style={{
-            background: s.bg, borderRadius: 14, padding: 14,
-            display: 'flex', flexDirection: 'column', gap: 3,
-          } as React.CSSProperties}>
-            <div style={{ fontSize: FONT_BACK }}><s.Icon size={20} /></div>
-            <div style={{ fontSize: FONT_TITLE, fontWeight: 800, color: '#fff', marginTop: 2 }}>{s.value}</div>
-            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.75)' }}>{s.label}</div>
+      {/* ── Weight Trend (conditional) ── */}
+      {weightData.length >= 2 && (
+        <div style={cardStyle}>
+          <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.text, marginBottom: 12 }}>
+            <TrendingUp size={15} style={{verticalAlign:'middle',marginRight:4}} />{T('statsWeightTrend')}
           </div>
-        ))}
-      </div>
+          <LineChart data={weightData.map(d => ({ label: d.date, value: d.value }))}
+            color="#E91E63" showArea suffix={` ${T('statsKg')}`} />
+        </div>
+      )}
 
       {/* ── Daily Calories (conditional) ── */}
       {caloriesData.some(d => d.value > 0) && (

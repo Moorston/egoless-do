@@ -5,19 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { COLORS, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, formatTime } from '@egoless-do/core';
 import type { RootStackParamList } from '../../navigation';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
-
-function formatTime(ts?: number, date?: string): string {
-  if (ts) {
-    const d = new Date(ts);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
-  return date ?? '';
-}
 
 export default function CheckinHistoryScreen() {
   const TH = useTheme();

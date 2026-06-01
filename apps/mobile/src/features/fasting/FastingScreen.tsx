@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAudioPlayer } from 'expo-audio';
-import Svg, { Circle, Path } from 'react-native-svg';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, OutlineButton, ScreenHeader, useT } from '../../components/UI';
-import { estimateFastingKcal, FASTING_DURATIONS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE } from '@egoless-do/core';
+import { estimateFastingKcal, FASTING_DURATIONS, COLORS, WARM_CORAL, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE } from '@egoless-do/core';
 import {
   Hourglass, Clock, Flame, Trophy, Globe, Scale,
-  AlertTriangle, Check, ChevronRight,
+  AlertTriangle, Check, ChevronRight, StopCircle,
 } from 'lucide-react-native';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
@@ -99,10 +99,10 @@ export default function FastingScreen() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { icon:Hourglass, label:T('fastTotal'),    value:`${(store.fastingHistory ?? []).length} ${T('fastTimes')}`, bg:'#EF9A9A' },
-    { icon:Clock, label:T('fastTotalHours'),    value:`${totalFastHours} ${T('fastHours')}`,         bg:COLORS.GREEN },
-    { icon:Flame, label:T('fastStreak'),  value:`${currentFastingStreak} ${T('days')}`,             bg:'#FF8A65' },
-    { icon:Trophy, label:T('fastLongest'),  value:`${longestStreak} ${T('days')}`,            bg:'#9C27B0' },
+    { icon:Hourglass, label:T('fastTotal'),    value:`${(store.fastingHistory ?? []).length} ${T('fastTimes')}`, colors:['#7117EA', '#EA6060'] as const },
+    { icon:Clock, label:T('fastTotalHours'),    value:`${totalFastHours} ${T('fastHours')}`,         colors:['#17EAD9', '#6078EA'] as const },
+    { icon:Flame, label:T('fastStreak'),  value:`${currentFastingStreak} ${T('days')}`,             colors:['#9A4EFF', '#20ECFF'] as const },
+    { icon:Trophy, label:T('fastLongest'),  value:`${longestStreak} ${T('days')}`,            colors:['#8446FF', '#18CEFF'] as const },
   ], [(store.fastingHistory ?? []).length, currentFastingStreak, totalFastHours, longestStreak]);
 
   const isActive = !!store.activeFasting;
@@ -131,68 +131,90 @@ export default function FastingScreen() {
                   transform: [{ rotate: '-90deg' }],
                 }} />
                 <View style={{ alignItems:'center' }}>
-                <Text style={{ fontSize:FONT_CLOSE, fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
-                <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{T('fastTarget')} {store.activeFasting!.targetHours}h</Text>
+                <Text style={{ fontSize:26, fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
+                <Text style={{ fontSize:16, color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize:22 }}>{store.activeFasting!.targetHours}h</Text></Text>
                 </View>
               </View>
               <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:16 }}>
-                <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{T('fastActive')}</Text>
+                <Text style={{ color:TH.sub, fontSize:16 }}>{T('fastActive')}</Text>
                 <Flame size={16} color={COLORS.ORANGE} />
-                <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{Math.round(pct * 100)}%</Text>
+                <Text style={{ color:TH.sub, fontSize:22 }}>{Math.round(pct * 100)}%</Text>
               </View>
-              <PrimaryButton label={T('stopFasting')} onPress={() => store.stopFasting({ weight: store.userProfile.weight, gender: store.userProfile.gender, age: store.userProfile.age })} color={COLORS.RED} style={{ width:'100%' }} />
+              <PrimaryButton label={T('stopFasting')} onPress={() => store.stopFasting({ weight: store.userProfile.weight, gender: store.userProfile.gender, age: store.userProfile.age })} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
             </>
           ) : (
             <View style={{ gap:10, width:'100%' }}>
               <PrimaryButton label={T('startFasting')} onPress={() => { setTmpDur(8); setAgreed(false); setShowDur(true); }} color={P} />
-              <PrimaryButton label={T('quickStart')} onPress={() => store.startFasting(8)} color={COLORS.GREEN} />
+              <TouchableOpacity
+                onPress={() => store.startFasting(8)}
+                style={{ backgroundColor:TH.card, borderRadius:12, padding:15, alignItems:'center', borderWidth:1, borderColor:P }}
+              >
+                <Text style={{ color:P, fontWeight:'700', fontSize:FONT_BUTTON }}>{T('quickStart')}</Text>
+              </TouchableOpacity>
             </View>
           )}
         </Card>
 
         {/* Global fasting */}
         <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalFasting')}` })}
-          style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={P} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-            <Circle cx="12" cy="12" r="10" />
-            <Path d="M2 12h20" />
-            <Path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-          </Svg>
-          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('linkWorld')} — {T('globalFasting')}</Text>
-          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
+          style={{ flexDirection:'row', alignItems:'center', gap:10, padding:14, backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border }}>
+          <Globe size={20} color={P} />
+          <Text style={{ fontSize:FONT_BODY, color:TH.text, fontWeight:'600', flex:1 }}>{T('linkWorld')} — {T('globalFasting')}</Text>
+          <ChevronRight size={18} color={TH.sub} />
         </TouchableOpacity>
 
         {/* History entry */}
         <TouchableOpacity onPress={() => (nav as any).navigate('FastHistory')}
-          style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Clock size={18} color={P} />
-          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('fastingHistory')}</Text>
-          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
+          style={{ flexDirection:'row', alignItems:'center', gap:10, padding:14, backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border }}>
+          <Clock size={20} color={P} />
+          <Text style={{ fontSize:FONT_BODY, color:TH.text, fontWeight:'600', flex:1 }}>{T('fastingHistory')}</Text>
+          <ChevronRight size={18} color={TH.sub} />
         </TouchableOpacity>
 
         {/* Stats */}
         <Text style={{ fontWeight:'600', fontSize:FONT_BODY, marginBottom:10, color:TH.text }}>{T('fastYourStats')}</Text>
         <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:12 }}>
           {statsData.map(s => (
-            <View key={s.label} style={{ width:'48%', backgroundColor:s.bg, borderRadius:14, padding:16, alignItems:'center', gap:6 }}>
-              <s.icon size={26} color="#fff" />
-              <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{s.label}</Text>
-              <Text style={{ fontWeight:'700', color:'#fff', fontSize:FONT_STAT_CARD }}>{s.value}</Text>
+            <View key={s.label} style={{ width:'48%', borderRadius:14, overflow:'hidden' }}>
+              <LinearGradient
+                colors={s.colors}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{ padding:16, alignItems:'center', gap:6 }}
+              >
+                <s.icon size={26} color="#fff" />
+                <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{s.label}</Text>
+                <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{s.value}</Text>
+              </LinearGradient>
             </View>
           ))}
         </View>
 
         {/* Realtime kcal */}
         <View style={{ flexDirection:'row', gap:8, marginBottom:12 }}>
-          <View style={{ flex:1, backgroundColor:COLORS.ORANGE, borderRadius:14, padding:16, alignItems:'center', gap:6 }}>
-            <Flame size={26} color="#fff" />
-            <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)' }}>{T('fastKcalSaved')}</Text>
-            <Text style={{ fontWeight:'700', color:'#fff', fontSize:FONT_STAT_CARD }}>{kcal} <Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}>kcal</Text></Text>
+          <View style={{ flex:1, borderRadius:14, overflow:'hidden' }}>
+            <LinearGradient
+              colors={['#FAD961', '#F76B1C']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ padding:16, alignItems:'center', gap:6 }}
+            >
+              <Flame size={26} color="#fff" />
+              <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{T('fastKcalSaved')}</Text>
+              <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{kcal}<Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}> kcal</Text></Text>
+            </LinearGradient>
           </View>
-          <View style={{ flex:1, backgroundColor:COLORS.GREEN, borderRadius:14, padding:16, alignItems:'center', gap:6 }}>
-            <Scale size={26} color="#fff" />
-            <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)' }}>{T('fastWeightLoss')}</Text>
-            <Text style={{ fontWeight:'700', color:'#fff', fontSize:FONT_STAT_CARD }}>{(kcal / 7700).toFixed(2)} <Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}>{T('fastKg')}</Text></Text>
+          <View style={{ flex:1, borderRadius:14, overflow:'hidden' }}>
+            <LinearGradient
+              colors={['#17EAD9', '#6078EA']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{ padding:16, alignItems:'center', gap:6 }}
+            >
+              <Scale size={26} color="#fff" />
+              <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{T('fastWeightLoss')}</Text>
+              <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{(kcal / 7700).toFixed(2)}<Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}> {T('fastKg')}</Text></Text>
+            </LinearGradient>
           </View>
         </View>
 
@@ -248,8 +270,20 @@ export default function FastingScreen() {
             </TouchableOpacity>
             <View style={{ flexDirection:'row', gap:10 }}>
               <OutlineButton label={T('cancel')} onPress={() => setShowDur(false)} style={{ flex:1 }} />
-              <PrimaryButton label={T('start')} onPress={() => { store.startFasting(tmpDur); setShowDur(false); }}
-                color={agreed ? P : 'rgba(128,128,128,.2)'} style={{ flex:1 }} />
+              <TouchableOpacity
+                onPress={() => { store.startFasting(tmpDur); setShowDur(false); }}
+                style={{ flex:1, borderRadius:12, overflow:'hidden', opacity: agreed ? 1 : 0.5 }}
+                disabled={!agreed}
+              >
+                <LinearGradient
+                  colors={['#17EAD9', '#6078EA']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ padding:15, alignItems:'center' }}
+                >
+                  <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>{T('start')}</Text>
+                </LinearGradient>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

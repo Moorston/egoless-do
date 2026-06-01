@@ -4,6 +4,7 @@ import {
   View, Text, TouchableOpacity, TextInput, ScrollView,
   StyleSheet, ViewStyle, TextStyle,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../store/useAppStore';
 import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
 import { ChevronLeft } from 'lucide-react-native';
@@ -39,8 +40,8 @@ export function Card({ children, style }: { children: React.ReactNode; style?: V
 
 // ── PrimaryButton ─────────────────────────────────────────────────
 export function PrimaryButton({
-  label, onPress, color, style,
-}: { label: string; onPress: () => void; color?: string; style?: ViewStyle }) {
+  label, onPress, color, style, icon,
+}: { label: string; onPress: () => void; color?: string; style?: ViewStyle; icon?: React.ReactNode }) {
   const TH = useTheme();
   return (
     <TouchableOpacity
@@ -50,8 +51,12 @@ export function PrimaryButton({
         backgroundColor: color ?? TH.primary,
         borderRadius: 12, padding: 15,
         alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 8,
       }, style]}
     >
+      {icon}
       <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{label}</Text>
     </TouchableOpacity>
   );
@@ -225,17 +230,28 @@ export function TagPill({
 }
 
 // ── ProgressBar ──────────────────────────────────────────────────
-export function ProgressBar({ pct, color, height = 6 }: {
-  pct: number; color: string; height?: number;
+export function ProgressBar({ pct, color, colors, height = 6 }: {
+  pct: number; color?: string; colors?: readonly [string, string]; height?: number;
 }) {
   const TH = useTheme();
   return (
     <View style={{ height, backgroundColor: TH.border, borderRadius: height/2, overflow:'hidden' }}>
-      <View style={{
-        height, borderRadius: height/2,
-        backgroundColor: color,
-        width: `${Math.min(Math.max(pct,0),100)}%`,
-      }} />
+      {colors ? (
+        <View style={{ height, borderRadius: height/2, overflow:'hidden', width: `${Math.min(Math.max(pct,0),100)}%` }}>
+          <LinearGradient
+            colors={colors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ height, borderRadius: height/2 }}
+          />
+        </View>
+      ) : (
+        <View style={{
+          height, borderRadius: height/2,
+          backgroundColor: color ?? TH.primary,
+          width: `${Math.min(Math.max(pct,0),100)}%`,
+        }} />
+      )}
     </View>
   );
 }

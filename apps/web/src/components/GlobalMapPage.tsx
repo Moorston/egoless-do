@@ -164,7 +164,7 @@ export default function GlobalMapPage({ onClose, title, icon }: { onClose: () =>
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: FONT_BACK, cursor: 'pointer' }}><ChevronLeft size={20} /></button>
-          <span style={{ fontSize: FONT_BACK }}><Globe size={20} /></span>
+          <span style={{ fontSize: FONT_BACK }}><Globe size={20} color={P} /></span>
           <span style={{ fontWeight: 700, fontSize: FONT_BODY, color: '#fff' }}>{pageTitle}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,.15)', borderRadius: 12, padding: '5px 10px' }}>

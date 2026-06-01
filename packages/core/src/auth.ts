@@ -43,7 +43,13 @@ async function fetchWithTimeout(url: string, init: any): Promise<any> {
 }
 
 async function handleRes(res: Response) {
-  const data = await res.json();
+  const text = await res.text();
+  let data: any;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(`服务器返回了非 JSON 响应 (${res.status})`);
+  }
   if (!res.ok) throw new Error(data.error ?? '请求失败');
   return data;
 }

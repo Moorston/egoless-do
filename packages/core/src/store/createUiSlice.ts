@@ -106,6 +106,14 @@ export function createUiSlice<S extends UiSlice>(
       adapter.persistChange('checkin', result.record.date, result.record as any).catch(console.error);
     },
 
+    addGraceRecord(date: string) {
+      const entry = { date, restoredAt: Date.now() };
+      set(((s: any) => ({
+        graceHistory: [...(s.graceHistory ?? []), entry],
+      })) as any);
+      adapter.persistChange('grace', date, entry as any).catch(console.error);
+    },
+
     updateUserProfile(profile: Partial<UserProfile>) {
       const current = (get() as any).userProfile as UserProfile;
       const updated = { ...current, ...profile, updatedAt: Date.now() };

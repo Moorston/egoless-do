@@ -177,7 +177,7 @@ export default function GlobalMapPage({ route }: { route?: { params?: { icon?: s
             <TouchableOpacity onPress={() => nav.goBack()} style={{ padding: 4 }}>
               <ChevronLeft size={20} color="#fff" />
             </TouchableOpacity>
-            <Globe size={20} color="#fff" />
+            <Globe size={20} color={P} />
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: '#fff' }}>{pageTitle}</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(34,197,94,.15)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 5 }}>

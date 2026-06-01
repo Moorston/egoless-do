@@ -15,8 +15,7 @@ body::-webkit-scrollbar { display: none; }
 
 /* ── Theme CSS variables ────────────────────────────────────────── */
 [data-theme="dark"]   { --bg:#0F0A1E; --card:rgba(255,255,255,.07); --card-solid:#1A1030; --text:#fff; --sub:rgba(255,255,255,.45); --border:rgba(255,255,255,.09); --primary:#7C3AED; --nav-bg:rgba(15,10,30,.97); }
-[data-theme="light"]  { --bg:#F0EFF8; --card:rgba(255,255,255,.92); --card-solid:#fff;    --text:#111; --sub:#888;                  --border:#e0e0e0;                --primary:#7C3AED; --nav-bg:rgba(240,239,248,.97); }
+[data-theme="light"]  { --bg:#F0EFF8; --card:rgba(255,255,255,.92); --card-solid:#fff;    --text:#111; --sub:#6B6B6B;               --border:#e0e0e0;                --primary:#7C3AED; --nav-bg:rgba(240,239,248,.97); }
 [data-theme="ocean"]  { --bg:#071520; --card:rgba(255,255,255,.07); --card-solid:#0d2035; --text:#fff; --sub:rgba(255,255,255,.4);   --border:rgba(255,255,255,.08); --primary:#0EA5E9; --nav-bg:rgba(7,21,32,.97); }
-[data-theme="forest"] { --bg:#071510; --card:rgba(255,255,255,.07); --card-solid:#0d2218; --text:#fff; --sub:rgba(255,255,255,.4);   --border:rgba(255,255,255,.08); --primary:#10B981; --nav-bg:rgba(7,21,16,.97); }
 [data-theme="rose"]   { --bg:#160810; --card:rgba(255,255,255,.07); --card-solid:#250f1e; --text:#fff; --sub:rgba(255,255,255,.4);   --border:rgba(255,255,255,.08); --primary:#EC4899; --nav-bg:rgba(22,8,16,.97); }
 [data-theme="cosmos"] { --bg:rgba(5,3,16,0.85); --card:rgba(255,255,255,.06); --card-solid:rgba(13,8,38,0.92); --text:#fff; --sub:rgba(180,170,255,.5);   --border:rgba(150,120,255,.12); --primary:#8B5CF6; --nav-bg:rgba(5,3,16,.92); }

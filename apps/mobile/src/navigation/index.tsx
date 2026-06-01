@@ -43,6 +43,7 @@ import PlanHistoryScreen from '../features/plan/PlanHistoryScreen';
 import LoginScreen       from '../features/auth/LoginScreen';
 import RegisterScreen    from '../features/auth/RegisterScreen';
 import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
+import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
 import { useSync }       from '../features/sync/useSync';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
@@ -64,6 +65,7 @@ export type RootStackParamList = {
   PlanDetail: { planId: string };
   PlanHistory: undefined;
   RecycleBin: undefined;
+  PrivacyPolicy: undefined;
 };
 
 export type MainTabParamList = {
@@ -171,7 +173,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
         transform: animPos.getTranslateTransform(),
       }]}
     >
-      <Sparkles size={24} color="#fff" strokeWidth={2.5} />
+      <Sparkles size={24} color="#ffffff" strokeWidth={2.5} />
     </Animated.View>
   );
 }
@@ -348,6 +350,7 @@ export default function AppNavigator() {
         <Stack.Screen name="PlanDetail"     component={PlanDetailScreen} />
         <Stack.Screen name="PlanHistory"    component={PlanHistoryScreen} />
         <Stack.Screen name="RecycleBin"    component={RecycleBinScreen} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
       </Stack.Navigator>
     </NavigationContainer>
     </View>

@@ -6,7 +6,7 @@ export const zh: Record<string, string> = {
   done:'已完成', notDone:'未完成', cancel:'取消', save:'保存',
   submit:'提交打卡', note:'感念', freeCheckin:'自由打卡',
   startFasting:'⏰ 开始禁食', quickStart:'⚡ 快速开始 8小时',
-  stopFasting:'⏹ 停止禁食', accMed:'累计打坐 (分钟)', bgMusic:'背景音乐',
+  stopFasting:'停止禁食', accMed:'累计打坐 (分钟)', bgMusic:'背景音乐',
   startMed:'开始打坐', stopMed:'停止', shareMed:'☯ 分享我的打坐',
   shareCardTitle:'心流纪 · 打坐', shareCardSession:'打坐次数', shareCardDownload:'保存图片',
   mindPulse:'感念脉络', newReflection:'新建感念', saveReflection:'保存感念 ✦',
@@ -146,7 +146,7 @@ export const zh: Record<string, string> = {
   exerciseResume:'继续', exercisePause:'暂停', exerciseEnd:'结束',
   exerciseTip:'运动数据将自动记录。请确保健康权限已开启，以获取更准确的数据。',
   exerciseBack:'← 返回',
-  exerciseHistory:'运动历史', exerciseTotalTime:'总运动时长',
+  exerciseHistory:'我的运动记录', exerciseTotalTime:'总运动时长',
   exerciseTotalCount:'运动次数', exerciseCalories:'卡路里',
   exerciseNoHistory:'暂无运动记录', exerciseDeleteConfirm:'确认删除这条运动记录？',
   exerciseMin:'分钟', exerciseKm:'公里',
@@ -241,7 +241,7 @@ export const zh: Record<string, string> = {
   planStatusCancelled:'已作废', planStatusDelayed:'已延期',
   planStart:'开始计划', planPause:'暂停', planResume:'恢复',
   planComplete:'完成目标', planCancelPlan:'作废', planEdit:'编辑', planDelete:'删除',
-  planName:'计划名称', planGoal:'计划目标', planSlogan:'感召口号',
+  planName:'计划名称', planGoal:'计划目标', planSlogan:'我的愿景',
   planStartDate:'开始日期', planEndDate:'结束日期',
   planItems:'项目列表', planAddItem:'添加项目', planDeleteItem:'删除项目',
   planItemName:'项目名称', planItemDesc:'项目描述',
@@ -267,9 +267,15 @@ export const zh: Record<string, string> = {
   // Grace
   graceTitle:'宽限期恢复',
   graceDesc:'宽限期机制：中断1天内补打卡，连胜不断。',
-  graceYesterday:'昨天未打卡，今天可以补卡：',
+  graceYesterday:'昨天',
   graceNotDone:'未打卡', graceDone:'已打卡', graceSuccess:'✅ 已补卡成功！',
   graceButton:'✓ 补打卡（1天宽限期）', graceNote:'宽限期补卡',
+  graceNeedRestore:'昨天忘记打卡了？点击补卡保持连胜',
+  graceRemindTitle:'宽限期提醒',
+  graceRemindDesc:'昨天忘记打卡了？补卡保持连胜不断',
+  graceUsedCount:'已使用宽限期', graceUsedTimes:'次',
+  graceStatsTitle:'宽限期使用', graceAlreadyDone:'昨天已打卡，无需补卡',
+  graceNoNeed:'无需补卡', graceHistory:'补卡记录', graceHistoryEmpty:'暂无补卡记录',
 
   // Premium
   premiumUpgrade:'升级 Premium', premiumDesc:'解锁高级模板与 AI 感悟总结',
@@ -322,4 +328,20 @@ export const zh: Record<string, string> = {
 
   // Time ago
   timeAgoJustNow:'刚刚', timeAgoMinutes:'{n}分钟前', timeAgoHours:'{n}小时前', timeAgoDays:'{n}天前',
+
+  // Privacy Policy
+  privacyTitle:'隐私政策',
+  privacyLastUpdated:'最后更新：2026年5月',
+  privacyIntroTitle:'项目简介',
+  privacyIntro:'心流纪（Egoless Do）是一款开源的自我觉察与习惯养成应用，帮助用户记录感念、管理禁食、冥想、运动和日常打卡。本应用尊重并保护用户的隐私。',
+  privacyCollectTitle:'数据收集说明',
+  privacyCollect:'本应用不主动收集任何个人身份信息。我们不会追踪您的位置、联系人、浏览历史或其他敏感数据。应用运行所需的全部数据均由用户主动输入。',
+  privacyStorageTitle:'数据存储说明',
+  privacyStorage:'您的所有数据（感念记录、打卡数据、饮食日志等）优先存储在本地设备中。如果您选择登录账号并启用云同步功能，数据将通过加密连接同步至服务器，以便在多设备间共享。您可以随时在设置中清除本地数据。',
+  privacyThirdPartyTitle:'第三方服务',
+  privacyThirdParty:'本应用可能使用以下第三方服务：\n• PocketBase — 用于账号认证与云端数据同步\n• Apple Health / Health Connect — 用于读取步数等健康数据（需用户授权）\n以上服务均有独立的隐私政策，建议您查阅相关条款。',
+  privacyRightsTitle:'用户权利',
+  privacyRights:'您享有以下权利：\n• 随时查看、编辑或删除您的所有数据\n• 在设置中清除全部本地数据\n• 退出登录并停止云同步\n• 卸载应用以完全删除本地数据',
+  privacyContactTitle:'联系我们',
+  privacyContact:'如您对本隐私政策有任何疑问，请通过以下方式联系我们：\n邮箱：privacy@egoless-do.app',
 };

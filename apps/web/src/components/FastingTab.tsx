@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { COLORS, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
+import { COLORS, WARM_CORAL, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
@@ -109,10 +109,10 @@ export default function FastingTab() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { Icon: Hourglass, label: T('fastTotal'), value: `${store.fastingHistory.length} ${T('fastTimes')}`, bg: '#EF9A9A' },
-    { Icon: Clock, label: T('fastTotalHours'), value: `${totalFastHours} ${T('fastHours')}`, bg: COLORS.GREEN },
-    { Icon: Flame, label: T('fastStreak'), value: `${currentFastingStreak} ${T('days')}`, bg: '#FF8A65' },
-    { Icon: Trophy, label: T('fastLongest'), value: `${longestStreak} ${T('days')}`, bg: '#9C27B0' },
+    { Icon: Hourglass, label: T('fastTotal'), value: `${store.fastingHistory.length} ${T('fastTimes')}`, colors: ['#7117EA', '#EA6060'] },
+    { Icon: Clock, label: T('fastTotalHours'), value: `${totalFastHours} ${T('fastHours')}`, colors: ['#17EAD9', '#6078EA'] },
+    { Icon: Flame, label: T('fastStreak'), value: `${currentFastingStreak} ${T('days')}`, colors: ['#9A4EFF', '#20ECFF'] },
+    { Icon: Trophy, label: T('fastLongest'), value: `${longestStreak} ${T('days')}`, colors: ['#8446FF', '#18CEFF'] },
   ], [store.fastingHistory.length, currentFastingStreak, T, totalFastHours, longestStreak]);
 
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
@@ -143,7 +143,7 @@ export default function FastingTab() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <button onClick={() => { setTmpDur(8); setAgreed(false); setShowDur(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('startFasting')}</button>
-            <button onClick={() => store.startFasting(8)} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: COLORS.GREEN, color: '#fff', fontWeight: 600, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('quickStart')}</button>
+            <button onClick={() => store.startFasting(8)} style={{ width: '100%', padding: 14, borderRadius: 12, border: `1px solid ${P}`, background: TH.card, color: P, fontWeight: 600, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('quickStart')}</button>
           </div>
         )}
       </div>
@@ -159,24 +159,24 @@ export default function FastingTab() {
       <div style={{ fontWeight: 600, fontSize: FONT_BODY, marginBottom: 10, color: TH.text }}>{T('fastYourStats')}</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
         {statsData.map((s) => (
-          <div key={s.label} style={{ background: s.bg, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            <div style={{ fontSize: FONT_STAT_CARD }}><s.Icon size={26} style={{verticalAlign:'middle'}} /></div>
+          <div key={s.label} style={{ background: `linear-gradient(135deg, ${s.colors[0]}, ${s.colors[1]})`, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <div style={{ fontSize: 26, color: '#fff' }}><s.Icon size={26} style={{verticalAlign:'middle'}} /></div>
             <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{s.label}</div>
-            <div style={{ fontWeight: 700, color: '#fff', fontSize: FONT_TITLE }}>{s.value}</div>
+            <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{s.value}</div>
           </div>
         ))}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        <div style={{ background: COLORS.ORANGE, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-          <div style={{ fontSize: FONT_STAT_CARD }}><Flame size={26} style={{verticalAlign:'middle'}} /></div>
+        <div style={{ background: 'linear-gradient(135deg, #FAD961, #F76B1C)', borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+          <div style={{ fontSize: 26 }}><Flame size={26} style={{verticalAlign:'middle'}} /></div>
           <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastKcalSaved')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: FONT_TITLE }}>{kcal} <span style={{ fontSize: FONT_BODY, fontWeight: 400 }}>kcal</span></div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kcal} <span style={{ fontSize: FONT_SUB, fontWeight: 400 }}>kcal</span></div>
         </div>
-        <div style={{ background: COLORS.GREEN, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-          <div style={{ fontSize: FONT_STAT_CARD }}><Scale size={26} style={{verticalAlign:'middle'}} /></div>
+        <div style={{ background: 'linear-gradient(135deg, #17EAD9, #6078EA)', borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+          <div style={{ fontSize: 26 }}><Scale size={26} style={{verticalAlign:'middle'}} /></div>
           <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastWeightLoss')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: FONT_TITLE }}>{kg} <span style={{ fontSize: FONT_BODY, fontWeight: 400 }}>{T('fastKg')}</span></div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kg} <span style={{ fontSize: FONT_SUB, fontWeight: 400 }}>{T('fastKg')}</span></div>
         </div>
       </div>
 

@@ -18,7 +18,9 @@ export type OverlayKey =
   | 'streakBreak'
   | 'planCreate'
   | 'planDetail'
-  | 'planHistory';
+  | 'planHistory'
+  | 'privacyPolicy'
+  | 'stats';
 
 export interface OverlayProps {
   sport?: SportItem;

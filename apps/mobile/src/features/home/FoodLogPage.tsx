@@ -50,7 +50,7 @@ export default function FoodLogPage() {
         <Card style={{ alignItems:'center', paddingVertical:20 }}>
           <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('foodTodayKcal')}</Text>
           <View style={{ flexDirection:'row', alignItems:'baseline', gap:8 }}>
-            <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:COLORS.ORANGE }}>{totalCal}</Text>
+            <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:P }}>{totalCal}</Text>
             <Text style={{ fontSize:FONT_BACK, color:TH.sub }}>/ {store.calGoal}</Text>
           </View>
           <Text style={{ color:COLORS.GREEN, fontSize:FONT_BODY, marginTop:6 }}>{T('foodRemaining')}: {Math.max(0, store.calGoal - totalCal)} kcal</Text>
@@ -76,7 +76,7 @@ export default function FoodLogPage() {
         </Card>
 
         <TouchableOpacity onPress={() => setShowAdd(true)}
-          style={{ backgroundColor:COLORS.ORANGE, borderRadius:12, padding:14, alignItems:'center', marginTop:12 }}>
+          style={{ backgroundColor:P, borderRadius:12, padding:14, alignItems:'center', marginTop:12 }}>
           <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>{T('foodAdd')}</Text>
         </TouchableOpacity>
 

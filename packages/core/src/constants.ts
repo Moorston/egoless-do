@@ -2,11 +2,10 @@ import type { Theme, ThemeName, SportGroup, GlobalUser, FoodCategory } from './t
 
 export const THEMES: Record<ThemeName, Theme> = {
   dark:   { name:'深色',    nameEn:'Dark',      bg:'#0F0A1E', card:'rgba(255,255,255,.07)', cardSolid:'#1A1030', text:'#fff', sub:'rgba(255,255,255,.45)', border:'rgba(255,255,255,.09)', primary:'#7C3AED', navBg:'rgba(15,10,30,.97)',   starfield:false },
-  light:  { name:'浅色',    nameEn:'Light',     bg:'#F0EFF8', card:'rgba(255,255,255,.92)', cardSolid:'#fff',    text:'#111', sub:'#888',                  border:'#e0e0e0',                primary:'#7C3AED', navBg:'rgba(240,239,248,.97)',starfield:false },
+  light:  { name:'浅色',    nameEn:'Light',     bg:'#F0EFF8', card:'rgba(255,255,255,.92)', cardSolid:'#fff',    text:'#111', sub:'#6B6B6B',               border:'#e0e0e0',                primary:'#7C3AED', navBg:'rgba(240,239,248,.97)',starfield:false },
   ocean:  { name:'深海',    nameEn:'Ocean',     bg:'#071520', card:'rgba(255,255,255,.07)', cardSolid:'#0d2035', text:'#fff', sub:'rgba(255,255,255,.4)',   border:'rgba(255,255,255,.08)', primary:'#0EA5E9', navBg:'rgba(7,21,32,.97)',    starfield:false },
-  forest: { name:'森林',    nameEn:'Forest',    bg:'#071510', card:'rgba(255,255,255,.07)', cardSolid:'#0d2218', text:'#fff', sub:'rgba(255,255,255,.4)',   border:'rgba(255,255,255,.08)', primary:'#10B981', navBg:'rgba(7,21,16,.97)',    starfield:false },
   rose:   { name:'玫瑰',    nameEn:'Rose',      bg:'#160810', card:'rgba(255,255,255,.07)', cardSolid:'#250f1e', text:'#fff', sub:'rgba(255,255,255,.4)',   border:'rgba(255,255,255,.08)', primary:'#EC4899', navBg:'rgba(22,8,16,.97)',    starfield:false },
-  cosmos: { name:'星空 ✨', nameEn:'Cosmos ✨', bg:'rgba(5,3,16,0.85)', card:'rgba(255,255,255,.06)', cardSolid:'rgba(13,8,38,0.92)', text:'#fff', sub:'rgba(180,170,255,.5)',   border:'rgba(150,120,255,.12)', primary:'#8B5CF6', navBg:'rgba(5,3,16,.92)',    starfield:true  },
+  cosmos: { name:'星空 ✨', nameEn:'Cosmos ✨', bg:'#050510', card:'rgba(255,255,255,.06)', cardSolid:'rgba(10,10,25,0.95)', text:'#fff', sub:'rgba(180,170,255,.5)',   border:'rgba(150,120,255,.12)', primary:'#8B5CF6', navBg:'rgba(5,5,16,.97)',    starfield:true  },
 };
 
 export const COLORS = {
@@ -16,7 +15,24 @@ export const COLORS = {
   BLUE:   '#0EA5E9',
   YELLOW: '#FFC107',
   GRAY:   '#6B7280',
+  VIOLET: '#7C3AED',
+  INDIGO: '#4F46E5',
 };
+
+export const BANNER_COLORS = {
+  CHECKED:  '#7C3AED',
+  NOT_DONE: '#F59E0B',
+  DONE:     '#4F46E5',
+} as const;
+
+export const STATS_GRADIENT = [
+  ['#7117EA', '#EA6060'],
+  ['#17EAD9', '#6078EA'],
+  ['#9A4EFF', '#20ECFF'],
+  ['#8446FF', '#18CEFF'],
+] as const;
+
+export const WARM_CORAL = '#FF8A65';
 
 export const MIND_COLORS = [
   ['#2D1B69','#7C3AED'],

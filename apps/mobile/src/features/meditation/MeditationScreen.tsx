@@ -205,7 +205,7 @@ export default function MeditationScreen() {
                 ))}
               </View>
 
-              <PrimaryButton label={T('startMed')} onPress={() => { setSec(0); setActive(true); }} color={COLORS.GREEN} />
+              <PrimaryButton label={T('startMed')} onPress={() => { setSec(0); setActive(true); }} color={P} />
             </>
           )}
         </Card>
