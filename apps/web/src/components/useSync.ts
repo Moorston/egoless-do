@@ -10,6 +10,7 @@ const ENTITY_STATE_MAP: Record<string, string> = {
   food: 'foodLog', checkin: 'checkinHistory', exercise: 'exerciseLog',
   meditation: 'medHistory', profile: 'userProfile', grace: 'graceHistory',
   plan: 'plans', planItem: 'planItems', planItemCheckin: 'planItemCheckins',
+  dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
 };
 
 export function useSync(): SyncState & { triggerSync: () => Promise<void> } {
@@ -44,7 +45,7 @@ export function useSync(): SyncState & { triggerSync: () => Promise<void> } {
             if (latest) {
               const merged = { ...(store.userProfile ?? {}), ...latest.payload };
               patch.userProfile = merged;
-              if (merged.waterMl !== undefined) patch.waterMl = merged.waterMl;
+              // waterMl is managed by DailyResetManager, don't sync from server
               if (merged.waterGoal !== undefined) patch.waterGoal = merged.waterGoal;
             }
             continue;
@@ -63,14 +64,14 @@ export function useSync(): SyncState & { triggerSync: () => Promise<void> } {
                 }
                 // Otherwise keep local deleted version — server cannot resurrect
               } else if (item.deleted) {
-                // Server says deleted, local is not — apply if server is newer
-                if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
-                  merged[idx] = item;
-                }
+                // Server says deleted — remove from active list
+                merged.splice(idx, 1);
               } else {
-                // Neither deleted — keep newest
+                // Neither deleted — keep newest, but preserve local colors if server lacks them
                 if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
-                  merged[idx] = item;
+                  merged[idx] = (stateKey === 'reflections' && !item.colors && local.colors)
+                    ? { ...item, colors: local.colors }
+                    : item;
                 }
               }
             } else {

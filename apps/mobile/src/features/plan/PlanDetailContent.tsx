@@ -3,19 +3,15 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvo
 import Svg, { Circle } from 'react-native-svg';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { THEMES, COLORS, getPlanItems, getTodayItems, getTodayCustomTodos, getTodoHistory, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY } from '@egoless-do/core';
-import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink, DailyCustomTodo, DailyTodoHistory } from '@egoless-do/core';
+import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, dateStr } from '@egoless-do/core';
+import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemStatus, PlanItemLink, DailyCustomTodo, DailyTodoHistory } from '@egoless-do/core';
+import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT, Toggle } from '../../components/UI';
-import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Lock, Plus } from 'lucide-react-native';
+import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus } from 'lucide-react-native';
 
 const STATUS_COLORS: Record<string, string> = {
   not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
   completed: COLORS.BLUE, cancelled: COLORS.RED, delayed: COLORS.ORANGE,
-};
-
-const LINK_COLORS: Record<PlanItemLink, string> = {
-  manual: COLORS.GRAY, checkin: '#6366F1', fasting: '#F59E0B',
-  meditation: '#8B5CF6', exercise: '#10B981', habit: '#EC4899',
 };
 
 function StatusLabel({ status, T }: { status: PlanStatus; T: (k: string) => string }) {
@@ -64,7 +60,7 @@ function Heatmap({ checkins, items, plan, TH, T }: { checkins: PlanItemCheckin[]
     const start = new Date(plan.startDate);
     const end = new Date(plan.endDate);
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const ds = d.toISOString().slice(0, 10);
+      const ds = dateStr(d);
       const activeItems = items.filter(i => !i.deleted && ds >= i.startDate && ds <= i.endDate);
       if (activeItems.length === 0) map.set(ds, -1);
       else {
@@ -82,7 +78,7 @@ function Heatmap({ checkins, items, plan, TH, T }: { checkins: PlanItemCheckin[]
 
     const dates: string[] = [];
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      dates.push(d.toISOString().slice(0, 10));
+      dates.push(dateStr(d));
     }
 
     const weeks: (string | null)[][] = [];
@@ -166,12 +162,12 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const nav = useRootNavigation();
 
   // 日期状态，支持跨天自动刷新
-  const [today, setToday] = useState(() => new Date().toISOString().slice(0, 10));
+  const [today, setToday] = useState(() => dateStr());
   const todayRef = useRef(today);
 
   // 检测日期变化（不依赖闭包中的 today）
   const checkDateChange = () => {
-    const newToday = new Date().toISOString().slice(0, 10);
+    const newToday = dateStr();
     if (newToday !== todayRef.current) {
       const previousDate = todayRef.current;
       todayRef.current = newToday;
@@ -216,50 +212,18 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     return Math.min(Math.round((doneCount / totalDays) * 100), 100);
   };
 
-  // 实时计算计划进度（所有任务进度的平均值）
-  const progress = useMemo(() => {
-    if (!plan) return 0;
-    if (items.length === 0) {
-      // 没有任务时，基于时间计算进度
-      const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1;
-      if (totalDays <= 0) return 0;
-      const clampedToday = today > plan.endDate ? plan.endDate : today;
-      const elapsed = Math.round((new Date(clampedToday).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1;
-      return Math.max(0, Math.min(Math.round((elapsed / totalDays) * 100), 100));
-    }
-    // 有任务时，计算所有任务进度的平均值
-    const totalProgress = items.reduce((sum, item) => sum + computeItemProgressRealtime(item), 0);
-    return Math.round(totalProgress / items.length);
-  }, [plan, items, checkins, today]);
+  // 计划进度基于时间（已过天数/总天数），任务进度单独计算
 
   const [tab, setTab] = useState<'detail' | 'todo'>('detail');
 
-  const todayItems = useMemo(() => {
-    if (!plan) return [];
-    return getTodayItems(store.planItems ?? [], plan, today);
-  }, [store.planItems, plan, today]);
-  const isItemDone = (item: PlanItem) => checkins.some(c => c.planItemId === item.id && c.date === today && c.done);
-  const isItemAutoChecked = (item: PlanItem) => {
-    const checkin = checkins.find(c => c.planItemId === item.id && c.date === today && c.done);
-    return !!checkin?.linkedModule;
-  };
-  const doneCount = todayItems.filter(i => isItemDone(i)).length;
-  const [showHistory, setShowHistory] = useState(plan?.status !== 'in_progress');
-
-  // Daily custom todos
-  const dailyCustomTodos = useMemo(() => {
-    if (!plan) return [];
-    return getTodayCustomTodos(store.dailyCustomTodos ?? [], plan.id, today);
-  }, [store.dailyCustomTodos, plan, today]);
-  const [newTodoName, setNewTodoName] = useState('');
-  const [showAddTodo, setShowAddTodo] = useState(false);
-  const customTodoDoneCount = dailyCustomTodos.filter(t => t.done).length;
-
-  // History: from dailyTodoHistory (excluding today)
-  const historyGroups = useMemo(() => {
-    if (!plan) return [];
-    return getTodoHistory(store.dailyTodoHistory ?? [], plan.id, today);
-  }, [store.dailyTodoHistory, plan, today]);
+  const {
+    todayItems, dailyCustomTodos, statusMap, stats,
+    historyGroups, historySummary,
+    showHistory, setShowHistory,
+    newTodoName, setNewTodoName,
+    toggleItem, addCustomTodo, deleteCustomTodo, toggleCustomTodo,
+    mergeHistoryItems,
+  } = useDailyTodo(plan, today);
 
   if (!plan) {
     return (
@@ -271,7 +235,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
   const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1;
   const elapsed = Math.max(0, Math.round((new Date(today > plan.endDate ? plan.endDate : today).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1);
-  const delayed = isPlanDelayed(plan, today);
+  const progress = totalDays > 0 ? Math.min(Math.round((elapsed / totalDays) * 100), 100) : 0;
+  const planDelayed = isPlanDelayed(plan, today);
   const deletable = canDeletePlan(plan.status);
   const editable = canEditPlan(plan.status);
   const completable = plan.status === 'in_progress' || plan.status === 'paused';
@@ -279,11 +244,39 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const pausable = plan.status === 'in_progress';
   const cancellable = plan.status === 'paused';
 
+  const getItemEffectiveStatus = (item: PlanItem): PlanItemStatus => {
+    if (item.status === 'completed') return 'completed';
+    if (computeItemProgressRealtime(item) >= 100) return 'completed';
+    if (item.status === 'in_progress' && item.endDate < today) return 'delayed';
+    return item.status;
+  };
+
+  const checkCanArchive = (onConfirm: () => void) => {
+    const result = store.canArchivePlan(plan.id);
+    if (!result.allowed) {
+      Alert.alert(
+        '无法执行操作',
+        `该计划中有 ${result.linkedReflectionCount} 个任务关联了感念，无法执行此操作。\n\n是否批量解绑关联的感念任务？`,
+        [
+          { text: '取消', style: 'cancel' },
+          { text: '批量解绑并继续', style: 'destructive', onPress: () => {
+            store.unlinkAllReflectionsFromPlan(plan.id);
+            onConfirm();
+          }},
+        ]
+      );
+      return;
+    }
+    onConfirm();
+  };
+
   const handleDelete = () => {
-    Alert.alert(T('planDelete'), T('planDeleteConfirm'), [
-      { text: T('commonCancel'), style: 'cancel' },
-      { text: T('commonConfirm'), style: 'destructive', onPress: () => { store.deletePlan(plan.id); onClose(); } },
-    ]);
+    checkCanArchive(() => {
+      Alert.alert(T('planDelete'), T('planDeleteConfirm'), [
+        { text: T('commonCancel'), style: 'cancel' },
+        { text: T('commonConfirm'), style: 'destructive', onPress: () => { store.deletePlan(plan.id); onClose(); } },
+      ]);
+    });
   };
 
   const handleComplete = () => {
@@ -302,14 +295,23 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   };
 
   const handleCancel = () => {
-    Alert.alert(T('planCancelPlan'), T('planConfirmCancel'), [
-      { text: T('commonCancel'), style: 'cancel' },
-      { text: T('commonConfirm'), style: 'destructive', onPress: () => store.cancelPlan(plan.id) },
-    ]);
+    checkCanArchive(() => {
+      Alert.alert(T('planCancelPlan'), T('planConfirmCancel'), [
+        { text: T('commonCancel'), style: 'cancel' },
+        { text: T('commonConfirm'), style: 'destructive', onPress: () => store.cancelPlan(plan.id) },
+      ]);
+    });
   };
 
   return (
-    <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 32 }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={{ flex: 1 }}
+    >
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 32 }}
+        keyboardShouldPersistTaps="handled"
+      >
       {/* Tab switcher */}
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
         {(['detail', 'todo'] as const).map(t => {
@@ -389,9 +391,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</Text>
             ) : (
               items.map((item, idx) => {
-                const itemCheckins = checkins.filter(c => c.planItemId === item.id && c.done);
+                const clampedToday = today > item.endDate ? item.endDate : today;
+                const itemCheckins = checkins.filter(c => c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday);
                 const itemProgress = computeItemProgressRealtime(item);
                 const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
+                const effectiveStatus = getItemEffectiveStatus(item);
                 return (
                   <View key={item.id} style={{
                     padding: 12, marginBottom: idx < items.length - 1 ? 8 : 0, borderRadius: 10,
@@ -401,7 +405,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       {p ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: p.color }} /> : null}
                       <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
                       <LinkBadge link={item.link} T={T} P={P} />
-                      <StatusLabel status={item.status} T={T} />
+                      <StatusLabel status={effectiveStatus} T={T} />
                     </View>
                     <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginBottom: 4 }}>
                       {item.startDate} ~ {item.endDate}
@@ -430,23 +434,23 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       ) : (
         /* TodoList tab */
         <>
-          {/* Today's tasks — only for in_progress plans */}
-          {plan.status === 'in_progress' && (
+          {/* Today's tasks — only for active plans */}
+          {(plan.status === 'in_progress' || plan.status === 'paused') && (
             <>
               <Card style={{ alignItems: 'center', paddingVertical: 20 }}>
                 <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('planTodoToday')}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: COLORS.GREEN }}>{doneCount + customTodoDoneCount}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>/ {todayItems.length + dailyCustomTodos.length}</Text>
+                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: COLORS.GREEN }}>{stats.totalDone}</Text>
+                  <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>/ {stats.totalItems}</Text>
                 </View>
                 <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{today}</Text>
               </Card>
 
-              {(todayItems.length + dailyCustomTodos.length) > 0 && (
+              {stats.totalItems > 0 && (
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, paddingHorizontal: 4 }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{doneCount + customTodoDoneCount}/{todayItems.length + dailyCustomTodos.length} {T('planProgress')}</Text>
+                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{stats.totalDone}/{stats.totalItems} {T('planProgress')}</Text>
                   <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, marginLeft: 12, overflow: 'hidden' }}>
-                    <View style={{ height: 4, width: `${(todayItems.length + dailyCustomTodos.length) > 0 ? ((doneCount + customTodoDoneCount) / (todayItems.length + dailyCustomTodos.length) * 100) : 0}%`, backgroundColor: COLORS.GREEN, borderRadius: 2 }} />
+                    <View style={{ height: 4, width: `${stats.progressPercent}%`, backgroundColor: COLORS.GREEN, borderRadius: 2 }} />
                   </View>
                 </View>
               )}
@@ -458,8 +462,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 ) : (
                   <>
                     {todayItems.map((item, i, arr) => {
-                      const done = isItemDone(item);
-                      const autoChecked = isItemAutoChecked(item);
+                      const status = statusMap.get(item.id);
+                      const done = status?.done ?? false;
+                      const autoChecked = status?.autoChecked ?? false;
                       return (
                         <View
                           key={item.id}
@@ -470,13 +475,16 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                             opacity: autoChecked ? 0.7 : 1,
                           }}
                         >
-                          {autoChecked ? (
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                              <Lock size={14} color={COLORS.GREEN} />
-                              <Text style={{ fontSize: FONT_BADGE, color: COLORS.GREEN, fontWeight: '600' }}>{T('planAutoChecked')}</Text>
+                          <Toggle on={done} onChange={() => toggleItem(item.id)} />
+                          {autoChecked && (
+                            <View style={{ backgroundColor:`${COLORS.GREEN}20`, paddingHorizontal:4, paddingVertical:1, borderRadius:4 }}>
+                              <Text style={{ fontSize:9, color:COLORS.GREEN, fontWeight:'600' }}>{T('planAutoChecked')}</Text>
                             </View>
-                          ) : (
-                            <Toggle on={done} onChange={() => done ? store.uncheckinPlanItem(item.id) : store.checkinPlanItem(item.id)} />
+                          )}
+                          {item.status === 'delayed' && !done && (
+                            <View style={{ backgroundColor:`${COLORS.ORANGE}20`, paddingHorizontal:4, paddingVertical:1, borderRadius:4 }}>
+                              <Text style={{ fontSize:9, color:COLORS.ORANGE, fontWeight:'600' }}>{T('planStatusDelayed')}</Text>
+                            </View>
                           )}
                           <View style={{ flex: 1, minWidth: 0 }}>
                             <Text style={{
@@ -503,7 +511,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border,
                         }}
                       >
-                        <Toggle on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id)} />
+                        <Toggle on={todo.done} onChange={() => toggleCustomTodo(todo.id)} />
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{
                             fontSize: FONT_BODY, fontWeight: '500',
@@ -515,7 +523,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           onPress={() => {
                             Alert.alert(T('planDeleteCustomTodo'), T('planDeleteCustomTodoConfirm'), [
                               { text: T('commonCancel'), style: 'cancel' },
-                              { text: T('commonConfirm'), style: 'destructive', onPress: () => store.deleteDailyCustomTodo(todo.id) },
+                              { text: T('commonConfirm'), style: 'destructive', onPress: () => deleteCustomTodo(todo.id) },
                             ]);
                           }}
                           style={{ padding: 4 }}
@@ -528,7 +536,6 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 )}
 
                 {/* Add custom todo */}
-                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, borderTopWidth: todayItems.length > 0 || dailyCustomTodos.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
                     <TextInput
                       style={{
@@ -539,29 +546,23 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       placeholderTextColor={TH.sub}
                       value={newTodoName}
                       onChangeText={setNewTodoName}
-                      onSubmitEditing={() => {
-                        if (newTodoName.trim() && plan) {
-                          store.addDailyCustomTodo(plan.id, newTodoName.trim());
-                          setNewTodoName('');
-                        }
-                      }}
+                      onSubmitEditing={addCustomTodo}
                       returnKeyType="done"
                     />
                     <TouchableOpacity
-                      onPress={() => {
-                        if (newTodoName.trim() && plan) {
-                          store.addDailyCustomTodo(plan.id, newTodoName.trim());
-                          setNewTodoName('');
-                        }
-                      }}
+                      onPress={addCustomTodo}
                       style={{ padding: 8, backgroundColor: P, borderRadius: 8 }}
                     >
                       <Plus size={16} color="#fff" />
                     </TouchableOpacity>
                   </View>
-                </KeyboardAvoidingView>
               </Card>
             </>
+            )}
+          {plan.status !== 'in_progress' && plan.status !== 'paused' && (
+            <Card style={{ alignItems:'center', paddingVertical:20 }}>
+              <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T(`planStatus${plan.status.charAt(0).toUpperCase() + plan.status.slice(1)}`)}</Text>
+            </Card>
           )}
 
           {/* History section */}
@@ -580,8 +581,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 {historyGroups.length > 0 && (
                   <View style={{ flexDirection: 'row', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, borderRadius: 14, paddingVertical: 14, marginBottom: 16 }}>
                     {[
-                      { value: String(historyGroups.length), label: T('planDays') },
-                      { value: String(historyGroups.reduce((s, g) => s + g.planItems.filter(i => i.done).length + g.customTodos.filter(t => t.done).length, 0)), label: T('planTodoDone') },
+                      { value: String(historySummary.totalDays), label: T('planDays') },
+                      { value: String(historySummary.totalDoneItems), label: T('planTodoDone') },
                     ].map(s => (
                       <View key={s.label} style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{s.value}</Text>
@@ -592,15 +593,12 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 )}
 
                 {historyGroups.length === 0 ? (
-                  <Text style={{ color: TH.sub, fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 }}>{T('foodNoHistory')}</Text>
+                  <Text style={{ color: TH.sub, fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 }}>{T('noHistory')}</Text>
                 ) : (
                   <View style={{ position: 'relative', paddingLeft: 20 }}>
                     <View style={{ position: 'absolute', left: 6, top: 6, bottom: 6, width: 2, backgroundColor: TH.border, borderRadius: 1 }} />
                     {historyGroups.map((group) => {
-                      const allItems = [
-                        ...group.planItems.map(i => ({ ...i, type: 'plan' as const })),
-                        ...group.customTodos.map(t => ({ ...t, type: 'custom' as const, link: 'manual' as PlanItemLink })),
-                      ];
+                      const allItems = mergeHistoryItems(group);
                       const doneCount = allItems.filter(i => i.done).length;
                       return (
                         <View key={group.date} style={{ position: 'relative', marginBottom: 16 }}>
@@ -626,7 +624,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                                 </View>
                                 <Text style={{
                                   fontSize: FONT_BODY, color: TH.text, flex: 1,
-                                  textDecorationLine: item.done ? 'none' : 'line-through',
+                                  textDecorationLine: item.done ? 'line-through' : 'none',
                                 }}>{item.name}</Text>
                                 {item.type === 'plan' && <LinkBadge link={item.link} T={T} P={P} />}
                                 {item.type === 'custom' && (
@@ -696,5 +694,6 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
         </View>
       )}
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

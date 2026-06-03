@@ -7,7 +7,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { THEMES, COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
-import { SimpleHeader } from '../../navigation';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { ClipboardList } from 'lucide-react-native';
 import PlanDetailContent from './PlanDetailContent';
 

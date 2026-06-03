@@ -4,7 +4,8 @@ import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
-import * as Notifications from 'expo-notifications';
+
+const getNotifications = () => import('expo-notifications');
 
 export default function LoginScreen() {
   const TH = useTheme();
@@ -30,6 +31,7 @@ export default function LoginScreen() {
       if (token) {
         const getExpoPushToken = async () => {
           try {
+            const Notifications = await getNotifications();
             const { status: existingStatus } = await Notifications.getPermissionsAsync();
             let finalStatus = existingStatus;
 

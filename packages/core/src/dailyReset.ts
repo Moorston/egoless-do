@@ -48,23 +48,25 @@ export interface DailyResetDeps {
   persistProfile: (data: Record<string, unknown>) => void;
   getProfile: () => Record<string, unknown>;
   getWaterGoal: () => number;
+  /** Called when plan daily reset is needed (pass previous date) */
+  onPlanDailyReset?: (previousDate: string) => void;
   /** Platform-specific visibility listener (e.g. AppState on RN, document on web) */
   addVisibilityListener?: (callback: () => void) => void;
 }
 
 export class DailyResetManager {
   private timerId: ReturnType<typeof setTimeout> | null = null;
+  private lastCheckedDate: string | null = null;
 
   constructor(private deps: DailyResetDeps) {}
 
   /** Perform the daily reset check */
   async check(): Promise<void> {
     const lastReset = await this.deps.getLastReset();
-    const patch = getDailyResetPatch(lastReset);
-    if (!patch) return;
-
-    // Check if today's checkin has water amount
     const today = dateStr();
+    const needsReset = lastReset !== today;
+
+    // Always check today's checkin for water amount
     const checkinHistory = this.deps.getCheckinHistory();
     const todayCheckin = checkinHistory.find((c) => c.date === today);
     let todayWater = 0;
@@ -75,10 +77,50 @@ export class DailyResetManager {
       } catch (e) { console.warn('[dailyReset] Failed to parse checkin note:', e); }
     }
 
-    // Apply reset with today's water from checkin
-    const resetPatch = { ...patch, waterMl: todayWater };
-    this.deps.applyPatch(resetPatch);
-    this.deps.setLastReset(dateStr());
+    if (needsReset) {
+      // Check if we need to backfill missing days (e.g., app was closed for multiple days)
+      if (lastReset) {
+        const lastDate = new Date(lastReset);
+        const todayDate = new Date(today);
+        const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / 86400000);
+
+        // Backfill missing days (up to 7 days to prevent excessive processing)
+        if (daysDiff > 1 && daysDiff <= 7) {
+          for (let i = 1; i < daysDiff; i++) {
+            const backfillDate = new Date(lastDate);
+            backfillDate.setDate(backfillDate.getDate() + i);
+            const backfillDateStr = dateStr(backfillDate);
+
+            // Trigger plan daily reset for each missed day
+            if (this.deps.onPlanDailyReset) {
+              this.deps.onPlanDailyReset(backfillDateStr);
+            }
+          }
+        }
+      }
+
+      // Full daily reset
+      const patch = getDailyResetPatch(lastReset);
+      if (patch) {
+        const resetPatch = { ...patch, waterMl: todayWater };
+        this.deps.applyPatch(resetPatch);
+      }
+
+      // Trigger plan daily reset with the previous date
+      if (lastReset && this.deps.onPlanDailyReset) {
+        this.deps.onPlanDailyReset(lastReset);
+      }
+
+      this.deps.setLastReset(today);
+    } else {
+      // Already reset today, but still sync waterMl from checkin
+      const currentWaterMl = this.deps.getProfile().waterMl as number ?? 0;
+      if (currentWaterMl !== todayWater) {
+        this.deps.applyPatch({ waterMl: todayWater });
+      }
+    }
+
+    this.lastCheckedDate = today;
 
     // Persist updated profile
     const userProfile = this.deps.getProfile();

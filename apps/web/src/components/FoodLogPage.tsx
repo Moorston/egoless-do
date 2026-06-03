@@ -16,7 +16,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
   const todayLog = getTodayFoodLog(foodLog);
   const totalCal = todayLog.reduce((a, f) => a + f.calories, 0);
   const [showAdd, setShowAdd] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(true);
 
   const {
     fn, setFn, fc, setFc, fnote, setFnote,

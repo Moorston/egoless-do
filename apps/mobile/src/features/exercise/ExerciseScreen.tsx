@@ -7,7 +7,7 @@ import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_S
 import type { SportItem } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
-import { SimpleHeader } from '../../navigation';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Footprints, Activity, Bike, Dumbbell, ChevronRight,
   Globe, Clock, X, Search,

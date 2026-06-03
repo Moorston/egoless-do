@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AMapSdk } from 'react-native-amap3d';
 import AppNavigator from './src/navigation';
 import SplashScreen from './src/features/splash/SplashScreen';
 
@@ -17,9 +16,9 @@ export default function App() {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    try {
-      AMapSdk?.init?.(AMAP_KEY);
-    } catch {}
+    import('react-native-amap3d').then(({ AMapSdk }) => {
+      try { AMapSdk?.init?.(AMAP_KEY); } catch {}
+    }).catch(() => {});
   }, []);
 
   if (!isReady) {

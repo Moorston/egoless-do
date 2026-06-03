@@ -1,20 +1,16 @@
 'use client';
 
 import { useMemo, useState, useRef, useEffect } from 'react';
-import { THEMES, COLORS, getPlanItems, getTodayItems, getTodayCustomTodos, getTodoHistory, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY } from '@egoless-do/core';
+import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, dateStr } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink, DailyCustomTodo, DailyTodoHistory } from '@egoless-do/core';
+import { useDailyTodo } from './useDailyTodo';
 import { useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { ChevronLeft, Check, ChevronDown, ChevronRight, ClipboardList, Pencil, CircleCheck, Play, Pause, XCircle, Trash2, Lock, Plus } from 'lucide-react';
+import { ChevronLeft, Check, ChevronDown, ChevronRight, ClipboardList, Pencil, CircleCheck, Play, Pause, XCircle, Trash2, CheckCircle2, Plus } from 'lucide-react';
 
 const STATUS_COLORS: Record<string, string> = {
   not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
   completed: COLORS.BLUE, cancelled: COLORS.RED, delayed: COLORS.ORANGE,
-};
-
-const LINK_COLORS: Record<PlanItemLink, string> = {
-  manual: COLORS.GRAY, checkin: '#6366F1', fasting: '#F59E0B',
-  meditation: '#8B5CF6', exercise: '#10B981', habit: '#EC4899',
 };
 
 function StatusLabel({ status, T }: { status: string; T: (k: string) => string }) {
@@ -75,7 +71,7 @@ function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemChecki
     const start = new Date(plan.startDate);
     const end = new Date(plan.endDate);
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const ds = d.toISOString().slice(0, 10);
+      const ds = dateStr(d);
       const activeItems = items.filter(i => !i.deleted && ds >= i.startDate && ds <= i.endDate);
       if (activeItems.length === 0) map.set(ds, -1);
       else {
@@ -91,7 +87,7 @@ function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemChecki
     const startDay = start.getDay();
     const dates: string[] = [];
     for (let d = new Date(start); d <= new Date(plan.endDate); d.setDate(d.getDate() + 1)) {
-      dates.push(d.toISOString().slice(0, 10));
+      dates.push(dateStr(d));
     }
     const weeks: (string | null)[][] = [];
     let week: (string | null)[] = new Array(startDay).fill(null);
@@ -168,13 +164,13 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const T = useT();
 
   // 日期状态，支持跨天自动刷新
-  const [today, setToday] = useState(() => new Date().toISOString().slice(0, 10));
+  const [today, setToday] = useState(() => dateStr());
   const todayRef = useRef(today);
 
   // 检测日期变化
   useEffect(() => {
     const checkDateChange = () => {
-      const newToday = new Date().toISOString().slice(0, 10);
+      const newToday = dateStr();
       if (newToday !== todayRef.current) {
         const previousDate = todayRef.current;
         todayRef.current = newToday;
@@ -219,49 +215,18 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     return Math.min(Math.round((doneCount / totalDays) * 100), 100);
   };
 
-  // 实时计算计划进度（所有任务进度的平均值）
-  const progress = useMemo(() => {
-    if (!plan) return 0;
-    if (items.length === 0) {
-      // 没有任务时，基于时间计算进度
-      const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1;
-      if (totalDays <= 0) return 0;
-      const clampedToday = today > plan.endDate ? plan.endDate : today;
-      const elapsed = Math.round((new Date(clampedToday).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1;
-      return Math.max(0, Math.min(Math.round((elapsed / totalDays) * 100), 100));
-    }
-    // 有任务时，计算所有任务进度的平均值
-    const totalProgress = items.reduce((sum, item) => sum + computeItemProgressRealtime(item), 0);
-    return Math.round(totalProgress / items.length);
-  }, [plan, items, checkins, today]);
+  // 计划进度基于时间（已过天数/总天数），任务进度单独计算
 
   const [tab, setTab] = useState<'detail' | 'todo'>('detail');
-  const [showHistory, setShowHistory] = useState(plan?.status !== 'in_progress');
 
-  const todayItems = useMemo(() => {
-    if (!plan) return [];
-    return getTodayItems(store.planItems ?? [], plan, today);
-  }, [store.planItems, plan, today]);
-  const isItemDone = (item: PlanItem) => checkins.some(c => c.planItemId === item.id && c.date === today && c.done);
-  const isItemAutoChecked = (item: PlanItem) => {
-    const checkin = checkins.find(c => c.planItemId === item.id && c.date === today && c.done);
-    return !!checkin?.linkedModule;
-  };
-  const doneCount = todayItems.filter(i => isItemDone(i)).length;
-
-  // Daily custom todos
-  const dailyCustomTodos = useMemo(() => {
-    if (!plan) return [];
-    return getTodayCustomTodos(store.dailyCustomTodos ?? [], plan.id, today);
-  }, [store.dailyCustomTodos, plan, today]);
-  const [newTodoName, setNewTodoName] = useState('');
-  const [showAddTodo, setShowAddTodo] = useState(false);
-  const customTodoDoneCount = dailyCustomTodos.filter(t => t.done).length;
-
-  const historyGroups = useMemo(() => {
-    if (!plan) return [];
-    return getTodoHistory(store.dailyTodoHistory ?? [], plan.id, today);
-  }, [store.dailyTodoHistory, plan, today]);
+  const {
+    todayItems, dailyCustomTodos, statusMap, stats,
+    historyGroups, historySummary,
+    showHistory, setShowHistory,
+    newTodoName, setNewTodoName,
+    toggleItem, addCustomTodo, deleteCustomTodo, toggleCustomTodo,
+    mergeHistoryItems,
+  } = useDailyTodo(plan, today);
 
   if (!plan) {
     return (
@@ -277,6 +242,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
   const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1;
   const elapsed = Math.max(0, Math.round((new Date(today > plan.endDate ? plan.endDate : today).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1);
+  const progress = totalDays > 0 ? Math.min(Math.round((elapsed / totalDays) * 100), 100) : 0;
   const delayed = isPlanDelayed(plan, today);
   const deletable = canDeletePlan(plan.status);
   const editable = canEditPlan(plan.status);
@@ -285,7 +251,20 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const pausable = plan.status === 'in_progress';
   const cancellable = plan.status === 'paused';
 
+  const checkCanArchive = (): boolean => {
+    const result = store.canArchivePlan(plan.id);
+    if (!result.allowed) {
+      if (confirm(`该计划中有 ${result.linkedReflectionCount} 个任务关联了感念，无法执行此操作。\n\n是否批量解绑关联的感念任务？`)) {
+        store.unlinkAllReflectionsFromPlan(plan.id);
+        return true;
+      }
+      return false;
+    }
+    return true;
+  };
+
   const handleDelete = () => {
+    if (!checkCanArchive()) return;
     if (confirm(T('planDeleteConfirm'))) { store.deletePlan(plan.id); onClose(); }
   };
   const handleComplete = () => {
@@ -298,6 +277,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     store.pausePlan(plan.id);
   };
   const handleCancel = () => {
+    if (!checkCanArchive()) return;
     if (confirm(T('planConfirmCancel'))) store.cancelPlan(plan.id);
   };
 
@@ -388,7 +368,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
           <div style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</div>
         ) : (
           items.map((item, idx) => {
-            const itemCheckins = checkins.filter(c => c.planItemId === item.id && c.done);
+            const clampedToday = today > item.endDate ? item.endDate : today;
+            const itemCheckins = checkins.filter(c => c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday);
             const itemProgress = computeItemProgressRealtime(item);
             const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
             return (
@@ -433,17 +414,17 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
             <div style={{ ...cs(TH), textAlign: 'center', padding: '20px 0' }}>
               <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('planTodoToday')}</div>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
-                <span style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, color: COLORS.GREEN }}>{doneCount + customTodoDoneCount}</span>
-                <span style={{ fontSize: FONT_BODY, color: TH.sub }}>/ {todayItems.length + dailyCustomTodos.length}</span>
+                <span style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, color: COLORS.GREEN }}>{stats.totalDone}</span>
+                <span style={{ fontSize: FONT_BODY, color: TH.sub }}>/ {stats.totalItems}</span>
               </div>
               <div style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{today}</div>
             </div>
 
-            {(todayItems.length + dailyCustomTodos.length) > 0 && (
+            {stats.totalItems > 0 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, padding: '0 4px' }}>
-                <span style={{ fontSize: FONT_SUB, color: TH.sub, whiteSpace: 'nowrap' }}>{doneCount + customTodoDoneCount}/{todayItems.length + dailyCustomTodos.length} {T('planProgress')}</span>
+                <span style={{ fontSize: FONT_SUB, color: TH.sub, whiteSpace: 'nowrap' }}>{stats.totalDone}/{stats.totalItems} {T('planProgress')}</span>
                 <div style={{ flex: 1, height: 4, background: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-                  <div style={{ height: 4, width: `${(todayItems.length + dailyCustomTodos.length) > 0 ? ((doneCount + customTodoDoneCount) / (todayItems.length + dailyCustomTodos.length) * 100) : 0}%`, background: COLORS.GREEN, borderRadius: 2, transition: 'width .3s' }} />
+                  <div style={{ height: 4, width: `${stats.progressPercent}%`, background: COLORS.GREEN, borderRadius: 2, transition: 'width .3s' }} />
                 </div>
               </div>
             )}
@@ -455,41 +436,33 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 <>
                   {/* Plan items */}
                   {todayItems.map((item, i, arr) => {
-                    const done = isItemDone(item);
-                    const autoChecked = isItemAutoChecked(item);
+                    const status = statusMap.get(item.id);
+                    const done = status?.done ?? false;
+                    const autoChecked = status?.autoChecked ?? false;
                     return (
                       <div key={item.id} style={{
                         display: 'flex', alignItems: 'center', gap: 12,
                         padding: '10px 12px',
                         borderBottom: i < arr.length - 1 || dailyCustomTodos.length > 0 ? `1px solid ${TH.border}` : 'none',
-                        cursor: autoChecked ? 'default' : 'pointer',
+                        cursor: 'pointer',
                         opacity: autoChecked ? 0.7 : 1,
                       }}
-                        onClick={() => {
-                          if (autoChecked) return;
-                          done ? store.uncheckinPlanItem(item.id) : store.checkinPlanItem(item.id);
-                        }}
+                        onClick={() => toggleItem(item.id)}
                       >
-                        {autoChecked ? (
-                          <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: FONT_BADGE, color: COLORS.GREEN, fontWeight: 600, flexShrink: 0 }}>
-                            <Lock size={14} style={{verticalAlign:'middle'}} /> {T('planAutoChecked')}
-                          </span>
-                        ) : (
+                        <div style={{
+                          width: 36, height: 20, borderRadius: 10,
+                          border: `2px solid ${done ? COLORS.GREEN : TH.border}`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: done ? COLORS.GREEN : 'transparent', flexShrink: 0,
+                          transition: 'all .2s',
+                        }}>
                           <div style={{
-                            width: 36, height: 20, borderRadius: 10,
-                            border: `2px solid ${done ? COLORS.GREEN : TH.border}`,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: done ? COLORS.GREEN : 'transparent', flexShrink: 0,
-                            transition: 'all .2s',
-                          }}>
-                            <div style={{
-                              width: 12, height: 12, borderRadius: 6,
-                              background: '#fff',
-                              transform: done ? 'translateX(8px)' : 'translateX(-8px)',
-                              transition: 'transform .2s',
-                            }} />
-                          </div>
-                        )}
+                            width: 12, height: 12, borderRadius: 6,
+                            background: '#fff',
+                            transform: done ? 'translateX(8px)' : 'translateX(-8px)',
+                            transition: 'transform .2s',
+                          }} />
+                        </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{
                             fontSize: FONT_BODY, fontWeight: 500, color: done ? TH.sub : TH.text,
@@ -501,6 +474,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                             </div>
                           )}
                         </div>
+                        {autoChecked && (
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 10, color: COLORS.GREEN, fontWeight: 500, flexShrink: 0 }}>
+                            <CheckCircle2 size={10} /> {T('planAutoChecked')}
+                          </span>
+                        )}
                         <LinkBadge link={item.link} T={T} P={P} />
                       </div>
                     );
@@ -517,7 +495,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       }}
                     >
                       <div
-                        onClick={() => store.toggleDailyCustomTodo(todo.id)}
+                        onClick={() => toggleCustomTodo(todo.id)}
                         style={{
                           width: 36, height: 20, borderRadius: 10,
                           border: `2px solid ${todo.done ? COLORS.GREEN : TH.border}`,
@@ -543,7 +521,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                         onClick={(e) => {
                           e.stopPropagation();
                           if (window.confirm(T('planDeleteCustomTodoConfirm'))) {
-                            store.deleteDailyCustomTodo(todo.id);
+                            deleteCustomTodo(todo.id);
                           }
                         }}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}
@@ -563,10 +541,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                   value={newTodoName}
                   onChange={(e) => setNewTodoName(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' && newTodoName.trim() && plan) {
-                      store.addDailyCustomTodo(plan.id, newTodoName.trim());
-                      setNewTodoName('');
-                    }
+                    if (e.key === 'Enter') addCustomTodo();
                   }}
                   style={{
                     flex: 1, height: 36, border: `1px solid ${TH.border}`, borderRadius: 8,
@@ -575,12 +550,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                   }}
                 />
                 <button
-                  onClick={() => {
-                    if (newTodoName.trim() && plan) {
-                      store.addDailyCustomTodo(plan.id, newTodoName.trim());
-                      setNewTodoName('');
-                    }
-                  }}
+                  onClick={addCustomTodo}
                   style={{
                     padding: '8px', background: P, color: '#fff', border: 'none',
                     borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center',
@@ -611,8 +581,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
               {historyGroups.length > 0 && (
                 <div style={{ display: 'flex', background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 14, padding: '14px 0', marginBottom: 16 }}>
                   {[
-                    { value: String(historyGroups.length), label: T('planDays') },
-                    { value: String(historyGroups.reduce((s, g) => s + g.planItems.filter(i => i.done).length + g.customTodos.filter(t => t.done).length, 0)), label: T('planTodoDone') },
+                    { value: String(historySummary.totalDays), label: T('planDays') },
+                    { value: String(historySummary.totalDoneItems), label: T('planTodoDone') },
                   ].map(s => (
                     <div key={s.label} style={{ flex: 1, textAlign: 'center' }}>
                       <div style={{ fontSize: FONT_STAT_CARD, fontWeight: 800, color: P }}>{s.value}</div>
@@ -628,10 +598,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 <div style={{ position: 'relative', paddingLeft: 20 }}>
                   <div style={{ position: 'absolute', left: 6, top: 6, bottom: 6, width: 2, background: TH.border, borderRadius: 1 }} />
                   {historyGroups.map((group) => {
-                    const allItems = [
-                      ...group.planItems.map(i => ({ ...i, type: 'plan' as const })),
-                      ...group.customTodos.map(t => ({ ...t, type: 'custom' as const, link: 'manual' as PlanItemLink })),
-                    ];
+                    const allItems = mergeHistoryItems(group);
                     const doneCount = allItems.filter(i => i.done).length;
                     return (
                       <div key={group.date} style={{ position: 'relative', marginBottom: 16 }}>

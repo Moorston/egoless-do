@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioPlayer } from 'expo-audio';
 import { useAppStore } from '../../store/useAppStore';
-import { SimpleHeader } from '../../navigation';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, PrimaryButton, OutlineButton, ScreenHeader, useT } from '../../components/UI';
 import { estimateFastingKcal, FASTING_DURATIONS, COLORS, WARM_CORAL, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE } from '@egoless-do/core';
 import {

@@ -12,7 +12,7 @@ import { Card, useTheme, useT, ProgressBar } from '../../components/UI';
 import AddFoodModal from '../../components/AddFoodModal';
 import CheckinModal from './CheckinModal';
 import { useRootNavigation } from '../../navigation/hooks';
-import { SimpleHeader } from '../../navigation';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   CalendarCheck, Trophy, Zap, Utensils, Scale, Footprints,
   Droplets, Pencil, Check, ClipboardList, Shield,

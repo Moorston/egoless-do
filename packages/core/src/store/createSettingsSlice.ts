@@ -4,7 +4,7 @@ import type { SliceCreator } from './sliceHelper';
 
 export function createSettingsSlice(): SliceCreator<SettingsSlice> {
   return (set) => ({
-    theme: 'dark' as ThemeName,
+    theme: 'light' as ThemeName,
     language: 'zh',
     remindEnabled: false,
     remindTime: '21:00',

@@ -120,6 +120,7 @@ export const zhHant: I18nKeys = {
   tagSectionPreset:'預設標籤', tagSectionCustom:'自定義標籤', tagSectionHabit:'習慣標籤',
   moodSectionPreset:'預設心情', moodSectionCustom:'自定義心情',
   moveToTop:'移至頂部',
+  sortByFreqOff:'按使用頻率排序', sortByFreqOn:'✓ 已按使用頻率排序',
 
   // Fasting
   fastTotal:'總次數', fastTotalHours:'總禁食', fastStreak:'連續天數',
@@ -250,13 +251,13 @@ export const zhHant: I18nKeys = {
   planItems:'任務列表', planAddItem:'添加任務', planDeleteItem:'刪除任務',
   planItemName:'任務名稱', planItemDesc:'任務描述',
   planItemStart:'任務開始日期', planItemEnd:'任務結束日期',
-  planItemContent:'任務內容（外鏈）', planItemLink:'聯動模組', planItemTarget:'任務指標',
+  planItemContent:'任務連結', planItemLink:'聯動模組', planItemTarget:'任務指標',
   planPriority:'優先級', planPriorityHigh:'高',
   planPriorityMedium:'中', planPriorityLow:'低',
   planSave:'保存計劃', planCreate:'創建計劃', planEditTitle:'編輯計劃',
   planTodoList:'每日待辦', planTodoDate:'今日待辦', planDetail:'計劃詳情',
   planLinkManual:'手動', planLinkCheckin:'今日打卡', planLinkFasting:'禁食',
-  planLinkMeditation:'冥想', planLinkExercise:'鍛鍊', planLinkHabit:'習慣',
+  planLinkMeditation:'冥想', planLinkExercise:'鍛鍊', planLinkHabit:'習慣', planLinkReflection:'感念',
   planProgress:'進度', planDays:'天', planCheckinDays:'打卡天數', planCheckin:'完成', planUncheckin:'取消',
   planTodayCheckin:'今日打卡', planHeatmap:'打卡熱力圖',
   planConfirmDelete:'確認刪除此計劃？', planConfirmCancel:'確認作廢此計劃？',
@@ -330,7 +331,7 @@ export const zhHant: I18nKeys = {
   weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',
   weekdayThu:'四', weekdayFri:'五', weekdaySat:'六',
   planNotFound:'計劃不存在', heatmapLess:'少', heatmapMore:'多', month:'月',
-  planTodoToday:'今日待辦', planTodoHistory:'待辦歷史', planTodoDone:'已完成', planTodoTotal:'總任務', planAutoChecked:'已聯動',
+  planTodoToday:'今日待辦', planTodoHistory:'待辦歷史', planTodoDone:'已完成', planTodoTotal:'總任務', planAutoChecked:'聯動打卡',
   planDailyCustomTodos:'每日自定義待辦', planAddCustomTodoPlaceholder:'添加今日待辦項...', planNoCustomTodos:'暫無自定義待辦',
   planDeleteCustomTodo:'刪除待辦', planDeleteCustomTodoConfirm:'確定要刪除這個待辦項嗎？',
 

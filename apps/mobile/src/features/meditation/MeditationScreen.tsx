@@ -8,7 +8,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
 import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
-import { SimpleHeader } from '../../navigation';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { Music, Globe, Binary, ChevronRight, Clock } from 'lucide-react-native';
 
 // Local sound files
@@ -103,20 +103,7 @@ export default function MeditationScreen() {
       completedRef.current = false;
       playBgSound();
       timerRef.current = setInterval(() => {
-        setSec(s => {
-          if (s + 1 >= targetSec) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            setActive(false);
-            if (!completedRef.current) {
-              completedRef.current = true;
-              store.addMedMinutes(durMin);
-            }
-            stopBgSound();
-            playBell();
-            return 0;
-          }
-          return s + 1;
-        });
+        setSec(s => s + 1);
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -125,7 +112,22 @@ export default function MeditationScreen() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [active, targetSec, playBgSound, stopBgSound, playBell]);
+  }, [active, playBgSound, stopBgSound]);
+
+  // Detect timer completion outside of render
+  const addMedMinutes = store.addMedMinutes;
+  useEffect(() => {
+    if (active && sec >= targetSec) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      setActive(false);
+      if (!completedRef.current) {
+        completedRef.current = true;
+        addMedMinutes(durMin);
+      }
+      stopBgSound();
+      playBell();
+    }
+  }, [sec, active, targetSec, durMin, addMedMinutes, stopBgSound, playBell]);
 
   const handleStop = () => {
     if (active && !completedRef.current) {

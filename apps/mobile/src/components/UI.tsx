@@ -208,11 +208,41 @@ export function ThemedInput({
 }
 
 // ── TagPill ───────────────────────────────────────────────────────
-export function TagPill({
-  label, active, onPress, color, style, textStyle,
-}: { label: string; active: boolean; onPress: () => void; color?: string; style?: ViewStyle; textStyle?: TextStyle }) {
+// ── PillSelector (generic tag/mood grid picker) ──────────────────
+export function PillSelector<Item extends string>({
+  options, selected, onChange, counts, color, textActiveColor,
+}: {
+  options: readonly Item[] | Item[];
+  selected: readonly Item[];
+  onChange: (item: Item) => void;
+  counts?: Record<string, number>;
+  color?: string;
+  textActiveColor?: string;
+}) {
+  return (
+    <View style={{ flexDirection:'row', flexWrap:'wrap' }}>
+      {options.map(item => {
+        const freq = counts?.[item];
+        return (
+          <TagPill key={item}
+            label={freq && freq > 0 ? `${item} ${freq}` : item as string}
+            active={selected.includes(item)}
+            onPress={() => onChange(item)}
+            color={color}
+            textActiveColor={textActiveColor}
+          />
+        );
+      })}
+    </View>
+  );
+}
+
+export const TagPill = React.memo(function TagPill({
+  label, active, onPress, color, count, style, textStyle, textActiveColor,
+}: { label: string; active: boolean; onPress: () => void; color?: string; count?: number; style?: ViewStyle; textStyle?: TextStyle; textActiveColor?: string }) {
   const TH = useTheme();
   const c = color ?? TH.primary;
+  const activeText = textActiveColor ?? '#fff';
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}
       style={{
@@ -224,10 +254,17 @@ export function TagPill({
         ...style,
       }}
     >
-      <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_BODY, ...textStyle }}>{label}</Text>
+      <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+        <Text style={{ color: active ? activeText : TH.sub, fontSize: FONT_BODY, ...textStyle }}>{label}</Text>
+        {count !== undefined && count > 0 && (
+          <View style={{ backgroundColor: active ? 'rgba(255,255,255,.3)' : `${c}20`, paddingHorizontal:5, paddingVertical:1, borderRadius:8 }}>
+            <Text style={{ color: active ? activeText : c, fontSize:10, fontWeight:'600' }}>{count}</Text>
+          </View>
+        )}
+      </View>
     </TouchableOpacity>
   );
-}
+});
 
 // ── ProgressBar ──────────────────────────────────────────────────
 export function ProgressBar({ pct, color, colors, height = 6 }: {

@@ -1,16 +1,32 @@
-import React, { useEffect, useRef, useMemo } from 'react';
-import { View, Animated, Dimensions, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useMemo, useState } from 'react';
+import { View, Animated, Dimensions, StyleSheet, Platform } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
+// 检测是否为低端设备（基于平台和屏幕尺寸）
+const isLowEndDevice = Platform.OS === 'android' && (SCREEN_WIDTH < 400 || SCREEN_HEIGHT < 800);
+
 // ─── 星星层次配置 ───────────────────────────────────────────────
-const LAYERS = [
-  { count: 100, minSize: 0.5, maxSize: 1.2, minOpacity: 0.2, maxOpacity: 0.5, twinkleSpeed: [3000, 6000] },
-  { count: 60,  minSize: 1.0, maxSize: 2.0, minOpacity: 0.4, maxOpacity: 0.8, twinkleSpeed: [2000, 4000] },
-  { count: 20,  minSize: 2.0, maxSize: 3.5, minOpacity: 0.7, maxOpacity: 1.0, twinkleSpeed: [1500, 3000] },
-  { count: 8,   minSize: 4.0, maxSize: 6.0, minOpacity: 0.85, maxOpacity: 1.0, twinkleSpeed: [1000, 2000] },
-];
+// 根据设备性能动态调整星星数量
+const LAYERS = isLowEndDevice
+  ? [
+      // 低端设备：减少星星数量（共 60 颗）
+      { count: 30, minSize: 0.5, maxSize: 1.2, minOpacity: 0.2, maxOpacity: 0.5, twinkleSpeed: [3000, 6000] },
+      { count: 20, minSize: 1.0, maxSize: 2.0, minOpacity: 0.4, maxOpacity: 0.8, twinkleSpeed: [2000, 4000] },
+      { count: 8,  minSize: 2.0, maxSize: 3.5, minOpacity: 0.7, maxOpacity: 1.0, twinkleSpeed: [1500, 3000] },
+      { count: 2,  minSize: 4.0, maxSize: 6.0, minOpacity: 0.85, maxOpacity: 1.0, twinkleSpeed: [1000, 2000] },
+    ]
+  : [
+      // 高端设备：完整星星数量（共 188 颗）
+      { count: 100, minSize: 0.5, maxSize: 1.2, minOpacity: 0.2, maxOpacity: 0.5, twinkleSpeed: [3000, 6000] },
+      { count: 60,  minSize: 1.0, maxSize: 2.0, minOpacity: 0.4, maxOpacity: 0.8, twinkleSpeed: [2000, 4000] },
+      { count: 20,  minSize: 2.0, maxSize: 3.5, minOpacity: 0.7, maxOpacity: 1.0, twinkleSpeed: [1500, 3000] },
+      { count: 8,   minSize: 4.0, maxSize: 6.0, minOpacity: 0.85, maxOpacity: 1.0, twinkleSpeed: [1000, 2000] },
+    ];
+
+// 低端设备减少流星数量
+const SHOOTING_STAR_COUNT = isLowEndDevice ? 1 : 3;
 
 // ─── 星座连线配置 ───────────────────────────────────────────────
 const CONSTELLATION_LINE_COLOR = 'rgba(150, 130, 255, 0.15)';
@@ -192,7 +208,7 @@ function ShootingStar({ delay: initialDelay }: { delay: number }) {
   const translateX = useRef(new Animated.Value(-100)).current;
   const translateY = useRef(new Animated.Value(-100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
-  const tailWidth = useRef(new Animated.Value(0)).current;
+  const tailScale = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const animate = () => {
@@ -210,7 +226,7 @@ function ShootingStar({ delay: initialDelay }: { delay: number }) {
         Animated.delay(initialDelay + Math.random() * 10000),
         Animated.parallel([
           Animated.timing(opacity, { toValue: 1, duration: 50, useNativeDriver: true }),
-          Animated.timing(tailWidth, { toValue: 80 + Math.random() * 40, duration: 100, useNativeDriver: false }),
+          Animated.timing(tailScale, { toValue: 1, duration: 100, useNativeDriver: true }),
         ]),
         Animated.parallel([
           Animated.timing(translateX, { toValue: endX, duration, useNativeDriver: true }),
@@ -218,7 +234,7 @@ function ShootingStar({ delay: initialDelay }: { delay: number }) {
         ]),
         Animated.parallel([
           Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true }),
-          Animated.timing(tailWidth, { toValue: 0, duration: 200, useNativeDriver: false }),
+          Animated.timing(tailScale, { toValue: 0, duration: 200, useNativeDriver: true }),
         ]),
       ]).start(() => {
         setTimeout(animate, 3000 + Math.random() * 8000);
@@ -238,7 +254,7 @@ function ShootingStar({ delay: initialDelay }: { delay: number }) {
       ]}
     >
       <View style={styles.shootingStarHead} />
-      <Animated.View style={[styles.shootingStarTail, { width: tailWidth }]} />
+      <Animated.View style={[styles.shootingStarTail, { transform: [{ scaleX: tailScale }] }]} />
     </Animated.View>
   );
 }
@@ -313,28 +329,34 @@ export default function StarfieldBackground() {
 
   const brightStars = allStars.filter(s => s.size >= 4);
   const normalStars = allStars.filter(s => s.size < 4);
-  const constellationLines = useMemo(() => generateConstellations(brightStars), []);
+  // 低端设备跳过星座连线计算
+  const constellationLines = useMemo(
+    () => isLowEndDevice ? [] : generateConstellations(brightStars),
+    []
+  );
 
   return (
     <View style={styles.container} pointerEvents="none">
-      {/* 星座连线层 */}
-      <Svg
-        style={StyleSheet.absoluteFill}
-        width={SCREEN_WIDTH}
-        height={SCREEN_HEIGHT}
-      >
-        {constellationLines.map((line, index) => (
-          <Line
-            key={`line-${index}`}
-            x1={line.x1}
-            y1={line.y1}
-            x2={line.x2}
-            y2={line.y2}
-            stroke={CONSTELLATION_LINE_COLOR}
-            strokeWidth={0.5}
-          />
-        ))}
-      </Svg>
+      {/* 星座连线层（低端设备跳过） */}
+      {!isLowEndDevice && (
+        <Svg
+          style={StyleSheet.absoluteFill}
+          width={SCREEN_WIDTH}
+          height={SCREEN_HEIGHT}
+        >
+          {constellationLines.map((line, index) => (
+            <Line
+              key={`line-${index}`}
+              x1={line.x1}
+              y1={line.y1}
+              x2={line.x2}
+              y2={line.y2}
+              stroke={CONSTELLATION_LINE_COLOR}
+              strokeWidth={0.5}
+            />
+          ))}
+        </Svg>
+      )}
 
       {/* 普通星星层 */}
       {normalStars.map((star, index) => (
@@ -347,9 +369,9 @@ export default function StarfieldBackground() {
       ))}
 
       {/* 流星层（最顶层） */}
-      <ShootingStar delay={2000} />
-      <ShootingStar delay={6000} />
-      <ShootingStar delay={10000} />
+      {Array.from({ length: SHOOTING_STAR_COUNT }, (_, i) => (
+        <ShootingStar key={`shooting-${i}`} delay={2000 + i * 4000} />
+      ))}
     </View>
   );
 }

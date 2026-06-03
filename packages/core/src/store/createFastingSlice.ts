@@ -5,6 +5,7 @@ import type { SliceCreator } from './sliceHelper';
 
 export function createFastingSlice(
   adapter: StorageAdapter,
+  onSync?: () => void,
 ): SliceCreator<FastingSlice> {
   return (set, get) => ({
     activeFasting: null,
@@ -28,6 +29,7 @@ export function createFastingSlice(
         fastingHistory: [finished, ...(s.fastingHistory ?? [])],
       }));
       adapter.persistChange('fasting', finished.id, finished).catch(console.error);
+      onSync?.();
     },
   });
 }

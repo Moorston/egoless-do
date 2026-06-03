@@ -5,7 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
 import { useAppStore } from '../../store/useAppStore';
-import { SimpleHeader } from '../../navigation';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
 } from '../../components/UI';
@@ -95,7 +95,7 @@ export default function SettingsScreen() {
       title: T('settingsRemind'),
       rows: [
         {
-          label: T('settingsRemindOn'), icon: <Bell size={20} color={TH.text} />,
+          label: T('settingsRemindOn'), icon: <Bell size={20} color={P} />,
           right: <Toggle on={store.remindEnabled} onChange={async () => {
             const next = !store.remindEnabled;
             if (next) {
@@ -110,7 +110,7 @@ export default function SettingsScreen() {
           }} />,
         },
         {
-          label: T('settingsRemindTime'), icon: <Clock size={20} color={TH.text} />,
+          label: T('settingsRemindTime'), icon: <Clock size={20} color={P} />,
           right: (
             <TouchableOpacity onPress={() => { setTimeEdit(store.remindTime); setShowTimePicker(true); }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -127,37 +127,37 @@ export default function SettingsScreen() {
       title: T('settingsData'),
       rows: [
         {
-          label: T('settingsStats'), icon: <BarChart3 size={20} color={TH.text} />,
+          label: T('settingsStats'), icon: <BarChart3 size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('Stats'),
         },
         {
-          label: T('settingsHistory'), icon: <CalendarDays size={20} color={TH.text} />,
+          label: T('settingsHistory'), icon: <CalendarDays size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('CheckinHistory'),
         },
         {
-          label: T('planHistory'), icon: <ClipboardList size={20} color={TH.text} />,
+          label: T('planHistory'), icon: <ClipboardList size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('PlanHistory'),
         },
         {
-          label: T('settingsFoodLog'), icon: <Utensils size={20} color={TH.text} />,
+          label: T('settingsFoodLog'), icon: <Utensils size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('FoodLog'),
         },
         {
-          label: T('settingsGrace'), icon: <Shield size={20} color={TH.text} />, sub: T('settingsGraceDesc'),
+          label: T('settingsGrace'), icon: <Shield size={20} color={P} />, sub: T('settingsGraceDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('Grace'),
         },
         {
-          label: T('settingsStreakBreak'), icon: <HeartCrack size={20} color={TH.text} />, sub: T('settingsStreakBreakDesc'),
+          label: T('settingsStreakBreak'), icon: <HeartCrack size={20} color={P} />, sub: T('settingsStreakBreakDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('StreakBreak'),
         },
         {
-          label: T('recycleBin'), icon: <Trash2 size={20} color={TH.text} />, sub: T('recycleBinDesc'),
+          label: T('recycleBin'), icon: <Trash2 size={20} color={P} />, sub: T('recycleBinDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('RecycleBin'),
           last: true,
@@ -168,7 +168,7 @@ export default function SettingsScreen() {
       title: T('settingsGeneral'),
       rows: [
         {
-          label: T('settingsLanguage'), icon: <Globe size={20} color={TH.text} />,
+          label: T('settingsLanguage'), icon: <Globe size={20} color={P} />,
           right: (
             <TouchableOpacity onPress={() => setShowLang(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -182,7 +182,7 @@ export default function SettingsScreen() {
           ),
         },
         {
-          label: T('settingsTheme'), icon: <Palette size={20} color={TH.text} />,
+          label: T('settingsTheme'), icon: <Palette size={20} color={P} />,
           right: (
             <TouchableOpacity onPress={() => setShowTheme(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -194,7 +194,7 @@ export default function SettingsScreen() {
         },
         {
           label: T('settingsWeightUnit'),
-          icon: <Scale size={20} color={TH.text} />,
+          icon: <Scale size={20} color={P} />,
           right: (
             <TouchableOpacity onPress={() => setShowWeightUnit(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -215,7 +215,7 @@ export default function SettingsScreen() {
         {
           label: T('settingsAppleHealth'),
           sub: healthSyncEnabled ? T('settingsConnected') : T('settingsNotEnabled'),
-          icon: <Heart size={20} color={TH.text} />,
+          icon: <Heart size={20} color={P} />,
           right: <Toggle on={healthSyncEnabled} onChange={async () => {
             if (!healthSyncEnabled) {
               const { isHealthAvailable, requestHealthPermissions } = await import('../health/HealthService');
@@ -241,7 +241,7 @@ export default function SettingsScreen() {
       title: T('settingsSync'),
       rows: [
         {
-          label: T('settingsSyncStatus'), icon: <Cloud size={20} color={TH.text} />,
+          label: T('settingsSyncStatus'), icon: <Cloud size={20} color={P} />,
           sub: online ? (syncing ? T('settingsSyncing') : T('settingsConnected')) : T('settingsOffline'),
           right: (
             <View style={{
@@ -251,11 +251,11 @@ export default function SettingsScreen() {
           ),
         },
         {
-          label: T('settingsPending'), icon: <CloudUpload size={20} color={TH.text} />,
+          label: T('settingsPending'), icon: <CloudUpload size={20} color={P} />,
           right: <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{pendingCount} {T('settingsPendingUnit')}</Text>,
         },
         {
-          label: T('settingsLastSync'), icon: <History size={20} color={TH.text} />,
+          label: T('settingsLastSync'), icon: <History size={20} color={P} />,
           right: (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
               {lastSyncAt
@@ -266,7 +266,7 @@ export default function SettingsScreen() {
         },
         {
           label: T('settingsManualSync'),
-          icon: <RefreshCw size={20} color={TH.text} />,
+          icon: <RefreshCw size={20} color={P} />,
           right: (
             <TouchableOpacity onPress={triggerSync} disabled={syncing || !online}>
               <Text style={{ color: P, fontSize: FONT_SUB }}>
@@ -282,7 +282,7 @@ export default function SettingsScreen() {
       title: T('settingsAbout'),
       rows: [
         {
-          label: T('settingsShareFriend'), icon: <Hand size={20} color={TH.text} />,
+          label: T('settingsShareFriend'), icon: <Hand size={20} color={P} />,
           sub: T('settingsShareDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: async () => {
@@ -297,16 +297,16 @@ export default function SettingsScreen() {
           },
         },
         {
-          label: T('settingsVersion'), icon: <Info size={20} color={TH.text} />,
+          label: T('settingsVersion'), icon: <Info size={20} color={P} />,
           right: <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>v1.0.0 (MVP)</Text>,
         },
         {
-          label: T('settingsPrivacy'), icon: <Lock size={20} color={TH.text} />,
+          label: T('settingsPrivacy'), icon: <Lock size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('PrivacyPolicy' as never),
         },
         {
-          label: T('settingsResetWelcome'), icon: <RefreshCw size={20} color={TH.text} />,
+          label: T('settingsResetWelcome'), icon: <RefreshCw size={20} color={P} />,
           sub: T('settingsResetWelcomeDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
           last: true,

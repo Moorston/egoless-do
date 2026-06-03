@@ -36,12 +36,13 @@ export async function dbGetAllReflections(db: SQLiteDatabase): Promise<MindRefle
 export async function dbInsertReflection(db: SQLiteDatabase, r: MindReflection): Promise<void> {
   await db.runAsync(`
     INSERT OR IGNORE INTO mind_reflections
-    (id,created_at,content,tags,mood,card_theme,linked_habit_id,is_pinned,is_published,updated_at,deleted,synced)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+    (id,created_at,content,tags,mood,card_theme,linked_habit_id,linked_plan_id,is_pinned,is_published,updated_at,deleted,synced,colors)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     [r.id, r.timestamp, r.content, JSON.stringify(r.tags), r.mood ?? null,
-     r.cardTheme ?? null, r.linkedHabitId ?? null,
+     r.cardTheme ?? null, r.linkedHabitId ?? null, r.linkedPlanItemId ?? null,
      r.isPinned ? 1 : 0, r.isPublished ? 1 : 0,
-     r.updatedAt ?? Date.now(), r.deleted ? 1 : 0, 0]
+     r.updatedAt ?? Date.now(), r.deleted ? 1 : 0, 0,
+     r.colors ? JSON.stringify(r.colors) : null]
   );
 }
 
@@ -141,6 +142,14 @@ function rowToHabit(r: Record<string, unknown>): Habit {
 }
 
 function rowToReflection(r: Record<string, unknown>): MindReflection {
+  const defaultColors: readonly [string, string] = ['#6366f1', '#8b5cf6'];
+  let colors = defaultColors;
+  if (r.colors) {
+    try {
+      const parsed = JSON.parse(r.colors as string);
+      if (Array.isArray(parsed) && parsed.length === 2) colors = parsed;
+    } catch {}
+  }
   return {
     id: r.id as string,
     timestamp: r.created_at as number,
@@ -149,9 +158,10 @@ function rowToReflection(r: Record<string, unknown>): MindReflection {
     mood: r.mood as MindReflection['mood'],
     cardTheme: r.card_theme as string | undefined,
     linkedHabitId: r.linked_habit_id as string | undefined,
+    linkedPlanItemId: r.linked_plan_id as string | undefined,
     isPinned: (r.is_pinned as number) === 1,
     isPublished: (r.is_published as number) === 1,
-    colors: ['#6366f1', '#8b5cf6'],
+    colors,
     updatedAt: (r.updated_at as number) ?? 0,
     deleted: (r.deleted as number) === 1,
   };

@@ -45,3 +45,9 @@ export const FONT_CHART_AXIS = 14;
 
 /** Chart tooltip text */
 export const FONT_CHART_TOOLTIP = 14;
+
+/** Small annotation, footnote */
+export const FONT_SMALL = 14;
+
+/** Tiny text: count badges, micro labels */
+export const FONT_TINY = 14;

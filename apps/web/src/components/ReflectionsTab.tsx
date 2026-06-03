@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { MIND_COLORS, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_CLOSE } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_TINY, FONT_CLOSE, dateStr, REFLECTION_CATEGORIES, highlightSearchMatch } from '@egoless-do/core';
 import { useTheme, useT, cs, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { Link, X, Settings, Eye, EyeOff } from 'lucide-react';
+import { useOverlay } from './useOverlay';
+import { useReflections } from './useReflections';
+import LineChart from './charts/LineChart';
+import { Link, X, Settings, Eye, EyeOff, ClipboardList, ExternalLink, TrendingUp, Grid3x3, Network, Bookmark, ArrowLeft, Pin } from 'lucide-react';
 import TagManagerPanel from './TagManagerPanel';
 import MoodManagerPanel from './MoodManagerPanel';
 
@@ -19,6 +22,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   const [mood, setMood] = useState('');
   const [link, setLink] = useState('');
   const [colorIdx, setColorIdx] = useState(0);
+  const [category, setCategory] = useState('');
   const lastTrigger = useRef(0);
 
   // Edit state
@@ -28,6 +32,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   const [editMood, setEditMood] = useState('');
   const [editLink, setEditLink] = useState('');
   const [editColorIdx, setEditColorIdx] = useState(0);
+  const [editCategory, setEditCategory] = useState('');
 
   // Action menu state (right-click context menu)
   const [actionMenuId, setActionMenuId] = useState<string|null>(null);
@@ -37,6 +42,33 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   const [showTagManager, setShowTagManager] = useState(false);
   const [showMoodManager, setShowMoodManager] = useState(false);
 
+  const store = useWebStore();
+  const { TH, P } = useTheme();
+  const T = useT();
+
+  // Create plan item state
+  const [showCreatePlanItem, setShowCreatePlanItem] = useState(false);
+  const [selectedReflectionId, setSelectedReflectionId] = useState<string | null>(null);
+  const [planItemName, setPlanItemName] = useState('');
+  const [planItemDescription, setPlanItemDescription] = useState('');
+  const [planItemTargetMetric, setPlanItemTargetMetric] = useState('');
+  const [planItemStartDate, setPlanItemStartDate] = useState(() => {
+    const today = dateStr();
+    const activePlan = store.getActivePlan();
+    if (activePlan) {
+      return today >= activePlan.startDate ? today : activePlan.startDate;
+    }
+    return today;
+  });
+  const [planItemEndDate, setPlanItemEndDate] = useState(() => {
+    const activePlan = store.getActivePlan();
+    if (activePlan) return activePlan.endDate;
+    const d = new Date();
+    d.setDate(d.getDate() + 30);
+    return d.toISOString().slice(0, 10);
+  });
+  const [planItemPriority, setPlanItemPriority] = useState<'high' | 'medium' | 'low'>('medium');
+
   // Open new-mind form when FAB triggers
   useEffect(() => {
     if (newMindTrigger !== undefined && newMindTrigger !== lastTrigger.current) {
@@ -44,95 +76,28 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
       setShowNew(true);
     }
   }, [newMindTrigger]);
-  const store = useWebStore();
-  const { TH, P } = useTheme();
-  const T = useT();
-  const [filterTag, setFilterTag] = useState('');
+  const overlay = useOverlay();
   const [showError, setShowError] = useState(false);
-  const [showDeletedTags, setShowDeletedTags] = useState(false);
+  const [detailId, setDetailId] = useState<string|null>(null);
 
-  const allTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).flatMap((r) => r.tags))];
-    const habitTagsList = (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`);
-    const allAvailable = [...new Set([...reflTags, ...habitTagsList])];
-    const order = store.allTagsOrder ?? [];
-    if (order.length > 0) {
-      const ordered = order.filter(t => allAvailable.includes(t));
-      const remaining = allAvailable.filter(t => !order.includes(t));
-      return [...ordered, ...remaining];
-    }
-    const customSet = new Set(store.customTags ?? []);
-    const customInUse = (store.customTags ?? []).filter(t => allAvailable.includes(t));
-    const others = allAvailable.filter(t => !customSet.has(t));
-    return [...customInUse, ...others];
-  }, [store.reflections, store.customTags, store.allTagsOrder, store.habits]);
-
-  // All tags used in data (including deleted tags that still have data)
-  const allUsedTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).flatMap((r) => r.tags))];
-    const habitTagsList = (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`);
-    return [...new Set([...reflTags, ...habitTagsList])];
-  }, [store.reflections, store.habits]);
-
-  // Tags that are deleted but still have data
-  const deletedTagsWithData = useMemo(() => {
-    const availableSet = new Set(allTags);
-    return allUsedTags.filter(t => !availableSet.has(t));
-  }, [allTags, allUsedTags]);
-
-  // Current visible tags in filter bar
-  const visibleTags = showDeletedTags ? allUsedTags : allTags;
-  const filtered = useMemo(() =>
-    filterTag ? (store.reflections ?? []).filter((r) => r.tags.includes(filterTag)) : (store.reflections ?? []),
-    [filterTag, store.reflections]
-  );
-  const tagCounts = useMemo(() => {
-    const counts: Record<string, number> = { '': (store.reflections ?? []).length };
-    (store.reflections ?? []).forEach(r => r.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
-    return counts;
-  }, [store.reflections]);
-  const habitTags = useMemo(() => (store.habits ?? []).filter((h) => h.createTag).map((h) => `#${h.name}`), [store.habits]);
-  const allTagOptions = useMemo(() => {
-    const required = [...TAGS_PRESET, ...(store.customTags ?? [])];
-    const order = store.allTagsOrder ?? [];
-    const effective = order.length > 0 ? ensureOrderContains(order, required) : required;
-    return [...effective, ...habitTags];
-  }, [store.allTagsOrder, store.customTags, habitTags]);
-  const allMoodOptions = useMemo(() => {
-    const required = [...MOODS, ...(store.customMoods ?? [])];
-    const order = store.allMoodsOrder ?? [];
-    return order.length > 0 ? ensureOrderContains(order, required) : required;
-  }, [store.allMoodsOrder, store.customMoods]);
-
-  const topTag = useMemo(() => {
-    if (allTags.length === 0) return '--';
-    const tagCounts: Record<string, number> = {};
-    (store.reflections ?? []).forEach(r => r.tags.forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; }));
-    return allTags.reduce((a, b) => (tagCounts[a] || 0) > (tagCounts[b] || 0) ? a : b);
-  }, [store.reflections, allTags]);
-
-  const consecutiveDays = useMemo(() => {
-    if ((store.reflections ?? []).length === 0) return 0;
-    const days = new Set((store.reflections ?? []).map(r => new Date(r.timestamp).toDateString()));
-    let streak = 0;
-    let date = new Date();
-    while (days.has(date.toDateString())) {
-      streak++;
-      date.setDate(date.getDate() - 1);
-    }
-    return streak;
-  }, [store.reflections]);
-
-  const mindByDay = useMemo(() => {
-    const m: Record<string, typeof store.reflections> = {};
-    // Sort filtered by timestamp descending (newest first)
-    const sorted = [...filtered].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
-    sorted.forEach((r) => {
-      const d = new Date(r.timestamp).toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
-      if (!m[d]) m[d] = []; m[d].push(r);
-    });
-    return m;
-  }, [filtered]);
+  // Use the shared hook for all filter/computed state
+  const {
+    filters, setFilters,
+    searchInput, setSearchInput,
+    showDeletedTags, setShowDeletedTags,
+    showInsights, setShowInsights,
+    insightsTab, setInsightsTab,
+    moodTrendDays, setMoodTrendDays,
+    toggleTag, toggleMood, applyCollection, clearAllFilters, removeFilter,
+    activeFilters, hasActiveFilters,
+    allTags, allUsedTags, deletedTagsWithData, visibleTags,
+    allTagOptions, allMoodOptions,
+    filtered, byDay: mindByDay,
+    dynamicTagCounts, dynamicMoodCounts,
+    totalCount, topTag, streakDays: consecutiveDays,
+    sparklineData, moodStats, allMoods,
+    moodTrend, heatmapData, tagGraph, smartCollections, tagFrequency,
+  } = useReflections();
 
   const cardStyle = useCachedStyle(() => ({ ...cs(TH), padding: '12px 16px', marginBottom: 12 }), [TH]);
 
@@ -144,11 +109,15 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
     }
     if (content.trim()) {
       try {
-        store.addReflection({ content, tags: selTags, mood, colorIdx, link: link.trim() || undefined });
+        // Add category tag if selected
+        const categoryTag = category ? `#${REFLECTION_CATEGORIES.find(c => c.key === category)?.label}` : '';
+        const finalTags = categoryTag && !selTags.includes(categoryTag) ? [categoryTag, ...selTags] : selTags;
+        store.addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
         setContent('');
         setSelTags([]);
         setMood('');
         setLink('');
+        setCategory('');
         setShowNew(false);
       } catch (e) {
         setShowError(true);
@@ -163,19 +132,26 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
     setEditTags(r.tags || []);
     setEditMood(r.mood || '');
     setEditLink(r.link || '');
-    const bgIdx = MIND_COLORS.findIndex(c => c[0] === (r.colors?.[0]));
+    const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (r.colors?.[0]));
     setEditColorIdx(bgIdx >= 0 ? bgIdx : 0);
+    const cat = REFLECTION_CATEGORIES.find(c => r.tags?.includes(`#${c.label}`));
+    setEditCategory(cat?.key || '');
   };
 
   const saveEdit = () => {
     if (!editId || !editContent.trim()) return;
-    const idx = Math.min(Math.max(editColorIdx, 0), MIND_COLORS.length - 1);
+    const idx = Math.min(Math.max(editColorIdx, 0), MIND_COLORS_EXTENDED.length - 1);
+    const categoryTag = editCategory ? `#${REFLECTION_CATEGORIES.find(c => c.key === editCategory)?.label}` : '';
+    const oldCategoryTags = REFLECTION_CATEGORIES.map(c => `#${c.label}`);
+    let finalTags = editTags.filter(t => !oldCategoryTags.includes(t));
+    if (categoryTag) finalTags = [categoryTag, ...finalTags];
+
     store.updateReflection(editId, {
       content: editContent,
-      tags: editTags,
+      tags: finalTags,
       mood: editMood,
       link: editLink.trim() || undefined,
-      colors: MIND_COLORS[idx] as unknown as readonly [string, string],
+      colors: MIND_COLORS_EXTENDED[idx] as unknown as readonly [string, string],
     });
     setEditId(null);
   };
@@ -193,20 +169,24 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
         <button onClick={() => setShowNew(true)} style={{ padding: '6px 16px', borderRadius: 20, border: 'none', background: P, color: '#fff', fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>+ {T('newReflection')}</button>
       </div>
 
+      {/* Tag filter */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1 }}>
-          {[{ t: T('habitStatusAll'), active: !filterTag, fn: () => setFilterTag(''), isDeleted: false } as const, ...visibleTags.map((t) => {
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1, overflowX: 'auto', paddingBottom: 4 }}>
+          {[{ t: '🏷️ 全部', tagKey: '', active: filters.tags.length === 0, fn: () => setFilters({ ...filters, tags: [], collectionId: undefined }), isDeleted: false } as const, ...visibleTags.map((t) => {
             const isDeleted = !allTags.includes(t);
-            return { t, active: filterTag === t, fn: () => setFilterTag((f) => f === t ? '' : t), isDeleted } as const;
-          })].map(({ t, active, fn, isDeleted }) => (
-            <button key={t} onClick={fn} style={{
-              padding: '6px 14px', borderRadius: 20, fontSize: FONT_BUTTON, cursor: 'pointer',
-              border: isDeleted ? `1px dashed ${TH.sub}` : `1px solid ${P}`,
-              background: active ? P : 'transparent',
-              color: active ? '#fff' : (isDeleted ? TH.sub : P),
+            return { t, tagKey: t, active: filters.tags.includes(t), fn: () => toggleTag(t), isDeleted } as const;
+          })].map(({ t, tagKey, active, fn, isDeleted }) => (
+            <button key={tagKey || 'all'} onClick={fn} style={{
+              display: 'flex', alignItems: 'center', gap: 4, padding: '6px 14px', borderRadius: 20, fontSize: FONT_SMALL, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+              border: isDeleted ? `1px dashed ${TH.sub}` : `1px solid ${active ? P : TH.border}`,
+              background: active ? `${P}20` : TH.card,
+              color: isDeleted ? TH.sub : TH.text,
               textDecoration: isDeleted ? 'line-through' : 'none',
               opacity: isDeleted ? 0.6 : 1,
-            }}>{t} {tagCounts[filterTag === t ? '' : t] ?? tagCounts[t] ?? 0}</button>
+            }}>
+              {t}
+              <span style={{ background: `${P}20`, padding: '1px 5px', borderRadius: 6, fontSize: FONT_TINY, fontWeight: 600, color: P }}>{dynamicTagCounts[tagKey] ?? 0}</span>
+            </button>
           ))}
         </div>
         {deletedTagsWithData.length > 0 && (
@@ -218,10 +198,209 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
         )}
       </div>
 
+      {/* Search bar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, background: TH.card, borderRadius: 12, padding: '8px 12px' }}>
+        <span style={{ fontSize: FONT_BODY }}>🔍</span>
+        <input
+          type="text"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          placeholder="搜索感念内容、标签、心情..."
+          style={{ flex: 1, background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_BODY, outline: 'none' }}
+        />
+        {searchInput.length > 0 && (
+          <button onClick={() => { setSearchInput(''); removeFilter('search'); }} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: TH.sub }}>
+            <X size={16} />
+          </button>
+        )}
+      </div>
+
+      {/* Active Filters Bar */}
+      {hasActiveFilters && (
+        <div style={{ display: 'flex', gap: 6, marginBottom: 12, overflowX: 'auto', paddingBottom: 4, flexWrap: 'wrap' }}>
+          {activeFilters.map((f, i) => (
+            <button key={`${f.key}-${f.value ?? i}`}
+              onClick={() => removeFilter(f.key, f.value)}
+              style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px', borderRadius: 16, fontSize: FONT_SMALL, cursor: 'pointer', border: `1px solid ${P}30`, background: `${P}15`, color: P, whiteSpace: 'nowrap' }}>
+              {f.label} <X size={12} />
+            </button>
+          ))}
+          <button onClick={clearAllFilters}
+            style={{ padding: '4px 10px', borderRadius: 16, fontSize: FONT_SMALL, cursor: 'pointer', border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, whiteSpace: 'nowrap' }}>
+            清除全部
+          </button>
+        </div>
+      )}
+
+      {/* Mood filter */}
+      {allMoods.length > 0 && (
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12, overflowX: 'auto', paddingBottom: 4 }}>
+          {(() => {
+            const moodIcon = (m: string) => m === '开心' ? '😊' : m === '平静' ? '🌿' : m === '焦虑' ? '😰' : m === '难过' ? '😢' : m === '兴奋' ? '🎉' : m === '感恩' ? '🙏' : '💭';
+            return [
+              <button key="all-mood" onClick={() => toggleMood('')}
+                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 14px', borderRadius: 20, fontSize: FONT_SMALL, cursor: 'pointer', whiteSpace: 'nowrap', border: `1px solid ${filters.moods.length === 0 ? P : TH.border}`, background: filters.moods.length === 0 ? `${P}20` : TH.card, color: TH.text }}>
+                😊 全部心情
+              </button>,
+              ...allMoods.map(m => (
+                <button key={m} onClick={() => toggleMood(m)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 14px', borderRadius: 20, fontSize: FONT_SMALL, cursor: 'pointer', whiteSpace: 'nowrap', border: `1px solid ${filters.moods.includes(m) ? P : TH.border}`, background: filters.moods.includes(m) ? `${P}20` : TH.card, color: TH.text }}>
+                  <span>{moodIcon(m)}</span>
+                  {m}
+                  <span style={{ background: `${P}20`, padding: '1px 5px', borderRadius: 6, fontSize: FONT_TINY, fontWeight: 600, color: P }}>{dynamicMoodCounts[m] ?? 0}</span>
+                </button>
+              ))
+            ];
+          })()}
+        </div>
+      )}
+
+      {/* Data Insights Toggle */}
+      <button onClick={() => setShowInsights(!showInsights)}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', background: TH.card, borderRadius: 12, padding: '10px 14px', marginBottom: 12, border: 'none', cursor: 'pointer' }}>
+        <span style={{ color: TH.text, fontSize: FONT_BODY, fontWeight: 600 }}>📊 数据洞察</span>
+        <span style={{ color: TH.sub }}>{showInsights ? '▲' : '▼'}</span>
+      </button>
+
+      {/* Data Insights Panel */}
+      {showInsights && (
+        <div style={{ background: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+          {/* Tab bar */}
+          <div style={{ display: 'flex', gap: 4, marginBottom: 16, background: TH.border, borderRadius: 10, padding: 3 }}>
+            {([
+              { key: 'stats' as const, icon: <TrendingUp size={14} />, label: '统计' },
+              { key: 'heatmap' as const, icon: <Grid3x3 size={14} />, label: '热力图' },
+              { key: 'mood' as const, icon: <span>😊</span>, label: '心情' },
+              { key: 'tags' as const, icon: <Network size={14} />, label: '标签' },
+            ]).map(tab => (
+              <button key={tab.key} onClick={() => setInsightsTab(tab.key)}
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, padding: '6px 8px', borderRadius: 8, fontSize: FONT_SMALL, fontWeight: 600, cursor: 'pointer', border: 'none', background: insightsTab === tab.key ? TH.cardSolid : 'transparent', color: insightsTab === tab.key ? TH.text : TH.sub, transition: 'all 0.2s' }}>
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Stats tab */}
+          {insightsTab === 'stats' && (
+            <>
+              <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
+                <div style={{ flex: 1, textAlign: 'center' }}>
+                  <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: P }}>{sparklineData.reduce((a, b) => a + b, 0)}</div>
+                  <div style={{ fontSize: FONT_SMALL, color: TH.sub }}>近7天</div>
+                </div>
+                <div style={{ flex: 1, textAlign: 'center' }}>
+                  <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: P }}>{totalCount}</div>
+                  <div style={{ fontSize: FONT_SMALL, color: TH.sub }}>总计</div>
+                </div>
+                <div style={{ flex: 1, textAlign: 'center' }}>
+                  <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: P }}>{consecutiveDays}</div>
+                  <div style={{ fontSize: FONT_SMALL, color: TH.sub }}>连续</div>
+                </div>
+              </div>
+              {/* Mood Distribution */}
+              {moodStats.length > 0 && (
+                <>
+                  <div style={{ fontSize: FONT_SUB, fontWeight: 600, color: TH.text, marginBottom: 10 }}>心情分布</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {moodStats.map(([moodName, count]) => {
+                      const maxCount = moodStats[0]?.[1] ?? 1;
+                      const widthPercent = (count / maxCount) * 100;
+                      return (
+                        <div key={moodName} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ color: TH.text, fontSize: FONT_SUB, width: 60 }}>{moodName}</span>
+                          <div style={{ flex: 1, height: 8, background: TH.border, borderRadius: 4, overflow: 'hidden' }}>
+                            <div style={{ width: `${widthPercent}%`, height: '100%', background: P, borderRadius: 4, transition: 'width 0.3s' }} />
+                          </div>
+                          <span style={{ color: TH.sub, fontSize: FONT_SMALL, width: 24, textAlign: 'right' }}>{count}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+
+          {/* Heatmap tab */}
+          {insightsTab === 'heatmap' && (
+            <>
+              <div style={{ fontSize: FONT_SUB, fontWeight: 600, color: TH.text, marginBottom: 10 }}>近20周写作热力图</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 3, marginBottom: 8 }}>
+                {heatmapData.map((day, idx) => {
+                  const opacity = day.count === 0 ? 0.1 : 0.3 + Math.min(day.count / 3, 0.7);
+                  return (
+                    <div key={idx} title={`${day.date}: ${day.count} 条`} style={{ width: '100%', aspectRatio: 1, borderRadius: 3, background: day.count > 0 ? P : TH.border, opacity, transition: 'opacity 0.2s' }} />
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Mood trend tab */}
+          {insightsTab === 'mood' && (
+            <>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                {[7, 30, 90].map(d => (
+                  <button key={d} onClick={() => setMoodTrendDays(d)}
+                    style={{ padding: '4px 12px', borderRadius: 12, fontSize: FONT_SMALL, cursor: 'pointer', border: `1px solid ${P}`, background: moodTrendDays === d ? P : 'transparent', color: moodTrendDays === d ? '#fff' : P }}>
+                    {d}天
+                  </button>
+                ))}
+              </div>
+              {moodTrend.length > 0 ? (
+                <LineChart data={moodTrend.map(p => ({ label: p.date.slice(5), value: p.avgScore }))} color={P} height={160} showArea />
+              ) : (
+                <div style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', padding: 20 }}>暂无心情数据</div>
+              )}
+            </>
+          )}
+
+          {/* Tags tab */}
+          {insightsTab === 'tags' && (
+            <>
+              <div style={{ fontSize: FONT_SUB, fontWeight: 600, color: TH.text, marginBottom: 10 }}>标签词云</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+                {tagFrequency.map(([tag, count]) => {
+                  const maxCount = tagFrequency[0]?.[1] ?? 1;
+                  const scale = count / maxCount;
+                  const fontSize = 12 + scale * 8;
+                  return (
+                    <span key={tag} style={{ padding: '4px 10px', borderRadius: 12, background: `${P}${Math.round(scale * 40 + 10).toString(16).padStart(2, '0')}`, color: P, fontSize, fontWeight: scale > 0.5 ? 700 : 400, transition: 'all 0.2s' }}>
+                      {tag}
+                    </span>
+                  );
+                })}
+              </div>
+              {/* Tag co-occurrence */}
+              {tagGraph.edges.length > 0 && (
+                <>
+                  <div style={{ fontSize: FONT_SUB, fontWeight: 600, color: TH.text, marginBottom: 10 }}>标签关联</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {tagGraph.edges.slice(0, 8).map((edge, idx) => {
+                      const source = tagGraph.nodes.find(n => n.tag === edge.source);
+                      const target = tagGraph.nodes.find(n => n.tag === edge.target);
+                      return (
+                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: FONT_SMALL, color: TH.sub }}>
+                          <span style={{ color: P }}>{source?.tag ?? edge.source}</span>
+                          <span style={{ flex: 1, height: 1, background: TH.border }} />
+                          <span style={{ fontSize: FONT_TINY, color: TH.sub }}>{edge.weight}</span>
+                          <span style={{ flex: 1, height: 1, background: TH.border }} />
+                          <span style={{ color: P }}>{target?.tag ?? edge.target}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
       <div style={cardStyle as React.CSSProperties}>
         <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
           <div>
-            <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: P }}>{(store.reflections ?? []).length}</div>
+            <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: P }}>{totalCount}</div>
             <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('reflTotal')}</div>
           </div>
           <div>
@@ -249,20 +428,53 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             <div style={{ flex: 1, height: 1, background: TH.border }} />
           </div>
           {items.map((r) => {
-            const bgColor = r.colors?.[0] || MIND_COLORS[0][0];
-            const bgColor2 = r.colors?.[1] || MIND_COLORS[0][1];
+            const bgColor = r.colors?.[0] || MIND_COLORS_EXTENDED[0][0];
+            const bgColor2 = r.colors?.[1] || MIND_COLORS_EXTENDED[0][1];
+            const linkedPlanItem = r.linkedPlanItemId
+              ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
+              : null;
+            const contentText = r.content;
             return (
-            <div key={r.id} onContextMenu={(e) => { e.preventDefault(); setActionMenuId(r.id); setActionMenuPos({ x: e.clientX, y: e.clientY }); }}
-              style={{ background: `linear-gradient(135deg,${bgColor},${bgColor2})`, borderRadius: 18, padding: 18, marginBottom: 10, marginLeft: 20, position: 'relative', overflow: 'hidden', cursor: 'context-menu' }}>
+            <div key={r.id}
+              onContextMenu={(e) => { e.preventDefault(); setActionMenuId(r.id); setActionMenuPos({ x: e.clientX, y: e.clientY }); }}
+              onClick={() => setDetailId(r.id)}
+              style={{ background: `linear-gradient(135deg,${bgColor},${bgColor2})`, borderRadius: 18, padding: 18, marginBottom: 10, marginLeft: 20, position: 'relative', overflow: 'hidden', cursor: 'pointer', transition: 'transform 0.2s, box-shadow 0.2s', transform: 'translateY(0)' }}>
               <div style={{ position: 'absolute', top: 0, right: 0, width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,.05)', transform: 'translate(20px,-20px)' }} />
-              <div style={{ fontSize: FONT_BODY, lineHeight: 1.7, marginBottom: 10, color: '#fff' }}>{r.content}</div>
+              {linkedPlanItem && (
+                <div
+                  onClick={(e) => { e.stopPropagation(); overlay.open('planDetail', { planId: linkedPlanItem.planId }); }}
+                  title={`关联任务: ${linkedPlanItem.name}`}
+                  style={{ position: 'absolute', top: 10, right: 10, display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px', borderRadius: 8, background: 'rgba(255,255,255,.2)', cursor: 'pointer', zIndex: 1 }}
+                >
+                  <ExternalLink size={14} color="rgba(255,255,255,.9)" />
+                  <span style={{ fontSize: FONT_SMALL, color: 'rgba(255,255,255,.9)' }}>{linkedPlanItem.name.slice(0, 10)}</span>
+                </div>
+              )}
+              <div style={{ fontSize: FONT_BODY, lineHeight: 1.7, marginBottom: 10, color: '#fff', paddingRight: linkedPlanItem ? 120 : 0 }}>
+                {filters.search.trim() ? (
+                  highlightSearchMatch(contentText, filters.search).map((seg, i) => (
+                    seg.highlight
+                      ? <mark key={i} style={{ background: 'rgba(255,255,0,.4)', color: '#fff', padding: 0 }}>{seg.text}</mark>
+                      : <span key={i}>{seg.text}</span>
+                  ))
+                ) : contentText.length > 80 ? (
+                  <>{contentText.slice(0, 80)}...</>
+                ) : contentText}
+              </div>
               {r.link && (
                 <a href={r.link} target="_blank" rel="noopener noreferrer" style={{ display: 'block', fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', textDecoration: 'underline', marginBottom: 8 }}>
                   <Link size={14} style={{verticalAlign:'middle',marginRight:4}} />{r.link}
                 </a>
               )}
               <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-                {r.tags.map((tag) => <span key={tag} style={{ fontSize: FONT_BODY, padding: '2px 8px', borderRadius: 10, background: 'rgba(255,255,255,.2)', color: 'rgba(255,255,255,.9)' }}>{tag}</span>)}
+                {r.tags.map((tag) => {
+                  const cat = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
+                  return (
+                    <span key={tag} style={{ fontSize: FONT_BODY, padding: '2px 8px', borderRadius: 10, background: cat ? `${cat.color}40` : 'rgba(255,255,255,.2)', color: 'rgba(255,255,255,.9)' }}>
+                      {cat ? `${cat.icon} ${tag}` : tag}
+                    </span>
+                  );
+                })}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.6)' }}>{r.mood}</span>
@@ -281,9 +493,22 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
               <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('newReflection')}</div>
               <button onClick={() => setShowNew(false)} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
             </div>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-              {MIND_COLORS.map((c, i) => (
-                <div key={i} onClick={() => setColorIdx(i)} style={{ width: 26, height: 26, borderRadius: 13, background: `linear-gradient(135deg,${c[0]},${c[1]})`, cursor: 'pointer', border: colorIdx === i ? '3px solid #fff' : '3px solid transparent', flexShrink: 0 }} />
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
+              {MIND_COLORS_EXTENDED.map((c, i) => (
+                <div key={i} onClick={() => setColorIdx(i)} style={{ width: 28, height: 28, borderRadius: '50%', background: colorIdx === i ? c[0] : 'transparent', padding: colorIdx === i ? 2 : 0, cursor: 'pointer', flexShrink: 0, transition: 'all 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: `linear-gradient(135deg,${c[0]},${c[1]})`, border: colorIdx === i ? '2px solid #fff' : 'none', boxSizing: 'border-box' }} />
+                </div>
+              ))}
+            </div>
+            {/* Category */}
+            <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>分类</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
+              {REFLECTION_CATEGORIES.map(cat => (
+                <button key={cat.key} onClick={() => setCategory(category === cat.key ? '' : cat.key)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 20, fontSize: FONT_SUB, cursor: 'pointer', border: `1px solid ${category === cat.key ? cat.color : TH.border}`, background: category === cat.key ? cat.color : 'transparent', color: category === cat.key ? '#fff' : TH.text }}>
+                  <span>{cat.icon}</span>
+                  <span>{cat.label}</span>
+                </button>
               ))}
             </div>
             <div style={{ position: 'relative', marginBottom: 14 }}>
@@ -297,7 +522,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
               {allTagOptions.map((tag) => (
                 <button key={tag} onClick={() => setSelTags((ts) => ts.includes(tag) ? ts.filter((x) => x !== tag) : [...ts, tag])}
-                  style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: selTags.includes(tag) ? P : 'transparent', color: selTags.includes(tag) ? '#fff' : P, borderColor: P }}>{tag}</button>
+                  style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: selTags.includes(tag) ? `${P}30` : 'transparent', color: P, borderColor: P }}>{tag}</button>
               ))}
               <button onClick={() => setShowTagManager(true)}
                 style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px dashed', background: 'transparent', color: TH.sub, borderColor: TH.sub }}><Settings size={16} style={{verticalAlign:'middle'}} /></button>
@@ -305,11 +530,11 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('mood')}</div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 18 }}>
               {allMoodOptions.map((m) => (
-                <button key={m} onClick={() => setMood(m)}
-                  style={{ padding: '5px 12px', borderRadius: 16, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: mood === m ? P : 'transparent', color: mood === m ? '#fff' : P, borderColor: P }}>{m}</button>
+                <button key={m} onClick={() => setMood(mood === m ? '' : m)}
+                  style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: mood === m ? `${P}30` : 'transparent', color: P, borderColor: P }}>{m}</button>
               ))}
               <button onClick={() => setShowMoodManager(true)}
-                style={{ padding: '5px 12px', borderRadius: 16, fontSize: FONT_BODY, cursor: 'pointer', border: '1px dashed', background: 'transparent', color: TH.sub, borderColor: TH.sub }}><Settings size={16} style={{verticalAlign:'middle'}} /></button>
+                style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px dashed', background: 'transparent', color: TH.sub, borderColor: TH.sub }}><Settings size={16} style={{verticalAlign:'middle'}} /></button>
             </div>
             <button onClick={handleAddReflection}
               style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('saveReflection')}</button>
@@ -325,9 +550,22 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
               <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('reflEditTitle')}</div>
               <button onClick={cancelEdit} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
             </div>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-              {MIND_COLORS.map((c, i) => (
-                <div key={i} onClick={() => setEditColorIdx(i)} style={{ width: 26, height: 26, borderRadius: 13, background: `linear-gradient(135deg,${c[0]},${c[1]})`, cursor: 'pointer', border: editColorIdx === i ? '3px solid #fff' : '3px solid transparent', flexShrink: 0 }} />
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
+              {MIND_COLORS_EXTENDED.map((c, i) => (
+                <div key={i} onClick={() => setEditColorIdx(i)} style={{ width: 28, height: 28, borderRadius: '50%', background: editColorIdx === i ? c[0] : 'transparent', padding: editColorIdx === i ? 2 : 0, cursor: 'pointer', flexShrink: 0, transition: 'all 0.15s', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: `linear-gradient(135deg,${c[0]},${c[1]})`, border: editColorIdx === i ? '2px solid #fff' : 'none', boxSizing: 'border-box' }} />
+                </div>
+              ))}
+            </div>
+            {/* Category */}
+            <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>分类</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
+              {REFLECTION_CATEGORIES.map(cat => (
+                <button key={cat.key} onClick={() => setEditCategory(editCategory === cat.key ? '' : cat.key)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 20, fontSize: FONT_SUB, cursor: 'pointer', border: `1px solid ${editCategory === cat.key ? cat.color : TH.border}`, background: editCategory === cat.key ? cat.color : 'transparent', color: editCategory === cat.key ? '#fff' : TH.text }}>
+                  <span>{cat.icon}</span>
+                  <span>{cat.label}</span>
+                </button>
               ))}
             </div>
             <div style={{ position: 'relative', marginBottom: 14 }}>
@@ -341,7 +579,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
               {allTagOptions.map((tag) => (
                 <button key={tag} onClick={() => setEditTags((ts) => ts.includes(tag) ? ts.filter((x) => x !== tag) : [...ts, tag])}
-                  style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: editTags.includes(tag) ? P : 'transparent', color: editTags.includes(tag) ? '#fff' : P, borderColor: P }}>{tag}</button>
+                  style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: editTags.includes(tag) ? `${P}30` : 'transparent', color: P, borderColor: P }}>{tag}</button>
               ))}
               <button onClick={() => setShowTagManager(true)}
                 style={{ padding: '6px 12px', borderRadius: 16, border: `1px dashed ${TH.border}`, background: 'transparent', color: TH.sub, cursor: 'pointer' }}>
@@ -351,13 +589,11 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('mood')}</div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 18 }}>
               {allMoodOptions.map((m) => (
-                <button key={m} onClick={() => setEditMood(m)}
-                  style={{ padding: '5px 12px', borderRadius: 16, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: editMood === m ? P : 'transparent', color: editMood === m ? '#fff' : P, borderColor: P }}>{m}</button>
+                <button key={m} onClick={() => setEditMood(editMood === m ? '' : m)}
+                  style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: editMood === m ? `${P}30` : 'transparent', color: P, borderColor: P }}>{m}</button>
               ))}
               <button onClick={() => setShowMoodManager(true)}
-                style={{ padding: '6px 12px', borderRadius: 16, border: `1px dashed ${TH.border}`, background: 'transparent', color: TH.sub, cursor: 'pointer' }}>
-                <Settings size={16} />
-              </button>
+                style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px dashed', background: 'transparent', color: TH.sub, borderColor: TH.sub }}><Settings size={16} style={{verticalAlign:'middle'}} /></button>
             </div>
             <button onClick={saveEdit}
               style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('reflSaveEdit')}</button>
@@ -384,6 +620,42 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
               style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: TH.card, color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>
               {T('reflEditTitle')}
             </button>
+            {/* 创建/解除计划任务 */}
+            {(() => {
+              const r = (store.reflections ?? []).find(r => r.id === actionMenuId);
+              const isLinked = r?.linkedPlanItemId;
+              return isLinked ? (
+                <button onClick={() => {
+                  if (r && confirm('确定解除与计划任务的关联吗？关联的计划任务将被删除。')) {
+                    // 先删除关联的计划任务
+                    if (r.linkedPlanItemId) {
+                      store.deletePlanItem(r.linkedPlanItemId);
+                    }
+                    // 再解除关联
+                    store.unlinkReflectionFromPlanItem(r.id);
+                  }
+                  setActionMenuId(null);
+                }}
+                  style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: TH.card, color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>
+                  🔗 解除任务关联
+                </button>
+              ) : (
+                <button onClick={() => {
+                  const activePlan = store.getActivePlan();
+                  if (!activePlan) {
+                    alert('暂无活跃计划，请先创建一个计划。');
+                    setActionMenuId(null);
+                    return;
+                  }
+                  setSelectedReflectionId(actionMenuId);
+                  setShowCreatePlanItem(true);
+                  setActionMenuId(null);
+                }}
+                  style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: TH.card, color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>
+                  🎯 创建为计划任务
+                </button>
+              );
+            })()}
             <button onClick={() => {
               const r = (store.reflections ?? []).find(r => r.id === actionMenuId);
               setActionMenuId(null);
@@ -404,6 +676,224 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
           </div>
         </>
       )}
+
+      {/* Card detail overlay */}
+      {detailId && (() => {
+        const r = (store.reflections ?? []).find(x => x.id === detailId);
+        if (!r) return null;
+        const linkedPlanItem = r.linkedPlanItemId
+          ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
+          : null;
+        const bgColor = r.colors?.[0] || MIND_COLORS_EXTENDED[0][0];
+        const bgColor2 = r.colors?.[1] || MIND_COLORS_EXTENDED[0][1];
+        const isWithin7Days = (Date.now() - r.timestamp) < DELETE_WINDOW_MS;
+        return (
+          <div onClick={() => setDetailId(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: 420, maxHeight: '90vh', background: `linear-gradient(135deg,${bgColor},${bgColor2})`, borderRadius: 18, padding: 24, overflow: 'auto', position: 'relative' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <button onClick={() => setDetailId(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: 4 }}>
+                  <ArrowLeft size={22} color="#fff" />
+                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {r.isPinned && <Pin size={14} color="#fff" />}
+                  <span style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL }}>
+                    {new Date(r.timestamp).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    {' '}
+                    {new Date(r.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div style={{ color: '#fff', fontSize: FONT_BODY, lineHeight: 1.8, marginBottom: 16, whiteSpace: 'pre-wrap' }}>{r.content}</div>
+
+              {/* Tags + Mood */}
+              {(r.tags.length > 0 || r.mood) && (
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+                  {r.tags.map((tag) => (
+                    <span key={tag} style={{ fontSize: FONT_SMALL, padding: '3px 10px', borderRadius: 12, background: 'rgba(255,255,255,.2)', color: '#fff' }}>{tag}</span>
+                  ))}
+                  {r.mood && (
+                    <span style={{ fontSize: FONT_SMALL, padding: '3px 10px', borderRadius: 12, background: 'rgba(255,255,255,.15)', color: 'rgba(255,255,255,.8)' }}>{r.mood}</span>
+                  )}
+                </div>
+              )}
+
+              {/* Link */}
+              {r.link && (
+                <a href={r.link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL, textDecoration: 'underline', marginBottom: 12 }}>
+                  <Link size={14} />{r.link}
+                </a>
+              )}
+
+              {/* Linked plan item */}
+              {linkedPlanItem && (
+                <div
+                  onClick={() => { setDetailId(null); overlay.open('planDetail', { planId: linkedPlanItem.planId }); }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12, background: 'rgba(255,255,255,.15)', padding: '8px 12px', borderRadius: 10, cursor: 'pointer' }}
+                >
+                  <ExternalLink size={14} color="#fff" />
+                  <span style={{ color: '#fff', fontSize: FONT_SMALL }}>{linkedPlanItem.name}</span>
+                </div>
+              )}
+
+              {/* Action buttons */}
+              <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+                <button onClick={() => { setDetailId(null); openEdit(r); }}
+                  style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(255,255,255,.25)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
+                  {T('reflEditTitle')}
+                </button>
+                <button onClick={() => { store.updateReflection(r.id, { isPinned: !r.isPinned }); }}
+                  style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(255,255,255,.25)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
+                  {r.isPinned ? '取消置顶' : '置顶'}
+                </button>
+                {isWithin7Days && (
+                  <button onClick={() => { if (confirm(T('confirmDeleteReflection'))) { store.deleteReflection(r.id); setDetailId(null); } }}
+                    style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(239,68,68,.4)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
+                    {T('reflDelete')}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* 创建计划任务弹窗 */}
+      {showCreatePlanItem && selectedReflectionId && (() => {
+        const reflection = (store.reflections ?? []).find(r => r.id === selectedReflectionId);
+        if (!reflection) return null;
+        
+        // 自动填充任务名称（感念内容的第一行或前50字）
+        const lines = reflection.content.split('\n').filter(l => l.trim());
+        const defaultName = lines[0]?.slice(0, 50) || reflection.content.slice(0, 50);
+        
+        return (
+        <div onClick={(e) => { if (e.target === e.currentTarget) setShowCreatePlanItem(false); }} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '100%', maxWidth: 390, background: TH.cardSolid, borderRadius: 24, padding: 24, maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
+              <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>创建计划任务</div>
+              <button onClick={() => setShowCreatePlanItem(false)} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
+            </div>
+            <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>
+              关联计划: {store.getActivePlan()?.name || '无活跃计划'}（进行中）
+            </div>
+            
+            {/* 任务名称（必填） */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>任务名称 *</div>
+              <input 
+                type="text" 
+                value={planItemName || defaultName} 
+                onChange={(e) => setPlanItemName(e.target.value)}
+                placeholder="请输入任务名称"
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY, boxSizing: 'border-box' }} 
+              />
+            </div>
+            
+            {/* 任务指标（必填） */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>任务指标 *</div>
+              <input 
+                type="text" 
+                value={planItemTargetMetric} 
+                onChange={(e) => setPlanItemTargetMetric(e.target.value)}
+                placeholder="例如：每天练习30分钟"
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY, boxSizing: 'border-box' }} 
+              />
+            </div>
+            
+            {/* 任务描述 */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>任务描述</div>
+              <textarea
+                value={planItemDescription || reflection.content}
+                onChange={(e) => setPlanItemDescription(e.target.value)}
+                placeholder="请输入任务描述"
+                rows={3}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY, resize: 'vertical', boxSizing: 'border-box' }}
+              />
+            </div>
+
+            {/* 任务链接（只读，自动填入感念标签） */}
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>任务链接</div>
+              <input
+                type="text"
+                value={reflection.tags.join(', ')}
+                readOnly
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: `1px solid ${TH.border}`, background: TH.card, color: TH.sub, fontSize: FONT_BODY, boxSizing: 'border-box' }}
+              />
+            </div>
+            
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>开始日期</div>
+              <input type="date" value={planItemStartDate} onChange={(e) => setPlanItemStartDate(e.target.value)}
+                min={(() => { const today = dateStr(); const plan = store.getActivePlan(); const planStart = plan?.startDate ?? today; return today >= planStart ? today : planStart; })()}
+                max={planItemEndDate}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY }} />
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>结束日期</div>
+              <input type="date" value={planItemEndDate} onChange={(e) => setPlanItemEndDate(e.target.value)}
+                min={planItemStartDate}
+                max={store.getActivePlan()?.endDate}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY }} />
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>优先级</div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[
+                  { value: 'high' as const, label: '高', color: '#FF4444' },
+                  { value: 'medium' as const, label: '中', color: '#FFAA00' },
+                  { value: 'low' as const, label: '低', color: '#44AA44' },
+                ].map(p => (
+                  <button key={p.value} onClick={() => setPlanItemPriority(p.value)}
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 8, border: `1px solid ${planItemPriority === p.value ? p.color : TH.border}`, background: planItemPriority === p.value ? `${p.color}20` : 'transparent', color: planItemPriority === p.value ? p.color : TH.text, fontSize: FONT_BODY, cursor: 'pointer' }}>
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button onClick={() => setShowCreatePlanItem(false)}
+                style={{ flex: 1, padding: 14, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>取消</button>
+              <button onClick={() => {
+                if (selectedReflectionId) {
+                  const finalName = planItemName || defaultName;
+                  if (!finalName.trim()) {
+                    alert('请输入任务名称');
+                    return;
+                  }
+                  if (!planItemTargetMetric.trim()) {
+                    alert('请输入任务指标');
+                    return;
+                  }
+                  const success = store.createPlanItemFromReflection(
+                    selectedReflectionId, 
+                    planItemStartDate, 
+                    planItemEndDate, 
+                    planItemPriority,
+                    finalName,
+                    planItemDescription || reflection.content,
+                    planItemTargetMetric
+                  );
+                  if (success) {
+                    setShowCreatePlanItem(false);
+                    setSelectedReflectionId(null);
+                    setPlanItemName('');
+                    setPlanItemDescription('');
+                    setPlanItemTargetMetric('');
+                  }
+                }
+              }}
+                style={{ flex: 1, padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontSize: FONT_BODY, fontWeight: 700, cursor: 'pointer' }}>创建</button>
+            </div>
+          </div>
+        </div>
+        );
+      })()}
     </>
   );
 }

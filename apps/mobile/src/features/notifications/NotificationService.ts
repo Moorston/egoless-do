@@ -1,14 +1,24 @@
-import * as Notifications from 'expo-notifications';
+const getNotifications = () => import('expo-notifications');
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge:  false,
-  }),
-});
+let handlerSet = false;
+async function ensureHandler() {
+  if (handlerSet) return;
+  try {
+    const Notifications = await getNotifications();
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge:  false,
+      }),
+    });
+    handlerSet = true;
+  } catch {}
+}
 
 export async function requestNotificationPermission(): Promise<boolean> {
+  const Notifications = await getNotifications();
+  ensureHandler();
   const { status: existing } = await Notifications.getPermissionsAsync();
   if (existing === 'granted') return true;
   const { status } = await Notifications.requestPermissionsAsync();
@@ -16,6 +26,8 @@ export async function requestNotificationPermission(): Promise<boolean> {
 }
 
 export async function scheduleDailyReminder(hour: number, minute: number): Promise<void> {
+  const Notifications = await getNotifications();
+  ensureHandler();
   await Notifications.cancelAllScheduledNotificationsAsync();
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -32,5 +44,7 @@ export async function scheduleDailyReminder(hour: number, minute: number): Promi
 }
 
 export async function cancelAllReminders(): Promise<void> {
+  const Notifications = await getNotifications();
+  ensureHandler();
   await Notifications.cancelAllScheduledNotificationsAsync();
 }

@@ -23,6 +23,8 @@ const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
   planItem:        { table: db.planItems, pk: 'id' },
   planItemCheckin: { table: db.planItemCheckins, pk: 'id' },
   grace:           { table: db.graceHistory, pk: 'date' },
+  dailyCustomTodo: { table: db.dailyCustomTodos, pk: 'id' },
+  dailyTodoHistory:{ table: db.dailyTodoHistory, pk: 'id' },
   profile: {
     table: db.profiles,
     pk: 'profileId',

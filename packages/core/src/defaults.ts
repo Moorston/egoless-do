@@ -1,6 +1,6 @@
 // ─── Shared Zustand store (platform-agnostic logic) ──────────────
 import { uid, dateStr } from './utils';
-import { MIND_COLORS } from './constants';
+import { MIND_COLORS_EXTENDED } from './constants';
 import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry } from './types';
 import { defaultAuthState } from './types';
 
@@ -35,13 +35,13 @@ export function createHabitFromForm(form: {
 }
 
 export function createReflection(params: { content: string; tags: string[]; mood: string; colorIdx?: number; link?: string }): MindReflection {
-  const idx = Math.min(Math.max(params.colorIdx ?? 0, 0), MIND_COLORS.length - 1);
+  const idx = Math.min(Math.max(params.colorIdx ?? 0, 0), MIND_COLORS_EXTENDED.length - 1);
   return {
     id: uid(), timestamp: Date.now(),
     content: params.content, tags: params.tags,
     mood: params.mood,
     link: params.link || undefined,
-    colors: MIND_COLORS[idx] as unknown as readonly [string, string],
+    colors: MIND_COLORS_EXTENDED[idx] as unknown as readonly [string, string],
     isPinned: false, isPublished: false,
     updatedAt: Date.now(),
     deleted: false,

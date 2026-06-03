@@ -4,7 +4,10 @@ import { deleteExerciseFromList } from '../business';
 import type { StorageAdapter, ExerciseSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
-export function createExerciseSlice(adapter: StorageAdapter): SliceCreator<ExerciseSlice> {
+export function createExerciseSlice(
+  adapter: StorageAdapter,
+  onSync?: () => void,
+): SliceCreator<ExerciseSlice> {
   return (set, get) => ({
     exerciseLog: [],
 
@@ -12,6 +15,7 @@ export function createExerciseSlice(adapter: StorageAdapter): SliceCreator<Exerc
       const e: ExerciseEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false };
       set(s => ({ exerciseLog: [e, ...(s.exerciseLog ?? [])] }));
       adapter.persistChange('exercise', e.id, e).catch(console.error);
+      onSync?.();
     },
 
     deleteExercise(id: string) {
@@ -21,8 +25,7 @@ export function createExerciseSlice(adapter: StorageAdapter): SliceCreator<Exerc
         state.addToRecycleBin({ id, entityType: 'exercise', data: exercise });
       }
       set(s => ({ exerciseLog: deleteExerciseFromList(s.exerciseLog ?? [], id) }));
-      const deleted = get().exerciseLog.find(e => e.id === id);
-      if (deleted) adapter.persistChange('exercise', id, deleted).catch(console.error);
+      adapter.markDeleted('exercise', id).catch(console.error);
     },
   });
 }

@@ -120,6 +120,7 @@ export const en: I18nKeys = {
   tagSectionPreset:'Preset Tags', tagSectionCustom:'Custom Tags', tagSectionHabit:'Habit Tags',
   moodSectionPreset:'Preset Moods', moodSectionCustom:'Custom Moods',
   moveToTop:'Move to Top',
+  sortByFreqOff:'Sort by usage', sortByFreqOn:'✓ Sorted by usage',
 
   // Fasting
   fastTotal:'Total', fastTotalHours:'Total Fasting', fastStreak:'Streak',
@@ -250,13 +251,13 @@ export const en: I18nKeys = {
   planItems:'Tasks', planAddItem:'Add Task', planDeleteItem:'Delete Task',
   planItemName:'Task Name', planItemDesc:'Description',
   planItemStart:'Task Start Date', planItemEnd:'Task End Date',
-  planItemContent:'Content (URL)', planItemLink:'Link Module', planItemTarget:'Target Metric',
+  planItemContent:'Task Link', planItemLink:'Link Module', planItemTarget:'Target Metric',
   planPriority:'Priority', planPriorityHigh:'High',
   planPriorityMedium:'Medium', planPriorityLow:'Low',
   planSave:'Save Plan', planCreate:'Create Plan', planEditTitle:'Edit Plan',
   planTodoList:'Daily TodoList', planTodoDate:"Today's Tasks", planDetail:'Plan Details',
   planLinkManual:'Manual', planLinkCheckin:'Check-in', planLinkFasting:'Fasting',
-  planLinkMeditation:'Meditation', planLinkExercise:'Exercise', planLinkHabit:'Habit',
+  planLinkMeditation:'Meditation', planLinkExercise:'Exercise', planLinkHabit:'Habit', planLinkReflection:'Reflection',
   planProgress:'Progress', planDays:'days', planCheckinDays:'Check-in Days', planCheckin:'Done', planUncheckin:'Undo',
   planTodayCheckin:"Today's Check-in", planHeatmap:'Check-in Heatmap',
   planConfirmDelete:'Delete this plan?', planConfirmCancel:'Cancel this plan?',

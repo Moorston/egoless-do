@@ -3,8 +3,7 @@ import {
   View, Text, TouchableOpacity, Modal, ScrollView,
 } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
-import { THEMES, COLORS, getTodayItems, getActivePlan, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
-import type { PlanItem } from '@egoless-do/core';
+import { THEMES, COLORS, getTodayItems, getActivePlan, getTodoItemStatus, computeDailyTodoStats, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import { X, CheckCircle2, Check } from 'lucide-react-native';
 
@@ -13,7 +12,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
   const T = useT();
   const P = TH.primary;
   const store = useAppStore();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = dateStr();
 
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
   const todayItems = useMemo(() => {
@@ -23,9 +22,10 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
 
   const checkins = store.planItemCheckins ?? [];
 
-  const isItemDone = (item: PlanItem) => checkins.some(c => c.planItemId === item.id && c.date === today && c.done);
-
-  const doneCount = todayItems.filter(i => isItemDone(i)).length;
+  const stats = useMemo(
+    () => computeDailyTodoStats(todayItems, [], checkins, today),
+    [todayItems, checkins, today],
+  );
 
   return (
     <Modal visible transparent animationType="slide" onRequestClose={onClose}>
@@ -56,7 +56,8 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
             ) : (
               <ScrollView>
                 {todayItems.map(item => {
-                  const done = isItemDone(item);
+                  const status = getTodoItemStatus(item, checkins, today);
+                  const done = status.done;
                   const isManual = item.link === 'manual';
                   return (
                     <TouchableOpacity
@@ -109,7 +110,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
                   );
                 })}
                 <Text style={{ textAlign: 'center', fontSize: FONT_SUB, color: TH.sub, marginTop: 8 }}>
-                  {doneCount}/{todayItems.length} {T('planProgress')}
+                  {stats.planItemsDone}/{stats.planItemsTotal} {T('planProgress')}
                 </Text>
               </ScrollView>
             )}

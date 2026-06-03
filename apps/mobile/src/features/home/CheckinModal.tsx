@@ -6,11 +6,11 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT, Toggle, ThemedInput, PrimaryButton, OutlineButton } from '../../components/UI';
-import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON } from '@egoless-do/core';
+import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import {
   Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
-  ClipboardList, CheckCircle2, Circle, X, Check, Lock,
+  ClipboardList, CheckCircle2, Circle, X, Check,
 } from 'lucide-react-native';
 
 function parseExistingNote(raw: string): { userNote: string; practices: string[]; customs: string[]; fasted: boolean; waterMl: number; habits: string[] } {
@@ -60,12 +60,17 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
     return getTodayItems(store.planItems ?? [], activePlan, today);
   }, [store.planItems, activePlan, today]);
   const planCheckins = store.planItemCheckins ?? [];
+  const dailyCustomTodos = useMemo(() => {
+    if (!activePlan) return [];
+    return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, today);
+  }, [store.dailyCustomTodos, activePlan, today]);
   const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     if (!activePlan) return initial;
     const items = (store.planItems ?? []).filter(i => !i.deleted && i.planId === activePlan.id);
     items.forEach(item => {
-      if (item.link === 'manual') {
+      // manual 和 reflection 类型支持手动切换
+      if (item.link === 'manual' || item.link === 'reflection') {
         initial[item.id] = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
       }
     });
@@ -264,16 +269,19 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
             </View>
             </View>
 
-            {/* Today's plan items */}
-            {todayPlanItems.length > 0 && (
+            {/* Today's plan items + daily custom todos */}
+            {(todayPlanItems.length > 0 || dailyCustomTodos.length > 0) && (
               <View style={{ paddingVertical:13, borderBottomWidth:1, borderBottomColor:TH.border }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
                   <ClipboardList size={16} color={TH.text} />
                   <Text style={{ fontWeight:'600', color:TH.text, fontSize:FONT_BODY }}>{T('planTodoList')}</Text>
                 </View>
                 {todayPlanItems.map(item => {
-                  const done = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-                  const autoChecked = done && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
+                  const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
+                  const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
+                  // manual 和 reflection 类型使用本地 toggle 状态
+                  const useLocalToggle = item.link === 'manual' || item.link === 'reflection';
+                  const done = useLocalToggle ? (planToggles[item.id] ?? storeDone) : storeDone;
                   return (
                     <View key={item.id} style={{
                       flexDirection:'row', alignItems:'center',
@@ -292,15 +300,31 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                       </View>
                       {autoChecked ? (
                         <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                          <Lock size={14} color={COLORS.GREEN} />
+                          <CheckCircle2 size={14} color={COLORS.GREEN} />
                           <Text style={{ fontSize:FONT_BADGE, color:COLORS.GREEN, fontWeight:'600' }}>{T('planAutoChecked')}</Text>
                         </View>
                       ) : (
-                        <Toggle on={done} onChange={() => done ? store.uncheckinPlanItem(item.id) : store.checkinPlanItem(item.id)} />
+                        <Toggle on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} />
                       )}
                     </View>
                   );
                 })}
+                {dailyCustomTodos.map(todo => (
+                  <View key={todo.id} style={{
+                    flexDirection:'row', alignItems:'center',
+                    justifyContent:'space-between', paddingVertical:10,
+                    borderBottomWidth:1, borderBottomColor:TH.border,
+                  }}>
+                    <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
+                      <Sparkles size={16} color={TH.text} />
+                      <View>
+                        <Text style={{ color:TH.text, fontSize:FONT_BODY, textDecorationLine: todo.done ? 'line-through' : 'none', opacity: todo.done ? 0.6 : 1 }}>{todo.name}</Text>
+                        <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{T('planDailyCustomTodos')}</Text>
+                      </View>
+                    </View>
+                    <Toggle on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id)} />
+                  </View>
+                ))}
               </View>
             )}
 

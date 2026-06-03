@@ -15,7 +15,7 @@ export default function FoodLogPage() {
   const P     = TH.primary;
   const store = useAppStore();
   const [showAdd, setShowAdd]     = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(true);
 
   const foodLog = store.foodLog ?? [];
   const totalCal = useMemo(() => getTodayFoodLog(foodLog).reduce((a, f) => a + (f.calories ?? 0), 0), [foodLog]);

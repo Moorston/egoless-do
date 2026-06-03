@@ -23,8 +23,7 @@ export function createFoodSlice(adapter: StorageAdapter): SliceCreator<FoodSlice
         state.addToRecycleBin({ id, entityType: 'food', data: food });
       }
       set(s => ({ foodLog: deleteFoodFromList(s.foodLog ?? [], id) }));
-      const deleted = get().foodLog.find(f => f.id === id);
-      if (deleted) adapter.persistChange('food', id, deleted).catch(console.error);
+      adapter.markDeleted('food', id).catch(console.error);
     },
 
     setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); },

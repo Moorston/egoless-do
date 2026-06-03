@@ -1,6 +1,8 @@
-import type { MindReflection } from '../types';
+import type { MindReflection, ReflectionFilters } from '../types';
+import { DEFAULT_REFLECTION_FILTERS } from '../types';
 import {
   addReflectionToList, togglePinInList, deleteReflectionFromList, updateReflectionInList,
+  unlinkReflectionFromPlanItem as unlinkReflectionFromPlanItemBiz,
   type CreateReflectionParams,
 } from '../business/reflections';
 import type { StorageAdapter, ReflectionSlice, RecycleBinSlice } from './types';
@@ -11,6 +13,7 @@ export function createReflectionSlice(
 ): SliceCreator<ReflectionSlice> {
   return (set, get) => ({
     reflections: [],
+    reflectionFilters: { ...DEFAULT_REFLECTION_FILTERS },
 
     addReflection(params: CreateReflectionParams) {
       set(s => ({ reflections: addReflectionToList(s.reflections ?? [], params) }));
@@ -31,14 +34,23 @@ export function createReflectionSlice(
         state.addToRecycleBin({ id, entityType: 'reflection', data: reflection });
       }
       set(s => ({ reflections: deleteReflectionFromList(s.reflections ?? [], id) }));
-      const deleted = get().reflections.find(r => r.id === id);
-      if (deleted) adapter.persistChange('reflection', id, deleted).catch(console.error);
+      adapter.markDeleted('reflection', id).catch(console.error);
     },
 
     updateReflection(id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>) {
       set(s => ({ reflections: updateReflectionInList(s.reflections ?? [], id, updates) }));
       const updated = get().reflections.find(r => r.id === id);
       if (updated) adapter.persistChange('reflection', id, updated).catch(console.error);
+    },
+
+    unlinkReflectionFromPlanItem(reflectionId: string) {
+      set(s => ({ reflections: unlinkReflectionFromPlanItemBiz(s.reflections ?? [], reflectionId) }));
+      const updated = get().reflections.find(r => r.id === reflectionId);
+      if (updated) adapter.persistChange('reflection', reflectionId, updated).catch(console.error);
+    },
+
+    setReflectionFilters(filters: ReflectionFilters) {
+      set({ reflectionFilters: filters });
     },
   });
 }

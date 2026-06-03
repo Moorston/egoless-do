@@ -8,7 +8,7 @@ import { THEMES, t, setPocketbaseUrl, FONT_BODY, FONT_SUB, FONT_CLOSE } from '@e
 import { useReminder } from './useReminder';
 import { ErrorBoundary, useResponsive } from './helpers';
 import {
-  Home, Timer, Brain, Dumbbell, Settings, Plus,
+  Home, Timer, Brain, Dumbbell, Settings, Plus, ClipboardList, Target, Sparkles,
 } from 'lucide-react';
 import { useSync } from './useSync';
 import { OverlayContext, useOverlayState } from './useOverlay';
@@ -49,17 +49,27 @@ const TABS = [
   { key: 'meditation',  Icon: Brain,          labelKey: 'meditation'  },
   { key: 'fasting',     Icon: Timer,          labelKey: 'fasting'     },
   { key: 'settings',    Icon: Settings,       labelKey: 'settings'    },
+  { key: 'plan',        Icon: ClipboardList,  labelKey: 'plan'       },
+  { key: 'habits',      Icon: Target,         labelKey: 'habits'     },
+  { key: 'reflections', Icon: Sparkles,       labelKey: 'reflections' },
 ];
 
 export default function AppShell() {
-  const store = useWebStore();
   const router = useRouter();
-  const isSignedIn = store.auth.isSignedIn;
-  const TH = THEMES[store.theme];
-  const lang = store.language;
-  const T = (k: string) => t(k, lang);
+
+  // 使用选择器订阅，避免全量订阅导致的不必要重渲染
+  const isSignedIn = useWebStore((s) => s.auth.isSignedIn);
+  const theme = useWebStore((s) => s.theme);
+  const language = useWebStore((s) => s.language);
+  const auth = useWebStore((s) => s.auth);
+  const refreshAuth = useWebStore((s) => s.refreshAuth);
+  const logout = useWebStore((s) => s.logout);
+
+  const TH = THEMES[theme];
+  const T = (k: string) => t(k, language);
 
   const [tab, setTab] = useState(0);
+  const [headerTab, setHeaderTab] = useState('home');
   const overlayState = useOverlayState();
   const { maxWidth } = useResponsive();
   const sync = useSync();
@@ -69,6 +79,7 @@ export default function AppShell() {
   // Switch tab and preserve scroll position
   const switchTab = useCallback((targetIndex: number) => {
     scrollPosRef.current.set(tab, window.scrollY);
+    setHeaderTab('home');
     setTab(targetIndex);
     requestAnimationFrame(() => {
       const savedY = scrollPosRef.current.get(targetIndex) ?? 0;
@@ -84,17 +95,17 @@ export default function AppShell() {
 
   // Sync theme CSS variables
   useEffect(() => {
-    document.documentElement.dataset.theme = store.theme;
-  }, [store.theme]);
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   // Auth expiry check on startup
   useEffect(() => {
     if (!isSignedIn) return;
-    const expiresAt = store.auth.expiresAt;
+    const expiresAt = auth.expiresAt;
     if (!expiresAt || expiresAt < Date.now()) {
-      store.refreshAuth().catch(() => store.logout());
+      refreshAuth().catch(() => logout());
     } else if (expiresAt - Date.now() < 3600000) {
-      store.refreshAuth().catch((e) => console.error('[err]', e));
+      refreshAuth().catch((e) => console.error('[err]', e));
     }
   }, []);
 
@@ -137,12 +148,6 @@ export default function AppShell() {
         return <ExerciseHistoryPage onClose={overlayState.close} />;
       case 'streakBreak':
         return <StreakBreakPage onClose={overlayState.close} />;
-      case 'plan':
-        return <OverlayWrapper onClose={overlayState.close}><PlanTab /></OverlayWrapper>;
-      case 'habits':
-        return <OverlayWrapper onClose={overlayState.close}><HabitsTab /></OverlayWrapper>;
-      case 'reflections':
-        return <OverlayWrapper onClose={overlayState.close}><ReflectionsTab /></OverlayWrapper>;
       case 'planCreate':
         return <PlanCreatePage planId={overlayProps.planId} onClose={overlayState.close} />;
       case 'planDetail':
@@ -167,22 +172,30 @@ export default function AppShell() {
           {TH.starfield && <StarfieldBackground />}
           <AppHeader />
           <div style={{ padding: '6px 16px 0', fontSize: FONT_SUB, color: TH.sub, flexShrink: 0, position: 'relative', zIndex: 1, borderBottom: `1px solid ${TH.border}` }}>
-            {T('today')} · {new Date().toLocaleDateString(store.language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
+            {T('today')} · {new Date().toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
           </div>
-          <div style={{ padding: '12px 16px 0', position: 'relative', zIndex: 1 }}>
+          <div style={{ padding: '12px 0 0', position: 'relative', zIndex: 1 }}>
             <HeaderTabs
-              active={overlayState.overlay ?? 'home'}
-              onNavigateHome={() => { overlayState.close(); switchTab(0); }}
+              active={headerTab}
+              onTabChange={setHeaderTab}
+              onNavigateHome={() => { setHeaderTab('home'); switchTab(0); }}
             />
           </div>
 
           {/* Content */}
           <div style={{ padding: '12px 16px', position: 'relative', zIndex: 1 }}>
-            {tab === 0 && <HomeTab />}
-            {tab === 1 && <ExerciseTab />}
-            {tab === 2 && <MeditateTab />}
-            {tab === 3 && <FastingTab />}
-            {tab === 4 && <SettingsTab syncState={sync} onOpenStats={() => overlayState.open('stats')} />}
+            {headerTab === 'home' && (
+              <>
+                {tab === 0 && <HomeTab />}
+                {tab === 1 && <ExerciseTab />}
+                {tab === 2 && <MeditateTab />}
+                {tab === 3 && <FastingTab />}
+                {tab === 4 && <SettingsTab syncState={sync} onOpenStats={() => overlayState.open('stats')} />}
+              </>
+            )}
+            {headerTab === 'plan' && <PlanTab />}
+            {headerTab === 'habits' && <HabitsTab />}
+            {headerTab === 'reflections' && <ReflectionsTab />}
           </div>
 
           <BottomNav tabs={TABS} activeTab={tab} onTabChange={switchTab} />
@@ -197,12 +210,10 @@ export default function AppShell() {
 }
 
 function OverlayWrapper({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
-  const store = useWebStore();
-  const TH = THEMES[store.theme];
-  const lang = store.language;
-  const T = (k: string) => t(k, lang);
-  const overlayState = useOverlayState();
-  const activeTab = overlayState.overlay ?? '';
+  const theme = useWebStore((s) => s.theme);
+  const language = useWebStore((s) => s.language);
+  const TH = THEMES[theme];
+  const T = (k: string) => t(k, language);
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.85)', zIndex: 200, display: 'flex', justifyContent: 'center', overflowY: 'auto' }}>
@@ -213,13 +224,7 @@ function OverlayWrapper({ onClose, children }: { onClose: () => void; children: 
           </div>
           <AppHeader />
           <div style={{ padding: '6px 16px 0', fontSize: FONT_SUB, color: TH.sub, borderBottom: `1px solid ${TH.border}` }}>
-            {T('today')} · {new Date().toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
-          </div>
-          <div style={{ padding: '12px 16px 0' }}>
-            <HeaderTabs
-              active={activeTab}
-              onNavigateHome={onClose}
-            />
+            {T('today')} · {new Date().toLocaleDateString(language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
           </div>
         </div>
         <div style={{ padding: '0 16px' }}>
@@ -231,8 +236,8 @@ function OverlayWrapper({ onClose, children }: { onClose: () => void; children: 
 }
 
 function FabButton({ onClick }: { onClick: () => void }) {
-  const store = useWebStore();
-  const TH = THEMES[store.theme];
+  const theme = useWebStore((s) => s.theme);
+  const TH = THEMES[theme];
   const P = TH.primary;
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const startPos = useRef({ x: 0, y: 0 });

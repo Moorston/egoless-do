@@ -14,7 +14,7 @@ export async function fetchWithTimeout(url: string, init: RequestInit): Promise<
   try {
     return await fetch(url, { ...init, signal: controller.signal });
   } catch (err: unknown) {
-    if (err instanceof DOMException && err.name === 'AbortError') {
+    if (err instanceof Error && err.name === 'AbortError') {
       throw new Error('请求超时，请检查网络');
     }
     throw new Error('网络连接失败');

@@ -27,19 +27,25 @@ async function loadFromIndexedDB(): Promise<void> {
     // Ensure database is ready before accessing tables
     await db.open();
 
-    const [habits, reflections, fastingSessions, foodEntries, checkins, exerciseEntries, meditationEntries, profiles, plans, planItems, planItemCheckins, graceEntries] = await Promise.all([
-      db.habits?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.reflections?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.fastingSessions?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.foodEntries?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.checkins?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.exerciseEntries?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.meditationEntries?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.profiles?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.plans?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.planItems?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.planItemCheckins?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
-      db.graceHistory?.where('deleted').notEqual(1).toArray().catch(() => []) ?? [],
+    // Helper: filter out deleted records (handles both boolean true and number 1)
+    const notDeleted = <T extends { deleted?: boolean | number }>(arr: T[]) =>
+      arr.filter(r => !r.deleted);
+
+    const [habits, reflections, fastingSessions, foodEntries, checkins, exerciseEntries, meditationEntries, profiles, plans, planItems, planItemCheckins, graceEntries, dailyCustomTodos, dailyTodoHistory] = await Promise.all([
+      db.habits?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.reflections?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.fastingSessions?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.foodEntries?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.checkins?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.exerciseEntries?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.meditationEntries?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.profiles?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.plans?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.planItems?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.planItemCheckins?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.graceHistory?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.dailyCustomTodos?.toArray().then(notDeleted).catch(() => []) ?? [],
+      db.dailyTodoHistory?.toArray().then(notDeleted).catch(() => []) ?? [],
     ]);
 
     const patch: Record<string, unknown> = {};
@@ -63,6 +69,8 @@ async function loadFromIndexedDB(): Promise<void> {
     if (planItems.length) patch.planItems = planItems;
     if (planItemCheckins.length) patch.planItemCheckins = planItemCheckins;
     if (graceEntries.length) patch.graceHistory = graceEntries;
+    if (dailyCustomTodos.length) patch.dailyCustomTodos = dailyCustomTodos;
+    if (dailyTodoHistory.length) patch.dailyTodoHistory = dailyTodoHistory;
 
     // Load profile (single record with profileId='self')
     if (profiles.length) {
@@ -71,7 +79,7 @@ async function loadFromIndexedDB(): Promise<void> {
         try {
           const profileData = typeof latest.data === 'string' ? JSON.parse(latest.data) : latest.data;
           patch.userProfile = profileData;
-          if (profileData.waterMl !== undefined) patch.waterMl = profileData.waterMl;
+          // waterMl is managed by DailyResetManager, don't load from profile
           if (profileData.waterGoal !== undefined) patch.waterGoal = profileData.waterGoal;
         } catch (e) { console.warn('[store] Failed to parse profile data:', e); }
       }
@@ -89,17 +97,21 @@ export type WebStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice &
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
   & PlanSlice & RecycleBinSlice & { resetData: () => void };
 
+// Delayed sync callback - set after store is created
+let _autoSyncCallback: (() => void) | null = null;
+const triggerAutoSync = () => _autoSyncCallback?.();
+
 export const useWebStore = create<WebStore>()(
   persist(
     (...a) => ({
       ...createAuthSlice(adapter, () => { triggerSync().catch(console.error); })(...a),
-      ...createHabitSlice(adapter)(...a),
+      ...createHabitSlice(adapter, triggerAutoSync)(...a),
       ...createReflectionSlice(adapter)(...a),
-      ...createFastingSlice(adapter)(...a),
-      ...createMeditationSlice(adapter)(...a),
+      ...createFastingSlice(adapter, triggerAutoSync)(...a),
+      ...createMeditationSlice(adapter, triggerAutoSync)(...a),
       ...createFoodSlice(adapter)(...a),
-      ...createExerciseSlice(adapter)(...a),
-      ...createCheckinSlice(adapter)(...a),
+      ...createExerciseSlice(adapter, triggerAutoSync)(...a),
+      ...createCheckinSlice(adapter, triggerAutoSync)(...a),
       ...createProfileSlice(adapter)(...a),
       ...createSettingsSlice()(...a),
       ...createTagMoodSlice()(...a),
@@ -118,7 +130,8 @@ export const useWebStore = create<WebStore>()(
       ),
       partialize: s => ({
         auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
-        waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
+        // waterMl is NOT persisted here — it's managed by DailyResetManager and stored in IndexedDB profile
+        waterGoal: s.waterGoal, calGoal: s.calGoal,
         foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
         activeFasting: s.activeFasting,
         fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,
@@ -129,10 +142,16 @@ export const useWebStore = create<WebStore>()(
         customFoodPresets: s.customFoodPresets,
         exerciseLog: s.exerciseLog,
         plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
+        dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
         graceHistory: s.graceHistory, recycleBin: s.recycleBin,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+
+        // Set the auto sync callback after store is created
+        _autoSyncCallback = () => {
+          useWebStore.getState().autoSyncPlanItems?.();
+        };
 
         const loadPromise = loadFromIndexedDB().then(() => {
           triggerSync().catch(console.error);
@@ -147,6 +166,9 @@ export const useWebStore = create<WebStore>()(
           getWaterGoal: () => useWebStore.getState().waterGoal ?? 2000,
           persistProfile: (data) => {
             webStorageAdapter.persistChange('profile', 'self', data).catch(console.error);
+          },
+          onPlanDailyReset: (previousDate) => {
+            useWebStore.getState().performDailyReset?.(previousDate);
           },
         });
         dailyReset.start(loadPromise);

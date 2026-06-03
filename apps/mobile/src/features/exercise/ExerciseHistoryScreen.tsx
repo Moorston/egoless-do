@@ -1,12 +1,33 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
-import { MapView, Polyline } from 'react-native-amap3d';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, getSportType } from '@egoless-do/core';
 import type { ExerciseEntry } from '@egoless-do/core';
+
+let _MapView: any = null;
+let _Polyline: any = null;
+let _amapLoaded = false;
+
+function useAmapComponents() {
+  const [ready, setReady] = useState(_amapLoaded);
+  useEffect(() => {
+    if (_amapLoaded) { setReady(true); return; }
+    import('react-native-amap3d').then(m => {
+      _MapView = m.MapView;
+      _Polyline = m.Polyline;
+      _amapLoaded = true;
+      setReady(true);
+    }).catch(() => {});
+  }, []);
+  return { MapView: _MapView, Polyline: _Polyline, ready };
+}
+
+function MapViewFallback() {
+  return <View style={{ flex: 1, backgroundColor: '#1a1a2e' }} />;
+}
 
 function formatPace(secPerKm: number): string {
   if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
@@ -15,7 +36,7 @@ function formatPace(secPerKm: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-function DetailCard({ e, TH, P, T }: { e: ExerciseEntry; TH: any; P: string; T: (k: string) => string }) {
+function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: any; P: string; T: (k: string) => string; MapView: any; Polyline: any }) {
   const trackCoords = (e.trackPoints ?? []).map(p => ({ latitude: p.lat, longitude: p.lng }));
   const center = trackCoords.length > 0 ? trackCoords[0] : { latitude: 39.9042, longitude: 116.4074 };
   const bestPace = (e.segmentPaces ?? []).length > 0 ? Math.min(...(e.segmentPaces ?? [])) : 0;
@@ -23,7 +44,7 @@ function DetailCard({ e, TH, P, T }: { e: ExerciseEntry; TH: any; P: string; T: 
 
   return (
     <View style={{ marginTop: 12, borderTopWidth: 1, borderTopColor: TH.border, paddingTop: 12 }}>
-      {trackCoords.length > 1 && (
+      {trackCoords.length > 1 && MapView && Polyline && (
         <View style={{ height: 160, borderRadius: 12, overflow: 'hidden', marginBottom: 12 }}>
           <MapView style={{ flex: 1 }} initialCameraPosition={{ target: center, zoom: 14 }} myLocationEnabled={false} zoomGesturesEnabled={false} scrollGesturesEnabled={false}>
             <Polyline points={trackCoords} color={P} width={4} />
@@ -100,6 +121,7 @@ export default function ExerciseHistoryScreen() {
   const T = useT();
   const P = TH.primary;
   const store = useAppStore();
+  const { MapView, Polyline } = useAmapComponents();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
 
@@ -298,7 +320,7 @@ export default function ExerciseHistoryScreen() {
                         <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.calories} kcal</Text>
                       ) : null}
                     </View>
-                    {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} />}
+                    {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView} Polyline={Polyline} />}
                     <TouchableOpacity
                       onPress={() => {
                         Alert.alert(T('exerciseDeleteConfirm'), '', [

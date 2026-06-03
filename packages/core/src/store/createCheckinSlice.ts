@@ -4,7 +4,10 @@ import { submitCheckinEntry } from '../business';
 import type { StorageAdapter, CheckinSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
-export function createCheckinSlice(adapter: StorageAdapter): SliceCreator<CheckinSlice> {
+export function createCheckinSlice(
+  adapter: StorageAdapter,
+  onSync?: () => void,
+): SliceCreator<CheckinSlice> {
   return (set, get) => ({
     checkinHistory: [],
     streak: 0,
@@ -15,6 +18,8 @@ export function createCheckinSlice(adapter: StorageAdapter): SliceCreator<Checki
       const result = submitCheckinEntry(history ?? [], done, note, dateOverride, weight);
       set({ checkinHistory: result.history, streak: result.streak });
       adapter.persistChange('checkin', result.record.date, result.record).catch(console.error);
+      // Trigger sync when checkin status changes (especially when unchecking)
+      onSync?.();
     },
 
     calculateStreak() {

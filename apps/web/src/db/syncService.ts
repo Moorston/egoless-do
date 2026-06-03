@@ -46,8 +46,9 @@ const engine = new SyncEngine({
         changes: changes.map(c => ({
           entity: c.entity,
           entityId: c.entityId,
-          op: 'upsert',
+          op: c.op,
           payload: c.payload,
+          deleted: c.deleted,
         })),
       }),
     });
@@ -164,6 +165,11 @@ async function applyChangesToIndexedDB(changes: SyncChange[], deletedIds?: Set<s
         }
       }
 
+      // Preserve local colors field for reflections if server data lacks it
+      if (c.entity === 'reflection' && !(normalized as any).colors) {
+        const local = await table.get(c.entityId);
+        if (local?.colors) (normalized as any).colors = local.colors;
+      }
       await table.put(normalized as Record<string, unknown>);
     }
   });

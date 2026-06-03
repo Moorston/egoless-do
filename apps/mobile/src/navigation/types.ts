@@ -17,6 +17,7 @@ export type RootStackParamList = {
   PlanHistory: undefined;
   RecycleBin: undefined;
   PrivacyPolicy: undefined;
+  Stats: undefined;
 };
 
 export type MainTabParamList = {
@@ -28,5 +29,4 @@ export type MainTabParamList = {
   Settings: undefined;
   Reflections: { showNew?: boolean } | undefined;
   Habits: undefined;
-  Stats: undefined;
 };

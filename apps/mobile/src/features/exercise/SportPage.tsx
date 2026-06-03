@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
-import { MapView, Polyline } from 'react-native-amap3d';
-import * as Location from 'expo-location';
+// expo-location loaded lazily — not in Expo Go built-in SDK
 import * as Haptics from 'expo-haptics';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useTheme, useT } from '../../components/UI';
@@ -12,6 +11,51 @@ import type { SportType, ExerciseSet } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
 import { X, Play, Pause, Minus, Plus } from 'lucide-react-native';
 import type { RootStackParamList } from '../../navigation/hooks';
+
+let _MapView: any = null;
+let _Polyline: any = null;
+let _amapLoaded = false;
+
+function useAmapComponents() {
+  const [ready, setReady] = useState(_amapLoaded);
+  useEffect(() => {
+    if (_amapLoaded) { setReady(true); return; }
+    import('react-native-amap3d').then(m => {
+      _MapView = m.MapView;
+      _Polyline = m.Polyline;
+      _amapLoaded = true;
+      setReady(true);
+    }).catch(() => {});
+  }, []);
+  return { MapView: _MapView, Polyline: _Polyline, ready };
+}
+
+function MapViewFallback() {
+  return <View style={{ flex: 1, backgroundColor: '#1a1a2e' }} />;
+}
+
+let _LocationMod: any = null;
+async function _getLocation() {
+  if (_LocationMod === null) {
+    try { _LocationMod = await import('expo-location'); } catch { _LocationMod = false; }
+  }
+  return _LocationMod;
+}
+async function _reqLocPerm() {
+  const m = await _getLocation();
+  if (!m) return { status: 'denied' };
+  try { return await m.requestForegroundPermissionsAsync(); } catch { return { status: 'denied' }; }
+}
+async function _getCurPos() {
+  const m = await _getLocation();
+  if (!m) return null;
+  try { return await m.getCurrentPositionAsync({}); } catch { return null; }
+}
+async function _watchPos(cb: (loc: any) => void) {
+  const m = await _getLocation();
+  if (!m) return { remove: () => {} };
+  try { return await m.watchPositionAsync({ accuracy: m.Accuracy.High, timeInterval: 2000, distanceInterval: 5 }, cb); } catch { return { remove: () => {} }; }
+}
 
 type Route = RouteProp<RootStackParamList, 'Sport'>;
 type Page = 'prep' | 'countdown' | 'active' | 'paused' | 'report';
@@ -42,6 +86,7 @@ export default function SportPage() {
   const TH    = useTheme();
   const T     = useT();
   const store = useAppStore();
+  const { MapView, Polyline, ready: amapReady } = useAmapComponents();
   const { key: sportName, icon, color, gps: gpsParam } = route.params;
 
   const isGpsSport = gpsParam ?? false;
@@ -81,7 +126,7 @@ export default function SportPage() {
   const [restSec, setRestSec]       = useState(0);
 
   const timerRef    = useRef<ReturnType<typeof setInterval> | null>(null);
-  const locationSub = useRef<Location.LocationSubscription | null>(null);
+  const locationSub = useRef<any>(null);
   const mapRef      = useRef<any>(null);
   const holdAnim    = useRef(new Animated.Value(0)).current;
 
@@ -95,10 +140,10 @@ export default function SportPage() {
   useEffect(() => {
     if (isGpsSport) {
       (async () => {
-        const { status } = await Location.requestForegroundPermissionsAsync();
+        const { status } = await _reqLocPerm();
         if (status === 'granted') {
-          const loc = await Location.getCurrentPositionAsync({});
-          setInitialPos({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
+          const loc = await _getCurPos();
+          if (loc) setInitialPos({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
         }
       })();
     }
@@ -171,16 +216,13 @@ export default function SportPage() {
 
   // ── GPS tracking ──
   const startGpsTracking = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await _reqLocPerm();
     if (status !== 'granted') return;
-    locationSub.current = await Location.watchPositionAsync(
-      { accuracy: Location.Accuracy.High, timeInterval: 2000, distanceInterval: 5 },
-      loc => {
-        const c = { latitude: loc.coords.latitude, longitude: loc.coords.longitude, ts: Date.now() };
-        setCoords(arr => [...arr, c]);
-        mapRef.current?.moveCamera({ target: c, zoom: 16 }, 300);
-      },
-    );
+    locationSub.current = await _watchPos(loc => {
+      const c = { latitude: loc.coords.latitude, longitude: loc.coords.longitude, ts: Date.now() };
+      setCoords(arr => [...arr, c]);
+      mapRef.current?.moveCamera({ target: c, zoom: 16 }, 300);
+    });
   };
 
   const stopGpsTracking = () => {
@@ -274,6 +316,7 @@ export default function SportPage() {
   if (page === 'prep') {
     return (
       <View style={{ flex: 1, backgroundColor: bg }}>
+        {/* Header */}
         <View style={{ paddingTop: 56, paddingHorizontal: 20 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: '#fff' }}>{sportName}</Text>
@@ -317,32 +360,33 @@ export default function SportPage() {
               </View>
             </View>
           )}
+        </View>
 
+        {/* Centered circle + GO button */}
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 40 }}>
           {/* Big circle */}
-          <View style={{ alignItems: 'center', marginTop: 40, marginBottom: 40 }}>
-            <View style={{ width: 180, height: 180, borderRadius: 90, borderWidth: 4, borderColor: 'rgba(255,255,255,.3)', alignItems: 'center', justifyContent: 'center' }}>
-              {sportType === 'repetition' ? (
-                <>
-                  <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>{T('exerciseReps')}</Text>
-                </>
-              ) : sportType === 'timed' ? (
-                <>
-                  <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0:00</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>{T('exerciseMin')}</Text>
-                </>
-              ) : (
-                <>
-                  <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0.00</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>km</Text>
-                </>
-              )}
-            </View>
+          <View style={{ width: 180, height: 180, borderRadius: 90, borderWidth: 4, borderColor: 'rgba(255,255,255,.3)', alignItems: 'center', justifyContent: 'center', marginBottom: 40 }}>
+            {sportType === 'repetition' ? (
+              <>
+                <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>{T('exerciseReps')}</Text>
+              </>
+            ) : sportType === 'timed' ? (
+              <>
+                <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0:00</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>{T('exerciseMin')}</Text>
+              </>
+            ) : (
+              <>
+                <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0.00</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>km</Text>
+              </>
+            )}
           </View>
 
           {/* GO button */}
           <TouchableOpacity onPress={handleGo}
-            style={{ height: 64, borderRadius: 32, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+            style={{ height: 64, borderRadius: 32, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', alignSelf: 'stretch' }}>
             <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: bg, letterSpacing: 4 }}>GO</Text>
           </TouchableOpacity>
         </View>
@@ -429,24 +473,28 @@ export default function SportPage() {
   if (page === 'report') {
     const bestPace = segmentPaces.length > 0 ? Math.min(...segmentPaces) : 0;
     return (
-      <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-        <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 16, backgroundColor: '#fff' }}>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#333' }}>{T('exerciseReport')}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: '#888', marginTop: 4 }}>{sportName} · {new Date().toLocaleDateString('zh-CN')}</Text>
+      <View style={{ flex: 1, backgroundColor: TH.bg }}>
+        <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 16, backgroundColor: TH.cardSolid }}>
+          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('exerciseReport')}</Text>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{sportName} · {new Date().toLocaleDateString('zh-CN')}</Text>
         </View>
 
         {/* Map snapshot (static) */}
         {isGpsSport && coords.length > 1 && (
           <View style={{ height: 200, margin: 16, borderRadius: 16, overflow: 'hidden' }}>
-            <MapView
-              style={{ flex: 1 }}
-              initialCameraPosition={{ target: initialPos, zoom: 14 }}
-              myLocationEnabled={false}
-              zoomGesturesEnabled={false}
-              scrollGesturesEnabled={false}
-            >
-              <Polyline points={coords} color={color} width={4} />
-            </MapView>
+            {amapReady && MapView ? (
+              <MapView
+                style={{ flex: 1 }}
+                initialCameraPosition={{ target: initialPos, zoom: 14 }}
+                myLocationEnabled={false}
+                zoomGesturesEnabled={false}
+                scrollGesturesEnabled={false}
+              >
+                <Polyline points={coords} color={color} width={4} />
+              </MapView>
+            ) : (
+              <MapViewFallback />
+            )}
           </View>
         )}
 
@@ -459,9 +507,9 @@ export default function SportPage() {
             ...(sportType === 'gps' ? [{ label: T('exercisePace'), value: formatPace(distKm > 0 ? sec / distKm : 0) }] : []),
             { label: T('exerciseTotalCal'), value: `${calories} kcal` },
           ].map(d => (
-            <View key={d.label} style={{ width: '47%', backgroundColor: '#fff', borderRadius: 12, padding: 16 }}>
-              <Text style={{ fontSize: FONT_SUB, color: '#888' }}>{d.label}</Text>
-              <Text style={{ fontSize: FONT_CLOSE, fontWeight: '800', color: '#333', marginTop: 4 }}>{d.value}</Text>
+            <View key={d.label} style={{ width: '47%', backgroundColor: TH.cardSolid, borderRadius: 12, padding: 16 }}>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{d.label}</Text>
+              <Text style={{ fontSize: FONT_CLOSE, fontWeight: '800', color: TH.text, marginTop: 4 }}>{d.value}</Text>
             </View>
           ))}
         </View>
@@ -469,12 +517,12 @@ export default function SportPage() {
         {/* Sets breakdown for repetition sports */}
         {sets.length > 0 && (
           <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#333', marginBottom: 8 }}>{T('exerciseSets')}</Text>
-            <View style={{ backgroundColor: '#fff', borderRadius: 12, padding: 12 }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('exerciseSets')}</Text>
+            <View style={{ backgroundColor: TH.cardSolid, borderRadius: 12, padding: 12 }}>
               {sets.map((s, i) => (
-                <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < sets.length - 1 ? 1 : 0, borderBottomColor: '#eee' }}>
-                  <Text style={{ fontSize: FONT_BODY, color: '#333' }}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#333' }}>{s.reps} {T('exerciseReps')}</Text>
+                <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < sets.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
+                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{s.reps} {T('exerciseReps')}</Text>
                 </View>
               ))}
             </View>
@@ -484,15 +532,15 @@ export default function SportPage() {
         {/* Segment paces */}
         {segmentPaces.length > 0 && (
           <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#333', marginBottom: 8 }}>{T('exerciseSegmentPace')}</Text>
-            <View style={{ backgroundColor: '#fff', borderRadius: 12, padding: 12 }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('exerciseSegmentPace')}</Text>
+            <View style={{ backgroundColor: TH.cardSolid, borderRadius: 12, padding: 12 }}>
               {segmentPaces.map((p, i) => {
                 const isBest = p === bestPace;
-                const color = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
+                const paceColor = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
                 return (
-                  <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < segmentPaces.length - 1 ? 1 : 0, borderBottomColor: '#eee' }}>
-                    <Text style={{ fontSize: FONT_BODY, color: '#333' }}>{i + 1} km</Text>
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color }}>{formatPace(p)}</Text>
+                  <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < segmentPaces.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
+                    <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{i + 1} km</Text>
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: paceColor }}>{formatPace(p)}</Text>
                   </View>
                 );
               })}
@@ -517,14 +565,18 @@ export default function SportPage() {
       <View style={{ flex: 1, backgroundColor: '#000' }}>
         {/* Map area (40%) */}
         <View style={{ flex: 4 }}>
-          <MapView
-            ref={mapRef}
-            style={{ flex: 1 }}
-            initialCameraPosition={{ target: initialPos, zoom: 16 }}
-            myLocationEnabled
-          >
-            {coords.length > 1 && <Polyline points={coords} color={color} width={4} />}
-          </MapView>
+          {amapReady && MapView ? (
+            <MapView
+              ref={mapRef}
+              style={{ flex: 1 }}
+              initialCameraPosition={{ target: initialPos, zoom: 16 }}
+              myLocationEnabled
+            >
+              {coords.length > 1 && <Polyline points={coords} color={color} width={4} />}
+            </MapView>
+          ) : (
+            <MapViewFallback />
+          )}
         </View>
 
         {/* Data area (60%) */}

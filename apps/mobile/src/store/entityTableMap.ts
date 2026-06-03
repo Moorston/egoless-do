@@ -29,7 +29,9 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       id: d.id, created_at: d.timestamp, content: d.content, tags: json(d.tags),
       mood: d.mood ?? null, card_theme: d.cardTheme ?? null,
       linked_habit_id: d.linkedHabitId ?? null,
+      linked_plan_id: d.linkedPlanItemId ?? null,
       is_pinned: bool(d.isPinned), is_published: bool(d.isPublished),
+      colors: d.colors ? json(d.colors) : null,
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
@@ -106,6 +108,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       progress: num(d.progress), link: d.link ?? 'manual',
       priority: d.priority ?? 'medium',
       target_metric: d.targetMetric ?? '',
+      reflection_id: d.reflectionId ?? null,
       link_config: json(d.linkConfig), item_order: num(d.order),
       updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
     }),
@@ -122,6 +125,22 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     table: 'grace_history', pk: 'date',
     toRow: (d) => ({
       date: d.date, restored_at: d.restoredAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+  },
+  dailyCustomTodo: {
+    table: 'daily_custom_todos', pk: 'id',
+    toRow: (d) => ({
+      id: d.id, plan_id: d.planId, date: d.date, name: d.name,
+      done: bool(d.done), todo_order: num(d.order), recurring: bool(d.recurring),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+  },
+  dailyTodoHistory: {
+    table: 'daily_todo_history', pk: 'id',
+    toRow: (d) => ({
+      id: d.id, plan_id: d.planId, date: d.date,
+      plan_items: json(d.planItems), custom_todos: json(d.customTodos),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },

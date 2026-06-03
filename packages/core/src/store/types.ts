@@ -4,6 +4,7 @@ import type {
   MedHistoryEntry, FoodEntry, ExerciseEntry, CheckinEntry,
   UserProfile, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
+  ReflectionFilters,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -114,10 +115,15 @@ export interface HabitSlice {
 
 export interface ReflectionSlice {
   reflections: MindReflection[];
+  reflectionFilters: ReflectionFilters;
   addReflection: (params: CreateReflectionParams) => void;
   togglePin: (id: string) => void;
   deleteReflection: (id: string) => void;
   updateReflection: (id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>) => void;
+  /** 解绑感念与计划任务 */
+  unlinkReflectionFromPlanItem: (reflectionId: string) => void;
+  /** 更新感念筛选条件 */
+  setReflectionFilters: (filters: ReflectionFilters) => void;
 }
 
 export interface FastingSlice {
@@ -145,18 +151,26 @@ export interface PlanSlice {
   addPlanItem: (form: {
     planId: string; name: string; description?: string;
     startDate: string; endDate: string; contentUrl?: string;
-    link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number;
+    link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; reflectionId?: string; order?: number;
   }) => void;
   updatePlanItem: (id: string, patch: Partial<PlanItem>) => void;
   deletePlanItem: (id: string) => void;
   checkinPlanItem: (planItemId: string, date?: string) => void;
   uncheckinPlanItem: (planItemId: string, date?: string) => void;
   autoSyncPlanItems: () => void;
-  addDailyCustomTodo: (planId: string, name: string, date?: string) => void;
+  addDailyCustomTodo: (planId: string, name: string, date?: string, recurring?: boolean) => void;
   toggleDailyCustomTodo: (id: string, date?: string) => void;
   deleteDailyCustomTodo: (id: string) => void;
   saveDailyTodoHistory: (planId: string, date?: string) => void;
   performDailyReset: (previousDate: string) => void;
+  /** 获取活跃计划 */
+  getActivePlan: () => Plan | null;
+  /** 从感念创建计划任务 */
+  createPlanItemFromReflection: (reflectionId: string, startDate: string, endDate: string, priority?: PlanItemPriority, name?: string, description?: string, targetMetric?: string) => boolean;
+  /** 检查计划是否可以废弃/取消/删除 */
+  canArchivePlan: (planId: string) => { allowed: boolean; linkedReflectionCount: number };
+  /** 批量解绑计划中所有任务的感念关联 */
+  unlinkAllReflectionsFromPlan: (planId: string) => void;
 }
 
 export interface RecycleBinSlice {

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { THEMES, COLORS, isPlanDelayed, FONT_TITLE, FONT_BADGE } from '@egoless-do/core';
+import { THEMES, COLORS, isPlanDelayed, FONT_TITLE, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import { ChevronLeft } from 'lucide-react-native';
 import PlanDetailContent from './PlanDetailContent';
@@ -16,7 +16,7 @@ export default function PlanDetailScreen() {
   const nav = useRootNavigation();
   const route = useRoute<any>();
   const planId = route.params?.planId as string;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = dateStr();
 
   const plan = useMemo(() => (store.plans ?? []).find(p => p.id === planId), [store.plans, planId]);
   const delayed = plan ? isPlanDelayed(plan, today) : false;

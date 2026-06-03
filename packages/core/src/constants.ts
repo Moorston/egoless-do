@@ -1,11 +1,11 @@
-import type { Theme, ThemeName, SportGroup, GlobalUser, FoodCategory } from './types';
+import type { Theme, ThemeName, SportGroup, GlobalUser, FoodCategory, PlanItemLink } from './types';
 
 export const THEMES: Record<ThemeName, Theme> = {
+  cosmos: { name:'星空 ✨', nameEn:'Cosmos ✨', bg:'#050510', card:'rgba(255,255,255,.06)', cardSolid:'rgba(10,10,25,0.95)', text:'#fff', sub:'rgba(180,170,255,.5)',   border:'rgba(150,120,255,.12)', primary:'#8B5CF6', navBg:'rgba(5,5,16,.97)',    starfield:true  },
   dark:   { name:'深色',    nameEn:'Dark',      bg:'#0F0A1E', card:'rgba(255,255,255,.07)', cardSolid:'#1A1030', text:'#fff', sub:'rgba(255,255,255,.45)', border:'rgba(255,255,255,.09)', primary:'#7C3AED', navBg:'rgba(15,10,30,.97)',   starfield:false },
   light:  { name:'浅色',    nameEn:'Light',     bg:'#F0EFF8', card:'rgba(255,255,255,.92)', cardSolid:'#fff',    text:'#111', sub:'#6B6B6B',               border:'#e0e0e0',                primary:'#7C3AED', navBg:'rgba(240,239,248,.97)',starfield:false },
   ocean:  { name:'深海',    nameEn:'Ocean',     bg:'#071520', card:'rgba(255,255,255,.07)', cardSolid:'#0d2035', text:'#fff', sub:'rgba(255,255,255,.4)',   border:'rgba(255,255,255,.08)', primary:'#0EA5E9', navBg:'rgba(7,21,32,.97)',    starfield:false },
   rose:   { name:'玫瑰',    nameEn:'Rose',      bg:'#160810', card:'rgba(255,255,255,.07)', cardSolid:'#250f1e', text:'#fff', sub:'rgba(255,255,255,.4)',   border:'rgba(255,255,255,.08)', primary:'#EC4899', navBg:'rgba(22,8,16,.97)',    starfield:false },
-  cosmos: { name:'星空 ✨', nameEn:'Cosmos ✨', bg:'#050510', card:'rgba(255,255,255,.06)', cardSolid:'rgba(10,10,25,0.95)', text:'#fff', sub:'rgba(180,170,255,.5)',   border:'rgba(150,120,255,.12)', primary:'#8B5CF6', navBg:'rgba(5,5,16,.97)',    starfield:true  },
 };
 
 export const COLORS = {
@@ -19,6 +19,12 @@ export const COLORS = {
   INDIGO: '#4F46E5',
 };
 
+export const LINK_COLORS: Record<PlanItemLink, string> = {
+  manual: COLORS.GRAY, checkin: '#6366F1', fasting: '#F59E0B',
+  meditation: '#8B5CF6', exercise: '#10B981', habit: '#EC4899',
+  reflection: '#F97316',
+};
+
 export const BANNER_COLORS = {
   CHECKED:  '#7C3AED',
   NOT_DONE: '#F59E0B',
@@ -27,7 +33,7 @@ export const BANNER_COLORS = {
 
 export const STATS_GRADIENT = [
   ['#7117EA', '#EA6060'],
-  ['#17EAD9', '#6078EA'],
+  ['#6078EA', '#17EAD9'],
   ['#9A4EFF', '#20ECFF'],
   ['#8446FF', '#18CEFF'],
 ] as const;
@@ -43,7 +49,31 @@ export const MIND_COLORS = [
   ['#1C1917','#78716C'],
 ] as const;
 
+export const MIND_COLORS_EXTENDED = [
+  // 紫/紫红系
+  ['#7117EA', '#EA6060'],
+  ['#8446FF', '#18CEFF'],
+  ['#2D1B69', '#7C3AED'],
+  // 蓝/青系
+  ['#6078EA', '#17EAD9'],
+  ['#1a1a2e', '#16213e'],
+  // 绿系
+  ['#064E3B', '#10B981'],
+  // 暖色系
+  ['#7C2D12', '#F97316'],
+  ['#4C0519', '#EC4899'],
+] as const;
+
 export const TAGS_PRESET = ['#觉察','#灵感','#内心独白'];
+
+export const REFLECTION_CATEGORIES = [
+  { key: 'daily', label: '日常感悟', icon: '📝', color: '#8B5CF6' },
+  { key: 'learning', label: '学习笔记', icon: '📚', color: '#3B82F6' },
+  { key: 'goal', label: '目标复盘', icon: '🎯', color: '#10B981' },
+  { key: 'emotion', label: '情绪记录', icon: '💭', color: '#EC4899' },
+  { key: 'gratitude', label: '感恩日记', icon: '🙏', color: '#F59E0B' },
+  { key: 'idea', label: '灵感闪现', icon: '💡', color: '#F97316' },
+] as const;
 export const MOOD_DISPLAY: Record<string, string> = {
   '平静': '🌿 平静',
   '开心': '😊 开心',

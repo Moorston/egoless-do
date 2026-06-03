@@ -9,6 +9,7 @@ import type { SliceCreator } from './sliceHelper';
 
 export function createHabitSlice(
   adapter: StorageAdapter,
+  onSync?: () => void,
 ): SliceCreator<HabitSlice> {
   return (set, get) => ({
     habits: [],
@@ -32,14 +33,14 @@ export function createHabitSlice(
         state.addToRecycleBin({ id, entityType: 'habit', data: habit });
       }
       set(s => ({ habits: deleteHabitFromList(s.habits ?? [], id) }));
-      const deleted = get().habits.find(h => h.id === id);
-      if (deleted) adapter.persistChange('habit', id, deleted).catch(console.error);
+      adapter.markDeleted('habit', id).catch(console.error);
     },
 
     checkinHabit(id: string, date: string) {
       set(s => ({ habits: checkinHabitInList(s.habits ?? [], id, date) }));
       const updated = get().habits.find(h => h.id === id);
       if (updated) adapter.persistChange('habit', id, updated).catch(console.error);
+      onSync?.();
     },
 
     changeHabitStatus(id: string, ns: Habit['status'], reason?: string) {

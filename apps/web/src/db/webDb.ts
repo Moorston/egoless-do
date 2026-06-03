@@ -2,10 +2,10 @@
 import Dexie, { type Table } from 'dexie';
 import type {
   Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession, ExerciseEntry,
-  Plan, PlanItem, PlanItemCheckin, MedHistoryEntry,
+  Plan, PlanItem, PlanItemCheckin, MedHistoryEntry, DailyCustomTodo, DailyTodoHistory,
 } from '@egoless-do/core';
 
-export type SyncEntity = 'habit' | 'reflection' | 'fasting' | 'food' | 'checkin' | 'meditation' | 'profile' | 'exercise' | 'plan' | 'planItem' | 'planItemCheckin' | 'grace';
+export type SyncEntity = 'habit' | 'reflection' | 'fasting' | 'food' | 'checkin' | 'meditation' | 'profile' | 'exercise' | 'plan' | 'planItem' | 'planItemCheckin' | 'dailyCustomTodo' | 'dailyTodoHistory' | 'grace';
 export type SyncOperation = 'upsert' | 'delete';
 
 /** Wrapper for profile storage in IndexedDB (UserProfile has no id field) */
@@ -38,6 +38,8 @@ export class EgolessDB extends Dexie {
   planItems!:      Table<PlanItem,       string>;
   planItemCheckins!:Table<PlanItemCheckin, string>;
   graceHistory!:   Table<{ date: string; updatedAt?: number; deleted?: boolean }, string>;
+  dailyCustomTodos!: Table<DailyCustomTodo, string>;
+  dailyTodoHistory!: Table<DailyTodoHistory, string>;
   syncQueue!:      Table<SyncQueueItem,  number>;
 
   constructor() {
@@ -127,6 +129,23 @@ export class EgolessDB extends Dexie {
       planItems:       'id, planId, status, startDate, endDate, deleted, priority',
       planItemCheckins:'id, planItemId, date, deleted',
       graceHistory:    'date, deleted, updatedAt',
+      syncQueue:       '++_id, entity, entityId, operation, createdAt',
+    });
+    this.version(9).stores({
+      habits:          'id, status, startDate, deleted',
+      reflections:     'id, created_at, *tags, deleted',
+      fastingSessions: 'id, started_at, deleted',
+      foodEntries:     'id, ts, deleted',
+      checkins:        'date, deleted',
+      exerciseEntries: 'id, sportKey, timestamp, isGpsSport, deleted',
+      meditationEntries: 'date, deleted, updatedAt',
+      profiles:        'profileId, updatedAt, deleted',
+      plans:           'id, status, startDate, endDate, deleted',
+      planItems:       'id, planId, status, startDate, endDate, deleted, priority',
+      planItemCheckins:'id, planItemId, date, deleted',
+      graceHistory:    'date, deleted, updatedAt',
+      dailyCustomTodos:'id, planId, date, deleted',
+      dailyTodoHistory:'id, planId, date, deleted',
       syncQueue:       '++_id, entity, entityId, operation, createdAt',
     });
   }

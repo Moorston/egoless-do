@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS mind_reflections (
   mood            TEXT,
   card_theme      TEXT,
   linked_habit_id TEXT,
+  linked_plan_id  TEXT,
   is_pinned       INTEGER NOT NULL DEFAULT 0,
   is_published    INTEGER NOT NULL DEFAULT 0,
   updated_at      INTEGER,
@@ -206,6 +207,30 @@ CREATE TABLE IF NOT EXISTS grace_history (
   deleted     INTEGER NOT NULL DEFAULT 0,
   synced      INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS daily_custom_todos (
+  id          TEXT PRIMARY KEY,
+  plan_id     TEXT    NOT NULL,
+  date        TEXT    NOT NULL,
+  name        TEXT    NOT NULL,
+  done        INTEGER NOT NULL DEFAULT 0,
+  todo_order  INTEGER NOT NULL DEFAULT 0,
+  recurring   INTEGER NOT NULL DEFAULT 0,
+  updated_at  INTEGER,
+  deleted     INTEGER NOT NULL DEFAULT 0,
+  synced      INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS daily_todo_history (
+  id          TEXT PRIMARY KEY,
+  plan_id     TEXT    NOT NULL,
+  date        TEXT    NOT NULL,
+  plan_items  TEXT    NOT NULL DEFAULT '[]',
+  custom_todos TEXT   NOT NULL DEFAULT '[]',
+  updated_at  INTEGER,
+  deleted     INTEGER NOT NULL DEFAULT 0,
+  synced      INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -213,21 +238,15 @@ export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
 }
 
 export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
-  const habitsInfo = await db.getAllAsync<{ name: string }>('PRAGMA table_info(habits)');
-  if (!habitsInfo.some(col => col.name === 'synced')) {
-    await db.execAsync('ALTER TABLE habits ADD COLUMN synced INTEGER NOT NULL DEFAULT 0');
-  }
-  const foodInfo = await db.getAllAsync<{ name: string }>('PRAGMA table_info(food_entries)');
-  if (!foodInfo.some(col => col.name === 'synced')) {
-    await db.execAsync('ALTER TABLE food_entries ADD COLUMN synced INTEGER NOT NULL DEFAULT 0');
-  }
-  const checkinInfo = await db.getAllAsync<{ name: string }>('PRAGMA table_info(checkin_records)');
-  if (!checkinInfo.some(col => col.name === 'timestamp')) {
-    await db.execAsync('ALTER TABLE checkin_records ADD COLUMN timestamp INTEGER');
-  }
-  if (!checkinInfo.some(col => col.name === 'weight')) {
-    await db.execAsync('ALTER TABLE checkin_records ADD COLUMN weight REAL');
-  }
+  const tryAddCol = async (table: string, column: string, type: string) => {
+    try { await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`); } catch {}
+  };
+
+  await tryAddCol('habits', 'synced', 'INTEGER NOT NULL DEFAULT 0');
+  await tryAddCol('mind_reflections', 'linked_plan_id', 'TEXT');
+  await tryAddCol('food_entries', 'synced', 'INTEGER NOT NULL DEFAULT 0');
+  await tryAddCol('checkin_records', 'timestamp', 'INTEGER');
+  await tryAddCol('checkin_records', 'weight', 'REAL');
 
   // Ensure exercise_entries table exists
   const exerciseTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -244,10 +263,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   }
 
   // Add health_synced column to exercise_entries for HealthKit/Health Connect tracking
-  const exerciseColInfo = await db.getAllAsync<{ name: string }>('PRAGMA table_info(exercise_entries)');
-  if (!exerciseColInfo.some(col => col.name === 'health_synced')) {
-    await db.execAsync('ALTER TABLE exercise_entries ADD COLUMN health_synced INTEGER NOT NULL DEFAULT 0');
-  }
+  await tryAddCol('exercise_entries', 'health_synced', 'INTEGER NOT NULL DEFAULT 0');
 
   // Ensure sync_queue table exists
   const syncQueueCheck = await db.getFirstAsync<{ name: string }>(
@@ -308,14 +324,13 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     }
   }
 
-  // Add priority column to plan_items if missing
-  const planItemColInfo = await db.getAllAsync<{ name: string }>('PRAGMA table_info(plan_items)');
-  if (planItemColInfo.length > 0 && !planItemColInfo.some(col => col.name === 'priority')) {
-    await db.execAsync("ALTER TABLE plan_items ADD COLUMN priority TEXT NOT NULL DEFAULT 'medium'");
-  }
-  if (planItemColInfo.length > 0 && !planItemColInfo.some(col => col.name === 'target_metric')) {
-    await db.execAsync("ALTER TABLE plan_items ADD COLUMN target_metric TEXT NOT NULL DEFAULT ''");
-  }
+  // Add columns to plan_items if missing
+  await tryAddCol('plan_items', 'priority', "TEXT NOT NULL DEFAULT 'medium'");
+  await tryAddCol('plan_items', 'target_metric', "TEXT NOT NULL DEFAULT ''");
+  await tryAddCol('plan_items', 'reflection_id', 'TEXT');
+
+  // Ensure mind_reflections.colors column exists
+  await tryAddCol('mind_reflections', 'colors', 'TEXT');
 
   // Ensure plan tables exist
   const planTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -330,6 +345,31 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       date TEXT PRIMARY KEY, restored_at INTEGER NOT NULL,
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
       synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure daily_custom_todos table exists
+  const dailyCustomTodoTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='daily_custom_todos'"
+  );
+  if (!dailyCustomTodoTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos (
+      id TEXT PRIMARY KEY, plan_id TEXT NOT NULL, date TEXT NOT NULL,
+      name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
+      todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure daily_todo_history table exists
+  const dailyTodoHistoryTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='daily_todo_history'"
+  );
+  if (!dailyTodoHistoryTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_todo_history (
+      id TEXT PRIMARY KEY, plan_id TEXT NOT NULL, date TEXT NOT NULL,
+      plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
 
@@ -392,17 +432,17 @@ export async function dbUpsertPlanItem(db: SQLite.SQLiteDatabase, i: {
   id: string; planId: string; name: string; description: string;
   startDate: string; endDate: string; contentUrl: string;
   totalCheckinDays: number; status: string; progress: number;
-  link: string; priority?: string; targetMetric?: string; linkConfig?: Record<string, unknown>; order: number;
+  link: string; priority?: string; targetMetric?: string; reflectionId?: string; linkConfig?: Record<string, unknown>; order: number;
   updatedAt?: number; deleted?: boolean;
 }): Promise<void> {
   await db.runAsync(`
     INSERT OR REPLACE INTO plan_items
     (id,plan_id,name,description,start_date,end_date,content_url,total_checkin_days,
-     status,progress,link,priority,target_metric,link_config,item_order,updated_at,deleted,synced)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0)`,
+     status,progress,link,priority,target_metric,reflection_id,link_config,item_order,updated_at,deleted,synced)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0)`,
     [i.id, i.planId, i.name, i.description, i.startDate, i.endDate, i.contentUrl,
      i.totalCheckinDays, i.status, i.progress, i.link, i.priority ?? 'medium', i.targetMetric ?? '',
-     JSON.stringify(i.linkConfig ?? {}), i.order, i.updatedAt ?? null, i.deleted ? 1 : 0]
+     i.reflectionId ?? null, JSON.stringify(i.linkConfig ?? {}), i.order, i.updatedAt ?? null, i.deleted ? 1 : 0]
   );
 }
 

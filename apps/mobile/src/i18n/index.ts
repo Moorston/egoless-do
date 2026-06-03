@@ -1,16 +1,22 @@
 import 'intl-pluralrules';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import * as Localization from 'expo-localization';
-import { zh, en } from '@egoless-do/core';
+import { zh, zhHant, en } from '@egoless-do/core';
+
+let lng = 'zh';
+try {
+  const Localization = require('expo-localization');
+  lng = Localization.getLocales()[0]?.languageCode ?? 'zh';
+} catch {}
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v4',
   resources: {
     zh: { translation: zh },
+    'zh-Hant': { translation: zhHant },
     en: { translation: en },
   },
-  lng: Localization.getLocales()[0]?.languageCode ?? 'zh',
+  lng,
   fallbackLng: 'zh',
   interpolation: { escapeValue: false },
 });

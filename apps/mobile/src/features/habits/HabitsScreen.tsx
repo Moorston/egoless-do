@@ -9,9 +9,9 @@ import {
   Card, useTheme, PrimaryButton, OutlineButton, Toggle,
   ScreenHeader, TagPill, ThemedInput, ProgressBar, RowItem, useT,
 } from '../../components/UI';
-import { COLORS, tomorrow, dateStr, daysInMonth, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_LABEL, FONT_BADGE, FONT_STAT_CARD, FONT_CLOSE, FONT_EMPTY } from '@egoless-do/core';
+import { COLORS, tomorrow, dateStr, daysInMonth, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_SMALL, FONT_TINY, FONT_LABEL, FONT_BADGE, FONT_STAT_CARD, FONT_CLOSE, FONT_EMPTY } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
-import { SimpleHeader } from '../../navigation';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Target, Pause, Play, X, Pencil, Trash2, ChevronRight, ChevronLeft, CheckCircle,
 } from 'lucide-react-native';
@@ -108,9 +108,18 @@ export default function HabitsScreen() {
 
         {/* Filter */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap:8, paddingBottom:14 }}>
-          {ALL_FILTERS.map(([v,l]) => (
-            <TagPill key={v} label={`${T(l)} ${filterCounts[v] ?? 0}`} active={filter===v} onPress={() => setFilter(v)} color={P} />
-          ))}
+          {ALL_FILTERS.map(([v,l]) => {
+            const isActive = filter===v;
+            return (
+              <TouchableOpacity key={v} onPress={() => setFilter(v)}
+                style={{ flexDirection:'row', alignItems:'center', gap:4, paddingHorizontal:10, paddingVertical:6, borderRadius:16, backgroundColor: isActive ? `${P}20` : TH.card, borderWidth:1, borderColor: isActive ? P : TH.border }}>
+                <Text style={{ color: isActive ? P : TH.text, fontSize:FONT_SMALL }}>{T(l)}</Text>
+                <View style={{ backgroundColor:`${P}20`, paddingHorizontal:5, paddingVertical:1, borderRadius:6 }}>
+                  <Text style={{ color:P, fontSize:FONT_TINY, fontWeight:'600' }}>{filterCounts[v] ?? 0}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </ScrollView>
 
         {/* Timeline */}
@@ -137,11 +146,11 @@ export default function HabitsScreen() {
                 {h.goal ? (
                   <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:6 }}>
                     <Target size={15} color={P} />
-                    <Text style={{ color:TH.text, fontSize:FONT_TITLE, fontWeight:'700' }}>{h.goal}</Text>
+                    <Text style={{ color:TH.text, fontSize:FONT_BODY, fontWeight:'700' }}>{h.goal}</Text>
                   </View>
                 ) : null}
 
-                <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
+                <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
 
                 {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>"{h.insight}"</Text> : null}
                 {h.createTag && (

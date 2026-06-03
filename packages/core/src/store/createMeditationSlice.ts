@@ -3,7 +3,10 @@ import { addMedMinutesToList } from '../business/meditation';
 import type { StorageAdapter, MeditationSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
-export function createMeditationSlice(adapter: StorageAdapter): SliceCreator<MeditationSlice> {
+export function createMeditationSlice(
+  adapter: StorageAdapter,
+  onSync?: () => void,
+): SliceCreator<MeditationSlice> {
   return (set, get) => ({
     totalMedMinutes: 0,
     medHistory: [],
@@ -14,6 +17,7 @@ export function createMeditationSlice(adapter: StorageAdapter): SliceCreator<Med
       set({ totalMedMinutes: result.total, medHistory: result.history });
       const entry = result.history[0];
       if (entry) adapter.persistChange('meditation', entry.date, entry).catch(console.error);
+      onSync?.();
     },
 
     calculateTotalMedMin() {

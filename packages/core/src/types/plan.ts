@@ -3,7 +3,7 @@ import type { Syncable } from './shared';
 
 export type PlanStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'cancelled';
 export type PlanItemStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'delayed';
-export type PlanItemLink = 'manual' | 'checkin' | 'fasting' | 'meditation' | 'exercise' | 'habit';
+export type PlanItemLink = 'manual' | 'checkin' | 'fasting' | 'meditation' | 'exercise' | 'habit' | 'reflection';
 export type PlanItemPriority = 'high' | 'medium' | 'low';
 
 export interface Plan extends Syncable {
@@ -32,10 +32,11 @@ export interface PlanItem extends Syncable {
   priority: PlanItemPriority;
   targetMetric: string;
   linkConfig?: {
-    habitId?: string;
     targetMinutes?: number;
     targetHours?: number;
+    habitId?: string;
   };
+  reflectionId?: string;  // 来源感念 ID
   order: number;
 }
 

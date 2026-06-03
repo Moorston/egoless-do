@@ -96,6 +96,7 @@ export interface I18nKeys {
   tagSectionCustom: string; tagSectionHabit: string;
   moodSectionPreset: string; moodSectionCustom: string;
   moveToTop: string;
+  sortByFreqOff: string; sortByFreqOn: string;
   fastTotal: string; fastTotalHours: string; fastStreak: string;
   fastLongest: string; fastTimes: string; fastHours: string;
   fastTarget: string; fastActive: string; fastYourStats: string;
@@ -221,7 +222,7 @@ export interface I18nKeys {
   planSave: string; planCreate: string; planEditTitle: string;
   planTodoList: string; planTodoDate: string; planDetail: string; planLinkManual: string;
   planLinkCheckin: string; planLinkFasting: string;
-  planLinkMeditation: string; planLinkExercise: string;
+  planLinkMeditation: string; planLinkExercise: string; planLinkReflection: string;
   planLinkHabit: string; planProgress: string; planDays: string;
   planCheckinDays: string; planCheckin: string; planUncheckin: string;
   planTodayCheckin: string; planHeatmap: string;

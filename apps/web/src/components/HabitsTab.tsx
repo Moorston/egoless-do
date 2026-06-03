@@ -54,7 +54,7 @@ export default function HabitsTab() {
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
         {Object.entries(STATUS_LABELS_R).map(([k, l]) => (
           <button key={k} onClick={() => setFilter(k)}
-            style={{ padding: '6px 14px', borderRadius: 20, fontSize: FONT_BUTTON, cursor: 'pointer', border: '1px solid', background: filter === k ? P : 'transparent', color: filter === k ? '#fff' : P, borderColor: P }}>{l} {filterCounts[k] ?? 0}</button>
+            style={{ padding: '4px 12px', borderRadius: 20, fontSize: FONT_BODY, cursor: 'pointer', border: '1px solid', background: filter === k ? P : 'transparent', color: filter === k ? '#fff' : P, borderColor: P }}>{l} {filterCounts[k] ?? 0}</button>
         ))}
       </div>
 

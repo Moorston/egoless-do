@@ -54,15 +54,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-sqlite",
-      "expo-notifications",
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "允许心流纪访问您的位置以记录运动轨迹"
-        }
-      ],
-      "expo-audio"
+      "expo-sqlite"
     ],
     "extra": {
       "eas": {

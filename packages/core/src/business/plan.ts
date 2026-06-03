@@ -2,6 +2,7 @@
 import type {
   Plan, PlanStatus, PlanItem, PlanItemStatus, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   Habit, FastingSession, MedHistoryEntry, ExerciseEntry, CheckinEntry, DailyCustomTodo, DailyTodoHistory,
+  MindReflection,
 } from '../types';
 import { uid, dateStr } from '../utils';
 
@@ -271,6 +272,68 @@ export function deletePlanItem(planItems: PlanItem[], id: string): PlanItem[] {
   return planItems.map(i => i.id === id ? { ...i, deleted: true, updatedAt: Date.now() } : i);
 }
 
+/** Create a plan item from a reflection */
+export function createPlanItemFromReflection(
+  reflection: { id: string; content: string; tags: string[] },
+  planId: string,
+  startDate: string,
+  endDate: string,
+  priority: PlanItemPriority = 'medium',
+  name?: string,
+  description?: string,
+  targetMetric?: string,
+): Omit<PlanItem, 'id' | 'updatedAt' | 'deleted'> {
+  const lines = reflection.content.split('\n').filter(l => l.trim());
+  const defaultName = lines[0]?.slice(0, 50) || reflection.content.slice(0, 50);
+  const defaultDescription = lines.length > 1 ? lines.slice(1).join('\n') : reflection.content;
+  const defaultTargetMetric = reflection.tags.length > 0 ? `关联标签: ${reflection.tags.join(', ')}` : '';
+
+  // 如果开始日期是今天或更早，默认状态为进行中
+  const today = dateStr();
+  const status: PlanItemStatus = startDate <= today ? 'in_progress' : 'not_started';
+
+  return {
+    planId,
+    name: name || defaultName,
+    description: description || defaultDescription,
+    startDate,
+    endDate,
+    contentUrl: '',
+    totalCheckinDays: 0,
+    status,
+    progress: 0,
+    link: 'reflection',
+    priority,
+    targetMetric: targetMetric || defaultTargetMetric,
+    reflectionId: reflection.id,
+    order: 0,
+  };
+}
+
+/** Check if a plan can be archived/cancelled/deleted (no linked reflections) */
+export function canArchivePlan(
+  planId: string,
+  planItems: PlanItem[],
+): { allowed: boolean; linkedReflectionCount: number } {
+  const linkedCount = planItems.filter(
+    i => !i.deleted && i.planId === planId && i.reflectionId
+  ).length;
+  return { allowed: linkedCount === 0, linkedReflectionCount: linkedCount };
+}
+
+/** Unlink all reflections from plan items in a plan */
+export function unlinkAllReflectionsFromPlan(
+  planItems: PlanItem[],
+  planId: string,
+): PlanItem[] {
+  const now = Date.now();
+  return planItems.map(i =>
+    i.planId === planId && i.reflectionId
+      ? { ...i, reflectionId: undefined, updatedAt: now }
+      : i
+  );
+}
+
 // ── PlanItemCheckin ───────────────────────────────────────────
 
 export function checkinItem(checkins: PlanItemCheckin[], planItemId: string, date: string, linkedModule?: string): PlanItemCheckin[] {
@@ -306,6 +369,7 @@ interface ModuleState {
   medHistory: MedHistoryEntry[];
   exerciseLog: ExerciseEntry[];
   checkinHistory: CheckinEntry[];
+  reflections: MindReflection[];
 }
 
 /** Sync plan items from linked modules — auto-check items whose link condition is met */
@@ -357,6 +421,9 @@ export function syncPlanItemsFromModules(
           linkedDone = state.habits.some(h =>
             !h.deleted && h.id === item.linkConfig?.habitId && h.checkedDates.includes(today)
           );
+          break;
+        case 'reflection':
+          // 感念关联任务不自动打卡，需手动完成
           break;
         case 'manual':
         default:

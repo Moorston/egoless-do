@@ -6,7 +6,8 @@ import { AppState, type AppStateStatus } from 'react-native';
 import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, setLastSyncAt, connectRealtime, disconnectRealtime } from './SyncService';
 import { useAppStore } from '../../store/useAppStore';
 import { registerPushToken } from '@egoless-do/core';
-import * as Notifications from 'expo-notifications';
+
+const getNotifications = () => import('expo-notifications');
 
 const POCKETBASE_URL = process.env.EXPO_PUBLIC_POCKETBASE_URL ?? 'http://localhost:8090';
 
@@ -25,7 +26,8 @@ export function useSync() {
         habits: 'habits', reflections: 'reflections', fastingHistory: 'fastingHistory',
         foodLog: 'foodLog', checkinHistory: 'checkinHistory', exerciseLog: 'exerciseLog',
         medHistory: 'medHistory', plans: 'plans', planItems: 'planItems',
-        planItemCheckins: 'planItemCheckins', graceHistory: 'graceHistory',
+        planItemCheckins: 'planItemCheckins', dailyCustomTodos: 'dailyCustomTodos',
+        dailyTodoHistory: 'dailyTodoHistory', graceHistory: 'graceHistory',
       };
       for (const [key, storeKey] of Object.entries(ARRAY_KEYS)) {
         if (!patch[key]) continue;
@@ -47,7 +49,9 @@ export function useSync() {
               }
             } else {
               if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
-                result[idx] = item;
+                result[idx] = (storeKey === 'reflections' && !item.colors && local.colors)
+                  ? { ...item, colors: local.colors }
+                  : item;
               }
             }
           } else {
@@ -78,6 +82,7 @@ export function useSync() {
 
     const getExpoPushToken = async () => {
       try {
+        const Notifications = await getNotifications();
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
 

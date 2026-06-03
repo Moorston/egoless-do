@@ -200,6 +200,7 @@ function reflectionToSync(r: Record<string, unknown>) {
     id: r.id, timestamp: r.created_at, content: r.content,
     tags: JSON.parse((r.tags as string) ?? '[]'),
     mood: r.mood, cardTheme: r.card_theme, linkedHabitId: r.linked_habit_id,
+    linkedPlanItemId: r.linked_plan_id,
     isPinned: (r.is_pinned as number) === 1,
     isPublished: (r.is_published as number) === 1,
     updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
@@ -414,24 +415,43 @@ async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: 
   if (data.reflection?.length) {
     const alive = data.reflection.filter(r => !r.deleted);
     const dead = data.reflection.filter(r => r.deleted);
+    const preservedColors = new Map<string, string>();
     for (const r of alive) {
       if (deletedIds?.has(r.id)) { await db.runAsync('UPDATE mind_reflections SET deleted=1,synced=1 WHERE id=?', [r.id]); continue; }
       if (await isLocalDeleted(db, 'mind_reflections', 'id', r.id)) continue;
       if (await isLocalNewer(db, 'mind_reflections', 'id', r.id, r.updatedAt)) continue;
+      // Preserve local colors before overwrite (server data may lack colors)
+      if (!r.colors) {
+        try {
+          const local = await db.getFirstAsync<{ colors: string | null }>('SELECT colors FROM mind_reflections WHERE id=?', [r.id]);
+          if (local?.colors) preservedColors.set(r.id, local.colors);
+        } catch {}
+      }
       await db.runAsync(`
         INSERT OR REPLACE INTO mind_reflections
-        (id,created_at,content,tags,mood,card_theme,linked_habit_id,is_pinned,is_published,updated_at,deleted,synced)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,1)`,
+        (id,created_at,content,tags,mood,card_theme,linked_habit_id,linked_plan_id,is_pinned,is_published,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1)`,
         [r.id, r.timestamp ?? r.created_at, r.content, JSON.stringify(r.tags ?? []),
          r.mood ?? null, r.cardTheme ?? r.card_theme ?? null, r.linkedHabitId ?? r.linked_habit_id ?? null,
+         r.linkedPlanItemId ?? r.linked_plan_id ?? null,
          (r.isPinned ?? r.is_pinned) ? 1 : 0, (r.isPublished ?? r.is_published) ? 1 : 0,
          r.updatedAt ?? null, 0]
       );
+      // Restore preserved colors after insert
+      if (preservedColors.has(r.id)) {
+        try {
+          await db.runAsync('UPDATE mind_reflections SET colors=? WHERE id=?', [preservedColors.get(r.id), r.id]);
+        } catch {}
+      }
     }
     for (const r of dead) {
       await db.runAsync('UPDATE mind_reflections SET deleted=1,synced=1 WHERE id=?', [r.id]);
     }
-    patch.reflections = data.reflection;
+    // Merge preserved colors into the patch for store update
+    patch.reflections = data.reflection.map(r => {
+      if (!r.colors && preservedColors.has(r.id)) return { ...r, colors: preservedColors.get(r.id) };
+      return r;
+    });
   }
 
   if (data.fasting?.length) {
@@ -555,7 +575,7 @@ async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: 
           [profileId, JSON.stringify(profileData), latest.updatedAt ?? null, 0]
         );
         patch.userProfile = profileData;
-        if (profileData.waterMl !== undefined) patch.waterMl = profileData.waterMl;
+        // waterMl is managed by DailyResetManager, don't sync from server
         if (profileData.waterGoal !== undefined) patch.waterGoal = profileData.waterGoal;
       }
     }

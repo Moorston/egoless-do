@@ -7,7 +7,7 @@ const withPWA = require('next-pwa')({
 });
 
 const config: NextConfig = {
-  transpilePackages: ['@egoless-do/core'],
+  transpilePackages: ['@egoless-do/core', 'pocketbase'],
   experimental: { turbo: {} },
 };
 

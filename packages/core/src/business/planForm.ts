@@ -12,7 +12,7 @@ export interface ItemForm {
   link: PlanItemLink;
   priority: PlanItemPriority;
   targetMetric: string;
-  linkConfig?: { habitId?: string; targetMinutes?: number; targetHours?: number };
+  linkConfig?: { targetMinutes?: number; targetHours?: number };
 }
 
 /** Link type options for plan items. */
@@ -21,7 +21,7 @@ export const LINK_OPTIONS: { value: PlanItemLink; labelKey: string }[] = [
   { value: 'fasting', labelKey: 'planLinkFasting' },
   { value: 'meditation', labelKey: 'planLinkMeditation' },
   { value: 'exercise', labelKey: 'planLinkExercise' },
-  { value: 'habit', labelKey: 'planLinkHabit' },
+  { value: 'reflection', labelKey: 'planLinkReflection' },
 ];
 
 /** Priority options for plan items. */

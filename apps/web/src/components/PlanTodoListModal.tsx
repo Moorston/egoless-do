@@ -1,8 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { THEMES, COLORS, getTodayItems, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE, FONT_STAT_CARD } from '@egoless-do/core';
-import type { PlanItem } from '@egoless-do/core';
+import { THEMES, COLORS, getTodayItems, getActivePlan, getTodoItemStatus, computeDailyTodoStats, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { X, CheckCircle2, Check } from 'lucide-react';
@@ -12,7 +11,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = dateStr();
 
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
   const todayItems = useMemo(() => {
@@ -22,9 +21,10 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
 
   const checkins = store.planItemCheckins ?? [];
 
-  const isItemDone = (item: PlanItem) => checkins.some(c => c.planItemId === item.id && c.date === today && c.done);
-
-  const doneCount = todayItems.filter(i => isItemDone(i)).length;
+  const stats = useMemo(
+    () => computeDailyTodoStats(todayItems, [], checkins, today),
+    [todayItems, checkins, today],
+  );
 
   return (
     <div style={{
@@ -53,7 +53,8 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
         ) : (
           <>
             {todayItems.map(item => {
-              const done = isItemDone(item);
+              const status = getTodoItemStatus(item, checkins, today);
+              const done = status.done;
               const isManual = item.link === 'manual';
               return (
                 <div key={item.id} style={{
@@ -99,7 +100,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
               );
             })}
             <div style={{ textAlign: 'center', fontSize: FONT_SUB, color: TH.sub, marginTop: 8 }}>
-              {doneCount}/{todayItems.length} {T('planProgress')}
+              {stats.planItemsDone}/{stats.planItemsTotal} {T('planProgress')}
             </div>
           </>
         )}

@@ -187,7 +187,7 @@ export async function GET(req: NextRequest) {
         }
         data[entity] = allRecords
           .map(r => getPayload(r))
-          .filter(d => d && d.deleted !== true);
+          .filter(d => d != null);
       } catch (err: any) {
         if (err?.status === 404) {
           console.warn(`[Sync GET] Collection not found for ${entity} (${collection}), skipping`);

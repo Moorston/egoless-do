@@ -120,6 +120,7 @@ export const zh: I18nKeys = {
   tagSectionPreset:'预设标签', tagSectionCustom:'自定义标签', tagSectionHabit:'习惯标签',
   moodSectionPreset:'预设心情', moodSectionCustom:'自定义心情',
   moveToTop:'移至顶部',
+  sortByFreqOff:'按使用频率排序', sortByFreqOn:'✓ 已按使用频率排序',
 
   // Fasting
   fastTotal:'总次数', fastTotalHours:'总禁食', fastStreak:'连续天数',
@@ -250,13 +251,13 @@ export const zh: I18nKeys = {
   planItems:'任务列表', planAddItem:'添加任务', planDeleteItem:'删除任务',
   planItemName:'任务名称', planItemDesc:'任务描述',
   planItemStart:'任务开始日期', planItemEnd:'任务结束日期',
-  planItemContent:'任务内容（外链）', planItemLink:'联动模块', planItemTarget:'任务指标',
+  planItemContent:'任务链接', planItemLink:'联动模块', planItemTarget:'任务指标',
   planPriority:'优先级', planPriorityHigh:'高',
   planPriorityMedium:'中', planPriorityLow:'低',
   planSave:'保存计划', planCreate:'创建计划', planEditTitle:'编辑计划',
   planTodoList:'每日待办', planTodoDate:'今日待办', planDetail:'计划详情',
   planLinkManual:'手动', planLinkCheckin:'今日打卡', planLinkFasting:'禁食',
-  planLinkMeditation:'冥想', planLinkExercise:'锻炼', planLinkHabit:'习惯',
+  planLinkMeditation:'冥想', planLinkExercise:'锻炼', planLinkHabit:'习惯', planLinkReflection:'感念',
   planProgress:'进度', planDays:'天', planCheckinDays:'打卡天数', planCheckin:'完成', planUncheckin:'取消',
   planTodayCheckin:'今日打卡', planHeatmap:'打卡热力图',
   planConfirmDelete:'确认删除此计划？', planConfirmCancel:'确认作废此计划？',
@@ -332,7 +333,7 @@ export const zh: I18nKeys = {
 
   // Plan detail
   planNotFound:'计划不存在', heatmapLess:'少', heatmapMore:'多', month:'月',
-  planTodoToday:'今日待办', planTodoHistory:'待办历史', planTodoDone:'已完成', planTodoTotal:'总任务', planAutoChecked:'已联动',
+  planTodoToday:'今日待办', planTodoHistory:'待办历史', planTodoDone:'已完成', planTodoTotal:'总任务', planAutoChecked:'联动打卡',
   planDailyCustomTodos:'每日自定义待办', planAddCustomTodoPlaceholder:'添加今日待办项...', planNoCustomTodos:'暂无自定义待办',
   planDeleteCustomTodo:'删除待办', planDeleteCustomTodoConfirm:'确定要删除这个待办项吗？',
 

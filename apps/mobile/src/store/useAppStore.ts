@@ -34,15 +34,19 @@ export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlic
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
   & MobileUiSlice & PlanSlice & RecycleBinSlice;
 
+// Delayed sync callback - set after store is created
+let _autoSyncCallback: (() => void) | null = null;
+const triggerAutoSync = () => _autoSyncCallback?.();
+
 export const useAppStore = create<MobileStore>()(
   persist(
     (...a) => ({
       ...createAuthSlice(adapter, () => { runSync().catch(console.error); })(...a),
-      ...createHabitSlice(adapter)(...a),
+      ...createHabitSlice(adapter, triggerAutoSync)(...a),
       ...createReflectionSlice(adapter)(...a),
-      ...createFastingSlice(adapter)(...a),
-      ...createMeditationSlice(adapter)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter), createExerciseSlice(adapter), createCheckinSlice(adapter), createProfileSlice(adapter), createSettingsSlice(), createTagMoodSlice())(...a),
+      ...createFastingSlice(adapter, triggerAutoSync)(...a),
+      ...createMeditationSlice(adapter, triggerAutoSync)(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(), createTagMoodSlice())(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice()(...a),
     }),
@@ -51,6 +55,11 @@ export const useAppStore = create<MobileStore>()(
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+
+        // Set the auto sync callback after store is created
+        _autoSyncCallback = () => {
+          useAppStore.getState().autoSyncPlanItems?.();
+        };
 
         const dailyReset = new DailyResetManager({
           getLastReset: () => AsyncStorage.getItem(DAILY_RESET_KEY),
@@ -61,6 +70,9 @@ export const useAppStore = create<MobileStore>()(
           getWaterGoal: () => useAppStore.getState().waterGoal ?? 2000,
           persistProfile: (data) => {
             adapter.persistChange('profile', 'self', data).catch(console.error);
+          },
+          onPlanDailyReset: (previousDate) => {
+            useAppStore.getState().performDailyReset?.(previousDate);
           },
           addVisibilityListener: (callback) => {
             AppState.addEventListener('change', (s) => {

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
+import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
 import { COLORS, STATS_GRADIENT, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
 import {
@@ -20,6 +21,7 @@ export default function StatsScreen() {
   const T     = useT();
   const store = useAppStore();
   const P     = TH.primary;
+  const nav   = useRootNavigation();
 
   const activeHabits = (store.habits ?? []).filter(h => h.status === 'inProgress').length;
   const totalCal     = (store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? 0), 0);
@@ -60,10 +62,10 @@ export default function StatsScreen() {
   ];
 
   return (
-    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}>
-        <ScreenHeader title={T('statsTitle')} subtitle={T('statsOverview')} compact />
+        <ScreenHeader title={T('statsTitle')} subtitle={T('statsOverview')} compact onBack={() => nav.goBack()} />
 
         {/* ── Check-in Calendar ── */}
         <Card>
