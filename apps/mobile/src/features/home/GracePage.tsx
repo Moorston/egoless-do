@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader, PrimaryButton } from '../../components/UI';
 import { COLORS, yesterday, FONT_BODY, FONT_TITLE, FONT_SUB } from '@egoless-do/core';
 import { Shield, ShieldCheck, CheckCircle2, Clock, ChevronRight } from 'lucide-react-native';
 
 export default function GracePage() {
-  const nav   = useNavigation();
+  const nav   = useRootNavigation();
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;

@@ -1,4 +1,6 @@
-export const en: Record<string, string> = {
+import type { I18nKeys } from './types';
+
+export const en: I18nKeys = {
   appName:'Flow Journal', streak:'Day Streak', days:'days', home:'Home',
   fasting:'Fasting', meditation:'Meditation', reflections:'Mind', exercise:'Exercise',
   habits:'Habits', stats:'Stats', settings:'Settings',
@@ -243,21 +245,29 @@ export const en: Record<string, string> = {
   planComplete:'Complete', planCancelPlan:'Cancel', planEdit:'Edit', planDelete:'Delete',
   planName:'Plan Name', planGoal:'Plan Goal', planSlogan:'My Vision',
   planStartDate:'Start Date', planEndDate:'End Date',
-  planItems:'Items', planAddItem:'Add Item', planDeleteItem:'Delete Item',
-  planItemName:'Item Name', planItemDesc:'Description',
-  planItemStart:'Item Start Date', planItemEnd:'Item End Date',
-  planItemContent:'Content (URL)', planItemLink:'Link Module',
+  planPeriod:'Plan Period', planPeriod1m:'1 Month', planPeriod3m:'3 Months',
+  planPeriod6m:'6 Months', planPeriod1y:'1 Year',
+  planItems:'Tasks', planAddItem:'Add Task', planDeleteItem:'Delete Task',
+  planItemName:'Task Name', planItemDesc:'Description',
+  planItemStart:'Task Start Date', planItemEnd:'Task End Date',
+  planItemContent:'Content (URL)', planItemLink:'Link Module', planItemTarget:'Target Metric',
+  planPriority:'Priority', planPriorityHigh:'High',
+  planPriorityMedium:'Medium', planPriorityLow:'Low',
   planSave:'Save Plan', planCreate:'Create Plan', planEditTitle:'Edit Plan',
-  planTodoList:'Daily TodoList', planTodoDate:"Today's Tasks",
+  planTodoList:'Daily TodoList', planTodoDate:"Today's Tasks", planDetail:'Plan Details',
   planLinkManual:'Manual', planLinkCheckin:'Check-in', planLinkFasting:'Fasting',
   planLinkMeditation:'Meditation', planLinkExercise:'Exercise', planLinkHabit:'Habit',
   planProgress:'Progress', planDays:'days', planCheckinDays:'Check-in Days', planCheckin:'Done', planUncheckin:'Undo',
   planTodayCheckin:"Today's Check-in", planHeatmap:'Check-in Heatmap',
   planConfirmDelete:'Delete this plan?', planConfirmCancel:'Cancel this plan?',
   planConfirmComplete:'Complete this plan?',
-  planItemTimeError:'Item dates must be within plan date range', planItemTimeOrderError:'End date must be after start date',
+  planItemTimeError:'Task dates must be within plan date range', planItemTimeOrderError:'End date must be after start date',
+  planItemDescRequired:'Task description is required', planItemTargetRequired:'Task metric is required',
   planTimeError:'End date must be after start date', planNameRequired:'Plan name is required',
-  planGoalRequired:'Plan goal is required', planNoItems:'No items yet', planAddItemHint:'+ Add Item',
+  planGoalRequired:'Plan goal is required', planNoItems:'No tasks yet', planAddItemHint:'+ Add Task',
+  planDeleteItemConfirm:'Are you sure you want to delete this task?',
+  planDeleteConfirm:'Are you sure you want to delete this plan? It will be moved to the recycle bin.',
+  planCompleteConfirm:'Are you sure you want to complete this plan?',
 
   // Global
   globalPulse:'Global Pulse', globalLeaderboard:'Leaderboard',
@@ -301,7 +311,7 @@ export const en: Record<string, string> = {
 
   // Common
   commonCancel:'Cancel', commonConfirm:'Confirm', commonClose:'Close',
-  commonDelete:'Delete', commonSave:'Save', commonEdit:'Edit',
+  commonDelete:'Delete', commonSave:'Save', commonEdit:'Edit', commonAdd:'Add',
   commonBack:'← Back', commonSyncing:'Syncing...', commonConnected:'Connected',
   commonOffline:'Offline',
 
@@ -319,6 +329,12 @@ export const en: Record<string, string> = {
   // Calendar weekdays
   weekdaySun:'Sun', weekdayMon:'Mon', weekdayTue:'Tue', weekdayWed:'Wed',
   weekdayThu:'Thu', weekdayFri:'Fri', weekdaySat:'Sat',
+
+  // Plan detail
+  planNotFound:'Plan not found', heatmapLess:'Less', heatmapMore:'More', month:'/',
+  planTodoToday:"Today's Tasks", planTodoHistory:'Task History', planTodoDone:'Done', planTodoTotal:'Total', planAutoChecked:'Auto',
+  planDailyCustomTodos:'Daily Custom Todos', planAddCustomTodoPlaceholder:'Add a custom todo for today...', planNoCustomTodos:'No custom todos yet',
+  planDeleteCustomTodo:'Delete Todo', planDeleteCustomTodoConfirm:'Are you sure you want to delete this todo?',
 
   // Errors
   errorDisconnected:'Disconnected',

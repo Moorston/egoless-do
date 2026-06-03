@@ -5,12 +5,14 @@ import {
   PanResponder, GestureResponderEvent, PanResponderGestureState,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
+import { useTabNavigation, type MainTabParamList } from '../../navigation/hooks';
 import {
   useTheme, ScreenHeader, TagPill, PrimaryButton, OutlineButton,
   ThemedInput, useT,
 } from '../../components/UI';
+import { SimpleHeader } from '../../navigation';
 import { MIND_COLORS, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE, FONT_BADGE, FONT_LABEL, FONT_EMPTY } from '@egoless-do/core';
 import {
   Link, Pin, Settings, Pencil, Trash2, Check, X, ChevronLeft, ChevronUp, ChevronDown, Eye, EyeOff, AlertCircle,
@@ -431,8 +433,8 @@ export default function ReflectionsScreen() {
   const P     = TH.primary;
   const store = useAppStore();
   const T     = useT();
-  const route = useRoute<any>();
-  const nav   = useNavigation<any>();
+  const route = useRoute<RouteProp<MainTabParamList, 'Reflections'>>();
+  const nav   = useTabNavigation();
 
   const [filterTag, setFilterTag] = useState('');
   const [showNew, setShowNew]     = useState(false);
@@ -604,6 +606,7 @@ export default function ReflectionsScreen() {
 
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>
+      <SimpleHeader routeName="Reflections" />
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:100 }}>
         <ScreenHeader title={T('reflTitle')} compact
           right={
@@ -676,7 +679,7 @@ export default function ReflectionsScreen() {
 
                 <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:22, marginBottom:10 }}>{r.content}</Text>
                 {r.link && (
-                  <TouchableOpacity onPress={() => Linking.openURL(r.link!).catch(() => {})} style={{ marginBottom:8 }}>
+                  <TouchableOpacity onPress={() => Linking.openURL(r.link!).catch(console.error)} style={{ marginBottom:8 }}>
                     <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
                       <Link size={14} color="rgba(255,255,255,.7)" />
                       <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SUB, textDecorationLine:'underline' }}>{r.link}</Text>
@@ -793,7 +796,7 @@ export default function ReflectionsScreen() {
                 const tagsStr = r.tags?.length ? `\n标签: ${r.tags.join(' ')}` : '';
                 const moodStr = r.mood ? `\n心情: ${r.mood}` : '';
                 const timeStr = new Date(r.timestamp ?? 0).toLocaleString('zh-CN');
-                Share.share({ message: `${r.content}${tagsStr}${moodStr}\n\n— ${timeStr}` }).catch(() => {});
+                Share.share({ message: `${r.content}${tagsStr}${moodStr}\n\n— ${timeStr}` }).catch(console.error);
               }
               setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(59,130,246,.15)', alignItems:'center' }}>

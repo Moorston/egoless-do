@@ -1,7 +1,7 @@
 'use client';
 
-const AMAP_KEY = 'c35895081bfc43fa3c3acb9399b912bf';
-const AMAP_SECURITY_KEY = '5a79ce0ed040f7b3ed12921ce48986ab';
+const AMAP_KEY = process.env.NEXT_PUBLIC_AMAP_KEY ?? '';
+const AMAP_SECURITY_KEY = process.env.NEXT_PUBLIC_AMAP_SECURITY_KEY ?? '';
 
 let loadPromise: Promise<typeof AMap> | null = null;
 

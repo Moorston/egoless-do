@@ -15,9 +15,23 @@ const COLLECTIONS = [
   { name: 'meditation_history', idField: 'date' },
   { name: 'user_profiles',      idField: 'profile_id' },
   { name: 'exercise_entries',   idField: 'exercise_id' },
+  { name: 'plans',              idField: 'plan_id' },
+  { name: 'plan_items',         idField: 'plan_item_id' },
+  { name: 'plan_item_checkins', idField: 'checkin_id' },
+  { name: 'grace_history',      idField: 'date' },
 ];
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Require SETUP_SECRET to protect this endpoint (passed via header, not URL)
+  const setupSecret = process.env.SETUP_SECRET;
+  if (!setupSecret) {
+    return NextResponse.json({ error: 'SETUP_SECRET not configured' }, { status: 503 });
+  }
+  const token = request.headers.get('x-setup-secret');
+  if (token !== setupSecret) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const adminEmail = process.env.PB_ADMIN_EMAIL;
   const adminPass = process.env.PB_ADMIN_PASSWORD;
   if (!adminEmail || !adminPass) {

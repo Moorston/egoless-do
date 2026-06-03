@@ -1,23 +1,36 @@
 // ─── Mobile-specific UiSlice extension ─────────────────────────
 import type { StateCreator } from 'zustand';
-import type { UiSlice } from '@egoless-do/core';
-import { submitCheckinEntry } from '@egoless-do/core';
-import type { StorageAdapter } from '@egoless-do/core';
+import type {
+  FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
+  StorageAdapter, FullStore,
+} from '@egoless-do/core';
+import { submitCheckinEntry, createResetDataPatch } from '@egoless-do/core';
 
-export interface MobileUiSlice extends UiSlice {
+export interface MobileUiSlice extends FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice {
   healthSyncEnabled: boolean;
   todaySteps: number | null;
   setHealthSyncEnabled: (v: boolean) => void;
   setTodaySteps: (n: number) => void;
   syncWeightFromHealth: (weight: number) => void;
+  resetData: () => void;
 }
 
-export function createMobileUiSlice<S extends MobileUiSlice>(
+export function createMobileUiSlice(
   adapter: StorageAdapter,
-  baseCreateUiSlice: StateCreator<S, [], [], UiSlice>,
-): StateCreator<S, [], [], MobileUiSlice> {
+  foodSlice: StateCreator<FullStore, [], [], FoodSlice>,
+  exerciseSlice: StateCreator<FullStore, [], [], ExerciseSlice>,
+  checkinSlice: StateCreator<FullStore, [], [], CheckinSlice>,
+  profileSlice: StateCreator<FullStore, [], [], ProfileSlice>,
+  settingsSlice: StateCreator<FullStore, [], [], SettingsSlice>,
+  tagMoodSlice: StateCreator<FullStore, [], [], TagMoodSlice>,
+): StateCreator<FullStore, [], [], MobileUiSlice> {
   return (set, get, api) => ({
-    ...baseCreateUiSlice(set, get, api),
+    ...foodSlice(set, get, api),
+    ...exerciseSlice(set, get, api),
+    ...checkinSlice(set, get, api),
+    ...profileSlice(set, get, api),
+    ...settingsSlice(set, get, api),
+    ...tagMoodSlice(set, get, api),
 
     healthSyncEnabled: false,
     todaySteps: null,
@@ -26,7 +39,7 @@ export function createMobileUiSlice<S extends MobileUiSlice>(
     setTodaySteps(n: number) { set({ todaySteps: n } as any); },
 
     syncWeightFromHealth(weight: number) {
-      const s = get() as any;
+      const s = get();
       const result = submitCheckinEntry(s.checkinHistory ?? [], false, '', undefined, weight);
       set({
         checkinHistory: result.history,
@@ -34,7 +47,12 @@ export function createMobileUiSlice<S extends MobileUiSlice>(
         userProfile: { ...(s.userProfile ?? {}), weight },
       } as any);
       const entry = result.history[0];
-      if (entry) adapter.persistChange('checkin', entry.date, entry as any).catch(console.error);
+      if (entry) adapter.persistChange('checkin', entry.date, entry).catch(console.error);
+    },
+
+    resetData() {
+      const { auth, theme, language } = get();
+      set(createResetDataPatch(auth, theme, language) as any);
     },
   });
 }

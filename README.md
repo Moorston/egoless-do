@@ -49,7 +49,7 @@ egoless-do/ (Turborepo + pnpm workspaces)
 
 ## 数据同步
 
-Web 端通过 `/api/sync` 路由与 PocketBase 双向同步，使用 7 个按实体划分的集合：
+Web 端通过 `/api/sync` 路由与 PocketBase 双向同步，使用 12 个按实体划分的集合：
 
 | 集合 | 标识字段 | 说明 |
 |------|---------|------|
@@ -60,6 +60,11 @@ Web 端通过 `/api/sync` 路由与 PocketBase 双向同步，使用 7 个按实
 | `checkin_records` | `date` | 每日打卡 |
 | `meditation_history` | `date` | 冥想记录 |
 | `user_profiles` | `profile_id` | 用户资料 |
+| `exercise_entries` | `exercise_id` | 运动记录 |
+| `plans` | `plan_id` | 计划定义 |
+| `plan_items` | `plan_item_id` | 计划项目 |
+| `plan_item_checkins` | `checkin_id` | 计划项目打卡 |
+| `grace_history` | `date` | 宽限期记录 |
 
 权限规则：用户仅可读写自己的数据（`@request.auth.id = user_id`）。
 

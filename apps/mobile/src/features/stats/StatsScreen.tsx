@@ -154,7 +154,7 @@ export default function StatsScreen() {
         )}
 
         {/* ── Habit Progress ── */}
-        {store.habits.filter(h => h.status === 'inProgress').map(h => (
+        {(store.habits ?? []).filter(h => h.status === 'inProgress').map(h => (
           <Card key={h.id}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
               <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{h.name}</Text>

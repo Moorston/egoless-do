@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
   fmt, fmtMS, dateStr, yesterday, tomorrow, daysInMonth,
-  uid, computeStreak, estimateFastKcal, estimateFastingKcal,
+  uid, computeStreak, estimateFastingKcal,
   calculateCheckinStreak, buildHeatmapGrid, normalizeEntity,
 } from './utils';
 
@@ -72,14 +72,6 @@ describe('computeStreak', () => {
   it('deduplicates', () => {
     const today = dateStr();
     expect(computeStreak([today, today])).toBe(1);
-  });
-});
-
-describe('estimateFastKcal', () => {
-  it('calculates 35 kcal/hour', () => {
-    expect(estimateFastKcal(3600)).toBe(35);
-    expect(estimateFastKcal(7200)).toBe(70);
-    expect(estimateFastKcal(0)).toBe(0);
   });
 });
 

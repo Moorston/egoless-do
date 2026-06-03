@@ -20,7 +20,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       done_days: num(d.doneDays), streak: num(d.streak), interrupted: num(d.interrupted),
       status: d.status ?? 'notStarted', checked_dates: json(d.checkedDates),
       pause_reason: d.pauseReason ?? '', abandon_reason: d.abandonReason ?? '',
-      updated_at: d.updatedAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   reflection: {
@@ -30,7 +30,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       mood: d.mood ?? null, card_theme: d.cardTheme ?? null,
       linked_habit_id: d.linkedHabitId ?? null,
       is_pinned: bool(d.isPinned), is_published: bool(d.isPublished),
-      updated_at: d.updatedAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   fasting: {
@@ -39,15 +39,15 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       id: d.id, target_hours: num(d.targetHours), started_at: d.startedAt,
       ended_at: d.endedAt ?? null, estimated_kcal: d.estimatedKcal ?? null,
       insight: d.insight ?? null,
-      updated_at: d.updatedAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   food: {
     table: 'food_entries', pk: 'id',
     toRow: (d) => ({
       id: d.id, name: d.name, cal: num(d.calories), note: d.note ?? '',
-      entry_date: '', ts: d.timestamp,
-      updated_at: d.updatedAt ?? Date.now(),
+      entry_date: d.timestamp ? new Date(d.timestamp as number).toISOString().slice(0, 10) : '', ts: d.timestamp,
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   checkin: {
@@ -55,7 +55,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       date: d.date, done: bool(d.done), note: d.note ?? '',
       streak: num(d.streak), timestamp: d.timestamp ?? null, weight: d.weight ?? null,
-      updated_at: d.updatedAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   exercise: {
@@ -66,14 +66,14 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       calories: d.calories ?? 0, avg_pace: d.avgPace ?? 0,
       track_points: json(d.trackPoints), is_gps_sport: bool(d.isGpsSport),
       ts: d.timestamp,
-      updated_at: d.updatedAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   meditation: {
     table: 'meditation_history', pk: 'date',
     toRow: (d) => ({
       date: d.date, dur: d.dur ?? '0', mood: d.mood ?? '',
-      updated_at: d.updatedAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   profile: {
@@ -84,6 +84,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
         profile_id: profileId ?? 'self',
         data: typeof data === 'string' ? data : JSON.stringify(rest),
         updated_at: d.updatedAt ?? Date.now(),
+        deleted: bool(d.deleted),
       };
     },
   },
@@ -103,6 +104,8 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       start_date: d.startDate, end_date: d.endDate, content_url: d.contentUrl ?? '',
       total_checkin_days: num(d.totalCheckinDays), status: d.status ?? 'not_started',
       progress: num(d.progress), link: d.link ?? 'manual',
+      priority: d.priority ?? 'medium',
+      target_metric: d.targetMetric ?? '',
       link_config: json(d.linkConfig), item_order: num(d.order),
       updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
     }),
@@ -113,6 +116,13 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       id: d.id, plan_item_id: d.planItemId, date: d.date,
       done: bool(d.done), note: d.note ?? '', linked_module: d.linkedModule ?? '',
       updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
+    }),
+  },
+  grace: {
+    table: 'grace_history', pk: 'date',
+    toRow: (d) => ({
+      date: d.date, restored_at: d.restoredAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
 };

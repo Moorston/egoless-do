@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
 import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
+import { SimpleHeader } from '../../navigation';
 import { Music, Globe, Binary, ChevronRight, Clock } from 'lucide-react-native';
 
 // Local sound files
@@ -25,7 +26,7 @@ export default function MeditationScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
   const store = useAppStore();
-  const nav   = useNavigation();
+  const nav   = useRootNavigation();
   const T     = useT();
 
   const [durMin, setDurMin]       = useState(10);
@@ -149,6 +150,7 @@ export default function MeditationScreen() {
 
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
+      <SimpleHeader routeName="Meditation" />
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
 
         {audioError && (
@@ -222,7 +224,7 @@ export default function MeditationScreen() {
         </Card>
 
         {/* Global meditators */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
+        <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
           style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
           <Globe size={18} color={P} />
           <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
@@ -230,7 +232,7 @@ export default function MeditationScreen() {
         </TouchableOpacity>
 
         {/* History entry */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('MedHistory')}
+        <TouchableOpacity onPress={() => nav.navigate('MedHistory')}
           style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
           <Binary size={18} color={P} />
           <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('meditationHistory')}</Text>

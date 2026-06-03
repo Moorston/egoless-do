@@ -14,7 +14,8 @@ export function togglePinInList(reflections: MindReflection[], id: string): Mind
 }
 
 export function deleteReflectionFromList(reflections: MindReflection[], id: string): MindReflection[] {
-  return reflections.filter(r => r.id !== id);
+  const now = Date.now();
+  return reflections.map(r => r.id === id ? { ...r, deleted: true, updatedAt: now } : r);
 }
 
 export function updateReflectionInList(reflections: MindReflection[], id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>): MindReflection[] {

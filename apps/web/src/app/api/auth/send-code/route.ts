@@ -3,39 +3,10 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import { getPb, escapeFilter } from '../../_pb';
 import db from '../../_db';
+import { getClientIp, sendCodeRateLimit } from '../../_rateLimit';
 
 const CODE_EXPIRES_MS = 5 * 60 * 1000;
 const CODE_LENGTH = 6;
-
-// ── In-memory rate limiter (per IP) ───────────────────────────────
-const ipAttempts = new Map<string, { count: number; resetAt: number }>();
-const IP_MAX_ATTEMPTS = 5;
-const IP_WINDOW_MS = 60_000;
-
-function checkIpRateLimit(ip: string): boolean {
-  const now = Date.now();
-  if (ipAttempts.size > 1000) {
-    for (const [key, entry] of ipAttempts) {
-      if (now > entry.resetAt) ipAttempts.delete(key);
-    }
-  }
-  const entry = ipAttempts.get(ip);
-  if (!entry || now > entry.resetAt) {
-    ipAttempts.set(ip, { count: 1, resetAt: now + IP_WINDOW_MS });
-    return true;
-  }
-  if (entry.count >= IP_MAX_ATTEMPTS) return false;
-  entry.count++;
-  return true;
-}
-
-function getClientIp(req: NextRequest): string {
-  return (
-    req.headers.get('x-real-ip') ??
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    'unknown'
-  );
-}
 
 function generateCode(): string {
   return String(crypto.randomInt(0, 10 ** CODE_LENGTH)).padStart(CODE_LENGTH, '0');
@@ -55,7 +26,7 @@ function getTransporter() {
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  if (!checkIpRateLimit(ip)) {
+  if (!sendCodeRateLimit(ip)) {
     return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
   }
 

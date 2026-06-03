@@ -3,7 +3,7 @@
 // token comes from Zustand store, server changes update store.
 import { useEffect, useRef } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { runSync, setSyncTokenProvider, setSyncChangeHandler, setLastSyncAt, connectRealtime, disconnectRealtime } from './SyncService';
+import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, setLastSyncAt, connectRealtime, disconnectRealtime } from './SyncService';
 import { useAppStore } from '../../store/useAppStore';
 import { registerPushToken } from '@egoless-do/core';
 import * as Notifications from 'expo-notifications';
@@ -13,18 +13,62 @@ const POCKETBASE_URL = process.env.EXPO_PUBLIC_POCKETBASE_URL ?? 'http://localho
 export function useSync() {
   const token = useAppStore(s => s.auth.token);
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
-  const updateFromSync = useAppStore.setState;
   const lastSyncAtRef = useRef(0);
 
   // Wire up token provider & change handler once
   useEffect(() => {
     setSyncTokenProvider(() => useAppStore.getState().auth.token);
     setSyncChangeHandler((patch) => {
-      useAppStore.setState(patch);
-      // Recalculate streak after syncing checkin records
-      if (patch.checkinHistory) {
+      const store = useAppStore.getState();
+      const merged: Record<string, unknown> = {};
+      const ARRAY_KEYS: Record<string, string> = {
+        habits: 'habits', reflections: 'reflections', fastingHistory: 'fastingHistory',
+        foodLog: 'foodLog', checkinHistory: 'checkinHistory', exerciseLog: 'exerciseLog',
+        medHistory: 'medHistory', plans: 'plans', planItems: 'planItems',
+        planItemCheckins: 'planItemCheckins', graceHistory: 'graceHistory',
+      };
+      for (const [key, storeKey] of Object.entries(ARRAY_KEYS)) {
+        if (!patch[key]) continue;
+        const serverItems = patch[key] as any[];
+        const existing = (store as any)[storeKey] as any[] ?? [];
+        const result = [...existing];
+        for (const item of serverItems) {
+          const idField = item.date ? 'date' : 'id';
+          const idx = result.findIndex((e: any) => e[idField] === item[idField]);
+          if (idx >= 0) {
+            const local = result[idx];
+            if (local.deleted) {
+              if (item.deleted && (item.updatedAt ?? 0) > (local.updatedAt ?? 0)) {
+                result[idx] = item;
+              }
+            } else if (item.deleted) {
+              if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
+                result[idx] = item;
+              }
+            } else {
+              if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
+                result[idx] = item;
+              }
+            }
+          } else {
+            if (!item.deleted) result.push(item);
+          }
+        }
+        merged[storeKey] = result;
+      }
+      // Non-array fields (userProfile, waterMl, etc.) pass through directly
+      for (const key of Object.keys(patch)) {
+        if (!ARRAY_KEYS[key]) merged[key] = patch[key];
+      }
+      useAppStore.setState(merged);
+      if (merged.checkinHistory) {
         useAppStore.getState().calculateStreak();
       }
+    });
+    // Provide recycle bin IDs so sync can skip locally deleted items
+    setDeletedIdsProvider(() => {
+      const recycleBin = useAppStore.getState().recycleBin ?? [];
+      return new Set(recycleBin.map((r: any) => r.id));
     });
   }, []);
 

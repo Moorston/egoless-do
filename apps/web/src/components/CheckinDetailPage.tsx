@@ -12,7 +12,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
-  const record = store.checkinHistory.find((c: CheckinEntry) => c.date === date);
+  const record = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === date);
 
   const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
   const PRACTICE_ICONS: Record<string, React.ReactNode> = { sit: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, stand: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, chant: <BookOpen size={16} style={{verticalAlign:'middle'}} /> };
@@ -40,7 +40,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
     );
   }
 
-  const streak = record.done ? calculateCheckinStreak(store.checkinHistory, date) : 0;
+  const streak = record.done ? calculateCheckinStreak(store.checkinHistory ?? [], date) : 0;
 
   const statusBg = record.done ? 'rgba(16,185,129,.12)' : 'rgba(239,68,68,.08)';
   const statusColor = record.done ? COLORS.GREEN : COLORS.RED;

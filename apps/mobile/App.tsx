@@ -9,8 +9,8 @@ import AppNavigator from './src/navigation';
 import SplashScreen from './src/features/splash/SplashScreen';
 
 const AMAP_KEY = Platform.select({
-  android: 'fb01a15f17ec665d46422ab1769d2427',
-  ios: 'efb232210c5328248abffe22437e2b89',
+  android: process.env.EXPO_PUBLIC_AMAP_KEY_ANDROID ?? '',
+  ios: process.env.EXPO_PUBLIC_AMAP_KEY_IOS ?? '',
 });
 
 export default function App() {

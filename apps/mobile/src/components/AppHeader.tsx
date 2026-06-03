@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
@@ -35,7 +35,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
   const language = useAppStore(s => s.language);
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
-  const tabPositions = useRef<Record<string, number>>({});
+  const tabLayoutsRef = useRef<Record<string, { x: number; width: number }>>({});
 
   const TH = THEMES[theme];
   const P = TH.primary;
@@ -45,16 +45,8 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
     month: 'long', day: 'numeric', weekday: 'short',
   }), []);
 
-  // Scroll to active tab when it changes
-  useEffect(() => {
-    if (activeTab && tabPositions.current[activeTab] !== undefined) {
-      const x = tabPositions.current[activeTab];
-      scrollRef.current?.scrollTo({ x: Math.max(0, x - 50), animated: true });
-    }
-  }, [activeTab]);
-
-  const handleTabLayout = (key: string, x: number) => {
-    tabPositions.current[key] = x;
+  const handleTabLayout = (key: string, x: number, width: number) => {
+    tabLayoutsRef.current[key] = { x, width };
   };
 
   return (
@@ -86,7 +78,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
           <TouchableOpacity
             key={tab.key}
             onPress={() => onTabChange?.(tab.key)}
-            onLayout={(e) => handleTabLayout(tab.key, e.nativeEvent.layout.x)}
+            onLayout={(e) => handleTabLayout(tab.key, e.nativeEvent.layout.x, e.nativeEvent.layout.width)}
             activeOpacity={0.7}
             hitSlop={{ top: 8, bottom: 8, left: 4, right: 4 }}
             style={[
@@ -163,13 +155,13 @@ const styles = StyleSheet.create({
   tabsContainer: {
     paddingHorizontal: 12,
     paddingVertical: 10,
-    gap: 8,
+    gap: 6,
   },
   tab: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 14,
-    minHeight: 40,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+    minHeight: 36,
     justifyContent: 'center',
   },
   tabText: {

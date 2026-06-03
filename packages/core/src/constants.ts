@@ -44,7 +44,6 @@ export const MIND_COLORS = [
 ] as const;
 
 export const TAGS_PRESET = ['#觉察','#灵感','#内心独白'];
-export const TAGS_PRESET_EN = ['#Awareness','#Inspiration','#Inner Voice'];
 export const MOOD_DISPLAY: Record<string, string> = {
   '平静': '🌿 平静',
   '开心': '😊 开心',
@@ -56,13 +55,6 @@ export const MOODS_EN = ['Calm','Happy'] as const;
 export const FASTING_DURATIONS = [8,12,14,16,18,20,24] as const;
 export const MEDITATION_DURATIONS_MIN = [1,5,10,15,20,30,45,60,120,180,300] as const;
 export const MED_SOUNDS = ['海潮','雨声','钵声','鸟叫','流水','风铃','无'];
-
-export const QUICK_FOODS: { name: string; nameEn: string; cal: number }[] = [
-  { name:'米饭（一碗）', nameEn:'Rice (1 bowl)', cal:200 },
-  { name:'面条（一碗）', nameEn:'Noodles (1 bowl)', cal:250 },
-  { name:'馒头（一个）', nameEn:'Steamed bun', cal:180 },
-  { name:'面包（一片）', nameEn:'Bread (1 slice)', cal:80  },
-];
 
 export const FOOD_PRESETS: FoodCategory[] = [
   { key:'staple', label:'主食', labelEn:'Staples', icon:'Wheat', items:[

@@ -8,7 +8,7 @@ export function addMedMinutesToList(
   min: number,
 ): { total: number; history: MedHistoryEntry[] } {
   const today = dateStr();
-  const entry: MedHistoryEntry = { date: today, dur: `${min}min`, mood: '🌿 平静', updatedAt: Date.now() };
+  const entry: MedHistoryEntry = { date: today, dur: `${min}min`, mood: '🌿 平静', updatedAt: Date.now(), deleted: false };
   return {
     total: currentTotal + min,
     history: [entry, ...medHistory],

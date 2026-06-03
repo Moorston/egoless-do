@@ -3,10 +3,9 @@ import {
   View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import NetInfo from '@react-native-community/netinfo';
 import { useAppStore } from '../../store/useAppStore';
+import { SimpleHeader } from '../../navigation';
 import {
   Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
 } from '../../components/UI';
@@ -17,21 +16,19 @@ import {
   BarChart3, CalendarDays, Utensils, Shield, HeartCrack,
   Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
   Check, X, ChevronRight, Scale, Bell, Clock, Globe, Palette,
-  Cloud, CloudUpload, History, Info, Lock,
+  Cloud, CloudUpload,   History, Info, Lock, ClipboardList,
 } from 'lucide-react-native';
-import type { RootStackParamList } from '../../navigation';
+import { useRootNavigation } from '../../navigation/hooks';
 import {
   requestNotificationPermission, scheduleDailyReminder, cancelAllReminders,
 } from '../notifications/NotificationService';
-
-type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export default function SettingsScreen() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
   const store = useAppStore();
-  const nav   = useNavigation<Nav>();
+  const nav   = useRootNavigation();
 
   const healthSyncEnabled = useAppStore(s => s.healthSyncEnabled);
   const setHealthSyncEnabled = useAppStore(s => s.setHealthSyncEnabled);
@@ -137,27 +134,32 @@ export default function SettingsScreen() {
         {
           label: T('settingsHistory'), icon: <CalendarDays size={20} color={TH.text} />,
           right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => (nav as any).navigate('CheckinHistory'),
+          onPress: () => nav.navigate('CheckinHistory'),
+        },
+        {
+          label: T('planHistory'), icon: <ClipboardList size={20} color={TH.text} />,
+          right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('PlanHistory'),
         },
         {
           label: T('settingsFoodLog'), icon: <Utensils size={20} color={TH.text} />,
           right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => (nav as any).navigate('FoodLog'),
+          onPress: () => nav.navigate('FoodLog'),
         },
         {
           label: T('settingsGrace'), icon: <Shield size={20} color={TH.text} />, sub: T('settingsGraceDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => (nav as any).navigate('Grace'),
+          onPress: () => nav.navigate('Grace'),
         },
         {
           label: T('settingsStreakBreak'), icon: <HeartCrack size={20} color={TH.text} />, sub: T('settingsStreakBreakDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => (nav as any).navigate('StreakBreak'),
+          onPress: () => nav.navigate('StreakBreak'),
         },
         {
           label: T('recycleBin'), icon: <Trash2 size={20} color={TH.text} />, sub: T('recycleBinDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => (nav as any).navigate('RecycleBin'),
+          onPress: () => nav.navigate('RecycleBin'),
           last: true,
         },
       ],
@@ -315,6 +317,7 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <SimpleHeader routeName="Settings" />
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 60 }}
         showsVerticalScrollIndicator={false}
@@ -346,7 +349,7 @@ export default function SettingsScreen() {
             </View>
           ) : (
             <TouchableOpacity
-              onPress={() => (nav as any).navigate('Login')}
+              onPress={() => nav.navigate('Login')}
               style={{
                 paddingHorizontal: 16, paddingVertical: 8,
                 borderRadius: 12, backgroundColor: P,
@@ -393,7 +396,7 @@ export default function SettingsScreen() {
                   <Text style={{ color: '#EF4444', fontSize: FONT_BODY, flex: 1 }}>{T('settingsClearData')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => { store.logout(); (nav as any).reset({ index: 0, routes: [{ name: 'Login' }] }); }}
+                  onPress={() => { store.logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16 }}
                 >
                   <LogOut size={18} color="#EF4444" style={{ marginRight: 12 }} />
@@ -409,7 +412,7 @@ export default function SettingsScreen() {
           textAlign: 'center', color: TH.sub,
           fontSize: FONT_SUB, paddingVertical: 16,
         }}>
-          Egoless Do · {T('settingsFooter')}
+          {T('settingsFooter')}
         </Text>
       </ScrollView>
 

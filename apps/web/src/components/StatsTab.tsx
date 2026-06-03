@@ -4,30 +4,46 @@ import { useMemo } from 'react';
 import { THEMES, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK } from '@egoless-do/core';
 import { useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useShallow } from 'zustand/react/shallow';
 import LineChart from './charts/LineChart';
 import BarChart from './charts/BarChart';
 import CalendarGrid from './charts/CalendarGrid';
 import { Flame, Sparkles, Brain, Circle, Timer, Utensils, CalendarCheck, CalendarDays, Zap, PersonStanding, Dumbbell, BarChart3, TrendingUp, Shield } from 'lucide-react';
 
 export default function StatsTab() {
-  const store = useWebStore();
-  const TH = THEMES[store.theme];
+  const {
+    theme, language, streak, reflections, totalMedMinutes, habits,
+    fastingHistory, checkinHistory, foodLog, exerciseLog, graceHistory,
+  } = useWebStore(useShallow((s) => ({
+    theme: s.theme,
+    language: s.language,
+    streak: s.streak,
+    reflections: s.reflections,
+    totalMedMinutes: s.totalMedMinutes,
+    habits: s.habits,
+    fastingHistory: s.fastingHistory,
+    checkinHistory: s.checkinHistory,
+    foodLog: s.foodLog,
+    exerciseLog: s.exerciseLog,
+    graceHistory: s.graceHistory,
+  })));
+  const TH = THEMES[theme];
   const P = TH.primary;
   const T = useT();
-  const activeHabits = store.habits.filter((h) => h.status === 'inProgress').length;
+  const activeHabits = (habits ?? []).filter((h) => h.status === 'inProgress').length;
 
-  const exerciseLog = store.exerciseLog ?? [];
+  const exerciseLogData = exerciseLog ?? [];
   const now = Date.now();
   const weekStart = now - 7 * 24 * 3600 * 1000;
   const monthStart = now - 30 * 24 * 3600 * 1000;
-  const weekKm = exerciseLog.filter(e => e.timestamp >= weekStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
-  const monthKm = exerciseLog.filter(e => e.timestamp >= monthStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
-  const allPaces = exerciseLog.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
+  const weekKm = exerciseLogData.filter(e => e.timestamp >= weekStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
+  const monthKm = exerciseLogData.filter(e => e.timestamp >= monthStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
+  const allPaces = exerciseLogData.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
   const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
   const bestPaceStr = bestPace > 0 ? `${Math.floor(bestPace / 60)}:${String(Math.floor(bestPace % 60)).padStart(2, '0')}` : '--';
 
   const totalFastHours = (() => {
-    const totalSec = store.fastingHistory.reduce((sum, f) => {
+    const totalSec = (fastingHistory ?? []).reduce((sum, f) => {
       if (f.endedAt && f.startedAt) return sum + (f.endedAt - f.startedAt) / 1000;
       return sum;
     }, 0);
@@ -35,15 +51,15 @@ export default function StatsTab() {
   })();
 
   // Chart data (memoized)
-  const weightData = useMemo(() => aggregateWeightData(store.checkinHistory ?? [], 30), [store.checkinHistory]);
-  const caloriesData = useMemo(() => aggregateDailyCalories(store.foodLog ?? [], 7), [store.foodLog]);
-  const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLog, 8), [exerciseLog]);
+  const weightData = useMemo(() => aggregateWeightData(checkinHistory ?? [], 30), [checkinHistory]);
+  const caloriesData = useMemo(() => aggregateDailyCalories(foodLog ?? [], 7), [foodLog]);
+  const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLogData, 8), [exerciseLogData]);
 
-  const graceCount = (store.graceHistory ?? []).length;
+  const graceCount = (graceHistory ?? []).length;
   const keyMetrics = [
-    { label: T('streak'), value: `${store.streak} ${T('days')}`, Icon: Flame, bg: '#F97316' },
-    { label: T('statsReflections'), value: `${store.reflections.length} ${T('fastTimes')}`, Icon: Sparkles, bg: P },
-    { label: T('statsMeditation'), value: `${store.totalMedMinutes} ${T('medMinutes')}`, Icon: Brain, bg: '#22C55E' },
+    { label: T('streak'), value: `${streak} ${T('days')}`, Icon: Flame, bg: '#F97316' },
+    { label: T('statsReflections'), value: `${(reflections ?? []).length} ${T('fastTimes')}`, Icon: Sparkles, bg: P },
+    { label: T('statsMeditation'), value: `${totalMedMinutes} ${T('medMinutes')}`, Icon: Brain, bg: '#22C55E' },
     { label: T('statsActiveHabits'), value: `${activeHabits} ${T('habitDays')}`, Icon: Circle, bg: '#3B82F6' },
     { label: T('totalFasting'), value: `${totalFastHours}h`, Icon: Timer, bg: '#8B5CF6' },
     { label: T('graceStatsTitle'), value: `${graceCount} ${T('graceUsedTimes')}`, Icon: Shield, bg: '#F59E0B' },
@@ -53,8 +69,8 @@ export default function StatsTab() {
     { label: T('exerciseWeekKm'), value: `${weekKm.toFixed(1)} km`, Icon: CalendarCheck, bg: '#00897B' },
     { label: T('exerciseMonthKm'), value: `${monthKm.toFixed(1)} km`, Icon: CalendarDays, bg: '#5C6BC0' },
     { label: T('exerciseBestPace'), value: `${bestPaceStr} /km`, Icon: Zap, bg: '#FF6F00' },
-    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60)} ${T('exerciseMin')}`, Icon: PersonStanding, bg: '#E91E63' },
-    { label: T('exerciseTotalCount'), value: `${exerciseLog.length} ${T('fastTimes')}`, Icon: Dumbbell, bg: '#9C27B0' },
+    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLogData.reduce((s, e) => s + e.durationSec, 0) / 60)} ${T('exerciseMin')}`, Icon: PersonStanding, bg: '#E91E63' },
+    { label: T('exerciseTotalCount'), value: `${exerciseLogData.length} ${T('fastTimes')}`, Icon: Dumbbell, bg: '#9C27B0' },
   ];
 
   const cardStyle: React.CSSProperties = { ...cs(TH), padding: 16 };
@@ -66,7 +82,7 @@ export default function StatsTab() {
         <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.text, marginBottom: 12 }}>
           <CalendarCheck size={15} style={{verticalAlign:'middle',marginRight:4}} />{T('statsCheckinHeatmap')}
         </div>
-        <CalendarGrid history={store.checkinHistory ?? []} />
+        <CalendarGrid history={checkinHistory ?? []} />
       </div>
 
       {/* ── Key Metrics ── */}

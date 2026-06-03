@@ -1,169 +1,199 @@
-import type { StateCreator } from 'zustand';
-import type { Plan, PlanItem, PlanItemCheckin, PlanItemLink } from '../types';
+import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
 import {
-  addPlan, updatePlan, deletePlan,
-  startPlan, pausePlan, resumePlan, completePlan, cancelPlan, delayPlan,
-  checkAutoStatus,
+  addPlan, updatePlan, deletePlan, canDeletePlan,
+  startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
+  checkAutoStatus, performDailyReset as performDailyResetBiz,
   addPlanItem, updatePlanItem, deletePlanItem,
   checkinItem, uncheckinItem,
   syncPlanItemsFromModules, refreshPlanItemStats,
+  addDailyCustomTodo as addDailyCustomTodoBiz,
+  toggleDailyCustomTodo as toggleDailyCustomTodoBiz,
+  deleteDailyCustomTodo as deleteDailyCustomTodoBiz,
+  saveDailyTodoHistory as saveDailyTodoHistoryBiz,
 } from '../business/plan';
-import type { StorageAdapter } from './storageAdapter';
-import type { PlanSlice } from './types';
+import type { StorageAdapter, PlanSlice } from './types';
+import type { SliceCreator } from './sliceHelper';
 
-export function createPlanSlice<S extends PlanSlice>(
+export function createPlanSlice(
   adapter: StorageAdapter,
-): StateCreator<S, [], [], PlanSlice> {
+): SliceCreator<PlanSlice> {
   return (set, get) => ({
     plans: [],
     planItems: [],
     planItemCheckins: [],
+    dailyCustomTodos: [],
+    dailyTodoHistory: [],
 
     addPlan(form) {
       let planId = '';
-      set(((s: any) => {
+      set(s => {
         const result = addPlan(s.plans ?? [], form);
+        if (!result) return {}; // No change if active plan exists
         planId = result.planId;
         return { plans: result.plans };
-      }) as any);
-      const p = (get() as any).plans.find((p: Plan) => p.id === planId);
-      if (p) adapter.persistChange('plan', p.id, p as any).catch(console.error);
+      });
+      if (!planId) return '';
+      const p = get().plans.find(p => p.id === planId);
+      if (p) adapter.persistChange('plan', p.id, p).catch(console.error);
       return planId;
     },
 
     updatePlan(id, patch) {
-      set(((s: any) => ({ plans: updatePlan(s.plans ?? [], id, patch) })) as any);
-      const updated = (get() as any).plans.find((p: Plan) => p.id === id);
-      if (updated) adapter.persistChange('plan', id, updated as any).catch(console.error);
+      set(s => ({ plans: updatePlan(s.plans ?? [], id, patch) }));
+      const updated = get().plans.find(p => p.id === id);
+      if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
     },
 
     deletePlan(id) {
-      const s = get() as any;
-      const plan = (s.plans ?? []).find((p: Plan) => p.id === id);
-      if (plan && s.addToRecycleBin) {
-        s.addToRecycleBin({ id, entityType: 'plan', data: plan });
-      }
-      const itemsToDelete = (s.planItems ?? []).filter((i: PlanItem) => i.planId === id);
-      const checkinsToDelete = (s.planItemCheckins ?? []).filter((c: PlanItemCheckin) =>
-        itemsToDelete.some((i: PlanItem) => i.id === c.planItemId)
-      );
-      set(((prev: any) => ({
+      const s = get();
+      const plan = (s.plans ?? []).find(p => p.id === id);
+      if (!plan || !canDeletePlan(plan.status)) return;
+      s.addToRecycleBin({ id, entityType: 'plan', data: plan });
+      const now = Date.now();
+      set(prev => ({
         plans: deletePlan(prev.plans ?? [], id),
-        planItems: (prev.planItems ?? []).filter((i: PlanItem) => i.planId !== id),
-        planItemCheckins: (prev.planItemCheckins ?? []).filter((c: PlanItemCheckin) => {
-          const item = (prev.planItems ?? []).find((i: PlanItem) => i.id === c.planItemId);
-          return item?.planId !== id;
+        planItems: (prev.planItems ?? []).map(i =>
+          i.planId === id ? { ...i, deleted: true, updatedAt: now } : i
+        ),
+        planItemCheckins: (prev.planItemCheckins ?? []).map(c => {
+          const item = (prev.planItems ?? []).find(i => i.id === c.planItemId);
+          return item?.planId === id ? { ...c, deleted: true, updatedAt: now } : c;
         }),
-      })) as any);
-      adapter.markDeleted('plan', id).catch(console.error);
-      itemsToDelete.forEach((i: PlanItem) => adapter.markDeleted('planItem', i.id).catch(console.error));
-      checkinsToDelete.forEach((c: PlanItemCheckin) => adapter.markDeleted('planItemCheckin', c.id).catch(console.error));
+      }));
+      const deletedPlan = get().plans.find(p => p.id === id);
+      if (deletedPlan) adapter.persistChange('plan', id, deletedPlan).catch(console.error);
+      get().planItems
+        .filter(i => i.planId === id && i.deleted)
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
+      get().planItemCheckins
+        .filter(c => c.deleted)
+        .forEach(c => adapter.persistChange('planItemCheckin', c.id, c).catch(console.error));
     },
 
     startPlan(id) {
-      const s = get() as any;
+      const s = get();
       const result = startPlan(s.plans ?? [], s.planItems ?? [], id);
-      set({ plans: result.plans, planItems: result.planItems } as any);
-      const updated = (get() as any).plans.find((p: Plan) => p.id === id);
-      if (updated) adapter.persistChange('plan', id, updated as any).catch(console.error);
-      (get() as any).planItems.filter((i: PlanItem) => i.planId === id)
-        .forEach((i: PlanItem) => adapter.persistChange('planItem', i.id, i as any).catch(console.error));
+      set({ plans: result.plans, planItems: result.planItems });
+      const updated = get().plans.find(p => p.id === id);
+      if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
+      get().planItems.filter(i => i.planId === id)
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     pausePlan(id) {
-      const s = get() as any;
+      const s = get();
       const result = pausePlan(s.plans ?? [], s.planItems ?? [], id);
-      set({ plans: result.plans, planItems: result.planItems } as any);
-      const updated = (get() as any).plans.find((p: Plan) => p.id === id);
-      if (updated) adapter.persistChange('plan', id, updated as any).catch(console.error);
-      (get() as any).planItems.filter((i: PlanItem) => i.planId === id)
-        .forEach((i: PlanItem) => adapter.persistChange('planItem', i.id, i as any).catch(console.error));
+      set({ plans: result.plans, planItems: result.planItems });
+      const updated = get().plans.find(p => p.id === id);
+      if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
+      get().planItems.filter(i => i.planId === id)
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     resumePlan(id) {
-      const s = get() as any;
+      const s = get();
       const result = resumePlan(s.plans ?? [], s.planItems ?? [], id);
-      set({ plans: result.plans, planItems: result.planItems } as any);
-      const updated = (get() as any).plans.find((p: Plan) => p.id === id);
-      if (updated) adapter.persistChange('plan', id, updated as any).catch(console.error);
-      (get() as any).planItems.filter((i: PlanItem) => i.planId === id)
-        .forEach((i: PlanItem) => adapter.persistChange('planItem', i.id, i as any).catch(console.error));
+      set({ plans: result.plans, planItems: result.planItems });
+      const updated = get().plans.find(p => p.id === id);
+      if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
+      get().planItems.filter(i => i.planId === id)
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     completePlan(id) {
-      set(((s: any) => ({ plans: completePlan(s.plans ?? [], id) })) as any);
-      const updated = (get() as any).plans.find((p: Plan) => p.id === id);
-      if (updated) adapter.persistChange('plan', id, updated as any).catch(console.error);
+      const s = get();
+      const result = completePlan(s.plans ?? [], s.planItems ?? [], id);
+      set({ plans: result.plans, planItems: result.planItems });
+      const updated = get().plans.find(p => p.id === id);
+      if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
+      get().planItems.filter(i => i.planId === id)
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     cancelPlan(id) {
-      set(((s: any) => ({ plans: cancelPlan(s.plans ?? [], id) })) as any);
-      const updated = (get() as any).plans.find((p: Plan) => p.id === id);
-      if (updated) adapter.persistChange('plan', id, updated as any).catch(console.error);
-    },
-
-    delayPlan(id) {
-      set(((s: any) => ({ plans: delayPlan(s.plans ?? [], id) })) as any);
-      const updated = (get() as any).plans.find((p: Plan) => p.id === id);
-      if (updated) adapter.persistChange('plan', id, updated as any).catch(console.error);
+      const s = get();
+      const result = cancelPlan(s.plans ?? [], s.planItems ?? [], id);
+      set({ plans: result.plans, planItems: result.planItems });
+      const updated = get().plans.find(p => p.id === id);
+      if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
+      get().planItems.filter(i => i.planId === id)
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     checkAutoStatus() {
       const today = new Date().toISOString().slice(0, 10);
-      set(((s: any) => {
-        const result = checkAutoStatus(s.plans ?? [], s.planItems ?? [], today);
-        return { plans: result.plans, planItems: result.planItems };
-      }) as any);
+      const s = get();
+      const result = checkAutoStatus(s.plans ?? [], s.planItems ?? [], today);
+      set({ plans: result.plans, planItems: result.planItems });
+      // Persist changed plans
+      result.plans.forEach(p => {
+        const orig = (s.plans ?? []).find(op => op.id === p.id);
+        if (orig && orig.updatedAt !== p.updatedAt) {
+          adapter.persistChange('plan', p.id, p).catch(console.error);
+        }
+      });
+      // Persist changed items
+      result.planItems.forEach(item => {
+        const orig = (s.planItems ?? []).find(oi => oi.id === item.id);
+        if (orig && orig.updatedAt !== item.updatedAt) {
+          adapter.persistChange('planItem', item.id, item).catch(console.error);
+        }
+      });
     },
 
     addPlanItem(form) {
-      set(((s: any) => ({ planItems: addPlanItem(s.planItems ?? [], form) })) as any);
-      const items = (get() as any).planItems as PlanItem[];
+      set(s => ({ planItems: addPlanItem(s.planItems ?? [], form, s.plans) }));
+      const items = get().planItems;
       const item = items[items.length - 1];
-      if (item) adapter.persistChange('planItem', item.id, item as any).catch(console.error);
+      if (item) adapter.persistChange('planItem', item.id, item).catch(console.error);
     },
 
     updatePlanItem(id, patch) {
-      set(((s: any) => ({ planItems: updatePlanItem(s.planItems ?? [], id, patch) })) as any);
-      const updated = (get() as any).planItems.find((i: PlanItem) => i.id === id);
-      if (updated) adapter.persistChange('planItem', id, updated as any).catch(console.error);
+      set(s => ({ planItems: updatePlanItem(s.planItems ?? [], id, patch) }));
+      const updated = get().planItems.find(i => i.id === id);
+      if (updated) adapter.persistChange('planItem', id, updated).catch(console.error);
     },
 
     deletePlanItem(id) {
-      const checkinsToDelete = (get() as any).planItemCheckins.filter((c: PlanItemCheckin) => c.planItemId === id);
-      set(((s: any) => ({
+      const now = Date.now();
+      set(s => ({
         planItems: deletePlanItem(s.planItems ?? [], id),
-        planItemCheckins: (s.planItemCheckins ?? []).filter((c: PlanItemCheckin) => c.planItemId !== id),
-      })) as any);
-      adapter.markDeleted('planItem', id).catch(console.error);
-      checkinsToDelete.forEach((c: PlanItemCheckin) => adapter.markDeleted('planItemCheckin', c.id).catch(console.error));
+        planItemCheckins: (s.planItemCheckins ?? []).map(c =>
+          c.planItemId === id ? { ...c, deleted: true, updatedAt: now } : c
+        ),
+      }));
+      const deletedItem = get().planItems.find(i => i.id === id);
+      if (deletedItem) adapter.persistChange('planItem', id, deletedItem).catch(console.error);
+      get().planItemCheckins
+        .filter(c => c.planItemId === id && c.deleted)
+        .forEach(c => adapter.persistChange('planItemCheckin', c.id, c).catch(console.error));
     },
 
     checkinPlanItem(planItemId, date) {
       const today = date ?? new Date().toISOString().slice(0, 10);
-      set(((s: any) => ({ planItemCheckins: checkinItem(s.planItemCheckins ?? [], planItemId, today) })) as any);
-      const checkin = (get() as any).planItemCheckins.find(
-        (c: PlanItemCheckin) => c.planItemId === planItemId && c.date === today
+      set(s => ({ planItemCheckins: checkinItem(s.planItemCheckins ?? [], planItemId, today) }));
+      const checkin = get().planItemCheckins.find(
+        c => c.planItemId === planItemId && c.date === today
       );
-      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin as any).catch(console.error);
+      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
       const todayStr = new Date().toISOString().slice(0, 10);
-      set(((s: any) => ({ planItems: refreshPlanItemStats(s.planItems ?? [], s.planItemCheckins ?? [], todayStr) })) as any);
+      set(s => ({ planItems: refreshPlanItemStats(s.planItems ?? [], s.planItemCheckins ?? [], todayStr) }));
     },
 
     uncheckinPlanItem(planItemId, date) {
       const today = date ?? new Date().toISOString().slice(0, 10);
-      set(((s: any) => ({ planItemCheckins: uncheckinItem(s.planItemCheckins ?? [], planItemId, today) })) as any);
-      const checkin = (get() as any).planItemCheckins.find(
-        (c: PlanItemCheckin) => c.planItemId === planItemId && c.date === today
+      set(s => ({ planItemCheckins: uncheckinItem(s.planItemCheckins ?? [], planItemId, today) }));
+      const checkin = get().planItemCheckins.find(
+        c => c.planItemId === planItemId && c.date === today
       );
-      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin as any).catch(console.error);
+      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
       const todayStr = new Date().toISOString().slice(0, 10);
-      set(((s: any) => ({ planItems: refreshPlanItemStats(s.planItems ?? [], s.planItemCheckins ?? [], todayStr) })) as any);
+      set(s => ({ planItems: refreshPlanItemStats(s.planItems ?? [], s.planItemCheckins ?? [], todayStr) }));
     },
 
     autoSyncPlanItems() {
       const today = new Date().toISOString().slice(0, 10);
-      const s = get() as any;
+      const s = get();
       const state = {
         habits: s.habits ?? [],
         fastingHistory: s.fastingHistory ?? [],
@@ -176,13 +206,99 @@ export function createPlanSlice<S extends PlanSlice>(
         s.planItems ?? [], s.planItemCheckins ?? [], s.plans ?? [], state, today
       );
       if (updatedCheckins.length !== (s.planItemCheckins ?? []).length) {
-        set({ planItemCheckins: updatedCheckins } as any);
-        updatedCheckins.slice((s.planItemCheckins ?? []).length).forEach((c: PlanItemCheckin) => {
-          adapter.persistChange('planItemCheckin', c.id, c as any).catch(console.error);
+        set({ planItemCheckins: updatedCheckins });
+        updatedCheckins.slice((s.planItemCheckins ?? []).length).forEach(c => {
+          adapter.persistChange('planItemCheckin', c.id, c).catch(console.error);
         });
-        set(((prev: any) => ({
+        set(prev => ({
           planItems: refreshPlanItemStats(prev.planItems ?? [], updatedCheckins, today),
-        })) as any);
+        }));
+      }
+    },
+
+    addDailyCustomTodo(planId, name, date) {
+      const today = date ?? new Date().toISOString().slice(0, 10);
+      set(s => ({
+        dailyCustomTodos: addDailyCustomTodoBiz(s.dailyCustomTodos ?? [], planId, name, today),
+      }));
+      const todos = get().dailyCustomTodos;
+      const newTodo = todos[todos.length - 1];
+      if (newTodo) adapter.persistChange('dailyCustomTodo', newTodo.id, newTodo).catch(console.error);
+    },
+
+    toggleDailyCustomTodo(id, date) {
+      const today = date ?? new Date().toISOString().slice(0, 10);
+      set(s => ({
+        dailyCustomTodos: toggleDailyCustomTodoBiz(s.dailyCustomTodos ?? [], id, today),
+      }));
+      const updated = get().dailyCustomTodos.find(t => t.id === id);
+      if (updated) adapter.persistChange('dailyCustomTodo', id, updated).catch(console.error);
+    },
+
+    deleteDailyCustomTodo(id) {
+      set(s => ({
+        dailyCustomTodos: deleteDailyCustomTodoBiz(s.dailyCustomTodos ?? [], id),
+      }));
+      const deleted = get().dailyCustomTodos.find(t => t.id === id);
+      if (deleted) adapter.persistChange('dailyCustomTodo', id, deleted).catch(console.error);
+    },
+
+    saveDailyTodoHistory(planId, date) {
+      const today = date ?? new Date().toISOString().slice(0, 10);
+      const s = get();
+      const updatedHistory = saveDailyTodoHistoryBiz(
+        s.dailyTodoHistory ?? [],
+        planId,
+        today,
+        s.planItems ?? [],
+        s.planItemCheckins ?? [],
+        s.dailyCustomTodos ?? [],
+      );
+      set({ dailyTodoHistory: updatedHistory });
+      // 持久化新的或更新的历史记录
+      const entry = updatedHistory.find(h => h.planId === planId && h.date === today);
+      if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(console.error);
+    },
+
+    performDailyReset(previousDate) {
+      const today = new Date().toISOString().slice(0, 10);
+      const s = get();
+      const result = performDailyResetBiz(
+        s.plans ?? [],
+        s.planItems ?? [],
+        s.planItemCheckins ?? [],
+        s.dailyCustomTodos ?? [],
+        s.dailyTodoHistory ?? [],
+        previousDate,
+        today,
+      );
+
+      if (result.hasChanges) {
+        set({
+          plans: result.plans,
+          planItems: result.planItems,
+          dailyTodoHistory: result.dailyTodoHistory,
+        });
+
+        // 持久化变更
+        result.plans.forEach(p => {
+          const orig = (s.plans ?? []).find(op => op.id === p.id);
+          if (orig && orig.updatedAt !== p.updatedAt) {
+            adapter.persistChange('plan', p.id, p).catch(console.error);
+          }
+        });
+        result.planItems.forEach(item => {
+          const orig = (s.planItems ?? []).find(oi => oi.id === item.id);
+          if (orig && orig.updatedAt !== item.updatedAt) {
+            adapter.persistChange('planItem', item.id, item).catch(console.error);
+          }
+        });
+        result.dailyTodoHistory.forEach(h => {
+          const orig = (s.dailyTodoHistory ?? []).find(oh => oh.id === h.id);
+          if (!orig || orig.updatedAt !== h.updatedAt) {
+            adapter.persistChange('dailyTodoHistory', h.id, h).catch(console.error);
+          }
+        });
       }
     },
   });

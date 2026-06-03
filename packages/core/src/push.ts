@@ -1,6 +1,8 @@
 // ─── Push Notification Service ────────────────────────────────────
 // Shared across all platforms for registering push tokens and sending notifications
 
+import { buildHeaders, fetchWithTimeout, handleJsonResponse } from './fetch';
+
 export type PushPlatform = 'web' | 'android' | 'ios';
 
 export interface PushPayload {
@@ -17,38 +19,10 @@ export interface PushToken {
   created_at: string;
 }
 
-const REQUEST_TIMEOUT = 15000;
-
 let apiBase = '';
 
 export function setPushApiBase(base: string) {
   apiBase = base.replace(/\/+$/, '');
-}
-
-function headers(token?: string): Record<string, string> {
-  const h: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) h['Authorization'] = `Bearer ${token}`;
-  return h;
-}
-
-async function fetchWithTimeout(url: string, init: any): Promise<any> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT) as any;
-  try {
-    const res = await fetch(url, { ...init, signal: controller.signal });
-    return res;
-  } catch (err: any) {
-    if (err.name === 'AbortError') throw new Error('请求超时，请检查网络');
-    throw new Error('网络连接失败');
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-async function handleRes(res: Response) {
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error ?? '请求失败');
-  return data;
 }
 
 // ── Register push token ──────────────────────────────────────────
@@ -60,10 +34,10 @@ export async function apiRegisterPushToken(
 ): Promise<{ ok: boolean }> {
   const res = await fetchWithTimeout(`${apiBase}/api/push`, {
     method: 'POST',
-    headers: headers(authToken),
+    headers: buildHeaders(authToken),
     body: JSON.stringify({ platform, token: pushToken }),
   });
-  return handleRes(res);
+  return handleJsonResponse<{ ok: boolean }>(res);
 }
 
 // ── Send push notification ───────────────────────────────────────
@@ -75,10 +49,10 @@ export async function apiSendPushNotification(
 ): Promise<{ ok: boolean; sent: number; failed: number }> {
   const res = await fetchWithTimeout(`${apiBase}/api/push`, {
     method: 'PUT',
-    headers: headers(authToken),
+    headers: buildHeaders(authToken),
     body: JSON.stringify({ targetUserId, payload }),
   });
-  return handleRes(res);
+  return handleJsonResponse<{ ok: boolean; sent: number; failed: number }>(res);
 }
 
 // ── Helper: Register token for current platform ──────────────────

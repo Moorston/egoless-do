@@ -1,6 +1,6 @@
 'use client';
 
-import { THEMES, t, FONT_BUTTON } from '@egoless-do/core';
+import { THEMES, t, FONT_BODY } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 
 interface TabDef {
@@ -30,13 +30,14 @@ export default function BottomNav({ tabs, activeTab, onTabChange }: {
       display: 'flex', padding: '8px 0 18px', zIndex: 50 }}>
       {btnTabs.map((t) => {
         const idx = tabs.findIndex(x => x.key === t.key);
+        const isActive = activeTab === idx;
         return (
           <button key={t.key} onClick={() => onTabChange(idx)}
             style={{ flex: 1, border: 'none', background: 'transparent', cursor: 'pointer',
-              color: activeTab === idx ? P : TH.sub,
+              color: isActive ? P : TH.sub,
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '4px 0' }}>
             <t.Icon size={20} />
-            <span style={{ fontSize: FONT_BUTTON }}>{T(t.labelKey)}</span>
+            <span style={{ fontSize: FONT_BODY, fontWeight: isActive ? 700 : 500 }}>{T(t.labelKey)}</span>
           </button>
         );
       })}

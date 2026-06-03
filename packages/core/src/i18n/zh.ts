@@ -1,5 +1,7 @@
-export const zh: Record<string, string> = {
-  appName:'心流纪', streak:'连续打卡', days:'天', home:'主页',
+import type { I18nKeys } from './types';
+
+export const zh: I18nKeys = {
+  appName:'心流纪', streak:'连续打卡', days:'天', home:'首页',
   fasting:'禁食', meditation:'冥想', reflections:'感念', exercise:'锻炼',
   habits:'习惯', stats:'统计', settings:'设置',
   linkWorld:'全球脉动', todayCheckin:'今日打卡', openCheckin:'进入打卡',
@@ -243,21 +245,29 @@ export const zh: Record<string, string> = {
   planComplete:'完成目标', planCancelPlan:'作废', planEdit:'编辑', planDelete:'删除',
   planName:'计划名称', planGoal:'计划目标', planSlogan:'我的愿景',
   planStartDate:'开始日期', planEndDate:'结束日期',
-  planItems:'项目列表', planAddItem:'添加项目', planDeleteItem:'删除项目',
-  planItemName:'项目名称', planItemDesc:'项目描述',
-  planItemStart:'项目开始日期', planItemEnd:'项目结束日期',
-  planItemContent:'项目内容（外链）', planItemLink:'联动模块',
+  planPeriod:'计划周期', planPeriod1m:'1个月', planPeriod3m:'3个月',
+  planPeriod6m:'半年', planPeriod1y:'1年',
+  planItems:'任务列表', planAddItem:'添加任务', planDeleteItem:'删除任务',
+  planItemName:'任务名称', planItemDesc:'任务描述',
+  planItemStart:'任务开始日期', planItemEnd:'任务结束日期',
+  planItemContent:'任务内容（外链）', planItemLink:'联动模块', planItemTarget:'任务指标',
+  planPriority:'优先级', planPriorityHigh:'高',
+  planPriorityMedium:'中', planPriorityLow:'低',
   planSave:'保存计划', planCreate:'创建计划', planEditTitle:'编辑计划',
-  planTodoList:'每日 TodoList', planTodoDate:'今日待办',
+  planTodoList:'每日待办', planTodoDate:'今日待办', planDetail:'计划详情',
   planLinkManual:'手动', planLinkCheckin:'今日打卡', planLinkFasting:'禁食',
   planLinkMeditation:'冥想', planLinkExercise:'锻炼', planLinkHabit:'习惯',
   planProgress:'进度', planDays:'天', planCheckinDays:'打卡天数', planCheckin:'完成', planUncheckin:'取消',
   planTodayCheckin:'今日打卡', planHeatmap:'打卡热力图',
   planConfirmDelete:'确认删除此计划？', planConfirmCancel:'确认作废此计划？',
   planConfirmComplete:'确认完成此计划？',
-  planItemTimeError:'项目时间须在计划时间范围内', planItemTimeOrderError:'结束日期须晚于开始日期',
+  planItemTimeError:'任务时间须在计划时间范围内', planItemTimeOrderError:'结束日期须晚于开始日期',
+  planItemDescRequired:'任务描述为必填项', planItemTargetRequired:'任务指标为必填项',
   planTimeError:'结束日期须晚于开始日期', planNameRequired:'请输入计划名称',
-  planGoalRequired:'请输入计划目标', planNoItems:'暂无项目', planAddItemHint:'+ 添加项目',
+  planGoalRequired:'请输入计划目标', planNoItems:'暂无任务', planAddItemHint:'+ 添加任务',
+  planDeleteItemConfirm:'确定删除此任务吗？',
+  planDeleteConfirm:'确定删除此计划吗？删除后将进入回收箱。',
+  planCompleteConfirm:'确定完成此计划吗？',
 
   // Global
   globalPulse:'全球脉动', globalLeaderboard:'打卡排行榜',
@@ -301,7 +311,7 @@ export const zh: Record<string, string> = {
 
   // Common
   commonCancel:'取消', commonConfirm:'确定', commonClose:'关闭',
-  commonDelete:'删除', commonSave:'保存', commonEdit:'编辑',
+  commonDelete:'删除', commonSave:'保存', commonEdit:'编辑', commonAdd:'添加',
   commonBack:'← 返回', commonSyncing:'同步中...', commonConnected:'已连接',
   commonOffline:'离线模式',
 
@@ -319,6 +329,12 @@ export const zh: Record<string, string> = {
   // Calendar weekdays
   weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',
   weekdayThu:'四', weekdayFri:'五', weekdaySat:'六',
+
+  // Plan detail
+  planNotFound:'计划不存在', heatmapLess:'少', heatmapMore:'多', month:'月',
+  planTodoToday:'今日待办', planTodoHistory:'待办历史', planTodoDone:'已完成', planTodoTotal:'总任务', planAutoChecked:'已联动',
+  planDailyCustomTodos:'每日自定义待办', planAddCustomTodoPlaceholder:'添加今日待办项...', planNoCustomTodos:'暂无自定义待办',
+  planDeleteCustomTodo:'删除待办', planDeleteCustomTodoConfirm:'确定要删除这个待办项吗？',
 
   // Errors
   errorDisconnected:'连接断开',

@@ -6,6 +6,7 @@ import { apiSyncPush, apiSyncPull } from '@egoless-do/core';
 let _syncing = false;
 let _tokenProvider: (() => string | null) | null = null;
 let _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
+let _deletedIdsProvider: (() => Set<string>) | null = null;
 let _lastSyncAt = 0;
 
 // Short polling for near real-time updates (React Native doesn't support EventSource)
@@ -20,6 +21,10 @@ export function setSyncTokenProvider(fn: () => string | null) {
 
 export function setSyncChangeHandler(fn: (patch: Record<string, unknown>) => void) {
   _onChanges = fn;
+}
+
+export function setDeletedIdsProvider(fn: () => Set<string>) {
+  _deletedIdsProvider = fn;
 }
 
 export function setLastSyncAt(ts: number) {
@@ -72,15 +77,16 @@ async function pollForChanges(token: string): Promise<void> {
     const result = await apiSyncPull(token);
 
     if (result.data && Object.keys(result.data).length > 0) {
-      // Apply changes to local DB
-      const patch = await applyServerChanges(result.data);
+      // Apply changes to local DB, skipping IDs in the recycle bin
+      const deletedIds = _deletedIdsProvider?.();
+      const patch = await applyServerChanges(result.data, deletedIds);
 
       if (Object.keys(patch).length > 0) {
         // Notify listeners
         for (const listener of _realtimeListeners) {
           try {
             listener(patch);
-          } catch {}
+          } catch (e) { console.error('[sync] Realtime listener error:', e); }
         }
 
         // Notify store
@@ -109,6 +115,7 @@ const ENTITY_CONFIG: Record<string, { table: string; pk: string }> = {
   plan:           { table: 'plans',               pk: 'id'   },
   planItem:       { table: 'plan_items',          pk: 'id'   },
   planItemCheckin:{ table: 'plan_item_checkins',  pk: 'id'   },
+  grace:          { table: 'grace_history',       pk: 'date' },
 };
 
 function entityTable(entity: string): string {
@@ -130,7 +137,7 @@ async function getPending(entity: string): Promise<Record<string, unknown>[]> {
 
 async function getUnsynced() {
   const db = await openDatabase();
-  const [habits, reflections, fastingSessions, foodLog, checkins, exercises, meditations, profiles, plans, planItems, planItemCheckins] = await Promise.all([
+  const [habits, reflections, fastingSessions, foodLog, checkins, exercises, meditations, profiles, plans, planItems, planItemCheckins, graceRecords] = await Promise.all([
     getPending('habit'),
     getPending('reflection'),
     getPending('fasting'),
@@ -142,26 +149,27 @@ async function getUnsynced() {
     getPending('plan'),
     getPending('planItem'),
     getPending('planItemCheckin'),
+    getPending('grace'),
   ]);
-  return { habits, reflections, fastingSessions, foodLog, checkins, exercises, meditations, profiles, plans, planItems, planItemCheckins };
+  return { habits, reflections, fastingSessions, foodLog, checkins, exercises, meditations, profiles, plans, planItems, planItemCheckins, graceRecords };
 }
 
-// Mark a record as deleted in SQLite (synced=2) so SyncService can push the delete
+// Mark a record as deleted in SQLite (deleted=1, synced=2) so SyncService can push the delete
 export async function markForDeletion(entity: string, entityId: string): Promise<void> {
   const db = await openDatabase();
   const table = entityTable(entity);
   const pk = entityPk(entity);
-  await db.runAsync(`UPDATE ${table} SET synced = 2 WHERE ${pk} = ?`, [entityId]);
+  await db.runAsync(`UPDATE ${table} SET deleted = 1, synced = 2 WHERE ${pk} = ?`, [entityId]);
 }
 
-// Physically remove records that have been successfully synced after deletion
+// Mark deleted records as synced after successful sync (soft delete — keep in DB)
 export async function cleanupDeleted(entity: string, ids: string[]): Promise<void> {
   if (!ids.length) return;
   const db = await openDatabase();
   const table = entityTable(entity);
   const pk = entityPk(entity);
   const placeholders = ids.map(() => '?').join(',');
-  await db.runAsync(`DELETE FROM ${table} WHERE ${pk} IN (${placeholders}) AND synced = 2`, ids);
+  await db.runAsync(`UPDATE ${table} SET synced = 1 WHERE ${pk} IN (${placeholders}) AND deleted = 1`, ids);
 }
 
 async function markSynced(entity: string, ids: string[]) {
@@ -183,7 +191,7 @@ function habitToSync(r: Record<string, unknown>) {
     status: r.status,
     checkedDates: JSON.parse((r.checked_dates as string) ?? '[]'),
     pauseReason: r.pause_reason, abandonReason: r.abandon_reason,
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -194,7 +202,7 @@ function reflectionToSync(r: Record<string, unknown>) {
     mood: r.mood, cardTheme: r.card_theme, linkedHabitId: r.linked_habit_id,
     isPinned: (r.is_pinned as number) === 1,
     isPublished: (r.is_published as number) === 1,
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -202,7 +210,7 @@ function fastingToSync(r: Record<string, unknown>) {
   return {
     id: r.id, targetHours: r.target_hours, startedAt: r.started_at,
     endedAt: r.ended_at, estimatedKcal: r.estimated_kcal, insight: r.insight,
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -210,7 +218,7 @@ function foodToSync(r: Record<string, unknown>) {
   return {
     id: r.id, name: r.name, calories: r.cal, note: r.note,
     timestamp: r.ts,
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -219,7 +227,7 @@ function checkinToSync(r: Record<string, unknown>) {
     date: r.date, done: (r.done as number) === 1,
     note: r.note, streak: r.streak,
     timestamp: r.timestamp, weight: r.weight,
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -231,7 +239,7 @@ function exerciseToSync(r: Record<string, unknown>) {
     trackPoints: JSON.parse((r.track_points as string) ?? '[]'),
     isGpsSport: (r.is_gps_sport as number) === 1,
     timestamp: r.ts,
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -250,7 +258,7 @@ function planItemToSync(r: Record<string, unknown>) {
     startDate: r.start_date, endDate: r.end_date, contentUrl: r.content_url,
     totalCheckinDays: r.total_checkin_days, status: r.status, progress: r.progress,
     link: r.link, linkConfig: JSON.parse((r.link_config as string) ?? '{}'),
-    order: r.item_order,
+    order: r.item_order, priority: r.priority ?? 'medium', targetMetric: r.target_metric ?? '',
     updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
@@ -267,7 +275,7 @@ function planItemCheckinToSync(r: Record<string, unknown>) {
 function meditationToSync(r: Record<string, unknown>) {
   return {
     date: r.date, dur: r.dur, mood: r.mood ?? '',
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -275,7 +283,14 @@ function profileToSync(r: Record<string, unknown>) {
   return {
     profileId: r.profile_id,
     data: JSON.parse((r.data as string) ?? '{}'),
-    updatedAt: r.updated_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+  };
+}
+
+function graceToSync(r: Record<string, unknown>) {
+  return {
+    date: r.date, restoredAt: r.restored_at,
+    updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
 
@@ -284,28 +299,34 @@ function buildChanges(unsynced: Awaited<ReturnType<typeof getUnsynced>>) {
   const changes: { entity: string; entityId: string; payload: Record<string, unknown>; op?: 'upsert' | 'delete' }[] = [];
 
   for (const r of unsynced.habits) {
-    if (r.synced === 2) { changes.push({ entity: 'habit', entityId: r.id as string, payload: {}, op: 'delete' }); continue; }
-    changes.push({ entity: 'habit', entityId: r.id as string, payload: habitToSync(r) });
+    const payload = habitToSync(r);
+    if (r.synced === 2) { payload.deleted = true; changes.push({ entity: 'habit', entityId: r.id as string, payload, op: 'upsert' }); continue; }
+    changes.push({ entity: 'habit', entityId: r.id as string, payload });
   }
   for (const r of unsynced.reflections) {
-    if (r.synced === 2) { changes.push({ entity: 'reflection', entityId: r.id as string, payload: {}, op: 'delete' }); continue; }
-    changes.push({ entity: 'reflection', entityId: r.id as string, payload: reflectionToSync(r) });
+    const payload = reflectionToSync(r);
+    if (r.synced === 2) { payload.deleted = true; changes.push({ entity: 'reflection', entityId: r.id as string, payload, op: 'upsert' }); continue; }
+    changes.push({ entity: 'reflection', entityId: r.id as string, payload });
   }
   for (const r of unsynced.fastingSessions) {
-    if (r.synced === 2) { changes.push({ entity: 'fasting', entityId: r.id as string, payload: {}, op: 'delete' }); continue; }
-    changes.push({ entity: 'fasting', entityId: r.id as string, payload: fastingToSync(r) });
+    const payload = fastingToSync(r);
+    if (r.synced === 2) { payload.deleted = true; changes.push({ entity: 'fasting', entityId: r.id as string, payload, op: 'upsert' }); continue; }
+    changes.push({ entity: 'fasting', entityId: r.id as string, payload });
   }
   for (const r of unsynced.foodLog) {
-    if (r.synced === 2) { changes.push({ entity: 'food', entityId: r.id as string, payload: {}, op: 'delete' }); continue; }
-    changes.push({ entity: 'food', entityId: r.id as string, payload: foodToSync(r) });
+    const payload = foodToSync(r);
+    if (r.synced === 2) { payload.deleted = true; changes.push({ entity: 'food', entityId: r.id as string, payload, op: 'upsert' }); continue; }
+    changes.push({ entity: 'food', entityId: r.id as string, payload });
   }
   for (const r of unsynced.checkins) {
-    if (r.synced === 2) { changes.push({ entity: 'checkin', entityId: r.date as string, payload: {}, op: 'delete' }); continue; }
-    changes.push({ entity: 'checkin', entityId: r.date as string, payload: checkinToSync(r) });
+    const payload = checkinToSync(r);
+    if (r.synced === 2) { payload.deleted = true; changes.push({ entity: 'checkin', entityId: r.date as string, payload, op: 'upsert' }); continue; }
+    changes.push({ entity: 'checkin', entityId: r.date as string, payload });
   }
   for (const r of unsynced.exercises) {
-    if (r.synced === 2) { changes.push({ entity: 'exercise', entityId: r.id as string, payload: {}, op: 'delete' }); continue; }
-    changes.push({ entity: 'exercise', entityId: r.id as string, payload: exerciseToSync(r) });
+    const payload = exerciseToSync(r);
+    if (r.synced === 2) { payload.deleted = true; changes.push({ entity: 'exercise', entityId: r.id as string, payload, op: 'upsert' }); continue; }
+    changes.push({ entity: 'exercise', entityId: r.id as string, payload });
   }
   for (const r of unsynced.meditations) {
     if (r.synced === 2) { changes.push({ entity: 'meditation', entityId: r.date as string, payload: {}, op: 'delete' }); continue; }
@@ -327,6 +348,10 @@ function buildChanges(unsynced: Awaited<ReturnType<typeof getUnsynced>>) {
     if (r.synced === 2) { changes.push({ entity: 'planItemCheckin', entityId: r.id as string, payload: {}, op: 'delete' }); continue; }
     changes.push({ entity: 'planItemCheckin', entityId: r.id as string, payload: planItemCheckinToSync(r) });
   }
+  for (const r of unsynced.graceRecords) {
+    if (r.synced === 2) { changes.push({ entity: 'grace', entityId: r.date as string, payload: {}, op: 'delete' }); continue; }
+    changes.push({ entity: 'grace', entityId: r.date as string, payload: graceToSync(r) });
+  }
 
   return changes;
 }
@@ -347,7 +372,18 @@ async function isLocalNewer(
   return (local.updated_at ?? 0) > serverTs;
 }
 
-async function applyServerChanges(data: Record<string, unknown[]>): Promise<Record<string, unknown>> {
+/** Check if a local record is soft-deleted. */
+async function isLocalDeleted(
+  db: Awaited<ReturnType<typeof openDatabase>>,
+  table: string, pk: string, id: string
+): Promise<boolean> {
+  const local = await db.getFirstAsync<{ deleted: number | null }>(
+    `SELECT deleted FROM ${table} WHERE ${pk} = ?`, [id]
+  );
+  return local?.deleted === 1;
+}
+
+async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>): Promise<Record<string, unknown>> {
   const db = await openDatabase();
   const patch: Record<string, unknown> = {};
 
@@ -355,136 +391,150 @@ async function applyServerChanges(data: Record<string, unknown[]>): Promise<Reco
     const alive = data.habit.filter(h => !h.deleted);
     const dead = data.habit.filter(h => h.deleted);
     for (const h of alive) {
+      if (deletedIds?.has(h.id)) { await db.runAsync('UPDATE habits SET deleted=1,synced=1 WHERE id=?', [h.id]); continue; }
+      if (await isLocalDeleted(db, 'habits', 'id', h.id)) continue;
       if (await isLocalNewer(db, 'habits', 'id', h.id, h.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO habits
         (id,name,start_date,target_days,goal,insight,create_tag,done_days,streak,interrupted,
-         status,checked_dates,pause_reason,abandon_reason,updated_at,synced)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)`,
+         status,checked_dates,pause_reason,abandon_reason,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)`,
         [h.id, h.name, h.startDate, h.targetDays, h.goal ?? '', h.insight ?? '',
          h.createTag ? 1 : 0, h.doneDays ?? 0, h.streak ?? 0, h.interrupted ?? 0,
          h.status ?? 'notStarted', JSON.stringify(h.checkedDates ?? []),
-         h.pauseReason ?? '', h.abandonReason ?? '', h.updatedAt ?? null]
+         h.pauseReason ?? '', h.abandonReason ?? '', h.updatedAt ?? null, 0]
       );
     }
     for (const h of dead) {
-      await db.runAsync('DELETE FROM habits WHERE id = ?', [h.id]);
+      await db.runAsync('UPDATE habits SET deleted=1,synced=1 WHERE id=?', [h.id]);
     }
-    patch.habits = alive;
+    patch.habits = data.habit;
   }
 
   if (data.reflection?.length) {
     const alive = data.reflection.filter(r => !r.deleted);
     const dead = data.reflection.filter(r => r.deleted);
     for (const r of alive) {
+      if (deletedIds?.has(r.id)) { await db.runAsync('UPDATE mind_reflections SET deleted=1,synced=1 WHERE id=?', [r.id]); continue; }
+      if (await isLocalDeleted(db, 'mind_reflections', 'id', r.id)) continue;
       if (await isLocalNewer(db, 'mind_reflections', 'id', r.id, r.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO mind_reflections
-        (id,created_at,content,tags,mood,card_theme,linked_habit_id,is_pinned,is_published,updated_at,synced)
-        VALUES (?,?,?,?,?,?,?,?,?,?,1)`,
+        (id,created_at,content,tags,mood,card_theme,linked_habit_id,is_pinned,is_published,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,1)`,
         [r.id, r.timestamp ?? r.created_at, r.content, JSON.stringify(r.tags ?? []),
          r.mood ?? null, r.cardTheme ?? r.card_theme ?? null, r.linkedHabitId ?? r.linked_habit_id ?? null,
          (r.isPinned ?? r.is_pinned) ? 1 : 0, (r.isPublished ?? r.is_published) ? 1 : 0,
-         r.updatedAt ?? null]
+         r.updatedAt ?? null, 0]
       );
     }
     for (const r of dead) {
-      await db.runAsync('DELETE FROM mind_reflections WHERE id = ?', [r.id]);
+      await db.runAsync('UPDATE mind_reflections SET deleted=1,synced=1 WHERE id=?', [r.id]);
     }
-    patch.reflections = alive;
+    patch.reflections = data.reflection;
   }
 
   if (data.fasting?.length) {
     const alive = data.fasting.filter(s => !s.deleted);
     const dead = data.fasting.filter(s => s.deleted);
     for (const s of alive) {
+      if (deletedIds?.has(s.id)) { await db.runAsync('UPDATE fasting_sessions SET deleted=1,synced=1 WHERE id=?', [s.id]); continue; }
+      if (await isLocalDeleted(db, 'fasting_sessions', 'id', s.id)) continue;
       if (await isLocalNewer(db, 'fasting_sessions', 'id', s.id, s.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO fasting_sessions
-        (id,target_hours,started_at,ended_at,estimated_kcal,insight,updated_at,synced)
-        VALUES (?,?,?,?,?,?,?,1)`,
+        (id,target_hours,started_at,ended_at,estimated_kcal,insight,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,1)`,
         [s.id, s.targetHours ?? s.target_hours, s.startedAt ?? s.started_at, s.endedAt ?? s.ended_at ?? null,
-         s.estimatedKcal ?? s.estimated_kcal ?? null, s.insight ?? null, s.updatedAt ?? null]
+         s.estimatedKcal ?? s.estimated_kcal ?? null, s.insight ?? null, s.updatedAt ?? null, 0]
       );
     }
     for (const s of dead) {
-      await db.runAsync('DELETE FROM fasting_sessions WHERE id = ?', [s.id]);
+      await db.runAsync('UPDATE fasting_sessions SET deleted=1,synced=1 WHERE id=?', [s.id]);
     }
-    patch.fastingHistory = alive;
+    patch.fastingHistory = data.fasting;
   }
 
   if (data.food?.length) {
     const alive = data.food.filter(f => !f.deleted);
     const dead = data.food.filter(f => f.deleted);
     for (const f of alive) {
+      if (deletedIds?.has(f.id)) { await db.runAsync('UPDATE food_entries SET deleted=1,synced=1 WHERE id=?', [f.id]); continue; }
+      if (await isLocalDeleted(db, 'food_entries', 'id', f.id)) continue;
       if (await isLocalNewer(db, 'food_entries', 'id', f.id, f.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO food_entries
-        (id,name,cal,note,entry_date,ts,updated_at,synced)
-        VALUES (?,?,?,?,?,?,?,1)`,
-        [f.id, f.name, f.calories ?? f.cal ?? 0, f.note ?? '', f.entry_date ?? '', f.timestamp ?? f.ts, f.updatedAt ?? null]
+        (id,name,cal,note,entry_date,ts,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,1)`,
+        [f.id, f.name, f.calories ?? f.cal ?? 0, f.note ?? '', f.entry_date ?? '', f.timestamp ?? f.ts, f.updatedAt ?? null, 0]
       );
     }
     for (const f of dead) {
-      await db.runAsync('DELETE FROM food_entries WHERE id = ?', [f.id]);
+      await db.runAsync('UPDATE food_entries SET deleted=1,synced=1 WHERE id=?', [f.id]);
     }
-    patch.foodLog = alive;
+    patch.foodLog = data.food;
   }
 
   if (data.checkin?.length) {
     const alive = data.checkin.filter(c => !c.deleted);
     const dead = data.checkin.filter(c => c.deleted);
     for (const c of alive) {
+      if (deletedIds?.has(c.date)) { await db.runAsync('UPDATE checkin_records SET deleted=1,synced=1 WHERE date=?', [c.date]); continue; }
+      if (await isLocalDeleted(db, 'checkin_records', 'date', c.date)) continue;
       if (await isLocalNewer(db, 'checkin_records', 'date', c.date, c.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO checkin_records
-        (date,done,note,streak,timestamp,weight,updated_at,synced)
-        VALUES (?,?,?,?,?,?,?,1)`,
+        (date,done,note,streak,timestamp,weight,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,1)`,
         [c.date, c.done ? 1 : 0, c.note ?? '', c.streak ?? 0,
-         c.timestamp ?? null, c.weight ?? null, c.updatedAt ?? null]
+         c.timestamp ?? null, c.weight ?? null, c.updatedAt ?? null, 0]
       );
     }
     for (const c of dead) {
-      await db.runAsync('DELETE FROM checkin_records WHERE date = ?', [c.date]);
+      await db.runAsync('UPDATE checkin_records SET deleted=1,synced=1 WHERE date=?', [c.date]);
     }
-    patch.checkinHistory = alive;
+    patch.checkinHistory = data.checkin;
   }
 
   if (data.exercise?.length) {
     const alive = data.exercise.filter(e => !e.deleted);
     const dead = data.exercise.filter(e => e.deleted);
     for (const e of alive) {
+      if (deletedIds?.has(e.id)) { await db.runAsync('UPDATE exercise_entries SET deleted=1,synced=1 WHERE id=?', [e.id]); continue; }
+      if (await isLocalDeleted(db, 'exercise_entries', 'id', e.id)) continue;
       if (await isLocalNewer(db, 'exercise_entries', 'id', e.id, e.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO exercise_entries
-        (id,sport_key,sport_icon,duration_sec,distance_km,calories,avg_pace,track_points,is_gps_sport,ts,updated_at,synced)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,1)`,
+        (id,sport_key,sport_icon,duration_sec,distance_km,calories,avg_pace,track_points,is_gps_sport,ts,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1)`,
         [e.id, e.sportKey ?? e.sport_key, e.sportIcon ?? e.sport_icon,
          e.durationSec ?? e.duration_sec ?? 0, e.distanceKm ?? e.distance_km ?? 0,
          e.calories ?? 0, e.avgPace ?? e.avg_pace ?? 0,
          JSON.stringify(e.trackPoints ?? e.track_points ?? []),
          (e.isGpsSport ?? e.is_gps_sport) ? 1 : 0,
-         e.timestamp ?? e.ts, e.updatedAt ?? null]
+         e.timestamp ?? e.ts, e.updatedAt ?? null, 0]
       );
     }
     for (const e of dead) {
-      await db.runAsync('DELETE FROM exercise_entries WHERE id = ?', [e.id]);
+      await db.runAsync('UPDATE exercise_entries SET deleted=1,synced=1 WHERE id=?', [e.id]);
     }
-    patch.exerciseLog = alive;
+    patch.exerciseLog = data.exercise;
   }
 
   if (data.meditation?.length) {
     const alive = data.meditation.filter(m => !m.deleted);
     const dead = data.meditation.filter(m => m.deleted);
     for (const m of alive) {
+      if (deletedIds?.has(m.date)) { await db.runAsync('UPDATE meditation_history SET deleted=1,synced=1 WHERE date=?', [m.date]); continue; }
+      if (await isLocalDeleted(db, 'meditation_history', 'date', m.date)) continue;
       if (await isLocalNewer(db, 'meditation_history', 'date', m.date, m.updatedAt)) continue;
       await db.runAsync(`
-        INSERT OR REPLACE INTO meditation_history (date,dur,mood,updated_at,synced) VALUES (?,?,?,?,1)`,
-        [m.date, m.dur ?? '0', m.mood ?? '', m.updatedAt ?? null]
+        INSERT OR REPLACE INTO meditation_history (date,dur,mood,updated_at,deleted,synced) VALUES (?,?,?,?,?,1)`,
+        [m.date, m.dur ?? '0', m.mood ?? '', m.updatedAt ?? null, 0]
       );
     }
     for (const m of dead) {
-      await db.runAsync('DELETE FROM meditation_history WHERE date = ?', [m.date]);
+      await db.runAsync('UPDATE meditation_history SET deleted=1,synced=1 WHERE date=?', [m.date]);
     }
     // Recompute totalMedMinutes from synced data
     const allMed = await db.getAllAsync<{ dur: string }>('SELECT dur FROM meditation_history');
@@ -501,8 +551,8 @@ async function applyServerChanges(data: Record<string, unknown[]>): Promise<Reco
       if (!(await isLocalNewer(db, 'user_profiles', 'profile_id', profileId, latest.updatedAt))) {
         const profileData = latest.data ?? latest;
         await db.runAsync(`
-          INSERT OR REPLACE INTO user_profiles (profile_id,data,updated_at,synced) VALUES (?,?,?,1)`,
-          [profileId, JSON.stringify(profileData), latest.updatedAt ?? null]
+          INSERT OR REPLACE INTO user_profiles (profile_id,data,updated_at,deleted,synced) VALUES (?,?,?,?,1)`,
+          [profileId, JSON.stringify(profileData), latest.updatedAt ?? null, 0]
         );
         patch.userProfile = profileData;
         if (profileData.waterMl !== undefined) patch.waterMl = profileData.waterMl;
@@ -515,6 +565,8 @@ async function applyServerChanges(data: Record<string, unknown[]>): Promise<Reco
     const alive = data.plan.filter(p => !p.deleted);
     const dead = data.plan.filter(p => p.deleted);
     for (const p of alive) {
+      if (deletedIds?.has(p.id)) { await db.runAsync('UPDATE plans SET deleted=1,synced=1 WHERE id=?', [p.id]); continue; }
+      if (await isLocalDeleted(db, 'plans', 'id', p.id)) continue;
       if (await isLocalNewer(db, 'plans', 'id', p.id, p.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO plans
@@ -525,37 +577,41 @@ async function applyServerChanges(data: Record<string, unknown[]>): Promise<Reco
       );
     }
     for (const p of dead) {
-      await db.runAsync('DELETE FROM plans WHERE id = ?', [p.id]);
+      await db.runAsync('UPDATE plans SET deleted=1,synced=1 WHERE id=?', [p.id]);
     }
-    patch.plans = alive;
+    patch.plans = data.plan;
   }
 
   if (data.planItem?.length) {
     const alive = data.planItem.filter(i => !i.deleted);
     const dead = data.planItem.filter(i => i.deleted);
     for (const i of alive) {
+      if (deletedIds?.has(i.id)) { await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE id=?', [i.id]); continue; }
+      if (await isLocalDeleted(db, 'plan_items', 'id', i.id)) continue;
       if (await isLocalNewer(db, 'plan_items', 'id', i.id, i.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO plan_items
         (id,plan_id,name,description,start_date,end_date,content_url,total_checkin_days,
-         status,progress,link,link_config,item_order,updated_at,deleted,synced)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)`,
+         status,progress,link,link_config,item_order,priority,target_metric,updated_at,deleted,synced)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)`,
         [i.id, i.planId, i.name, i.description ?? '', i.startDate, i.endDate,
          i.contentUrl ?? '', i.totalCheckinDays ?? 0, i.status ?? 'not_started',
          i.progress ?? 0, i.link ?? 'manual', JSON.stringify(i.linkConfig ?? {}),
-         i.order ?? 0, i.updatedAt ?? null, 0]
+         i.order ?? 0, i.priority ?? 'medium', i.targetMetric ?? '', i.updatedAt ?? null, 0]
       );
     }
     for (const i of dead) {
-      await db.runAsync('DELETE FROM plan_items WHERE id = ?', [i.id]);
+      await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE id=?', [i.id]);
     }
-    patch.planItems = alive;
+    patch.planItems = data.planItem;
   }
 
   if (data.planItemCheckin?.length) {
     const alive = data.planItemCheckin.filter(c => !c.deleted);
     const dead = data.planItemCheckin.filter(c => c.deleted);
     for (const c of alive) {
+      if (deletedIds?.has(c.id)) { await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE id=?', [c.id]); continue; }
+      if (await isLocalDeleted(db, 'plan_item_checkins', 'id', c.id)) continue;
       if (await isLocalNewer(db, 'plan_item_checkins', 'id', c.id, c.updatedAt)) continue;
       await db.runAsync(`
         INSERT OR REPLACE INTO plan_item_checkins
@@ -566,9 +622,27 @@ async function applyServerChanges(data: Record<string, unknown[]>): Promise<Reco
       );
     }
     for (const c of dead) {
-      await db.runAsync('DELETE FROM plan_item_checkins WHERE id = ?', [c.id]);
+      await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE id=?', [c.id]);
     }
-    patch.planItemCheckins = alive;
+    patch.planItemCheckins = data.planItemCheckin;
+  }
+
+  if (data.grace?.length) {
+    const alive = data.grace.filter(g => !g.deleted);
+    const dead = data.grace.filter(g => g.deleted);
+    for (const g of alive) {
+      if (deletedIds?.has(g.date)) { await db.runAsync('UPDATE grace_history SET deleted=1,synced=1 WHERE date=?', [g.date]); continue; }
+      if (await isLocalDeleted(db, 'grace_history', 'date', g.date)) continue;
+      if (await isLocalNewer(db, 'grace_history', 'date', g.date, g.updatedAt)) continue;
+      await db.runAsync(`
+        INSERT OR REPLACE INTO grace_history (date,restored_at,updated_at,deleted,synced) VALUES (?,?,?,?,1)`,
+        [g.date, g.restoredAt ?? Date.now(), g.updatedAt ?? null, 0]
+      );
+    }
+    for (const g of dead) {
+      await db.runAsync('UPDATE grace_history SET deleted=1,synced=1 WHERE date=?', [g.date]);
+    }
+    patch.graceHistory = data.grace;
   }
 
   return patch;
@@ -631,7 +705,8 @@ export async function runSync(): Promise<void> {
           const payload = c.deleted ? { ...c.payload, deleted: true } : c.payload;
           (byEntity[c.entity] ??= []).push(payload);
         }
-        const patch = await applyServerChanges(byEntity);
+        const deletedIds = _deletedIdsProvider?.();
+        const patch = await applyServerChanges(byEntity, deletedIds);
         if (Object.keys(patch).length) _onChanges?.(patch);
       }
 
@@ -643,7 +718,8 @@ export async function runSync(): Promise<void> {
     // 2. Nothing to push — pull server changes
     const pullResult = await apiSyncPull(token);
     if (pullResult.data && Object.keys(pullResult.data).length > 0) {
-      const patch = await applyServerChanges(pullResult.data);
+      const deletedIds = _deletedIdsProvider?.();
+      const patch = await applyServerChanges(pullResult.data, deletedIds);
       if (Object.keys(patch).length) _onChanges?.(patch);
     }
 

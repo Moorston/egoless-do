@@ -1,5 +1,7 @@
-export const zhHant: Record<string, string> = {
-  appName:'心流紀', streak:'連續打卡', days:'天', home:'主頁',
+import type { I18nKeys } from './types';
+
+export const zhHant: I18nKeys = {
+  appName:'心流紀', streak:'連續打卡', days:'天', home:'首頁',
   fasting:'禁食', meditation:'冥想', reflections:'感念', exercise:'鍛鍊',
   habits:'習慣', stats:'統計', settings:'設置',
   linkWorld:'全球脈動', todayCheckin:'今日打卡', openCheckin:'進入打卡',
@@ -243,21 +245,29 @@ export const zhHant: Record<string, string> = {
   planComplete:'完成目標', planCancelPlan:'作廢', planEdit:'編輯', planDelete:'刪除',
   planName:'計劃名稱', planGoal:'計劃目標', planSlogan:'我的願景',
   planStartDate:'開始日期', planEndDate:'結束日期',
-  planItems:'項目列表', planAddItem:'添加項目', planDeleteItem:'刪除項目',
-  planItemName:'項目名稱', planItemDesc:'項目描述',
-  planItemStart:'項目開始日期', planItemEnd:'項目結束日期',
-  planItemContent:'項目內容（外鏈）', planItemLink:'聯動模組',
+  planPeriod:'計劃週期', planPeriod1m:'1個月', planPeriod3m:'3個月',
+  planPeriod6m:'半年', planPeriod1y:'1年',
+  planItems:'任務列表', planAddItem:'添加任務', planDeleteItem:'刪除任務',
+  planItemName:'任務名稱', planItemDesc:'任務描述',
+  planItemStart:'任務開始日期', planItemEnd:'任務結束日期',
+  planItemContent:'任務內容（外鏈）', planItemLink:'聯動模組', planItemTarget:'任務指標',
+  planPriority:'優先級', planPriorityHigh:'高',
+  planPriorityMedium:'中', planPriorityLow:'低',
   planSave:'保存計劃', planCreate:'創建計劃', planEditTitle:'編輯計劃',
-  planTodoList:'每日 TodoList', planTodoDate:'今日待辦',
-  planLinkManual:'手動', planLinkCheckin:'今日打卡', linkFasting:'禁食',
+  planTodoList:'每日待辦', planTodoDate:'今日待辦', planDetail:'計劃詳情',
+  planLinkManual:'手動', planLinkCheckin:'今日打卡', planLinkFasting:'禁食',
   planLinkMeditation:'冥想', planLinkExercise:'鍛鍊', planLinkHabit:'習慣',
   planProgress:'進度', planDays:'天', planCheckinDays:'打卡天數', planCheckin:'完成', planUncheckin:'取消',
   planTodayCheckin:'今日打卡', planHeatmap:'打卡熱力圖',
   planConfirmDelete:'確認刪除此計劃？', planConfirmCancel:'確認作廢此計劃？',
   planConfirmComplete:'確認完成此計劃？',
-  planItemTimeError:'項目時間須在計劃時間範圍內', planItemTimeOrderError:'結束日期須晚於開始日期',
+  planItemTimeError:'任務時間須在計劃時間範圍內', planItemTimeOrderError:'結束日期須晚於開始日期',
+  planItemDescRequired:'任務描述為必填項', planItemTargetRequired:'任務指標為必填項',
   planTimeError:'結束日期須晚於開始日期', planNameRequired:'請輸入計劃名稱',
-  planGoalRequired:'請輸入計劃目標', planNoItems:'暫無項目', planAddItemHint:'+ 添加項目',
+  planGoalRequired:'請輸入計劃目標', planNoItems:'暫無任務', planAddItemHint:'+ 添加任務',
+  planDeleteItemConfirm:'確定刪除此任務嗎？',
+  planDeleteConfirm:'確定刪除此計劃嗎？刪除後將進入回收箱。',
+  planCompleteConfirm:'確定完成此計劃嗎？',
 
   // Global
   globalPulse:'全球脈動', globalLeaderboard:'打卡排行榜',
@@ -301,7 +311,7 @@ export const zhHant: Record<string, string> = {
 
   // Common
   commonCancel:'取消', commonConfirm:'確定', commonClose:'關閉',
-  commonDelete:'刪除', commonSave:'保存', commonEdit:'編輯',
+  commonDelete:'刪除', commonSave:'保存', commonEdit:'編輯', commonAdd:'添加',
   commonBack:'← 返回', commonSyncing:'同步中...', commonConnected:'已連接',
   commonOffline:'離線模式',
 
@@ -319,6 +329,10 @@ export const zhHant: Record<string, string> = {
   // Calendar weekdays
   weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',
   weekdayThu:'四', weekdayFri:'五', weekdaySat:'六',
+  planNotFound:'計劃不存在', heatmapLess:'少', heatmapMore:'多', month:'月',
+  planTodoToday:'今日待辦', planTodoHistory:'待辦歷史', planTodoDone:'已完成', planTodoTotal:'總任務', planAutoChecked:'已聯動',
+  planDailyCustomTodos:'每日自定義待辦', planAddCustomTodoPlaceholder:'添加今日待辦項...', planNoCustomTodos:'暫無自定義待辦',
+  planDeleteCustomTodo:'刪除待辦', planDeleteCustomTodoConfirm:'確定要刪除這個待辦項嗎？',
 
   // Errors
   errorDisconnected:'連接斷開',

@@ -2,11 +2,19 @@
 import Dexie, { type Table } from 'dexie';
 import type {
   Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession, ExerciseEntry,
-  Plan, PlanItem, PlanItemCheckin,
+  Plan, PlanItem, PlanItemCheckin, MedHistoryEntry,
 } from '@egoless-do/core';
 
-export type SyncEntity = 'habit' | 'reflection' | 'fasting' | 'food' | 'checkin' | 'meditation' | 'profile' | 'exercise' | 'goal' | 'task' | 'taskLog' | 'plan' | 'planItem' | 'planItemCheckin';
+export type SyncEntity = 'habit' | 'reflection' | 'fasting' | 'food' | 'checkin' | 'meditation' | 'profile' | 'exercise' | 'plan' | 'planItem' | 'planItemCheckin' | 'grace';
 export type SyncOperation = 'upsert' | 'delete';
+
+/** Wrapper for profile storage in IndexedDB (UserProfile has no id field) */
+export interface ProfileRecord {
+  profileId: string;
+  data: string; // JSON-serialized UserProfile
+  updatedAt: number;
+  deleted: boolean;
+}
 
 export interface SyncQueueItem {
   _id?: number;
@@ -24,9 +32,12 @@ export class EgolessDB extends Dexie {
   foodEntries!:    Table<FoodEntry,      string>;
   checkins!:       Table<CheckinEntry,  string>;
   exerciseEntries!:Table<ExerciseEntry,  string>;
+  meditationEntries!: Table<MedHistoryEntry, string>;
+  profiles!:       Table<ProfileRecord,  string>;
   plans!:          Table<Plan,           string>;
   planItems!:      Table<PlanItem,       string>;
   planItemCheckins!:Table<PlanItemCheckin, string>;
+  graceHistory!:   Table<{ date: string; updatedAt?: number; deleted?: boolean }, string>;
   syncQueue!:      Table<SyncQueueItem,  number>;
 
   constructor() {
@@ -74,6 +85,48 @@ export class EgolessDB extends Dexie {
       plans:           'id, status, startDate, endDate',
       planItems:       'id, planId, status, startDate, endDate',
       planItemCheckins:'id, planItemId, date',
+      syncQueue:       '++_id, entity, entityId, operation, createdAt',
+    });
+    this.version(6).stores({
+      habits:          'id, status, startDate, deleted',
+      reflections:     'id, created_at, *tags, deleted',
+      fastingSessions: 'id, started_at, deleted',
+      foodEntries:     'id, ts, deleted',
+      checkins:        'date, deleted',
+      exerciseEntries: 'id, sportKey, timestamp, isGpsSport, deleted',
+      plans:           'id, status, startDate, endDate, deleted',
+      planItems:       'id, planId, status, startDate, endDate, deleted',
+      planItemCheckins:'id, planItemId, date, deleted',
+      syncQueue:       '++_id, entity, entityId, operation, createdAt',
+    });
+    this.version(7).stores({
+      habits:          'id, status, startDate, deleted',
+      reflections:     'id, created_at, *tags, deleted',
+      fastingSessions: 'id, started_at, deleted',
+      foodEntries:     'id, ts, deleted',
+      checkins:        'date, deleted',
+      exerciseEntries: 'id, sportKey, timestamp, isGpsSport, deleted',
+      meditationEntries: 'date, deleted, updatedAt',
+      profiles:        'profileId, updatedAt, deleted',
+      plans:           'id, status, startDate, endDate, deleted',
+      planItems:       'id, planId, status, startDate, endDate, deleted',
+      planItemCheckins:'id, planItemId, date, deleted',
+      graceHistory:    'date, deleted, updatedAt',
+      syncQueue:       '++_id, entity, entityId, operation, createdAt',
+    });
+    this.version(8).stores({
+      habits:          'id, status, startDate, deleted',
+      reflections:     'id, created_at, *tags, deleted',
+      fastingSessions: 'id, started_at, deleted',
+      foodEntries:     'id, ts, deleted',
+      checkins:        'date, deleted',
+      exerciseEntries: 'id, sportKey, timestamp, isGpsSport, deleted',
+      meditationEntries: 'date, deleted, updatedAt',
+      profiles:        'profileId, updatedAt, deleted',
+      plans:           'id, status, startDate, endDate, deleted',
+      planItems:       'id, planId, status, startDate, endDate, deleted, priority',
+      planItemCheckins:'id, planItemId, date, deleted',
+      graceHistory:    'date, deleted, updatedAt',
       syncQueue:       '++_id, entity, entityId, operation, createdAt',
     });
   }

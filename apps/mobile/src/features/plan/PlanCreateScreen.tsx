@@ -1,15 +1,18 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput, Alert,
+  KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
+import { useRootNavigation } from '../../navigation/hooks';
 import { THEMES, COLORS, canEditPlan, dateStr, validatePlanForm, createNewItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
 import type { ItemForm } from '@egoless-do/core';
-import { LINK_OPTIONS } from '@egoless-do/core';
+import { LINK_OPTIONS, PRIORITY_OPTIONS } from '@egoless-do/core';
 import { Card, useTheme, useT, PrimaryButton, OutlineButton, ThemedInput } from '../../components/UI';
 import DatePickerModal from '../../components/DatePickerModal';
+import DateRangePickerModal from '../../components/DateRangePickerModal';
 import { ChevronLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react-native';
 
 export default function PlanCreateScreen() {
@@ -17,7 +20,7 @@ export default function PlanCreateScreen() {
   const T = useT();
   const P = TH.primary;
   const store = useAppStore();
-  const nav = useNavigation<any>();
+  const nav = useRootNavigation();
   const route = useRoute<any>();
   const planId = route.params?.planId as string | undefined;
 
@@ -33,14 +36,29 @@ export default function PlanCreateScreen() {
     existingItems.map(i => ({
       id: i.id, name: i.name, description: i.description,
       startDate: i.startDate, endDate: i.endDate, contentUrl: i.contentUrl,
-      link: i.link, linkConfig: i.linkConfig,
+      link: i.link, priority: i.priority ?? 'medium', targetMetric: i.targetMetric ?? '', linkConfig: i.linkConfig,
     }))
   );
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => new Set(existingItems.map(i => i.id)));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [datePicker, setDatePicker] = useState<{ field: string; value: string; min?: string; max?: string } | null>(null);
+  const [showRangePicker, setShowRangePicker] = useState(false);
 
   const isEdit = !!existingPlan;
+
+  // Auto-adjust item dates when plan dates change
+  useEffect(() => {
+    if (!startDate && !endDate) return;
+    setItems(prev => prev.map(item => {
+      let changed = false;
+      let s = item.startDate;
+      let e = item.endDate;
+      if (startDate && s && s < startDate) { s = startDate; changed = true; }
+      if (endDate && e && e > endDate) { e = endDate; changed = true; }
+      if (s && e && e < s) { e = s; changed = true; }
+      return changed ? { ...item, startDate: s, endDate: e } : item;
+    }));
+  }, [startDate, endDate]);
 
   const validate = (): boolean => {
     const e = validatePlanForm({ name, goal, startDate, endDate, items }, T);
@@ -50,6 +68,16 @@ export default function PlanCreateScreen() {
 
   const handleSave = () => {
     if (!validate()) return;
+    // Check if there's already an active plan (not_started, in_progress, paused)
+    if (!isEdit) {
+      const activePlan = (store.plans ?? []).find(p =>
+        !p.deleted && (p.status === 'not_started' || p.status === 'in_progress' || p.status === 'paused')
+      );
+      if (activePlan) {
+        Alert.alert(T('planActiveExists'));
+        return;
+      }
+    }
     if (isEdit && planId) {
       store.updatePlan(planId, { name, goal, slogan, startDate, endDate });
       const existingIds = new Set(existingItems.map(i => i.id));
@@ -63,14 +91,14 @@ export default function PlanCreateScreen() {
           store.updatePlanItem(item.id, {
             name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
-            contentUrl: item.contentUrl, link: item.link, linkConfig: item.linkConfig,
+            contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
             order: idx,
           });
         } else {
           store.addPlanItem({
             planId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
-            contentUrl: item.contentUrl, link: item.link, linkConfig: item.linkConfig,
+            contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
             order: idx,
           });
         }
@@ -82,7 +110,7 @@ export default function PlanCreateScreen() {
           store.addPlanItem({
             planId: newPlanId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
-            contentUrl: item.contentUrl, link: item.link, linkConfig: item.linkConfig,
+            contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
             order: idx,
           });
         });
@@ -98,7 +126,10 @@ export default function PlanCreateScreen() {
   };
 
   const removeItem = (id: string) => {
-    setItems(prev => prev.filter(i => i.id !== id));
+    Alert.alert(T('planDeleteItem'), T('planDeleteItemConfirm'), [
+      { text: T('cancel'), style: 'cancel' },
+      { text: T('planDeleteItem'), style: 'destructive', onPress: () => setItems(prev => prev.filter(i => i.id !== id)) },
+    ]);
   };
 
   const updateItem = (id: string, patch: Partial<ItemForm>) => {
@@ -128,7 +159,12 @@ export default function PlanCreateScreen() {
         <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text }}>{isEdit ? T('planEditTitle') : T('planCreate')}</Text>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 100 }}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <ScrollView
+        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+        keyboardDismissMode="on-drag"
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Plan basic info */}
         <Card>
           <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planName')} *</Text>
@@ -154,28 +190,45 @@ export default function PlanCreateScreen() {
             style={[inputStyle, { marginBottom: 12 }]}
           />
 
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planStartDate')} *</Text>
+          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 6 }}>{T('planPeriod')}</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }} contentContainerStyle={{ gap: 6 }}>
+            {([
+              { key: '1m', months: 1, label: T('planPeriod1m') },
+              { key: '3m', months: 3, label: T('planPeriod3m') },
+              { key: '6m', months: 6, label: T('planPeriod6m') },
+              { key: '1y', months: 12, label: T('planPeriod1y') },
+            ] as const).map(opt => (
               <TouchableOpacity
-                onPress={() => setDatePicker({ field: 'planStart', value: startDate })}
-                style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: errors.startDate ? COLORS.RED : TH.border }]}
+                key={opt.key}
+                onPress={() => {
+                  const start = new Date();
+                  const end = new Date(start);
+                  end.setMonth(end.getMonth() + opt.months);
+                  end.setDate(end.getDate() - 1);
+                  setStartDate(dateStr(start));
+                  setEndDate(dateStr(end));
+                }}
+                style={{
+                  paddingHorizontal: 14, paddingVertical: 7, borderRadius: 8,
+                  backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border,
+                }}
               >
-                <Text style={{ fontSize: FONT_BODY, color: startDate ? TH.text : TH.sub }}>{startDate || 'YYYY-MM-DD'}</Text>
-                <Calendar size={16} color={TH.sub} />
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '500' }}>{opt.label}</Text>
               </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planEndDate')} *</Text>
-              <TouchableOpacity
-                onPress={() => setDatePicker({ field: 'planEnd', value: endDate, min: startDate || undefined })}
-                style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: errors.endDate ? COLORS.RED : TH.border }]}
-              >
-                <Text style={{ fontSize: FONT_BODY, color: endDate ? TH.text : TH.sub }}>{endDate || 'YYYY-MM-DD'}</Text>
-                <Calendar size={16} color={TH.sub} />
-              </TouchableOpacity>
-            </View>
-          </View>
+            ))}
+          </ScrollView>
+
+          <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planPeriod')} *</Text>
+          <TouchableOpacity
+            onPress={() => setShowRangePicker(true)}
+            style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: (errors.startDate || errors.endDate) ? COLORS.RED : TH.border }]}
+          >
+            <Text style={{ fontSize: FONT_BODY, color: (startDate && endDate) ? TH.text : TH.sub }}>
+              {startDate && endDate ? `${startDate}  —  ${endDate}` : '选择计划日期范围'}
+            </Text>
+            <Calendar size={16} color={TH.sub} />
+          </TouchableOpacity>
+          {errors.startDate ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginTop: 4 }}>{errors.startDate}</Text> : null}
           {errors.endDate ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginTop: 4 }}>{errors.endDate}</Text> : null}
         </Card>
 
@@ -206,6 +259,7 @@ export default function PlanCreateScreen() {
                 <Text style={{ flex: 1, fontSize: FONT_SUB, fontWeight: '600', color: TH.text }} numberOfLines={1}>
                   {item.name || `${T('planItemName')} ${idx + 1}`}
                 </Text>
+                {(() => { const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium')); return p ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: p.color }} /> : null; })()}
                 <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
                   {item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
                 </Text>
@@ -222,11 +276,42 @@ export default function PlanCreateScreen() {
                   />
                   {errors[`item_${idx}_name`] ? <Text style={{ fontSize: FONT_BADGE, color: COLORS.RED, marginBottom: 6 }}>{errors[`item_${idx}_name`]}</Text> : null}
 
-                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemDesc')}</Text>
+                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planPriority')}</Text>
+                  <View style={{ flexDirection: 'row', gap: 6, marginBottom: 8 }}>
+                    {PRIORITY_OPTIONS.map(opt => {
+                      const active = (item.priority ?? 'medium') === opt.value;
+                      return (
+                        <TouchableOpacity
+                          key={opt.value}
+                          onPress={() => updateItem(item.id, { priority: opt.value })}
+                          style={{
+                            flexDirection: 'row', alignItems: 'center', gap: 4,
+                            paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+                            backgroundColor: active ? `${opt.color}20` : TH.card,
+                            borderWidth: 1, borderColor: active ? opt.color : TH.border,
+                          }}
+                        >
+                          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: opt.color }} />
+                          <Text style={{ color: active ? opt.color : TH.sub, fontSize: FONT_SUB, fontWeight: active ? '600' : '400' }}>
+                            {T(opt.labelKey)}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+
+                  <Text style={{ fontSize: FONT_LABEL, color: errors[`item_${idx}_targetMetric`] ? COLORS.RED : TH.sub, marginBottom: 4 }}>{T('planItemTarget')} *</Text>
+                  <TextInput
+                    value={item.targetMetric} onChangeText={v => updateItem(item.id, { targetMetric: v })}
+                    placeholder={T('planItemTarget')} placeholderTextColor={TH.sub}
+                    style={[inputStyle, { borderColor: errors[`item_${idx}_targetMetric`] ? COLORS.RED : TH.border, marginBottom: 8 }]}
+                  />
+
+                  <Text style={{ fontSize: FONT_LABEL, color: errors[`item_${idx}_description`] ? COLORS.RED : TH.sub, marginBottom: 4 }}>{T('planItemDesc')} *</Text>
                   <TextInput
                     value={item.description} onChangeText={v => updateItem(item.id, { description: v })}
                     placeholder={T('planItemDesc')} placeholderTextColor={TH.sub} multiline
-                    style={[inputStyle, { minHeight: 40, textAlignVertical: 'top', marginBottom: 8 }]}
+                    style={[inputStyle, { minHeight: 40, textAlignVertical: 'top', borderColor: errors[`item_${idx}_description`] ? COLORS.RED : TH.border, marginBottom: 8 }]}
                   />
 
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
@@ -294,14 +379,41 @@ export default function PlanCreateScreen() {
             </Card>
           );
         })}
+
+        {/* Add next task button */}
+        {items.length > 0 && (
+          <TouchableOpacity
+            onPress={addItem}
+            style={{
+              paddingVertical: 14, borderRadius: 12, borderWidth: 1.5, borderColor: `${P}40`,
+              borderStyle: 'dashed', alignItems: 'center', marginTop: 4,
+            }}
+          >
+            <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{T('planAddItemHint')}</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Save button */}
       <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 32, backgroundColor: TH.bg }}>
         <PrimaryButton label={T('planSave')} onPress={handleSave} />
       </View>
 
-      {/* Date Picker Modal */}
+      {/* Date Range Picker Modal for plan dates */}
+      <DateRangePickerModal
+        visible={showRangePicker}
+        startDate={startDate}
+        endDate={endDate}
+        onClose={() => setShowRangePicker(false)}
+        onConfirm={(start, end) => {
+          setStartDate(start);
+          setEndDate(end);
+          setShowRangePicker(false);
+        }}
+      />
+
+      {/* Date Picker Modal for item dates */}
       {datePicker && (
         <DatePickerModal
           visible
@@ -311,10 +423,13 @@ export default function PlanCreateScreen() {
           onClose={() => setDatePicker(null)}
           onConfirm={(date) => {
             const { field } = datePicker;
-            if (field === 'planStart') setStartDate(date);
-            else if (field === 'planEnd') setEndDate(date);
-            else if (field.startsWith('itemStart_')) updateItem(field.slice(11), { startDate: date });
-            else if (field.startsWith('itemEnd_')) updateItem(field.slice(9), { endDate: date });
+            if (field.startsWith('itemStart_')) {
+              const id = field.slice(10);
+              const item = items.find(i => i.id === id);
+              updateItem(id, { startDate: date, ...(item && item.endDate && item.endDate < date ? { endDate: date } : {}) });
+            } else if (field.startsWith('itemEnd_')) {
+              updateItem(field.slice(8), { endDate: date });
+            }
             setDatePicker(null);
           }}
         />

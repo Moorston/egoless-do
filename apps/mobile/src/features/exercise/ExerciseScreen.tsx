@@ -2,19 +2,16 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/stack';
 import { useTheme, useT } from '../../components/UI';
 import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
-import type { RootStackParamList } from '../../navigation';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+import { SimpleHeader } from '../../navigation';
 import {
   Footprints, Activity, Bike, Dumbbell, ChevronRight,
   Globe, Clock, X, Search,
 } from 'lucide-react-native';
-
-type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 function formatPace(secPerKm: number): string {
   if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
@@ -27,14 +24,14 @@ export default function ExerciseScreen() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const nav   = useNavigation<Nav>();
+  const nav   = useRootNavigation();
   const store = useAppStore();
   const [showOther, setShowOther] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const SPORT_EMOJI: Record<string, string> = { '行走': '🚶', '跑步': '🏃', '骑行': '🚴' };
   const startSport = (s: SportItem | { key: string; color: string; gps: boolean }) => {
     const icon = 'icon' in s && typeof s.icon === 'string' ? s.icon : (SPORT_EMOJI[s.key] ?? '🏃');
-    (nav as any).navigate('Sport', { key: s.key, icon, color: s.color ?? P, gps: s.gps ?? false });
+    nav.navigate('Sport', { key: s.key, icon, color: s.color ?? P, gps: s.gps ?? false });
   };
 
   // ── Weekly stats ──
@@ -97,6 +94,7 @@ export default function ExerciseScreen() {
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <SimpleHeader routeName="Exercise" />
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
 
         {/* ── Hero Banner ── */}
@@ -210,7 +208,7 @@ export default function ExerciseScreen() {
         </View>
 
         {/* ── Global Map ── */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('exerciseGlobal')}` })}
+        <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('exerciseGlobal')}` })}
           style={{ flexDirection:'row', alignItems:'center', padding:14, gap:12, backgroundColor:TH.card, borderRadius:16, marginTop:20, marginHorizontal:16, borderWidth:1, borderColor:TH.border }}>
           <Globe size={20} color={P} />
           <Text style={{ fontSize:FONT_BODY, fontWeight:'600', color:TH.text, flex:1 }}>{T('linkWorld')} — {T('exerciseGlobal')}</Text>

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT, ScreenHeader, Card } from '../../components/UI';
 import { COLORS, detectStreakBreaks, computeLongestStreak, FONT_STAT_SECTION, FONT_SUB, FONT_BODY, FONT_BADGE } from '@egoless-do/core';
@@ -12,7 +12,7 @@ export default function StreakBreakScreen() {
   const T = useT();
   const P = TH.primary;
   const store = useAppStore();
-  const nav = useNavigation();
+  const nav = useRootNavigation();
 
   const breaks = useMemo(() => detectStreakBreaks(store.checkinHistory ?? []), [store.checkinHistory]);
   const longestStreak = useMemo(() => computeLongestStreak(store.checkinHistory ?? []), [store.checkinHistory]);

@@ -4,9 +4,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { THEMES, COLORS, FOOD_PRESETS, getTodayFoodLog, dateStr, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_CARD, FONT_BODY, FONT_BUTTON, FONT_HERO, FONT_STAT_SECTION, FONT_CLOSE, FONT_BADGE, FONT_LABEL, FONT_EMPTY } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { ChevronLeft, ChevronDown, ChevronRight, X, Star, Wheat, Beef, Leaf, Apple, CupSoda, Cookie, Utensils } from 'lucide-react';
-
-const FOOD_ICON_MAP: Record<string, React.ComponentType<any>> = { Wheat, Beef, Leaf, Apple, CupSoda, Cookie, Utensils, Star };
+import { useFoodSearch, FOOD_ICON_MAP } from './useFoodSearch';
+import { ChevronLeft, ChevronDown, ChevronRight, X, Star } from 'lucide-react';
 
 export default function FoodLogPage({ onClose }: { onClose: () => void }) {
   const store = useWebStore();
@@ -18,35 +17,13 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
   const totalCal = todayLog.reduce((a, f) => a + f.calories, 0);
   const [showAdd, setShowAdd] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [fn, setFn] = useState('');
-  const [fc, setFc] = useState('');
-  const [fnote, setFnote] = useState('');
-  const [foodTab, setFoodTab] = useState(0);
-  const [foodSearch, setFoodSearch] = useState('');
-  const [showManual, setShowManual] = useState(false);
 
-  const allTabs = useMemo(() => [
-    ...FOOD_PRESETS.map(c => ({ key: c.key, label: c.label, icon: c.icon, items: c.items })),
-    { key: 'my', label: T('foodMyPresets'), icon: 'Star', items: [] as { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] },
-  ], [T]);
-
-  const getFilteredItems = useCallback(() => {
-    const tab = allTabs[foodTab];
-    if (!tab) return [];
-    let items: { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] = [];
-    if (tab.key === 'my') {
-      items = (store.customFoodPresets ?? []).map(p => ({ name: p.name, nameEn: p.name, cal: p.calories, unit: '份', unitEn: 'serving' }));
-    } else {
-      items = tab.items;
-    }
-    if (foodSearch.trim()) {
-      const q = foodSearch.trim().toLowerCase();
-      items = items.filter(i => i.name.toLowerCase().includes(q) || i.nameEn.toLowerCase().includes(q));
-    }
-    return items;
-  }, [allTabs, foodTab, foodSearch, store.customFoodPresets]);
-
-  const resetFoodForm = useCallback(() => { setFn(''); setFc(''); setFnote(''); setShowManual(false); setFoodSearch(''); setFoodTab(0); }, []);
+  const {
+    fn, setFn, fc, setFc, fnote, setFnote,
+    foodTab, setFoodTab, foodSearch, setFoodSearch,
+    showManual, setShowManual,
+    allTabs, filteredItems, resetFoodForm,
+  } = useFoodSearch(store.language);
 
   const historyGroups = useMemo(() => {
     const today = dateStr();
@@ -249,7 +226,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
 
             {/* Food list */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '0 20px', paddingBottom: 12 }}>
-              {getFilteredItems().map((f, i) => (
+              {filteredItems.map((f, i) => (
                 <button key={`${f.name}-${i}`}
                   onClick={() => handlePresetAdd(f.name, f.cal)}
                   onContextMenu={(e) => { e.preventDefault(); setFn(f.name); setFc(String(f.cal)); setShowManual(true); }}
@@ -265,7 +242,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
                   <div style={{ color: P, fontSize: FONT_BODY, fontWeight: 600 }}>{f.cal} kcal</div>
                 </button>
               ))}
-              {getFilteredItems().length === 0 && (
+              {filteredItems.length === 0 && (
                 <div style={{ color: TH.sub, textAlign: 'center', padding: '32px 0', fontSize: FONT_BODY }}>
                   {foodTab === allTabs.length - 1 ? T('foodEmpty') : T('foodNoHistory')}
                 </div>

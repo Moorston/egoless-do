@@ -3,7 +3,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
 import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_EMPTY } from '@egoless-do/core';
@@ -51,7 +51,7 @@ export default function RecycleBinScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const nav = useNavigation();
+  const nav = useRootNavigation();
   const store = useAppStore();
   const recycleBin = useAppStore(s => s.recycleBin ?? []);
   const restoreFromRecycleBin = useAppStore(s => s.restoreFromRecycleBin);

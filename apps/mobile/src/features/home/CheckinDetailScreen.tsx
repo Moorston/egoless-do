@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
-import type { RootStackParamList } from '../../navigation';
+import { useRootNavigation, type RootStackParamList } from '../../navigation/hooks';
 import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check } from 'lucide-react-native';
 
 type DetailRoute = RouteProp<RootStackParamList, 'CheckinDetail'>;
@@ -15,7 +15,7 @@ export default function CheckinDetailScreen() {
   const TH = useTheme();
   const T = useT();
   const store = useAppStore();
-  const nav = useNavigation();
+  const nav = useRootNavigation();
   const route = useRoute<DetailRoute>();
   const date = route.params?.date ?? '';
   const record = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === date);

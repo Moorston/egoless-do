@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
 import * as Notifications from 'expo-notifications';
 
 export default function LoginScreen() {
   const TH = useTheme();
-  const nav = useNavigation<any>();
+  const nav = useRootNavigation();
   const login = useAppStore(s => s.login);
   const isLoading = useAppStore(s => s.auth.isLoading);
 

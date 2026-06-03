@@ -3,6 +3,9 @@ import { getPb, escapeFilter } from '../../_pb';
 import crypto from 'crypto';
 import { TOKEN_EXPIRES_IN } from '../../constants';
 import { sanitizeError } from '../../_errors';
+import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const wechatRateLimit = createRateLimiter(10, 60_000); // 10 req/min
 
 function wechatPassword(openid: string) {
   const salt = process.env.WECHAT_SECRET;
@@ -11,6 +14,11 @@ function wechatPassword(openid: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!wechatRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
   try {
     const { code } = await req.json();
     if (!code) return NextResponse.json({ error: '缺少 code' }, { status: 400 });

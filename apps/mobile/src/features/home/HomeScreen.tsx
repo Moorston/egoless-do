@@ -1,43 +1,31 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
   StatusBar, Modal, TextInput,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
-import { THEMES, COLORS, BANNER_COLORS, STATS_GRADIENT, dateStr, yesterday, getTodayFoodLog, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_LABEL, FONT_STAT_CARD, FONT_HERO } from '@egoless-do/core';
+import { THEMES, COLORS, BANNER_COLORS, STATS_GRADIENT, dateStr, yesterday, getTodayFoodLog, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_HERO, computeLongestStreak } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { Card, useTheme, useT, ProgressBar } from '../../components/UI';
 import AddFoodModal from '../../components/AddFoodModal';
 import CheckinModal from './CheckinModal';
+import { useRootNavigation } from '../../navigation/hooks';
+import { SimpleHeader } from '../../navigation';
 import {
   CalendarCheck, Trophy, Zap, Utensils, Scale, Footprints,
-  Droplets, Pencil, Check, ClipboardList, Shield, Flame,
+  Droplets, Pencil, Check, ClipboardList, Shield,
 } from 'lucide-react-native';
-
-function computeLongestStreak(history: CheckinEntry[]): number {
-  const doneDates = history.filter(c => c.done).map(c => c.date).sort();
-  if (doneDates.length === 0) return 0;
-  let max = 1, current = 1;
-  for (let i = 1; i < doneDates.length; i++) {
-    const prev = new Date(doneDates[i - 1]);
-    const curr = new Date(doneDates[i]);
-    const diff = (curr.getTime() - prev.getTime()) / 86400000;
-    if (diff === 1) { current++; max = Math.max(max, current); }
-    else if (diff > 1) current = 1;
-  }
-  return max;
-}
 
 export default function HomeScreen() {
   const TH         = useTheme();
   const T          = useT();
   const P          = TH.primary;
   const store      = useAppStore();
-  const nav        = useNavigation();
+  const nav        = useRootNavigation();
   const today      = dateStr();
+
 
   const [showCI, setShowCI]       = useState(false);
   const [showFood, setShowFood]   = useState(false);
@@ -62,7 +50,7 @@ export default function HomeScreen() {
   const savedKcal = useMemo(() => (store.fastingHistory ?? []).reduce((sum, f) => sum + (f.estimatedKcal ?? 0), 0), [store.fastingHistory]);
 
   const totalCompleted = useMemo(() => (store.checkinHistory ?? []).filter((c: CheckinEntry) => c.done).length, [store.checkinHistory]);
-  const longestStreak = useMemo(() => computeLongestStreak(store.checkinHistory ?? []), [store.checkinHistory]);
+  const longestStreak = useMemo(() => computeLongestStreak((store.checkinHistory ?? []).filter((c: CheckinEntry) => c.done).map(c => c.date)), [store.checkinHistory]);
   const savedMeals = useMemo(() => (store.fastingHistory ?? []).length, [store.fastingHistory]);
 
   const statsData = useMemo(() => [
@@ -77,7 +65,7 @@ export default function HomeScreen() {
     if (!store.healthSyncEnabled) return;
     import('../health/HealthService').then(({ performHealthSync }) => {
       performHealthSync(store);
-    }).catch(() => {});
+    }).catch(console.error);
   }, [store.healthSyncEnabled]);
 
 
@@ -91,10 +79,12 @@ export default function HomeScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
       <StatusBar barStyle={TH === THEMES.light ? 'dark-content' : 'light-content'} />
+      <SimpleHeader routeName="Home" />
       <ScrollView
-        contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
+        <View style={{ padding: 16, paddingBottom: 0 }}>
         {/* Check-in banner */}
         {bannerState === 'notDone' ? (
           <TouchableOpacity
@@ -196,7 +186,7 @@ export default function HomeScreen() {
           if (yesterdayDone) return null;
           return (
             <TouchableOpacity
-              onPress={() => (nav as any).navigate('Grace')}
+              onPress={() => nav.navigate('Grace')}
               activeOpacity={0.8}
               style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
             >
@@ -219,7 +209,7 @@ export default function HomeScreen() {
 
         {/* Streak card */}
         <TouchableOpacity
-          onPress={() => (nav as any).navigate('Grace')}
+          onPress={() => nav.navigate('Grace')}
           activeOpacity={0.9}
           style={{ borderRadius: 16, marginBottom: 12, overflow: 'hidden' }}
         >
@@ -331,23 +321,20 @@ export default function HomeScreen() {
             <Text style={{ fontSize:FONT_STAT_CARD, fontWeight:'700', color:P }}>{totalCal}</Text>
             <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>/ {store.calGoal} kcal</Text>
           </View>
-          <View style={{ marginTop:8 }}>
+          <View style={{ marginTop:8, marginBottom:12 }}>
             <ProgressBar pct={Math.min(totalCal / store.calGoal * 100, 100)} colors={['#7117EA', '#EA6060']} />
           </View>
+          <TouchableOpacity
+            onPress={() => setShowFood(true)}
+            style={{
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+              backgroundColor: P, borderRadius: 12, padding: 14,
+            }}
+          >
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('addFoodBtn')}</Text>
+          </TouchableOpacity>
         </Card>
-
-        {/* Add food button */}
-        <TouchableOpacity
-          onPress={() => setShowFood(true)}
-          style={{
-            flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-            backgroundColor: P, borderRadius: 12, padding: 14,
-            marginBottom: 12,
-          }}
-        >
-          <Utensils size={18} color="#fff" />
-          <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('addFood')}</Text>
-        </TouchableOpacity>
+        </View>
       </ScrollView>
 
       {showCI && <CheckinModal onClose={() => setShowCI(false)} />}

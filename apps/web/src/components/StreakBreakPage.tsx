@@ -13,7 +13,7 @@ export default function StreakBreakPage({ onClose }: { onClose: () => void }) {
   const T = useT();
 
   const breaks = useMemo(() => detectStreakBreaks(store.checkinHistory ?? []), [store.checkinHistory]);
-  const longestStreak = useMemo(() => computeLongestStreak(store.checkinHistory ?? []), [store.checkinHistory]);
+  const longestStreak = useMemo(() => computeLongestStreak((store.checkinHistory ?? []).filter(c => c.done).map(c => c.date)), [store.checkinHistory]);
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: TH.bg, overflowY: 'auto' }}>

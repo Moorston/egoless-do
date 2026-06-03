@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
+import { useRootNavigation } from '../../navigation/hooks';
 import { THEMES, COLORS, getHistoryPlans, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import type { PlanStatus } from '@egoless-do/core';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -17,7 +17,7 @@ export default function PlanHistoryScreen() {
   const TH = useTheme();
   const T = useT();
   const store = useAppStore();
-  const nav = useNavigation<any>();
+  const nav = useRootNavigation();
 
   const historyPlans = useMemo(() => getHistoryPlans(store.plans ?? []), [store.plans]);
 
@@ -27,7 +27,7 @@ export default function PlanHistoryScreen() {
   };
 
   return (
-    <SafeAreaView edges={['bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* Header */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, paddingBottom: 10 }}>
         <TouchableOpacity onPress={() => nav.goBack()}>

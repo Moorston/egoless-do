@@ -2,15 +2,16 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { useAudioPlayer } from 'expo-audio';
 import { useAppStore } from '../../store/useAppStore';
+import { SimpleHeader } from '../../navigation';
 import { Card, useTheme, PrimaryButton, OutlineButton, ScreenHeader, useT } from '../../components/UI';
 import { estimateFastingKcal, FASTING_DURATIONS, COLORS, WARM_CORAL, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE } from '@egoless-do/core';
 import {
   Hourglass, Clock, Flame, Trophy, Globe, Scale,
   AlertTriangle, Check, ChevronRight, StopCircle,
 } from 'lucide-react-native';
+import { useRootNavigation } from '../../navigation/hooks';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
@@ -18,7 +19,7 @@ export default function FastingScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
   const store = useAppStore();
-  const nav   = useNavigation();
+  const nav   = useRootNavigation();
   const T     = useT();
 
   const [elapsed, setElapsed]   = useState(0);
@@ -41,7 +42,7 @@ export default function FastingScreen() {
       setElapsed(0);
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [!!store.activeFasting]);
+  }, [store.activeFasting?.id]);
 
   const pct  = useMemo(() => store.activeFasting ? Math.min(elapsed / (store.activeFasting.targetHours * 3600), 1) : 0, [store.activeFasting, elapsed]);
   const kcal = useMemo(() => estimateFastingKcal(elapsed / 3600, store.userProfile.weight ?? 70, store.userProfile.gender ?? 'male', store.userProfile.age ?? 30), [elapsed, store.userProfile]);
@@ -99,16 +100,17 @@ export default function FastingScreen() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { icon:Hourglass, label:T('fastTotal'),    value:`${(store.fastingHistory ?? []).length} ${T('fastTimes')}`, colors:['#7117EA', '#EA6060'] as const },
-    { icon:Clock, label:T('fastTotalHours'),    value:`${totalFastHours} ${T('fastHours')}`,         colors:['#17EAD9', '#6078EA'] as const },
-    { icon:Flame, label:T('fastStreak'),  value:`${currentFastingStreak} ${T('days')}`,             colors:['#9A4EFF', '#20ECFF'] as const },
-    { icon:Trophy, label:T('fastLongest'),  value:`${longestStreak} ${T('days')}`,            colors:['#8446FF', '#18CEFF'] as const },
+    { icon:Hourglass, label:T('fastTotal'),    value:`${(store.fastingHistory ?? []).length}`, unit:T('fastTimes'), colors:['#7117EA', '#EA6060'] as const },
+    { icon:Clock, label:T('fastTotalHours'),    value:`${totalFastHours}`, unit:T('fastHours'),         colors:['#17EAD9', '#6078EA'] as const },
+    { icon:Flame, label:T('fastStreak'),  value:`${currentFastingStreak}`, unit:T('days'),             colors:['#9A4EFF', '#20ECFF'] as const },
+    { icon:Trophy, label:T('fastLongest'),  value:`${longestStreak}`, unit:T('days'),            colors:['#8446FF', '#18CEFF'] as const },
   ], [(store.fastingHistory ?? []).length, currentFastingStreak, totalFastHours, longestStreak]);
 
   const isActive = !!store.activeFasting;
 
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
+      <SimpleHeader routeName="Fasting" />
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
 
         {/* Main card */}
@@ -156,7 +158,7 @@ export default function FastingScreen() {
         </Card>
 
         {/* Global fasting */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalFasting')}` })}
+        <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalFasting')}` })}
           style={{ flexDirection:'row', alignItems:'center', gap:10, padding:14, backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border }}>
           <Globe size={20} color={P} />
           <Text style={{ fontSize:FONT_BODY, color:TH.text, fontWeight:'600', flex:1 }}>{T('linkWorld')} — {T('globalFasting')}</Text>
@@ -164,7 +166,7 @@ export default function FastingScreen() {
         </TouchableOpacity>
 
         {/* History entry */}
-        <TouchableOpacity onPress={() => (nav as any).navigate('FastHistory')}
+        <TouchableOpacity onPress={() => nav.navigate('FastHistory')}
           style={{ flexDirection:'row', alignItems:'center', gap:10, padding:14, backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border }}>
           <Clock size={20} color={P} />
           <Text style={{ fontSize:FONT_BODY, color:TH.text, fontWeight:'600', flex:1 }}>{T('fastingHistory')}</Text>
@@ -184,7 +186,7 @@ export default function FastingScreen() {
               >
                 <s.icon size={26} color="#fff" />
                 <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{s.label}</Text>
-                <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{s.value}</Text>
+                <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{s.value}<Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}> {s.unit}</Text></Text>
               </LinearGradient>
             </View>
           ))}

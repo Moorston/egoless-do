@@ -16,9 +16,12 @@ export type OverlayKey =
   | 'grace'
   | 'exerciseHistory'
   | 'streakBreak'
+  | 'plan'
   | 'planCreate'
   | 'planDetail'
   | 'planHistory'
+  | 'habits'
+  | 'reflections'
   | 'privacyPolicy'
   | 'stats';
 
@@ -35,6 +38,7 @@ interface OverlayContextValue {
   overlayProps: OverlayProps;
   open: (key: OverlayKey, props?: OverlayProps) => void;
   close: () => void;
+  switch: (key: OverlayKey, props?: OverlayProps) => void;
 }
 
 export const OverlayContext = createContext<OverlayContextValue | null>(null);
@@ -54,7 +58,12 @@ export function useOverlayState() {
     setOverlayProps({});
   }, []);
 
-  return { overlay, overlayProps, open, close };
+  const switchOverlay = useCallback((key: OverlayKey, props?: OverlayProps) => {
+    setOverlay(key);
+    setOverlayProps(props ?? {});
+  }, []);
+
+  return { overlay, overlayProps, open, close, switch: switchOverlay };
 }
 
 /** Access overlay context from any child component. */

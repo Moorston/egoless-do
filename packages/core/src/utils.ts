@@ -34,8 +34,6 @@ export const tomorrow = () => {
   return dateStr(d);
 };
 
-export const tmr = tomorrow;
-
 export const daysInMonth = (y: number, m: number) => new Date(y, m + 1, 0).getDate();
 
 export const formatAgoT = (ts: number, T: (key: string) => string) => {
@@ -46,16 +44,8 @@ export const formatAgoT = (ts: number, T: (key: string) => string) => {
   return T('timeAgoDays').replace('{n}', String(Math.floor(d / 1440)));
 };
 
-export const formatAgo = (ts: number) => formatAgoT(ts, (k) => {
-  const zh: Record<string, string> = { timeAgoJustNow: '刚刚', timeAgoMinutes: '{n}分钟前', timeAgoHours: '{n}小时前', timeAgoDays: '{n}天前' };
-  return zh[k] ?? k;
-});
-
 let _uidCounter = 0;
 export const uid = () => Date.now().toString(36) + (_uidCounter++).toString(36) + Math.random().toString(36).slice(2, 6);
-
-/** Blur GPS coordinate by ±500m random offset */
-export const blurCoord = (coord: number) => coord + (Math.random() - 0.5) * 0.009;
 
 /** Compute habit streak from checked dates (validates most recent is today/yesterday) */
 export const computeStreak = (checkedDates: string[]): number => {
@@ -75,13 +65,6 @@ export const computeStreak = (checkedDates: string[]): number => {
   }
   return streak;
 };
-
-/** Calculate habit streak (alias for computeStreak) */
-export const calculateStreak = computeStreak;
-
-/** Estimated kcal burned in a fast (35 kcal/hour baseline) */
-export const estimateFastKcal = (seconds: number) =>
-  Math.round((seconds / 3600) * 35);
 
 /** Calculate streak from checkin history (allows 1-day gap for reference date) */
 export const calculateCheckinStreak = (history: Array<{ date: string; done: boolean }>, refDate?: string): number => {
@@ -291,6 +274,21 @@ export function normalizeEntity<T>(raw: Record<string, unknown>): T {
     result[FIELD_MAPPING[key] ?? key] = value;
   }
   return result as T;
+}
+
+/** Compute the longest consecutive-day streak from a sorted/unsorted list of date strings. */
+export function computeLongestStreak(dates: string[]): number {
+  if (dates.length === 0) return 0;
+  const sorted = [...dates].sort();
+  let max = 1, current = 1;
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = new Date(sorted[i - 1]);
+    const curr = new Date(sorted[i]);
+    const diff = (curr.getTime() - prev.getTime()) / 86400000;
+    if (diff === 1) { current++; max = Math.max(max, current); }
+    else if (diff > 1) current = 1;
+  }
+  return max;
 }
 
 /** Format timestamp or date string to readable date-time format */

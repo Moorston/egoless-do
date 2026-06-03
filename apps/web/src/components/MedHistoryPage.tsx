@@ -1,6 +1,7 @@
 'use client';
 
-import { THEMES, FONT_BACK, FONT_TITLE, FONT_EMPTY, FONT_BODY } from '@egoless-do/core';
+import { useMemo } from 'react';
+import { THEMES, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TITLE, FONT_BACK } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 import { useT } from './helpers';
 import { ChevronLeft } from 'lucide-react';
@@ -10,32 +11,95 @@ export default function MedHistoryPage({ onClose }: { onClose: () => void }) {
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
-  const medHistory = store.medHistory || [];
+
+  const sorted = useMemo(() =>
+    [...(store.medHistory ?? [])].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
+    [store.medHistory]
+  );
+
+  const grouped = useMemo(() => {
+    const map = new Map<string, typeof sorted>();
+    for (const m of sorted) {
+      const key = (m.date ?? '').slice(0, 7);
+      if (!key) continue;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(m);
+    }
+    return Array.from(map.entries());
+  }, [sorted]);
+
+  const formatMonth = (key: string) => {
+    const [y, mo] = key.split('-');
+    return `${y}年${parseInt(mo)}月`;
+  };
+
+  const formatDay = (dateStr: string) => {
+    const parts = dateStr.split('-');
+    return parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : dateStr;
+  };
+
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  const getWeekday = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? '' : weekdays[d.getDay()];
+  };
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: TH.bg, overflowY: 'auto' }}>
-      <div style={{ maxWidth: 390, margin: '0 auto' }}>
-        <div style={{ padding: '20px 16px 10px', display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ maxWidth: 480, margin: '0 auto', padding: '0 16px 32px' }}>
+        <div style={{ padding: '20px 0 10px', display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_BACK, cursor: 'pointer' }}><ChevronLeft size={20} /></button>
           <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('meditationHistory')}</div>
         </div>
-        <div style={{ padding: '0 16px' }}>
-          {medHistory.length === 0 && (
-            <div style={{ textAlign: 'center', color: TH.sub, padding: '40px 0', fontSize: FONT_EMPTY }}>{T('noHistory')}</div>
-          )}
-          {medHistory.map((m, i) => (
-            <div key={i} style={{
-              background: TH.card, borderRadius: 16, padding: 14, marginBottom: 10,
-              border: `1px solid ${TH.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-            }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>{m.date}</div>
-                <div style={{ fontSize: FONT_BODY, color: TH.sub, marginTop: 2 }}>{m.mood}</div>
-              </div>
-              <div style={{ fontWeight: 700, color: P, fontSize: FONT_BODY }}>{m.dur}</div>
+
+        {sorted.length === 0 && (
+          <div style={{ textAlign: 'center', color: TH.sub, padding: '60px 0', fontSize: FONT_BODY }}>{T('noHistory')}</div>
+        )}
+
+        {grouped.map(([monthKey, items]) => (
+          <div key={monthKey} style={{ marginBottom: 24 }}>
+            {/* Month header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, marginLeft: 4 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 5, background: P, flexShrink: 0 }} />
+              <span style={{ fontSize: FONT_SUB, fontWeight: 700, color: TH.text }}>{formatMonth(monthKey)}</span>
+              <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length} {T('fastTimes')}</span>
             </div>
-          ))}
-        </div>
+
+            {items.map((m, idx) => {
+              const isLast = idx === items.length - 1;
+              return (
+                <div key={m.date ?? idx} style={{ display: 'flex', marginLeft: 4 }}>
+                  {/* Timeline line + dot */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 24, flexShrink: 0 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 5, background: P, zIndex: 1, flexShrink: 0 }} />
+                    {!isLast && <div style={{ width: 2, flex: 1, background: `${P}30` }} />}
+                  </div>
+
+                  {/* Content card */}
+                  <div style={{
+                    flex: 1, background: TH.card, borderRadius: 12, padding: '12px 14px',
+                    marginBottom: 10, marginLeft: 8,
+                    borderLeft: `3px solid ${P}`,
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatDay(m.date)}</span>
+                        <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(m.date)}</span>
+                      </div>
+                      <span style={{
+                        background: `${P}15`, padding: '3px 10px', borderRadius: 8,
+                        color: P, fontWeight: 700, fontSize: FONT_SUB,
+                      }}>{m.dur}</span>
+                    </div>
+                    {m.mood && (
+                      <div style={{ fontSize: FONT_BADGE, color: TH.sub }}>{m.mood}</div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );

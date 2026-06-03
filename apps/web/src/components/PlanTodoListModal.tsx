@@ -14,10 +14,10 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
   const T = useT();
   const today = new Date().toISOString().slice(0, 10);
 
-  const activePlan = useMemo(() => getActivePlan(store.plans), [store.plans]);
+  const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
   const todayItems = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayItems(store.planItems, activePlan, today);
+    return getTodayItems(store.planItems ?? [], activePlan, today);
   }, [store.planItems, activePlan, today]);
 
   const checkins = store.planItemCheckins ?? [];

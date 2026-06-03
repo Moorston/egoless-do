@@ -118,15 +118,18 @@ export default function DatePickerModal({ visible, value, onConfirm, onClose, mi
                   onPress={() => setSelectedDay(d)}
                   style={{
                     width: '14.28%', aspectRatio: 1, alignItems: 'center', justifyContent: 'center',
-                    borderRadius: 8,
-                    backgroundColor: isSelected ? P : 'transparent',
                     opacity: disabled ? 0.3 : 1,
                   }}
                 >
+                  <View style={{
+                    width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: isSelected ? P : 'transparent',
+                  }}>
                   <Text style={{
                     fontSize: FONT_BODY, fontWeight: isSelected ? '700' : '400',
                     color: isSelected ? '#fff' : isToday ? P : TH.text,
                   }}>{d}</Text>
+                  </View>
                 </TouchableOpacity>
               );
             })}

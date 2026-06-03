@@ -1,18 +1,19 @@
 // ─── Navigation root ──────────────────────────────────────────────
-import React, { useRef, useCallback, useEffect, useState, createContext, useContext } from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import React, { useRef, useEffect, useState, createContext, useContext } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
-  View, TouchableOpacity, Animated, PanResponder, StyleSheet, Dimensions,
+  View, Text, Image, TouchableOpacity, Animated, PanResponder, StyleSheet, Dimensions,
 } from 'react-native';
 import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
-  Sparkles, Target, BarChart3, Plus,
+  Sparkles, Target, BarChart3, Flame,
 } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, TAB_ICONS, ACTION_ICONS, FONT_BODY } from '@egoless-do/core';
-import AppHeader from '../components/AppHeader';
+import { THEMES, t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
 import StarfieldBackground from '../components/StarfieldBackground';
 
 // Tab screens
@@ -47,38 +48,8 @@ import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
 import { useSync }       from '../features/sync/useSync';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
-export type RootStackParamList = {
-  MainTabs: undefined;
-  Login: undefined;
-  Register: undefined;
-  GlobalMap: { icon?: string; title?: string } | undefined;
-  Sport: { key: string; icon: string; color: string; gps?: boolean };
-  FastHistory: undefined;
-  MedHistory: undefined;
-  FoodLog: undefined;
-  Grace: undefined;
-  StreakBreak: undefined;
-  CheckinHistory: undefined;
-  CheckinDetail: { date: string };
-  ExerciseHistory: undefined;
-  PlanCreate: { planId?: string } | undefined;
-  PlanDetail: { planId: string };
-  PlanHistory: undefined;
-  RecycleBin: undefined;
-  PrivacyPolicy: undefined;
-};
-
-export type MainTabParamList = {
-  Home: undefined;
-  Plan: undefined;
-  Fasting: undefined;
-  Meditation: undefined;
-  Exercise: undefined;
-  Settings: undefined;
-  Reflections: { showNew?: boolean } | undefined;
-  Habits: undefined;
-  Stats: undefined;
-};
+export type { RootStackParamList, MainTabParamList } from './types';
+export { useRootNavigation, useTabNavigation } from './hooks';
 
 const Tab   = createBottomTabNavigator<MainTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
@@ -192,33 +163,79 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 10,
   },
-  fabText: { color: '#fff' },
 });
 
-// All Tab routes
-const TAB_ROUTES: Record<string, string> = {
-  home: 'Home',
-  plan: 'Plan',
-  fasting: 'Fasting',
-  meditation: 'Meditation',
-  exercise: 'Exercise',
-  settings: 'Settings',
-  reflections: 'Reflections',
-  habits: 'Habits',
-  stats: 'Stats',
+const HEADER_TAB_KEYS = ['home', 'plan', 'habits', 'reflections'];
+const HEADER_TAB_ROUTES: Record<string, string> = {
+  home: 'Home', plan: 'Plan', habits: 'Habits', reflections: 'Reflections',
+};
+const HEADER_TAB_ICONS: Record<string, React.ComponentType<any>> = {
+  home: Home, plan: ClipboardList, habits: Target, reflections: Sparkles,
 };
 
-// Route name → tab key mapping
-const ROUTE_TO_TAB: Record<string, string> = {
-  Home: 'home',
-  Plan: 'plan',
-  Fasting: 'fasting',
-  Meditation: 'meditation',
-  Exercise: 'exercise',
-  Settings: 'settings',
-  Reflections: 'reflections',
-  Habits: 'habits',
-  Stats: 'stats',
+function SimpleHeader({ routeName }: { routeName?: string }) {
+  const theme = useAppStore(s => s.theme);
+  const streak = useAppStore(s => s.streak);
+  const language = useAppStore(s => s.language);
+  const TH = THEMES[theme];
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const today = new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
+  const showTabs = Object.values(HEADER_TAB_ROUTES).includes(routeName ?? '');
+  const activeKey = Object.entries(HEADER_TAB_ROUTES).find(([, r]) => r === routeName)?.[0] ?? 'home';
+
+  return (
+    <View style={{ backgroundColor: TH.bg, paddingTop: insets.top }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
+        <Image
+          source={require('../../assets/header-logo.png')}
+          style={{ width: 108, height: 54 }}
+          resizeMode="contain"
+        />
+        <View style={{ alignItems: 'flex-end' }}>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{t('streak', language)}</Text>
+          <Text style={{ fontWeight: '800', fontSize: FONT_STAT_SECTION, lineHeight: 42, color: '#EA6060' }}>
+            {streak} <Text style={{ fontSize: FONT_LABEL }}>{t('days', language)} </Text><Flame size={20} color="#EA6060" />
+          </Text>
+        </View>
+      </View>
+      {showTabs && (
+        <View style={{ flexDirection: 'row', paddingHorizontal: 12, paddingVertical: 8, gap: 6 }}>
+          {HEADER_TAB_KEYS.map((key) => (
+            <TouchableOpacity
+              key={key}
+              onPress={() => { const route = HEADER_TAB_ROUTES[key]; if (route && route !== routeName) navigation.navigate(route as never); }}
+              activeOpacity={0.7}
+              style={{ flex: 1, paddingVertical: 8, borderRadius: 12, minHeight: 36, justifyContent: 'center', alignItems: 'center', backgroundColor: key === activeKey ? TH.primary : TH.card }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                {(() => {
+                  const Icon = HEADER_TAB_ICONS[key];
+                  return Icon ? <Icon size={14} color={key === activeKey ? '#fff' : TH.sub} strokeWidth={key === activeKey ? 2.2 : 1.5} /> : null;
+                })()}
+                <Text style={{ fontSize: FONT_BODY, fontWeight: key === activeKey ? '700' : '500', color: key === activeKey ? '#fff' : TH.sub }}>
+                  {t(key, language)}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+      <View style={{ paddingHorizontal: 16, paddingTop: 6, paddingBottom: 0, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: TH.border }}>
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+          {t('today', language)} · {today}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+export { SimpleHeader };
+
+const TAB_ROUTES: Record<string, string> = {
+  home: 'Home', plan: 'Plan', fasting: 'Fasting', meditation: 'Meditation',
+  exercise: 'Exercise', settings: 'Settings', reflections: 'Reflections',
+  habits: 'Habits', stats: 'Stats',
 };
 
 function MainTabs() {
@@ -248,17 +265,7 @@ function MainTabs() {
       screenOptions={({ route, navigation }) => {
         tabNavRef.current = navigation;
         return {
-        header: () => {
-          const tabKey = ROUTE_TO_TAB[route.name] || 'home';
-          const handleTabChange = (key: string) => {
-            const tabRoute = TAB_ROUTES[key];
-            if (tabRoute && tabRoute !== route.name) {
-              navigation.navigate(tabRoute as never);
-            }
-          };
-          return <AppHeader activeTab={tabKey} onTabChange={handleTabChange} />;
-        },
-        headerShadowVisible: false,
+        headerShown: false,
         tabBarIcon: ({ focused }) => tabIcon(route.name, focused),
         tabBarActiveTintColor:   TH.primary,
         tabBarInactiveTintColor: TH.sub,
@@ -274,12 +281,12 @@ function MainTabs() {
         };
       }}
     >
-      <Tab.Screen name="Home"        component={HomeScreen}        options={{ title:'主页', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title:'计划', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Fasting"     component={FastingScreen}     options={{ title:'禁食', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title:'冥想', tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Home"        component={HomeScreen}        options={{ title:'首页', tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Exercise"    component={ExerciseScreen}    options={{ title:'锻炼', tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title:'冥想', tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Fasting"     component={FastingScreen}     options={{ title:'禁食', tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title:'设置', tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title:'计划', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title:'感念', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title:'习惯', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Stats"       component={StatsScreen}       options={{ title:'统计', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />

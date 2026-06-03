@@ -1,83 +1,104 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { COLORS, BANNER_COLORS, STATS_GRADIENT, FOOD_PRESETS, dateStr, yesterday, getTodayFoodLog, getActivePlan, getTodayItems, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_HERO, FONT_STAT_CARD, FONT_CLOSE, FONT_LABEL, FONT_EMPTY, FONT_STAT_SECTION } from '@egoless-do/core';
+import { COLORS, BANNER_COLORS, STATS_GRADIENT, dateStr, yesterday, getTodayFoodLog, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useOverlay } from './useOverlay';
-import { CalendarCheck, Trophy, Zap, Utensils, Scale, Droplets, Pencil, Check, CheckCircle2, Circle, Star, ClipboardList, Shield, X, ChevronRight, Wheat, Beef, Leaf, Apple, CupSoda, Cookie } from 'lucide-react';
+import { useFoodSearch, FOOD_ICON_MAP } from './useFoodSearch';
+import { CalendarCheck, Trophy, Zap, Utensils, Scale, Droplets, Pencil, Check, ClipboardList, Shield, X } from 'lucide-react';
 
-const FOOD_ICON_MAP: Record<string, React.ComponentType<any>> = { Wheat, Beef, Leaf, Apple, CupSoda, Cookie, Utensils, Star };
-
-function computeLongestStreak(history: CheckinEntry[]): number {
-  const doneDates = history.filter(c => c.done).map(c => c.date).sort();
-  if (doneDates.length === 0) return 0;
-  let max = 1, current = 1;
-  for (let i = 1; i < doneDates.length; i++) {
-    const prev = new Date(doneDates[i - 1]);
-    const curr = new Date(doneDates[i]);
-    const diff = (curr.getTime() - prev.getTime()) / 86400000;
-    if (diff === 1) { current++; max = Math.max(max, current); }
-    else if (diff > 1) current = 1;
-  }
-  return max;
-}
+const WATER_GOAL_MIN = 500;
+const WATER_GOAL_MAX = 3000;
+const CAL_GOAL_MIN = 500;
+const CAL_GOAL_MAX = 10000;
 
 export default function HomeTab() {
-  const store = useWebStore();
+  const {
+    theme, language, streak, waterMl, waterGoal, calGoal, foodLog, habits,
+    reflections, fastingHistory, checkinHistory, userProfile, customFoodPresets,
+    graceHistory, weightUnit,
+    addFood, addWater, setWaterGoal, setCalGoal, addCustomFoodPreset,
+    checkAutoStatus, autoSyncPlanItems,
+  } = useWebStore(useShallow((s) => ({
+    theme: s.theme,
+    language: s.language,
+    streak: s.streak,
+    waterMl: s.waterMl,
+    waterGoal: s.waterGoal,
+    calGoal: s.calGoal,
+    foodLog: s.foodLog,
+    habits: s.habits,
+    reflections: s.reflections,
+    fastingHistory: s.fastingHistory,
+    checkinHistory: s.checkinHistory,
+    userProfile: s.userProfile,
+    customFoodPresets: s.customFoodPresets,
+    graceHistory: s.graceHistory,
+    weightUnit: s.weightUnit,
+    addFood: s.addFood,
+    addWater: s.addWater,
+    setWaterGoal: s.setWaterGoal,
+    setCalGoal: s.setCalGoal,
+    addCustomFoodPreset: s.addCustomFoodPreset,
+    checkAutoStatus: s.checkAutoStatus,
+    autoSyncPlanItems: s.autoSyncPlanItems,
+  })));
   const { TH, P } = useTheme();
   const T = useT();
   const overlay = useOverlay();
 
   const [showFood, setShowFood] = useState(false);
-  const [fn, setFn] = useState('');
-  const [fc, setFc] = useState('');
-  const [fnote, setFnote] = useState('');
-  const [foodTab, setFoodTab] = useState(0);
-  const [foodSearch, setFoodSearch] = useState('');
-  const [showManual, setShowManual] = useState(false);
   const [showWG, setShowWG] = useState(false);
-  const [wgi, setWgi] = useState(String(store.waterGoal));
+  const [wgi, setWgi] = useState(String(waterGoal));
   const [showCG, setShowCG] = useState(false);
-  const [cgi, setCgi] = useState(String(store.calGoal));
+  const [cgi, setCgi] = useState(String(calGoal));
+
+  const {
+    fn, setFn, fc, setFc, fnote, setFnote,
+    foodTab, setFoodTab, foodSearch, setFoodSearch,
+    showManual, setShowManual,
+    allTabs, filteredItems, resetFoodForm,
+  } = useFoodSearch(language);
 
   useEffect(() => {
-    store.checkAutoStatus();
-    store.autoSyncPlanItems();
+    checkAutoStatus();
+    autoSyncPlanItems();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const totalCal = useMemo(() => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + f.calories, 0), [store.foodLog]);
+  const totalCal = useMemo(() => getTodayFoodLog(foodLog ?? []).reduce((a, f) => a + f.calories, 0), [foodLog]);
 
   const todayWeight = useMemo(() => {
     const today = dateStr();
-    const todayCheckin = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
+    const todayCheckin = (checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
     return todayCheckin?.weight;
-  }, [store.checkinHistory]);
+  }, [checkinHistory]);
 
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
   const waterProgress = useCachedStyle(() => ({
     height: 6,
-    background: COLORS.BLUE,
+    background: 'linear-gradient(90deg, #C66EFF, #2AFCFF)',
     borderRadius: 3,
-    width: `${Math.min(store.waterMl / store.waterGoal * 100, 100)}%`,
+    width: `${Math.min(waterMl / waterGoal * 100, 100)}%`,
     transition: 'width .4s'
-  }), [store.waterMl, store.waterGoal]);
+  }), [waterMl, waterGoal]);
 
   const calProgress = useCachedStyle(() => ({
     height: 4,
-    background: COLORS.ORANGE,
+    background: 'linear-gradient(90deg, #7117EA, #EA6060)',
     borderRadius: 2,
-    width: `${Math.min(totalCal / store.calGoal * 100, 100)}%`,
+    width: `${Math.min(totalCal / calGoal * 100, 100)}%`,
     transition: 'width .4s'
-  }), [totalCal, store.calGoal]);
+  }), [totalCal, calGoal]);
 
-  const savedKcal = useMemo(() => (store.fastingHistory ?? []).reduce((sum, f) => sum + (f.estimatedKcal ?? 0), 0), [store.fastingHistory]);
+  const savedKcal = useMemo(() => (fastingHistory ?? []).reduce((sum, f) => sum + (f.estimatedKcal ?? 0), 0), [fastingHistory]);
 
-  const totalCompleted = useMemo(() => (store.checkinHistory ?? []).filter((c: CheckinEntry) => c.done).length, [store.checkinHistory]);
-  const longestStreak = useMemo(() => computeLongestStreak(store.checkinHistory ?? []), [store.checkinHistory]);
-  const savedMeals = useMemo(() => (store.fastingHistory ?? []).length, [store.fastingHistory]);
+  const totalCompleted = useMemo(() => (checkinHistory ?? []).filter((c: CheckinEntry) => c.done).length, [checkinHistory]);
+  const longestStreak = useMemo(() => computeLongestStreak((checkinHistory ?? []).filter((c: CheckinEntry) => c.done).map(c => c.date)), [checkinHistory]);
+  const savedMeals = useMemo(() => (fastingHistory ?? []).length, [fastingHistory]);
 
   const statsData = useMemo(() => [
     { Icon: CalendarCheck, label: T('totalCompleted'), value: totalCompleted, unit: T('days'), colors: STATS_GRADIENT[0] },
@@ -88,39 +109,7 @@ export default function HomeTab() {
 
   const today = dateStr();
 
-  const allTabs = useMemo(() => [
-    ...FOOD_PRESETS.map(c => ({ key: c.key, label: store.language === 'en' ? c.labelEn : c.label, icon: c.icon, items: c.items })),
-    { key: 'my', label: T('foodMyPresets'), icon: 'Star', items: [] as { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] },
-  ], [T, store.language]);
-
-  const getFilteredItems = useCallback(() => {
-    const tab = allTabs[foodTab];
-    if (!tab) return [];
-    let items: { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] = [];
-    if (tab.key === 'my') {
-      items = (store.customFoodPresets ?? []).map(p => ({ name: p.name, nameEn: p.name, cal: p.calories, unit: '份', unitEn: 'serving' }));
-    } else {
-      items = tab.items;
-    }
-    if (foodSearch.trim()) {
-      const q = foodSearch.trim().toLowerCase();
-      items = items.filter(i => i.name.toLowerCase().includes(q) || i.nameEn.toLowerCase().includes(q));
-    }
-    return items;
-  }, [allTabs, foodTab, foodSearch, store.customFoodPresets]);
-
-  const resetFoodForm = useCallback(() => { setFn(''); setFc(''); setFnote(''); setShowManual(false); setFoodSearch(''); setFoodTab(0); }, []);
-
-  // Today's plan items (new plan system)
-  const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
-  const todayPlanItems = useMemo(() => {
-    if (!activePlan) return [];
-    return getTodayItems(store.planItems ?? [], activePlan, today);
-  }, [store.planItems, activePlan, today]);
-  const planCheckins = store.planItemCheckins ?? [];
-  const todayPlanDoneCount = todayPlanItems.filter(i => planCheckins.some(c => c.planItemId === i.id && c.date === today && c.done)).length;
-
-  const todayRecord = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
+  const todayRecord = (checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
 
   const bannerConfig = {
@@ -131,6 +120,7 @@ export default function HomeTab() {
 
   return (
     <>
+      {/* Check-in banner */}
       <div style={{ borderRadius: 16, background: bannerConfig.bg, padding: '18px 20px', marginBottom: 12, color: '#fff' }}>
         <div style={{ fontWeight: 700, fontSize: FONT_TITLE, textAlign: 'center' }}>{T('todayCheckin')}</div>
         <div style={{ textAlign: 'center', fontSize: FONT_BODY, opacity: 0.8, marginTop: 3, marginBottom: 14 }}>{bannerConfig.sub}</div>
@@ -140,47 +130,10 @@ export default function HomeTab() {
         </button>
       </div>
 
-      {/* Today's plan */}
-      {activePlan && todayPlanItems.length > 0 && (
-        <div style={cardStyle}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.text }}><ClipboardList size={16} style={{verticalAlign:'middle',marginRight:4}} /> {activePlan.name}</span>
-            <span style={{ fontSize: FONT_BADGE, color: P, cursor: 'pointer' }} onClick={() => overlay.open('planDetail', { planId: activePlan!.id })}>{T('planTodoList')} <ChevronRight size={14} style={{verticalAlign:'middle'}} /></span>
-          </div>
-          {todayPlanItems.slice(0, 5).map(item => {
-            const done = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-            const isManual = item.link === 'manual';
-            return (
-              <div key={item.id} style={{
-                display: 'flex', alignItems: 'center', gap: 8, padding: '7px 0',
-                borderBottom: `1px solid ${TH.border}`,
-              }}>
-                <span style={{ fontSize: FONT_BODY }}>{done ? <CheckCircle2 size={16} style={{verticalAlign:'middle'}} /> : <Circle size={16} style={{verticalAlign:'middle'}} />}</span>
-                <span style={{ flex: 1, fontSize: FONT_SUB, color: done ? TH.sub : TH.text, textDecoration: done ? 'line-through' : 'none' }}>{item.name}</span>
-                {isManual ? (
-                  <button onClick={() => done ? store.uncheckinPlanItem(item.id) : store.checkinPlanItem(item.id)} style={{
-                    fontSize: FONT_SUB, color: done ? TH.sub : P, background: done ? 'transparent' : `${P}15`,
-                    border: `1px solid ${done ? TH.border : P}40`, borderRadius: 6,
-                    padding: '2px 8px', cursor: 'pointer',
-                  }}>{done ? T('planUncheckin') : T('planCheckin')}</button>
-                ) : (
-                  <span style={{ fontSize: FONT_BADGE, color: done ? COLORS.GREEN : TH.sub, fontWeight: 500 }}>
-                    {done ? <><Check size={11} style={{verticalAlign:'middle',marginRight:2}} />{T('planCheckin')}</> : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
-                  </span>
-                )}
-              </div>
-            );
-          })}
-          <div style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 6, textAlign: 'right' }}>
-            {todayPlanDoneCount}/{todayPlanItems.length} {T('planProgress')}
-          </div>
-        </div>
-      )}
-
       {/* Grace reminder banner */}
       {(() => {
         const yStr = yesterday();
-        const yesterdayRecord = (store.checkinHistory ?? []).find((h: CheckinEntry) => h.date === yStr);
+        const yesterdayRecord = (checkinHistory ?? []).find((h: CheckinEntry) => h.date === yStr);
         const yesterdayDone = yesterdayRecord?.done === true;
         if (yesterdayDone) return null;
         return (
@@ -201,12 +154,12 @@ export default function HomeTab() {
 
       {/* Streak card */}
       <div onClick={() => overlay.open('grace')} style={{
-        borderRadius: 16, background: `linear-gradient(135deg, ${COLORS.VIOLET}, ${COLORS.INDIGO})`,
+        borderRadius: 16, background: `linear-gradient(135deg, #9A4EFF, #20ECFF)`,
         padding: '20px 16px', textAlign: 'center', color: '#fff', marginBottom: 12, cursor: 'pointer',
       } as React.CSSProperties}>
         <div style={{ fontSize: FONT_STAT_SECTION }}><Shield size={40} color="#fff" /></div>
         <div style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_BODY, marginTop: 6 }}>{T('streak')}</div>
-        <div style={{ fontSize: FONT_HERO, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>{store.streak}</div>
+        <div style={{ fontSize: FONT_HERO, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>{streak}</div>
         <div style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_BODY, marginTop: 4 }}>{T('days')}</div>
         <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.5)', marginTop: 8 }}>{T('gracePeriodHint')}</div>
       </div>
@@ -226,7 +179,7 @@ export default function HomeTab() {
           <span style={{ fontSize: FONT_BODY, fontWeight: 600 }}><Scale size={16} style={{verticalAlign:'middle',marginRight:4}} /> {T('todayWeight')}</span>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
             <span style={{ fontSize: FONT_STAT_CARD, fontWeight: 700, color: P }}>{todayWeight != null ? todayWeight : '—'}</span>
-            <span style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('checkinKg')}</span>
+            <span style={{ color: TH.sub, fontSize: FONT_BODY }}>{weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</span>
           </div>
         </div>
       </div>
@@ -234,34 +187,33 @@ export default function HomeTab() {
       <div style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
           <span style={{ fontSize: FONT_BODY, fontWeight: 600 }}>{T('water')}</span>
-          <span style={{ color: TH.sub, fontSize: FONT_BODY, cursor: 'pointer' }} onClick={() => { setWgi(String(store.waterGoal)); setShowWG(true); }}>
-            <span style={{ fontWeight: 600, color: P }}>{store.waterMl}</span> ml / {store.waterGoal}ml <Pencil size={14} style={{verticalAlign:'middle'}} />
+          <span style={{ color: TH.sub, fontSize: FONT_BODY, cursor: 'pointer' }} onClick={() => { setWgi(String(waterGoal)); setShowWG(true); }}>
+            <span style={{ fontWeight: 600, color: P }}>{waterMl}</span> ml / {waterGoal}ml <Pencil size={14} style={{verticalAlign:'middle'}} />
           </span>
         </div>
         <div style={{ height: 6, background: TH.border, borderRadius: 3, marginBottom: 12, overflow: 'hidden' }}>
           <div style={waterProgress} />
         </div>
-        <button onClick={() => store.addWater(250)} style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 600, fontSize: FONT_BUTTON, cursor: 'pointer' }}>+ 250ml</button>
+        <button onClick={() => addWater(250)} style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 600, fontSize: FONT_BUTTON, cursor: 'pointer' }}>+ 250ml</button>
       </div>
 
       <div style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-          <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: COLORS.ORANGE }}>{T('addFood')}</span>
+          <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: P }}>{T('addFood')}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: FONT_STAT_CARD, fontWeight: 700, color: COLORS.ORANGE }}>{totalCal}</span>
-          <span style={{ color: TH.sub, fontSize: FONT_BODY }}>/ {store.calGoal} kcal</span>
-          <span style={{ cursor: 'pointer', fontSize: FONT_BODY }} onClick={() => { setCgi(String(store.calGoal)); setShowCG(true); }}><Pencil size={16} style={{verticalAlign:'middle'}} /></span>
+          <span style={{ fontSize: FONT_STAT_CARD, fontWeight: 700, color: P }}>{totalCal}</span>
+          <span style={{ color: TH.sub, fontSize: FONT_BODY }}>/ {calGoal} kcal</span>
+          <span style={{ cursor: 'pointer', fontSize: FONT_BODY }} onClick={() => { setCgi(String(calGoal)); setShowCG(true); }}><Pencil size={16} style={{verticalAlign:'middle'}} /></span>
         </div>
-        <div style={{ height: 4, background: TH.border, borderRadius: 2, marginTop: 8, overflow: 'hidden' }}>
+        <div style={{ height: 4, background: TH.border, borderRadius: 2, marginTop: 8, marginBottom: 12, overflow: 'hidden' }}>
           <div style={calProgress} />
         </div>
+        <button onClick={() => { resetFoodForm(); setShowFood(true); }}
+          style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
+          {T('addFoodBtn')}
+        </button>
       </div>
-
-      <button onClick={() => { resetFoodForm(); setShowFood(true); }}
-        style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer', marginBottom: 12, position: 'relative', zIndex: 1 }}>
-        {T('addFoodBtn')}
-      </button>
 
       {showFood && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.85)', zIndex: 300, display: 'flex', justifyContent: 'center' }}>
@@ -295,10 +247,10 @@ export default function HomeTab() {
 
             {/* Food list */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '0 20px' }}>
-              {getFilteredItems().map((f, i) => (
+              {filteredItems.map((f, i) => (
                 <div key={`${f.name}-${i}`}
                   onClick={() => {
-                    store.addFood({ name: f.name, calories: f.cal, note: '', timestamp: Date.now() });
+                    addFood({ name: f.name, calories: f.cal, note: '', timestamp: Date.now() });
                     setShowFood(false); resetFoodForm();
                   }}
                   style={{
@@ -312,7 +264,7 @@ export default function HomeTab() {
                   <span style={{ color: P, fontSize: FONT_BUTTON, fontWeight: 600 }}>{f.cal} kcal</span>
                 </div>
               ))}
-              {getFilteredItems().length === 0 && (
+              {filteredItems.length === 0 && (
                 <div style={{ color: TH.sub, textAlign: 'center', padding: '32px 0', fontSize: FONT_EMPTY }}>
                   {foodTab === allTabs.length - 1 ? T('foodEmpty') : T('foodNoHistory')}
                 </div>
@@ -329,9 +281,9 @@ export default function HomeTab() {
                 <textarea value={fnote} onChange={(e) => setFnote(e.target.value)} placeholder={T('notePlaceholder')} rows={2}
                   style={{ width: '100%', background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 10, padding: '10px 12px', color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box', marginBottom: 10 }} />
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button onClick={() => { if (fn.trim()) { store.addFood({ name: fn, calories: +fc || 0, note: fnote, timestamp: Date.now() }); setShowFood(false); resetFoodForm(); } }}
+                  <button onClick={() => { if (fn.trim()) { addFood({ name: fn, calories: +fc || 0, note: fnote, timestamp: Date.now() }); setShowFood(false); resetFoodForm(); } }}
                     style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('confirm')}</button>
-                  <button onClick={() => { if (fn.trim()) store.addCustomFoodPreset(fn, +fc || 0, fnote); }}
+                  <button onClick={() => { if (fn.trim()) addCustomFoodPreset(fn, +fc || 0, fnote); }}
                     style={{ padding: '12px 16px', borderRadius: 12, border: `1px solid ${P}`, background: 'transparent', color: P, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('foodSavePreset')}</button>
                 </div>
               </div>
@@ -357,7 +309,7 @@ export default function HomeTab() {
               style={{ ...inp(TH), fontSize: FONT_STAT_CARD, fontWeight: 700, textAlign: 'center', marginBottom: 20, border: `2px solid ${COLORS.BLUE}`, width: '100%', boxSizing: 'border-box' } as React.CSSProperties} />
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setShowWG(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('cancel')}</button>
-              <button onClick={() => { store.setWaterGoal(Math.max(500, Math.min(3000, +wgi || 2000))); setShowWG(false); }}
+              <button onClick={() => { setWaterGoal(Math.max(WATER_GOAL_MIN, Math.min(WATER_GOAL_MAX, +wgi || 2000))); setShowWG(false); }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
             </div>
           </div>
@@ -373,7 +325,7 @@ export default function HomeTab() {
               style={{ ...inp(TH), fontSize: FONT_STAT_CARD, fontWeight: 700, textAlign: 'center', marginBottom: 20, border: `2px solid ${COLORS.GREEN}`, width: '100%', boxSizing: 'border-box' } as React.CSSProperties} />
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setShowCG(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('cancel')}</button>
-              <button onClick={() => { store.setCalGoal(Math.max(500, Math.min(10000, +cgi || 2000))); setShowCG(false); }}
+              <button onClick={() => { setCalGoal(Math.max(CAL_GOAL_MIN, Math.min(CAL_GOAL_MAX, +cgi || 2000))); setShowCG(false); }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: '#18CEFF', color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
             </div>
           </div>

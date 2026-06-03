@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import { GLOBAL_USERS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK } from '@egoless-do/core';
 import { Globe, X, Trophy, Flame, ChevronLeft } from 'lucide-react-native';
@@ -75,7 +75,7 @@ function PulseMarker({ u, primaryColor, onPress }: { u: typeof USERS_WITH_STREAK
 }
 
 export default function GlobalMapPage({ route }: { route?: { params?: { icon?: string; title?: string } } }) {
-  const nav = useNavigation();
+  const nav = useRootNavigation();
   const TH  = useTheme();
   const T   = useT();
   const P   = TH.primary;

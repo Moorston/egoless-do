@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAuth } from '../_auth';
 import { getPb, escapeFilter } from '../_pb';
+import { getClientIp, createRateLimiter } from '../_rateLimit';
+import { sanitizeError } from '../_errors';
 import { resolveConflict, ENTITY_COLLECTION, ENTITY_ID_FIELD, type SyncEntity } from '@egoless-do/core';
+
+const syncPostRateLimit = createRateLimiter(60, 60_000); // 60 req/min
+const syncGetRateLimit = createRateLimiter(30, 60_000);  // 30 req/min
+const MAX_CHANGES_PER_SYNC = 500;
 
 /** Safely read the JSON `data` field from a PocketBase record.
  *  Use `record.get('data')` instead of `record.data` because
@@ -17,6 +23,11 @@ function getEntityId(record: any, field: string): string {
 
 // ── POST: incremental sync (push + pull) ─────────────────────────
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!syncPostRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
   const token = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
@@ -28,7 +39,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { lastSyncAt, changes } = body;
 
-    console.log(`[Sync POST] userId=${userId}, changes=${changes?.length ?? 0}, lastSyncAt=${lastSyncAt}`);
+    if (!Array.isArray(changes) || changes.length > MAX_CHANGES_PER_SYNC) {
+      return NextResponse.json({ error: '无效的同步数据' }, { status: 400 });
+    }
 
     // Verify PocketBase connection
     try {
@@ -138,12 +151,17 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: unknown) {
     console.error('[Sync POST] Error:', err);
-    return NextResponse.json({ error: err instanceof Error ? err.message : '同步失败' }, { status: 500 });
+    return NextResponse.json({ error: sanitizeError(err, '同步失败') }, { status: 500 });
   }
 }
 
 // ── GET: full pull (all user data, after login) ──────────────────
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!syncGetRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
   const token = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
@@ -153,8 +171,6 @@ export async function GET(req: NextRequest) {
     pb.authStore.save(token!, null);
     const userId = auth.userId;
     const data: Record<string, unknown[]> = {};
-
-    console.log('[Sync GET] Pulling data for user:', userId);
 
     const PAGE_SIZE = 500;
     for (const [entity, collection] of Object.entries(ENTITY_COLLECTION)) {
@@ -172,8 +188,6 @@ export async function GET(req: NextRequest) {
         data[entity] = allRecords
           .map(r => getPayload(r))
           .filter(d => d && d.deleted !== true);
-        
-        console.log(`[Sync GET] ${entity}: ${data[entity].length} records`);
       } catch (err: any) {
         if (err?.status === 404) {
           console.warn(`[Sync GET] Collection not found for ${entity} (${collection}), skipping`);
@@ -187,6 +201,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data, serverTime: Date.now() });
   } catch (err: unknown) {
     console.error('[Sync GET] Error:', err);
-    return NextResponse.json({ error: err instanceof Error ? err.message : '拉取失败' }, { status: 500 });
+    return NextResponse.json({ error: sanitizeError(err, '拉取失败') }, { status: 500 });
   }
 }

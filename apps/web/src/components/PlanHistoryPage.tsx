@@ -8,7 +8,7 @@ import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
 import { ChevronLeft, ChevronRight, ClipboardList } from 'lucide-react';
 
-const STATUS_COLORS: Record<PlanStatus, string> = {
+const STATUS_COLORS: Record<string, string> = {
   not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
   completed: COLORS.BLUE, cancelled: COLORS.RED, delayed: COLORS.ORANGE,
 };
@@ -19,7 +19,7 @@ export default function PlanHistoryPage({ onClose }: { onClose: () => void }) {
   const T = useT();
   const overlay = useOverlay();
 
-  const historyPlans = useMemo(() => getHistoryPlans(store.plans), [store.plans]);
+  const historyPlans = useMemo(() => getHistoryPlans(store.plans ?? []), [store.plans]);
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: TH.bg, overflowY: 'auto' }}>

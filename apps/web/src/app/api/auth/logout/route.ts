@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtExp } from '../../_auth';
+import { verifyAuth, jwtExp } from '../../_auth';
 import db from '../../_db';
+import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const logoutRateLimit = createRateLimiter(10, 60_000); // 10 req/min
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!logoutRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
   const auth = req.headers.get('authorization');
+  const authResult = await verifyAuth(auth);
+  if (!authResult) {
+    return NextResponse.json({ error: '未登录' }, { status: 401 });
+  }
   if (auth?.startsWith('Bearer ')) {
     const token = auth.slice(7);
     const exp = jwtExp(token);

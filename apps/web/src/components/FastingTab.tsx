@@ -4,12 +4,24 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { COLORS, WARM_CORAL, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useOverlay } from './useOverlay';
 import { Hourglass, Clock, Flame, Trophy, Timer, Scale, AlertTriangle, ChevronRight, Check } from 'lucide-react';
 
 export default function FastingTab() {
   const overlay = useOverlay();
-  const store = useWebStore();
+  const {
+    theme, language, activeFasting, fastingHistory, userProfile,
+    startFasting, stopFasting,
+  } = useWebStore(useShallow((s) => ({
+    theme: s.theme,
+    language: s.language,
+    activeFasting: s.activeFasting,
+    fastingHistory: s.fastingHistory,
+    userProfile: s.userProfile,
+    startFasting: s.startFasting,
+    stopFasting: s.stopFasting,
+  })));
   const { TH, P } = useTheme();
   const T = useT();
   const [elapsed, setElapsed] = useState(0);
@@ -38,17 +50,17 @@ export default function FastingTab() {
   }, []);
 
   useEffect(() => {
-    if (store.activeFasting) {
+    if (activeFasting) {
       bellPlayedRef.current = false;
-      const startedAt = store.activeFasting.startedAt;
+      const startedAt = activeFasting.startedAt;
       ref.current = window.setInterval(() => setElapsed(Math.floor((Date.now() - startedAt) / 1000)), 1000);
     } else { if (ref.current !== null) window.clearInterval(ref.current); ref.current = null; setElapsed(0); }
     return () => { if (ref.current !== null) window.clearInterval(ref.current); };
-  }, [store.activeFasting]);
+  }, [activeFasting]);
 
   const pct = useMemo(() =>
-    store.activeFasting ? Math.min(elapsed / (store.activeFasting.targetHours * 3600), 1) : 0,
-    [store.activeFasting, elapsed]
+    activeFasting ? Math.min(elapsed / (activeFasting.targetHours * 3600), 1) : 0,
+    [activeFasting, elapsed]
   );
 
   useEffect(() => {
@@ -60,26 +72,28 @@ export default function FastingTab() {
   
   const kcal = useMemo(() => {
     const hours = elapsed / 3600;
-    return Math.round((store.userProfile.weight ?? 70) * hours * 0.9);
-  }, [elapsed, store.userProfile]);
+    return Math.round((userProfile.weight ?? 70) * hours * 0.9);
+  }, [elapsed, userProfile]);
   
   const kg = useMemo(() => (kcal / 7700).toFixed(2), [kcal]);
 
   const totalFastHours = useMemo(() => {
-    const totalSec = store.fastingHistory.reduce((sum, f) => {
+    const totalSec = (fastingHistory ?? []).reduce((sum, f) => {
       if (f.endedAt && f.startedAt) return sum + (f.endedAt - f.startedAt) / 1000;
       return sum;
     }, 0);
     return Math.round(totalSec / 3600);
-  }, [store.fastingHistory]);
+  }, [fastingHistory]);
 
   const fastingDates = useMemo(() => {
-    if (!store.fastingHistory.length) return [] as string[];
-    return [...new Set(store.fastingHistory.map(f => {
+    if (!(fastingHistory ?? []).length) return [] as string[];
+    return [...new Set((fastingHistory ?? []).map(f => {
+      if (!f.startedAt) return null;
       const d = new Date(f.startedAt);
+      if (isNaN(d.getTime())) return null;
       return d.toISOString().slice(0, 10);
-    }))].sort();
-  }, [store.fastingHistory]);
+    }).filter(Boolean as unknown as <T>(x: T) => x is NonNullable<T>))].sort();
+  }, [fastingHistory]);
 
   const currentFastingStreak = useMemo(() => {
     if (!fastingDates.length) return 0;
@@ -109,22 +123,22 @@ export default function FastingTab() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { Icon: Hourglass, label: T('fastTotal'), value: `${store.fastingHistory.length} ${T('fastTimes')}`, colors: ['#7117EA', '#EA6060'] },
-    { Icon: Clock, label: T('fastTotalHours'), value: `${totalFastHours} ${T('fastHours')}`, colors: ['#17EAD9', '#6078EA'] },
-    { Icon: Flame, label: T('fastStreak'), value: `${currentFastingStreak} ${T('days')}`, colors: ['#9A4EFF', '#20ECFF'] },
-    { Icon: Trophy, label: T('fastLongest'), value: `${longestStreak} ${T('days')}`, colors: ['#8446FF', '#18CEFF'] },
-  ], [store.fastingHistory.length, currentFastingStreak, T, totalFastHours, longestStreak]);
+    { Icon: Hourglass, label: T('fastTotal'), value: (fastingHistory ?? []).length, unit: T('fastTimes'), colors: ['#7117EA', '#EA6060'] },
+    { Icon: Clock, label: T('fastTotalHours'), value: totalFastHours, unit: T('fastHours'), colors: ['#17EAD9', '#6078EA'] },
+    { Icon: Flame, label: T('fastStreak'), value: currentFastingStreak, unit: T('days'), colors: ['#9A4EFF', '#20ECFF'] },
+    { Icon: Trophy, label: T('fastLongest'), value: longestStreak, unit: T('days'), colors: ['#8446FF', '#18CEFF'] },
+  ], [(fastingHistory ?? []).length, currentFastingStreak, T, totalFastHours, longestStreak]);
 
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
 
   const handleStopFasting = () => {
-    store.stopFasting({ weight: store.userProfile.weight, gender: store.userProfile.gender, age: store.userProfile.age });
+    stopFasting({ weight: userProfile.weight, gender: userProfile.gender, age: userProfile.age });
   };
 
   return (
     <>
       <div style={{ ...cardStyle, textAlign: 'center' } as React.CSSProperties}>
-        {store.activeFasting ? (
+        {activeFasting ? (
           <>
             <div style={{ position: 'relative', width: 160, height: 160, margin: '0 auto 16px' }}>
               <svg width={160} height={160} style={{ transform: 'rotate(-90deg)' }}>
@@ -134,7 +148,7 @@ export default function FastingTab() {
               </svg>
               <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ fontSize: FONT_STAT_CARD, fontWeight: 800, color: P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</div>
-                <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('fastTarget')} {store.activeFasting.targetHours}h</div>
+                <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('fastTarget')} {activeFasting.targetHours}h</div>
               </div>
             </div>
             <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>{T('fastActive')} <Flame size={16} style={{verticalAlign:'middle'}} /> {Math.round(pct * 100)}%</div>
@@ -143,7 +157,7 @@ export default function FastingTab() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <button onClick={() => { setTmpDur(8); setAgreed(false); setShowDur(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('startFasting')}</button>
-            <button onClick={() => store.startFasting(8)} style={{ width: '100%', padding: 14, borderRadius: 12, border: `1px solid ${P}`, background: TH.card, color: P, fontWeight: 600, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('quickStart')}</button>
+            <button onClick={() => startFasting(8)} style={{ width: '100%', padding: 14, borderRadius: 12, border: `1px solid ${P}`, background: TH.card, color: P, fontWeight: 600, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('quickStart')}</button>
           </div>
         )}
       </div>
@@ -159,24 +173,24 @@ export default function FastingTab() {
       <div style={{ fontWeight: 600, fontSize: FONT_BODY, marginBottom: 10, color: TH.text }}>{T('fastYourStats')}</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
         {statsData.map((s) => (
-          <div key={s.label} style={{ background: `linear-gradient(135deg, ${s.colors[0]}, ${s.colors[1]})`, borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+          <div key={s.label} style={{ background: `linear-gradient(135deg, ${s.colors[0]}, ${s.colors[1]})`, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
             <div style={{ fontSize: 26, color: '#fff' }}><s.Icon size={26} style={{verticalAlign:'middle'}} /></div>
             <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{s.label}</div>
-            <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{s.value}</div>
+            <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{s.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {s.unit}</span></div>
           </div>
         ))}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        <div style={{ background: 'linear-gradient(135deg, #FAD961, #F76B1C)', borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+        <div style={{ background: 'linear-gradient(135deg, #FAD961, #F76B1C)', borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           <div style={{ fontSize: 26 }}><Flame size={26} style={{verticalAlign:'middle'}} /></div>
           <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastKcalSaved')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kcal} <span style={{ fontSize: FONT_SUB, fontWeight: 400 }}>kcal</span></div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kcal}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> kcal</span></div>
         </div>
-        <div style={{ background: 'linear-gradient(135deg, #17EAD9, #6078EA)', borderRadius: 14, padding: '16px 12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+        <div style={{ background: 'linear-gradient(135deg, #17EAD9, #6078EA)', borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           <div style={{ fontSize: 26 }}><Scale size={26} style={{verticalAlign:'middle'}} /></div>
           <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastWeightLoss')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kg} <span style={{ fontSize: FONT_SUB, fontWeight: 400 }}>{T('fastKg')}</span></div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kg}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {T('fastKg')}</span></div>
         </div>
       </div>
 
@@ -218,7 +232,7 @@ export default function FastingTab() {
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setShowDur(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('cancel')}</button>
-              <button disabled={!agreed} onClick={() => { store.startFasting(tmpDur); setShowDur(false); }}
+              <button disabled={!agreed} onClick={() => { startFasting(tmpDur); setShowDur(false); }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', cursor: agreed ? 'pointer' : 'not-allowed', background: agreed ? P : 'rgba(128,128,128,.2)', color: '#fff', fontWeight: 600, fontSize: FONT_BODY }}>{T('start')}</button>
             </div>
           </div>

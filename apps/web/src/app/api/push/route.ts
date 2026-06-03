@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyAuth } from '../_auth';
-import { getPb } from '../_pb';
+import { getPb, escapeFilter } from '../_pb';
+import { getClientIp, createRateLimiter } from '../_rateLimit';
+
+const pushRateLimit = createRateLimiter(30, 60_000); // 30 req/min
 
 // ── Push notification service ────────────────────────────────────
 // Supports FCM (Android), APNs (iOS), and Web Push
@@ -21,6 +24,11 @@ interface PushPayload {
 
 // ── Register push token ──────────────────────────────────────────
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!pushRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
@@ -36,7 +44,7 @@ export async function POST(req: NextRequest) {
     // Check if token already exists
     try {
       const existing = await pb.collection('push_tokens').getFirstListItem(
-        `user_id = "${auth.userId}" && token = "${token}"`
+        `user_id = "${escapeFilter(auth.userId)}" && token = "${escapeFilter(token)}"`
       );
       // Update existing token
       await pb.collection('push_tokens').update(existing.id, {
@@ -60,6 +68,11 @@ export async function POST(req: NextRequest) {
 
 // ── Send push notification ───────────────────────────────────────
 export async function PUT(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!pushRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
@@ -74,7 +87,7 @@ export async function PUT(req: NextRequest) {
 
     // Get all push tokens for target user
     const tokens = await pb.collection('push_tokens').getFullList({
-      filter: `user_id = "${targetUserId}"`,
+      filter: `user_id = "${escapeFilter(targetUserId)}"`,
     });
 
     if (tokens.length === 0) {
@@ -104,7 +117,7 @@ export async function PUT(req: NextRequest) {
     if (failedTokens.length > 0) {
       await Promise.all(
         failedTokens.map((token) =>
-          pb.collection('push_tokens').delete(token.id).catch(() => {})
+          pb.collection('push_tokens').delete(token.id).catch(console.error)
         )
       );
     }
@@ -149,17 +162,9 @@ async function sendFCM(token: string, payload: PushPayload): Promise<void> {
 }
 
 async function sendAPNs(token: string, payload: PushPayload): Promise<void> {
-  // APNs implementation would go here
-  // This requires a proper APNs client library like 'apn' or 'node-apn'
-  // For now, we'll just log it
-  console.log('[APNs] Would send to:', token, payload);
   throw new Error('APNs not implemented yet');
 }
 
 async function sendWebPush(token: string, payload: PushPayload): Promise<void> {
-  // Web Push implementation would go here
-  // This requires a proper Web Push library like 'web-push'
-  // For now, we'll just log it
-  console.log('[WebPush] Would send to:', token, payload);
   throw new Error('WebPush not implemented yet');
 }

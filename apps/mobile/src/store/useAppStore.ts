@@ -3,11 +3,16 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
-import type { ThemeName, AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, UiSlice, PlanSlice, RecycleBinSlice } from '@egoless-do/core';
+import type {
+  AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
+  FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
+  PlanSlice, RecycleBinSlice,
+} from '@egoless-do/core';
 import {
-  setApiBase, dateStr, DAILY_RESET_KEY, getDailyResetPatch, msUntilMidnight,
-  createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice,
-  createUiSlice, createPlanSlice, createRecycleBinSlice,
+  setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager,
+  createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
+  createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
+  createPlanSlice, createRecycleBinSlice,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
@@ -25,54 +30,45 @@ setApiBase(apiBase);
 
 const adapter = mobileStorageAdapter;
 
-export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MobileUiSlice & PlanSlice & RecycleBinSlice;
+export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
+  & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
+  & MobileUiSlice & PlanSlice & RecycleBinSlice;
 
 export const useAppStore = create<MobileStore>()(
   persist(
     (...a) => ({
-      ...createAuthSlice<MobileStore>(adapter, () => { runSync().catch(() => {}); })(...a),
-      ...createHabitSlice<MobileStore>(adapter)(...a),
-      ...createReflectionSlice<MobileStore>(adapter)(...a),
-      ...createFastingSlice<MobileStore>(adapter)(...a),
-      ...createMobileUiSlice<MobileStore>(adapter, createUiSlice<MobileStore>(adapter))(...a),
-      ...createPlanSlice<MobileStore>(adapter)(...a),
-      ...createRecycleBinSlice<MobileStore>()(...a),
+      ...createAuthSlice(adapter, () => { runSync().catch(console.error); })(...a),
+      ...createHabitSlice(adapter)(...a),
+      ...createReflectionSlice(adapter)(...a),
+      ...createFastingSlice(adapter)(...a),
+      ...createMeditationSlice(adapter)(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter), createExerciseSlice(adapter), createCheckinSlice(adapter), createProfileSlice(adapter), createSettingsSlice(), createTagMoodSlice())(...a),
+      ...createPlanSlice(adapter)(...a),
+      ...createRecycleBinSlice()(...a),
     }),
     {
       name: 'egoless-do-mobile',
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        const checkAndReset = () => {
-          AsyncStorage.getItem(DAILY_RESET_KEY).then(lastReset => {
-            const patch = getDailyResetPatch(lastReset);
-            if (patch) {
-              // Check if today's checkin has water amount
-              const today = dateStr();
-              const { checkinHistory } = useAppStore.getState();
-              const todayCheckin = (checkinHistory ?? []).find((c: any) => c.date === today);
-              let todayWater = 0;
-              if (todayCheckin?.note) {
-                try {
-                  const noteData = JSON.parse(todayCheckin.note);
-                  if (typeof noteData.water === 'number') todayWater = noteData.water;
-                } catch {}
-              }
-              // Use checkin water amount if available, otherwise reset to 0
-              const resetPatch = { ...patch, waterMl: todayWater };
-              useAppStore.setState(resetPatch);
-              AsyncStorage.setItem(DAILY_RESET_KEY, dateStr()).catch(() => {});
-              const { userProfile, waterGoal } = useAppStore.getState();
-              openDatabase().then(db => {
-                db.runAsync(
-                  `INSERT OR REPLACE INTO user_profiles (profile_id,data,synced) VALUES (?,?,0)`,
-                  ['self', JSON.stringify({ ...userProfile, waterMl: todayWater, waterGoal })]
-                );
-              }).catch(() => {});
-            }
-          }).catch(() => {});
-        };
-        checkAndReset();
+
+        const dailyReset = new DailyResetManager({
+          getLastReset: () => AsyncStorage.getItem(DAILY_RESET_KEY),
+          setLastReset: (date) => { AsyncStorage.setItem(DAILY_RESET_KEY, date).catch(console.error); },
+          getCheckinHistory: () => useAppStore.getState().checkinHistory ?? [],
+          applyPatch: (patch) => useAppStore.setState(patch as any),
+          getProfile: () => (useAppStore.getState().userProfile ?? {}) as Record<string, unknown>,
+          getWaterGoal: () => useAppStore.getState().waterGoal ?? 2000,
+          persistProfile: (data) => {
+            adapter.persistChange('profile', 'self', data).catch(console.error);
+          },
+          addVisibilityListener: (callback) => {
+            AppState.addEventListener('change', (s) => {
+              if (s === 'active') callback();
+            });
+          },
+        });
+        dailyReset.start();
 
         // Load food entries from SQLite into store
         openDatabase().then(db => dbGetAllFoodEntries(db)).then(entries => {
@@ -88,13 +84,6 @@ export const useAppStore = create<MobileStore>()(
 
         // Clean up expired recycle bin items
         useAppStore.getState().cleanupRecycleBin();
-        AppState.addEventListener('change', (s) => {
-          if (s === 'active') checkAndReset();
-        });
-        const scheduleNext = () => {
-          setTimeout(() => { checkAndReset(); scheduleNext(); }, msUntilMidnight() + 1000);
-        };
-        scheduleNext();
       },
     }
   )

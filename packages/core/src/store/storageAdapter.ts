@@ -1,7 +1,3 @@
 // ─── Platform-agnostic storage adapter interface ───────────────
-import type { SyncEntity } from '../sync/entities';
-
-export interface StorageAdapter {
-  persistChange(entity: SyncEntity, id: string, data: Record<string, unknown>): Promise<void>;
-  markDeleted(entity: SyncEntity, id: string): Promise<void>;
-}
+// Re-export the type-safe StorageAdapter from types.ts
+export type { StorageAdapter, SyncDataMap } from './types';

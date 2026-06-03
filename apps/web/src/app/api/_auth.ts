@@ -4,7 +4,9 @@ import db from './_db';
 
 export function jwtPayload(token: string): Record<string, unknown> | null {
   try {
-    return JSON.parse(atob(token.split('.')[1]));
+    const parts = token.split('.');
+    if (parts.length !== 3 || !parts[1]) return null;
+    return JSON.parse(atob(parts[1]));
   } catch {
     return null;
   }

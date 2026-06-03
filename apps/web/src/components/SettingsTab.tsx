@@ -7,6 +7,7 @@ import type { ThemeName } from '@egoless-do/core';
 import { Toggle, useTheme, useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
+import { ConfirmDialog } from './ManagerPanelShared';
 import type { SyncState } from '../db/syncService';
 import { BarChart3, ClipboardList, CalendarCheck, Utensils, Shield, HeartCrack, Heart, RefreshCw, Share2, PersonStanding, Trash2, LogOut, ChevronRight, Check, X, Bell, Clock, Globe, Palette, Scale, Cloud, CloudUpload, History, Info, Lock } from 'lucide-react';
 
@@ -30,6 +31,7 @@ export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: 
   const [showTheme, setShowTheme] = useState(false);
   const [showWeightUnit, setShowWeightUnit] = useState(false);
   const [healthSync, setHealthSync] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const sections = [
     { title: T('settingsRemind'), rows: [
@@ -82,7 +84,7 @@ export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: 
       { label: T('settingsResetWelcome'), icon: <RefreshCw size={18} />, sub: T('settingsResetWelcomeDesc'), right: <ChevronRight size={18} color={TH.sub} />, last: true },
     ]},
     { title: T('settingsAccount'), rows: [
-      { label: T('settingsClearData'), icon: <Trash2 size={18} />, sub: T('settingsClearDataDesc'), right: <span style={{ color: '#EF4444' }}>{T('settingsClearData')}</span>, onClick: () => { if (confirm(T('settingsClearConfirm'))) store.resetData(); } },
+      { label: T('settingsClearData'), icon: <Trash2 size={18} />, sub: T('settingsClearDataDesc'), right: <span style={{ color: '#EF4444' }}>{T('settingsClearData')}</span>, onClick: () => setShowClearConfirm(true) },
       { label: T('settingsLogout'), icon: <LogOut size={18} />, right: <span style={{ color: '#EF4444' }}>{T('settingsLogout')}</span>, onClick: () => { store.logout(); window.location.href = '/login'; }, last: true },
     ]},
   ];
@@ -229,6 +231,14 @@ export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: 
           </div>
         </div>,
         document.body
+      )}
+
+      {showClearConfirm && (
+        <ConfirmDialog
+          message={T('settingsClearConfirm')}
+          onConfirm={() => { store.resetData(); setShowClearConfirm(false); }}
+          onCancel={() => setShowClearConfirm(false)}
+        />
       )}
     </>
   );

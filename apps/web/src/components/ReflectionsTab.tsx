@@ -1,409 +1,15 @@
 'use client';
 
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { MIND_COLORS, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE } from '@egoless-do/core';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { MIND_COLORS, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_CLOSE } from '@egoless-do/core';
 import { useTheme, useT, cs, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { Link, X, Settings, Check, Pencil, Trash2, ChevronUp, ChevronDown, Eye, EyeOff, AlertCircle, GripVertical } from 'lucide-react';
+import { Link, X, Settings, Eye, EyeOff } from 'lucide-react';
+import TagManagerPanel from './TagManagerPanel';
+import MoodManagerPanel from './MoodManagerPanel';
 
-// ─── Confirm Dialog ─────────────────────────────────────────────
-function ConfirmDialog({ message, onConfirm, onCancel }: { message: string; onConfirm: () => void; onCancel: () => void }) {
-  const { TH, P } = useTheme();
-  const T = useT();
-  return (
-    <div onClick={onCancel} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div onClick={e => e.stopPropagation()} style={{ width: '100%', maxWidth: 340, background: TH.cardSolid, borderRadius: 16, padding: 24, boxShadow: '0 8px 32px rgba(0,0,0,.3)' }}>
-        <div style={{ fontSize: FONT_BODY, color: TH.text, marginBottom: 20, lineHeight: 1.6 }}>{message}</div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={onCancel} style={{ flex: 1, padding: '10px 16px', borderRadius: 10, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>{T('cancel')}</button>
-          <button onClick={onConfirm} style={{ flex: 1, padding: '10px 16px', borderRadius: 10, border: 'none', background: COLORS.RED, color: '#fff', fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>{T('confirm')}</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── useDragReorder (Web) ──────────────────────────────────────
-function useWebDragReorder(
-  orderedItems: string[],
-  onReorder: (from: number, to: number) => void,
-) {
-  const [draggedId, setDraggedId] = useState<string | null>(null);
-  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
-  const startIdx = useRef(0);
-  const startY = useRef(0);
-  const rowHeight = 44;
-
-  const handleMouseDown = useCallback((e: React.MouseEvent, id: string) => {
-    e.preventDefault();
-    const idx = orderedItems.indexOf(id);
-    setDraggedId(id);
-    setDragOverIdx(idx);
-    startIdx.current = idx;
-    startY.current = e.clientY;
-  }, [orderedItems]);
-
-  useEffect(() => {
-    if (!draggedId) return;
-    const handleMouseMove = (e: MouseEvent) => {
-      const offset = Math.round((e.clientY - startY.current) / rowHeight);
-      const target = Math.max(0, Math.min(orderedItems.length - 1, startIdx.current + offset));
-      setDragOverIdx(target);
-    };
-    const handleMouseUp = () => {
-      if (dragOverIdx !== null) {
-        const currentIdx = orderedItems.indexOf(draggedId);
-        if (currentIdx >= 0 && currentIdx !== dragOverIdx) {
-          onReorder(currentIdx, dragOverIdx);
-        }
-      }
-      setDraggedId(null);
-      setDragOverIdx(null);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [draggedId, dragOverIdx, orderedItems, onReorder]);
-
-  return { draggedId, dragOverIdx, handleMouseDown };
-}
-
-// ─── Tag Manager Panel ────────────────────────────────────────────
-function TagManagerPanel({ onClose }: { onClose: () => void }) {
-  const store = useWebStore();
-  const { TH, P } = useTheme();
-  const T = useT();
-  const [newTag, setNewTag] = useState('');
-  const [editingTag, setEditingTag] = useState<{ old: string; new: string } | null>(null);
-  const [confirmDel, setConfirmDel] = useState<string | null>(null);
-
-  const habitTagsList = useMemo(() => store.habits.filter(h => h.createTag).map(h => `#${h.name}`), [store.habits]);
-
-  const orderedTags = useMemo(() => {
-    const required = [...TAGS_PRESET, ...(store.customTags ?? []), ...habitTagsList];
-    const order = store.allTagsOrder ?? [];
-    return order.length > 0 ? ensureOrderContains(order, required) : required;
-  }, [store.allTagsOrder, store.customTags, habitTagsList]);
-
-  const handleReorder = useCallback((from: number, to: number) => {
-    store.reorderAllTag(from, to);
-  }, [store]);
-
-  const { draggedId, dragOverIdx, handleMouseDown } = useWebDragReorder(orderedTags, handleReorder);
-
-  const customTags = store.customTags ?? [];
-  const presetSet = new Set(TAGS_PRESET);
-  const customSet = new Set(customTags);
-
-  const getTagSection = (tag: string): 'preset' | 'custom' | 'habit' => {
-    if (presetSet.has(tag)) return 'preset';
-    if (customSet.has(tag)) return 'custom';
-    return 'habit';
-  };
-
-  // Real-time input validation
-  const inputWords = newTag.replace('#', '').trim().split(/\s+/).filter(Boolean);
-  const tagTooLong = inputWords.length > 4;
-  const maxTagsReached = customTags.length >= 10;
-
-  const handleAddTag = () => {
-    if (newTag.trim()) {
-      const tag = newTag.startsWith('#') ? newTag : `#${newTag}`;
-      const words = tag.replace('#', '').trim().split(/\s+/);
-      if (words.length > 4) { alert(T('tagTooLong')); return; }
-      if (customTags.length >= 10) { alert(T('maxTagsReached')); return; }
-      store.addCustomTag(tag);
-      setNewTag('');
-    }
-  };
-
-  const handleUpdateTag = () => {
-    if (editingTag && editingTag.new.trim()) {
-      const newTagValue = editingTag.new.startsWith('#') ? editingTag.new : `#${editingTag.new}`;
-      const words = newTagValue.replace('#', '').trim().split(/\s+/);
-      if (words.length > 4) { alert(T('tagTooLong')); return; }
-      store.updateCustomTag(editingTag.old, newTagValue);
-      setEditingTag(null);
-    }
-  };
-
-  const doDeleteTag = (tag: string) => {
-    store.removeCustomTag(tag);
-    setConfirmDel(null);
-  };
-
-  const handleDeleteTag = (tag: string) => {
-    setConfirmDel(tag);
-  };
-
-  const confirmMessage = useMemo(() => {
-    if (!confirmDel) return '';
-    const usedCount = store.reflections.filter(r => r.tags.includes(confirmDel)).length;
-    return usedCount > 0
-      ? `${T('tagDeleteConfirm')} ${T('tagUsedBy').replace('{count}', String(usedCount))}`
-      : T('tagDeleteConfirm');
-  }, [confirmDel, store.reflections, T]);
-
-  return (
-    <div onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '100%', maxWidth: 390, background: TH.cardSolid, borderRadius: 20, padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-          <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('tagManager')}</div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
-        </div>
-
-        {/* Add new tag */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-          <input value={newTag} onChange={(e) => setNewTag(e.target.value)} placeholder={T('newTagPlaceholder')}
-            style={{ flex: 1, padding: '8px 12px', borderRadius: 8, border: `1px solid ${tagTooLong || maxTagsReached ? COLORS.RED : TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY }} />
-          <button onClick={handleAddTag}
-            style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: P, color: '#fff', fontSize: FONT_BODY, cursor: 'pointer' }}>{T('add')}</button>
-        </div>
-        {(tagTooLong || maxTagsReached) && (
-          <div style={{ fontSize: FONT_SUB, color: COLORS.RED, marginBottom: 12 }}>
-            {tagTooLong ? T('tagTooLong') : T('maxTagsReached')}
-          </div>
-        )}
-
-        {/* Tag list with section headers */}
-        {orderedTags.map((tag, idx, arr) => {
-          const section = getTagSection(tag);
-          const prevSection = idx > 0 ? getTagSection(arr[idx - 1]) : null;
-          const showHeader = section !== prevSection;
-          const isPreset = section === 'preset';
-          const isCustom = section === 'custom';
-          const isHabit = section === 'habit';
-          const canEditDelete = isCustom;
-          const isDragging = draggedId === tag;
-          const isDropTarget = dragOverIdx === idx && draggedId !== tag;
-
-          return (
-            <div key={tag}>
-              {showHeader && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, marginBottom: 8 }}>
-                  <div style={{ flex: 1, height: 1, background: TH.border }} />
-                  <span style={{ fontSize: FONT_SUB, color: TH.sub, fontWeight: 600 }}>
-                    {section === 'preset' ? T('tagSectionPreset') : section === 'custom' ? T('tagSectionCustom') : T('tagSectionHabit')}
-                  </span>
-                  <div style={{ flex: 1, height: 1, background: TH.border }} />
-                </div>
-              )}
-              <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0',
-                borderBottom: `1px solid ${TH.border}`,
-                borderLeft: isDragging ? `3px solid ${P}` : isDropTarget ? `3px solid ${P}40` : '3px solid transparent',
-                background: isDragging ? `${P}10` : isDropTarget ? `${P}08` : 'transparent',
-                opacity: isDragging ? 0.7 : 1,
-                transition: 'background 0.15s, border-color 0.15s',
-              }}>
-                {editingTag?.old === tag ? (
-                  <div style={{ display: 'flex', gap: 8, flex: 1 }}>
-                    <input value={editingTag.new} onChange={(e) => setEditingTag({ ...editingTag, new: e.target.value })}
-                      style={{ flex: 1, padding: '4px 8px', borderRadius: 4, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY }} />
-                    <button onClick={handleUpdateTag} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: COLORS.GREEN, color: '#fff', fontSize: FONT_SUB, cursor: 'pointer' }}><Check size={14} /></button>
-                    <button onClick={() => setEditingTag(null)} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: COLORS.RED, color: '#fff', fontSize: FONT_SUB, cursor: 'pointer' }}><X size={14} /></button>
-                  </div>
-                ) : (
-                  <>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: 6 }}>
-                      <span onMouseDown={(e) => handleMouseDown(e, tag)} style={{ cursor: 'grab', display: 'flex', alignItems: 'center', color: TH.sub }} title={T('moveToTop')}>
-                        <GripVertical size={14} />
-                      </span>
-                      <span style={{ color: TH.text, fontSize: FONT_BODY }}>{tag}</span>
-                      {isPreset && <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('preset')}</span>}
-                      {isHabit && <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('habitTag')}</span>}
-                    </div>
-                    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                      <button onClick={() => store.reorderAllTag(idx, idx - 1)} disabled={idx === 0} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === 0 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === 0 ? 'default' : 'pointer' }}><ChevronUp size={16} /></button>
-                      <button onClick={() => store.reorderAllTag(idx, idx + 1)} disabled={idx === arr.length - 1} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === arr.length - 1 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === arr.length - 1 ? 'default' : 'pointer' }}><ChevronDown size={16} /></button>
-                      {canEditDelete && (
-                        <>
-                          <button onClick={() => setEditingTag({ old: tag, new: tag })} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: P, fontSize: FONT_SUB, cursor: 'pointer' }}><Pencil size={14} /></button>
-                          <button onClick={(e) => { e.stopPropagation(); handleDeleteTag(tag); }} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: COLORS.RED, fontSize: FONT_SUB, cursor: 'pointer' }}><Trash2 size={14} /></button>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Custom confirm dialog */}
-      {confirmDel && (
-        <ConfirmDialog message={confirmMessage} onConfirm={() => doDeleteTag(confirmDel)} onCancel={() => setConfirmDel(null)} />
-      )}
-    </div>
-  );
-}
-
-// ─── Mood Manager Panel ───────────────────────────────────────────
-function MoodManagerPanel({ onClose }: { onClose: () => void }) {
-  const store = useWebStore();
-  const { TH, P } = useTheme();
-  const T = useT();
-  const [newMood, setNewMood] = useState('');
-  const [editingMood, setEditingMood] = useState<{ old: string; new: string } | null>(null);
-  const [confirmDel, setConfirmDel] = useState<string | null>(null);
-
-  const orderedMoods = useMemo(() => {
-    const required = [...MOODS, ...(store.customMoods ?? [])];
-    const order = store.allMoodsOrder ?? [];
-    return order.length > 0 ? ensureOrderContains(order, required) : required;
-  }, [store.allMoodsOrder, store.customMoods]);
-
-  const handleReorder = useCallback((from: number, to: number) => {
-    store.reorderAllMood(from, to);
-  }, [store]);
-
-  const { draggedId, dragOverIdx, handleMouseDown } = useWebDragReorder(orderedMoods, handleReorder);
-
-  const customMoods = store.customMoods ?? [];
-  const presetSet = new Set(MOODS as string[]);
-
-  const getMoodSection = (mood: string): 'preset' | 'custom' => {
-    return presetSet.has(mood) ? 'preset' : 'custom';
-  };
-
-  // Real-time input validation
-  const inputWords = newMood.trim().split(/\s+/).filter(Boolean);
-  const moodTooLong = inputWords.length > 4;
-  const maxMoodsReached = customMoods.length >= 10;
-
-  const handleAddMood = () => {
-    if (newMood.trim()) {
-      const words = newMood.trim().split(/\s+/);
-      if (words.length > 4) { alert(T('moodTooLong')); return; }
-      if (customMoods.length >= 10) { alert(T('maxMoodsReached')); return; }
-      store.addCustomMood(newMood);
-      setNewMood('');
-    }
-  };
-
-  const handleUpdateMood = () => {
-    if (editingMood && editingMood.new.trim()) {
-      const words = editingMood.new.trim().split(/\s+/);
-      if (words.length > 4) { alert(T('moodTooLong')); return; }
-      store.updateCustomMood(editingMood.old, editingMood.new);
-      setEditingMood(null);
-    }
-  };
-
-  const doDeleteMood = (mood: string) => {
-    store.removeCustomMood(mood);
-    setConfirmDel(null);
-  };
-
-  const handleDeleteMood = (mood: string) => {
-    setConfirmDel(mood);
-  };
-
-  const confirmMessage = useMemo(() => {
-    if (!confirmDel) return '';
-    const usedCount = store.reflections.filter(r => r.mood === confirmDel).length;
-    return usedCount > 0
-      ? `${T('moodDeleteConfirm')} ${T('moodUsedBy').replace('{count}', String(usedCount))}`
-      : T('moodDeleteConfirm');
-  }, [confirmDel, store.reflections, T]);
-
-  return (
-    <div onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-      style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ width: '100%', maxWidth: 390, background: TH.cardSolid, borderRadius: 20, padding: 24, maxHeight: '80vh', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-          <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('moodManager')}</div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
-        </div>
-
-        {/* Add new mood */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-          <input value={newMood} onChange={(e) => setNewMood(e.target.value)} placeholder={T('newMoodPlaceholder')}
-            style={{ flex: 1, padding: '8px 12px', borderRadius: 8, border: `1px solid ${moodTooLong || maxMoodsReached ? COLORS.RED : TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY }} />
-          <button onClick={handleAddMood}
-            style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: P, color: '#fff', fontSize: FONT_BODY, cursor: 'pointer' }}>{T('add')}</button>
-        </div>
-        {(moodTooLong || maxMoodsReached) && (
-          <div style={{ fontSize: FONT_SUB, color: COLORS.RED, marginBottom: 12 }}>
-            {moodTooLong ? T('moodTooLong') : T('maxMoodsReached')}
-          </div>
-        )}
-
-        {/* Mood list with section headers */}
-        {orderedMoods.map((mood, idx, arr) => {
-          const section = getMoodSection(mood);
-          const prevSection = idx > 0 ? getMoodSection(arr[idx - 1]) : null;
-          const showHeader = section !== prevSection;
-          const isPreset = section === 'preset';
-          const isCustom = section === 'custom';
-          const isDragging = draggedId === mood;
-          const isDropTarget = dragOverIdx === idx && draggedId !== mood;
-
-          return (
-            <div key={mood}>
-              {showHeader && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, marginBottom: 8 }}>
-                  <div style={{ flex: 1, height: 1, background: TH.border }} />
-                  <span style={{ fontSize: FONT_SUB, color: TH.sub, fontWeight: 600 }}>
-                    {section === 'preset' ? T('moodSectionPreset') : T('moodSectionCustom')}
-                  </span>
-                  <div style={{ flex: 1, height: 1, background: TH.border }} />
-                </div>
-              )}
-              <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0',
-                borderBottom: `1px solid ${TH.border}`,
-                borderLeft: isDragging ? `3px solid ${P}` : isDropTarget ? `3px solid ${P}40` : '3px solid transparent',
-                background: isDragging ? `${P}10` : isDropTarget ? `${P}08` : 'transparent',
-                opacity: isDragging ? 0.7 : 1,
-                transition: 'background 0.15s, border-color 0.15s',
-              }}>
-                {editingMood?.old === mood ? (
-                  <div style={{ display: 'flex', gap: 8, flex: 1 }}>
-                    <input value={editingMood.new} onChange={(e) => setEditingMood({ ...editingMood, new: e.target.value })}
-                      style={{ flex: 1, padding: '4px 8px', borderRadius: 4, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY }} />
-                    <button onClick={handleUpdateMood} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: COLORS.GREEN, color: '#fff', fontSize: FONT_SUB, cursor: 'pointer' }}><Check size={14} /></button>
-                    <button onClick={() => setEditingMood(null)} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: COLORS.RED, color: '#fff', fontSize: FONT_SUB, cursor: 'pointer' }}><X size={14} /></button>
-                  </div>
-                ) : (
-                  <>
-                    <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: 6 }}>
-                      <span onMouseDown={(e) => handleMouseDown(e, mood)} style={{ cursor: 'grab', display: 'flex', alignItems: 'center', color: TH.sub }} title={T('moveToTop')}>
-                        <GripVertical size={14} />
-                      </span>
-                      <span style={{ color: TH.text, fontSize: FONT_BODY }}>{mood}</span>
-                      {isPreset && <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('preset')}</span>}
-                    </div>
-                    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-                      <button onClick={() => store.reorderAllMood(idx, idx - 1)} disabled={idx === 0} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === 0 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === 0 ? 'default' : 'pointer' }}><ChevronUp size={16} /></button>
-                      <button onClick={() => store.reorderAllMood(idx, idx + 1)} disabled={idx === arr.length - 1} style={{ padding: '4px', borderRadius: 4, border: 'none', background: 'transparent', color: idx === arr.length - 1 ? TH.border : P, fontSize: FONT_SUB, cursor: idx === arr.length - 1 ? 'default' : 'pointer' }}><ChevronDown size={16} /></button>
-                      {isCustom && (
-                        <>
-                          <button onClick={() => setEditingMood({ old: mood, new: mood })} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: P, fontSize: FONT_SUB, cursor: 'pointer' }}><Pencil size={14} /></button>
-                          <button onClick={(e) => { e.stopPropagation(); handleDeleteMood(mood); }} style={{ padding: '4px 8px', borderRadius: 4, border: 'none', background: 'transparent', color: COLORS.RED, fontSize: FONT_SUB, cursor: 'pointer' }}><Trash2 size={14} /></button>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Custom confirm dialog */}
-      {confirmDel && (
-        <ConfirmDialog message={confirmMessage} onConfirm={() => doDeleteMood(confirmDel)} onCancel={() => setConfirmDel(null)} />
-      )}
-    </div>
-  );
-}
+const MAX_REFLECTION_LENGTH = 200;
+const DELETE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
 // ─── Main ReflectionsTab ──────────────────────────────────────────
 export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: number }) {
@@ -446,8 +52,8 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   const [showDeletedTags, setShowDeletedTags] = useState(false);
 
   const allTags = useMemo(() => {
-    const reflTags = [...new Set(store.reflections.flatMap((r) => r.tags))];
-    const habitTagsList = store.habits.filter(h => h.createTag).map(h => `#${h.name}`);
+    const reflTags = [...new Set((store.reflections ?? []).flatMap((r) => r.tags))];
+    const habitTagsList = (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`);
     const allAvailable = [...new Set([...reflTags, ...habitTagsList])];
     const order = store.allTagsOrder ?? [];
     if (order.length > 0) {
@@ -463,8 +69,8 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
 
   // All tags used in data (including deleted tags that still have data)
   const allUsedTags = useMemo(() => {
-    const reflTags = [...new Set(store.reflections.flatMap((r) => r.tags))];
-    const habitTagsList = store.habits.filter(h => h.createTag).map(h => `#${h.name}`);
+    const reflTags = [...new Set((store.reflections ?? []).flatMap((r) => r.tags))];
+    const habitTagsList = (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`);
     return [...new Set([...reflTags, ...habitTagsList])];
   }, [store.reflections, store.habits]);
 
@@ -477,15 +83,15 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   // Current visible tags in filter bar
   const visibleTags = showDeletedTags ? allUsedTags : allTags;
   const filtered = useMemo(() =>
-    filterTag ? store.reflections.filter((r) => r.tags.includes(filterTag)) : store.reflections,
+    filterTag ? (store.reflections ?? []).filter((r) => r.tags.includes(filterTag)) : (store.reflections ?? []),
     [filterTag, store.reflections]
   );
   const tagCounts = useMemo(() => {
-    const counts: Record<string, number> = { '': store.reflections.length };
-    store.reflections.forEach(r => r.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
+    const counts: Record<string, number> = { '': (store.reflections ?? []).length };
+    (store.reflections ?? []).forEach(r => r.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
     return counts;
   }, [store.reflections]);
-  const habitTags = useMemo(() => store.habits.filter((h) => h.createTag).map((h) => `#${h.name}`), [store.habits]);
+  const habitTags = useMemo(() => (store.habits ?? []).filter((h) => h.createTag).map((h) => `#${h.name}`), [store.habits]);
   const allTagOptions = useMemo(() => {
     const required = [...TAGS_PRESET, ...(store.customTags ?? [])];
     const order = store.allTagsOrder ?? [];
@@ -501,13 +107,13 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   const topTag = useMemo(() => {
     if (allTags.length === 0) return '--';
     const tagCounts: Record<string, number> = {};
-    store.reflections.forEach(r => r.tags.forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; }));
+    (store.reflections ?? []).forEach(r => r.tags.forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; }));
     return allTags.reduce((a, b) => (tagCounts[a] || 0) > (tagCounts[b] || 0) ? a : b);
   }, [store.reflections, allTags]);
 
   const consecutiveDays = useMemo(() => {
-    if (store.reflections.length === 0) return 0;
-    const days = new Set(store.reflections.map(r => new Date(r.timestamp).toDateString()));
+    if ((store.reflections ?? []).length === 0) return 0;
+    const days = new Set((store.reflections ?? []).map(r => new Date(r.timestamp).toDateString()));
     let streak = 0;
     let date = new Date();
     while (days.has(date.toDateString())) {
@@ -531,7 +137,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   const cardStyle = useCachedStyle(() => ({ ...cs(TH), padding: '12px 16px', marginBottom: 12 }), [TH]);
 
   const handleAddReflection = () => {
-    if (content.length > 200) {
+    if (content.length > MAX_REFLECTION_LENGTH) {
       setShowError(true);
       setTimeout(() => setShowError(false), 3000);
       return;
@@ -615,7 +221,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
       <div style={cardStyle as React.CSSProperties}>
         <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
           <div>
-            <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: P }}>{store.reflections.length}</div>
+            <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: P }}>{(store.reflections ?? []).length}</div>
             <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('reflTotal')}</div>
           </div>
           <div>
@@ -682,9 +288,9 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             </div>
             <div style={{ position: 'relative', marginBottom: 14 }}>
               <textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder={T('reflectionPlaceholder')}
-                style={{ width: '100%', minHeight: 90, background: TH.card, border: `1px solid ${content.length > 200 ? '#EF4444' : TH.border}`, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
-              <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: FONT_BODY, color: content.length > 200 ? '#EF4444' : TH.sub }}>
-                {content.length}/200
+                style={{ width: '100%', minHeight: 90, background: TH.card, border: `1px solid ${content.length > MAX_REFLECTION_LENGTH ? '#EF4444' : TH.border}`, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
+              <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: FONT_BODY, color: content.length > MAX_REFLECTION_LENGTH ? '#EF4444' : TH.sub }}>
+                {content.length}/{MAX_REFLECTION_LENGTH}
               </div>
             </div>
             <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('addTags')}</div>
@@ -726,9 +332,9 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             </div>
             <div style={{ position: 'relative', marginBottom: 14 }}>
               <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} placeholder={T('reflectionPlaceholder')}
-                style={{ width: '100%', minHeight: 90, background: TH.card, border: `1px solid ${editContent.length > 200 ? '#EF4444' : TH.border}`, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
-              <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: FONT_BODY, color: editContent.length > 200 ? '#EF4444' : TH.sub }}>
-                {editContent.length}/200
+                style={{ width: '100%', minHeight: 90, background: TH.card, border: `1px solid ${editContent.length > MAX_REFLECTION_LENGTH ? '#EF4444' : TH.border}`, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
+              <div style={{ position: 'absolute', bottom: 8, right: 12, fontSize: FONT_BODY, color: editContent.length > MAX_REFLECTION_LENGTH ? '#EF4444' : TH.sub }}>
+                {editContent.length}/{MAX_REFLECTION_LENGTH}
               </div>
             </div>
             <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('addTags')}</div>
@@ -774,27 +380,20 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             background: TH.cardSolid, borderRadius: 12, padding: 12,
             boxShadow: '0 4px 20px rgba(0,0,0,.3)', zIndex: 501, minWidth: 160,
           }}>
-            <button onClick={() => { openEdit(store.reflections.find(r => r.id === actionMenuId)); setActionMenuId(null); }}
+            <button onClick={() => { openEdit((store.reflections ?? []).find(r => r.id === actionMenuId)); setActionMenuId(null); }}
               style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: TH.card, color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>
               {T('reflEditTitle')}
             </button>
             <button onClick={() => {
-              const r = store.reflections.find(r => r.id === actionMenuId);
-              if (r) {
-                const tagsStr = r.tags?.length ? `\n标签: ${r.tags.join(' ')}` : '';
-                const moodStr = r.mood ? `\n心情: ${r.mood}` : '';
-                const timeStr = new Date(r.timestamp ?? 0).toLocaleString('zh-CN');
-                const text = `${r.content}${tagsStr}${moodStr}\n\n— ${timeStr}`;
-                navigator.clipboard.writeText(text).catch(() => {});
-              }
+              const r = (store.reflections ?? []).find(r => r.id === actionMenuId);
               setActionMenuId(null);
             }}
               style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: TH.card, color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>
               {T('reflShare')}
             </button>
             {(() => {
-              const r = store.reflections.find(r => r.id === actionMenuId);
-              const isWithin7Days = r && (Date.now() - r.timestamp) < 7 * 24 * 60 * 60 * 1000;
+              const r = (store.reflections ?? []).find(r => r.id === actionMenuId);
+              const isWithin7Days = r && (Date.now() - r.timestamp) < DELETE_WINDOW_MS;
               return isWithin7Days ? (
                 <button onClick={() => { if (confirm(T('confirmDeleteReflection'))) store.deleteReflection(actionMenuId); setActionMenuId(null); }}
                   style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: 'rgba(239,68,68,.15)', color: COLORS.RED, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>

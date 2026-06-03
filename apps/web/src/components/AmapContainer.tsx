@@ -34,7 +34,7 @@ export default function AmapContainer({
       });
       mapRef.current = map;
       onMapReady?.(map);
-    });
+    }).catch(err => console.warn('AMap load failed:', err));
 
     return () => {
       mapRef.current?.destroy();

@@ -1,7 +1,7 @@
 // ─── Shared Zustand store (platform-agnostic logic) ──────────────
-import { uid, dateStr, tomorrow, computeStreak, estimateFastingKcal } from './utils';
+import { uid, dateStr } from './utils';
 import { MIND_COLORS } from './constants';
-import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, Goal, GoalLevel, GoalStatus, DailyTask, TaskSchedule, TaskLink, TaskLog, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin } from './types';
+import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry } from './types';
 import { defaultAuthState } from './types';
 
 // ── Initial seed data ─────────────────────────────────────────────
@@ -30,6 +30,7 @@ export function createHabitFromForm(form: {
     pauseReason: '',
     abandonReason: '',
     updatedAt: Date.now(),
+    deleted: false,
   };
 }
 
@@ -43,91 +44,13 @@ export function createReflection(params: { content: string; tags: string[]; mood
     colors: MIND_COLORS[idx] as unknown as readonly [string, string],
     isPinned: false, isPublished: false,
     updatedAt: Date.now(),
+    deleted: false,
   };
 }
 
 export function createFastingSession(targetHours: number): FastingSession {
-  return { id: uid(), targetHours, startedAt: Date.now(), updatedAt: Date.now() };
+  return { id: uid(), targetHours, startedAt: Date.now(), updatedAt: Date.now(), deleted: false };
 }
-
-export function createGoalFromForm(form: {
-  parentId?: string | null;
-  level: GoalLevel;
-  name: string;
-  description?: string;
-  icon?: string;
-  startDate: string;
-  endDate: string;
-  tags?: string[];
-  order?: number;
-}): Goal {
-  return {
-    id: uid(),
-    parentId: form.parentId ?? null,
-    level: form.level,
-    name: form.name,
-    description: form.description ?? '',
-    icon: form.icon ?? '🎯',
-    startDate: form.startDate,
-    endDate: form.endDate,
-    status: 'active',
-    progress: 0,
-    tags: form.tags ?? [],
-    order: form.order ?? 0,
-    updatedAt: Date.now(),
-  };
-}
-
-export function createTaskFromForm(form: {
-  goalId?: string | null;
-  name: string;
-  icon?: string;
-  schedule: TaskSchedule;
-  required?: boolean;
-  link?: TaskLink;
-  order?: number;
-}): DailyTask {
-  return {
-    id: uid(),
-    goalId: form.goalId ?? null,
-    name: form.name,
-    icon: form.icon ?? '📋',
-    schedule: form.schedule,
-    required: form.required ?? false,
-    link: form.link ?? { kind: 'none' },
-    order: form.order ?? 0,
-    updatedAt: Date.now(),
-  };
-}
-
-// ── Default app state ─────────────────────────────────────────────
-export const defaultAppState: AppState = {
-  auth: defaultAuthState,
-  theme: 'dark',
-  language: 'zh',
-  streak: 0,
-  waterMl: 0,
-  waterGoal: 2000,
-  calGoal: 2000,
-  totalMedMinutes: 0,
-  fastingHistory: [],
-  medHistory: [],
-  checkinHistory: [],
-  foodLog: [],
-  exerciseLog: [],
-  reflections: [],
-  habits: [],
-  activeFasting: null,
-  userProfile: {},
-  goals: [],
-  dailyTasks: [],
-  taskLogs: [],
-  plans: [],
-  planItems: [],
-  planItemCheckins: [],
-  remindEnabled: false,
-  remindTime: '21:00',
-};
 
 // ── Resettable data state (everything except auth/theme/language) ─
 export const defaultDataState = {
@@ -145,14 +68,28 @@ export const defaultDataState = {
   habits: [] as Habit[],
   activeFasting: null as FastingSession | null,
   userProfile: {} as UserProfile,
-  goals: [] as Goal[],
-  dailyTasks: [] as DailyTask[],
-  taskLogs: [] as TaskLog[],
   plans: [] as Plan[],
   planItems: [] as PlanItem[],
   planItemCheckins: [] as PlanItemCheckin[],
+  recycleBin: [] as RecycleBinItem[],
+  graceHistory: [] as GraceHistoryEntry[],
   remindEnabled: false,
   remindTime: '21:00',
   healthSyncEnabled: false,
   customFoodPresets: [] as CustomFoodPreset[],
+  weightUnit: 'kg' as 'kg' | 'lb',
 };
+
+/** Create a patch object that resets all data fields (preserving auth, theme, language) */
+export function createResetDataPatch(auth: AppState['auth'], theme: AppState['theme'], language: string): Record<string, unknown> {
+  return {
+    ...defaultDataState,
+    auth,
+    theme,
+    language,
+    customTags: [] as string[],
+    customMoods: [] as string[],
+    allTagsOrder: [] as string[],
+    allMoodsOrder: [] as string[],
+  };
+}

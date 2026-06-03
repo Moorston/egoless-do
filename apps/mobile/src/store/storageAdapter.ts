@@ -29,7 +29,7 @@ export const mobileStorageAdapter: StorageAdapter = {
       console.warn(`[storageAdapter] Unknown entity: ${entity}`);
       return;
     }
-    await db.runAsync(`UPDATE ${config.table} SET synced = 2 WHERE ${config.pk} = ?`, [id]);
-    await enqueueChange(entity, id, 'delete', { updatedAt: Date.now() }).catch(console.error);
+    await db.runAsync(`UPDATE ${config.table} SET deleted = 1, synced = 2 WHERE ${config.pk} = ?`, [id]);
+    await enqueueChange(entity, id, 'delete', { updatedAt: Date.now(), deleted: true }).catch(console.error);
   },
 };

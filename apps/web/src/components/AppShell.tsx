@@ -4,24 +4,22 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useWebStore } from '../store/useWebStore';
-import { THEMES, t, setPocketbaseUrl, FONT_BODY, FONT_BUTTON, FONT_CLOSE } from '@egoless-do/core';
+import { THEMES, t, setPocketbaseUrl, FONT_BODY, FONT_SUB, FONT_CLOSE } from '@egoless-do/core';
 import { useReminder } from './useReminder';
 import { ErrorBoundary, useResponsive } from './helpers';
 import {
-  Home, ClipboardList, Timer, Brain, Sparkles, Dumbbell,
-  Target, BarChart3, Settings, Plus,
+  Home, Timer, Brain, Dumbbell, Settings, Plus,
 } from 'lucide-react';
 import { useSync } from './useSync';
 import { OverlayContext, useOverlayState } from './useOverlay';
 import AppHeader from './AppHeader';
+import HeaderTabs from './HeaderTabs';
 import BottomNav from './BottomNav';
 import StarfieldBackground from './StarfieldBackground';
 import HomeTab from './HomeTab';
 import FastingTab from './FastingTab';
 import MeditateTab from './MeditateTab';
-import ReflectionsTab from './ReflectionsTab';
 import ExerciseTab from './ExerciseTab';
-import HabitsTab from './HabitsTab';
 import SettingsTab from './SettingsTab';
 
 // Lazy-loaded overlay pages (not needed on initial render)
@@ -41,16 +39,15 @@ const PlanDetailPage = dynamic(() => import('./PlanDetailPage'), { ssr: false })
 const PlanHistoryPage = dynamic(() => import('./PlanHistoryPage'), { ssr: false });
 const PrivacyPolicyPage = dynamic(() => import('./PrivacyPolicyPage'), { ssr: false });
 const StatsPage = dynamic(() => import('./StatsPage'), { ssr: false });
-import PlanTab from './PlanTab';
+const PlanTab = dynamic(() => import('./PlanTab'), { ssr: false });
+const HabitsTab = dynamic(() => import('./HabitsTab'), { ssr: false });
+const ReflectionsTab = dynamic(() => import('./ReflectionsTab'), { ssr: false });
 
 const TABS = [
   { key: 'home',        Icon: Home,          labelKey: 'home'       },
-  { key: 'plan',        Icon: ClipboardList,  labelKey: 'plan'       },
-  { key: 'fasting',     Icon: Timer,          labelKey: 'fasting'     },
-  { key: 'meditation',  Icon: Brain,          labelKey: 'meditation'  },
-  { key: 'reflections', Icon: Sparkles,       labelKey: 'reflections' },
   { key: 'exercise',    Icon: Dumbbell,       labelKey: 'exercise'    },
-  { key: 'habits',      Icon: Target,         labelKey: 'habits'      },
+  { key: 'meditation',  Icon: Brain,          labelKey: 'meditation'  },
+  { key: 'fasting',     Icon: Timer,          labelKey: 'fasting'     },
   { key: 'settings',    Icon: Settings,       labelKey: 'settings'    },
 ];
 
@@ -63,11 +60,21 @@ export default function AppShell() {
   const T = (k: string) => t(k, lang);
 
   const [tab, setTab] = useState(0);
-  const [newMindTrigger, setNewMindTrigger] = useState(0);
   const overlayState = useOverlayState();
   const { maxWidth } = useResponsive();
   const sync = useSync();
   useReminder();
+  const scrollPosRef = useRef<Map<number, number>>(new Map());
+
+  // Switch tab and preserve scroll position
+  const switchTab = useCallback((targetIndex: number) => {
+    scrollPosRef.current.set(tab, window.scrollY);
+    setTab(targetIndex);
+    requestAnimationFrame(() => {
+      const savedY = scrollPosRef.current.get(targetIndex) ?? 0;
+      window.scrollTo(0, savedY);
+    });
+  }, [tab]);
 
   // Initialize PocketBase for community features
   useEffect(() => {
@@ -97,9 +104,8 @@ export default function AppShell() {
   }, [isSignedIn, router]);
 
   const handleFabClick = useCallback(() => {
-    setNewMindTrigger(n => n + 1);
-    setTab(3);
-  }, []);
+    switchTab(2);
+  }, [switchTab]);
 
   if (!isSignedIn) return null;
 
@@ -131,6 +137,12 @@ export default function AppShell() {
         return <ExerciseHistoryPage onClose={overlayState.close} />;
       case 'streakBreak':
         return <StreakBreakPage onClose={overlayState.close} />;
+      case 'plan':
+        return <OverlayWrapper onClose={overlayState.close}><PlanTab /></OverlayWrapper>;
+      case 'habits':
+        return <OverlayWrapper onClose={overlayState.close}><HabitsTab /></OverlayWrapper>;
+      case 'reflections':
+        return <OverlayWrapper onClose={overlayState.close}><ReflectionsTab /></OverlayWrapper>;
       case 'planCreate':
         return <PlanCreatePage planId={overlayProps.planId} onClose={overlayState.close} />;
       case 'planDetail':
@@ -154,39 +166,26 @@ export default function AppShell() {
         <div style={{ maxWidth, margin: '0 auto', fontFamily: '-apple-system,system-ui,sans-serif', background: TH.bg, minHeight: '100dvh', color: TH.text, fontSize: FONT_BODY, position: 'relative', paddingBottom: 80 }}>
           {TH.starfield && <StarfieldBackground />}
           <AppHeader />
-
-          {/* Header Tabs */}
-          <div style={{ display: 'flex', padding: '12px 12px 0', gap: 4, flexShrink: 0, overflowX: 'auto', position: 'relative', zIndex: 1 }}>
-            {TABS.filter(t => t.key !== 'stats' && t.key !== 'settings').map((t) => {
-              const i = TABS.indexOf(t);
-              return (
-              <button key={t.key} onClick={() => {
-                setTab(i);
-              }}
-                style={{ flexShrink: 0, padding: '7px 18px', border: 'none', borderRadius: 12, fontSize: FONT_BUTTON, cursor: 'pointer',
-                  background: tab === i ? TH.primary : TH.card, color: tab === i ? '#fff' : TH.sub, whiteSpace: 'nowrap' as const }}>
-                <t.Icon size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} /> {T(t.labelKey)}
-              </button>
-              );
-            })}
-          </div>
-          <div style={{ padding: '8px 16px 0', fontSize: FONT_BODY, color: TH.sub, flexShrink: 0, position: 'relative', zIndex: 1 }}>
+          <div style={{ padding: '6px 16px 0', fontSize: FONT_SUB, color: TH.sub, flexShrink: 0, position: 'relative', zIndex: 1, borderBottom: `1px solid ${TH.border}` }}>
             {T('today')} · {new Date().toLocaleDateString(store.language === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
+          </div>
+          <div style={{ padding: '12px 16px 0', position: 'relative', zIndex: 1 }}>
+            <HeaderTabs
+              active={overlayState.overlay ?? 'home'}
+              onNavigateHome={() => { overlayState.close(); switchTab(0); }}
+            />
           </div>
 
           {/* Content */}
           <div style={{ padding: '12px 16px', position: 'relative', zIndex: 1 }}>
             {tab === 0 && <HomeTab />}
-            {tab === 1 && <PlanTab />}
-            {tab === 2 && <FastingTab />}
-            {tab === 3 && <MeditateTab />}
-            {tab === 4 && <ReflectionsTab newMindTrigger={newMindTrigger} />}
-            {tab === 5 && <ExerciseTab />}
-            {tab === 6 && <HabitsTab />}
-            {tab === 7 && <SettingsTab syncState={sync} onOpenStats={() => overlayState.open('stats')} />}
+            {tab === 1 && <ExerciseTab />}
+            {tab === 2 && <MeditateTab />}
+            {tab === 3 && <FastingTab />}
+            {tab === 4 && <SettingsTab syncState={sync} onOpenStats={() => overlayState.open('stats')} />}
           </div>
 
-          <BottomNav tabs={TABS} activeTab={tab} onTabChange={setTab} />
+          <BottomNav tabs={TABS} activeTab={tab} onTabChange={switchTab} />
           <FabButton onClick={handleFabClick} />
         </div>
 
@@ -194,6 +193,40 @@ export default function AppShell() {
         {overlayState.overlay && renderOverlay()}
       </ErrorBoundary>
     </OverlayContext.Provider>
+  );
+}
+
+function OverlayWrapper({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+  const store = useWebStore();
+  const TH = THEMES[store.theme];
+  const lang = store.language;
+  const T = (k: string) => t(k, lang);
+  const overlayState = useOverlayState();
+  const activeTab = overlayState.overlay ?? '';
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.85)', zIndex: 200, display: 'flex', justifyContent: 'center', overflowY: 'auto' }}>
+      <div style={{ width: '100%', maxWidth: 420, background: TH.bg, minHeight: '100dvh', paddingBottom: 32 }}>
+        <div style={{ position: 'sticky', top: 0, zIndex: 10, background: TH.bg }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '12px 16px 0' }}>
+            <button onClick={onClose} style={{ background: 'transparent', border: 'none', fontSize: 20, color: TH.sub, cursor: 'pointer' }}>✕</button>
+          </div>
+          <AppHeader />
+          <div style={{ padding: '6px 16px 0', fontSize: FONT_SUB, color: TH.sub, borderBottom: `1px solid ${TH.border}` }}>
+            {T('today')} · {new Date().toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', { month: 'long', day: 'numeric', weekday: 'short' })}
+          </div>
+          <div style={{ padding: '12px 16px 0' }}>
+            <HeaderTabs
+              active={activeTab}
+              onNavigateHome={onClose}
+            />
+          </div>
+        </div>
+        <div style={{ padding: '0 16px' }}>
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }
 

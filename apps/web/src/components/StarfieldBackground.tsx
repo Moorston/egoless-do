@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef } from 'react';
 
+const STAR_COUNT = 200;
+
 interface Star {
   x: number;
   y: number;
@@ -31,7 +33,7 @@ export default function StarfieldBackground() {
     window.addEventListener('resize', resize);
 
     // Generate stars
-    const starCount = 200;
+    const starCount = STAR_COUNT;
     starsRef.current = Array.from({ length: starCount }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
@@ -123,9 +125,19 @@ export default function StarfieldBackground() {
 
     animate();
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        if (animRef.current) cancelAnimationFrame(animRef.current);
+      } else {
+        animate();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
-      cancelAnimationFrame(animRef.current);
+      if (animRef.current) cancelAnimationFrame(animRef.current);
       window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRootNavigation } from '../../navigation/hooks';
 import { MapView, Polyline } from 'react-native-amap3d';
 import * as Location from 'expo-location';
 import * as Haptics from 'expo-haptics';
@@ -10,7 +11,7 @@ import { SPORT_BG_COLORS, fmt, COLORS, getSportType, TARGET_PRESETS, estimateCal
 import type { SportType, ExerciseSet } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
 import { X, Play, Pause, Minus, Plus } from 'lucide-react-native';
-import type { RootStackParamList } from '../../navigation';
+import type { RootStackParamList } from '../../navigation/hooks';
 
 type Route = RouteProp<RootStackParamList, 'Sport'>;
 type Page = 'prep' | 'countdown' | 'active' | 'paused' | 'report';
@@ -36,7 +37,7 @@ function formatPace(secPerKm: number): string {
 }
 
 export default function SportPage() {
-  const nav   = useNavigation();
+  const nav   = useRootNavigation();
   const route = useRoute<Route>();
   const TH    = useTheme();
   const T     = useT();

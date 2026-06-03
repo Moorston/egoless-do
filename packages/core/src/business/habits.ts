@@ -15,7 +15,8 @@ export function updateHabitInList(habits: Habit[], id: string, patch: Partial<Ha
 }
 
 export function deleteHabitFromList(habits: Habit[], id: string): Habit[] {
-  return habits.filter(h => h.id !== id);
+  const now = Date.now();
+  return habits.map(h => h.id === id ? { ...h, deleted: true, updatedAt: now } : h);
 }
 
 export function checkinHabitInList(habits: Habit[], id: string, date: string): Habit[] {

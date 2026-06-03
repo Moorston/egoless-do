@@ -6,6 +6,5 @@ export * from './food';
 export * from './exercise';
 export * from './meditation';
 export * from './customLists';
-export * from './planGoals';
 export * from './plan';
 export * from './planForm';

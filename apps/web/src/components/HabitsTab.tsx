@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { COLORS, tmr, daysInMonth, dateStr, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE, FONT_HERO } from '@egoless-do/core';
+import { COLORS, tomorrow, daysInMonth, dateStr, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE, FONT_HERO } from '@egoless-do/core';
 import type { Habit } from '@egoless-do/core';
 import { Toggle, useTheme, useT, cs, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -14,7 +14,7 @@ export default function HabitsTab() {
   const [filter, setFilter] = useState('all');
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: '', startDate: tmr(), targetDays: '21', goal: '', insight: '', createTag: false });
+  const [form, setForm] = useState({ name: '', startDate: tomorrow(), targetDays: '21', goal: '', insight: '', createTag: false });
   const [showStatus, setShowStatus] = useState<{ id: string; ns: string } | null>(null);
   const [reason, setReason] = useState('');
   const [showCal, setShowCal] = useState<string | null>(null);
@@ -25,12 +25,13 @@ export default function HabitsTab() {
   const STATUS_LABELS_R: Record<string, string> = { all: T('habitStatusAll'), notStarted: T('habitStatusNotStarted'), inProgress: T('habitStatusInProgress'), paused: T('habitStatusPaused'), abandoned: T('habitStatusAbandoned'), completed: T('habitStatusCompleted') };
   const STATUS_COLORS_R: Record<string, string> = { notStarted: TH.sub, inProgress: COLORS.GREEN, paused: COLORS.YELLOW, abandoned: COLORS.RED, completed: P };
   const STATUS_ORDER: Record<string, number> = { inProgress: 0, notStarted: 1, paused: 2, completed: 3, abandoned: 4 };
-  const filtered = (filter === 'all' ? store.habits : store.habits.filter((h) => h.status === filter))
+  const filtered = (filter === 'all' ? (store.habits ?? []).filter(h => !h.deleted) : (store.habits ?? []).filter((h) => !h.deleted && h.status === filter))
     .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || (b.startDate.localeCompare(a.startDate)));
 
   const filterCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: store.habits.length };
-    store.habits.forEach(h => { counts[h.status] = (counts[h.status] || 0) + 1; });
+    const active = (store.habits ?? []).filter(h => !h.deleted);
+    const counts: Record<string, number> = { all: active.length };
+    active.forEach(h => { counts[h.status] = (counts[h.status] || 0) + 1; });
     return counts;
   }, [store.habits]);
 
@@ -38,7 +39,7 @@ export default function HabitsTab() {
     if (!form.name.trim()) return;
     if (editingId) { store.updateHabit(editingId, { ...form, targetDays: +form.targetDays }); }
     else { store.addHabit({ ...form, targetDays: +form.targetDays }); }
-    setForm({ name: '', startDate: tmr(), targetDays: '21', goal: '', insight: '', createTag: false });
+    setForm({ name: '', startDate: tomorrow(), targetDays: '21', goal: '', insight: '', createTag: false });
     setEditingId(null); setShowAdd(false);
   }
 
@@ -46,7 +47,7 @@ export default function HabitsTab() {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <div style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.text }}>{T('myHabits')}</div>
-          <button onClick={() => { setEditingId(null); setForm({ name: '', startDate: tmr(), targetDays: '21', goal: '', insight: '', createTag: false }); setShowAdd(true); }}
+          <button onClick={() => { setEditingId(null); setForm({ name: '', startDate: tomorrow(), targetDays: '21', goal: '', insight: '', createTag: false }); setShowAdd(true); }}
           style={{ padding: '6px 16px', borderRadius: 20, border: 'none', background: P, color: '#fff', fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>{T('addHabit')}</button>
       </div>
 
@@ -76,7 +77,7 @@ export default function HabitsTab() {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                   <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text, flex: 1, marginRight: 8 }}>{h.name}</div>
-                  <span style={{ fontSize: FONT_SUB, padding: '3px 8px', borderRadius: 8, background: `${sc}20`, color: sc, fontWeight: 600, flexShrink: 0 }}>{STATUS_LABELS_R[h.status]}</span>
+                  <span style={{ fontSize: FONT_BADGE, padding: '3px 8px', borderRadius: 8, background: `${sc}20`, color: sc, fontWeight: 600, flexShrink: 0 }}>{STATUS_LABELS_R[h.status]}</span>
                 </div>
 
                 {h.goal && (
@@ -196,7 +197,7 @@ export default function HabitsTab() {
 
       {/* Context Menu */}
       {actionMenuId && (() => {
-        const h = store.habits.find(x => x.id === actionMenuId);
+        const h = (store.habits ?? []).find(x => x.id === actionMenuId && !x.deleted);
         if (!h) return null;
         return (
           <>
@@ -260,7 +261,7 @@ function HabitCalendarModal({ habitId, onClose }: { habitId: string; onClose: ()
   const store = useWebStore();
   const { TH, P } = useTheme();
   const T = useT();
-  const habit = store.habits.find((h) => h.id === habitId);
+  const habit = (store.habits ?? []).find((h) => h.id === habitId && !h.deleted);
   const checked = useMemo(() => new Set(habit?.checkedDates || []), [habit]);
   const today = new Date();
   const [vy, setVy] = useState(today.getFullYear());

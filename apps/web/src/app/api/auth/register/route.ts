@@ -4,6 +4,9 @@ import { getPb } from '../../_pb';
 import db from '../../_db';
 import { TOKEN_EXPIRES_IN } from '../../constants';
 import { sanitizeError } from '../../_errors';
+import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const registerRateLimit = createRateLimiter(5, 60_000); // 5 req/min
 
 function validatePassword(pwd: string): string | null {
   if (pwd.length < 8) return '密码需至少8位';
@@ -14,6 +17,11 @@ function validatePassword(pwd: string): string | null {
 }
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!registerRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
   try {
     const { email, password, name, code } = await req.json();
     if (!email || !password || !name || !code) {

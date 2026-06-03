@@ -2,7 +2,7 @@
 
 export const SYNC_ENTITIES = [
   'habit', 'reflection', 'fasting', 'food', 'checkin', 'meditation', 'profile', 'exercise',
-  'plan', 'planItem', 'planItemCheckin',
+  'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'grace',
 ] as const;
 
 export type SyncEntity = typeof SYNC_ENTITIES[number];
@@ -19,6 +19,9 @@ export const ENTITY_COLLECTION: Record<SyncEntity, string> = {
   plan:            'plans',
   planItem:        'plan_items',
   planItemCheckin: 'plan_item_checkins',
+  dailyCustomTodo: 'daily_custom_todos',
+  dailyTodoHistory: 'daily_todo_history',
+  grace:           'grace_history',
 };
 
 export const ENTITY_ID_FIELD: Record<SyncEntity, string> = {
@@ -33,4 +36,7 @@ export const ENTITY_ID_FIELD: Record<SyncEntity, string> = {
   plan:            'plan_id',
   planItem:        'plan_item_id',
   planItemCheckin: 'checkin_id',
+  dailyCustomTodo: 'todo_id',
+  dailyTodoHistory: 'history_id',
+  grace:           'date',
 };

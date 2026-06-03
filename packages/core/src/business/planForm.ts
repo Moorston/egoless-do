@@ -1,5 +1,5 @@
 // ─── Plan form shared logic (used by both Mobile & Web) ──────
-import type { PlanItemLink } from '../types';
+import type { PlanItemLink, PlanItemPriority } from '../types';
 
 /** Form state for a single plan item (used in create/edit screens). */
 export interface ItemForm {
@@ -10,17 +10,25 @@ export interface ItemForm {
   endDate: string;
   contentUrl: string;
   link: PlanItemLink;
+  priority: PlanItemPriority;
+  targetMetric: string;
   linkConfig?: { habitId?: string; targetMinutes?: number; targetHours?: number };
 }
 
 /** Link type options for plan items. */
 export const LINK_OPTIONS: { value: PlanItemLink; labelKey: string }[] = [
   { value: 'manual', labelKey: 'planLinkManual' },
-  { value: 'checkin', labelKey: 'planLinkCheckin' },
   { value: 'fasting', labelKey: 'planLinkFasting' },
   { value: 'meditation', labelKey: 'planLinkMeditation' },
   { value: 'exercise', labelKey: 'planLinkExercise' },
   { value: 'habit', labelKey: 'planLinkHabit' },
+];
+
+/** Priority options for plan items. */
+export const PRIORITY_OPTIONS: { value: PlanItemPriority; labelKey: string; color: string }[] = [
+  { value: 'high', labelKey: 'planPriorityHigh', color: '#FF4444' },
+  { value: 'medium', labelKey: 'planPriorityMedium', color: '#FFAA00' },
+  { value: 'low', labelKey: 'planPriorityLow', color: '#44AA44' },
 ];
 
 /** Validate plan form data. Returns a map of field → error message. */
@@ -36,6 +44,8 @@ export function validatePlanForm(
   if (form.startDate && form.endDate && form.endDate <= form.startDate) e.endDate = T('planTimeError');
   form.items.forEach((item, idx) => {
     if (!item.name.trim()) e[`item_${idx}_name`] = T('planNameRequired');
+    if (!item.description.trim()) e[`item_${idx}_description`] = T('planItemDescRequired');
+    if (!item.targetMetric.trim()) e[`item_${idx}_targetMetric`] = T('planItemTargetRequired');
     if (!item.startDate) e[`item_${idx}_startDate`] = T('planItemTimeError');
     if (!item.endDate) e[`item_${idx}_endDate`] = T('planItemTimeError');
     if (item.startDate && item.endDate && item.endDate <= item.startDate) e[`item_${idx}_endDate`] = T('planItemTimeOrderError');
@@ -52,6 +62,6 @@ export function createNewItem(planStartDate: string, planEndDate: string): ItemF
     id: `new_${Date.now()}`,
     name: '', description: '',
     startDate: planStartDate || '', endDate: planEndDate || '',
-    contentUrl: '', link: 'manual',
+    contentUrl: '', link: 'manual', priority: 'medium', targetMetric: '',
   };
 }

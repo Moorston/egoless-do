@@ -285,7 +285,7 @@ export async function performHealthSync(store: {
 
     // Read weight — only if user hasn't entered weight today
     const today = dateStr();
-    const todayCheckin = store.checkinHistory.find((c) => c.date === today);
+    const todayCheckin = (store.checkinHistory ?? []).find((c) => c.date === today);
     if (!todayCheckin?.weight) {
       const weight = await readLatestWeight();
       if (weight && weight.date === today) {

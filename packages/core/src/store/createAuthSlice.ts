@@ -1,22 +1,19 @@
-import type { StateCreator } from 'zustand';
-import type { AuthState } from '../types';
+import type { AuthSlice, UiSlice, StorageAdapter } from './types';
+import type { SliceCreator } from './sliceHelper';
 import { defaultAuthState } from '../types';
-import {
-  apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull,
-  mergeById, calculateCheckinStreak,
-} from '../';
-import type { StorageAdapter } from './storageAdapter';
-import type { AuthSlice } from './types';
+import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull } from '../auth';
+import { mergeById } from '../sync/merge';
+import { calculateCheckinStreak } from '../utils';
 
-export function createAuthSlice<S extends AuthSlice>(
+export function createAuthSlice(
   adapter: StorageAdapter,
   onSyncTrigger: () => void,
-): StateCreator<S, [], [], AuthSlice> {
+): SliceCreator<AuthSlice> {
   return (set, get) => ({
     auth: defaultAuthState,
 
     async login(email: string, password: string) {
-      set({ auth: { ...(get() as any).auth, isLoading: true } } as any);
+      set(s => ({ auth: { ...s.auth, isLoading: true } }));
       try {
         const res = await apiLogin(email, password);
         set({
@@ -24,17 +21,17 @@ export function createAuthSlice<S extends AuthSlice>(
             user: res.user, token: res.token, refreshToken: res.refreshToken,
             isSignedIn: true, isLoading: false, expiresAt: res.expiresAt,
           },
-        } as any);
-        await (get() as any).pullServerData(res.token);
+        });
+        await get().pullServerData(res.token);
         onSyncTrigger();
       } catch (e) {
-        set({ auth: { ...(get() as any).auth, isLoading: false } } as any);
+        set(s => ({ auth: { ...s.auth, isLoading: false } }));
         throw e;
       }
     },
 
     async register(email: string, password: string, name: string, code: string) {
-      set({ auth: { ...(get() as any).auth, isLoading: true } } as any);
+      set(s => ({ auth: { ...s.auth, isLoading: true } }));
       try {
         const res = await apiRegister(email, password, name, code);
         set({
@@ -42,42 +39,42 @@ export function createAuthSlice<S extends AuthSlice>(
             user: res.user, token: res.token, refreshToken: res.refreshToken,
             isSignedIn: true, isLoading: false, expiresAt: res.expiresAt,
           },
-        } as any);
-        await (get() as any).pullServerData(res.token);
+        });
+        await get().pullServerData(res.token);
         onSyncTrigger();
       } catch (e) {
-        set({ auth: { ...(get() as any).auth, isLoading: false } } as any);
+        set(s => ({ auth: { ...s.auth, isLoading: false } }));
         throw e;
       }
     },
 
     logout() {
-      const { auth } = get() as any;
+      const { auth } = get();
       if (auth.token && auth.refreshToken) {
         apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => console.error('[err]', e));
       }
-      set({ auth: defaultAuthState } as any);
+      set({ auth: defaultAuthState });
     },
 
     async refreshAuth() {
-      const { auth } = get() as any;
+      const { auth } = get();
       if (!auth.refreshToken) return;
       try {
         const res = await apiRefreshToken(auth.refreshToken);
-        set({ auth: { ...auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } } as any);
+        set({ auth: { ...auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } });
       } catch {
-        set({ auth: defaultAuthState } as any);
+        set({ auth: defaultAuthState });
       }
     },
 
     async pullServerData(tokenOverride?: string) {
-      const token = tokenOverride ?? (get() as any).auth.token;
+      const token = tokenOverride ?? get().auth.token;
       if (!token) return;
       try {
         const result = await apiSyncPull(token);
         if (!result.data) return;
         const data = result.data;
-        const s = get() as any;
+        const s = get();
         const patch: Record<string, unknown> = {};
 
         if (data.habit)      patch.habits = mergeById(data.habit, s.habits ?? [], 'id');
@@ -86,6 +83,14 @@ export function createAuthSlice<S extends AuthSlice>(
         if (data.food)       patch.foodLog = mergeById(data.food, s.foodLog ?? [], 'id');
         if (data.checkin)    patch.checkinHistory = mergeById(data.checkin, s.checkinHistory ?? [], 'date');
         if (data.exercise)   patch.exerciseLog = mergeById(data.exercise, s.exerciseLog ?? [], 'id');
+        if (data.meditation) {
+          patch.medHistory = mergeById(data.meditation, s.medHistory ?? [], 'date');
+          patch.totalMedMinutes = (patch.medHistory as any[]).reduce((sum: number, m: any) => sum + (parseInt(m.dur) || 0), 0);
+        }
+        if (data.plan)            patch.plans = mergeById(data.plan, s.plans ?? [], 'id');
+        if (data.planItem)        patch.planItems = mergeById(data.planItem, s.planItems ?? [], 'id');
+        if (data.planItemCheckin) patch.planItemCheckins = mergeById(data.planItemCheckin, s.planItemCheckins ?? [], 'id');
+        if (data.grace)           patch.graceHistory = mergeById(data.grace, s.graceHistory ?? [], 'date');
 
         if (data.profile?.length) {
           const latest = data.profile
@@ -100,8 +105,8 @@ export function createAuthSlice<S extends AuthSlice>(
         }
 
         if (Object.keys(patch).length) {
-          set(patch as any);
-          if (patch.checkinHistory) (get() as any).calculateStreak();
+          set(patch);
+          if (patch.checkinHistory) get().calculateStreak();
         }
       } catch (err) {
         console.error('[pullServerData] Error:', err);

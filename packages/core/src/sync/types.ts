@@ -6,6 +6,7 @@ export interface SyncChange {
   entityId: string;
   op: 'upsert' | 'delete';
   payload: Record<string, unknown>;
+  deleted?: boolean;
 }
 
 export interface SyncPushResult {

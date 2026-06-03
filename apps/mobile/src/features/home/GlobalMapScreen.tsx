@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
-import { useNavigation } from '@react-navigation/native';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme } from '../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import { ChevronLeft, Circle } from 'lucide-react-native';
@@ -10,7 +10,7 @@ import { ChevronLeft, Circle } from 'lucide-react-native';
 const GLOBAL_USERS: { id:number; name:string; lat:number; lng:number; days:number; sport:string; duration:string }[] = [];
 
 export default function GlobalMapScreen() {
-  const nav = useNavigation();
+  const nav = useRootNavigation();
   const TH  = useTheme();
 
   return (

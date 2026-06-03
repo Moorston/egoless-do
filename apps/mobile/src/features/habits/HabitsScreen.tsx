@@ -11,6 +11,7 @@ import {
 } from '../../components/UI';
 import { COLORS, tomorrow, dateStr, daysInMonth, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_LABEL, FONT_BADGE, FONT_STAT_CARD, FONT_CLOSE, FONT_EMPTY } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
+import { SimpleHeader } from '../../navigation';
 import {
   Target, Pause, Play, X, Pencil, Trash2, ChevronRight, ChevronLeft, CheckCircle,
 } from 'lucide-react-native';
@@ -52,7 +53,7 @@ export default function HabitsScreen() {
   const [confirmDelete, setConfirmDelete] = useState<string|null>(null);
   const [actionMenuHabit, setActionMenuHabit] = useState<Habit|null>(null);
 
-  const allHabits = store.habits ?? [];
+  const allHabits = (store.habits ?? []).filter(h => !h.deleted);
   const filtered = (filter==='all' ? allHabits : allHabits.filter(h => h.status===filter))
     .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || (b.startDate.localeCompare(a.startDate)));
 
@@ -88,12 +89,13 @@ export default function HabitsScreen() {
   };
 
   // Calendar data
-  const calHabit = useMemo(() => store.habits.find(h => h.id===showCal), [store.habits, showCal]);
+  const calHabit = useMemo(() => (store.habits ?? []).find(h => h.id===showCal && !h.deleted), [store.habits, showCal]);
   const calDays = useMemo(() => daysInMonth(calYear, calMonth), [calYear, calMonth]);
   const firstDay = useMemo(() => new Date(calYear, calMonth, 1).getDay(), [calYear, calMonth]);
 
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>
+      <SimpleHeader routeName="Habits" />
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:100 }}>
         <ScreenHeader title={T('habitTitle')} compact
           right={
@@ -128,7 +130,7 @@ export default function HabitsScreen() {
                 <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
                   <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE, flex:1, marginRight:8 }}>{h.name}</Text>
                   <View style={{ backgroundColor:`${sc}22`, borderRadius:8, paddingHorizontal:10, paddingVertical:4 }}>
-                    <Text style={{ color:sc, fontSize:FONT_SUB, fontWeight:'600' }}>{T(STATUS_LABELS[h.status])}</Text>
+                    <Text style={{ color:sc, fontSize:FONT_BADGE, fontWeight:'600' }}>{T(STATUS_LABELS[h.status])}</Text>
                   </View>
                 </View>
 

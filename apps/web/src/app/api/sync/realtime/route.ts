@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { verifyAuth } from '../../_auth';
-import { getPb } from '../../_pb';
+import { getPb, escapeFilter } from '../../_pb';
 import { ENTITY_COLLECTION, ENTITY_ID_FIELD, type SyncEntity } from '@egoless-do/core';
 
 /** Safely read the JSON `data` field from a PocketBase record. */
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
             const entity = entityKey as SyncEntity;
             try {
               const records = await pb.collection(collection).getFullList({
-                filter: `user_id = "${userId}" && updated >= "${lastPollTime}"`,
+                filter: `user_id = "${escapeFilter(userId)}" && updated >= "${lastPollTime}"`,
               });
 
               for (const record of records) {

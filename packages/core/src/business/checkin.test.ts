@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { CheckinEntry } from '../types';
-import { submitCheckinEntry, computeLongestStreak } from './checkin';
+import { submitCheckinEntry, computeLongestStreakFromHistory as computeLongestStreak } from './checkin';
 
 describe('submitCheckinEntry', () => {
   it('creates a new checkin record', () => {
@@ -12,7 +12,7 @@ describe('submitCheckinEntry', () => {
   });
   it('replaces existing record for same date', () => {
     const existing: CheckinEntry = {
-      date: '2026-01-15', done: false, note: 'old', streak: 0,
+      date: '2026-01-15', done: false, note: 'old', streak: 0, updatedAt: 0, deleted: false,
     };
     const result = submitCheckinEntry([existing], true, 'new', '2026-01-15');
     expect(result.history).toHaveLength(1);
@@ -21,7 +21,7 @@ describe('submitCheckinEntry', () => {
   });
   it('preserves other dates', () => {
     const existing: CheckinEntry = {
-      date: '2026-01-14', done: true, note: 'prev', streak: 1,
+      date: '2026-01-14', done: true, note: 'prev', streak: 1, updatedAt: 0, deleted: false,
     };
     const result = submitCheckinEntry([existing], true, 'today', '2026-01-15');
     expect(result.history).toHaveLength(2);
@@ -38,29 +38,29 @@ describe('computeLongestStreak', () => {
   });
   it('returns 1 for single done', () => {
     expect(computeLongestStreak([
-      { date: '2026-01-15', done: true, note: '', streak: 1 },
+      { date: '2026-01-15', done: true, note: '', streak: 1, updatedAt: 0, deleted: false },
     ])).toBe(1);
   });
   it('counts consecutive days', () => {
     expect(computeLongestStreak([
-      { date: '2026-01-15', done: true, note: '', streak: 3 },
-      { date: '2026-01-14', done: true, note: '', streak: 2 },
-      { date: '2026-01-13', done: true, note: '', streak: 1 },
+      { date: '2026-01-15', done: true, note: '', streak: 3, updatedAt: 0, deleted: false },
+      { date: '2026-01-14', done: true, note: '', streak: 2, updatedAt: 0, deleted: false },
+      { date: '2026-01-13', done: true, note: '', streak: 1, updatedAt: 0, deleted: false },
     ])).toBe(3);
   });
   it('handles gaps correctly', () => {
     expect(computeLongestStreak([
-      { date: '2026-01-15', done: true, note: '', streak: 1 },
-      { date: '2026-01-14', done: true, note: '', streak: 2 },
-      { date: '2026-01-11', done: true, note: '', streak: 1 }, // gap
-      { date: '2026-01-10', done: true, note: '', streak: 2 },
-      { date: '2026-01-09', done: true, note: '', streak: 3 },
+      { date: '2026-01-15', done: true, note: '', streak: 1, updatedAt: 0, deleted: false },
+      { date: '2026-01-14', done: true, note: '', streak: 2, updatedAt: 0, deleted: false },
+      { date: '2026-01-11', done: true, note: '', streak: 1, updatedAt: 0, deleted: false }, // gap
+      { date: '2026-01-10', done: true, note: '', streak: 2, updatedAt: 0, deleted: false },
+      { date: '2026-01-09', done: true, note: '', streak: 3, updatedAt: 0, deleted: false },
     ])).toBe(3); // longest is Jan 9-11
   });
   it('ignores not-done entries', () => {
     expect(computeLongestStreak([
-      { date: '2026-01-15', done: false, note: '', streak: 0 },
-      { date: '2026-01-14', done: true, note: '', streak: 1 },
+      { date: '2026-01-15', done: false, note: '', streak: 0, updatedAt: 0, deleted: false },
+      { date: '2026-01-14', done: true, note: '', streak: 1, updatedAt: 0, deleted: false },
     ])).toBe(1);
   });
 });
