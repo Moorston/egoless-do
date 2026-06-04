@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { COLORS, BANNER_COLORS, STATS_GRADIENT, dateStr, yesterday, getTodayFoodLog, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';
+import { COLORS, THEME_GRADIENTS, STATUS_GRADIENTS, deriveStatsGradients, dateStr, yesterday, getTodayFoodLog, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -80,19 +80,19 @@ export default function HomeTab() {
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
   const waterProgress = useCachedStyle(() => ({
     height: 6,
-    background: 'linear-gradient(90deg, #C66EFF, #2AFCFF)',
+    background: P,
     borderRadius: 3,
     width: `${Math.min(waterMl / waterGoal * 100, 100)}%`,
     transition: 'width .4s'
-  }), [waterMl, waterGoal]);
+  }), [waterMl, waterGoal, P]);
 
   const calProgress = useCachedStyle(() => ({
     height: 4,
-    background: 'linear-gradient(90deg, #7117EA, #EA6060)',
+    background: P,
     borderRadius: 2,
     width: `${Math.min(totalCal / calGoal * 100, 100)}%`,
     transition: 'width .4s'
-  }), [totalCal, calGoal]);
+  }), [totalCal, calGoal, P]);
 
   const savedKcal = useMemo(() => (fastingHistory ?? []).reduce((sum, f) => sum + (f.estimatedKcal ?? 0), 0), [fastingHistory]);
 
@@ -100,22 +100,25 @@ export default function HomeTab() {
   const longestStreak = useMemo(() => computeLongestStreak((checkinHistory ?? []).filter((c: CheckinEntry) => c.done).map(c => c.date)), [checkinHistory]);
   const savedMeals = useMemo(() => (fastingHistory ?? []).length, [fastingHistory]);
 
+  const statsGradients = useMemo(() => deriveStatsGradients(THEME_GRADIENTS[theme]), [theme]);
+
   const statsData = useMemo(() => [
-    { Icon: CalendarCheck, label: T('totalCompleted'), value: totalCompleted, unit: T('days'), colors: STATS_GRADIENT[0] },
-    { Icon: Trophy, label: T('longestStreak'), value: longestStreak, unit: T('days'), colors: STATS_GRADIENT[1] },
-    { Icon: Zap, label: T('savedCalories'), value: savedKcal, unit: T('kcalUnit'), colors: STATS_GRADIENT[2] },
-    { Icon: Utensils, label: T('savedMeals'), value: savedMeals, unit: T('mealUnit'), colors: STATS_GRADIENT[3] },
-  ], [totalCompleted, longestStreak, savedKcal, savedMeals, T]);
+    { Icon: CalendarCheck, label: T('totalCompleted'), value: totalCompleted, unit: T('days'), colors: statsGradients[0] },
+    { Icon: Trophy, label: T('longestStreak'), value: longestStreak, unit: T('days'), colors: statsGradients[1] },
+    { Icon: Zap, label: T('savedCalories'), value: savedKcal, unit: T('kcalUnit'), colors: statsGradients[2] },
+    { Icon: Utensils, label: T('savedMeals'), value: savedMeals, unit: T('mealUnit'), colors: statsGradients[3] },
+  ], [totalCompleted, longestStreak, savedKcal, savedMeals, T, statsGradients]);
 
   const today = dateStr();
 
   const todayRecord = (checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
 
+  const themeGrad = THEME_GRADIENTS[theme];
   const bannerConfig = {
-    notChecked: { bg: `linear-gradient(135deg,${BANNER_COLORS.CHECKED},#6D28D9)`, sub: T('checkinDoneToday'), btn: T('openCheckin'), BtnIcon: ClipboardList },
-    notDone:    { bg: `linear-gradient(135deg,${BANNER_COLORS.NOT_DONE},#D97706)`, sub: T('checkinModifyNotDone'), btn: T('checkinModify'), BtnIcon: Pencil },
-    done:       { bg: `linear-gradient(135deg,${BANNER_COLORS.DONE},#4338CA)`, sub: T('checkinDoneBanner'), btn: T('checkinDoneBanner'), BtnIcon: Check },
+    notChecked: { bg: `linear-gradient(135deg,${themeGrad[0]},${themeGrad[1]})`, sub: T('checkinDoneToday'), btn: T('openCheckin'), BtnIcon: ClipboardList },
+    notDone:    { bg: `linear-gradient(135deg,${STATUS_GRADIENTS.WARNING[0]},${STATUS_GRADIENTS.WARNING[1]})`, sub: T('checkinModifyNotDone'), btn: T('checkinModify'), BtnIcon: Pencil },
+    done:       { bg: `linear-gradient(135deg,${themeGrad[0]},${themeGrad[1]})`, sub: T('checkinDoneBanner'), btn: T('checkinDoneBanner'), BtnIcon: Check },
   }[bannerState];
 
   return (
@@ -138,7 +141,7 @@ export default function HomeTab() {
         if (yesterdayDone) return null;
         return (
           <div onClick={() => overlay.open('grace')} style={{
-            borderRadius: 14, background: `linear-gradient(135deg, #F59E0B, #EF4444)`,
+            borderRadius: 14, background: `linear-gradient(135deg, ${STATUS_GRADIENTS.WARNING[0]}, ${STATUS_GRADIENTS.WARNING[1]})`,
             padding: '12px 14px', marginBottom: 12, cursor: 'pointer',
             display: 'flex', alignItems: 'center', gap: 10,
           }}>
@@ -154,7 +157,7 @@ export default function HomeTab() {
 
       {/* Streak card */}
       <div onClick={() => overlay.open('grace')} style={{
-        borderRadius: 16, background: `linear-gradient(135deg, #9A4EFF, #20ECFF)`,
+        borderRadius: 16, background: `linear-gradient(135deg, ${themeGrad[0]}, ${themeGrad[1]})`,
         padding: '20px 16px', textAlign: 'center', color: '#fff', marginBottom: 12, cursor: 'pointer',
       } as React.CSSProperties}>
         <div style={{ fontSize: FONT_STAT_SECTION }}><Shield size={40} color="#fff" /></div>

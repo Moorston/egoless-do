@@ -228,6 +228,20 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     mergeHistoryItems,
   } = useDailyTodo(plan, today);
 
+  // 历史记录手风琴状态，默认展开最近一天
+  const [expandedDates, setExpandedDates] = useState<Set<string>>(() => {
+    return new Set(historyGroups.length > 0 ? [historyGroups[0].date] : []);
+  });
+
+  const toggleDateExpand = (date: string) => {
+    setExpandedDates(prev => {
+      const next = new Set(prev);
+      if (next.has(date)) next.delete(date);
+      else next.add(date);
+      return next;
+    });
+  };
+
   if (!plan) {
     return (
       <>
@@ -420,20 +434,18 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
               <div style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{today}</div>
             </div>
 
-            {stats.totalItems > 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, padding: '0 4px' }}>
-                <span style={{ fontSize: FONT_SUB, color: TH.sub, whiteSpace: 'nowrap' }}>{stats.totalDone}/{stats.totalItems} {T('planProgress')}</span>
-                <div style={{ flex: 1, height: 4, background: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-                  <div style={{ height: 4, width: `${stats.progressPercent}%`, background: COLORS.GREEN, borderRadius: 2, transition: 'width .3s' }} />
-                </div>
-              </div>
-            )}
-
             <div style={cs(TH)}>
               {todayItems.length === 0 && dailyCustomTodos.length === 0 ? (
                 <div style={{ fontSize: FONT_EMPTY, color: TH.sub, textAlign: 'center', padding: 24 }}>{T('planNoItems')}</div>
               ) : (
                 <>
+                  {/* Plan items group header */}
+                  {todayItems.length > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px 4px', fontSize: FONT_SUB, fontWeight: 600, color: TH.sub }}>
+                      <ClipboardList size={14} />
+                      {T('planTodoList')} ({todayItems.length})
+                    </div>
+                  )}
                   {/* Plan items */}
                   {todayItems.map((item, i, arr) => {
                     const status = statusMap.get(item.id);
@@ -444,24 +456,21 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                         display: 'flex', alignItems: 'center', gap: 12,
                         padding: '10px 12px',
                         borderBottom: i < arr.length - 1 || dailyCustomTodos.length > 0 ? `1px solid ${TH.border}` : 'none',
-                        cursor: 'pointer',
                         opacity: autoChecked ? 0.7 : 1,
-                      }}
-                        onClick={() => toggleItem(item.id)}
-                      >
+                      }}>
                         <div style={{
-                          width: 36, height: 20, borderRadius: 10,
-                          border: `2px solid ${done ? COLORS.GREEN : TH.border}`,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: done ? COLORS.GREEN : 'transparent', flexShrink: 0,
-                          transition: 'all .2s',
-                        }}>
+                          width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0, cursor: 'pointer',
+                        }} onClick={() => toggleItem(item.id)}>
                           <div style={{
-                            width: 12, height: 12, borderRadius: 6,
-                            background: '#fff',
-                            transform: done ? 'translateX(8px)' : 'translateX(-8px)',
-                            transition: 'transform .2s',
-                          }} />
+                            width: 22, height: 22, borderRadius: 6,
+                            border: `2px solid ${done ? COLORS.GREEN : TH.border}`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            background: done ? COLORS.GREEN : 'transparent',
+                            transition: 'all .2s',
+                          }}>
+                            {done && <Check size={14} color="#fff" />}
+                          </div>
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{
@@ -484,6 +493,13 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                     );
                   })}
 
+                  {/* Custom todos group header */}
+                  {dailyCustomTodos.length > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px 4px', borderTop: todayItems.length > 0 ? `1px solid ${TH.border}` : 'none', fontSize: FONT_SUB, fontWeight: 600, color: TH.sub }}>
+                      <Pencil size={14} />
+                      {T('planDailyCustomTodos')} ({dailyCustomTodos.length})
+                    </div>
+                  )}
                   {/* Custom todos */}
                   {dailyCustomTodos.map((todo, i, arr) => (
                     <div
@@ -497,19 +513,19 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       <div
                         onClick={() => toggleCustomTodo(todo.id)}
                         style={{
-                          width: 36, height: 20, borderRadius: 10,
-                          border: `2px solid ${todo.done ? COLORS.GREEN : TH.border}`,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: todo.done ? COLORS.GREEN : 'transparent', flexShrink: 0,
-                          transition: 'all .2s', cursor: 'pointer',
+                          width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0, cursor: 'pointer',
                         }}
                       >
                         <div style={{
-                          width: 12, height: 12, borderRadius: 6,
-                          background: '#fff',
-                          transform: todo.done ? 'translateX(8px)' : 'translateX(-8px)',
-                          transition: 'transform .2s',
-                        }} />
+                          width: 22, height: 22, borderRadius: 6,
+                          border: `2px solid ${todo.done ? COLORS.GREEN : TH.border}`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: todo.done ? COLORS.GREEN : 'transparent',
+                          transition: 'all .2s',
+                        }}>
+                          {todo.done && <Check size={14} color="#fff" />}
+                        </div>
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
@@ -600,15 +616,22 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                   {historyGroups.map((group) => {
                     const allItems = mergeHistoryItems(group);
                     const doneCount = allItems.filter(i => i.done).length;
+                    const isExpanded = expandedDates.has(group.date);
                     return (
                       <div key={group.date} style={{ position: 'relative', marginBottom: 16 }}>
                         <div style={{ position: 'absolute', left: -17, top: 14, width: 10, height: 10, borderRadius: 5, background: P, border: `2px solid ${TH.bg}` }} />
                         <div style={{ background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 12, overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderBottom: `1px solid ${TH.border}`, background: `${P}08` }}>
-                            <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.text }}>{group.date}</span>
+                          <div
+                            onClick={() => toggleDateExpand(group.date)}
+                            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: `${P}08`, cursor: 'pointer', borderBottom: isExpanded ? `1px solid ${TH.border}` : 'none' }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              {isExpanded ? <ChevronDown size={16} color={TH.text} /> : <ChevronRight size={16} color={TH.text} />}
+                              <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.text }}>{group.date}</span>
+                            </div>
                             <span style={{ fontSize: FONT_BODY, color: P, fontWeight: 700 }}>{doneCount} {T('planTodoDone')}</span>
                           </div>
-                          {allItems.map((item, i) => (
+                          {isExpanded && allItems.map((item, i) => (
                             <div key={i} style={{
                               display: 'flex', alignItems: 'center', gap: 8,
                               padding: '8px 14px',

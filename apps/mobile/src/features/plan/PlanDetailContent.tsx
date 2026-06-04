@@ -6,7 +6,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, dateStr } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemStatus, PlanItemLink, DailyCustomTodo, DailyTodoHistory } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
-import { Card, useTheme, useT, Toggle } from '../../components/UI';
+import { Card, useTheme, useT } from '../../components/UI';
 import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus } from 'lucide-react-native';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -224,6 +224,20 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     toggleItem, addCustomTodo, deleteCustomTodo, toggleCustomTodo,
     mergeHistoryItems,
   } = useDailyTodo(plan, today);
+
+  // 历史记录手风琴状态，默认展开最近一天
+  const [expandedDates, setExpandedDates] = useState<Set<string>>(() => {
+    return new Set(historyGroups.length > 0 ? [historyGroups[0].date] : []);
+  });
+
+  const toggleDateExpand = (date: string) => {
+    setExpandedDates(prev => {
+      const next = new Set(prev);
+      if (next.has(date)) next.delete(date);
+      else next.add(date);
+      return next;
+    });
+  };
 
   if (!plan) {
     return (
@@ -446,21 +460,19 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{today}</Text>
               </Card>
 
-              {stats.totalItems > 0 && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, paddingHorizontal: 4 }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{stats.totalDone}/{stats.totalItems} {T('planProgress')}</Text>
-                  <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, marginLeft: 12, overflow: 'hidden' }}>
-                    <View style={{ height: 4, width: `${stats.progressPercent}%`, backgroundColor: COLORS.GREEN, borderRadius: 2 }} />
-                  </View>
-                </View>
-              )}
-
               <Card>
                 {/* Plan items */}
                 {todayItems.length === 0 && dailyCustomTodos.length === 0 ? (
                   <Text style={{ fontSize: FONT_EMPTY, color: TH.sub, textAlign: 'center', padding: 24 }}>{T('planNoItems')}</Text>
                 ) : (
                   <>
+                    {/* Plan items group header */}
+                    {todayItems.length > 0 && (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8, paddingHorizontal: 12 }}>
+                        <ClipboardList size={14} color={TH.sub} />
+                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.sub }}>{T('planTodoList')} ({todayItems.length})</Text>
+                      </View>
+                    )}
                     {todayItems.map((item, i, arr) => {
                       const status = statusMap.get(item.id);
                       const done = status?.done ?? false;
@@ -475,7 +487,16 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                             opacity: autoChecked ? 0.7 : 1,
                           }}
                         >
-                          <Toggle on={done} onChange={() => toggleItem(item.id)} />
+                          <TouchableOpacity onPress={() => toggleItem(item.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{
+                              width: 22, height: 22, borderRadius: 6,
+                              borderWidth: 2, borderColor: done ? COLORS.GREEN : TH.border,
+                              alignItems: 'center', justifyContent: 'center',
+                              backgroundColor: done ? COLORS.GREEN : 'transparent',
+                            }}>
+                              {done && <Check size={14} color="#fff" />}
+                            </View>
+                          </TouchableOpacity>
                           {autoChecked && (
                             <View style={{ backgroundColor:`${COLORS.GREEN}20`, paddingHorizontal:4, paddingVertical:1, borderRadius:4 }}>
                               <Text style={{ fontSize:9, color:COLORS.GREEN, fontWeight:'600' }}>{T('planAutoChecked')}</Text>
@@ -501,6 +522,13 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       );
                     })}
 
+                    {/* Custom todos group header */}
+                    {dailyCustomTodos.length > 0 && (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8, paddingHorizontal: 12, borderTopWidth: todayItems.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
+                        <Pencil size={14} color={TH.sub} />
+                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.sub }}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
+                      </View>
+                    )}
                     {/* Custom todos */}
                     {dailyCustomTodos.map((todo, i, arr) => (
                       <View
@@ -511,7 +539,16 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border,
                         }}
                       >
-                        <Toggle on={todo.done} onChange={() => toggleCustomTodo(todo.id)} />
+                        <TouchableOpacity onPress={() => toggleCustomTodo(todo.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
+                          <View style={{
+                            width: 22, height: 22, borderRadius: 6,
+                            borderWidth: 2, borderColor: todo.done ? COLORS.GREEN : TH.border,
+                            alignItems: 'center', justifyContent: 'center',
+                            backgroundColor: todo.done ? COLORS.GREEN : 'transparent',
+                          }}>
+                            {todo.done && <Check size={14} color="#fff" />}
+                          </View>
+                        </TouchableOpacity>
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{
                             fontSize: FONT_BODY, fontWeight: '500',
@@ -600,15 +637,22 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                     {historyGroups.map((group) => {
                       const allItems = mergeHistoryItems(group);
                       const doneCount = allItems.filter(i => i.done).length;
+                      const isExpanded = expandedDates.has(group.date);
                       return (
                         <View key={group.date} style={{ position: 'relative', marginBottom: 16 }}>
                           <View style={{ position: 'absolute', left: -17, top: 14, width: 10, height: 10, borderRadius: 5, backgroundColor: P, borderWidth: 2, borderColor: TH.bg }} />
                           <View style={{ backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, borderRadius: 12, overflow: 'hidden' }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, borderBottomWidth: 1, borderBottomColor: TH.border, backgroundColor: `${P}08` }}>
-                              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{group.date}</Text>
+                            <TouchableOpacity
+                              onPress={() => toggleDateExpand(group.date)}
+                              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: `${P}08`, borderBottomWidth: isExpanded ? 1 : 0, borderBottomColor: TH.border }}
+                            >
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                                {isExpanded ? <ChevronDown size={16} color={TH.text} /> : <ChevronRight size={16} color={TH.text} />}
+                                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{group.date}</Text>
+                              </View>
                               <Text style={{ fontSize: FONT_BODY, color: P, fontWeight: '700' }}>{doneCount} {T('planTodoDone')}</Text>
-                            </View>
-                            {allItems.map((item, i) => (
+                            </TouchableOpacity>
+                            {isExpanded && allItems.map((item, i) => (
                               <View key={i} style={{
                                 flexDirection: 'row', alignItems: 'center', gap: 8,
                                 paddingVertical: 8, paddingHorizontal: 14,

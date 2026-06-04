@@ -25,12 +25,40 @@ export const LINK_COLORS: Record<PlanItemLink, string> = {
   reflection: '#F97316',
 };
 
+/** Level 1: 主题主渐变 — 从 theme.primary 派生，色相不变，只变明度 */
+export const THEME_GRADIENTS: Record<ThemeName, [string, string]> = {
+  cosmos: ['#8B5CF6', '#6D28D9'],
+  dark:   ['#7C3AED', '#5B21B6'],
+  light:  ['#7C3AED', '#A78BFA'],
+  ocean:  ['#0EA5E9', '#0369A1'],
+  rose:   ['#EC4899', '#BE185D'],
+};
+
+/** Level 2: 状态色渐变 — 同色系深浅过渡，色相不变 */
+export const STATUS_GRADIENTS = {
+  SUCCESS: ['#10B981', '#059669'] as [string, string],
+  WARNING: ['#F59E0B', '#D97706'] as [string, string],
+  ERROR:   ['#EF4444', '#DC2626'] as [string, string],
+} as const;
+
+/** Level 3: Stats 渐变派生 — 从主题渐变派生 4 组渐变，透明度递增 */
+export function deriveStatsGradients(themeGrad: [string, string]): [string, string][] {
+  const [c1, c2] = themeGrad;
+  const opacities = [0.10, 0.15, 0.20, 0.25];
+  return opacities.map(op => {
+    const hex = Math.round(op * 255).toString(16).padStart(2, '0');
+    return [`${c1}${hex}`, `${c2}${hex}`] as [string, string];
+  });
+}
+
+/** @deprecated Use THEME_GRADIENTS + STATUS_GRADIENTS instead */
 export const BANNER_COLORS = {
   CHECKED:  '#7C3AED',
   NOT_DONE: '#F59E0B',
   DONE:     '#4F46E5',
 } as const;
 
+/** @deprecated Use deriveStatsGradients(THEME_GRADIENTS[theme]) instead */
 export const STATS_GRADIENT = [
   ['#7117EA', '#EA6060'],
   ['#6078EA', '#17EAD9'],

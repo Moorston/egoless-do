@@ -6,7 +6,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
-import { THEMES, COLORS, BANNER_COLORS, STATS_GRADIENT, dateStr, yesterday, getTodayFoodLog, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_HERO, computeLongestStreak } from '@egoless-do/core';
+import { THEMES, COLORS, THEME_GRADIENTS, STATUS_GRADIENTS, deriveStatsGradients, dateStr, yesterday, getTodayFoodLog, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_HERO, computeLongestStreak } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { Card, useTheme, useT, ProgressBar } from '../../components/UI';
 import AddFoodModal from '../../components/AddFoodModal';
@@ -53,12 +53,15 @@ export default function HomeScreen() {
   const longestStreak = useMemo(() => computeLongestStreak((store.checkinHistory ?? []).filter((c: CheckinEntry) => c.done).map(c => c.date)), [store.checkinHistory]);
   const savedMeals = useMemo(() => (store.fastingHistory ?? []).length, [store.fastingHistory]);
 
+  const themeName = useAppStore(s => s.theme);
+  const statsGradients = useMemo(() => deriveStatsGradients(THEME_GRADIENTS[themeName]), [themeName]);
+
   const statsData = useMemo(() => [
-    { icon:CalendarCheck, label:T('totalCompleted'), value:`${totalCompleted}`, unit:T('days'),  colors:STATS_GRADIENT[0] },
-    { icon:Trophy, label:T('longestStreak'), value:`${longestStreak}`, unit:T('days'),  colors:STATS_GRADIENT[1] },
-    { icon:Zap, label:T('savedCalories'), value:`${savedKcal}`, unit:T('kcalUnit'), colors:STATS_GRADIENT[2] },
-    { icon:Utensils, label:T('savedMeals'),  value:`${savedMeals}`, unit:T('mealUnit'),  colors:STATS_GRADIENT[3] },
-  ], [totalCompleted, longestStreak, savedKcal, savedMeals, T]);
+    { icon:CalendarCheck, label:T('totalCompleted'), value:`${totalCompleted}`, unit:T('days'),  colors:statsGradients[0] },
+    { icon:Trophy, label:T('longestStreak'), value:`${longestStreak}`, unit:T('days'),  colors:statsGradients[1] },
+    { icon:Zap, label:T('savedCalories'), value:`${savedKcal}`, unit:T('kcalUnit'), colors:statsGradients[2] },
+    { icon:Utensils, label:T('savedMeals'),  value:`${savedMeals}`, unit:T('mealUnit'),  colors:statsGradients[3] },
+  ], [totalCompleted, longestStreak, savedKcal, savedMeals, T, statsGradients]);
 
   // Auto-sync health data on mount when enabled
   useEffect(() => {
@@ -71,7 +74,6 @@ export default function HomeScreen() {
 
   const todayRecord = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
-  const bannerColors: Record<string, string> = { notChecked: BANNER_COLORS.CHECKED, notDone: BANNER_COLORS.NOT_DONE, done: BANNER_COLORS.DONE };
   const bannerSubText: Record<string, string> = { notChecked: T('checkinDoneToday'), notDone: T('checkinModifyNotDone'), done: T('checkinDoneBanner') };
   const bannerBtnText: Record<string, string> = { notChecked: T('openCheckin'), notDone: T('checkinModify'), done: T('checkinDoneBanner') };
   const bannerBtnIcon: Record<string, React.ComponentType<any>> = { notChecked: ClipboardList, notDone: Pencil, done: Check };
@@ -93,7 +95,7 @@ export default function HomeScreen() {
             style={{ borderRadius: 16, marginBottom: 12, overflow: 'hidden' }}
           >
             <LinearGradient
-              colors={['#7117EA', '#EA6060']}
+              colors={STATUS_GRADIENTS.WARNING}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ borderRadius: 16, padding: 18 }}
@@ -121,7 +123,7 @@ export default function HomeScreen() {
             style={{ borderRadius: 16, marginBottom: 12, overflow: 'hidden' }}
           >
             <LinearGradient
-              colors={['#17EAD9', '#6078EA']}
+              colors={THEME_GRADIENTS[themeName]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{ borderRadius: 16, padding: 18 }}
@@ -151,11 +153,14 @@ export default function HomeScreen() {
         <TouchableOpacity
           onPress={() => setShowCI(true)}
           activeOpacity={0.8}
-          style={{
-            borderRadius: 16, padding: 18, marginBottom: 12,
-            backgroundColor: bannerColors[bannerState],
-          }}
+          style={{ borderRadius: 16, marginBottom: 12, overflow: 'hidden' }}
         >
+          <LinearGradient
+            colors={THEME_GRADIENTS[themeName]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ borderRadius: 16, padding: 18 }}
+          >
           <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_TITLE, textAlign: 'center' }}>
             {T('todayCheckin')}
           </Text>
@@ -175,6 +180,7 @@ export default function HomeScreen() {
               </Text>
             </View>
           </View>
+          </LinearGradient>
         </TouchableOpacity>
         )}
 
@@ -191,7 +197,7 @@ export default function HomeScreen() {
               style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
             >
               <LinearGradient
-                colors={['#F59E0B', '#EF4444']}
+                colors={STATUS_GRADIENTS.WARNING}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 10 }}
@@ -214,7 +220,7 @@ export default function HomeScreen() {
           style={{ borderRadius: 16, marginBottom: 12, overflow: 'hidden' }}
         >
           <LinearGradient
-            colors={['#9A4EFF', '#20ECFF']}
+            colors={THEME_GRADIENTS[themeName]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{ paddingVertical: 24, alignItems: 'center' }}
@@ -298,7 +304,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
           <View style={{ marginBottom: 12 }}>
-            <ProgressBar pct={store.waterMl / store.waterGoal * 100} colors={['#C66EFF', '#2AFCFF']} />
+            <ProgressBar pct={store.waterMl / store.waterGoal * 100} colors={[P]} />
           </View>
           <TouchableOpacity onPress={() => store.addWater(250)}
             style={{ backgroundColor:P, borderRadius:10, padding:12, alignItems:'center' }}>
@@ -322,7 +328,7 @@ export default function HomeScreen() {
             <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>/ {store.calGoal} kcal</Text>
           </View>
           <View style={{ marginTop:8, marginBottom:12 }}>
-            <ProgressBar pct={Math.min(totalCal / store.calGoal * 100, 100)} colors={['#7117EA', '#EA6060']} />
+            <ProgressBar pct={Math.min(totalCal / store.calGoal * 100, 100)} colors={[P]} />
           </View>
           <TouchableOpacity
             onPress={() => setShowFood(true)}

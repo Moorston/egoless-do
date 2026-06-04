@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
-import { COLORS, STATS_GRADIENT, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import { COLORS, THEME_GRADIENTS, deriveStatsGradients, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Droplets, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -25,6 +25,8 @@ export default function StatsScreen() {
 
   const activeHabits = (store.habits ?? []).filter(h => h.status === 'inProgress').length;
   const totalCal     = (store.foodLog ?? []).reduce((a, f) => a + (f.calories ?? 0), 0);
+  const themeName    = useAppStore(s => s.theme);
+  const statsGradients = useMemo(() => deriveStatsGradients(THEME_GRADIENTS[themeName]), [themeName]);
 
   // Exercise stats
   const exerciseLog = store.exerciseLog ?? [];
@@ -44,21 +46,21 @@ export default function StatsScreen() {
   // Key metrics
   const graceCount = (store.graceHistory ?? []).length;
   const keyMetrics = [
-    { label: T('streak'), value: `${store.streak}`, unit: T('days'), icon: Flame, colors: STATS_GRADIENT[0] },
-    { label: T('statsReflections'), value: `${(store.reflections ?? []).length}`, unit: T('fastTimes'), icon: Sparkles, colors: STATS_GRADIENT[1] },
-    { label: T('statsMeditation'), value: `${store.totalMedMinutes}`, unit: T('medMinutes'), icon: Target, colors: STATS_GRADIENT[2] },
-    { label: T('statsActiveHabits'), value: `${activeHabits}`, unit: T('habitDays'), icon: Star, colors: STATS_GRADIENT[3] },
-    { label: T('foodTodayKcal'), value: `${totalCal}`, unit: 'kcal', icon: Utensils, colors: STATS_GRADIENT[0] },
-    { label: T('graceStatsTitle'), value: `${graceCount}`, unit: T('graceUsedTimes'), icon: Shield, colors: STATS_GRADIENT[1] },
+    { label: T('streak'), value: `${store.streak}`, unit: T('days'), icon: Flame, colors: statsGradients[0] },
+    { label: T('statsReflections'), value: `${(store.reflections ?? []).length}`, unit: T('fastTimes'), icon: Sparkles, colors: statsGradients[1] },
+    { label: T('statsMeditation'), value: `${store.totalMedMinutes}`, unit: T('medMinutes'), icon: Target, colors: statsGradients[2] },
+    { label: T('statsActiveHabits'), value: `${activeHabits}`, unit: T('habitDays'), icon: Star, colors: statsGradients[3] },
+    { label: T('foodTodayKcal'), value: `${totalCal}`, unit: 'kcal', icon: Utensils, colors: statsGradients[0] },
+    { label: T('graceStatsTitle'), value: `${graceCount}`, unit: T('graceUsedTimes'), icon: Shield, colors: statsGradients[1] },
   ];
 
   // Exercise metrics
   const exerciseMetrics = [
-    { label: T('exerciseWeekKm'), value: `${weekKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, colors: STATS_GRADIENT[2] },
-    { label: T('exerciseMonthKm'), value: `${monthKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, colors: STATS_GRADIENT[3] },
-    { label: T('exerciseBestPace'), value: bestPace > 0 ? `${Math.floor(bestPace / 60)}:${String(Math.floor(bestPace % 60)).padStart(2, '0')}` : '--', unit: '/km', icon: Zap, colors: STATS_GRADIENT[0] },
-    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60)}`, unit: T('exerciseMin'), icon: Dumbbell, colors: STATS_GRADIENT[1] },
-    { label: T('exerciseTotalCount'), value: `${exerciseLog.length}`, unit: T('fastTimes'), icon: Dumbbell, colors: STATS_GRADIENT[2] },
+    { label: T('exerciseWeekKm'), value: `${weekKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, colors: statsGradients[2] },
+    { label: T('exerciseMonthKm'), value: `${monthKm.toFixed(1)}`, unit: 'km', icon: CalendarDays, colors: statsGradients[3] },
+    { label: T('exerciseBestPace'), value: bestPace > 0 ? `${Math.floor(bestPace / 60)}:${String(Math.floor(bestPace % 60)).padStart(2, '0')}` : '--', unit: '/km', icon: Zap, colors: statsGradients[0] },
+    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60)}`, unit: T('exerciseMin'), icon: Dumbbell, colors: statsGradients[1] },
+    { label: T('exerciseTotalCount'), value: `${exerciseLog.length}`, unit: T('fastTimes'), icon: Dumbbell, colors: statsGradients[2] },
   ];
 
   return (
