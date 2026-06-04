@@ -50,6 +50,8 @@ export interface DailyResetDeps {
   getWaterGoal: () => number;
   /** Called when plan daily reset is needed (pass previous date) */
   onPlanDailyReset?: (previousDate: string) => void;
+  /** Called when habit auto-start check is needed */
+  onHabitDailyReset?: () => void;
   /** Platform-specific visibility listener (e.g. AppState on RN, document on web) */
   addVisibilityListener?: (callback: () => void) => void;
 }
@@ -118,6 +120,11 @@ export class DailyResetManager {
       if (currentWaterMl !== todayWater) {
         this.deps.applyPatch({ waterMl: todayWater });
       }
+    }
+
+    // Always check habit auto-start (regardless of needsReset)
+    if (this.deps.onHabitDailyReset) {
+      this.deps.onHabitDailyReset();
     }
 
     this.lastCheckedDate = today;

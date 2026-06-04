@@ -66,6 +66,31 @@ export const STATS_GRADIENT = [
   ['#8446FF', '#18CEFF'],
 ] as const;
 
+/** 统一卡片背景色: 将 color 以 opacity 混合到 bg 上 */
+export function cardAccent(color: string, bg: string, opacity: number): string {
+  const hexToRgb = (hex: string) => {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    return [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+  };
+  const c = hexToRgb(color);
+  const b = hexToRgb(bg);
+  const r = Math.round(c[0] * opacity + b[0] * (1 - opacity));
+  const g = Math.round(c[1] * opacity + b[1] * (1 - opacity));
+  const bl = Math.round(c[2] * opacity + b[2] * (1 - opacity));
+  return '#' + [r, g, bl].map(v => Math.min(255, Math.max(0, v)).toString(16).padStart(2, '0')).join('');
+}
+
+/** 统一卡片文字色: 背景亮度 < 10% 用白字，否则用深色字 */
+export function cardTextColor(bg: string): string {
+  const hex = bg.replace('#', '');
+  const r = parseInt(hex.slice(0, 2), 16) / 255;
+  const g = parseInt(hex.slice(2, 4), 16) / 255;
+  const b = parseInt(hex.slice(4, 6), 16) / 255;
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance < 0.1 ? '#fff' : '#1a1a2e';
+}
+
 export const WARM_CORAL = '#FF8A65';
 
 export const MIND_COLORS = [
@@ -84,7 +109,6 @@ export const MIND_COLORS_EXTENDED = [
   ['#2D1B69', '#7C3AED'],
   // 蓝/青系
   ['#6078EA', '#17EAD9'],
-  ['#1a1a2e', '#16213e'],
   // 绿系
   ['#064E3B', '#10B981'],
   // 暖色系

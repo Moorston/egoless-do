@@ -7,7 +7,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../store/useAppStore';
 import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
-import { ChevronLeft } from 'lucide-react-native';
+import { ChevronLeft, Check } from 'lucide-react-native';
 
 // ── useTheme ──────────────────────────────────────────────────────
 export function useTheme() {
@@ -100,6 +100,24 @@ export function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) 
         backgroundColor: '#fff',
         alignSelf: on ? 'flex-end' : 'flex-start',
       }} />
+    </TouchableOpacity>
+  );
+}
+
+// ── Checkbox ──────────────────────────────────────────────────────
+export function Checkbox({ on, onChange }: { on: boolean; onChange: () => void }) {
+  const TH = useTheme();
+  return (
+    <TouchableOpacity onPress={onChange} activeOpacity={0.7}
+      style={{
+        width: 22, height: 22, borderRadius: 6,
+        borderWidth: 2,
+        borderColor: on ? TH.primary : TH.border,
+        backgroundColor: on ? TH.primary : 'transparent',
+        alignItems: 'center', justifyContent: 'center',
+      }}
+    >
+      {on && <Check size={14} color="#fff" strokeWidth={3} />}
     </TouchableOpacity>
   );
 }

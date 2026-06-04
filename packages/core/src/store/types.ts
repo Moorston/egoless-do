@@ -111,6 +111,7 @@ export interface HabitSlice {
   deleteHabit: (id: string) => void;
   checkinHabit: (id: string, date: string) => void;
   changeHabitStatus: (id: string, ns: Habit['status'], reason?: string) => void;
+  checkHabitAutoStatus: () => void;
 }
 
 export interface ReflectionSlice {

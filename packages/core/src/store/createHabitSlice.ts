@@ -1,9 +1,10 @@
 import type { Habit } from '../types';
 import {
   addHabitToList, updateHabitInList, deleteHabitFromList,
-  checkinHabitInList, changeHabitStatusInList,
+  checkinHabitInList, changeHabitStatusInList, checkAutoStatus,
   type CreateHabitForm,
 } from '../business/habits';
+import { dateStr } from '../utils';
 import type { StorageAdapter, HabitSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
@@ -47,6 +48,16 @@ export function createHabitSlice(
       set(s => ({ habits: changeHabitStatusInList(s.habits ?? [], id, ns, reason) }));
       const updated = get().habits.find(h => h.id === id);
       if (updated) adapter.persistChange('habit', id, updated).catch(console.error);
+    },
+
+    checkHabitAutoStatus() {
+      const today = dateStr();
+      const prev = get().habits ?? [];
+      const next = checkAutoStatus(prev, today);
+      const changed = next.filter((h, i) => h !== prev[i]);
+      if (changed.length === 0) return;
+      set({ habits: next });
+      changed.forEach(h => adapter.persistChange('habit', h.id, h).catch(console.error));
     },
   });
 }

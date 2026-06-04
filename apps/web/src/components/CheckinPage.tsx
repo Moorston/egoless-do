@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_BADGE } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
-import { RowItem, Toggle, useTheme, useT, inp } from './helpers';
+import { RowItem, Checkbox, useTheme, useT, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { ChevronLeft, Utensils, PersonStanding, Star, ClipboardList, CheckCircle2, Circle, X, Check, Pencil, Droplets, Scale, Sparkles } from 'lucide-react';
 
@@ -133,47 +133,205 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: TH.bg, overflowY: 'auto', WebkitOverflowScrolling: 'touch', fontFamily: '-apple-system,system-ui,sans-serif', color: TH.text, fontSize: FONT_BODY }}>
-      <div style={{ padding: '16px 16px 32px' }}>
+      <div style={{ padding: '16px 16px 32px', maxWidth: 500, margin: '0 auto' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
           <button onClick={onClose}
             style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_BACK, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}><ChevronLeft size={22} /></button>
           <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('checkinTitle')}</div>
+          <div style={{ flex: 1 }} />
+          <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{today}</div>
         </div>
-        <div style={{ textAlign: 'center', fontSize: FONT_BODY, color: TH.sub, marginBottom: 20 }}>{T('checkinSubtitle')}</div>
 
-        {/* Today's checkin: weight + water + food */}
-        <div style={{ borderTop: `1px solid ${TH.border}`, borderBottom: `1px solid ${TH.border}` }}>
-        <div style={{ padding: '13px 0' }}>
+        {/* Status buttons - TOP */}
+        <div style={{ display: 'flex', gap: 10, marginTop: 16, marginBottom: 20 }}>
+          <button onClick={() => setLocalDone(false)}
+            style={{
+              flex: 1, padding: '14px 0', borderRadius: 12, fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
+              border: '2px solid', borderColor: localDone === false ? '#C53364' : TH.border,
+              background: localDone === false ? 'rgba(197,51,100,0.1)' : 'transparent',
+              color: localDone === false ? '#C53364' : TH.sub,
+              transition: 'all .2s',
+            }}>
+            <X size={18} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinNotDone')}
+          </button>
+          <button onClick={() => setLocalDone(true)}
+            style={{
+              flex: 1, padding: '14px 0', borderRadius: 12, fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
+              border: '2px solid', borderColor: localDone === true ? '#17EAD9' : TH.border,
+              background: localDone === true ? 'rgba(23,234,217,0.1)' : 'transparent',
+              color: localDone === true ? '#17EAD9' : TH.sub,
+              transition: 'all .2s',
+            }}>
+            <Check size={18} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinDone')}
+          </button>
+        </div>
+
+        {/* Tasks section - merged */}
+        <div style={{ background: TH.card, borderRadius: 16, padding: '16px', marginBottom: 12, border: `1px solid ${TH.border}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+            <ClipboardList size={18} style={{ color: P }} />
+            <span style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>{T('checkinPractice')} & {T('planTodoList')}</span>
+          </div>
+
+          {/* Practices */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, paddingLeft: 4 }}>{T('checkinPractice')}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {[{ key: 'sit' as const, icon: <PersonStanding size={16} style={{verticalAlign:'middle', color: P}} />, label: T('checkinSit') }, { key: 'stand' as const, icon: <PersonStanding size={16} style={{verticalAlign:'middle', color: P}} />, label: T('checkinStand') }, { key: 'chant' as const, icon: <Star size={16} style={{verticalAlign:'middle', color: P}} />, label: T('checkinSutra') }].map(({ key, icon, label }) => (
+                <button key={key} onClick={() => setPractices((p) => ({ ...p, [key]: !p[key] }))}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderRadius: 10,
+                    border: `1px solid ${practices[key] ? P : TH.border}`,
+                    background: practices[key] ? `${P}15` : 'transparent',
+                    color: practices[key] ? P : TH.text,
+                    cursor: 'pointer', fontSize: FONT_BODY, transition: 'all .15s',
+                  }}>
+                  {icon} {label}
+                  {practices[key] && <Check size={14} style={{ marginLeft: 2 }} />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Plan items */}
+          {todayPlanItems.length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, paddingLeft: 4 }}>{T('planTodoList')}</div>
+              {todayPlanItems.map(item => {
+                const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
+                const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
+                const done = planToggles[item.id] ?? storeDone;
+                return (
+                  <div key={item.id} style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '8px 4px', borderRadius: 8,
+                    background: done ? `${P}10` : 'transparent',
+                    marginBottom: 4,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
+                      <Checkbox on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{
+                          fontSize: FONT_BODY, color: done ? TH.sub : TH.text,
+                          textDecoration: done ? 'line-through' : 'none',
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                        }}>{item.name}</div>
+                      </div>
+                      {autoChecked && (
+                        <span style={{ fontSize: FONT_BADGE, color: P, fontWeight: 500, flexShrink: 0 }}>
+                          <CheckCircle2 size={10} style={{verticalAlign:'middle'}} />
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Custom todos */}
+          {dailyCustomTodos.length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, paddingLeft: 4 }}>{T('planDailyCustomTodos')}</div>
+              {dailyCustomTodos.map(todo => (
+                <div key={todo.id} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '8px 4px', borderRadius: 8,
+                  background: todo.done ? `${P}10` : 'transparent',
+                  marginBottom: 4,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+                    <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id)} />
+                    <div style={{
+                      fontSize: FONT_BODY, color: todo.done ? TH.sub : TH.text,
+                      textDecoration: todo.done ? 'line-through' : 'none',
+                    }}>{todo.name}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Habits */}
+          {(store.habits ?? []).filter((h) => h.status === 'inProgress').length > 0 && (
+            <div>
+              <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, paddingLeft: 4 }}>{T('checkinHabitCheck')}</div>
+              {(store.habits ?? []).filter((h) => h.status === 'inProgress').map(h => (
+                <div key={h.id} style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '8px 4px', borderRadius: 8,
+                  marginBottom: 4,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Checkbox on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins((c) => ({ ...c, [h.id]: !c[h.id] }))} />
+                    <div>
+                      <div style={{ fontSize: FONT_BODY, color: TH.text }}>{h.name}</div>
+                      <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{h.streak} {T('checkinStreak')}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Submit button - inside tasks card */}
+          <button onClick={submit}
+            style={{
+              width: '100%', padding: 14, borderRadius: 12, border: 'none', marginTop: 12,
+              background: localDone === true
+                ? 'linear-gradient(135deg, #17EAD9, #6078EA)'
+                : localDone === false
+                  ? 'linear-gradient(135deg, #622774, #C53364)'
+                  : P,
+              color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
+              transition: 'all .2s',
+            }}>
+            {localDone === true ? T('checkinSubmit') : localDone === false ? T('checkinSave') : T('checkinSelectStatus')}
+          </button>
+        </div>
+
+        {/* Data section - merged */}
+        <div style={{ background: TH.card, borderRadius: 16, padding: '16px', marginBottom: 12, border: `1px solid ${TH.border}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+            <Scale size={18} style={{ color: P }} />
+            <span style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>{T('checkinWeight')} / {T('checkinWater')} / {T('checkinFood')}</span>
+          </div>
+
           {/* Weight */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 0', borderBottom: `1px solid ${TH.border}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${TH.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: FONT_BODY }}><Scale size={16} style={{verticalAlign:'middle'}} /></span><span style={{ color: TH.text }}>{T('checkinWeight')}</span>
+              <Scale size={16} style={{ color: P }} />
+              <span style={{ color: TH.text }}>{T('checkinWeight')}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)}
-                style={{ width: 60, textAlign: 'center', border: `1px solid ${TH.border}`, borderRadius: 8, outline: 'none', fontSize: FONT_BODY, fontWeight: 600, padding: '6px 0', background: TH.card, color: TH.text }} />
+                style={{ width: 60, textAlign: 'center', border: `1px solid ${TH.border}`, borderRadius: 8, outline: 'none', fontSize: FONT_BODY, fontWeight: 600, padding: '6px 0', background: TH.cardSolid, color: TH.text }} />
               <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</span>
             </div>
           </div>
 
           {/* Water */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 0', borderBottom: `1px solid ${TH.border}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${TH.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: FONT_BODY }}><Droplets size={16} style={{verticalAlign:'middle'}} /></span><span style={{ color: TH.text }}>{T('checkinWater')}</span>
+              <Droplets size={16} style={{ color: P }} />
+              <span style={{ color: TH.text }}>{T('checkinWater')}</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <input type="number" value={waterMl || ''} onChange={(e) => setWaterMl(Math.max(0, parseInt(e.target.value) || 0))} placeholder="0"
-                style={{ width: 60, textAlign: 'center', border: `1px solid ${TH.border}`, borderRadius: 8, outline: 'none', fontSize: FONT_BODY, fontWeight: 600, padding: '6px 0', background: TH.card, color: TH.text }} />
+                style={{ width: 60, textAlign: 'center', border: `1px solid ${TH.border}`, borderRadius: 8, outline: 'none', fontSize: FONT_BODY, fontWeight: 600, padding: '6px 0', background: TH.cardSolid, color: TH.text }} />
               <span style={{ color: TH.sub, fontSize: FONT_SUB }}>ml</span>
+              <button onClick={() => setWaterMl(w => w + 250)}
+                style={{ padding: '4px 8px', borderRadius: 6, border: 'none', background: `${P}20`, color: P, fontSize: FONT_SUB, fontWeight: 600, cursor: 'pointer' }}>+250</button>
             </div>
           </div>
 
           {/* Food */}
-          <div style={{ padding: '13px 0' }}>
+          <div style={{ padding: '10px 0' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: FONT_BODY }}><Utensils size={16} style={{verticalAlign:'middle'}} /></span><span style={{ color: TH.text }}>{T('checkinFood')}</span>
+                <Utensils size={16} style={{ color: P }} />
+                <span style={{ color: TH.text }}>{T('checkinFood')}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: FONT_TITLE, fontWeight: 600, color: P }}>{totalCal}</span>
@@ -182,7 +340,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
               </div>
             </div>
             {showFoodAdd && (
-              <div style={{ marginTop: 10, padding: 10, background: TH.card, borderRadius: 10, border: `1px solid ${TH.border}` }}>
+              <div style={{ marginTop: 10, padding: 10, background: TH.cardSolid, borderRadius: 10, border: `1px solid ${TH.border}` }}>
                 <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
                   <input value={foodName} onChange={(e) => setFoodName(e.target.value)} placeholder={T('foodName')}
                     style={{ ...inp(TH), flex: 2, padding: '7px 10px' } as React.CSSProperties} />
@@ -199,139 +357,22 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
             )}
           </div>
         </div>
-        </div>
 
-        {/* Practices */}
-        <div style={{ borderTop: `1px solid ${TH.border}`, borderBottom: `1px solid ${TH.border}` }}>
-        <div style={{ padding: '13px 0' }}>
+        {/* Note section */}
+        <div style={{ background: TH.card, borderRadius: 16, padding: '16px', marginBottom: 12, border: `1px solid ${TH.border}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-            <span style={{ fontSize: FONT_BODY }}><Star size={16} style={{verticalAlign:'middle'}} /></span><span style={{ fontWeight: 600, color: TH.text }}>{T('checkinPractice')}</span>
-          </div>
-          {[{ key: 'sit' as const, icon: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, label: T('checkinSit') }, { key: 'stand' as const, icon: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, label: T('checkinStand') }, { key: 'chant' as const, icon: <Star size={16} style={{verticalAlign:'middle'}} />, label: T('checkinSutra') }].map(({ key, icon, label }, i, arr) => (
-            <RowItem key={key} icon={icon} label={label} last={i === arr.length - 1}
-              right={<Toggle on={practices[key]} onChange={() => setPractices((p) => ({ ...p, [key]: !p[key] }))} />} />
-          ))}
-        </div>
-        </div>
-
-        {/* Today's plan items + daily custom todos */}
-        {(todayPlanItems.length > 0 || dailyCustomTodos.length > 0) && (
-          <div style={{ padding: '13px 0', borderBottom: `1px solid ${TH.border}` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <span style={{ fontSize: FONT_BODY }}><ClipboardList size={16} style={{verticalAlign:'middle'}} /></span><span style={{ fontWeight: 600, color: TH.text }}>{T('planTodoList')}</span>
-            </div>
-            {todayPlanItems.map(item => {
-              const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-              const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
-              // manual 和 reflection 类型使用本地 toggle 状态
-              const useLocalToggle = item.link === 'manual' || item.link === 'reflection';
-              const done = useLocalToggle ? (planToggles[item.id] ?? storeDone) : storeDone;
-              return (
-                <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${TH.border}`, opacity: autoChecked ? 0.7 : 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ fontSize: FONT_BODY }}><ClipboardList size={16} style={{verticalAlign:'middle'}} /></span>
-                    <div>
-                      <div style={{ fontSize: FONT_BODY, color: TH.text }}>{item.name}</div>
-                      <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}</div>
-                    </div>
-                  </div>
-                  {autoChecked ? (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: FONT_BADGE, color: COLORS.GREEN, fontWeight: 600 }}>
-                      <CheckCircle2 size={14} style={{verticalAlign:'middle'}} /> {T('planAutoChecked')}
-                    </span>
-                  ) : (
-                    <Toggle on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} />
-                  )}
-                </div>
-              );
-            })}
-            {dailyCustomTodos.map(todo => (
-              <div key={todo.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${TH.border}` }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: FONT_BODY }}><Sparkles size={16} style={{verticalAlign:'middle'}} /></span>
-                  <div>
-                    <div style={{ fontSize: FONT_BODY, color: TH.text, textDecoration: todo.done ? 'line-through' : 'none', opacity: todo.done ? 0.6 : 1 }}>{todo.name}</div>
-                    <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planDailyCustomTodos')}</div>
-                  </div>
-                </div>
-                <Toggle on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id)} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Habit checkin */}
-        {(store.habits ?? []).filter((h) => h.status === 'inProgress').length > 0 && (
-          <div style={{ padding: '13px 0', borderBottom: `1px solid ${TH.border}` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-              <span style={{ fontSize: FONT_BODY }}><Star size={16} style={{verticalAlign:'middle'}} /></span><span style={{ fontWeight: 600, color: TH.text }}>{T('checkinHabitCheck')}</span>
-            </div>
-            {(store.habits ?? []).filter((h) => h.status === 'inProgress').map((h, i, arr) => (
-              <div key={h.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: i === arr.length - 1 ? 'none' : `1px solid ${TH.border}` }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ fontSize: FONT_BODY }}><Star size={16} style={{verticalAlign:'middle'}} /></span>
-                  <div>
-                    <div style={{ fontSize: FONT_BODY, color: TH.text }}>{h.name}</div>
-                    <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{h.streak} {T('checkinStreak')}</div>
-                  </div>
-                </div>
-                <Toggle on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins((c) => ({ ...c, [h.id]: !c[h.id] }))} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Note */}
-        <div style={{ padding: '14px 0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ fontSize: FONT_BODY }}><Sparkles size={16} style={{verticalAlign:'middle'}} /></span>
-            <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.text }}>{T('checkinNote')}</span>
+            <Sparkles size={18} style={{ color: P }} />
+            <span style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>{T('checkinNote')}</span>
           </div>
           <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder={T('checkinNotePlaceholder')} rows={3}
-            style={{ width: '100%', background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 12, padding: '10px 12px', color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
+            style={{ width: '100%', background: TH.cardSolid, border: `1px solid ${TH.border}`, borderRadius: 12, padding: '10px 12px', color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
         </div>
-
-        {/* Done / Not Done buttons */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
-          <button onClick={() => setLocalDone(false)}
-            style={{
-              flex: 1, padding: '13px 0', borderRadius: 12, fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
-              border: '2px solid', borderColor: localDone === false ? '#C53364' : TH.border,
-              background: 'transparent', color: localDone === false ? '#C53364' : TH.sub,
-            }}>
-            <X size={16} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinNotDone')}
-          </button>
-          <button onClick={() => setLocalDone(true)}
-            style={{
-              flex: 1, padding: '13px 0', borderRadius: 12, fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
-              border: '2px solid', borderColor: localDone === true ? '#17EAD9' : TH.border,
-              background: 'transparent', color: localDone === true ? '#17EAD9' : TH.sub,
-            }}>
-            <Check size={16} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinDone')}
-          </button>
-        </div>
-
-        {/* Submit button */}
-        <button onClick={submit}
-          style={{
-            width: '100%', padding: 14, borderRadius: 12, border: 'none', marginBottom: 10,
-            background: localDone === true
-              ? 'linear-gradient(135deg, #17EAD9, #6078EA)'
-              : localDone === false
-                ? 'linear-gradient(135deg, #622774, #C53364)'
-                : P,
-            color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
-          }}>
-          {localDone === true ? T('checkinSubmit') : localDone === false ? T('checkinSave') : T('checkinSelectStatus')}
-        </button>
 
         {/* Cancel button */}
-        <div style={{ padding: '12px 0' }}>
-          <button onClick={onClose}
-            style={{ width: '100%', padding: 14, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
-            {T('commonCancel')}
-          </button>
-        </div>
+        <button onClick={onClose}
+          style={{ width: '100%', padding: 14, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
+          {T('commonCancel')}
+        </button>
       </div>
     </div>
   );

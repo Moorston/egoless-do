@@ -1,0 +1,57 @@
+# 核心模式配置
+schema:
+  mode: my-workflow
+  enableCustomRules: true
+
+# 项目上下文
+context: |
+  Project: egoless-do — 个人成长与习惯追踪应用
+
+  Tech stack:
+    - Language: TypeScript
+    - Web: Next.js 15 + React 19 + Zustand + Recharts + Tailwind CSS
+    - Mobile: Expo 54 + React Native + React Navigation
+    - Backend: PocketBase (SQLite)
+    - Shared: packages/core (业务逻辑), packages/config (共享配置)
+    - Monorepo: pnpm workspaces + Turbo
+    - Testing: Vitest (web)
+
+  Architecture:
+    - apps/web — Next.js PWA 前端
+    - apps/mobile — Expo 移动端
+    - backend — PocketBase migrations, hooks
+    - packages/core — 跨平台共享业务逻辑
+    - packages/config — 共享配置
+
+  Conventions:
+    - 中文注释和提交信息
+    - 组件使用函数式 + Hooks
+    - 状态管理用 Zustand store
+    - API 通过 PocketBase SDK 调用
+
+# 自定义规则
+rules:
+  proposal:
+    - 明确变更影响的平台（web / mobile / 全部）
+    - 包含"非目标"部分说明不做什么
+    - 涉及 UI 变更时附上交互描述
+  design:
+    - 优先复用 packages/core 中的共享逻辑
+    - 数据模型变更需考虑 PocketBase migration
+    - 跨平台场景需说明 web 和 mobile 的差异处理
+  specs:
+    - 类型定义使用 TypeScript interface
+    - API 相关 spec 需包含请求/响应格式
+  tasks:
+    - 每个任务控制在 2 小时以内
+    - 标注任务涉及的目录路径
+    - 数据库相关任务需包含 rollback 方案
+
+# 主规格文档列表
+specs: []
+
+# CLI 行为配置
+cli:
+  verboseErrors: true
+  defaultStrictMode: false
+  autoBackupOnArchive: true

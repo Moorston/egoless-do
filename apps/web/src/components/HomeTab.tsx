@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { COLORS, THEME_GRADIENTS, STATUS_GRADIENTS, deriveStatsGradients, dateStr, yesterday, getTodayFoodLog, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';
+import { COLORS, cardAccent, cardTextColor, dateStr, yesterday, getTodayFoodLog, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -100,38 +100,41 @@ export default function HomeTab() {
   const longestStreak = useMemo(() => computeLongestStreak((checkinHistory ?? []).filter((c: CheckinEntry) => c.done).map(c => c.date)), [checkinHistory]);
   const savedMeals = useMemo(() => (fastingHistory ?? []).length, [fastingHistory]);
 
-  const statsGradients = useMemo(() => deriveStatsGradients(THEME_GRADIENTS[theme]), [theme]);
+  const statsOps = [0.12, 0.17, 0.22, 0.27];
 
   const statsData = useMemo(() => [
-    { Icon: CalendarCheck, label: T('totalCompleted'), value: totalCompleted, unit: T('days'), colors: statsGradients[0] },
-    { Icon: Trophy, label: T('longestStreak'), value: longestStreak, unit: T('days'), colors: statsGradients[1] },
-    { Icon: Zap, label: T('savedCalories'), value: savedKcal, unit: T('kcalUnit'), colors: statsGradients[2] },
-    { Icon: Utensils, label: T('savedMeals'), value: savedMeals, unit: T('mealUnit'), colors: statsGradients[3] },
-  ], [totalCompleted, longestStreak, savedKcal, savedMeals, T, statsGradients]);
+    { Icon: CalendarCheck, label: T('totalCompleted'), value: totalCompleted, unit: T('days'), color: cardAccent(TH.primary, TH.bg, statsOps[0]) },
+    { Icon: Trophy, label: T('longestStreak'), value: longestStreak, unit: T('days'), color: cardAccent(TH.primary, TH.bg, statsOps[1]) },
+    { Icon: Zap, label: T('savedCalories'), value: savedKcal, unit: T('kcalUnit'), color: cardAccent(TH.primary, TH.bg, statsOps[2]) },
+    { Icon: Utensils, label: T('savedMeals'), value: savedMeals, unit: T('mealUnit'), color: cardAccent(TH.primary, TH.bg, statsOps[3]) },
+  ], [totalCompleted, longestStreak, savedKcal, savedMeals, T, TH.primary, TH.bg]);
 
   const today = dateStr();
 
   const todayRecord = (checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
 
-  const themeGrad = THEME_GRADIENTS[theme];
+  const bannerBg = cardAccent(TH.primary, TH.bg, 0.45);
+  const warnBg = cardAccent('#F59E0B', TH.bg, 0.45);
   const bannerConfig = {
-    notChecked: { bg: `linear-gradient(135deg,${themeGrad[0]},${themeGrad[1]})`, sub: T('checkinDoneToday'), btn: T('openCheckin'), BtnIcon: ClipboardList },
-    notDone:    { bg: `linear-gradient(135deg,${STATUS_GRADIENTS.WARNING[0]},${STATUS_GRADIENTS.WARNING[1]})`, sub: T('checkinModifyNotDone'), btn: T('checkinModify'), BtnIcon: Pencil },
-    done:       { bg: `linear-gradient(135deg,${themeGrad[0]},${themeGrad[1]})`, sub: T('checkinDoneBanner'), btn: T('checkinDoneBanner'), BtnIcon: Check },
+    notChecked: { bg: bannerBg, sub: T('checkinDoneToday'), btn: T('openCheckin'), BtnIcon: ClipboardList },
+    notDone:    { bg: warnBg, sub: T('checkinModifyNotDone'), btn: T('checkinModify'), BtnIcon: Pencil },
+    done:       { bg: bannerBg, sub: T('checkinDoneBanner'), btn: T('checkinDoneBanner'), BtnIcon: Check },
   }[bannerState];
 
   return (
     <>
       {/* Check-in banner */}
-      <div style={{ borderRadius: 16, background: bannerConfig.bg, padding: '18px 20px', marginBottom: 12, color: '#fff' }}>
+      {(() => { const tc = cardTextColor(TH.bg); return (
+      <div style={{ borderRadius: 16, background: bannerConfig.bg, padding: '18px 20px', marginBottom: 12, color: tc }}>
         <div style={{ fontWeight: 700, fontSize: FONT_TITLE, textAlign: 'center' }}>{T('todayCheckin')}</div>
         <div style={{ textAlign: 'center', fontSize: FONT_BODY, opacity: 0.8, marginTop: 3, marginBottom: 14 }}>{bannerConfig.sub}</div>
         <button onClick={() => { if (bannerState !== 'done') overlay.open('checkin'); }}
-          style={{ width: '100%', padding: '11px 0', borderRadius: 12, border: '2px solid rgba(255,255,255,.6)', background: 'rgba(255,255,255,.18)', color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: bannerState === 'done' ? 'default' : 'pointer', opacity: bannerState === 'done' ? 0.7 : 1 }}>
+          style={{ width: '100%', padding: '11px 0', borderRadius: 12, border: `2px solid ${tc}60`, background: `${tc}18`, color: tc, fontWeight: 700, fontSize: FONT_BUTTON, cursor: bannerState === 'done' ? 'default' : 'pointer', opacity: bannerState === 'done' ? 0.7 : 1 }}>
           <bannerConfig.BtnIcon size={16} style={{verticalAlign:'middle',marginRight:4}} /> {bannerConfig.btn}
         </button>
       </div>
+      ); })()}
 
       {/* Grace reminder banner */}
       {(() => {
@@ -141,40 +144,42 @@ export default function HomeTab() {
         if (yesterdayDone) return null;
         return (
           <div onClick={() => overlay.open('grace')} style={{
-            borderRadius: 14, background: `linear-gradient(135deg, ${STATUS_GRADIENTS.WARNING[0]}, ${STATUS_GRADIENTS.WARNING[1]})`,
+            borderRadius: 14, background: warnBg,
             padding: '12px 14px', marginBottom: 12, cursor: 'pointer',
             display: 'flex', alignItems: 'center', gap: 10,
           }}>
-            <Shield size={20} color="#fff" />
+            <Shield size={20} color={cardTextColor(TH.bg)} />
             <div style={{ flex: 1 }}>
-              <div style={{ color: '#fff', fontWeight: 700, fontSize: FONT_BODY }}>{T('graceRemindTitle')}</div>
-              <div style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SUB, marginTop: 2 }}>{T('graceRemindDesc')}</div>
+              <div style={{ color: cardTextColor(TH.bg), fontWeight: 700, fontSize: FONT_BODY }}>{T('graceRemindTitle')}</div>
+              <div style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>{T('graceRemindDesc')}</div>
             </div>
-            <span style={{ color: '#fff', fontSize: FONT_SUB }}>→</span>
+            <span style={{ color: cardTextColor(TH.bg), fontSize: FONT_SUB }}>→</span>
           </div>
         );
       })()}
 
       {/* Streak card */}
+      {(() => { const tc = cardTextColor(TH.bg); return (
       <div onClick={() => overlay.open('grace')} style={{
-        borderRadius: 16, background: `linear-gradient(135deg, ${themeGrad[0]}, ${themeGrad[1]})`,
-        padding: '20px 16px', textAlign: 'center', color: '#fff', marginBottom: 12, cursor: 'pointer',
+        borderRadius: 16, background: bannerBg,
+        padding: '20px 16px', textAlign: 'center', color: tc, marginBottom: 12, cursor: 'pointer',
       } as React.CSSProperties}>
-        <div style={{ fontSize: FONT_STAT_SECTION }}><Shield size={40} color="#fff" /></div>
-        <div style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_BODY, marginTop: 6 }}>{T('streak')}</div>
-        <div style={{ fontSize: FONT_HERO, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>{streak}</div>
-        <div style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_BODY, marginTop: 4 }}>{T('days')}</div>
-        <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.5)', marginTop: 8 }}>{T('gracePeriodHint')}</div>
+        <div style={{ fontSize: FONT_STAT_SECTION }}><Shield size={40} color={tc} /></div>
+        <div style={{ color: tc, opacity: 0.7, fontSize: FONT_BODY, marginTop: 6 }}>{T('streak')}</div>
+        <div style={{ fontSize: FONT_HERO, fontWeight: 800, color: tc, lineHeight: 1.1 }}>{streak}</div>
+        <div style={{ color: tc, opacity: 0.5, fontSize: FONT_BODY, marginTop: 4 }}>{T('days')}</div>
+        <div style={{ fontSize: FONT_BODY, color: tc, opacity: 0.5, marginTop: 8 }}>{T('gracePeriodHint')}</div>
       </div>
+      ); })()}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        {statsData.map((item) => (
-          <div key={item.label} style={{ background: `linear-gradient(135deg, ${item.colors[0]}, ${item.colors[1]})`, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            <div style={{ fontSize: 26, color: '#fff' }}><item.Icon size={26} style={{verticalAlign:'middle'}} /></div>
-            <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{item.label}</div>
-            <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{item.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {item.unit}</span></div>
+        {statsData.map((item) => { const tc = cardTextColor(TH.bg); return (
+          <div key={item.label} style={{ background: item.color, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <div style={{ fontSize: 26, color: tc }}><item.Icon size={26} style={{verticalAlign:'middle'}} /></div>
+            <div style={{ fontSize: FONT_BODY, color: tc, opacity: 0.85, textAlign: 'center' }}>{item.label}</div>
+            <div style={{ fontWeight: 700, color: tc, fontSize: 26 }}>{item.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {item.unit}</span></div>
           </div>
-        ))}
+        ); })}
       </div>
 
       <div style={cardStyle}>

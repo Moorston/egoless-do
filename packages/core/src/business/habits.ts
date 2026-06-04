@@ -48,3 +48,15 @@ export function changeHabitStatusInList(
     updatedAt: now,
   } : h);
 }
+
+/** Auto-start habits: notStarted → inProgress when startDate arrives */
+export function checkAutoStatus(habits: Habit[], today: string): Habit[] {
+  return habits.map(h => {
+    if (h.deleted) return h;
+    if (h.status === 'completed' || h.status === 'abandoned') return h;
+    if (h.status === 'notStarted' && h.startDate <= today) {
+      return { ...h, status: 'inProgress', updatedAt: Date.now() };
+    }
+    return h;
+  });
+}

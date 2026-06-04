@@ -428,7 +428,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
             <div style={{ ...cs(TH), textAlign: 'center', padding: '20px 0' }}>
               <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('planTodoToday')}</div>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8 }}>
-                <span style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, color: COLORS.GREEN }}>{stats.totalDone}</span>
+                <span style={{ fontSize: FONT_STAT_SECTION, fontWeight: 800, color: P }}>{stats.totalDone}</span>
                 <span style={{ fontSize: FONT_BODY, color: TH.sub }}>/ {stats.totalItems}</span>
               </div>
               <div style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{today}</div>
@@ -464,9 +464,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                         }} onClick={() => toggleItem(item.id)}>
                           <div style={{
                             width: 22, height: 22, borderRadius: 6,
-                            border: `2px solid ${done ? COLORS.GREEN : TH.border}`,
+                            border: `2px solid ${done ? P : TH.border}`,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: done ? COLORS.GREEN : 'transparent',
+                            background: done ? P : 'transparent',
                             transition: 'all .2s',
                           }}>
                             {done && <Check size={14} color="#fff" />}
@@ -519,9 +519,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       >
                         <div style={{
                           width: 22, height: 22, borderRadius: 6,
-                          border: `2px solid ${todo.done ? COLORS.GREEN : TH.border}`,
+                          border: `2px solid ${todo.done ? P : TH.border}`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          background: todo.done ? COLORS.GREEN : 'transparent',
+                          background: todo.done ? P : 'transparent',
                           transition: 'all .2s',
                         }}>
                           {todo.done && <Check size={14} color="#fff" />}
@@ -640,7 +640,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                             }}>
                               <div style={{
                                 width: 18, height: 18, borderRadius: 4,
-                                background: item.done ? COLORS.GREEN : `${TH.border}80`,
+                                background: item.done ? P : `${TH.border}80`,
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                               }}>
                                 {item.done && <Check size={10} color="#fff" />}

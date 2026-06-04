@@ -155,6 +155,12 @@ export const useWebStore = create<WebStore>()(
 
         const loadPromise = loadFromIndexedDB().then(() => {
           triggerSync().catch(console.error);
+          // 数据加载完成后检查习惯自动启动
+          // 使用 setTimeout 确保 store 已完全更新
+          setTimeout(() => {
+            console.log('[loadFromIndexedDB] calling checkAutoStatus');
+            useWebStore.getState().checkAutoStatus?.();
+          }, 0);
         }).catch(console.error);
 
         const dailyReset = new DailyResetManager({
@@ -169,6 +175,9 @@ export const useWebStore = create<WebStore>()(
           },
           onPlanDailyReset: (previousDate) => {
             useWebStore.getState().performDailyReset?.(previousDate);
+          },
+          onHabitDailyReset: () => {
+            useWebStore.getState().checkHabitAutoStatus?.();
           },
         });
         dailyReset.start(loadPromise);

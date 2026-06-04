@@ -454,7 +454,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
               <Card style={{ alignItems: 'center', paddingVertical: 20 }}>
                 <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('planTodoToday')}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: COLORS.GREEN }}>{stats.totalDone}</Text>
+                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: P }}>{stats.totalDone}</Text>
                   <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>/ {stats.totalItems}</Text>
                 </View>
                 <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{today}</Text>
@@ -490,9 +490,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           <TouchableOpacity onPress={() => toggleItem(item.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
                             <View style={{
                               width: 22, height: 22, borderRadius: 6,
-                              borderWidth: 2, borderColor: done ? COLORS.GREEN : TH.border,
+                              borderWidth: 2, borderColor: done ? P : TH.border,
                               alignItems: 'center', justifyContent: 'center',
-                              backgroundColor: done ? COLORS.GREEN : 'transparent',
+                              backgroundColor: done ? P : 'transparent',
                             }}>
                               {done && <Check size={14} color="#fff" />}
                             </View>
@@ -542,9 +542,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                         <TouchableOpacity onPress={() => toggleCustomTodo(todo.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
                           <View style={{
                             width: 22, height: 22, borderRadius: 6,
-                            borderWidth: 2, borderColor: todo.done ? COLORS.GREEN : TH.border,
+                            borderWidth: 2, borderColor: todo.done ? P : TH.border,
                             alignItems: 'center', justifyContent: 'center',
-                            backgroundColor: todo.done ? COLORS.GREEN : 'transparent',
+                            backgroundColor: todo.done ? P : 'transparent',
                           }}>
                             {todo.done && <Check size={14} color="#fff" />}
                           </View>
@@ -661,7 +661,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                               }}>
                                 <View style={{
                                   width: 18, height: 18, borderRadius: 4,
-                                  backgroundColor: item.done ? COLORS.GREEN : `${TH.border}80`,
+                                  backgroundColor: item.done ? P : `${TH.border}80`,
                                   alignItems: 'center', justifyContent: 'center',
                                 }}>
                                   {item.done && <Check size={10} color="#fff" />}

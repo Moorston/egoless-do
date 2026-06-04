@@ -53,6 +53,22 @@ export const useAppStore = create<MobileStore>()(
     {
       name: 'egoless-do-mobile',
       storage: createJSONStorage(() => AsyncStorage),
+      partialize: s => ({
+        auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
+        waterGoal: s.waterGoal, calGoal: s.calGoal,
+        foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
+        activeFasting: s.activeFasting,
+        fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,
+        medHistory: s.medHistory, checkinHistory: s.checkinHistory,
+        userProfile: s.userProfile, remindEnabled: s.remindEnabled, remindTime: s.remindTime,
+        weightUnit: s.weightUnit, customTags: s.customTags, customMoods: s.customMoods,
+        allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,
+        customFoodPresets: s.customFoodPresets,
+        exerciseLog: s.exerciseLog,
+        plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
+        dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
+        graceHistory: s.graceHistory, recycleBin: s.recycleBin,
+      }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
 
@@ -74,6 +90,9 @@ export const useAppStore = create<MobileStore>()(
           onPlanDailyReset: (previousDate) => {
             useAppStore.getState().performDailyReset?.(previousDate);
           },
+          onHabitDailyReset: () => {
+            useAppStore.getState().checkHabitAutoStatus?.();
+          },
           addVisibilityListener: (callback) => {
             AppState.addEventListener('change', (s) => {
               if (s === 'active') callback();
@@ -81,6 +100,9 @@ export const useAppStore = create<MobileStore>()(
           },
         });
         dailyReset.start();
+
+        // 习惯自动启动检查
+        useAppStore.getState().checkHabitAutoStatus?.();
 
         // Load food entries from SQLite into store
         openDatabase().then(db => dbGetAllFoodEntries(db)).then(entries => {

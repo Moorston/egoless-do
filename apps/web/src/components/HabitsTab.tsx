@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { COLORS, tomorrow, daysInMonth, dateStr, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_CLOSE, FONT_HERO } from '@egoless-do/core';
 import type { Habit } from '@egoless-do/core';
 import { Toggle, useTheme, useT, cs, inp } from './helpers';
@@ -21,6 +21,11 @@ export default function HabitsTab() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [actionMenuId, setActionMenuId] = useState<string | null>(null);
   const [actionMenuPos, setActionMenuPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    store.checkHabitAutoStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const STATUS_LABELS_R: Record<string, string> = { all: T('habitStatusAll'), notStarted: T('habitStatusNotStarted'), inProgress: T('habitStatusInProgress'), paused: T('habitStatusPaused'), abandoned: T('habitStatusAbandoned'), completed: T('habitStatusCompleted') };
   const STATUS_COLORS_R: Record<string, string> = { notStarted: TH.sub, inProgress: COLORS.GREEN, paused: COLORS.YELLOW, abandoned: COLORS.RED, completed: P };

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
   KeyboardAvoidingView, Platform,
@@ -52,6 +52,11 @@ export default function HabitsScreen() {
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [confirmDelete, setConfirmDelete] = useState<string|null>(null);
   const [actionMenuHabit, setActionMenuHabit] = useState<Habit|null>(null);
+
+  useEffect(() => {
+    store.checkHabitAutoStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const allHabits = (store.habits ?? []).filter(h => !h.deleted);
   const filtered = (filter==='all' ? allHabits : allHabits.filter(h => h.status===filter))

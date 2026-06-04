@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import type { Habit } from '../types';
 import {
   addHabitToList, updateHabitInList, deleteHabitFromList,
-  checkinHabitInList, changeHabitStatusInList,
+  checkinHabitInList, changeHabitStatusInList, checkAutoStatus,
 } from './habits';
 import { dateStr, yesterday } from '../utils';
 
@@ -84,5 +84,44 @@ describe('changeHabitStatusInList', () => {
     const habits = [makeHabit()];
     const result = changeHabitStatusInList(habits, 'h1', 'abandoned', 'bored');
     expect(result[0].abandonReason).toBe('bored');
+  });
+});
+
+describe('checkAutoStatus', () => {
+  it('auto-starts habit when startDate <= today', () => {
+    const habits = [makeHabit({ status: 'notStarted', startDate: '2026-01-01' })];
+    const result = checkAutoStatus(habits, '2026-01-15');
+    expect(result[0].status).toBe('inProgress');
+    expect(result[0].updatedAt).toBeGreaterThan(0);
+  });
+  it('does not auto-start if startDate > today', () => {
+    const habits = [makeHabit({ status: 'notStarted', startDate: '2026-12-01' })];
+    const result = checkAutoStatus(habits, '2026-01-15');
+    expect(result[0].status).toBe('notStarted');
+  });
+  it('skips deleted habits', () => {
+    const habits = [makeHabit({ status: 'notStarted', startDate: '2026-01-01', deleted: true })];
+    const result = checkAutoStatus(habits, '2026-01-15');
+    expect(result[0].status).toBe('notStarted');
+  });
+  it('skips completed habits', () => {
+    const habits = [makeHabit({ status: 'completed', startDate: '2026-01-01' })];
+    const result = checkAutoStatus(habits, '2026-01-15');
+    expect(result[0].status).toBe('completed');
+  });
+  it('skips abandoned habits', () => {
+    const habits = [makeHabit({ status: 'abandoned', startDate: '2026-01-01' })];
+    const result = checkAutoStatus(habits, '2026-01-15');
+    expect(result[0].status).toBe('abandoned');
+  });
+  it('skips paused habits', () => {
+    const habits = [makeHabit({ status: 'paused', startDate: '2026-01-01' })];
+    const result = checkAutoStatus(habits, '2026-01-15');
+    expect(result[0].status).toBe('paused');
+  });
+  it('skips inProgress habits', () => {
+    const habits = [makeHabit({ status: 'inProgress', startDate: '2026-01-01' })];
+    const result = checkAutoStatus(habits, '2026-01-15');
+    expect(result[0].status).toBe('inProgress');
   });
 });
