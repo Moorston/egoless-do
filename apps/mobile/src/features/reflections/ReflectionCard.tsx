@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Swipeable } from 'react-native-gesture-handler';
-import { Pin, ExternalLink, Link, Pencil } from 'lucide-react-native';
+import { ExternalLink, Link } from 'lucide-react-native';
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, FONT_TINY, REFLECTION_CATEGORIES, highlightSearchMatch } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import type { MindReflection } from '@egoless-do/core';
@@ -19,8 +18,6 @@ interface Props {
   searchQuery?: string;
   onPress: (id: string) => void;
   onLongPress: (id: string) => void;
-  onEdit: (id: string) => void;
-  onTogglePin: (id: string) => void;
   onNavigateToPlan?: (planId: string) => void;
   index?: number;
 }
@@ -31,8 +28,6 @@ function ReflectionCardComponent({
   searchQuery,
   onPress,
   onLongPress,
-  onEdit,
-  onTogglePin,
   onNavigateToPlan,
   index = 0,
 }: Props) {
@@ -62,14 +57,6 @@ function ReflectionCardComponent({
     onLongPress(r.id);
   }, [r.id, onLongPress]);
 
-  const handleEdit = useCallback(() => {
-    onEdit(r.id);
-  }, [r.id, onEdit]);
-
-  const handleTogglePin = useCallback(() => {
-    onTogglePin(r.id);
-  }, [r.id, onTogglePin]);
-
   const handleLinkPress = useCallback(() => {
     if (r.link) Linking.openURL(r.link).catch(console.error);
   }, [r.link]);
@@ -79,27 +66,6 @@ function ReflectionCardComponent({
       onNavigateToPlan(linkedPlanItem.planId);
     }
   }, [linkedPlanItem, onNavigateToPlan]);
-
-  const renderRightActions = useCallback(() => {
-    return (
-      <View style={styles.swipeActions}>
-        <TouchableOpacity
-          onPress={handleEdit}
-          style={[styles.swipeButton, { backgroundColor: COLORS.BLUE }]}
-        >
-          <Pencil size={18} color="#fff" />
-          <Text style={styles.swipeButtonText}>编辑</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleTogglePin}
-          style={[styles.swipeButton, { backgroundColor: r.isPinned ? COLORS.ORANGE : COLORS.GREEN }]}
-        >
-          <Pin size={18} color="#fff" />
-          <Text style={styles.swipeButtonText}>{r.isPinned ? '取消' : '置顶'}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }, [handleEdit, handleTogglePin, r.isPinned]);
 
   const content = (
     <LinearGradient
@@ -114,11 +80,6 @@ function ReflectionCardComponent({
           {new Date(r.timestamp ?? 0).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
         </Text>
         <View style={styles.badges}>
-          {r.isPinned && (
-            <View style={[styles.badge, { backgroundColor: 'rgba(255,255,255,.2)' }]}>
-              <Pin size={10} color="#fff" />
-            </View>
-          )}
           {linkedPlanItem && (
             <TouchableOpacity
               onPress={handlePlanPress}
@@ -180,29 +141,17 @@ function ReflectionCardComponent({
   return (
     <View style={[styles.container, { marginBottom: 10 }]}>
       <View style={[styles.card, { borderColor: TH.border }]}>
-        <Swipeable
-          renderRightActions={renderRightActions}
-          overshootRight={false}
-          friction={2}
+        <TouchableOpacity
+          onPress={handlePress}
+          onLongPress={handleLongPress}
+          activeOpacity={0.85}
         >
-          <TouchableOpacity
-            onPress={handlePress}
-            onLongPress={handleLongPress}
-            activeOpacity={0.85}
-          >
-            {content}
-          </TouchableOpacity>
-        </Swipeable>
+          {content}
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
-
-const COLORS = {
-  BLUE: '#3B82F6',
-  GREEN: '#10B981',
-  ORANGE: '#F59E0B',
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -296,25 +245,6 @@ const styles = StyleSheet.create({
   moodText: {
     color: 'rgba(255,255,255,.8)',
     fontSize: FONT_SMALL,
-  },
-  swipeActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-    gap: 4,
-  },
-  swipeButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 70,
-    height: '100%',
-    borderRadius: 8,
-    gap: 4,
-  },
-  swipeButtonText: {
-    color: '#fff',
-    fontSize: FONT_TINY,
-    fontWeight: '600',
   },
 });
 

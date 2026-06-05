@@ -264,7 +264,7 @@ export function useReflections() {
     } else if (key === 'mood' && value) {
       setFilters({ ...filters, moods: filters.moods.filter(m => m !== value), collectionId: undefined });
     } else if (key === 'dateRange') {
-      setFilters({ ...filters, dateRange: undefined, collectionId: undefined });
+      setFilters({ ...filters, dateRange: undefined, datePreset: undefined, collectionId: undefined });
     } else if (key === 'hasLink') {
       setFilters({ ...filters, hasLink: undefined, collectionId: undefined });
     } else if (key === 'hasLinkedTask') {

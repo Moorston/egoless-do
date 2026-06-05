@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { X, Link, Calendar, ListChecks } from 'lucide-react-native';
+import { X, Link, ListChecks, Calendar } from 'lucide-react-native';
 import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL } from '@egoless-do/core';
 import { useTheme, useT, PillSelector } from '../../components/UI';
+import DateRangePickerModal from '../../components/DateRangePickerModal';
 
 interface Props {
   visible: boolean;
@@ -13,6 +14,7 @@ interface Props {
     hasLink?: boolean;
     hasLinkedTask?: boolean;
     dateRange?: { from: number; to: number };
+    datePreset?: string;
   };
   onApplyFilters: (filters: any) => void;
   allTagOptions: string[];
@@ -21,6 +23,42 @@ interface Props {
   dynamicMoodCounts: Record<string, number>;
   primaryColor: string;
 }
+
+type DatePreset = 'week' | 'month' | '7d' | '30d' | 'custom';
+
+function getDateRange(preset: Exclude<DatePreset, 'custom'>): { from: number; to: number } {
+  const now = new Date();
+  const to = Date.now();
+  let from: number;
+  if (preset === 'week') {
+    const d = new Date(now);
+    const day = d.getDay() || 7;
+    d.setDate(d.getDate() - day + 1);
+    d.setHours(0, 0, 0, 0);
+    from = d.getTime();
+  } else if (preset === 'month') {
+    const d = new Date(now.getFullYear(), now.getMonth(), 1);
+    from = d.getTime();
+  } else if (preset === '7d') {
+    const d = new Date(now);
+    d.setDate(d.getDate() - 6);
+    d.setHours(0, 0, 0, 0);
+    from = d.getTime();
+  } else {
+    const d = new Date(now);
+    d.setDate(d.getDate() - 29);
+    d.setHours(0, 0, 0, 0);
+    from = d.getTime();
+  }
+  return { from, to };
+}
+
+const QUICK_PRESETS: { key: Exclude<DatePreset, 'custom'>; label: string }[] = [
+  { key: 'week', label: '本周' },
+  { key: 'month', label: '本月' },
+  { key: '7d', label: '近7天' },
+  { key: '30d', label: '近30天' },
+];
 
 function FilterDrawerComponent({
   visible,
@@ -35,6 +73,10 @@ function FilterDrawerComponent({
 }: Props) {
   const TH = useTheme();
   const T = useT();
+
+  const [showRangePicker, setShowRangePicker] = useState(false);
+
+  const activePreset = filters.datePreset as DatePreset | undefined;
 
   const handleTagToggle = useCallback((tag: string) => {
     const newTags = filters.tags.includes(tag)
@@ -58,9 +100,34 @@ function FilterDrawerComponent({
     onApplyFilters({ ...filters, hasLinkedTask: filters.hasLinkedTask ? undefined : true });
   }, [filters, onApplyFilters]);
 
+  const handleQuickPreset = useCallback((preset: Exclude<DatePreset, 'custom'>) => {
+    if (activePreset === preset) {
+      // 取消选中
+      onApplyFilters({ ...filters, dateRange: undefined, datePreset: undefined });
+    } else {
+      onApplyFilters({ ...filters, dateRange: getDateRange(preset), datePreset: preset });
+    }
+  }, [filters, onApplyFilters, activePreset]);
+
+  const handleCustomPress = useCallback(() => {
+    setShowRangePicker(true);
+  }, []);
+
+  const handleCustomRangeConfirm = useCallback((start: string, end: string) => {
+    setShowRangePicker(false);
+    const from = new Date(start + 'T00:00:00').getTime();
+    const to = new Date(end + 'T23:59:59').getTime();
+    onApplyFilters({ ...filters, dateRange: { from, to }, datePreset: 'custom' });
+  }, [filters, onApplyFilters]);
+
   const handleClearAll = useCallback(() => {
-    onApplyFilters({ tags: [], moods: [], hasLink: undefined, hasLinkedTask: undefined, dateRange: undefined });
+    onApplyFilters({ tags: [], moods: [], hasLink: undefined, hasLinkedTask: undefined, dateRange: undefined, datePreset: undefined });
   }, [onApplyFilters]);
+
+  // 自定义范围显示文本
+  const customLabel = activePreset === 'custom' && filters.dateRange
+    ? `${new Date(filters.dateRange.from).toLocaleDateString('sv-SE')} ~ ${new Date(filters.dateRange.to).toLocaleDateString('sv-SE')}`
+    : '自定义';
 
   if (!visible) return null;
 
@@ -68,12 +135,10 @@ function FilterDrawerComponent({
     <View style={styles.overlay}>
       <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
       <View style={[styles.drawer, { backgroundColor: TH.cardSolid }]}>
-        {/* Drag handle */}
         <View style={styles.handleContainer}>
           <View style={[styles.handle, { backgroundColor: TH.border }]} />
         </View>
 
-        {/* Header */}
         <View style={styles.header}>
           <Text style={[styles.title, { color: TH.text }]}>筛选</Text>
           <TouchableOpacity onPress={onClose}>
@@ -82,7 +147,7 @@ function FilterDrawerComponent({
         </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* Tag filter */}
+          {/* 标签 */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: TH.sub }]}>标签</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillsContainer}>
@@ -97,7 +162,7 @@ function FilterDrawerComponent({
             </ScrollView>
           </View>
 
-          {/* Mood filter */}
+          {/* 心情 */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: TH.sub }]}>心情</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pillsContainer}>
@@ -112,33 +177,60 @@ function FilterDrawerComponent({
             </ScrollView>
           </View>
 
-          {/* More filters */}
+          {/* 时间范围 */}
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: TH.sub }]}>时间范围</Text>
+            <View style={styles.moreFilters}>
+              {QUICK_PRESETS.map(({ key, label }) => {
+                const isActive = activePreset === key;
+                return (
+                  <TouchableOpacity
+                    key={key}
+                    onPress={() => handleQuickPreset(key)}
+                    style={[styles.filterChip, {
+                      backgroundColor: isActive ? `${P}20` : TH.card,
+                      borderColor: isActive ? P : TH.border,
+                    }]}
+                  >
+                    <Calendar size={14} color={isActive ? P : TH.sub} />
+                    <Text style={{ color: isActive ? P : TH.text, fontSize: FONT_SMALL }}>{label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+              {/* 自定义 */}
+              <TouchableOpacity
+                onPress={handleCustomPress}
+                style={[styles.filterChip, {
+                  backgroundColor: activePreset === 'custom' ? `${P}20` : TH.card,
+                  borderColor: activePreset === 'custom' ? P : TH.border,
+                }]}
+              >
+                <Calendar size={14} color={activePreset === 'custom' ? P : TH.sub} />
+                <Text style={{ color: activePreset === 'custom' ? P : TH.text, fontSize: FONT_SMALL }}>{customLabel}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* 更多筛选 */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: TH.sub }]}>更多筛选</Text>
             <View style={styles.moreFilters}>
               <TouchableOpacity
                 onPress={handleToggleHasLink}
-                style={[
-                  styles.filterChip,
-                  {
-                    backgroundColor: filters.hasLink ? `${P}20` : TH.card,
-                    borderColor: filters.hasLink ? P : TH.border,
-                  },
-                ]}
+                style={[styles.filterChip, {
+                  backgroundColor: filters.hasLink ? `${P}20` : TH.card,
+                  borderColor: filters.hasLink ? P : TH.border,
+                }]}
               >
                 <Link size={14} color={filters.hasLink ? P : TH.sub} />
                 <Text style={{ color: filters.hasLink ? P : TH.text, fontSize: FONT_SMALL }}>有链接</Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 onPress={handleToggleHasLinkedTask}
-                style={[
-                  styles.filterChip,
-                  {
-                    backgroundColor: filters.hasLinkedTask ? `${P}20` : TH.card,
-                    borderColor: filters.hasLinkedTask ? P : TH.border,
-                  },
-                ]}
+                style={[styles.filterChip, {
+                  backgroundColor: filters.hasLinkedTask ? `${P}20` : TH.card,
+                  borderColor: filters.hasLinkedTask ? P : TH.border,
+                }]}
               >
                 <ListChecks size={14} color={filters.hasLinkedTask ? P : TH.sub} />
                 <Text style={{ color: filters.hasLinkedTask ? P : TH.text, fontSize: FONT_SMALL }}>关联任务</Text>
@@ -147,22 +239,24 @@ function FilterDrawerComponent({
           </View>
         </ScrollView>
 
-        {/* Action buttons */}
+        {/* 底部按钮 */}
         <View style={styles.actions}>
-          <TouchableOpacity
-            onPress={handleClearAll}
-            style={[styles.clearButton, { borderColor: TH.border }]}
-          >
+          <TouchableOpacity onPress={handleClearAll} style={[styles.clearButton, { borderColor: TH.border }]}>
             <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>清除全部</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={onClose}
-            style={[styles.applyButton, { backgroundColor: P }]}
-          >
+          <TouchableOpacity onPress={onClose} style={[styles.applyButton, { backgroundColor: P }]}>
             <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>应用筛选</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <DateRangePickerModal
+        visible={showRangePicker}
+        startDate={filters.dateRange ? new Date(filters.dateRange.from).toLocaleDateString('sv-SE') : new Date().toISOString().slice(0, 10)}
+        endDate={filters.dateRange ? new Date(filters.dateRange.to).toLocaleDateString('sv-SE') : new Date().toISOString().slice(0, 10)}
+        onConfirm={handleCustomRangeConfirm}
+        onClose={() => setShowRangePicker(false)}
+      />
     </View>
   );
 }

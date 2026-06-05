@@ -1,11 +1,10 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
   KeyboardAvoidingView, Platform, TextInput, Linking, Alert, StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Swipeable } from 'react-native-gesture-handler';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
@@ -22,7 +21,7 @@ import { useReflections } from './useReflections';
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES } from '@egoless-do/core';
 import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
 import {
-  Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Pin, Link, BarChart3, Pencil, Target,
+  Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3, Target,
 } from 'lucide-react-native';
 
 // ── Manager helpers ───────────────────────────────────────────────
@@ -113,6 +112,19 @@ export default function ReflectionsScreen() {
   const [showNew, setShowNew]       = useState(false);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [managerMode, setManagerMode] = useState<'tag'|'mood'|null>(null);
+
+  // Date collapse state: track which day groups are collapsed
+  const [collapsedDays, setCollapsedDays] = useState<Set<string>>(new Set());
+  const initializedCollapse = useRef(false);
+  useEffect(() => {
+    if (!initializedCollapse.current) {
+      const days = Object.keys(byDay);
+      if (days.length > 1) {
+        setCollapsedDays(new Set(days.slice(1))); // collapse all except the first (most recent)
+      }
+      initializedCollapse.current = true;
+    }
+  }, [byDay]);
 
   useEffect(() => {
     if (route.params?.showNew) {
@@ -268,30 +280,18 @@ export default function ReflectionsScreen() {
     setActionMenuId(id);
   }, []);
 
+  const toggleDayCollapse = useCallback((day: string) => {
+    setCollapsedDays(prev => {
+      const next = new Set(prev);
+      if (next.has(day)) next.delete(day);
+      else next.add(day);
+      return next;
+    });
+  }, []);
+
   const handleNavigateToPlan = useCallback((planId: string) => {
     rootNav.navigate('PlanDetail', { planId });
   }, [rootNav]);
-
-  const renderRightActions = useCallback((id: string) => {
-    return (
-      <View style={styles.swipeActions}>
-        <TouchableOpacity
-          onPress={() => handleEdit(id)}
-          style={[styles.swipeButton, { backgroundColor: '#3B82F6' }]}
-        >
-          <Pencil size={18} color="#fff" />
-          <Text style={styles.swipeButtonText}>编辑</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleCreatePlanItem(id)}
-          style={[styles.swipeButton, { backgroundColor: '#10B981' }]}
-        >
-          <Target size={18} color="#fff" />
-          <Text style={styles.swipeButtonText}>创建任务</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }, [handleEdit, handleCreatePlanItem]);
 
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>
@@ -347,100 +347,127 @@ export default function ReflectionsScreen() {
         )}
 
         {/* Timeline */}
-        {Object.entries(byDay).map(([day, items]) => (
-          <View key={day}>
-            <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
-              <View style={{ width:8, height:8, borderRadius:4, backgroundColor:P }} />
-              <Text style={{ color:TH.sub, fontSize:FONT_SUB, fontWeight:'600' }}>{day}</Text>
-              <View style={{ flex:1, height:1, backgroundColor:TH.border }} />
-            </View>
-            {items.map((r, idx) => {
-              const linkedPlanItem = r.linkedPlanItemId
-                ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
-                : null;
-              const displayContent = r.content.length > 100 ? r.content.slice(0, 100) + '...' : r.content;
+        {Object.entries(byDay).map(([day, items]) => {
+          const isCollapsed = collapsedDays.has(day) && !hasActiveFilters;
 
-              return (
-                <View key={r.id} style={{ marginBottom:10 }}>
-                  <View style={{ borderRadius:12, borderWidth:1, borderColor:TH.border, overflow:'hidden' }}>
-                    <Swipeable
-                      renderRightActions={() => renderRightActions(r.id)}
-                      overshootRight={false}
-                      friction={2}
-                    >
-                      <TouchableOpacity
-                        onPress={() => handleCardPress(r.id)}
-                        onLongPress={() => handleCardLongPress(r.id)}
-                        activeOpacity={0.85}
-                      >
-                      <LinearGradient
-                      colors={(() => { const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors); } catch { return null; } })() : r.colors; return [c?.[0] || MIND_COLORS_EXTENDED[0][0], c?.[1] || MIND_COLORS_EXTENDED[0][1]]; })()}
-                      start={{ x:0, y:0 }} end={{ x:1, y:1 }}
-                      style={{ padding:14 }}
-                    >
-                      <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
-                        <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>
-                          {new Date(r.timestamp ?? 0).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' })}
-                        </Text>
-                        <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
-                          {r.isPinned && <Pin size={12} color={P} />}
-                          {linkedPlanItem && (
-                            <TouchableOpacity
-                              onPress={() => handleNavigateToPlan(linkedPlanItem.planId)}
-                              style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:`${P}15` }}
-                            >
-                              <ExternalLink size={10} color={P} />
-                              <Text style={{ fontSize:FONT_TINY, color:P, fontWeight:'500' }}>{linkedPlanItem.name.slice(0, 6)}</Text>
-                            </TouchableOpacity>
-                          )}
-                        </View>
-                      </View>
+          if (isCollapsed) {
+            // Compute summary for collapsed card
+            const tagCounts: Record<string, number> = {};
+            const moodCounts: Record<string, number> = {};
+            items.forEach(r => {
+              (r.tags ?? []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; });
+              if (r.mood) moodCounts[r.mood] = (moodCounts[r.mood] || 0) + 1;
+            });
+            const topTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t]) => t);
+            const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
-                      {filters.search.trim() ? (
-                        <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:26, marginBottom:8 }}>
-                          {highlightSearchMatch(displayContent, filters.search).map((seg, i) => (
-                            seg.highlight
-                              ? <Text key={i} style={{ backgroundColor:'rgba(255,255,0,.3)', color:'#fff' }}>{seg.text}</Text>
-                              : <Text key={i}>{seg.text}</Text>
-                          ))}
-                        </Text>
-                      ) : (
-                        <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:26, marginBottom:8 }}>{displayContent}</Text>
-                      )}
-
-                      {r.link && (
-                        <TouchableOpacity onPress={() => Linking.openURL(r.link!).catch(console.error)} style={{ marginBottom:8 }}>
-                          <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                            <Link size={12} color="rgba(255,255,255,.7)" />
-                            <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL, textDecorationLine:'underline' }} numberOfLines={1}>{r.link}</Text>
-                          </View>
-                        </TouchableOpacity>
-                      )}
-
-                      {(r.tags.length > 0 || r.mood) && (
-                        <View style={{ flexDirection:'row', flexWrap:'wrap', gap:4, rowGap:2 }}>
-                          {r.tags.map(tag => {
-                            const category = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
-                            return (
-                              <Text key={tag} style={{ color:'rgba(255,255,255,.9)', fontSize:FONT_SMALL }}>
-                                {category ? `${category.icon} ` : ''}{tag}
-                              </Text>
-                            );
-                          })}
-                          {r.mood && (
-                            <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>· {r.mood}</Text>
-                          )}
-                        </View>
-                      )}
-                    </LinearGradient>
-                    </TouchableOpacity>
-                    </Swipeable>
+            return (
+              <TouchableOpacity key={day} onPress={() => toggleDayCollapse(day)} activeOpacity={0.7}
+                style={{ flexDirection:'row', alignItems:'center', gap:10, marginBottom:10, paddingHorizontal:14, paddingVertical:12, borderRadius:12, backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }}>
+                <View style={{ width:8, height:8, borderRadius:4, backgroundColor:P }} />
+                <View style={{ flex:1 }}>
+                  <Text style={{ color:TH.text, fontSize:FONT_SUB, fontWeight:'600' }}>{day}</Text>
+                  <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginTop:4, flexWrap:'wrap' }}>
+                    <Text style={{ color:TH.sub, fontSize:FONT_SMALL }}>{items.length} 条感念</Text>
+                    {topTags.map(tag => (
+                      <Text key={tag} style={{ color:P, fontSize:FONT_SMALL }}>{tag}</Text>
+                    ))}
+                    {topMood && <Text style={{ color:TH.sub, fontSize:FONT_SMALL }}>· {topMood}</Text>}
                   </View>
                 </View>
-              );
-            })}
-          </View>
-        ))}
+              </TouchableOpacity>
+            );
+          }
+
+          return (
+            <View key={day}>
+              <TouchableOpacity onPress={() => toggleDayCollapse(day)} activeOpacity={0.7}
+                style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
+                <View style={{ width:8, height:8, borderRadius:4, backgroundColor:P }} />
+                <Text style={{ color:TH.sub, fontSize:FONT_SUB, fontWeight:'600' }}>{day}</Text>
+                <View style={{ flex:1, height:1, backgroundColor:TH.border }} />
+              </TouchableOpacity>
+              {items.map((r, idx) => {
+                const linkedPlanItem = r.linkedPlanItemId
+                  ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
+                  : null;
+                const displayContent = r.content.length > 100 ? r.content.slice(0, 100) + '...' : r.content;
+
+                return (
+                  <View key={r.id} style={{ marginBottom:10 }}>
+                    <View style={{ borderRadius:12, borderWidth:1, borderColor:TH.border, overflow:'hidden' }}>
+                        <TouchableOpacity
+                          onPress={() => handleCardPress(r.id)}
+                          onLongPress={() => handleCardLongPress(r.id)}
+                          activeOpacity={0.85}
+                        >
+                        <LinearGradient
+                        colors={(() => { const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors); } catch { return null; } })() : r.colors; return [c?.[0] || MIND_COLORS_EXTENDED[0][0], c?.[1] || MIND_COLORS_EXTENDED[0][1]]; })()}
+                        start={{ x:0, y:0 }} end={{ x:1, y:1 }}
+                        style={{ padding:14 }}
+                      >
+                        <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
+                          <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>
+                            {new Date(r.timestamp ?? 0).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' })}
+                          </Text>
+                          <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
+                            {linkedPlanItem && (
+                              <TouchableOpacity
+                                onPress={() => handleNavigateToPlan(linkedPlanItem.planId)}
+                                style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:`${P}15` }}
+                              >
+                                <ExternalLink size={10} color={P} />
+                                <Text style={{ fontSize:FONT_TINY, color:P, fontWeight:'500' }}>{linkedPlanItem.name.slice(0, 6)}</Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
+                        </View>
+
+                        {filters.search.trim() ? (
+                          <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:26, marginBottom:8 }}>
+                            {highlightSearchMatch(displayContent, filters.search).map((seg, i) => (
+                              seg.highlight
+                                ? <Text key={i} style={{ backgroundColor:'rgba(255,255,0,.3)', color:'#fff' }}>{seg.text}</Text>
+                                : <Text key={i}>{seg.text}</Text>
+                            ))}
+                          </Text>
+                        ) : (
+                          <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:26, marginBottom:8 }}>{displayContent}</Text>
+                        )}
+
+                        {r.link && (
+                          <TouchableOpacity onPress={() => Linking.openURL(r.link!).catch(console.error)} style={{ marginBottom:8 }}>
+                            <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                              <Link size={12} color="rgba(255,255,255,.7)" />
+                              <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL, textDecorationLine:'underline' }} numberOfLines={1}>{r.link}</Text>
+                            </View>
+                          </TouchableOpacity>
+                        )}
+
+                        {(r.tags.length > 0 || r.mood) && (
+                          <View style={{ flexDirection:'row', flexWrap:'wrap', gap:4, rowGap:2 }}>
+                            {r.tags.map(tag => {
+                              const category = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
+                              return (
+                                <Text key={tag} style={{ color:'rgba(255,255,255,.9)', fontSize:FONT_SMALL }}>
+                                  {category ? `${category.icon} ` : ''}{tag}
+                                </Text>
+                              );
+                            })}
+                            {r.mood && (
+                              <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>· {r.mood}</Text>
+                            )}
+                          </View>
+                        )}
+                      </LinearGradient>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+          );
+        })}
         {filtered.length === 0 && (
           <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY }}>{T('reflEmpty')}</Text>
         )}
@@ -687,7 +714,7 @@ export default function ReflectionsScreen() {
                 </ScrollView>
 
                 {/* Action buttons */}
-                <View style={{ flexDirection:'row', gap:10, marginTop:20 }}>
+                <View style={{ flexDirection:'row', gap:10, marginTop:20, flexWrap:'wrap' }}>
                   <TouchableOpacity onPress={() => { setDetailId(null); openEdit(r); }}
                     style={{ flex:1, backgroundColor:'rgba(255,255,255,.25)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
                     <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflEditTitle')}</Text>
@@ -696,10 +723,26 @@ export default function ReflectionsScreen() {
                     style={{ flex:1, backgroundColor:'rgba(255,255,255,.25)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
                     <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflShare')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => { store.updateReflection(r.id, { isPinned: !r.isPinned }); }}
-                    style={{ flex:1, backgroundColor:'rgba(255,255,255,.25)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
-                    <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{r.isPinned ? '取消置顶' : '置顶'}</Text>
-                  </TouchableOpacity>
+                  {r.linkedPlanItemId ? (
+                    <TouchableOpacity onPress={() => {
+                      Alert.alert('解除关联', '确定解除与计划任务的关联吗？关联的计划任务将被删除。', [
+                        { text: '取消', style: 'cancel' },
+                        { text: '确定', style: 'destructive', onPress: () => {
+                          if (r.linkedPlanItemId) store.deletePlanItem(r.linkedPlanItemId);
+                          store.unlinkReflectionFromPlanItem(r.id);
+                          setDetailId(null);
+                        }},
+                      ]);
+                    }}
+                      style={{ flex:1, backgroundColor:'rgba(139,92,246,.3)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
+                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>解绑任务</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => { setDetailId(null); handleCreatePlanItem(r.id); }}
+                      style={{ flex:1, backgroundColor:'rgba(16,185,129,.3)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
+                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>创建任务</Text>
+                    </TouchableOpacity>
+                  )}
                   {isToday && (
                     <TouchableOpacity onPress={() => { setDetailId(null); setConfirmDel(r.id); }}
                       style={{ flex:1, backgroundColor:'rgba(239,68,68,.4)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
@@ -980,23 +1023,4 @@ export default function ReflectionsScreen() {
 }
 
 const styles = StyleSheet.create({
-  swipeActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-    gap: 4,
-  },
-  swipeButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 70,
-    height: '100%',
-    borderRadius: 8,
-    gap: 4,
-  },
-  swipeButtonText: {
-    color: '#fff',
-    fontSize: FONT_TINY,
-    fontWeight: '600',
-  },
 });

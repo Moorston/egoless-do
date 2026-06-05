@@ -26,6 +26,7 @@ export interface ReflectionFilters {
     from: number;           // timestamp
     to: number;
   };
+  datePreset?: string;      // 用户选择的时间预设 key（week/month/7d/30d/custom）
   hasLink?: boolean;        // 仅有链接
   hasLinkedTask?: boolean;  // 仅关联计划任务
   collectionId?: string;    // 当前激活的智能集合 ID
