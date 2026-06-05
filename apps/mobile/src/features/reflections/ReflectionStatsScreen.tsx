@@ -2,13 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Share2, TrendingUp, Grid3x3, Heart, Tag } from 'lucide-react-native';
+import { ArrowLeft, Share2, TrendingUp, Grid3x3, Heart, Tag, ListChecks } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import CalendarGrid from '../../components/charts/CalendarGrid';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BUTTON, COLORS } from '@egoless-do/core';
 
-type TabKey = 'trend' | 'heatmap' | 'mood' | 'tags';
+type TabKey = 'tags' | 'mood' | 'linkedTask' | 'trend' | 'heatmap';
 
 export default function ReflectionStatsScreen() {
   const TH = useTheme();
@@ -17,7 +17,7 @@ export default function ReflectionStatsScreen() {
   const store = useAppStore();
   const nav = useNavigation();
 
-  const [activeTab, setActiveTab] = useState<TabKey>('trend');
+  const [activeTab, setActiveTab] = useState<TabKey>('tags');
 
   // Stats calculations
   const stats = useMemo(() => {
@@ -120,11 +120,38 @@ export default function ReflectionStatsScreen() {
       .slice(0, 15);
   }, [store.reflections]);
 
+  // Linked task stats
+  const linkedTaskStats = useMemo(() => {
+    const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
+    const planItems = (store.planItems ?? []).filter((i) => !i.deleted);
+    const linked = reflections.filter((r) => r.linkedPlanItemId);
+    const totalCount = reflections.length;
+    const linkedCount = linked.length;
+    const rate = totalCount > 0 ? Math.round((linkedCount / totalCount) * 100) : 0;
+
+    // Group by plan item
+    const groupMap = new Map<string, number>();
+    linked.forEach((r) => {
+      const id = r.linkedPlanItemId!;
+      groupMap.set(id, (groupMap.get(id) ?? 0) + 1);
+    });
+
+    const groups = Array.from(groupMap.entries())
+      .map(([itemId, count]) => {
+        const item = planItems.find((i) => i.id === itemId);
+        return { name: item?.name ?? '已删除任务', count };
+      })
+      .sort((a, b) => b.count - a.count);
+
+    return { linkedCount, rate, groups };
+  }, [store.reflections, store.planItems]);
+
   const tabs: { key: TabKey; label: string; Icon: any }[] = [
+    { key: 'tags', label: '标签', Icon: Tag },
+    { key: 'mood', label: '心情', Icon: Heart },
+    { key: 'linkedTask', label: '关联任务', Icon: ListChecks },
     { key: 'trend', label: '趋势', Icon: TrendingUp },
     { key: 'heatmap', label: '热力图', Icon: Grid3x3 },
-    { key: 'mood', label: '心情', Icon: Heart },
-    { key: 'tags', label: '标签', Icon: Tag },
   ];
 
   const handleShare = async () => {
@@ -327,6 +354,48 @@ export default function ReflectionStatsScreen() {
     );
   };
 
+  const renderLinkedTaskTab = () => {
+    const { linkedCount, rate, groups } = linkedTaskStats;
+    const maxCount = groups[0]?.count ?? 1;
+
+    return (
+      <View style={styles.tabContent}>
+        {/* Overview */}
+        <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
+          <View style={[styles.overviewCard, { flex: 1, backgroundColor: TH.card, borderColor: TH.border }]}>
+            <Text style={[styles.overviewValue, { color: P }]}>{linkedCount}</Text>
+            <Text style={[styles.overviewLabel, { color: TH.sub }]}>关联感念</Text>
+          </View>
+          <View style={[styles.overviewCard, { flex: 1, backgroundColor: TH.card, borderColor: TH.border }]}>
+            <Text style={[styles.overviewValue, { color: P }]}>{rate}%</Text>
+            <Text style={[styles.overviewLabel, { color: TH.sub }]}>关联率</Text>
+          </View>
+        </View>
+
+        <Text style={[styles.sectionTitle, { color: TH.sub }]}>按任务分组</Text>
+        {groups.length === 0 ? (
+          <Text style={[styles.emptyText, { color: TH.sub }]}>暂无关联任务数据</Text>
+        ) : (
+          <View style={styles.moodList}>
+            {groups.map((g, idx) => {
+              const pct = (g.count / maxCount) * 100;
+              return (
+                <View key={idx} style={styles.moodItem}>
+                  <Text style={[styles.rankingIndex, { color: idx < 3 ? P : TH.sub }]}>{idx + 1}</Text>
+                  <Text style={[styles.rankingTag, { color: TH.text }]} numberOfLines={1}>{g.name}</Text>
+                  <View style={styles.rankingBarContainer}>
+                    <View style={[styles.rankingBar, { width: `${pct}%`, backgroundColor: P }]} />
+                  </View>
+                  <Text style={[styles.rankingCount, { color: TH.sub }]}>{g.count}</Text>
+                </View>
+              );
+            })}
+          </View>
+        )}
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* Header with back button */}
@@ -394,10 +463,11 @@ export default function ReflectionStatsScreen() {
         </View>
 
         {/* Tab content */}
+        {activeTab === 'tags' && renderTagsTab()}
+        {activeTab === 'mood' && renderMoodTab()}
+        {activeTab === 'linkedTask' && renderLinkedTaskTab()}
         {activeTab === 'trend' && renderTrendTab()}
         {activeTab === 'heatmap' && renderHeatmapTab()}
-        {activeTab === 'mood' && renderMoodTab()}
-        {activeTab === 'tags' && renderTagsTab()}
       </ScrollView>
 
       {/* Share button */}
