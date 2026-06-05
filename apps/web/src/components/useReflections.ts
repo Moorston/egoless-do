@@ -120,12 +120,12 @@ export function useReflections() {
   // ── Dynamic counts (based on other active filters) ──────────
   const dynamicTagCounts = useMemo(
     () => computeDynamicTagCounts(store.reflections ?? [], filters),
-    [store.reflections, filters.moods, filters.search, filters.dateRange, filters.hasLink, filters.isPinned],
+    [store.reflections, filters.moods, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
   );
 
   const dynamicMoodCounts = useMemo(
     () => computeDynamicMoodCounts(store.reflections ?? [], filters),
-    [store.reflections, filters.tags, filters.search, filters.dateRange, filters.hasLink, filters.isPinned],
+    [store.reflections, filters.tags, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
   );
 
   // ── Stats ────────────────────────────────────────────────────
@@ -238,8 +238,8 @@ export function useReflections() {
     setFilters({ ...filters, hasLink: v, collectionId: undefined });
   }, [filters, setFilters]);
 
-  const setIsPinned = useCallback((v?: boolean) => {
-    setFilters({ ...filters, isPinned: v, collectionId: undefined });
+  const setHasLinkedTask = useCallback((v?: boolean) => {
+    setFilters({ ...filters, hasLinkedTask: v, collectionId: undefined });
   }, [filters, setFilters]);
 
   const applyCollection = useCallback((col: SmartCollection) => {
@@ -263,8 +263,8 @@ export function useReflections() {
       setFilters({ ...filters, dateRange: undefined, collectionId: undefined });
     } else if (key === 'hasLink') {
       setFilters({ ...filters, hasLink: undefined, collectionId: undefined });
-    } else if (key === 'isPinned') {
-      setFilters({ ...filters, isPinned: undefined, collectionId: undefined });
+    } else if (key === 'hasLinkedTask') {
+      setFilters({ ...filters, hasLinkedTask: undefined, collectionId: undefined });
     } else if (key === 'collectionId') {
       setFilters({ ...filters, collectionId: undefined });
     }
@@ -282,7 +282,7 @@ export function useReflections() {
       list.push({ key: 'dateRange', label: `${from} - ${to}` });
     }
     if (filters.hasLink) list.push({ key: 'hasLink', label: '有链接' });
-    if (filters.isPinned) list.push({ key: 'isPinned', label: '已置顶' });
+    if (filters.hasLinkedTask) list.push({ key: 'hasLinkedTask', label: '关联任务' });
     if (filters.collectionId) {
       const col = smartCollections.find(c => c.id === filters.collectionId);
       if (col) list.push({ key: 'collectionId', label: col.name });
@@ -302,7 +302,7 @@ export function useReflections() {
     moodTrendDays, setMoodTrendDays,
 
     // Filter actions
-    toggleTag, toggleMood, setDateRange, setHasLink, setIsPinned,
+    toggleTag, toggleMood, setDateRange, setHasLink, setHasLinkedTask,
     applyCollection, clearAllFilters, removeFilter,
     activeFilters, hasActiveFilters,
 

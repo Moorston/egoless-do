@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { X, Link, Pin, Calendar } from 'lucide-react-native';
+import { X, Link, Calendar, ListChecks } from 'lucide-react-native';
 import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL } from '@egoless-do/core';
 import { useTheme, useT, PillSelector } from '../../components/UI';
 
@@ -11,7 +11,7 @@ interface Props {
     tags: string[];
     moods: string[];
     hasLink?: boolean;
-    isPinned?: boolean;
+    hasLinkedTask?: boolean;
     dateRange?: { from: number; to: number };
   };
   onApplyFilters: (filters: any) => void;
@@ -54,12 +54,12 @@ function FilterDrawerComponent({
     onApplyFilters({ ...filters, hasLink: filters.hasLink ? undefined : true });
   }, [filters, onApplyFilters]);
 
-  const handleToggleIsPinned = useCallback(() => {
-    onApplyFilters({ ...filters, isPinned: filters.isPinned ? undefined : true });
+  const handleToggleHasLinkedTask = useCallback(() => {
+    onApplyFilters({ ...filters, hasLinkedTask: filters.hasLinkedTask ? undefined : true });
   }, [filters, onApplyFilters]);
 
   const handleClearAll = useCallback(() => {
-    onApplyFilters({ tags: [], moods: [], hasLink: undefined, isPinned: undefined, dateRange: undefined });
+    onApplyFilters({ tags: [], moods: [], hasLink: undefined, hasLinkedTask: undefined, dateRange: undefined });
   }, [onApplyFilters]);
 
   if (!visible) return null;
@@ -131,17 +131,17 @@ function FilterDrawerComponent({
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={handleToggleIsPinned}
+                onPress={handleToggleHasLinkedTask}
                 style={[
                   styles.filterChip,
                   {
-                    backgroundColor: filters.isPinned ? `${P}20` : TH.card,
-                    borderColor: filters.isPinned ? P : TH.border,
+                    backgroundColor: filters.hasLinkedTask ? `${P}20` : TH.card,
+                    borderColor: filters.hasLinkedTask ? P : TH.border,
                   },
                 ]}
               >
-                <Pin size={14} color={filters.isPinned ? P : TH.sub} />
-                <Text style={{ color: filters.isPinned ? P : TH.text, fontSize: FONT_SMALL }}>已置顶</Text>
+                <ListChecks size={14} color={filters.hasLinkedTask ? P : TH.sub} />
+                <Text style={{ color: filters.hasLinkedTask ? P : TH.text, fontSize: FONT_SMALL }}>关联任务</Text>
               </TouchableOpacity>
             </View>
           </View>

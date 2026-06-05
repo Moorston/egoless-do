@@ -61,6 +61,7 @@ export function getLinkedPlanItem(
 export function filterReflections(
   reflections: MindReflection[],
   filters: ReflectionFilters,
+  planItems?: PlanItem[],
 ): MindReflection[] {
   return reflections.filter(r => {
     if (r.deleted) return false;
@@ -68,7 +69,13 @@ export function filterReflections(
     if (filters.tags.length > 0 && !filters.tags.some(t => tags.includes(t))) return false;
     if (filters.moods.length > 0 && !filters.moods.includes(r.mood)) return false;
     if (filters.hasLink && !r.link) return false;
-    if (filters.isPinned && !r.isPinned) return false;
+    if (filters.hasLinkedTask) {
+      if (!r.linkedPlanItemId) return false;
+      if (planItems) {
+        const item = planItems.find(i => i.id === r.linkedPlanItemId);
+        if (!item || item.deleted) return false;
+      }
+    }
     if (filters.dateRange) {
       const ts = r.timestamp ?? 0;
       if (ts < filters.dateRange.from || ts > filters.dateRange.to) return false;
@@ -108,7 +115,7 @@ export function computeDynamicTagCounts(
     if (r.deleted) return false;
     if (filters.moods.length > 0 && !filters.moods.includes(r.mood)) return false;
     if (filters.hasLink && !r.link) return false;
-    if (filters.isPinned && !r.isPinned) return false;
+    if (filters.hasLinkedTask && !r.linkedPlanItemId) return false;
     if (filters.dateRange) {
       const ts = r.timestamp ?? 0;
       if (ts < filters.dateRange.from || ts > filters.dateRange.to) return false;
@@ -139,7 +146,7 @@ export function computeDynamicMoodCounts(
     if (r.deleted) return false;
     if (filters.tags.length > 0 && !filters.tags.some(t => r.tags.includes(t))) return false;
     if (filters.hasLink && !r.link) return false;
-    if (filters.isPinned && !r.isPinned) return false;
+    if (filters.hasLinkedTask && !r.linkedPlanItemId) return false;
     if (filters.dateRange) {
       const ts = r.timestamp ?? 0;
       if (ts < filters.dateRange.from || ts > filters.dateRange.to) return false;

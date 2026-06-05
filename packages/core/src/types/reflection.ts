@@ -27,7 +27,7 @@ export interface ReflectionFilters {
     to: number;
   };
   hasLink?: boolean;        // 仅有链接
-  isPinned?: boolean;       // 仅置顶
+  hasLinkedTask?: boolean;  // 仅关联计划任务
   collectionId?: string;    // 当前激活的智能集合 ID
 }
 
