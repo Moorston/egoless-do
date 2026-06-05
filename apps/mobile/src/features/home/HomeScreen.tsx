@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import {
   View, Text, ScrollView, TouchableOpacity,
   StatusBar, Modal, TextInput,
+  KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,8 +16,9 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Utensils, Scale, Footprints,
   Droplets, Pencil, Check, X, Shield, Star, Sparkles,
-  PersonStanding, ClipboardList, Target,
+  PersonStanding, ClipboardList, Target, BarChart3,
 } from 'lucide-react-native';
+import CheckinStatsModal from './CheckinStatsModal';
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
 
@@ -38,6 +40,7 @@ export default function HomeScreen() {
   const parsed = useMemo(() => parseCheckinNote(todayRecord?.note ?? ''), [todayRecord]);
 
   // ── Local state (initialized from existing record) ──
+  const [showStatsModal, setShowStatsModal] = useState(false);
   const [localDone, setLocalDone] = useState<boolean | null>(() => todayRecord?.done ?? null);
   const [practices, setPractices] = useState(() => ({
     sit: parsed.practices.includes('sit'),
@@ -46,13 +49,7 @@ export default function HomeScreen() {
   }));
   const [note, setNote] = useState(() => parsed.userNote);
   const [weight, setWeight] = useState(() => todayRecord?.weight != null ? String(todayRecord.weight) : '');
-  const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    (store.habits ?? []).filter(h => h.status === 'inProgress').forEach(h => {
-      initial[h.id] = h.checkedDates?.includes(today) ?? false;
-    });
-    return initial;
-  });
+  // habitCheckins derived from store — no local state needed
 
   // ── Plan items ──
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
@@ -65,17 +62,7 @@ export default function HomeScreen() {
     if (!activePlan) return [];
     return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, today);
   }, [store.dailyCustomTodos, activePlan, today]);
-  const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    if (!activePlan) return initial;
-    const items = (store.planItems ?? []).filter(i => !i.deleted && i.planId === activePlan.id);
-    items.forEach(item => {
-      if (item.link === 'manual' || item.link === 'reflection') {
-        initial[item.id] = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-      }
-    });
-    return initial;
-  });
+  // planToggles derived from store — no local state needed
 
   // ── Modals ──
   const [showFood, setShowFood] = useState(false);
@@ -118,11 +105,6 @@ export default function HomeScreen() {
     });
     setNote(p.userNote);
     setWeight(todayRecord.weight != null ? String(todayRecord.weight) : '');
-    const initial: Record<string, boolean> = {};
-    activeHabits.forEach(h => {
-      initial[h.id] = h.checkedDates?.includes(today) ?? false;
-    });
-    setHabitCheckins(initial);
   }, [todayRecord?.date, todayRecord?.updatedAt]);
 
   // ── Build JSON note ──
@@ -135,14 +117,13 @@ export default function HomeScreen() {
     if (practices.stand) pr.push('stand');
     if (practices.chant) pr.push('chant');
     if (pr.length) noteData.practices = pr;
-    const checkedHabits = Object.entries(habitCheckins)
-      .filter(([, checked]) => checked)
-      .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
-      .filter(Boolean);
+    const checkedHabits = (store.habits ?? [])
+      .filter(h => h.status === 'inProgress' && h.checkedDates?.includes(today))
+      .map(h => h.name);
     if (checkedHabits.length) noteData.habits = checkedHabits;
     if (totalCal > 0) noteData.food = totalCal;
     return JSON.stringify(noteData);
-  }, [note, practices, habitCheckins, store.waterMl, totalCal, store.habits]);
+  }, [note, practices, store.waterMl, totalCal, store.habits, today]);
 
   // ── Real-time save ──
   const saveField = useCallback((doneOverride?: boolean) => {
@@ -156,7 +137,6 @@ export default function HomeScreen() {
     if (isLocked) return;
     setPractices(p => {
       const next = { ...p, [key]: !p[key] };
-      // Defer save to next tick so state is updated
       setTimeout(() => {
         const pr: string[] = [];
         if (next.sit) pr.push('sit');
@@ -166,10 +146,9 @@ export default function HomeScreen() {
         if (note) noteData.note = note;
         if (store.waterMl > 0) noteData.water = store.waterMl;
         if (pr.length) noteData.practices = pr;
-        const checkedHabits = Object.entries(habitCheckins)
-          .filter(([, c]) => c)
-          .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
-          .filter(Boolean);
+        const checkedHabits = (store.habits ?? [])
+          .filter(h => h.status === 'inProgress' && h.checkedDates?.includes(today))
+          .map(h => h.name);
         if (checkedHabits.length) noteData.habits = checkedHabits;
         if (totalCal > 0) noteData.food = totalCal;
         const w = weight ? parseFloat(weight) : undefined;
@@ -177,16 +156,12 @@ export default function HomeScreen() {
       }, 0);
       return next;
     });
-  }, [isLocked, note, habitCheckins, store, totalCal, weight, localDone]);
+  }, [isLocked, note, store, totalCal, weight, localDone, today]);
 
   const toggleHabit = useCallback((id: string) => {
     if (isLocked) return;
-    setHabitCheckins(prev => {
-      const next = { ...prev, [id]: !prev[id] };
-      store.checkinHabit(id, today);
-      setTimeout(() => saveField(), 0);
-      return next;
-    });
+    store.checkinHabit(id, today);
+    setTimeout(() => saveField(), 0);
   }, [isLocked, store, today, saveField]);
 
   const addWater = useCallback(() => {
@@ -222,22 +197,26 @@ export default function HomeScreen() {
 
   const togglePlanItem = useCallback((itemId: string) => {
     if (isLocked) return;
-    const storeDone = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
-    const current = planToggles[itemId] ?? storeDone;
-    setPlanToggles(prev => ({ ...prev, [itemId]: !current }));
+    const current = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
     if (current) {
       store.uncheckinPlanItem(itemId);
     } else {
       store.checkinPlanItem(itemId);
     }
-  }, [isLocked, planCheckins, today, planToggles, store]);
+  }, [isLocked, planCheckins, today, store]);
 
   const toggleCustomTodo = useCallback((id: string) => {
     if (isLocked) return;
     store.toggleDailyCustomTodo(id);
   }, [isLocked, store]);
 
-  // ── Auto-sync health data ──
+  // ── Auto-sync plan items and health data on mount ──
+  useEffect(() => {
+    store.checkAutoStatus();
+    store.autoSyncPlanItems();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (!store.healthSyncEnabled) return;
     import('../health/HealthService').then(({ performHealthSync }) => {
@@ -270,6 +249,10 @@ export default function HomeScreen() {
   const warnBg = cardAccent('#F59E0B', TH.bg, 0.45);
 
   return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <StatusBar barStyle={TH === THEMES.light ? 'dark-content' : 'light-content'} />
       <SimpleHeader routeName="Home" />
@@ -310,17 +293,19 @@ export default function HomeScreen() {
 
             {/* Stats row */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <View style={{ alignItems: 'center', flex: 1 }}>
+              <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
                 <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('totalCompleted')}</Text>
                 <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{totalCompleted}</Text>
                 <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
-              </View>
+                <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+              </TouchableOpacity>
               <View style={{ width: 1, height: 40, backgroundColor: 'rgba(255,255,255,.2)' }} />
-              <View style={{ alignItems: 'center', flex: 1 }}>
+              <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
                 <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('streak')}</Text>
                 <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{store.streak}</Text>
                 <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
-              </View>
+                <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+              </TouchableOpacity>
             </View>
           </LinearGradient>
 
@@ -384,9 +369,8 @@ export default function HomeScreen() {
               <>
                 <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('planTodoList')}</Text>
                 {todayPlanItems.map(item => {
-                  const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-                  const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
-                  const done = planToggles[item.id] ?? storeDone;
+                  const done = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
+                  const autoChecked = done && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
                   return (
                     <View key={item.id} style={{
                       flexDirection: 'row', alignItems: 'center',
@@ -397,7 +381,7 @@ export default function HomeScreen() {
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                         <ClipboardList size={16} color={P} />
                         <View>
-                          <Text style={{ color: done ? TH.sub : TH.text, fontSize: FONT_BODY, textDecorationLine: done ? 'line-through' : 'none' }} numberOfLines={1}>{item.name}</Text>
+                          <Text style={{ color: TH.text, fontSize: FONT_BODY }} numberOfLines={1}>{item.name}</Text>
                           <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
                             {item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
                           </Text>
@@ -431,7 +415,7 @@ export default function HomeScreen() {
                   }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                       <Sparkles size={16} color={P} />
-                      <Text style={{ color: todo.done ? TH.sub : TH.text, fontSize: FONT_BODY, textDecorationLine: todo.done ? 'line-through' : 'none', opacity: todo.done ? 0.6 : 1 }}>{todo.name}</Text>
+                      <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{todo.name}</Text>
                     </View>
                     {isLocked ? (
                       todo.done ? <Check size={18} color={COLORS.GREEN} /> : <X size={18} color={TH.sub} />
@@ -447,28 +431,31 @@ export default function HomeScreen() {
             {activeHabits.length > 0 && (
               <>
                 <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('checkinHabitCheck')}</Text>
-                {activeHabits.map(h => (
-                  <View key={h.id} style={{
-                    flexDirection: 'row', alignItems: 'center',
-                    justifyContent: 'space-between', paddingVertical: 12,
-                    borderBottomWidth: 1, borderBottomColor: TH.border,
-                  }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                      <Star size={16} color={P} />
-                      <View>
-                        <Text style={{ color: isLocked && !habitCheckins[h.id] ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isLocked && !habitCheckins[h.id] ? 0.5 : 1 }}>{h.name}</Text>
-                        <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
+                {activeHabits.map(h => {
+                  const habitDone = h.checkedDates?.includes(today) ?? false;
+                  return (
+                    <View key={h.id} style={{
+                      flexDirection: 'row', alignItems: 'center',
+                      justifyContent: 'space-between', paddingVertical: 12,
+                      borderBottomWidth: 1, borderBottomColor: TH.border,
+                    }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                        <Star size={16} color={P} />
+                        <View>
+                          <Text style={{ color: isLocked && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isLocked && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
+                          <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
+                        </View>
                       </View>
+                      {isLocked ? (
+                        habitDone
+                          ? <Check size={18} color={COLORS.GREEN} />
+                          : <X size={18} color={TH.sub} />
+                      ) : (
+                        <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} />
+                      )}
                     </View>
-                    {isLocked ? (
-                      habitCheckins[h.id]
-                        ? <Check size={18} color={COLORS.GREEN} />
-                        : <X size={18} color={TH.sub} />
-                    ) : (
-                      <Checkbox on={!!habitCheckins[h.id]} onChange={() => toggleHabit(h.id)} />
-                    )}
-                  </View>
-                ))}
+                  );
+                })}
               </>
             )}
 
@@ -678,6 +665,12 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
+
+      <CheckinStatsModal
+        visible={showStatsModal}
+        onClose={() => setShowStatsModal(false)}
+      />
     </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }

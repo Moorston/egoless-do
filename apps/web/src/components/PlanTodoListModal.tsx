@@ -80,8 +80,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontSize: FONT_BUTTON, fontWeight: 500, color: done ? TH.sub : TH.text,
-                      textDecoration: done ? 'line-through' : 'none',
+                      fontSize: FONT_BUTTON, fontWeight: 500, color: TH.text,
                     }}>{item.name}</div>
                     {item.description && (
                       <div style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

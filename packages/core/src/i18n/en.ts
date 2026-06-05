@@ -31,6 +31,7 @@ export const en: I18nKeys = {
   interrupted:'Interrupted', fastingHistory:'Fasting History', meditationHistory:'Meditation History',
   gracePeriodHint:"1-day grace period, occasional misses won't break your streak",
   totalCompleted:'Total Completed', longestStreak:'Longest Streak',
+  monthCompletionRate:'Month Rate', monthCheckinDays:'Month Days', avgPerWeek:'Avg/Week', checkinStats:'Check-in Stats', total:'of',
   savedCalories:'Calories Saved', savedMeals:'Meals Saved',
   kcalUnit:'kcal', mealUnit:'meals',
   waterGoalSetting:'Set Daily Water Goal', waterGoalHint:'Enter value between 500-3000',

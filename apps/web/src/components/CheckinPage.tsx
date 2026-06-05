@@ -213,8 +213,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
                       <Checkbox on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
-                          fontSize: FONT_BODY, color: done ? TH.sub : TH.text,
-                          textDecoration: done ? 'line-through' : 'none',
+                          fontSize: FONT_BODY, color: TH.text,
                           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                         }}>{item.name}</div>
                       </div>
@@ -244,8 +243,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
                     <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id)} />
                     <div style={{
-                      fontSize: FONT_BODY, color: todo.done ? TH.sub : TH.text,
-                      textDecoration: todo.done ? 'line-through' : 'none',
+                      fontSize: FONT_BODY, color: TH.text,
                     }}>{todo.name}</div>
                   </div>
                 </div>

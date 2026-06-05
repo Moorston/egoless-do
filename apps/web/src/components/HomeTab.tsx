@@ -8,7 +8,8 @@ import { useWebStore } from '../store/useWebStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useOverlay } from './useOverlay';
 import { useFoodSearch, FOOD_ICON_MAP } from './useFoodSearch';
-import { CalendarCheck, Trophy, Zap, Utensils, Scale, Droplets, Pencil, Check, ClipboardList, Shield, X } from 'lucide-react';
+import { CalendarCheck, Trophy, Zap, Utensils, Scale, Droplets, Pencil, Check, ClipboardList, Shield, X, BarChart3 } from 'lucide-react';
+import CheckinStatsModal from './CheckinStatsModal';
 
 const WATER_GOAL_MIN = 500;
 const WATER_GOAL_MAX = 3000;
@@ -55,6 +56,7 @@ export default function HomeTab() {
   const [wgi, setWgi] = useState(String(waterGoal));
   const [showCG, setShowCG] = useState(false);
   const [cgi, setCgi] = useState(String(calGoal));
+  const [showStatsModal, setShowStatsModal] = useState(false);
 
   const {
     fn, setFn, fc, setFc, fnote, setFnote,
@@ -173,11 +175,12 @@ export default function HomeTab() {
       ); })()}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        {statsData.map((item) => { const tc = cardTextColor(TH.bg); return (
-          <div key={item.label} style={{ background: item.color, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+        {statsData.map((item, index) => { const tc = cardTextColor(TH.bg); return (
+          <div key={item.label} onClick={index < 2 ? () => setShowStatsModal(true) : undefined} style={{ background: item.color, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, cursor: index < 2 ? 'pointer' : 'default' }}>
             <div style={{ fontSize: 26, color: tc }}><item.Icon size={26} style={{verticalAlign:'middle'}} /></div>
             <div style={{ fontSize: FONT_BODY, color: tc, opacity: 0.85, textAlign: 'center' }}>{item.label}</div>
             <div style={{ fontWeight: 700, color: tc, fontSize: 26 }}>{item.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {item.unit}</span></div>
+            {index < 2 && <BarChart3 size={12} color={`${tc}80`} />}
           </div>
         ); })}
       </div>
@@ -339,6 +342,11 @@ export default function HomeTab() {
           </div>
         </div>
       )}
+
+      <CheckinStatsModal
+        visible={showStatsModal}
+        onClose={() => setShowStatsModal(false)}
+      />
     </>
   );
 }

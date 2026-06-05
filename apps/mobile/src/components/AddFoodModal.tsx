@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Animated,
   KeyboardAvoidingView, Keyboard, Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
 import { useTheme, useT, ThemedInput } from './UI';
 import { COLORS, FOOD_PRESETS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK } from '@egoless-do/core';
@@ -26,6 +27,7 @@ export default function AddFoodModal({ visible, onClose }: Props) {
   const T  = useT();
   const P  = TH.primary;
   const store = useAppStore();
+  const insets = useSafeAreaInsets();
 
   const [search, setSearch]     = useState('');
   const [tab, setTab]           = useState(0);
@@ -296,6 +298,12 @@ export default function AddFoodModal({ visible, onClose }: Props) {
               </View>
             </TouchableOpacity>
           )}
+
+          {/* Cancel button */}
+          <TouchableOpacity onPress={() => { onClose(); resetAll(); }}
+            style={{ padding: 14, paddingBottom: 14 + insets.bottom, alignItems: 'center', borderTopWidth: 1, borderTopColor: TH.border, flexGrow: 0, flexShrink: 0 }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>{T('commonCancel')}</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Toast */}

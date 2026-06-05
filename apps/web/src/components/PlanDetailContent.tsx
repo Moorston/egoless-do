@@ -474,8 +474,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{
-                            fontSize: FONT_BODY, fontWeight: 500, color: done ? TH.sub : TH.text,
-                            textDecoration: done ? 'line-through' : 'none',
+                            fontSize: FONT_BODY, fontWeight: 500, color: TH.text,
                           }}>{item.name}</div>
                           {item.description && (
                             <div style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -529,8 +528,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{
-                          fontSize: FONT_BODY, fontWeight: 500, color: todo.done ? TH.sub : TH.text,
-                          textDecoration: todo.done ? 'line-through' : 'none',
+                          fontSize: FONT_BODY, fontWeight: 500, color: TH.text,
                         }}>{todo.name}</div>
                       </div>
                       <button
@@ -647,7 +645,6 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                               </div>
                               <span style={{
                                 fontSize: FONT_BODY, color: TH.text, flex: 1,
-                                textDecoration: item.done ? 'none' : 'line-through',
                               }}>{item.name}</span>
                               {item.type === 'plan' && <LinkBadge link={item.link as PlanItemLink} T={T} P={P} />}
                               {item.type === 'custom' && (

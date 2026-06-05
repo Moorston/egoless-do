@@ -26,6 +26,7 @@ export interface I18nKeys {
   fastingHistory: string; meditationHistory: string;
   gracePeriodHint: string; totalCompleted: string;
   longestStreak: string; savedCalories: string; savedMeals: string;
+  monthCompletionRate: string; monthCheckinDays: string; avgPerWeek: string; checkinStats: string; total: string;
   kcalUnit: string; mealUnit: string; waterGoalSetting: string;
   waterGoalHint: string; calGoalSetting: string; calGoalHint: string;
   reflectionPlaceholder: string; addTags: string; mood: string;

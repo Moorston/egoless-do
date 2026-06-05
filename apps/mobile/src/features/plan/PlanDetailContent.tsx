@@ -510,8 +510,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           <View style={{ flex: 1, minWidth: 0 }}>
                             <Text style={{
                               fontSize: FONT_BODY, fontWeight: '500',
-                              color: done ? TH.sub : TH.text,
-                              textDecorationLine: done ? 'line-through' : 'none',
+                              color: TH.text,
                             }}>{item.name}</Text>
                             {item.description ? (
                               <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{item.description}</Text>
@@ -552,8 +551,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{
                             fontSize: FONT_BODY, fontWeight: '500',
-                            color: todo.done ? TH.sub : TH.text,
-                            textDecorationLine: todo.done ? 'line-through' : 'none',
+                            color: TH.text,
                           }}>{todo.name}</Text>
                         </View>
                         <TouchableOpacity
