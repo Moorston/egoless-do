@@ -1,14 +1,14 @@
 'use client';
 
 import { useMemo } from 'react';
-import { THEMES, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK } from '@egoless-do/core';
+import { THEMES, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, FONT_BODY, FONT_BUTTON, FONT_SUB } from '@egoless-do/core';
 import { useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useShallow } from 'zustand/react/shallow';
 import LineChart from './charts/LineChart';
 import BarChart from './charts/BarChart';
 import CalendarGrid from './charts/CalendarGrid';
-import { Flame, Sparkles, Brain, Circle, Timer, Utensils, CalendarCheck, CalendarDays, Zap, PersonStanding, Dumbbell, BarChart3, TrendingUp, Shield } from 'lucide-react';
+import { Flame, Sparkles, Brain, Circle, Timer, CalendarCheck, CalendarDays, Zap, PersonStanding, Dumbbell, BarChart3, TrendingUp, Shield } from 'lucide-react';
 
 export default function StatsTab() {
   const {
@@ -57,20 +57,20 @@ export default function StatsTab() {
 
   const graceCount = (graceHistory ?? []).length;
   const keyMetrics = [
-    { label: T('streak'), value: `${streak} ${T('days')}`, Icon: Flame, bg: '#F97316' },
-    { label: T('statsReflections'), value: `${(reflections ?? []).length} ${T('fastTimes')}`, Icon: Sparkles, bg: P },
-    { label: T('statsMeditation'), value: `${totalMedMinutes} ${T('medMinutes')}`, Icon: Brain, bg: '#22C55E' },
-    { label: T('statsActiveHabits'), value: `${activeHabits} ${T('habitDays')}`, Icon: Circle, bg: '#3B82F6' },
-    { label: T('totalFasting'), value: `${totalFastHours}h`, Icon: Timer, bg: '#8B5CF6' },
-    { label: T('graceStatsTitle'), value: `${graceCount} ${T('graceUsedTimes')}`, Icon: Shield, bg: '#F59E0B' },
+    { label: T('streak'), value: `${streak}`, unit: T('days'), Icon: Flame },
+    { label: T('statsReflections'), value: `${(reflections ?? []).length}`, unit: T('fastTimes'), Icon: Sparkles },
+    { label: T('statsMeditation'), value: `${totalMedMinutes}`, unit: T('medMinutes'), Icon: Brain },
+    { label: T('statsActiveHabits'), value: `${activeHabits}`, unit: T('habitDays'), Icon: Circle },
+    { label: T('totalFasting'), value: `${totalFastHours}`, unit: 'h', Icon: Timer },
+    { label: T('graceStatsTitle'), value: `${graceCount}`, unit: T('graceUsedTimes'), Icon: Shield },
   ];
 
   const exerciseMetrics = [
-    { label: T('exerciseWeekKm'), value: `${weekKm.toFixed(1)} km`, Icon: CalendarCheck, bg: '#00897B' },
-    { label: T('exerciseMonthKm'), value: `${monthKm.toFixed(1)} km`, Icon: CalendarDays, bg: '#5C6BC0' },
-    { label: T('exerciseBestPace'), value: `${bestPaceStr} /km`, Icon: Zap, bg: '#FF6F00' },
-    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLogData.reduce((s, e) => s + e.durationSec, 0) / 60)} ${T('exerciseMin')}`, Icon: PersonStanding, bg: '#E91E63' },
-    { label: T('exerciseTotalCount'), value: `${exerciseLogData.length} ${T('fastTimes')}`, Icon: Dumbbell, bg: '#9C27B0' },
+    { label: T('exerciseWeekKm'), value: `${weekKm.toFixed(1)}`, unit: 'km', Icon: CalendarCheck },
+    { label: T('exerciseMonthKm'), value: `${monthKm.toFixed(1)}`, unit: 'km', Icon: CalendarDays },
+    { label: T('exerciseBestPace'), value: bestPaceStr, unit: '/km', Icon: Zap },
+    { label: T('exerciseTotalTime'), value: `${Math.round(exerciseLogData.reduce((s, e) => s + e.durationSec, 0) / 60)}`, unit: T('exerciseMin'), Icon: PersonStanding },
+    { label: T('exerciseTotalCount'), value: `${exerciseLogData.length}`, unit: T('fastTimes'), Icon: Dumbbell },
   ];
 
   const cardStyle: React.CSSProperties = { ...cs(TH), padding: 16 };
@@ -86,31 +86,31 @@ export default function StatsTab() {
       </div>
 
       {/* ── Key Metrics ── */}
-      <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.sub, marginBottom: 10 }}>{T('statsKeyMetrics')}</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
+      <div style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.sub, marginBottom: 10 }}>{T('statsKeyMetrics')}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
         {keyMetrics.map((s, i) => (
           <div key={i} style={{
-            background: s.bg, borderRadius: 14, padding: 14,
-            display: 'flex', flexDirection: 'column', gap: 3,
-          } as React.CSSProperties}>
-            <div style={{ fontSize: FONT_BACK, color: '#fff' }}><s.Icon size={20} /></div>
-            <div style={{ fontSize: FONT_TITLE, fontWeight: 800, color: '#fff', marginTop: 2 }}>{s.value}</div>
-            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.75)' }}>{s.label}</div>
+            background: TH.card, borderRadius: 14, padding: 16, border: `1px solid ${TH.border}`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+          }}>
+            <s.Icon size={26} color={P} />
+            <span style={{ fontWeight: 700, color: P, fontSize: 26, textAlign: 'center' }}>{s.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400, color: TH.sub }}> {s.unit}</span></span>
+            <span style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{s.label}</span>
           </div>
         ))}
       </div>
 
       {/* ── Exercise Stats Grid ── */}
-      <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.sub, marginBottom: 10 }}>{T('statsExerciseStats')}</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 16 }}>
+      <div style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.sub, marginBottom: 10 }}>{T('statsExerciseStats')}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 16 }}>
         {exerciseMetrics.map((s, i) => (
           <div key={i} style={{
-            background: s.bg, borderRadius: 14, padding: 14,
-            display: 'flex', flexDirection: 'column', gap: 3,
-          } as React.CSSProperties}>
-            <div style={{ fontSize: FONT_BACK, color: '#fff' }}><s.Icon size={20} /></div>
-            <div style={{ fontSize: FONT_TITLE, fontWeight: 800, color: '#fff', marginTop: 2 }}>{s.value}</div>
-            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.75)' }}>{s.label}</div>
+            background: TH.card, borderRadius: 14, padding: 16, border: `1px solid ${TH.border}`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+          }}>
+            <s.Icon size={26} color={P} />
+            <span style={{ fontWeight: 700, color: P, fontSize: 26, textAlign: 'center' }}>{s.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400, color: TH.sub }}> {s.unit}</span></span>
+            <span style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{s.label}</span>
           </div>
         ))}
       </div>

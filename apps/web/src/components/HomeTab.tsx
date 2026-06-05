@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { COLORS, cardAccent, cardTextColor, dateStr, yesterday, getTodayFoodLog, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';
+import { COLORS, cardAccent, cardTextColor, dateStr, yesterday, getTodayFoodLog, getRecentFoods, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_HERO, FONT_CLOSE, FONT_EMPTY, FONT_STAT_SECTION, computeLongestStreak } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useTheme, useT, cs, inp, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -21,7 +21,7 @@ export default function HomeTab() {
     theme, language, streak, waterMl, waterGoal, calGoal, foodLog, habits,
     reflections, fastingHistory, checkinHistory, userProfile, customFoodPresets,
     graceHistory, weightUnit,
-    addFood, addWater, setWaterGoal, setCalGoal, addCustomFoodPreset,
+    addFood, deleteFood, addWater, setWaterGoal, setCalGoal, addCustomFoodPreset,
     checkAutoStatus, autoSyncPlanItems,
   } = useWebStore(useShallow((s) => ({
     theme: s.theme,
@@ -40,6 +40,7 @@ export default function HomeTab() {
     graceHistory: s.graceHistory,
     weightUnit: s.weightUnit,
     addFood: s.addFood,
+    deleteFood: s.deleteFood,
     addWater: s.addWater,
     setWaterGoal: s.setWaterGoal,
     setCalGoal: s.setCalGoal,
@@ -57,6 +58,8 @@ export default function HomeTab() {
   const [showCG, setShowCG] = useState(false);
   const [cgi, setCgi] = useState(String(calGoal));
   const [showStatsModal, setShowStatsModal] = useState(false);
+  const [editFood, setEditFood] = useState<{ name: string; cal: number } | null>(null);
+  const [editPortion, setEditPortion] = useState(1);
 
   const {
     fn, setFn, fc, setFc, fnote, setFnote,
@@ -72,6 +75,11 @@ export default function HomeTab() {
   }, []);
 
   const totalCal = useMemo(() => getTodayFoodLog(foodLog ?? []).reduce((a, f) => a + f.calories, 0), [foodLog]);
+  const recentFoods = useMemo(() => getRecentFoods(foodLog ?? [], 3), [foodLog]);
+  const todayFoods = useMemo(() => getTodayFoodLog(foodLog ?? []).filter(f => !f.deleted).slice(0, 3), [foodLog]);
+  const todayFoodTotal = useMemo(() => getTodayFoodLog(foodLog ?? []).filter(f => !f.deleted).length, [foodLog]);
+  const [portionFood, setPortionFood] = useState<{ name: string; calories: number } | null>(null);
+  const [portion, setPortion] = useState(1);
 
   const todayWeight = useMemo(() => {
     const today = dateStr();
@@ -205,23 +213,61 @@ export default function HomeTab() {
         <div style={{ height: 6, background: TH.border, borderRadius: 3, marginBottom: 12, overflow: 'hidden' }}>
           <div style={waterProgress} />
         </div>
-        <button onClick={() => addWater(250)} style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 600, fontSize: FONT_BUTTON, cursor: 'pointer' }}>+ 250ml</button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {[200, 250, 350, 500].map(ml => (
+            <button key={ml} onClick={() => addWater(ml)}
+              style={{ flex: 1, padding: 10, borderRadius: 10, border: `1px solid ${TH.border}`, background: TH.card, color: P, fontWeight: 600, fontSize: FONT_SUB, cursor: 'pointer' }}>
+              {ml}ml
+            </button>
+          ))}
+        </div>
       </div>
 
       <div style={cardStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-          <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: P }}>{T('addFood')}</span>
+          <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: P }}>{T('todayFood')}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: FONT_STAT_CARD, fontWeight: 700, color: P }}>{totalCal}</span>
           <span style={{ color: TH.sub, fontSize: FONT_BODY }}>/ {calGoal} kcal</span>
           <span style={{ cursor: 'pointer', fontSize: FONT_BODY }} onClick={() => { setCgi(String(calGoal)); setShowCG(true); }}><Pencil size={16} style={{verticalAlign:'middle'}} /></span>
         </div>
-        <div style={{ height: 4, background: TH.border, borderRadius: 2, marginTop: 8, marginBottom: 12, overflow: 'hidden' }}>
+        <div style={{ height: 4, background: TH.border, borderRadius: 2, marginTop: 8, overflow: 'hidden' }}>
           <div style={calProgress} />
         </div>
+
+        {/* Recent Foods */}
+        {recentFoods.length > 0 && (
+          <div style={{ marginTop: 10 }}>
+            <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('recentFoods')}</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {recentFoods.map(f => (
+                <div key={f.name} onClick={() => { setPortionFood(f); setPortion(1); }}
+                  style={{ flex: 1, borderRadius: 10, padding: 10, textAlign: 'center', background: TH.card, border: `1px solid ${TH.border}`, cursor: 'pointer' }}>
+                  <div style={{ color: TH.text, fontSize: FONT_SUB, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{f.name}</div>
+                  <div style={{ color: P, fontSize: FONT_SUB, fontWeight: 600 }}>{f.calories}kcal</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Today's Food List */}
+        {todayFoods.length > 0 && (
+          <div style={{ marginTop: 10 }}>
+            <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('todayFood')} ({todayFoodTotal})</div>
+            {todayFoods.map(f => (
+              <div key={f.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: `1px solid ${TH.border}` }}>
+                <span style={{ color: TH.text, fontSize: FONT_BODY, flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{f.name}</span>
+                <span style={{ color: P, fontSize: FONT_SUB, fontWeight: 600, margin: '0 8px' }}>{f.calories} kcal</span>
+                <span onClick={() => deleteFood(f.id)} style={{ cursor: 'pointer', color: TH.sub }}><X size={14} /></span>
+              </div>
+            ))}
+          </div>
+        )}
+
         <button onClick={() => { resetFoodForm(); setShowFood(true); }}
-          style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
+          style={{ width: '100%', padding: 12, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer', marginTop: 10 }}>
           {T('addFoodBtn')}
         </button>
       </div>
@@ -232,7 +278,7 @@ export default function HomeTab() {
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 20px 12px' }}>
               <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('addFood')}</div>
-              <button onClick={() => { setShowFood(false); resetFoodForm(); }} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={20} /></button>
+              <button onClick={() => { setShowFood(false); resetFoodForm(); setEditFood(null); }} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={20} /></button>
             </div>
 
             {/* Search */}
@@ -259,20 +305,57 @@ export default function HomeTab() {
             {/* Food list */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '0 20px' }}>
               {filteredItems.map((f, i) => (
-                <div key={`${f.name}-${i}`}
-                  onClick={() => {
-                    addFood({ name: f.name, calories: f.cal, note: '', timestamp: Date.now() });
-                    setShowFood(false); resetFoodForm();
-                  }}
-                  style={{
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: '12px 0', borderBottom: `1px solid ${TH.border}`, cursor: 'pointer',
-                  }}>
-                  <div>
-                    <div style={{ color: TH.text, fontSize: FONT_BUTTON }}>{f.name}</div>
-                    <div style={{ color: TH.sub, fontSize: FONT_BADGE }}>{f.unit}</div>
+                <div key={`${f.name}-${i}`}>
+                  <div
+                    onClick={() => { setEditFood({ name: f.name, cal: f.cal }); setEditPortion(1); }}
+                    onDoubleClick={() => { addFood({ name: f.name, calories: f.cal, note: '', timestamp: Date.now() }); setShowFood(false); resetFoodForm(); setEditFood(null); }}
+                    style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      padding: '12px 0', borderBottom: `1px solid ${TH.border}`, cursor: 'pointer',
+                      background: editFood?.name === f.name ? `${P}10` : 'transparent',
+                    }}>
+                    <div>
+                      <div style={{ color: TH.text, fontSize: FONT_BUTTON }}>{f.name}</div>
+                      <div style={{ color: TH.sub, fontSize: FONT_BADGE }}>{f.unit}</div>
+                    </div>
+                    <span style={{ color: P, fontSize: FONT_BUTTON, fontWeight: 600 }}>{f.cal} kcal</span>
                   </div>
-                  <span style={{ color: P, fontSize: FONT_BUTTON, fontWeight: 600 }}>{f.cal} kcal</span>
+                  {/* Inline portion selector */}
+                  {editFood?.name === f.name && (
+                    <div style={{ padding: '12px 0', borderBottom: `1px solid ${TH.border}` }}>
+                      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                        {[0.5, 1, 1.5, 2].map(p => (
+                          <button key={p} onClick={(e) => { e.stopPropagation(); setEditPortion(p); }}
+                            style={{
+                              flex: 1, padding: '8px 0', borderRadius: 10, border: 'none', cursor: 'pointer',
+                              background: editPortion === p ? P : TH.card, color: editPortion === p ? '#fff' : TH.text,
+                              fontWeight: editPortion === p ? 700 : 400, fontSize: FONT_SUB,
+                              outline: editPortion === p ? 'none' : `1px solid ${TH.border}`,
+                            }}>
+                            {p}份
+                          </button>
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                        <span style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('foodTotalCal')}</span>
+                        <span style={{ fontWeight: 700, color: '#F97316', fontSize: FONT_BODY }}>{Math.round(f.cal * editPortion)} kcal</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button onClick={(e) => { e.stopPropagation(); setEditFood(null); }}
+                          style={{ flex: 1, padding: 8, borderRadius: 10, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_SUB, cursor: 'pointer' }}>
+                          {T('cancel')}
+                        </button>
+                        <button onClick={(e) => {
+                          e.stopPropagation();
+                          addFood({ name: f.name, calories: Math.round(f.cal * editPortion), note: '', timestamp: Date.now() });
+                          setShowFood(false); resetFoodForm(); setEditFood(null);
+                        }}
+                          style={{ flex: 1, padding: 8, borderRadius: 10, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_SUB, cursor: 'pointer' }}>
+                          {T('confirm')}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
               {filteredItems.length === 0 && (
@@ -307,6 +390,50 @@ export default function HomeTab() {
                 {T('foodManualInput')}
               </button>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Portion Selector (for recent foods) */}
+      {portionFood && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.65)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
+          onClick={() => setPortionFood(null)}>
+          <div style={{ background: TH.cardSolid, borderRadius: 20, padding: 24, width: '100%', maxWidth: 340 }}
+            onClick={e => e.stopPropagation()}>
+            <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text, marginBottom: 4 }}>{portionFood.name}</div>
+            <div style={{ color: TH.sub, fontSize: FONT_BODY, marginBottom: 16 }}>{T('foodPerUnit')} {portionFood.calories} kcal</div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              {[0.5, 1, 1.5, 2].map(p => (
+                <button key={p} onClick={() => setPortion(p)}
+                  style={{
+                    flex: 1, padding: '10px 0', borderRadius: 12, border: 'none', cursor: 'pointer',
+                    background: portion === p ? P : TH.card, color: portion === p ? '#fff' : TH.text,
+                    fontWeight: portion === p ? 700 : 400, fontSize: FONT_BODY,
+                    outline: portion === p ? 'none' : `1px solid ${TH.border}`,
+                  }}>
+                  {p}份
+                </button>
+              ))}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
+              <span style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('foodTotalCal')}</span>
+              <span style={{ fontSize: 26, fontWeight: 800, color: '#F97316' }}>
+                {Math.round(portionFood.calories * portion)} <span style={{ fontSize: FONT_SUB, fontWeight: 400, color: TH.sub }}>kcal</span>
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setPortionFood(null)}
+                style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BODY, cursor: 'pointer' }}>
+                {T('cancel')}
+              </button>
+              <button onClick={() => {
+                addFood({ name: portionFood.name, calories: Math.round(portionFood.calories * portion), note: '', timestamp: Date.now() });
+                setPortionFood(null);
+              }}
+                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>
+                {T('confirm')}
+              </button>
+            </div>
           </div>
         </div>
       )}

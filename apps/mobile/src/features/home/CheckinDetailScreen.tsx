@@ -4,10 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote } from '@egoless-do/core';
+import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useRootNavigation, type RootStackParamList } from '../../navigation/hooks';
-import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check } from 'lucide-react-native';
+import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check, AlertTriangle } from 'lucide-react-native';
 
 type DetailRoute = RouteProp<RootStackParamList, 'CheckinDetail'>;
 
@@ -175,6 +175,25 @@ export default function CheckinDetailScreen() {
             <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 22 }}>{parsed.userNote}</Text>
           </View>
         ) : null}
+
+        {/* Incomplete Reason */}
+        {parsed.incompleteReason ? (() => {
+          const reason = INCOMPLETE_REASONS.find(r => r.code === parsed.incompleteReason);
+          const labelKey = `incompleteReason${parsed.incompleteReason.charAt(0).toUpperCase() + parsed.incompleteReason.slice(1)}` as string;
+          return (
+            <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: TH.border, marginTop: parsed.userNote ? 12 : 0 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: parsed.incompleteNote ? 8 : 0 }}>
+                <AlertTriangle size={18} color="#F59E0B" />
+                <Text style={{ fontSize: FONT_BODY, color: '#F59E0B', fontWeight: '600' }}>
+                  {reason?.icon} {T(labelKey as any)}
+                </Text>
+              </View>
+              {parsed.incompleteNote ? (
+                <Text style={{ fontSize: FONT_BODY, color: TH.sub, lineHeight: 22 }}>{parsed.incompleteNote}</Text>
+              ) : null}
+            </View>
+          );
+        })() : null}
       </ScrollView>
     </SafeAreaView>
   );

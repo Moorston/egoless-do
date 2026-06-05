@@ -172,6 +172,8 @@ export interface PlanSlice {
   canArchivePlan: (planId: string) => { allowed: boolean; linkedReflectionCount: number };
   /** 批量解绑计划中所有任务的感念关联 */
   unlinkAllReflectionsFromPlan: (planId: string) => void;
+  /** 发送计划延期提醒 */
+  notifyPlanDelayed: (delayedPlans: Plan[]) => void;
 }
 
 export interface RecycleBinSlice {

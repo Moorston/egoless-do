@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
 import CalendarGrid from '../../components/charts/CalendarGrid';
 import { useAppStore } from '../../store/useAppStore';
-import { FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_TITLE, computeLongestStreak } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 
 interface CheckinStatsModalProps {
@@ -18,6 +18,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   const T = useT();
   const P = TH.primary;
   const store = useAppStore();
+  const insets = useSafeAreaInsets();
 
   const checkinHistory = store.checkinHistory ?? [];
   const totalCompleted = useMemo(() => checkinHistory.filter((c: CheckinEntry) => c.done).length, [checkinHistory]);
@@ -70,19 +71,40 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
     { label: T('avgPerWeek'), value: avgPerWeek, sub: T('days') },
   ];
 
+  // 本月未完成原因分布
+  const reasonDistribution = useMemo(() => {
+    const counts: Record<string, number> = {};
+    checkinHistory
+      .filter((c: CheckinEntry) => {
+        if (!c.done) return false;
+        const d = new Date(c.date);
+        return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+      })
+      .forEach((c: CheckinEntry) => {
+        const parsed = parseCheckinNote(c.note ?? '');
+        if (parsed.incompleteReason) {
+          counts[parsed.incompleteReason] = (counts[parsed.incompleteReason] ?? 0) + 1;
+        }
+      });
+    return INCOMPLETE_REASONS
+      .map(r => ({ ...r, count: counts[r.code] ?? 0 }))
+      .filter(r => r.count > 0)
+      .sort((a, b) => b.count - a.count);
+  }, [checkinHistory, currentYear, currentMonth]);
+
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: `${TH.bg}E6` }}>
+      <View style={{ flex: 1, backgroundColor: `${TH.bg}E6` }}>
         <View style={{ flex: 1, backgroundColor: TH.bg }}>
           {/* Header */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: insets.top + 12, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: TH.border }}>
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('checkinStats')}</Text>
             <TouchableOpacity onPress={onClose} style={{ padding: 8 }}>
               <X size={24} color={TH.text} />
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 16 + insets.bottom }}>
             {/* Calendar */}
             <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
               <CalendarGrid
@@ -95,18 +117,34 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             </View>
 
             {/* Stats Grid */}
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: reasonDistribution.length > 0 ? 16 : 0 }}>
               {stats.map((stat, i) => (
-                <View key={i} style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, width: '48%', borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4, textAlign: 'center' }}>{stat.label}</Text>
-                  <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: P }}>{stat.value}</Text>
+                <View key={i} style={{ backgroundColor: TH.card, borderRadius: 14, padding: 12, width: '48%', borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 26, fontWeight: '700', color: P }}>{stat.value}</Text>
+                  <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{stat.label}</Text>
                   <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2, textAlign: 'center' }}>{stat.sub}</Text>
                 </View>
               ))}
             </View>
+
+            {/* Incomplete Reason Distribution */}
+            {reasonDistribution.length > 0 && (
+              <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: TH.border }}>
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('incompleteReasonStats')}</Text>
+                {reasonDistribution.map((r) => {
+                  const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
+                  return (
+                    <View key={r.code} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8 }}>
+                      <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{r.icon} {T(labelKey as any)}</Text>
+                      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: P }}>{r.count} {T('days')}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            )}
           </ScrollView>
         </View>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 }

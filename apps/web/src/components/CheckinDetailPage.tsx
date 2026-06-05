@@ -1,11 +1,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import { THEMES, COLORS, calculateCheckinStreak, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_SECTION, formatTime, parseCheckinNote } from '@egoless-do/core';
+import { THEMES, COLORS, calculateCheckinStreak, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_SECTION, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { ChevronLeft, CheckCircle2, PenLine, Star, Circle, Check, PersonStanding, BookOpen, Hand, Droplets, Utensils } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, PenLine, Star, Circle, Check, PersonStanding, BookOpen, Hand, Droplets, Utensils, AlertTriangle } from 'lucide-react';
 
 export default function CheckinDetailPage({ date, onClose }: { date: string; onClose: () => void }) {
   const store = useWebStore();
@@ -18,7 +18,7 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
   const PRACTICE_ICONS: Record<string, React.ReactNode> = { sit: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, stand: <PersonStanding size={16} style={{verticalAlign:'middle'}} />, chant: <BookOpen size={16} style={{verticalAlign:'middle'}} /> };
 
   const parsed = useMemo(() => {
-    if (!record) return { userNote: '', practices: [] as { key: string; icon: React.ReactNode; label: string }[], customs: [] as string[], fasted: false, waterMl: 0, habits: [] as string[], food: 0 };
+    if (!record) return { userNote: '', practices: [] as { key: string; icon: React.ReactNode; label: string }[], customs: [] as string[], fasted: false, waterMl: 0, habits: [] as string[], food: 0, incompleteReason: '', incompleteNote: '' };
     const raw = record.note || '';
     const result = parseCheckinNote(raw);
     const practices = result.practices.map((k: string) => ({
@@ -171,6 +171,25 @@ export default function CheckinDetailPage({ date, onClose }: { date: string; onC
             <div style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{parsed.userNote}</div>
           </div>
         )}
+
+        {/* Incomplete Reason */}
+        {parsed.incompleteReason && (() => {
+          const reason = INCOMPLETE_REASONS.find(r => r.code === parsed.incompleteReason);
+          const labelKey = `incompleteReason${parsed.incompleteReason.charAt(0).toUpperCase() + parsed.incompleteReason.slice(1)}` as string;
+          return (
+            <div style={{ background: TH.card, borderRadius: 16, padding: 16, border: `1px solid ${TH.border}`, marginTop: parsed.userNote ? 12 : 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: parsed.incompleteNote ? 8 : 0 }}>
+                <AlertTriangle size={18} style={{ color: '#F59E0B', verticalAlign: 'middle' }} />
+                <span style={{ fontSize: FONT_BODY, color: '#F59E0B', fontWeight: 600 }}>
+                  {reason?.icon} {T(labelKey as any)}
+                </span>
+              </div>
+              {parsed.incompleteNote && (
+                <div style={{ fontSize: FONT_BODY, color: TH.sub, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{parsed.incompleteNote}</div>
+              )}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

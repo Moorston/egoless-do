@@ -130,8 +130,7 @@ export const useWebStore = create<WebStore>()(
       ),
       partialize: s => ({
         auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
-        // waterMl is NOT persisted here — it's managed by DailyResetManager and stored in IndexedDB profile
-        waterGoal: s.waterGoal, calGoal: s.calGoal,
+        waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
         foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
         activeFasting: s.activeFasting,
         fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,

@@ -195,7 +195,8 @@ export const zh: I18nKeys = {
   foodSavePreset:'保存为预设', foodPresetSaved:'已保存为预设',
   foodDeletePreset:'删除预设', foodDeletePresetConfirm:'确定删除这个预设？',
   foodHistory:'饮食历史', foodNoHistory:'暂无历史记录', foodDeleteConfirm:'确定删除这条饮食记录？',
-  foodAdded:'已添加', foodLongPressHint:'长按快速添加', foodPerUnit:'每份',
+  foodAdded:'已添加', todayFood:'今日饮食', recentFoods:'最近常吃', foodTotalCount:'共 %d 条',
+  foodLongPressHint:'长按快速添加', foodPerUnit:'每份',
   foodPortion:'份数', foodTotalCal:'总卡路里', foodBackToList:'返回列表',
 
   // Stats
@@ -261,6 +262,7 @@ export const zh: I18nKeys = {
   planLinkMeditation:'冥想', planLinkExercise:'锻炼', planLinkHabit:'习惯', planLinkReflection:'感念',
   planProgress:'进度', planDays:'天', planCheckinDays:'打卡天数', planCheckin:'完成', planUncheckin:'取消',
   planTodayCheckin:'今日打卡', planHeatmap:'打卡热力图',
+  planCountdownTitle:'倒计时', planCountdownStart:'距离计划开始', planCountdownEnd:'距离计划结束', planDelayed:'已超期', planDelayedNotify:'计划延期提醒',
   planConfirmDelete:'确认删除此计划？', planConfirmCancel:'确认作废此计划？',
   planConfirmComplete:'确认完成此计划？',
   planItemTimeError:'任务时间须在计划时间范围内', planItemTimeOrderError:'结束日期须晚于开始日期',
@@ -362,4 +364,19 @@ export const zh: I18nKeys = {
   privacyRights:'您享有以下权利：\n• 随时查看、编辑或删除您的所有数据\n• 在设置中清除全部本地数据\n• 退出登录并停止云同步\n• 卸载应用以完全删除本地数据',
   privacyContactTitle:'联系我们',
   privacyContact:'如您对本隐私政策有任何疑问，请通过以下方式联系我们：\n邮箱：privacy@egoless-do.app',
+
+  // Incomplete Reason
+  incompleteReasonTitle:'今日还有未完成项',
+  incompleteReasonTime:'时间不够',
+  incompleteReasonHealth:'身体不适',
+  incompleteReasonExternal:'外部事务',
+  incompleteReasonMood:'心情低落',
+  incompleteReasonForgot:'忘记/遗漏',
+  incompleteReasonOther:'其他',
+  incompleteReasonConfirm:'仍然完成',
+  incompleteReasonBack:'返回继续打卡',
+  incompleteReasonNote:'补充说明（必填）',
+  incompleteReasonNotePlaceholder:'请填写补充说明...',
+  incompleteReasonStats:'未完成原因分布',
+  dateBarToday:'今天', noCheckinRecord:'未打卡',
 };

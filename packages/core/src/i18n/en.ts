@@ -195,7 +195,8 @@ export const en: I18nKeys = {
   foodSavePreset:'Save as preset', foodPresetSaved:'Saved as preset',
   foodDeletePreset:'Delete preset', foodDeletePresetConfirm:'Delete this preset?',
   foodHistory:'Food History', foodNoHistory:'No history yet', foodDeleteConfirm:'Delete this food record?',
-  foodAdded:'Added', foodLongPressHint:'Long press to quick add', foodPerUnit:'Per unit',
+  foodAdded:'Added', todayFood:"Today's Food", recentFoods:'Recent Foods', foodTotalCount:'%d total',
+  foodLongPressHint:'Long press to quick add', foodPerUnit:'Per unit',
   foodPortion:'Portion', foodTotalCal:'Total calories', foodBackToList:'Back to list',
 
   // Stats
@@ -261,6 +262,7 @@ export const en: I18nKeys = {
   planLinkMeditation:'Meditation', planLinkExercise:'Exercise', planLinkHabit:'Habit', planLinkReflection:'Reflection',
   planProgress:'Progress', planDays:'days', planCheckinDays:'Check-in Days', planCheckin:'Done', planUncheckin:'Undo',
   planTodayCheckin:"Today's Check-in", planHeatmap:'Check-in Heatmap',
+  planCountdownTitle:'Countdown', planCountdownStart:'Until plan starts', planCountdownEnd:'Until plan ends', planDelayed:'Overdue', planDelayedNotify:'Plan Delay Notification',
   planConfirmDelete:'Delete this plan?', planConfirmCancel:'Cancel this plan?',
   planConfirmComplete:'Complete this plan?',
   planItemTimeError:'Task dates must be within plan date range', planItemTimeOrderError:'End date must be after start date',
@@ -362,4 +364,19 @@ export const en: I18nKeys = {
   privacyRights:'You have the following rights:\n• View, edit, or delete all your data at any time\n• Clear all local data in Settings\n• Sign out and stop cloud syncing\n• Uninstall the app to completely remove local data',
   privacyContactTitle:'Contact Us',
   privacyContact:'If you have any questions about this privacy policy, please contact us at:\nEmail: privacy@egoless-do.app',
+
+  // Incomplete Reason
+  incompleteReasonTitle:'Incomplete items today',
+  incompleteReasonTime:'Not enough time',
+  incompleteReasonHealth:'Not feeling well',
+  incompleteReasonExternal:'External affairs',
+  incompleteReasonMood:'Low mood',
+  incompleteReasonForgot:'Forgot',
+  incompleteReasonOther:'Other',
+  incompleteReasonConfirm:'Still complete',
+  incompleteReasonBack:'Go back',
+  incompleteReasonNote:'Additional notes (required)',
+  incompleteReasonNotePlaceholder:'Please enter notes...',
+  incompleteReasonStats:'Incomplete reason distribution',
+  dateBarToday:'Today', noCheckinRecord:'No check-in',
 };

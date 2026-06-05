@@ -2,8 +2,74 @@
 import type { CheckinEntry } from '../types';
 import { dateStr, calculateCheckinStreak, computeLongestStreak as computeLongestStreakRaw } from '../utils';
 
+// ─── Incomplete reason constants ───────────────────────────────
+export const INCOMPLETE_REASONS = [
+  { code: 'time',     icon: '⏰' },
+  { code: 'health',   icon: '🏥' },
+  { code: 'external', icon: '📋' },
+  { code: 'mood',     icon: '😔' },
+  { code: 'forgot',   icon: '💭' },
+  { code: 'other',    icon: '💬' },
+] as const;
+
+export type IncompleteReasonCode = typeof INCOMPLETE_REASONS[number]['code'];
+
+export interface IncompleteItem {
+  type: 'practice' | 'habit' | 'planItem';
+  name: string;
+}
+
+/** Detect incomplete checkin items for today */
+export function getIncompleteItems(params: {
+  practices: { sit: boolean; stand: boolean; chant: boolean };
+  habits: Array<{ name: string; status: string; checkedDates?: string[] }>;
+  planItems: Array<{ id: string; name: string }>;
+  planItemCheckins: Array<{ planItemId: string; date: string; done: boolean; linkedModule?: string }>;
+  today: string;
+}): IncompleteItem[] {
+  const { practices, habits, planItems, planItemCheckins, today } = params;
+  const result: IncompleteItem[] = [];
+
+  // Practices
+  const practiceNames: Record<string, string> = { sit: '打坐', stand: '站桩', chant: '诵经' };
+  for (const [key, checked] of Object.entries(practices)) {
+    if (!checked) result.push({ type: 'practice', name: practiceNames[key] ?? key });
+  }
+
+  // Habits (inProgress only)
+  for (const h of habits) {
+    if (h.status === 'inProgress' && !h.checkedDates?.includes(today)) {
+      result.push({ type: 'habit', name: h.name });
+    }
+  }
+
+  // Plan items (exclude auto-checked via linkedModule)
+  for (const item of planItems) {
+    const checkin = planItemCheckins.find(c => c.planItemId === item.id && c.date === today);
+    if (!checkin?.done && !checkin?.linkedModule) {
+      result.push({ type: 'planItem', name: item.name });
+    }
+  }
+
+  return result;
+}
+
+/** Get food log entries for a specific date (derived from timestamp) */
+export function getFoodLogByDate<T extends { timestamp: number; deleted?: boolean }>(foodLog: T[], date: string): T[] {
+  return (foodLog ?? []).filter(f => dateStr(new Date(f.timestamp)) === date && !f.deleted);
+}
+
 export function computeLongestStreakFromHistory(history: CheckinEntry[]): number {
   return computeLongestStreakRaw(history.filter(c => c.done).map(c => c.date));
+}
+
+/** Get streak and totalDays for a specific date from history (handles legacy records without totalDays) */
+export function getStatsForDate(history: CheckinEntry[], date: string): { streak: number; totalDays: number } {
+  const record = history.find(c => c.date === date);
+  const doneRecords = history.filter(c => c.done);
+  const totalDays = record?.totalDays ?? doneRecords.filter(c => c.date <= date).length;
+  const streak = record?.streak ?? calculateCheckinStreak(doneRecords.filter(c => c.date <= date).map(c => ({ date: c.date, done: true })), date);
+  return { streak, totalDays };
 }
 
 export function submitCheckinEntry(
@@ -20,7 +86,8 @@ export function submitCheckinEntry(
   };
   const newHistory = [tempRecord, ...history.filter(c => c.date !== today)];
   const newStreak = calculateCheckinStreak(newHistory);
-  const record: CheckinEntry = { ...tempRecord, streak: newStreak };
+  const totalDays = newHistory.filter(c => c.done).length;
+  const record: CheckinEntry = { ...tempRecord, streak: newStreak, totalDays };
   const finalHistory = [record, ...history.filter(c => c.date !== today)];
   return { record, history: finalHistory, streak: newStreak };
 }
@@ -34,11 +101,13 @@ export interface ParsedCheckinNote {
   waterMl: number;
   habits: string[];
   food: number;
+  incompleteReason: string;
+  incompleteNote: string;
 }
 
 /** Parse checkin note from JSON or legacy format */
 export function parseCheckinNote(raw: string): ParsedCheckinNote {
-  if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [], food: 0 };
+  if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [], food: 0, incompleteReason: '', incompleteNote: '' };
   
   try {
     const data = JSON.parse(raw);
@@ -51,6 +120,8 @@ export function parseCheckinNote(raw: string): ParsedCheckinNote {
         waterMl: typeof data.water === 'number' ? data.water : 0,
         habits: data.habits ?? [],
         food: typeof data.food === 'number' ? data.food : 0,
+        incompleteReason: data.incompleteReason ?? '',
+        incompleteNote: data.incompleteNote ?? '',
       };
     }
   } catch {
@@ -75,5 +146,5 @@ export function parseCheckinNote(raw: string): ParsedCheckinNote {
     }
   }
   
-  return { userNote: noteParts.join(' · '), practices, customs, fasted: false, waterMl: 0, habits: [], food: 0 };
+  return { userNote: noteParts.join(' · '), practices, customs, fasted: false, waterMl: 0, habits: [], food: 0, incompleteReason: '', incompleteNote: '' };
 }

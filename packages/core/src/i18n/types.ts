@@ -166,6 +166,7 @@ export interface I18nKeys {
   foodDeletePreset: string; foodDeletePresetConfirm: string;
   foodHistory: string; foodNoHistory: string;
   foodDeleteConfirm: string; foodAdded: string;
+  todayFood: string; recentFoods: string; foodTotalCount: string;
   foodLongPressHint: string; foodPerUnit: string; foodPortion: string;
   foodTotalCal: string; foodBackToList: string;
   statsTitle: string; statsOverview: string; statsReflections: string;
@@ -227,6 +228,7 @@ export interface I18nKeys {
   planLinkHabit: string; planProgress: string; planDays: string;
   planCheckinDays: string; planCheckin: string; planUncheckin: string;
   planTodayCheckin: string; planHeatmap: string;
+  planCountdownTitle: string; planCountdownStart: string; planCountdownEnd: string; planDelayed: string; planDelayedNotify: string;
   planConfirmDelete: string; planConfirmCancel: string;
   planConfirmComplete: string; planItemTimeError: string;
   planItemTimeOrderError: string; planTimeError: string;
@@ -286,6 +288,13 @@ export interface I18nKeys {
   privacyThirdPartyTitle: string; privacyThirdParty: string;
   privacyRightsTitle: string; privacyRights: string;
   privacyContactTitle: string; privacyContact: string;
+  incompleteReasonTitle: string; incompleteReasonTime: string;
+  incompleteReasonHealth: string; incompleteReasonExternal: string;
+  incompleteReasonMood: string; incompleteReasonForgot: string;
+  incompleteReasonOther: string; incompleteReasonConfirm: string;
+  incompleteReasonBack: string; incompleteReasonNote: string;
+  incompleteReasonNotePlaceholder: string; incompleteReasonStats: string;
+  dateBarToday: string; noCheckinRecord: string;
 }
 
 export type I18nKey = keyof I18nKeys;

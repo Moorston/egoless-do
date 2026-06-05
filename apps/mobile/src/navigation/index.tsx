@@ -26,6 +26,7 @@ import SettingsScreen   from '../features/settings/SettingsScreen';
 
 // Stack screens
 import ReflectionsScreen from '../features/reflections/ReflectionsScreen';
+import ReflectionStatsScreen from '../features/reflections/ReflectionStatsScreen';
 import HabitsScreen      from '../features/habits/HabitsScreen';
 import StatsScreen       from '../features/stats/StatsScreen';
 import GlobalMapPage     from '../features/home/GlobalMapPage';
@@ -294,6 +295,7 @@ export default function AppNavigator() {
         <Stack.Screen name="RecycleBin"    component={RecycleBinScreen} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
         <Stack.Screen name="Stats"         component={StatsScreen} />
+        <Stack.Screen name="ReflectionStats" component={ReflectionStatsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
     </View>

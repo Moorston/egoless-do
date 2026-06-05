@@ -15,6 +15,7 @@ export interface Plan extends Syncable {
   endDate: string;
   status: PlanStatus;
   progress: number;
+  lastDelayedNotifyAt?: number; // 上次发送延期邮箱提醒的时间戳
 }
 
 export interface PlanItem extends Syncable {

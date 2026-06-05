@@ -18,6 +18,7 @@ export type RootStackParamList = {
   RecycleBin: undefined;
   PrivacyPolicy: undefined;
   Stats: undefined;
+  ReflectionStats: undefined;
 };
 
 export type MainTabParamList = {

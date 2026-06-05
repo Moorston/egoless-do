@@ -141,9 +141,10 @@ export function cancelPlan(plans: Plan[], planItems: PlanItem[], id: string): { 
 }
 
 /** Auto-detect status changes: not_started→in_progress when startDate arrives, mark overdue items */
-export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: string): { plans: Plan[]; planItems: PlanItem[] } {
+export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: string): { plans: Plan[]; planItems: PlanItem[]; delayedPlans: Plan[] } {
   let plansChanged = false;
   let itemsChanged = false;
+  const delayedPlans: Plan[] = [];
 
   const updatedPlans = plans.map(p => {
     if (p.deleted) return p;
@@ -158,6 +159,10 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
     if (p.status === 'paused' && p.endDate < today) {
       plansChanged = true;
       return { ...p, updatedAt: Date.now() };
+    }
+    // Detect delayed plans: in_progress but endDate has passed
+    if (p.status === 'in_progress' && p.endDate < today && !p.lastDelayedNotifyAt) {
+      delayedPlans.push(p);
     }
     return p;
   });
@@ -182,8 +187,11 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
     return item;
   });
 
-  return { plans: plansChanged ? updatedPlans : plans, planItems: itemsChanged ? updatedItems : planItems };
+  return { plans: plansChanged ? updatedPlans : plans, planItems: itemsChanged ? updatedItems : planItems, delayedPlans };
 }
+
+/** Alias for compatibility */
+export const checkPlanAutoStatus = checkAutoStatus;
 
 /** Perform daily reset: auto-start tasks and save previous day's history */
 export function performDailyReset(
@@ -199,9 +207,10 @@ export function performDailyReset(
   planItems: PlanItem[];
   dailyTodoHistory: DailyTodoHistory[];
   hasChanges: boolean;
+  delayedPlans: Plan[];
 } {
   // 1. Auto-start tasks
-  const { plans: updatedPlans, planItems: updatedPlanItems } = checkAutoStatus(plans, planItems, today);
+  const { plans: updatedPlans, planItems: updatedPlanItems, delayedPlans } = checkAutoStatus(plans, planItems, today);
 
   // 2. Save previous day's history for all active plans
   let updatedHistory = [...dailyTodoHistory];
@@ -225,6 +234,7 @@ export function performDailyReset(
     planItems: updatedPlanItems,
     dailyTodoHistory: updatedHistory,
     hasChanges: plansChanged || itemsChanged || historyChanged,
+    delayedPlans,
   };
 }
 

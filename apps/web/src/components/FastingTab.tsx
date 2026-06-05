@@ -123,10 +123,10 @@ export default function FastingTab() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { Icon: Hourglass, label: T('fastTotal'), value: (fastingHistory ?? []).length, unit: T('fastTimes'), colors: ['#7117EA', '#EA6060'] },
-    { Icon: Clock, label: T('fastTotalHours'), value: totalFastHours, unit: T('fastHours'), colors: ['#17EAD9', '#6078EA'] },
-    { Icon: Flame, label: T('fastStreak'), value: currentFastingStreak, unit: T('days'), colors: ['#9A4EFF', '#20ECFF'] },
-    { Icon: Trophy, label: T('fastLongest'), value: longestStreak, unit: T('days'), colors: ['#8446FF', '#18CEFF'] },
+    { Icon: Hourglass, label: T('fastTotal'), value: (fastingHistory ?? []).length, unit: T('fastTimes') },
+    { Icon: Clock, label: T('fastTotalHours'), value: totalFastHours, unit: T('fastHours') },
+    { Icon: Flame, label: T('fastStreak'), value: currentFastingStreak, unit: T('days') },
+    { Icon: Trophy, label: T('fastLongest'), value: longestStreak, unit: T('days') },
   ], [(fastingHistory ?? []).length, currentFastingStreak, T, totalFastHours, longestStreak]);
 
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
@@ -173,24 +173,24 @@ export default function FastingTab() {
       <div style={{ fontWeight: 600, fontSize: FONT_BODY, marginBottom: 10, color: TH.text }}>{T('fastYourStats')}</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
         {statsData.map((s) => (
-          <div key={s.label} style={{ background: `linear-gradient(135deg, ${s.colors[0]}, ${s.colors[1]})`, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            <div style={{ fontSize: 26, color: '#fff' }}><s.Icon size={26} style={{verticalAlign:'middle'}} /></div>
-            <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{s.label}</div>
-            <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{s.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {s.unit}</span></div>
+          <div key={s.label} style={{ background: TH.card, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, border: `1px solid ${TH.border}` }}>
+            <s.Icon size={26} color={P} />
+            <div style={{ fontWeight: 700, color: P, fontSize: 26, textAlign: 'center' }}>{s.value}<span style={{ fontSize: FONT_SUB, fontWeight: 400, color: TH.sub }}> {s.unit}</span></div>
+            <div style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
-        <div style={{ background: 'linear-gradient(135deg, #FAD961, #F76B1C)', borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-          <div style={{ fontSize: 26 }}><Flame size={26} style={{verticalAlign:'middle'}} /></div>
-          <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastKcalSaved')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kcal}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> kcal</span></div>
+        <div style={{ background: TH.card, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, border: `1px solid ${TH.border}` }}>
+          <Flame size={26} color={P} />
+          <div style={{ fontWeight: 700, color: P, fontSize: 26, textAlign: 'center' }}>{kcal}<span style={{ fontSize: FONT_SUB, fontWeight: 400, color: TH.sub }}> kcal</span></div>
+          <div style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('fastKcalSaved')}</div>
         </div>
-        <div style={{ background: 'linear-gradient(135deg, #17EAD9, #6078EA)', borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-          <div style={{ fontSize: 26 }}><Scale size={26} style={{verticalAlign:'middle'}} /></div>
-          <div style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.85)', textAlign: 'center' }}>{T('fastWeightLoss')}</div>
-          <div style={{ fontWeight: 700, color: '#fff', fontSize: 26 }}>{kg}<span style={{ fontSize: FONT_SUB, fontWeight: 400 }}> {T('fastKg')}</span></div>
+        <div style={{ background: TH.card, borderRadius: 14, padding: '16px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, border: `1px solid ${TH.border}` }}>
+          <Scale size={26} color={P} />
+          <div style={{ fontWeight: 700, color: P, fontSize: 26, textAlign: 'center' }}>{kg}<span style={{ fontSize: FONT_SUB, fontWeight: 400, color: TH.sub }}> {T('fastKg')}</span></div>
+          <div style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('fastWeightLoss')}</div>
         </div>
       </div>
 

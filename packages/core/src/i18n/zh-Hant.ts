@@ -195,7 +195,8 @@ export const zhHant: I18nKeys = {
   foodSavePreset:'保存為預設', foodPresetSaved:'已保存為預設',
   foodDeletePreset:'刪除預設', foodDeletePresetConfirm:'確定刪除這個預設？',
   foodHistory:'飲食歷史', foodNoHistory:'暫無歷史記錄', foodDeleteConfirm:'確定刪除這條飲食記錄？',
-  foodAdded:'已添加', foodLongPressHint:'長按快速添加', foodPerUnit:'每份',
+  foodAdded:'已添加', todayFood:'今日飲食', recentFoods:'最近常吃', foodTotalCount:'共 %d 條',
+  foodLongPressHint:'長按快速添加', foodPerUnit:'每份',
   foodPortion:'份數', foodTotalCal:'總卡路里', foodBackToList:'返回列表',
 
   // Stats
@@ -261,6 +262,7 @@ export const zhHant: I18nKeys = {
   planLinkMeditation:'冥想', planLinkExercise:'鍛鍊', planLinkHabit:'習慣', planLinkReflection:'感念',
   planProgress:'進度', planDays:'天', planCheckinDays:'打卡天數', planCheckin:'完成', planUncheckin:'取消',
   planTodayCheckin:'今日打卡', planHeatmap:'打卡熱力圖',
+  planCountdownTitle:'倒數計時', planCountdownStart:'距離計劃開始', planCountdownEnd:'距離計劃結束', planDelayed:'已超期', planDelayedNotify:'計劃延期提醒',
   planConfirmDelete:'確認刪除此計劃？', planConfirmCancel:'確認作廢此計劃？',
   planConfirmComplete:'確認完成此計劃？',
   planItemTimeError:'任務時間須在計劃時間範圍內', planItemTimeOrderError:'結束日期須晚於開始日期',
@@ -360,4 +362,19 @@ export const zhHant: I18nKeys = {
   privacyRights:'您享有以下權利：\n• 隨時查看、編輯或刪除您的所有數據\n• 在設定中清除全部本地數據\n• 登出並停止雲端同步\n• 解除安裝應用以完全刪除本地數據',
   privacyContactTitle:'聯絡我們',
   privacyContact:'如您對本隱私政策有任何疑問，請透過以下方式聯絡我們：\n電郵：privacy@egoless-do.app',
+
+  // Incomplete Reason
+  incompleteReasonTitle:'今日還有未完成項',
+  incompleteReasonTime:'時間不夠',
+  incompleteReasonHealth:'身體不適',
+  incompleteReasonExternal:'外部事務',
+  incompleteReasonMood:'心情低落',
+  incompleteReasonForgot:'忘記/遺漏',
+  incompleteReasonOther:'其他',
+  incompleteReasonConfirm:'仍然完成',
+  incompleteReasonBack:'返回繼續打卡',
+  incompleteReasonNote:'補充說明（必填）',
+  incompleteReasonNotePlaceholder:'請填寫補充說明...',
+  incompleteReasonStats:'未完成原因分佈',
+  dateBarToday:'今天', noCheckinRecord:'未打卡',
 };

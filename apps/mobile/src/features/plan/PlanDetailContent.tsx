@@ -7,6 +7,7 @@ import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDela
 import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemStatus, PlanItemLink, DailyCustomTodo, DailyTodoHistory } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
+import PlanCountdown from '../../components/PlanCountdown';
 import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus } from 'lucide-react-native';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -387,6 +388,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
             <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
               <View style={{ height: 6, width: `${progress}%`, backgroundColor: P, borderRadius: 3 }} />
             </View>
+            
+            {/* Countdown */}
+            <PlanCountdown plan={plan} />
           </Card>
 
           {/* Goal */}

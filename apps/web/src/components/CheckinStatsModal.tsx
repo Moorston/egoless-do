@@ -6,7 +6,7 @@ import CalendarGrid from './charts/CalendarGrid';
 import { useWebStore } from '../store/useWebStore';
 import { useShallow } from 'zustand/react/shallow';
 import { X } from 'lucide-react';
-import { FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_TITLE, computeLongestStreak } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 
 interface CheckinStatsModalProps {
@@ -69,6 +69,27 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
     { label: T('avgPerWeek'), value: avgPerWeek, sub: T('days') },
   ];
 
+  // 本月未完成原因分布
+  const reasonDistribution = useMemo(() => {
+    const counts: Record<string, number> = {};
+    history
+      .filter((c: CheckinEntry) => {
+        if (!c.done) return false;
+        const d = new Date(c.date);
+        return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+      })
+      .forEach((c: CheckinEntry) => {
+        const parsed = parseCheckinNote(c.note ?? '');
+        if (parsed.incompleteReason) {
+          counts[parsed.incompleteReason] = (counts[parsed.incompleteReason] ?? 0) + 1;
+        }
+      });
+    return INCOMPLETE_REASONS
+      .map(r => ({ ...r, count: counts[r.code] ?? 0 }))
+      .filter(r => r.count > 0)
+      .sort((a, b) => b.count - a.count);
+  }, [history, currentYear, currentMonth]);
+
   if (!visible) return null;
 
   return (
@@ -94,18 +115,34 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
         </div>
 
         {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: reasonDistribution.length > 0 ? 16 : 0 }}>
           {stats.map((stat, i) => (
             <div key={i} style={{
-              background: TH.card, borderRadius: 12, padding: 12, border: `1px solid ${TH.border}`,
+              background: TH.card, borderRadius: 14, padding: 12, border: `1px solid ${TH.border}`,
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
             }}>
-              <span style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center' }}>{stat.label}</span>
-              <span style={{ fontSize: FONT_STAT_CARD, fontWeight: 700, color: P }}>{stat.value}</span>
+              <span style={{ fontSize: 26, fontWeight: 700, color: P }}>{stat.value}</span>
+              <span style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{stat.label}</span>
               <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{stat.sub}</span>
             </div>
           ))}
         </div>
+
+        {/* Incomplete Reason Distribution */}
+        {reasonDistribution.length > 0 && (
+          <div style={{ background: TH.card, borderRadius: 16, padding: 16, border: `1px solid ${TH.border}` }}>
+            <div style={{ fontSize: FONT_BODY, fontWeight: 600, color: TH.text, marginBottom: 12 }}>{T('incompleteReasonStats')}</div>
+            {reasonDistribution.map((r) => {
+              const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
+              return (
+                <div key={r.code} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0' }}>
+                  <span style={{ fontSize: FONT_BODY, color: TH.text }}>{r.icon} {T(labelKey as any)}</span>
+                  <span style={{ fontSize: FONT_BODY, fontWeight: 600, color: P }}>{r.count} {T('days')}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

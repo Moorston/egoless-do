@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_BADGE } from '@egoless-do/core';
+import { useState, useMemo, useCallback } from 'react';
+import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { RowItem, Checkbox, useTheme, useT, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
@@ -61,6 +61,10 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
     () => Object.fromEntries(parsed.customs.map((_, i) => [`existing-${i}`, true])),
   );
   const [localDone, setLocalDone] = useState<boolean | null>(() => existing?.done ?? null);
+  const [showReasonModal, setShowReasonModal] = useState(false);
+  const [incompleteItems, setIncompleteItems] = useState<ReturnType<typeof getIncompleteItems>>([]);
+  const [selectedReason, setSelectedReason] = useState('');
+  const [reasonNote, setReasonNote] = useState('');
   const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     (store.habits ?? []).filter(h => h.status === 'inProgress').forEach(h => {
@@ -94,7 +98,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
     return initial;
   });
 
-  const submit = () => {
+  const submit = (reasonOverride?: string, reasonNoteOverride?: string) => {
     if (localDone === null) return;
     Object.entries(habitCheckins).forEach(([id, checked]) => {
       const habit = (store.habits ?? []).find(h => h.id === id);
@@ -126,10 +130,68 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
       .filter(Boolean);
     if (checkedHabits.length) noteData.habits = checkedHabits;
     if (totalCal > 0) noteData.food = totalCal;
+    if (reasonOverride) noteData.incompleteReason = reasonOverride;
+    if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
     const weightNum = weight ? parseFloat(weight) : undefined;
     store.submitCheckin(localDone, JSON.stringify(noteData), undefined, weightNum);
     onClose();
   };
+
+  const handleDone = useCallback(() => {
+    const items = getIncompleteItems({
+      practices,
+      habits: (store.habits ?? []).filter(h => h.status === 'inProgress'),
+      planItems: todayPlanItems,
+      planItemCheckins: planCheckins,
+      today,
+    });
+    if (items.length > 0) {
+      setIncompleteItems(items);
+      setSelectedReason('');
+      setReasonNote('');
+      setLocalDone(true);
+      setShowReasonModal(true);
+      return;
+    }
+    setLocalDone(true);
+    // Submit directly with done=true
+    Object.entries(habitCheckins).forEach(([id, checked]) => {
+      const habit = (store.habits ?? []).find(h => h.id === id);
+      const alreadyDone = habit?.checkedDates?.includes(today) ?? false;
+      if (checked !== alreadyDone) store.checkinHabit(id, today);
+    });
+    Object.entries(planToggles).forEach(([itemId, desired]) => {
+      const current = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
+      if (desired && !current) store.checkinPlanItem(itemId);
+      if (!desired && current) store.uncheckinPlanItem(itemId);
+    });
+    if (waterMl > 0) { store.resetWater(); store.addWater(waterMl); }
+    const noteData: Record<string, unknown> = {};
+    if (note) noteData.note = note;
+    if (waterMl > 0) noteData.water = waterMl;
+    const pr: string[] = [];
+    if (practices.sit) pr.push('sit');
+    if (practices.stand) pr.push('stand');
+    if (practices.chant) pr.push('chant');
+    if (pr.length) noteData.practices = pr;
+    const customs = freeItems.filter(item => freeCheckins[item.id] && item.name).map(item => item.name);
+    if (customs.length) noteData.customs = customs;
+    const checkedHabits = Object.entries(habitCheckins)
+      .filter(([, checked]) => checked)
+      .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
+      .filter(Boolean);
+    if (checkedHabits.length) noteData.habits = checkedHabits;
+    if (totalCal > 0) noteData.food = totalCal;
+    const weightNum = weight ? parseFloat(weight) : undefined;
+    store.submitCheckin(true, JSON.stringify(noteData), undefined, weightNum);
+    onClose();
+  }, [practices, habitCheckins, planToggles, planCheckins, today, waterMl, note, freeItems, freeCheckins, totalCal, weight, store, onClose, todayPlanItems]);
+
+  const confirmDoneWithReason = useCallback(() => {
+    if (!selectedReason || !reasonNote.trim()) return;
+    setShowReasonModal(false);
+    submit(selectedReason, reasonNote);
+  }, [submit, selectedReason, reasonNote]);
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 200, background: TH.bg, overflowY: 'auto', WebkitOverflowScrolling: 'touch', fontFamily: '-apple-system,system-ui,sans-serif', color: TH.text, fontSize: FONT_BODY }}>
@@ -141,30 +203,6 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
           <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('checkinTitle')}</div>
           <div style={{ flex: 1 }} />
           <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{today}</div>
-        </div>
-
-        {/* Status buttons - TOP */}
-        <div style={{ display: 'flex', gap: 10, marginTop: 16, marginBottom: 20 }}>
-          <button onClick={() => setLocalDone(false)}
-            style={{
-              flex: 1, padding: '14px 0', borderRadius: 12, fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
-              border: '2px solid', borderColor: localDone === false ? '#C53364' : TH.border,
-              background: localDone === false ? 'rgba(197,51,100,0.1)' : 'transparent',
-              color: localDone === false ? '#C53364' : TH.sub,
-              transition: 'all .2s',
-            }}>
-            <X size={18} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinNotDone')}
-          </button>
-          <button onClick={() => setLocalDone(true)}
-            style={{
-              flex: 1, padding: '14px 0', borderRadius: 12, fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
-              border: '2px solid', borderColor: localDone === true ? '#17EAD9' : TH.border,
-              background: localDone === true ? 'rgba(23,234,217,0.1)' : 'transparent',
-              color: localDone === true ? '#17EAD9' : TH.sub,
-              transition: 'all .2s',
-            }}>
-            <Check size={18} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinDone')}
-          </button>
         </div>
 
         {/* Tasks section - merged */}
@@ -273,19 +311,15 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* Submit button - inside tasks card */}
-          <button onClick={submit}
+          {/* Done button */}
+          <button onClick={handleDone}
             style={{
               width: '100%', padding: 14, borderRadius: 12, border: 'none', marginTop: 12,
-              background: localDone === true
-                ? 'linear-gradient(135deg, #17EAD9, #6078EA)'
-                : localDone === false
-                  ? 'linear-gradient(135deg, #622774, #C53364)'
-                  : P,
+              background: 'linear-gradient(135deg, #17EAD9, #6078EA)',
               color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
               transition: 'all .2s',
             }}>
-            {localDone === true ? T('checkinSubmit') : localDone === false ? T('checkinSave') : T('checkinSelectStatus')}
+            <Check size={18} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinDone')}
           </button>
         </div>
 
@@ -372,6 +406,69 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
           {T('commonCancel')}
         </button>
       </div>
+
+      {/* Incomplete Reason Modal */}
+      {showReasonModal && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(0,0,0,.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div style={{ background: TH.cardSolid, borderRadius: 20, padding: 24, maxWidth: 420, width: '100%', maxHeight: '80%', overflowY: 'auto' }}>
+            <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text, marginBottom: 12 }}>{T('incompleteReasonTitle')}</div>
+
+            {/* Incomplete items list */}
+            <div style={{ marginBottom: 16 }}>
+              {incompleteItems.map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: 6 }}>
+                  <X size={16} style={{ color: '#C53364', marginRight: 8 }} />
+                  <span style={{ fontSize: FONT_TITLE, color: TH.sub }}>{item.name}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Reason options */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+              {INCOMPLETE_REASONS.map(r => {
+                const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
+                const selected = selectedReason === r.code;
+                return (
+                  <button key={r.code} onClick={() => setSelectedReason(r.code)}
+                    style={{
+                      padding: '10px 14px', borderRadius: 12, cursor: 'pointer',
+                      border: `1.5px solid ${selected ? P : TH.border}`,
+                      background: selected ? `${P}15` : 'transparent',
+                      color: selected ? P : TH.text, fontSize: FONT_BODY,
+                      transition: 'all .15s',
+                    }}>
+                    {r.icon} {T(labelKey as any)}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Additional note */}
+            <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}><span style={{ color: '#EF4444' }}>* </span>{T('incompleteReasonNote')}</div>
+            <textarea value={reasonNote} onChange={(e) => setReasonNote(e.target.value)}
+              placeholder={T('incompleteReasonNotePlaceholder')}
+              rows={2}
+              style={{
+                width: '100%', minHeight: 60, background: TH.card, border: `1px solid ${TH.border}`,
+                borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, marginBottom: 20,
+                resize: 'none', outline: 'none', boxSizing: 'border-box',
+              }}
+            />
+
+            {/* Buttons */}
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => { setShowReasonModal(false); setLocalDone(null); }}
+                style={{ flex: 1, padding: 14, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>
+                {T('incompleteReasonBack')}
+              </button>
+              <button onClick={confirmDoneWithReason} disabled={!selectedReason || !reasonNote.trim()}
+                style={{ flex: 1, padding: 14, borderRadius: 12, border: 'none', background: selectedReason && reasonNote.trim() ? P : TH.border, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: selectedReason && reasonNote.trim() ? 'pointer' : 'not-allowed' }}>
+                {T('incompleteReasonConfirm')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ export interface CheckinEntry extends Syncable {
   done: boolean;
   note: string;
   streak: number;
+  totalDays?: number;
   weight?: number;
   timestamp?: number;
 }

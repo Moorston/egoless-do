@@ -100,10 +100,10 @@ export default function FastingScreen() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { icon:Hourglass, label:T('fastTotal'),    value:`${(store.fastingHistory ?? []).length}`, unit:T('fastTimes'), colors:['#7117EA', '#EA6060'] as const },
-    { icon:Clock, label:T('fastTotalHours'),    value:`${totalFastHours}`, unit:T('fastHours'),         colors:['#17EAD9', '#6078EA'] as const },
-    { icon:Flame, label:T('fastStreak'),  value:`${currentFastingStreak}`, unit:T('days'),             colors:['#9A4EFF', '#20ECFF'] as const },
-    { icon:Trophy, label:T('fastLongest'),  value:`${longestStreak}`, unit:T('days'),            colors:['#8446FF', '#18CEFF'] as const },
+    { icon:Hourglass, label:T('fastTotal'),    value:`${(store.fastingHistory ?? []).length}`, unit:T('fastTimes') },
+    { icon:Clock, label:T('fastTotalHours'),    value:`${totalFastHours}`, unit:T('fastHours') },
+    { icon:Flame, label:T('fastStreak'),  value:`${currentFastingStreak}`, unit:T('days') },
+    { icon:Trophy, label:T('fastLongest'),  value:`${longestStreak}`, unit:T('days') },
   ], [(store.fastingHistory ?? []).length, currentFastingStreak, totalFastHours, longestStreak]);
 
   const isActive = !!store.activeFasting;
@@ -177,46 +177,25 @@ export default function FastingScreen() {
         <Text style={{ fontWeight:'600', fontSize:FONT_BODY, marginBottom:10, color:TH.text }}>{T('fastYourStats')}</Text>
         <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:12 }}>
           {statsData.map(s => (
-            <View key={s.label} style={{ width:'48%', borderRadius:14, overflow:'hidden' }}>
-              <LinearGradient
-                colors={s.colors}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ padding:16, alignItems:'center', gap:6 }}
-              >
-                <s.icon size={26} color="#fff" />
-                <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{s.label}</Text>
-                <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{s.value}<Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}> {s.unit}</Text></Text>
-              </LinearGradient>
+            <View key={s.label} style={{ width:'48%', borderRadius:14, padding:16, alignItems:'center', gap:6, backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }}>
+              <s.icon size={26} color={P} />
+              <Text style={{ fontWeight:'700', color:P, fontSize:26, textAlign:'center' }}>{s.value}<Text style={{ fontSize:FONT_SUB, fontWeight:'400', color:TH.sub }}> {s.unit}</Text></Text>
+              <Text style={{ fontSize:FONT_BODY, color:TH.sub, textAlign:'center' }}>{s.label}</Text>
             </View>
           ))}
         </View>
 
         {/* Realtime kcal */}
         <View style={{ flexDirection:'row', gap:8, marginBottom:12 }}>
-          <View style={{ flex:1, borderRadius:14, overflow:'hidden' }}>
-            <LinearGradient
-              colors={['#FAD961', '#F76B1C']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{ padding:16, alignItems:'center', gap:6 }}
-            >
-              <Flame size={26} color="#fff" />
-              <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{T('fastKcalSaved')}</Text>
-              <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{kcal}<Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}> kcal</Text></Text>
-            </LinearGradient>
+          <View style={{ flex:1, borderRadius:14, padding:16, alignItems:'center', gap:6, backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }}>
+            <Flame size={26} color={P} />
+            <Text style={{ fontWeight:'700', color:P, fontSize:26, textAlign:'center' }}>{kcal}<Text style={{ fontSize:FONT_SUB, fontWeight:'400', color:TH.sub }}> kcal</Text></Text>
+            <Text style={{ fontSize:FONT_BODY, color:TH.sub, textAlign:'center' }}>{T('fastKcalSaved')}</Text>
           </View>
-          <View style={{ flex:1, borderRadius:14, overflow:'hidden' }}>
-            <LinearGradient
-              colors={['#17EAD9', '#6078EA']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{ padding:16, alignItems:'center', gap:6 }}
-            >
-              <Scale size={26} color="#fff" />
-              <Text style={{ fontSize:FONT_BODY, color:'rgba(255,255,255,.85)', textAlign:'center' }}>{T('fastWeightLoss')}</Text>
-              <Text style={{ fontWeight:'700', color:'#fff', fontSize:26 }}>{(kcal / 7700).toFixed(2)}<Text style={{ fontSize:FONT_SUB, fontWeight:'400' }}> {T('fastKg')}</Text></Text>
-            </LinearGradient>
+          <View style={{ flex:1, borderRadius:14, padding:16, alignItems:'center', gap:6, backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }}>
+            <Scale size={26} color={P} />
+            <Text style={{ fontWeight:'700', color:P, fontSize:26, textAlign:'center' }}>{(kcal / 7700).toFixed(2)}<Text style={{ fontSize:FONT_SUB, fontWeight:'400', color:TH.sub }}> {T('fastKg')}</Text></Text>
+            <Text style={{ fontSize:FONT_BODY, color:TH.sub, textAlign:'center' }}>{T('fastWeightLoss')}</Text>
           </View>
         </View>
 

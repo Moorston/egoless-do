@@ -55,7 +55,7 @@ export const useAppStore = create<MobileStore>()(
       storage: createJSONStorage(() => AsyncStorage),
       partialize: s => ({
         auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
-        waterGoal: s.waterGoal, calGoal: s.calGoal,
+        waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
         foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
         activeFasting: s.activeFasting,
         fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,

@@ -2,7 +2,7 @@ import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
   startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
-  checkAutoStatus, performDailyReset as performDailyResetBiz,
+  checkPlanAutoStatus, performDailyReset as performDailyResetBiz,
   addPlanItem, updatePlanItem, deletePlanItem,
   checkinItem, uncheckinItem,
   syncPlanItemsFromModules, refreshPlanItemStats,
@@ -147,7 +147,7 @@ export function createPlanSlice(
     checkAutoStatus() {
       const today = dateStr();
       const s = get();
-      const result = checkAutoStatus(s.plans ?? [], s.planItems ?? [], today);
+      const result = checkPlanAutoStatus(s.plans ?? [], s.planItems ?? [], today);
       set({ plans: result.plans, planItems: result.planItems });
       // Persist changed plans
       result.plans.forEach(p => {
@@ -163,6 +163,10 @@ export function createPlanSlice(
           adapter.persistChange('planItem', item.id, item).catch(console.error);
         }
       });
+      // Trigger delayed plan notifications
+      if (result.delayedPlans.length > 0) {
+        get().notifyPlanDelayed(result.delayedPlans);
+      }
     },
 
     addPlanItem(form) {
@@ -377,6 +381,10 @@ export function createPlanSlice(
             adapter.persistChange('dailyTodoHistory', h.id, h).catch(console.error);
           }
         });
+        // Trigger delayed plan notifications
+        if (result.delayedPlans.length > 0) {
+          get().notifyPlanDelayed(result.delayedPlans);
+        }
       }
     },
 
@@ -465,6 +473,45 @@ export function createPlanSlice(
           adapter.persistChange('reflection', r.id, r).catch(console.error);
         }
       });
+    },
+
+    async notifyPlanDelayed(delayedPlans) {
+      const s = get();
+      const userId = s.auth?.user?.id;
+      if (!userId) return;
+
+      const now = Date.now();
+      
+      for (const plan of delayedPlans) {
+        // Skip if already notified
+        if (plan.lastDelayedNotifyAt) continue;
+
+        try {
+          // Call API to send email notification
+          const apiBase = process.env.EXPO_PUBLIC_API_BASE || 'https://egoless-do.vercel.app';
+          await fetch(`${apiBase}/api/plan/notify-delayed`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              planId: plan.id,
+              planName: plan.name,
+              endDate: plan.endDate,
+              userId,
+            }),
+          });
+
+          // Update plan with notification timestamp
+          const updatedPlan = { ...plan, lastDelayedNotifyAt: now, updatedAt: now };
+          set(s => ({
+            plans: (s.plans ?? []).map(p => p.id === plan.id ? updatedPlan : p),
+          }));
+          
+          // Persist change
+          adapter.persistChange('plan', plan.id, updatedPlan).catch(console.error);
+        } catch (err) {
+          console.error('Failed to send delayed plan notification:', err);
+        }
+      }
     },
   });
 }
