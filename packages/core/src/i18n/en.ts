@@ -45,7 +45,7 @@ export const en: I18nKeys = {
   otherSports:'Other Sports', mySports:'My Sports', runWalkRide:'Run/Walk/Ride',
   insightTooLong:'Notion comment cannot exceed 20 characters', today:'Today',
   globalMeditators:'Quiet Coordinates Across the World', globalFasting:'Fasting Journey Beyond Mountains and Seas',
-  globalExercise:'View Global Exercisers', checkinDoneToday:'Did you move towards your goal today?',
+  globalExercise:'View Global Exercisers', checkinDoneToday:'A new day, start your check-in',
   navHome:'Home', navFasting:'Fasting', navMeditate:'Meditation',
   navReflections:'Mind', navExercise:'Exercise', navHabits:'Habits',
   navStats:'Stats', navSettings:'Settings',
@@ -180,9 +180,9 @@ export const en: I18nKeys = {
   checkinSelectStatus:'Please select status', checkinHistory:'History',
   checkinNoRecords:'No records', checkinDone:'Done', checkinNotDone:'Not Done',
   checkinStreak:'Streak',
-  checkinNotChecked:'Not checked in, tap to start', checkinModifyNotDone:'Incomplete, tap to modify',
-  checkinDoneBanner:'Completed today', checkinModify:'Modify',
-  checkinDetailTitle:'Check-in Detail', checkinTime:'Check-in Time',
+  checkinNotChecked:'Not checked in, tap to start', checkinModifyNotDone:'Keep going, continue your check-in',
+  checkinDoneBanner:'Amazing, today\'s goal achieved', checkinModify:'Modify',
+  checkinDataTitle:'Today\'s Data', checkinDetailTitle:'Check-in Detail', checkinTime:'Check-in Time',
   checkinStatus:'Status', checkinContent:'Content',
 
   // Food

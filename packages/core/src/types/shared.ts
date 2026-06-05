@@ -20,6 +20,7 @@ export interface Theme {
   sub: string;
   border: string;
   primary: string;
+  accent: string;
   navBg: string;
   starfield: boolean;
 }

@@ -154,7 +154,7 @@ export interface I18nKeys {
   checkinNoRecords: string; checkinDone: string; checkinNotDone: string;
   checkinStreak: string; checkinNotChecked: string;
   checkinModifyNotDone: string; checkinDoneBanner: string;
-  checkinModify: string; checkinDetailTitle: string;
+  checkinModify: string; checkinDataTitle: string; checkinDetailTitle: string;
   checkinTime: string; checkinStatus: string; checkinContent: string;
   foodTitle: string; foodTodayKcal: string; foodRemaining: string;
   foodEmpty: string; foodAdd: string; foodAddTitle: string;

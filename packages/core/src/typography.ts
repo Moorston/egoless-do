@@ -5,16 +5,19 @@
 export const FONT_TITLE = 18;
 
 /** Body text, descriptions */
-export const FONT_BODY = 16;
+export const FONT_BODY = 15;
 
 /** Button label */
-export const FONT_BUTTON = 16;
+export const FONT_BUTTON = 15;
 
 /** Empty state message */
-export const FONT_EMPTY = 16;
+export const FONT_EMPTY = 15;
 
-/** Form field label */
+/** Section label, form field label */
 export const FONT_LABEL = 16;
+
+/** Card title */
+export const FONT_CARD_TITLE = 17;
 
 /** Sub-label, unit, secondary text */
 export const FONT_SUB = 14;

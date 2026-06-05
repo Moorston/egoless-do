@@ -334,7 +334,7 @@ export default function HomeTab() {
             <div style={{ display: 'flex', gap: 10 }}>
               <button onClick={() => setShowCG(false)} style={{ flex: 1, padding: 12, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.sub, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('cancel')}</button>
               <button onClick={() => { setCalGoal(Math.max(CAL_GOAL_MIN, Math.min(CAL_GOAL_MAX, +cgi || 2000))); setShowCG(false); }}
-                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: '#18CEFF', color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
+                style={{ flex: 1, padding: 12, borderRadius: 12, border: 'none', background: TH.accent, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer' }}>{T('save')}</button>
             </div>
           </div>
         </div>

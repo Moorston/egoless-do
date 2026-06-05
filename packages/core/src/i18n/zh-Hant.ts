@@ -45,7 +45,7 @@ export const zhHant: I18nKeys = {
   otherSports:'其他運動', mySports:'我的運動', runWalkRide:'跑走騎運動',
   insightTooLong:'感悟評論不能超過20字', today:'今天',
   globalMeditators:'散落在世界的寧靜座標', globalFasting:'跨越山海的空腹修行',
-  globalExercise:'查看全球鍛鍊者', checkinDoneToday:'今天朝目標邁進了嗎？',
+  globalExercise:'查看全球鍛鍊者', checkinDoneToday:'新的一天，開始打卡行動',
   navHome:'首頁', navFasting:'禁食', navMeditate:'止觀',
   navReflections:'感念', navExercise:'鍛鍊', navHabits:'習慣',
   navStats:'統計', navSettings:'設置',
@@ -180,9 +180,9 @@ export const zhHant: I18nKeys = {
   checkinSelectStatus:'請選擇完成狀態', checkinHistory:'打卡歷史',
   checkinNoRecords:'暫無記錄', checkinDone:'已完成', checkinNotDone:'未完成',
   checkinStreak:'連續',
-  checkinNotChecked:'今日未打卡，進入打卡', checkinModifyNotDone:'今日未完成，點擊修改',
-  checkinDoneBanner:'今日已完成', checkinModify:'修改',
-  checkinDetailTitle:'打卡詳情', checkinTime:'打卡時間',
+  checkinNotChecked:'今日未打卡，進入打卡', checkinModifyNotDone:'加油，繼續今日打卡',
+  checkinDoneBanner:'太棒了，今日目標已達成', checkinModify:'修改',
+  checkinDataTitle:'今日數據', checkinDetailTitle:'打卡詳情', checkinTime:'打卡時間',
   checkinStatus:'打卡狀態', checkinContent:'打卡內容',
 
   // Food

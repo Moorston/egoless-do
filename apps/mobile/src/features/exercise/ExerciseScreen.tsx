@@ -86,10 +86,10 @@ export default function ExerciseScreen() {
   }, [otherGroups, searchQuery]);
 
   const quickSports = [
-    { icon: Footprints, label: T('exerciseWalk'), key: '行走', colors: ['#17EAD9', '#6078EA'] as const, gps: true },
-    { icon: Activity, label: T('exerciseRun'), key: '跑步', colors: ['#9A4EFF', '#20ECFF'] as const, gps: true },
-    { icon: Bike, label: T('exerciseCycle'), key: '骑行', colors: ['#FAD961', '#F76B1C'] as const, gps: true },
-    { icon: Dumbbell, label: T('exerciseOther'), key: '', colors: ['#8446FF', '#18CEFF'] as const, gps: false, more: true },
+    { icon: Footprints, label: T('exerciseWalk'), key: '行走', colors: ['#9A4EFF', '#20ECFF'] as const, gps: true },
+    { icon: Activity, label: T('exerciseRun'), key: '跑步', colors: ['#17EAD9', '#6078EA'] as const, gps: true },
+    { icon: Bike, label: T('exerciseCycle'), key: '骑行', colors: ['#8446FF', '#18CEFF'] as const, gps: true },
+    { icon: Dumbbell, label: T('exerciseOther'), key: '', colors: ['#BB73E0', '#FF8DDB'] as const, gps: false, more: true },
   ];
 
   return (
