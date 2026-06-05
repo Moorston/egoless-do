@@ -1,13 +1,14 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
-  KeyboardAvoidingView, Platform, TextInput, Linking, Alert,
+  KeyboardAvoidingView, Platform, TextInput, Linking, Alert, StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Swipeable } from 'react-native-gesture-handler';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
-import { useTabNavigation, type MainTabParamList } from '../../navigation/hooks';
+import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
 import {
   useTheme, ScreenHeader, TagPill, PrimaryButton, OutlineButton,
   ThemedInput, useT, PillSelector,
@@ -16,11 +17,12 @@ import ItemManagerPanel from '../../components/ItemManagerPanel';
 import DatePickerModal from '../../components/DatePickerModal';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import ShareCard from './ShareCard';
+import FilterDrawer from './FilterDrawer';
 import { useReflections } from './useReflections';
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES } from '@egoless-do/core';
 import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
 import {
-  Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Pin, Link,
+  Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Pin, Link, BarChart3, Pencil, Target,
 } from 'lucide-react-native';
 
 // ── Manager helpers ───────────────────────────────────────────────
@@ -90,6 +92,7 @@ export default function ReflectionsScreen() {
   const T     = useT();
   const route = useRoute<RouteProp<MainTabParamList, 'Reflections'>>();
   const nav   = useTabNavigation();
+  const rootNav = useRootNavigation();
 
   // Use shared reflections hook (includes filters, debounced search, dynamic counts, etc.)
   const {
@@ -108,8 +111,7 @@ export default function ReflectionsScreen() {
   } = useReflections();
 
   const [showNew, setShowNew]       = useState(false);
-  const [showFilter, setShowFilter]   = useState(false);
-  const [showStats, setShowStats]     = useState(false);
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [managerMode, setManagerMode] = useState<'tag'|'mood'|null>(null);
 
   useEffect(() => {
@@ -240,6 +242,57 @@ export default function ReflectionsScreen() {
     setActionMenuId(null);
   };
 
+  const handleEdit = useCallback((id: string) => {
+    const r = (store.reflections ?? []).find(x => x.id === id);
+    if (r) openEdit(r);
+  }, [store]);
+
+  const handleCreatePlanItem = useCallback((id: string) => {
+    const r = (store.reflections ?? []).find(x => x.id === id);
+    if (r) {
+      const activePlan = store.getActivePlan();
+      if (!activePlan) {
+        Alert.alert('提示', '暂无活跃计划，请先创建一个计划。');
+        return;
+      }
+      setSelectedReflectionId(id);
+      setShowCreatePlanItem(true);
+    }
+  }, [store]);
+
+  const handleCardPress = useCallback((id: string) => {
+    setDetailId(id);
+  }, []);
+
+  const handleCardLongPress = useCallback((id: string) => {
+    setActionMenuId(id);
+  }, []);
+
+  const handleNavigateToPlan = useCallback((planId: string) => {
+    rootNav.navigate('PlanDetail', { planId });
+  }, [rootNav]);
+
+  const renderRightActions = useCallback((id: string) => {
+    return (
+      <View style={styles.swipeActions}>
+        <TouchableOpacity
+          onPress={() => handleEdit(id)}
+          style={[styles.swipeButton, { backgroundColor: '#3B82F6' }]}
+        >
+          <Pencil size={18} color="#fff" />
+          <Text style={styles.swipeButtonText}>编辑</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleCreatePlanItem(id)}
+          style={[styles.swipeButton, { backgroundColor: '#10B981' }]}
+        >
+          <Target size={18} color="#fff" />
+          <Text style={styles.swipeButtonText}>创建任务</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }, [handleEdit, handleCreatePlanItem]);
+
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>
       <SimpleHeader routeName="Reflections" />
@@ -265,13 +318,13 @@ export default function ReflectionsScreen() {
               </TouchableOpacity>
             )}
           </View>
-          <TouchableOpacity onPress={() => setShowFilter(f => !f)}
-            style={{ paddingHorizontal:14, borderRadius:10, backgroundColor: showFilter ? `${P}20` : TH.card, justifyContent:'center' }}>
-            <Text style={{ color: showFilter ? P : TH.sub, fontSize:FONT_SMALL, fontWeight:'600' }}>筛选</Text>
+          <TouchableOpacity onPress={() => setShowFilterDrawer(f => !f)}
+            style={{ paddingHorizontal:14, borderRadius:10, backgroundColor: showFilterDrawer ? `${P}20` : TH.card, justifyContent:'center' }}>
+            <Text style={{ color: showFilterDrawer ? P : TH.sub, fontSize:FONT_SMALL, fontWeight:'600' }}>筛选</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setShowStats(s => !s)}
-            style={{ paddingHorizontal:14, borderRadius:10, backgroundColor: showStats ? `${P}20` : TH.card, justifyContent:'center' }}>
-            <Text style={{ fontSize:FONT_BODY }}>📊</Text>
+          <TouchableOpacity onPress={() => rootNav.navigate('ReflectionStats')}
+            style={{ paddingHorizontal:14, borderRadius:10, backgroundColor: TH.card, justifyContent:'center' }}>
+            <BarChart3 size={18} color={TH.sub} />
           </TouchableOpacity>
         </View>
 
@@ -293,137 +346,6 @@ export default function ReflectionsScreen() {
           </ScrollView>
         )}
 
-        {/* Filter area (collapsible) */}
-        {showFilter && (
-          <View style={{ marginBottom:16, gap:8 }}>
-            {/* Tag filter (multi-select) */}
-            <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap:6 }} style={{ flex:1 }}>
-                <TouchableOpacity onPress={() => setFilters({ ...filters, tags: [], collectionId: undefined })}
-                  style={{ flexDirection:'row', alignItems:'center', gap:4, paddingHorizontal:10, paddingVertical:6, borderRadius:16, backgroundColor: filters.tags.length === 0 ? `${P}20` : TH.card, borderWidth:1, borderColor: filters.tags.length === 0 ? P : TH.border }}>
-                  <Text style={{ color:TH.text, fontSize:FONT_SMALL }}>🏷️ 全部</Text>
-                  <View style={{ backgroundColor:`${P}20`, paddingHorizontal:5, paddingVertical:1, borderRadius:6 }}>
-                    <Text style={{ color:P, fontSize:FONT_TINY, fontWeight:'600' }}>{dynamicTagCounts[''] ?? totalCount}</Text>
-                  </View>
-                </TouchableOpacity>
-                {visibleTags.map(t => {
-                  const isDeleted = !allTags.includes(t);
-                  const isActive = filters.tags.includes(t);
-                  return (
-                    <TouchableOpacity key={t} onPress={() => toggleTag(t)}
-                      style={{ flexDirection:'row', alignItems:'center', gap:4, paddingHorizontal:10, paddingVertical:6, borderRadius:16, backgroundColor: isActive ? `${P}20` : TH.card, borderWidth:1, borderColor: isActive ? P : (isDeleted ? TH.sub : TH.border), borderStyle: isDeleted ? 'dashed' : 'solid' }}>
-                      <Text style={{ color: isDeleted ? TH.sub : TH.text, fontSize:FONT_SMALL, textDecorationLine: isDeleted ? 'line-through' : 'none', opacity: isDeleted ? 0.6 : 1 }}>{t}</Text>
-                      <View style={{ backgroundColor:`${P}20`, paddingHorizontal:5, paddingVertical:1, borderRadius:6 }}>
-                        <Text style={{ color:P, fontSize:FONT_TINY, fontWeight:'600' }}>{dynamicTagCounts[t] ?? 0}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
-              {deletedTagsWithData.length > 0 && (
-                <TouchableOpacity onPress={() => setShowDeletedTags(d => !d)} style={{ padding:6 }}>
-                  {showDeletedTags ? <EyeOff size={16} color={P} /> : <Eye size={16} color={TH.sub} />}
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Mood filter (multi-select) */}
-            {allMoods.length > 0 && (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap:6 }}>
-                <TouchableOpacity onPress={() => toggleMood('')}
-                  style={{ flexDirection:'row', alignItems:'center', gap:4, paddingHorizontal:10, paddingVertical:6, borderRadius:16, backgroundColor: filters.moods.length === 0 ? `${P}20` : TH.card, borderWidth:1, borderColor: filters.moods.length === 0 ? P : TH.border }}>
-                  <Text style={{ color:TH.text, fontSize:FONT_SMALL }}>😊 全部心情</Text>
-                </TouchableOpacity>
-                {allMoods.map(m => {
-                  const isActive = filters.moods.includes(m);
-                  const moodIcon = m === '开心' ? '😊' : m === '平静' ? '🌿' : m === '焦虑' ? '😰' : m === '难过' ? '😢' : m === '兴奋' ? '🎉' : m === '感恩' ? '🙏' : '💭';
-                  return (
-                    <TouchableOpacity key={m} onPress={() => toggleMood(m)}
-                      style={{ flexDirection:'row', alignItems:'center', gap:4, paddingHorizontal:10, paddingVertical:6, borderRadius:16, backgroundColor: isActive ? `${P}20` : TH.card, borderWidth:1, borderColor: isActive ? P : TH.border }}>
-                      <Text style={{ fontSize:FONT_SMALL }}>{moodIcon}</Text>
-                      <Text style={{ color:TH.text, fontSize:FONT_SMALL }}>{m}</Text>
-                      <View style={{ backgroundColor:`${P}20`, paddingHorizontal:5, paddingVertical:1, borderRadius:6 }}>
-                        <Text style={{ color:P, fontSize:FONT_TINY, fontWeight:'600' }}>{dynamicMoodCounts[m] ?? 0}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
-            )}
-
-          </View>
-        )}
-
-        {/* Stats panel (collapsible) */}
-        {showStats && (
-          <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12, gap:14 }}>
-            <View>
-              <Text style={{ color:TH.sub, fontSize:FONT_SMALL, fontWeight:'600', marginBottom:8 }}>近 7 天活跃度</Text>
-              <View style={{ flexDirection:'row', alignItems:'flex-end', justifyContent:'space-between', height:44, paddingHorizontal:2 }}>
-                {sparklineData.map((count, idx) => {
-                  const max = Math.max(...sparklineData, 1);
-                  const h = (count / max) * 36 + 6;
-                  return (
-                    <View key={idx} style={{ alignItems:'center', flex:1 }}>
-                      {count > 0 && <Text style={{ fontSize:FONT_TINY, color:P, fontWeight:'600', marginBottom:2 }}>{count}</Text>}
-                      <View style={{ width:20, height:h, backgroundColor: count > 0 ? P : TH.border, borderRadius:4, opacity: 0.5 + (count / max) * 0.5 }} />
-                      <Text style={{ fontSize:FONT_TINY, color:TH.sub, marginTop:3 }}>{['一','二','三','四','五','六','日'][idx]}</Text>
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
-            {moodStats.length > 0 && (
-              <View>
-                <Text style={{ color:TH.sub, fontSize:FONT_SMALL, fontWeight:'600', marginBottom:6 }}>心情分布</Text>
-                <View style={{ gap:4 }}>
-                  {moodStats.map(([m, count]) => {
-                    const maxCount = moodStats[0]?.[1] ?? 1;
-                    const pct = (count / maxCount) * 100;
-                    return (
-                      <View key={m} style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                        <Text style={{ color:TH.text, fontSize:FONT_SMALL, width:56 }}>{m}</Text>
-                        <View style={{ flex:1, height:6, backgroundColor:TH.border, borderRadius:3, overflow:'hidden' }}>
-                          <View style={{ width:`${pct}%`, height:'100%', backgroundColor:P, borderRadius:3 }} />
-                        </View>
-                        <Text style={{ color:TH.sub, fontSize:FONT_TINY, width:20, textAlign:'right' }}>{count}</Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              </View>
-            )}
-            {tagFrequency.length > 0 && (
-              <View>
-                <Text style={{ color:TH.sub, fontSize:FONT_SMALL, fontWeight:'600', marginBottom:6 }}>热门标签</Text>
-                <View style={{ flexDirection:'row', flexWrap:'wrap', gap:6 }}>
-                  {tagFrequency.slice(0, 10).map(([tag, count]) => {
-                    const maxCount = tagFrequency[0]?.[1] ?? 1;
-                    const scale = count / maxCount;
-                    const fs = 11 + scale * 5;
-                    return (
-                      <Text key={tag} style={{ color:P, fontSize:fs, fontWeight: scale > 0.6 ? '700' : '400' }}>
-                        {tag} <Text style={{ color:TH.sub, fontSize:FONT_TINY, fontWeight:'400' }}>{count}</Text>
-                      </Text>
-                    );
-                  })}
-                </View>
-              </View>
-            )}
-            <View>
-              <Text style={{ color:TH.sub, fontSize:FONT_SMALL, fontWeight:'600', marginBottom:6, marginTop:2 }}>近 5 周写作热力图</Text>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:2 }}>
-                {calendarData.map((day, idx) => {
-                  const op = day.count === 0 ? 0.08 : 0.2 + Math.min(day.count * 0.25, 0.8);
-                  return (
-                    <View key={idx} style={{ width:12, height:12, borderRadius:2, backgroundColor: day.count > 0 ? P : TH.border, opacity: op }} />
-                  );
-                })}
-              </View>
-            </View>
-          </View>
-        )}
-
         {/* Timeline */}
         {Object.entries(byDay).map(([day, items]) => (
           <View key={day}>
@@ -441,12 +363,17 @@ export default function ReflectionsScreen() {
               return (
                 <View key={r.id} style={{ marginBottom:10 }}>
                   <View style={{ borderRadius:12, borderWidth:1, borderColor:TH.border, overflow:'hidden' }}>
-                    <TouchableOpacity
-                      onPress={() => setDetailId(r.id)}
-                      onLongPress={() => setActionMenuId(r.id)}
-                      activeOpacity={0.85}
+                    <Swipeable
+                      renderRightActions={() => renderRightActions(r.id)}
+                      overshootRight={false}
+                      friction={2}
                     >
-                    <LinearGradient
+                      <TouchableOpacity
+                        onPress={() => handleCardPress(r.id)}
+                        onLongPress={() => handleCardLongPress(r.id)}
+                        activeOpacity={0.85}
+                      >
+                      <LinearGradient
                       colors={[r.colors?.[0] || MIND_COLORS_EXTENDED[0][0], r.colors?.[1] || MIND_COLORS_EXTENDED[0][1]]}
                       start={{ x:0, y:0 }} end={{ x:1, y:1 }}
                       style={{ padding:14 }}
@@ -459,7 +386,7 @@ export default function ReflectionsScreen() {
                           {r.isPinned && <Pin size={12} color={P} />}
                           {linkedPlanItem && (
                             <TouchableOpacity
-                              onPress={() => nav.navigate('PlanDetail', { planId: linkedPlanItem.planId })}
+                              onPress={() => handleNavigateToPlan(linkedPlanItem.planId)}
                               style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:`${P}15` }}
                             >
                               <ExternalLink size={10} color={P} />
@@ -507,16 +434,33 @@ export default function ReflectionsScreen() {
                       )}
                     </LinearGradient>
                     </TouchableOpacity>
+                    </Swipeable>
                   </View>
                 </View>
               );
             })}
           </View>
         ))}
-        {filtered.length===0 && (
-          <Text style={{ color:TH.sub, textAlign:'center', marginTop:60, fontSize:FONT_EMPTY }}>{T('reflEmpty')}</Text>
+        {filtered.length === 0 && (
+          <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY }}>{T('reflEmpty')}</Text>
         )}
       </ScrollView>
+
+      {/* Filter Drawer */}
+      <FilterDrawer
+        visible={showFilterDrawer}
+        onClose={() => setShowFilterDrawer(false)}
+        filters={filters}
+        onApplyFilters={(newFilters) => {
+          setFilters(newFilters);
+          setShowFilterDrawer(false);
+        }}
+        allTagOptions={allTagOptions}
+        allMoodOptions={allMoodOptions}
+        dynamicTagCounts={dynamicTagCounts}
+        dynamicMoodCounts={dynamicMoodCounts}
+        primaryColor={P}
+      />
 
       {/* New reflection modal */}
       <Modal visible={showNew} animationType="slide" transparent>
@@ -774,8 +718,19 @@ export default function ReflectionsScreen() {
         <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.7)', justifyContent:'center', padding:24 }}>
           <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24, maxHeight:'90%' }}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text, marginBottom:16 }}>创建计划任务</Text>
-              <Text style={{ fontSize:FONT_BODY, color:TH.sub, marginBottom:16 }}>
+              <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
+                <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>创建计划任务</Text>
+                <TouchableOpacity onPress={() => { 
+                  setShowCreatePlanItem(false); 
+                  setSelectedReflectionId(null);
+                  setPlanItemName('');
+                  setPlanItemDescription('');
+                  setPlanItemTargetMetric('');
+                }}>
+                  <X size={24} color={TH.sub} />
+                </TouchableOpacity>
+              </View>
+              <Text style={{ fontSize:FONT_BODY, fontWeight:'600', color:TH.text, marginBottom:16 }}>
                 关联计划: {store.getActivePlan()?.name || '无活跃计划'}（进行中）
               </Text>
               
@@ -813,8 +768,8 @@ export default function ReflectionsScreen() {
                       onChangeText={setPlanItemDescription}
                       placeholder="请输入任务描述"
                       multiline
-                      numberOfLines={3}
-                      style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, color:TH.text, backgroundColor:TH.card, minHeight:80, textAlignVertical:'top' }}
+                      numberOfLines={2}
+                      style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, color:TH.text, backgroundColor:TH.card, minHeight:60, textAlignVertical:'top' }}
                     />
 
                     {/* 任务链接（只读，自动填入感念标签） */}
@@ -1023,3 +978,25 @@ export default function ReflectionsScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  swipeActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    gap: 4,
+  },
+  swipeButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 70,
+    height: '100%',
+    borderRadius: 8,
+    gap: 4,
+  },
+  swipeButtonText: {
+    color: '#fff',
+    fontSize: FONT_TINY,
+    fontWeight: '600',
+  },
+});
