@@ -168,7 +168,10 @@ async function applyChangesToIndexedDB(changes: SyncChange[], deletedIds?: Set<s
       // Preserve local colors field for reflections if server data lacks it
       if (c.entity === 'reflection' && !(normalized as any).colors) {
         const local = await table.get(c.entityId);
-        if (local?.colors) (normalized as any).colors = local.colors;
+        if (local?.colors) {
+          const lc = local.colors;
+          (normalized as any).colors = typeof lc === 'string' ? (() => { try { return JSON.parse(lc); } catch { return lc; } })() : lc;
+        }
       }
       await table.put(normalized as Record<string, unknown>);
     }

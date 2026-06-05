@@ -14,6 +14,12 @@ import MoodManagerPanel from './MoodManagerPanel';
 const MAX_REFLECTION_LENGTH = 200;
 const DELETE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
+function parseColors(c: unknown): [string, string] | null {
+  if (Array.isArray(c) && c.length >= 2) return c as [string, string];
+  if (typeof c === 'string') { try { const p = JSON.parse(c); return Array.isArray(p) && p.length >= 2 ? p as [string, string] : null; } catch { return null; } }
+  return null;
+}
+
 // ─── Main ReflectionsTab ──────────────────────────────────────────
 export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: number }) {
   const [showNew, setShowNew] = useState(false);
@@ -132,7 +138,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
     setEditTags(r.tags || []);
     setEditMood(r.mood || '');
     setEditLink(r.link || '');
-    const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (r.colors?.[0]));
+    const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (parseColors(r.colors)?.[0]));
     setEditColorIdx(bgIdx >= 0 ? bgIdx : 0);
     const cat = REFLECTION_CATEGORIES.find(c => r.tags?.includes(`#${c.label}`));
     setEditCategory(cat?.key || '');
@@ -428,8 +434,9 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
             <div style={{ flex: 1, height: 1, background: TH.border }} />
           </div>
           {items.map((r) => {
-            const bgColor = r.colors?.[0] || MIND_COLORS_EXTENDED[0][0];
-            const bgColor2 = r.colors?.[1] || MIND_COLORS_EXTENDED[0][1];
+            const _c = parseColors(r.colors);
+            const bgColor = _c?.[0] || MIND_COLORS_EXTENDED[0][0];
+            const bgColor2 = _c?.[1] || MIND_COLORS_EXTENDED[0][1];
             const linkedPlanItem = r.linkedPlanItemId
               ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
               : null;
@@ -684,8 +691,9 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
         const linkedPlanItem = r.linkedPlanItemId
           ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
           : null;
-        const bgColor = r.colors?.[0] || MIND_COLORS_EXTENDED[0][0];
-        const bgColor2 = r.colors?.[1] || MIND_COLORS_EXTENDED[0][1];
+        const _c2 = parseColors(r.colors);
+        const bgColor = _c2?.[0] || MIND_COLORS_EXTENDED[0][0];
+        const bgColor2 = _c2?.[1] || MIND_COLORS_EXTENDED[0][1];
         const isWithin7Days = (Date.now() - r.timestamp) < DELETE_WINDOW_MS;
         return (
           <div onClick={() => setDetailId(null)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

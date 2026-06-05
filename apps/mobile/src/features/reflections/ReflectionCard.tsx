@@ -45,10 +45,10 @@ function ReflectionCardComponent({
     return r.content.slice(0, 100) + '...';
   }, [r.content, expanded]);
 
-  const colors = useMemo<[string, string]>(() => [
-    r.colors?.[0] || MIND_COLORS_EXTENDED[0][0],
-    r.colors?.[1] || MIND_COLORS_EXTENDED[0][1],
-  ], [r.colors]);
+  const colors = useMemo<[string, string]>(() => {
+    const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors); } catch { return null; } })() : r.colors;
+    return [c?.[0] || MIND_COLORS_EXTENDED[0][0], c?.[1] || MIND_COLORS_EXTENDED[0][1]];
+  }, [r.colors]);
 
   const handlePress = useCallback(() => {
     if (r.content.length > 100 && !expanded) {

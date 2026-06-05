@@ -25,7 +25,8 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
 
   if (!reflection) return null;
 
-  const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (reflection.colors?.[0]));
+  const parsedColors = typeof reflection.colors === 'string' ? (() => { try { return JSON.parse(reflection.colors); } catch { return null; } })() : reflection.colors;
+  const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (parsedColors?.[0]));
   const bgColor = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[0] ?? MIND_COLORS_EXTENDED[0][0];
   const bgColor2 = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[1] ?? MIND_COLORS_EXTENDED[0][1];
 

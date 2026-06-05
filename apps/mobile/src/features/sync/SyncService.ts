@@ -203,6 +203,7 @@ function reflectionToSync(r: Record<string, unknown>) {
     linkedPlanItemId: r.linked_plan_id,
     isPinned: (r.is_pinned as number) === 1,
     isPublished: (r.is_published as number) === 1,
+    colors: typeof r.colors === 'string' ? JSON.parse(r.colors as string) : r.colors,
     updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
   };
 }
@@ -429,13 +430,13 @@ async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: 
       }
       await db.runAsync(`
         INSERT OR REPLACE INTO mind_reflections
-        (id,created_at,content,tags,mood,card_theme,linked_habit_id,linked_plan_id,is_pinned,is_published,updated_at,deleted,synced)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1)`,
+        (id,created_at,content,tags,mood,card_theme,linked_habit_id,linked_plan_id,is_pinned,is_published,updated_at,deleted,synced,colors)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1,?)`,
         [r.id, r.timestamp ?? r.created_at, r.content, JSON.stringify(r.tags ?? []),
          r.mood ?? null, r.cardTheme ?? r.card_theme ?? null, r.linkedHabitId ?? r.linked_habit_id ?? null,
          r.linkedPlanItemId ?? r.linked_plan_id ?? null,
          (r.isPinned ?? r.is_pinned) ? 1 : 0, (r.isPublished ?? r.is_published) ? 1 : 0,
-         r.updatedAt ?? null, 0]
+         r.updatedAt ?? null, 0, r.colors ? JSON.stringify(r.colors) : null]
       );
       // Restore preserved colors after insert
       if (preservedColors.has(r.id)) {
@@ -449,7 +450,9 @@ async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: 
     }
     // Merge preserved colors into the patch for store update
     patch.reflections = data.reflection.map(r => {
-      if (!r.colors && preservedColors.has(r.id)) return { ...r, colors: preservedColors.get(r.id) };
+      if (!r.colors && preservedColors.has(r.id)) {
+        try { return { ...r, colors: JSON.parse(preservedColors.get(r.id)!) }; } catch {}
+      }
       return r;
     });
   }

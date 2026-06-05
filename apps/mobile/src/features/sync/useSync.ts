@@ -49,7 +49,8 @@ export function useSync() {
               }
             } else {
               if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
-                result[idx] = (storeKey === 'reflections' && !item.colors && local.colors)
+                const itemColorsMissing = storeKey === 'reflections' && (!item.colors || typeof item.colors === 'string');
+                result[idx] = (itemColorsMissing && local.colors && Array.isArray(local.colors))
                   ? { ...item, colors: local.colors }
                   : item;
               }
