@@ -168,6 +168,15 @@ export const zh: I18nKeys = {
   exerciseSets:'组数', exerciseSet:'第{n}组', exerciseRestTime:'休息时间',
   exerciseSetComplete:'完成一组', exerciseMet:'MET 值', exerciseEstRemaining:'预计剩余',
   exerciseConfirmFinish:'确认结束', exerciseTotalReps:'总次数', exerciseRepsPerSet:'每组次数', exerciseSkip:'跳过休息',
+  exerciseRepsTarget:'{n} 次 目标', exerciseBreathGuide:'呼吸引导', exerciseBgSound:'背景音效',
+  exerciseSoftTargetMin:'💡 建议 {n} 分钟', exerciseSoftTargetReps:'💡 建议 {n} 次',
+  exerciseLastTime:'上次:', exerciseFloors:'层数', exerciseHeartRate:'实时心率',
+  exerciseTargetProgress:'目标: {value} — {percent}%', exerciseConfirmFinishMsg:'确定要结束吗？',
+  exerciseStop:'停止', exerciseTooShort:'运动时间过短',
+  exerciseTooShortMsg:'本次运动时间过短，无法保存记录，确定结束吗？',
+  exerciseResting:'休息中', exerciseTargetReached:'✓ 达标', exerciseDuration:'时长',
+  exerciseSkipShort:'跳过',
+  exerciseCustom:'自定义', exerciseCustomInvalid:'请输入有效的数值',
 
   // Checkin
   checkinTitle:'今日打卡', checkinSubtitle:'诚实记录，养成习惯',
@@ -340,6 +349,13 @@ export const zh: I18nKeys = {
   // Sounds
   soundOcean:'海潮', soundRain:'雨声', soundBowl:'钵音', soundBirds:'鸟鸣',
   soundStream:'溪流', soundChimes:'风铃', soundNone:'静音',
+  musicTitle:'轻松听', musicAll:'全部', musicFocus:'专注',
+  musicMeditate:'冥想', musicExercise:'运动', musicMy:'我的',
+  musicImport:'导入音乐', musicImportDesc:'从手机导入音频文件',
+  musicDelete:'删除', musicDeleteConfirm:'确定删除这首音乐？',
+  musicPlaying:'正在播放', musicPaused:'已暂停', musicLoop:'循环',
+  musicNoTracks:'暂无音乐', musicEmptyMy:'暂无导入音乐，点击上方按钮导入', musicSection:'音乐',
+  musicFavorites:'收藏', musicTrackCount:'{n}首', musicEmptyFavorites:'暂无收藏曲目',
 
   // Calendar weekdays
   weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',

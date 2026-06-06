@@ -261,6 +261,18 @@ export function getSportType(sportKey: string, isGps: boolean): SportType {
   return 'timed';
 }
 
+// 最短运动时长阈值（秒），低于此值提示运动时间过短
+const MIN_DURATION_60S = [
+  ...GPS_SPORTS,                                            // GPS 运动
+  '太极', '八卦', '形意', '铁牛', '太阳摸经', '瑜伽',     // 冥想类
+  '羽毛球', '足球', '篮球', '乒乓球', '网球',             // 球类
+];
+const DEFAULT_MIN_DURATION = 30;
+
+export function getMinDuration(sportKey: string): number {
+  return MIN_DURATION_60S.includes(sportKey) ? 60 : DEFAULT_MIN_DURATION;
+}
+
 // Target presets for different sport types
 export const TARGET_PRESETS: Record<SportType, { distance?: Array<{ label: string; labelEn: string; value: number }>; time: Array<{ label: string; labelEn: string; value: number }>; calories: Array<{ label: string; labelEn: string; value: number }>; reps?: Array<{ label: string; labelEn: string; value: number }> }> = {
   gps: {
@@ -403,6 +415,8 @@ export const SPORT_BG_COLORS: Record<string, string> = {
   放松运动: '#81C784', 热身运动: '#FFB74D', 滑板: '#7E57C2',
   户外骑行: '#4CAF50', 室内跑步: '#2196F3', 乒乓球: '#009688', 网球: '#8BC34A',
 };
+
+export * from './constants/music';
 
 export const GLOBAL_USERS: GlobalUser[] = [
   { id: 1, name: '林夕',   lat: 39.9, lng: 116.4, days: 365, sport: '跑步',   since: '2025-05', duration: '1年' },

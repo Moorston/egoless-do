@@ -168,6 +168,15 @@ export const en: I18nKeys = {
   exerciseSets:'Sets', exerciseSet:'Set {n}', exerciseRestTime:'Rest Time',
   exerciseSetComplete:'Complete Set', exerciseMet:'MET', exerciseEstRemaining:'Est. Remaining',
   exerciseConfirmFinish:'Confirm Finish', exerciseTotalReps:'Total Reps', exerciseRepsPerSet:'Reps per Set', exerciseSkip:'Skip Rest',
+  exerciseRepsTarget:'{n} reps target', exerciseBreathGuide:'Breathing Guide', exerciseBgSound:'Background Sound',
+  exerciseSoftTargetMin:'💡 Suggested {n} min', exerciseSoftTargetReps:'💡 Suggested {n} reps',
+  exerciseLastTime:'Last:', exerciseFloors:'Floors', exerciseHeartRate:'Heart Rate',
+  exerciseTargetProgress:'Target: {value} — {percent}%', exerciseConfirmFinishMsg:'Are you sure you want to finish?',
+  exerciseStop:'Stop', exerciseTooShort:'Exercise Too Short',
+  exerciseTooShortMsg:'Exercise too short to save. End anyway?',
+  exerciseResting:'Resting', exerciseTargetReached:'✓ Target Reached', exerciseDuration:'Duration',
+  exerciseSkipShort:'Skip',
+  exerciseCustom:'Custom', exerciseCustomInvalid:'Please enter a valid number',
 
   // Checkin
   checkinTitle:"Today's Check-in", checkinSubtitle:'Be honest, build habits',
@@ -340,6 +349,13 @@ export const en: I18nKeys = {
   // Sounds
   soundOcean:'Ocean', soundRain:'Rain', soundBowl:'Singing Bowl', soundBirds:'Birds',
   soundStream:'Stream', soundChimes:'Wind Chimes', soundNone:'Silent',
+  musicTitle:'Relax & Listen', musicAll:'All', musicFocus:'Focus',
+  musicMeditate:'Meditate', musicExercise:'Exercise', musicMy:'My',
+  musicImport:'Import Music', musicImportDesc:'Import audio from phone',
+  musicDelete:'Delete', musicDeleteConfirm:'Delete this music?',
+  musicPlaying:'Now Playing', musicPaused:'Paused', musicLoop:'Loop',
+  musicNoTracks:'No music', musicEmptyMy:'No imported music, tap above to import', musicSection:'Music',
+  musicFavorites:'Favorites', musicTrackCount:'{n} tracks', musicEmptyFavorites:'No favorite tracks',
 
   // Calendar weekdays
   weekdaySun:'Sun', weekdayMon:'Mon', weekdayTue:'Tue', weekdayWed:'Wed',

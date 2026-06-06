@@ -49,6 +49,8 @@ import LoginScreen       from '../features/auth/LoginScreen';
 import RegisterScreen    from '../features/auth/RegisterScreen';
 import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
 import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
+import MusicScreen from '../features/music/MusicScreen';
+import MusicCategoryScreen from '../features/music/MusicCategoryScreen';
 import { useSync }       from '../features/sync/useSync';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
@@ -296,6 +298,8 @@ export default function AppNavigator() {
         <Stack.Screen name="PlanHistory"    component={PlanHistoryScreen} />
         <Stack.Screen name="RecycleBin"    component={RecycleBinScreen} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+        <Stack.Screen name="Music"         component={MusicScreen} />
+        <Stack.Screen name="MusicCategory" component={MusicCategoryScreen} />
         <Stack.Screen name="Stats"         component={StatsScreen} />
         <Stack.Screen name="ReflectionStats" component={ReflectionStatsScreen} />
         <Stack.Screen name="MindTrail"     component={MindTrailScreen} />
