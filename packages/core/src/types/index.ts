@@ -9,4 +9,5 @@ export * from './exercise';
 export * from './checkin';
 export * from './plan';
 export * from './recycle';
+export * from './thought-trail';
 export * from './app';

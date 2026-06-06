@@ -19,6 +19,8 @@ export type RootStackParamList = {
   PrivacyPolicy: undefined;
   Stats: undefined;
   ReflectionStats: undefined;
+  MindTrail: undefined;
+  ThoughtTrailDetail: { trailId: string };
 };
 
 export type MainTabParamList = {

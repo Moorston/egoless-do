@@ -9,6 +9,7 @@ import type { ExerciseEntry } from './exercise';
 import type { CheckinEntry, MedHistoryEntry, GraceHistoryEntry } from './checkin';
 import type { Plan, PlanItem, PlanItemCheckin } from './plan';
 import type { RecycleBinItem } from './recycle';
+import type { ThoughtTrail } from './thought-trail';
 
 export interface UserProfile {
   weight?: number;
@@ -46,6 +47,7 @@ export interface AppState {
   foodLog: FoodEntry[];
   exerciseLog: ExerciseEntry[];
   reflections: MindReflection[];
+  thoughtTrails: ThoughtTrail[];
   habits: Habit[];
   activeFasting: FastingSession | null;
   userProfile: UserProfile;

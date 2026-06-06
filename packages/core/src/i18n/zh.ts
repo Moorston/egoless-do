@@ -291,6 +291,17 @@ export const zh: I18nKeys = {
   graceStatsTitle:'宽限期使用', graceAlreadyDone:'昨天已打卡，无需补卡',
   graceNoNeed:'无需补卡', graceHistory:'补卡记录', graceHistoryEmpty:'暂无补卡记录',
 
+  // Thought Trail
+  mindTrail:'思维脉络', thoughtTrail:'思路脉络', tagTrail:'标签脉络',
+  createThoughtTrail:'新建思路脉络', editThoughtTrail:'编辑思路脉络',
+  thoughtTrailName:'脉络名称', thoughtTrailDesc:'脉络描述',
+  thoughtTrailAddReflection:'添加感念', thoughtTrailRemoveReflection:'移除感念',
+  thoughtTrailDelete:'删除思路脉络', thoughtTrailDeleteConfirm:'确定删除此思路脉络吗？',
+  thoughtTrailEmpty:'暂无思路脉络', thoughtTrailReflections:'个感念',
+  thoughtTrailAutoName:'的思维脉络', thoughtTrailCreateFromTag:'创建为思路脉络',
+  thoughtTrailSelectReflection:'选择感念', thoughtTrailNamePlaceholder:'请输入脉络名称',
+  thoughtTrailDescPlaceholder:'请输入脉络描述（可选）',
+
   // Premium
   premiumUpgrade:'升级 Premium', premiumDesc:'解锁高级模板与 AI 感悟总结',
   premiumLearn:'了解 →',

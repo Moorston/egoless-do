@@ -6,13 +6,13 @@ import { AppState } from 'react-native';
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice,
 } from '@egoless-do/core';
 import {
   setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
-  createPlanSlice, createRecycleBinSlice,
+  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
@@ -32,7 +32,7 @@ const adapter = mobileStorageAdapter;
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & MobileUiSlice & PlanSlice & RecycleBinSlice;
+  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice;
 
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
@@ -49,6 +49,7 @@ export const useAppStore = create<MobileStore>()(
       ...createMobileUiSlice(adapter, createFoodSlice(adapter), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(), createTagMoodSlice())(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice()(...a),
+      ...createThoughtTrailSlice()(...a),
     }),
     {
       name: 'egoless-do-mobile',
@@ -57,6 +58,7 @@ export const useAppStore = create<MobileStore>()(
         auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
         waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
         foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
+        thoughtTrails: s.thoughtTrails,
         activeFasting: s.activeFasting,
         fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,
         medHistory: s.medHistory, checkinHistory: s.checkinHistory,

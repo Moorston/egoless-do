@@ -17,6 +17,7 @@ import DatePickerModal from '../../components/DatePickerModal';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import ShareCard from './ShareCard';
 import FilterDrawer from './FilterDrawer';
+import MindTrailEntryCard from './MindTrailEntryCard';
 import { useReflections } from './useReflections';
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES } from '@egoless-do/core';
 import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
@@ -305,6 +306,9 @@ export default function ReflectionsScreen() {
             </TouchableOpacity>
           }
         />
+
+        {/* Mind Trail Entry Card */}
+        <MindTrailEntryCard onPress={() => rootNav.navigate('MindTrail')} />
 
         {/* Search + toggle row */}
         <View style={{ flexDirection:'row', gap:8, marginBottom:16 }}>

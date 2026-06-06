@@ -247,6 +247,15 @@ export interface I18nKeys {
   graceUsedCount: string; graceUsedTimes: string;
   graceStatsTitle: string; graceAlreadyDone: string;
   graceNoNeed: string; graceHistory: string; graceHistoryEmpty: string;
+  mindTrail: string; thoughtTrail: string; tagTrail: string;
+  createThoughtTrail: string; editThoughtTrail: string;
+  thoughtTrailName: string; thoughtTrailDesc: string;
+  thoughtTrailAddReflection: string; thoughtTrailRemoveReflection: string;
+  thoughtTrailDelete: string; thoughtTrailDeleteConfirm: string;
+  thoughtTrailEmpty: string; thoughtTrailReflections: string;
+  thoughtTrailAutoName: string; thoughtTrailCreateFromTag: string;
+  thoughtTrailSelectReflection: string; thoughtTrailNamePlaceholder: string;
+  thoughtTrailDescPlaceholder: string;
   premiumUpgrade: string; premiumDesc: string; premiumLearn: string;
   errorBoundary: string; errorNetwork: string; errorTimeout: string;
   authTagline: string; authLoginTitle: string;

@@ -20,3 +20,4 @@ export {
 } from './plan';
 export * from './planForm';
 export * from './planTodo';
+export * from './thought-trail';

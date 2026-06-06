@@ -291,6 +291,17 @@ export const zhHant: I18nKeys = {
   graceStatsTitle:'寬限期使用', graceAlreadyDone:'昨天已打卡，無需補卡',
   graceNoNeed:'無需補卡', graceHistory:'補卡記錄', graceHistoryEmpty:'暫無補卡記錄',
 
+  // Thought Trail
+  mindTrail:'思維脈絡', thoughtTrail:'思路脈絡', tagTrail:'標籤脈絡',
+  createThoughtTrail:'新建思路脈絡', editThoughtTrail:'編輯思路脈絡',
+  thoughtTrailName:'脈絡名稱', thoughtTrailDesc:'脈絡描述',
+  thoughtTrailAddReflection:'添加感念', thoughtTrailRemoveReflection:'移除感念',
+  thoughtTrailDelete:'刪除思路脈絡', thoughtTrailDeleteConfirm:'確定刪除此思路脈絡嗎？',
+  thoughtTrailEmpty:'暫無思路脈絡', thoughtTrailReflections:'個感念',
+  thoughtTrailAutoName:'的思維脈絡', thoughtTrailCreateFromTag:'創建為思路脈絡',
+  thoughtTrailSelectReflection:'選擇感念', thoughtTrailNamePlaceholder:'請輸入脈絡名稱',
+  thoughtTrailDescPlaceholder:'請輸入脈絡描述（可選）',
+
   // Premium
   premiumUpgrade:'升級 Premium', premiumDesc:'解鎖高級模板與 AI 感悟總結',
   premiumLearn:'了解 →',

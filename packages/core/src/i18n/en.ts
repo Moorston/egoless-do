@@ -291,6 +291,17 @@ export const en: I18nKeys = {
   graceStatsTitle:'Grace Usage', graceAlreadyDone:'Already checked in yesterday',
   graceNoNeed:'No catch-up needed', graceHistory:'Catch-up History', graceHistoryEmpty:'No catch-up records',
 
+  // Thought Trail
+  mindTrail:'Mind Trail', thoughtTrail:'Thought Trail', tagTrail:'Tag Trail',
+  createThoughtTrail:'Create Thought Trail', editThoughtTrail:'Edit Thought Trail',
+  thoughtTrailName:'Trail Name', thoughtTrailDesc:'Trail Description',
+  thoughtTrailAddReflection:'Add Reflection', thoughtTrailRemoveReflection:'Remove Reflection',
+  thoughtTrailDelete:'Delete Trail', thoughtTrailDeleteConfirm:'Delete this thought trail?',
+  thoughtTrailEmpty:'No thought trails yet', thoughtTrailReflections:'reflections',
+  thoughtTrailAutoName:'\'s Mind Trail', thoughtTrailCreateFromTag:'Create as Thought Trail',
+  thoughtTrailSelectReflection:'Select Reflections', thoughtTrailNamePlaceholder:'Enter trail name',
+  thoughtTrailDescPlaceholder:'Enter description (optional)',
+
   // Premium
   premiumUpgrade:'Upgrade Premium', premiumDesc:'Unlock premium templates & AI insights',
   premiumLearn:'Learn More →',

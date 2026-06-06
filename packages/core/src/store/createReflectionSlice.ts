@@ -33,6 +33,15 @@ export function createReflectionSlice(
       if (reflection) {
         state.addToRecycleBin({ id, entityType: 'reflection', data: reflection });
       }
+
+      // Remove reflection from all thought trails
+      const thoughtTrails = state.thoughtTrails ?? [];
+      for (const trail of thoughtTrails) {
+        if (trail.reflectionIds.includes(id)) {
+          state.removeReflectionFromTrail(trail.id, id);
+        }
+      }
+
       set(s => ({ reflections: deleteReflectionFromList(s.reflections ?? [], id) }));
       adapter.markDeleted('reflection', id).catch(console.error);
     },

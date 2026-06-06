@@ -4,7 +4,7 @@ import type {
   MedHistoryEntry, FoodEntry, ExerciseEntry, CheckinEntry,
   UserProfile, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
-  ReflectionFilters,
+  ReflectionFilters, ThoughtTrail,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -185,11 +185,21 @@ export interface RecycleBinSlice {
   cleanupRecycleBin: () => void;
 }
 
+export interface ThoughtTrailSlice {
+  thoughtTrails: ThoughtTrail[];
+  createThoughtTrail: (name: string, description?: string, reflectionIds?: string[]) => string;
+  updateThoughtTrail: (id: string, patch: Partial<ThoughtTrail>) => void;
+  deleteThoughtTrail: (id: string) => void;
+  addReflectionToTrail: (trailId: string, reflectionId: string) => void;
+  removeReflectionFromTrail: (trailId: string, reflectionId: string) => void;
+  reorderTrailReflections: (trailId: string, fromIndex: number, toIndex: number) => void;
+}
+
 // ─── FullStore composition ─────────────────────────────────────
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
