@@ -17,6 +17,7 @@ import {
   Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
   Check, X, ChevronRight, Scale, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload,   History, Info, Lock, ClipboardList,
+  Music,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import {
@@ -160,6 +161,17 @@ export default function SettingsScreen() {
           label: T('recycleBin'), icon: <Trash2 size={20} color={P} />, sub: T('recycleBinDesc'),
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('RecycleBin'),
+          last: true,
+        },
+      ],
+    },
+    {
+      title: T('musicSection'),
+      rows: [
+        {
+          label: T('musicTitle'), icon: <Music size={20} color={P} />,
+          right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('Music'),
           last: true,
         },
       ],

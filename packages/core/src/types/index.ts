@@ -10,4 +10,5 @@ export * from './checkin';
 export * from './plan';
 export * from './recycle';
 export * from './thought-trail';
+export * from './music';
 export * from './app';
