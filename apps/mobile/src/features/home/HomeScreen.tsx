@@ -555,7 +555,7 @@ export default function HomeScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 16 }}>
                   <ClipboardList size={16} color={P} />
                   <Text style={{ fontWeight: '700', fontSize: FONT_CARD_TITLE, color: TH.text }}>
-                    {isReadOnly ? viewDateLabel : (isToday ? T('checkinDoneToday') : viewDateLabel)}
+                    {isReadOnly ? (isToday && status === 'done' ? '今日目标已达成，点赞 👍' : viewDateLabel) : (isToday ? T('checkinDoneToday') : viewDateLabel)}
                   </Text>
                 </View>
 

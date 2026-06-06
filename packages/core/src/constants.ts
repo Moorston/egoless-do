@@ -327,6 +327,74 @@ export function estimateCalories(sportKey: string, durationSec: number, weight =
   return Math.round(met * weight * (durationSec / 3600));
 }
 
+// ─── Sport experience classification ─────────────────────────
+export type SportExperienceType = 'meditative' | 'endurance' | 'strength' | 'interval';
+
+const MEDITATIVE_SPORTS = ['太极', '八卦', '形意', '铁牛', '太阳摸经', '瑜伽'];
+const ENDURANCE_SPORTS = ['游泳', '爬楼梯', '平板支撑'];
+const INTERVAL_SPORTS = ['波比跳', '开合跳', '高抬腿'];
+
+export function getSportExperienceType(sportKey: string, sportType: SportType): SportExperienceType {
+  if (MEDITATIVE_SPORTS.includes(sportKey)) return 'meditative';
+  if (INTERVAL_SPORTS.includes(sportKey)) return 'interval';
+  if (ENDURANCE_SPORTS.includes(sportKey)) return 'endurance';
+  return 'strength';
+}
+
+// ─── Soft targets (recommended values for free mode) ─────────
+export interface SoftTarget { beginner: number; intermediate: number; advanced: number; unit: 'min' | 'reps' | 'sets'; }
+
+export const SOFT_TARGETS: Record<string, SoftTarget> = {
+  '瑜伽':    { beginner: 15, intermediate: 30, advanced: 60, unit: 'min' },
+  '太极':    { beginner: 10, intermediate: 20, advanced: 40, unit: 'min' },
+  '八卦':    { beginner: 10, intermediate: 20, advanced: 40, unit: 'min' },
+  '形意':    { beginner: 10, intermediate: 20, advanced: 30, unit: 'min' },
+  '铁牛':    { beginner: 10, intermediate: 15, advanced: 30, unit: 'min' },
+  '太阳摸经': { beginner: 10, intermediate: 15, advanced: 30, unit: 'min' },
+  '平板支撑': { beginner: 30, intermediate: 60, advanced: 120, unit: 'min' },
+  '游泳':    { beginner: 15, intermediate: 30, advanced: 45, unit: 'min' },
+  '爬楼梯':  { beginner: 10, intermediate: 20, advanced: 30, unit: 'min' },
+  '放松运动': { beginner: 5, intermediate: 10, advanced: 15, unit: 'min' },
+  '热身运动': { beginner: 5, intermediate: 10, advanced: 15, unit: 'min' },
+  '俯卧撑':  { beginner: 30, intermediate: 60, advanced: 100, unit: 'reps' },
+  '引体向上': { beginner: 10, intermediate: 20, advanced: 40, unit: 'reps' },
+  '深蹲':    { beginner: 30, intermediate: 60, advanced: 100, unit: 'reps' },
+  '波比跳':  { beginner: 20, intermediate: 40, advanced: 60, unit: 'reps' },
+  '跳绳':    { beginner: 100, intermediate: 300, advanced: 500, unit: 'reps' },
+};
+
+export function getSoftTarget(sportKey: string): SoftTarget | undefined {
+  return SOFT_TARGETS[sportKey];
+}
+
+// ─── Exercise sounds ────────────────────────────────────────
+export const EXERCISE_SOUNDS = [
+  { key: '无', file: null },
+  { key: '海潮', file: 'ocean.mp3' },
+  { key: '雨声', file: 'rain.mp3' },
+  { key: '钵声', file: 'bowl.mp3' },
+  { key: '鸟叫', file: 'birds.mp3' },
+  { key: '流水', file: 'flowing-stream.mp3' },
+  { key: '风铃', file: 'wind-chimes.mp3' },
+];
+
+// ─── Milestone definitions ──────────────────────────────────
+export interface Milestone { value: number; label: string; labelEn: string; }
+
+export const REP_MILESTONES: Milestone[] = [
+  { value: 10,  label: '双位数！继续 💪', labelEn: 'Double digits! 💪' },
+  { value: 50,  label: '半百达成！🔥', labelEn: 'Half century! 🔥' },
+  { value: 100, label: '百次俱乐部！🏆', labelEn: 'Century club! 🏆' },
+  { value: 200, label: '两百次！逆天 🌟', labelEn: '200 reps! 🌟' },
+];
+
+export const TIME_MILESTONES: Milestone[] = [
+  { value: 10 * 60, label: '已坚持 10 分钟 ⏱', labelEn: '10 minutes! ⏱' },
+  { value: 20 * 60, label: '20 分钟！了不起 🌟', labelEn: '20 minutes! 🌟' },
+  { value: 30 * 60, label: '半小时达成！🏆', labelEn: '30 minutes! 🏆' },
+  { value: 60 * 60, label: '一小时！太强了 🔥', labelEn: '1 hour! 🔥' },
+];
+
 export const SPORT_BG_COLORS: Record<string, string> = {
   爬楼梯: '#4CAF50', 跳绳: '#FF9800', 游泳: '#00BCD4',
   瑜伽: '#9C27B0', 篮球: '#FF5722', 足球: '#4CAF50', 羽毛球: '#2196F3',
