@@ -235,6 +235,7 @@ export interface I18nKeys {
   planLinkCheckin: string; planLinkFasting: string;
   planLinkMeditation: string; planLinkExercise: string; planLinkReflection: string;
   planLinkHabit: string; planProgress: string; planDays: string;
+  planHours: string; planMinutes: string; planSeconds: string;
   planCheckinDays: string; planCheckin: string; planUncheckin: string;
   planTodayCheckin: string; planHeatmap: string;
   planCountdownTitle: string; planCountdownStart: string; planCountdownEnd: string; planDelayed: string; planDelayedNotify: string;

@@ -170,21 +170,21 @@ export default function PlanCountdown({ plan }: Props) {
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>
             {formatNumber(time.hours)}
           </Text>
-          <Text style={{ fontSize: 10, color: TH.sub }}>时</Text>
+          <Text style={{ fontSize: 10, color: TH.sub }}>{T('planHours')}</Text>
         </View>
         <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
         <View style={{ alignItems: 'center' }}>
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>
             {formatNumber(time.minutes)}
           </Text>
-          <Text style={{ fontSize: 10, color: TH.sub }}>分</Text>
+          <Text style={{ fontSize: 10, color: TH.sub }}>{T('planMinutes')}</Text>
         </View>
         <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
         <View style={{ alignItems: 'center' }}>
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>
             {formatNumber(time.seconds)}
           </Text>
-          <Text style={{ fontSize: 10, color: TH.sub }}>秒</Text>
+          <Text style={{ fontSize: 10, color: TH.sub }}>{T('planSeconds')}</Text>
         </View>
       </View>
     </View>

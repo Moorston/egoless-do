@@ -42,6 +42,9 @@ export function createReflectionSlice(
         }
       }
 
+      // Remove all reflection links involving this reflection
+      state.deleteLinksByReflection(id);
+
       set(s => ({ reflections: deleteReflectionFromList(s.reflections ?? [], id) }));
       adapter.markDeleted('reflection', id).catch(console.error);
     },

@@ -5,6 +5,7 @@ import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDela
 import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink, DailyCustomTodo, DailyTodoHistory } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { useT, cs } from './helpers';
+import { useOverlay } from './useOverlay';
 import { useWebStore } from '../store/useWebStore';
 import { ChevronLeft, Check, ChevronDown, ChevronRight, ClipboardList, Pencil, CircleCheck, Play, Pause, XCircle, Trash2, CheckCircle2, Plus } from 'lucide-react';
 
@@ -159,6 +160,7 @@ function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemChecki
 
 export default function PlanDetailContent({ planId, onClose }: { planId: string; onClose: () => void }) {
   const store = useWebStore();
+  const overlay = useOverlay();
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
@@ -670,7 +672,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       {tab === 'detail' && (editable || pausable || resumable || cancellable || completable || deletable) && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 24 }}>
           {editable && (
-            <button onClick={() => {/* open edit overlay */}}
+            <button onClick={() => overlay.switch('planCreate', { planId: plan.id })}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px 0', borderRadius: 12, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>
               <Pencil size={16} /> {T('commonEdit')}
             </button>

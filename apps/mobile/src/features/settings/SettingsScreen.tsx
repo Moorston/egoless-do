@@ -17,7 +17,7 @@ import {
   Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
   Check, X, ChevronRight, Scale, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload,   History, Info, Lock, ClipboardList,
-  Music,
+  Music, Brain,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import {
@@ -286,6 +286,19 @@ export default function SettingsScreen() {
               </Text>
             </TouchableOpacity>
           ),
+          last: true,
+        },
+      ],
+    },
+    {
+      title: 'AI设置',
+      rows: [
+        {
+          label: 'AI模型配置',
+          sub: '配置云端AI功能',
+          icon: <Brain size={20} color={P} />,
+          right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('AISettings' as never),
           last: true,
         },
       ],

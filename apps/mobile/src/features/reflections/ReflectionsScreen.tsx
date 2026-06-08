@@ -26,6 +26,7 @@ import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core'
 import {
   Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3, Target,
 } from 'lucide-react-native';
+import CreateIntentModal from './CreateIntentModal';
 
 // ── Manager helpers ───────────────────────────────────────────────
 function getManagerProps(
@@ -189,6 +190,10 @@ export default function ReflectionsScreen() {
 
   // Long press action menu state
   const [actionMenuId, setActionMenuId] = useState<string|null>(null);
+
+  // Create intent modal state
+  const [showCreateIntent, setShowCreateIntent] = useState(false);
+  const [intentReflection, setIntentReflection] = useState<any>(null);
 
   // Card detail modal state
   const [detailId, setDetailId] = useState<string|null>(null);
@@ -630,6 +635,17 @@ export default function ReflectionsScreen() {
                 </TouchableOpacity>
               );
             })()}
+            {/* 创建意图 */}
+            <TouchableOpacity onPress={() => {
+              const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
+              if (r) {
+                setIntentReflection(r);
+                setShowCreateIntent(true);
+              }
+              setActionMenuId(null);
+            }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(139,92,246,.15)', alignItems:'center' }}>
+              <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON, fontWeight:'600' }}>💡 创建意图</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => {
               const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
               if (r) onShare(r);
@@ -762,6 +778,10 @@ export default function ReflectionsScreen() {
                       <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflDelete')}</Text>
                     </TouchableOpacity>
                   )}
+                  <TouchableOpacity onPress={() => { setDetailId(null); nav.navigate('RelationMap' as never, { context: { type: 'reflection', id: r.id } } as never); }}
+                    style={{ flex:1, backgroundColor:'rgba(59,130,246,.3)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
+                    <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>查看关系</Text>
+                  </TouchableOpacity>
                 </View>
               </LinearGradient>
             </View>
@@ -995,6 +1015,16 @@ export default function ReflectionsScreen() {
           )}
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Create Intent Modal */}
+      <CreateIntentModal
+        visible={showCreateIntent}
+        onClose={() => {
+          setShowCreateIntent(false);
+          setIntentReflection(null);
+        }}
+        reflection={intentReflection}
+      />
 
     </SafeAreaView>
   );

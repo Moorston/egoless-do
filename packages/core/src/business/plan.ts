@@ -339,7 +339,7 @@ export function unlinkAllReflectionsFromPlan(
   const now = Date.now();
   return planItems.map(i =>
     i.planId === planId && i.reflectionId
-      ? { ...i, reflectionId: null as any, updatedAt: now }
+      ? { ...i, reflectionId: undefined, updatedAt: now }
       : i
   );
 }

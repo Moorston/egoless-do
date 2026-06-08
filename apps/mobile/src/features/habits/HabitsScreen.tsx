@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import {
   Card, useTheme, PrimaryButton, OutlineButton, Toggle,
@@ -40,6 +41,7 @@ export default function HabitsScreen() {
   const P     = TH.primary;
   const store = useAppStore();
   const T     = useT();
+  const nav   = useNavigation();
 
   const [filter, setFilter]     = useState('all');
   const [showAdd, setShowAdd]   = useState(false);
@@ -283,6 +285,16 @@ export default function HabitsScreen() {
           style={{ flex:1, backgroundColor:'rgba(0,0,0,.5)', justifyContent:'flex-end' }}>
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingBottom:40, paddingTop:20 }}>
             <View style={{ width:40, height:4, borderRadius:2, backgroundColor:TH.border, alignSelf:'center', marginBottom:20 }} />
+            {/* View Detail */}
+            <TouchableOpacity onPress={() => {
+              if (actionMenuHabit) {
+                (nav as any).navigate('HabitDetail', { habitId: actionMenuHabit.id });
+              }
+              setActionMenuHabit(null);
+            }}
+              style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(59,130,246,.15)', alignItems:'center' }}>
+              <Text style={{ color:'#3B82F6', fontSize:FONT_BUTTON, fontWeight:'600' }}>查看详情</Text>
+            </TouchableOpacity>
             {actionMenuHabit?.status==='notStarted' && (
               <TouchableOpacity onPress={() => { if(actionMenuHabit) changeStatus(actionMenuHabit.id,'inProgress'); setActionMenuHabit(null); }}
                 style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:COLORS.GREEN, alignItems:'center' }}>

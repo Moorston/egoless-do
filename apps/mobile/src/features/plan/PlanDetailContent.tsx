@@ -8,7 +8,7 @@ import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemStatus, PlanI
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
 import PlanCountdown from '../../components/PlanCountdown';
-import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus } from 'lucide-react-native';
+import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pause, XCircle, ClipboardList, Plus, Link } from 'lucide-react-native';
 
 const STATUS_COLORS: Record<string, string> = {
   not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
@@ -443,6 +443,21 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
             )}
           </Card>
 
+          {/* Relation Map Entry */}
+          <TouchableOpacity
+            onPress={() => nav.navigate('RelationMap' as never, { context: { type: 'plan', id: planId } } as never)}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }}
+          >
+            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: `${P}20`, alignItems: 'center', justifyContent: 'center' }}>
+              <Link size={20} color={P} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>关系全景图</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>查看感念、意图、习惯的关联关系</Text>
+            </View>
+            <ChevronRight size={18} color={TH.sub} />
+          </TouchableOpacity>
+
           {/* Heatmap */}
           <Card>
             <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('planHeatmap')}</Text>
@@ -690,6 +705,72 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
             )}
           </View>
         </>
+      )}
+
+      {/* Related Reflections & Trails */}
+      {tab === 'detail' && (
+        <View style={{ marginTop: 24 }}>
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>关联内容</Text>
+          
+          {/* Related Reflections */}
+          {(() => {
+            const relatedReflections = (store.reflections ?? []).filter(r => 
+              !r.deleted && r.linkedPlanItemId === planId
+            ).slice(0, 3);
+            
+            if (relatedReflections.length === 0) return null;
+            
+            return (
+              <View style={{ marginBottom: 12 }}>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>相关感念</Text>
+                {relatedReflections.map(r => (
+                  <TouchableOpacity
+                    key={r.id}
+                    onPress={() => {
+                      // 感念详情在当前页面不导航
+                    }}
+                    style={{ backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, borderRadius: 10, padding: 12, marginBottom: 8 }}
+                  >
+                    <Text style={{ fontSize: FONT_BODY, color: TH.text }} numberOfLines={2}>{r.content}</Text>
+                    <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+                      {new Date(r.timestamp).toLocaleDateString()}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            );
+          })()}
+
+          {/* Related Trails */}
+          {(() => {
+            const relatedTrails = (store.thoughtTrails ?? []).filter(t => 
+              !t.deleted && t.reflectionIds.some(rid => {
+                const r = (store.reflections ?? []).find(ref => ref.id === rid);
+                return r && r.linkedPlanItemId === planId;
+              })
+            ).slice(0, 2);
+            
+            if (relatedTrails.length === 0) return null;
+            
+            return (
+              <View>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>相关脉络</Text>
+                {relatedTrails.map(trail => (
+                  <TouchableOpacity
+                    key={trail.id}
+                    onPress={() => nav.navigate('ThoughtTrailDetail', { trailId: trail.id })}
+                    style={{ backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, borderRadius: 10, padding: 12, marginBottom: 8 }}
+                  >
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{trail.name}</Text>
+                    <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+                      {trail.reflectionIds.length} 条感念
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            );
+          })()}
+        </View>
       )}
 
       {/* Action buttons — only on detail tab */}

@@ -269,8 +269,15 @@ export function createPlanSlice(
         s.planItems ?? [], existingCheckins, s.plans ?? [], state, today
       );
       // Compare content, not just length — checkinItem may modify existing records in-place
-      const changed = updatedCheckins.length !== existingCheckins.length
-        || JSON.stringify(updatedCheckins) !== JSON.stringify(existingCheckins);
+      const changed = (() => {
+        if (updatedCheckins.length !== existingCheckins.length) return true;
+        const existingMap = new Map(existingCheckins.map(c => [c.id, c]));
+        for (const c of updatedCheckins) {
+          const prev = existingMap.get(c.id);
+          if (!prev || prev.done !== c.done || prev.linkedModule !== c.linkedModule || prev.deleted !== c.deleted) return true;
+        }
+        return false;
+      })();
       if (changed) {
         set({ planItemCheckins: updatedCheckins });
         // Persist all changed/new checkins

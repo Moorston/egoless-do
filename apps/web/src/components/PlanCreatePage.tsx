@@ -308,12 +308,25 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
                     style={{ ...inp(TH), marginBottom: 8 }} />
 
                   <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{T('planItemLink')}</div>
-                  <select value={item.link} onChange={e => updateItem(item.id, { link: e.target.value as PlanItemLink })}
+                  <select value={item.link} onChange={e => updateItem(item.id, { link: e.target.value as PlanItemLink, linkConfig: e.target.value === 'habit' ? item.linkConfig : undefined })}
                     style={{ ...inp(TH), marginBottom: 8 }}>
                     {LINK_OPTIONS.map(opt => (
                       <option key={opt.value} value={opt.value}>{T(opt.labelKey)}</option>
                     ))}
                   </select>
+
+                  {item.link === 'habit' && (
+                    <>
+                      <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{T('planLinkHabit')}</div>
+                      <select value={item.linkConfig?.habitId ?? ''} onChange={e => updateItem(item.id, { linkConfig: { ...item.linkConfig, habitId: e.target.value } })}
+                        style={{ ...inp(TH), marginBottom: 8 }}>
+                        <option value="">--</option>
+                        {(store.habits ?? []).filter(h => !h.deleted).map(h => (
+                          <option key={h.id} value={h.id}>{h.name}</option>
+                        ))}
+                      </select>
+                    </>
+                  )}
 
                   <button onClick={() => removeItem(item.id)} style={{
                     width: '100%', padding: '8px 0', borderRadius: 8, border: `1px solid ${COLORS.RED}40`,

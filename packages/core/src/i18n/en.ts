@@ -269,7 +269,7 @@ export const en: I18nKeys = {
   planTodoList:'Daily TodoList', planTodoDate:"Today's Tasks", planDetail:'Plan Details',
   planLinkManual:'Manual', planLinkCheckin:'Check-in', planLinkFasting:'Fasting',
   planLinkMeditation:'Meditation', planLinkExercise:'Exercise', planLinkHabit:'Habit', planLinkReflection:'Reflection',
-  planProgress:'Progress', planDays:'days', planCheckinDays:'Check-in Days', planCheckin:'Done', planUncheckin:'Undo',
+  planProgress:'Progress', planDays:'days', planHours:'hrs', planMinutes:'min', planSeconds:'sec', planCheckinDays:'Check-in Days', planCheckin:'Done', planUncheckin:'Undo',
   planTodayCheckin:"Today's Check-in", planHeatmap:'Check-in Heatmap',
   planCountdownTitle:'Countdown', planCountdownStart:'Until plan starts', planCountdownEnd:'Until plan ends', planDelayed:'Overdue', planDelayedNotify:'Plan Delay Notification',
   planConfirmDelete:'Delete this plan?', planConfirmCancel:'Cancel this plan?',

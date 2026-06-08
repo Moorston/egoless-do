@@ -12,6 +12,7 @@ import {
   Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
   ClipboardList, CheckCircle2, Circle, X, Check,
 } from 'lucide-react-native';
+import CheckinReflection from './CheckinReflection';
 
 function parseExistingNote(raw: string): { userNote: string; practices: string[]; customs: string[]; fasted: boolean; waterMl: number; habits: string[] } {
   if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
@@ -102,6 +103,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
   const [incompleteItems, setIncompleteItems] = useState<ReturnType<typeof getIncompleteItems>>([]);
   const [selectedReason, setSelectedReason] = useState('');
   const [reasonNote, setReasonNote] = useState('');
+  const [showReflection, setShowReflection] = useState(false);
 
   const submit = useCallback((reasonOverride?: string, reasonNoteOverride?: string) => {
     if (localDone === null) return;
@@ -141,8 +143,9 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
     if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
     const weightNum = weight ? parseFloat(weight) : undefined;
     store.submitCheckin(localDone, JSON.stringify(noteData), undefined, weightNum);
-    onClose();
-  }, [localDone, habitCheckins, planToggles, planCheckins, today, waterMl, note, practices, totalCal, weight, store, onClose]);
+    // Show reflection prompt instead of closing immediately
+    setShowReflection(true);
+  }, [localDone, habitCheckins, planToggles, planCheckins, today, waterMl, note, practices, totalCal, weight, store]);
 
   const handleDone = useCallback(() => {
     const items = getIncompleteItems({
@@ -189,14 +192,43 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
     if (checkedHabits.length) noteData.habits = checkedHabits;
     if (totalCal > 0) noteData.food = totalCal;
     store.submitCheckin(true, JSON.stringify(noteData), undefined, weight ? parseFloat(weight) : undefined);
-    onClose();
-  }, [practices, store, todayPlanItems, planCheckins, today, habitCheckins, planToggles, waterMl, note, totalCal, weight, onClose]);
+    // Show reflection prompt instead of closing immediately
+    setShowReflection(true);
+  }, [practices, store, todayPlanItems, planCheckins, today, habitCheckins, planToggles, waterMl, note, totalCal, weight]);
 
   const confirmDoneWithReason = useCallback(() => {
     if (!selectedReason || !reasonNote.trim()) return;
     setShowReasonModal(false);
     submit(selectedReason, reasonNote);
   }, [submit, selectedReason, reasonNote]);
+
+  const handleReflectionSave = useCallback((mood: string, insight: string, saveAsReflection: boolean) => {
+    if (saveAsReflection && insight.trim()) {
+      store.addReflection({
+        content: insight,
+        tags: [],
+        mood: mood,
+      });
+    }
+    onClose();
+  }, [store, onClose]);
+
+  // Show reflection prompt after successful checkin
+  if (showReflection) {
+    return (
+      <Modal visible animationType="slide" transparent>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1, justifyContent: 'flex-end' }}
+        >
+          <CheckinReflection
+            onSave={handleReflectionSave}
+            onSkip={onClose}
+          />
+        </KeyboardAvoidingView>
+      </Modal>
+    );
+  }
 
   return (
     <Modal visible animationType="slide" transparent>

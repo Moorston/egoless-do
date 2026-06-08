@@ -269,7 +269,7 @@ export const zhHant: I18nKeys = {
   planTodoList:'每日待辦', planTodoDate:'今日待辦', planDetail:'計劃詳情',
   planLinkManual:'手動', planLinkCheckin:'今日打卡', planLinkFasting:'禁食',
   planLinkMeditation:'冥想', planLinkExercise:'鍛鍊', planLinkHabit:'習慣', planLinkReflection:'感念',
-  planProgress:'進度', planDays:'天', planCheckinDays:'打卡天數', planCheckin:'完成', planUncheckin:'取消',
+  planProgress:'進度', planDays:'天', planHours:'時', planMinutes:'分', planSeconds:'秒', planCheckinDays:'打卡天數', planCheckin:'完成', planUncheckin:'取消',
   planTodayCheckin:'今日打卡', planHeatmap:'打卡熱力圖',
   planCountdownTitle:'倒數計時', planCountdownStart:'距離計劃開始', planCountdownEnd:'距離計劃結束', planDelayed:'已超期', planDelayedNotify:'計劃延期提醒',
   planConfirmDelete:'確認刪除此計劃？', planConfirmCancel:'確認作廢此計劃？',

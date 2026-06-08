@@ -4,7 +4,7 @@ import type {
   MedHistoryEntry, FoodEntry, ExerciseEntry, CheckinEntry,
   UserProfile, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
-  ReflectionFilters, ThoughtTrail,
+  ReflectionFilters, ThoughtTrail, Intent, ReflectionLink, IntentStatus, IntentSource, LinkType,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -187,19 +187,54 @@ export interface RecycleBinSlice {
 
 export interface ThoughtTrailSlice {
   thoughtTrails: ThoughtTrail[];
-  createThoughtTrail: (name: string, description?: string, reflectionIds?: string[]) => string;
+  createThoughtTrail: (name: string, description?: string, reflectionIds?: string[], source?: 'auto' | 'manual' | 'recommended') => string;
   updateThoughtTrail: (id: string, patch: Partial<ThoughtTrail>) => void;
   deleteThoughtTrail: (id: string) => void;
   addReflectionToTrail: (trailId: string, reflectionId: string) => void;
   removeReflectionFromTrail: (trailId: string, reflectionId: string) => void;
   reorderTrailReflections: (trailId: string, fromIndex: number, toIndex: number) => void;
+  getTrailById: (id: string) => ThoughtTrail | null;
+  getTrailsByReflection: (reflectionId: string) => ThoughtTrail[];
+  setInsightSummary: (trailId: string, summary: string) => void;
+  linkToIntent: (trailId: string, intentId: string) => void;
+}
+
+export interface IntentSlice {
+  intents: Intent[];
+  createIntent: (content: string, why: string, source: IntentSource, linkedReflectionIds?: string[]) => string;
+  updateIntent: (id: string, patch: Partial<Intent>) => void;
+  deleteIntent: (id: string) => void;
+  getIntentById: (id: string) => Intent | null;
+  getIntentsByReflection: (reflectionId: string) => Intent[];
+  getIntentsByPlan: (planId: string) => Intent[];
+  getIntentsByHabit: (habitId: string) => Intent[];
+  linkIntentToPlan: (intentId: string, planId: string) => void;
+  linkIntentToHabit: (intentId: string, habitId: string) => void;
+  unlinkIntentFromPlan: (intentId: string, planId: string) => void;
+  unlinkIntentFromHabit: (intentId: string, habitId: string) => void;
+  updateIntentStatus: (id: string, status: IntentStatus) => void;
+  addLearning: (intentId: string, learning: string) => void;
+  setOutcome: (intentId: string, outcome: string) => void;
+  getInactiveIntents: () => Intent[];
+  getStuckIntents: () => Intent[];
+}
+
+export interface ReflectionLinkSlice {
+  reflectionLinks: ReflectionLink[];
+  createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => string;
+  updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => void;
+  deleteReflectionLink: (id: string) => void;
+  getLinksByReflection: (reflectionId: string) => ReflectionLink[];
+  getLinksFromReflection: (reflectionId: string) => ReflectionLink[];
+  getLinksToReflection: (reflectionId: string) => ReflectionLink[];
+  deleteLinksByReflection: (reflectionId: string) => void;
 }
 
 // ─── FullStore composition ─────────────────────────────────────
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & IntentSlice & ReflectionLinkSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -219,6 +254,8 @@ export interface SyncDataMap {
   dailyTodoHistory: DailyTodoHistory;
   grace: GraceHistoryEntry;
   thoughtTrail: ThoughtTrail;
+  intent: Intent;
+  reflectionLink: ReflectionLink;
 }
 
 /** Type-safe storage adapter */

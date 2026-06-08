@@ -368,6 +368,32 @@ export default function PlanCreateScreen() {
                     ))}
                   </ScrollView>
 
+                  {item.link === 'habit' && (
+                    <>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planLinkHabit')}</Text>
+                      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
+                        {(store.habits ?? []).filter(h => !h.deleted).map(h => {
+                          const active = item.linkConfig?.habitId === h.id;
+                          return (
+                            <TouchableOpacity
+                              key={h.id}
+                              onPress={() => updateItem(item.id, { linkConfig: { ...item.linkConfig, habitId: h.id } })}
+                              style={{
+                                paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+                                backgroundColor: active ? P : TH.card,
+                                borderWidth: 1, borderColor: active ? P : TH.border,
+                              }}
+                            >
+                              <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SUB, fontWeight: active ? '600' : '400' }}>
+                                {h.name}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </ScrollView>
+                    </>
+                  )}
+
                   <TouchableOpacity
                     onPress={() => removeItem(item.id)}
                     style={{ paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: `${COLORS.RED}40`, alignItems: 'center' }}
