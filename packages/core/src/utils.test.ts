@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import {
   fmt, fmtMS, dateStr, yesterday, tomorrow, daysInMonth,
   uid, computeStreak, estimateFastingKcal,
-  calculateCheckinStreak, buildHeatmapGrid, normalizeEntity,
+  calculateCheckinStreak, buildHeatmapGrid,
 } from './utils';
 
 describe('fmt', () => {
@@ -139,23 +139,6 @@ describe('buildHeatmapGrid', () => {
     const todayCell = grid.flat().find(c => c.date === today);
     expect(todayCell?.done).toBe(true);
     expect(todayCell?.isToday).toBe(true);
-  });
-});
-
-describe('normalizeEntity', () => {
-  it('maps snake_case to camelCase', () => {
-    const result = normalizeEntity({
-      id: '1', target_hours: 16, started_at: 1000, ended_at: 2000,
-      estimated_kcal: 500, created_at: 3000, is_pinned: true,
-    });
-    expect(result).toEqual({
-      id: '1', targetHours: 16, startedAt: 1000, endedAt: 2000,
-      estimatedKcal: 500, timestamp: 3000, isPinned: true,
-    });
-  });
-  it('passes through unmapped fields', () => {
-    const result = normalizeEntity({ id: '1', name: 'test' });
-    expect(result).toEqual({ id: '1', name: 'test' });
   });
 });
 

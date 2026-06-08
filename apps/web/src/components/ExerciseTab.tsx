@@ -1,19 +1,13 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { SPORT_GROUPS, THEMES, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_CLOSE, FONT_BACK } from '@egoless-do/core';
+import { SPORT_GROUPS, THEMES, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_CLOSE, FONT_BACK, formatPace } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
 import { useT, LinkWorldBtn } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
 import { Footprints, PersonStanding, Bike, Dumbbell, ChevronRight, ChevronDown, X } from 'lucide-react';
 
-function formatPace(secPerKm: number): string {
-  if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
-  const m = Math.floor(secPerKm / 60);
-  const s = Math.floor(secPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 export default function ExerciseTab() {
   const overlay = useOverlay();

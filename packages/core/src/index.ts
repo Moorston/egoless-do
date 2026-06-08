@@ -7,7 +7,6 @@ export * from './defaults';
 export * from './store';
 export * from './auth';
 export * from './pocketbase';
-export * from './realtimeSync';
 export * from './push';
 export * from './dailyReset';
 export * from './business';

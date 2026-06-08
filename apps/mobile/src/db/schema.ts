@@ -18,19 +18,6 @@ export const SCHEMA_SQL = `
 PRAGMA journal_mode = WAL;
 PRAGMA foreign_keys = ON;
 
-CREATE TABLE IF NOT EXISTS habit_records (
-  id           TEXT PRIMARY KEY,
-  type         TEXT NOT NULL CHECK(type IN ('fasting','meditation','running','custom')),
-  started_at   INTEGER NOT NULL,
-  ended_at     INTEGER,
-  duration_s   INTEGER,
-  insight      TEXT CHECK(length(insight) <= 20),
-  linked_mind_id TEXT,
-  updated_at   INTEGER,
-  deleted      INTEGER NOT NULL DEFAULT 0,
-  synced       INTEGER NOT NULL DEFAULT 0
-);
-
 CREATE TABLE IF NOT EXISTS mind_reflections (
   id              TEXT PRIMARY KEY,
   created_at      INTEGER NOT NULL,
@@ -38,6 +25,7 @@ CREATE TABLE IF NOT EXISTS mind_reflections (
   tags            TEXT    NOT NULL DEFAULT '[]',
   mood            TEXT,
   card_theme      TEXT,
+  link            TEXT,
   linked_habit_id TEXT,
   linked_plan_id  TEXT,
   is_pinned       INTEGER NOT NULL DEFAULT 0,
@@ -154,17 +142,18 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 );
 
 CREATE TABLE IF NOT EXISTS plans (
-  id          TEXT PRIMARY KEY,
-  name        TEXT    NOT NULL,
-  goal        TEXT    NOT NULL DEFAULT '',
-  slogan      TEXT    NOT NULL DEFAULT '',
-  start_date  TEXT    NOT NULL,
-  end_date    TEXT    NOT NULL,
-  status      TEXT    NOT NULL DEFAULT 'not_started',
-  progress    INTEGER NOT NULL DEFAULT 0,
-  updated_at  INTEGER,
-  deleted     INTEGER NOT NULL DEFAULT 0,
-  synced      INTEGER NOT NULL DEFAULT 0
+  id                      TEXT PRIMARY KEY,
+  name                    TEXT    NOT NULL,
+  goal                    TEXT    NOT NULL DEFAULT '',
+  slogan                  TEXT    NOT NULL DEFAULT '',
+  start_date              TEXT    NOT NULL,
+  end_date                TEXT    NOT NULL,
+  status                  TEXT    NOT NULL DEFAULT 'not_started',
+  progress                INTEGER NOT NULL DEFAULT 0,
+  last_delayed_notify_at  INTEGER,
+  updated_at              INTEGER,
+  deleted                 INTEGER NOT NULL DEFAULT 0,
+  synced                  INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS plan_items (
@@ -230,6 +219,17 @@ CREATE TABLE IF NOT EXISTS daily_todo_history (
   updated_at  INTEGER,
   deleted     INTEGER NOT NULL DEFAULT 0,
   synced      INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS thought_trails (
+  id              TEXT PRIMARY KEY,
+  name            TEXT    NOT NULL,
+  description     TEXT    DEFAULT '',
+  reflection_ids  TEXT    NOT NULL DEFAULT '[]',
+  created_at      INTEGER NOT NULL,
+  updated_at      INTEGER,
+  deleted         INTEGER NOT NULL DEFAULT 0,
+  synced          INTEGER NOT NULL DEFAULT 0
 );
 `;
 
@@ -332,6 +332,25 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   // Ensure mind_reflections.colors column exists
   await tryAddCol('mind_reflections', 'colors', 'TEXT');
 
+  // Ensure mind_reflections.link column exists
+  await tryAddCol('mind_reflections', 'link', 'TEXT');
+
+  // Ensure plans.last_delayed_notify_at column exists
+  await tryAddCol('plans', 'last_delayed_notify_at', 'INTEGER');
+
+  // Ensure thought_trails table exists
+  const thoughtTrailTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='thought_trails'"
+  );
+  if (!thoughtTrailTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS thought_trails (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT DEFAULT '',
+      reflection_ids TEXT NOT NULL DEFAULT '[]',
+      created_at INTEGER NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
   // Ensure plan tables exist
   const planTableCheck = await db.getFirstAsync<{ name: string }>(
     "SELECT name FROM sqlite_master WHERE type='table' AND name='plans'"
@@ -395,6 +414,29 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
+
+  // Remove CHECK(length(insight) <= 20) constraint from fasting_sessions
+  // by recreating the table (SQLite doesn't support ALTER TABLE DROP CHECK)
+  const hasInsightCheck = await db.getFirstAsync<{ sql: string }>(
+    "SELECT sql FROM sqlite_master WHERE type='table' AND name='fasting_sessions'"
+  );
+  if (hasInsightCheck?.sql?.includes('CHECK(length(insight)')) {
+    await db.execAsync(`CREATE TABLE fasting_sessions_new (
+      id TEXT PRIMARY KEY, target_hours REAL NOT NULL, started_at INTEGER NOT NULL,
+      ended_at INTEGER, estimated_kcal INTEGER, insight TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync(`INSERT INTO fasting_sessions_new SELECT * FROM fasting_sessions`);
+    await db.execAsync(`DROP TABLE fasting_sessions`);
+    await db.execAsync(`ALTER TABLE fasting_sessions_new RENAME TO fasting_sessions`);
+  }
+
+  // Add missing indexes for frequently queried columns
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_food_entry_date ON food_entries(entry_date)');
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_exercise_ts ON exercise_entries(ts)');
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_items_plan_id ON plan_items(plan_id)');
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_item_checkins_lookup ON plan_item_checkins(plan_item_id, date)');
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_daily_custom_todos_lookup ON daily_custom_todos(plan_id, date)');
 }
 
 // ── Generic helpers ───────────────────────────────────────────────
@@ -411,68 +453,3 @@ export async function setState(db: SQLite.SQLiteDatabase, key: string, value: st
   );
 }
 
-// ── Plan SQLite helpers ──────────────────────────────────────────
-export async function dbUpsertPlan(db: SQLite.SQLiteDatabase, p: {
-  id: string; name: string; goal: string; slogan: string;
-  startDate: string; endDate: string; status: string; progress: number;
-  updatedAt?: number; deleted?: boolean;
-}): Promise<void> {
-  await db.runAsync(`
-    INSERT OR REPLACE INTO plans (id,name,goal,slogan,start_date,end_date,status,progress,updated_at,deleted,synced)
-    VALUES (?,?,?,?,?,?,?,?,?,?,0)`,
-    [p.id, p.name, p.goal, p.slogan, p.startDate, p.endDate, p.status, p.progress, p.updatedAt ?? null, p.deleted ? 1 : 0]
-  );
-}
-
-export async function dbDeletePlan(db: SQLite.SQLiteDatabase, id: string): Promise<void> {
-  await db.runAsync('UPDATE plans SET synced = 2, deleted = 1 WHERE id = ?', [id]);
-}
-
-export async function dbUpsertPlanItem(db: SQLite.SQLiteDatabase, i: {
-  id: string; planId: string; name: string; description: string;
-  startDate: string; endDate: string; contentUrl: string;
-  totalCheckinDays: number; status: string; progress: number;
-  link: string; priority?: string; targetMetric?: string; reflectionId?: string; linkConfig?: Record<string, unknown>; order: number;
-  updatedAt?: number; deleted?: boolean;
-}): Promise<void> {
-  await db.runAsync(`
-    INSERT OR REPLACE INTO plan_items
-    (id,plan_id,name,description,start_date,end_date,content_url,total_checkin_days,
-     status,progress,link,priority,target_metric,reflection_id,link_config,item_order,updated_at,deleted,synced)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0)`,
-    [i.id, i.planId, i.name, i.description, i.startDate, i.endDate, i.contentUrl,
-     i.totalCheckinDays, i.status, i.progress, i.link, i.priority ?? 'medium', i.targetMetric ?? '',
-     i.reflectionId ?? null, JSON.stringify(i.linkConfig ?? {}), i.order, i.updatedAt ?? null, i.deleted ? 1 : 0]
-  );
-}
-
-export async function dbDeletePlanItem(db: SQLite.SQLiteDatabase, id: string): Promise<void> {
-  await db.runAsync('UPDATE plan_items SET synced = 2, deleted = 1 WHERE id = ?', [id]);
-}
-
-export async function dbUpsertPlanItemCheckin(db: SQLite.SQLiteDatabase, c: {
-  id: string; planItemId: string; date: string; done: boolean;
-  note?: string; linkedModule?: string; updatedAt?: number; deleted?: boolean;
-}): Promise<void> {
-  await db.runAsync(`
-    INSERT OR REPLACE INTO plan_item_checkins
-    (id,plan_item_id,date,done,note,linked_module,updated_at,deleted,synced)
-    VALUES (?,?,?,?,?,?,?,?,0)`,
-    [c.id, c.planItemId, c.date, c.done ? 1 : 0, c.note ?? '', c.linkedModule ?? '', c.updatedAt ?? null, c.deleted ? 1 : 0]
-  );
-}
-
-export async function dbDeletePlanItemCheckin(db: SQLite.SQLiteDatabase, id: string): Promise<void> {
-  await db.runAsync('UPDATE plan_item_checkins SET synced = 2, deleted = 1 WHERE id = ?', [id]);
-}
-
-export async function dbDeletePlanItemsByPlanId(db: SQLite.SQLiteDatabase, planId: string): Promise<void> {
-  await db.runAsync('UPDATE plan_items SET synced = 2, deleted = 1 WHERE plan_id = ?', [planId]);
-}
-
-export async function dbDeletePlanItemCheckinsByPlanId(db: SQLite.SQLiteDatabase, planId: string): Promise<void> {
-  await db.runAsync(
-    'UPDATE plan_item_checkins SET synced = 2, deleted = 1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id = ?)',
-    [planId]
-  );
-}

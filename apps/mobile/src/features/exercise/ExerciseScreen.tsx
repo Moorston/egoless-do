@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
-import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE } from '@egoless-do/core';
+import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
@@ -12,13 +12,6 @@ import {
   Footprints, Activity, Bike, Dumbbell, ChevronRight,
   Globe, Clock, X, Search,
 } from 'lucide-react-native';
-
-function formatPace(secPerKm: number): string {
-  if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
-  const m = Math.floor(secPerKm / 60);
-  const s = Math.floor(secPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 export default function ExerciseScreen() {
   const TH    = useTheme();

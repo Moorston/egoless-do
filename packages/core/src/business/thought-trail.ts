@@ -5,13 +5,14 @@ import type { MindReflection } from '../types/reflection';
 /**
  * 自动生成思路脉络名称
  * 优先使用第一个标签，无标签时使用内容前 20 字
+ * @param t optional i18n translation function for localized default names
  */
-export function generateTrailName(reflections: MindReflection[]): string {
-  if (reflections.length === 0) return '新思路脉络';
+export function generateTrailName(reflections: MindReflection[], t?: (key: string, vars?: Record<string, string>) => string): string {
+  if (reflections.length === 0) return t?.('thoughtTrailEmpty') ?? 'New Trail';
 
   const first = reflections[0];
   if (first.tags.length > 0) {
-    return `${first.tags[0]}的思维脉络`;
+    return t?.('thoughtTrailAutoName', { tag: first.tags[0] }) ?? `${first.tags[0]} trail`;
   }
 
   const content = first.content.trim();

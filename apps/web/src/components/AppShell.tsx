@@ -10,7 +10,6 @@ import { ErrorBoundary, useResponsive } from './helpers';
 import {
   Home, Timer, Brain, Dumbbell, Settings, Plus, ClipboardList, Target, Sparkles,
 } from 'lucide-react';
-import { useSync } from './useSync';
 import { OverlayContext, useOverlayState } from './useOverlay';
 import AppHeader from './AppHeader';
 import HeaderTabs from './HeaderTabs';
@@ -72,7 +71,6 @@ export default function AppShell() {
   const [headerTab, setHeaderTab] = useState('home');
   const overlayState = useOverlayState();
   const { maxWidth } = useResponsive();
-  const sync = useSync();
   useReminder();
   const scrollPosRef = useRef<Map<number, number>>(new Map());
 
@@ -190,7 +188,7 @@ export default function AppShell() {
                 {tab === 1 && <ExerciseTab />}
                 {tab === 2 && <MeditateTab />}
                 {tab === 3 && <FastingTab />}
-                {tab === 4 && <SettingsTab syncState={sync} onOpenStats={() => overlayState.open('stats')} />}
+                {tab === 4 && <SettingsTab onOpenStats={() => overlayState.open('stats')} />}
               </>
             )}
             {headerTab === 'plan' && <PlanTab />}

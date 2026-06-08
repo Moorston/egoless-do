@@ -18,14 +18,18 @@ export interface ConflictResult {
 export function resolveConflict({ clientUpdated, serverUpdated, now }: ConflictInput): ConflictResult {
   const t = now ?? Date.now();
   let adj = clientUpdated;
+  let adjServer = serverUpdated;
 
   // Reject timestamps too far in the future
   if (adj > t + MAX_FUTURE_DRIFT) {
     adj = t;
   }
+  if (adjServer > t + MAX_FUTURE_DRIFT) {
+    adjServer = t;
+  }
 
   return {
     clientUpdated: adj,
-    winner: adj >= serverUpdated ? 'client' : 'server',
+    winner: adj >= adjServer ? 'client' : 'server',
   };
 }

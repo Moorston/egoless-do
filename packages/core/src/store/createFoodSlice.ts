@@ -4,7 +4,7 @@ import { deleteFoodFromList } from '../business';
 import type { StorageAdapter, FoodSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
-export function createFoodSlice(adapter: StorageAdapter): SliceCreator<FoodSlice> {
+export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () => void): SliceCreator<FoodSlice> {
   return (set, get) => ({
     foodLog: [],
     calGoal: 2000,
@@ -26,7 +26,7 @@ export function createFoodSlice(adapter: StorageAdapter): SliceCreator<FoodSlice
       adapter.markDeleted('food', id).catch(console.error);
     },
 
-    setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); },
+    setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); onSettingsPersist?.(); },
 
     addCustomFoodPreset(name: string, calories: number, note?: string) {
       set(s => ({
@@ -35,12 +35,14 @@ export function createFoodSlice(adapter: StorageAdapter): SliceCreator<FoodSlice
           ...(s.customFoodPresets ?? []),
         ],
       }));
+      onSettingsPersist?.();
     },
 
     removeCustomFoodPreset(id: string) {
       set(s => ({
         customFoodPresets: (s.customFoodPresets ?? []).filter(p => p.id !== id),
       }));
+      onSettingsPersist?.();
     },
   });
 }

@@ -35,7 +35,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
       const initialReflections = initialReflectionIds
         .map(id => reflections.find(r => r.id === id))
         .filter((r): r is MindReflection => r != null);
-      setName(generateTrailName(initialReflections));
+      setName(generateTrailName(initialReflections, T));
     }
   }, [initialReflectionIds, reflections]);
 

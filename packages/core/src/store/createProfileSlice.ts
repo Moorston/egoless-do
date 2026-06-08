@@ -12,13 +12,19 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
     updateUserProfile(profile: Partial<UserProfile>) {
       const current = get().userProfile;
       const updated = { ...current, ...profile, updatedAt: Date.now() };
-      set({ userProfile: updated });
+      const patch: Record<string, unknown> = { userProfile: updated };
+      // Sync weightUnit to top-level field if changed
+      if (profile.weightUnit !== undefined) patch.weightUnit = profile.weightUnit;
+      set(patch);
       adapter.persistChange('profile', 'self', updated).catch(console.error);
     },
 
     addWater(ml: number) {
       if (ml > 0) {
-        set(s => ({ waterMl: Math.min((s.waterMl ?? 0) + ml, s.waterGoal ?? 2000) }));
+        set(s => {
+          const waterMl = Math.min((s.waterMl ?? 0) + ml, s.waterGoal ?? 2000);
+          return { waterMl, userProfile: { ...s.userProfile, waterMl, updatedAt: Date.now() } };
+        });
         const s = get();
         adapter.persistChange('profile', 'self', {
           ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, updatedAt: Date.now(),
@@ -27,7 +33,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
     },
 
     resetWater() {
-      set({ waterMl: 0 });
+      set(s => ({ waterMl: 0, userProfile: { ...s.userProfile, waterMl: 0, updatedAt: Date.now() } }));
       const s = get();
       adapter.persistChange('profile', 'self', {
         ...s.userProfile, waterMl: 0, waterGoal: s.waterGoal, updatedAt: Date.now(),
@@ -35,13 +41,22 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
     },
 
     setWaterGoal(ml: number) {
-      set({ waterGoal: Math.max(100, ml) });
+      set(s => {
+        const waterGoal = Math.max(100, ml);
+        return { waterGoal, userProfile: { ...s.userProfile, waterGoal, updatedAt: Date.now() } };
+      });
       const s = get();
       adapter.persistChange('profile', 'self', {
         ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, updatedAt: Date.now(),
       }).catch(console.error);
     },
 
-    setWeightUnit(u: 'kg' | 'lb') { set({ weightUnit: u }); },
+    setWeightUnit(u: 'kg' | 'lb') {
+      set(s => ({ weightUnit: u, userProfile: { ...s.userProfile, weightUnit: u, updatedAt: Date.now() } }));
+      const s = get();
+      adapter.persistChange('profile', 'self', {
+        ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, weightUnit: u, updatedAt: Date.now(),
+      }).catch(console.error);
+    },
   });
 }

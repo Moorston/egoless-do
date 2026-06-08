@@ -9,7 +9,7 @@ import type {
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice,
 } from '@egoless-do/core';
 import {
-  setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager,
+  setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice,
@@ -17,7 +17,8 @@ import {
 import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
-import { runSync } from '../features/sync/SyncService';
+import { runSync, resetSyncState } from '../features/sync/SyncService';
+import { resetMigrationFlag } from '../features/sync/useSync';
 import { openDatabase } from '../db/schema';
 import { dbGetAllFoodEntries } from '../db/queries';
 
@@ -30,6 +31,33 @@ setApiBase(apiBase);
 
 const adapter = mobileStorageAdapter;
 
+// Debounced profile settings persistence (piggyback settings onto profile entity)
+let _settingsPersistTimer: ReturnType<typeof setTimeout> | null = null;
+function persistProfileSettings() {
+  if (_settingsPersistTimer) clearTimeout(_settingsPersistTimer);
+  _settingsPersistTimer = setTimeout(() => {
+    _settingsPersistTimer = null;
+    const s = useAppStore.getState();
+    adapter.persistChange('profile', 'self', {
+      ...s.userProfile,
+      waterMl: s.waterMl,
+      waterGoal: s.waterGoal,
+      weightUnit: s.weightUnit,
+      calGoal: s.calGoal,
+      customFoodPresets: s.customFoodPresets,
+      theme: s.theme,
+      language: s.language,
+      remindEnabled: s.remindEnabled,
+      remindTime: s.remindTime,
+      customTags: s.customTags,
+      customMoods: s.customMoods,
+      allTagsOrder: s.allTagsOrder,
+      allMoodsOrder: s.allMoodsOrder,
+      updatedAt: Date.now(),
+    }).catch(console.error);
+  }, 500);
+}
+
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
   & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice;
@@ -41,15 +69,20 @@ const triggerAutoSync = () => _autoSyncCallback?.();
 export const useAppStore = create<MobileStore>()(
   persist(
     (...a) => ({
-      ...createAuthSlice(adapter, () => { runSync().catch(console.error); })(...a),
+      ...createAuthSlice(adapter, () => { runSync().catch(console.error); }, () => {
+        const { auth, theme, language } = useAppStore.getState();
+        useAppStore.setState(createResetDataPatch(auth, theme, language) as any);
+        resetSyncState().catch(console.error);
+        resetMigrationFlag();
+      })(...a),
       ...createHabitSlice(adapter, triggerAutoSync)(...a),
       ...createReflectionSlice(adapter)(...a),
       ...createFastingSlice(adapter, triggerAutoSync)(...a),
       ...createMeditationSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(), createTagMoodSlice())(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); })(...a),
       ...createPlanSlice(adapter)(...a),
-      ...createRecycleBinSlice()(...a),
-      ...createThoughtTrailSlice()(...a),
+      ...createRecycleBinSlice(adapter)(...a),
+      ...createThoughtTrailSlice(adapter)(...a),
     }),
     {
       name: 'egoless-do-mobile',
@@ -70,6 +103,7 @@ export const useAppStore = create<MobileStore>()(
         plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
         dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
         graceHistory: s.graceHistory, recycleBin: s.recycleBin,
+        healthSyncEnabled: s.healthSyncEnabled,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

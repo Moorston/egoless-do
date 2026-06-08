@@ -1,0 +1,213 @@
+// ─── One-time migration: move unsynced records into sync_queue ───
+// After upgrading from the old scan-based sync to the queue-based sync,
+// existing synced=0/2 records need to be enqueued so they get pushed.
+import { openDatabase } from '../../db/schema';
+import { enqueueChange } from '../../db/syncQueue';
+import type { SyncEntity } from '@egoless-do/core';
+
+const MIGRATION_KEY = 'sync_queue_migrated';
+
+/** Check if migration has already been completed. */
+export async function isMigrationDone(): Promise<boolean> {
+  const db = await openDatabase();
+  const row = await db.getFirstAsync<{ value: string }>(
+    'SELECT value FROM app_state WHERE key = ?', [MIGRATION_KEY]
+  );
+  return row?.value === '1';
+}
+
+/** Run the one-time migration. Safe to call multiple times (idempotent). */
+export async function migrateToSyncQueue(): Promise<number> {
+  if (await isMigrationDone()) return 0;
+
+  let count = 0;
+
+  const migrations: Array<{
+    entity: SyncEntity;
+    table: string;
+    pk: string;
+    toPayload: (r: Record<string, unknown>) => Record<string, unknown>;
+  }> = [
+    {
+      entity: 'habit', table: 'habits', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, name: r.name, startDate: r.start_date, targetDays: r.target_days,
+        goal: r.goal, insight: r.insight, createTag: (r.create_tag as number) === 1,
+        doneDays: r.done_days, streak: r.streak, interrupted: r.interrupted,
+        status: r.status, checkedDates: safeJson(r.checked_dates),
+        pauseReason: r.pause_reason, abandonReason: r.abandon_reason,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'reflection', table: 'mind_reflections', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, timestamp: r.created_at, content: r.content,
+        tags: safeJson(r.tags), mood: r.mood, cardTheme: r.card_theme,
+        linkedHabitId: r.linked_habit_id, linkedPlanItemId: r.linked_plan_id,
+        isPinned: (r.is_pinned as number) === 1,
+        isPublished: (r.is_published as number) === 1,
+        colors: safeParseColors(r.colors),
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'fasting', table: 'fasting_sessions', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, targetHours: r.target_hours, startedAt: r.started_at,
+        endedAt: r.ended_at, estimatedKcal: r.estimated_kcal, insight: r.insight,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'food', table: 'food_entries', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, name: r.name, calories: r.cal, note: r.note, timestamp: r.ts,
+        entryDate: r.entry_date || (r.ts ? new Date(Number(r.ts)).toISOString().slice(0, 10) : ''),
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'checkin', table: 'checkin_records', pk: 'date',
+      toPayload: (r) => ({
+        date: r.date, done: (r.done as number) === 1, note: r.note,
+        streak: r.streak, timestamp: r.timestamp, weight: r.weight,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'exercise', table: 'exercise_entries', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, sportKey: r.sport_key, sportIcon: r.sport_icon,
+        durationSec: r.duration_sec, distanceKm: r.distance_km,
+        calories: r.calories, avgPace: r.avg_pace,
+        trackPoints: safeJson(r.track_points),
+        isGpsSport: (r.is_gps_sport as number) === 1,
+        timestamp: r.ts,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'meditation', table: 'meditation_history', pk: 'date',
+      toPayload: (r) => ({
+        date: r.date, dur: r.dur, mood: r.mood ?? '',
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'profile', table: 'user_profiles', pk: 'profile_id',
+      toPayload: (r) => ({
+        profileId: r.profile_id,
+        data: safeJsonObj(r.data),
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'plan', table: 'plans', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, name: r.name, goal: r.goal, slogan: r.slogan,
+        startDate: r.start_date, endDate: r.end_date,
+        status: r.status, progress: r.progress,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'planItem', table: 'plan_items', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, planId: r.plan_id, name: r.name, description: r.description,
+        startDate: r.start_date, endDate: r.end_date, contentUrl: r.content_url,
+        totalCheckinDays: r.total_checkin_days, status: r.status, progress: r.progress,
+        link: r.link, linkConfig: safeJson(r.link_config),
+        order: r.item_order, priority: r.priority, targetMetric: r.target_metric,
+        reflectionId: r.reflection_id,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'planItemCheckin', table: 'plan_item_checkins', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, planItemId: r.plan_item_id, date: r.date,
+        done: (r.done as number) === 1, note: r.note ?? '',
+        linkedModule: r.linked_module ?? '',
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'grace', table: 'grace_history', pk: 'date',
+      toPayload: (r) => ({
+        date: r.date, restoredAt: r.restored_at,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'dailyCustomTodo', table: 'daily_custom_todos', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, planId: r.plan_id, date: r.date, name: r.name,
+        done: (r.done as number) === 1, order: r.todo_order,
+        recurring: (r.recurring as number) === 1,
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'dailyTodoHistory', table: 'daily_todo_history', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, planId: r.plan_id, date: r.date,
+        planItems: safeJson(r.plan_items), customTodos: safeJson(r.custom_todos),
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'thoughtTrail', table: 'thought_trails', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, name: r.name, description: r.description ?? '',
+        reflectionIds: safeJson(r.reflection_ids),
+        createdAt: r.created_at, updatedAt: r.updated_at,
+        deleted: (r.deleted as number) === 1,
+      }),
+    },
+  ];
+
+  const db = await openDatabase();
+
+  for (const { entity, table, pk, toPayload } of migrations) {
+    const rows = await db.getAllAsync<Record<string, unknown>>(
+      `SELECT * FROM ${table} WHERE synced = 0 OR synced = 2`
+    );
+    for (const row of rows) {
+      const id = row[pk] as string;
+      if (!id) continue;
+      const operation = row.synced === 2 ? 'delete' : 'upsert';
+      const payload = toPayload(row);
+      if (operation === 'delete') payload.deleted = true;
+      await enqueueChange(entity, id, operation, payload);
+      count++;
+    }
+  }
+
+  // Mark migration complete
+  await db.runAsync(
+    'INSERT OR REPLACE INTO app_state(key, value) VALUES(?, ?)',
+    [MIGRATION_KEY, '1']
+  );
+
+  console.log(`[Migration] Migrated ${count} unsynced records to sync_queue`);
+  return count;
+}
+
+function safeJson(v: unknown): unknown {
+  if (v == null) return [];
+  if (typeof v === 'string') { try { return JSON.parse(v); } catch { return []; } }
+  return v;
+}
+
+function safeJsonObj(v: unknown): Record<string, unknown> {
+  if (v == null) return {};
+  if (typeof v === 'string') { try { const p = JSON.parse(v); return (typeof p === 'object' && p !== null && !Array.isArray(p)) ? p : {}; } catch { return {}; } }
+  return (typeof v === 'object' && v !== null && !Array.isArray(v)) ? v as Record<string, unknown> : {};
+}
+
+function safeParseColors(v: unknown): unknown {
+  if (v == null) return null;
+  if (typeof v === 'string') { try { return JSON.parse(v); } catch { return null; } }
+  return v;
+}

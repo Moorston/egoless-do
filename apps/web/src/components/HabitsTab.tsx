@@ -94,7 +94,7 @@ export default function HabitsTab() {
 
                 <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</div>
 
-                {h.insight && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, fontStyle: 'italic' }}>"{h.insight}"</div>}
+                {h.insight && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, fontStyle: 'italic' }}>&ldquo;{h.insight}&rdquo;</div>}
                 {h.createTag && <span style={{ fontSize: FONT_SUB, padding: '2px 8px', borderRadius: 10, background: `${P}30`, color: P, marginBottom: 8, display: 'inline-block' }}>#{h.name}</span>}
                 {h.pauseReason && <div style={{ fontSize: FONT_SUB, color: COLORS.YELLOW, marginBottom: 4 }}>{T('habitPause')}{h.pauseReason}</div>}
                 {h.abandonReason && <div style={{ fontSize: FONT_SUB, color: COLORS.RED, marginBottom: 4 }}>{T('habitAbandon')}{h.abandonReason}</div>}

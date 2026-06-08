@@ -87,8 +87,10 @@ export class DailyResetManager {
         const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / 86400000);
 
         // Backfill missing days (up to 7 days to prevent excessive processing)
+        // Loop from lastDate to yesterday (daysDiff-1). performDailyReset derives
+        // today = previousDate+1, so passing yesterday yields the actual today.
         if (daysDiff > 1 && daysDiff <= 7) {
-          for (let i = 1; i < daysDiff; i++) {
+          for (let i = 0; i < daysDiff; i++) {
             const backfillDate = new Date(lastDate);
             backfillDate.setDate(backfillDate.getDate() + i);
             const backfillDateStr = dateStr(backfillDate);
@@ -106,11 +108,6 @@ export class DailyResetManager {
       if (patch) {
         const resetPatch = { ...patch, waterMl: todayWater };
         this.deps.applyPatch(resetPatch);
-      }
-
-      // Trigger plan daily reset with the previous date
-      if (lastReset && this.deps.onPlanDailyReset) {
-        this.deps.onPlanDailyReset(lastReset);
       }
 
       this.deps.setLastReset(today);

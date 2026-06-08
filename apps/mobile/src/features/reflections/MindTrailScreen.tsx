@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON } from '@egoless-do/core';
 import { getTrailStats, getMoodIcon } from '@egoless-do/core';
 import type { ThoughtTrail } from '@egoless-do/core';
+import CreateThoughtTrailModal from './CreateThoughtTrailModal';
 
 type TabKey = 'thought' | 'tag';
 
@@ -19,6 +20,23 @@ export default function MindTrailScreen() {
   const nav = useNavigation();
 
   const [activeTab, setActiveTab] = useState<TabKey>('thought');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const handleCreateTrail = useCallback((trailId: string) => {
+    (nav as any).navigate('ThoughtTrailDetail', { trailId });
+  }, [nav]);
+
+  const handleCreateFromTag = useCallback((tag: string) => {
+    const tagReflections = (store.reflections ?? []).filter(r => !r.deleted && r.tags.includes(tag));
+    if (tagReflections.length === 0) return;
+
+    const trailId = store.createThoughtTrail(
+      `${tag}${T('thoughtTrailAutoName')}`,
+      undefined,
+      tagReflections.map(r => r.id)
+    );
+    (nav as any).navigate('ThoughtTrailDetail', { trailId });
+  }, [store, nav, T]);
 
   const thoughtTrails = useMemo(() => 
     (store.thoughtTrails ?? []).filter(t => !t.deleted),
@@ -49,7 +67,7 @@ export default function MindTrailScreen() {
             {T('thoughtTrail')} ({thoughtTrails.length})
           </Text>
           <TouchableOpacity
-            onPress={() => {/* TODO: Open create modal */}}
+            onPress={() => setShowCreateModal(true)}
             style={[styles.addButton, { backgroundColor: P }]}
           >
             <Plus size={16} color="#fff" />
@@ -67,7 +85,7 @@ export default function MindTrailScreen() {
             return (
               <TouchableOpacity
                 key={trail.id}
-                onPress={() => {/* TODO: Navigate to detail */}}
+                onPress={() => (nav as any).navigate('ThoughtTrailDetail', { trailId: trail.id })}
                 style={[styles.trailCard, { backgroundColor: TH.card, borderColor: TH.border }]}
               >
                 <Text style={[styles.trailName, { color: TH.text }]}>{trail.name}</Text>
@@ -105,7 +123,7 @@ export default function MindTrailScreen() {
               <Text style={[styles.tagCount, { color: P }]}>{count}</Text>
             </View>
             <TouchableOpacity
-              onPress={() => {/* TODO: Create trail from tag */}}
+              onPress={() => handleCreateFromTag(tag)}
               style={[styles.createTrailButton, { borderColor: P }]}
             >
               <Text style={[styles.createTrailButtonText, { color: P }]}>
@@ -141,15 +159,14 @@ export default function MindTrailScreen() {
             style={[
               styles.tab,
               {
-                backgroundColor: activeTab === tab.key ? `${P}20` : 'transparent',
-                borderColor: activeTab === tab.key ? P : 'transparent',
+                backgroundColor: activeTab === tab.key ? P : TH.card,
               },
             ]}
           >
             <Text style={{
-              color: activeTab === tab.key ? P : TH.sub,
-              fontWeight: activeTab === tab.key ? '600' : '400',
-              fontSize: FONT_SMALL,
+              color: activeTab === tab.key ? '#fff' : TH.sub,
+              fontWeight: activeTab === tab.key ? '700' : '500',
+              fontSize: FONT_BODY,
             }}>
               {tab.label}
             </Text>
@@ -165,6 +182,13 @@ export default function MindTrailScreen() {
       >
         {activeTab === 'thought' ? renderThoughtTrailTab() : renderTagTrailTab()}
       </ScrollView>
+
+      {/* Create Modal */}
+      <CreateThoughtTrailModal
+        visible={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={handleCreateTrail}
+      />
     </SafeAreaView>
   );
 }
@@ -196,8 +220,7 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
+    borderRadius: 12,
     alignItems: 'center',
   },
   tabContent: {

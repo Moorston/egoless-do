@@ -290,7 +290,7 @@ export function createPlanSlice(
     addDailyCustomTodo(planId, name, date, recurring) {
       const today = date ?? dateStr();
       set(s => ({
-        dailyCustomTodos: addDailyCustomTodoBiz(s.dailyCustomTodos ?? [], planId, name, today),
+        dailyCustomTodos: addDailyCustomTodoBiz(s.dailyCustomTodos ?? [], planId, name, today, recurring),
       }));
       const todos = get().dailyCustomTodos;
       const newTodo = todos[todos.length - 1];
@@ -342,7 +342,10 @@ export function createPlanSlice(
     },
 
     performDailyReset(previousDate) {
-      const today = dateStr();
+      // Derive today from previousDate to handle backfill correctly
+      const d = new Date(previousDate);
+      d.setDate(d.getDate() + 1);
+      const today = dateStr(d);
       const s = get();
       const result = performDailyResetBiz(
         s.plans ?? [],

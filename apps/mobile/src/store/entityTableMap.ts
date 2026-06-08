@@ -28,6 +28,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       id: d.id, created_at: d.timestamp, content: d.content, tags: json(d.tags),
       mood: d.mood ?? null, card_theme: d.cardTheme ?? null,
+      link: d.link ?? null,
       linked_habit_id: d.linkedHabitId ?? null,
       linked_plan_id: d.linkedPlanItemId ?? null,
       is_pinned: bool(d.isPinned), is_published: bool(d.isPublished),
@@ -96,22 +97,26 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       id: d.id, name: d.name, goal: d.goal ?? '', slogan: d.slogan ?? '',
       start_date: d.startDate, end_date: d.endDate,
       status: d.status ?? 'not_started', progress: num(d.progress),
+      last_delayed_notify_at: d.lastDelayedNotifyAt ?? null,
       updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
     }),
   },
   planItem: {
     table: 'plan_items', pk: 'id',
-    toRow: (d) => ({
-      id: d.id, plan_id: d.planId, name: d.name, description: d.description ?? '',
-      start_date: d.startDate, end_date: d.endDate, content_url: d.contentUrl ?? '',
-      total_checkin_days: num(d.totalCheckinDays), status: d.status ?? 'not_started',
-      progress: num(d.progress), link: d.link ?? 'manual',
-      priority: d.priority ?? 'medium',
-      target_metric: d.targetMetric ?? '',
-      reflection_id: d.reflectionId ?? null,
-      link_config: json(d.linkConfig), item_order: num(d.order),
-      updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
-    }),
+    toRow: (d) => {
+      const row: Record<string, unknown> = {
+        id: d.id, plan_id: d.planId, name: d.name, description: d.description ?? '',
+        start_date: d.startDate, end_date: d.endDate, content_url: d.contentUrl ?? '',
+        total_checkin_days: num(d.totalCheckinDays), status: d.status ?? 'not_started',
+        progress: num(d.progress), link: d.link ?? 'manual',
+        priority: d.priority ?? 'medium',
+        target_metric: d.targetMetric ?? '',
+        link_config: json(d.linkConfig), item_order: num(d.order),
+        updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
+      };
+      if (d.reflectionId !== undefined) row.reflection_id = d.reflectionId;
+      return row;
+    },
   },
   planItemCheckin: {
     table: 'plan_item_checkins', pk: 'id',
@@ -141,6 +146,15 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       id: d.id, plan_id: d.planId, date: d.date,
       plan_items: json(d.planItems), custom_todos: json(d.customTodos),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+  },
+  thoughtTrail: {
+    table: 'thought_trails', pk: 'id',
+    toRow: (d) => ({
+      id: d.id, name: d.name, description: d.description ?? '',
+      reflection_ids: json(d.reflectionIds),
+      created_at: d.createdAt ?? Date.now(),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },

@@ -1,19 +1,12 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, getSportType } from '@egoless-do/core';
+import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, getSportType, formatPace } from '@egoless-do/core';
 import type { ExerciseEntry } from '@egoless-do/core';
 import { useWebStore } from '../store/useWebStore';
 import { useT } from './helpers';
 import { loadAMap } from '../lib/amapLoader';
 import { ChevronLeft, X } from 'lucide-react';
-
-function formatPace(secPerKm: number): string {
-  if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
-  const m = Math.floor(secPerKm / 60);
-  const s = Math.floor(secPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 function DetailCard({ e, TH, P, T }: { e: ExerciseEntry; TH: any; P: string; T: (k: string) => string }) {
   const mapRef = useRef<HTMLDivElement>(null);

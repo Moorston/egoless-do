@@ -5,97 +5,26 @@ import { setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDat
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice,
 } from '@egoless-do/core';
 import {
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
-  createPlanSlice, createRecycleBinSlice,
+  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice,
 } from '@egoless-do/core';
-import { webStorageAdapter } from './storageAdapter';
-import { triggerSync } from '../db/syncService';
-import { db } from '../db/webDb';
 
 // Configure API base (empty = same origin)
 setApiBase('');
 
-const adapter = webStorageAdapter;
-
-/** Load all entity data from IndexedDB and merge into Zustand store */
-async function loadFromIndexedDB(): Promise<void> {
-  try {
-    // Ensure database is ready before accessing tables
-    await db.open();
-
-    // Helper: filter out deleted records (handles both boolean true and number 1)
-    const notDeleted = <T extends { deleted?: boolean | number }>(arr: T[]) =>
-      arr.filter(r => !r.deleted);
-
-    const [habits, reflections, fastingSessions, foodEntries, checkins, exerciseEntries, meditationEntries, profiles, plans, planItems, planItemCheckins, graceEntries, dailyCustomTodos, dailyTodoHistory] = await Promise.all([
-      db.habits?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.reflections?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.fastingSessions?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.foodEntries?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.checkins?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.exerciseEntries?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.meditationEntries?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.profiles?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.plans?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.planItems?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.planItemCheckins?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.graceHistory?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.dailyCustomTodos?.toArray().then(notDeleted).catch(() => []) ?? [],
-      db.dailyTodoHistory?.toArray().then(notDeleted).catch(() => []) ?? [],
-    ]);
-
-    const patch: Record<string, unknown> = {};
-
-    if (habits.length) patch.habits = habits;
-    if (reflections.length) patch.reflections = reflections;
-    if (foodEntries.length) patch.foodLog = foodEntries;
-    if (checkins.length) patch.checkinHistory = checkins;
-    if (exerciseEntries.length) patch.exerciseLog = exerciseEntries;
-    if (meditationEntries.length) {
-      patch.medHistory = meditationEntries;
-      patch.totalMedMinutes = meditationEntries.reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
-    }
-    if (fastingSessions.length) {
-      const active = fastingSessions.find(f => !f.endedAt);
-      const completed = fastingSessions.filter(f => f.endedAt);
-      if (active) patch.activeFasting = active;
-      patch.fastingHistory = completed;
-    }
-    if (plans.length) patch.plans = plans;
-    if (planItems.length) patch.planItems = planItems;
-    if (planItemCheckins.length) patch.planItemCheckins = planItemCheckins;
-    if (graceEntries.length) patch.graceHistory = graceEntries;
-    if (dailyCustomTodos.length) patch.dailyCustomTodos = dailyCustomTodos;
-    if (dailyTodoHistory.length) patch.dailyTodoHistory = dailyTodoHistory;
-
-    // Load profile (single record with profileId='self')
-    if (profiles.length) {
-      const latest = profiles.sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0];
-      if (latest?.data) {
-        try {
-          const profileData = typeof latest.data === 'string' ? JSON.parse(latest.data) : latest.data;
-          patch.userProfile = profileData;
-          // waterMl is managed by DailyResetManager, don't load from profile
-          if (profileData.waterGoal !== undefined) patch.waterGoal = profileData.waterGoal;
-        } catch (e) { console.warn('[store] Failed to parse profile data:', e); }
-      }
-    }
-
-    if (Object.keys(patch).length) {
-      useWebStore.setState(patch);
-    }
-  } catch (err) {
-    console.error('[loadFromIndexedDB] Error:', err);
-  }
-}
+// Minimal in-memory adapter (web frontend is deprecated, no sync needed)
+const noopAdapter = {
+  persistChange: async () => {},
+  markDeleted: async () => {},
+};
 
 export type WebStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & { resetData: () => void };
 
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
@@ -104,19 +33,20 @@ const triggerAutoSync = () => _autoSyncCallback?.();
 export const useWebStore = create<WebStore>()(
   persist(
     (...a) => ({
-      ...createAuthSlice(adapter, () => { triggerSync().catch(console.error); })(...a),
-      ...createHabitSlice(adapter, triggerAutoSync)(...a),
-      ...createReflectionSlice(adapter)(...a),
-      ...createFastingSlice(adapter, triggerAutoSync)(...a),
-      ...createMeditationSlice(adapter, triggerAutoSync)(...a),
-      ...createFoodSlice(adapter)(...a),
-      ...createExerciseSlice(adapter, triggerAutoSync)(...a),
-      ...createCheckinSlice(adapter, triggerAutoSync)(...a),
-      ...createProfileSlice(adapter)(...a),
+      ...createAuthSlice(noopAdapter, () => {})(...a),
+      ...createHabitSlice(noopAdapter, triggerAutoSync)(...a),
+      ...createReflectionSlice(noopAdapter)(...a),
+      ...createFastingSlice(noopAdapter, triggerAutoSync)(...a),
+      ...createMeditationSlice(noopAdapter, triggerAutoSync)(...a),
+      ...createFoodSlice(noopAdapter)(...a),
+      ...createExerciseSlice(noopAdapter, triggerAutoSync)(...a),
+      ...createCheckinSlice(noopAdapter, triggerAutoSync)(...a),
+      ...createProfileSlice(noopAdapter)(...a),
       ...createSettingsSlice()(...a),
       ...createTagMoodSlice()(...a),
-      ...createPlanSlice(adapter)(...a),
-      ...createRecycleBinSlice()(...a),
+      ...createPlanSlice(noopAdapter)(...a),
+      ...createRecycleBinSlice(noopAdapter)(...a),
+      ...createThoughtTrailSlice()(...a),
       resetData() {
         const [set, get] = a;
         const { auth, theme, language } = get();
@@ -142,7 +72,8 @@ export const useWebStore = create<WebStore>()(
         exerciseLog: s.exerciseLog,
         plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
         dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
-        graceHistory: s.graceHistory, recycleBin: s.recycleBin,
+        graceHistory: s.graceHistory, thoughtTrails: s.thoughtTrails,
+        recycleBin: s.recycleBin,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
@@ -152,15 +83,10 @@ export const useWebStore = create<WebStore>()(
           useWebStore.getState().autoSyncPlanItems?.();
         };
 
-        const loadPromise = loadFromIndexedDB().then(() => {
-          triggerSync().catch(console.error);
-          // 数据加载完成后检查习惯自动启动
-          // 使用 setTimeout 确保 store 已完全更新
-          setTimeout(() => {
-            console.log('[loadFromIndexedDB] calling checkAutoStatus');
-            useWebStore.getState().checkAutoStatus?.();
-          }, 0);
-        }).catch(console.error);
+        // Check habit auto status after rehydration
+        setTimeout(() => {
+          useWebStore.getState().checkAutoStatus?.();
+        }, 0);
 
         const dailyReset = new DailyResetManager({
           getLastReset: () => localStorage.getItem(DAILY_RESET_KEY),
@@ -169,9 +95,7 @@ export const useWebStore = create<WebStore>()(
           applyPatch: (patch) => useWebStore.setState(patch as any),
           getProfile: () => (useWebStore.getState().userProfile ?? {}) as Record<string, unknown>,
           getWaterGoal: () => useWebStore.getState().waterGoal ?? 2000,
-          persistProfile: (data) => {
-            webStorageAdapter.persistChange('profile', 'self', data).catch(console.error);
-          },
+          persistProfile: () => {},
           onPlanDailyReset: (previousDate) => {
             useWebStore.getState().performDailyReset?.(previousDate);
           },
@@ -179,7 +103,7 @@ export const useWebStore = create<WebStore>()(
             useWebStore.getState().checkHabitAutoStatus?.();
           },
         });
-        dailyReset.start(loadPromise);
+        dailyReset.start();
       },
     }
   )

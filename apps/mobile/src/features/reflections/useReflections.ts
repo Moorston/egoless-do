@@ -149,7 +149,7 @@ export function useReflections() {
       ),
     )].sort().reverse();
     let streak = 0;
-    let current = new Date();
+    let current = new Date(); // eslint-disable-line prefer-const
     for (const d of dates) {
       const expected = current.toISOString().slice(0, 10);
       if (d === expected) { streak++; current.setDate(current.getDate() - 1); }
