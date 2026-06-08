@@ -2,7 +2,7 @@
 import type { Syncable } from './shared';
 
 export type PlanStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'cancelled';
-export type PlanItemStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'delayed';
+export type PlanItemStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'cancelled' | 'delayed';
 export type PlanItemLink = 'manual' | 'checkin' | 'fasting' | 'meditation' | 'exercise' | 'habit' | 'reflection';
 export type PlanItemPriority = 'high' | 'medium' | 'low';
 
@@ -57,6 +57,7 @@ export interface DailyCustomTodo extends Syncable {
   name: string;
   done: boolean;
   order: number;
+  recurring?: boolean;
 }
 
 export interface DailyTodoHistory extends Syncable {

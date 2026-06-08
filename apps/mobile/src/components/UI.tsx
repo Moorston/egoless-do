@@ -228,7 +228,7 @@ export function ThemedInput({
 // ── TagPill ───────────────────────────────────────────────────────
 // ── PillSelector (generic tag/mood grid picker) ──────────────────
 export function PillSelector<Item extends string>({
-  options, selected, onChange, counts, color, textActiveColor,
+  options, selected, onChange, counts, color, textActiveColor, trailing,
 }: {
   options: readonly Item[] | Item[];
   selected: readonly Item[];
@@ -236,9 +236,10 @@ export function PillSelector<Item extends string>({
   counts?: Record<string, number>;
   color?: string;
   textActiveColor?: string;
+  trailing?: React.ReactNode;
 }) {
   return (
-    <View style={{ flexDirection:'row', flexWrap:'wrap' }}>
+    <View style={{ flexDirection:'row', flexWrap:'wrap', gap: 6, alignItems: 'center' }}>
       {options.map(item => {
         const freq = counts?.[item];
         return (
@@ -251,6 +252,7 @@ export function PillSelector<Item extends string>({
           />
         );
       })}
+      {trailing}
     </View>
   );
 }

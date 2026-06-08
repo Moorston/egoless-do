@@ -42,6 +42,9 @@ export async function POST(req: NextRequest) {
     if (!Array.isArray(changes) || changes.length > MAX_CHANGES_PER_SYNC) {
       return NextResponse.json({ error: '无效的同步数据' }, { status: 400 });
     }
+    if (lastSyncAt != null && (typeof lastSyncAt !== 'number' || !Number.isFinite(lastSyncAt))) {
+      return NextResponse.json({ error: 'lastSyncAt must be a finite number' }, { status: 400 });
+    }
 
     // Verify PocketBase connection
     try {
@@ -52,9 +55,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Apply client changes to PocketBase
-    const rejected: Array<{ entity: string; entityId: string; payload: Record<string, unknown>; deleted?: boolean }> = [];
+    const rejected: Array<{ entity: string; entityId: string; op: 'upsert' | 'delete'; payload: Record<string, unknown>; deleted?: boolean }> = [];
 
     for (const change of changes ?? []) {
+      if (!change || typeof change !== 'object') continue;
       const entity = change.entity as SyncEntity;
       const collection = ENTITY_COLLECTION[entity];
       const idField = ENTITY_ID_FIELD[entity];
@@ -62,6 +66,9 @@ export async function POST(req: NextRequest) {
         console.warn(`[Sync POST] Unknown entity: ${change.entity}`);
         continue;
       }
+      if (typeof change.entityId !== 'string' || !change.entityId) continue;
+      if (change.op !== 'upsert' && change.op !== 'delete') continue;
+      if (change.payload != null && typeof change.payload !== 'object') continue;
 
       const clientPayload = change.payload ?? {};
       const clientUpdated = Number(clientPayload.updatedAt ?? 0);
@@ -83,7 +90,8 @@ export async function POST(req: NextRequest) {
                 data: { ...existingPayload, deleted: true, updatedAt: serverTimestamp },
               });
             } else {
-              rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload, deleted: existingPayload.deleted === true });
+              // Stamp with server time so client's isLocalNewer recognizes server wins
+              rejected.push({ entity: change.entity, entityId: change.entityId, op: 'delete', payload: { ...existingPayload, updatedAt: serverTimestamp }, deleted: existingPayload.deleted === true });
             }
           } catch {
             await pb.collection(collection).create({
@@ -105,7 +113,8 @@ export async function POST(req: NextRequest) {
                 data: { ...clientPayload, updatedAt: serverTimestamp },
               });
             } else {
-              rejected.push({ entity: change.entity, entityId: change.entityId, payload: existingPayload });
+              // Stamp with server time so client's isLocalNewer recognizes server wins
+              rejected.push({ entity: change.entity, entityId: change.entityId, op: 'upsert', payload: { ...existingPayload, updatedAt: serverTimestamp } });
             }
           } catch {
             await pb.collection(collection).create({
@@ -132,11 +141,13 @@ export async function POST(req: NextRequest) {
           filter: `user_id = "${escapeFilter(userId)}" && updated >= "${new Date(syncTimestamp).toISOString()}"`,
         });
         for (const record of records) {
+          const payload = getPayload(record);
           serverChanges.push({
             entity,
             entityId: getEntityId(record, ENTITY_ID_FIELD[entity]),
-            payload: getPayload(record),
-            deleted: getPayload(record).deleted === true,
+            op: payload.deleted === true ? 'delete' as const : 'upsert' as const,
+            payload,
+            deleted: payload.deleted === true,
           });
         }
       } catch {

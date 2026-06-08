@@ -1,15 +1,9 @@
 'use client';
 
 import React from 'react';
-import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, formatPace } from '@egoless-do/core';
 import type { SportItem, SportType, ExerciseSet } from '@egoless-do/core';
 
-function formatPace(secPerKm: number): string {
-  if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
-  const m = Math.floor(secPerKm / 60);
-  const s = Math.floor(secPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 function fmt(totalSec: number): string {
   const h = Math.floor(totalSec / 3600);

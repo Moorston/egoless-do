@@ -3,18 +3,25 @@
 // token comes from Zustand store, server changes update store.
 import { useEffect, useRef } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, setLastSyncAt, connectRealtime, disconnectRealtime } from './SyncService';
+import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime } from './SyncService';
+import { migrateToSyncQueue } from './migrateToSyncQueue';
 import { useAppStore } from '../../store/useAppStore';
+import { mobileStorageAdapter } from '../../store/storageAdapter';
 import { registerPushToken } from '@egoless-do/core';
 
 const getNotifications = () => import('expo-notifications');
 
-const POCKETBASE_URL = process.env.EXPO_PUBLIC_POCKETBASE_URL ?? 'http://localhost:8090';
+// Module-level guards to avoid repeated DB queries and concurrent syncs
+let _migrationDone = false;
+
+export function resetMigrationFlag() {
+  _migrationDone = false;
+}
 
 export function useSync() {
   const token = useAppStore(s => s.auth.token);
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
-  const lastSyncAtRef = useRef(0);
+  const syncingRef = useRef(false);
 
   // Wire up token provider & change handler once
   useEffect(() => {
@@ -28,14 +35,19 @@ export function useSync() {
         medHistory: 'medHistory', plans: 'plans', planItems: 'planItems',
         planItemCheckins: 'planItemCheckins', dailyCustomTodos: 'dailyCustomTodos',
         dailyTodoHistory: 'dailyTodoHistory', graceHistory: 'graceHistory',
+        thoughtTrails: 'thoughtTrails',
+      };
+      // Explicit PK field per store key (don't guess from field presence)
+      const KEY_FIELD: Record<string, string> = {
+        checkinHistory: 'date', medHistory: 'date', graceHistory: 'date',
       };
       for (const [key, storeKey] of Object.entries(ARRAY_KEYS)) {
         if (!patch[key]) continue;
         const serverItems = patch[key] as any[];
         const existing = (store as any)[storeKey] as any[] ?? [];
         const result = [...existing];
+        const idField = KEY_FIELD[storeKey] ?? 'id';
         for (const item of serverItems) {
-          const idField = item.date ? 'date' : 'id';
           const idx = result.findIndex((e: any) => e[idField] === item[idField]);
           if (idx >= 0) {
             const local = result[idx];
@@ -65,7 +77,68 @@ export function useSync() {
       for (const key of Object.keys(patch)) {
         if (!ARRAY_KEYS[key]) merged[key] = patch[key];
       }
+
+      // Extract settings from profile data (piggybacked on profile entity)
+      if (merged.userProfile && Array.isArray(merged.userProfile)) {
+        const profileArr = merged.userProfile as any[];
+        if (profileArr.length > 0) {
+          // Pick the latest non-deleted profile (matching pullServerData behavior)
+          const latest = profileArr
+            .filter((p: any) => !p.deleted)
+            .sort((a: any, b: any) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0];
+          if (latest) {
+            let profileData = latest.data ?? latest;
+            if (typeof profileData === 'string') {
+              try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
+            }
+            // Flatten profile array back to object (matching pullServerData behavior)
+            merged.userProfile = { ...(store.userProfile ?? {}), ...profileData };
+            if (profileData.waterMl !== undefined) merged.waterMl = profileData.waterMl;
+            if (profileData.waterGoal !== undefined) merged.waterGoal = profileData.waterGoal;
+            if (profileData.weightUnit !== undefined) merged.weightUnit = profileData.weightUnit;
+            const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
+            for (const sk of SETTINGS_KEYS) {
+              if (profileData[sk] !== undefined) (merged as any)[sk] = profileData[sk];
+            }
+          } else {
+            // All profiles deleted — remove userProfile from patch, continue with other data
+            delete merged.userProfile;
+          }
+        }
+      }
       useAppStore.setState(merged);
+
+      // Reconcile thoughtTrailIds: rebuild from canonical thoughtTrail.reflectionIds
+      if (merged.thoughtTrails || merged.reflections) {
+        const state = useAppStore.getState();
+        const trails = state.thoughtTrails ?? [];
+        const trailMap = new Map<string, string[]>();
+        for (const trail of trails) {
+          if (trail.deleted) continue;
+          for (const rid of (trail.reflectionIds ?? [])) {
+            const arr = trailMap.get(rid) ?? [];
+            arr.push(trail.id);
+            trailMap.set(rid, arr);
+          }
+        }
+        const reflections = state.reflections ?? [];
+        const changedReflections: typeof reflections = [];
+        const updated = reflections.map(r => {
+          const ids = trailMap.get(r.id) ?? [];
+          const current = r.thoughtTrailIds ?? [];
+          if (ids.length === current.length && ids.every((id, i) => id === current[i])) return r;
+          const updatedR = { ...r, thoughtTrailIds: ids };
+          changedReflections.push(updatedR);
+          return updatedR;
+        });
+        if (changedReflections.length) {
+          useAppStore.setState({ reflections: updated } as any);
+          for (const r of changedReflections) {
+            mobileStorageAdapter.persistChange('reflection', r.id, r).catch(console.error);
+          }
+        }
+      }
+
       if (merged.checkinHistory) {
         useAppStore.getState().calculateStreak();
       }
@@ -122,7 +195,7 @@ export function useSync() {
     }
 
     // Connect to real-time sync (short polling)
-    connectRealtime(POCKETBASE_URL);
+    connectRealtime();
 
     return () => {
       disconnectRealtime();
@@ -133,11 +206,23 @@ export function useSync() {
   useEffect(() => {
     if (!isSignedIn || !token) return;
 
-    const sync = () => {
-      setLastSyncAt(lastSyncAtRef.current);
-      runSync().then(() => {
-        // lastSyncAt is updated internally in runSync
-      }).catch((e) => console.error('[err]', e));
+    const sync = async () => {
+      if (syncingRef.current) return; // Prevent concurrent syncs
+      syncingRef.current = true;
+      try {
+        // One-time migration: move old unsynced records to sync_queue
+        if (!_migrationDone) {
+          await migrateToSyncQueue().catch((e) => console.error('[Migration] Error:', e));
+          _migrationDone = true;
+        }
+
+        // runSync() manages _lastSyncAt internally — no need to set it here
+        await runSync();
+      } catch (e) {
+        console.error('[err]', e);
+      } finally {
+        syncingRef.current = false;
+      }
     };
 
     // Initial sync on mount

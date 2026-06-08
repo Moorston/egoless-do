@@ -4,36 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, getSportType } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, getSportType, formatPace } from '@egoless-do/core';
 import type { ExerciseEntry } from '@egoless-do/core';
-
-let _MapView: any = null;
-let _Polyline: any = null;
-let _amapLoaded = false;
-
-function useAmapComponents() {
-  const [ready, setReady] = useState(_amapLoaded);
-  useEffect(() => {
-    if (_amapLoaded) { setReady(true); return; }
-    import('react-native-amap3d').then(m => {
-      _MapView = m.MapView;
-      _Polyline = m.Polyline;
-      _amapLoaded = true;
-      setReady(true);
-    }).catch(() => {});
-  }, []);
-  return { MapView: _MapView, Polyline: _Polyline, ready };
-}
+import { useAmapComponents } from './hooks/useAmapComponents';
 
 function MapViewFallback() {
   return <View style={{ flex: 1, backgroundColor: '#1a1a2e' }} />;
-}
-
-function formatPace(secPerKm: number): string {
-  if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
-  const m = Math.floor(secPerKm / 60);
-  const s = Math.floor(secPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: any; P: string; T: (k: string) => string; MapView: any; Polyline: any }) {

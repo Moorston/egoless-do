@@ -218,6 +218,7 @@ export interface SyncDataMap {
   dailyCustomTodo: DailyCustomTodo;
   dailyTodoHistory: DailyTodoHistory;
   grace: GraceHistoryEntry;
+  thoughtTrail: ThoughtTrail;
 }
 
 /** Type-safe storage adapter */

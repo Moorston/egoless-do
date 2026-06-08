@@ -8,7 +8,11 @@ import { calculateCheckinStreak } from '../utils';
 export function createAuthSlice(
   adapter: StorageAdapter,
   onSyncTrigger: () => void,
+  onLogout?: () => void,
 ): SliceCreator<AuthSlice> {
+  // Guard against concurrent refresh calls (shared across the slice lifetime)
+  let _refreshInFlight: Promise<void> | null = null;
+
   return (set, get) => ({
     auth: defaultAuthState,
 
@@ -54,16 +58,25 @@ export function createAuthSlice(
         apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => console.error('[err]', e));
       }
       set({ auth: defaultAuthState });
+      onLogout?.();
     },
 
     async refreshAuth() {
       const { auth } = get();
       if (!auth.refreshToken) return;
+      if (_refreshInFlight) return _refreshInFlight;
+      _refreshInFlight = (async () => {
+        try {
+          const res = await apiRefreshToken(auth.refreshToken!);
+          set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
+        } catch {
+          set({ auth: defaultAuthState });
+        }
+      })();
       try {
-        const res = await apiRefreshToken(auth.refreshToken);
-        set({ auth: { ...auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } });
-      } catch {
-        set({ auth: defaultAuthState });
+        await _refreshInFlight;
+      } finally {
+        _refreshInFlight = null;
       }
     },
 
@@ -90,17 +103,29 @@ export function createAuthSlice(
         if (data.plan)            patch.plans = mergeById(data.plan, s.plans ?? [], 'id');
         if (data.planItem)        patch.planItems = mergeById(data.planItem, s.planItems ?? [], 'id');
         if (data.planItemCheckin) patch.planItemCheckins = mergeById(data.planItemCheckin, s.planItemCheckins ?? [], 'id');
+        if (data.dailyCustomTodo) patch.dailyCustomTodos = mergeById(data.dailyCustomTodo, s.dailyCustomTodos ?? [], 'id');
+        if (data.dailyTodoHistory) patch.dailyTodoHistory = mergeById(data.dailyTodoHistory, s.dailyTodoHistory ?? [], 'id');
         if (data.grace)           patch.graceHistory = mergeById(data.grace, s.graceHistory ?? [], 'date');
+        if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail, s.thoughtTrails ?? [], 'id');
 
         if (data.profile?.length) {
           const latest = data.profile
             .filter((p: any) => !p.deleted)
             .sort((a: any, b: any) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0];
           if (latest) {
-            const profileData = latest.data ?? latest;
+            let profileData = latest.data ?? latest;
+            if (typeof profileData === 'string') {
+              try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
+            }
             patch.userProfile = { ...(s.userProfile ?? {}), ...profileData };
             if (profileData.waterMl !== undefined) patch.waterMl = profileData.waterMl;
             if (profileData.waterGoal !== undefined) patch.waterGoal = profileData.waterGoal;
+            if (profileData.weightUnit !== undefined) patch.weightUnit = profileData.weightUnit;
+            // Extract piggybacked settings from profile
+            const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
+            for (const sk of SETTINGS_KEYS) {
+              if (profileData[sk] !== undefined) (patch as any)[sk] = profileData[sk];
+            }
           }
         }
 

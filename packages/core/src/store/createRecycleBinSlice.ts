@@ -1,10 +1,19 @@
 import type { RecycleBinItem, RecycleBinEntityType } from '../types';
-import type { RecycleBinSlice } from './types';
+import type { RecycleBinSlice, StorageAdapter } from './types';
+import type { SyncEntity } from '../sync/entities';
 import type { SliceCreator } from './sliceHelper';
 
 const EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-export function createRecycleBinSlice(): SliceCreator<RecycleBinSlice> {
+const ENTITY_TYPE_MAP: Record<RecycleBinEntityType, SyncEntity> = {
+  habit: 'habit',
+  reflection: 'reflection',
+  food: 'food',
+  exercise: 'exercise',
+  plan: 'plan',
+};
+
+export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<RecycleBinSlice> {
   return (set, get) => ({
     recycleBin: [],
 
@@ -32,7 +41,41 @@ export function createRecycleBinSlice(): SliceCreator<RecycleBinSlice> {
 
       const targetKey = restoreMap[item.entityType as RecycleBinEntityType];
       if (targetKey) {
-        set(s => ({ [targetKey]: [...((s[targetKey] as any[]) ?? []), item.data] }));
+        const restoredData = { ...item.data, deleted: false };
+        // Remove existing soft-deleted copy before appending restored item
+        set(s => ({ [targetKey]: [...((s[targetKey] as any[]) ?? []).filter((x: any) => x.id !== id), restoredData] }));
+        // Persist to SQLite and enqueue for sync (overwrites deleted=1 row)
+        const syncEntity = ENTITY_TYPE_MAP[item.entityType as RecycleBinEntityType];
+        if (syncEntity && adapter) {
+          adapter.persistChange(syncEntity, item.id, restoredData).catch(console.error);
+        }
+
+        // For plans, also restore child planItems and planItemCheckins
+        if (item.entityType === 'plan' && adapter) {
+          const planItems = (get() as any).planItems as any[] ?? [];
+          const planItemCheckins = (get() as any).planItemCheckins as any[] ?? [];
+          const childItems = planItems.filter(pi => pi.planId === item.id && pi.deleted);
+          const childCheckins = planItemCheckins.filter(
+            pic => childItems.some((ci: any) => ci.id === pic.planItemId) && pic.deleted
+          );
+
+          set(s => ({
+            planItems: (s.planItems ?? []).map((pi: any) =>
+              pi.planId === item.id && pi.deleted ? { ...pi, deleted: false } : pi
+            ),
+            planItemCheckins: (s.planItemCheckins ?? []).map((pic: any) =>
+              childItems.some((ci: any) => ci.id === pic.planItemId) && pic.deleted
+                ? { ...pic, deleted: false } : pic
+            ),
+          }));
+
+          for (const ci of childItems) {
+            adapter.persistChange('planItem', ci.id, { ...ci, deleted: false }).catch(console.error);
+          }
+          for (const cic of childCheckins) {
+            adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false }).catch(console.error);
+          }
+        }
       }
     },
 

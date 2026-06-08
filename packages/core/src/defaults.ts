@@ -1,7 +1,7 @@
 // ─── Shared Zustand store (platform-agnostic logic) ──────────────
 import { uid, dateStr } from './utils';
 import { MIND_COLORS_EXTENDED } from './constants';
-import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry } from './types';
+import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory, ThoughtTrail } from './types';
 import { defaultAuthState } from './types';
 
 // ── Initial seed data ─────────────────────────────────────────────
@@ -71,13 +71,20 @@ export const defaultDataState = {
   plans: [] as Plan[],
   planItems: [] as PlanItem[],
   planItemCheckins: [] as PlanItemCheckin[],
+  dailyCustomTodos: [] as DailyCustomTodo[],
+  dailyTodoHistory: [] as DailyTodoHistory[],
   recycleBin: [] as RecycleBinItem[],
   graceHistory: [] as GraceHistoryEntry[],
-  remindEnabled: false,
-  remindTime: '21:00',
-  healthSyncEnabled: false,
+  thoughtTrails: [] as ThoughtTrail[],
+  customTags: [] as string[],
+  customMoods: [] as string[],
+  allTagsOrder: [] as string[],
+  allMoodsOrder: [] as string[],
   customFoodPresets: [] as CustomFoodPreset[],
   weightUnit: 'kg' as 'kg' | 'lb',
+  healthSyncEnabled: false,
+  remindEnabled: false,
+  remindTime: '21:00',
 };
 
 /** Create a patch object that resets all data fields (preserving auth, theme, language) */
@@ -87,9 +94,5 @@ export function createResetDataPatch(auth: AppState['auth'], theme: AppState['th
     auth,
     theme,
     language,
-    customTags: [] as string[],
-    customMoods: [] as string[],
-    allTagsOrder: [] as string[],
-    allMoodsOrder: [] as string[],
   };
 }

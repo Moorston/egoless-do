@@ -15,6 +15,13 @@ export const fmtMS = (s: number) => {
   return `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
 };
 
+export function formatPace(secPerKm: number): string {
+  if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
+  const m = Math.floor(secPerKm / 60);
+  const s = Math.floor(secPerKm % 60);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 export const dateStr = (d = new Date()) => {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -233,7 +240,9 @@ export const detectStreakBreaks = (
     const curr = new Date(doneDates[i]);
     const diff = (curr.getTime() - prev.getTime()) / 86400000;
 
-    if (diff === 1) {
+    if (diff === 0) {
+      continue; // Skip same-day duplicates without breaking streak
+    } else if (diff === 1) {
       streakLen++;
     } else if (diff >= 2) {
       // Gap found — this is a streak break
@@ -255,31 +264,10 @@ export const detectStreakBreaks = (
   return breaks.reverse(); // newest first
 };
 
-// ── Mobile legacy field normalization ────────────────────────────
-
-const FIELD_MAPPING: Record<string, string> = {
-  target_hours: 'targetHours',
-  started_at: 'startedAt',
-  ended_at: 'endedAt',
-  estimated_kcal: 'estimatedKcal',
-  created_at: 'timestamp',
-  is_pinned: 'isPinned',
-  is_published: 'isPublished',
-};
-
-/** Normalize mobile legacy snake_case fields to camelCase. */
-export function normalizeEntity<T>(raw: Record<string, unknown>): T {
-  const result: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(raw)) {
-    result[FIELD_MAPPING[key] ?? key] = value;
-  }
-  return result as T;
-}
-
 /** Compute the longest consecutive-day streak from a sorted/unsorted list of date strings. */
 export function computeLongestStreak(dates: string[]): number {
   if (dates.length === 0) return 0;
-  const sorted = [...dates].sort();
+  const sorted = [...new Set(dates)].sort();
   let max = 1, current = 1;
   for (let i = 1; i < sorted.length; i++) {
     const prev = new Date(sorted[i - 1]);

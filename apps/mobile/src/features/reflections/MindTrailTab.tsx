@@ -149,15 +149,14 @@ export default function MindTrailTab() {
             style={[
               styles.tab,
               {
-                backgroundColor: activeTab === tab.key ? `${P}20` : 'transparent',
-                borderColor: activeTab === tab.key ? P : 'transparent',
+                backgroundColor: activeTab === tab.key ? P : TH.card,
               },
             ]}
           >
             <Text style={{
-              color: activeTab === tab.key ? P : TH.sub,
-              fontWeight: activeTab === tab.key ? '600' : '400',
-              fontSize: FONT_SMALL,
+              color: activeTab === tab.key ? '#fff' : TH.sub,
+              fontWeight: activeTab === tab.key ? '700' : '500',
+              fontSize: FONT_BODY,
             }}>
               {tab.label}
             </Text>
@@ -187,8 +186,7 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     paddingVertical: 10,
-    borderRadius: 10,
-    borderWidth: 1,
+    borderRadius: 12,
     alignItems: 'center',
   },
   tabContent: {

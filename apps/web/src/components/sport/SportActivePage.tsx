@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Play, Pause, Minus, Plus, X } from 'lucide-react';
-import { COLORS, FONT_SUB, FONT_BACK, FONT_CLOSE, FONT_BODY, FONT_HERO, FONT_STAT_SECTION, FONT_STAT_CARD, FONT_TITLE, FONT_ERROR, MET_MAP } from '@egoless-do/core';
+import { COLORS, FONT_SUB, FONT_BACK, FONT_CLOSE, FONT_BODY, FONT_HERO, FONT_STAT_SECTION, FONT_STAT_CARD, FONT_TITLE, FONT_ERROR, MET_MAP, formatPace } from '@egoless-do/core';
 import type { SportItem, SportType, ExerciseSet } from '@egoless-do/core';
 
 function fmt(totalSec: number): string {
@@ -13,12 +13,6 @@ function fmt(totalSec: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-function formatPace(secPerKm: number): string {
-  if (!isFinite(secPerKm) || secPerKm <= 0) return '--:--';
-  const m = Math.floor(secPerKm / 60);
-  const s = Math.floor(secPerKm % 60);
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
 
 interface SportActivePageProps {
   sport: SportItem;

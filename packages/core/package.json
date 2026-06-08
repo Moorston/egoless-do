@@ -5,7 +5,6 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./realtimeSync": "./dist/realtimeSync.js",
     "./push": "./dist/push.js"
   },
   "scripts": {

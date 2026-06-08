@@ -23,6 +23,7 @@ export function createMobileUiSlice(
   profileSlice: StateCreator<FullStore, [], [], ProfileSlice>,
   settingsSlice: StateCreator<FullStore, [], [], SettingsSlice>,
   tagMoodSlice: StateCreator<FullStore, [], [], TagMoodSlice>,
+  onReset?: () => void,
 ): StateCreator<FullStore, [], [], MobileUiSlice> {
   return (set, get, api) => ({
     ...foodSlice(set, get, api),
@@ -41,18 +42,21 @@ export function createMobileUiSlice(
     syncWeightFromHealth(weight: number) {
       const s = get();
       const result = submitCheckinEntry(s.checkinHistory ?? [], false, '', undefined, weight);
+      const updatedProfile = { ...(s.userProfile ?? {}), weight, updatedAt: Date.now() };
       set({
         checkinHistory: result.history,
         streak: result.streak,
-        userProfile: { ...(s.userProfile ?? {}), weight },
+        userProfile: updatedProfile,
       } as any);
       const entry = result.history[0];
       if (entry) adapter.persistChange('checkin', entry.date, entry).catch(console.error);
+      adapter.persistChange('profile', 'self', updatedProfile).catch(console.error);
     },
 
     resetData() {
       const { auth, theme, language } = get();
       set(createResetDataPatch(auth, theme, language) as any);
+      onReset?.();
     },
   });
 }

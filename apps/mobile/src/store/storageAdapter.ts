@@ -15,10 +15,18 @@ export const mobileStorageAdapter: StorageAdapter = {
     const columns = Object.keys(row);
     const placeholders = columns.map(() => '?').join(',');
     const values = Object.values(row);
-    await db.runAsync(
-      `INSERT OR REPLACE INTO ${config.table} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
-      values,
+    const setClause = columns.map(c => `${c}=?`).join(',');
+    // UPDATE-first-INSERT to preserve local-only columns (e.g. exercise.health_synced)
+    const result = await db.runAsync(
+      `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
+      [...values, id],
     );
+    if (result.changes === 0) {
+      await db.runAsync(
+        `INSERT INTO ${config.table} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
+        values,
+      );
+    }
     await enqueueChange(entity, id, 'upsert', data).catch(console.error);
   },
 

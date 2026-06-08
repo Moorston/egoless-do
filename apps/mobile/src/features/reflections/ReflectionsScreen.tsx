@@ -3,9 +3,10 @@ import {
   View, Text, ScrollView, TouchableOpacity, Modal,
   KeyboardAvoidingView, Platform, TextInput, Linking, Alert, StyleSheet,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppStore } from '../../store/useAppStore';
 import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../navigation/hooks';
 import {
@@ -18,6 +19,7 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import ShareCard from './ShareCard';
 import FilterDrawer from './FilterDrawer';
 import MindTrailEntryCard from './MindTrailEntryCard';
+import ReflectionForm from './ReflectionForm';
 import { useReflections } from './useReflections';
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES } from '@egoless-do/core';
 import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
@@ -26,29 +28,25 @@ import {
 } from 'lucide-react-native';
 
 // ── Manager helpers ───────────────────────────────────────────────
-function useManagerProps(mode: 'tag' | 'mood', onBack: () => void) {
-  const store = useAppStore();
-  const habitTags = useMemo(() =>
-    mode === 'tag'
-      ? (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`)
-      : [],
-    [store.habits, mode]
-  );
-
+function getManagerProps(
+  store: any,
+  mode: 'tag' | 'mood',
+  onBack: () => void,
+  hiddenItems?: string[],
+  onToggleHidden?: (item: string) => void,
+) {
   if (mode === 'tag') {
-    const orderedTags = store.allTagsOrder?.length
-      ? store.allTagsOrder
-      : [...TAGS_PRESET, ...(store.customTags ?? []), ...habitTags];
+    // Get all tags (preset + custom + habit)
+    const habitTags = (store.habits ?? []).filter((h: any) => h.createTag).map((h: any) => `#${h.name}`);
+    const allTags = [...new Set([...TAGS_PRESET, ...(store.customTags ?? []), ...habitTags])];
+    
     const sections = [
-      { titleKey: 'tagSectionPreset', items: TAGS_PRESET.filter(t => orderedTags.includes(t)), isPreset: true, isReadonly: true } as const,
-      { titleKey: 'tagSectionCustom', items: (store.customTags ?? []).filter(t => orderedTags.includes(t)), isPreset: false, isReadonly: false } as const,
-      { titleKey: 'tagSectionHabit', items: habitTags.filter(t => orderedTags.includes(t)), isPreset: false, isReadonly: true } as const,
+      { titleKey: 'allTags', items: allTags, isPreset: false, isReadonly: false } as const,
     ];
     return {
       titleKey: 'tagManager', backLabelKey: 'reflBack',
       inputPlaceholderKey: 'newTagPlaceholder', tooLongKey: 'tagTooLong', maxReachedKey: 'maxTagsReached',
       deleteConfirmKey: 'tagDeleteConfirm', usedByKey: 'tagUsedBy', deleteTitleKey: 'tagDelete',
-      presetLabelKey: 'preset' as string | undefined, readonlyLabelKey: 'habitTag' as string | undefined,
       sections,
       addItem: (s: string) => store.addCustomTag(s),
       updateItem: (o: string, n: string) => store.updateCustomTag(o, n),
@@ -57,22 +55,21 @@ function useManagerProps(mode: 'tag' | 'mood', onBack: () => void) {
       getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => (r as any).tags?.includes(s)).length,
       customItems: store.customTags ?? [],
       formatInput: (s: string) => s.startsWith('#') ? s : `#${s}`,
+      hiddenItems,
+      onToggleHidden,
       onBack,
     };
   }
 
-  const orderedMoods = store.allMoodsOrder?.length
-    ? store.allMoodsOrder
-    : [...MOODS, ...(store.customMoods ?? [])];
+  // Mood mode
+  const allMoods = [...new Set([...MOODS, ...(store.customMoods ?? [])])];
   const sections = [
-    { titleKey: 'moodSectionPreset', items: (MOODS as string[]).filter(m => orderedMoods.includes(m)), isPreset: true, isReadonly: true } as const,
-    { titleKey: 'moodSectionCustom', items: (store.customMoods ?? []).filter(m => orderedMoods.includes(m)), isPreset: false, isReadonly: false } as const,
+    { titleKey: 'allMoods', items: allMoods, isPreset: false, isReadonly: false } as const,
   ];
   return {
     titleKey: 'moodManager', backLabelKey: 'reflBack',
     inputPlaceholderKey: 'newMoodPlaceholder', tooLongKey: 'moodTooLong', maxReachedKey: 'maxMoodsReached',
     deleteConfirmKey: 'moodDeleteConfirm', usedByKey: 'moodUsedBy', deleteTitleKey: 'moodDelete',
-    presetLabelKey: 'preset' as string | undefined, readonlyLabelKey: undefined,
     sections,
     addItem: (s: string) => store.addCustomMood(s),
     updateItem: (o: string, n: string) => store.updateCustomMood(o, n),
@@ -80,6 +77,8 @@ function useManagerProps(mode: 'tag' | 'mood', onBack: () => void) {
     reorderItem: (from: number, to: number, _ordered: string[]) => store.reorderAllMood(from, to),
     getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => (r as any).mood === s).length,
     customItems: store.customMoods ?? [],
+    hiddenItems,
+    onToggleHidden,
     onBack,
   };
 }
@@ -93,6 +92,7 @@ export default function ReflectionsScreen() {
   const route = useRoute<RouteProp<MainTabParamList, 'Reflections'>>();
   const nav   = useTabNavigation();
   const rootNav = useRootNavigation();
+  const insets = useSafeAreaInsets();
 
   // Use shared reflections hook (includes filters, debounced search, dynamic counts, etc.)
   const {
@@ -113,6 +113,51 @@ export default function ReflectionsScreen() {
   const [showNew, setShowNew]       = useState(false);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [managerMode, setManagerMode] = useState<'tag'|'mood'|null>(null);
+  const [hiddenTags, setHiddenTags] = useState<string[]>([]);
+  const [hiddenMoods, setHiddenMoods] = useState<string[]>([]);
+
+  // Load hidden tags/moods from storage on mount
+  useEffect(() => {
+    Promise.all([
+      AsyncStorage.getItem('hiddenTags'),
+      AsyncStorage.getItem('hiddenMoods'),
+    ]).then(([tagsData, moodsData]) => {
+      if (tagsData) {
+        try { setHiddenTags(JSON.parse(tagsData)); } catch {}
+      }
+      if (moodsData) {
+        try { setHiddenMoods(JSON.parse(moodsData)); } catch {}
+      }
+    });
+  }, []);
+
+  const handleToggleHiddenTag = useCallback((tag: string) => {
+    setHiddenTags(prev => {
+      const next = prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag];
+      AsyncStorage.setItem('hiddenTags', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const handleToggleHiddenMood = useCallback((mood: string) => {
+    setHiddenMoods(prev => {
+      const next = prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood];
+      AsyncStorage.setItem('hiddenMoods', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  // Filter hidden tags for new/edit reflection form
+  const visibleTagOptions = useMemo(() => 
+    allTagOptions.filter(tag => !hiddenTags.includes(tag)),
+    [allTagOptions, hiddenTags]
+  );
+
+  // Filter hidden moods for new/edit reflection form
+  const visibleMoodOptions = useMemo(() => 
+    allMoodOptions.filter(mood => !hiddenMoods.includes(mood)),
+    [allMoodOptions, hiddenMoods]
+  );
 
   // Date collapse state: track which day groups are collapsed
   const [collapsedDays, setCollapsedDays] = useState<Set<string>>(new Set());
@@ -484,7 +529,6 @@ export default function ReflectionsScreen() {
         filters={filters}
         onApplyFilters={(newFilters) => {
           setFilters(newFilters);
-          setShowFilterDrawer(false);
         }}
         allTagOptions={allTagOptions}
         allMoodOptions={allMoodOptions}
@@ -495,77 +539,42 @@ export default function ReflectionsScreen() {
 
       {/* New reflection modal */}
       <Modal visible={showNew} animationType="slide" transparent>
-        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end' }}>
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.5)' }}>
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
             <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:20, marginBottom:16 }}>
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflNewTitle')}</Text>
               <TouchableOpacity onPress={() => { setShowNew(false); setManagerMode(null); }}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
-            {managerMode ? (
-              <ItemManagerPanel {...useManagerProps(managerMode, () => setManagerMode(null))} />
-            ) : (
-            <ScrollView keyboardShouldPersistTaps="handled">
-              {/* Card theme color */}
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:10, marginBottom:16, paddingVertical:4 }}>
-                {MIND_COLORS_EXTENDED.map((c, i) => {
-                  const isActive = colorIdx === i;
-                  return (
-                    <TouchableOpacity key={i} onPress={() => setColorIdx(i)}
-                      style={{
-                        width: isActive ? 36 : 32,
-                        height: isActive ? 36 : 32,
-                        borderRadius: 18,
-                        backgroundColor: isActive ? c[0] : 'transparent',
-                        padding: isActive ? 2 : 0,
-                        overflow: 'hidden',
-                      }}>
-                      <View style={{
-                        flex:1, borderRadius:16, overflow:'hidden',
-                        borderWidth: isActive ? 2 : 0,
-                        borderColor: isActive ? '#fff' : 'transparent',
-                      }}>
-                        <View style={{ flex:1, backgroundColor:c[0] }} />
-                        <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:c[1], opacity:0.5 }} />
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              {/* Content with 200-char limit */}
-              <View style={{ marginBottom:16 }}>
-                <ThemedInput value={content} onChangeText={setContent}
-                  placeholder={T('reflPlaceholder')}
-                  multiline numberOfLines={4} style={{ minHeight:90 }} />
-                <Text style={{ color: content.length > 200 ? COLORS.RED : TH.sub, fontSize:FONT_BODY, textAlign:'right', marginTop:4 }}>
-                  {content.length}/200
-                </Text>
-              </View>
-
-              {/* Tags */}
-              <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:8 }}>{T('reflAddTag')}</Text>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
-                <PillSelector options={allTagOptions} selected={tags} onChange={t => setTags(ts => ts.includes(t) ? ts.filter(x=>x!==t) : [...ts,t])} counts={dynamicTagCounts} color={P} textActiveColor={P} />
-                <TouchableOpacity onPress={() => setManagerMode('tag')}
-                  style={{ paddingHorizontal:12, paddingVertical:6, borderRadius:16, borderWidth:1, borderColor:TH.border, borderStyle:'dashed' }}>
-                  <Settings size={16} color={TH.sub} />
-                </TouchableOpacity>
-              </View>
-
-              {/* Mood */}
-              <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:8 }}>{T('reflMood')}</Text>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:24 }}>
-                <PillSelector options={allMoodOptions} selected={mood ? [mood] : []} onChange={m => setMood(mood === m ? '' : m)} color={P} textActiveColor={P} />
-                <TouchableOpacity onPress={() => setManagerMode('mood')}
-                  style={{ paddingHorizontal:12, paddingVertical:6, borderRadius:16, borderWidth:1, borderColor:TH.border, borderStyle:'dashed' }}>
-                  <Settings size={16} color={TH.sub} />
-                </TouchableOpacity>
-              </View>
-
-              <PrimaryButton label={T('saveReflection')} onPress={saveReflection} />
-            </ScrollView>
-            )}
+            <ReflectionForm
+              content={content}
+              onContentChange={setContent}
+              colorIdx={colorIdx}
+              onColorIdxChange={setColorIdx}
+              tags={tags}
+              onTagsChange={setTags}
+              mood={mood}
+              onMoodChange={setMood}
+              onSave={saveReflection}
+              saveLabel={T('saveReflection')}
+              allTagOptions={visibleTagOptions}
+              allMoodOptions={visibleMoodOptions}
+              dynamicTagCounts={dynamicTagCounts}
+              onOpenTagManager={() => setManagerMode('tag')}
+              onOpenMoodManager={() => setManagerMode('mood')}
+            />
           </View>
+          {/* Item Manager Overlay */}
+          {managerMode && (
+            <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
+              <ItemManagerPanel {...getManagerProps(
+                store, 
+                managerMode, 
+                () => setManagerMode(null),
+                managerMode === 'tag' ? hiddenTags : hiddenMoods,
+                managerMode === 'tag' ? handleToggleHiddenTag : handleToggleHiddenMood,
+              )} />
+            </View>
+          )}
         </KeyboardAvoidingView>
       </Modal>
 
@@ -948,77 +957,42 @@ export default function ReflectionsScreen() {
 
       {/* Edit reflection modal */}
       <Modal visible={!!editId} animationType="slide" transparent>
-        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end' }}>
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.5)' }}>
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
             <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:20, marginBottom:16 }}>
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflEditTitle')}</Text>
               <TouchableOpacity onPress={cancelEdit}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
-            {managerMode ? (
-              <ItemManagerPanel {...useManagerProps(managerMode, () => setManagerMode(null))} />
-            ) : (
-            <ScrollView keyboardShouldPersistTaps="handled">
-              {/* Card theme color */}
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:10, marginBottom:16, paddingVertical:4 }}>
-                {MIND_COLORS_EXTENDED.map((c, i) => {
-                  const isActive = editColorIdx === i;
-                  return (
-                    <TouchableOpacity key={i} onPress={() => setEditColorIdx(i)}
-                      style={{
-                        width: isActive ? 36 : 32,
-                        height: isActive ? 36 : 32,
-                        borderRadius: 18,
-                        backgroundColor: isActive ? c[0] : 'transparent',
-                        padding: isActive ? 2 : 0,
-                        overflow: 'hidden',
-                      }}>
-                      <View style={{
-                        flex:1, borderRadius:16, overflow:'hidden',
-                        borderWidth: isActive ? 2 : 0,
-                        borderColor: isActive ? '#fff' : 'transparent',
-                      }}>
-                        <View style={{ flex:1, backgroundColor:c[0] }} />
-                        <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:c[1], opacity:0.5 }} />
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              {/* Content with 200-char limit */}
-              <View style={{ marginBottom:16 }}>
-                <ThemedInput value={editContent} onChangeText={setEditContent}
-                  placeholder={T('reflPlaceholder')}
-                  multiline numberOfLines={4} style={{ minHeight:90 }} />
-                <Text style={{ color: editContent.length > 200 ? COLORS.RED : TH.sub, fontSize:FONT_BODY, textAlign:'right', marginTop:4 }}>
-                  {editContent.length}/200
-                </Text>
-              </View>
-
-              {/* Tags */}
-              <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:8 }}>{T('reflAddTag')}</Text>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
-                <PillSelector options={allTagOptions} selected={editTags} onChange={t => setEditTags(ts => ts.includes(t) ? ts.filter(x=>x!==t) : [...ts,t])} counts={dynamicTagCounts} color={P} textActiveColor={P} />
-                <TouchableOpacity onPress={() => setManagerMode('tag')}
-                  style={{ paddingHorizontal:12, paddingVertical:6, borderRadius:16, borderWidth:1, borderColor:TH.border, borderStyle:'dashed' }}>
-                  <Settings size={16} color={TH.sub} />
-                </TouchableOpacity>
-              </View>
-
-              {/* Mood */}
-              <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:8 }}>{T('reflMood')}</Text>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:24 }}>
-                <PillSelector options={allMoodOptions} selected={editMood ? [editMood] : []} onChange={m => setEditMood(editMood === m ? '' : m)} color={P} textActiveColor={P} />
-                <TouchableOpacity onPress={() => setManagerMode('mood')}
-                  style={{ paddingHorizontal:12, paddingVertical:6, borderRadius:16, borderWidth:1, borderColor:TH.border, borderStyle:'dashed' }}>
-                  <Settings size={16} color={TH.sub} />
-                </TouchableOpacity>
-              </View>
-
-              <PrimaryButton label={T('reflSaveEdit')} onPress={saveEdit} />
-            </ScrollView>
-            )}
+            <ReflectionForm
+              content={editContent}
+              onContentChange={setEditContent}
+              colorIdx={editColorIdx}
+              onColorIdxChange={setEditColorIdx}
+              tags={editTags}
+              onTagsChange={setEditTags}
+              mood={editMood}
+              onMoodChange={setEditMood}
+              onSave={saveEdit}
+              saveLabel={T('reflSaveEdit')}
+              allTagOptions={visibleTagOptions}
+              allMoodOptions={visibleMoodOptions}
+              dynamicTagCounts={dynamicTagCounts}
+              onOpenTagManager={() => setManagerMode('tag')}
+              onOpenMoodManager={() => setManagerMode('mood')}
+            />
           </View>
+          {/* Item Manager Overlay */}
+          {managerMode && (
+            <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
+              <ItemManagerPanel {...getManagerProps(
+                store, 
+                managerMode, 
+                () => setManagerMode(null),
+                managerMode === 'tag' ? hiddenTags : hiddenMoods,
+                managerMode === 'tag' ? handleToggleHiddenTag : handleToggleHiddenMood,
+              )} />
+            </View>
+          )}
         </KeyboardAvoidingView>
       </Modal>
 

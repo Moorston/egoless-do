@@ -1,5 +1,6 @@
 // ─── Auth API client (shared across all platforms) ─────────────────
 import type { AuthUser } from './types';
+import type { SyncPushResult } from './sync/types';
 import { buildHeaders, fetchWithTimeout, handleJsonResponse } from './fetch';
 
 export interface AuthResponse {
@@ -107,13 +108,13 @@ export async function apiLogout(token: string, refreshToken: string): Promise<vo
 }
 
 // ── Sync: push local changes + pull server changes ───────────────
-export async function apiSyncPush(token: string, lastSyncAt: number, changes: any[]): Promise<{ changes: any[]; serverTime: number }> {
+export async function apiSyncPush(token: string, lastSyncAt: number, changes: any[]): Promise<SyncPushResult> {
   const res = await fetchWithTimeout(`${apiBase}/api/sync`, {
     method: 'POST',
     headers: buildHeaders(token),
     body: JSON.stringify({ lastSyncAt, changes }),
   });
-  return handleJsonResponse<{ changes: any[]; serverTime: number }>(res);
+  return handleJsonResponse<SyncPushResult>(res);
 }
 
 // ── Sync: full pull (all user data, used after login) ────────────
@@ -123,4 +124,13 @@ export async function apiSyncPull(token: string): Promise<{ data: Record<string,
     headers: buildHeaders(token),
   });
   return handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
+}
+
+// ── Sync: lightweight check for server-side changes ──────────────
+export async function apiSyncCheck(token: string, since: number): Promise<{ hasChanges: boolean; count: number }> {
+  const res = await fetchWithTimeout(`${apiBase}/api/sync/check?since=${since}`, {
+    method: 'GET',
+    headers: buildHeaders(token),
+  });
+  return handleJsonResponse<{ hasChanges: boolean; count: number }>(res);
 }

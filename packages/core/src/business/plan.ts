@@ -124,7 +124,7 @@ export function completePlan(plans: Plan[], planItems: PlanItem[], id: string): 
   const progress = computePlanProgress(plan, planItems);
   return {
     plans: plans.map(p => p.id === id ? { ...p, status: 'completed' as PlanStatus, progress, updatedAt: now } : p),
-    planItems: planItems.map(i => i.planId === id && (i.status === 'in_progress' || i.status === 'paused' || i.status === 'delayed')
+    planItems: planItems.map(i => i.planId === id && i.status !== 'completed' && i.status !== 'cancelled'
       ? { ...i, status: 'completed' as PlanItemStatus, updatedAt: now } : i),
   };
 }
@@ -135,7 +135,7 @@ export function cancelPlan(plans: Plan[], planItems: PlanItem[], id: string): { 
   if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return { plans, planItems };
   return {
     plans: plans.map(p => p.id === id ? { ...p, status: 'cancelled' as PlanStatus, updatedAt: now } : p),
-    planItems: planItems.map(i => i.planId === id && (i.status === 'in_progress' || i.status === 'paused' || i.status === 'delayed')
+    planItems: planItems.map(i => i.planId === id && i.status !== 'completed' && i.status !== 'cancelled'
       ? { ...i, status: 'cancelled' as PlanItemStatus, updatedAt: now } : i),
   };
 }
@@ -339,7 +339,7 @@ export function unlinkAllReflectionsFromPlan(
   const now = Date.now();
   return planItems.map(i =>
     i.planId === planId && i.reflectionId
-      ? { ...i, reflectionId: undefined, updatedAt: now }
+      ? { ...i, reflectionId: null as any, updatedAt: now }
       : i
   );
 }
@@ -518,7 +518,7 @@ export function refreshPlanItemStats(planItems: PlanItem[], checkins: PlanItemCh
 
 // ── DailyCustomTodo ─────────────────────────────────────────
 
-export function addDailyCustomTodo(todos: DailyCustomTodo[], planId: string, name: string, date: string): DailyCustomTodo[] {
+export function addDailyCustomTodo(todos: DailyCustomTodo[], planId: string, name: string, date: string, recurring?: boolean): DailyCustomTodo[] {
   const existingTodos = todos.filter(t => t.planId === planId && t.date === date && !t.deleted);
   const maxOrder = existingTodos.reduce((max, t) => Math.max(max, t.order), -1);
   const todo: DailyCustomTodo = {
@@ -528,6 +528,7 @@ export function addDailyCustomTodo(todos: DailyCustomTodo[], planId: string, nam
     name,
     done: false,
     order: maxOrder + 1,
+    recurring: recurring ?? false,
     updatedAt: Date.now(),
     deleted: false,
   };

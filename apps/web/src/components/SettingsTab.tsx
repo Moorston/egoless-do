@@ -8,7 +8,6 @@ import { Toggle, useTheme, useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
 import { ConfirmDialog } from './ManagerPanelShared';
-import type { SyncState } from '../db/syncService';
 import { BarChart3, ClipboardList, CalendarCheck, Utensils, Shield, HeartCrack, Heart, RefreshCw, Share2, PersonStanding, Trash2, LogOut, ChevronRight, Check, X, Bell, Clock, Globe, Palette, Scale, Cloud, CloudUpload, History, Info, Lock } from 'lucide-react';
 
 interface SettingsRow {
@@ -20,7 +19,7 @@ interface SettingsRow {
   last?: boolean;
 }
 
-export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: () => void; syncState?: SyncState & { triggerSync: () => Promise<void> } }) {
+export default function SettingsTab({ onOpenStats }: { onOpenStats?: () => void }) {
   const overlay = useOverlay();
   const store = useWebStore();
   const { TH, P } = useTheme();
@@ -58,14 +57,6 @@ export default function SettingsTab({ onOpenStats, syncState }: { onOpenStats?: 
     ]},
     { title: T('settingsHealthSection'), rows: [
       { label: T('settingsAppleHealth'), icon: <Heart size={18} />, sub: healthSync ? T('settingsConnected') : T('settingsNotEnabled'), right: <Toggle on={healthSync} onChange={() => setHealthSync(v => !v)} />, last: true },
-    ]},
-    { title: T('settingsSync'), rows: [
-      ...(syncState ? [
-        { label: T('settingsSyncStatus'), icon: <Cloud size={18} />, sub: syncState.online ? (syncState.status === 'syncing' ? T('settingsSyncing') : syncState.status === 'error' ? `错误: ${syncState.error}` : T('settingsConnected')) : T('settingsOffline'), right: <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: 4, background: syncState.online ? (syncState.status === 'error' ? '#EF4444' : '#10B981') : '#6B7280' }} /> },
-        { label: T('settingsPending'), icon: <CloudUpload size={18} />, right: <span style={{ color: TH.sub }}>{syncState.pendingCount} {T('settingsPendingUnit')}</span> },
-        { label: T('settingsLastSync'), icon: <History size={18} />, right: <span style={{ color: TH.sub }}>{syncState.lastSyncAt ? new Date(syncState.lastSyncAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : T('settingsNeverSync')}</span> },
-        { label: T('settingsManualSync'), icon: <RefreshCw size={18} />, right: <span style={{ color: P, cursor: 'pointer', fontSize: FONT_BODY }}>{syncState.status === 'syncing' ? T('settingsSyncing') : T('settingsSyncNow')}</span>, onClick: () => { if (syncState.status !== 'syncing') syncState.triggerSync(); }, last: true },
-      ] : []),
     ]},
     { title: T('settingsAbout'), rows: [
       { label: T('settingsShareFriend'), icon: <Share2 size={18} />, sub: T('settingsShareDesc'), right: <ChevronRight size={18} color={TH.sub} />, onClick: async () => {

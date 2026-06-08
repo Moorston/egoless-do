@@ -7,9 +7,10 @@ import type { FastingSession } from './fasting';
 import type { FoodEntry } from './food';
 import type { ExerciseEntry } from './exercise';
 import type { CheckinEntry, MedHistoryEntry, GraceHistoryEntry } from './checkin';
-import type { Plan, PlanItem, PlanItemCheckin } from './plan';
+import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from './plan';
 import type { RecycleBinItem } from './recycle';
 import type { ThoughtTrail } from './thought-trail';
+import type { CustomFoodPreset } from './food';
 
 export interface UserProfile {
   weight?: number;
@@ -18,6 +19,7 @@ export interface UserProfile {
   height?: number;
   waterMl?: number;
   waterGoal?: number;
+  weightUnit?: 'kg' | 'lb';
   updatedAt?: number;
 }
 
@@ -54,8 +56,17 @@ export interface AppState {
   plans: Plan[];
   planItems: PlanItem[];
   planItemCheckins: PlanItemCheckin[];
+  dailyCustomTodos: DailyCustomTodo[];
+  dailyTodoHistory: DailyTodoHistory[];
   recycleBin: RecycleBinItem[];
   graceHistory: GraceHistoryEntry[];
+  customTags: string[];
+  customMoods: string[];
+  allTagsOrder: string[];
+  allMoodsOrder: string[];
+  customFoodPresets: CustomFoodPreset[];
+  weightUnit: 'kg' | 'lb';
+  healthSyncEnabled: boolean;
   remindEnabled: boolean;
   remindTime: string;
 }

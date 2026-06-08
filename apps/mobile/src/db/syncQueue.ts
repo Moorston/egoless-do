@@ -19,14 +19,16 @@ export async function enqueueChange(
   payload: unknown,
 ): Promise<void> {
   const db = await openDatabase();
-  await db.runAsync(
-    'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
-    [entity, entityId],
-  );
-  await db.runAsync(
-    'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at) VALUES (?, ?, ?, ?, ?)',
-    [entity, entityId, operation, JSON.stringify(payload), Date.now()],
-  );
+  await db.withTransactionAsync(async () => {
+    await db.runAsync(
+      'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
+      [entity, entityId],
+    );
+    await db.runAsync(
+      'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at) VALUES (?, ?, ?, ?, ?)',
+      [entity, entityId, operation, JSON.stringify(payload), Date.now()],
+    );
+  });
 }
 
 /** Drain up to `limit` items from the queue, ordered by creation time. */
@@ -62,4 +64,12 @@ export async function getQueueCount(): Promise<number> {
 export async function clearQueue(): Promise<void> {
   const db = await openDatabase();
   await db.runAsync('DELETE FROM sync_queue');
+}
+
+/** Remove queue items older than maxAgeMs (default: 30 days). */
+export async function pruneStaleQueueItems(maxAgeMs = 30 * 24 * 60 * 60 * 1000): Promise<number> {
+  const db = await openDatabase();
+  const cutoff = Date.now() - maxAgeMs;
+  const result = await db.runAsync('DELETE FROM sync_queue WHERE created_at < ?', [cutoff]);
+  return result.changes;
 }
