@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Rect, Text as SvgText } from 'react-native-svg';
+import { COLORS } from '@egoless-do/core';
 
 export interface HeatmapCell {
   date: string;
   done: boolean;
+  grace: boolean;
   isToday: boolean;
 }
 
@@ -45,12 +47,16 @@ export default function HeatmapGrid({
             const x = labelW + wi * (cellSize + gap);
             const y = di * (cellSize + gap);
             const fill = cell.done ? activeColor : inactiveColor;
+            const hasBorder = cell.isToday || cell.grace;
+            const strokeColor = cell.isToday ? todayBorderColor : cell.grace ? COLORS.ORANGE : 'transparent';
+            const strokeWidth = cell.isToday ? 2 : cell.grace ? 1.5 : 0;
             return (
               <React.Fragment key={`${wi}-${di}`}>
                 <Rect x={x} y={y} width={cellSize} height={cellSize}
                   rx={6} ry={6} fill={fill}
-                  stroke={cell.isToday ? todayBorderColor : 'transparent'}
-                  strokeWidth={cell.isToday ? 2 : 0} />
+                  stroke={hasBorder ? strokeColor : 'transparent'}
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={cell.grace && !cell.isToday ? '4 2' : undefined} />
                 {/* Date number inside cell */}
                 <SvgText x={x + cellSize / 2} y={y + cellSize / 2 + 4}
                   fontSize={10} textAnchor="middle"

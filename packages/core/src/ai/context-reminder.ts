@@ -1,10 +1,10 @@
 // ─── Context-aware Reminder Service ────────────────────────────
-import type { MindReflection, Habit, Intent, CheckinEntry } from '../types';
+import type { MindReflection, Habit, CheckinEntry } from '../types';
 import { dateStr } from '../utils';
 
 export interface ContextReminder {
   id: string;
-  type: 'mood_pattern' | 'habit_risk' | 'intent_stuck' | 'streak_at_risk' | 'reflection_gap';
+  type: 'mood_pattern' | 'habit_risk' | 'streak_at_risk' | 'reflection_gap';
   title: string;
   message: string;
   priority: 'low' | 'medium' | 'high';
@@ -105,44 +105,6 @@ export function detectHabitRisks(habits: Habit[]): ContextReminder[] {
   return reminders;
 }
 
-// 检测意图卡住
-export function detectStuckIntents(intents: Intent[]): ContextReminder[] {
-  const reminders: ContextReminder[] = [];
-  const now = Date.now();
-
-  intents.filter(i => !i.deleted).forEach(intent => {
-    const daysSinceUpdate = Math.floor((now - intent.updatedAt) / (24 * 60 * 60 * 1000));
-
-    // 种子状态超过7天
-    if (intent.status === 'seed' && daysSinceUpdate >= 7) {
-      reminders.push({
-        id: `intent_stuck_${intent.id}`,
-        type: 'intent_stuck',
-        title: `意图「${intent.content.slice(0, 15)}...」待行动`,
-        message: `这个意图已经 ${daysSinceUpdate} 天没有进展了`,
-        priority: 'medium',
-        action: '查看详情',
-        createdAt: Date.now(),
-      });
-    }
-
-    // 活跃状态超过30天
-    if (intent.status === 'active' && daysSinceUpdate >= 30) {
-      reminders.push({
-        id: `intent_long_${intent.id}`,
-        type: 'intent_stuck',
-        title: `意图「${intent.content.slice(0, 15)}...」进行中`,
-        message: `这个意图已经活跃 ${daysSinceUpdate} 天了，检查一下进度`,
-        priority: 'low',
-        action: '查看详情',
-        createdAt: Date.now(),
-      });
-    }
-  });
-
-  return reminders;
-}
-
 // 检测打卡连续性风险
 export function detectStreakRisks(checkinHistory: CheckinEntry[]): ContextReminder[] {
   const reminders: ContextReminder[] = [];
@@ -216,13 +178,11 @@ export function detectReflectionGaps(reflections: MindReflection[]): ContextRemi
 export function getAllContextReminders(
   reflections: MindReflection[],
   habits: Habit[],
-  intents: Intent[],
   checkinHistory: CheckinEntry[]
 ): ContextReminder[] {
   const reminders: ContextReminder[] = [
     ...detectMoodPatterns(reflections),
     ...detectHabitRisks(habits),
-    ...detectStuckIntents(intents),
     ...detectStreakRisks(checkinHistory),
     ...detectReflectionGaps(reflections),
   ];

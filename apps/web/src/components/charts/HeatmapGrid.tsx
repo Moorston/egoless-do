@@ -1,11 +1,12 @@
 'use client';
 
 import { useTheme } from '../helpers';
-import { FONT_CHART_AXIS } from '@egoless-do/core';
+import { FONT_CHART_AXIS, COLORS } from '@egoless-do/core';
 
 export interface HeatmapCell {
   date: string;
   done: boolean;
+  grace: boolean;
   isToday: boolean;
 }
 
@@ -51,19 +52,24 @@ export default function HeatmapGrid({
               {wi < grid.length - 1 ? `W${wi + 1}` : '本周'}
             </div>
             {/* Cells */}
-            {grid[wi].map((cell, di) => (
-              <div key={`${wi}-${di}`} style={{
-                width: cellSize, height: cellSize, borderRadius: 6,
-                background: cell.done ? activeColor : inactiveColor,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: FONT_CHART_AXIS, color: cell.done ? '#fff' : 'rgba(128,128,128,.4)',
-                border: cell.isToday ? `2px solid ${TH.primary}` : '2px solid transparent',
-                fontWeight: cell.isToday ? 700 : 400,
-                transition: 'background .2s',
-              }}>
-                {parseInt(cell.date.slice(-2))}
-              </div>
-            ))}
+            {grid[wi].map((cell, di) => {
+              const borderStyle = cell.isToday ? `2px solid ${TH.primary}`
+                : cell.grace ? `1.5px dashed ${COLORS.ORANGE}`
+                : '2px solid transparent';
+              return (
+                <div key={`${wi}-${di}`} style={{
+                  width: cellSize, height: cellSize, borderRadius: 6,
+                  background: cell.done ? activeColor : inactiveColor,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: FONT_CHART_AXIS, color: cell.done ? '#fff' : 'rgba(128,128,128,.4)',
+                  border: borderStyle,
+                  fontWeight: cell.isToday ? 700 : 400,
+                  transition: 'background .2s',
+                }}>
+                  {parseInt(cell.date.slice(-2))}
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>

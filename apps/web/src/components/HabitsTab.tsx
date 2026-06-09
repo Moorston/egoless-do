@@ -228,7 +228,7 @@ export default function HabitsTab() {
                 <button onClick={() => { store.changeHabitStatus(h.id, 'inProgress'); setActionMenuId(null); }}
                   style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: COLORS.GREEN, color: '#fff', fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>{T('habitResumeBtn')}</button>
               )}
-              {(h.status === 'inProgress' || h.status === 'paused') && (
+              {h.status === 'paused' && (
                 <button onClick={() => { setShowStatus({ id: h.id, ns: 'abandoned' }); setReason(''); setActionMenuId(null); }}
                   style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: 'rgba(239,68,68,.15)', color: COLORS.RED, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>{T('habitAbandonBtn')}</button>
               )}

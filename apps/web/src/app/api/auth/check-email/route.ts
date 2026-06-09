@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPb, escapeFilter } from '../../_pb';
+import { getAdminPb, escapeFilter } from '../../_pb';
 import { getClientIp, checkEmailRateLimit } from '../../_rateLimit';
 
 export async function POST(req: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ available: false, error: '请输入有效的邮箱地址' });
     }
 
-    const pb = getPb();
+    const pb = await getAdminPb();
     try {
       await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
       return NextResponse.json({ available: false });

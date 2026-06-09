@@ -1,5 +1,5 @@
 // ─── Personalized Suggestion Engine ─────────────────────────────
-import type { MindReflection, Habit, Intent, Plan, CheckinEntry } from '../types';
+import type { MindReflection, Habit, Plan, CheckinEntry } from '../types';
 import type { ThoughtPattern } from './thought-patterns';
 import type { RiskWarning } from './risk-warning';
 
@@ -114,38 +114,6 @@ export function generateHabitSuggestions(
           createdAt: Date.now(),
         });
       }
-    }
-  });
-
-  return suggestions;
-}
-
-// 基于意图生成建议
-export function generateIntentSuggestions(
-  intents: Intent[],
-  reflections: MindReflection[]
-): PersonalizedSuggestion[] {
-  const suggestions: PersonalizedSuggestion[] = [];
-
-  // 种子状态的意图
-  const seedIntents = intents.filter(i => i.status === 'seed' && !i.deleted);
-  
-  seedIntents.forEach(intent => {
-    const daysSinceCreation = Math.floor(
-      (Date.now() - intent.createdAt) / (24 * 60 * 60 * 1000)
-    );
-
-    if (daysSinceCreation >= 3) {
-      suggestions.push({
-        id: `intent_start_${intent.id}`,
-        type: 'action',
-        title: `开始「${intent.content.slice(0, 10)}...」`,
-        description: '这个意图已经酝酿几天了，是时候迈出第一步',
-        reason: '行动比完美的计划更重要',
-        priority: 'medium',
-        relatedIds: [intent.id],
-        createdAt: Date.now(),
-      });
     }
   });
 
@@ -267,7 +235,6 @@ export function generateTimeBasedSuggestions(
 export function getAllPersonalizedSuggestions(
   reflections: MindReflection[],
   habits: Habit[],
-  intents: Intent[],
   plans: Plan[],
   checkinHistory: CheckinEntry[],
   patterns: ThoughtPattern[],
@@ -276,13 +243,12 @@ export function getAllPersonalizedSuggestions(
   const suggestions: PersonalizedSuggestion[] = [
     ...generateMoodSuggestions(reflections, patterns),
     ...generateHabitSuggestions(habits, reflections),
-    ...generateIntentSuggestions(intents, reflections),
     ...generateRiskBasedSuggestions(risks),
     ...generateTimeBasedSuggestions(reflections, checkinHistory),
   ];
 
   // 去重
-  const uniqueSuggestions = suggestions.filter((s, i, arr) => 
+  const uniqueSuggestions = suggestions.filter((s, i, arr) =>
     arr.findIndex(s2 => s2.id === s.id) === i
   );
 

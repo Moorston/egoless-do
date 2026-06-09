@@ -78,10 +78,12 @@ export function submitCheckinEntry(
   note: string,
   dateOverride?: string,
   weight?: number,
+  grace?: boolean,
 ): { record: CheckinEntry; history: CheckinEntry[]; streak: number } {
   const today = dateOverride ?? dateStr();
   const tempRecord: CheckinEntry = {
     date: today, done, note, streak: 0, weight,
+    grace: grace ?? false,
     timestamp: Date.now(), updatedAt: Date.now(), deleted: false,
   };
   const newHistory = [tempRecord, ...history.filter(c => c.date !== today)];

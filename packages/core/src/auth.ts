@@ -57,7 +57,7 @@ export async function apiCheckEmail(email: string): Promise<{ available: boolean
     headers: buildHeaders(),
     body: JSON.stringify({ email }),
   });
-  return res.json();
+  return handleJsonResponse<{ available: boolean; error?: string }>(res);
 }
 
 // ── Login ─────────────────────────────────────────────────────────

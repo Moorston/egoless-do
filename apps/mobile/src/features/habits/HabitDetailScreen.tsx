@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { ArrowLeft, Link, Target, Calendar, TrendingUp, CheckCircle } from 'lucide-react-native';
+import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth } from '@egoless-do/core';
@@ -37,13 +37,6 @@ export default function HabitDetailScreen() {
     ).slice(0, 5);
   }, [habit, store.reflections]);
 
-  // Related intents
-  const relatedIntents = useMemo(() => {
-    if (!habit) return [];
-    return (store.intents ?? []).filter(i =>
-      !i.deleted && i.linkedHabitIds.includes(habit.id)
-    );
-  }, [habit, store.intents]);
 
   // Calendar data
   const today = new Date();
@@ -80,13 +73,11 @@ export default function HabitDetailScreen() {
         contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Status Badge */}
-        <View style={[styles.statusBadge, { backgroundColor: `${statusConfig.color}20` }]}>
-          <Text style={[styles.statusText, { color: statusConfig.color }]}>{statusConfig.label}</Text>
-        </View>
-
         {/* Stats */}
         <View style={[styles.statsContainer, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <View style={[styles.statusBadge, { backgroundColor: `${statusConfig.color}20`, alignSelf: 'flex-start', marginBottom: 12 }]}>
+            <Text style={[styles.statusText, { color: statusConfig.color }]}>{statusConfig.label}</Text>
+          </View>
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: P }]}>{habit.streak}</Text>
@@ -127,7 +118,7 @@ export default function HabitDetailScreen() {
           )}
           {habit.insight && (
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: TH.sub }]}>洞察</Text>
+              <Text style={[styles.infoLabel, { color: TH.sub }]}>我的愿景</Text>
               <Text style={[styles.infoValue, { color: TH.text }]}>{habit.insight}</Text>
             </View>
           )}
@@ -204,26 +195,6 @@ export default function HabitDetailScreen() {
           </View>
         )}
 
-        {/* Related Intents */}
-        {relatedIntents.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: TH.text }]}>相关意图</Text>
-            {relatedIntents.map(i => (
-              <TouchableOpacity
-                key={i.id}
-                onPress={() => (nav as any).navigate('IntentDetail', { intentId: i.id })}
-                style={[styles.relatedItem, { backgroundColor: TH.card, borderColor: TH.border }]}
-              >
-                <View style={styles.intentHeader}>
-                  <Target size={16} color={P} />
-                  <Text style={[styles.intentContent, { color: TH.text }]}>{i.content}</Text>
-                </View>
-                <Text style={[styles.intentWhy, { color: TH.sub }]}>{i.why}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
         {/* Relation Map Entry */}
         <TouchableOpacity
           onPress={() => (nav as any).navigate('RelationMap', { context: { type: 'habit', id: habitId } })}
@@ -234,7 +205,7 @@ export default function HabitDetailScreen() {
           </View>
           <View style={styles.relationContent}>
             <Text style={[styles.relationTitle, { color: TH.text }]}>关系全景图</Text>
-            <Text style={[styles.relationDesc, { color: TH.sub }]}>查看感念、意图、计划的关联关系</Text>
+            <Text style={[styles.relationDesc, { color: TH.sub }]}>查看感念、计划的关联关系</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>
@@ -423,20 +394,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   relatedDate: {
-    fontSize: FONT_TINY,
-  },
-  intentHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 4,
-  },
-  intentContent: {
-    fontSize: FONT_SMALL,
-    fontWeight: '500',
-    flex: 1,
-  },
-  intentWhy: {
     fontSize: FONT_TINY,
   },
   relationEntry: {

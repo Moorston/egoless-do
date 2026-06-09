@@ -7,11 +7,10 @@ export {
 } from './cloud-providers';
 
 // Context reminder
-export { 
+export {
   getAllContextReminders,
   detectMoodPatterns,
   detectHabitRisks,
-  detectStuckIntents,
   detectStreakRisks,
   detectReflectionGaps,
 } from './context-reminder';
@@ -22,7 +21,6 @@ export {
   getAllRiskWarnings,
   detectHabitAbandonRisk,
   detectPlanDelayRisk,
-  detectIntentStaleRisk,
   detectStreakBreakRisk,
   detectMoodDeclineRisk,
 } from './risk-warning';
@@ -44,7 +42,6 @@ export {
   getAllPersonalizedSuggestions,
   generateMoodSuggestions,
   generateHabitSuggestions,
-  generateIntentSuggestions,
   generateRiskBasedSuggestions,
   generateTimeBasedSuggestions,
 } from './personalized-suggestions';
@@ -64,7 +61,7 @@ export type {
   AIFeatureType, AIMode,
   AIResult, AIConfig, ModelConfig, ProviderTemplate,
   TagSuggestion, MoodDetection, TrailInsight,
-  IntentExtraction, ReviewGuide, GenerateOptions, UsageStats,
+  ReviewGuide, GenerateOptions, UsageStats,
 } from './types';
 
 export { PROVIDER_TEMPLATES } from './types';

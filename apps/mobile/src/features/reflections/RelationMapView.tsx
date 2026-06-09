@@ -10,7 +10,7 @@ import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Node types
-type NodeType = 'reflection' | 'intent' | 'plan' | 'habit';
+type NodeType = 'reflection' | 'plan' | 'habit';
 
 interface RelationNode {
   id: string;
@@ -35,21 +35,18 @@ interface RelationEdge {
 // Color map for node types
 const NODE_COLORS: Record<NodeType, string> = {
   reflection: '#3B82F6',
-  intent: '#8B5CF6',
   plan: '#10B981',
   habit: '#F59E0B',
 };
 
 const NODE_LABELS: Record<NodeType, string> = {
   reflection: '感念',
-  intent: '意图',
   plan: '计划',
   habit: '习惯',
 };
 
 const NODE_ICONS: Record<NodeType, string> = {
   reflection: '💭',
-  intent: '💡',
   plan: '📋',
   habit: '🌱',
 };
@@ -121,37 +118,6 @@ export default function RelationMapView() {
           const planNode = addNode(plan.id, 'plan', plan.name, plan, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
           contextNode = planNode;
 
-          // Find related intents
-          const relatedIntents = (store.intents ?? []).filter(i => 
-            !i.deleted && i.linkedPlanIds.includes(plan.id)
-          );
-          relatedIntents.forEach(intent => {
-            const intentNode = addNode(intent.id, 'intent', intent.content, intent);
-            addEdge(intent.id, plan.id, 'execute', '执行');
-          });
-
-          // Find related reflections (from intents)
-          relatedIntents.forEach(intent => {
-            intent.linkedReflectionIds.forEach(refId => {
-              const reflection = (store.reflections ?? []).find(r => r.id === refId);
-              if (reflection && !reflection.deleted) {
-                addNode(reflection.id, 'reflection', reflection.content, reflection);
-                addEdge(reflection.id, intent.id, 'trigger', '触发');
-              }
-            });
-          });
-
-          // Find related habits (from intents)
-          relatedIntents.forEach(intent => {
-            intent.linkedHabitIds.forEach(habitId => {
-              const habit = (store.habits ?? []).find(h => h.id === habitId);
-              if (habit && !habit.deleted) {
-                addNode(habit.id, 'habit', habit.name, habit);
-                addEdge(intent.id, habit.id, 'execute', '执行');
-              }
-            });
-          });
-
           // Find reflections linked to plan items
           const planItems = (store.planItems ?? []).filter(pi => pi.planId === plan.id && !pi.deleted);
           planItems.forEach(item => {
@@ -160,6 +126,17 @@ export default function RelationMapView() {
               if (reflection && !reflection.deleted) {
                 addNode(reflection.id, 'reflection', reflection.content, reflection);
                 addEdge(reflection.id, plan.id, 'related', '相关');
+              }
+            }
+          });
+
+          // Find habits linked to plan items
+          planItems.forEach(item => {
+            if (item.linkConfig?.habitId) {
+              const habit = (store.habits ?? []).find(h => h.id === item.linkConfig!.habitId);
+              if (habit && !habit.deleted) {
+                addNode(habit.id, 'habit', habit.name, habit);
+                addEdge(habit.id, plan.id, 'linked', '关联');
               }
             }
           });
@@ -174,49 +151,26 @@ export default function RelationMapView() {
           const habitNode = addNode(habit.id, 'habit', habit.name, habit, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
           contextNode = habitNode;
 
-          // Find related intents
-          const relatedIntents = (store.intents ?? []).filter(i => 
-            !i.deleted && i.linkedHabitIds.includes(habit.id)
-          );
-          relatedIntents.forEach(intent => {
-            const intentNode = addNode(intent.id, 'intent', intent.content, intent);
-            addEdge(intent.id, habit.id, 'execute', '执行');
-          });
-
-          // Find related reflections (from intents or tags)
-          const intentReflectionIds = new Set(relatedIntents.flatMap(i => i.linkedReflectionIds));
-          const tagReflections = (store.reflections ?? []).filter(r => 
+          // Find related reflections (from tags)
+          const tagReflections = (store.reflections ?? []).filter(r =>
             !r.deleted && r.tags.some(t => t.includes(habit.name))
           );
 
-          [...intentReflectionIds].forEach(refId => {
-            const reflection = (store.reflections ?? []).find(r => r.id === refId);
-            if (reflection && !reflection.deleted) {
-              addNode(reflection.id, 'reflection', reflection.content, reflection);
-              // Find which intent links to this reflection
-              const linkingIntent = relatedIntents.find(i => i.linkedReflectionIds.includes(refId));
-              if (linkingIntent) {
-                addEdge(reflection.id, linkingIntent.id, 'trigger', '触发');
-              }
-            }
-          });
-
           tagReflections.forEach(reflection => {
-            if (!nodeMap.has(reflection.id)) {
-              addNode(reflection.id, 'reflection', reflection.content, reflection);
-              addEdge(reflection.id, habit.id, 'related', '相关');
-            }
+            addNode(reflection.id, 'reflection', reflection.content, reflection);
+            addEdge(reflection.id, habit.id, 'related', '相关');
           });
 
-          // Find related plans (from intents)
-          relatedIntents.forEach(intent => {
-            intent.linkedPlanIds.forEach(planId => {
-              const plan = (store.plans ?? []).find(p => p.id === planId);
-              if (plan && !plan.deleted) {
-                addNode(plan.id, 'plan', plan.name, plan);
-                addEdge(intent.id, plan.id, 'execute', '执行');
-              }
-            });
+          // Find plans that link to this habit
+          const linkedPlanItems = (store.planItems ?? []).filter(i =>
+            !i.deleted && i.linkConfig?.habitId === habit.id
+          );
+          linkedPlanItems.forEach(item => {
+            const plan = (store.plans ?? []).find(p => p.id === item.planId);
+            if (plan && !plan.deleted) {
+              addNode(plan.id, 'plan', plan.name, plan);
+              addEdge(plan.id, habit.id, 'linked', '关联');
+            }
           });
           break;
         }
@@ -229,36 +183,8 @@ export default function RelationMapView() {
           const reflectionNode = addNode(reflection.id, 'reflection', reflection.content, reflection, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
           contextNode = reflectionNode;
 
-          // Find related intents
-          const relatedIntents = (store.intents ?? []).filter(i => 
-            !i.deleted && i.linkedReflectionIds.includes(reflection.id)
-          );
-          relatedIntents.forEach(intent => {
-            const intentNode = addNode(intent.id, 'intent', intent.content, intent);
-            addEdge(reflection.id, intent.id, 'trigger', '触发');
-          });
-
-          // Find related plans and habits (from intents)
-          relatedIntents.forEach(intent => {
-            intent.linkedPlanIds.forEach(planId => {
-              const plan = (store.plans ?? []).find(p => p.id === planId);
-              if (plan && !plan.deleted) {
-                addNode(plan.id, 'plan', plan.name, plan);
-                addEdge(intent.id, plan.id, 'execute', '执行');
-              }
-            });
-
-            intent.linkedHabitIds.forEach(habitId => {
-              const habit = (store.habits ?? []).find(h => h.id === habitId);
-              if (habit && !habit.deleted) {
-                addNode(habit.id, 'habit', habit.name, habit);
-                addEdge(intent.id, habit.id, 'execute', '执行');
-              }
-            });
-          });
-
           // Find related reflections (from links)
-          const relatedLinks = (store.reflectionLinks ?? []).filter(l => 
+          const relatedLinks = (store.reflectionLinks ?? []).filter(l =>
             !l.deleted && (l.fromId === reflection.id || l.toId === reflection.id)
           );
           relatedLinks.forEach(link => {
@@ -271,9 +197,9 @@ export default function RelationMapView() {
           });
 
           // Find same-tag reflections
-          const sameTagReflections = (store.reflections ?? []).filter(r => 
-            !r.deleted && 
-            r.id !== reflection.id && 
+          const sameTagReflections = (store.reflections ?? []).filter(r =>
+            !r.deleted &&
+            r.id !== reflection.id &&
             r.tags.some(t => reflection.tags.includes(t))
           ).slice(0, 3); // Limit to 3
 
@@ -283,6 +209,18 @@ export default function RelationMapView() {
               addEdge(reflection.id, r.id, 'same_tag', '同标签');
             }
           });
+
+          // Find linked plan item
+          if (reflection.linkedPlanItemId) {
+            const planItem = (store.planItems ?? []).find(i => i.id === reflection.linkedPlanItemId);
+            if (planItem && !planItem.deleted) {
+              const plan = (store.plans ?? []).find(p => p.id === planItem.planId);
+              if (plan && !plan.deleted) {
+                addNode(plan.id, 'plan', plan.name, plan);
+                addEdge(reflection.id, plan.id, 'related', '相关');
+              }
+            }
+          }
           break;
         }
       }
@@ -363,9 +301,6 @@ export default function RelationMapView() {
   // Navigate to detail
   const handleNavigateToDetail = useCallback((node: RelationNode) => {
     switch (node.type) {
-      case 'intent':
-        (nav as any).navigate('IntentDetail', { intentId: node.id });
-        break;
       case 'plan':
         (nav as any).navigate('PlanDetail', { planId: node.id });
         break;
@@ -511,10 +446,6 @@ export default function RelationMapView() {
           <Text style={[styles.statLabel, { color: TH.sub }]}>感念</Text>
         </View>
         <View style={styles.statItem}>
-          <Text style={[styles.statNumber, { color: P }]}>{nodes.filter(n => n.type === 'intent').length}</Text>
-          <Text style={[styles.statLabel, { color: TH.sub }]}>意图</Text>
-        </View>
-        <View style={styles.statItem}>
           <Text style={[styles.statNumber, { color: P }]}>{nodes.filter(n => n.type === 'plan').length}</Text>
           <Text style={[styles.statLabel, { color: TH.sub }]}>计划</Text>
         </View>
@@ -552,38 +483,33 @@ function generateInsights(
 ): string[] {
   const insights: string[] = [];
 
-  // Count by type
-  const typeCounts = new Map<NodeType, number>();
-  nodes.forEach(n => {
-    typeCounts.set(n.type, (typeCounts.get(n.type) ?? 0) + 1);
-  });
-
-  // Find reflections that triggered intents
-  const triggerEdges = edges.filter(e => e.type === 'trigger');
-  if (triggerEdges.length > 0) {
-    insights.push(`${triggerEdges.length} 条感念触发了意图`);
-  }
-
-  // Find intents with linked actions
-  const executeEdges = edges.filter(e => e.type === 'execute');
-  if (executeEdges.length > 0) {
-    insights.push(`${executeEdges.length} 个意图关联了行动`);
-  }
-
   // Context-specific insights
   if (contextType === 'plan') {
-    const planNodes = nodes.filter(n => n.type === 'plan');
     const reflectionNodes = nodes.filter(n => n.type === 'reflection');
     if (reflectionNodes.length > 0) {
       insights.push(`关联了 ${reflectionNodes.length} 条感念`);
     }
+    const habitNodes = nodes.filter(n => n.type === 'habit');
+    if (habitNodes.length > 0) {
+      insights.push(`关联了 ${habitNodes.length} 个习惯`);
+    }
   }
 
   if (contextType === 'habit') {
-    const habitNodes = nodes.filter(n => n.type === 'habit');
-    const intentNodes = nodes.filter(n => n.type === 'intent');
-    if (intentNodes.length > 0) {
-      insights.push(`有 ${intentNodes.length} 个相关意图`);
+    const reflectionNodes = nodes.filter(n => n.type === 'reflection');
+    if (reflectionNodes.length > 0) {
+      insights.push(`有 ${reflectionNodes.length} 条相关感念`);
+    }
+    const planNodes = nodes.filter(n => n.type === 'plan');
+    if (planNodes.length > 0) {
+      insights.push(`关联了 ${planNodes.length} 个计划`);
+    }
+  }
+
+  if (contextType === 'reflection') {
+    const linkEdges = edges.filter(e => e.type === 'same_tag');
+    if (linkEdges.length > 0) {
+      insights.push(`有 ${linkEdges.length} 条同标签感念`);
     }
   }
 

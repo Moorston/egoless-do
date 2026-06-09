@@ -265,7 +265,7 @@ export const zh: I18nKeys = {
   planItemContent:'任务链接', planItemLink:'联动模块', planItemTarget:'任务指标',
   planPriority:'优先级', planPriorityHigh:'高',
   planPriorityMedium:'中', planPriorityLow:'低',
-  planSave:'保存计划', planCreate:'创建计划', planEditTitle:'编辑计划',
+  planSave:'保存计划', planCreate:'创建计划', planEditTitle:'编辑计划', planDateRangePlaceholder:'选择计划日期范围',
   planTodoList:'每日待办', planTodoDate:'今日待办', planDetail:'计划详情',
   planLinkManual:'手动', planLinkCheckin:'今日打卡', planLinkFasting:'禁食',
   planLinkMeditation:'冥想', planLinkExercise:'锻炼', planLinkHabit:'习惯', planLinkReflection:'感念',
@@ -277,10 +277,24 @@ export const zh: I18nKeys = {
   planItemTimeError:'任务时间须在计划时间范围内', planItemTimeOrderError:'结束日期须晚于开始日期',
   planItemDescRequired:'任务描述为必填项', planItemTargetRequired:'任务指标为必填项',
   planTimeError:'结束日期须晚于开始日期', planNameRequired:'请输入计划名称',
-  planGoalRequired:'请输入计划目标', planNoItems:'暂无任务', planAddItemHint:'+ 添加任务',
+  planGoalRequired:'请输入计划目标', planNoItems:'暂无任务', planNoHistory:'暂无历史计划', planNoTodayTodos:'今日无待办项目', planAddItemHint:'+ 添加任务',
+  planShowHeatmap:'查看打卡记录', planHideHeatmap:'收起打卡记录',
   planDeleteItemConfirm:'确定删除此任务吗？',
   planDeleteConfirm:'确定删除此计划吗？删除后将进入回收箱。',
   planCompleteConfirm:'确定完成此计划吗？',
+  planRelationMap:'关系全景图', planRelationMapDesc:'查看感念、习惯的关联关系',
+  planLinkedContent:'关联内容', planRelatedReflections:'相关感念',
+  planRelatedTrails:'相关脉络', planTrailReflectionCount:'条感念',
+  planCannotOperate:'无法执行操作', planUnlinkAndContinue:'批量解绑并继续',
+  planCannotOperateDetail:'该计划中有 {count} 个任务关联了感念，无法执行此操作。\n\n是否批量解绑关联的感念任务？',
+  freqDaily:'打卡频率', freqInterval:'间隔', freqWeekly:'每周', freqWeeklyFixed:'每周固定', freqMonthly:'每月', freqMonthlyFixed:'每月固定',
+  freqEveryNDays:'每 {n} 天', freqNTimesPerWeek:'每周 {n} 次', freqNTimesPerMonth:'每月 {n} 次',
+  freqSelectDays:'选择星期', freqSelectDates:'选择日期',
+  freqSummaryDaily:'', freqSummaryInterval:'每 {n} 天',
+  freqSummaryWeekly:'每周 {n} 次', freqSummaryWeeklyFixed:'{days}',
+  freqSummaryMonthly:'每月 {n} 次', freqSummaryMonthlyFixed:'每月 {dates} 日',
+  freqThisWeek:'本周', freqThisMonth:'本月',
+  freqCannotEdit:'进行中任务不可编辑，如需修改请删除重建',
 
   // Global
   globalPulse:'全球脉动', globalLeaderboard:'打卡排行榜',
@@ -299,6 +313,9 @@ export const zh: I18nKeys = {
   graceUsedCount:'已使用宽限期', graceUsedTimes:'次',
   graceStatsTitle:'宽限期使用', graceAlreadyDone:'昨天已打卡，无需补卡',
   graceNoNeed:'无需补卡', graceHistory:'补卡记录', graceHistoryEmpty:'暂无补卡记录',
+  graceCheckinTitle:'宽限期补卡', graceCheckinHint:'为昨天完成打卡，标记为补卡天', graceCheckinSubmit:'提交补卡',
+  graceQuotaUsed:'本月已用 {used}/{total} 次', graceQuotaExhausted:'本月宽限次数已用完', graceQuotaReset:'下月重置',
+  graceStreakPending:'连胜待定 · 补卡保持连胜', graceSettingTitle:'每月宽限次数', graceSettingHint:'设为 0 可完全禁用宽限期',
 
   // Thought Trail
   mindTrail:'思维脉络', thoughtTrail:'思路脉络', tagTrail:'标签脉络',
@@ -364,7 +381,7 @@ export const zh: I18nKeys = {
   // Plan detail
   planNotFound:'计划不存在', heatmapLess:'少', heatmapMore:'多', month:'月',
   planTodoToday:'今日待办', planTodoHistory:'待办历史', planTodoDone:'已完成', planTodoTotal:'总任务', planAutoChecked:'联动打卡',
-  planDailyCustomTodos:'每日自定义待办', planAddCustomTodoPlaceholder:'添加今日待办项...', planNoCustomTodos:'暂无自定义待办',
+  planDailyCustomTodos:'每日自定义待办', planAddCustomTodoPlaceholder:'添加今日待办项...', planNoCustomTodos:'暂无自定义待办', planRecurring:'循环',
   planDeleteCustomTodo:'删除待办', planDeleteCustomTodoConfirm:'确定要删除这个待办项吗？',
 
   // Errors

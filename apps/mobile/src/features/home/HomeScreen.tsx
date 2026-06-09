@@ -7,7 +7,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
-import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate } from '@egoless-do/core';
+import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../components/UI';
 import AddFoodModal from '../../components/AddFoodModal';
@@ -79,11 +79,11 @@ export default function HomeScreen() {
 
   // ── Plan items ──
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
+  const planCheckins = store.planItemCheckins ?? [];
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayItems(store.planItems ?? [], activePlan, viewDate);
-  }, [store.planItems, activePlan, viewDate]);
-  const planCheckins = store.planItemCheckins ?? [];
+    return getTodayItems(store.planItems ?? [], activePlan, viewDate, planCheckins);
+  }, [store.planItems, activePlan, viewDate, planCheckins]);
   const dailyCustomTodos = useMemo(() => {
     if (!activePlan) return [];
     return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, viewDate);
@@ -389,6 +389,9 @@ export default function HomeScreen() {
   const yStr = yesterday();
   const yesterdayRecord = (store.checkinHistory ?? []).find((h: CheckinEntry) => h.date === yStr);
   const showGrace = isToday && yesterdayRecord?.done !== true;
+  const currentMonth = dateStr().slice(0, 7);
+  const graceQuota = store.userProfile?.graceMonthlyQuota ?? 2;
+  const graceAvailable = isGraceAvailable(store.graceHistory ?? [], graceQuota, currentMonth, yStr);
 
   // ── Delayed plan reminder ──
   const [showDelayedReminder, setShowDelayedReminder] = useState(true);
@@ -505,7 +508,14 @@ export default function HomeScreen() {
                     <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('streak')}</Text>
                     <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? store.streak : viewDateStats.streak}</Text>
                     <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
-                    <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+                    {isToday && showGrace && graceAvailable ? (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 4 }}>
+                        <Shield size={10} color="rgba(255,255,255,.7)" />
+                        <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: 9 }}>{T('graceStreakPending')}</Text>
+                      </View>
+                    ) : (
+                      <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+                    )}
                   </TouchableOpacity>
                 </View>
               </LinearGradient>

@@ -322,7 +322,6 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
         tags: safeJson(r.tags), mood: r.mood ?? null,
         card_theme: r.cardTheme ?? r.card_theme ?? null,
         link: r.link ?? null,
-        linked_habit_id: r.linkedHabitId ?? r.linked_habit_id ?? null,
         linked_plan_id: r.linkedPlanItemId ?? r.linked_plan_id ?? null,
         is_pinned: (r.isPinned ?? r.is_pinned) ? 1 : 0,
         is_published: (r.isPublished ?? r.is_published) ? 1 : 0,
@@ -394,6 +393,7 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       };
       // Only include reflection_id when server sends it, to preserve local value
       if (r.reflectionId !== undefined) row.reflection_id = r.reflectionId;
+      row.frequency = r.frequency ? safeJson(r.frequency) : null;
       return row;
     }
     case 'planItemCheckin':
@@ -424,6 +424,8 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       return {
         id: r.id, name: r.name, description: r.description ?? '',
         reflection_ids: safeJson(r.reflectionIds),
+        source: r.source ?? 'manual',
+        insight_summary: r.insightSummary ?? null,
         created_at: r.createdAt ?? null,
         updated_at: r.updatedAt ?? null, deleted: 0,
       };

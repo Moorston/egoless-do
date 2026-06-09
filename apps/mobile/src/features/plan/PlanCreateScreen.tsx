@@ -4,12 +4,13 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { THEMES, COLORS, canEditPlan, dateStr, validatePlanForm, createNewItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
-import type { ItemForm } from '@egoless-do/core';
-import { LINK_OPTIONS, PRIORITY_OPTIONS } from '@egoless-do/core';
+import { COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
+import type { ItemForm, CheckinFrequency } from '@egoless-do/core';
+import { LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 import { Card, useTheme, useT, PrimaryButton, OutlineButton, ThemedInput } from '../../components/UI';
 import DatePickerModal from '../../components/DatePickerModal';
 import DateRangePickerModal from '../../components/DateRangePickerModal';
@@ -21,11 +22,11 @@ export default function PlanCreateScreen() {
   const P = TH.primary;
   const store = useAppStore();
   const nav = useRootNavigation();
-  const route = useRoute<any>();
+  const route = useRoute<RouteProp<RootStackParamList, 'PlanCreate'>>();
   const planId = route.params?.planId as string | undefined;
 
-  const existingPlan = planId ? (store.plans ?? []).find(p => p.id === planId) : null;
-  const existingItems = planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [];
+  const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => p.id === planId) : null, [store.plans, planId]);
+  const existingItems = useMemo(() => planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [], [store.planItems, planId]);
 
   const [name, setName] = useState(existingPlan?.name ?? '');
   const [goal, setGoal] = useState(existingPlan?.goal ?? '');
@@ -37,6 +38,7 @@ export default function PlanCreateScreen() {
       id: i.id, name: i.name, description: i.description,
       startDate: i.startDate, endDate: i.endDate, contentUrl: i.contentUrl,
       link: i.link, priority: i.priority ?? 'medium', targetMetric: i.targetMetric ?? '', linkConfig: i.linkConfig,
+      frequency: i.frequency,
     }))
   );
   const [expandedItems, setExpandedItems] = useState<Set<string>>(() => new Set(existingItems.map(i => i.id)));
@@ -68,11 +70,9 @@ export default function PlanCreateScreen() {
 
   const handleSave = () => {
     if (!validate()) return;
-    // Check if there's already an active plan (not_started, in_progress, paused)
+    // Check if there's already an active plan
     if (!isEdit) {
-      const activePlan = (store.plans ?? []).find(p =>
-        !p.deleted && (p.status === 'not_started' || p.status === 'in_progress' || p.status === 'paused')
-      );
+      const activePlan = (store.plans ?? []).find(p => !p.deleted && isPlanActive(p.status));
       if (activePlan) {
         Alert.alert(T('planActiveExists'));
         return;
@@ -92,6 +92,7 @@ export default function PlanCreateScreen() {
             name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+            frequency: item.frequency,
             order: idx,
           });
         } else {
@@ -99,6 +100,7 @@ export default function PlanCreateScreen() {
             planId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+            frequency: item.frequency,
             order: idx,
           });
         }
@@ -111,6 +113,7 @@ export default function PlanCreateScreen() {
             planId: newPlanId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+            frequency: item.frequency,
             order: idx,
           });
         });
@@ -224,7 +227,7 @@ export default function PlanCreateScreen() {
             style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: (errors.startDate || errors.endDate) ? COLORS.RED : TH.border }]}
           >
             <Text style={{ fontSize: FONT_BODY, color: (startDate && endDate) ? TH.text : TH.sub }}>
-              {startDate && endDate ? `${startDate}  —  ${endDate}` : '选择计划日期范围'}
+              {startDate && endDate ? `${startDate}  —  ${endDate}` : T('planDateRangePlaceholder')}
             </Text>
             <Calendar size={16} color={TH.sub} />
           </TouchableOpacity>
@@ -268,6 +271,19 @@ export default function PlanCreateScreen() {
               {/* Expanded content */}
               {isExpanded && (
                 <View style={{ paddingHorizontal: 14, paddingBottom: 14, borderTopWidth: 1, borderTopColor: TH.border }}>
+                  {/* Check if existing item is in_progress */}
+                  {(() => {
+                    const existingItem = existingItems.find(i => i.id === item.id);
+                    if (existingItem && !canEditPlanItem(existingItem.status)) {
+                      return (
+                        <View style={{ backgroundColor: `${COLORS.ORANGE}15`, padding: 10, borderRadius: 8, marginTop: 10, marginBottom: 8 }}>
+                          <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE }}>{T('freqCannotEdit')}</Text>
+                        </View>
+                      );
+                    }
+                    return null;
+                  })()}
+
                   <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4, marginTop: 10 }}>{T('planItemName')} *</Text>
                   <TextInput
                     value={item.name} onChangeText={v => updateItem(item.id, { name: v })}
@@ -367,6 +383,129 @@ export default function PlanCreateScreen() {
                       </TouchableOpacity>
                     ))}
                   </ScrollView>
+
+                  {/* Frequency selector */}
+                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('freqDaily')}</Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
+                    {FREQUENCY_OPTIONS.map(opt => {
+                      const active = (item.frequency?.mode ?? 'daily') === opt.mode;
+                      return (
+                        <TouchableOpacity
+                          key={opt.mode}
+                          onPress={() => updateItem(item.id, { frequency: opt.mode === 'daily' ? undefined : createDefaultFrequency(opt.mode) })}
+                          style={{
+                            paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+                            backgroundColor: active ? P : TH.card,
+                            borderWidth: 1, borderColor: active ? P : TH.border,
+                          }}
+                        >
+                          <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SUB, fontWeight: active ? '600' : '400' }}>
+                            {T(opt.labelKey)}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </ScrollView>
+
+                  {/* Frequency config */}
+                  {item.frequency && item.frequency.mode === 'interval' && (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('freqEveryNDays').replace('{n}', '')}</Text>
+                      <TextInput
+                        value={String(item.frequency.every)}
+                        onChangeText={v => {
+                          const n = parseInt(v) || 1;
+                          updateItem(item.id, { frequency: { mode: 'interval', every: Math.max(1, n) } });
+                        }}
+                        keyboardType="number-pad"
+                        style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
+                      />
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('days')}</Text>
+                    </View>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'weekly' && (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('freqNTimesPerWeek').replace('{n}', '')}</Text>
+                      <TextInput
+                        value={String(item.frequency.target)}
+                        onChangeText={v => {
+                          const n = parseInt(v) || 1;
+                          updateItem(item.id, { frequency: { mode: 'weekly', target: Math.max(1, Math.min(7, n)) } });
+                        }}
+                        keyboardType="number-pad"
+                        style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
+                      />
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('planDays')}</Text>
+                    </View>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'weekly_fixed' && (
+                    <View style={{ flexDirection: 'row', gap: 6, marginBottom: 8 }}>
+                      {[0, 1, 2, 3, 4, 5, 6].map(d => {
+                        const active = item.frequency && 'days' in item.frequency && item.frequency.days.includes(d);
+                        const label = [T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')][d];
+                        return (
+                          <TouchableOpacity
+                            key={d}
+                            onPress={() => {
+                              if (!item.frequency || !('days' in item.frequency)) return;
+                              const days = active ? item.frequency.days.filter(x => x !== d) : [...item.frequency.days, d].sort();
+                              updateItem(item.id, { frequency: { mode: 'weekly_fixed', days } });
+                            }}
+                            style={{
+                              width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center',
+                              backgroundColor: active ? P : TH.card,
+                              borderWidth: 1, borderColor: active ? P : TH.border,
+                            }}
+                          >
+                            <Text style={{ color: active ? '#fff' : TH.sub, fontSize: 12, fontWeight: active ? '700' : '400' }}>{label}</Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'monthly' && (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('freqNTimesPerMonth').replace('{n}', '')}</Text>
+                      <TextInput
+                        value={String(item.frequency.target)}
+                        onChangeText={v => {
+                          const n = parseInt(v) || 1;
+                          updateItem(item.id, { frequency: { mode: 'monthly', target: Math.max(1, Math.min(31, n)) } });
+                        }}
+                        keyboardType="number-pad"
+                        style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
+                      />
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('planDays')}</Text>
+                    </View>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'monthly_fixed' && (
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map(d => {
+                        const active = item.frequency && 'dates' in item.frequency && item.frequency.dates.includes(d);
+                        return (
+                          <TouchableOpacity
+                            key={d}
+                            onPress={() => {
+                              if (!item.frequency || !('dates' in item.frequency)) return;
+                              const dates = active ? item.frequency.dates.filter(x => x !== d) : [...item.frequency.dates, d].sort((a, b) => a - b);
+                              updateItem(item.id, { frequency: { mode: 'monthly_fixed', dates } });
+                            }}
+                            style={{
+                              width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center',
+                              backgroundColor: active ? P : TH.card,
+                              borderWidth: 1, borderColor: active ? P : TH.border,
+                            }}
+                          >
+                            <Text style={{ color: active ? '#fff' : TH.sub, fontSize: 12, fontWeight: active ? '700' : '400' }}>{d}</Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  )}
 
                   {item.link === 'habit' && (
                     <>

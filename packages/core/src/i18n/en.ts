@@ -265,7 +265,7 @@ export const en: I18nKeys = {
   planItemContent:'Task Link', planItemLink:'Link Module', planItemTarget:'Target Metric',
   planPriority:'Priority', planPriorityHigh:'High',
   planPriorityMedium:'Medium', planPriorityLow:'Low',
-  planSave:'Save Plan', planCreate:'Create Plan', planEditTitle:'Edit Plan',
+  planSave:'Save Plan', planCreate:'Create Plan', planEditTitle:'Edit Plan', planDateRangePlaceholder:'Select plan date range',
   planTodoList:'Daily TodoList', planTodoDate:"Today's Tasks", planDetail:'Plan Details',
   planLinkManual:'Manual', planLinkCheckin:'Check-in', planLinkFasting:'Fasting',
   planLinkMeditation:'Meditation', planLinkExercise:'Exercise', planLinkHabit:'Habit', planLinkReflection:'Reflection',
@@ -277,10 +277,24 @@ export const en: I18nKeys = {
   planItemTimeError:'Task dates must be within plan date range', planItemTimeOrderError:'End date must be after start date',
   planItemDescRequired:'Task description is required', planItemTargetRequired:'Task metric is required',
   planTimeError:'End date must be after start date', planNameRequired:'Plan name is required',
-  planGoalRequired:'Plan goal is required', planNoItems:'No tasks yet', planAddItemHint:'+ Add Task',
+  planGoalRequired:'Plan goal is required', planNoItems:'No tasks yet', planNoHistory:'No history plans', planNoTodayTodos:'No todos for today', planAddItemHint:'+ Add Task',
+  planShowHeatmap:'Show Check-in History', planHideHeatmap:'Hide Check-in History',
   planDeleteItemConfirm:'Are you sure you want to delete this task?',
   planDeleteConfirm:'Are you sure you want to delete this plan? It will be moved to the recycle bin.',
   planCompleteConfirm:'Are you sure you want to complete this plan?',
+  planRelationMap:'Relation Map', planRelationMapDesc:'View connections between reflections and habits',
+  planLinkedContent:'Linked Content', planRelatedReflections:'Related Reflections',
+  planRelatedTrails:'Related Trails', planTrailReflectionCount:'reflections',
+  planCannotOperate:'Cannot Operate', planUnlinkAndContinue:'Unlink All & Continue',
+  planCannotOperateDetail:'{count} tasks in this plan are linked to reflections and cannot be operated on.\n\nWould you like to unlink all linked reflection tasks?',
+  freqDaily:'Frequency', freqInterval:'Interval', freqWeekly:'Weekly', freqWeeklyFixed:'Fixed Weekdays', freqMonthly:'Monthly', freqMonthlyFixed:'Fixed Month Days',
+  freqEveryNDays:'Every {n} days', freqNTimesPerWeek:'{n}x per week', freqNTimesPerMonth:'{n}x per month',
+  freqSelectDays:'Select Days', freqSelectDates:'Select Dates',
+  freqSummaryDaily:'', freqSummaryInterval:'Every {n} days',
+  freqSummaryWeekly:'{n}x/week', freqSummaryWeeklyFixed:'{days}',
+  freqSummaryMonthly:'{n}x/month', freqSummaryMonthlyFixed:'Day {dates}',
+  freqThisWeek:'This Week', freqThisMonth:'This Month',
+  freqCannotEdit:'In-progress tasks cannot be edited. Delete and recreate to modify.',
 
   // Global
   globalPulse:'Global Pulse', globalLeaderboard:'Leaderboard',
@@ -299,6 +313,9 @@ export const en: I18nKeys = {
   graceUsedCount:'Grace used', graceUsedTimes:'times',
   graceStatsTitle:'Grace Usage', graceAlreadyDone:'Already checked in yesterday',
   graceNoNeed:'No catch-up needed', graceHistory:'Catch-up History', graceHistoryEmpty:'No catch-up records',
+  graceCheckinTitle:'Grace Check-in', graceCheckinHint:'Complete check-in for yesterday, marked as grace day', graceCheckinSubmit:'Submit Catch-up',
+  graceQuotaUsed:'Used {used}/{total} this month', graceQuotaExhausted:'Monthly grace quota used up', graceQuotaReset:'Resets next month',
+  graceStreakPending:'Streak pending — catch up to keep it', graceSettingTitle:'Monthly Grace Quota', graceSettingHint:'Set to 0 to disable grace period',
 
   // Thought Trail
   mindTrail:'Mind Trail', thoughtTrail:'Thought Trail', tagTrail:'Tag Trail',
@@ -364,7 +381,7 @@ export const en: I18nKeys = {
   // Plan detail
   planNotFound:'Plan not found', heatmapLess:'Less', heatmapMore:'More', month:'/',
   planTodoToday:"Today's Tasks", planTodoHistory:'Task History', planTodoDone:'Done', planTodoTotal:'Total', planAutoChecked:'Auto',
-  planDailyCustomTodos:'Daily Custom Todos', planAddCustomTodoPlaceholder:'Add a custom todo for today...', planNoCustomTodos:'No custom todos yet',
+  planDailyCustomTodos:'Daily Custom Todos', planAddCustomTodoPlaceholder:'Add a custom todo for today...', planNoCustomTodos:'No custom todos yet', planRecurring:'Recurring',
   planDeleteCustomTodo:'Delete Todo', planDeleteCustomTodoConfirm:'Are you sure you want to delete this todo?',
 
   // Errors

@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS checkin_records (
   streak     INTEGER NOT NULL DEFAULT 0,
   timestamp  INTEGER,
   weight     REAL,
+  grace      INTEGER NOT NULL DEFAULT 0,
   updated_at INTEGER,
   deleted    INTEGER NOT NULL DEFAULT 0,
   synced     INTEGER NOT NULL DEFAULT 0
@@ -172,6 +173,7 @@ CREATE TABLE IF NOT EXISTS plan_items (
   target_metric     TEXT    NOT NULL DEFAULT '',
   link_config       TEXT    NOT NULL DEFAULT '{}',
   item_order        INTEGER NOT NULL DEFAULT 0,
+  frequency         TEXT,
   updated_at        INTEGER,
   deleted           INTEGER NOT NULL DEFAULT 0,
   synced            INTEGER NOT NULL DEFAULT 0
@@ -226,6 +228,8 @@ CREATE TABLE IF NOT EXISTS thought_trails (
   name            TEXT    NOT NULL,
   description     TEXT    DEFAULT '',
   reflection_ids  TEXT    NOT NULL DEFAULT '[]',
+  source          TEXT    DEFAULT 'manual',
+  insight_summary TEXT,
   created_at      INTEGER NOT NULL,
   updated_at      INTEGER,
   deleted         INTEGER NOT NULL DEFAULT 0,
@@ -247,6 +251,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('food_entries', 'synced', 'INTEGER NOT NULL DEFAULT 0');
   await tryAddCol('checkin_records', 'timestamp', 'INTEGER');
   await tryAddCol('checkin_records', 'weight', 'REAL');
+  await tryAddCol('checkin_records', 'grace', 'INTEGER NOT NULL DEFAULT 0');
 
   // Ensure exercise_entries table exists
   const exerciseTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -328,6 +333,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('plan_items', 'priority', "TEXT NOT NULL DEFAULT 'medium'");
   await tryAddCol('plan_items', 'target_metric', "TEXT NOT NULL DEFAULT ''");
   await tryAddCol('plan_items', 'reflection_id', 'TEXT');
+  await tryAddCol('plan_items', 'frequency', 'TEXT');
 
   // Ensure mind_reflections.colors column exists
   await tryAddCol('mind_reflections', 'colors', 'TEXT');
@@ -346,10 +352,15 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync(`CREATE TABLE IF NOT EXISTS thought_trails (
       id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT DEFAULT '',
       reflection_ids TEXT NOT NULL DEFAULT '[]',
+      source TEXT DEFAULT 'manual', insight_summary TEXT,
       created_at INTEGER NOT NULL, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
+
+  // Add source and insight_summary columns to thought_trails if missing
+  await tryAddCol('thought_trails', 'source', "TEXT DEFAULT 'manual'");
+  await tryAddCol('thought_trails', 'insight_summary', 'TEXT');
 
   // Ensure plan tables exist
   const planTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -406,6 +417,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       progress INTEGER NOT NULL DEFAULT 0, link TEXT NOT NULL DEFAULT 'manual',
       priority TEXT NOT NULL DEFAULT 'medium', target_metric TEXT NOT NULL DEFAULT '',
       link_config TEXT NOT NULL DEFAULT '{}', item_order INTEGER NOT NULL DEFAULT 0,
+      frequency TEXT,
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
     await db.execAsync(`CREATE TABLE IF NOT EXISTS plan_item_checkins (

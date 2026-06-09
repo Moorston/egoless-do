@@ -9,6 +9,7 @@ export interface CheckinEntry extends Syncable {
   totalDays?: number;
   weight?: number;
   timestamp?: number;
+  grace?: boolean;
 }
 
 export interface MedHistoryEntry extends Syncable {

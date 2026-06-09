@@ -29,7 +29,6 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       id: d.id, created_at: d.timestamp, content: d.content, tags: json(d.tags),
       mood: d.mood ?? null, card_theme: d.cardTheme ?? null,
       link: d.link ?? null,
-      linked_habit_id: d.linkedHabitId ?? null,
       linked_plan_id: d.linkedPlanItemId ?? null,
       is_pinned: bool(d.isPinned), is_published: bool(d.isPublished),
       colors: d.colors ? json(d.colors) : null,
@@ -58,6 +57,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       date: d.date, done: bool(d.done), note: d.note ?? '',
       streak: num(d.streak), timestamp: d.timestamp ?? null, weight: d.weight ?? null,
+      grace: bool(d.grace),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
@@ -115,6 +115,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
         updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
       };
       if (d.reflectionId !== undefined) row.reflection_id = d.reflectionId;
+      row.frequency = d.frequency ? JSON.stringify(d.frequency) : null;
       return row;
     },
   },
@@ -154,6 +155,8 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       id: d.id, name: d.name, description: d.description ?? '',
       reflection_ids: json(d.reflectionIds),
+      source: d.source ?? 'manual',
+      insight_summary: d.insightSummary ?? null,
       created_at: d.createdAt ?? Date.now(),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),

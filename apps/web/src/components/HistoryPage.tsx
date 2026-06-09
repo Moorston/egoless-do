@@ -5,7 +5,7 @@ import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK,
 import { useT } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Shield } from 'lucide-react';
 
 const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
 const PRACTICE_ICONS: Record<string, string> = { sit: '🧘', stand: '🧍', chant: '📿' };
@@ -112,13 +112,25 @@ export default function HistoryPage({ onClose }: { onClose: () => void }) {
                         <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatDay(h.date)}</span>
                         <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(h.date)}</span>
                       </div>
-                      <span style={{
-                        padding: '3px 10px', borderRadius: 8, fontSize: FONT_BADGE, fontWeight: 600,
-                        background: h.done ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.1)',
-                        color: h.done ? COLORS.GREEN : COLORS.RED,
-                      }}>
-                        {h.done ? T('checkinDone') : T('checkinNotDone')}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {h.grace && (
+                          <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 3,
+                            padding: '3px 8px', borderRadius: 8, fontSize: FONT_BADGE, fontWeight: 600,
+                            background: `${COLORS.ORANGE}15`, color: COLORS.ORANGE,
+                          }}>
+                            <Shield size={10} />
+                            {T('graceTitle')}
+                          </span>
+                        )}
+                        <span style={{
+                          padding: '3px 10px', borderRadius: 8, fontSize: FONT_BADGE, fontWeight: 600,
+                          background: h.done ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.1)',
+                          color: h.done ? COLORS.GREEN : COLORS.RED,
+                        }}>
+                          {h.done ? T('checkinDone') : T('checkinNotDone')}
+                        </span>
+                      </div>
                     </div>
 
                     {parsed.userNote && (

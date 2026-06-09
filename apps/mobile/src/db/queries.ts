@@ -1,6 +1,6 @@
 // ─── All SQL query helpers ────────────────────────────────────────
 import type { SQLiteDatabase } from 'expo-sqlite';
-import type { Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession } from '@egoless-do/core';
+import type { Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession, ThoughtTrail } from '@egoless-do/core';
 
 // ── Habits ────────────────────────────────────────────────────────
 export async function dbGetAllHabits(db: SQLiteDatabase): Promise<Habit[]> {
@@ -61,7 +61,7 @@ export async function dbGetAllFoodEntries(db: SQLiteDatabase): Promise<FoodEntry
 // ── Checkins ──────────────────────────────────────────────────────
 export async function dbGetCheckins(db: SQLiteDatabase): Promise<CheckinEntry[]> {
   return db.getAllAsync<CheckinEntry>(
-    'SELECT date,done,note,streak,weight,timestamp,updated_at,deleted FROM checkin_records WHERE deleted = 0 ORDER BY date DESC'
+    'SELECT date,done,note,streak,weight,timestamp,grace,updated_at,deleted FROM checkin_records WHERE deleted = 0 ORDER BY date DESC'
   );
 }
 
@@ -103,11 +103,32 @@ function rowToReflection(r: Record<string, unknown>): MindReflection {
     mood: r.mood as MindReflection['mood'],
     cardTheme: r.card_theme as string | undefined,
     link: r.link as string | undefined,
-    linkedHabitId: r.linked_habit_id as string | undefined,
     linkedPlanItemId: r.linked_plan_id as string | undefined,
     isPinned: (r.is_pinned as number) === 1,
     isPublished: (r.is_published as number) === 1,
     colors,
+    updatedAt: (r.updated_at as number) ?? 0,
+    deleted: (r.deleted as number) === 1,
+  };
+}
+
+// ── Thought Trails ───────────────────────────────────────────────
+export async function dbGetAllThoughtTrails(db: SQLiteDatabase): Promise<ThoughtTrail[]> {
+  const rows = await db.getAllAsync<Record<string, unknown>>(
+    'SELECT * FROM thought_trails WHERE deleted = 0 ORDER BY created_at DESC'
+  );
+  return rows.map(rowToThoughtTrail);
+}
+
+function rowToThoughtTrail(r: Record<string, unknown>): ThoughtTrail {
+  return {
+    id: r.id as string,
+    name: r.name as string,
+    description: (r.description as string) ?? '',
+    reflectionIds: JSON.parse((r.reflection_ids as string) ?? '[]'),
+    source: (r.source as ThoughtTrail['source']) ?? 'manual',
+    insightSummary: r.insight_summary as string | undefined,
+    createdAt: (r.created_at as number) ?? 0,
     updatedAt: (r.updated_at as number) ?? 0,
     deleted: (r.deleted as number) === 1,
   };

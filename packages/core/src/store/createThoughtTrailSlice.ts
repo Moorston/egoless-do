@@ -135,45 +135,10 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
       if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(console.error);
     },
 
-    reorderTrailReflections: (trailId, fromIndex, toIndex) => {
-      set(s => ({
-        thoughtTrails: (s.thoughtTrails ?? []).map(t => {
-          if (t.id !== trailId) return t;
-          const ids = [...t.reflectionIds];
-          const [removed] = ids.splice(fromIndex, 1);
-          ids.splice(toIndex, 0, removed);
-          return { ...t, reflectionIds: ids, updatedAt: Date.now() };
-        }),
-      }));
-
-      const updated = get().thoughtTrails.find(t => t.id === trailId);
-      if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(console.error);
-    },
-
-    getTrailById: (id) => {
-      return (get().thoughtTrails ?? []).find(t => t.id === id && !t.deleted) ?? null;
-    },
-
-    getTrailsByReflection: (reflectionId) => {
-      return (get().thoughtTrails ?? []).filter(t => 
-        !t.deleted && t.reflectionIds.includes(reflectionId)
-      );
-    },
-
     setInsightSummary: (trailId, summary) => {
       set(s => ({
         thoughtTrails: (s.thoughtTrails ?? []).map(t =>
           t.id === trailId ? { ...t, insightSummary: summary, updatedAt: Date.now() } : t
-        ),
-      }));
-      const trail = get().thoughtTrails.find(t => t.id === trailId);
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
-    },
-
-    linkToIntent: (trailId, intentId) => {
-      set(s => ({
-        thoughtTrails: (s.thoughtTrails ?? []).map(t =>
-          t.id === trailId ? { ...t, intentId, updatedAt: Date.now() } : t
         ),
       }));
       const trail = get().thoughtTrails.find(t => t.id === trailId);

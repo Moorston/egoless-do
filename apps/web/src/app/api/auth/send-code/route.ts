@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
-import { getPb, escapeFilter } from '../../_pb';
+import { getAdminPb, escapeFilter } from '../../_pb';
 import db from '../../_db';
 import { getClientIp, sendCodeRateLimit } from '../../_rateLimit';
 
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if email already registered via PocketBase
-    const pb = getPb();
+    const pb = await getAdminPb();
     try {
       await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
       return NextResponse.json({ error: '该邮箱已注册' }, { status: 409 });

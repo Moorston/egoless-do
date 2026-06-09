@@ -2,7 +2,7 @@ import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
   startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
-  checkPlanAutoStatus, performDailyReset as performDailyResetBiz,
+  checkAutoStatus, performDailyReset as performDailyResetBiz,
   addPlanItem, updatePlanItem, deletePlanItem,
   checkinItem, uncheckinItem,
   syncPlanItemsFromModules, refreshPlanItemStats,
@@ -16,7 +16,7 @@ import {
   unlinkAllReflectionsFromPlan as unlinkAllReflectionsFromPlanBiz,
 } from '../business/plan';
 import {
-  linkReflectionToPlanItem, unlinkReflectionFromPlanItem,
+  linkReflectionToPlanItem,
 } from '../business/reflections';
 import { uid, dateStr } from '../utils';
 import type { StorageAdapter, PlanSlice } from './types';
@@ -61,30 +61,36 @@ export function createPlanSlice(
       const deletedItemIds: string[] = [];
       const deletedCheckinIds: string[] = [];
       const deletedItemIdsSet = new Set<string>();
-      set(prev => ({
-        plans: deletePlan(prev.plans ?? [], id),
-        planItems: (prev.planItems ?? []).map(i => {
-          if (i.planId === id) {
-            deletedItemIds.push(i.id);
-            deletedItemIdsSet.add(i.id);
-            return { ...i, deleted: true, updatedAt: now };
-          }
-          return i;
-        }),
-        planItemCheckins: (prev.planItemCheckins ?? []).map(c => {
-          const item = (prev.planItems ?? []).find(i => i.id === c.planItemId);
-          if (item?.planId === id) {
-            deletedCheckinIds.push(c.id);
-            return { ...c, deleted: true, updatedAt: now };
-          }
-          return c;
-        }),
-        reflections: (prev.reflections ?? []).map(r =>
-          r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId)
-            ? { ...r, linkedPlanItemId: undefined, updatedAt: now }
-            : r,
-        ),
-      }));
+      set(prev => {
+        // Pre-build planId index for O(1) checkin lookup
+        const planIdByItemId = new Map<string, string>();
+        for (const i of (prev.planItems ?? [])) {
+          planIdByItemId.set(i.id, i.planId);
+        }
+        return {
+          plans: deletePlan(prev.plans ?? [], id),
+          planItems: (prev.planItems ?? []).map(i => {
+            if (i.planId === id) {
+              deletedItemIds.push(i.id);
+              deletedItemIdsSet.add(i.id);
+              return { ...i, deleted: true, updatedAt: now };
+            }
+            return i;
+          }),
+          planItemCheckins: (prev.planItemCheckins ?? []).map(c => {
+            if (planIdByItemId.get(c.planItemId) === id) {
+              deletedCheckinIds.push(c.id);
+              return { ...c, deleted: true, updatedAt: now };
+            }
+            return c;
+          }),
+          reflections: (prev.reflections ?? []).map(r =>
+            r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId)
+              ? { ...r, linkedPlanItemId: undefined, updatedAt: now }
+              : r,
+          ),
+        };
+      });
       adapter.markDeleted('plan', id).catch(console.error);
       deletedItemIds.forEach(itemId => adapter.markDeleted('planItem', itemId).catch(console.error));
       deletedCheckinIds.forEach(checkinId => adapter.markDeleted('planItemCheckin', checkinId).catch(console.error));
@@ -98,9 +104,9 @@ export function createPlanSlice(
       const s = get();
       const result = startPlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = get().plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      get().planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -108,9 +114,9 @@ export function createPlanSlice(
       const s = get();
       const result = pausePlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = get().plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      get().planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -118,9 +124,9 @@ export function createPlanSlice(
       const s = get();
       const result = resumePlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = get().plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      get().planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -128,9 +134,9 @@ export function createPlanSlice(
       const s = get();
       const result = completePlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = get().plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      get().planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -138,31 +144,32 @@ export function createPlanSlice(
       const s = get();
       const result = cancelPlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = get().plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      get().planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     checkAutoStatus() {
       const today = dateStr();
       const s = get();
-      const result = checkPlanAutoStatus(s.plans ?? [], s.planItems ?? [], today);
+      const result = checkAutoStatus(s.plans ?? [], s.planItems ?? [], today);
       set({ plans: result.plans, planItems: result.planItems });
-      // Persist changed plans
-      result.plans.forEach(p => {
-        const orig = (s.plans ?? []).find(op => op.id === p.id);
+      // Persist changed plans/items — pre-build maps for O(1) lookup
+      const origPlanMap = new Map((s.plans ?? []).map(p => [p.id, p]));
+      const origItemMap = new Map((s.planItems ?? []).map(i => [i.id, i]));
+      for (const p of result.plans) {
+        const orig = origPlanMap.get(p.id);
         if (orig && orig.updatedAt !== p.updatedAt) {
           adapter.persistChange('plan', p.id, p).catch(console.error);
         }
-      });
-      // Persist changed items
-      result.planItems.forEach(item => {
-        const orig = (s.planItems ?? []).find(oi => oi.id === item.id);
+      }
+      for (const item of result.planItems) {
+        const orig = origItemMap.get(item.id);
         if (orig && orig.updatedAt !== item.updatedAt) {
           adapter.persistChange('planItem', item.id, item).catch(console.error);
         }
-      });
+      }
       // Trigger delayed plan notifications
       if (result.delayedPlans.length > 0) {
         get().notifyPlanDelayed(result.delayedPlans);
@@ -185,16 +192,16 @@ export function createPlanSlice(
     deletePlanItem(id) {
       const now = Date.now();
       const deletedCheckinIds: string[] = [];
-      set(s => ({
-        planItems: deletePlanItem(s.planItems ?? [], id),
-        planItemCheckins: (s.planItemCheckins ?? []).map(c => {
+      set(prev => ({
+        planItems: deletePlanItem(prev.planItems ?? [], id),
+        planItemCheckins: (prev.planItemCheckins ?? []).map(c => {
           if (c.planItemId === id) {
             deletedCheckinIds.push(c.id);
             return { ...c, deleted: true, updatedAt: now };
           }
           return c;
         }),
-        reflections: (s.reflections ?? []).map(r =>
+        reflections: (prev.reflections ?? []).map(r =>
           r.linkedPlanItemId === id ? { ...r, linkedPlanItemId: undefined, updatedAt: now } : r,
         ),
       }));
@@ -208,46 +215,46 @@ export function createPlanSlice(
 
     checkinPlanItem(planItemId, date) {
       const today = date ?? dateStr();
-      set(s => ({ planItemCheckins: checkinItem(s.planItemCheckins ?? [], planItemId, today) }));
-      const checkin = get().planItemCheckins.find(
-        c => c.planItemId === planItemId && c.date === today
-      );
-      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
       const todayStr = dateStr();
-      set(s => ({ planItems: refreshPlanItemStats(s.planItems ?? [], s.planItemCheckins ?? [], todayStr) }));
-      // 自动保存当天待办历史
-      const item = get().planItems.find(i => i.id === planItemId);
+      set(s => {
+        const newCheckins = checkinItem(s.planItemCheckins ?? [], planItemId, today);
+        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, todayStr);
+        const item = newItems.find(i => i.id === planItemId);
+        const newHistory = item
+          ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], item.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
+          : s.dailyTodoHistory;
+        return { planItemCheckins: newCheckins, planItems: newItems, dailyTodoHistory: newHistory };
+      });
+      // Persist
+      const state = get();
+      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today);
+      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
+      const item = state.planItems.find(i => i.id === planItemId);
       if (item) {
-        const s = get();
-        const updatedHistory = saveDailyTodoHistoryBiz(
-          s.dailyTodoHistory ?? [], item.planId, today,
-          s.planItems ?? [], s.planItemCheckins ?? [], s.dailyCustomTodos ?? [],
-        );
-        set({ dailyTodoHistory: updatedHistory });
-        const entry = updatedHistory.find(h => h.planId === item.planId && h.date === today);
+        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today);
         if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(console.error);
       }
     },
 
     uncheckinPlanItem(planItemId, date) {
       const today = date ?? dateStr();
-      set(s => ({ planItemCheckins: uncheckinItem(s.planItemCheckins ?? [], planItemId, today) }));
-      const checkin = get().planItemCheckins.find(
-        c => c.planItemId === planItemId && c.date === today
-      );
-      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
       const todayStr = dateStr();
-      set(s => ({ planItems: refreshPlanItemStats(s.planItems ?? [], s.planItemCheckins ?? [], todayStr) }));
-      // 自动保存当天待办历史
-      const item = get().planItems.find(i => i.id === planItemId);
+      set(s => {
+        const newCheckins = uncheckinItem(s.planItemCheckins ?? [], planItemId, today);
+        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, todayStr);
+        const item = newItems.find(i => i.id === planItemId);
+        const newHistory = item
+          ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], item.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
+          : s.dailyTodoHistory;
+        return { planItemCheckins: newCheckins, planItems: newItems, dailyTodoHistory: newHistory };
+      });
+      // Persist
+      const state = get();
+      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today);
+      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
+      const item = state.planItems.find(i => i.id === planItemId);
       if (item) {
-        const s = get();
-        const updatedHistory = saveDailyTodoHistoryBiz(
-          s.dailyTodoHistory ?? [], item.planId, today,
-          s.planItems ?? [], s.planItemCheckins ?? [], s.dailyCustomTodos ?? [],
-        );
-        set({ dailyTodoHistory: updatedHistory });
-        const entry = updatedHistory.find(h => h.planId === item.planId && h.date === today);
+        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today);
         if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(console.error);
       }
     },
@@ -269,9 +276,9 @@ export function createPlanSlice(
         s.planItems ?? [], existingCheckins, s.plans ?? [], state, today
       );
       // Compare content, not just length — checkinItem may modify existing records in-place
+      const existingMap = new Map(existingCheckins.map(c => [c.id, c]));
       const changed = (() => {
         if (updatedCheckins.length !== existingCheckins.length) return true;
-        const existingMap = new Map(existingCheckins.map(c => [c.id, c]));
         for (const c of updatedCheckins) {
           const prev = existingMap.get(c.id);
           if (!prev || prev.done !== c.done || prev.linkedModule !== c.linkedModule || prev.deleted !== c.deleted) return true;
@@ -281,7 +288,6 @@ export function createPlanSlice(
       if (changed) {
         set({ planItemCheckins: updatedCheckins });
         // Persist all changed/new checkins
-        const existingMap = new Map(existingCheckins.map(c => [c.id, c]));
         for (const c of updatedCheckins) {
           const prev = existingMap.get(c.id);
           if (!prev || prev.done !== c.done || prev.linkedModule !== c.linkedModule || prev.deleted !== c.deleted) {
@@ -369,28 +375,37 @@ export function createPlanSlice(
           plans: result.plans,
           planItems: result.planItems,
           dailyTodoHistory: result.dailyTodoHistory,
+          dailyCustomTodos: result.dailyCustomTodos,
         });
 
-        // 持久化变更
-        result.plans.forEach(p => {
-          const orig = (s.plans ?? []).find(op => op.id === p.id);
+        // 持久化变更 — pre-build maps for O(1) lookup
+        const origPlanMap = new Map((s.plans ?? []).map(p => [p.id, p]));
+        const origItemMap = new Map((s.planItems ?? []).map(i => [i.id, i]));
+        const origTodoMap = new Map((s.dailyCustomTodos ?? []).map(t => [t.id, t]));
+        const origHistMap = new Map((s.dailyTodoHistory ?? []).map(h => [h.id, h]));
+        for (const p of result.plans) {
+          const orig = origPlanMap.get(p.id);
           if (orig && orig.updatedAt !== p.updatedAt) {
             adapter.persistChange('plan', p.id, p).catch(console.error);
           }
-        });
-        result.planItems.forEach(item => {
-          const orig = (s.planItems ?? []).find(oi => oi.id === item.id);
+        }
+        for (const item of result.planItems) {
+          const orig = origItemMap.get(item.id);
           if (orig && orig.updatedAt !== item.updatedAt) {
             adapter.persistChange('planItem', item.id, item).catch(console.error);
           }
-        });
-        // 持久化新复制的重复待办
-        result.dailyTodoHistory.forEach(h => {
-          const orig = (s.dailyTodoHistory ?? []).find(oh => oh.id === h.id);
+        }
+        for (const t of result.dailyCustomTodos) {
+          if (!origTodoMap.has(t.id)) {
+            adapter.persistChange('dailyCustomTodo', t.id, t).catch(console.error);
+          }
+        }
+        for (const h of result.dailyTodoHistory) {
+          const orig = origHistMap.get(h.id);
           if (!orig || orig.updatedAt !== h.updatedAt) {
             adapter.persistChange('dailyTodoHistory', h.id, h).catch(console.error);
           }
-        });
+        }
         // Trigger delayed plan notifications
         if (result.delayedPlans.length > 0) {
           get().notifyPlanDelayed(result.delayedPlans);
@@ -462,27 +477,30 @@ export function createPlanSlice(
       // Unlink from plan items
       const updatedPlanItems = unlinkAllReflectionsFromPlanBiz(planItems, planId);
 
-      // Unlink from reflections
-      let updatedReflections = [...reflections];
-      for (const reflectionId of linkedReflectionIds) {
-        updatedReflections = unlinkReflectionFromPlanItem(updatedReflections, reflectionId);
-      }
+      // Unlink from reflections — single pass with Set for O(N+M)
+      const linkedIdSet = new Set(linkedReflectionIds);
+      const now = Date.now();
+      const updatedReflections = reflections.map(r =>
+        linkedIdSet.has(r.id) ? { ...r, linkedPlanItemId: undefined, updatedAt: now } : r
+      );
 
       set({ planItems: updatedPlanItems, reflections: updatedReflections });
 
-      // Persist changes
-      updatedPlanItems.forEach(item => {
-        const orig = planItems.find(i => i.id === item.id);
+      // Persist changes — pre-build maps for O(1) lookup
+      const origItemMap = new Map(planItems.map(i => [i.id, i]));
+      const origReflectionMap = new Map(reflections.map(r => [r.id, r]));
+      for (const item of updatedPlanItems) {
+        const orig = origItemMap.get(item.id);
         if (orig && orig.updatedAt !== item.updatedAt) {
           adapter.persistChange('planItem', item.id, item).catch(console.error);
         }
-      });
-      updatedReflections.forEach(r => {
-        const orig = reflections.find(or => or.id === r.id);
+      }
+      for (const r of updatedReflections) {
+        const orig = origReflectionMap.get(r.id);
         if (orig && orig.updatedAt !== r.updatedAt) {
           adapter.persistChange('reflection', r.id, r).catch(console.error);
         }
-      });
+      }
     },
 
     async notifyPlanDelayed(delayedPlans) {

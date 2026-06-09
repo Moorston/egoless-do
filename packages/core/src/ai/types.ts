@@ -1,11 +1,10 @@
 // ─── AI types ──────────────────────────────────────────────────
 
-export type AIFeatureType = 
+export type AIFeatureType =
   | 'tag_suggest'
   | 'mood_detect'
   | 'content_expand'
   | 'trail_insight'
-  | 'intent_extract'
   | 'review_guide';
 
 export type AIMode = 'local' | 'cloud' | 'hybrid';
@@ -35,12 +34,6 @@ export interface TrailInsight {
   keyPoints: string[];
   turningPoints: string[];
   suggestions: string[];
-}
-
-export interface IntentExtraction {
-  content: string;
-  why: string;
-  suggestedActions: string[];
 }
 
 export interface ReviewGuide {

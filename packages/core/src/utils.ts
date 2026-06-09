@@ -188,28 +188,29 @@ export const aggregateWeeklyKm = (
 
 /** Build a heatmap grid for check-in history (last N weeks, Mon-Sun rows). */
 export const buildHeatmapGrid = (
-  history: Array<{ date: string; done: boolean }>,
+  history: Array<{ date: string; done: boolean; grace?: boolean }>,
   weeks: number = 4,
-): { date: string; done: boolean; isToday: boolean }[][] => {
+): { date: string; done: boolean; grace: boolean; isToday: boolean }[][] => {
   const doneSet = new Set(history.filter(e => e.done).map(e => e.date));
+  const graceSet = new Set(history.filter(e => e.grace).map(e => e.date));
   const today = dateStr();
   const todayDate = new Date();
   const dayOfWeek = todayDate.getDay(); // 0=Sun, 1=Mon...
   const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // days since last Monday
 
-  const grid: { date: string; done: boolean; isToday: boolean }[][] = [];
+  const grid: { date: string; done: boolean; grace: boolean; isToday: boolean }[][] = [];
   // Build from oldest week to newest
   const totalDays = weeks * 7;
   const startDate = new Date(todayDate);
   startDate.setDate(startDate.getDate() - mondayOffset - (weeks - 1) * 7);
 
   for (let w = 0; w < weeks; w++) {
-    const row: { date: string; done: boolean; isToday: boolean }[] = [];
+    const row: { date: string; done: boolean; grace: boolean; isToday: boolean }[] = [];
     for (let d = 0; d < 7; d++) {
       const cellDate = new Date(startDate);
       cellDate.setDate(cellDate.getDate() + w * 7 + d);
       const ds = dateStr(cellDate);
-      row.push({ date: ds, done: doneSet.has(ds), isToday: ds === today });
+      row.push({ date: ds, done: doneSet.has(ds), grace: graceSet.has(ds), isToday: ds === today });
     }
     grid.push(row);
   }

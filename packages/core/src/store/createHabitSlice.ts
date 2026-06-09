@@ -33,8 +33,27 @@ export function createHabitSlice(
       if (habit) {
         state.addToRecycleBin({ id, entityType: 'habit', data: habit });
       }
-      set(s => ({ habits: deleteHabitFromList(s.habits ?? [], id) }));
+
+      // Capture affected plan items before set
+      const affectedPlanItemIds = (state.planItems ?? [])
+        .filter(i => !i.deleted && i.linkConfig?.habitId === id)
+        .map(i => i.id);
+
+      set(s => ({
+        habits: deleteHabitFromList(s.habits ?? [], id),
+        planItems: (s.planItems ?? []).map(i =>
+          affectedPlanItemIds.includes(i.id)
+            ? { ...i, linkConfig: { ...i.linkConfig, habitId: undefined }, updatedAt: Date.now() }
+            : i
+        ),
+      }));
       adapter.markDeleted('habit', id).catch(console.error);
+
+      // Persist affected plan items
+      const planItemIdSet = new Set(affectedPlanItemIds);
+      (get().planItems ?? [])
+        .filter(i => planItemIdSet.has(i.id))
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     checkinHabit(id: string, date: string) {

@@ -5,6 +5,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const getNotifications = () => import('expo-notifications');
 
 export default function LoginScreen() {
@@ -16,11 +17,24 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  const handleEmailBlur = () => {
+    if (email && !EMAIL_REGEX.test(email)) {
+      setEmailError('邮箱格式不正确');
+    } else {
+      setEmailError('');
+    }
+  };
 
   const handleLogin = async () => {
     setError('');
     if (!email.trim() || !password.trim()) {
       setError('请填写邮箱和密码');
+      return;
+    }
+    if (email && !EMAIL_REGEX.test(email)) {
+      setEmailError('邮箱格式不正确');
       return;
     }
     try {
@@ -93,11 +107,16 @@ export default function LoginScreen() {
           <Card style={{ marginBottom: 16 }}>
             <ThemedInput
               value={email}
-              onChangeText={setEmail}
+              onChangeText={(text) => { setEmail(text); setEmailError(''); }}
+              onBlur={handleEmailBlur}
               placeholder="邮箱"
-              keyboardType="default"
-              style={{ marginBottom: 12 }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={{ marginBottom: emailError ? 4 : 12, ...(emailError ? { borderColor: '#ef4444' } : {}) }}
             />
+            {emailError ? (
+              <Text style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>{emailError}</Text>
+            ) : null}
             <ThemedInput
               value={password}
               onChangeText={setPassword}

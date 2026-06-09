@@ -13,9 +13,9 @@ export function createCheckinSlice(
     streak: 0,
     graceHistory: [],
 
-    submitCheckin(done: boolean, note: string, dateOverride?: string, weight?: number) {
+    submitCheckin(done: boolean, note: string, dateOverride?: string, weight?: number, grace?: boolean) {
       const history = get().checkinHistory;
-      const result = submitCheckinEntry(history ?? [], done, note, dateOverride, weight);
+      const result = submitCheckinEntry(history ?? [], done, note, dateOverride, weight, grace);
       set({ checkinHistory: result.history, streak: result.streak });
       adapter.persistChange('checkin', result.record.date, result.record).catch(console.error);
       // Trigger sync when checkin status changes (especially when unchecking)
@@ -28,6 +28,7 @@ export function createCheckinSlice(
     },
 
     addGraceRecord(date: string) {
+      if ((get().graceHistory ?? []).some(g => g.date === date && !g.deleted)) return;
       const entry: GraceHistoryEntry = { date, restoredAt: Date.now(), updatedAt: Date.now(), deleted: false };
       set(s => ({
         graceHistory: [...(s.graceHistory ?? []), entry],

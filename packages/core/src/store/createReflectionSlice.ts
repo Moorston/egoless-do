@@ -45,8 +45,26 @@ export function createReflectionSlice(
       // Remove all reflection links involving this reflection
       state.deleteLinksByReflection(id);
 
-      set(s => ({ reflections: deleteReflectionFromList(s.reflections ?? [], id) }));
+      // Capture affected plan items before set
+      const affectedPlanItemIds = (state.planItems ?? [])
+        .filter(i => !i.deleted && i.reflectionId === id)
+        .map(i => i.id);
+
+      set(s => ({
+        reflections: deleteReflectionFromList(s.reflections ?? [], id),
+        planItems: (s.planItems ?? []).map(i =>
+          affectedPlanItemIds.includes(i.id)
+            ? { ...i, reflectionId: undefined, updatedAt: Date.now() }
+            : i
+        ),
+      }));
       adapter.markDeleted('reflection', id).catch(console.error);
+
+      // Persist affected plan items
+      const planItemIdSet = new Set(affectedPlanItemIds);
+      (get().planItems ?? [])
+        .filter(i => planItemIdSet.has(i.id))
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
     updateReflection(id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>) {
@@ -56,9 +74,24 @@ export function createReflectionSlice(
     },
 
     unlinkReflectionFromPlanItem(reflectionId: string) {
+      const reflection = get().reflections.find(r => r.id === reflectionId);
+      const planItemId = reflection?.linkedPlanItemId;
+
+      // Clear reflection side
       set(s => ({ reflections: unlinkReflectionFromPlanItemBiz(s.reflections ?? [], reflectionId) }));
       const updated = get().reflections.find(r => r.id === reflectionId);
       if (updated) adapter.persistChange('reflection', reflectionId, updated).catch(console.error);
+
+      // Clear planItem side
+      if (planItemId) {
+        set(s => ({
+          planItems: (s.planItems ?? []).map(i =>
+            i.id === planItemId ? { ...i, reflectionId: undefined, updatedAt: Date.now() } : i
+          ),
+        }));
+        const updatedItem = get().planItems.find(i => i.id === planItemId);
+        if (updatedItem) adapter.persistChange('planItem', updatedItem.id, updatedItem).catch(console.error);
+      }
     },
 
     setReflectionFilters(filters: ReflectionFilters) {

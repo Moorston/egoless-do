@@ -1,13 +1,53 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { THEMES, COLORS, canEditPlan, dateStr, validatePlanForm, createNewItem, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_ERROR } from '@egoless-do/core';
-import type { ItemForm, PlanItemLink } from '@egoless-do/core';
-import { LINK_OPTIONS, PRIORITY_OPTIONS } from '@egoless-do/core';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { THEMES, COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_ERROR } from '@egoless-do/core';
+import type { ItemForm, PlanItemLink, CheckinFrequency } from '@egoless-do/core';
+import { LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 import { useT, cs, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import DateRangePickerModal from './DateRangePickerModal';
+
+function FrequencyInput({ value, min, max, onChange, style }: {
+  value: number;
+  min: number;
+  max?: number;
+  onChange: (val: number) => void;
+  style?: React.CSSProperties;
+}) {
+  const [localValue, setLocalValue] = useState(String(value));
+
+  useEffect(() => {
+    setLocalValue(String(value));
+  }, [value]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setLocalValue(val);
+    const num = parseInt(val);
+    if (!isNaN(num) && num >= min && (max === undefined || num <= max)) {
+      onChange(num);
+    }
+  }, [min, max, onChange]);
+
+  const handleBlur = useCallback(() => {
+    const num = parseInt(localValue);
+    if (isNaN(num) || num < min) {
+      setLocalValue(String(min));
+      onChange(min);
+    } else if (max !== undefined && num > max) {
+      setLocalValue(String(max));
+      onChange(max);
+    }
+  }, [localValue, min, max, onChange]);
+
+  return (
+    <input type="number" min={min} max={max} value={localValue}
+      onChange={handleChange} onBlur={handleBlur}
+      style={style} />
+  );
+}
 
 export default function PlanCreatePage({ planId, onClose }: { planId?: string; onClose: () => void }) {
   const store = useWebStore();
@@ -15,8 +55,8 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
   const P = TH.primary;
   const T = useT();
 
-  const existingPlan = planId ? (store.plans ?? []).find(p => p.id === planId) : null;
-  const existingItems = planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [];
+  const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => p.id === planId) : null, [store.plans, planId]);
+  const existingItems = useMemo(() => planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [], [store.planItems, planId]);
 
   const [name, setName] = useState(existingPlan?.name ?? '');
   const [goal, setGoal] = useState(existingPlan?.goal ?? '');
@@ -28,6 +68,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
       id: i.id, name: i.name, description: i.description,
       startDate: i.startDate, endDate: i.endDate, contentUrl: i.contentUrl,
       link: i.link, priority: i.priority ?? 'medium', targetMetric: i.targetMetric ?? '', linkConfig: i.linkConfig,
+      frequency: i.frequency,
     }))
   );
   const [expandedItems, setExpandedItems] = useState<Set<string>>(() => new Set(existingItems.map(i => i.id)));
@@ -57,19 +98,20 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
   };
 
   const [showActiveAlert, setShowActiveAlert] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleSave = () => {
+    if (saving) return;
     if (!validate()) return;
-    // Check if there's already an active plan (not_started, in_progress, paused)
+    // Check if there's already an active plan
     if (!isEdit) {
-      const activePlan = (store.plans ?? []).find(p =>
-        !p.deleted && (p.status === 'not_started' || p.status === 'in_progress' || p.status === 'paused')
-      );
+      const activePlan = (store.plans ?? []).find(p => !p.deleted && isPlanActive(p.status));
       if (activePlan) {
         setShowActiveAlert(true);
         return;
       }
     }
+    setSaving(true);
     if (isEdit && planId) {
       store.updatePlan(planId, { name, goal, slogan, startDate, endDate });
       const existingIds = new Set(existingItems.map(i => i.id));
@@ -84,6 +126,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
             name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+            frequency: item.frequency,
             order: idx,
           });
         } else {
@@ -91,6 +134,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
             planId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+            frequency: item.frequency,
             order: idx,
           });
         }
@@ -103,6 +147,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
             planId: newPlanId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+            frequency: item.frequency,
             order: idx,
           });
         });
@@ -193,7 +238,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
             }}
           >
             <span style={{ color: (startDate && endDate) ? TH.text : TH.sub }}>
-              {startDate && endDate ? `${startDate}  —  ${endDate}` : '选择计划日期范围'}
+              {startDate && endDate ? `${startDate}  —  ${endDate}` : T('planDateRangePlaceholder')}
             </span>
             <span style={{ fontSize: FONT_SUB, color: TH.sub }}>📅</span>
           </div>
@@ -238,6 +283,19 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
               {/* Expanded content */}
               {isExpanded && (
                 <div style={{ padding: '0 14px 14px', borderTop: `1px solid ${TH.border}` }}>
+                  {/* Check if existing item is in_progress */}
+                  {(() => {
+                    const existingItem = existingItems.find(i => i.id === item.id);
+                    if (existingItem && !canEditPlanItem(existingItem.status)) {
+                      return (
+                        <div style={{ background: `${COLORS.ORANGE}15`, padding: '10px 12px', borderRadius: 8, marginTop: 10, marginBottom: 8, fontSize: FONT_SUB, color: COLORS.ORANGE }}>
+                          {T('freqCannotEdit')}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+
                   <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4, marginTop: 10 }}>{T('planItemName')} *</div>
                   <input value={item.name} onChange={e => updateItem(item.id, { name: e.target.value })}
                     placeholder={T('planItemName')}
@@ -328,6 +386,112 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
                     </>
                   )}
 
+                  {/* Frequency selector */}
+                  <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{T('freqDaily')}</div>
+                  <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
+                    {FREQUENCY_OPTIONS.map(opt => {
+                      const active = (item.frequency?.mode ?? 'daily') === opt.mode;
+                      return (
+                        <button
+                          key={opt.mode}
+                          onClick={() => updateItem(item.id, { frequency: opt.mode === 'daily' ? undefined : createDefaultFrequency(opt.mode) })}
+                          style={{
+                            padding: '5px 12px', borderRadius: 8, fontSize: FONT_SUB, fontWeight: active ? 600 : 400,
+                            background: active ? P : TH.card,
+                            border: `1px solid ${active ? P : TH.border}`,
+                            color: active ? '#fff' : TH.sub, cursor: 'pointer',
+                          }}
+                        >
+                          {T(opt.labelKey)}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Frequency config */}
+                  {item.frequency && item.frequency.mode === 'interval' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('freqEveryNDays').replace('{n}', '')}</span>
+                      <FrequencyInput value={item.frequency.every} min={1}
+                        onChange={val => updateItem(item.id, { frequency: { mode: 'interval', every: val } })}
+                        style={{ ...inp(TH), width: 60, textAlign: 'center', marginBottom: 0 }} />
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('days')}</span>
+                    </div>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'weekly' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('freqNTimesPerWeek').replace('{n}', '')}</span>
+                      <FrequencyInput value={item.frequency.target} min={1} max={7}
+                        onChange={val => updateItem(item.id, { frequency: { mode: 'weekly', target: val } })}
+                        style={{ ...inp(TH), width: 60, textAlign: 'center', marginBottom: 0 }} />
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planDays')}</span>
+                    </div>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'weekly_fixed' && (
+                    <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+                      {[0, 1, 2, 3, 4, 5, 6].map(d => {
+                        const active = item.frequency && 'days' in item.frequency && item.frequency.days.includes(d);
+                        const label = [T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')][d];
+                        return (
+                          <button
+                            key={d}
+                            onClick={() => {
+                              if (!item.frequency || !('days' in item.frequency)) return;
+                              const days = active ? item.frequency.days.filter(x => x !== d) : [...item.frequency.days, d].sort();
+                              updateItem(item.id, { frequency: { mode: 'weekly_fixed', days } });
+                            }}
+                            style={{
+                              width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              background: active ? P : TH.card,
+                              border: `1px solid ${active ? P : TH.border}`,
+                              color: active ? '#fff' : TH.sub, fontSize: 12, fontWeight: active ? 700 : 400, cursor: 'pointer',
+                            }}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'monthly' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('freqNTimesPerMonth').replace('{n}', '')}</span>
+                      <FrequencyInput value={item.frequency.target} min={1} max={31}
+                        onChange={val => updateItem(item.id, { frequency: { mode: 'monthly', target: val } })}
+                        style={{ ...inp(TH), width: 60, textAlign: 'center', marginBottom: 0 }} />
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planDays')}</span>
+                    </div>
+                  )}
+
+                  {item.frequency && item.frequency.mode === 'monthly_fixed' && (
+                    <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map(d => {
+                        const active = item.frequency && 'dates' in item.frequency && item.frequency.dates.includes(d);
+                        return (
+                          <button
+                            key={d}
+                            onClick={() => {
+                              if (!item.frequency || !('dates' in item.frequency)) return;
+                              const dates = active ? item.frequency.dates.filter(x => x !== d) : [...item.frequency.dates, d].sort((a, b) => a - b);
+                              updateItem(item.id, { frequency: { mode: 'monthly_fixed', dates } });
+                            }}
+                            style={{
+                              width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              background: active ? P : TH.card,
+                              border: `1px solid ${active ? P : TH.border}`,
+                              color: active ? '#fff' : TH.sub, fontSize: 12, fontWeight: active ? 700 : 400, cursor: 'pointer',
+                            }}
+                          >
+                            {d}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <button onClick={() => removeItem(item.id)} style={{
                     width: '100%', padding: '8px 0', borderRadius: 8, border: `1px solid ${COLORS.RED}40`,
                     background: 'transparent', color: COLORS.RED, fontSize: FONT_BADGE, cursor: 'pointer',
@@ -350,12 +514,14 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
         {/* Save button */}
         <button
           onClick={handleSave}
+          disabled={saving}
           style={{
             position: 'fixed', bottom: 16, left: '50%', transform: 'translateX(-50%)',
             width: 'calc(100% - 32px)', maxWidth: 448, padding: 14, borderRadius: 14, border: 'none',
-            background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer', zIndex: 10,
+            background: saving ? `${P}80` : P, color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON,
+            cursor: saving ? 'not-allowed' : 'pointer', zIndex: 10,
           }}
-        >{T('planSave')}</button>
+        >{saving ? '...' : T('planSave')}</button>
       </div>
 
       {/* Date Range Picker Modal */}

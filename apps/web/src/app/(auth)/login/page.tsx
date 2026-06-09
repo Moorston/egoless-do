@@ -5,16 +5,31 @@ import Link from 'next/link';
 import { useWebStore } from '../../../store/useWebStore';
 import { FONT_BODY, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [loading, setLoading] = useState(false);
   const login = useWebStore(s => s.login);
   const router = useRouter();
 
+  function validateEmail(value: string) {
+    if (value && !EMAIL_REGEX.test(value)) {
+      setEmailError('邮箱格式不正确');
+    } else {
+      setEmailError('');
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (email && !EMAIL_REGEX.test(email)) {
+      setEmailError('邮箱格式不正确');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -34,8 +49,13 @@ export default function LoginPage() {
         <p style={{ fontSize: FONT_BODY, color: '#818cf8', textAlign: 'center', marginBottom: 8, letterSpacing: 1 }}>Egoless Do</p>
         <p style={{ fontSize: FONT_BODY, color: '#888', textAlign: 'center', marginBottom: 32 }}>登录你的账号</p>
 
-        <input type="email" placeholder="邮箱" value={email} onChange={e => setEmail(e.target.value)} required
-          style={inputStyle} />
+        <input type="email" placeholder="邮箱" value={email}
+          onChange={e => { setEmail(e.target.value); setEmailError(''); }}
+          onBlur={e => validateEmail(e.target.value)}
+          style={{ ...inputStyle, borderColor: emailError ? '#ef4444' : inputStyle.borderColor }}
+        />
+        {emailError && <p style={{ color: '#ef4444', fontSize: FONT_ERROR, marginTop: -8, marginBottom: 12 }}>{emailError}</p>}
+
         <input type="password" placeholder="密码" value={password} onChange={e => setPassword(e.target.value)} required
           style={inputStyle} />
 

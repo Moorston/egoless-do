@@ -125,7 +125,7 @@ export default function AppShell() {
       case 'globalMap':
         return <GlobalMapPage onClose={overlayState.close} title={overlayState.overlayProps.globalMapTitle} icon={overlayState.overlayProps.globalMapIcon} />;
       case 'checkin':
-        return <CheckinPage onClose={overlayState.close} />;
+        return <CheckinPage onClose={overlayState.close} graceDate={overlayProps.checkinGraceDate} />;
       case 'sport':
         return overlayProps.sport ? <SportPage sport={overlayProps.sport} onClose={overlayState.close} /> : null;
       case 'fastHistory':

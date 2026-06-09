@@ -21,6 +21,8 @@ export type RootStackParamList = {
   ReflectionStats: undefined;
   MindTrail: undefined;
   ThoughtTrailDetail: { trailId: string };
+  ReflectionDetail: { reflectionId: string };
+  HabitDetail: { habitId: string };
   Music: undefined;
   MusicCategory: { category: string };
 };

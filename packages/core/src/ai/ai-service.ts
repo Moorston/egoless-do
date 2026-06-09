@@ -1,8 +1,8 @@
 // ─── AI Service ────────────────────────────────────────────────
-import type { 
+import type {
   AIConfig, AIResult, ModelConfig, AIMode,
   TagSuggestion, MoodDetection, TrailInsight,
-  IntentExtraction, ReviewGuide, GenerateOptions
+  ReviewGuide, GenerateOptions
 } from './types';
 import { LocalAIEngine } from './local-engine';
 import { createProvider, testConnection } from './cloud-providers';
@@ -235,56 +235,7 @@ ${reflections.map((r, i) => `${i + 1}. [${r.mood}] ${r.content}`).join('\n')}
       return fallback;
     }
   }
-  
-  // 意图提炼
-  async extractIntent(
-    content: string,
-    options?: { useCloud?: boolean; preferredModelId?: string }
-  ): Promise<IntentExtraction> {
-    const localResult: IntentExtraction = {
-      content: content.slice(0, 50),
-      why: '从感念中提炼',
-      suggestedActions: [],
-    };
-    
-    if (!options?.useCloud || this.config.mode === 'local') {
-      return localResult;
-    }
-    
-    const prompt = `请从以下感念中提炼出用户的意图：
 
-"${content}"
-
-请用中文提供：
-1. 意图描述
-2. 为什么有这个意图
-3. 建议的行动（1-3个）`;
-
-    const result = await this.generateCloud(prompt, {
-      preferredModelId: options?.preferredModelId,
-      systemPrompt: '你是一个帮助用户提炼意图的助手。',
-    });
-    
-    if (result.success && result.data) {
-      return this.parseIntent(result.data, localResult);
-    }
-    
-    return localResult;
-  }
-  
-  private parseIntent(aiResult: string, fallback: IntentExtraction): IntentExtraction {
-    try {
-      const lines = aiResult.split('\n').filter(l => l.trim());
-      return {
-        content: lines[0]?.replace(/^\d+\.\s*/, '') || fallback.content,
-        why: lines[1]?.replace(/^\d+\.\s*/, '') || fallback.why,
-        suggestedActions: lines.slice(2).filter(l => l.match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '')),
-      };
-    } catch {
-      return fallback;
-    }
-  }
-  
   // 复盘引导
   async generateReviewGuide(
     weekReflections: Array<{ content: string; mood: string; timestamp: number }>,

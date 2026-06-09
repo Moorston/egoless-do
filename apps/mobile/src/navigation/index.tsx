@@ -29,10 +29,10 @@ import ReflectionsScreen from '../features/reflections/ReflectionsScreen';
 import ReflectionStatsScreen from '../features/reflections/ReflectionStatsScreen';
 import MindTrailScreen from '../features/reflections/MindTrailScreen';
 import ThoughtTrailDetailScreen from '../features/reflections/ThoughtTrailDetailScreen';
+import ReflectionDetailScreen from '../features/reflections/ReflectionDetailScreen';
 import InsightScreen from '../features/reflections/InsightScreen';
 import ReviewScreen from '../features/reflections/ReviewScreen';
 import StrategyLibrary from '../features/reflections/StrategyLibrary';
-import IntentDetailScreen from '../features/reflections/IntentDetailScreen';
 import HabitDetailScreen from '../features/habits/HabitDetailScreen';
 import RelationMapView from '../features/reflections/RelationMapView';
 import HabitsScreen      from '../features/habits/HabitsScreen';
@@ -312,10 +312,10 @@ export default function AppNavigator() {
         <Stack.Screen name="ReflectionStats" component={ReflectionStatsScreen} />
         <Stack.Screen name="MindTrail"     component={MindTrailScreen} />
         <Stack.Screen name="ThoughtTrailDetail" component={ThoughtTrailDetailScreen} />
+        <Stack.Screen name="ReflectionDetail" component={ReflectionDetailScreen} />
         <Stack.Screen name="Insight"       component={InsightScreen} />
         <Stack.Screen name="Review"        component={ReviewScreen} />
         <Stack.Screen name="StrategyLibrary" component={StrategyLibrary} />
-        <Stack.Screen name="IntentDetail"  component={IntentDetailScreen} />
         <Stack.Screen name="HabitDetail"   component={HabitDetailScreen} />
         <Stack.Screen name="RelationMap"   component={RelationMapView} />
       </Stack.Navigator>

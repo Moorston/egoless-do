@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { THEMES, COLORS, isPlanDelayed, FONT_TITLE, FONT_BADGE, dateStr } from '@egoless-do/core';
+import { COLORS, isPlanDelayed, statusToI18nKey, PLAN_STATUS_COLORS, FONT_TITLE, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import { ChevronLeft } from 'lucide-react-native';
 import PlanDetailContent from './PlanDetailContent';
@@ -14,7 +15,7 @@ export default function PlanDetailScreen() {
   const T = useT();
   const store = useAppStore();
   const nav = useRootNavigation();
-  const route = useRoute<any>();
+  const route = useRoute<RouteProp<RootStackParamList, 'PlanDetail'>>();
   const planId = route.params?.planId as string;
   const today = dateStr();
 
@@ -36,13 +37,16 @@ export default function PlanDetailScreen() {
             <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: COLORS.ORANGE }}>{T('planStatusDelayed')}</Text>
           </View>
         )}
-        {plan && (
-          <View style={{ backgroundColor: `${COLORS.GREEN}20`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
-            <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: COLORS.GREEN }}>
-              {T(`planStatus${plan.status.charAt(0).toUpperCase() + plan.status.slice(1).replace(/_([a-z])/g, (_: string, c: string) => c.toUpperCase())}`)}
-            </Text>
-          </View>
-        )}
+        {plan && (() => {
+          const statusColor = PLAN_STATUS_COLORS[plan.status] ?? COLORS.GREEN;
+          return (
+            <View style={{ backgroundColor: `${statusColor}20`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
+              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: statusColor }}>
+                {T(statusToI18nKey(plan.status))}
+              </Text>
+            </View>
+          );
+        })()}
       </View>
 
       <PlanDetailContent planId={planId} onClose={() => nav.goBack()} />

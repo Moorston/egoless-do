@@ -7,6 +7,17 @@ export interface TodoItemStatus {
   linkedModule?: string;
 }
 
+/** Build a checkin index grouped by planItemId for a specific date. */
+function buildCheckinIndex(checkins: PlanItemCheckin[], date: string): Map<string, PlanItemCheckin> {
+  const map = new Map<string, PlanItemCheckin>();
+  for (const c of checkins) {
+    if (c.date === date && c.done) {
+      map.set(c.planItemId, c);
+    }
+  }
+  return map;
+}
+
 export function getTodoItemStatus(
   item: PlanItem,
   checkins: PlanItemCheckin[],
@@ -28,9 +39,19 @@ export function getTodoItemStatusMap(
   checkins: PlanItemCheckin[],
   date: string,
 ): Map<string, TodoItemStatus> {
+  const index = buildCheckinIndex(checkins, date);
   const map = new Map<string, TodoItemStatus>();
   for (const item of items) {
-    map.set(item.id, getTodoItemStatus(item, checkins, date));
+    const checkin = index.get(item.id);
+    if (!checkin) {
+      map.set(item.id, { done: false, autoChecked: false });
+    } else {
+      map.set(item.id, {
+        done: true,
+        autoChecked: !!checkin.linkedModule,
+        linkedModule: checkin.linkedModule,
+      });
+    }
   }
   return map;
 }
@@ -51,9 +72,8 @@ export function computeDailyTodoStats(
   checkins: PlanItemCheckin[],
   date: string,
 ): DailyTodoStats {
-  const planItemsDone = planItems.filter(item =>
-    checkins.some(c => c.planItemId === item.id && c.date === date && c.done),
-  ).length;
+  const index = buildCheckinIndex(checkins, date);
+  const planItemsDone = planItems.filter(item => index.has(item.id)).length;
   const customTodosDone = customTodos.filter(t => t.done).length;
   const totalDone = planItemsDone + customTodosDone;
   const totalItems = planItems.length + customTodos.length;

@@ -6,6 +6,14 @@ export type PlanItemStatus = 'not_started' | 'in_progress' | 'paused' | 'complet
 export type PlanItemLink = 'manual' | 'checkin' | 'fasting' | 'meditation' | 'exercise' | 'habit' | 'reflection';
 export type PlanItemPriority = 'high' | 'medium' | 'low';
 
+export type CheckinFrequency =
+  | { mode: 'daily' }
+  | { mode: 'interval'; every: number }
+  | { mode: 'weekly'; target: number }
+  | { mode: 'weekly_fixed'; days: number[] }
+  | { mode: 'monthly'; target: number }
+  | { mode: 'monthly_fixed'; dates: number[] };
+
 export interface Plan extends Syncable {
   id: string;
   name: string;
@@ -39,6 +47,7 @@ export interface PlanItem extends Syncable {
   };
   reflectionId?: string;  // 来源感念 ID
   order: number;
+  frequency?: CheckinFrequency;
 }
 
 export interface PlanItemCheckin extends Syncable {

@@ -1,10 +1,10 @@
 // ─── Risk Warning System ────────────────────────────────────────
-import type { Habit, Plan, Intent, CheckinEntry, MindReflection } from '../types';
+import type { Habit, Plan, CheckinEntry, MindReflection } from '../types';
 import { dateStr } from '../utils';
 
 export interface RiskWarning {
   id: string;
-  type: 'habit_abandon' | 'plan_delay' | 'intent_stale' | 'streak_break' | 'mood_decline';
+  type: 'habit_abandon' | 'plan_delay' | 'streak_break' | 'mood_decline';
   severity: 'low' | 'medium' | 'high' | 'critical';
   title: string;
   description: string;
@@ -117,46 +117,6 @@ export function detectPlanDelayRisk(plans: Plan[]): RiskWarning[] {
   return warnings;
 }
 
-// 检测意图过期
-export function detectIntentStaleRisk(intents: Intent[]): RiskWarning[] {
-  const warnings: RiskWarning[] = [];
-  const now = Date.now();
-
-  intents.filter(i => !i.deleted).forEach(intent => {
-    const daysSinceUpdate = Math.floor((now - intent.updatedAt) / (24 * 60 * 60 * 1000));
-
-    // 种子状态超过7天
-    if (intent.status === 'seed' && daysSinceUpdate >= 7) {
-      warnings.push({
-        id: `intent_stale_${intent.id}`,
-        type: 'intent_stale',
-        severity: daysSinceUpdate >= 14 ? 'high' : 'medium',
-        title: `意图「${intent.content.slice(0, 10)}...」停滞`,
-        description: `种子状态已 ${daysSinceUpdate} 天未行动`,
-        suggestion: '决定行动或放弃，避免悬而未决',
-        relatedId: intent.id,
-        createdAt: now,
-      });
-    }
-
-    // 活跃状态超过30天
-    if (intent.status === 'active' && daysSinceUpdate >= 30) {
-      warnings.push({
-        id: `intent_long_${intent.id}`,
-        type: 'intent_stale',
-        severity: 'low',
-        title: `意图「${intent.content.slice(0, 10)}...」长期进行`,
-        description: `已活跃 ${daysSinceUpdate} 天`,
-        suggestion: '检视进度，考虑是否需要调整目标',
-        relatedId: intent.id,
-        createdAt: now,
-      });
-    }
-  });
-
-  return warnings;
-}
-
 // 检测连续记录中断风险
 export function detectStreakBreakRisk(checkinHistory: CheckinEntry[]): RiskWarning[] {
   const warnings: RiskWarning[] = [];
@@ -245,14 +205,12 @@ export function detectMoodDeclineRisk(reflections: MindReflection[]): RiskWarnin
 export function getAllRiskWarnings(
   habits: Habit[],
   plans: Plan[],
-  intents: Intent[],
   checkinHistory: CheckinEntry[],
   reflections: MindReflection[]
 ): RiskWarning[] {
   const warnings: RiskWarning[] = [
     ...detectHabitAbandonRisk(habits),
     ...detectPlanDelayRisk(plans),
-    ...detectIntentStaleRisk(intents),
     ...detectStreakBreakRisk(checkinHistory),
     ...detectMoodDeclineRisk(reflections),
   ];

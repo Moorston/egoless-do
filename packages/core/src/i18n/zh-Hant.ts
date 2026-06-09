@@ -265,7 +265,7 @@ export const zhHant: I18nKeys = {
   planItemContent:'任務連結', planItemLink:'聯動模組', planItemTarget:'任務指標',
   planPriority:'優先級', planPriorityHigh:'高',
   planPriorityMedium:'中', planPriorityLow:'低',
-  planSave:'保存計劃', planCreate:'創建計劃', planEditTitle:'編輯計劃',
+  planSave:'保存計劃', planCreate:'創建計劃', planEditTitle:'編輯計劃', planDateRangePlaceholder:'選擇計劃日期範圍',
   planTodoList:'每日待辦', planTodoDate:'今日待辦', planDetail:'計劃詳情',
   planLinkManual:'手動', planLinkCheckin:'今日打卡', planLinkFasting:'禁食',
   planLinkMeditation:'冥想', planLinkExercise:'鍛鍊', planLinkHabit:'習慣', planLinkReflection:'感念',
@@ -277,10 +277,24 @@ export const zhHant: I18nKeys = {
   planItemTimeError:'任務時間須在計劃時間範圍內', planItemTimeOrderError:'結束日期須晚於開始日期',
   planItemDescRequired:'任務描述為必填項', planItemTargetRequired:'任務指標為必填項',
   planTimeError:'結束日期須晚於開始日期', planNameRequired:'請輸入計劃名稱',
-  planGoalRequired:'請輸入計劃目標', planNoItems:'暫無任務', planAddItemHint:'+ 添加任務',
+  planGoalRequired:'請輸入計劃目標', planNoItems:'暫無任務', planNoHistory:'暫無歷史計劃', planNoTodayTodos:'今日無待辦項目', planAddItemHint:'+ 添加任務',
+  planShowHeatmap:'查看打卡記錄', planHideHeatmap:'收起打卡記錄',
   planDeleteItemConfirm:'確定刪除此任務嗎？',
   planDeleteConfirm:'確定刪除此計劃嗎？刪除後將進入回收箱。',
   planCompleteConfirm:'確定完成此計劃嗎？',
+  planRelationMap:'關係全景圖', planRelationMapDesc:'查看感念、習慣的關聯關係',
+  planLinkedContent:'關聯內容', planRelatedReflections:'相關感念',
+  planRelatedTrails:'相關脈絡', planTrailReflectionCount:'條感念',
+  planCannotOperate:'無法執行操作', planUnlinkAndContinue:'批量解綁並繼續',
+  planCannotOperateDetail:'該計劃中有 {count} 個任務關聯了感念，無法執行此操作。\n\n是否批量解綁關聯的感念任務？',
+  freqDaily:'打卡頻率', freqInterval:'間隔', freqWeekly:'每週', freqWeeklyFixed:'每週固定', freqMonthly:'每月', freqMonthlyFixed:'每月固定',
+  freqEveryNDays:'每 {n} 天', freqNTimesPerWeek:'每週 {n} 次', freqNTimesPerMonth:'每月 {n} 次',
+  freqSelectDays:'選擇星期', freqSelectDates:'選擇日期',
+  freqSummaryDaily:'', freqSummaryInterval:'每 {n} 天',
+  freqSummaryWeekly:'每週 {n} 次', freqSummaryWeeklyFixed:'{days}',
+  freqSummaryMonthly:'每月 {n} 次', freqSummaryMonthlyFixed:'每月 {dates} 日',
+  freqThisWeek:'本週', freqThisMonth:'本月',
+  freqCannotEdit:'進行中任務不可編輯，如需修改請刪除重建',
 
   // Global
   globalPulse:'全球脈動', globalLeaderboard:'打卡排行榜',
@@ -299,6 +313,9 @@ export const zhHant: I18nKeys = {
   graceUsedCount:'已使用寬限期', graceUsedTimes:'次',
   graceStatsTitle:'寬限期使用', graceAlreadyDone:'昨天已打卡，無需補卡',
   graceNoNeed:'無需補卡', graceHistory:'補卡記錄', graceHistoryEmpty:'暫無補卡記錄',
+  graceCheckinTitle:'寬限期補卡', graceCheckinHint:'為昨天完成打卡，標記為補卡天', graceCheckinSubmit:'提交補卡',
+  graceQuotaUsed:'本月已用 {used}/{total} 次', graceQuotaExhausted:'本月寬限次數已用完', graceQuotaReset:'下月重置',
+  graceStreakPending:'連勝待定 · 補卡保持連勝', graceSettingTitle:'每月寬限次數', graceSettingHint:'設為 0 可完全禁用寬限期',
 
   // Thought Trail
   mindTrail:'思維脈絡', thoughtTrail:'思路脈絡', tagTrail:'標籤脈絡',
@@ -362,7 +379,7 @@ export const zhHant: I18nKeys = {
   weekdayThu:'四', weekdayFri:'五', weekdaySat:'六',
   planNotFound:'計劃不存在', heatmapLess:'少', heatmapMore:'多', month:'月',
   planTodoToday:'今日待辦', planTodoHistory:'待辦歷史', planTodoDone:'已完成', planTodoTotal:'總任務', planAutoChecked:'聯動打卡',
-  planDailyCustomTodos:'每日自定義待辦', planAddCustomTodoPlaceholder:'添加今日待辦項...', planNoCustomTodos:'暫無自定義待辦',
+  planDailyCustomTodos:'每日自定義待辦', planAddCustomTodoPlaceholder:'添加今日待辦項...', planNoCustomTodos:'暫無自定義待辦', planRecurring:'循環',
   planDeleteCustomTodo:'刪除待辦', planDeleteCustomTodoConfirm:'確定要刪除這個待辦項嗎？',
 
   // Errors

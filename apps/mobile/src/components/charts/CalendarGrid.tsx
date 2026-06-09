@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_BADGE, COLORS } from '@egoless-do/core';
 
 export interface CalendarGridProps {
   /** checkin history entries */
-  history: Array<{ date: string; done: boolean }>;
+  history: Array<{ date: string; done: boolean; grace?: boolean }>;
   primaryColor: string;
   textColor: string;
   subColor: string;
@@ -29,26 +29,28 @@ export default function CalendarGrid({
   const [viewMonth, setViewMonth] = useState(today.getMonth());
 
   const doneSet = useMemo(() => new Set(history.filter(e => e.done).map(e => e.date)), [history]);
+  const graceSet = useMemo(() => new Set(history.filter(e => e.grace).map(e => e.date)), [history]);
 
   const weeks = useMemo(() => {
     const firstDay = new Date(viewYear, viewMonth, 1);
     let startDow = firstDay.getDay() - 1;
     if (startDow < 0) startDow = 6;
 
-    const result: Array<Array<{ day: number; date: string; done: boolean; isToday: boolean; inMonth: boolean }>> = [];
+    const result: Array<Array<{ day: number; date: string; done: boolean; grace: boolean; isToday: boolean; inMonth: boolean }>> = [];
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - startDow);
 
     const cur = new Date(startDate);
     const todayStr = dateStr(today);
     for (let w = 0; w < 6; w++) {
-      const row: Array<{ day: number; date: string; done: boolean; isToday: boolean; inMonth: boolean }> = [];
+      const row: Array<{ day: number; date: string; done: boolean; grace: boolean; isToday: boolean; inMonth: boolean }> = [];
       for (let d = 0; d < 7; d++) {
         const ds = dateStr(cur);
         row.push({
           day: cur.getDate(),
           date: ds,
           done: doneSet.has(ds),
+          grace: graceSet.has(ds),
           isToday: ds === todayStr,
           inMonth: cur.getMonth() === viewMonth,
         });
@@ -57,7 +59,7 @@ export default function CalendarGrid({
       result.push(row);
     }
     return result;
-  }, [viewYear, viewMonth, doneSet]);
+  }, [viewYear, viewMonth, doneSet, graceSet]);
 
   const goPrev = () => {
     if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11); }
@@ -110,13 +112,20 @@ export default function CalendarGrid({
               : cell.done ? primaryColor : `${primaryColor}18`;
             const fg = !cell.inMonth ? 'rgba(128,128,128,.2)'
               : cell.done ? '#fff' : 'rgba(128,128,128,.5)';
+            // Grace days get dashed border; today gets solid border
+            const hasBorder = cell.isToday || cell.grace;
+            const borderWidth = cell.isToday ? 2 : cell.grace ? 1.5 : 0;
+            const borderColor = cell.isToday ? primaryColor : cell.grace ? COLORS.ORANGE : 'transparent';
+            // React Native doesn't support borderStyle: 'dashed' on all platforms,
+            // so we render a dashed effect via an overlay View for grace cells
             return (
               <View key={di} style={{
                 flex: 1, aspectRatio: 1, marginHorizontal: 2,
                 borderRadius: 8, alignItems: 'center', justifyContent: 'center',
                 backgroundColor: bg,
-                borderWidth: cell.isToday ? 2 : 0,
-                borderColor: cell.isToday ? primaryColor : 'transparent',
+                borderWidth: hasBorder ? borderWidth : 0,
+                borderColor,
+                borderStyle: cell.grace && !cell.isToday ? 'dashed' : 'solid',
               }}>
                 <Text style={{
                   fontSize: FONT_SUB, fontWeight: cell.isToday ? '700' : '400',

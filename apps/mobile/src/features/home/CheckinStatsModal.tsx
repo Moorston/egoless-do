@@ -108,7 +108,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             {/* Calendar */}
             <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
               <CalendarGrid
-                history={checkinHistory.map((c: CheckinEntry) => ({ date: c.date, done: c.done }))}
+                history={checkinHistory.map((c: CheckinEntry) => ({ date: c.date, done: c.done, grace: c.grace }))}
                 primaryColor={P}
                 textColor={TH.text}
                 subColor={TH.sub}
