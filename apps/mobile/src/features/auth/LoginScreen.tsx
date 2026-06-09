@@ -4,6 +4,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
+import { apiCheckEmail } from '@egoless-do/core';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const getNotifications = () => import('expo-notifications');
@@ -18,12 +19,30 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'registered' | 'not_registered'>('idle');
 
-  const handleEmailBlur = () => {
+  const handleEmailBlur = async () => {
     if (email && !EMAIL_REGEX.test(email)) {
       setEmailError('邮箱格式不正确');
-    } else {
-      setEmailError('');
+      setEmailStatus('idle');
+      return;
+    }
+    setEmailError('');
+    if (!email) {
+      setEmailStatus('idle');
+      return;
+    }
+    setEmailStatus('checking');
+    try {
+      const res = await apiCheckEmail(email.trim());
+      if (res.available) {
+        setEmailStatus('not_registered');
+        setEmailError('该邮箱未注册，请先注册');
+      } else {
+        setEmailStatus('registered');
+      }
+    } catch {
+      setEmailStatus('idle');
     }
   };
 
@@ -107,7 +126,7 @@ export default function LoginScreen() {
           <Card style={{ marginBottom: 16 }}>
             <ThemedInput
               value={email}
-              onChangeText={(text) => { setEmail(text); setEmailError(''); }}
+              onChangeText={(text) => { setEmail(text); setEmailError(''); setEmailStatus('idle'); }}
               onBlur={handleEmailBlur}
               placeholder="邮箱"
               keyboardType="email-address"
@@ -139,8 +158,14 @@ export default function LoginScreen() {
           />
 
           <TouchableOpacity onPress={() => nav.navigate('Register')} activeOpacity={0.7}>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', marginBottom: 12 }}>
               没有账号？<Text style={{ color: TH.primary }}>去注册</Text>
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => nav.navigate('ForgotPassword')} activeOpacity={0.7}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
+              <Text style={{ color: TH.primary }}>忘记密码？</Text>
             </Text>
           </TouchableOpacity>
         </View>

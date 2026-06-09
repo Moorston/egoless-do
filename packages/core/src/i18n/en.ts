@@ -423,4 +423,12 @@ export const en: I18nKeys = {
   incompleteReasonNotePlaceholder:'Please enter notes...',
   incompleteReasonStats:'Incomplete reason distribution',
   dateBarToday:'Today', noCheckinRecord:'No check-in',
+  streakBreakActiveStreak:'{n}-day streak', streakBreakDaysSince:'{n} days since last break',
+  streakBreakGettingStronger:"You're getting stronger", streakBreakRestart:"It's OK, start again",
+  streakBreakPrevStreak:'Previous streak: {n} days', streakBreakCanBeLonger:'This time can be longer',
+  streakBreakDontForget:"Don't forget today's check-in", streakBreakNeverTooLate:'Never too late to restart',
+  streakBreakCheckinNow:'Check in now', streakBreakInsight:'Break Patterns',
+  streakBreakHighDay:'Most common day', streakBreakAvgStreak:'Avg Streak',
+  streakBreakAvgRecovery:'Avg Recovery', streakBreakTrend:'Trend',
+  streakBreakHypothetical:'Hypothetical streak: {n} days', streakBreakGraceHint:'Grace available but unused',
 };

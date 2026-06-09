@@ -37,13 +37,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '请输入有效的邮箱地址' }, { status: 400 });
     }
 
-    // Check if email already registered via PocketBase
+    // Check if email already registered
     const pb = await getAdminPb();
     try {
       await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
       return NextResponse.json({ error: '该邮箱已注册' }, { status: 409 });
-    } catch {
-      // Email not found — proceed
+    } catch (err: any) {
+      if (err?.status !== 404) {
+        throw err; // Re-throw unexpected errors
+      }
+      // 404 = not found, proceed with sending code
     }
 
     // Rate limit: max 1 code per 60 seconds

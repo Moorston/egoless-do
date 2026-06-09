@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useWebStore } from '../../../store/useWebStore';
-import { FONT_BODY, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
+import { apiCheckEmail, FONT_BODY, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -16,11 +16,20 @@ export default function LoginPage() {
   const login = useWebStore(s => s.login);
   const router = useRouter();
 
-  function validateEmail(value: string) {
+  async function validateEmail(value: string) {
     if (value && !EMAIL_REGEX.test(value)) {
       setEmailError('邮箱格式不正确');
-    } else {
-      setEmailError('');
+      return;
+    }
+    setEmailError('');
+    if (!value) return;
+    try {
+      const res = await apiCheckEmail(value);
+      if (res.available) {
+        setEmailError('该邮箱未注册，请先注册');
+      }
+    } catch {
+      // ignore check errors
     }
   }
 
@@ -70,6 +79,9 @@ export default function LoginPage() {
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: FONT_BODY, color: '#888' }}>
           没有账号？{' '}
           <Link href="/register" style={{ color: '#818cf8', textDecoration: 'none' }}>注册</Link>
+        </p>
+        <p style={{ textAlign: 'center', marginTop: 10, fontSize: FONT_BODY }}>
+          <Link href="/forgot-password" style={{ color: '#818cf8', textDecoration: 'none', fontSize: FONT_BODY }}>忘记密码？</Link>
         </p>
       </form>
     </div>

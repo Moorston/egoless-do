@@ -107,6 +107,16 @@ export async function apiLogout(token: string, refreshToken: string): Promise<vo
   });
 }
 
+// ── Reset password ──────────────────────────────────────────────
+export async function apiResetPassword(email: string, code: string, password: string): Promise<{ ok: boolean; message: string }> {
+  const res = await fetchWithTimeout(`${apiBase}/api/auth/reset-password`, {
+    method: 'POST',
+    headers: buildHeaders(),
+    body: JSON.stringify({ email, code, password }),
+  });
+  return handleJsonResponse<{ ok: boolean; message: string }>(res);
+}
+
 // ── Sync: push local changes + pull server changes ───────────────
 export async function apiSyncPush(token: string, lastSyncAt: number, changes: any[]): Promise<SyncPushResult> {
   const res = await fetchWithTimeout(`${apiBase}/api/sync`, {

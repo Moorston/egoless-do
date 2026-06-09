@@ -53,6 +53,7 @@ import PlanDetailScreen from '../features/plan/PlanDetailScreen';
 import PlanHistoryScreen from '../features/plan/PlanHistoryScreen';
 import LoginScreen       from '../features/auth/LoginScreen';
 import RegisterScreen    from '../features/auth/RegisterScreen';
+import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
 import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
 import AISettingsScreen from '../features/settings/AISettingsScreen';
@@ -289,6 +290,7 @@ export default function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? 'MainTabs' : 'Login'}>
         <Stack.Screen name="Login"        component={LoginScreen} />
         <Stack.Screen name="Register"     component={RegisterScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="MainTabs"     component={MainTabs} />
         <Stack.Screen name="GlobalMap"    component={GlobalMapPage} />
         <Stack.Screen name="Sport"        component={SportPage} />

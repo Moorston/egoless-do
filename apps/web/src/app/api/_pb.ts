@@ -11,13 +11,27 @@ export function getPb(): PocketBase {
 }
 
 /** Get a PocketBase instance authenticated as admin (for querying users collection). */
+let _adminPb: PocketBase | null = null;
+let _adminAuthAt = 0;
+const ADMIN_AUTH_TTL = 5 * 60 * 1000; // Re-auth every 5 min
+
 export async function getAdminPb(): Promise<PocketBase> {
+  const now = Date.now();
+  if (_adminPb && now - _adminAuthAt < ADMIN_AUTH_TTL) {
+    return _adminPb;
+  }
+
   const pb = getPb();
   const adminEmail = process.env.PB_ADMIN_EMAIL;
   const adminPass = process.env.PB_ADMIN_PASSWORD;
-  if (adminEmail && adminPass) {
-    await pb.collection('_superusers').authWithPassword(adminEmail, adminPass);
+
+  if (!adminEmail || !adminPass) {
+    throw new Error('PB_ADMIN_EMAIL or PB_ADMIN_PASSWORD not configured');
   }
+
+  await pb.collection('_superusers').authWithPassword(adminEmail, adminPass);
+  _adminPb = pb;
+  _adminAuthAt = now;
   return pb;
 }
 

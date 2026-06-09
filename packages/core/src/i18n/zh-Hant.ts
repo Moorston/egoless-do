@@ -421,4 +421,12 @@ export const zhHant: I18nKeys = {
   incompleteReasonNotePlaceholder:'請填寫補充說明...',
   incompleteReasonStats:'未完成原因分佈',
   dateBarToday:'今天', noCheckinRecord:'未打卡',
+  streakBreakActiveStreak:'當前連勝 {n} 天', streakBreakDaysSince:'距上次中斷已過 {n} 天',
+  streakBreakGettingStronger:'你正在變得更強', streakBreakRestart:'沒關係，重新開始',
+  streakBreakPrevStreak:'上次連勝 {n} 天', streakBreakCanBeLonger:'這次可以更久',
+  streakBreakDontForget:'別忘了今天的打卡', streakBreakNeverTooLate:'重新開始，永遠不晚',
+  streakBreakCheckinNow:'立即打卡', streakBreakInsight:'中斷模式',
+  streakBreakHighDay:'高發日', streakBreakAvgStreak:'平均連勝',
+  streakBreakAvgRecovery:'恢復平均', streakBreakTrend:'趨勢',
+  streakBreakHypothetical:'假設連勝 {n} 天', streakBreakGraceHint:'可用寬限期未使用',
 };

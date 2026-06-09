@@ -22,10 +22,21 @@ export const mobileStorageAdapter: StorageAdapter = {
       [...values, id],
     );
     if (result.changes === 0) {
-      await db.runAsync(
-        `INSERT INTO ${config.table} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
-        values,
-      );
+      try {
+        await db.runAsync(
+          `INSERT INTO ${config.table} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
+          values,
+        );
+      } catch (insertErr: any) {
+        if (insertErr?.message?.includes('UNIQUE constraint')) {
+          await db.runAsync(
+            `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
+            [...values, id],
+          );
+        } else {
+          throw insertErr;
+        }
+      }
     }
     await enqueueChange(entity, id, 'upsert', data).catch(console.error);
   },

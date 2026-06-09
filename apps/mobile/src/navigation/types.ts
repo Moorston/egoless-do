@@ -2,6 +2,7 @@ export type RootStackParamList = {
   MainTabs: undefined;
   Login: undefined;
   Register: undefined;
+  ForgotPassword: undefined;
   GlobalMap: { icon?: string; title?: string } | undefined;
   Sport: { key: string; icon: string; color: string; gps?: boolean };
   FastHistory: undefined;

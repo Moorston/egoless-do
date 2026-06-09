@@ -7,6 +7,7 @@ import { apiSyncPush, apiSyncPull, apiSyncCheck } from '@egoless-do/core';
 let _syncing = false;
 let _syncingSince = 0;
 let _syncGeneration = 0;
+let _abortController: AbortController | null = null;
 const SYNC_TIMEOUT_MS = 60_000; // 60s timeout to prevent stuck sync
 let _tokenProvider: (() => string | null) | null = null;
 let _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
@@ -218,6 +219,7 @@ async function applyEntityToTable(
   entity: string,
   records: any[],
   deletedIds?: Set<string>,
+  signal?: AbortSignal,
 ): Promise<unknown[]> {
   const config = ENTITY_CONFIG[entity];
   if (!config) return [];
@@ -229,6 +231,7 @@ async function applyEntityToTable(
 
   for (const r of alive) {
     try {
+      if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
       // Profile entity may not have profile_id in payload; default to 'self'
       const id = resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
       if (!id) continue;
@@ -263,10 +266,22 @@ async function applyEntityToTable(
       );
       if (result.changes === 0) {
         const placeholders = columns.map(() => '?').join(',');
-        await db.runAsync(
-          `INSERT INTO ${table} (${columns.join(',')},synced) VALUES (${placeholders},1)`,
-          values,
-        );
+        try {
+          await db.runAsync(
+            `INSERT INTO ${table} (${columns.join(',')},synced) VALUES (${placeholders},1)`,
+            values,
+          );
+        } catch (insertErr: any) {
+          // Race condition: concurrent sync inserted the row between UPDATE and INSERT
+          if (insertErr?.message?.includes('UNIQUE constraint')) {
+            await db.runAsync(
+              `UPDATE ${table} SET ${setClause},synced=1 WHERE ${pk}=?`,
+              [...values, id],
+            );
+          } else {
+            throw insertErr;
+          }
+        }
       }
       applied.push(processedRecord);
     } catch (e) {
@@ -276,6 +291,7 @@ async function applyEntityToTable(
 
   for (const r of dead) {
     try {
+      if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
       const id = resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
       if (id) {
         if (!(await isLocalNewer(db, table, pk, id, r.updatedAt))) {
@@ -434,13 +450,14 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
   }
 }
 
-async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>): Promise<Record<string, unknown>> {
+async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<Record<string, unknown>> {
   const db = await openDatabase();
   const patch: Record<string, unknown> = {};
 
   for (const [entity, records] of Object.entries(data)) {
     if (!records?.length) continue;
-    const applied = await applyEntityToTable(db, entity, records, deletedIds);
+    if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+    const applied = await applyEntityToTable(db, entity, records, deletedIds, signal);
 
     // Special: recompute totalMedMinutes after meditation sync
     if (entity === 'meditation' && applied.length > 0) {
@@ -471,9 +488,11 @@ const ENTITY_STORE_KEY: Record<string, string> = {
 // ── Main sync entry point ─────────────────────────────────────────
 export async function runSync(): Promise<void> {
   if (_syncing) {
-    // Reset stuck sync flag if timeout exceeded
+    // Reset stuck sync flag if timeout exceeded, and abort in-flight DB ops
     if (Date.now() - _syncingSince > SYNC_TIMEOUT_MS) {
-      console.warn('[Sync] Previous sync timed out, resetting flag');
+      console.warn('[Sync] Previous sync timed out, aborting');
+      _abortController?.abort();
+      _abortController = null;
       _syncing = false;
     } else {
       return;
@@ -487,6 +506,8 @@ export async function runSync(): Promise<void> {
 
   _syncing = true;
   _syncingSince = Date.now();
+  _abortController = new AbortController();
+  const { signal } = _abortController;
   const myGeneration = ++_syncGeneration;
   console.log('[Sync] Starting sync...');
 
@@ -564,7 +585,7 @@ export async function runSync(): Promise<void> {
           (byEntity[c.entity] ??= []).push(payload);
         }
         const deletedIds = _deletedIdsProvider?.();
-        const patch = await applyServerChanges(byEntity, deletedIds);
+        const patch = await applyServerChanges(byEntity, deletedIds, signal);
         if (Object.keys(patch).length) _onChanges?.(patch);
       }
 
@@ -577,10 +598,11 @@ export async function runSync(): Promise<void> {
     }
 
     // 2. Pull server changes
+    if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
     const pullResult = await apiSyncPull(token);
     if (pullResult.data && Object.keys(pullResult.data).length > 0) {
       const deletedIds = _deletedIdsProvider?.();
-      const patch = await applyServerChanges(pullResult.data, deletedIds);
+      const patch = await applyServerChanges(pullResult.data, deletedIds, signal);
       if (Object.keys(patch).length) _onChanges?.(patch);
     }
 
@@ -591,11 +613,18 @@ export async function runSync(): Promise<void> {
       await purgeDeletedRecords();
       _hasSyncedDeletes = false;
     }
-  } catch (err) {
-    console.error('[Sync] Error:', err);
+  } catch (err: any) {
+    if (err?.name === 'AbortError') {
+      console.warn('[Sync] Aborted (timed out)');
+    } else {
+      console.error('[Sync] Error:', err);
+    }
   } finally {
     // Only reset if this is still the current sync (not a stale timed-out call)
-    if (_syncGeneration === myGeneration) _syncing = false;
+    if (_syncGeneration === myGeneration) {
+      _syncing = false;
+      _abortController = null;
+    }
   }
 }
 

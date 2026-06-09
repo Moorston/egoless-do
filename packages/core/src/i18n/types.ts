@@ -339,6 +339,14 @@ export interface I18nKeys {
   incompleteReasonBack: string; incompleteReasonNote: string;
   incompleteReasonNotePlaceholder: string; incompleteReasonStats: string;
   dateBarToday: string; noCheckinRecord: string;
+  streakBreakActiveStreak: string; streakBreakDaysSince: string;
+  streakBreakGettingStronger: string; streakBreakRestart: string;
+  streakBreakPrevStreak: string; streakBreakCanBeLonger: string;
+  streakBreakDontForget: string; streakBreakNeverTooLate: string;
+  streakBreakCheckinNow: string; streakBreakInsight: string;
+  streakBreakHighDay: string; streakBreakAvgStreak: string;
+  streakBreakAvgRecovery: string; streakBreakTrend: string;
+  streakBreakHypothetical: string; streakBreakGraceHint: string;
 }
 
 export type I18nKey = keyof I18nKeys;

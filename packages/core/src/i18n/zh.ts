@@ -423,4 +423,12 @@ export const zh: I18nKeys = {
   incompleteReasonNotePlaceholder:'请填写补充说明...',
   incompleteReasonStats:'未完成原因分布',
   dateBarToday:'今天', noCheckinRecord:'未打卡',
+  streakBreakActiveStreak:'当前连胜 {n} 天', streakBreakDaysSince:'距上次中断已过 {n} 天',
+  streakBreakGettingStronger:'你正在变得更强', streakBreakRestart:'没关系，重新开始',
+  streakBreakPrevStreak:'上次连胜 {n} 天', streakBreakCanBeLonger:'这次可以更久',
+  streakBreakDontForget:'别忘了今天的打卡', streakBreakNeverTooLate:'重新开始，永远不晚',
+  streakBreakCheckinNow:'立即打卡', streakBreakInsight:'中断模式',
+  streakBreakHighDay:'高发日', streakBreakAvgStreak:'平均连胜',
+  streakBreakAvgRecovery:'恢复平均', streakBreakTrend:'趋势',
+  streakBreakHypothetical:'假设连胜 {n} 天', streakBreakGraceHint:'可用宽限期未使用',
 };
