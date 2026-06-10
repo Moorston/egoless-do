@@ -17,16 +17,13 @@ export async function POST(req: NextRequest) {
     const pb = await getAdminPb();
     try {
       await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
-      // Found → email is registered
       return NextResponse.json({ available: false });
     } catch (err: any) {
       if (err?.status === 404) {
-        // Not found → email is available
         return NextResponse.json({ available: true });
       }
-      // Other errors
-      console.error('[check-email] query error:', err);
-      return NextResponse.json({ available: false, error: '查询失败' });
+      console.error('[check-email] error:', err?.status, err?.message);
+      return NextResponse.json({ available: false, error: '检查失败' });
     }
   } catch (err) {
     console.error('[check-email] unexpected error:', err);

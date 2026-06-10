@@ -159,7 +159,7 @@ export default function HabitsScreen() {
 
                 <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
 
-                {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>"{h.insight}"</Text> : null}
+                {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>愿景："{h.insight}"</Text> : null}
                 {h.createTag && (
                   <View style={{ marginBottom:8, alignSelf:'flex-start', backgroundColor:`${P}30`, borderRadius:10, paddingHorizontal:10, paddingVertical:3 }}>
                     <Text style={{ color:P, fontSize:FONT_SUB }}>#{h.name}</Text>
@@ -319,7 +319,7 @@ export default function HabitsScreen() {
                 <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitResumeBtn')}</Text>
               </TouchableOpacity>
             )}
-            {(actionMenuHabit?.status==='inProgress'||actionMenuHabit?.status==='paused') && (
+            {actionMenuHabit?.status==='paused' && (
               <TouchableOpacity onPress={() => { if(actionMenuHabit) changeStatus(actionMenuHabit.id,'abandoned'); setActionMenuHabit(null); }}
                 style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(239,68,68,.15)', alignItems:'center' }}>
                 <Text style={{ color:COLORS.RED, fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitAbandonBtn')}</Text>

@@ -31,22 +31,31 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { email } = await req.json();
+    const { email, type } = await req.json();
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: '请输入有效的邮箱地址' }, { status: 400 });
     }
 
-    // Check if email already registered
+    // Check email registration status based on type
     const pb = await getAdminPb();
+    let emailExists = false;
     try {
       await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
-      return NextResponse.json({ error: '该邮箱已注册' }, { status: 409 });
+      emailExists = true;
     } catch (err: any) {
       if (err?.status !== 404) {
-        throw err; // Re-throw unexpected errors
+        console.error('[send-code] check email error:', err?.status, err?.message);
+        throw err;
       }
-      // 404 = not found, proceed with sending code
+    }
+
+    // type='reset' requires email to be registered
+    // type='register' (default) requires email NOT to be registered
+    if (type === 'reset' && !emailExists) {
+      return NextResponse.json({ error: '该邮箱未注册' }, { status: 404 });
+    } else if (type !== 'reset' && emailExists) {
+      return NextResponse.json({ error: '该邮箱已注册' }, { status: 409 });
     }
 
     // Rate limit: max 1 code per 60 seconds
@@ -67,15 +76,18 @@ export async function POST(req: NextRequest) {
     ).run(email, code, expiresAt);
 
     const transporter = getTransporter();
+    const subject = type === 'reset' ? '【心流纪】密码重置验证码' : '【心流纪】邮箱验证码';
+    const purpose = type === 'reset' ? '密码重置验证码' : '注册验证码';
+
     await transporter.sendMail({
       from: `"心流纪 Egoless Do" <${process.env.SMTP_USER}>`,
       to: email,
-      subject: '【心流纪】邮箱验证码',
+      subject,
       html: `
         <div style="font-family:system-ui,sans-serif;max-width:420px;margin:0 auto;padding:32px;background:#0F0A1E;border-radius:16px;color:#fff;">
           <h2 style="text-align:center;margin-bottom:8px;">心流纪</h2>
           <p style="text-align:center;color:#818cf8;font-size:13px;margin-bottom:24px;">Egoless Do</p>
-          <p style="font-size:15px;margin-bottom:16px;">你的注册验证码为：</p>
+          <p style="font-size:15px;margin-bottom:16px;">你的${purpose}为：</p>
           <div style="text-align:center;font-size:32px;font-weight:800;letter-spacing:8px;color:#818cf8;padding:16px;background:rgba(129,140,248,.1);border-radius:12px;margin-bottom:24px;">
             ${code}
           </div>

@@ -387,7 +387,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
                   )}
 
                   {/* Frequency selector */}
-                  <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{T('freqDaily')}</div>
+                  <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{T('checkinFreq')}</div>
                   <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
                     {FREQUENCY_OPTIONS.map(opt => {
                       const active = (item.frequency?.mode ?? 'daily') === opt.mode;
@@ -409,25 +409,31 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
                   </div>
 
                   {/* Frequency config */}
-                  {item.frequency && item.frequency.mode === 'interval' && (
+                  {item.frequency && item.frequency.mode === 'interval' && (() => {
+                    const [prefix, suffix] = T('freqEveryNDays').split('{n}');
+                    return (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('freqEveryNDays').replace('{n}', '')}</span>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{prefix}</span>
                       <FrequencyInput value={item.frequency.every} min={1}
                         onChange={val => updateItem(item.id, { frequency: { mode: 'interval', every: val } })}
                         style={{ ...inp(TH), width: 60, textAlign: 'center', marginBottom: 0 }} />
-                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('days')}</span>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{suffix}</span>
                     </div>
-                  )}
+                    );
+                  })()}
 
-                  {item.frequency && item.frequency.mode === 'weekly' && (
+                  {item.frequency && item.frequency.mode === 'weekly' && (() => {
+                    const [prefix, suffix] = T('freqNTimesPerWeek').split('{n}');
+                    return (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('freqNTimesPerWeek').replace('{n}', '')}</span>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{prefix}</span>
                       <FrequencyInput value={item.frequency.target} min={1} max={7}
                         onChange={val => updateItem(item.id, { frequency: { mode: 'weekly', target: val } })}
                         style={{ ...inp(TH), width: 60, textAlign: 'center', marginBottom: 0 }} />
-                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planDays')}</span>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{suffix}</span>
                     </div>
-                  )}
+                    );
+                  })()}
 
                   {item.frequency && item.frequency.mode === 'weekly_fixed' && (
                     <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
@@ -456,15 +462,18 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
                     </div>
                   )}
 
-                  {item.frequency && item.frequency.mode === 'monthly' && (
+                  {item.frequency && item.frequency.mode === 'monthly' && (() => {
+                    const [prefix, suffix] = T('freqNTimesPerMonth').split('{n}');
+                    return (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('freqNTimesPerMonth').replace('{n}', '')}</span>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{prefix}</span>
                       <FrequencyInput value={item.frequency.target} min={1} max={31}
                         onChange={val => updateItem(item.id, { frequency: { mode: 'monthly', target: val } })}
                         style={{ ...inp(TH), width: 60, textAlign: 'center', marginBottom: 0 }} />
-                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planDays')}</span>
+                      <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{suffix}</span>
                     </div>
-                  )}
+                    );
+                  })()}
 
                   {item.frequency && item.frequency.mode === 'monthly_fixed' && (
                     <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>

@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, createDateChangeDetector, computeItemProgress } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemProgress } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, CheckinFrequency } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -20,6 +20,8 @@ const WEEKDAY_LABELS = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 
 
 function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string): string {
   switch (freq.mode) {
+    case 'daily':
+      return T('freqSummaryDaily');
     case 'interval':
       return T('freqSummaryInterval').replace('{n}', String(freq.every));
     case 'weekly': {
@@ -366,11 +368,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.doneCount} {T('planCheckinDays')}</Text>
                     </View>
                     {/* Frequency summary */}
-                    {item.frequency && item.frequency.mode !== 'daily' && (
-                      <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 4 }}>
-                        {getFrequencySummary(item.frequency, T, checkins, today)}
-                      </Text>
-                    )}
+                    <Text style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
+                      {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today)}
+                    </Text>
                     {/* Heatmap toggle */}
                     <TouchableOpacity
                       onPress={() => toggleHeatmap(item.id)}
@@ -566,6 +566,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                               fontSize: FONT_BODY, fontWeight: '500',
                               color: TH.text,
                             }}>{item.name}</Text>
+                            <Text style={{ fontSize: FONT_TINY, color: P, marginTop: 1 }}>
+                              {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today)}
+                            </Text>
                             {item.description ? (
                               <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{item.description}</Text>
                             ) : null}

@@ -49,7 +49,7 @@ export default function ForgotPasswordScreen() {
         setError('该邮箱未注册');
         return;
       }
-      await apiSendCode(email);
+      await apiSendCode(email, 'reset');
       startCooldown();
     } catch (e: any) {
       setError(e.message || '发送失败');

@@ -385,7 +385,7 @@ export default function PlanCreateScreen() {
                   </ScrollView>
 
                   {/* Frequency selector */}
-                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('freqDaily')}</Text>
+                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('checkinFreq')}</Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
                     {FREQUENCY_OPTIONS.map(opt => {
                       const active = (item.frequency?.mode ?? 'daily') === opt.mode;
@@ -408,9 +408,11 @@ export default function PlanCreateScreen() {
                   </ScrollView>
 
                   {/* Frequency config */}
-                  {item.frequency && item.frequency.mode === 'interval' && (
+                  {item.frequency && item.frequency.mode === 'interval' && (() => {
+                    const [prefix, suffix] = T('freqEveryNDays').split('{n}');
+                    return (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('freqEveryNDays').replace('{n}', '')}</Text>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
                       <TextInput
                         value={String(item.frequency.every)}
                         onChangeText={v => {
@@ -420,13 +422,16 @@ export default function PlanCreateScreen() {
                         keyboardType="number-pad"
                         style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
                       />
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('days')}</Text>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{suffix}</Text>
                     </View>
-                  )}
+                    );
+                  })()}
 
-                  {item.frequency && item.frequency.mode === 'weekly' && (
+                  {item.frequency && item.frequency.mode === 'weekly' && (() => {
+                    const [prefix, suffix] = T('freqNTimesPerWeek').split('{n}');
+                    return (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('freqNTimesPerWeek').replace('{n}', '')}</Text>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
                       <TextInput
                         value={String(item.frequency.target)}
                         onChangeText={v => {
@@ -436,9 +441,10 @@ export default function PlanCreateScreen() {
                         keyboardType="number-pad"
                         style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
                       />
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('planDays')}</Text>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{suffix}</Text>
                     </View>
-                  )}
+                    );
+                  })()}
 
                   {item.frequency && item.frequency.mode === 'weekly_fixed' && (
                     <View style={{ flexDirection: 'row', gap: 6, marginBottom: 8 }}>
@@ -466,9 +472,11 @@ export default function PlanCreateScreen() {
                     </View>
                   )}
 
-                  {item.frequency && item.frequency.mode === 'monthly' && (
+                  {item.frequency && item.frequency.mode === 'monthly' && (() => {
+                    const [prefix, suffix] = T('freqNTimesPerMonth').split('{n}');
+                    return (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('freqNTimesPerMonth').replace('{n}', '')}</Text>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
                       <TextInput
                         value={String(item.frequency.target)}
                         onChangeText={v => {
@@ -478,9 +486,10 @@ export default function PlanCreateScreen() {
                         keyboardType="number-pad"
                         style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
                       />
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{T('planDays')}</Text>
+                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{suffix}</Text>
                     </View>
-                  )}
+                    );
+                  })()}
 
                   {item.frequency && item.frequency.mode === 'monthly_fixed' && (
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>

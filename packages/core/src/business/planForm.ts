@@ -19,11 +19,9 @@ export interface ItemForm {
 /** Link type options for plan items. */
 export const LINK_OPTIONS: { value: PlanItemLink; labelKey: string }[] = [
   { value: 'manual', labelKey: 'planLinkManual' },
-  { value: 'checkin', labelKey: 'planLinkCheckin' },
   { value: 'fasting', labelKey: 'planLinkFasting' },
   { value: 'meditation', labelKey: 'planLinkMeditation' },
   { value: 'exercise', labelKey: 'planLinkExercise' },
-  { value: 'habit', labelKey: 'planLinkHabit' },
   { value: 'reflection', labelKey: 'planLinkReflection' },
 ];
 

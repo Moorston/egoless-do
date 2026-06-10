@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
         setError('该邮箱未注册');
         return;
       }
-      await apiSendCode(email);
+      await apiSendCode(email, 'reset');
       startCooldown();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err));

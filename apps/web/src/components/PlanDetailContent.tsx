@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useRef, useEffect, memo } from 'react';
-import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, dateStr, createDateChangeDetector, PLAN_STATUS_COLORS, statusToI18nKey, computeItemProgress } from '@egoless-do/core';
+import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, dateStr, createDateChangeDetector, PLAN_STATUS_COLORS, statusToI18nKey, computeItemProgress } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink, CheckinFrequency } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { useT, cs } from './helpers';
@@ -16,6 +16,8 @@ const WEEKDAY_LABELS = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 
 
 function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string): string {
   switch (freq.mode) {
+    case 'daily':
+      return T('freqSummaryDaily');
     case 'interval':
       return T('freqSummaryInterval').replace('{n}', String(freq.every));
     case 'weekly': {
@@ -448,11 +450,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                   <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{prog.doneCount} {T('planCheckinDays')}</span>
                 </div>
                 {/* Frequency summary */}
-                {item.frequency && item.frequency.mode !== 'daily' && (
-                  <div style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 4 }}>
-                    {getFrequencySummary(item.frequency, T, checkins, today)}
+                {(() => { const freq = item.frequency ?? { mode: 'daily' as const }; return (
+                  <div style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
+                    {getFrequencySummary(freq, T, checkins, today)}
                   </div>
-                )}
+                ); })()}
                 {/* Heatmap toggle */}
                 <div
                   onClick={() => toggleHeatmap(item.id)}
@@ -548,6 +550,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           <div style={{
                             fontSize: FONT_BODY, fontWeight: 500, color: TH.text,
                           }}>{item.name}</div>
+                          {(() => { const freq = item.frequency ?? { mode: 'daily' as const }; return (
+                            <div style={{ fontSize: FONT_TINY, color: P, marginTop: 1 }}>
+                              {getFrequencySummary(freq, T, checkins, today)}
+                            </div>
+                          ); })()}
                           {item.description && (
                             <div style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {item.description}

@@ -61,9 +61,9 @@ export default function LoginPage() {
         <input type="email" placeholder="邮箱" value={email}
           onChange={e => { setEmail(e.target.value); setEmailError(''); }}
           onBlur={e => validateEmail(e.target.value)}
-          style={{ ...inputStyle, borderColor: emailError ? '#ef4444' : inputStyle.borderColor }}
+          style={{ ...inputStyle, marginBottom: 0, borderColor: emailError ? '#ef4444' : inputStyle.borderColor }}
         />
-        {emailError && <p style={{ color: '#ef4444', fontSize: FONT_ERROR, marginTop: -8, marginBottom: 12 }}>{emailError}</p>}
+        <p style={{ color: '#ef4444', fontSize: FONT_ERROR, minHeight: 20, margin: '4px 0 8px' }}>{emailError}</p>
 
         <input type="password" placeholder="密码" value={password} onChange={e => setPassword(e.target.value)} required
           style={inputStyle} />

@@ -253,7 +253,7 @@ export interface I18nKeys {
   planRelatedTrails: string; planTrailReflectionCount: string;
   planCannotOperate: string; planUnlinkAndContinue: string;
   planCannotOperateDetail: string;
-  freqDaily: string; freqInterval: string; freqWeekly: string;
+  checkinFreq: string, freqDaily: string; freqInterval: string; freqWeekly: string;
   freqWeeklyFixed: string; freqMonthly: string; freqMonthlyFixed: string;
   freqEveryNDays: string; freqNTimesPerWeek: string; freqNTimesPerMonth: string;
   freqSelectDays: string; freqSelectDates: string;

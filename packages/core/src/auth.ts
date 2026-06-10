@@ -41,11 +41,11 @@ export async function apiRegister(email: string, password: string, name: string,
 }
 
 // ── Send verification code ────────────────────────────────────────
-export async function apiSendCode(email: string): Promise<{ ok: boolean; message: string }> {
+export async function apiSendCode(email: string, type?: 'register' | 'reset'): Promise<{ ok: boolean; message: string }> {
   const res = await fetchWithTimeout(`${apiBase}/api/auth/send-code`, {
     method: 'POST',
     headers: buildHeaders(),
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, type }),
   });
   return handleJsonResponse<{ ok: boolean; message: string }>(res);
 }
