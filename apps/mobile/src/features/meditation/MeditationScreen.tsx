@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Music, Globe, Binary, ChevronRight } from 'lucide-react-native';
 import { useMusicStore } from '../music/useMusicStore';
 import MusicMiniBar from '../music/MusicMiniBar';
+import MusicPickerModal from '../music/MusicPickerModal';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
@@ -27,6 +28,7 @@ export default function MeditationScreen() {
   const [sec, setSec]             = useState(0);
   const [active, setActive]       = useState(false);
   const [showShare, setShowShare]   = useState(false);
+  const [showMusicPicker, setShowMusicPicker] = useState(false);
   const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
   const completedRef = useRef(false);
   const shareCardRef = useRef<ViewShot>(null);
@@ -121,7 +123,7 @@ export default function MeditationScreen() {
       currentTrack={musicTrack} isPlaying={musicIsPlaying} loop={musicLoop}
       onTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()}
       onToggleLoop={musicToggleLoop}
-      onPressTrackName={() => nav.navigate('Music')}
+      onPressTrackName={() => setShowMusicPicker(true)}
       primaryColor={P}
     />
   );
@@ -205,7 +207,7 @@ export default function MeditationScreen() {
                   musicBar
                 ) : (
                   <TouchableOpacity
-                    onPress={() => nav.navigate('Music')}
+                    onPress={() => setShowMusicPicker(true)}
                     style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, gap: 8 }}
                   >
                     <Music size={18} color={P} />
@@ -265,6 +267,13 @@ export default function MeditationScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Music Picker Modal */}
+      <MusicPickerModal
+        visible={showMusicPicker}
+        onClose={() => setShowMusicPicker(false)}
+        primaryColor={P}
+      />
     </SafeAreaView>
   );
 }
