@@ -9,6 +9,7 @@ import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, Outl
 import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Music, Globe, Binary, ChevronRight, Clock } from 'lucide-react-native';
 
 // Local sound files
@@ -161,11 +162,48 @@ export default function MeditationScreen() {
           </View>
         )}
 
-        {/* Accumulated */}
-        <Card style={{ alignItems:'center', paddingVertical:20 }}>
-          <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:P }}>{store.totalMedMinutes}</Text>
-          <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>{T('accMed')}</Text>
-        </Card>
+        {/* Hero Banner */}
+        <View style={{ marginHorizontal: 0, marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
+          <LinearGradient
+            colors={['#7117EA', '#A855F7']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ padding: 20 }}
+          >
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('meditation')}</Text>
+              <TouchableOpacity onPress={() => nav.navigate('MedHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600' }}>{T('meditationHistory')}</Text>
+                <ChevronRight size={16} color="rgba(255,255,255,.8)" />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{store.totalMedMinutes}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('accMed')}</Text>
+              </View>
+              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{todayMedMin}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('medTitle')}</Text>
+              </View>
+              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.medHistory ?? []).length}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('shareCardSession')}</Text>
+              </View>
+            </View>
+            <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🧘', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.2)' }}>
+              <Globe size={18} color="rgba(255,255,255,.8)" />
+              <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600', flex: 1 }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
+              <ChevronRight size={16} color="rgba(255,255,255,.8)" />
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
 
         {/* Main card */}
         <Card style={{ paddingVertical:32 }}>
@@ -214,32 +252,6 @@ export default function MeditationScreen() {
           )}
         </Card>
 
-        {/* Today card */}
-        <Card>
-          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center' }}>
-            <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-              <Clock size={18} color={P} />
-              <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('medTitle')}</Text>
-            </View>
-            <Text style={{ color:P, fontWeight:'600' }}>{todayMedMin} {T('medMinutes')}</Text>
-          </View>
-        </Card>
-
-        {/* Global meditators */}
-        <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
-          style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Globe size={18} color={P} />
-          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
-          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
-        </TouchableOpacity>
-
-        {/* History entry */}
-        <TouchableOpacity onPress={() => nav.navigate('MedHistory')}
-          style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Binary size={18} color={P} />
-          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('meditationHistory')}</Text>
-          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
-        </TouchableOpacity>
 
         <Text style={{ textAlign:'center', fontSize:FONT_BODY, color:TH.sub, marginTop:12 }}>{T('medAttribution')}</Text>
       </ScrollView>
