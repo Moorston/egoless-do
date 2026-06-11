@@ -13,6 +13,7 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Music, Globe, Binary, ChevronRight } from 'lucide-react-native';
 import { useMusicStore } from '../music/useMusicStore';
+import { useAudioEngine } from '../music/useAudioEngine';
 import MusicPickerModal from '../music/MusicPickerModal';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
@@ -23,6 +24,9 @@ export default function MeditationScreen() {
   const store = useAppStore();
   const nav   = useRootNavigation();
   const T     = useT();
+
+  // Mount audio engine so music store play/pause actually produces sound
+  useAudioEngine();
 
   const [durMin, setDurMin]       = useState(10);
   const [sec, setSec]             = useState(0);
