@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, useT } from '../../components/UI';
-import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, estimateFastingKcal, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION } from '@egoless-do/core';
+import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, estimateFastingKcal, getTodayMedMinutes, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -121,13 +121,6 @@ export default function StatsScreen() {
   const weightData = useMemo(() => aggregateWeightData(store.checkinHistory ?? [], 30), [store.checkinHistory]);
   const caloriesData = useMemo(() => aggregateDailyCalories(store.foodLog ?? [], 7), [store.foodLog]);
   const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLog, 8), [exerciseLog]);
-
-  // ── Hero Banner 3 columns ──
-  const heroStats = [
-    { value: `${store.streak}`, unit: T('days'), label: T('streak') },
-    { value: `${reflCount}`, unit: T('fastTimes'), label: T('statsReflections') },
-    { value: `${totalMedMin}`, unit: T('medMinutes'), label: T('statsMeditation') },
-  ];
 
   // ── Render helpers ──
   const renderStatGrid = (items: { value: string; unit: string; label: string; icon?: React.ComponentType<any> }[], columns = 2) => (
@@ -253,7 +246,6 @@ export default function StatsScreen() {
             {renderChartArea()}
             {renderHabitList()}
             {renderPlanList()}
-            {renderCalendar()}
           </>
         );
       case 'fasting':
@@ -331,24 +323,8 @@ export default function StatsScreen() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
-        {/* Hero Banner */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 20, padding: 20, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('statsTitle')}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            {heroStats.map((s, i) => (
-              <React.Fragment key={i}>
-                {i > 0 && <View style={{ width: 1, backgroundColor: TH.border, marginVertical: 4 }} />}
-                <View style={{ alignItems: 'center', flex: 1 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: P }}>{s.value}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{s.unit}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{s.label}</Text>
-                </View>
-              </React.Fragment>
-            ))}
-          </View>
-        </View>
+        {/* Calendar heatmap */}
+        {renderCalendar()}
 
         {/* Tabs */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }} contentContainerStyle={{ gap: 6 }}>
