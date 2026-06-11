@@ -24,6 +24,7 @@ export function createMobileUiSlice(
   settingsSlice: StateCreator<FullStore, [], [], SettingsSlice>,
   tagMoodSlice: StateCreator<FullStore, [], [], TagMoodSlice>,
   onReset?: () => void,
+  onSettingsPersist?: () => void,
 ): StateCreator<FullStore, [], [], MobileUiSlice> {
   return (set, get, api) => ({
     ...foodSlice(set, get, api),
@@ -36,7 +37,7 @@ export function createMobileUiSlice(
     healthSyncEnabled: false,
     todaySteps: null,
 
-    setHealthSyncEnabled(v: boolean) { set({ healthSyncEnabled: v } as any); },
+    setHealthSyncEnabled(v: boolean) { set({ healthSyncEnabled: v } as any); onSettingsPersist?.(); },
     setTodaySteps(n: number) { set({ todaySteps: n } as any); },
 
     syncWeightFromHealth(weight: number) {

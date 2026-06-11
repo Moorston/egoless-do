@@ -117,14 +117,20 @@ export function createAuthSlice(
             if (typeof profileData === 'string') {
               try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
             }
-            patch.userProfile = { ...(s.userProfile ?? {}), ...profileData };
+            // Separate settings from profile data to prevent overwriting local settings via merge
+            const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
+            const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = profileData as any;
+            patch.userProfile = { ...(s.userProfile ?? {}), ...profileDataWithoutSettings };
             if (profileData.waterMl !== undefined) patch.waterMl = profileData.waterMl;
             if (profileData.waterGoal !== undefined) patch.waterGoal = profileData.waterGoal;
             if (profileData.weightUnit !== undefined) patch.weightUnit = profileData.weightUnit;
-            // Extract piggybacked settings from profile
-            const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
-            for (const sk of SETTINGS_KEYS) {
-              if (profileData[sk] !== undefined) (patch as any)[sk] = profileData[sk];
+            // Only overwrite local settings if server profile is newer
+            const localUpdated = (s.userProfile as any)?.updatedAt ?? 0;
+            const serverUpdated = latest.updatedAt ?? 0;
+            if (serverUpdated >= localUpdated) {
+              for (const sk of SETTINGS_KEYS) {
+                if (profileData[sk] !== undefined) (patch as any)[sk] = profileData[sk];
+              }
             }
           }
         }

@@ -166,7 +166,7 @@ export interface I18nKeys {
   checkinSelectStatus: string; checkinHistory: string;
   checkinNoRecords: string; checkinDone: string; checkinNotDone: string;
   checkinStreak: string; checkinNotChecked: string;
-  checkinModifyNotDone: string; checkinDoneBanner: string;
+  checkinModifyNotDone: string; checkinDoneBanner: string; checkinDoneHistory: string; checkinNotDoneBanner: string;
   checkinModify: string; checkinDataTitle: string; checkinDetailTitle: string;
   checkinTime: string; checkinStatus: string; checkinContent: string;
   foodTitle: string; foodTodayKcal: string; foodRemaining: string;
@@ -190,6 +190,9 @@ export interface I18nKeys {
   statsKeyMetrics: string; statsExerciseStats: string;
   statsKg: string; statsKcal: string; statsUpgrade: string;
   statsUpgradeDesc: string; statsLearnMore: string;
+  statsTabOverview: string; statsTabFasting: string; statsTabMeditation: string; statsTabExercise: string; statsTabReflections: string; statsTabPlan: string; statsTabHabits: string; statsGraceCount: string; statsTotalCheckinDays: string; statsCompletedTasks: string; statsHabitCount: string; statsExerciseDuration: string;
+  statsPlanTotal: string; statsPlanTasks: string; statsPlanDone: string; statsPlanProgress: string;
+  statsChartSwitch: string; statsCalendarEntry: string; statsHabitProgress: string; statsPlanList: string;
   settingsRemind: string; settingsRemindOn: string;
   settingsRemindTime: string; settingsData: string;
   settingsStats: string; settingsHistory: string;

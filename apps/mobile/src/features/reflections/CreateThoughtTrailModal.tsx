@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { X, Check, Search } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
@@ -76,6 +76,14 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
     });
   }, []);
 
+  const handleSelectAll = useCallback(() => {
+    setSelectedIds(new Set(filteredReflections.map(r => r.id)));
+  }, [filteredReflections]);
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
   const handleCreate = useCallback(() => {
     if (!name.trim()) return;
 
@@ -107,7 +115,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   return (
     <Modal visible={visible} transparent animationType="slide">
       <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={styles.overlay}>
-        <View style={[styles.container, { backgroundColor: TH.cardSolid }]}>
+        <View style={[styles.container, { backgroundColor: TH.cardSolid }]} onTouchStart={() => Keyboard.dismiss()}>
           {/* Header */}
           <View style={styles.header}>
             <Text style={[styles.title, { color: TH.text }]}>{T('createThoughtTrail')}</Text>
@@ -167,6 +175,19 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                     <X size={16} color={TH.sub} />
                   </TouchableOpacity>
                 )}
+              </View>
+
+              {/* Batch select/deselect buttons */}
+              <View style={[styles.batchActions, { borderBottomColor: TH.border }]}>
+                <TouchableOpacity onPress={handleSelectAll} style={[styles.batchBtn, { backgroundColor: `${P}15` }]}>
+                  <Text style={{ color: P, fontSize: FONT_SMALL, fontWeight: '600' }}>全选</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleDeselectAll} style={[styles.batchBtn, { backgroundColor: `${TH.sub}15` }]}>
+                  <Text style={{ color: TH.sub, fontSize: FONT_SMALL, fontWeight: '600' }}>取消全选</Text>
+                </TouchableOpacity>
+                <Text style={{ color: TH.sub, fontSize: FONT_SMALL, marginLeft: 'auto' }}>
+                  已选 {selectedIds.size} 项
+                </Text>
               </View>
 
               <ScrollView
@@ -341,6 +362,20 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: FONT_BODY,
     padding: 0,
+  },
+  batchActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    gap: 8,
+  },
+  batchBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   reflectionList: {
     flex: 1,

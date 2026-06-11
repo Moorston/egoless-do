@@ -165,6 +165,32 @@ export const aggregateDailyCalories = (
   }));
 };
 
+/** Aggregate daily water intake from checkin history (last N days). */
+export const aggregateDailyWater = (
+  history: Array<{ date: string; note?: string }>,
+  days: number = 7,
+): { label: string; value: number }[] => {
+  const map = new Map<string, number>();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    map.set(dateStr(d), 0);
+  }
+  for (const e of history) {
+    if (!e.note || !map.has(e.date)) continue;
+    try {
+      const data = JSON.parse(e.note);
+      if (typeof data === 'object' && data !== null && typeof data.water === 'number') {
+        map.set(e.date, (map.get(e.date) ?? 0) + data.water);
+      }
+    } catch {}
+  }
+  return Array.from(map.entries()).map(([k, v]) => ({
+    label: k.slice(5),
+    value: Math.round(v),
+  }));
+};
+
 /** Aggregate weekly km from exercise log (last N weeks). */
 export const aggregateWeeklyKm = (
   exerciseLog: Array<{ timestamp: number; distanceKm?: number }>,

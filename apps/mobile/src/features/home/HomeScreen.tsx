@@ -327,13 +327,18 @@ export default function HomeScreen() {
   const addWater = useCallback((ml: number) => {
     if (!isToday) return;
     store.addWater(ml);
-    setTimeout(() => saveField(), 0);
-  }, [store, saveField, isToday]);
+    // 无论打卡状态如何，都更新饮水数据
+    setTimeout(() => {
+      const weightNum = weight ? parseFloat(weight) : undefined;
+      store.submitCheckin(localDone ?? true, buildNote(), undefined, weightNum);
+    }, 0);
+  }, [store, buildNote, weight, localDone, isToday]);
 
   const saveWeight = useCallback((val: string) => {
     setWeight(val);
     const w = val ? parseFloat(val) : undefined;
-    store.submitCheckin(localDone ?? false, buildNote(), undefined, w);
+    // 无论打卡状态如何，都更新体重数据
+    store.submitCheckin(localDone ?? true, buildNote(), undefined, w);
   }, [localDone, buildNote, store]);
 
   const saveNote = useCallback((val: string) => {
@@ -423,10 +428,10 @@ export default function HomeScreen() {
     return `${d.getMonth() + 1}月${d.getDate()}日打卡`;
   })();
   const bannerStatusText = status === 'done'
-    ? T('checkinDoneBanner')
+    ? (isToday ? T('checkinDoneBanner') : T('checkinDoneHistory'))
     : status === 'editing'
     ? T('checkinModifyNotDone')
-    : (isToday ? T('checkinDoneToday') : viewDateLabel);
+    : (isToday ? T('checkinDoneToday') : T('checkinNotDoneBanner'));
 
   const bannerTimeText = todayRecord?.timestamp
     ? new Date(todayRecord.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
@@ -1001,7 +1006,13 @@ export default function HomeScreen() {
         </RNAnimated.View>
       )}
 
-      <AddFoodModal visible={showFood} onClose={() => setShowFood(false)} />
+      <AddFoodModal visible={showFood} onClose={() => setShowFood(false)} onFoodAdded={() => {
+        // 添加食物后更新打卡记录
+        setTimeout(() => {
+          const weightNum = weight ? parseFloat(weight) : undefined;
+          store.submitCheckin(localDone ?? true, buildNote(), undefined, weightNum);
+        }, 0);
+      }} />
 
       {/* Portion Selector Modal (for recent foods) */}
       <Modal visible={!!portionFood} transparent animationType="fade" onRequestClose={() => setPortionFood(null)}>
@@ -1038,6 +1049,11 @@ export default function HomeScreen() {
                 if (portionFood) {
                   store.addFood({ name: portionFood.name, calories: Math.round(portionFood.calories * portion), timestamp: Date.now() });
                   setPortionFood(null);
+                  // 添加食物后更新打卡记录
+                  setTimeout(() => {
+                    const weightNum = weight ? parseFloat(weight) : undefined;
+                    store.submitCheckin(localDone ?? true, buildNote(), undefined, weightNum);
+                  }, 0);
                 }
               }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>

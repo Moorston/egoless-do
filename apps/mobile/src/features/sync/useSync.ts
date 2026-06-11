@@ -91,14 +91,21 @@ export function useSync() {
             if (typeof profileData === 'string') {
               try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
             }
+            // Separate settings from profile data to prevent overwriting local settings via merge
+            const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
+            const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = profileData as any;
             // Flatten profile array back to object (matching pullServerData behavior)
-            merged.userProfile = { ...(store.userProfile ?? {}), ...profileData };
+            merged.userProfile = { ...(store.userProfile ?? {}), ...profileDataWithoutSettings };
             if (profileData.waterMl !== undefined) merged.waterMl = profileData.waterMl;
             if (profileData.waterGoal !== undefined) merged.waterGoal = profileData.waterGoal;
             if (profileData.weightUnit !== undefined) merged.weightUnit = profileData.weightUnit;
-            const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
-            for (const sk of SETTINGS_KEYS) {
-              if (profileData[sk] !== undefined) (merged as any)[sk] = profileData[sk];
+            // Only overwrite local settings if server profile is newer
+            const localProfileUpdated = (store.userProfile as any)?.updatedAt ?? 0;
+            const serverProfileUpdated = latest.updatedAt ?? 0;
+            if (serverProfileUpdated >= localProfileUpdated) {
+              for (const sk of SETTINGS_KEYS) {
+                if (profileData[sk] !== undefined) (merged as any)[sk] = profileData[sk];
+              }
             }
           } else {
             // All profiles deleted — remove userProfile from patch, continue with other data
