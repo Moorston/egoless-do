@@ -5,22 +5,15 @@ import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { useAppStore } from '../../store/useAppStore';
-import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
-import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
+import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
+import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Music, Globe, Binary, ChevronRight, Clock } from 'lucide-react-native';
+import { Music, Globe, Binary, ChevronRight } from 'lucide-react-native';
+import { useMusicStore } from '../music/useMusicStore';
+import MusicMiniBar from '../music/MusicMiniBar';
 
-// Local sound files
-const SOUND_FILES: Record<string, number> = {
-  '海潮': require('../../../assets/sounds/ocean.mp3'),
-  '雨声': require('../../../assets/sounds/rain.mp3'),
-  '钵声': require('../../../assets/sounds/bowl.mp3'),
-  '鸟叫': require('../../../assets/sounds/birds.mp3'),
-  '流水': require('../../../assets/sounds/flowing-stream.mp3'),
-  '风铃': require('../../../assets/sounds/wind-chimes.mp3'),
-};
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
 export default function MeditationScreen() {
@@ -33,8 +26,6 @@ export default function MeditationScreen() {
   const [durMin, setDurMin]       = useState(10);
   const [sec, setSec]             = useState(0);
   const [active, setActive]       = useState(false);
-  const [sound, setSound]         = useState('海潮');
-  const [audioError, setAudioError] = useState<string | null>(null);
   const [showShare, setShowShare]   = useState(false);
   const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
   const completedRef = useRef(false);
@@ -45,11 +36,13 @@ export default function MeditationScreen() {
   const pct = sec / targetSec * 100;
   const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory ?? []), [store.medHistory]);
 
-  // Background sound player (looping, 30% volume)
-  const bgSource = SOUND_FILES[sound];
-  const bgPlayer = useAudioPlayer(bgSource ?? undefined);
-  bgPlayer.loop = true;
-  bgPlayer.volume = 0.3;
+  // Music store
+  const musicTrack = useMusicStore(s => s.currentTrack);
+  const musicIsPlaying = useMusicStore(s => s.isPlaying);
+  const musicLoop = useMusicStore(s => s.loop);
+  const musicPause = useMusicStore(s => s.pause);
+  const musicResume = useMusicStore(s => s.resume);
+  const musicToggleLoop = useMusicStore(s => s.toggleLoop);
 
   // Bell sound player (one-shot, 50% volume)
   const bellPlayer = useAudioPlayer(BELL_FILE);
@@ -63,24 +56,6 @@ export default function MeditationScreen() {
     }).catch((e) => console.error('[err]', e));
   }, []);
 
-  const playBgSound = useCallback(() => {
-    try {
-      if (bgSource) bgPlayer.play();
-      setAudioError(null);
-    } catch {
-      setAudioError('medLoadError');
-    }
-  }, [bgSource, bgPlayer]);
-
-  const stopBgSound = useCallback(() => {
-    try {
-      if (bgPlayer.playing) {
-        bgPlayer.pause();
-        bgPlayer.seekTo(0);
-      }
-    } catch {}
-  }, [bgPlayer]);
-
   const playBell = useCallback(() => {
     try {
       bellPlayer.seekTo(0);
@@ -88,34 +63,26 @@ export default function MeditationScreen() {
     } catch {}
   }, [bellPlayer]);
 
-  // Cleanup timer and audio on unmount
+  // Cleanup timer on unmount
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
-    try {
-      if (bgPlayer.playing) {
-        bgPlayer.pause();
-        bgPlayer.seekTo(0);
-      }
-    } catch {}
-  }, [bgPlayer]);
+  }, []);
 
   useEffect(() => {
     if (active) {
       completedRef.current = false;
-      playBgSound();
       timerRef.current = setInterval(() => {
         setSec(s => s + 1);
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
-      stopBgSound();
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [active, playBgSound, stopBgSound]);
+  }, [active]);
 
-  // Detect timer completion outside of render
+  // Detect timer completion
   const addMedMinutes = store.addMedMinutes;
   useEffect(() => {
     if (active && sec >= targetSec) {
@@ -125,10 +92,9 @@ export default function MeditationScreen() {
         completedRef.current = true;
         addMedMinutes(durMin);
       }
-      stopBgSound();
       playBell();
     }
-  }, [sec, active, targetSec, durMin, addMedMinutes, stopBgSound, playBell]);
+  }, [sec, active, targetSec, durMin, addMedMinutes, playBell]);
 
   const handleStop = () => {
     if (active && !completedRef.current) {
@@ -137,7 +103,6 @@ export default function MeditationScreen() {
       if (elapsedMin > 0) store.addMedMinutes(elapsedMin);
     }
     setActive(false);
-    stopBgSound();
     playBell();
   };
 
@@ -151,16 +116,20 @@ export default function MeditationScreen() {
     setShowShare(false);
   }, [T]);
 
+  const musicBar = (
+    <MusicMiniBar
+      currentTrack={musicTrack} isPlaying={musicIsPlaying} loop={musicLoop}
+      onTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()}
+      onToggleLoop={musicToggleLoop}
+      onPressTrackName={() => nav.navigate('Music')}
+      primaryColor={P}
+    />
+  );
+
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Meditation" />
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
-
-        {audioError && (
-          <View style={{ backgroundColor:'#F59E0B', borderRadius:12, padding:12, marginBottom:12, alignItems:'center' }}>
-            <Text style={{ color:'#fff', fontSize:FONT_BODY }}>{T(audioError)}</Text>
-          </View>
-        )}
 
         {/* Hero Banner */}
         <View style={{ marginHorizontal: 0, marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
@@ -209,12 +178,18 @@ export default function MeditationScreen() {
         <Card style={{ paddingVertical:32 }}>
           {active ? (
             <View style={{ alignItems:'center' }}>
+              {/* Music mini bar during meditation */}
+              {musicTrack && (
+                <View style={{ width: '100%', marginBottom: 16, backgroundColor: `${P}10`, borderRadius: 12, paddingVertical: 4 }}>
+                  {musicBar}
+                </View>
+              )}
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
                 <Text style={{ fontSize:FONT_HERO, fontWeight:'800', color:P, letterSpacing:2 }}>
                   {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
                 </Text>
                 <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginTop:6 }}>
-                  {T('medActive')} {sound !== '无' ? <><Music size={14} color={TH.sub} /> {sound}</> : ''}
+                  {T('medActive')}
                 </Text>
               </View>
               <View style={{ width:'80%', marginBottom:16 }}>
@@ -224,26 +199,27 @@ export default function MeditationScreen() {
             </View>
           ) : (
             <>
-              {/* Sound selector */}
-              <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border, marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T('bgMusic')}</Text>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                  <Music size={16} color={P} />
-                  <Text style={{ color:P, fontSize:FONT_BODY }}>{sound}</Text>
-                  <ChevronRight size={16} color={P} />
-                </View>
-              </View>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:6, marginBottom:14 }}>
-                {MED_SOUNDS.map(s => (
-                  <TagPill key={s} label={s} active={sound===s} onPress={() => setSound(s)} textActiveColor="#333" />
-                ))}
+              {/* Music selector */}
+              <View style={{ backgroundColor: `${P}08`, borderRadius: 12, paddingVertical: 4, marginBottom: 16 }}>
+                {musicTrack ? (
+                  musicBar
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => nav.navigate('Music')}
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, gap: 8 }}
+                  >
+                    <Music size={18} color={P} />
+                    <Text style={{ fontSize: FONT_BODY, color: P, fontWeight: '600' }}>{T('bgMusic')}</Text>
+                    <ChevronRight size={16} color={P} />
+                  </TouchableOpacity>
+                )}
               </View>
 
               {/* Duration selector */}
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
                 {MEDITATION_DURATIONS_MIN.map(d => (
                   <TagPill key={d} label={`${d}${T('medMinutes')}`} active={durMin===d}
-                    onPress={() => { setDurMin(d); setSec(0); setActive(false); }} textActiveColor="#333" />
+                    onPress={() => { setDurMin(d); setSec(0); setActive(false); }} textActiveColor={TH.sub} />
                 ))}
               </View>
 
@@ -251,7 +227,6 @@ export default function MeditationScreen() {
             </>
           )}
         </Card>
-
 
         <Text style={{ textAlign:'center', fontSize:FONT_BODY, color:TH.sub, marginTop:12 }}>{T('medAttribution')}</Text>
       </ScrollView>
