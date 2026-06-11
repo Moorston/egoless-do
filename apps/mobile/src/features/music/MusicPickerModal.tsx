@@ -89,6 +89,7 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, prim
                     onPlay={() => handlePlay(track)}
                     onToggleFavorite={() => toggleFavorite(track.id)}
                     primaryColor={primaryColor}
+                    showFavorite={false}
                   />
                 ))}
               </View>

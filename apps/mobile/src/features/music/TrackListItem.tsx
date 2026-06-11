@@ -21,9 +21,10 @@ interface Props {
   onPlay: () => void;
   onToggleFavorite: () => void;
   primaryColor: string;
+  showFavorite?: boolean;
 }
 
-export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor }: Props) {
+export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor, showFavorite = true }: Props) {
   const TH = useTheme();
   const visual = TRACK_VISUAL[track.id];
   const IconComp = visual ? (ICON_MAP[visual.icon] ?? Music) : Music;
@@ -58,7 +59,7 @@ export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite,
         </View>
 
         {/* Right: favorite + animated icon + category icon */}
-        <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} size={20} />
+        {showFavorite && <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} size={20} />}
         <AnimatedMusicIcon isPlaying={isCurrent && isPlaying} color={isCurrent ? primaryColor : TH.text} size={22} />
         <IconComp size={20} color={iconColor} />
       </View>
