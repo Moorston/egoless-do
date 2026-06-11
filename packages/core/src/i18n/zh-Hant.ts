@@ -197,6 +197,22 @@ export const zhHant: I18nKeys = {
   checkinDataTitle:'今日數據', checkinDetailTitle:'打卡詳情', checkinTime:'打卡時間',
   checkinStatus:'打卡狀態', checkinContent:'打卡內容',
 
+  // Review
+  reviewTitle:'復盤', reviewWeekTitle:'週復盤', reviewMonthTitle:'月復盤',
+  reviewCompletionRate:'完成率', reviewStreakDays:'連續天數', reviewVsPrevious:'對比上期',
+  reviewVsLastWeek:'vs上週', reviewVsLastMonth:'vs上月',
+  reviewIncompleteAnalysis:'未完成分析', reviewReasonDistribution:'原因分布',
+  reviewIncompleteItems:'未完成項', reviewHabitProgress:'習慣養成',
+  reviewPlanProgress:'計劃任務', reviewHealthMetrics:'健康指標',
+  reviewWeight:'體重', reviewWater:'飲水', reviewCalories:'熱量',
+  reviewExercise:'運動', reviewMeditation:'冥想', reviewFasting:'禁食',
+  reviewTasks:'任務', reviewStreak:'連續', reviewAIAnalysis:'AI分析',
+  reviewHighlights:'亮點', reviewImprovements:'改進建議',
+  reviewHistory:'歷史復盤', reviewViewAll:'查看全部',
+  reviewGenerating:'正在生成復盤...', reviewNoData:'暫無復盤數據',
+  reviewRefresh:'刷新', reviewTimes:'次', reviewHistoryTitle:'復盤歷史',
+  reviewWeek:'週復盤', reviewMonth:'月復盤', reviewNoHistory:'暫無歷史復盤',
+
   // Food
   foodTitle:'飲食', foodTodayKcal:'今日卡路里', foodRemaining:'剩餘卡路里:',
   foodEmpty:'今天還沒有飲食記錄', foodAdd:'+ 添加飲食', foodAddTitle:'添加飲食',
@@ -300,6 +316,7 @@ export const zhHant: I18nKeys = {
   freqSummaryWeekly:'每週 {n} 次', freqSummaryWeeklyFixed:'{days}',
   freqSummaryMonthly:'每月 {n} 次', freqSummaryMonthlyFixed:'每月 {dates} 日',
   freqThisWeek:'本週', freqThisMonth:'本月',
+  last3Months:'最近3個月', allTime:'全部',
   freqCannotEdit:'進行中任務不可編輯，如需修改請刪除重建',
 
   // Global
@@ -333,6 +350,56 @@ export const zhHant: I18nKeys = {
   thoughtTrailAutoName:'的思維脈絡', thoughtTrailCreateFromTag:'創建為思路脈絡',
   thoughtTrailSelectReflection:'選擇感念', thoughtTrailNamePlaceholder:'請輸入脈絡名稱',
   thoughtTrailDescPlaceholder:'請輸入脈絡描述（可選）',
+
+  // Quick Create Trail
+  quickCreateTrail:'快速建立脈絡',
+  quickTrailSearchPlaceholder:'描述你想追蹤的思路...',
+  quickTrailNamePlaceholder:'脈絡名稱（可選）',
+  quickTrailCreate:'建立脈絡',
+  quickTrailReflections:'條感念',
+  quickTrailRecommend:'推薦思路鏈',
+  quickTrailMatch:'匹配結果',
+  quickTrailMatchLocal:'🔍 本地匹配',
+  quickTrailMatchAI:'🤖 AI 匹配',
+  quickTrailNoResults:'沒有找到匹配的感念',
+  quickTrailTryAgain:'試試換個關鍵詞或放寬篩選條件',
+  quickTrailResetFilters:'重置所有篩選',
+  quickTrailNotEnough:'你只有 {n} 條感念，還不足以發現有價值的思路鏈。',
+  quickTrailKeepRecording:'繼續記錄感念，當累積到 5 條以上時，系統會自動發現你的思維模式。',
+  quickTrailGoRecord:'去記錄感念',
+  quickTrailManualCreate:'選擇感念建立脈絡',
+  quickTrailManualSelect:'手動選擇',
+  quickTrailSelectAll:'全選',
+  quickTrailDeselectAll:'取消全選',
+  quickTrailOnlyUnassigned:'僅未歸屬',
+  quickTrailSelected:'已選 {n} 條',
+  quickTrailAssignedNotice:'{n} 條已屬於其他脈絡',
+  quickTrailAssignedExplain:'加入新脈絡不會從舊脈絡移除。',
+  quickTrailPresetMoodChange:'最近心情變化',
+  quickTrailPresetUnassigned:'未歸屬感念',
+  quickTrailPresetNight:'深夜思考',
+  quickTrailTrendUp:'上升',
+  quickTrailTrendDown:'下降',
+  quickTrailTrendFlat:'平穩',
+  quickTrailNarrativeDefault:'從{from}到{to}的{tag}之路',
+  quickTrailLocalMatch:'本地匹配',
+  quickTrailAIMatch:'AI 匹配',
+  quickTrailAIAnalyzing:'AI 分析中...',
+  quickTrailCollapse:'收起',
+
+  // Gap Hint
+  gapHintTitle:'脈絡洞察',
+  gapHintTimeGap:'缺少 {start} 到 {end} 的記錄',
+  gapHintMoodGap:'缺少從{from}到{to}的轉折感念',
+  gapHintSuggestion:'建議：{suggestion}',
+  gapHintDismiss:'知道了',
+  gapHintFill:'去填補',
+
+  // Trail Suggestion Banner
+  trailSuggestionTitle:'發現思維線索',
+  trailSuggestionDesc:'你有 {n} 條感念可以組成一條脈絡',
+  trailSuggestionAction:'查看推薦',
+  trailSuggestionDismiss:'稍後再說',
 
   // Premium
   premiumUpgrade:'升級 Premium', premiumDesc:'解鎖高級模板與 AI 感悟總結',

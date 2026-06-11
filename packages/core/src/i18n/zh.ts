@@ -197,6 +197,22 @@ export const zh: I18nKeys = {
   checkinDataTitle:'今日数据', checkinDetailTitle:'打卡详情', checkinTime:'打卡时间',
   checkinStatus:'打卡状态', checkinContent:'打卡内容',
 
+  // Review
+  reviewTitle:'复盘', reviewWeekTitle:'周复盘', reviewMonthTitle:'月复盘',
+  reviewCompletionRate:'完成率', reviewStreakDays:'连续天数', reviewVsPrevious:'对比上期',
+  reviewVsLastWeek:'vs上周', reviewVsLastMonth:'vs上月',
+  reviewIncompleteAnalysis:'未完成分析', reviewReasonDistribution:'原因分布',
+  reviewIncompleteItems:'未完成项', reviewHabitProgress:'习惯养成',
+  reviewPlanProgress:'计划任务', reviewHealthMetrics:'健康指标',
+  reviewWeight:'体重', reviewWater:'饮水', reviewCalories:'热量',
+  reviewExercise:'运动', reviewMeditation:'冥想', reviewFasting:'禁食',
+  reviewTasks:'任务', reviewStreak:'连续', reviewAIAnalysis:'AI分析',
+  reviewHighlights:'亮点', reviewImprovements:'改进建议',
+  reviewHistory:'历史复盘', reviewViewAll:'查看全部',
+  reviewGenerating:'正在生成复盘...', reviewNoData:'暂无复盘数据',
+  reviewRefresh:'刷新', reviewTimes:'次', reviewHistoryTitle:'复盘历史',
+  reviewWeek:'周复盘', reviewMonth:'月复盘', reviewNoHistory:'暂无历史复盘',
+
   // Food
   foodTitle:'饮食', foodTodayKcal:'今日卡路里', foodRemaining:'剩余卡路里:',
   foodEmpty:'今天还没有饮食记录', foodAdd:'+ 添加饮食', foodAddTitle:'添加饮食',
@@ -300,6 +316,7 @@ export const zh: I18nKeys = {
   freqSummaryWeekly:'每周 {n} 次', freqSummaryWeeklyFixed:'{days}',
   freqSummaryMonthly:'每月 {n} 次', freqSummaryMonthlyFixed:'每月 {dates} 日',
   freqThisWeek:'本周', freqThisMonth:'本月',
+  last3Months:'最近3个月', allTime:'全部',
   freqCannotEdit:'进行中任务不可编辑，如需修改请删除重建',
 
   // Global
@@ -333,6 +350,56 @@ export const zh: I18nKeys = {
   thoughtTrailAutoName:'的思维脉络', thoughtTrailCreateFromTag:'创建为思路脉络',
   thoughtTrailSelectReflection:'选择感念', thoughtTrailNamePlaceholder:'请输入脉络名称',
   thoughtTrailDescPlaceholder:'请输入脉络描述（可选）',
+
+  // Quick Create Trail
+  quickCreateTrail:'快速创建脉络',
+  quickTrailSearchPlaceholder:'描述你想追踪的思路...',
+  quickTrailNamePlaceholder:'脉络名称（可选）',
+  quickTrailCreate:'创建脉络',
+  quickTrailReflections:'条感念',
+  quickTrailRecommend:'推荐思路链',
+  quickTrailMatch:'匹配结果',
+  quickTrailMatchLocal:'🔍 本地匹配',
+  quickTrailMatchAI:'🤖 AI 匹配',
+  quickTrailNoResults:'没有找到匹配的感念',
+  quickTrailTryAgain:'试试换个关键词或放宽筛选条件',
+  quickTrailResetFilters:'重置所有筛选',
+  quickTrailNotEnough:'你只有 {n} 条感念，还不足以发现有价值的思路链。',
+  quickTrailKeepRecording:'继续记录感念，当积累到 5 条以上时，系统会自动发现你的思维模式。',
+  quickTrailGoRecord:'去记录感念',
+  quickTrailManualCreate:'选择感念创建脉络',
+  quickTrailManualSelect:'手动选择',
+  quickTrailSelectAll:'全选',
+  quickTrailDeselectAll:'取消全选',
+  quickTrailOnlyUnassigned:'仅未归属',
+  quickTrailSelected:'已选 {n} 条',
+  quickTrailAssignedNotice:'{n} 条已属于其他脉络',
+  quickTrailAssignedExplain:'加入新脉络不会从旧脉络移除。',
+  quickTrailPresetMoodChange:'最近心情变化',
+  quickTrailPresetUnassigned:'未归属感念',
+  quickTrailPresetNight:'深夜思考',
+  quickTrailTrendUp:'上升',
+  quickTrailTrendDown:'下降',
+  quickTrailTrendFlat:'平稳',
+  quickTrailNarrativeDefault:'从{from}到{to}的{tag}之路',
+  quickTrailLocalMatch:'本地匹配',
+  quickTrailAIMatch:'AI 匹配',
+  quickTrailAIAnalyzing:'AI 分析中...',
+  quickTrailCollapse:'收起',
+
+  // Gap Hint
+  gapHintTitle:'脉络洞察',
+  gapHintTimeGap:'缺少 {start} 到 {end} 的记录',
+  gapHintMoodGap:'缺少从{from}到{to}的转折感念',
+  gapHintSuggestion:'建议：{suggestion}',
+  gapHintDismiss:'知道了',
+  gapHintFill:'去填补',
+
+  // Trail Suggestion Banner
+  trailSuggestionTitle:'发现思维线索',
+  trailSuggestionDesc:'你有 {n} 条感念可以组成一条脉络',
+  trailSuggestionAction:'查看推荐',
+  trailSuggestionDismiss:'稍后再说',
 
   // Premium
   premiumUpgrade:'升级 Premium', premiumDesc:'解锁高级模板与 AI 感悟总结',

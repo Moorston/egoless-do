@@ -12,6 +12,8 @@ export type RootStackParamList = {
   StreakBreak: undefined;
   CheckinHistory: undefined;
   CheckinDetail: { date: string };
+  ReviewHistory: undefined;
+  ReviewDetail: { reviewId: string };
   ExerciseHistory: undefined;
   PlanCreate: { planId?: string } | undefined;
   PlanDetail: { planId: string };
@@ -21,6 +23,7 @@ export type RootStackParamList = {
   Stats: undefined;
   ReflectionStats: undefined;
   MindTrail: undefined;
+  QuickCreateTrail: undefined;
   ThoughtTrailDetail: { trailId: string };
   ReflectionDetail: { reflectionId: string };
   HabitDetail: { habitId: string };

@@ -65,3 +65,11 @@ export type {
 } from './types';
 
 export { PROVIDER_TEMPLATES } from './types';
+
+// Trail recommender
+export {
+  recommendTrailsViaAI,
+  matchReflectionsToTopic,
+  isAIRecommendAvailable,
+} from './trail-recommender';
+export type { AIRecommendation, AIMatchResult } from './trail-recommender';

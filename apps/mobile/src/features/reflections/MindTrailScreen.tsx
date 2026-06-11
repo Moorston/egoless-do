@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Plus } from 'lucide-react-native';
+import { ArrowLeft, Plus, Zap } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, FONT_TINY } from '@egoless-do/core';
@@ -47,13 +47,21 @@ export default function MindTrailScreen() {
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
               {T('thoughtTrail')} ({manualTrails.length})
             </Text>
-            <TouchableOpacity
-              onPress={() => setShowCreateModal(true)}
-              style={[styles.addButton, { backgroundColor: P }]}
-            >
-              <Plus size={16} color="#fff" />
-              <Text style={styles.addButtonText}>{T('createThoughtTrail')}</Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <TouchableOpacity
+                onPress={() => (nav as any).navigate('QuickCreateTrail')}
+                style={[styles.addButton, { backgroundColor: '#8B5CF6' }]}
+              >
+                <Zap size={16} color="#fff" />
+                <Text style={styles.addButtonText}>{T('quickCreateTrail')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setShowCreateModal(true)}
+                style={[styles.addButton, { backgroundColor: P }]}
+              >
+                <Plus size={16} color="#fff" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {manualTrails.length === 0 ? (
