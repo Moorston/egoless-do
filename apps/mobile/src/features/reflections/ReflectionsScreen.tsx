@@ -717,7 +717,7 @@ export default function ReflectionsScreen() {
       {/* 创建计划任务弹窗 */}
       <Modal visible={showCreatePlanItem} transparent animationType="slide">
         <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.7)' }}>
-          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
+          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingTop:24, paddingBottom:40, maxHeight:'90%' }}>
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
                 <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>创建计划任务</Text>

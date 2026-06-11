@@ -201,17 +201,6 @@ export default function MeditationScreen() {
                 ))}
               </View>
 
-              {/* Music library entry */}
-              <TouchableOpacity onPress={() => nav.navigate('Music')}
-                style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border, marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T('musicTitle')}</Text>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                  <Music size={16} color={P} />
-                  <Text style={{ color:P, fontSize:FONT_BODY }}>{T('musicTitle')}</Text>
-                  <ChevronRight size={16} color={P} />
-                </View>
-              </TouchableOpacity>
-
               {/* Duration selector */}
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
                 {MEDITATION_DURATIONS_MIN.map(d => (
