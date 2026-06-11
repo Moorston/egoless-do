@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { Settings } from 'lucide-react-native';
+import { Settings, Link, Plus } from 'lucide-react-native';
 import { useTheme, useT, PillSelector, PrimaryButton, ThemedInput } from '../../components/UI';
-import { MIND_COLORS_EXTENDED, COLORS, FONT_BODY, FONT_LABEL } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, COLORS, FONT_BODY, FONT_LABEL, FONT_SMALL } from '@egoless-do/core';
 
 interface ReflectionFormProps {
   content: string;
@@ -20,6 +20,8 @@ interface ReflectionFormProps {
   dynamicTagCounts: Record<string, number>;
   onOpenTagManager: () => void;
   onOpenMoodManager: () => void;
+  linkedTrailNames?: string[];
+  onOpenTrailPicker?: () => void;
 }
 
 export default function ReflectionForm({
@@ -38,6 +40,8 @@ export default function ReflectionForm({
   dynamicTagCounts,
   onOpenTagManager,
   onOpenMoodManager,
+  linkedTrailNames = [],
+  onOpenTrailPicker,
 }: ReflectionFormProps) {
   const TH = useTheme();
   const T = useT();
@@ -149,6 +153,30 @@ export default function ReflectionForm({
         />
       </View>
 
+      {/* Linked Thought Trails */}
+      {onOpenTrailPicker && (
+        <>
+          <Text style={[styles.sectionLabel, { color: TH.sub }]}>
+            关联思维脉络
+          </Text>
+          <View style={styles.trailContainer}>
+            {linkedTrailNames.map(name => (
+              <View key={name} style={[styles.trailChip, { backgroundColor: `${P}15`, borderColor: P }]}>
+                <Link size={12} color={P} />
+                <Text style={[styles.trailChipText, { color: P }]}>{name}</Text>
+              </View>
+            ))}
+            <TouchableOpacity
+              onPress={onOpenTrailPicker}
+              style={[styles.trailAddButton, { borderColor: TH.border }]}
+            >
+              <Plus size={14} color={TH.sub} />
+              <Text style={[styles.trailAddText, { color: TH.sub }]}>加入脉络</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+
       <PrimaryButton label={saveLabel} onPress={onSave} />
     </ScrollView>
   );
@@ -210,5 +238,38 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderStyle: 'dashed',
+  },
+  trailContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  trailChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  trailChipText: {
+    fontSize: FONT_SMALL,
+    fontWeight: '600',
+  },
+  trailAddButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+  },
+  trailAddText: {
+    fontSize: FONT_SMALL,
   },
 });

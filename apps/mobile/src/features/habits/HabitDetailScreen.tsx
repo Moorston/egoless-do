@@ -1,11 +1,11 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth, MOOD_DISPLAY } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
 
 const STATUS_CONFIG: Record<HabitStatus, { label: string; color: string }> = {
@@ -29,12 +29,14 @@ export default function HabitDetailScreen() {
     [store.habits, habitId]
   );
 
-  // Related reflections
+  // Related reflections (exact tag match, sorted by newest first)
+  const [expanded, setExpanded] = useState(false);
   const relatedReflections = useMemo(() => {
     if (!habit) return [];
+    const habitTag = `#${habit.name}`;
     return (store.reflections ?? []).filter(r =>
-      !r.deleted && r.tags.some(t => t.includes(habit.name))
-    ).slice(0, 5);
+      !r.deleted && r.tags.some(t => t === habitTag)
+    ).sort((a, b) => b.timestamp - a.timestamp);
   }, [habit, store.reflections]);
 
 
@@ -179,21 +181,64 @@ export default function HabitDetailScreen() {
         </View>
 
         {/* Related Reflections */}
-        {relatedReflections.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: TH.text }]}>相关感念</Text>
-            {relatedReflections.map(r => (
-              <View key={r.id} style={[styles.relatedItem, { backgroundColor: TH.card, borderColor: TH.border }]}>
-                <Text style={[styles.relatedContent, { color: TH.text }]} numberOfLines={2}>
-                  {r.content}
+        {relatedReflections.length > 0 && (() => {
+          const latest = relatedReflections[0];
+          const rest = relatedReflections.slice(1);
+          const latestMood = latest.mood ? (MOOD_DISPLAY[latest.mood] ?? latest.mood) : null;
+          return (
+            <View style={styles.section}>
+              <Text style={[styles.sectionTitle, { color: TH.text }]}>相关感念</Text>
+              {/* Latest - full display */}
+              <View style={[styles.relatedItem, { backgroundColor: TH.card, borderColor: TH.border }]}>
+                <Text style={[styles.relatedContentFull, { color: TH.text }]}>
+                  {latest.content}
                 </Text>
-                <Text style={[styles.relatedDate, { color: TH.sub }]}>
-                  {new Date(r.timestamp).toLocaleDateString()}
-                </Text>
+                <View style={styles.relatedMeta}>
+                  <View style={styles.relatedMetaLeft}>
+                    {latestMood && <Text style={[styles.relatedMood, { color: TH.sub }]}>{latestMood}</Text>}
+                    {latest.tags.map(t => (
+                      <Text key={t} style={[styles.relatedTag, { color: P, backgroundColor: `${P}15` }]}>{t}</Text>
+                    ))}
+                  </View>
+                  <Text style={[styles.relatedDate, { color: TH.sub }]}>
+                    {new Date(latest.timestamp).toLocaleDateString()}
+                  </Text>
+                </View>
               </View>
-            ))}
-          </View>
-        )}
+              {/* Collapsed rest */}
+              {rest.length > 0 && (
+                <>
+                  {expanded && rest.map(r => {
+                    const mood = r.mood ? (MOOD_DISPLAY[r.mood] ?? r.mood) : null;
+                    return (
+                      <View key={r.id} style={[styles.relatedItem, { backgroundColor: TH.card, borderColor: TH.border }]}>
+                        <Text style={[styles.relatedContent, { color: TH.text }]} numberOfLines={2}>
+                          {r.content}
+                        </Text>
+                        <View style={styles.relatedMeta}>
+                          <View style={styles.relatedMetaLeft}>
+                            {mood && <Text style={[styles.relatedMood, { color: TH.sub }]}>{mood}</Text>}
+                            {r.tags.map(t => (
+                              <Text key={t} style={[styles.relatedTag, { color: P, backgroundColor: `${P}15` }]}>{t}</Text>
+                            ))}
+                          </View>
+                          <Text style={[styles.relatedDate, { color: TH.sub }]}>
+                            {new Date(r.timestamp).toLocaleDateString()}
+                          </Text>
+                        </View>
+                      </View>
+                    );
+                  })}
+                  <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.expandBtn}>
+                    <Text style={[styles.expandText, { color: P }]}>
+                      {expanded ? '收起' : `展开更多 (${rest.length}条)`}
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          );
+        })()}
 
         {/* Relation Map Entry */}
         <TouchableOpacity
@@ -393,8 +438,43 @@ const styles = StyleSheet.create({
     fontSize: FONT_SMALL,
     marginBottom: 4,
   },
+  relatedContentFull: {
+    fontSize: FONT_SMALL,
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  relatedMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  relatedMetaLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  relatedMood: {
+    fontSize: FONT_TINY,
+  },
+  relatedTag: {
+    fontSize: FONT_TINY,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
   relatedDate: {
     fontSize: FONT_TINY,
+    marginLeft: 8,
+  },
+  expandBtn: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  expandText: {
+    fontSize: FONT_SMALL,
+    fontWeight: '600',
   },
   relationEntry: {
     flexDirection: 'row',

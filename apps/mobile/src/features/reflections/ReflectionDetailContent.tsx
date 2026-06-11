@@ -143,10 +143,6 @@ export default function ReflectionDetailContent({
               <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflDelete')}</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity onPress={() => { onClose(); nav.navigate('RelationMap' as never, { context: { type: 'reflection', id: r.id } } as never); }}
-            style={{ flex: 1, backgroundColor: 'rgba(59,130,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-            <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>查看关系</Text>
-          </TouchableOpacity>
         </View>
       </LinearGradient>
     </View>

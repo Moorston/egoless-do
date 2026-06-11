@@ -27,6 +27,8 @@ import {
   Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3,
 } from 'lucide-react-native';
 import ReflectionDetailContent from './ReflectionDetailContent';
+import TrailPickerModal from './TrailPickerModal';
+import { getTrailsByReflection } from '@egoless-do/core';
 
 // ── Manager helpers ───────────────────────────────────────────────
 function getManagerProps(
@@ -191,6 +193,9 @@ export default function ReflectionsScreen() {
   // Long press action menu state
   const [actionMenuId, setActionMenuId] = useState<string|null>(null);
 
+  // Trail picker state
+  const [trailPickerId, setTrailPickerId] = useState<string|null>(null);
+
   // Card detail modal state
   const [detailId, setDetailId] = useState<string|null>(null);
 
@@ -203,7 +208,8 @@ export default function ReflectionsScreen() {
   const [editColorIdx, setEditColorIdx]   = useState(0);
   const [editCategory, setEditCategory]   = useState('');
 
-  // Tag/Mood manager visibility - managerMode declared above
+  // Pending trail IDs for new reflection (before it's saved)
+  const [pendingTrailIds, setPendingTrailIds] = useState<string[]>([]);
 
   // Create plan item state
   const [showCreatePlanItem, setShowCreatePlanItem] = useState(false);
@@ -252,7 +258,12 @@ export default function ReflectionsScreen() {
     // Add category tag if selected
     const categoryTag = category ? `#${REFLECTION_CATEGORIES.find(c => c.key === category)?.label}` : '';
     const finalTags = categoryTag && !tags.includes(categoryTag) ? [categoryTag, ...tags] : tags;
-    store.addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
+    const newR = store.addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
+    // Link pending trails to the newly created reflection
+    if (newR && pendingTrailIds.length > 0) {
+      pendingTrailIds.forEach(tid => store.addReflectionToTrail(tid, newR.id));
+      setPendingTrailIds([]);
+    }
     setContent(''); setTags([]); setMood(''); setLink(''); setColorIdx(0); setCategory('');
     setShowNew(false);
   };
@@ -294,6 +305,7 @@ export default function ReflectionsScreen() {
   const cancelEdit = () => {
     setEditId(null);
     setManagerMode(null);
+    setTrailPickerId(null);
   };
 
   const onShare = async (r: any) => {
@@ -509,6 +521,20 @@ export default function ReflectionsScreen() {
                             )}
                           </View>
                         )}
+                        {(() => {
+                          const linkedTrails = getTrailsByReflection(r.id, store.thoughtTrails ?? []).filter(t => !t.deleted);
+                          if (linkedTrails.length === 0) return null;
+                          return (
+                            <View style={{ flexDirection:'row', flexWrap:'wrap', gap:4, marginTop:6 }}>
+                              {linkedTrails.map(t => (
+                                <View key={t.id} style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:'rgba(255,255,255,.15)' }}>
+                                  <Link size={10} color="rgba(255,255,255,.7)" />
+                                  <Text style={{ fontSize:FONT_TINY, color:'rgba(255,255,255,.7)' }}>{t.name}</Text>
+                                </View>
+                              ))}
+                            </View>
+                          );
+                        })()}
                       </LinearGradient>
                       </TouchableOpacity>
                     </View>
@@ -544,7 +570,7 @@ export default function ReflectionsScreen() {
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
             <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:20, marginBottom:16 }}>
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflNewTitle')}</Text>
-              <TouchableOpacity onPress={() => { setShowNew(false); setManagerMode(null); }}><X size={26} color={TH.sub} /></TouchableOpacity>
+              <TouchableOpacity onPress={() => { setShowNew(false); setManagerMode(null); setPendingTrailIds([]); }}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
             <ReflectionForm
               content={content}
@@ -562,20 +588,34 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
+              linkedTrailNames={pendingTrailIds.map(id => (store.thoughtTrails ?? []).find(t => t.id === id)?.name ?? '').filter(Boolean)}
+              onOpenTrailPicker={() => setTrailPickerId('__new__')}
             />
           </View>
           {/* Item Manager Overlay */}
           {managerMode && (
             <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
               <ItemManagerPanel {...getManagerProps(
-                store, 
-                managerMode, 
+                store,
+                managerMode,
                 () => setManagerMode(null),
                 managerMode === 'tag' ? hiddenTags : hiddenMoods,
                 managerMode === 'tag' ? handleToggleHiddenTag : handleToggleHiddenMood,
               )} />
             </View>
           )}
+          {/* Trail Picker for new reflection */}
+          <TrailPickerModal
+            visible={trailPickerId === '__new__'}
+            reflectionId=""
+            onClose={() => setTrailPickerId(null)}
+            onToggle={(trailId, linked) => {
+              setPendingTrailIds(prev =>
+                linked ? [...prev, trailId] : prev.filter(id => id !== trailId)
+              );
+            }}
+            linkedTrailIds={new Set(pendingTrailIds)}
+          />
         </KeyboardAvoidingView>
       </Modal>
 
@@ -631,6 +671,12 @@ export default function ReflectionsScreen() {
                 </TouchableOpacity>
               );
             })()}
+            <TouchableOpacity onPress={() => {
+              setTrailPickerId(actionMenuId);
+              setActionMenuId(null);
+            }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(139,92,246,.15)', alignItems:'center' }}>
+              <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON, fontWeight:'600' }}>🔗 关联思维脉络</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => {
               const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
               if (r) onShare(r);
@@ -878,22 +924,41 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
+              linkedTrailNames={getTrailsByReflection(editId ?? '', store.thoughtTrails ?? []).map(t => t.name)}
+              onOpenTrailPicker={() => setTrailPickerId(editId)}
             />
           </View>
           {/* Item Manager Overlay */}
           {managerMode && (
             <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
               <ItemManagerPanel {...getManagerProps(
-                store, 
-                managerMode, 
+                store,
+                managerMode,
                 () => setManagerMode(null),
                 managerMode === 'tag' ? hiddenTags : hiddenMoods,
                 managerMode === 'tag' ? handleToggleHiddenTag : handleToggleHiddenMood,
               )} />
             </View>
           )}
+          {/* Trail Picker for edit reflection */}
+          {editId && (
+            <TrailPickerModal
+              visible={!!trailPickerId && trailPickerId !== '__new__'}
+              reflectionId={trailPickerId ?? ''}
+              onClose={() => setTrailPickerId(null)}
+            />
+          )}
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Trail Picker Modal (top-level, for long-press menu when edit modal is not open) */}
+      {!editId && trailPickerId && trailPickerId !== '__new__' && (
+        <TrailPickerModal
+          visible={!!trailPickerId && trailPickerId !== '__new__' && !editId}
+          reflectionId={trailPickerId}
+          onClose={() => setTrailPickerId(null)}
+        />
+      )}
 
     </SafeAreaView>
   );

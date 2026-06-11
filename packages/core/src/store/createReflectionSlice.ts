@@ -15,10 +15,11 @@ export function createReflectionSlice(
     reflections: [],
     reflectionFilters: { ...DEFAULT_REFLECTION_FILTERS },
 
-    addReflection(params: CreateReflectionParams) {
+    addReflection(params: CreateReflectionParams): MindReflection | undefined {
       set(s => ({ reflections: addReflectionToList(s.reflections ?? [], params) }));
       const r = get().reflections[0];
       if (r) adapter.persistChange('reflection', r.id, r).catch(console.error);
+      return r;
     },
 
     togglePin(id: string) {

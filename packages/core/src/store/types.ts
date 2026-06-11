@@ -117,7 +117,7 @@ export interface HabitSlice {
 export interface ReflectionSlice {
   reflections: MindReflection[];
   reflectionFilters: ReflectionFilters;
-  addReflection: (params: CreateReflectionParams) => void;
+  addReflection: (params: CreateReflectionParams) => MindReflection | undefined;
   togglePin: (id: string) => void;
   deleteReflection: (id: string) => void;
   updateReflection: (id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>) => void;
