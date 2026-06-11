@@ -160,22 +160,24 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
             </View>
           )}
 
-          {/* Actions */}
-          <View style={styles.actions}>
-            <TouchableOpacity
-              onPress={handleClose}
-              style={[styles.button, { borderColor: TH.border }]}
-            >
-              <Text style={{ color: TH.sub }}>{T('commonCancel')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleCreate}
-              style={[styles.button, { backgroundColor: P, opacity: name.trim() ? 1 : 0.5 }]}
-              disabled={!name.trim()}
-            >
-              <Text style={{ color: '#fff', fontWeight: '600' }}>{T('commonConfirm')}</Text>
-            </TouchableOpacity>
-          </View>
+          {/* Actions — hidden during reflection selection */}
+          {!showSelector && (
+            <View style={styles.actions}>
+              <TouchableOpacity
+                onPress={handleClose}
+                style={[styles.button, { borderColor: TH.border }]}
+              >
+                <Text style={{ color: TH.sub }}>{T('commonCancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleCreate}
+                style={[styles.button, { backgroundColor: P, opacity: name.trim() ? 1 : 0.5 }]}
+                disabled={!name.trim()}
+              >
+                <Text style={{ color: '#fff', fontWeight: '600' }}>{T('commonConfirm')}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </KeyboardAvoidingView>
     </Modal>

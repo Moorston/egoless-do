@@ -319,7 +319,7 @@ export const en: I18nKeys = {
 
   // Thought Trail
   mindTrail:'Mind Trail', thoughtTrail:'Thought Trail', tagTrail:'Tag Trail',
-  createThoughtTrail:'Create Thought Trail', editThoughtTrail:'Edit Thought Trail',
+  createThoughtTrail:'Create Thought Chain', editThoughtTrail:'Edit Thought Trail',
   thoughtTrailName:'Trail Name', thoughtTrailDesc:'Trail Description',
   thoughtTrailAddReflection:'Add Reflection', thoughtTrailRemoveReflection:'Remove Reflection',
   thoughtTrailDelete:'Delete Trail', thoughtTrailDeleteConfirm:'Delete this thought trail?',

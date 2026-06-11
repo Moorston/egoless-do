@@ -319,7 +319,7 @@ export const zhHant: I18nKeys = {
 
   // Thought Trail
   mindTrail:'思維脈絡', thoughtTrail:'思路脈絡', tagTrail:'標籤脈絡',
-  createThoughtTrail:'新建思路脈絡', editThoughtTrail:'編輯思路脈絡',
+  createThoughtTrail:'新建思路鏈', editThoughtTrail:'編輯思路脈絡',
   thoughtTrailName:'脈絡名稱', thoughtTrailDesc:'脈絡描述',
   thoughtTrailAddReflection:'添加感念', thoughtTrailRemoveReflection:'移除感念',
   thoughtTrailDelete:'刪除思路脈絡', thoughtTrailDeleteConfirm:'確定刪除此思路脈絡嗎？',
