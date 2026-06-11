@@ -28,7 +28,7 @@ export const zhHant: I18nKeys = {
   premiumTitle:'升級 Premium', premiumSub:'解鎖高級模板與 AI 感悟總結',
   learnMore:'了解 →', water:'今日飲水量', addFoodBtn:'+ 添加飲食',
   totalFasting:'禁食時長', totalExercise:'鍛鍊次數', noHistory:'暫無記錄',
-  interrupted:'中斷天數', fastingHistory:'我的禁食記錄', meditationHistory:'我的冥想記錄',
+  interrupted:'中斷天數', fastingHistory:'禁食記錄', meditationHistory:'冥想記錄',
   gracePeriodHint:'允許1天寬限，偶爾忘記不會中斷連勝',
   totalCompleted:'累計打卡', longestStreak:'最長連續',
   monthCompletionRate:'本月完成率', monthCheckinDays:'本月打卡', avgPerWeek:'每週平均', checkinStats:'打卡統計', total:'共',
@@ -150,7 +150,7 @@ export const zhHant: I18nKeys = {
   exerciseResume:'繼續', exercisePause:'暫停', exerciseEnd:'結束',
   exerciseTip:'運動數據將自動記錄。請確保健康權限已開啟，以獲取更準確的數據。',
   exerciseBack:'← 返回',
-  exerciseHistory:'運動歷史', exerciseTotalTime:'總運動時長',
+  exerciseHistory:'運動記錄', exerciseTotalTime:'總運動時長',
   exerciseTotalCount:'運動次數', exerciseCalories:'卡路里',
   exerciseNoHistory:'暫無運動記錄', exerciseDeleteConfirm:'確認刪除這條運動記錄？',
   exerciseMin:'分鐘', exerciseKm:'公里',
@@ -221,7 +221,7 @@ export const zhHant: I18nKeys = {
 
   // Settings
   settingsRemind:'打卡提醒', settingsRemindOn:'啟用每日提醒', settingsRemindTime:'提醒時間',
-  settingsData:'數據記錄', settingsStats:'統計數據', settingsHistory:'打卡歷史',
+  settingsData:'數據記錄', settingsStats:'統計數據', settingsHistory:'打卡記錄',
   settingsFoodLog:'飲食記錄', settingsFreeze:'凍結連勝',
   settingsFreezeDesc:'今天和昨天都沒打卡', settingsGrace:'寬限期恢復',
   settingsGraceDesc:'昨天沒打卡，今天補卡', settingsStreakBreak:'連勝中斷',
@@ -248,7 +248,7 @@ export const zhHant: I18nKeys = {
   weightUnitKg:'公斤(kg)', weightUnitLb:'磅(lb)',
 
   // Plan
-  plan:'計劃', planHistory:'計劃歷史', planEmpty:'目前暫無計劃',
+  plan:'計劃', planHistory:'計劃記錄', planEmpty:'目前暫無計劃',
   planCreateBtn:'創建你的目標計劃', planActiveExists:'當前已有活躍計劃，請先完成或作廢後再創建新計劃',
   planStatusNotStarted:'未開始', planStatusInProgress:'進行中',
   planStatusPaused:'已暫停', planStatusCompleted:'已完成',

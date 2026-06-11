@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { X, Check } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
@@ -76,8 +76,8 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   }, [initialReflectionIds, onClose]);
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
+    <Modal visible={visible} transparent animationType="slide">
+      <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={styles.overlay}>
         <View style={[styles.container, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
           <View style={styles.header}>
@@ -89,7 +89,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
 
           {!showSelector ? (
             /* Name and Description Form */
-            <ScrollView style={styles.form}>
+            <ScrollView style={styles.form} keyboardShouldPersistTaps="handled">
               <Text style={[styles.label, { color: TH.sub }]}>{T('thoughtTrailName')}</Text>
               <TextInput
                 value={name}
@@ -177,7 +177,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -186,12 +186,13 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,.5)',
-    justifyContent: 'center',
-    padding: 24,
+    justifyContent: 'flex-end',
   },
   container: {
-    borderRadius: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     maxHeight: '80%',
+    paddingBottom: 40,
   },
   header: {
     flexDirection: 'row',

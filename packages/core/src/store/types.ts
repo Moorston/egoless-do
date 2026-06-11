@@ -8,6 +8,7 @@ import type {
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
+import type { AIMode, ModelConfig } from '../ai/types';
 import type { CreateReflectionParams } from '../business/reflections';
 import type { StopFastingOpts } from '../business/fasting';
 
@@ -195,6 +196,17 @@ export interface ThoughtTrailSlice {
   setInsightSummary: (trailId: string, summary: string) => void;
 }
 
+export interface AISlice {
+  aiMode: AIMode;
+  aiModels: ModelConfig[];
+  setAIMode: (mode: AIMode) => void;
+  addAIModel: (model: ModelConfig) => void;
+  updateAIModel: (modelId: string, updates: Partial<ModelConfig>) => void;
+  removeAIModel: (modelId: string) => void;
+  setDefaultAIModel: (modelId: string) => void;
+  toggleAIModel: (modelId: string) => void;
+}
+
 export interface ReflectionLinkSlice {
   reflectionLinks: ReflectionLink[];
   createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => string;
@@ -210,7 +222,7 @@ export interface ReflectionLinkSlice {
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReflectionLinkSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReflectionLinkSlice & AISlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -231,6 +243,7 @@ export interface SyncDataMap {
   grace: GraceHistoryEntry;
   thoughtTrail: ThoughtTrail;
   reflectionLink: ReflectionLink;
+  aiConfig: { config_id: string; mode: AIMode; models: ModelConfig[]; updatedAt: number };
 }
 
 /** Type-safe storage adapter */

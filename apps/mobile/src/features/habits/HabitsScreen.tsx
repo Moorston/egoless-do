@@ -239,7 +239,7 @@ export default function HabitsScreen() {
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{editingId ? T('habitEditTitle') : T('habitAddTitle')}</Text>
               <TouchableOpacity onPress={() => setShowAdd(false)}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
-            <ScrollView>
+            <ScrollView keyboardShouldPersistTaps="handled">
               {[
                 { label:T('habitName'), key:'name', ph:'例：每日冥想' },
                 { label:T('habitGoal'), key:'goal', ph:'每天打坐5分钟' },
@@ -264,9 +264,9 @@ export default function HabitsScreen() {
       </Modal>
 
       {/* Status reason modal */}
-      <Modal visible={!!statusModal} transparent animationType="fade">
-        <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.7)', justifyContent:'center', padding:24 }}>
-          <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24 }}>
+      <Modal visible={!!statusModal} transparent animationType="slide">
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.7)' }}>
+          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, paddingTop:20 }}>
             <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_BODY, marginBottom:12 }}>
               {statusModal?.ns==='paused' ? T('habitPauseReason') : T('habitAbandonReason')}
             </Text>
@@ -276,7 +276,7 @@ export default function HabitsScreen() {
               <PrimaryButton label={T('confirm')} onPress={confirmStatus} style={{ flex:1 }} />
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* Action menu modal (long press) */}

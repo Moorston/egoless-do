@@ -235,6 +235,15 @@ CREATE TABLE IF NOT EXISTS thought_trails (
   deleted         INTEGER NOT NULL DEFAULT 0,
   synced          INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS ai_configs (
+  config_id  TEXT PRIMARY KEY,
+  mode       TEXT NOT NULL DEFAULT 'hybrid',
+  models     TEXT NOT NULL DEFAULT '[]',
+  updated_at INTEGER,
+  deleted    INTEGER NOT NULL DEFAULT 0,
+  synced     INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -361,6 +370,18 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   // Add source and insight_summary columns to thought_trails if missing
   await tryAddCol('thought_trails', 'source', "TEXT DEFAULT 'manual'");
   await tryAddCol('thought_trails', 'insight_summary', 'TEXT');
+
+  // Ensure ai_configs table exists
+  const aiConfigsTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='ai_configs'"
+  );
+  if (!aiConfigsTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS ai_configs (
+      config_id TEXT PRIMARY KEY, mode TEXT NOT NULL DEFAULT 'hybrid',
+      models TEXT NOT NULL DEFAULT '[]', updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
 
   // Ensure plan tables exist
   const planTableCheck = await db.getFirstAsync<{ name: string }>(

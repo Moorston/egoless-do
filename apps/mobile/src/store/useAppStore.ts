@@ -6,13 +6,13 @@ import { AppState } from 'react-native';
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice, ThoughtTrailSlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, AISlice,
 } from '@egoless-do/core';
 import {
   setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
-  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice,
+  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createAISlice,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
@@ -58,9 +58,26 @@ function persistProfileSettings() {
   }, 500);
 }
 
+// Debounced AI config persistence
+let _aiConfigPersistTimer: ReturnType<typeof setTimeout> | null = null;
+function persistAIConfig() {
+  if (_aiConfigPersistTimer) clearTimeout(_aiConfigPersistTimer);
+  _aiConfigPersistTimer = setTimeout(() => {
+    _aiConfigPersistTimer = null;
+    const s = useAppStore.getState();
+    adapter.persistChange('aiConfig', 'self', {
+      config_id: 'self',
+      mode: s.aiMode,
+      models: s.aiModels,
+      updatedAt: Date.now(),
+      deleted: false,
+    }).catch(console.error);
+  }, 500);
+}
+
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice;
+  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & AISlice;
 
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
@@ -83,6 +100,7 @@ export const useAppStore = create<MobileStore>()(
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
       ...createThoughtTrailSlice(adapter)(...a),
+      ...createAISlice(persistAIConfig)(...a),
     }),
     {
       name: 'egoless-do-mobile',
@@ -104,6 +122,7 @@ export const useAppStore = create<MobileStore>()(
         dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
         graceHistory: s.graceHistory, recycleBin: s.recycleBin,
         healthSyncEnabled: s.healthSyncEnabled,
+        aiMode: s.aiMode, aiModels: s.aiModels,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
@@ -154,6 +173,20 @@ export const useAppStore = create<MobileStore>()(
 
         // Clean up expired recycle bin items
         useAppStore.getState().cleanupRecycleBin();
+
+        // Load AI config from SQLite into store
+        openDatabase().then(async db => {
+          try {
+            const row = await db.getFirstAsync<{ mode: string; models: string }>(
+              "SELECT mode, models FROM ai_configs WHERE config_id = 'self' AND deleted = 0"
+            );
+            if (row) {
+              let models: any[] = [];
+              try { models = JSON.parse(row.models); } catch {}
+              useAppStore.setState({ aiMode: row.mode as any, aiModels: models });
+            }
+          } catch {}
+        }).catch(() => {});
       },
     }
   )

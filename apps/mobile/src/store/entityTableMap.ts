@@ -161,4 +161,13 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
+  aiConfig: {
+    table: 'ai_configs', pk: 'config_id',
+    toRow: (d) => ({
+      config_id: d.config_id ?? 'self',
+      mode: d.mode ?? 'hybrid',
+      models: json(d.models),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+  },
 };
