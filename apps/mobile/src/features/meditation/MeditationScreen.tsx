@@ -7,12 +7,12 @@ import * as Sharing from 'expo-sharing';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
 import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
+import type { MusicTrack } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Music, Globe, Binary, ChevronRight } from 'lucide-react-native';
 import { useMusicStore } from '../music/useMusicStore';
-import MusicMiniBar from '../music/MusicMiniBar';
 import MusicPickerModal from '../music/MusicPickerModal';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
@@ -29,6 +29,7 @@ export default function MeditationScreen() {
   const [active, setActive]       = useState(false);
   const [showShare, setShowShare]   = useState(false);
   const [showMusicPicker, setShowMusicPicker] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<MusicTrack | null>(null);
   const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
   const completedRef = useRef(false);
   const shareCardRef = useRef<ViewShot>(null);
@@ -38,13 +39,10 @@ export default function MeditationScreen() {
   const pct = sec / targetSec * 100;
   const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory ?? []), [store.medHistory]);
 
-  // Music store
-  const musicTrack = useMusicStore(s => s.currentTrack);
-  const musicIsPlaying = useMusicStore(s => s.isPlaying);
-  const musicLoop = useMusicStore(s => s.loop);
+  // Music store — only for playback control
+  const musicPlay = useMusicStore(s => s.play);
   const musicPause = useMusicStore(s => s.pause);
-  const musicResume = useMusicStore(s => s.resume);
-  const musicToggleLoop = useMusicStore(s => s.toggleLoop);
+  const musicStop = useMusicStore(s => s.stop);
 
   // Bell sound player (one-shot, 50% volume)
   const bellPlayer = useAudioPlayer(BELL_FILE);
@@ -84,6 +82,13 @@ export default function MeditationScreen() {
     };
   }, [active]);
 
+  // Start music when meditation begins
+  useEffect(() => {
+    if (active && selectedTrack) {
+      musicPlay(selectedTrack);
+    }
+  }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Detect timer completion
   const addMedMinutes = store.addMedMinutes;
   useEffect(() => {
@@ -94,9 +99,10 @@ export default function MeditationScreen() {
         completedRef.current = true;
         addMedMinutes(durMin);
       }
+      musicStop();
       playBell();
     }
-  }, [sec, active, targetSec, durMin, addMedMinutes, playBell]);
+  }, [sec, active, targetSec, durMin, addMedMinutes, playBell, musicStop]);
 
   const handleStop = () => {
     if (active && !completedRef.current) {
@@ -105,8 +111,20 @@ export default function MeditationScreen() {
       if (elapsedMin > 0) store.addMedMinutes(elapsedMin);
     }
     setActive(false);
+    musicStop();
     playBell();
   };
+
+  const handleStart = () => {
+    setSec(0);
+    setActive(true);
+  };
+
+  const handleMusicPickerClose = useCallback(() => {
+    // Pause preview music, keep selectedTrack for display
+    musicPause();
+    setShowMusicPicker(false);
+  }, [musicPause]);
 
   const handleShare = useCallback(async () => {
     try {
@@ -117,17 +135,6 @@ export default function MeditationScreen() {
     } catch (e) { console.warn('Share failed:', e); }
     setShowShare(false);
   }, [T]);
-
-  const musicBar = (
-    <MusicMiniBar
-      currentTrack={musicTrack} isPlaying={musicIsPlaying} loop={musicLoop}
-      onTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()}
-      onToggleLoop={musicToggleLoop}
-      onPressTrackName={() => setShowMusicPicker(true)}
-      primaryColor={P}
-      darkBackground={false}
-    />
-  );
 
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
@@ -181,10 +188,11 @@ export default function MeditationScreen() {
         <Card style={{ paddingVertical:32 }}>
           {active ? (
             <View style={{ alignItems:'center' }}>
-              {/* Music mini bar during meditation */}
-              {musicTrack && (
-                <View style={{ width: '100%', marginBottom: 16, backgroundColor: `${P}10`, borderRadius: 12, paddingVertical: 4 }}>
-                  {musicBar}
+              {/* Music display during meditation — non-interactive */}
+              {selectedTrack && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16, backgroundColor: `${P}10`, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 }}>
+                  <Music size={14} color={P} />
+                  <Text style={{ fontSize: FONT_SUB, color: TH.text }} numberOfLines={1}>{selectedTrack.name}</Text>
                 </View>
               )}
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
@@ -202,21 +210,22 @@ export default function MeditationScreen() {
             </View>
           ) : (
             <>
-              {/* Music selector */}
-              <View style={{ backgroundColor: `${P}08`, borderRadius: 12, paddingVertical: 4, marginBottom: 16 }}>
-                {musicTrack ? (
-                  musicBar
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => setShowMusicPicker(true)}
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 12, gap: 8 }}
-                  >
+              {/* Music selector — tappable to open picker */}
+              <TouchableOpacity
+                onPress={() => setShowMusicPicker(true)}
+                activeOpacity={0.7}
+                style={{ backgroundColor: `${P}08`, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 16, marginBottom: 16 }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
                     <Music size={18} color={P} />
-                    <Text style={{ fontSize: FONT_BODY, color: P, fontWeight: '600' }}>{T('bgMusic')}</Text>
-                    <ChevronRight size={16} color={P} />
-                  </TouchableOpacity>
-                )}
-              </View>
+                    <Text style={{ fontSize: FONT_BODY, color: selectedTrack ? TH.text : TH.sub }} numberOfLines={1}>
+                      {selectedTrack ? selectedTrack.name : T('bgMusic')}
+                    </Text>
+                  </View>
+                  <ChevronRight size={16} color={TH.sub} />
+                </View>
+              </TouchableOpacity>
 
               {/* Duration selector */}
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
@@ -226,7 +235,7 @@ export default function MeditationScreen() {
                 ))}
               </View>
 
-              <PrimaryButton label={T('startMed')} onPress={() => { setSec(0); setActive(true); }} color={P} />
+              <PrimaryButton label={T('startMed')} onPress={handleStart} color={P} />
             </>
           )}
         </Card>
@@ -272,7 +281,8 @@ export default function MeditationScreen() {
       {/* Music Picker Modal */}
       <MusicPickerModal
         visible={showMusicPicker}
-        onClose={() => setShowMusicPicker(false)}
+        onClose={handleMusicPickerClose}
+        onSelectTrack={setSelectedTrack}
         primaryColor={P}
       />
     </SafeAreaView>

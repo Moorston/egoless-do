@@ -3,12 +3,14 @@ import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet, KeyboardAv
 import { X } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import type { MusicTrack } from '@egoless-do/core';
 import { useMusicStore } from './useMusicStore';
 import TrackListItem from './TrackListItem';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
+  onSelectTrack?: (track: MusicTrack) => void;
   primaryColor: string;
 }
 
@@ -19,7 +21,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   user: '我的',
 };
 
-export default function MusicPickerModal({ visible, onClose, primaryColor }: Props) {
+export default function MusicPickerModal({ visible, onClose, onSelectTrack, primaryColor }: Props) {
   const TH = useTheme();
   const T = useT();
 
@@ -49,6 +51,7 @@ export default function MusicPickerModal({ visible, onClose, primaryColor }: Pro
 
   const handlePlay = (track: typeof library[0]) => {
     play(track);
+    onSelectTrack?.(track);
   };
 
   return (
