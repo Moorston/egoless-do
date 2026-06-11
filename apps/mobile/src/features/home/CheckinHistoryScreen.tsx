@@ -8,7 +8,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { Shield } from 'lucide-react-native';
 
 const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
-const PRACTICE_ICONS: Record<string, string> = { sit: '🧘', stand: '🧍', chant: '📿' };
+const PRACTICE_ICONS: Record<string, string> = { sit: '🌙', stand: '🌅', chant: '🧠' };
 
 export default function CheckinHistoryScreen() {
   const TH = useTheme();

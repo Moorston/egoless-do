@@ -112,6 +112,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   // 关联内容折叠状态，默认折叠
   const [showRelated, setShowRelated] = useState(false);
 
+  // 热力图折叠状态，默认折叠
+  const [showHeatmap, setShowHeatmap] = useState(false);
+
   // 任务级热力图展开状态
   const [expandedHeatmaps, setExpandedHeatmaps] = useState<Set<string>>(new Set());
 
@@ -495,8 +498,20 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
           {/* Heatmap */}
           <Card>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('planHeatmap')}</Text>
-            <Heatmap checkins={checkins} items={items} plan={plan} TH={TH} T={T} />
+            <TouchableOpacity
+              onPress={() => setShowHeatmap(v => !v)}
+              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+            >
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('planHeatmap')}</Text>
+              {showHeatmap
+                ? <ChevronDown size={18} color={TH.sub} />
+                : <ChevronRight size={18} color={TH.sub} />}
+            </TouchableOpacity>
+            {showHeatmap && (
+              <View style={{ marginTop: 12 }}>
+                <Heatmap checkins={checkins} items={items} plan={plan} TH={TH} T={T} />
+              </View>
+            )}
           </Card>
         </>
       ) : (

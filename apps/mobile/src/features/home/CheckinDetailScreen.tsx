@@ -7,7 +7,7 @@ import { useTheme, useT } from '../../components/UI';
 import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useRootNavigation, type RootStackParamList } from '../../navigation/hooks';
-import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check, AlertTriangle } from 'lucide-react-native';
+import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check, AlertTriangle, Moon, Sunrise, Brain } from 'lucide-react-native';
 
 type DetailRoute = RouteProp<RootStackParamList, 'CheckinDetail'>;
 
@@ -113,7 +113,7 @@ export default function CheckinDetailScreen() {
             </View>
             {parsed.practices.map((practice, i) => {
               const practiceLabels: Record<string, string> = { sit: T('checkinSit'), stand: T('checkinStand'), chant: T('checkinSutra') };
-              const practiceIcons: Record<string, React.ReactNode> = { sit: <PersonStanding size={16} color={TH.text} />, stand: <PersonStanding size={16} color={TH.text} />, chant: <Sparkles size={16} color={TH.text} /> };
+              const practiceIcons: Record<string, React.ReactNode> = { sit: <Moon size={16} color={TH.text} />, stand: <Sunrise size={16} color={TH.text} />, chant: <Brain size={16} color={TH.text} /> };
               return (
                 <View key={practice} style={{
                   flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',

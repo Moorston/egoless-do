@@ -184,6 +184,17 @@ export default function SettingsScreen() {
       title: T('settingsGeneral'),
       rows: [
         {
+          label: T('settingsTheme'), icon: <Palette size={20} color={P} />,
+          right: (
+            <TouchableOpacity onPress={() => setShowTheme(true)}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[store.theme].name}</Text>
+                <ChevronRight size={14} color={TH.sub} />
+              </View>
+            </TouchableOpacity>
+          ),
+        },
+        {
           label: T('settingsLanguage'), icon: <Globe size={20} color={P} />,
           right: (
             <TouchableOpacity onPress={() => setShowLang(true)}>
@@ -192,17 +203,6 @@ export default function SettingsScreen() {
                   {LANG_LIST.find(l => l.code === store.language)?.flag ?? '🇨🇳'}{' '}
                   {LANG_LIST.find(l => l.code === store.language)?.name ?? T('settingsLanguage')}
                 </Text>
-                <ChevronRight size={14} color={TH.sub} />
-              </View>
-            </TouchableOpacity>
-          ),
-        },
-        {
-          label: T('settingsTheme'), icon: <Palette size={20} color={P} />,
-          right: (
-            <TouchableOpacity onPress={() => setShowTheme(true)}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[store.theme].name}</Text>
                 <ChevronRight size={14} color={TH.sub} />
               </View>
             </TouchableOpacity>

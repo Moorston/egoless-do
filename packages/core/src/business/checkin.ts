@@ -31,7 +31,7 @@ export function getIncompleteItems(params: {
   const result: IncompleteItem[] = [];
 
   // Practices
-  const practiceNames: Record<string, string> = { sit: '打坐', stand: '站桩', chant: '诵经' };
+  const practiceNames: Record<string, string> = { sit: '早睡', stand: '早起', chant: '冥想' };
   for (const [key, checked] of Object.entries(practices)) {
     if (!checked) result.push({ type: 'practice', name: practiceNames[key] ?? key });
   }

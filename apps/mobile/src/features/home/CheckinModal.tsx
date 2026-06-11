@@ -11,6 +11,7 @@ import type { CheckinEntry } from '@egoless-do/core';
 import {
   Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
   ClipboardList, CheckCircle2, Circle, X, Check, Shield,
+  Moon, Sunrise, Brain,
 } from 'lucide-react-native';
 import CheckinReflection from './CheckinReflection';
 
@@ -298,9 +299,9 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('checkinPractice')}</Text>
                 <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8 }}>
                   {([
-                    { key:'sit' as const,   icon:<PersonStanding size={16} color={P} />, label:T('checkinSit') },
-                    { key:'stand' as const, icon:<PersonStanding size={16} color={P} />, label:T('checkinStand') },
-                    { key:'chant' as const, icon:<Sparkles size={16} color={P} />, label:T('checkinSutra') },
+                    { key:'sit' as const,   icon:<Moon size={16} color={P} />, label:T('checkinSit') },
+                    { key:'stand' as const, icon:<Sunrise size={16} color={P} />, label:T('checkinStand') },
+                    { key:'chant' as const, icon:<Brain size={16} color={P} />, label:T('checkinSutra') },
                   ]).map(({ key, icon, label }) => (
                     <TouchableOpacity key={key} onPress={() => setPractices(p => ({ ...p, [key]:!p[key] }))}
                       style={{
