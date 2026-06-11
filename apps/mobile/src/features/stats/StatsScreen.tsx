@@ -226,7 +226,7 @@ export default function StatsScreen() {
   };
 
   const renderCalendarEntry = () => (
-    <TouchableOpacity onPress={() => nav.navigate('CheckinStats')}
+    <TouchableOpacity onPress={() => nav.navigate('CheckinHistory')}
       style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, backgroundColor: TH.card, borderRadius: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
       <CalendarDays size={20} color={P} />
       <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', flex: 1 }}>{T('statsCalendarEntry')}</Text>
