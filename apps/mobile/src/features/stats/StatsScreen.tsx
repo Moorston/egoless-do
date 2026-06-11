@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, useT } from '../../components/UI';
-import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, estimateFastingKcal, getTodayMedMinutes, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -13,23 +13,24 @@ import {
 import LineChart from '../../components/charts/LineChart';
 import BarChart from '../../components/charts/BarChart';
 import CalendarGrid from '../../components/charts/CalendarGrid';
-import SimpleHeader from '../../navigation/SimpleHeader';
+import { ChevronLeft } from 'lucide-react-native';
 
 const CHART_W = Dimensions.get('window').width - 64;
 
-const TABS = ['overview', 'fasting', 'meditation', 'exercise', 'reflections', 'plan'] as const;
+const TABS = ['overview', 'plan', 'habits', 'reflections', 'exercise', 'meditation', 'fasting'] as const;
 type TabKey = typeof TABS[number];
 
 const TAB_I18N: Record<TabKey, string> = {
   overview: 'statsTabOverview',
-  fasting: 'statsTabFasting',
-  meditation: 'statsTabMeditation',
-  exercise: 'statsTabExercise',
-  reflections: 'statsTabReflections',
   plan: 'statsTabPlan',
+  reflections: 'statsTabReflections',
+  exercise: 'statsTabExercise',
+  meditation: 'statsTabMeditation',
+  fasting: 'statsTabFasting',
+  habits: 'statsTabHabits',
 };
 
-const CHART_TABS = ['exercise', 'weight', 'calories'] as const;
+const CHART_TABS = ['calories', 'water', 'weight', 'exercise'] as const;
 type ChartKey = typeof CHART_TABS[number];
 
 export default function StatsScreen() {
@@ -45,6 +46,7 @@ export default function StatsScreen() {
   // ── Common data ──
   const exerciseLog = store.exerciseLog ?? [];
   const now = Date.now();
+  const today = new Date(now).toISOString().slice(0, 10);
   const weekStart = now - 7 * 24 * 3600 * 1000;
   const monthStart = now - 30 * 24 * 3600 * 1000;
 
@@ -108,7 +110,6 @@ export default function StatsScreen() {
   // ── Plan stats ──
   const plans = store.plans ?? [];
   const planItems = store.planItems ?? [];
-  const planCheckins = store.planItemCheckins ?? [];
   const activePlans = plans.filter(p => p.status === 'in_progress');
   const totalPlanTasks = planItems.length;
   const completedPlanTasks = planItems.filter(i => i.status === 'completed').length;
@@ -120,6 +121,7 @@ export default function StatsScreen() {
   // ── Chart data ──
   const weightData = useMemo(() => aggregateWeightData(store.checkinHistory ?? [], 30), [store.checkinHistory]);
   const caloriesData = useMemo(() => aggregateDailyCalories(store.foodLog ?? [], 7), [store.foodLog]);
+  const waterData = useMemo(() => aggregateDailyWater(store.checkinHistory ?? [], 7), [store.checkinHistory]);
   const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLog, 8), [exerciseLog]);
 
   // ── Render helpers ──
@@ -141,7 +143,7 @@ export default function StatsScreen() {
     <Card style={{ marginBottom: 12 }}>
       <View style={{ flexDirection: 'row', gap: 6, marginBottom: 12 }}>
         {CHART_TABS.map(key => {
-          const labels: Record<ChartKey, string> = { exercise: T('statsExerciseTrend'), weight: T('statsWeightTrend'), calories: T('statsDailyCalories') };
+          const labels: Record<ChartKey, string> = { calories: T('statsDailyCalories'), water: T('waterIntake'), weight: T('statsWeightTrend'), exercise: T('statsExerciseTrend') };
           const active = activeChart === key;
           return (
             <TouchableOpacity key={key} onPress={() => setActiveChart(key)}
@@ -151,10 +153,16 @@ export default function StatsScreen() {
           );
         })}
       </View>
-      {activeChart === 'exercise' && exerciseTrendData.some(d => d.value > 0) && (
-        <LineChart data={exerciseTrendData.map(d => d.value)} labels={exerciseTrendData.map(d => d.label)} width={CHART_W} height={160} color="#3B82F6" showArea suffix="km" />
+      {activeChart === 'calories' && caloriesData.some(d => d.value > 0) && (
+        <BarChart data={caloriesData.map(d => d.value)} labels={caloriesData.map(d => d.label)} width={CHART_W} height={150} color="#F59E0B" />
       )}
-      {activeChart === 'exercise' && !exerciseTrendData.some(d => d.value > 0) && (
+      {activeChart === 'calories' && !caloriesData.some(d => d.value > 0) && (
+        <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
+      )}
+      {activeChart === 'water' && waterData.some(d => d.value > 0) && (
+        <BarChart data={waterData.map(d => d.value)} labels={waterData.map(d => d.label)} width={CHART_W} height={150} color="#3B82F6" />
+      )}
+      {activeChart === 'water' && !waterData.some(d => d.value > 0) && (
         <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
       {activeChart === 'weight' && weightData.length >= 2 && (
@@ -163,8 +171,11 @@ export default function StatsScreen() {
       {activeChart === 'weight' && weightData.length < 2 && (
         <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
-      {activeChart === 'calories' && caloriesData.some(d => d.value > 0) && (
-        <BarChart data={caloriesData.map(d => d.value)} labels={caloriesData.map(d => d.label)} width={CHART_W} height={150} color="#F59E0B" />
+      {activeChart === 'exercise' && exerciseTrendData.some(d => d.value > 0) && (
+        <LineChart data={exerciseTrendData.map(d => d.value)} labels={exerciseTrendData.map(d => d.label)} width={CHART_W} height={160} color="#3B82F6" showArea suffix="km" />
+      )}
+      {activeChart === 'exercise' && !exerciseTrendData.some(d => d.value > 0) && (
+        <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
       {activeChart === 'calories' && !caloriesData.some(d => d.value > 0) && (
         <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
@@ -203,14 +214,47 @@ export default function StatsScreen() {
           const done = items.filter(i => i.status === 'completed').length;
           const pct = items.length > 0 ? Math.round(done / items.length * 100) : 0;
           return (
-            <View key={p.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-              <ClipboardList size={16} color={P} />
-              <Text style={{ flex: 1, fontSize: FONT_BODY, color: TH.text }} numberOfLines={1}>{p.name}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planStatusInProgress')}</Text>
-              <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-                <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${pct}%` }} />
+            <View key={p.id} style={{ marginBottom: 16 }}>
+              {/* Plan header */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
+                <ClipboardList size={16} color={P} />
+                <Text style={{ flex: 1, fontSize: FONT_BODY, fontWeight: '600', color: TH.text }} numberOfLines={1}>{p.name}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{done}/{items.length}</Text>
+                <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
+                  <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${pct}%` }} />
+                </View>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
               </View>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
+              {/* Tree items */}
+              {items.length > 0 && (
+                <View style={{ marginLeft: 8 }}>
+                  {items.map((item, idx) => {
+                    const checkedDays = item.totalCheckinDays;
+                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
+                    const itemPct = expectedDays > 0 ? Math.min(Math.round((checkedDays / expectedDays) * 100), 100) : 0;
+                    const isLast = idx === items.length - 1;
+                    return (
+                      <View key={item.id} style={{ flexDirection: 'row' }}>
+                        {/* Vertical line + dot */}
+                        <View style={{ width: 20, alignItems: 'center' }}>
+                          <View style={{ position: 'absolute', top: 0, bottom: isLast ? '50%' : 0, width: 1, backgroundColor: TH.border }} />
+                          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: item.status === 'completed' ? P : TH.border, marginTop: 8, zIndex: 1 }} />
+                        </View>
+                        {/* Content - same layout as plan header */}
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>·</Text>
+                          <Text style={{ flex: 1, fontSize: FONT_SUB, color: item.status === 'completed' ? TH.sub : TH.text, textDecorationLine: item.status === 'completed' ? 'line-through' : 'none' }} numberOfLines={1}>{item.name}</Text>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{checkedDays}/{expectedDays}</Text>
+                          <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
+                            <View style={{ height: 4, backgroundColor: item.status === 'completed' ? P : COLORS.GREEN, borderRadius: 2, width: `${itemPct}%` }} />
+                          </View>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{itemPct}%</Text>
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
             </View>
           );
         })}
@@ -225,7 +269,8 @@ export default function StatsScreen() {
         <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('statsCheckinHeatmap')}</Text>
       </View>
       <CalendarGrid history={store.checkinHistory ?? []}
-        primaryColor={P} textColor={TH.text} subColor={TH.sub} borderColor={TH.border} />
+        primaryColor={P} textColor={TH.text} subColor={TH.sub} borderColor={TH.border}
+        onDayPress={(date) => nav.navigate('CheckinDetail', { date })} />
     </Card>
   );
 
@@ -237,12 +282,15 @@ export default function StatsScreen() {
           <>
             {renderStatGrid([
               { value: `${store.streak}`, unit: T('days'), label: T('streak'), icon: Flame },
-              { value: `${reflCount}`, unit: T('fastTimes'), label: T('statsReflections'), icon: Sparkles },
+              { value: `${(store.checkinHistory ?? []).length}`, unit: T('days'), label: T('statsTotalCheckinDays'), icon: CalendarDays },
+              { value: `${plans.length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
+              { value: `${completedPlanTasks}`, unit: '', label: T('statsCompletedTasks'), icon: Target },
+              { value: `${(store.habits ?? []).length}`, unit: '', label: T('statsHabitCount'), icon: Star },
+              { value: `${reflCount}`, unit: '', label: T('statsReflections'), icon: Sparkles },
+              { value: `${totalExerciseMin}`, unit: T('exerciseMin'), label: T('statsExerciseDuration'), icon: Dumbbell },
               { value: `${totalMedMin}`, unit: T('medMinutes'), label: T('statsMeditation'), icon: Target },
               { value: `${totalFastCount}`, unit: T('fastTimes'), label: T('statsTotalFasting'), icon: Clock },
-              { value: `${totalFastHours}`, unit: T('fastHours'), label: T('fastTotalHours'), icon: Clock },
-              { value: `${activeHabits}`, unit: '', label: T('statsActiveHabits'), icon: Star },
-            ])}
+            ], 3)}
             {renderChartArea()}
             {renderHabitList()}
             {renderPlanList()}
@@ -310,11 +358,21 @@ export default function StatsScreen() {
         return (
           <>
             {renderStatGrid([
-              { value: `${plans.length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
+              { value: `${activePlans.length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
               { value: `${totalPlanTasks}`, unit: '', label: T('statsPlanTasks'), icon: Target },
               { value: `${completedPlanTasks}`, unit: '', label: T('statsPlanDone'), icon: Star },
             ], 3)}
             {renderPlanList()}
+          </>
+        );
+      case 'habits':
+        return (
+          <>
+            {renderStatGrid([
+              { value: `${activeHabits}`, unit: '', label: T('statsActiveHabits'), icon: Star },
+              { value: `${graceCount}`, unit: '', label: T('statsGraceCount'), icon: Shield },
+            ])}
+            {renderHabitList()}
           </>
         );
     }
@@ -323,6 +381,12 @@ export default function StatsScreen() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+        {/* Back button + title */}
+        <TouchableOpacity onPress={() => nav.goBack()} style={{ marginBottom: 12, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' }}>
+          <ChevronLeft size={28} color={TH.text} />
+          <Text style={{ fontSize: 18, fontWeight: '600', color: TH.text, marginLeft: 4 }}>{T('statsTitle')}</Text>
+        </TouchableOpacity>
+
         {/* Calendar heatmap */}
         {renderCalendar()}
 

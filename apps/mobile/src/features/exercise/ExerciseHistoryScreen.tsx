@@ -297,17 +297,6 @@ export default function ExerciseHistoryScreen() {
                       ) : null}
                     </View>
                     {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView} Polyline={Polyline} />}
-                    <TouchableOpacity
-                      onPress={() => {
-                        Alert.alert(T('exerciseDeleteConfirm'), '', [
-                          { text: T('cancel'), style: 'cancel' },
-                          { text: T('commonDelete'), style: 'destructive', onPress: () => store.deleteExercise(e.id) },
-                        ]);
-                      }}
-                      style={{ position: 'absolute', top: 8, right: 8 }}
-                    >
-                      <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>x</Text>
-                    </TouchableOpacity>
                   </TouchableOpacity>
                 </View>
               );

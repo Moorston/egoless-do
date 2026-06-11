@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemProgress } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemProgress, computeExpectedDays } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, CheckinFrequency } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -18,23 +18,30 @@ const EMPTY_CHECKINS: PlanItemCheckin[] = [];
 
 const WEEKDAY_LABELS = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'];
 
-function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string): string {
+/** Add N days to a YYYY-MM-DD string (pure string math, no timezone issues). */
+function addDaysStr(date: string, n: number): string {
+  const d = new Date(date + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
+}
+
+function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string, itemId?: string): string {
   switch (freq.mode) {
     case 'daily':
       return T('freqSummaryDaily');
     case 'interval':
       return T('freqSummaryInterval').replace('{n}', String(freq.every));
     case 'weekly': {
-      // Count done this week
-      const d = new Date(today);
-      const day = d.getDay();
-      const ws = new Date(d);
-      ws.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
-      const wsStr = ws.toISOString().slice(0, 10);
-      const we = new Date(ws);
-      we.setDate(ws.getDate() + 6);
-      const weStr = we.toISOString().slice(0, 10);
-      const doneThisWeek = checkins.filter(c => c.done && c.date >= wsStr && c.date <= weStr).length;
+      // Count done this week (Mon-Sun), using local-time date math
+      const d = new Date(today + 'T00:00:00');
+      const day = d.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+      const diffToMon = day === 0 ? 6 : day - 1;
+      const wsStr = addDaysStr(today, -diffToMon);
+      const weStr = addDaysStr(wsStr, 6);
+      const doneThisWeek = checkins.filter(c => c.done && (!itemId || c.planItemId === itemId) && c.date >= wsStr && c.date <= weStr).length;
       return `📅 ${T('freqSummaryWeekly').replace('{n}', String(freq.target))} | ${T('freqThisWeek')} ${doneThisWeek}/${freq.target}`;
     }
     case 'weekly_fixed': {
@@ -80,20 +87,17 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const items = useMemo(() => getPlanItems(store.planItems ?? [], planId), [store.planItems, planId]);
   const checkins = store.planItemCheckins ?? EMPTY_CHECKINS;
 
-  // Pre-compute progress for all items (avoids O(N*M) per render)
+  // Pre-compute progress for all items
   const itemProgressMap = useMemo(() => {
-    const map = new Map<string, { doneCount: number; progress: number }>();
+    const map = new Map<string, { doneCount: number; expectedDays: number; progress: number }>();
     for (const item of items) {
-      const clampedToday = today > item.endDate ? item.endDate : today;
-      let doneCount = 0;
-      for (const c of checkins) {
-        if (c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday) doneCount++;
-      }
-      const progress = computeItemProgress(item, checkins, today);
-      map.set(item.id, { doneCount, progress });
+      const doneCount = item.totalCheckinDays;
+      const totalExpectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
+      const progress = totalExpectedDays > 0 ? Math.min(Math.round((doneCount / totalExpectedDays) * 100), 100) : 0;
+      map.set(item.id, { doneCount, expectedDays: totalExpectedDays, progress });
     }
     return map;
-  }, [items, checkins, today]);
+  }, [items, today]);
 
   // 计划进度基于时间（已过天数/总天数），任务进度单独计算
 
@@ -367,12 +371,12 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
                         <View style={{ height: 4, width: `${prog.progress}%`, backgroundColor: P, borderRadius: 2 }} />
                       </View>
+                      <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.doneCount}/{prog.expectedDays}</Text>
                       <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.progress}%</Text>
-                      <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.doneCount} {T('planCheckinDays')}</Text>
                     </View>
                     {/* Frequency summary */}
                     <Text style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
-                      {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today)}
+                      {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today, item.id)}
                     </Text>
                     {/* Heatmap toggle */}
                     <TouchableOpacity
@@ -582,7 +586,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                               color: TH.text,
                             }}>{item.name}</Text>
                             <Text style={{ fontSize: FONT_TINY, color: P, marginTop: 1 }}>
-                              {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today)}
+                              {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today, item.id)}
                             </Text>
                             {item.description ? (
                               <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{item.description}</Text>

@@ -233,7 +233,7 @@ export default function HabitsScreen() {
 
       {/* Add/Edit modal */}
       <Modal visible={showAdd} animationType="slide" transparent>
-        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end' }}>
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.7)' }}>
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'92%' }}>
             <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:20, marginBottom:20 }}>
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{editingId ? T('habitEditTitle') : T('habitAddTitle')}</Text>

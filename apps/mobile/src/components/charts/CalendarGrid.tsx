@@ -9,6 +9,7 @@ export interface CalendarGridProps {
   textColor: string;
   subColor: string;
   borderColor: string;
+  onDayPress?: (date: string) => void;
 }
 
 const DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
@@ -22,7 +23,7 @@ function dateStr(d: Date): string {
 }
 
 export default function CalendarGrid({
-  history, primaryColor, textColor, subColor, borderColor,
+  history, primaryColor, textColor, subColor, borderColor, onDayPress,
 }: CalendarGridProps) {
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
@@ -119,19 +120,21 @@ export default function CalendarGrid({
             // React Native doesn't support borderStyle: 'dashed' on all platforms,
             // so we render a dashed effect via an overlay View for grace cells
             return (
-              <View key={di} style={{
-                flex: 1, aspectRatio: 1, marginHorizontal: 2,
-                borderRadius: 8, alignItems: 'center', justifyContent: 'center',
-                backgroundColor: bg,
-                borderWidth: hasBorder ? borderWidth : 0,
-                borderColor,
-                borderStyle: cell.grace && !cell.isToday ? 'dashed' : 'solid',
-              }}>
+              <TouchableOpacity key={di} activeOpacity={0.7} onPress={() => onDayPress?.(cell.date)}
+                disabled={!cell.inMonth || !cell.done}
+                style={{
+                  flex: 1, aspectRatio: 1, marginHorizontal: 2,
+                  borderRadius: 8, alignItems: 'center', justifyContent: 'center',
+                  backgroundColor: bg,
+                  borderWidth: hasBorder ? borderWidth : 0,
+                  borderColor,
+                  borderStyle: cell.grace && !cell.isToday ? 'dashed' : 'solid',
+                }}>
                 <Text style={{
                   fontSize: FONT_SUB, fontWeight: cell.isToday ? '700' : '400',
                   color: fg,
                 }}>{cell.day}</Text>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>

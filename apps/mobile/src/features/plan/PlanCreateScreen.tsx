@@ -410,15 +410,14 @@ export default function PlanCreateScreen() {
                   {/* Frequency config */}
                   {item.frequency && item.frequency.mode === 'interval' && (() => {
                     const [prefix, suffix] = T('freqEveryNDays').split('{n}');
+                    const [text, setText] = React.useState(String(item.frequency.every));
                     return (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                       <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
                       <TextInput
-                        value={String(item.frequency.every)}
-                        onChangeText={v => {
-                          const n = parseInt(v) || 1;
-                          updateItem(item.id, { frequency: { mode: 'interval', every: Math.max(1, n) } });
-                        }}
+                        value={text}
+                        onChangeText={v => { setText(v); const n = parseInt(v); if (n > 0) updateItem(item.id, { frequency: { mode: 'interval', every: n } }); }}
+                        onBlur={() => { const n = parseInt(text); setText(String(Math.max(1, n || 1))); updateItem(item.id, { frequency: { mode: 'interval', every: Math.max(1, n || 1) } }); }}
                         keyboardType="number-pad"
                         style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
                       />
@@ -429,15 +428,14 @@ export default function PlanCreateScreen() {
 
                   {item.frequency && item.frequency.mode === 'weekly' && (() => {
                     const [prefix, suffix] = T('freqNTimesPerWeek').split('{n}');
+                    const [text, setText] = React.useState(String(item.frequency.target));
                     return (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                       <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
                       <TextInput
-                        value={String(item.frequency.target)}
-                        onChangeText={v => {
-                          const n = parseInt(v) || 1;
-                          updateItem(item.id, { frequency: { mode: 'weekly', target: Math.max(1, Math.min(7, n)) } });
-                        }}
+                        value={text}
+                        onChangeText={v => { setText(v); const n = parseInt(v); if (n >= 1 && n <= 7) updateItem(item.id, { frequency: { mode: 'weekly', target: n } }); }}
+                        onBlur={() => { const n = parseInt(text); const clamped = Math.max(1, Math.min(7, n || 1)); setText(String(clamped)); updateItem(item.id, { frequency: { mode: 'weekly', target: clamped } }); }}
                         keyboardType="number-pad"
                         style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
                       />
@@ -474,15 +472,14 @@ export default function PlanCreateScreen() {
 
                   {item.frequency && item.frequency.mode === 'monthly' && (() => {
                     const [prefix, suffix] = T('freqNTimesPerMonth').split('{n}');
+                    const [text, setText] = React.useState(String(item.frequency.target));
                     return (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                       <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
                       <TextInput
-                        value={String(item.frequency.target)}
-                        onChangeText={v => {
-                          const n = parseInt(v) || 1;
-                          updateItem(item.id, { frequency: { mode: 'monthly', target: Math.max(1, Math.min(31, n)) } });
-                        }}
+                        value={text}
+                        onChangeText={v => { setText(v); const n = parseInt(v); if (n >= 1 && n <= 31) updateItem(item.id, { frequency: { mode: 'monthly', target: n } }); }}
+                        onBlur={() => { const n = parseInt(text); const clamped = Math.max(1, Math.min(31, n || 1)); setText(String(clamped)); updateItem(item.id, { frequency: { mode: 'monthly', target: clamped } }); }}
                         keyboardType="number-pad"
                         style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
                       />

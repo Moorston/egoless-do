@@ -20,9 +20,10 @@ const FOOD_ICON_MAP: Record<string, React.ComponentType<any>> = {
 interface Props {
   visible: boolean;
   onClose: () => void;
+  onFoodAdded?: () => void;
 }
 
-export default function AddFoodModal({ visible, onClose }: Props) {
+export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   const TH = useTheme();
   const T  = useT();
   const P  = TH.primary;
@@ -88,7 +89,8 @@ export default function AddFoodModal({ visible, onClose }: Props) {
   const handleQuickAdd = useCallback((name: string, cal: number) => {
     store.addFood({ name, calories: cal, note: '', timestamp: Date.now() });
     showToast(`${T('foodAdded')}: ${name}`);
-  }, [store, T, showToast]);
+    onFoodAdded?.();
+  }, [store, T, showToast, onFoodAdded]);
 
   // Confirm editing preset
   const handleConfirmEdit = useCallback(() => {
@@ -98,7 +100,8 @@ export default function AddFoodModal({ visible, onClose }: Props) {
     showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);
     setEditing(null);
     setPortion(1);
-  }, [editing, portion, store, T, showToast]);
+    onFoodAdded?.();
+  }, [editing, portion, store, T, showToast, onFoodAdded]);
 
   // Confirm manual input
   const handleConfirmManual = useCallback(() => {
@@ -106,7 +109,8 @@ export default function AddFoodModal({ visible, onClose }: Props) {
     store.addFood({ name: fn, calories: +fc || 0, note: fnote, timestamp: Date.now() });
     showToast(`${T('foodAdded')}: ${fn}`);
     setFn(''); setFc(''); setFnote(''); setShowManual(false);
-  }, [fn, fc, fnote, store, T, showToast]);
+    onFoodAdded?.();
+  }, [fn, fc, fnote, store, T, showToast, onFoodAdded]);
 
   // Save as preset
   const handleSavePreset = useCallback(() => {

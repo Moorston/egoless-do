@@ -193,7 +193,7 @@ export const zhHant: I18nKeys = {
   checkinNoRecords:'暫無記錄', checkinDone:'已完成', checkinNotDone:'未完成',
   checkinStreak:'連續',
   checkinNotChecked:'今日未打卡，進入打卡', checkinModifyNotDone:'加油，繼續今日打卡',
-  checkinDoneBanner:'太棒了，今日目標已達成', checkinModify:'修改',
+  checkinDoneBanner:'太棒了，今日目標已達成', checkinDoneHistory:'已打卡', checkinNotDoneBanner:'未打卡', checkinModify:'修改',
   checkinDataTitle:'今日數據', checkinDetailTitle:'打卡詳情', checkinTime:'打卡時間',
   checkinStatus:'打卡狀態', checkinContent:'打卡內容',
 
@@ -214,15 +214,16 @@ export const zhHant: I18nKeys = {
   statsTitle:'統計', statsOverview:'你的健康數據概覽', statsReflections:'感念總數',
   statsFoodLog:'飲食記錄', statsMeditation:'冥想時長', statsActiveHabits:'活躍習慣',
   statsTotalFasting:'總禁食', statsWeekChart:'本週完成情況',
+  statsTotalCheckinDays:'累計打卡', statsCompletedTasks:'完成任務', statsHabitCount:'習慣數量', statsExerciseDuration:'鍛鍊時長',
   statsWeightTrend:'體重趨勢', statsDailyCalories:'每日熱量',
   statsExerciseTrend:'運動趨勢', statsCheckinHeatmap:'簽到熱力圖',
   statsNoData:'暫無數據', statsKeyMetrics:'關鍵指標', statsExerciseStats:'運動數據',
   statsKg:'公斤', statsKcal:'千卡',
   statsUpgrade:'升級 Premium', statsUpgradeDesc:'解鎖高級模板與 AI 感悟總結',
   statsLearnMore:'了解更多 →',
-  statsTabOverview:'總覽', statsTabFasting:'禁食', statsTabMeditation:'冥想', statsTabExercise:'運動', statsTabReflections:'感念', statsTabPlan:'計劃',
+  statsTabOverview:'總覽', statsTabFasting:'禁食', statsTabMeditation:'冥想', statsTabExercise:'鍛鍊', statsTabReflections:'感念', statsTabPlan:'計劃', statsTabHabits:'習慣', statsGraceCount:'寬限次數',
   statsPlanTotal:'總計劃數', statsPlanTasks:'總任務數', statsPlanDone:'已完成', statsPlanProgress:'計劃進度',
-  statsChartSwitch:'切換圖表', statsCalendarEntry:'打卡日曆', statsHabitProgress:'習慣進度', statsPlanList:'計劃列表',
+  statsChartSwitch:'切換圖表', statsCalendarEntry:'打卡日曆', statsHabitProgress:'習慣進度', statsPlanList:'進行中計劃',
 
   // Settings
   settingsRemind:'打卡提醒', settingsRemindOn:'啟用每日提醒', settingsRemindTime:'提醒時間',

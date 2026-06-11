@@ -193,7 +193,7 @@ export const en: I18nKeys = {
   checkinNoRecords:'No records', checkinDone:'Done', checkinNotDone:'Not Done',
   checkinStreak:'Streak',
   checkinNotChecked:'Not checked in, tap to start', checkinModifyNotDone:'Keep going, continue your check-in',
-  checkinDoneBanner:'Amazing, today\'s goal achieved', checkinModify:'Modify',
+  checkinDoneBanner:'Amazing, today\'s goal achieved', checkinDoneHistory:'Checked In', checkinNotDoneBanner:'Not Checked In', checkinModify:'Modify',
   checkinDataTitle:'Today\'s Data', checkinDetailTitle:'Check-in Detail', checkinTime:'Check-in Time',
   checkinStatus:'Status', checkinContent:'Content',
 
@@ -214,15 +214,16 @@ export const en: I18nKeys = {
   statsTitle:'Statistics', statsOverview:'Your Health Overview', statsReflections:'Reflections',
   statsFoodLog:'Food Records', statsMeditation:'Meditation', statsActiveHabits:'Active Habits',
   statsTotalFasting:'Total Fasting', statsWeekChart:'This Week',
+  statsTotalCheckinDays:'Total Check-ins', statsCompletedTasks:'Completed Tasks', statsHabitCount:'Habits', statsExerciseDuration:'Exercise Time',
   statsWeightTrend:'Weight Trend', statsDailyCalories:'Daily Calories',
   statsExerciseTrend:'Exercise Trend', statsCheckinHeatmap:'Check-in Heatmap',
   statsNoData:'No data yet', statsKeyMetrics:'Key Metrics', statsExerciseStats:'Exercise Stats',
   statsKg:'kg', statsKcal:'kcal',
   statsUpgrade:'Upgrade Premium', statsUpgradeDesc:'Unlock premium templates & AI insights',
   statsLearnMore:'Learn More →',
-  statsTabOverview:'Overview', statsTabFasting:'Fasting', statsTabMeditation:'Meditation', statsTabExercise:'Exercise', statsTabReflections:'Reflections', statsTabPlan:'Plan',
+  statsTabOverview:'Overview', statsTabFasting:'Fasting', statsTabMeditation:'Meditation', statsTabExercise:'Exercise', statsTabReflections:'Reflections', statsTabPlan:'Plan', statsTabHabits:'Habits', statsGraceCount:'Grace Count',
   statsPlanTotal:'Total Plans', statsPlanTasks:'Total Tasks', statsPlanDone:'Completed', statsPlanProgress:'Plan Progress',
-  statsChartSwitch:'Switch Chart', statsCalendarEntry:'Check-in Calendar', statsHabitProgress:'Habit Progress', statsPlanList:'Plan List',
+  statsChartSwitch:'Switch Chart', statsCalendarEntry:'Check-in Calendar', statsHabitProgress:'Habit Progress', statsPlanList:'Active Plans',
 
   // Settings
   settingsRemind:'Reminders', settingsRemindOn:'Enable Daily Reminder', settingsRemindTime:'Reminder Time',

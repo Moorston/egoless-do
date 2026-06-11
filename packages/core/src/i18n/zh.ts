@@ -152,7 +152,7 @@ export const zh: I18nKeys = {
   exerciseResume:'继续', exercisePause:'暂停', exerciseEnd:'结束',
   exerciseTip:'运动数据将自动记录。请确保健康权限已开启，以获取更准确的数据。',
   exerciseBack:'← 返回',
-  exerciseHistory:'运动记录', exerciseTotalTime:'总运动时长',
+  exerciseHistory:'锻炼记录', exerciseTotalTime:'总运动时长',
   exerciseTotalCount:'运动次数', exerciseCalories:'卡路里',
   exerciseNoHistory:'暂无运动记录', exerciseDeleteConfirm:'确认删除这条运动记录？',
   exerciseMin:'分钟', exerciseKm:'公里',
@@ -193,7 +193,7 @@ export const zh: I18nKeys = {
   checkinNoRecords:'暂无记录', checkinDone:'已完成', checkinNotDone:'未完成',
   checkinStreak:'连续',
   checkinNotChecked:'今日未打卡，进入打卡', checkinModifyNotDone:'加油，继续今日打卡',
-  checkinDoneBanner:'太棒了，今日目标已达成', checkinModify:'修改',
+  checkinDoneBanner:'太棒了，今日目标已达成', checkinDoneHistory:'已打卡', checkinNotDoneBanner:'未打卡', checkinModify:'修改',
   checkinDataTitle:'今日数据', checkinDetailTitle:'打卡详情', checkinTime:'打卡时间',
   checkinStatus:'打卡状态', checkinContent:'打卡内容',
 
@@ -211,18 +211,19 @@ export const zh: I18nKeys = {
   foodPortion:'份数', foodTotalCal:'总卡路里', foodBackToList:'返回列表',
 
   // Stats
-  statsTitle:'统计', statsOverview:'你的健康数据概览', statsReflections:'感念总数',
+  statsTitle:'统计数据', statsOverview:'你的健康数据概览', statsReflections:'感念总数',
   statsFoodLog:'饮食记录', statsMeditation:'冥想时长', statsActiveHabits:'活跃习惯',
   statsTotalFasting:'总禁食', statsWeekChart:'本周完成情况',
+  statsTotalCheckinDays:'累计打卡', statsCompletedTasks:'完成任务', statsHabitCount:'习惯数量', statsExerciseDuration:'锻炼时长',
   statsWeightTrend:'体重趋势', statsDailyCalories:'每日热量',
   statsExerciseTrend:'运动趋势', statsCheckinHeatmap:'签到热力图',
   statsNoData:'暂无数据', statsKeyMetrics:'关键指标', statsExerciseStats:'运动数据',
   statsKg:'公斤', statsKcal:'千卡',
   statsUpgrade:'升级 Premium', statsUpgradeDesc:'解锁高级模板与 AI 感悟总结',
   statsLearnMore:'了解更多 →',
-  statsTabOverview:'总览', statsTabFasting:'禁食', statsTabMeditation:'冥想', statsTabExercise:'运动', statsTabReflections:'感念', statsTabPlan:'计划',
+  statsTabOverview:'总览', statsTabFasting:'禁食', statsTabMeditation:'冥想', statsTabExercise:'锻炼', statsTabReflections:'感念', statsTabPlan:'计划', statsTabHabits:'习惯', statsGraceCount:'宽限次数',
   statsPlanTotal:'总计划数', statsPlanTasks:'总任务数', statsPlanDone:'已完成', statsPlanProgress:'计划进度',
-  statsChartSwitch:'切换图表', statsCalendarEntry:'打卡日历', statsHabitProgress:'习惯进度', statsPlanList:'计划列表',
+  statsChartSwitch:'切换图表', statsCalendarEntry:'打卡日历', statsHabitProgress:'习惯进度', statsPlanList:'进行中计划',
 
   // Settings
   settingsRemind:'打卡提醒', settingsRemindOn:'启用每日提醒', settingsRemindTime:'提醒时间',
