@@ -220,6 +220,9 @@ export const en: I18nKeys = {
   statsKg:'kg', statsKcal:'kcal',
   statsUpgrade:'Upgrade Premium', statsUpgradeDesc:'Unlock premium templates & AI insights',
   statsLearnMore:'Learn More →',
+  statsTabOverview:'Overview', statsTabFasting:'Fasting', statsTabMeditation:'Meditation', statsTabExercise:'Exercise', statsTabReflections:'Reflections', statsTabPlan:'Plan',
+  statsPlanTotal:'Total Plans', statsPlanTasks:'Total Tasks', statsPlanDone:'Completed', statsPlanProgress:'Plan Progress',
+  statsChartSwitch:'Switch Chart', statsCalendarEntry:'Check-in Calendar', statsHabitProgress:'Habit Progress', statsPlanList:'Plan List',
 
   // Settings
   settingsRemind:'Reminders', settingsRemindOn:'Enable Daily Reminder', settingsRemindTime:'Reminder Time',

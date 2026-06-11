@@ -220,6 +220,9 @@ export const zh: I18nKeys = {
   statsKg:'公斤', statsKcal:'千卡',
   statsUpgrade:'升级 Premium', statsUpgradeDesc:'解锁高级模板与 AI 感悟总结',
   statsLearnMore:'了解更多 →',
+  statsTabOverview:'总览', statsTabFasting:'禁食', statsTabMeditation:'冥想', statsTabExercise:'运动', statsTabReflections:'感念', statsTabPlan:'计划',
+  statsPlanTotal:'总计划数', statsPlanTasks:'总任务数', statsPlanDone:'已完成', statsPlanProgress:'计划进度',
+  statsChartSwitch:'切换图表', statsCalendarEntry:'打卡日历', statsHabitProgress:'习惯进度', statsPlanList:'计划列表',
 
   // Settings
   settingsRemind:'打卡提醒', settingsRemindOn:'启用每日提醒', settingsRemindTime:'提醒时间',

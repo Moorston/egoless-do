@@ -190,6 +190,9 @@ export interface I18nKeys {
   statsKeyMetrics: string; statsExerciseStats: string;
   statsKg: string; statsKcal: string; statsUpgrade: string;
   statsUpgradeDesc: string; statsLearnMore: string;
+  statsTabOverview: string; statsTabFasting: string; statsTabMeditation: string; statsTabExercise: string; statsTabReflections: string; statsTabPlan: string;
+  statsPlanTotal: string; statsPlanTasks: string; statsPlanDone: string; statsPlanProgress: string;
+  statsChartSwitch: string; statsCalendarEntry: string; statsHabitProgress: string; statsPlanList: string;
   settingsRemind: string; settingsRemindOn: string;
   settingsRemindTime: string; settingsData: string;
   settingsStats: string; settingsHistory: string;

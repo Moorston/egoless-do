@@ -220,6 +220,9 @@ export const zhHant: I18nKeys = {
   statsKg:'公斤', statsKcal:'千卡',
   statsUpgrade:'升級 Premium', statsUpgradeDesc:'解鎖高級模板與 AI 感悟總結',
   statsLearnMore:'了解更多 →',
+  statsTabOverview:'總覽', statsTabFasting:'禁食', statsTabMeditation:'冥想', statsTabExercise:'運動', statsTabReflections:'感念', statsTabPlan:'計劃',
+  statsPlanTotal:'總計劃數', statsPlanTasks:'總任務數', statsPlanDone:'已完成', statsPlanProgress:'計劃進度',
+  statsChartSwitch:'切換圖表', statsCalendarEntry:'打卡日曆', statsHabitProgress:'習慣進度', statsPlanList:'計劃列表',
 
   // Settings
   settingsRemind:'打卡提醒', settingsRemindOn:'啟用每日提醒', settingsRemindTime:'提醒時間',
