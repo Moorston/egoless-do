@@ -235,7 +235,7 @@ export default function MeditationScreen() {
               </View>
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:6, marginBottom:14 }}>
                 {MED_SOUNDS.map(s => (
-                  <TagPill key={s} label={s} active={sound===s} onPress={() => setSound(s)} />
+                  <TagPill key={s} label={s} active={sound===s} onPress={() => setSound(s)} textActiveColor="#333" />
                 ))}
               </View>
 
@@ -243,7 +243,7 @@ export default function MeditationScreen() {
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
                 {MEDITATION_DURATIONS_MIN.map(d => (
                   <TagPill key={d} label={`${d}${T('medMinutes')}`} active={durMin===d}
-                    onPress={() => { setDurMin(d); setSec(0); setActive(false); }} />
+                    onPress={() => { setDurMin(d); setSec(0); setActive(false); }} textActiveColor="#333" />
                 ))}
               </View>
 
