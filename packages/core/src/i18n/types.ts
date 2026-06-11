@@ -6,7 +6,10 @@ export interface I18nKeys {
   done: string; notDone: string; cancel: string; save: string;
   submit: string; note: string; freeCheckin: string;
   startFasting: string; quickStart: string; stopFasting: string;
-  accMed: string; bgMusic: string; startMed: string; stopMed: string;
+  accMed: string; bgMusic: string;
+  medMusicFocus: string; medMusicMeditate: string; medMusicExercise: string; medMusicUser: string;
+  medSelectMusic: string; medTapToSelect: string; medNoMusic: string;
+  startMed: string; stopMed: string;
   shareMed: string; shareCardTitle: string; shareCardSession: string;
   shareCardDownload: string; mindPulse: string; newReflection: string;
   saveReflection: string; myHabits: string; addHabit: string;

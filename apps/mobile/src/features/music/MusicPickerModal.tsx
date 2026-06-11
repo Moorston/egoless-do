@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { X } from 'lucide-react-native';
+import { X, Music } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
@@ -10,8 +10,10 @@ import TrackListItem from './TrackListItem';
 interface Props {
   visible: boolean;
   onClose: () => void;
-  onSelectTrack?: (track: MusicTrack) => void;
+  onSelectTrack?: (track: MusicTrack | null) => void;
+  onSelectNoMusic?: () => void;
   primaryColor: string;
+  selectedTrackId?: string | null;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -21,7 +23,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   user: '我的',
 };
 
-export default function MusicPickerModal({ visible, onClose, onSelectTrack, primaryColor }: Props) {
+export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSelectNoMusic, primaryColor, selectedTrackId }: Props) {
   const TH = useTheme();
   const T = useT();
 
@@ -76,6 +78,19 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, prim
           </View>
 
           <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 20 }}>
+            {/* No music option */}
+            <TouchableOpacity
+              onPress={() => { onSelectNoMusic?.(); }}
+              activeOpacity={0.7}
+              style={[styles.noMusicItem, { backgroundColor: !selectedTrackId ? `${primaryColor}10` : 'transparent' }]}
+            >
+              <View style={[styles.noMusicIcon, { backgroundColor: !selectedTrackId ? `${primaryColor}18` : `${primaryColor}08` }]}>
+                <Music size={18} color={!selectedTrackId ? primaryColor : TH.sub} />
+              </View>
+              <Text style={[styles.noMusicText, { color: !selectedTrackId ? primaryColor : TH.text }]}>{T('medNoMusic')}</Text>
+              {!selectedTrackId && <View style={[styles.checkDot, { backgroundColor: primaryColor }]} />}
+            </TouchableOpacity>
+
             {grouped.map(group => (
               <View key={group.key} style={styles.group}>
                 <Text style={[styles.groupLabel, { color: TH.sub }]}>{group.label}</Text>
@@ -83,7 +98,7 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, prim
                   <TrackListItem
                     key={track.id}
                     track={track}
-                    isCurrent={currentTrack?.id === track.id}
+                    isCurrent={selectedTrackId === track.id}
                     isPlaying={currentTrack?.id === track.id && isPlaying}
                     isFavorite={favorites.includes(track.id)}
                     onPlay={() => handlePlay(track)}
@@ -145,6 +160,31 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     paddingHorizontal: 16,
     paddingVertical: 8,
+  },
+  noMusicItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginHorizontal: 8,
+    borderRadius: 12,
+    gap: 12,
+  },
+  noMusicIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  noMusicText: {
+    fontSize: FONT_BODY,
+    flex: 1,
+  },
+  checkDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   footer: {
     paddingHorizontal: 20,

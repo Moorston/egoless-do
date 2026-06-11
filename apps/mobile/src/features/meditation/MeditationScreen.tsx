@@ -11,10 +11,11 @@ import type { MusicTrack } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Music, Globe, Binary, ChevronRight } from 'lucide-react-native';
+import { Globe, Binary, ChevronRight } from 'lucide-react-native';
 import { useMusicStore } from '../music/useMusicStore';
 import { useAudioEngine } from '../music/useAudioEngine';
 import MusicPickerModal from '../music/MusicPickerModal';
+import MeditationMusicBar from './MeditationMusicBar';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
@@ -130,6 +131,12 @@ export default function MeditationScreen() {
     setShowMusicPicker(false);
   }, [musicPause]);
 
+  const handleSelectNoMusic = useCallback(() => {
+    setSelectedTrack(null);
+    musicStop();
+    setShowMusicPicker(false);
+  }, [musicStop]);
+
   const handleShare = useCallback(async () => {
     try {
       if (shareCardRef.current?.capture) {
@@ -193,12 +200,7 @@ export default function MeditationScreen() {
           {active ? (
             <View style={{ alignItems:'center' }}>
               {/* Music display during meditation — non-interactive */}
-              {selectedTrack && (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16, backgroundColor: `${P}10`, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 10 }}>
-                  <Music size={14} color={P} />
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text }} numberOfLines={1}>{selectedTrack.name}</Text>
-                </View>
-              )}
+              <MeditationMusicBar track={selectedTrack} isActive isPlaying={!!selectedTrack} primaryColor={P} />
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
                 <Text style={{ fontSize:FONT_HERO, fontWeight:'800', color:P, letterSpacing:2 }}>
                   {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
@@ -215,21 +217,7 @@ export default function MeditationScreen() {
           ) : (
             <>
               {/* Music selector — tappable to open picker */}
-              <TouchableOpacity
-                onPress={() => setShowMusicPicker(true)}
-                activeOpacity={0.7}
-                style={{ backgroundColor: `${P}08`, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 16, marginBottom: 16 }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-                    <Music size={18} color={P} />
-                    <Text style={{ fontSize: FONT_BODY, color: selectedTrack ? TH.text : TH.sub }} numberOfLines={1}>
-                      {selectedTrack ? selectedTrack.name : T('bgMusic')}
-                    </Text>
-                  </View>
-                  <ChevronRight size={16} color={TH.sub} />
-                </View>
-              </TouchableOpacity>
+              <MeditationMusicBar track={selectedTrack} isActive={false} isPlaying={false} primaryColor={P} onPress={() => setShowMusicPicker(true)} />
 
               {/* Duration selector */}
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
@@ -243,8 +231,6 @@ export default function MeditationScreen() {
             </>
           )}
         </Card>
-
-        <Text style={{ textAlign:'center', fontSize:FONT_BODY, color:TH.sub, marginTop:12 }}>{T('medAttribution')}</Text>
       </ScrollView>
 
       {/* Share Card Modal */}
@@ -287,7 +273,9 @@ export default function MeditationScreen() {
         visible={showMusicPicker}
         onClose={handleMusicPickerClose}
         onSelectTrack={setSelectedTrack}
+        onSelectNoMusic={handleSelectNoMusic}
         primaryColor={P}
+        selectedTrackId={selectedTrack?.id ?? null}
       />
     </SafeAreaView>
   );
