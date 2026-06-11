@@ -8,7 +8,7 @@ import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm,
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
-  ChevronRight, Moon, Clock, Trophy, ClipboardList,
+  Clock, ClipboardList,
 } from 'lucide-react-native';
 import LineChart from '../../components/charts/LineChart';
 import BarChart from '../../components/charts/BarChart';
@@ -225,13 +225,15 @@ export default function StatsScreen() {
     );
   };
 
-  const renderCalendarEntry = () => (
-    <TouchableOpacity onPress={() => nav.navigate('CheckinHistory')}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, backgroundColor: TH.card, borderRadius: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-      <CalendarDays size={20} color={P} />
-      <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', flex: 1 }}>{T('statsCalendarEntry')}</Text>
-      <ChevronRight size={18} color={TH.sub} />
-    </TouchableOpacity>
+  const renderCalendar = () => (
+    <Card style={{ marginBottom: 12 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+        <CalendarDays size={15} color={TH.text} />
+        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('statsCheckinHeatmap')}</Text>
+      </View>
+      <CalendarGrid history={store.checkinHistory ?? []}
+        primaryColor={P} textColor={TH.text} subColor={TH.sub} borderColor={TH.border} />
+    </Card>
   );
 
   // ── Tab content ──
@@ -251,7 +253,7 @@ export default function StatsScreen() {
             {renderChartArea()}
             {renderHabitList()}
             {renderPlanList()}
-            {renderCalendarEntry()}
+            {renderCalendar()}
           </>
         );
       case 'fasting':
