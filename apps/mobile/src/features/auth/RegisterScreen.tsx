@@ -23,6 +23,7 @@ export default function RegisterScreen() {
   const [sending, setSending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'ok' | 'taken'>('idle');
+  const [emailError, setEmailError] = useState('');
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startCooldown = useCallback(() => {
@@ -40,7 +41,13 @@ export default function RegisterScreen() {
 
   const handleEmailBlur = async () => {
     const em = email.trim();
-    if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
+    if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
+      setEmailError('邮箱格式不正确');
+      setEmailStatus('idle');
+      return;
+    }
+    setEmailError('');
+    if (!em) {
       setEmailStatus('idle');
       return;
     }
@@ -48,10 +55,10 @@ export default function RegisterScreen() {
     try {
       const res = await apiCheckEmail(em);
       setEmailStatus(res.available ? 'ok' : 'taken');
-      if (!res.available) setError(res.error ?? '该邮箱已注册');
-      else if (error === '该邮箱已注册') setError('');
-    } catch {
+      if (!res.available) setEmailError(res.error || '该邮箱已注册，请直接登录或使用其他邮箱');
+    } catch (e: any) {
       setEmailStatus('idle');
+      setEmailError(e.message || '检查失败');
     }
   };
 
@@ -124,19 +131,22 @@ export default function RegisterScreen() {
               placeholder="昵称"
               style={{ marginBottom: 12 }}
             />
-            <View style={{ position: 'relative', marginBottom: 12 }}>
+            <View style={{ position: 'relative', marginBottom: emailError ? 4 : 12 }}>
               <ThemedInput
                 value={email}
-                onChangeText={v => { setEmail(v); setEmailStatus('idle'); }}
+                onChangeText={v => { setEmail(v); setEmailStatus('idle'); setEmailError(''); }}
                 onBlur={handleEmailBlur}
                 placeholder="邮箱"
-                keyboardType="default"
-                style={{ marginBottom: 0, paddingRight: 80 }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                style={{ marginBottom: 0, paddingRight: 80, ...(emailError || emailStatus === 'taken' ? { borderColor: '#ef4444' } : emailStatus === 'ok' ? { borderColor: '#10b981' } : {}) }}
               />
               {emailStatus === 'checking' && <Text style={{ position: 'absolute', right: 14, top: 14, fontSize: FONT_SUB, color: TH.sub }}>检查中...</Text>}
               {emailStatus === 'ok' && <View style={{ position: 'absolute', right: 14, top: 14, flexDirection: 'row', alignItems: 'center', gap: 4 }}><Check size={14} color="#10b981" /><Text style={{ fontSize: FONT_SUB, color: '#10b981' }}>可用</Text></View>}
               {emailStatus === 'taken' && <View style={{ position: 'absolute', right: 14, top: 14, flexDirection: 'row', alignItems: 'center', gap: 4 }}><X size={14} color="#ef4444" /><Text style={{ fontSize: FONT_SUB, color: '#ef4444' }}>已注册</Text></View>}
             </View>
+            {emailError ? <Text style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>{emailError}</Text> : null}
+            {emailStatus === 'taken' && !emailError ? <Text style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>该邮箱已注册，请直接登录或使用其他邮箱</Text> : null}
             <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
               <View style={{ flex: 1 }}>
                 <ThemedInput

@@ -1,17 +1,12 @@
 'use client';
 
 import { useMemo } from 'react';
-import { THEMES, COLORS, getHistoryPlans, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
-import type { Plan, PlanStatus } from '@egoless-do/core';
+import { THEMES, PLAN_STATUS_COLORS, statusToI18nKey, getHistoryPlans, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import type { Plan } from '@egoless-do/core';
 import { useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
 import { ChevronLeft, ChevronRight, ClipboardList } from 'lucide-react';
-
-const STATUS_COLORS: Record<string, string> = {
-  not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
-  completed: COLORS.BLUE, cancelled: COLORS.RED, delayed: COLORS.ORANGE,
-};
 
 export default function PlanHistoryPage({ onClose }: { onClose: () => void }) {
   const store = useWebStore();
@@ -32,7 +27,7 @@ export default function PlanHistoryPage({ onClose }: { onClose: () => void }) {
         {historyPlans.length === 0 ? (
           <div style={{ ...cs(TH), textAlign: 'center', padding: 32 }}>
             <div style={{ fontSize: FONT_STAT_SECTION, marginBottom: 8 }}><ClipboardList size={32} /></div>
-            <div style={{ fontSize: FONT_BUTTON, color: TH.sub }}>暂无历史计划</div>
+            <div style={{ fontSize: FONT_BUTTON, color: TH.sub }}>{T('planNoHistory')}</div>
           </div>
         ) : (
           historyPlans.map(plan => (
@@ -53,8 +48,8 @@ export default function PlanHistoryPage({ onClose }: { onClose: () => void }) {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
                 <span style={{
                   fontSize: FONT_BADGE, fontWeight: 600, padding: '2px 8px', borderRadius: 6,
-                  background: `${STATUS_COLORS[plan.status]}20`, color: STATUS_COLORS[plan.status],
-                }}>{T(`planStatus${plan.status.charAt(0).toUpperCase() + plan.status.slice(1).replace(/_([a-z])/g, (_, c) => c.toUpperCase())}`)}</span>
+                  background: `${PLAN_STATUS_COLORS[plan.status]}20`, color: PLAN_STATUS_COLORS[plan.status],
+                }}>{T(statusToI18nKey(plan.status))}</span>
                 <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{plan.progress}%</span>
               </div>
               <span style={{ fontSize: FONT_SUB, color: TH.sub }}><ChevronRight size={14} style={{verticalAlign:'middle'}} /></span>

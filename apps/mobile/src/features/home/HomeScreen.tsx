@@ -7,7 +7,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
-import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate } from '@egoless-do/core';
+import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../components/UI';
 import AddFoodModal from '../../components/AddFoodModal';
@@ -17,7 +17,7 @@ import {
   Utensils, Scale, Footprints,
   Droplets, Pencil, Check, X, Shield, Star, Sparkles,
   PersonStanding, ClipboardList, Target, BarChart3, AlertTriangle,
-  ChevronLeft, ChevronRight, Calendar,
+  ChevronLeft, ChevronRight, Calendar, Moon, Sunrise, Binary,
 } from 'lucide-react-native';
 import CheckinStatsModal from './CheckinStatsModal';
 
@@ -79,11 +79,11 @@ export default function HomeScreen() {
 
   // ── Plan items ──
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
+  const planCheckins = store.planItemCheckins ?? [];
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayItems(store.planItems ?? [], activePlan, viewDate);
-  }, [store.planItems, activePlan, viewDate]);
-  const planCheckins = store.planItemCheckins ?? [];
+    return getTodayItems(store.planItems ?? [], activePlan, viewDate, planCheckins);
+  }, [store.planItems, activePlan, viewDate, planCheckins]);
   const dailyCustomTodos = useMemo(() => {
     if (!activePlan) return [];
     return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, viewDate);
@@ -121,6 +121,53 @@ export default function HomeScreen() {
     () => (store.habits ?? []).filter(h => h.status === 'inProgress'),
     [store.habits],
   );
+
+  // ── Practice streaks ──
+  const practiceStreaks = useMemo(() => {
+    const history = store.checkinHistory ?? [];
+    const streaks: Record<string, number> = { sit: 0, stand: 0, chant: 0 };
+    
+    // 创建日期到记录的映射
+    const recordMap = new Map<string, CheckinEntry>();
+    for (const c of history) {
+      if (c.done) recordMap.set(c.date, c);
+    }
+    
+    // 检查 viewDate 的记录中是否包含各修行项目
+    const viewDateRecord = recordMap.get(viewDate);
+    const viewDatePractices = viewDateRecord ? parseCheckinNote(viewDateRecord.note ?? '').practices : [];
+    
+    for (const key of ['sit', 'stand', 'chant'] as const) {
+      let streak = 0;
+      // 从 viewDate 的前一天开始向前检查连续天数
+      let currentDate = viewDate;
+      const d = new Date(viewDate + 'T00:00:00');
+      d.setDate(d.getDate() - 1);
+      currentDate = d.toISOString().slice(0, 10);
+      
+      while (true) {
+        const record = recordMap.get(currentDate);
+        if (!record) break;
+        
+        const parsed = parseCheckinNote(record.note ?? '');
+        if (!parsed.practices.includes(key)) break;
+        
+        streak++;
+        // 移动到前一天
+        const prev = new Date(currentDate + 'T00:00:00');
+        prev.setDate(prev.getDate() - 1);
+        currentDate = prev.toISOString().slice(0, 10);
+      }
+      
+      // 如果 viewDate 的记录中包含该修行项目，连续天数+1
+      if (viewDatePractices.includes(key)) {
+        streak++;
+      }
+      
+      streaks[key] = streak;
+    }
+    return streaks;
+  }, [store.checkinHistory, viewDate]);
 
   // ── Status derivation ──
   const status: CheckinStatus = todayRecord
@@ -389,6 +436,9 @@ export default function HomeScreen() {
   const yStr = yesterday();
   const yesterdayRecord = (store.checkinHistory ?? []).find((h: CheckinEntry) => h.date === yStr);
   const showGrace = isToday && yesterdayRecord?.done !== true;
+  const currentMonth = dateStr().slice(0, 7);
+  const graceQuota = store.userProfile?.graceMonthlyQuota ?? 2;
+  const graceAvailable = isGraceAvailable(store.graceHistory ?? [], graceQuota, currentMonth, yStr);
 
   // ── Delayed plan reminder ──
   const [showDelayedReminder, setShowDelayedReminder] = useState(true);
@@ -505,7 +555,14 @@ export default function HomeScreen() {
                     <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('streak')}</Text>
                     <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? store.streak : viewDateStats.streak}</Text>
                     <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
-                    <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+                    {isToday && showGrace && graceAvailable ? (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 4 }}>
+                        <Shield size={10} color="rgba(255,255,255,.7)" />
+                        <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL }}>{T('graceStreakPending')}</Text>
+                      </View>
+                    ) : (
+                      <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+                    )}
                   </TouchableOpacity>
                 </View>
               </LinearGradient>
@@ -562,30 +619,44 @@ export default function HomeScreen() {
                 {/* Practices */}
                 <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 8 }}>{T('checkinPractice')}</Text>
                 {([
-                  { key: 'sit' as const, icon: <PersonStanding size={16} color={P} />, label: T('checkinSit') },
-                  { key: 'stand' as const, icon: <PersonStanding size={16} color={P} />, label: T('checkinStand') },
-                  { key: 'chant' as const, icon: <Sparkles size={16} color={P} />, label: T('checkinSutra') },
-                ]).map(({ key, icon, label }) => (
-                  <View key={key} style={{
-                    flexDirection: 'row', alignItems: 'center',
-                    justifyContent: 'space-between', paddingVertical: 12,
-                    borderBottomWidth: 1, borderBottomColor: TH.border,
-                  }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                      {icon}
-                      <Text style={{ color: isReadOnly && !practices[key] ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !practices[key] ? 0.5 : 1 }}>
-                        {label}
-                      </Text>
+                  { key: 'sit' as const, icon: <Moon size={16} color={P} />, label: T('checkinSit') },
+                  { key: 'stand' as const, icon: <Sunrise size={16} color={P} />, label: T('checkinStand') },
+                  { key: 'chant' as const, icon: <Binary size={16} color={P} />, label: T('checkinSutra') },
+                ]).map(({ key, icon, label }) => {
+                  const isChecked = practices[key];
+                  const baseStreak = practiceStreaks[key];
+                  // 检查历史记录中是否包含该修行项目
+                  const viewDateRecord = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === viewDate && c.done);
+                  const hasInHistory = viewDateRecord ? parseCheckinNote(viewDateRecord.note ?? '').practices.includes(key) : false;
+                  // 选中时+1，取消时-1
+                  const displayStreak = isChecked 
+                    ? (hasInHistory ? baseStreak : baseStreak + 1) 
+                    : (hasInHistory ? baseStreak - 1 : baseStreak);
+                  return (
+                    <View key={key} style={{
+                      flexDirection: 'row', alignItems: 'center',
+                      justifyContent: 'space-between', paddingVertical: 12,
+                      borderBottomWidth: 1, borderBottomColor: TH.border,
+                    }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                        {icon}
+                        <View>
+                          <Text style={{ color: isReadOnly && !isChecked ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !isChecked ? 0.5 : 1 }}>
+                            {label}
+                          </Text>
+                          <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{displayStreak} {T('checkinStreak')}</Text>
+                        </View>
+                      </View>
+                      {isReadOnly ? (
+                        isChecked
+                          ? <Check size={18} color={COLORS.GREEN} />
+                          : <X size={18} color={TH.sub} />
+                      ) : (
+                        <Checkbox on={isChecked} onChange={() => togglePractice(key)} />
+                      )}
                     </View>
-                    {isReadOnly ? (
-                      practices[key]
-                        ? <Check size={18} color={COLORS.GREEN} />
-                        : <X size={18} color={TH.sub} />
-                    ) : (
-                      <Checkbox on={practices[key]} onChange={() => togglePractice(key)} />
-                    )}
-                  </View>
-                ))}
+                  );
+                })}
 
                 {/* Plan items */}
                 {todayPlanItems.length > 0 && (
@@ -890,7 +961,7 @@ export default function HomeScreen() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                       <Check size={18} color="#fff" />
                       <Text style={{ fontWeight: '700', fontSize: FONT_BUTTON, color: '#fff' }}>
-                        {T('checkinDone')}
+                        {T('checkinSubmit')}
                       </Text>
                     </View>
                   </TouchableOpacity>

@@ -2,12 +2,12 @@
 
 import { useState, useMemo } from 'react';
 import { useTheme } from '../helpers';
-import { FONT_BODY, FONT_BADGE, FONT_CHART_AXIS } from '@egoless-do/core';
+import { FONT_BODY, FONT_BADGE, FONT_CHART_AXIS, COLORS } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface CalendarGridProps {
   /** checkin history entries */
-  history: Array<{ date: string; done: boolean }>;
+  history: Array<{ date: string; done: boolean; grace?: boolean }>;
 }
 
 const DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
@@ -33,6 +33,7 @@ export default function CalendarGrid({ history }: CalendarGridProps) {
   const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-indexed
 
   const doneSet = useMemo(() => new Set(history.filter(e => e.done).map(e => e.date)), [history]);
+  const graceSet = useMemo(() => new Set(history.filter(e => e.grace).map(e => e.date)), [history]);
 
   const weeks = useMemo(() => {
     const firstDay = new Date(viewYear, viewMonth, 1);
@@ -41,7 +42,7 @@ export default function CalendarGrid({ history }: CalendarGridProps) {
     let startDow = firstDay.getDay() - 1;
     if (startDow < 0) startDow = 6;
 
-    const result: Array<Array<{ day: number; date: string; done: boolean; isToday: boolean; inMonth: boolean }>> = [];
+    const result: Array<Array<{ day: number; date: string; done: boolean; grace: boolean; isToday: boolean; inMonth: boolean }>> = [];
     // Fill leading days from previous month
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - startDow);
@@ -49,13 +50,14 @@ export default function CalendarGrid({ history }: CalendarGridProps) {
     const cur = new Date(startDate);
     const todayStr = dateStr(today);
     for (let w = 0; w < 6; w++) {
-      const row: Array<{ day: number; date: string; done: boolean; isToday: boolean; inMonth: boolean }> = [];
+      const row: Array<{ day: number; date: string; done: boolean; grace: boolean; isToday: boolean; inMonth: boolean }> = [];
       for (let d = 0; d < 7; d++) {
         const ds = dateStr(cur);
         row.push({
           day: cur.getDate(),
           date: ds,
           done: doneSet.has(ds),
+          grace: graceSet.has(ds),
           isToday: ds === todayStr,
           inMonth: cur.getMonth() === viewMonth,
         });
@@ -64,7 +66,7 @@ export default function CalendarGrid({ history }: CalendarGridProps) {
       result.push(row);
     }
     return result;
-  }, [viewYear, viewMonth, doneSet]);
+  }, [viewYear, viewMonth, doneSet, graceSet]);
 
   const goPrev = () => {
     if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11); }
@@ -115,21 +117,27 @@ export default function CalendarGrid({ history }: CalendarGridProps) {
 
       {/* Calendar grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4 }}>
-        {weeks.flat().map((cell, i) => (
-          <div key={i} style={{
-            width: '100%', aspectRatio: '1',
-            borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: FONT_BADGE, fontWeight: cell.isToday ? 700 : 400,
-            background: !cell.inMonth ? 'transparent'
-              : cell.done ? TH.primary : `${TH.primary}18`,
-            color: !cell.inMonth ? 'rgba(128,128,128,.2)'
-              : cell.done ? '#fff' : 'rgba(128,128,128,.5)',
-            border: cell.isToday ? `2px solid ${TH.primary}` : '2px solid transparent',
-            transition: 'background .2s',
-          }}>
-            {cell.day}
-          </div>
-        ))}
+        {weeks.flat().map((cell, i) => {
+          const hasBorder = cell.isToday || cell.grace;
+          const borderStyle = cell.isToday ? `2px solid ${TH.primary}`
+            : cell.grace ? `1.5px dashed ${COLORS.ORANGE}`
+            : '2px solid transparent';
+          return (
+            <div key={i} style={{
+              width: '100%', aspectRatio: '1',
+              borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: FONT_BADGE, fontWeight: cell.isToday ? 700 : 400,
+              background: !cell.inMonth ? 'transparent'
+                : cell.done ? TH.primary : `${TH.primary}18`,
+              color: !cell.inMonth ? 'rgba(128,128,128,.2)'
+                : cell.done ? '#fff' : 'rgba(128,128,128,.5)',
+              border: borderStyle,
+              transition: 'background .2s',
+            }}>
+              {cell.day}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

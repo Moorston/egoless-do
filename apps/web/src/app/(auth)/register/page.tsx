@@ -19,6 +19,7 @@ export default function RegisterPage() {
   const [sending, setSending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'ok' | 'taken'>('idle');
+  const [emailError, setEmailError] = useState('');
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const register = useWebStore(s => s.register);
   const router = useRouter();
@@ -37,7 +38,13 @@ export default function RegisterPage() {
   }, []);
 
   async function handleEmailBlur() {
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError('邮箱格式不正确');
+      setEmailStatus('idle');
+      return;
+    }
+    setEmailError('');
+    if (!email) {
       setEmailStatus('idle');
       return;
     }
@@ -45,10 +52,10 @@ export default function RegisterPage() {
     try {
       const res = await apiCheckEmail(email);
       setEmailStatus(res.available ? 'ok' : 'taken');
-      if (!res.available) setError(res.error ?? '该邮箱已注册');
-      else if (error === '该邮箱已注册') setError('');
-    } catch {
+      if (!res.available) setEmailError(res.error || '该邮箱已注册，请直接登录或使用其他邮箱');
+    } catch (e: any) {
       setEmailStatus('idle');
+      setEmailError(e.message || '检查失败');
     }
   }
 
@@ -99,12 +106,16 @@ export default function RegisterPage() {
           style={inputStyle} />
         <div style={{ position: 'relative' }}>
           <input type="email" placeholder="邮箱" value={email}
-            onChange={e => { setEmail(e.target.value); setEmailStatus('idle'); }}
-            onBlur={handleEmailBlur} required style={inputStyle} />
+            onChange={e => { setEmail(e.target.value); setEmailStatus('idle'); setEmailError(''); }}
+            onBlur={handleEmailBlur}
+            style={{ ...inputStyle, borderColor: (emailError || emailStatus === 'taken') ? '#ef4444' : emailStatus === 'ok' ? '#10b981' : inputStyle.borderColor }}
+          />
           {emailStatus === 'checking' && <span style={statusStyle}>检查中...</span>}
           {emailStatus === 'ok' && <span style={{ ...statusStyle, color: '#10b981' }}><Check size={16} style={{verticalAlign:'middle',marginRight:2}} />可用</span>}
           {emailStatus === 'taken' && <span style={{ ...statusStyle, color: '#ef4444' }}><X size={16} style={{verticalAlign:'middle',marginRight:2}} />已注册</span>}
         </div>
+        {emailError && <p style={{ color: '#ef4444', fontSize: FONT_ERROR, marginTop: -8, marginBottom: 12 }}>{emailError}</p>}
+        {emailStatus === 'taken' && !emailError && <p style={{ color: '#ef4444', fontSize: FONT_ERROR, marginTop: -8, marginBottom: 12 }}>该邮箱已注册，请直接登录或使用其他邮箱</p>}
 
         <div style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
           <input type="text" placeholder="邮箱验证码" value={code} onChange={e => setCode(e.target.value)} required

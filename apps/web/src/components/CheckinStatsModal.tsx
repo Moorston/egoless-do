@@ -111,7 +111,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
 
         {/* Calendar */}
         <div style={{ background: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, border: `1px solid ${TH.border}` }}>
-          <CalendarGrid history={history.map((c: CheckinEntry) => ({ date: c.date, done: c.done }))} />
+          <CalendarGrid history={history.map((c: CheckinEntry) => ({ date: c.date, done: c.done, grace: c.grace }))} />
         </div>
 
         {/* Stats Grid */}

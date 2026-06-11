@@ -24,8 +24,11 @@ import { useReflections } from './useReflections';
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES } from '@egoless-do/core';
 import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
 import {
-  Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3, Target,
+  Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3,
 } from 'lucide-react-native';
+import ReflectionDetailContent from './ReflectionDetailContent';
+import TrailPickerModal from './TrailPickerModal';
+import { getTrailsByReflection } from '@egoless-do/core';
 
 // ── Manager helpers ───────────────────────────────────────────────
 function getManagerProps(
@@ -190,6 +193,9 @@ export default function ReflectionsScreen() {
   // Long press action menu state
   const [actionMenuId, setActionMenuId] = useState<string|null>(null);
 
+  // Trail picker state
+  const [trailPickerId, setTrailPickerId] = useState<string|null>(null);
+
   // Card detail modal state
   const [detailId, setDetailId] = useState<string|null>(null);
 
@@ -202,7 +208,8 @@ export default function ReflectionsScreen() {
   const [editColorIdx, setEditColorIdx]   = useState(0);
   const [editCategory, setEditCategory]   = useState('');
 
-  // Tag/Mood manager visibility - managerMode declared above
+  // Pending trail IDs for new reflection (before it's saved)
+  const [pendingTrailIds, setPendingTrailIds] = useState<string[]>([]);
 
   // Create plan item state
   const [showCreatePlanItem, setShowCreatePlanItem] = useState(false);
@@ -251,7 +258,12 @@ export default function ReflectionsScreen() {
     // Add category tag if selected
     const categoryTag = category ? `#${REFLECTION_CATEGORIES.find(c => c.key === category)?.label}` : '';
     const finalTags = categoryTag && !tags.includes(categoryTag) ? [categoryTag, ...tags] : tags;
-    store.addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
+    const newR = store.addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
+    // Link pending trails to the newly created reflection
+    if (newR && pendingTrailIds.length > 0) {
+      pendingTrailIds.forEach(tid => store.addReflectionToTrail(tid, newR.id));
+      setPendingTrailIds([]);
+    }
     setContent(''); setTags([]); setMood(''); setLink(''); setColorIdx(0); setCategory('');
     setShowNew(false);
   };
@@ -293,6 +305,7 @@ export default function ReflectionsScreen() {
   const cancelEdit = () => {
     setEditId(null);
     setManagerMode(null);
+    setTrailPickerId(null);
   };
 
   const onShare = async (r: any) => {
@@ -508,6 +521,20 @@ export default function ReflectionsScreen() {
                             )}
                           </View>
                         )}
+                        {(() => {
+                          const linkedTrails = getTrailsByReflection(r.id, store.thoughtTrails ?? []).filter(t => !t.deleted);
+                          if (linkedTrails.length === 0) return null;
+                          return (
+                            <View style={{ flexDirection:'row', flexWrap:'wrap', gap:4, marginTop:6 }}>
+                              {linkedTrails.map(t => (
+                                <View key={t.id} style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:'rgba(255,255,255,.15)' }}>
+                                  <Link size={10} color="rgba(255,255,255,.7)" />
+                                  <Text style={{ fontSize:FONT_TINY, color:'rgba(255,255,255,.7)' }}>{t.name}</Text>
+                                </View>
+                              ))}
+                            </View>
+                          );
+                        })()}
                       </LinearGradient>
                       </TouchableOpacity>
                     </View>
@@ -543,7 +570,7 @@ export default function ReflectionsScreen() {
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
             <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:20, marginBottom:16 }}>
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflNewTitle')}</Text>
-              <TouchableOpacity onPress={() => { setShowNew(false); setManagerMode(null); }}><X size={26} color={TH.sub} /></TouchableOpacity>
+              <TouchableOpacity onPress={() => { setShowNew(false); setManagerMode(null); setPendingTrailIds([]); }}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
             <ReflectionForm
               content={content}
@@ -561,20 +588,34 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
+              linkedTrailNames={pendingTrailIds.map(id => (store.thoughtTrails ?? []).find(t => t.id === id)?.name ?? '').filter(Boolean)}
+              onOpenTrailPicker={() => setTrailPickerId('__new__')}
             />
           </View>
           {/* Item Manager Overlay */}
           {managerMode && (
             <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
               <ItemManagerPanel {...getManagerProps(
-                store, 
-                managerMode, 
+                store,
+                managerMode,
                 () => setManagerMode(null),
                 managerMode === 'tag' ? hiddenTags : hiddenMoods,
                 managerMode === 'tag' ? handleToggleHiddenTag : handleToggleHiddenMood,
               )} />
             </View>
           )}
+          {/* Trail Picker for new reflection */}
+          <TrailPickerModal
+            visible={trailPickerId === '__new__'}
+            reflectionId=""
+            onClose={() => setTrailPickerId(null)}
+            onToggle={(trailId, linked) => {
+              setPendingTrailIds(prev =>
+                linked ? [...prev, trailId] : prev.filter(id => id !== trailId)
+              );
+            }}
+            linkedTrailIds={new Set(pendingTrailIds)}
+          />
         </KeyboardAvoidingView>
       </Modal>
 
@@ -631,6 +672,12 @@ export default function ReflectionsScreen() {
               );
             })()}
             <TouchableOpacity onPress={() => {
+              setTrailPickerId(actionMenuId);
+              setActionMenuId(null);
+            }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(139,92,246,.15)', alignItems:'center' }}>
+              <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON, fontWeight:'600' }}>🔗 关联思维脉络</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {
               const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
               if (r) onShare(r);
               else setActionMenuId(null);
@@ -655,125 +702,23 @@ export default function ReflectionsScreen() {
 
       {/* Card detail modal */}
       <Modal visible={!!detailId} animationType="slide" transparent onRequestClose={() => setDetailId(null)}>
-        {(() => {
-          const r = (store.reflections ?? []).find(x => x.id === detailId);
-          if (!r) return null;
-          const linkedPlanItem = r.linkedPlanItemId
-            ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
-            : null;
-          const colors: [string, string] = [r.colors?.[0] || MIND_COLORS_EXTENDED[0][0], r.colors?.[1] || MIND_COLORS_EXTENDED[0][1]];
-          const isToday = new Date(r.timestamp ?? 0).toISOString().slice(0,10) === new Date().toISOString().slice(0,10);
-          return (
-            <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:'rgba(0,0,0,.5)', justifyContent:'flex-end' }}>
-              <TouchableOpacity activeOpacity={1} onPress={() => setDetailId(null)} style={{ flex:1 }} />
-              <LinearGradient
-                colors={colors}
-                start={{ x:0, y:0 }} end={{ x:1, y:1 }}
-                style={{ borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, paddingTop:20, maxHeight:'95%' }}
-              >
-                {/* Header */}
-                <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:20 }}>
-                  <TouchableOpacity onPress={() => setDetailId(null)}>
-                    <ArrowLeft size={24} color="#fff" />
-                  </TouchableOpacity>
-                  <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                    {r.isPinned && <Pin size={14} color="#fff" />}
-                    <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>
-                      {new Date(r.timestamp ?? 0).toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric' })}
-                      {' '}
-                      {new Date(r.timestamp ?? 0).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' })}
-                    </Text>
-                  </View>
-                </View>
-
-                <ScrollView>
-                  {/* Content */}
-                  <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:28, marginBottom:16 }}>{r.content}</Text>
-
-                  {/* Tags + Mood */}
-                  {(r.tags.length > 0 || r.mood) && (
-                    <View style={{ flexDirection:'row', flexWrap:'wrap', gap:6, marginBottom:16 }}>
-                      {r.tags.map(tag => (
-                        <View key={tag} style={{ backgroundColor:'rgba(255,255,255,.2)', paddingHorizontal:10, paddingVertical:4, borderRadius:12 }}>
-                          <Text style={{ color:'#fff', fontSize:FONT_SMALL }}>{tag}</Text>
-                        </View>
-                      ))}
-                      {r.mood && (
-                        <View style={{ backgroundColor:'rgba(255,255,255,.15)', paddingHorizontal:10, paddingVertical:4, borderRadius:12 }}>
-                          <Text style={{ color:'rgba(255,255,255,.8)', fontSize:FONT_SMALL }}>{r.mood}</Text>
-                        </View>
-                      )}
-                    </View>
-                  )}
-
-                  {/* Link */}
-                  {r.link && (
-                    <TouchableOpacity onPress={() => Linking.openURL(r.link!).catch(console.error)} style={{ flexDirection:'row', alignItems:'center', gap:6, marginBottom:12 }}>
-                      <Link size={14} color="rgba(255,255,255,.7)" />
-                      <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL, textDecorationLine:'underline', flex:1 }} numberOfLines={2}>{r.link}</Text>
-                    </TouchableOpacity>
-                  )}
-
-                  {/* Linked plan item */}
-                  {linkedPlanItem && (
-                    <TouchableOpacity
-                      onPress={() => { setDetailId(null); nav.navigate('PlanDetail', { planId: linkedPlanItem.planId }); }}
-                      style={{ flexDirection:'row', alignItems:'center', gap:6, marginBottom:12, backgroundColor:'rgba(255,255,255,.15)', paddingHorizontal:12, paddingVertical:8, borderRadius:10 }}
-                    >
-                      <ExternalLink size={14} color="#fff" />
-                      <Text style={{ color:'#fff', fontSize:FONT_SMALL }} numberOfLines={1}>{linkedPlanItem.name}</Text>
-                    </TouchableOpacity>
-                  )}
-                </ScrollView>
-
-                {/* Action buttons */}
-                <View style={{ flexDirection:'row', gap:10, marginTop:20, flexWrap:'wrap' }}>
-                  <TouchableOpacity onPress={() => { setDetailId(null); openEdit(r); }}
-                    style={{ flex:1, backgroundColor:'rgba(255,255,255,.25)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
-                    <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflEditTitle')}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => { setDetailId(null); onShare(r); }}
-                    style={{ flex:1, backgroundColor:'rgba(255,255,255,.25)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
-                    <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflShare')}</Text>
-                  </TouchableOpacity>
-                  {r.linkedPlanItemId ? (
-                    <TouchableOpacity onPress={() => {
-                      Alert.alert('解除关联', '确定解除与计划任务的关联吗？关联的计划任务将被删除。', [
-                        { text: '取消', style: 'cancel' },
-                        { text: '确定', style: 'destructive', onPress: () => {
-                          if (r.linkedPlanItemId) store.deletePlanItem(r.linkedPlanItemId);
-                          store.unlinkReflectionFromPlanItem(r.id);
-                          setDetailId(null);
-                        }},
-                      ]);
-                    }}
-                      style={{ flex:1, backgroundColor:'rgba(139,92,246,.3)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
-                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>解绑任务</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => { setDetailId(null); handleCreatePlanItem(r.id); }}
-                      style={{ flex:1, backgroundColor:'rgba(16,185,129,.3)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
-                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>创建任务</Text>
-                    </TouchableOpacity>
-                  )}
-                  {isToday && (
-                    <TouchableOpacity onPress={() => { setDetailId(null); setConfirmDel(r.id); }}
-                      style={{ flex:1, backgroundColor:'rgba(239,68,68,.4)', paddingVertical:12, borderRadius:12, alignItems:'center' }}>
-                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflDelete')}</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </LinearGradient>
-            </View>
-          );
-        })()}
+        {detailId && (
+          <ReflectionDetailContent
+            reflectionId={detailId}
+            onClose={() => setDetailId(null)}
+            onEdit={openEdit}
+            onShare={onShare}
+            onCreatePlanItem={handleCreatePlanItem}
+            onDelete={setConfirmDel}
+          />
+        )}
       </Modal>
 
       {/* 创建计划任务弹窗 */}
-      <Modal visible={showCreatePlanItem} transparent animationType="fade">
-        <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.7)', justifyContent:'center', padding:24 }}>
-          <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24, maxHeight:'90%' }}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+      <Modal visible={showCreatePlanItem} transparent animationType="slide">
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.7)' }}>
+          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingTop:24, paddingBottom:40, maxHeight:'90%' }}>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
               <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
                 <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>创建计划任务</Text>
                 <TouchableOpacity onPress={() => { 
@@ -915,7 +860,7 @@ export default function ReflectionsScreen() {
               </View>
             </ScrollView>
           </View>
-        </View>
+        </KeyboardAvoidingView>
         {/* Date pickers for plan item */}
         <DatePickerModal
           visible={showStartDatePicker}
@@ -979,22 +924,41 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
+              linkedTrailNames={getTrailsByReflection(editId ?? '', store.thoughtTrails ?? []).map(t => t.name)}
+              onOpenTrailPicker={() => setTrailPickerId(editId)}
             />
           </View>
           {/* Item Manager Overlay */}
           {managerMode && (
             <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
               <ItemManagerPanel {...getManagerProps(
-                store, 
-                managerMode, 
+                store,
+                managerMode,
                 () => setManagerMode(null),
                 managerMode === 'tag' ? hiddenTags : hiddenMoods,
                 managerMode === 'tag' ? handleToggleHiddenTag : handleToggleHiddenMood,
               )} />
             </View>
           )}
+          {/* Trail Picker for edit reflection */}
+          {editId && (
+            <TrailPickerModal
+              visible={!!trailPickerId && trailPickerId !== '__new__'}
+              reflectionId={trailPickerId ?? ''}
+              onClose={() => setTrailPickerId(null)}
+            />
+          )}
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Trail Picker Modal (top-level, for long-press menu when edit modal is not open) */}
+      {!editId && trailPickerId && trailPickerId !== '__new__' && (
+        <TrailPickerModal
+          visible={!!trailPickerId && trailPickerId !== '__new__' && !editId}
+          reflectionId={trailPickerId}
+          onClose={() => setTrailPickerId(null)}
+        />
+      )}
 
     </SafeAreaView>
   );

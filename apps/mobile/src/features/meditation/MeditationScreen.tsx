@@ -5,21 +5,18 @@ import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { useAppStore } from '../../store/useAppStore';
-import { Card, useTheme, PrimaryButton, ScreenHeader, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
-import { fmtMS, MEDITATION_DURATIONS_MIN, MED_SOUNDS, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
+import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
+import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
+import type { MusicTrack } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { Music, Globe, Binary, ChevronRight, Clock } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Globe, Binary, ChevronRight } from 'lucide-react-native';
+import { useMusicStore } from '../music/useMusicStore';
+import { useAudioEngine } from '../music/useAudioEngine';
+import MusicPickerModal from '../music/MusicPickerModal';
+import MeditationMusicBar from './MeditationMusicBar';
 
-// Local sound files
-const SOUND_FILES: Record<string, number> = {
-  '海潮': require('../../../assets/sounds/ocean.mp3'),
-  '雨声': require('../../../assets/sounds/rain.mp3'),
-  '钵声': require('../../../assets/sounds/bowl.mp3'),
-  '鸟叫': require('../../../assets/sounds/birds.mp3'),
-  '流水': require('../../../assets/sounds/flowing-stream.mp3'),
-  '风铃': require('../../../assets/sounds/wind-chimes.mp3'),
-};
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
 export default function MeditationScreen() {
@@ -29,12 +26,15 @@ export default function MeditationScreen() {
   const nav   = useRootNavigation();
   const T     = useT();
 
+  // Mount audio engine so music store play/pause actually produces sound
+  useAudioEngine();
+
   const [durMin, setDurMin]       = useState(10);
   const [sec, setSec]             = useState(0);
   const [active, setActive]       = useState(false);
-  const [sound, setSound]         = useState('海潮');
-  const [audioError, setAudioError] = useState<string | null>(null);
   const [showShare, setShowShare]   = useState(false);
+  const [showMusicPicker, setShowMusicPicker] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<MusicTrack | null>(null);
   const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
   const completedRef = useRef(false);
   const shareCardRef = useRef<ViewShot>(null);
@@ -44,11 +44,10 @@ export default function MeditationScreen() {
   const pct = sec / targetSec * 100;
   const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory ?? []), [store.medHistory]);
 
-  // Background sound player (looping, 30% volume)
-  const bgSource = SOUND_FILES[sound];
-  const bgPlayer = useAudioPlayer(bgSource ?? undefined);
-  bgPlayer.loop = true;
-  bgPlayer.volume = 0.3;
+  // Music store — only for playback control
+  const musicPlay = useMusicStore(s => s.play);
+  const musicPause = useMusicStore(s => s.pause);
+  const musicStop = useMusicStore(s => s.stop);
 
   // Bell sound player (one-shot, 50% volume)
   const bellPlayer = useAudioPlayer(BELL_FILE);
@@ -62,24 +61,6 @@ export default function MeditationScreen() {
     }).catch((e) => console.error('[err]', e));
   }, []);
 
-  const playBgSound = useCallback(() => {
-    try {
-      if (bgSource) bgPlayer.play();
-      setAudioError(null);
-    } catch {
-      setAudioError('medLoadError');
-    }
-  }, [bgSource, bgPlayer]);
-
-  const stopBgSound = useCallback(() => {
-    try {
-      if (bgPlayer.playing) {
-        bgPlayer.pause();
-        bgPlayer.seekTo(0);
-      }
-    } catch {}
-  }, [bgPlayer]);
-
   const playBell = useCallback(() => {
     try {
       bellPlayer.seekTo(0);
@@ -87,34 +68,33 @@ export default function MeditationScreen() {
     } catch {}
   }, [bellPlayer]);
 
-  // Cleanup timer and audio on unmount
+  // Cleanup timer on unmount
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
-    try {
-      if (bgPlayer.playing) {
-        bgPlayer.pause();
-        bgPlayer.seekTo(0);
-      }
-    } catch {}
-  }, [bgPlayer]);
+  }, []);
 
   useEffect(() => {
     if (active) {
       completedRef.current = false;
-      playBgSound();
       timerRef.current = setInterval(() => {
         setSec(s => s + 1);
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
-      stopBgSound();
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [active, playBgSound, stopBgSound]);
+  }, [active]);
 
-  // Detect timer completion outside of render
+  // Start music when meditation begins
+  useEffect(() => {
+    if (active && selectedTrack) {
+      musicPlay(selectedTrack);
+    }
+  }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Detect timer completion
   const addMedMinutes = store.addMedMinutes;
   useEffect(() => {
     if (active && sec >= targetSec) {
@@ -124,10 +104,10 @@ export default function MeditationScreen() {
         completedRef.current = true;
         addMedMinutes(durMin);
       }
-      stopBgSound();
+      musicStop();
       playBell();
     }
-  }, [sec, active, targetSec, durMin, addMedMinutes, stopBgSound, playBell]);
+  }, [sec, active, targetSec, durMin, addMedMinutes, playBell, musicStop]);
 
   const handleStop = () => {
     if (active && !completedRef.current) {
@@ -136,9 +116,26 @@ export default function MeditationScreen() {
       if (elapsedMin > 0) store.addMedMinutes(elapsedMin);
     }
     setActive(false);
-    stopBgSound();
+    musicStop();
     playBell();
   };
+
+  const handleStart = () => {
+    setSec(0);
+    setActive(true);
+  };
+
+  const handleMusicPickerClose = useCallback(() => {
+    // Pause preview music, keep selectedTrack for display
+    musicPause();
+    setShowMusicPicker(false);
+  }, [musicPause]);
+
+  const handleSelectNoMusic = useCallback(() => {
+    setSelectedTrack(null);
+    musicStop();
+    setShowMusicPicker(false);
+  }, [musicStop]);
 
   const handleShare = useCallback(async () => {
     try {
@@ -155,28 +152,61 @@ export default function MeditationScreen() {
       <SimpleHeader routeName="Meditation" />
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
 
-        {audioError && (
-          <View style={{ backgroundColor:'#F59E0B', borderRadius:12, padding:12, marginBottom:12, alignItems:'center' }}>
-            <Text style={{ color:'#fff', fontSize:FONT_BODY }}>{T(audioError)}</Text>
-          </View>
-        )}
-
-        {/* Accumulated */}
-        <Card style={{ alignItems:'center', paddingVertical:20 }}>
-          <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:P }}>{store.totalMedMinutes}</Text>
-          <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>{T('accMed')}</Text>
-        </Card>
+        {/* Hero Banner */}
+        <View style={{ marginHorizontal: 0, marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
+          <LinearGradient
+            colors={['#7117EA', '#A855F7']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ padding: 20 }}
+          >
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('meditation')}</Text>
+              <TouchableOpacity onPress={() => nav.navigate('MedHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600' }}>{T('meditationHistory')}</Text>
+                <ChevronRight size={16} color="rgba(255,255,255,.8)" />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{store.totalMedMinutes}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('accMed')}</Text>
+              </View>
+              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{todayMedMin}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('medTitle')}</Text>
+              </View>
+              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.medHistory ?? []).length}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('shareCardSession')}</Text>
+              </View>
+            </View>
+            <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🧘', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.2)' }}>
+              <Globe size={18} color="rgba(255,255,255,.8)" />
+              <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600', flex: 1 }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
+              <ChevronRight size={16} color="rgba(255,255,255,.8)" />
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
 
         {/* Main card */}
         <Card style={{ paddingVertical:32 }}>
           {active ? (
             <View style={{ alignItems:'center' }}>
+              {/* Music display during meditation — non-interactive */}
+              <MeditationMusicBar track={selectedTrack} isActive isPlaying={!!selectedTrack} primaryColor={P} />
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
                 <Text style={{ fontSize:FONT_HERO, fontWeight:'800', color:P, letterSpacing:2 }}>
                   {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
                 </Text>
                 <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginTop:6 }}>
-                  {T('medActive')} {sound !== '无' ? <><Music size={14} color={TH.sub} /> {sound}</> : ''}
+                  {T('medActive')}
                 </Text>
               </View>
               <View style={{ width:'80%', marginBottom:16 }}>
@@ -186,73 +216,21 @@ export default function MeditationScreen() {
             </View>
           ) : (
             <>
-              {/* Sound selector */}
-              <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border, marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T('bgMusic')}</Text>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                  <Music size={16} color={P} />
-                  <Text style={{ color:P, fontSize:FONT_BODY }}>{sound}</Text>
-                  <ChevronRight size={16} color={P} />
-                </View>
-              </View>
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:6, marginBottom:14 }}>
-                {MED_SOUNDS.map(s => (
-                  <TagPill key={s} label={s} active={sound===s} onPress={() => setSound(s)} />
-                ))}
-              </View>
-
-              {/* Music library entry */}
-              <TouchableOpacity onPress={() => nav.navigate('Music')}
-                style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border, marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T('musicTitle')}</Text>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-                  <Music size={16} color={P} />
-                  <Text style={{ color:P, fontSize:FONT_BODY }}>{T('musicTitle')}</Text>
-                  <ChevronRight size={16} color={P} />
-                </View>
-              </TouchableOpacity>
+              {/* Music selector — tappable to open picker */}
+              <MeditationMusicBar track={selectedTrack} isActive={false} isPlaying={false} primaryColor={P} onPress={() => setShowMusicPicker(true)} />
 
               {/* Duration selector */}
               <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
                 {MEDITATION_DURATIONS_MIN.map(d => (
                   <TagPill key={d} label={`${d}${T('medMinutes')}`} active={durMin===d}
-                    onPress={() => { setDurMin(d); setSec(0); setActive(false); }} />
+                    onPress={() => { setDurMin(d); setSec(0); setActive(false); }} textActiveColor={TH.sub} />
                 ))}
               </View>
 
-              <PrimaryButton label={T('startMed')} onPress={() => { setSec(0); setActive(true); }} color={P} />
+              <PrimaryButton label={T('startMed')} onPress={handleStart} color={P} />
             </>
           )}
         </Card>
-
-        {/* Today card */}
-        <Card>
-          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center' }}>
-            <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-              <Clock size={18} color={P} />
-              <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('medTitle')}</Text>
-            </View>
-            <Text style={{ color:P, fontWeight:'600' }}>{todayMedMin} {T('medMinutes')}</Text>
-          </View>
-        </Card>
-
-        {/* Global meditators */}
-        <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalMeditators')}` })}
-          style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Globe size={18} color={P} />
-          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
-          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
-        </TouchableOpacity>
-
-        {/* History entry */}
-        <TouchableOpacity onPress={() => nav.navigate('MedHistory')}
-          style={{ backgroundColor:TH.card, borderRadius:16, marginBottom:12, borderWidth:1, borderColor:TH.border, flexDirection:'row', alignItems:'center', gap:10, padding:12 }}>
-          <Binary size={18} color={P} />
-          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('meditationHistory')}</Text>
-          <ChevronRight size={18} color={TH.sub} style={{ marginLeft:'auto' }} />
-        </TouchableOpacity>
-
-        <Text style={{ textAlign:'center', fontSize:FONT_BODY, color:TH.sub, marginTop:12 }}>{T('medAttribution')}</Text>
       </ScrollView>
 
       {/* Share Card Modal */}
@@ -289,6 +267,16 @@ export default function MeditationScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Music Picker Modal */}
+      <MusicPickerModal
+        visible={showMusicPicker}
+        onClose={handleMusicPickerClose}
+        onSelectTrack={setSelectedTrack}
+        onSelectNoMusic={handleSelectNoMusic}
+        primaryColor={P}
+        selectedTrackId={selectedTrack?.id ?? null}
+      />
     </SafeAreaView>
   );
 }

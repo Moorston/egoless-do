@@ -28,6 +28,7 @@ export type OverlayKey =
 export interface OverlayProps {
   sport?: SportItem;
   checkinDetailDate?: string;
+  checkinGraceDate?: string;
   globalMapTitle?: string;
   globalMapIcon?: string;
   planId?: string;

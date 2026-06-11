@@ -94,7 +94,7 @@ export default function HabitsTab() {
 
                 <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</div>
 
-                {h.insight && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, fontStyle: 'italic' }}>&ldquo;{h.insight}&rdquo;</div>}
+                {h.insight && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, fontStyle: 'italic' }}>愿景：&ldquo;{h.insight}&rdquo;</div>}
                 {h.createTag && <span style={{ fontSize: FONT_SUB, padding: '2px 8px', borderRadius: 10, background: `${P}30`, color: P, marginBottom: 8, display: 'inline-block' }}>#{h.name}</span>}
                 {h.pauseReason && <div style={{ fontSize: FONT_SUB, color: COLORS.YELLOW, marginBottom: 4 }}>{T('habitPause')}{h.pauseReason}</div>}
                 {h.abandonReason && <div style={{ fontSize: FONT_SUB, color: COLORS.RED, marginBottom: 4 }}>{T('habitAbandon')}{h.abandonReason}</div>}
@@ -228,7 +228,7 @@ export default function HabitsTab() {
                 <button onClick={() => { store.changeHabitStatus(h.id, 'inProgress'); setActionMenuId(null); }}
                   style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: COLORS.GREEN, color: '#fff', fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>{T('habitResumeBtn')}</button>
               )}
-              {(h.status === 'inProgress' || h.status === 'paused') && (
+              {h.status === 'paused' && (
                 <button onClick={() => { setShowStatus({ id: h.id, ns: 'abandoned' }); setReason(''); setActionMenuId(null); }}
                   style={{ width: '100%', padding: '10px 16px', border: 'none', borderRadius: 8, background: 'rgba(239,68,68,.15)', color: COLORS.RED, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}>{T('habitAbandonBtn')}</button>
               )}

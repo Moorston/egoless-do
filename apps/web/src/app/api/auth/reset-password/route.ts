@@ -1,0 +1,58 @@
+import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
+import { getPb } from '../../_pb';
+import db from '../../_db';
+import { sanitizeError } from '../../_errors';
+import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const resetRateLimit = createRateLimiter(5, 60_000); // 5 req/min
+
+function validatePassword(pwd: string): string | null {
+  if (pwd.length < 8) return '密码需至少8位';
+  if (!/[a-zA-Z]/.test(pwd)) return '密码需包含字母';
+  if (!/[0-9]/.test(pwd)) return '密码需包含数字';
+  if (/^[a-zA-Z0-9]+$/.test(pwd)) return '密码需包含特殊符号';
+  return null;
+}
+
+export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!resetRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
+  try {
+    const { email, code, password } = await req.json();
+    if (!email || !code || !password) {
+      return NextResponse.json({ error: '缺少必填字段' }, { status: 400 });
+    }
+
+    const pwdError = validatePassword(password);
+    if (pwdError) return NextResponse.json({ error: pwdError }, { status: 400 });
+
+    const record = db.prepare(
+      'SELECT code, expires_at FROM verification_codes WHERE email = ? ORDER BY created_at DESC LIMIT 1'
+    ).get(email) as { code: string; expires_at: number } | undefined;
+
+    if (!record) return NextResponse.json({ error: '请先获取验证码' }, { status: 400 });
+    if (!crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
+      return NextResponse.json({ error: '验证码错误' }, { status: 400 });
+    }
+    if (Date.now() > record.expires_at) return NextResponse.json({ error: '验证码已过期' }, { status: 400 });
+
+    // Delete used verification code
+    db.prepare('DELETE FROM verification_codes WHERE email = ?').run(email);
+
+    // Find user by email and update password
+    const pb = getPb();
+    const user = await pb.collection('users').getFirstListItem(`email = "${email.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`);
+    await pb.collection('users').update(user.id, {
+      password,
+      passwordConfirm: password,
+    });
+
+    return NextResponse.json({ ok: true, message: '密码重置成功' });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: sanitizeError(err, '密码重置失败') }, { status: 400 });
+  }
+}

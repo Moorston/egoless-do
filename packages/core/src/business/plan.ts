@@ -2,14 +2,206 @@
 import type {
   Plan, PlanStatus, PlanItem, PlanItemStatus, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   Habit, FastingSession, MedHistoryEntry, ExerciseEntry, CheckinEntry, DailyCustomTodo, DailyTodoHistory,
-  MindReflection,
+  MindReflection, CheckinFrequency,
 } from '../types';
 import { uid, dateStr } from '../utils';
+import { COLORS } from '../constants';
+
+// ── Constants ─────────────────────────────────────────────────
+
+export const PLAN_STATUS_COLORS: Record<string, string> = {
+  not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
+  completed: COLORS.BLUE, cancelled: COLORS.RED, delayed: COLORS.ORANGE,
+};
+
+export function statusToI18nKey(status: string): string {
+  return `planStatus${status.charAt(0).toUpperCase() + status.slice(1).replace(/_([a-z])/g, (_: string, c: string) => c.toUpperCase())}`;
+}
 
 // ── Helpers ───────────────────────────────────────────────────
 
 function daysBetween(a: string, b: string): number {
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000);
+}
+
+/** Get the day of week (0=Sun, 1=Mon, ..., 6=Sat) for a date string. */
+function dayOfWeek(date: string): number {
+  return new Date(date).getDay();
+}
+
+/** Get the day of month (1-31) for a date string. */
+function dayOfMonth(date: string): number {
+  return new Date(date).getDate();
+}
+
+/** Get the number of days in the month of a given date string. */
+function daysInMonth(date: string): number {
+  const d = new Date(date);
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+}
+
+/** Add N days to a date string, returning a new date string. */
+function addDays(date: string, n: number): string {
+  const d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Get start of week (Monday) for a date string. */
+function weekStart(date: string): string {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = day === 0 ? 6 : day - 1; // Monday = 0
+  d.setDate(d.getDate() - diff);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Get start of month for a date string. */
+function monthStart(date: string): string {
+  return date.slice(0, 7) + '-01';
+}
+
+/**
+ * Compute the expected number of check-in days based on frequency.
+ * Used as the denominator in progress calculation.
+ */
+export function computeExpectedDays(
+  frequency: CheckinFrequency | undefined,
+  startDate: string,
+  endDate: string,
+  today: string,
+): number {
+  const freq = frequency ?? { mode: 'daily' };
+  const clampedEnd = today > endDate ? endDate : today;
+  const totalElapsed = daysBetween(startDate, clampedEnd) + 1;
+  if (totalElapsed <= 0) return 0;
+
+  switch (freq.mode) {
+    case 'daily':
+      return totalElapsed;
+
+    case 'interval': {
+      // Every N days: count how many period starts fall within [startDate, clampedEnd]
+      const every = Math.max(1, freq.every);
+      // First period start is startDate, then startDate + every, startDate + 2*every, ...
+      const elapsed = daysBetween(startDate, clampedEnd);
+      return Math.floor(elapsed / every) + 1;
+    }
+
+    case 'weekly': {
+      // Count expected across weeks, handling incomplete first/last weeks
+      const target = freq.target;
+      let expected = 0;
+      let cursor = startDate;
+      while (cursor <= clampedEnd) {
+        const ws = weekStart(cursor);
+        const we = addDays(ws, 6);
+        const periodStart = cursor > ws ? cursor : ws;
+        const periodEnd = clampedEnd < we ? clampedEnd : we;
+        const periodDays = daysBetween(periodStart, periodEnd) + 1;
+        expected += Math.min(Math.ceil((periodDays / 7) * target), target);
+        cursor = addDays(we, 1);
+      }
+      return expected;
+    }
+
+    case 'weekly_fixed': {
+      // Count how many of the specified weekdays fall within [startDate, clampedEnd]
+      const daySet = new Set(freq.days);
+      let count = 0;
+      let cursor = startDate;
+      while (cursor <= clampedEnd) {
+        if (daySet.has(dayOfWeek(cursor))) count++;
+        cursor = addDays(cursor, 1);
+      }
+      return count;
+    }
+
+    case 'monthly': {
+      // Count expected across months, handling incomplete first/last months
+      const target = freq.target;
+      let expected = 0;
+      let cursor = startDate;
+      while (cursor <= clampedEnd) {
+        const ms = monthStart(cursor);
+        const me = addDays(addDays(ms, daysInMonth(ms) - 1), 0); // last day of month
+        const periodStart = cursor > ms ? cursor : ms;
+        const periodEnd = clampedEnd < me ? clampedEnd : me;
+        const monthDays = daysInMonth(periodStart);
+        const periodDays = daysBetween(periodStart, periodEnd) + 1;
+        expected += Math.min(Math.ceil((periodDays / monthDays) * target), target);
+        cursor = addDays(me, 1);
+      }
+      return expected;
+    }
+
+    case 'monthly_fixed': {
+      // Count how many of the specified month-days fall within [startDate, clampedEnd]
+      const dateSet = new Set(freq.dates);
+      let count = 0;
+      let cursor = startDate;
+      while (cursor <= clampedEnd) {
+        const dom = dayOfMonth(cursor);
+        const maxDom = daysInMonth(cursor);
+        // Check if today's day-of-month is in the set (skip dates > month length)
+        if (dateSet.has(dom) && dom <= maxDom) count++;
+        cursor = addDays(cursor, 1);
+      }
+      return count;
+    }
+  }
+}
+
+/**
+ * Determine if a task should be shown in today's todo list based on its frequency.
+ */
+export function shouldShowToday(
+  frequency: CheckinFrequency | undefined,
+  startDate: string,
+  today: string,
+  checkins: PlanItemCheckin[],
+): boolean {
+  const freq = frequency ?? { mode: 'daily' };
+
+  switch (freq.mode) {
+    case 'daily':
+      return true;
+
+    case 'interval': {
+      // Show on the first day of each interval period, if not yet checked in this period
+      const every = Math.max(1, freq.every);
+      const elapsed = daysBetween(startDate, today);
+      if (elapsed < 0) return false;
+      // Today must be the start of a period
+      if (elapsed % every !== 0) return false;
+      // Check if already checked in today
+      return !checkins.some(c => c.date === today && c.done);
+    }
+
+    case 'weekly': {
+      // Show if this week's target hasn't been met yet
+      const ws = weekStart(today);
+      const we = addDays(ws, 6);
+      const doneThisWeek = checkins.filter(c => c.done && c.date >= ws && c.date <= we).length;
+      return doneThisWeek < freq.target;
+    }
+
+    case 'weekly_fixed':
+      // Show only on specified weekdays
+      return freq.days.includes(dayOfWeek(today));
+
+    case 'monthly': {
+      // Show if this month's target hasn't been met yet
+      const ms = monthStart(today);
+      const me = addDays(addDays(ms, daysInMonth(ms) - 1), 0);
+      const doneThisMonth = checkins.filter(c => c.done && c.date >= ms && c.date <= me).length;
+      return doneThisMonth < freq.target;
+    }
+
+    case 'monthly_fixed':
+      // Show only on specified month days (skip if day doesn't exist in this month)
+      return freq.dates.includes(dayOfMonth(today)) && dayOfMonth(today) <= daysInMonth(today);
+  }
 }
 
 // ── Permission helpers ────────────────────────────────────────
@@ -20,6 +212,10 @@ export function canDeletePlan(status: PlanStatus): boolean {
 
 export function canEditPlan(status: PlanStatus): boolean {
   return status === 'not_started' || status === 'in_progress' || status === 'paused';
+}
+
+export function canEditPlanItem(status: PlanItemStatus): boolean {
+  return status === 'not_started';
 }
 
 export function isPlanActive(status: PlanStatus): boolean {
@@ -39,7 +235,7 @@ export function addPlan(plans: Plan[], form: {
   startDate: string; endDate: string;
 }, today?: string): { plans: Plan[]; planId: string } | null {
   const id = uid();
-  const now = today ?? new Date().toISOString().slice(0, 10);
+  const now = today ?? dateStr();
   const willBeActive = form.startDate <= now;
   // Check if there's already an active plan when creating an active plan
   if (willBeActive) {
@@ -145,20 +341,29 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
   let plansChanged = false;
   let itemsChanged = false;
   const delayedPlans: Plan[] = [];
+  const now = new Date(today).getTime();
+
+  // Pre-build: does any non-deleted active plan already exist?
+  let hasActivePlan = plans.some(p => !p.deleted && isPlanActive(p.status));
 
   const updatedPlans = plans.map(p => {
     if (p.deleted) return p;
     // Auto-start: not_started → in_progress when startDate arrives
     if (p.status === 'not_started' && p.startDate <= today) {
-      const hasActive = plans.some(other => other.id !== p.id && !other.deleted && isPlanActive(other.status));
-      if (hasActive) return p;
+      if (hasActivePlan) return p;
+      hasActivePlan = true; // Prevent multiple auto-starts
       plansChanged = true;
-      return { ...p, status: 'in_progress' as PlanStatus, updatedAt: Date.now() };
+      const started = { ...p, status: 'in_progress' as PlanStatus, updatedAt: now };
+      // Check delayed in same pass — plan may already be past endDate
+      if (started.endDate < today && !started.lastDelayedNotifyAt) {
+        delayedPlans.push(started);
+      }
+      return started;
     }
     // Mark paused plans as delayed if endDate has passed (keep paused status, just update timestamp)
     if (p.status === 'paused' && p.endDate < today) {
       plansChanged = true;
-      return { ...p, updatedAt: Date.now() };
+      return { ...p, updatedAt: now };
     }
     // Detect delayed plans: in_progress but endDate has passed
     if (p.status === 'in_progress' && p.endDate < today && !p.lastDelayedNotifyAt) {
@@ -167,21 +372,24 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
     return p;
   });
 
+  // Pre-build planMap for O(1) lookup in items loop
+  const planMap = new Map(updatedPlans.map(p => [p.id, p]));
+
   const updatedItems = planItems.map(item => {
     if (item.deleted) return item;
-    const plan = updatedPlans.find(p => p.id === item.planId);
+    const plan = planMap.get(item.planId);
     if (!plan || plan.deleted) return item;
 
     // Auto-start items when plan is in_progress and startDate arrives
     if (item.status === 'not_started' && plan.status === 'in_progress' && item.startDate <= today) {
       itemsChanged = true;
-      return { ...item, status: 'in_progress' as PlanItemStatus, updatedAt: Date.now() };
+      return { ...item, status: 'in_progress' as PlanItemStatus, updatedAt: now };
     }
 
     // Mark overdue items as delayed
     if (item.status === 'in_progress' && item.endDate < today) {
       itemsChanged = true;
-      return { ...item, status: 'delayed' as PlanItemStatus, updatedAt: Date.now() };
+      return { ...item, status: 'delayed' as PlanItemStatus, updatedAt: now };
     }
 
     return item;
@@ -190,10 +398,7 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
   return { plans: plansChanged ? updatedPlans : plans, planItems: itemsChanged ? updatedItems : planItems, delayedPlans };
 }
 
-/** Alias for compatibility */
-export const checkPlanAutoStatus = checkAutoStatus;
-
-/** Perform daily reset: auto-start tasks and save previous day's history */
+/** Perform daily reset: auto-start tasks, save previous day's history, copy recurring todos */
 export function performDailyReset(
   plans: Plan[],
   planItems: PlanItem[],
@@ -205,6 +410,7 @@ export function performDailyReset(
 ): {
   plans: Plan[];
   planItems: PlanItem[];
+  dailyCustomTodos: DailyCustomTodo[];
   dailyTodoHistory: DailyTodoHistory[];
   hasChanges: boolean;
   delayedPlans: Plan[];
@@ -216,24 +422,67 @@ export function performDailyReset(
   let updatedHistory = [...dailyTodoHistory];
   const activePlans = updatedPlans.filter(p => !p.deleted && isPlanActive(p.status));
 
+  // Pre-build history key set for O(1) existence check
+  const historyKeySet = new Set(
+    dailyTodoHistory.filter(h => h.date === previousDate && !h.deleted).map(h => h.planId)
+  );
   for (const plan of activePlans) {
-    // Check if history already exists for this date
-    const existingHistory = updatedHistory.find(h => h.planId === plan.id && h.date === previousDate && !h.deleted);
-    if (!existingHistory) {
+    if (!historyKeySet.has(plan.id)) {
       updatedHistory = saveDailyTodoHistory(updatedHistory, plan.id, previousDate, updatedPlanItems, planItemCheckins, dailyCustomTodos);
     }
   }
+
+  // 3. Copy recurring custom todos to today — pre-build indexes for O(1) lookup
+  const todosByPlanPrev = new Map<string, DailyCustomTodo[]>();
+  const todosByPlanToday = new Map<string, DailyCustomTodo[]>();
+  for (const t of dailyCustomTodos) {
+    if (t.deleted) continue;
+    if (t.date === previousDate && t.recurring) {
+      let arr = todosByPlanPrev.get(t.planId);
+      if (!arr) { arr = []; todosByPlanPrev.set(t.planId, arr); }
+      arr.push(t);
+    }
+    if (t.date === today) {
+      let arr = todosByPlanToday.get(t.planId);
+      if (!arr) { arr = []; todosByPlanToday.set(t.planId, arr); }
+      arr.push(t);
+    }
+  }
+  const todayNameSet = new Set<string>();
+  for (const [planId, todos] of todosByPlanToday) {
+    for (const t of todos) todayNameSet.add(`${planId}:${t.name}`);
+  }
+  const newTodos: DailyCustomTodo[] = [];
+  for (const plan of activePlans) {
+    const recurringTodos = todosByPlanPrev.get(plan.id);
+    if (!recurringTodos) continue;
+    const existingToday = todosByPlanToday.get(plan.id) ?? [];
+    let order = existingToday.reduce((max, t) => Math.max(max, t.order), -1) + 1;
+    for (const todo of recurringTodos) {
+      const key = `${plan.id}:${todo.name}`;
+      if (!todayNameSet.has(key)) {
+        todayNameSet.add(key);
+        newTodos.push({
+          id: uid(), planId: plan.id, date: today, name: todo.name,
+          done: false, order: order++, recurring: true, updatedAt: Date.now(), deleted: false,
+        });
+      }
+    }
+  }
+  const updatedCustomTodos = newTodos.length > 0 ? [...dailyCustomTodos, ...newTodos] : dailyCustomTodos;
 
   const plansChanged = updatedPlans !== plans;
   const itemsChanged = updatedPlanItems !== planItems;
   const historyChanged = updatedHistory.length !== dailyTodoHistory.length ||
     updatedHistory.some((h, i) => h !== dailyTodoHistory[i]);
+  const todosChanged = updatedCustomTodos !== dailyCustomTodos;
 
   return {
     plans: updatedPlans,
     planItems: updatedPlanItems,
+    dailyCustomTodos: updatedCustomTodos,
     dailyTodoHistory: updatedHistory,
-    hasChanges: plansChanged || itemsChanged || historyChanged,
+    hasChanges: plansChanged || itemsChanged || historyChanged || todosChanged,
     delayedPlans,
   };
 }
@@ -243,14 +492,14 @@ export function performDailyReset(
 export function addPlanItem(planItems: PlanItem[], form: {
   planId: string; name: string; description?: string;
   startDate: string; endDate: string; contentUrl?: string;
-  link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number;
+  link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number; frequency?: PlanItem['frequency'];
 }, plans?: Plan[], today?: string): PlanItem[] {
   // Check if the plan is active (not completed or cancelled)
   if (plans) {
     const plan = plans.find(p => p.id === form.planId);
     if (!plan || plan.deleted || plan.status === 'completed' || plan.status === 'cancelled') return planItems;
   }
-  const now = today ?? new Date().toISOString().slice(0, 10);
+  const now = today ?? dateStr();
   const status: PlanItemStatus = form.startDate <= now ? 'in_progress' : 'not_started';
   const item: PlanItem = {
     id: uid(),
@@ -268,6 +517,7 @@ export function addPlanItem(planItems: PlanItem[], form: {
     targetMetric: form.targetMetric ?? '',
     linkConfig: form.linkConfig,
     order: form.order ?? 0,
+    frequency: form.frequency,
     updatedAt: Date.now(),
     deleted: false,
   };
@@ -339,7 +589,7 @@ export function unlinkAllReflectionsFromPlan(
   const now = Date.now();
   return planItems.map(i =>
     i.planId === planId && i.reflectionId
-      ? { ...i, reflectionId: null as any, updatedAt: now }
+      ? { ...i, reflectionId: undefined, updatedAt: now }
       : i
   );
 }
@@ -392,49 +642,75 @@ export function syncPlanItemsFromModules(
 ): PlanItemCheckin[] {
   let result = [...checkins];
 
+  // Pre-build indexes
+  const planItemsByPlanId = new Map<string, PlanItem[]>();
+  for (const item of planItems) {
+    if (item.deleted) continue;
+    let arr = planItemsByPlanId.get(item.planId);
+    if (!arr) { arr = []; planItemsByPlanId.set(item.planId, arr); }
+    arr.push(item);
+  }
+  const doneTodaySet = new Set<string>();
+  for (const c of checkins) {
+    if (c.date === today && c.done) doneTodaySet.add(c.planItemId);
+  }
+
+  // Pre-compute module state booleans
+  const checkinDone = state.checkinHistory.some(c => c.date === today && c.done && !c.deleted);
+  const meditationDone = state.medHistory.some(m => m.date === today && !m.deleted);
+  const habitById = new Map<string, boolean>();
+  for (const h of state.habits) {
+    if (!h.deleted) habitById.set(h.id, h.checkedDates.includes(today));
+  }
+  // Pre-compute max fasting hours and exercise minutes for today (single pass)
+  let maxFastingHours = 0;
+  for (const f of state.fastingHistory) {
+    if (!f.endedAt) continue;
+    if (dateStr(new Date(f.endedAt)) === today) {
+      maxFastingHours = Math.max(maxFastingHours, (f.endedAt - f.startedAt) / 3600000);
+    }
+  }
+  if (state.activeFasting != null && dateStr(new Date(state.activeFasting.startedAt)) === today) {
+    maxFastingHours = Math.max(maxFastingHours, (Date.now() - state.activeFasting.startedAt) / 3600000);
+  }
+  let maxExerciseMinutes = 0;
+  for (const e of state.exerciseLog) {
+    if (e.deleted) continue;
+    if (dateStr(new Date(e.timestamp)) === today) {
+      maxExerciseMinutes = Math.max(maxExerciseMinutes, e.durationSec / 60);
+    }
+  }
+  const fastingDoneByTarget = (targetHours: number) => maxFastingHours >= targetHours;
+  const exerciseDoneByMin = (minMinutes: number) => maxExerciseMinutes >= minMinutes;
+
   for (const plan of plans) {
     if (plan.deleted || plan.status !== 'in_progress') continue;
 
-    const items = planItems.filter(i => i.planId === plan.id && !i.deleted);
+    const items = planItemsByPlanId.get(plan.id);
+    if (!items) continue;
     for (const item of items) {
       if (item.status !== 'in_progress') continue;
       if (today < item.startDate || today > item.endDate) continue;
-
-      const alreadyDone = result.some(c => c.planItemId === item.id && c.date === today && c.done);
-      if (alreadyDone) continue;
+      if (doneTodaySet.has(item.id)) continue;
 
       let linkedDone = false;
       switch (item.link) {
         case 'checkin':
-          linkedDone = state.checkinHistory.some(c => c.date === today && c.done && !c.deleted);
+          linkedDone = checkinDone;
           break;
-        case 'fasting': {
-          const targetHours = item.linkConfig?.targetHours ?? 16;
-          linkedDone = state.fastingHistory.some(f => {
-            if (!f.endedAt) return false;
-            return dateStr(new Date(f.endedAt)) === today && (f.endedAt - f.startedAt) / 3600000 >= targetHours;
-          }) || (state.activeFasting != null && dateStr(new Date(state.activeFasting.startedAt)) === today);
+        case 'fasting':
+          linkedDone = fastingDoneByTarget(item.linkConfig?.targetHours ?? 16);
           break;
-        }
         case 'meditation':
-          linkedDone = state.medHistory.some(m => m.date === today && !m.deleted);
+          linkedDone = meditationDone;
           break;
-        case 'exercise': {
-          const minMinutes = item.linkConfig?.targetMinutes ?? 30;
-          linkedDone = state.exerciseLog.some(e => {
-            if (e.deleted) return false;
-            return dateStr(new Date(e.timestamp)) === today && e.durationSec >= minMinutes * 60;
-          });
+        case 'exercise':
+          linkedDone = exerciseDoneByMin(item.linkConfig?.targetMinutes ?? 30);
           break;
-        }
         case 'habit':
-          linkedDone = state.habits.some(h =>
-            !h.deleted && h.id === item.linkConfig?.habitId && h.checkedDates.includes(today)
-          );
+          linkedDone = habitById.get(item.linkConfig?.habitId ?? '') ?? false;
           break;
         case 'reflection':
-          // 感念关联任务不自动打卡，需手动完成
-          break;
         case 'manual':
         default:
           break;
@@ -442,6 +718,7 @@ export function syncPlanItemsFromModules(
 
       if (linkedDone) {
         result = checkinItem(result, item.id, today, item.link);
+        doneTodaySet.add(item.id);
       }
     }
   }
@@ -450,16 +727,46 @@ export function syncPlanItemsFromModules(
 
 // ── Progress computation ──────────────────────────────────────
 
+/** Build a Map<planItemId, PlanItemCheckin[]> for O(1) lookups. */
+function buildCheckinByItem(checkins: PlanItemCheckin[]): Map<string, PlanItemCheckin[]> {
+  const map = new Map<string, PlanItemCheckin[]>();
+  for (const c of checkins) {
+    let arr = map.get(c.planItemId);
+    if (!arr) { arr = []; map.set(c.planItemId, arr); }
+    arr.push(c);
+  }
+  return map;
+}
+
+/** Count done checkins for an item within [startDate, endDate] using pre-built index. */
+function countDoneCheckins(
+  index: Map<string, PlanItemCheckin[]>,
+  itemId: string,
+  startDate: string,
+  endDate: string,
+): number {
+  const arr = index.get(itemId);
+  if (!arr) return 0;
+  const doneDates = new Set<string>();
+  for (const c of arr) {
+    if (c.done && c.date >= startDate && c.date <= endDate) doneDates.add(c.date);
+  }
+  return doneDates.size;
+}
+
 export function computeItemProgress(item: PlanItem, checkins: PlanItemCheckin[], today: string): number {
-  const totalDays = daysBetween(item.startDate, item.endDate) + 1;
-  if (totalDays <= 0) return 0;
-
   const clampedToday = today > item.endDate ? item.endDate : today;
-  const doneCount = checkins.filter(c =>
-    c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday
-  ).length;
+  const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
+  if (expectedDays <= 0) return 0;
 
-  return Math.min(Math.round((doneCount / totalDays) * 100), 100);
+  const doneDates = new Set<string>();
+  for (const c of checkins) {
+    if (c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday) {
+      doneDates.add(c.date);
+    }
+  }
+
+  return Math.min(Math.round((doneDates.size / expectedDays) * 100), 100);
 }
 
 export function computePlanProgress(plan: Plan, planItems: PlanItem[]): number {
@@ -487,11 +794,19 @@ export function getPlanItems(planItems: PlanItem[], planId: string): PlanItem[] 
   return planItems.filter(i => i.planId === planId && !i.deleted).sort((a, b) => a.order - b.order);
 }
 
-export function getTodayItems(planItems: PlanItem[], plan: Plan, today: string): PlanItem[] {
+export function getTodayItems(planItems: PlanItem[], plan: Plan, today: string, checkins?: PlanItemCheckin[]): PlanItem[] {
   return planItems
-    .filter(i => !i.deleted && i.planId === plan.id
-      && (i.status === 'in_progress' || i.status === 'delayed')
-      && today >= i.startDate && today <= i.endDate)
+    .filter(i => {
+      if (i.deleted || i.planId !== plan.id) return false;
+      if (i.status !== 'in_progress' && i.status !== 'delayed') return false;
+      if (today < i.startDate || today > i.endDate) return false;
+      // Frequency filtering: only show if today is a required check-in day
+      if (checkins && i.frequency) {
+        const itemCheckins = checkins.filter(c => c.planItemId === i.id);
+        return shouldShowToday(i.frequency, i.startDate, today, itemCheckins);
+      }
+      return true;
+    })
     .sort((a, b) => a.order - b.order);
 }
 
@@ -501,14 +816,15 @@ export function getHistoryPlans(plans: Plan[]): Plan[] {
     .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
 }
 
-/** Update totalCheckinDays and progress for plan items based on checkins */
+/** Update totalCheckinDays and progress for plan items based on checkins. Uses pre-built index. */
 export function refreshPlanItemStats(planItems: PlanItem[], checkins: PlanItemCheckin[], today: string): PlanItem[] {
+  const index = buildCheckinByItem(checkins);
   return planItems.map(item => {
     if (item.deleted) return item;
-    const doneCount = checkins.filter(c =>
-      c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= today
-    ).length;
-    const progress = computeItemProgress(item, checkins, today);
+    const clampedToday = today > item.endDate ? item.endDate : today;
+    const doneCount = countDoneCheckins(index, item.id, item.startDate, clampedToday);
+    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
+    const progress = expectedDays > 0 ? Math.min(Math.round((doneCount / expectedDays) * 100), 100) : 0;
     if (item.totalCheckinDays !== doneCount || item.progress !== progress) {
       return { ...item, totalCheckinDays: doneCount, progress, updatedAt: Date.now() };
     }
@@ -565,6 +881,12 @@ export function saveDailyTodoHistory(
   // 检查是否已经存在该日期的历史记录
   const existingIndex = history.findIndex(h => h.planId === planId && h.date === date && !h.deleted);
 
+  // Pre-build done checkin set for O(1) lookup
+  const doneCheckinSet = new Set<string>();
+  for (const c of planItemCheckins) {
+    if (c.date === date && c.done) doneCheckinSet.add(c.planItemId);
+  }
+
   // 获取当天的计划任务完成情况
   const todayPlanItems = planItems
     .filter(i => !i.deleted && i.planId === planId && date >= i.startDate && date <= i.endDate)
@@ -572,7 +894,7 @@ export function saveDailyTodoHistory(
       id: i.id,
       name: i.name,
       link: i.link,
-      done: planItemCheckins.some(c => c.planItemId === i.id && c.date === date && c.done),
+      done: doneCheckinSet.has(i.id),
     }));
 
   // 获取当天的自定义待办完成情况

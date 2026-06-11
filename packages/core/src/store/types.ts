@@ -4,10 +4,11 @@ import type {
   MedHistoryEntry, FoodEntry, ExerciseEntry, CheckinEntry,
   UserProfile, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
-  ReflectionFilters, ThoughtTrail,
+  ReflectionFilters, ThoughtTrail, ReflectionLink, LinkType,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
+import type { AIMode, ModelConfig } from '../ai/types';
 import type { CreateReflectionParams } from '../business/reflections';
 import type { StopFastingOpts } from '../business/fasting';
 
@@ -34,7 +35,7 @@ export interface CheckinSlice {
   checkinHistory: CheckinEntry[];
   streak: number;
   graceHistory: GraceHistoryEntry[];
-  submitCheckin: (done: boolean, note: string, date?: string, weight?: number) => void;
+  submitCheckin: (done: boolean, note: string, date?: string, weight?: number, grace?: boolean) => void;
   calculateStreak: () => void;
   addGraceRecord: (date: string) => void;
 }
@@ -117,7 +118,7 @@ export interface HabitSlice {
 export interface ReflectionSlice {
   reflections: MindReflection[];
   reflectionFilters: ReflectionFilters;
-  addReflection: (params: CreateReflectionParams) => void;
+  addReflection: (params: CreateReflectionParams) => MindReflection | undefined;
   togglePin: (id: string) => void;
   deleteReflection: (id: string) => void;
   updateReflection: (id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>) => void;
@@ -152,7 +153,7 @@ export interface PlanSlice {
   addPlanItem: (form: {
     planId: string; name: string; description?: string;
     startDate: string; endDate: string; contentUrl?: string;
-    link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; reflectionId?: string; order?: number;
+    link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; reflectionId?: string; order?: number; frequency?: PlanItem['frequency'];
   }) => void;
   updatePlanItem: (id: string, patch: Partial<PlanItem>) => void;
   deletePlanItem: (id: string) => void;
@@ -187,19 +188,41 @@ export interface RecycleBinSlice {
 
 export interface ThoughtTrailSlice {
   thoughtTrails: ThoughtTrail[];
-  createThoughtTrail: (name: string, description?: string, reflectionIds?: string[]) => string;
+  createThoughtTrail: (name: string, description?: string, reflectionIds?: string[], source?: 'auto' | 'manual' | 'recommended') => string;
   updateThoughtTrail: (id: string, patch: Partial<ThoughtTrail>) => void;
   deleteThoughtTrail: (id: string) => void;
   addReflectionToTrail: (trailId: string, reflectionId: string) => void;
   removeReflectionFromTrail: (trailId: string, reflectionId: string) => void;
-  reorderTrailReflections: (trailId: string, fromIndex: number, toIndex: number) => void;
+  setInsightSummary: (trailId: string, summary: string) => void;
+}
+
+export interface AISlice {
+  aiMode: AIMode;
+  aiModels: ModelConfig[];
+  setAIMode: (mode: AIMode) => void;
+  addAIModel: (model: ModelConfig) => void;
+  updateAIModel: (modelId: string, updates: Partial<ModelConfig>) => void;
+  removeAIModel: (modelId: string) => void;
+  setDefaultAIModel: (modelId: string) => void;
+  toggleAIModel: (modelId: string) => void;
+}
+
+export interface ReflectionLinkSlice {
+  reflectionLinks: ReflectionLink[];
+  createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => string;
+  updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => void;
+  deleteReflectionLink: (id: string) => void;
+  getLinksByReflection: (reflectionId: string) => ReflectionLink[];
+  getLinksFromReflection: (reflectionId: string) => ReflectionLink[];
+  getLinksToReflection: (reflectionId: string) => ReflectionLink[];
+  deleteLinksByReflection: (reflectionId: string) => void;
 }
 
 // ─── FullStore composition ─────────────────────────────────────
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReflectionLinkSlice & AISlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -219,6 +242,8 @@ export interface SyncDataMap {
   dailyTodoHistory: DailyTodoHistory;
   grace: GraceHistoryEntry;
   thoughtTrail: ThoughtTrail;
+  reflectionLink: ReflectionLink;
+  aiConfig: { config_id: string; mode: AIMode; models: ModelConfig[]; updatedAt: number };
 }
 
 /** Type-safe storage adapter */

@@ -10,8 +10,10 @@ import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getToda
 import type { CheckinEntry } from '@egoless-do/core';
 import {
   Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
-  ClipboardList, CheckCircle2, Circle, X, Check,
+  ClipboardList, CheckCircle2, Circle, X, Check, Shield,
+  Moon, Sunrise, Brain,
 } from 'lucide-react-native';
+import CheckinReflection from './CheckinReflection';
 
 function parseExistingNote(raw: string): { userNote: string; practices: string[]; customs: string[]; fasted: boolean; waterMl: number; habits: string[] } {
   if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
@@ -33,18 +35,20 @@ function parseExistingNote(raw: string): { userNote: string; practices: string[]
   return { userNote: raw, practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
 }
 
-export default function CheckinModal({ onClose }: { onClose: () => void }) {
+export default function CheckinModal({ onClose, graceDate }: { onClose: () => void; graceDate?: string }) {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
   const store = useAppStore();
   const weightUnit = useAppStore(s => s.weightUnit);
   const today = dateStr();
+  const targetDate = graceDate ?? today;
+  const isGraceMode = !!graceDate;
 
   // Load existing checkin for re-edit support
   const existing = useMemo(() =>
-    (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === today),
-    [store.checkinHistory, today],
+    (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === targetDate),
+    [store.checkinHistory, targetDate],
   );
   const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
 
@@ -55,15 +59,15 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
 
   // Today's plan items
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
+  const planCheckins = store.planItemCheckins ?? [];
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayItems(store.planItems ?? [], activePlan, today);
-  }, [store.planItems, activePlan, today]);
-  const planCheckins = store.planItemCheckins ?? [];
+    return getTodayItems(store.planItems ?? [], activePlan, targetDate, planCheckins);
+  }, [store.planItems, activePlan, targetDate, planCheckins]);
   const dailyCustomTodos = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, today);
-  }, [store.dailyCustomTodos, activePlan, today]);
+    return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, targetDate);
+  }, [store.dailyCustomTodos, activePlan, targetDate]);
   const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     if (!activePlan) return initial;
@@ -71,7 +75,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
     items.forEach(item => {
       // manual 和 reflection 类型支持手动切换
       if (item.link === 'manual' || item.link === 'reflection') {
-        initial[item.id] = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
+        initial[item.id] = planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
       }
     });
     return initial;
@@ -93,7 +97,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
   const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     (store.habits ?? []).filter(h => h.status === 'inProgress').forEach(h => {
-      initial[h.id] = h.checkedDates?.includes(today) ?? false;
+      initial[h.id] = h.checkedDates?.includes(targetDate) ?? false;
     });
     return initial;
   });
@@ -102,30 +106,32 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
   const [incompleteItems, setIncompleteItems] = useState<ReturnType<typeof getIncompleteItems>>([]);
   const [selectedReason, setSelectedReason] = useState('');
   const [reasonNote, setReasonNote] = useState('');
+  const [showReflection, setShowReflection] = useState(false);
 
-  const submit = useCallback((reasonOverride?: string, reasonNoteOverride?: string) => {
-    if (localDone === null) return;
+  const submit = useCallback((reasonOverride?: string, reasonNoteOverride?: string, doneOverride?: boolean) => {
+    const done = doneOverride ?? localDone;
+    if (done === null) return;
     // Process habit checkins (toggle: already checked → uncheck, not checked → check)
     Object.entries(habitCheckins).forEach(([id, checked]) => {
       const habit = (store.habits ?? []).find(h => h.id === id);
-      const alreadyDone = habit?.checkedDates?.includes(today) ?? false;
-      if (checked !== alreadyDone) store.checkinHabit(id, today);
+      const alreadyDone = habit?.checkedDates?.includes(targetDate) ?? false;
+      if (checked !== alreadyDone) store.checkinHabit(id, targetDate);
     });
     // Save plan item toggles
     Object.entries(planToggles).forEach(([itemId, desired]) => {
-      const current = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
-      if (desired && !current) store.checkinPlanItem(itemId);
-      if (!desired && current) store.uncheckinPlanItem(itemId);
+      const current = planCheckins.some(c => c.planItemId === itemId && c.date === targetDate && c.done);
+      if (desired && !current) store.checkinPlanItem(itemId, targetDate);
+      if (!desired && current) store.uncheckinPlanItem(itemId, targetDate);
     });
-    // Set water amount directly
-    if (waterMl > 0) {
+    // Set water amount directly (skip in grace mode)
+    if (!isGraceMode && waterMl > 0) {
       store.resetWater();
       store.addWater(waterMl);
     }
     // Build structured JSON note (same format as web)
     const noteData: Record<string, unknown> = {};
     if (note) noteData.note = note;
-    if (waterMl > 0) noteData.water = waterMl;
+    if (!isGraceMode && waterMl > 0) noteData.water = waterMl;
     const pr: string[] = [];
     if (practices.sit) pr.push('sit');
     if (practices.stand) pr.push('stand');
@@ -136,21 +142,34 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
       .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
       .filter(Boolean);
     if (checkedHabits.length) noteData.habits = checkedHabits;
-    if (totalCal > 0) noteData.food = totalCal;
+    if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
     if (reasonOverride) noteData.incompleteReason = reasonOverride;
     if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
     const weightNum = weight ? parseFloat(weight) : undefined;
-    store.submitCheckin(localDone, JSON.stringify(noteData), undefined, weightNum);
-    onClose();
-  }, [localDone, habitCheckins, planToggles, planCheckins, today, waterMl, note, practices, totalCal, weight, store, onClose]);
+    store.submitCheckin(done, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
+    // In grace mode, also record grace history and close directly
+    if (isGraceMode) {
+      store.addGraceRecord(targetDate);
+      onClose();
+    } else {
+      // Show reflection prompt instead of closing immediately
+      setShowReflection(true);
+    }
+  }, [localDone, habitCheckins, planToggles, planCheckins, targetDate, isGraceMode, waterMl, note, practices, totalCal, weight, store, onClose]);
 
   const handleDone = useCallback(() => {
+    // Grace mode: skip incomplete items check, submit directly
+    if (isGraceMode) {
+      setLocalDone(true);
+      submit(undefined, undefined, true);
+      return;
+    }
     const items = getIncompleteItems({
       practices,
       habits: (store.habits ?? []).filter(h => h.status === 'inProgress'),
       planItems: todayPlanItems,
       planItemCheckins: planCheckins,
-      today,
+      today: targetDate,
     });
     if (items.length > 0) {
       setIncompleteItems(items);
@@ -161,42 +180,42 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
       return;
     }
     setLocalDone(true);
-    // Need to call submit with done=true directly since state update is async
-    // Rebuild the submit logic inline with done=true
-    Object.entries(habitCheckins).forEach(([id, checked]) => {
-      const habit = (store.habits ?? []).find(h => h.id === id);
-      const alreadyDone = habit?.checkedDates?.includes(today) ?? false;
-      if (checked !== alreadyDone) store.checkinHabit(id, today);
-    });
-    Object.entries(planToggles).forEach(([itemId, desired]) => {
-      const current = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
-      if (desired && !current) store.checkinPlanItem(itemId);
-      if (!desired && current) store.uncheckinPlanItem(itemId);
-    });
-    if (waterMl > 0) { store.resetWater(); store.addWater(waterMl); }
-    const noteData: Record<string, unknown> = {};
-    if (note) noteData.note = note;
-    if (waterMl > 0) noteData.water = waterMl;
-    const pr: string[] = [];
-    if (practices.sit) pr.push('sit');
-    if (practices.stand) pr.push('stand');
-    if (practices.chant) pr.push('chant');
-    if (pr.length) noteData.practices = pr;
-    const checkedHabits = Object.entries(habitCheckins)
-      .filter(([, checked]) => checked)
-      .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
-      .filter(Boolean);
-    if (checkedHabits.length) noteData.habits = checkedHabits;
-    if (totalCal > 0) noteData.food = totalCal;
-    store.submitCheckin(true, JSON.stringify(noteData), undefined, weight ? parseFloat(weight) : undefined);
-    onClose();
-  }, [practices, store, todayPlanItems, planCheckins, today, habitCheckins, planToggles, waterMl, note, totalCal, weight, onClose]);
+    submit();
+  }, [isGraceMode, practices, store, todayPlanItems, planCheckins, targetDate, submit]);
 
   const confirmDoneWithReason = useCallback(() => {
     if (!selectedReason || !reasonNote.trim()) return;
     setShowReasonModal(false);
     submit(selectedReason, reasonNote);
   }, [submit, selectedReason, reasonNote]);
+
+  const handleReflectionSave = useCallback((mood: string, insight: string, saveAsReflection: boolean) => {
+    if (saveAsReflection && insight.trim()) {
+      store.addReflection({
+        content: insight,
+        tags: [],
+        mood: mood,
+      });
+    }
+    onClose();
+  }, [store, onClose]);
+
+  // Show reflection prompt after successful checkin
+  if (showReflection) {
+    return (
+      <Modal visible animationType="slide" transparent>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1, justifyContent: 'flex-end' }}
+        >
+          <CheckinReflection
+            onSave={handleReflectionSave}
+            onSkip={onClose}
+          />
+        </KeyboardAvoidingView>
+      </Modal>
+    );
+  }
 
   return (
     <Modal visible animationType="slide" transparent>
@@ -214,15 +233,32 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
             flexDirection:'row', justifyContent:'space-between',
             alignItems:'center', paddingTop:20, paddingBottom:8,
           }}>
-            <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('checkinTitle')}</Text>
+            <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>
+              {isGraceMode ? T('graceCheckinTitle') : T('checkinTitle')}
+            </Text>
             <TouchableOpacity onPress={onClose}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
           </View>
 
+          {/* Grace mode hint banner */}
+          {isGraceMode && (
+            <View style={{
+              flexDirection: 'row', alignItems: 'center', gap: 8,
+              padding: 12, borderRadius: 10, marginBottom: 12,
+              backgroundColor: `${COLORS.ORANGE}15`, borderWidth: 1, borderColor: `${COLORS.ORANGE}30`,
+            }}>
+              <Shield size={16} color={COLORS.ORANGE} />
+              <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE, flex: 1 }}>
+                {T('graceCheckinHint')} · {targetDate}
+              </Text>
+            </View>
+          )}
+
           <ScrollView showsVerticalScrollIndicator={false}>
 
-            {/* Status buttons - TOP */}
+            {/* Status buttons - TOP (hidden in grace mode) */}
+            {!isGraceMode && (
             <View style={{ flexDirection:'row', gap:10, marginBottom:16 }}>
               <TouchableOpacity onPress={() => setLocalDone(false)}
                 style={{
@@ -249,12 +285,13 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                 </View>
               </TouchableOpacity>
             </View>
+            )}
 
             {/* Tasks section - merged card */}
             <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
               <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
                 <ClipboardList size={18} color={P} />
-                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{T('checkinPractice')} & {T('planTodoList')}</Text>
+                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{isGraceMode ? `${targetDate} ${T('graceTitle')}` : `${T('checkinPractice')} & ${T('planTodoList')}`}</Text>
               </View>
 
               {/* Practices */}
@@ -262,9 +299,9 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                 <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('checkinPractice')}</Text>
                 <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8 }}>
                   {([
-                    { key:'sit' as const,   icon:<PersonStanding size={16} color={P} />, label:T('checkinSit') },
-                    { key:'stand' as const, icon:<PersonStanding size={16} color={P} />, label:T('checkinStand') },
-                    { key:'chant' as const, icon:<Sparkles size={16} color={P} />, label:T('checkinSutra') },
+                    { key:'sit' as const,   icon:<Moon size={16} color={P} />, label:T('checkinSit') },
+                    { key:'stand' as const, icon:<Sunrise size={16} color={P} />, label:T('checkinStand') },
+                    { key:'chant' as const, icon:<Brain size={16} color={P} />, label:T('checkinSutra') },
                   ]).map(({ key, icon, label }) => (
                     <TouchableOpacity key={key} onPress={() => setPractices(p => ({ ...p, [key]:!p[key] }))}
                       style={{
@@ -323,7 +360,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                       backgroundColor: todo.done ? `${P}10` : 'transparent',
                       marginBottom:4,
                     }}>
-                      <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id)} />
+                      <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id, targetDate)} />
                       <Text style={{
                         flex:1, marginLeft:8, fontSize:FONT_BODY,
                         color: todo.done ? TH.sub : TH.text,
@@ -353,7 +390,8 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                 </View>
               )}
 
-              {/* Submit button - inside tasks card */}
+              {/* Submit button - inside tasks card (hidden in grace mode, moved to bottom) */}
+              {!isGraceMode && (
               <TouchableOpacity onPress={submit} style={{
                 marginTop:12, paddingVertical:14, borderRadius:12, alignItems:'center',
                 backgroundColor: localDone === true
@@ -366,17 +404,20 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                   {localDone === true ? T('checkinSubmit') : localDone === false ? T('checkinSave') : T('checkinSelectStatus')}
                 </Text>
               </TouchableOpacity>
+              )}
             </View>
 
-            {/* Data section - merged card */}
+            {/* Data section - merged card (hide water/food in grace mode) */}
             <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
               <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
                 <Scale size={18} color={P} />
-                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{T('checkinWeight')} / {T('checkinWater')} / {T('checkinFood')}</Text>
+                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>
+                  {isGraceMode ? T('checkinWeight') : `${T('checkinWeight')} / ${T('checkinWater')} / ${T('checkinFood')}`}
+                </Text>
               </View>
 
               {/* Weight */}
-              <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
+              <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth: isGraceMode ? 0 : 1, borderBottomColor:TH.border }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
                   <Scale size={16} color={P} />
                   <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{T('checkinWeight')}</Text>
@@ -394,30 +435,33 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                 </View>
               </View>
 
-              {/* Water */}
-              <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                  <Droplets size={16} color={P} />
-                  <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{T('checkinWater')}</Text>
+              {/* Water - hidden in grace mode */}
+              {!isGraceMode && (
+                <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
+                  <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
+                    <Droplets size={16} color={P} />
+                    <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{T('checkinWater')}</Text>
+                  </View>
+                  <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
+                    <TextInput
+                      value={waterMl ? String(waterMl) : ''}
+                      onChangeText={v => setWaterMl(Math.max(0, parseInt(v) || 0))}
+                      placeholder="0"
+                      placeholderTextColor={TH.sub}
+                      keyboardType="numeric"
+                      style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, backgroundColor:TH.cardSolid }}
+                    />
+                    <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>ml</Text>
+                    <TouchableOpacity onPress={() => setWaterMl(w => w + 250)}
+                      style={{ paddingVertical:4, paddingHorizontal:8, borderRadius:6, backgroundColor:`${P}20` }}>
+                      <Text style={{ color:P, fontSize:FONT_SUB, fontWeight:'600' }}>+250</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
-                  <TextInput
-                    value={waterMl ? String(waterMl) : ''}
-                    onChangeText={v => setWaterMl(Math.max(0, parseInt(v) || 0))}
-                    placeholder="0"
-                    placeholderTextColor={TH.sub}
-                    keyboardType="numeric"
-                    style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, backgroundColor:TH.cardSolid }}
-                  />
-                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>ml</Text>
-                  <TouchableOpacity onPress={() => setWaterMl(w => w + 250)}
-                    style={{ paddingVertical:4, paddingHorizontal:8, borderRadius:6, backgroundColor:`${P}20` }}>
-                    <Text style={{ color:P, fontSize:FONT_SUB, fontWeight:'600' }}>+250</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+              )}
 
-              {/* Food */}
+              {/* Food - hidden in grace mode */}
+              {!isGraceMode && (
               <View style={{ paddingVertical:10 }}>
                 <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
@@ -452,6 +496,7 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
                   </View>
                 )}
               </View>
+              )}
             </View>
 
             {/* Note section */}
@@ -462,6 +507,21 @@ export default function CheckinModal({ onClose }: { onClose: () => void }) {
               </View>
               <ThemedInput value={note} onChangeText={setNote} placeholder={T('checkinNotePlaceholder')} multiline numberOfLines={3} />
             </View>
+
+            {/* Grace mode: submit button at bottom */}
+            {isGraceMode && (
+              <TouchableOpacity onPress={handleDone} style={{
+                paddingVertical:14, borderRadius:12, alignItems:'center',
+                backgroundColor: '#17EAD9', marginBottom:10,
+              }}>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
+                  <Check size={18} color="#fff" />
+                  <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>
+                    {T('graceCheckinSubmit')}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
 
             {/* Cancel button */}
             <TouchableOpacity onPress={onClose} style={{

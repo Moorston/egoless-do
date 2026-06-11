@@ -6,7 +6,10 @@ export interface I18nKeys {
   done: string; notDone: string; cancel: string; save: string;
   submit: string; note: string; freeCheckin: string;
   startFasting: string; quickStart: string; stopFasting: string;
-  accMed: string; bgMusic: string; startMed: string; stopMed: string;
+  accMed: string; bgMusic: string;
+  medMusicFocus: string; medMusicMeditate: string; medMusicExercise: string; medMusicUser: string;
+  medSelectMusic: string; medTapToSelect: string; medNoMusic: string;
+  startMed: string; stopMed: string;
   shareMed: string; shareCardTitle: string; shareCardSession: string;
   shareCardDownload: string; mindPulse: string; newReflection: string;
   saveReflection: string; myHabits: string; addHabit: string;
@@ -230,11 +233,12 @@ export interface I18nKeys {
   planItemTarget: string;
   planPriority: string; planPriorityHigh: string;
   planPriorityMedium: string; planPriorityLow: string;
-  planSave: string; planCreate: string; planEditTitle: string;
+  planSave: string; planCreate: string; planEditTitle: string; planDateRangePlaceholder: string;
   planTodoList: string; planTodoDate: string; planDetail: string; planLinkManual: string;
   planLinkCheckin: string; planLinkFasting: string;
   planLinkMeditation: string; planLinkExercise: string; planLinkReflection: string;
   planLinkHabit: string; planProgress: string; planDays: string;
+  planHours: string; planMinutes: string; planSeconds: string;
   planCheckinDays: string; planCheckin: string; planUncheckin: string;
   planTodayCheckin: string; planHeatmap: string;
   planCountdownTitle: string; planCountdownStart: string; planCountdownEnd: string; planDelayed: string; planDelayedNotify: string;
@@ -243,9 +247,24 @@ export interface I18nKeys {
   planItemTimeOrderError: string; planTimeError: string;
   planItemDescRequired: string; planItemTargetRequired: string;
   planNameRequired: string; planGoalRequired: string;
-  planNoItems: string; planAddItemHint: string;
+  planNoItems: string; planNoHistory: string; planNoTodayTodos: string; planAddItemHint: string;
+  planShowHeatmap: string; planHideHeatmap: string;
   planDeleteItemConfirm: string;
   planDeleteConfirm: string; planCompleteConfirm: string;
+  planRelationMap: string; planRelationMapDesc: string;
+  planLinkedContent: string; planRelatedReflections: string;
+  planRelatedTrails: string; planTrailReflectionCount: string;
+  planCannotOperate: string; planUnlinkAndContinue: string;
+  planCannotOperateDetail: string;
+  checkinFreq: string, freqDaily: string; freqInterval: string; freqWeekly: string;
+  freqWeeklyFixed: string; freqMonthly: string; freqMonthlyFixed: string;
+  freqEveryNDays: string; freqNTimesPerWeek: string; freqNTimesPerMonth: string;
+  freqSelectDays: string; freqSelectDates: string;
+  freqSummaryDaily: string; freqSummaryInterval: string;
+  freqSummaryWeekly: string; freqSummaryWeeklyFixed: string;
+  freqSummaryMonthly: string; freqSummaryMonthlyFixed: string;
+  freqThisWeek: string; freqThisMonth: string;
+  freqCannotEdit: string;
   globalPulse: string; globalLeaderboard: string;
   globalCurrentStreak: string; globalTotalDays: string;
   globalDaysCurrent: string; globalDaysTotal: string;
@@ -256,6 +275,9 @@ export interface I18nKeys {
   graceUsedCount: string; graceUsedTimes: string;
   graceStatsTitle: string; graceAlreadyDone: string;
   graceNoNeed: string; graceHistory: string; graceHistoryEmpty: string;
+  graceCheckinTitle: string; graceCheckinHint: string; graceCheckinSubmit: string;
+  graceQuotaUsed: string; graceQuotaExhausted: string; graceQuotaReset: string;
+  graceStreakPending: string; graceSettingTitle: string; graceSettingHint: string;
   mindTrail: string; thoughtTrail: string; tagTrail: string;
   createThoughtTrail: string; editThoughtTrail: string;
   thoughtTrailName: string; thoughtTrailDesc: string;
@@ -301,7 +323,7 @@ export interface I18nKeys {
   weekdaySat: string;
   planNotFound: string; heatmapLess: string; heatmapMore: string; month: string;
   planTodoToday: string; planTodoHistory: string; planTodoDone: string; planTodoTotal: string; planAutoChecked: string;
-  planDailyCustomTodos: string; planAddCustomTodoPlaceholder: string; planNoCustomTodos: string;
+  planDailyCustomTodos: string; planAddCustomTodoPlaceholder: string; planNoCustomTodos: string; planRecurring: string;
   planDeleteCustomTodo: string; planDeleteCustomTodoConfirm: string;
   errorDisconnected: string; reminderBody: string;
   timeAgoJustNow: string; timeAgoMinutes: string;
@@ -320,6 +342,14 @@ export interface I18nKeys {
   incompleteReasonBack: string; incompleteReasonNote: string;
   incompleteReasonNotePlaceholder: string; incompleteReasonStats: string;
   dateBarToday: string; noCheckinRecord: string;
+  streakBreakActiveStreak: string; streakBreakDaysSince: string;
+  streakBreakGettingStronger: string; streakBreakRestart: string;
+  streakBreakPrevStreak: string; streakBreakCanBeLonger: string;
+  streakBreakDontForget: string; streakBreakNeverTooLate: string;
+  streakBreakCheckinNow: string; streakBreakInsight: string;
+  streakBreakHighDay: string; streakBreakAvgStreak: string;
+  streakBreakAvgRecovery: string; streakBreakTrend: string;
+  streakBreakHypothetical: string; streakBreakGraceHint: string;
 }
 
 export type I18nKey = keyof I18nKeys;

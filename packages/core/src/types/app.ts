@@ -10,6 +10,7 @@ import type { CheckinEntry, MedHistoryEntry, GraceHistoryEntry } from './checkin
 import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from './plan';
 import type { RecycleBinItem } from './recycle';
 import type { ThoughtTrail } from './thought-trail';
+import type { ReflectionLink } from './reflection-link';
 import type { CustomFoodPreset } from './food';
 
 export interface UserProfile {
@@ -20,6 +21,7 @@ export interface UserProfile {
   waterMl?: number;
   waterGoal?: number;
   weightUnit?: 'kg' | 'lb';
+  graceMonthlyQuota?: number;
   updatedAt?: number;
 }
 
@@ -50,6 +52,7 @@ export interface AppState {
   exerciseLog: ExerciseEntry[];
   reflections: MindReflection[];
   thoughtTrails: ThoughtTrail[];
+  reflectionLinks: ReflectionLink[];
   habits: Habit[];
   activeFasting: FastingSession | null;
   userProfile: UserProfile;

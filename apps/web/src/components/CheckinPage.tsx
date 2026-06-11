@@ -5,7 +5,7 @@ import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getToda
 import type { CheckinEntry } from '@egoless-do/core';
 import { RowItem, Checkbox, useTheme, useT, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { ChevronLeft, Utensils, PersonStanding, Star, ClipboardList, CheckCircle2, Circle, X, Check, Pencil, Droplets, Scale, Sparkles } from 'lucide-react';
+import { ChevronLeft, Utensils, PersonStanding, Star, ClipboardList, CheckCircle2, Circle, X, Check, Pencil, Droplets, Scale, Sparkles, Shield } from 'lucide-react';
 
 function parseExistingNote(raw: string): { userNote: string; practices: string[]; customs: string[]; fasted: boolean; waterMl: number; habits: string[] } {
   if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
@@ -27,16 +27,18 @@ function parseExistingNote(raw: string): { userNote: string; practices: string[]
   return { userNote: raw, practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
 }
 
-export default function CheckinPage({ onClose }: { onClose: () => void }) {
+export default function CheckinPage({ onClose, graceDate }: { onClose: () => void; graceDate?: string }) {
   const store = useWebStore();
   const { TH, P } = useTheme();
   const T = useT();
   const weightUnit = store.weightUnit;
 
   const today = dateStr();
+  const targetDate = graceDate ?? today;
+  const isGraceMode = !!graceDate;
   const existing = useMemo(() =>
-    (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === today),
-    [store.checkinHistory, today],
+    (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === targetDate),
+    [store.checkinHistory, targetDate],
   );
   const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
 
@@ -68,22 +70,22 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
   const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     (store.habits ?? []).filter(h => h.status === 'inProgress').forEach(h => {
-      initial[h.id] = h.checkedDates?.includes(today) ?? false;
+      initial[h.id] = h.checkedDates?.includes(targetDate) ?? false;
     });
     return initial;
   });
 
   // Today's plan items
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
+  const planCheckins = store.planItemCheckins ?? [];
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayItems(store.planItems ?? [], activePlan, today);
-  }, [store.planItems, activePlan, today]);
-  const planCheckins = store.planItemCheckins ?? [];
+    return getTodayItems(store.planItems ?? [], activePlan, targetDate, planCheckins);
+  }, [store.planItems, activePlan, targetDate, planCheckins]);
   const dailyCustomTodos = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, today);
-  }, [store.dailyCustomTodos, activePlan, today]);
+    return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, targetDate);
+  }, [store.dailyCustomTodos, activePlan, targetDate]);
   const [planToggles, setPlanToggles] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     if (!activePlan) return initial;
@@ -92,31 +94,33 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
     items.forEach(item => {
       // manual 和 reflection 类型支持手动切换
       if (item.link === 'manual' || item.link === 'reflection') {
-        initial[item.id] = checkins.some(c => c.planItemId === item.id && c.date === today && c.done);
+        initial[item.id] = checkins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
       }
     });
     return initial;
   });
 
-  const submit = (reasonOverride?: string, reasonNoteOverride?: string) => {
-    if (localDone === null) return;
+  const submit = (reasonOverride?: string, reasonNoteOverride?: string, doneOverride?: boolean) => {
+    const done = doneOverride ?? localDone;
+    if (done === null) return;
     Object.entries(habitCheckins).forEach(([id, checked]) => {
       const habit = (store.habits ?? []).find(h => h.id === id);
-      const alreadyDone = habit?.checkedDates?.includes(today) ?? false;
-      if (checked !== alreadyDone) store.checkinHabit(id, today);
+      const alreadyDone = habit?.checkedDates?.includes(targetDate) ?? false;
+      if (checked !== alreadyDone) store.checkinHabit(id, targetDate);
     });
     Object.entries(planToggles).forEach(([itemId, desired]) => {
-      const current = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
-      if (desired && !current) store.checkinPlanItem(itemId);
-      if (!desired && current) store.uncheckinPlanItem(itemId);
+      const current = planCheckins.some(c => c.planItemId === itemId && c.date === targetDate && c.done);
+      if (desired && !current) store.checkinPlanItem(itemId, targetDate);
+      if (!desired && current) store.uncheckinPlanItem(itemId, targetDate);
     });
-    if (waterMl > 0) {
+    // Skip water in grace mode
+    if (!isGraceMode && waterMl > 0) {
       store.resetWater();
       store.addWater(waterMl);
     }
     const noteData: Record<string, unknown> = {};
     if (note) noteData.note = note;
-    if (waterMl > 0) noteData.water = waterMl;
+    if (!isGraceMode && waterMl > 0) noteData.water = waterMl;
     const pr: string[] = [];
     if (practices.sit) pr.push('sit');
     if (practices.stand) pr.push('stand');
@@ -129,21 +133,31 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
       .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
       .filter(Boolean);
     if (checkedHabits.length) noteData.habits = checkedHabits;
-    if (totalCal > 0) noteData.food = totalCal;
+    if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
     if (reasonOverride) noteData.incompleteReason = reasonOverride;
     if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
     const weightNum = weight ? parseFloat(weight) : undefined;
-    store.submitCheckin(localDone, JSON.stringify(noteData), undefined, weightNum);
+    store.submitCheckin(done, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
+    // In grace mode, also record grace history
+    if (isGraceMode) {
+      store.addGraceRecord(targetDate);
+    }
     onClose();
   };
 
   const handleDone = useCallback(() => {
+    // Grace mode: skip incomplete items check, submit directly
+    if (isGraceMode) {
+      setLocalDone(true);
+      submit(undefined, undefined, true);
+      return;
+    }
     const items = getIncompleteItems({
       practices,
       habits: (store.habits ?? []).filter(h => h.status === 'inProgress'),
       planItems: todayPlanItems,
       planItemCheckins: planCheckins,
-      today,
+      today: targetDate,
     });
     if (items.length > 0) {
       setIncompleteItems(items);
@@ -157,18 +171,18 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
     // Submit directly with done=true
     Object.entries(habitCheckins).forEach(([id, checked]) => {
       const habit = (store.habits ?? []).find(h => h.id === id);
-      const alreadyDone = habit?.checkedDates?.includes(today) ?? false;
-      if (checked !== alreadyDone) store.checkinHabit(id, today);
+      const alreadyDone = habit?.checkedDates?.includes(targetDate) ?? false;
+      if (checked !== alreadyDone) store.checkinHabit(id, targetDate);
     });
     Object.entries(planToggles).forEach(([itemId, desired]) => {
-      const current = planCheckins.some(c => c.planItemId === itemId && c.date === today && c.done);
-      if (desired && !current) store.checkinPlanItem(itemId);
-      if (!desired && current) store.uncheckinPlanItem(itemId);
+      const current = planCheckins.some(c => c.planItemId === itemId && c.date === targetDate && c.done);
+      if (desired && !current) store.checkinPlanItem(itemId, targetDate);
+      if (!desired && current) store.uncheckinPlanItem(itemId, targetDate);
     });
-    if (waterMl > 0) { store.resetWater(); store.addWater(waterMl); }
+    if (!isGraceMode && waterMl > 0) { store.resetWater(); store.addWater(waterMl); }
     const noteData: Record<string, unknown> = {};
     if (note) noteData.note = note;
-    if (waterMl > 0) noteData.water = waterMl;
+    if (!isGraceMode && waterMl > 0) noteData.water = waterMl;
     const pr: string[] = [];
     if (practices.sit) pr.push('sit');
     if (practices.stand) pr.push('stand');
@@ -181,11 +195,15 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
       .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
       .filter(Boolean);
     if (checkedHabits.length) noteData.habits = checkedHabits;
-    if (totalCal > 0) noteData.food = totalCal;
+    if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
     const weightNum = weight ? parseFloat(weight) : undefined;
-    store.submitCheckin(true, JSON.stringify(noteData), undefined, weightNum);
+    store.submitCheckin(true, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
+    if (isGraceMode) {
+      store.addGraceRecord(targetDate);
+    }
     onClose();
-  }, [practices, habitCheckins, planToggles, planCheckins, today, waterMl, note, freeItems, freeCheckins, totalCal, weight, store, onClose, todayPlanItems]);
+  }, [isGraceMode, submit, practices, habitCheckins, planToggles, planCheckins, targetDate, waterMl, note, freeItems, freeCheckins, totalCal, weight, store, onClose, todayPlanItems]);
+
 
   const confirmDoneWithReason = useCallback(() => {
     if (!selectedReason || !reasonNote.trim()) return;
@@ -200,16 +218,30 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
           <button onClick={onClose}
             style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_BACK, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}><ChevronLeft size={22} /></button>
-          <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('checkinTitle')}</div>
+          <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{isGraceMode ? T('graceCheckinTitle') : T('checkinTitle')}</div>
           <div style={{ flex: 1 }} />
-          <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{today}</div>
+          <div style={{ fontSize: FONT_SUB, color: TH.sub }}>{targetDate}</div>
         </div>
+
+        {/* Grace mode hint banner */}
+        {isGraceMode && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: 12, borderRadius: 10, marginBottom: 12,
+            background: `${COLORS.ORANGE}15`, border: `1px solid ${COLORS.ORANGE}30`,
+          }}>
+            <Shield size={16} color={COLORS.ORANGE} />
+            <span style={{ fontSize: FONT_SUB, color: COLORS.ORANGE, flex: 1 }}>
+              {T('graceCheckinHint')} · {targetDate}
+            </span>
+          </div>
+        )}
 
         {/* Tasks section - merged */}
         <div style={{ background: TH.card, borderRadius: 16, padding: '16px', marginBottom: 12, border: `1px solid ${TH.border}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
             <ClipboardList size={18} style={{ color: P }} />
-            <span style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>{T('checkinPractice')} & {T('planTodoList')}</span>
+            <span style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>{isGraceMode ? `${targetDate} ${T('graceTitle')}` : `${T('checkinPractice')} & ${T('planTodoList')}`}</span>
           </div>
 
           {/* Practices */}
@@ -237,8 +269,8 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, paddingLeft: 4 }}>{T('planTodoList')}</div>
               {todayPlanItems.map(item => {
-                const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-                const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
+                const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
+                const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done && c.linkedModule);
                 const done = planToggles[item.id] ?? storeDone;
                 return (
                   <div key={item.id} style={{
@@ -279,7 +311,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
                   marginBottom: 4,
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
-                    <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id)} />
+                    <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id, targetDate)} />
                     <div style={{
                       fontSize: FONT_BODY, color: TH.text,
                     }}>{todo.name}</div>
@@ -311,7 +343,8 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          {/* Done button */}
+          {/* Done button (hidden in grace mode, moved to bottom) */}
+          {!isGraceMode && (
           <button onClick={handleDone}
             style={{
               width: '100%', padding: 14, borderRadius: 12, border: 'none', marginTop: 12,
@@ -321,17 +354,20 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
             }}>
             <Check size={18} style={{verticalAlign:'middle',marginRight:4}} /> {T('checkinDone')}
           </button>
+          )}
         </div>
 
         {/* Data section - merged */}
         <div style={{ background: TH.card, borderRadius: 16, padding: '16px', marginBottom: 12, border: `1px solid ${TH.border}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
             <Scale size={18} style={{ color: P }} />
-            <span style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>{T('checkinWeight')} / {T('checkinWater')} / {T('checkinFood')}</span>
+            <span style={{ fontWeight: 600, fontSize: FONT_BODY, color: TH.text }}>
+              {isGraceMode ? T('checkinWeight') : `${T('checkinWeight')} / ${T('checkinWater')} / ${T('checkinFood')}`}
+            </span>
           </div>
 
           {/* Weight */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${TH.border}` }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: isGraceMode ? 'none' : `1px solid ${TH.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Scale size={16} style={{ color: P }} />
               <span style={{ color: TH.text }}>{T('checkinWeight')}</span>
@@ -343,7 +379,8 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
             </div>
           </div>
 
-          {/* Water */}
+          {/* Water - hidden in grace mode */}
+          {!isGraceMode && (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: `1px solid ${TH.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Droplets size={16} style={{ color: P }} />
@@ -357,8 +394,10 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
                 style={{ padding: '4px 8px', borderRadius: 6, border: 'none', background: `${P}20`, color: P, fontSize: FONT_SUB, fontWeight: 600, cursor: 'pointer' }}>+250</button>
             </div>
           </div>
+          )}
 
-          {/* Food */}
+          {/* Food - hidden in grace mode */}
+          {!isGraceMode && (
           <div style={{ padding: '10px 0' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -388,6 +427,7 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
               </div>
             )}
           </div>
+          )}
         </div>
 
         {/* Note section */}
@@ -399,6 +439,18 @@ export default function CheckinPage({ onClose }: { onClose: () => void }) {
           <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder={T('checkinNotePlaceholder')} rows={3}
             style={{ width: '100%', background: TH.cardSolid, border: `1px solid ${TH.border}`, borderRadius: 12, padding: '10px 12px', color: TH.text, fontSize: FONT_BODY, resize: 'none', outline: 'none', boxSizing: 'border-box' }} />
         </div>
+
+        {/* Grace mode: submit button at bottom */}
+        {isGraceMode && (
+          <button onClick={handleDone}
+            style={{
+              width: '100%', padding: 14, borderRadius: 12, border: 'none', marginBottom: 10,
+              background: '#17EAD9', color: '#fff', fontWeight: 700, fontSize: FONT_BUTTON, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            }}>
+            <Check size={18} /> {T('graceCheckinSubmit')}
+          </button>
+        )}
 
         {/* Cancel button */}
         <button onClick={onClose}

@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../../store/useAppStore';
 import {
   Card, useTheme, PrimaryButton, OutlineButton, Toggle,
@@ -40,6 +41,7 @@ export default function HabitsScreen() {
   const P     = TH.primary;
   const store = useAppStore();
   const T     = useT();
+  const nav   = useNavigation();
 
   const [filter, setFilter]     = useState('all');
   const [showAdd, setShowAdd]   = useState(false);
@@ -157,7 +159,7 @@ export default function HabitsScreen() {
 
                 <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
 
-                {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>"{h.insight}"</Text> : null}
+                {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>愿景："{h.insight}"</Text> : null}
                 {h.createTag && (
                   <View style={{ marginBottom:8, alignSelf:'flex-start', backgroundColor:`${P}30`, borderRadius:10, paddingHorizontal:10, paddingVertical:3 }}>
                     <Text style={{ color:P, fontSize:FONT_SUB }}>#{h.name}</Text>
@@ -237,7 +239,7 @@ export default function HabitsScreen() {
               <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{editingId ? T('habitEditTitle') : T('habitAddTitle')}</Text>
               <TouchableOpacity onPress={() => setShowAdd(false)}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
-            <ScrollView>
+            <ScrollView keyboardShouldPersistTaps="handled">
               {[
                 { label:T('habitName'), key:'name', ph:'例：每日冥想' },
                 { label:T('habitGoal'), key:'goal', ph:'每天打坐5分钟' },
@@ -262,9 +264,9 @@ export default function HabitsScreen() {
       </Modal>
 
       {/* Status reason modal */}
-      <Modal visible={!!statusModal} transparent animationType="fade">
-        <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.7)', justifyContent:'center', padding:24 }}>
-          <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24 }}>
+      <Modal visible={!!statusModal} transparent animationType="slide">
+        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.7)' }}>
+          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, paddingTop:20 }}>
             <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_BODY, marginBottom:12 }}>
               {statusModal?.ns==='paused' ? T('habitPauseReason') : T('habitAbandonReason')}
             </Text>
@@ -274,7 +276,7 @@ export default function HabitsScreen() {
               <PrimaryButton label={T('confirm')} onPress={confirmStatus} style={{ flex:1 }} />
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* Action menu modal (long press) */}
@@ -283,6 +285,16 @@ export default function HabitsScreen() {
           style={{ flex:1, backgroundColor:'rgba(0,0,0,.5)', justifyContent:'flex-end' }}>
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingBottom:40, paddingTop:20 }}>
             <View style={{ width:40, height:4, borderRadius:2, backgroundColor:TH.border, alignSelf:'center', marginBottom:20 }} />
+            {/* View Detail */}
+            <TouchableOpacity onPress={() => {
+              if (actionMenuHabit) {
+                (nav as any).navigate('HabitDetail', { habitId: actionMenuHabit.id });
+              }
+              setActionMenuHabit(null);
+            }}
+              style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(59,130,246,.15)', alignItems:'center' }}>
+              <Text style={{ color:'#3B82F6', fontSize:FONT_BUTTON, fontWeight:'600' }}>查看详情</Text>
+            </TouchableOpacity>
             {actionMenuHabit?.status==='notStarted' && (
               <TouchableOpacity onPress={() => { if(actionMenuHabit) changeStatus(actionMenuHabit.id,'inProgress'); setActionMenuHabit(null); }}
                 style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:COLORS.GREEN, alignItems:'center' }}>
@@ -307,7 +319,7 @@ export default function HabitsScreen() {
                 <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitResumeBtn')}</Text>
               </TouchableOpacity>
             )}
-            {(actionMenuHabit?.status==='inProgress'||actionMenuHabit?.status==='paused') && (
+            {actionMenuHabit?.status==='paused' && (
               <TouchableOpacity onPress={() => { if(actionMenuHabit) changeStatus(actionMenuHabit.id,'abandoned'); setActionMenuHabit(null); }}
                 style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(239,68,68,.15)', alignItems:'center' }}>
                 <Text style={{ color:COLORS.RED, fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitAbandonBtn')}</Text>

@@ -1,11 +1,11 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { THEMES, COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';
+import { COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { ClipboardList } from 'lucide-react-native';
@@ -24,6 +24,7 @@ export default function PlanScreen() {
   }, []);
 
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
+  const handleNoop = useCallback(() => {}, []);
 
   // Empty state
   if (!activePlan) {
@@ -47,7 +48,7 @@ export default function PlanScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Plan" />
-      <PlanDetailContent planId={activePlan.id} onClose={() => {}} />
+      <PlanDetailContent planId={activePlan.id} onClose={handleNoop} />
     </SafeAreaView>
   );
 }

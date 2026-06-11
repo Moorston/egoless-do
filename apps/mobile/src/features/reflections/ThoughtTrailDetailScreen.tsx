@@ -2,12 +2,21 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Modal, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { ArrowLeft, Plus, Trash2, Pencil, X } from 'lucide-react-native';
+import { ArrowLeft, Plus, Trash2, Pencil, X, Brain, Link2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, FONT_TINY, MIND_COLORS_EXTENDED, REFLECTION_CATEGORIES } from '@egoless-do/core';
 import { getTrailStats, getMoodIcon } from '@egoless-do/core';
+import type { LinkType } from '@egoless-do/core';
+
+const LINK_TYPE_LABELS: Record<LinkType, { icon: string; label: string }> = {
+  inspire: { icon: '💭', label: '引发' },
+  evolve: { icon: '💡', label: '演进' },
+  contrast: { icon: '🔄', label: '转折' },
+  respond: { icon: '💬', label: '回应' },
+  related: { icon: '🔗', label: '相关' },
+};
 
 export default function ThoughtTrailDetailScreen() {
   const TH = useTheme();
@@ -39,6 +48,18 @@ export default function ThoughtTrailDetailScreen() {
     if (!trail) return { count: 0, dateRange: null, moodChanges: [] };
     return getTrailStats(trail, store.reflections ?? []);
   }, [trail, store.reflections]);
+
+  const links = useMemo(() => {
+    if (!trail) return [];
+    const reflectionIds = new Set(trail.reflectionIds);
+    return (store.reflectionLinks ?? []).filter(l => 
+      !l.deleted && reflectionIds.has(l.fromId) && reflectionIds.has(l.toId)
+    );
+  }, [trail, store.reflectionLinks]);
+
+  const getLinkBetween = useCallback((fromId: string, toId: string) => {
+    return links.find(l => l.fromId === fromId && l.toId === toId);
+  }, [links]);
 
   const handleRemoveReflection = useCallback((reflectionId: string) => {
     Alert.alert(
@@ -136,7 +157,7 @@ export default function ThoughtTrailDetailScreen() {
         )}
       </View>
 
-      {/* Reflections List */}
+      {/* Reflections List - Story Line View */}
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
@@ -147,59 +168,99 @@ export default function ThoughtTrailDetailScreen() {
             <Text style={[styles.emptyText, { color: TH.sub }]}>暂无感念</Text>
           </View>
         ) : (
-          trailReflections.map((r, idx) => (
-            <View key={r.id} style={styles.reflectionItem}>
-              {/* Timeline dot and line */}
-              <View style={styles.timelineContainer}>
-                <View style={[styles.timelineDot, { backgroundColor: P }]} />
-                {idx < trailReflections.length - 1 && (
-                  <View style={[styles.timelineLine, { backgroundColor: TH.border }]} />
-                )}
-              </View>
+          trailReflections.map((r, idx) => {
+            const isLast = idx === trailReflections.length - 1;
+            const linkToNext = !isLast ? getLinkBetween(r.id, trailReflections[idx + 1].id) : null;
+            
+            return (
+              <View key={r.id}>
+                <View style={styles.reflectionItem}>
+                  {/* Timeline dot and line */}
+                  <View style={styles.timelineContainer}>
+                    <View style={[styles.timelineDot, { backgroundColor: P }]} />
+                    {!isLast && (
+                      <View style={[styles.timelineLine, { backgroundColor: TH.border }]} />
+                    )}
+                  </View>
 
-              {/* Reflection card */}
-              <View style={[styles.reflectionCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
-                <View style={styles.reflectionHeader}>
-                  <Text style={[styles.reflectionDate, { color: TH.sub }]}>
-                    {new Date(r.timestamp).toISOString().slice(0, 10)}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => handleRemoveReflection(r.id)}
-                    style={styles.removeButton}
-                  >
-                    <Text style={[styles.removeButtonText, { color: '#EF4444' }]}>移除</Text>
-                  </TouchableOpacity>
+                  {/* Reflection card */}
+                  <View style={[styles.reflectionCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
+                    <View style={styles.reflectionHeader}>
+                      <Text style={[styles.reflectionDate, { color: TH.sub }]}>
+                        {new Date(r.timestamp).toISOString().slice(0, 10)}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => handleRemoveReflection(r.id)}
+                        style={styles.removeButton}
+                      >
+                        <Text style={[styles.removeButtonText, { color: '#EF4444' }]}>移除</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <LinearGradient
+                      colors={[r.colors?.[0] || MIND_COLORS_EXTENDED[0][0], r.colors?.[1] || MIND_COLORS_EXTENDED[0][1]]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.reflectionGradient}
+                    >
+                      <Text style={styles.reflectionContent} numberOfLines={3}>
+                        {r.content}
+                      </Text>
+
+                      {(r.tags.length > 0 || r.mood) && (
+                        <View style={styles.reflectionTags}>
+                          {r.tags.slice(0, 3).map(tag => {
+                            const category = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
+                            return (
+                              <Text key={tag} style={styles.reflectionTag}>
+                                {category ? `${category.icon} ` : ''}{tag}
+                              </Text>
+                            );
+                          })}
+                          {r.mood && (
+                            <Text style={styles.reflectionMood}>{getMoodIcon(r.mood)}</Text>
+                          )}
+                        </View>
+                      )}
+                    </LinearGradient>
+                  </View>
                 </View>
 
-                <LinearGradient
-                  colors={[r.colors?.[0] || MIND_COLORS_EXTENDED[0][0], r.colors?.[1] || MIND_COLORS_EXTENDED[0][1]]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.reflectionGradient}
-                >
-                  <Text style={styles.reflectionContent} numberOfLines={3}>
-                    {r.content}
-                  </Text>
-
-                  {(r.tags.length > 0 || r.mood) && (
-                    <View style={styles.reflectionTags}>
-                      {r.tags.slice(0, 3).map(tag => {
-                        const category = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
-                        return (
-                          <Text key={tag} style={styles.reflectionTag}>
-                            {category ? `${category.icon} ` : ''}{tag}
-                          </Text>
-                        );
-                      })}
-                      {r.mood && (
-                        <Text style={styles.reflectionMood}>{getMoodIcon(r.mood)}</Text>
-                      )}
+                {/* Link indicator between reflections */}
+                {!isLast && linkToNext && (
+                  <View style={styles.linkContainer}>
+                    <View style={styles.linkLine} />
+                    <View style={[styles.linkBadge, { backgroundColor: TH.card, borderColor: TH.border }]}>
+                      <Text style={styles.linkIcon}>{LINK_TYPE_LABELS[linkToNext.type]?.icon || '🔗'}</Text>
+                      <Text style={[styles.linkLabel, { color: TH.sub }]}>
+                        {LINK_TYPE_LABELS[linkToNext.type]?.label || '相关'}
+                      </Text>
                     </View>
-                  )}
-                </LinearGradient>
+                    <View style={styles.linkLine} />
+                  </View>
+                )}
               </View>
+            );
+          })
+        )}
+
+        {/* AI Insight Section */}
+        {trailReflections.length >= 2 && (
+          <View style={[styles.insightContainer, { backgroundColor: TH.card, borderColor: TH.border }]}>
+            <View style={styles.insightHeader}>
+              <Brain size={20} color={P} />
+              <Text style={[styles.insightTitle, { color: TH.text }]}>AI 洞察</Text>
             </View>
-          ))
+            <Text style={[styles.insightText, { color: TH.sub }]}>
+              这条脉络包含 {stats.count} 条感念，记录了从 {stats.dateRange?.start} 到 {stats.dateRange?.end} 的思考过程。
+              {stats.moodChanges.length > 1 && `心情经历了 ${stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')} 的变化。`}
+            </Text>
+            {trail.insightSummary && (
+              <Text style={[styles.insightSummary, { color: TH.text }]}>
+                {trail.insightSummary}
+              </Text>
+            )}
+          </View>
         )}
       </ScrollView>
 
@@ -317,7 +378,7 @@ const styles = StyleSheet.create({
   },
   reflectionItem: {
     flexDirection: 'row',
-    marginBottom: 16,
+    marginBottom: 0,
   },
   timelineContainer: {
     width: 24,
@@ -377,6 +438,59 @@ const styles = StyleSheet.create({
   },
   reflectionMood: {
     fontSize: FONT_TINY,
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 11,
+    paddingVertical: 4,
+  },
+  linkLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'transparent',
+  },
+  linkBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 4,
+  },
+  linkIcon: {
+    fontSize: 12,
+  },
+  linkLabel: {
+    fontSize: FONT_TINY,
+    fontWeight: '500',
+  },
+  insightContainer: {
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  insightHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  insightTitle: {
+    fontSize: FONT_BODY,
+    fontWeight: '600',
+  },
+  insightText: {
+    fontSize: FONT_SMALL,
+    lineHeight: 20,
+  },
+  insightSummary: {
+    fontSize: FONT_SMALL,
+    lineHeight: 20,
+    marginTop: 8,
+    fontWeight: '500',
   },
   modalOverlay: {
     flex: 1,

@@ -41,11 +41,11 @@ export async function apiRegister(email: string, password: string, name: string,
 }
 
 // ── Send verification code ────────────────────────────────────────
-export async function apiSendCode(email: string): Promise<{ ok: boolean; message: string }> {
+export async function apiSendCode(email: string, type?: 'register' | 'reset'): Promise<{ ok: boolean; message: string }> {
   const res = await fetchWithTimeout(`${apiBase}/api/auth/send-code`, {
     method: 'POST',
     headers: buildHeaders(),
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, type }),
   });
   return handleJsonResponse<{ ok: boolean; message: string }>(res);
 }
@@ -57,7 +57,7 @@ export async function apiCheckEmail(email: string): Promise<{ available: boolean
     headers: buildHeaders(),
     body: JSON.stringify({ email }),
   });
-  return res.json();
+  return handleJsonResponse<{ available: boolean; error?: string }>(res);
 }
 
 // ── Login ─────────────────────────────────────────────────────────
@@ -105,6 +105,16 @@ export async function apiLogout(token: string, refreshToken: string): Promise<vo
     headers: buildHeaders(token),
     body: JSON.stringify({ refreshToken }),
   });
+}
+
+// ── Reset password ──────────────────────────────────────────────
+export async function apiResetPassword(email: string, code: string, password: string): Promise<{ ok: boolean; message: string }> {
+  const res = await fetchWithTimeout(`${apiBase}/api/auth/reset-password`, {
+    method: 'POST',
+    headers: buildHeaders(),
+    body: JSON.stringify({ email, code, password }),
+  });
+  return handleJsonResponse<{ ok: boolean; message: string }>(res);
 }
 
 // ── Sync: push local changes + pull server changes ───────────────

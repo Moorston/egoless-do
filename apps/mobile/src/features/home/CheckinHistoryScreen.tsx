@@ -5,9 +5,10 @@ import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
+import { Shield } from 'lucide-react-native';
 
 const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
-const PRACTICE_ICONS: Record<string, string> = { sit: '🧘', stand: '🧍', chant: '📿' };
+const PRACTICE_ICONS: Record<string, string> = { sit: '🌙', stand: '🌅', chant: '🧠' };
 
 export default function CheckinHistoryScreen() {
   const TH = useTheme();
@@ -114,13 +115,27 @@ export default function CheckinHistoryScreen() {
                         <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatDay(h.date)}</Text>
                         <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(h.date)}</Text>
                       </View>
-                      <View style={{
-                        paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8,
-                        backgroundColor: h.done ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.1)',
-                      }}>
-                        <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: h.done ? COLORS.GREEN : COLORS.RED }}>
-                          {h.done ? T('checkinDone') : T('checkinNotDone')}
-                        </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        {h.grace && (
+                          <View style={{
+                            flexDirection: 'row', alignItems: 'center', gap: 3,
+                            paddingHorizontal: 7, paddingVertical: 3, borderRadius: 8,
+                            backgroundColor: `${COLORS.ORANGE}15`,
+                          }}>
+                            <Shield size={10} color={COLORS.ORANGE} />
+                            <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: COLORS.ORANGE }}>
+                              {T('graceTitle')}
+                            </Text>
+                          </View>
+                        )}
+                        <View style={{
+                          paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8,
+                          backgroundColor: h.done ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.1)',
+                        }}>
+                          <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: h.done ? COLORS.GREEN : COLORS.RED }}>
+                            {h.done ? T('checkinDone') : T('checkinNotDone')}
+                          </Text>
+                        </View>
                       </View>
                     </View>
 

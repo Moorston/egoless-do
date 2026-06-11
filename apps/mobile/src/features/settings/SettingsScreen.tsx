@@ -17,7 +17,7 @@ import {
   Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
   Check, X, ChevronRight, Scale, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload,   History, Info, Lock, ClipboardList,
-  Music,
+  Music, Brain, Dumbbell, Timer,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import {
@@ -143,6 +143,21 @@ export default function SettingsScreen() {
           onPress: () => nav.navigate('PlanHistory'),
         },
         {
+          label: T('exerciseHistory'), icon: <Dumbbell size={20} color={P} />,
+          right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('ExerciseHistory'),
+        },
+        {
+          label: T('meditationHistory'), icon: <Brain size={20} color={P} />,
+          right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('MedHistory'),
+        },
+        {
+          label: T('fastingHistory'), icon: <Timer size={20} color={P} />,
+          right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('FastHistory'),
+        },
+        {
           label: T('settingsFoodLog'), icon: <Utensils size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('FoodLog'),
@@ -166,19 +181,19 @@ export default function SettingsScreen() {
       ],
     },
     {
-      title: T('musicSection'),
-      rows: [
-        {
-          label: T('musicTitle'), icon: <Music size={20} color={P} />,
-          right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => nav.navigate('Music'),
-          last: true,
-        },
-      ],
-    },
-    {
       title: T('settingsGeneral'),
       rows: [
+        {
+          label: T('settingsTheme'), icon: <Palette size={20} color={P} />,
+          right: (
+            <TouchableOpacity onPress={() => setShowTheme(true)}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[store.theme].name}</Text>
+                <ChevronRight size={14} color={TH.sub} />
+              </View>
+            </TouchableOpacity>
+          ),
+        },
         {
           label: T('settingsLanguage'), icon: <Globe size={20} color={P} />,
           right: (
@@ -188,17 +203,6 @@ export default function SettingsScreen() {
                   {LANG_LIST.find(l => l.code === store.language)?.flag ?? '🇨🇳'}{' '}
                   {LANG_LIST.find(l => l.code === store.language)?.name ?? T('settingsLanguage')}
                 </Text>
-                <ChevronRight size={14} color={TH.sub} />
-              </View>
-            </TouchableOpacity>
-          ),
-        },
-        {
-          label: T('settingsTheme'), icon: <Palette size={20} color={P} />,
-          right: (
-            <TouchableOpacity onPress={() => setShowTheme(true)}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[store.theme].name}</Text>
                 <ChevronRight size={14} color={TH.sub} />
               </View>
             </TouchableOpacity>
@@ -217,6 +221,13 @@ export default function SettingsScreen() {
               </View>
             </TouchableOpacity>
           ),
+        },
+        {
+          label: 'AI模型配置',
+          sub: '配置云端AI功能',
+          icon: <Brain size={20} color={P} />,
+          right: <ChevronRight size={18} color={TH.sub} />,
+          onPress: () => nav.navigate('AISettings' as never),
           last: true,
         },
       ],
@@ -310,17 +321,12 @@ export default function SettingsScreen() {
         },
         {
           label: T('settingsVersion'), icon: <Info size={20} color={P} />,
-          right: <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>v1.0.0 (MVP)</Text>,
+          right: <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>v1.0.0</Text>,
         },
         {
           label: T('settingsPrivacy'), icon: <Lock size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('PrivacyPolicy' as never),
-        },
-        {
-          label: T('settingsResetWelcome'), icon: <RefreshCw size={20} color={P} />,
-          sub: T('settingsResetWelcomeDesc'),
-          right: <ChevronRight size={18} color={TH.sub} />,
           last: true,
         },
       ],
@@ -336,39 +342,58 @@ export default function SettingsScreen() {
       >
 
         {/* Profile card */}
-        <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 8 }}>
-          <View style={{
-            width: 56, height: 56, borderRadius: 28,
-            backgroundColor: `${P}30`,
-            alignItems: 'center', justifyContent: 'center',
-          }}>
-            <PersonStanding size={26} color={P} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>
-              {store.auth.user?.name ?? T('settingsDefaultName')}
-            </Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 3 }}>
-              {store.streak} {T('checkinStreak')} · {store.auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
-            </Text>
-          </View>
-          {store.auth.isSignedIn ? (
+        <Card style={{ marginBottom: 8 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
             <View style={{
-              paddingHorizontal: 12, paddingVertical: 6,
-              borderRadius: 12, backgroundColor: `${P}20`,
+              width: 56, height: 56, borderRadius: 28,
+              backgroundColor: `${P}30`,
+              alignItems: 'center', justifyContent: 'center',
             }}>
-              <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
+              <PersonStanding size={26} color={P} />
             </View>
-          ) : (
-            <TouchableOpacity
-              onPress={() => nav.navigate('Login')}
-              style={{
-                paddingHorizontal: 16, paddingVertical: 8,
-                borderRadius: 12, backgroundColor: P,
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>
+                {store.auth.user?.name ?? T('settingsDefaultName')}
+              </Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 3 }}>
+                {store.streak} {T('checkinStreak')} · {store.auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
+              </Text>
+            </View>
+            {store.auth.isSignedIn ? (
+              <View style={{
+                paddingHorizontal: 12, paddingVertical: 6,
+                borderRadius: 12, backgroundColor: `${P}20`,
               }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('settingsLogin')}</Text>
-            </TouchableOpacity>
-          )}
+                <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
+              </View>
+            ) : (
+              <TouchableOpacity
+                onPress={() => nav.navigate('Login')}
+                style={{
+                  paddingHorizontal: 16, paddingVertical: 8,
+                  borderRadius: 12, backgroundColor: P,
+                }}>
+                <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('settingsLogin')}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <TouchableOpacity
+            onPress={() => nav.navigate('Music')}
+            style={{
+              flexDirection: 'row', alignItems: 'center', gap: 12,
+              marginTop: 14, paddingTop: 14,
+              borderTopWidth: 1, borderTopColor: TH.border,
+            }}>
+            <View style={{
+              width: 36, height: 36, borderRadius: 18,
+              backgroundColor: `${P}20`,
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Music size={18} color={P} />
+            </View>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1 }}>{T('musicTitle')}</Text>
+            <ChevronRight size={18} color={TH.sub} />
+          </TouchableOpacity>
         </Card>
 
         {sections.map(({ title, rows }) => (
@@ -395,18 +420,6 @@ export default function SettingsScreen() {
           <View style={{ marginBottom: 4, marginTop: 16 }}>
             <Card style={{ padding: 0 }}>
               <View style={{ paddingHorizontal: 16 }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    Alert.alert(T('settingsClearData'), T('settingsClearConfirm'), [
-                      { text: T('commonCancel'), style: 'cancel' },
-                      { text: T('commonConfirm'), style: 'destructive', onPress: () => store.resetData() },
-                    ]);
-                  }}
-                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: TH.border }}
-                >
-                  <Trash2 size={18} color="#EF4444" style={{ marginRight: 12 }} />
-                  <Text style={{ color: '#EF4444', fontSize: FONT_BODY, flex: 1 }}>{T('settingsClearData')}</Text>
-                </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => { store.logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16 }}

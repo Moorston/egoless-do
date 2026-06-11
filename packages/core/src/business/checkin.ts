@@ -31,7 +31,7 @@ export function getIncompleteItems(params: {
   const result: IncompleteItem[] = [];
 
   // Practices
-  const practiceNames: Record<string, string> = { sit: '打坐', stand: '站桩', chant: '诵经' };
+  const practiceNames: Record<string, string> = { sit: '早睡', stand: '早起', chant: '冥想' };
   for (const [key, checked] of Object.entries(practices)) {
     if (!checked) result.push({ type: 'practice', name: practiceNames[key] ?? key });
   }
@@ -78,10 +78,12 @@ export function submitCheckinEntry(
   note: string,
   dateOverride?: string,
   weight?: number,
+  grace?: boolean,
 ): { record: CheckinEntry; history: CheckinEntry[]; streak: number } {
   const today = dateOverride ?? dateStr();
   const tempRecord: CheckinEntry = {
     date: today, done, note, streak: 0, weight,
+    grace: grace ?? false,
     timestamp: Date.now(), updatedAt: Date.now(), deleted: false,
   };
   const newHistory = [tempRecord, ...history.filter(c => c.date !== today)];

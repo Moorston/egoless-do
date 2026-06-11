@@ -10,7 +10,7 @@ import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Footprints, Activity, Bike, Dumbbell, ChevronRight,
-  Globe, Clock, X, Search,
+  Globe, X, Search,
 } from 'lucide-react-native';
 
 export default function ExerciseScreen() {
@@ -98,7 +98,13 @@ export default function ExerciseScreen() {
             end={{ x: 1, y: 1 }}
             style={{ padding: 20 }}
           >
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff', marginBottom: 12 }}>{T('exercise')}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('exercise')}</Text>
+              <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600' }}>{T('exerciseHistory')}</Text>
+                <ChevronRight size={16} color="rgba(255,255,255,.8)" />
+              </TouchableOpacity>
+            </View>
             {weeklyStats.weekCount > 0 ? (
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ alignItems: 'center', flex: 1 }}>
@@ -124,6 +130,12 @@ export default function ExerciseScreen() {
             ) : (
               <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', lineHeight: 22 }}>{T('exerciseNoActivity')}</Text>
             )}
+            <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('exerciseGlobal')}` })}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.2)' }}>
+              <Globe size={18} color="rgba(255,255,255,.8)" />
+              <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600', flex: 1 }}>{T('linkWorld')} — {T('exerciseGlobal')}</Text>
+              <ChevronRight size={16} color="rgba(255,255,255,.8)" />
+            </TouchableOpacity>
           </LinearGradient>
         </View>
 
@@ -199,22 +211,6 @@ export default function ExerciseScreen() {
             ))}
           </View>
         </View>
-
-        {/* ── Global Map ── */}
-        <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('exerciseGlobal')}` })}
-          style={{ flexDirection:'row', alignItems:'center', padding:14, gap:12, backgroundColor:TH.card, borderRadius:16, marginTop:20, marginHorizontal:16, borderWidth:1, borderColor:TH.border }}>
-          <Globe size={20} color={P} />
-          <Text style={{ fontSize:FONT_BODY, fontWeight:'600', color:TH.text, flex:1 }}>{T('linkWorld')} — {T('exerciseGlobal')}</Text>
-          <ChevronRight size={18} color={TH.sub} />
-        </TouchableOpacity>
-
-        {/* ── Exercise History Button ── */}
-        <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory')}
-          style={{ flexDirection:'row', alignItems:'center', padding:14, gap:12, backgroundColor:TH.card, borderRadius:16, marginTop:20, marginHorizontal:16, marginBottom:20, borderWidth:1, borderColor:TH.border }}>
-          <Clock size={20} color={P} />
-          <Text style={{ fontSize:FONT_BODY, fontWeight:'600', color:TH.text, flex:1 }}>{T('exerciseHistory')}</Text>
-          <ChevronRight size={18} color={TH.sub} />
-        </TouchableOpacity>
       </ScrollView>
 
       {/* ── Other Sports Modal ── */}

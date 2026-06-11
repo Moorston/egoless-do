@@ -29,6 +29,12 @@ import ReflectionsScreen from '../features/reflections/ReflectionsScreen';
 import ReflectionStatsScreen from '../features/reflections/ReflectionStatsScreen';
 import MindTrailScreen from '../features/reflections/MindTrailScreen';
 import ThoughtTrailDetailScreen from '../features/reflections/ThoughtTrailDetailScreen';
+import ReflectionDetailScreen from '../features/reflections/ReflectionDetailScreen';
+import InsightScreen from '../features/reflections/InsightScreen';
+import ReviewScreen from '../features/reflections/ReviewScreen';
+import StrategyLibrary from '../features/reflections/StrategyLibrary';
+import HabitDetailScreen from '../features/habits/HabitDetailScreen';
+import RelationMapView from '../features/reflections/RelationMapView';
 import HabitsScreen      from '../features/habits/HabitsScreen';
 import StatsScreen       from '../features/stats/StatsScreen';
 import GlobalMapPage     from '../features/home/GlobalMapPage';
@@ -47,8 +53,10 @@ import PlanDetailScreen from '../features/plan/PlanDetailScreen';
 import PlanHistoryScreen from '../features/plan/PlanHistoryScreen';
 import LoginScreen       from '../features/auth/LoginScreen';
 import RegisterScreen    from '../features/auth/RegisterScreen';
+import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
 import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
+import AISettingsScreen from '../features/settings/AISettingsScreen';
 import MusicScreen from '../features/music/MusicScreen';
 import MusicCategoryScreen from '../features/music/MusicCategoryScreen';
 import { useSync }       from '../features/sync/useSync';
@@ -282,6 +290,7 @@ export default function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? 'MainTabs' : 'Login'}>
         <Stack.Screen name="Login"        component={LoginScreen} />
         <Stack.Screen name="Register"     component={RegisterScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="MainTabs"     component={MainTabs} />
         <Stack.Screen name="GlobalMap"    component={GlobalMapPage} />
         <Stack.Screen name="Sport"        component={SportPage} />
@@ -298,12 +307,19 @@ export default function AppNavigator() {
         <Stack.Screen name="PlanHistory"    component={PlanHistoryScreen} />
         <Stack.Screen name="RecycleBin"    component={RecycleBinScreen} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+        <Stack.Screen name="AISettings"    component={AISettingsScreen} />
         <Stack.Screen name="Music"         component={MusicScreen} />
         <Stack.Screen name="MusicCategory" component={MusicCategoryScreen} />
         <Stack.Screen name="Stats"         component={StatsScreen} />
         <Stack.Screen name="ReflectionStats" component={ReflectionStatsScreen} />
         <Stack.Screen name="MindTrail"     component={MindTrailScreen} />
         <Stack.Screen name="ThoughtTrailDetail" component={ThoughtTrailDetailScreen} />
+        <Stack.Screen name="ReflectionDetail" component={ReflectionDetailScreen} />
+        <Stack.Screen name="Insight"       component={InsightScreen} />
+        <Stack.Screen name="Review"        component={ReviewScreen} />
+        <Stack.Screen name="StrategyLibrary" component={StrategyLibrary} />
+        <Stack.Screen name="HabitDetail"   component={HabitDetailScreen} />
+        <Stack.Screen name="RelationMap"   component={RelationMapView} />
       </Stack.Navigator>
     </NavigationContainer>
     </View>

@@ -19,16 +19,16 @@ export async function enqueueChange(
   payload: unknown,
 ): Promise<void> {
   const db = await openDatabase();
-  await db.withTransactionAsync(async () => {
-    await db.runAsync(
-      'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
-      [entity, entityId],
-    );
-    await db.runAsync(
-      'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at) VALUES (?, ?, ?, ?, ?)',
-      [entity, entityId, operation, JSON.stringify(payload), Date.now()],
-    );
-  });
+  // Use individual statements instead of withTransactionAsync to avoid
+  // "cannot start a transaction within a transaction" when called concurrently
+  await db.runAsync(
+    'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
+    [entity, entityId],
+  );
+  await db.runAsync(
+    'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at) VALUES (?, ?, ?, ?, ?)',
+    [entity, entityId, operation, JSON.stringify(payload), Date.now()],
+  );
 }
 
 /** Drain up to `limit` items from the queue, ordered by creation time. */

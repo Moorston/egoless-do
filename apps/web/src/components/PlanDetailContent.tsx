@@ -1,29 +1,60 @@
 'use client';
 
-import { useMemo, useState, useRef, useEffect } from 'react';
-import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, dateStr } from '@egoless-do/core';
-import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink, DailyCustomTodo, DailyTodoHistory } from '@egoless-do/core';
+import { useMemo, useState, useRef, useEffect, memo } from 'react';
+import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, dateStr, createDateChangeDetector, PLAN_STATUS_COLORS, statusToI18nKey, computeItemProgress } from '@egoless-do/core';
+import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink, CheckinFrequency } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { useT, cs } from './helpers';
+import { useOverlay } from './useOverlay';
 import { useWebStore } from '../store/useWebStore';
-import { ChevronLeft, Check, ChevronDown, ChevronRight, ClipboardList, Pencil, CircleCheck, Play, Pause, XCircle, Trash2, CheckCircle2, Plus } from 'lucide-react';
+import { ChevronLeft, Check, ChevronDown, ChevronRight, ClipboardList, Pencil, CircleCheck, Play, Pause, XCircle, Trash2, CheckCircle2, Plus, Repeat, BarChart2 } from 'lucide-react';
+import { ItemHeatmap } from './ItemHeatmap';
 
-const STATUS_COLORS: Record<string, string> = {
-  not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
-  completed: COLORS.BLUE, cancelled: COLORS.RED, delayed: COLORS.ORANGE,
-};
+const EMPTY_CHECKINS: PlanItemCheckin[] = [];
 
-function StatusLabel({ status, T }: { status: string; T: (k: string) => string }) {
-  const key = `planStatus${status.charAt(0).toUpperCase() + status.slice(1).replace(/_([a-z])/g, (_: string, c: string) => c.toUpperCase())}`;
+const WEEKDAY_LABELS = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'];
+
+function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string): string {
+  switch (freq.mode) {
+    case 'daily':
+      return T('freqSummaryDaily');
+    case 'interval':
+      return T('freqSummaryInterval').replace('{n}', String(freq.every));
+    case 'weekly': {
+      const d = new Date(today);
+      const day = d.getDay();
+      const ws = new Date(d);
+      ws.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+      const wsStr = ws.toISOString().slice(0, 10);
+      const we = new Date(ws);
+      we.setDate(ws.getDate() + 6);
+      const weStr = we.toISOString().slice(0, 10);
+      const doneThisWeek = checkins.filter(c => c.done && c.date >= wsStr && c.date <= weStr).length;
+      return `📅 ${T('freqSummaryWeekly').replace('{n}', String(freq.target))} | ${T('freqThisWeek')} ${doneThisWeek}/${freq.target}`;
+    }
+    case 'weekly_fixed': {
+      const labels = freq.days.map(d => T(WEEKDAY_LABELS[d])).join(' ');
+      return `📅 ${T('freqSummaryWeeklyFixed').replace('{days}', labels)}`;
+    }
+    case 'monthly':
+      return `📅 ${T('freqSummaryMonthly').replace('{n}', String(freq.target))}`;
+    case 'monthly_fixed':
+      return `📅 ${T('freqSummaryMonthlyFixed').replace('{dates}', freq.dates.join(', '))}`;
+    default:
+      return '';
+  }
+}
+
+const StatusLabel = memo(function StatusLabel({ status, T }: { status: string; T: (k: string) => string }) {
   return (
     <span style={{
       fontSize: FONT_BADGE, fontWeight: 600, padding: '2px 8px', borderRadius: 6,
-      background: `${STATUS_COLORS[status]}20`, color: STATUS_COLORS[status],
-    }}>{T(key)}</span>
+      background: `${PLAN_STATUS_COLORS[status]}20`, color: PLAN_STATUS_COLORS[status],
+    }}>{T(statusToI18nKey(status))}</span>
   );
-}
+});
 
-function LinkBadge({ link, T, P }: { link: PlanItemLink; T: (k: string) => string; P: string }) {
+const LinkBadge = memo(function LinkBadge({ link, T, P }: { link: PlanItemLink; T: (k: string) => string; P: string }) {
   if (link === 'manual') return null;
   const color = LINK_COLORS[link] ?? P;
   return (
@@ -31,9 +62,9 @@ function LinkBadge({ link, T, P }: { link: PlanItemLink; T: (k: string) => strin
       {T(`planLink${link.charAt(0).toUpperCase() + link.slice(1)}`)}
     </span>
   );
-}
+});
 
-function ProgressRing({ progress, size = 64, strokeWidth = 6, color }: { progress: number; size?: number; strokeWidth?: number; color: string }) {
+const ProgressRing = memo(function ProgressRing({ progress, size = 64, strokeWidth = 6, color }: { progress: number; size?: number; strokeWidth?: number; color: string }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - progress / 100);
@@ -47,9 +78,9 @@ function ProgressRing({ progress, size = 64, strokeWidth = 6, color }: { progres
       <span style={{ fontSize: FONT_TITLE, fontWeight: 700, color }}>{progress}%</span>
     </div>
   );
-}
+});
 
-function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemCheckin[]; items: PlanItem[]; plan: Plan; theme: string; T: (k: string) => string }) {
+const Heatmap = memo(function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemCheckin[]; items: PlanItem[]; plan: Plan; theme: string; T: (k: string) => string }) {
   const TH = THEMES[theme as keyof typeof THEMES] ?? THEMES.dark;
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -68,16 +99,25 @@ function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemChecki
 
   const rateMap = useMemo(() => {
     const map = new Map<string, number>();
+    // Pre-build done checkin set: "planItemId:date" → true
+    const doneSet = new Set<string>();
+    for (const c of checkins) {
+      if (c.done) doneSet.add(`${c.planItemId}:${c.date}`);
+    }
+    const activeItems = items.filter(i => !i.deleted);
     const start = new Date(plan.startDate);
     const end = new Date(plan.endDate);
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const ds = dateStr(d);
-      const activeItems = items.filter(i => !i.deleted && ds >= i.startDate && ds <= i.endDate);
-      if (activeItems.length === 0) map.set(ds, -1);
-      else {
-        const done = activeItems.filter(i => checkins.some(c => c.planItemId === i.id && c.date === ds && c.done)).length;
-        map.set(ds, done / activeItems.length);
+      let total = 0;
+      let done = 0;
+      for (const item of activeItems) {
+        if (ds >= item.startDate && ds <= item.endDate) {
+          total++;
+          if (doneSet.has(`${item.id}:${ds}`)) done++;
+        }
       }
+      map.set(ds, total === 0 ? -1 : done / total);
     }
     return map;
   }, [checkins, items, plan.startDate, plan.endDate]);
@@ -99,10 +139,10 @@ function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemChecki
     return { weeks };
   }, [plan.startDate, plan.endDate]);
 
-  const weekLabels = [
+  const weekLabels = useMemo(() => [
     T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'),
     T('weekdayThu'), T('weekdayFri'), T('weekdaySat'),
-  ];
+  ], [T]);
 
   if (cellSize <= 0) {
     return <div ref={containerRef} style={{ width: '100%' }} />;
@@ -155,65 +195,53 @@ function Heatmap({ checkins, items, plan, theme, T }: { checkins: PlanItemChecki
       </div>
     </div>
   );
-}
+});
 
 export default function PlanDetailContent({ planId, onClose }: { planId: string; onClose: () => void }) {
   const store = useWebStore();
+  const overlay = useOverlay();
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
 
   // 日期状态，支持跨天自动刷新
-  const [today, setToday] = useState(() => dateStr());
-  const todayRef = useRef(today);
+  const detector = useRef(createDateChangeDetector((prev) => {
+    store.performDailyReset(prev);
+  })).current;
+  const [today, setToday] = useState(() => detector.getCurrent());
 
-  // 检测日期变化
   useEffect(() => {
-    const checkDateChange = () => {
-      const newToday = dateStr();
-      if (newToday !== todayRef.current) {
-        const previousDate = todayRef.current;
-        todayRef.current = newToday;
-        setToday(newToday);
-        // 执行每日重置：自动启动任务并保存前一天的历史
-        store.performDailyReset(previousDate);
-      }
-    };
-
-    // 监听页面可见性变化
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        checkDateChange();
+        detector.check();
+        setToday(detector.getCurrent());
       }
     };
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // 每分钟检查一次日期变化
-    const interval = setInterval(checkDateChange, 60000);
-
-    // 组件挂载时也检查一次
-    checkDateChange();
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      clearInterval(interval);
-    };
+    const interval = setInterval(() => { detector.check(); setToday(detector.getCurrent()); }, 60000);
+    detector.check();
+    setToday(detector.getCurrent());
+    return () => { document.removeEventListener('visibilitychange', handleVisibilityChange); clearInterval(interval); };
   }, []);
 
   const plan = useMemo(() => (store.plans ?? []).find(p => p.id === planId), [store.plans, planId]);
   const items = useMemo(() => getPlanItems(store.planItems ?? [], planId), [store.planItems, planId]);
-  const checkins = store.planItemCheckins ?? [];
+  const checkins = store.planItemCheckins ?? EMPTY_CHECKINS;
 
-  // 实时计算每个任务的进度（基于整个任务周期）
-  const computeItemProgressRealtime = (item: PlanItem): number => {
-    const totalDays = Math.round((new Date(item.endDate).getTime() - new Date(item.startDate).getTime()) / 86400000) + 1;
-    if (totalDays <= 0) return 0;
-    const clampedToday = today > item.endDate ? item.endDate : today;
-    const doneCount = checkins.filter(c =>
-      c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday
-    ).length;
-    return Math.min(Math.round((doneCount / totalDays) * 100), 100);
-  };
+  // Pre-compute progress for all items (avoids O(N*M) per render)
+  const itemProgressMap = useMemo(() => {
+    const map = new Map<string, { doneCount: number; progress: number }>();
+    for (const item of items) {
+      const clampedToday = today > item.endDate ? item.endDate : today;
+      let doneCount = 0;
+      for (const c of checkins) {
+        if (c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday) doneCount++;
+      }
+      const progress = computeItemProgress(item, checkins, today);
+      map.set(item.id, { doneCount, progress });
+    }
+    return map;
+  }, [items, checkins, today]);
 
   // 计划进度基于时间（已过天数/总天数），任务进度单独计算
 
@@ -224,20 +252,36 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     historyGroups, historySummary,
     showHistory, setShowHistory,
     newTodoName, setNewTodoName,
+    newTodoRecurring, setNewTodoRecurring,
     toggleItem, addCustomTodo, deleteCustomTodo, toggleCustomTodo,
     mergeHistoryItems,
   } = useDailyTodo(plan, today);
 
   // 历史记录手风琴状态，默认展开最近一天
-  const [expandedDates, setExpandedDates] = useState<Set<string>>(() => {
-    return new Set(historyGroups.length > 0 ? [historyGroups[0].date] : []);
-  });
+  const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (historyGroups.length > 0 && expandedDates.size === 0) {
+      setExpandedDates(new Set([historyGroups[0].date]));
+    }
+  }, [historyGroups]);
 
   const toggleDateExpand = (date: string) => {
     setExpandedDates(prev => {
       const next = new Set(prev);
       if (next.has(date)) next.delete(date);
       else next.add(date);
+      return next;
+    });
+  };
+
+  // 任务级热力图展开状态
+  const [expandedHeatmaps, setExpandedHeatmaps] = useState<Set<string>>(new Set());
+
+  const toggleHeatmap = (itemId: string) => {
+    setExpandedHeatmaps(prev => {
+      const next = new Set(prev);
+      if (next.has(itemId)) next.delete(itemId);
+      else next.add(itemId);
       return next;
     });
   };
@@ -268,7 +312,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const checkCanArchive = (): boolean => {
     const result = store.canArchivePlan(plan.id);
     if (!result.allowed) {
-      if (confirm(`该计划中有 ${result.linkedReflectionCount} 个任务关联了感念，无法执行此操作。\n\n是否批量解绑关联的感念任务？`)) {
+      if (confirm(T('planCannotOperateDetail').replace('{count}', String(result.linkedReflectionCount)))) {
         store.unlinkAllReflectionsFromPlan(plan.id);
         return true;
       }
@@ -382,9 +426,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
           <div style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</div>
         ) : (
           items.map((item, idx) => {
-            const clampedToday = today > item.endDate ? item.endDate : today;
-            const itemCheckins = checkins.filter(c => c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday);
-            const itemProgress = computeItemProgressRealtime(item);
+            const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, progress: 0 };
             const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
             return (
               <div key={item.id} style={{
@@ -402,11 +444,36 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 {item.description && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.description}</div>}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <div style={{ flex: 1, height: 4, background: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-                    <div style={{ height: 4, width: `${itemProgress}%`, background: P, borderRadius: 2 }} />
+                    <div style={{ height: 4, width: `${prog.progress}%`, background: P, borderRadius: 2 }} />
                   </div>
-                  <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{itemProgress}%</span>
-                  <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{itemCheckins.length} {T('planCheckinDays')}</span>
+                  <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{prog.progress}%</span>
+                  <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{prog.doneCount} {T('planCheckinDays')}</span>
                 </div>
+                {/* Frequency summary */}
+                {(() => { const freq = item.frequency ?? { mode: 'daily' as const }; return (
+                  <div style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
+                    {getFrequencySummary(freq, T, checkins, today)}
+                  </div>
+                ); })()}
+                {/* Heatmap toggle */}
+                <div
+                  onClick={() => toggleHeatmap(item.id)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 8, cursor: 'pointer' }}
+                >
+                  <BarChart2 size={14} color={TH.sub} />
+                  <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>
+                    {expandedHeatmaps.has(item.id) ? T('planHideHeatmap') : T('planShowHeatmap')}
+                  </span>
+                  {expandedHeatmaps.has(item.id)
+                    ? <ChevronDown size={14} color={TH.sub} />
+                    : <ChevronRight size={14} color={TH.sub} />}
+                </div>
+                {/* Item Heatmap */}
+                {expandedHeatmaps.has(item.id) && (
+                  <div style={{ marginTop: 8 }}>
+                    <ItemHeatmap item={item} checkins={checkins} theme={store.theme} T={T} />
+                  </div>
+                )}
               </div>
             );
           })
@@ -458,10 +525,17 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                         borderBottom: i < arr.length - 1 || dailyCustomTodos.length > 0 ? `1px solid ${TH.border}` : 'none',
                         opacity: autoChecked ? 0.7 : 1,
                       }}>
-                        <div style={{
-                          width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0, cursor: 'pointer',
-                        }} onClick={() => toggleItem(item.id)}>
+                        <div
+                          role="checkbox"
+                          aria-checked={done}
+                          tabIndex={0}
+                          onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleItem(item.id); } }}
+                          style={{
+                            width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            flexShrink: 0, cursor: 'pointer',
+                          }}
+                          onClick={() => toggleItem(item.id)}
+                        >
                           <div style={{
                             width: 22, height: 22, borderRadius: 6,
                             border: `2px solid ${done ? P : TH.border}`,
@@ -476,6 +550,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           <div style={{
                             fontSize: FONT_BODY, fontWeight: 500, color: TH.text,
                           }}>{item.name}</div>
+                          {(() => { const freq = item.frequency ?? { mode: 'daily' as const }; return (
+                            <div style={{ fontSize: FONT_TINY, color: P, marginTop: 1 }}>
+                              {getFrequencySummary(freq, T, checkins, today)}
+                            </div>
+                          ); })()}
                           {item.description && (
                             <div style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {item.description}
@@ -510,6 +589,10 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       }}
                     >
                       <div
+                        role="checkbox"
+                        aria-checked={todo.done}
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleCustomTodo(todo.id); } }}
                         onClick={() => toggleCustomTodo(todo.id)}
                         style={{
                           width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -526,10 +609,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           {todo.done && <Check size={14} color="#fff" />}
                         </div>
                       </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
                         <div style={{
                           fontSize: FONT_BODY, fontWeight: 500, color: TH.text,
                         }}>{todo.name}</div>
+                        {todo.recurring && <Repeat size={12} color={P} />}
                       </div>
                       <button
                         onClick={(e) => {
@@ -563,6 +647,16 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                     outline: 'none',
                   }}
                 />
+                <button
+                  onClick={() => setNewTodoRecurring(!newTodoRecurring)}
+                  style={{
+                    padding: '8px', background: newTodoRecurring ? `${P}15` : 'transparent',
+                    border: `1px solid ${newTodoRecurring ? P : TH.border}`,
+                    borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center',
+                  }}
+                >
+                  <Repeat size={16} color={newTodoRecurring ? P : TH.sub} />
+                </button>
                 <button
                   onClick={addCustomTodo}
                   style={{
@@ -607,7 +701,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
               )}
 
               {historyGroups.length === 0 ? (
-                <div style={{ color: TH.sub, fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 }}>{T('foodNoHistory')}</div>
+                <div style={{ color: TH.sub, fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 }}>{T('noHistory')}</div>
               ) : (
                 <div style={{ position: 'relative', paddingLeft: 20 }}>
                   <div style={{ position: 'absolute', left: 6, top: 6, bottom: 6, width: 2, background: TH.border, borderRadius: 1 }} />
@@ -630,7 +724,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                             <span style={{ fontSize: FONT_BODY, color: P, fontWeight: 700 }}>{doneCount} {T('planTodoDone')}</span>
                           </div>
                           {isExpanded && allItems.map((item, i) => (
-                            <div key={i} style={{
+                            <div key={item.id} style={{
                               display: 'flex', alignItems: 'center', gap: 8,
                               padding: '8px 14px',
                               borderTop: i > 0 ? `1px solid ${TH.border}` : 'none',
@@ -645,6 +739,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                               </div>
                               <span style={{
                                 fontSize: FONT_BODY, color: TH.text, flex: 1,
+                                textDecoration: item.done ? 'line-through' : 'none',
                               }}>{item.name}</span>
                               {item.type === 'plan' && <LinkBadge link={item.link as PlanItemLink} T={T} P={P} />}
                               {item.type === 'custom' && (
@@ -670,7 +765,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       {tab === 'detail' && (editable || pausable || resumable || cancellable || completable || deletable) && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 24 }}>
           {editable && (
-            <button onClick={() => {/* open edit overlay */}}
+            <button onClick={() => overlay.switch('planCreate', { planId: plan.id })}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px 0', borderRadius: 12, border: `1px solid ${TH.border}`, background: TH.card, color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>
               <Pencil size={16} /> {T('commonEdit')}
             </button>

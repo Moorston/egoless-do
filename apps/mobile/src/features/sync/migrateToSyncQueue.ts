@@ -44,7 +44,7 @@ export async function migrateToSyncQueue(): Promise<number> {
       toPayload: (r) => ({
         id: r.id, timestamp: r.created_at, content: r.content,
         tags: safeJson(r.tags), mood: r.mood, cardTheme: r.card_theme,
-        linkedHabitId: r.linked_habit_id, linkedPlanItemId: r.linked_plan_id,
+        linkedPlanItemId: r.linked_plan_id,
         isPinned: (r.is_pinned as number) === 1,
         isPublished: (r.is_published as number) === 1,
         colors: safeParseColors(r.colors),
@@ -120,6 +120,7 @@ export async function migrateToSyncQueue(): Promise<number> {
         link: r.link, linkConfig: safeJson(r.link_config),
         order: r.item_order, priority: r.priority, targetMetric: r.target_metric,
         reflectionId: r.reflection_id,
+        frequency: r.frequency ? safeJson(r.frequency) : undefined,
         updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
       }),
     },
