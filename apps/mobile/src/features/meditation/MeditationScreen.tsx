@@ -125,6 +125,7 @@ export default function MeditationScreen() {
       onToggleLoop={musicToggleLoop}
       onPressTrackName={() => setShowMusicPicker(true)}
       primaryColor={P}
+      darkBackground={false}
     />
   );
 
