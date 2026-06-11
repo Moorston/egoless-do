@@ -31,6 +31,8 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, prim
   const currentTrack = useMusicStore(s => s.currentTrack);
   const isPlaying = useMusicStore(s => s.isPlaying);
   const play = useMusicStore(s => s.play);
+  const pause = useMusicStore(s => s.pause);
+  const resume = useMusicStore(s => s.resume);
   const toggleFavorite = useMusicStore(s => s.toggleFavorite);
 
   // Group tracks by category
@@ -50,8 +52,15 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, prim
   }, [library, userTracks]);
 
   const handlePlay = (track: typeof library[0]) => {
-    play(track);
-    onSelectTrack?.(track);
+    if (currentTrack?.id === track.id) {
+      // Same track: toggle play/pause
+      if (isPlaying) pause();
+      else resume();
+    } else {
+      // New track: start playing
+      play(track);
+      onSelectTrack?.(track);
+    }
   };
 
   return (
