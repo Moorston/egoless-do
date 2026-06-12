@@ -73,3 +73,10 @@ export {
   isAIRecommendAvailable,
 } from './trail-recommender';
 export type { AIRecommendation, AIMatchResult } from './trail-recommender';
+
+// Insight profile
+export {
+  computeLocalInsights,
+  generateInsightProfile,
+} from './insight-profile';
+export type { InsightProfile, HotTag, MoodEntry, HotTopic } from './insight-profile';

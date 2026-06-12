@@ -182,6 +182,15 @@ export default function ReflectionsScreen() {
       nav.setParams({ showNew: false });
     }
   }, [route.params?.showNew]);
+
+  // Handle trailId param — set as pending trail for new reflection
+  useEffect(() => {
+    if (route.params?.trailId) {
+      setPendingTrailIds(prev => prev.includes(route.params.trailId!) ? prev : [...prev, route.params.trailId!]);
+      setShowNew(true);
+      nav.setParams({ trailId: undefined });
+    }
+  }, [route.params?.trailId]);
   const [content, setContent]     = useState('');
   const [tags, setTags]           = useState<string[]>([]);
   const [mood, setMood]           = useState('');

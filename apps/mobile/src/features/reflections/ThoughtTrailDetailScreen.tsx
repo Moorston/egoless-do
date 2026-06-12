@@ -2,21 +2,23 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Modal, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { ArrowLeft, Plus, Trash2, Pencil, X, Brain, Link2 } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft, Trash2, Pencil, X } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, FONT_TINY, MIND_COLORS_EXTENDED, REFLECTION_CATEGORIES } from '@egoless-do/core';
-import { getTrailStats, getMoodIcon } from '@egoless-do/core';
-import type { LinkType } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SMALL, getTrailOverview, getRelatedTrails, getTrailTimelineItems } from '@egoless-do/core';
+import type { TrailInsightCache, TrailReviewCache } from '@egoless-do/core';
+import { AIService } from '@egoless-do/core';
 
-const LINK_TYPE_LABELS: Record<LinkType, { icon: string; label: string }> = {
-  inspire: { icon: '💭', label: '引发' },
-  evolve: { icon: '💡', label: '演进' },
-  contrast: { icon: '🔄', label: '转折' },
-  respond: { icon: '💬', label: '回应' },
-  related: { icon: '🔗', label: '相关' },
-};
+import { TrailOverviewCard } from './TrailOverviewCard';
+import { InsightSection } from './InsightSection';
+import { ReviewGuideSection } from './ReviewGuideSection';
+import { TimelineList } from './TimelineList';
+import { AddReflectionFAB } from './AddReflectionFAB';
+import { WriteNoteModal } from './WriteNoteModal';
+import { SelectReflectionModal } from './SelectReflectionModal';
+import { PlanTasksSection } from './PlanTasksSection';
+import { CreatePlanFromTrailModal } from './CreatePlanFromTrailModal';
+import { RelatedTrailsSection } from './RelatedTrailsSection';
 
 export default function ThoughtTrailDetailScreen() {
   const TH = useTheme();
@@ -27,56 +29,217 @@ export default function ThoughtTrailDetailScreen() {
   const route = useRoute();
 
   const { trailId } = route.params as { trailId: string };
-  const trail = useMemo(() => 
+  const trail = useMemo(() =>
     (store.thoughtTrails ?? []).find(t => t.id === trailId),
     [store.thoughtTrails, trailId]
   );
 
+  // ─── Modal states ───────────────────────────────────────────────
   const [showEditModal, setShowEditModal] = useState(false);
   const [editName, setEditName] = useState('');
   const [editDesc, setEditDesc] = useState('');
+  const [showWriteNote, setShowWriteNote] = useState(false);
+  const [guidedQuestion, setGuidedQuestion] = useState<string | undefined>();
+  const [showSelectReflection, setShowSelectReflection] = useState(false);
+  const [showCreatePlan, setShowCreatePlan] = useState(false);
 
-  const trailReflections = useMemo(() => {
+  // ─── Data ───────────────────────────────────────────────────────
+  const reflections = store.reflections ?? [];
+  const trailNotes = store.trailNotes ?? [];
+  const allTrails = useMemo(() =>
+    (store.thoughtTrails ?? []).filter(t => !t.deleted),
+    [store.thoughtTrails]
+  );
+
+  const overview = useMemo(() => {
+    if (!trail) return null;
+    return getTrailOverview(trail, reflections, trailNotes);
+  }, [trail, reflections, trailNotes]);
+
+  const timelineItems = useMemo(() => {
     if (!trail) return [];
-    return trail.reflectionIds
-      .map(id => (store.reflections ?? []).find(r => r.id === id))
-      .filter(r => r != null && !r.deleted)
-      .sort((a, b) => a.timestamp - b.timestamp);
-  }, [trail, store.reflections]);
-
-  const stats = useMemo(() => {
-    if (!trail) return { count: 0, dateRange: null, moodChanges: [] };
-    return getTrailStats(trail, store.reflections ?? []);
-  }, [trail, store.reflections]);
+    return getTrailTimelineItems(trail, reflections, trailNotes);
+  }, [trail, reflections, trailNotes]);
 
   const links = useMemo(() => {
     if (!trail) return [];
-    const reflectionIds = new Set(trail.reflectionIds);
-    return (store.reflectionLinks ?? []).filter(l => 
-      !l.deleted && reflectionIds.has(l.fromId) && reflectionIds.has(l.toId)
-    );
+    const ids = new Set(trail.reflectionIds);
+    return (store.reflectionLinks ?? [])
+      .filter(l => !l.deleted && ids.has(l.fromId) && ids.has(l.toId))
+      .map(l => ({ fromId: l.fromId, toId: l.toId, type: l.type }));
   }, [trail, store.reflectionLinks]);
 
-  const getLinkBetween = useCallback((fromId: string, toId: string) => {
-    return links.find(l => l.fromId === fromId && l.toId === toId);
-  }, [links]);
+  const planItems = useMemo(() => {
+    if (!trail) return [];
+    return store.getTrailPlanItems(trailId);
+  }, [trail, trailId, store.planItems]);
+
+  const planCheckins = useMemo(() => {
+    const planItemIds = new Set(planItems.map(p => p.id));
+    return (store.planItemCheckins ?? []).filter(c => planItemIds.has(c.planItemId));
+  }, [planItems, store.planItemCheckins]);
+
+  const relatedTrails = useMemo(() => {
+    if (!trail) return [];
+    return getRelatedTrails(trail, allTrails, reflections, trailNotes, 3);
+  }, [trail, allTrails, reflections, trailNotes]);
+
+  // ─── AI generation ──────────────────────────────────────────────
+  const handleGenerateInsight = useCallback(async () => {
+    if (!trail) return;
+    const aiService = AIService.getInstance();
+    const trailReflections = trail.reflectionIds
+      .map(id => reflections.find(r => r.id === id))
+      .filter((r): r is NonNullable<typeof r> => r != null && !r.deleted);
+    const notes = (trail.noteIds ?? [])
+      .map(id => trailNotes.find(n => n.id === id))
+      .filter((n): n is NonNullable<typeof n> => n != null && !n.deleted);
+
+    const result = await aiService.generateTrailInsight(
+      trailReflections.map(r => ({ content: r.content, mood: r.mood ?? '' })),
+      {
+        useCloud: store.aiMode !== 'local',
+        trailNotes: notes.map(n => ({ content: n.content, source: n.source, guidedQuestion: n.guidedQuestion })),
+      }
+    );
+
+    const cache: TrailInsightCache = {
+      summary: result.summary,
+      keyPoints: result.keyPoints,
+      turningPoints: result.turningPoints,
+      suggestions: result.suggestions,
+      generatedAt: Date.now(),
+      source: store.aiMode === 'local' ? 'local' : 'cloud',
+    };
+    store.setInsightCache(trailId, cache);
+  }, [trail, trailId, reflections, trailNotes, store]);
+
+  const handleGenerateReview = useCallback(async () => {
+    if (!trail) return;
+    const aiService = AIService.getInstance();
+    const trailReflections = trail.reflectionIds
+      .map(id => reflections.find(r => r.id === id))
+      .filter((r): r is NonNullable<typeof r> => r != null && !r.deleted);
+    const notes = (trail.noteIds ?? [])
+      .map(id => trailNotes.find(n => n.id === id))
+      .filter((n): n is NonNullable<typeof n> => n != null && !n.deleted);
+
+    const items = [
+      ...trailReflections.map(r => ({ content: r.content, mood: r.mood, timestamp: r.timestamp, kind: 'reflection' as const })),
+      ...notes.map(n => ({ content: n.content, mood: n.mood, timestamp: n.createdAt, kind: 'note' as const })),
+    ].sort((a, b) => a.timestamp - b.timestamp);
+
+    const result = await aiService.generateTrailReviewGuide(items, {
+      useCloud: store.aiMode !== 'local',
+    });
+
+    const cache: TrailReviewCache = {
+      questions: result.questions,
+      observations: result.observations,
+      suggestions: result.suggestions,
+      generatedAt: Date.now(),
+      source: store.aiMode === 'local' ? 'local' : 'cloud',
+    };
+    store.setReviewCache(trailId, cache);
+  }, [trail, trailId, reflections, trailNotes, store]);
+
+  // ─── Actions ────────────────────────────────────────────────────
+  const handleWriteReflection = useCallback(() => {
+    (nav as any).navigate('Reflections', { showNew: true, trailId });
+  }, [nav, trailId]);
+
+  const handleSelectExisting = useCallback(() => {
+    setShowSelectReflection(true);
+  }, []);
+
+  const handleWriteNote = useCallback((question?: string) => {
+    setGuidedQuestion(question);
+    setShowWriteNote(true);
+  }, []);
+
+  const handleSaveNote = useCallback((form: { content: string; tags: string[]; mood?: string; source: 'guided' | 'free'; guidedQuestion?: string }) => {
+    store.addTrailNote(trailId, form);
+    setShowWriteNote(false);
+    setGuidedQuestion(undefined);
+  }, [store, trailId]);
+
+  const handleSelectReflectionsConfirm = useCallback((selectedIds: string[]) => {
+    for (const id of selectedIds) {
+      store.addReflectionToTrail(trailId, id);
+    }
+    setShowSelectReflection(false);
+  }, [store, trailId]);
 
   const handleRemoveReflection = useCallback((reflectionId: string) => {
     Alert.alert(
       T('thoughtTrailRemoveReflection'),
-      '确定要从这条思路脉络中移除这个感念吗？',
+      T('thoughtTrailRemoveReflectionConfirm'),
       [
         { text: T('commonCancel'), style: 'cancel' },
         {
           text: T('commonConfirm'),
           style: 'destructive',
-          onPress: () => {
-            store.removeReflectionFromTrail(trailId, reflectionId);
-          },
+          onPress: () => store.removeReflectionFromTrail(trailId, reflectionId),
         },
       ]
     );
   }, [store, trailId]);
+
+  const handleDeleteNote = useCallback((noteId: string) => {
+    Alert.alert(
+      T('trailNoteDelete'),
+      T('trailNoteDeleteConfirm'),
+      [
+        { text: T('commonCancel'), style: 'cancel' },
+        {
+          text: T('commonConfirm'),
+          style: 'destructive',
+          onPress: () => store.deleteTrailNote(noteId),
+        },
+      ]
+    );
+  }, [store]);
+
+  const handleCreatePlanFromReflection = useCallback((reflectionId: string) => {
+    setShowCreatePlan(true);
+  }, []);
+
+  const handleCreatePlanFromNote = useCallback((noteId: string) => {
+    setShowCreatePlan(true);
+  }, []);
+
+  const handleCreatePlan = useCallback((form: { name: string; description: string; priority: any; startDate: string; endDate: string }) => {
+    store.createPlanItemFromTrail(trailId, form);
+    setShowCreatePlan(false);
+  }, [store, trailId]);
+
+  const handleNavigateToPlan = useCallback((planItemId: string) => {
+    nav.navigate('PlanDetail' as never, { planId: planItemId } as never);
+  }, [nav]);
+
+  const handleNavigateToTrail = useCallback((targetTrailId: string) => {
+    if (targetTrailId === trailId) return;
+    nav.push('ThoughtTrailDetail' as never, { trailId: targetTrailId } as never);
+  }, [nav, trailId]);
+
+  // ─── Edit & Delete ──────────────────────────────────────────────
+  const handleOpenEdit = useCallback(() => {
+    if (trail) {
+      setEditName(trail.name);
+      setEditDesc(trail.description ?? '');
+      setShowEditModal(true);
+    }
+  }, [trail]);
+
+  const handleSaveEdit = useCallback(() => {
+    if (editName.trim()) {
+      store.updateThoughtTrail(trailId, {
+        name: editName.trim(),
+        description: editDesc.trim() || undefined,
+      });
+      setShowEditModal(false);
+    }
+  }, [store, trailId, editName, editDesc]);
 
   const handleDeleteTrail = useCallback(() => {
     Alert.alert(
@@ -96,24 +259,7 @@ export default function ThoughtTrailDetailScreen() {
     );
   }, [store, trailId, nav]);
 
-  const handleOpenEdit = useCallback(() => {
-    if (trail) {
-      setEditName(trail.name);
-      setEditDesc(trail.description ?? '');
-      setShowEditModal(true);
-    }
-  }, [trail]);
-
-  const handleSaveEdit = useCallback(() => {
-    if (editName.trim()) {
-      store.updateThoughtTrail(trailId, {
-        name: editName.trim(),
-        description: editDesc.trim() || undefined,
-      });
-      setShowEditModal(false);
-    }
-  }, [store, trailId, editName, editDesc]);
-
+  // ─── Render ─────────────────────────────────────────────────────
   if (!trail) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -144,125 +290,79 @@ export default function ThoughtTrailDetailScreen() {
         </View>
       </View>
 
-      {/* Stats */}
-      <View style={[styles.statsContainer, { backgroundColor: TH.card, borderColor: TH.border }]}>
-        <Text style={[styles.statsText, { color: TH.sub }]}>
-          {stats.count} {T('thoughtTrailReflections')}
-          {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
-        </Text>
-        {stats.moodChanges.length > 0 && (
-          <Text style={[styles.moodText, { color: TH.sub }]}>
-            心情变化: {stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')}
-          </Text>
-        )}
-      </View>
+      {/* Overview - compact inline */}
+      {overview && <TrailOverviewCard overview={overview} />}
 
-      {/* Reflections List - Story Line View */}
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
       >
-        {trailReflections.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Text style={[styles.emptyText, { color: TH.sub }]}>暂无感念</Text>
-          </View>
-        ) : (
-          trailReflections.map((r, idx) => {
-            const isLast = idx === trailReflections.length - 1;
-            const linkToNext = !isLast ? getLinkBetween(r.id, trailReflections[idx + 1].id) : null;
-            
-            return (
-              <View key={r.id}>
-                <View style={styles.reflectionItem}>
-                  {/* Timeline dot and line */}
-                  <View style={styles.timelineContainer}>
-                    <View style={[styles.timelineDot, { backgroundColor: P }]} />
-                    {!isLast && (
-                      <View style={[styles.timelineLine, { backgroundColor: TH.border }]} />
-                    )}
-                  </View>
+        {/* Timeline - 核心内容置顶 */}
+        <TimelineList
+          items={timelineItems}
+          links={links}
+          onRemoveReflection={handleRemoveReflection}
+          onDeleteNote={handleDeleteNote}
+          onCreatePlanFromReflection={handleCreatePlanFromReflection}
+          onCreatePlanFromNote={handleCreatePlanFromNote}
+        />
 
-                  {/* Reflection card */}
-                  <View style={[styles.reflectionCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
-                    <View style={styles.reflectionHeader}>
-                      <Text style={[styles.reflectionDate, { color: TH.sub }]}>
-                        {new Date(r.timestamp).toISOString().slice(0, 10)}
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => handleRemoveReflection(r.id)}
-                        style={styles.removeButton}
-                      >
-                        <Text style={[styles.removeButtonText, { color: '#EF4444' }]}>移除</Text>
-                      </TouchableOpacity>
-                    </View>
+        {/* AI sections - 折叠 */}
+        <InsightSection
+          insightCache={trail.insightCache}
+          onGenerate={handleGenerateInsight}
+        />
 
-                    <LinearGradient
-                      colors={[r.colors?.[0] || MIND_COLORS_EXTENDED[0][0], r.colors?.[1] || MIND_COLORS_EXTENDED[0][1]]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.reflectionGradient}
-                    >
-                      <Text style={styles.reflectionContent} numberOfLines={3}>
-                        {r.content}
-                      </Text>
+        <ReviewGuideSection
+          reviewCache={trail.reviewCache}
+          onGenerate={handleGenerateReview}
+          onStartWrite={handleWriteNote}
+        />
 
-                      {(r.tags.length > 0 || r.mood) && (
-                        <View style={styles.reflectionTags}>
-                          {r.tags.slice(0, 3).map(tag => {
-                            const category = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
-                            return (
-                              <Text key={tag} style={styles.reflectionTag}>
-                                {category ? `${category.icon} ` : ''}{tag}
-                              </Text>
-                            );
-                          })}
-                          {r.mood && (
-                            <Text style={styles.reflectionMood}>{getMoodIcon(r.mood)}</Text>
-                          )}
-                        </View>
-                      )}
-                    </LinearGradient>
-                  </View>
-                </View>
+        {/* Plan Tasks - 紧凑 */}
+        <PlanTasksSection
+          planItems={planItems}
+          checkins={planCheckins}
+          onNavigateToPlan={handleNavigateToPlan}
+          onCreatePlan={() => setShowCreatePlan(true)}
+        />
 
-                {/* Link indicator between reflections */}
-                {!isLast && linkToNext && (
-                  <View style={styles.linkContainer}>
-                    <View style={styles.linkLine} />
-                    <View style={[styles.linkBadge, { backgroundColor: TH.card, borderColor: TH.border }]}>
-                      <Text style={styles.linkIcon}>{LINK_TYPE_LABELS[linkToNext.type]?.icon || '🔗'}</Text>
-                      <Text style={[styles.linkLabel, { color: TH.sub }]}>
-                        {LINK_TYPE_LABELS[linkToNext.type]?.label || '相关'}
-                      </Text>
-                    </View>
-                    <View style={styles.linkLine} />
-                  </View>
-                )}
-              </View>
-            );
-          })
-        )}
-
-        {/* AI Insight Section */}
-        {trailReflections.length >= 2 && (
-          <View style={[styles.insightContainer, { backgroundColor: TH.card, borderColor: TH.border }]}>
-            <View style={styles.insightHeader}>
-              <Brain size={20} color={P} />
-              <Text style={[styles.insightTitle, { color: TH.text }]}>AI 洞察</Text>
-            </View>
-            <Text style={[styles.insightText, { color: TH.sub }]}>
-              这条脉络包含 {stats.count} 条感念，记录了从 {stats.dateRange?.start} 到 {stats.dateRange?.end} 的思考过程。
-              {stats.moodChanges.length > 1 && `心情经历了 ${stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')} 的变化。`}
-            </Text>
-            {trail.insightSummary && (
-              <Text style={[styles.insightSummary, { color: TH.text }]}>
-                {trail.insightSummary}
-              </Text>
-            )}
-          </View>
-        )}
+        {/* Related Trails - 紧凑 */}
+        <RelatedTrailsSection
+          relatedTrails={relatedTrails}
+          onNavigateToTrail={handleNavigateToTrail}
+        />
       </ScrollView>
+
+      {/* FAB - 浮动添加按钮 */}
+      <AddReflectionFAB
+        onWriteReflection={handleWriteReflection}
+        onSelectExisting={handleSelectExisting}
+        onWriteNote={() => handleWriteNote()}
+      />
+
+      {/* Modals */}
+      <WriteNoteModal
+        visible={showWriteNote}
+        guidedQuestion={guidedQuestion}
+        onSave={handleSaveNote}
+        onClose={() => { setShowWriteNote(false); setGuidedQuestion(undefined); }}
+      />
+
+      <SelectReflectionModal
+        visible={showSelectReflection}
+        reflections={reflections}
+        onConfirm={handleSelectReflectionsConfirm}
+        onClose={() => setShowSelectReflection(false)}
+      />
+
+      <CreatePlanFromTrailModal
+        visible={showCreatePlan}
+        insightCache={trail.insightCache}
+        onCreate={handleCreatePlan}
+        onClose={() => setShowCreatePlan(false)}
+      />
 
       {/* Edit Modal */}
       <Modal visible={showEditModal} transparent animationType="fade">
@@ -347,20 +447,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  statsContainer: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  statsText: {
-    fontSize: FONT_SMALL,
-  },
-  moodText: {
-    fontSize: FONT_SMALL,
-    marginTop: 4,
-  },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -368,129 +454,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: FONT_BODY,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: 48,
-  },
-  emptyText: {
-    fontSize: FONT_BODY,
-  },
-  reflectionItem: {
-    flexDirection: 'row',
-    marginBottom: 0,
-  },
-  timelineContainer: {
-    width: 24,
-    alignItems: 'center',
-  },
-  timelineDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  timelineLine: {
-    width: 2,
-    flex: 1,
-    marginTop: 4,
-  },
-  reflectionCard: {
-    flex: 1,
-    marginLeft: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  reflectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 12,
-    paddingBottom: 8,
-  },
-  reflectionDate: {
-    fontSize: FONT_SMALL,
-  },
-  removeButton: {
-    padding: 4,
-  },
-  removeButtonText: {
-    fontSize: FONT_SMALL,
-    fontWeight: '500',
-  },
-  reflectionGradient: {
-    padding: 12,
-  },
-  reflectionContent: {
-    color: '#fff',
-    fontSize: FONT_BODY,
-    lineHeight: 22,
-    marginBottom: 8,
-  },
-  reflectionTags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  reflectionTag: {
-    color: 'rgba(255,255,255,.9)',
-    fontSize: FONT_TINY,
-  },
-  reflectionMood: {
-    fontSize: FONT_TINY,
-  },
-  linkContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 11,
-    paddingVertical: 4,
-  },
-  linkLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: 'transparent',
-  },
-  linkBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    borderWidth: 1,
-    gap: 4,
-  },
-  linkIcon: {
-    fontSize: 12,
-  },
-  linkLabel: {
-    fontSize: FONT_TINY,
-    fontWeight: '500',
-  },
-  insightContainer: {
-    marginTop: 16,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-  },
-  insightHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  insightTitle: {
-    fontSize: FONT_BODY,
-    fontWeight: '600',
-  },
-  insightText: {
-    fontSize: FONT_SMALL,
-    lineHeight: 20,
-  },
-  insightSummary: {
-    fontSize: FONT_SMALL,
-    lineHeight: 20,
-    marginTop: 8,
-    fontWeight: '500',
   },
   modalOverlay: {
     flex: 1,
@@ -513,7 +476,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   inputLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SMALL,
     marginBottom: 8,
   },
   input: {

@@ -1,7 +1,7 @@
 // ─── Shared Zustand store (platform-agnostic logic) ──────────────
 import { uid, dateStr } from './utils';
 import { MIND_COLORS_EXTENDED } from './constants';
-import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory, ThoughtTrail, ReflectionLink } from './types';
+import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory, ThoughtTrail, ReflectionLink, CheckinReview } from './types';
 import { defaultAuthState } from './types';
 
 // ── Initial seed data ─────────────────────────────────────────────
@@ -77,6 +77,7 @@ export const defaultDataState = {
   graceHistory: [] as GraceHistoryEntry[],
   thoughtTrails: [] as ThoughtTrail[],
   reflectionLinks: [] as ReflectionLink[],
+  checkinReviews: [] as CheckinReview[],
   customTags: [] as string[],
   customMoods: [] as string[],
   allTagsOrder: [] as string[],

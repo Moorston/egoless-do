@@ -2,7 +2,7 @@ export type { StorageAdapter, SyncDataMap } from './storageAdapter';
 export type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, UiSlice, PlanSlice, RecycleBinSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice, MeditationSlice,
-  ThoughtTrailSlice, ReflectionLinkSlice, AISlice, FullStore,
+  ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, FullStore,
 } from './types';
 export type { SliceCreator } from './sliceHelper';
 export { createAuthSlice } from './createAuthSlice';
@@ -20,5 +20,7 @@ export { createSettingsSlice } from './createSettingsSlice';
 export { createTagMoodSlice } from './createTagMoodSlice';
 export { createMeditationSlice } from './createMeditationSlice';
 export { createThoughtTrailSlice } from './createThoughtTrailSlice';
+export { createTrailNoteSlice } from './createTrailNoteSlice';
 export { createReflectionLinkSlice } from './createReflectionLinkSlice';
 export { createAISlice } from './createAISlice';
+export { createReviewSlice } from './createReviewSlice';

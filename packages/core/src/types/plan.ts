@@ -46,6 +46,7 @@ export interface PlanItem extends Syncable {
     habitId?: string;
   };
   reflectionId?: string;  // 来源感念 ID
+  trailId?: string;       // 来源脉络 ID
   order: number;
   frequency?: CheckinFrequency;
 }

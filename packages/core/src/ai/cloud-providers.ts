@@ -51,7 +51,12 @@ export class OpenAICompatibleProvider implements CloudProvider {
     }
     
     const data = await response.json();
-    return data.choices[0].message.content;
+    console.log('[CloudProvider] Response choices:', data.choices?.length, 'content:', data.choices?.[0]?.message?.content?.slice(0, 50));
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) {
+      throw new Error(`API返回空内容，响应: ${JSON.stringify(data).slice(0, 200)}`);
+    }
+    return content;
   }
 }
 

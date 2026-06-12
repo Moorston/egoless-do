@@ -23,7 +23,7 @@ export type RootStackParamList = {
   Stats: undefined;
   ReflectionStats: undefined;
   MindTrail: undefined;
-  QuickCreateTrail: undefined;
+  QuickCreateTrail: { initialText?: string } | undefined;
   ThoughtTrailDetail: { trailId: string };
   ReflectionDetail: { reflectionId: string };
   HabitDetail: { habitId: string };
@@ -38,6 +38,6 @@ export type MainTabParamList = {
   Meditation: undefined;
   Exercise: undefined;
   Settings: undefined;
-  Reflections: { showNew?: boolean } | undefined;
+  Reflections: { showNew?: boolean; trailId?: string } | undefined;
   Habits: undefined;
 };

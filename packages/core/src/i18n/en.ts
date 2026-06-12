@@ -360,7 +360,7 @@ export const en: I18nKeys = {
   quickTrailRecommend:'Recommended Trails',
   quickTrailMatch:'Match Results',
   quickTrailMatchLocal:'🔍 Local Match',
-  quickTrailMatchAI:'🤖 AI Match',
+  quickTrailMatchAI:'✨ AI Match',
   quickTrailNoResults:'No matching reflections found',
   quickTrailTryAgain:'Try different keywords or relax filters',
   quickTrailResetFilters:'Reset All Filters',
@@ -386,6 +386,86 @@ export const en: I18nKeys = {
   quickTrailAIMatch:'AI Match',
   quickTrailAIAnalyzing:'AI analyzing...',
   quickTrailCollapse:'Collapse',
+  quickTrailShowMore:'Show more',
+  insightProfileTitle:'Your Insight Profile',
+  insightProfileStats:'Last {days} days · {count} reflections',
+  insightProfileStreak:'{days}-day streak',
+  insightProfileAISummary:'💡 AI Insight',
+  insightProfileHotTags:'🏷️ Top Tags',
+  insightProfileMoodDist:'💭 Mood Distribution',
+  insightProfileHotTopics:'Keywords',
+  insightProfileQuickEntry:'⚡ Quick Start',
+  insightProfileTagCount:'{count}x',
+  insightProfileTagRising:'↑',
+  insightProfileTagStable:'→',
+  insightProfileTagDeclining:'↓',
+  insightProfileUnassigned:'Unassigned',
+  insightProfileNight:'Late Night',
+  insightProfileMoodChange:'Mood Changes',
+  insightProfileEmpty:'Record more reflections to generate your insight profile',
+  insightProfileNoData:'No reflections in this period',
+  insightProfileGoRecord:'Record Now',
+  insightProfileCategory:'{category}',
+  insightProfileDays7:'7 days',
+  insightProfileDays30:'30 days',
+
+  // Trail Detail - Overview
+  trailOverviewFormat:'{reflections} reflections + {notes} notes',
+  trailOverviewDaySpan:'{days} day span',
+  trailOverviewTrend:'Trend',
+  trailOverviewTrendUp:'Rising',
+  trailOverviewTrendDown:'Falling',
+  trailOverviewTrendFlat:'Steady',
+
+  // Trail Detail - AI Insight
+  trailInsightGenerate:'Generate Insight',
+  trailInsightRegenerate:'Regenerate',
+  trailInsightGeneratedAt:'Generated {time}',
+  trailInsightSummary:'Summary',
+  trailInsightKeyPoints:'Key Points',
+  trailInsightTurningPoints:'Turning Points',
+  trailInsightSuggestions:'Suggestions',
+  trailInsightGenerating:'Generating insight...',
+
+  // Trail Detail - Review Guide
+  trailReviewGenerate:'Generate Review Guide',
+  trailReviewRegenerate:'Regenerate',
+  trailReviewObservations:'Observations',
+  trailReviewQuestions:'Guided Questions',
+  trailReviewStart:'Write Reflection',
+  trailReviewGenerating:'Generating review guide...',
+
+  // Trail Detail - Trail Note
+  trailNoteWrite:'Write Reflection',
+  trailNoteGuided:'Guided Reflection',
+  trailNoteFree:'Free Reflection',
+  trailNoteSave:'Save to Trail',
+  trailNoteDelete:'Delete Note',
+  trailNoteDeleteConfirm:'Delete this reflection note?',
+  trailNoteGuidedBy:'Guided Question',
+
+  // Trail Detail - Plan Integration
+  trailPlanCreate:'Create Plan Task from Trail',
+  trailPlanTitle:'Create Plan Task',
+  trailPlanAISuggestions:'AI Suggestions',
+  trailPlanApplySelected:'Apply Selected',
+  trailPlanProgress:'{done}/{total} days',
+  trailPlanInProgress:'In Progress',
+  trailPlanCompleted:'Completed',
+  trailPlanNoPlan:'No linked plans',
+
+  // Trail Detail - Related
+  trailRelated:'Related Trails',
+  trailRelatedOverlap:'{percent}% tag overlap',
+
+  // Trail Detail - Timeline
+  trailTimelineDays:'{days}d',
+  trailTimelineCollapse:'Collapse',
+  trailTimelineExpand:'Show full text',
+  trailTimelineViewDetail:'View reflection',
+  trailTimelineCreatePlan:'Create plan task',
+  trailTimelineRemove:'Remove from trail',
+  trailTimelineRemoveConfirm:'Remove this reflection from the trail?',
 
   // Gap Hint
   gapHintTitle:'Trail Insights',
@@ -400,6 +480,8 @@ export const en: I18nKeys = {
   trailSuggestionDesc:'{n} reflections can form a trail',
   trailSuggestionAction:'View Suggestion',
   trailSuggestionDismiss:'Maybe later',
+  trailInputGuide:'Type your thoughts to create a trail',
+  manualCreateTrail:'Create Trail Manually',
 
   // Premium
   premiumUpgrade:'Upgrade Premium', premiumDesc:'Unlock premium templates & AI insights',

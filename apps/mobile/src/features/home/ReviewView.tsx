@@ -1,0 +1,540 @@
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { useAppStore } from '../../store/useAppStore';
+import { useTheme, useT } from '../../components/UI';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import type { CheckinReview } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
+import { 
+  TrendingUp, TrendingDown, Minus,
+  AlertTriangle, CheckCircle, Target,
+  Calendar, BarChart3, RefreshCw
+} from 'lucide-react-native';
+
+interface ReviewViewProps {
+  period: 'week' | 'month';
+}
+
+export default function ReviewView({ period }: ReviewViewProps) {
+  const TH = useTheme();
+  const T = useT();
+  const store = useAppStore();
+  const nav = useRootNavigation();
+  
+  const [review, setReview] = useState<CheckinReview | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  
+  useEffect(() => {
+    loadReview();
+  }, [period]);
+  
+  const loadReview = async () => {
+    setLoading(true);
+    try {
+      const result = await store.generateReview(period);
+      setReview(result);
+    } catch (error) {
+      console.error('Failed to generate review:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const result = await store.generateReview(period);
+      setReview(result);
+    } catch (error) {
+      console.error('Failed to refresh review:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  
+  const renderCoreMetrics = () => {
+    if (!review) return null;
+    
+    const metrics = [
+      {
+        value: `${review.completionRate}%`,
+        label: T('reviewCompletionRate'),
+        subLabel: `${review.doneDays}/${review.totalDays} ${T('days')}`,
+        trend: review.comparison.completionRateDiff,
+      },
+      {
+        value: `${review.streakDays}`,
+        label: T('reviewStreakDays'),
+        subLabel: T('days'),
+        trend: review.comparison.streakDiff,
+      },
+      {
+        value: review.comparison.completionRateDiff >= 0 ? `+${review.comparison.completionRateDiff}%` : `${review.comparison.completionRateDiff}%`,
+        label: T('reviewVsPrevious'),
+        subLabel: period === 'week' ? T('reviewVsLastWeek') : T('reviewVsLastMonth'),
+        trend: review.comparison.completionRateDiff,
+      },
+    ];
+    
+    return (
+      <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+        {metrics.map((m, i) => (
+          <View key={i} style={{
+            flex: 1, backgroundColor: TH.card, borderRadius: 14, padding: 16,
+            alignItems: 'center', borderWidth: 1, borderColor: TH.border,
+          }}>
+            <Text style={{ fontSize: 28, fontWeight: '700', color: TH.primary }}>
+              {m.value}
+            </Text>
+            <Text style={{ fontSize: FONT_BODY, color: TH.text, marginTop: 4 }}>
+              {m.label}
+            </Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+              {m.subLabel}
+            </Text>
+            {m.trend !== 0 && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                {m.trend > 0 ? (
+                  <TrendingUp size={14} color={COLORS.GREEN} />
+                ) : (
+                  <TrendingDown size={14} color={COLORS.RED} />
+                )}
+                <Text style={{ 
+                  fontSize: FONT_SUB, 
+                  color: m.trend > 0 ? COLORS.GREEN : COLORS.RED,
+                  marginLeft: 4,
+                }}>
+                  {m.trend > 0 ? '+' : ''}{m.trend}%
+                </Text>
+              </View>
+            )}
+          </View>
+        ))}
+      </View>
+    );
+  };
+  
+  const renderIncompleteAnalysis = () => {
+    if (!review || review.incompleteReasons.length === 0) return null;
+    
+    return (
+      <View style={{
+        backgroundColor: TH.card, borderRadius: 16, padding: 16,
+        borderWidth: 1, borderColor: TH.border, marginBottom: 16,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <AlertTriangle size={18} color="#F59E0B" />
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            {T('reviewIncompleteAnalysis')}
+          </Text>
+        </View>
+        
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>
+          {T('reviewReasonDistribution')}
+        </Text>
+        {review.incompleteReasons.map((r, i) => (
+          <View key={i} style={{ 
+            flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+            paddingVertical: 6, borderBottomWidth: i < review.incompleteReasons.length - 1 ? 1 : 0,
+            borderBottomColor: TH.border,
+          }}>
+            <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
+              {r.icon} {T(`incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}`)}
+            </Text>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>
+              {r.count} {T('reviewTimes')} ({r.percentage}%)
+            </Text>
+          </View>
+        ))}
+        
+        {review.incompleteItems.length > 0 && (
+          <>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 12, marginBottom: 8 }}>
+              {T('reviewIncompleteItems')}
+            </Text>
+            {review.incompleteItems.map((item, i) => (
+              <View key={i} style={{
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                paddingVertical: 6, borderBottomWidth: i < review.incompleteItems.length - 1 ? 1 : 0,
+                borderBottomColor: TH.border,
+              }}>
+                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
+                  {item.name}
+                </Text>
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: COLORS.RED }}>
+                  {item.count} {T('reviewTimes')}
+                </Text>
+              </View>
+            ))}
+          </>
+        )}
+      </View>
+    );
+  };
+  
+  const renderHabitProgress = () => {
+    if (!review || review.habitProgress.length === 0) return null;
+    
+    return (
+      <View style={{
+        backgroundColor: TH.card, borderRadius: 16, padding: 16,
+        borderWidth: 1, borderColor: TH.border, marginBottom: 16,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <CheckCircle size={18} color={COLORS.GREEN} />
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            {T('reviewHabitProgress')}
+          </Text>
+        </View>
+        
+        {review.habitProgress.map((habit, i) => (
+          <View key={habit.id} style={{
+            paddingVertical: 8,
+            borderBottomWidth: i < review.habitProgress.length - 1 ? 1 : 0,
+            borderBottomColor: TH.border,
+          }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+              <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{habit.name}</Text>
+              <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
+                {habit.progress}%
+              </Text>
+            </View>
+            
+            <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
+              <View style={{ 
+                height: 6, 
+                width: `${habit.progress}%`, 
+                backgroundColor: habit.progress >= 80 ? COLORS.GREEN : habit.progress >= 60 ? '#F59E0B' : COLORS.RED,
+                borderRadius: 3,
+              }} />
+            </View>
+            
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                {habit.doneDays}/{habit.targetDays} {T('days')}
+              </Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                {T('reviewStreak')}: {habit.streak} {T('days')}
+              </Text>
+            </View>
+          </View>
+        ))}
+      </View>
+    );
+  };
+  
+  const renderPlanProgress = () => {
+    if (!review || review.planProgress.length === 0) return null;
+    
+    return (
+      <View style={{
+        backgroundColor: TH.card, borderRadius: 16, padding: 16,
+        borderWidth: 1, borderColor: TH.border, marginBottom: 16,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <Target size={18} color={TH.primary} />
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            {T('reviewPlanProgress')}
+          </Text>
+        </View>
+        
+        {review.planProgress.map((plan, i) => (
+          <View key={plan.planId} style={{
+            paddingVertical: 8,
+            borderBottomWidth: i < review.planProgress.length - 1 ? 1 : 0,
+            borderBottomColor: TH.border,
+          }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+              <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{plan.planName}</Text>
+              <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
+                {plan.progress}%
+              </Text>
+            </View>
+            
+            <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
+              <View style={{ 
+                height: 6, 
+                width: `${plan.progress}%`, 
+                backgroundColor: TH.primary,
+                borderRadius: 3,
+              }} />
+            </View>
+            
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+              {plan.completedItems}/{plan.totalItems} {T('reviewTasks')}
+            </Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+  
+  const renderHealthMetrics = () => {
+    if (!review) return null;
+    
+    const metrics = [];
+    
+    if (review.metrics.avgWeight !== undefined) {
+      metrics.push({
+        icon: '⚖️',
+        label: T('reviewWeight'),
+        value: `${review.metrics.avgWeight}kg`,
+        change: review.comparison.weightDiff,
+        unit: 'kg',
+      });
+    }
+    
+    if (review.metrics.avgWater !== undefined) {
+      metrics.push({
+        icon: '💧',
+        label: T('reviewWater'),
+        value: `${review.metrics.avgWater}ml`,
+        change: review.comparison.waterDiff,
+        unit: 'ml',
+      });
+    }
+    
+    if (review.metrics.avgCalories !== undefined) {
+      metrics.push({
+        icon: '🍽️',
+        label: T('reviewCalories'),
+        value: `${review.metrics.avgCalories}kcal`,
+        change: review.comparison.caloriesDiff,
+        unit: 'kcal',
+      });
+    }
+    
+    if (review.metrics.totalExerciseMin !== undefined) {
+      metrics.push({
+        icon: '🏃',
+        label: T('reviewExercise'),
+        value: `${review.metrics.totalExerciseMin}min`,
+        change: review.comparison.exerciseMinDiff,
+        unit: 'min',
+      });
+    }
+    
+    if (review.metrics.totalMeditationMin !== undefined) {
+      metrics.push({
+        icon: '🧘',
+        label: T('reviewMeditation'),
+        value: `${review.metrics.totalMeditationMin}min`,
+        change: undefined,
+        unit: 'min',
+      });
+    }
+    
+    if (review.metrics.fastingCount !== undefined) {
+      metrics.push({
+        icon: '🔥',
+        label: T('reviewFasting'),
+        value: `${review.metrics.fastingCount}${T('reviewTimes')}`,
+        change: undefined,
+        unit: '',
+      });
+    }
+    
+    if (metrics.length === 0) return null;
+    
+    return (
+      <View style={{
+        backgroundColor: TH.card, borderRadius: 16, padding: 16,
+        borderWidth: 1, borderColor: TH.border, marginBottom: 16,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <BarChart3 size={18} color={TH.text} />
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            {T('reviewHealthMetrics')}
+          </Text>
+        </View>
+        
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {metrics.map((m, i) => (
+            <View key={i} style={{
+              width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12,
+              borderWidth: 1, borderColor: TH.border,
+            }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <Text style={{ fontSize: 16 }}>{m.icon}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{m.label}</Text>
+              </View>
+              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
+                {m.value}
+              </Text>
+              {m.change !== undefined && m.change !== 0 && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
+                  {m.change > 0 ? (
+                    <TrendingUp size={12} color={COLORS.GREEN} />
+                  ) : (
+                    <TrendingDown size={12} color={COLORS.RED} />
+                  )}
+                  <Text style={{ 
+                    fontSize: FONT_SUB, 
+                    color: m.change > 0 ? COLORS.GREEN : COLORS.RED,
+                    marginLeft: 4,
+                  }}>
+                    {m.change > 0 ? '+' : ''}{m.change}{m.unit}
+                  </Text>
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
+      </View>
+    );
+  };
+  
+  const renderAIAnalysis = () => {
+    if (!review || !review.aiSummary) return null;
+    
+    return (
+      <View style={{
+        backgroundColor: TH.card, borderRadius: 16, padding: 16,
+        borderWidth: 1, borderColor: TH.border, marginBottom: 16,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          <Text style={{ fontSize: 18 }}>💡</Text>
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            {T('reviewAIAnalysis')}
+          </Text>
+        </View>
+        
+        <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 24, marginBottom: 12 }}>
+          {review.aiSummary}
+        </Text>
+        
+        {review.highlights.length > 0 && (
+          <View style={{ marginBottom: 12 }}>
+            <Text style={{ fontSize: FONT_SUB, color: COLORS.GREEN, fontWeight: '600', marginBottom: 6 }}>
+              ✨ {T('reviewHighlights')}
+            </Text>
+            {review.highlights.map((h, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+                <Text style={{ fontSize: FONT_BODY, color: COLORS.GREEN, marginRight: 6 }}>•</Text>
+                <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{h}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+        
+        {review.improvements.length > 0 && (
+          <View>
+            <Text style={{ fontSize: FONT_SUB, color: '#F59E0B', fontWeight: '600', marginBottom: 6 }}>
+              💪 {T('reviewImprovements')}
+            </Text>
+            {review.improvements.map((imp, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+                <Text style={{ fontSize: FONT_BODY, color: '#F59E0B', marginRight: 6 }}>•</Text>
+                <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{imp}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </View>
+    );
+  };
+  
+  const renderHistoryEntry = () => {
+    const historyReviews = store.checkinReviews
+      ?.filter(r => r.period === period && r.deleted !== true)
+      .sort((a, b) => b.generatedAt - a.generatedAt)
+      .slice(0, 3) ?? [];
+    
+    if (historyReviews.length === 0) return null;
+    
+    return (
+      <View style={{
+        backgroundColor: TH.card, borderRadius: 16, padding: 16,
+        borderWidth: 1, borderColor: TH.border, marginBottom: 16,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Calendar size={18} color={TH.text} />
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              {T('reviewHistory')}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => nav.navigate('ReviewHistory')}>
+            <Text style={{ fontSize: FONT_SUB, color: TH.primary }}>{T('reviewViewAll')}</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {historyReviews.map((r, i) => (
+          <TouchableOpacity
+            key={r.id}
+            onPress={() => nav.navigate('ReviewDetail', { reviewId: r.id })}
+            style={{
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+              paddingVertical: 10,
+              borderBottomWidth: i < historyReviews.length - 1 ? 1 : 0,
+              borderBottomColor: TH.border,
+            }}
+          >
+            <View>
+              <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
+                {r.startDate} - {r.endDate}
+              </Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+                {T('reviewCompletionRate')}: {r.completionRate}%
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
+                {r.streakDays} {T('days')}
+              </Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('reviewStreak')}</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+  
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40 }}>
+        <RefreshCw size={32} color={TH.primary} />
+        <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginTop: 12 }}>
+          {T('reviewGenerating')}
+        </Text>
+      </View>
+    );
+  }
+  
+  if (!review) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40 }}>
+        <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>
+          {T('reviewNoData')}
+        </Text>
+      </View>
+    );
+  }
+  
+  return (
+    <ScrollView
+      contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      <View style={{ marginBottom: 16 }}>
+        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
+          {period === 'week' ? T('reviewWeekTitle') : T('reviewMonthTitle')}
+        </Text>
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+          {review.startDate} - {review.endDate}
+        </Text>
+      </View>
+      
+      {renderCoreMetrics()}
+      {renderIncompleteAnalysis()}
+      {renderHabitProgress()}
+      {renderPlanProgress()}
+      {renderHealthMetrics()}
+      {renderAIAnalysis()}
+      {renderHistoryEntry()}
+    </ScrollView>
+  );
+}

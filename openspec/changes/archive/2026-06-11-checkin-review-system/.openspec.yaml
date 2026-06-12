@@ -1,0 +1,19 @@
+name: checkin-review-system
+schema: default
+status: completed
+created: 2026-06-11T18:38:00Z
+updated: 2026-06-11T19:30:00Z
+description: 打卡复盘系统 - 周复盘/月复盘功能，AI分析生成专业复盘报告
+artifacts:
+  - type: proposal
+    path: proposal.md
+    status: complete
+  - type: design
+    path: design.md
+    status: complete
+  - type: specs
+    path: specs/review-feature/spec.md
+    status: complete
+  - type: tasks
+    path: tasks.md
+    status: complete

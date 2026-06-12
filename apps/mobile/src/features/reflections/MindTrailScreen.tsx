@@ -1,23 +1,22 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Plus, Zap } from 'lucide-react-native';
+import { ArrowLeft, Plus, Zap, Send } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, FONT_TINY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
 import { getTrailStats, getMoodIcon } from '@egoless-do/core';
-import type { ThoughtTrail, MindReflection } from '@egoless-do/core';
 import CreateThoughtTrailModal from './CreateThoughtTrailModal';
 
 export default function MindTrailScreen() {
   const TH = useTheme();
   const T = useT();
-  const P = TH.primary;
   const store = useAppStore();
   const nav = useNavigation();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [inputText, setInputText] = useState('');
 
   const handleCreateTrail = useCallback((trailId: string) => {
     (nav as any).navigate('ThoughtTrailDetail', { trailId });
@@ -47,21 +46,6 @@ export default function MindTrailScreen() {
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
               {T('thoughtTrail')} ({manualTrails.length})
             </Text>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              <TouchableOpacity
-                onPress={() => (nav as any).navigate('QuickCreateTrail')}
-                style={[styles.addButton, { backgroundColor: '#8B5CF6' }]}
-              >
-                <Zap size={16} color="#fff" />
-                <Text style={styles.addButtonText}>{T('quickCreateTrail')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShowCreateModal(true)}
-                style={[styles.addButton, { backgroundColor: P }]}
-              >
-                <Plus size={16} color="#fff" />
-              </TouchableOpacity>
-            </View>
           </View>
 
           {manualTrails.length === 0 ? (
@@ -97,7 +81,7 @@ export default function MindTrailScreen() {
   };
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
@@ -115,6 +99,45 @@ export default function MindTrailScreen() {
       >
         {renderThoughtTrailTab()}
       </ScrollView>
+
+      {/* Bottom Bar */}
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <View style={[styles.bottomBar, { backgroundColor: TH.bg, borderTopColor: TH.border }]}>
+          <View style={[styles.inputRow, { backgroundColor: TH.card, borderColor: TH.border }]}>
+            <Zap size={16} color="#8B5CF6" />
+            <TextInput
+              style={[styles.input, { color: TH.text }]}
+              placeholder={T('trailInputGuide')}
+              placeholderTextColor={TH.sub}
+              value={inputText}
+              onChangeText={setInputText}
+              returnKeyType="send"
+              onSubmitEditing={() => {
+                const text = inputText.trim();
+                setInputText('');
+                (nav as any).navigate('QuickCreateTrail', text ? { initialText: text } : {});
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                const text = inputText.trim();
+                setInputText('');
+                (nav as any).navigate('QuickCreateTrail', text ? { initialText: text } : {});
+              }}
+              style={[styles.sendBtn, { backgroundColor: '#8B5CF6' }]}
+            >
+              <Send size={16} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowCreateModal(true)}
+            style={[styles.manualBtn, { borderColor: TH.primary }]}
+          >
+            <Plus size={18} color={TH.primary} />
+            <Text style={[styles.manualBtnText, { color: TH.primary }]}>{T('manualCreateTrail')}</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
 
       {/* Create Modal */}
       <CreateThoughtTrailModal
@@ -160,19 +183,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: FONT_SMALL,
-    fontWeight: '600',
-  },
   emptyContainer: {
     alignItems: 'center',
     paddingVertical: 32,
@@ -197,5 +207,46 @@ const styles = StyleSheet.create({
   },
   moodChanges: {
     fontSize: FONT_SMALL,
+  },
+  bottomBar: {
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 24,
+    borderTopWidth: 1,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: FONT_BODY,
+    paddingVertical: 4,
+  },
+  sendBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manualBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 8,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  manualBtnText: {
+    fontSize: FONT_BODY,
+    fontWeight: '600',
   },
 });

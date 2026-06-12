@@ -4,7 +4,8 @@ import type {
   MedHistoryEntry, FoodEntry, ExerciseEntry, CheckinEntry,
   UserProfile, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
-  ReflectionFilters, ThoughtTrail, ReflectionLink, LinkType,
+  ReflectionFilters, ThoughtTrail, ReflectionLink, LinkType, CheckinReview,
+  TrailNote, TrailInsightCache, TrailReviewCache,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -194,6 +195,27 @@ export interface ThoughtTrailSlice {
   addReflectionToTrail: (trailId: string, reflectionId: string) => void;
   removeReflectionFromTrail: (trailId: string, reflectionId: string) => void;
   setInsightSummary: (trailId: string, summary: string) => void;
+  setInsightCache: (trailId: string, cache: TrailInsightCache) => void;
+  setReviewCache: (trailId: string, cache: TrailReviewCache) => void;
+  createPlanItemFromTrail: (trailId: string, form: { name: string; description: string; priority: PlanItemPriority; startDate: string; endDate: string }) => boolean;
+  getTrailPlanItems: (trailId: string) => PlanItem[];
+}
+
+export interface TrailNoteSlice {
+  trailNotes: TrailNote[];
+  addTrailNote: (trailId: string, form: { content: string; tags?: string[]; mood?: string; source: 'guided' | 'free'; guidedQuestion?: string }) => TrailNote;
+  updateTrailNote: (noteId: string, patch: Partial<TrailNote>) => void;
+  deleteTrailNote: (noteId: string) => void;
+  getNotesByTrail: (trailId: string) => TrailNote[];
+}
+
+export interface ReviewSlice {
+  checkinReviews: CheckinReview[];
+  generateReview: (period: 'week' | 'month') => Promise<CheckinReview>;
+  getReview: (period: 'week' | 'month', startDate: string) => CheckinReview | undefined;
+  getLatestReview: (period: 'week' | 'month') => CheckinReview | undefined;
+  deleteReview: (id: string) => void;
+  clearAllReviews: () => void;
 }
 
 export interface AISlice {
@@ -222,7 +244,7 @@ export interface ReflectionLinkSlice {
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReflectionLinkSlice & AISlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -242,7 +264,9 @@ export interface SyncDataMap {
   dailyTodoHistory: DailyTodoHistory;
   grace: GraceHistoryEntry;
   thoughtTrail: ThoughtTrail;
+  trailNote: TrailNote;
   reflectionLink: ReflectionLink;
+  checkinReview: CheckinReview;
   aiConfig: { config_id: string; mode: AIMode; models: ModelConfig[]; updatedAt: number };
 }
 

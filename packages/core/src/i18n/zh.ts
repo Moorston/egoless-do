@@ -360,7 +360,7 @@ export const zh: I18nKeys = {
   quickTrailRecommend:'推荐思路链',
   quickTrailMatch:'匹配结果',
   quickTrailMatchLocal:'🔍 本地匹配',
-  quickTrailMatchAI:'🤖 AI 匹配',
+  quickTrailMatchAI:'✨ AI 匹配',
   quickTrailNoResults:'没有找到匹配的感念',
   quickTrailTryAgain:'试试换个关键词或放宽筛选条件',
   quickTrailResetFilters:'重置所有筛选',
@@ -386,6 +386,86 @@ export const zh: I18nKeys = {
   quickTrailAIMatch:'AI 匹配',
   quickTrailAIAnalyzing:'AI 分析中...',
   quickTrailCollapse:'收起',
+  quickTrailShowMore:'展开更多',
+  insightProfileTitle:'你的感念画像',
+  insightProfileStats:'最近{days}天 · {count}条感念',
+  insightProfileStreak:'连续记录{days}天',
+  insightProfileAISummary:'💡 AI 洞察',
+  insightProfileHotTags:'🏷️ 高频标签',
+  insightProfileMoodDist:'💭 心情分布',
+  insightProfileHotTopics:'高频词',
+  insightProfileQuickEntry:'⚡ 快速入口',
+  insightProfileTagCount:'{count}次',
+  insightProfileTagRising:'↑',
+  insightProfileTagStable:'→',
+  insightProfileTagDeclining:'↓',
+  insightProfileUnassigned:'未归类',
+  insightProfileNight:'深夜',
+  insightProfileMoodChange:'情绪变化',
+  insightProfileEmpty:'记录更多感念后，这里会为你生成感念画像',
+  insightProfileNoData:'这段时间没有记录',
+  insightProfileGoRecord:'去记录',
+  insightProfileCategory:'{category}',
+  insightProfileDays7:'7天',
+  insightProfileDays30:'30天',
+
+  // Trail Detail - Overview
+  trailOverviewFormat:'{reflections} 感念 + {notes} 反思',
+  trailOverviewDaySpan:'跨度 {days} 天',
+  trailOverviewTrend:'趋势',
+  trailOverviewTrendUp:'上升',
+  trailOverviewTrendDown:'下降',
+  trailOverviewTrendFlat:'平稳',
+
+  // Trail Detail - AI Insight
+  trailInsightGenerate:'生成洞察',
+  trailInsightRegenerate:'重新生成',
+  trailInsightGeneratedAt:'生成于 {time}',
+  trailInsightSummary:'核心摘要',
+  trailInsightKeyPoints:'关键要点',
+  trailInsightTurningPoints:'转折点',
+  trailInsightSuggestions:'建议',
+  trailInsightGenerating:'正在生成洞察...',
+
+  // Trail Detail - Review Guide
+  trailReviewGenerate:'生成复盘引导',
+  trailReviewRegenerate:'重新生成',
+  trailReviewObservations:'观察',
+  trailReviewQuestions:'引导问题',
+  trailReviewStart:'开始写反思',
+  trailReviewGenerating:'正在生成复盘引导...',
+
+  // Trail Detail - Trail Note
+  trailNoteWrite:'写反思',
+  trailNoteGuided:'引导式反思',
+  trailNoteFree:'自由反思',
+  trailNoteSave:'保存到脉络',
+  trailNoteDelete:'删除反思',
+  trailNoteDeleteConfirm:'确定删除这条反思吗？',
+  trailNoteGuidedBy:'引导问题',
+
+  // Trail Detail - Plan Integration
+  trailPlanCreate:'从这条脉络创建计划任务',
+  trailPlanTitle:'创建计划任务',
+  trailPlanAISuggestions:'AI 建议',
+  trailPlanApplySelected:'应用选中',
+  trailPlanProgress:'{done}/{total} 天',
+  trailPlanInProgress:'进行中',
+  trailPlanCompleted:'已完成',
+  trailPlanNoPlan:'暂无关联计划',
+
+  // Trail Detail - Related
+  trailRelated:'相关脉络',
+  trailRelatedOverlap:'{percent}% 标签重叠',
+
+  // Trail Detail - Timeline
+  trailTimelineDays:'{days}天',
+  trailTimelineCollapse:'收起',
+  trailTimelineExpand:'展开全文',
+  trailTimelineViewDetail:'查看感念详情',
+  trailTimelineCreatePlan:'创建计划任务',
+  trailTimelineRemove:'从脉络移除',
+  trailTimelineRemoveConfirm:'确定要从这条思路脉络中移除这个感念吗？',
 
   // Gap Hint
   gapHintTitle:'脉络洞察',
@@ -400,6 +480,8 @@ export const zh: I18nKeys = {
   trailSuggestionDesc:'你有 {n} 条感念可以组成一条脉络',
   trailSuggestionAction:'查看推荐',
   trailSuggestionDismiss:'稍后再说',
+  trailInputGuide:'输入想法，快速创建自己的思维链',
+  manualCreateTrail:'手动创建脉络',
 
   // Premium
   premiumUpgrade:'升级 Premium', premiumDesc:'解锁高级模板与 AI 感悟总结',

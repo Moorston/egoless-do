@@ -52,6 +52,8 @@ export interface DailyResetDeps {
   onPlanDailyReset?: (previousDate: string) => void;
   /** Called when habit auto-start check is needed */
   onHabitDailyReset?: () => void;
+  /** Called when review auto-generation is needed */
+  onReviewDailyReset?: (period: 'week' | 'month') => void;
   /** Platform-specific visibility listener (e.g. AppState on RN, document on web) */
   addVisibilityListener?: (callback: () => void) => void;
 }
@@ -122,6 +124,23 @@ export class DailyResetManager {
     // Always check habit auto-start (regardless of needsReset)
     if (this.deps.onHabitDailyReset) {
       this.deps.onHabitDailyReset();
+    }
+    
+    // Check if we need to generate reviews
+    if (this.deps.onReviewDailyReset && needsReset) {
+      const todayDate = new Date();
+      const dayOfWeek = todayDate.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+      
+      // Sunday: generate last week's review
+      if (dayOfWeek === 0) {
+        this.deps.onReviewDailyReset('week');
+      }
+      
+      // Last day of month: generate this month's review
+      const lastDayOfMonth = new Date(todayDate.getFullYear(), todayDate.getMonth() + 1, 0).getDate();
+      if (todayDate.getDate() === lastDayOfMonth) {
+        this.deps.onReviewDailyReset('month');
+      }
     }
 
     this.lastCheckedDate = today;
