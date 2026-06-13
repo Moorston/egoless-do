@@ -6,19 +6,18 @@ import { AppState } from 'react-native';
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, AISlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, AISlice, ReviewSlice,
 } from '@egoless-do/core';
 import {
   setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
-  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createAISlice,
+  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createAISlice, createReviewSlice,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
-import { runSync, resetSyncState } from '../features/sync/SyncService';
-import { resetMigrationFlag } from '../features/sync/useSync';
+import { runSync, resetSyncState, resetMigrationFlag } from '../features/sync/SyncService';
 import { openDatabase } from '../db/schema';
 import { dbGetAllFoodEntries } from '../db/queries';
 
@@ -78,7 +77,7 @@ function persistAIConfig() {
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & AISlice;
+  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & AISlice & ReviewSlice;
 
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
@@ -101,7 +100,9 @@ export const useAppStore = create<MobileStore>()(
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
       ...createThoughtTrailSlice(adapter)(...a),
+      ...createTrailNoteSlice(adapter)(...a),
       ...createAISlice(persistAIConfig)(...a),
+      ...createReviewSlice(adapter, triggerAutoSync)(...a),
     }),
     {
       name: 'egoless-do-mobile',
@@ -111,6 +112,7 @@ export const useAppStore = create<MobileStore>()(
         waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
         foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
         thoughtTrails: s.thoughtTrails,
+        trailNotes: s.trailNotes,
         activeFasting: s.activeFasting,
         fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,
         medHistory: s.medHistory, checkinHistory: s.checkinHistory,
@@ -124,6 +126,8 @@ export const useAppStore = create<MobileStore>()(
         graceHistory: s.graceHistory, recycleBin: s.recycleBin,
         healthSyncEnabled: s.healthSyncEnabled,
         aiMode: s.aiMode, aiModels: s.aiModels,
+        checkinReviews: s.checkinReviews,
+        ignoredRecPatterns: s.ignoredRecPatterns,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
@@ -141,7 +145,16 @@ export const useAppStore = create<MobileStore>()(
           getProfile: () => (useAppStore.getState().userProfile ?? {}) as Record<string, unknown>,
           getWaterGoal: () => useAppStore.getState().waterGoal ?? 2000,
           persistProfile: (data) => {
-            adapter.persistChange('profile', 'self', data).catch(console.error);
+            const s = useAppStore.getState();
+            adapter.persistChange('profile', 'self', {
+              ...data,
+              calGoal: s.calGoal, customFoodPresets: s.customFoodPresets,
+              theme: s.theme, language: s.language,
+              remindEnabled: s.remindEnabled, remindTime: s.remindTime,
+              healthSyncEnabled: s.healthSyncEnabled,
+              customTags: s.customTags, customMoods: s.customMoods,
+              allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,
+            }).catch(console.error);
           },
           onPlanDailyReset: (previousDate) => {
             useAppStore.getState().performDailyReset?.(previousDate);

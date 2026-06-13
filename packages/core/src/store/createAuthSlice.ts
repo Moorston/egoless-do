@@ -107,6 +107,7 @@ export function createAuthSlice(
         if (data.dailyTodoHistory) patch.dailyTodoHistory = mergeById(data.dailyTodoHistory, s.dailyTodoHistory ?? [], 'id');
         if (data.grace)           patch.graceHistory = mergeById(data.grace, s.graceHistory ?? [], 'date');
         if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail, s.thoughtTrails ?? [], 'id');
+        if (data.trailNote)       patch.trailNotes = mergeById(data.trailNote, s.trailNotes ?? [], 'id');
 
         if (data.profile?.length) {
           const latest = data.profile

@@ -12,6 +12,8 @@ export type RootStackParamList = {
   StreakBreak: undefined;
   CheckinHistory: undefined;
   CheckinDetail: { date: string };
+  ReviewHistory: undefined;
+  ReviewDetail: { reviewId: string };
   ExerciseHistory: undefined;
   PlanCreate: { planId?: string } | undefined;
   PlanDetail: { planId: string };
@@ -21,6 +23,7 @@ export type RootStackParamList = {
   Stats: undefined;
   ReflectionStats: undefined;
   MindTrail: undefined;
+  QuickCreateTrail: { initialText?: string; selectedIds?: string[] } | undefined;
   ThoughtTrailDetail: { trailId: string };
   ReflectionDetail: { reflectionId: string };
   HabitDetail: { habitId: string };
@@ -35,6 +38,6 @@ export type MainTabParamList = {
   Meditation: undefined;
   Exercise: undefined;
   Settings: undefined;
-  Reflections: { showNew?: boolean } | undefined;
+  Reflections: { showNew?: boolean; trailId?: string } | undefined;
   Habits: undefined;
 };

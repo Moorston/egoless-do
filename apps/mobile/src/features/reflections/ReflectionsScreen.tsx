@@ -19,6 +19,7 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import ShareCard from './ShareCard';
 import FilterDrawer from './FilterDrawer';
 import MindTrailEntryCard from './MindTrailEntryCard';
+import TrailSuggestionBanner from './TrailSuggestionBanner';
 import ReflectionForm from './ReflectionForm';
 import { useReflections } from './useReflections';
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES } from '@egoless-do/core';
@@ -181,6 +182,15 @@ export default function ReflectionsScreen() {
       nav.setParams({ showNew: false });
     }
   }, [route.params?.showNew]);
+
+  // Handle trailId param — set as pending trail for new reflection
+  useEffect(() => {
+    if (route.params?.trailId) {
+      setPendingTrailIds(prev => prev.includes(route.params.trailId!) ? prev : [...prev, route.params.trailId!]);
+      setShowNew(true);
+      nav.setParams({ trailId: undefined });
+    }
+  }, [route.params?.trailId]);
   const [content, setContent]     = useState('');
   const [tags, setTags]           = useState<string[]>([]);
   const [mood, setMood]           = useState('');
@@ -367,6 +377,9 @@ export default function ReflectionsScreen() {
 
         {/* Mind Trail Entry Card */}
         <MindTrailEntryCard onPress={() => rootNav.navigate('MindTrail')} />
+
+        {/* Trail Suggestion Banner */}
+        <TrailSuggestionBanner />
 
         {/* Search + toggle row */}
         <View style={{ flexDirection:'row', gap:8, marginBottom:16 }}>

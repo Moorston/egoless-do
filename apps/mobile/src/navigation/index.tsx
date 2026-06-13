@@ -29,6 +29,7 @@ import ReflectionsScreen from '../features/reflections/ReflectionsScreen';
 import ReflectionStatsScreen from '../features/reflections/ReflectionStatsScreen';
 import MindTrailScreen from '../features/reflections/MindTrailScreen';
 import ThoughtTrailDetailScreen from '../features/reflections/ThoughtTrailDetailScreen';
+import QuickCreateTrailScreen from '../features/reflections/QuickCreateTrailScreen';
 import ReflectionDetailScreen from '../features/reflections/ReflectionDetailScreen';
 import InsightScreen from '../features/reflections/InsightScreen';
 import ReviewScreen from '../features/reflections/ReviewScreen';
@@ -47,6 +48,8 @@ import GracePage         from '../features/home/GracePage';
 import StreakBreakScreen from '../features/home/StreakBreakScreen';
 import CheckinHistoryScreen from '../features/home/CheckinHistoryScreen';
 import CheckinDetailScreen from '../features/home/CheckinDetailScreen';
+import ReviewHistoryScreen from '../features/home/ReviewHistoryScreen';
+import ReviewDetailScreen from '../features/home/ReviewDetailScreen';
 import PlanScreen from '../features/plan/PlanScreen';
 import PlanCreateScreen from '../features/plan/PlanCreateScreen';
 import PlanDetailScreen from '../features/plan/PlanDetailScreen';
@@ -301,6 +304,8 @@ export default function AppNavigator() {
         <Stack.Screen name="StreakBreak" component={StreakBreakScreen} />
         <Stack.Screen name="CheckinHistory" component={CheckinHistoryScreen} />
         <Stack.Screen name="CheckinDetail" component={CheckinDetailScreen} />
+        <Stack.Screen name="ReviewHistory" component={ReviewHistoryScreen} />
+        <Stack.Screen name="ReviewDetail" component={ReviewDetailScreen} />
         <Stack.Screen name="ExerciseHistory" component={ExerciseHistoryScreen} />
         <Stack.Screen name="PlanCreate"     component={PlanCreateScreen} />
         <Stack.Screen name="PlanDetail"     component={PlanDetailScreen} />
@@ -313,6 +318,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Stats"         component={StatsScreen} />
         <Stack.Screen name="ReflectionStats" component={ReflectionStatsScreen} />
         <Stack.Screen name="MindTrail"     component={MindTrailScreen} />
+        <Stack.Screen name="QuickCreateTrail" component={QuickCreateTrailScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ThoughtTrailDetail" component={ThoughtTrailDetailScreen} />
         <Stack.Screen name="ReflectionDetail" component={ReflectionDetailScreen} />
         <Stack.Screen name="Insight"       component={InsightScreen} />

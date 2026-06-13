@@ -1,5 +1,6 @@
-import type { ThoughtTrail } from '../types/thought-trail';
+import type { ThoughtTrail, TrailInsightCache, TrailReviewCache } from '../types/thought-trail';
 import type { MindReflection } from '../types/reflection';
+import type { PlanItem, PlanItemPriority } from '../types/plan';
 import type { ThoughtTrailSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
@@ -16,6 +17,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         name,
         description,
         reflectionIds,
+        noteIds: [],
         source,
         createdAt: now,
         updatedAt: now,
@@ -74,6 +76,15 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
           }
           return r;
         }),
+      }));
+
+      // Cascade delete trail notes
+      const notes = (get().trailNotes ?? []).filter(n => n.trailId === id);
+      for (const note of notes) {
+        adapter?.markDeleted('trailNote', note.id).catch(console.error);
+      }
+      set(s => ({
+        trailNotes: (s.trailNotes ?? []).filter(n => n.trailId !== id),
       }));
 
       // Delete the trail
@@ -143,6 +154,65 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
       }));
       const trail = get().thoughtTrails.find(t => t.id === trailId);
       if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
+    },
+
+    setInsightCache: (trailId, cache) => {
+      set(s => ({
+        thoughtTrails: (s.thoughtTrails ?? []).map(t =>
+          t.id === trailId ? { ...t, insightCache: cache, updatedAt: Date.now() } : t
+        ),
+      }));
+      const trail = get().thoughtTrails.find(t => t.id === trailId);
+      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
+    },
+
+    setReviewCache: (trailId, cache) => {
+      set(s => ({
+        thoughtTrails: (s.thoughtTrails ?? []).map(t =>
+          t.id === trailId ? { ...t, reviewCache: cache, updatedAt: Date.now() } : t
+        ),
+      }));
+      const trail = get().thoughtTrails.find(t => t.id === trailId);
+      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
+    },
+
+    createPlanItemFromTrail: (trailId, form) => {
+      const trail = (get().thoughtTrails ?? []).find(t => t.id === trailId);
+      if (!trail) return false;
+
+      const activePlan = get().getActivePlan?.();
+      if (!activePlan) return false;
+
+      get().addPlanItem({
+        planId: activePlan.id,
+        name: form.name,
+        description: form.description,
+        startDate: form.startDate,
+        endDate: form.endDate,
+        priority: form.priority,
+        trailId,
+      });
+
+      return true;
+    },
+
+    getTrailPlanItems: (trailId) => {
+      return (get().planItems ?? []).filter(
+        (item: PlanItem) => item.trailId === trailId && !item.deleted
+      );
+    },
+
+    // ─── User preferences for recommendations ───────────────────────
+    ignoredRecPatterns: [],
+
+    addIgnoredRecPattern: (pattern) => {
+      set(s => ({
+        ignoredRecPatterns: [...new Set([...(s.ignoredRecPatterns ?? []), pattern])],
+      }));
+    },
+
+    clearIgnoredRecPatterns: () => {
+      set({ ignoredRecPatterns: [] });
     },
   });
 }

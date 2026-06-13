@@ -228,13 +228,32 @@ CREATE TABLE IF NOT EXISTS thought_trails (
   name            TEXT    NOT NULL,
   description     TEXT    DEFAULT '',
   reflection_ids  TEXT    NOT NULL DEFAULT '[]',
+  note_ids        TEXT    NOT NULL DEFAULT '[]',
   source          TEXT    DEFAULT 'manual',
   insight_summary TEXT,
+  insight_cache   TEXT,
+  review_cache    TEXT,
   created_at      INTEGER NOT NULL,
   updated_at      INTEGER,
   deleted         INTEGER NOT NULL DEFAULT 0,
   synced          INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS trail_notes (
+  id               TEXT PRIMARY KEY,
+  trail_id         TEXT    NOT NULL,
+  content          TEXT    NOT NULL,
+  tags             TEXT    NOT NULL DEFAULT '[]',
+  mood             TEXT,
+  source           TEXT    NOT NULL DEFAULT 'free',
+  guided_question  TEXT,
+  note_order       INTEGER NOT NULL DEFAULT 0,
+  created_at       INTEGER NOT NULL,
+  updated_at       INTEGER,
+  deleted          INTEGER NOT NULL DEFAULT 0,
+  synced           INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id);
 
 CREATE TABLE IF NOT EXISTS ai_configs (
   config_id  TEXT PRIMARY KEY,
@@ -244,6 +263,20 @@ CREATE TABLE IF NOT EXISTS ai_configs (
   deleted    INTEGER NOT NULL DEFAULT 0,
   synced     INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS checkin_reviews (
+  id          TEXT PRIMARY KEY,
+  user_id     TEXT NOT NULL DEFAULT 'self',
+  review_id   TEXT NOT NULL,
+  period      TEXT NOT NULL DEFAULT 'week',
+  start_date  TEXT NOT NULL,
+  end_date    TEXT NOT NULL,
+  review_data TEXT NOT NULL DEFAULT '{}',
+  updated_at  INTEGER,
+  deleted     INTEGER NOT NULL DEFAULT 0,
+  synced      INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_checkin_reviews_period ON checkin_reviews(period, start_date);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -370,6 +403,27 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   // Add source and insight_summary columns to thought_trails if missing
   await tryAddCol('thought_trails', 'source', "TEXT DEFAULT 'manual'");
   await tryAddCol('thought_trails', 'insight_summary', 'TEXT');
+  await tryAddCol('thought_trails', 'note_ids', "TEXT NOT NULL DEFAULT '[]'");
+  await tryAddCol('thought_trails', 'insight_cache', 'TEXT');
+  await tryAddCol('thought_trails', 'review_cache', 'TEXT');
+
+  // Add trail_id column to plan_items if missing
+  await tryAddCol('plan_items', 'trail_id', 'TEXT');
+
+  // Ensure trail_notes table exists
+  const trailNotesTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='trail_notes'"
+  );
+  if (!trailNotesTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS trail_notes (
+      id TEXT PRIMARY KEY, trail_id TEXT NOT NULL, content TEXT NOT NULL,
+      tags TEXT NOT NULL DEFAULT '[]', mood TEXT, source TEXT NOT NULL DEFAULT 'free',
+      guided_question TEXT, note_order INTEGER NOT NULL DEFAULT 0,
+      created_at INTEGER NOT NULL, updated_at INTEGER,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id)');
+  }
 
   // Ensure ai_configs table exists
   const aiConfigsTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -381,6 +435,22 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       models TEXT NOT NULL DEFAULT '[]', updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
+  }
+
+  // Ensure checkin_reviews table exists
+  const checkinReviewsTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='checkin_reviews'"
+  );
+  if (!checkinReviewsTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS checkin_reviews (
+      id TEXT PRIMARY KEY, user_id TEXT NOT NULL DEFAULT 'self',
+      review_id TEXT NOT NULL, period TEXT NOT NULL DEFAULT 'week',
+      start_date TEXT NOT NULL, end_date TEXT NOT NULL,
+      review_data TEXT NOT NULL DEFAULT '{}',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_checkin_reviews_period ON checkin_reviews(period, start_date)');
   }
 
   // Ensure plan tables exist
