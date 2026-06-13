@@ -1,7 +1,12 @@
-// ─── AI Trail Recommender: cloud-based recommendation + matching ───
+// ─── AI Trail Recommender: RAG + 分批并发 ──────────────────────────
 import { getAIService } from './ai-service';
 import { buildReflectionSummary } from '../business/trail-creation';
 import type { MindReflection } from '../types/reflection';
+import type { ReflectionIndex } from './rag/indexer';
+import { buildIndex } from './rag/indexer';
+import { retrieveTopK } from './rag/retriever';
+import { buildRecommendPrompt, buildQueryParsePrompt } from './rag/prompt-builder';
+import { AICache, generateCacheKey } from './rag/cache';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -18,28 +23,177 @@ export interface AIMatchResult {
   relevance: number;
 }
 
-// ─── Prompts ─────────────────────────────────────────────────────────
+export interface SmartQueryFilters {
+  timeRange?: 'week' | 'month' | '3months' | 'all';
+  tags?: string[];
+  moods?: string[];
+  keywords?: string[];
+}
 
-const AI_RECOMMEND_SYSTEM = `你是思维脉络分析助手。你的任务是从用户的反思记录中发现有意义的思路链。
-要求：
-- 每条链包含 3-6 条感念（用序号引用，从0开始）
-- 链内感念应有叙事连贯性（时间线+情绪变化）
-- 避免过于宽泛的分组（如"所有焦虑的感念"）
-- 给出链的名称和一句话解释
-- 输出JSON数组格式: [{"name":"...","description":"...","reflectionIndices":[0,1,2],"confidence":0.8}]`;
+export interface SmartQueryResult {
+  filters: SmartQueryFilters;
+  intent: 'filter' | 'analyze' | 'explore';
+  question: string | null;
+  topic: string;
+}
 
-const AI_MATCH_SYSTEM = `你是思维脉络分析助手。用户会描述一个想追踪的主题，你需要从反思记录中找到相关的感念。
-要求：
-- 返回相关感念的序号（从0开始）
-- 给出每条感念的匹配理由
-- 按相关度排序
-- 输出JSON格式: [{"reflectionIndex":0,"reason":"...","relevance":0.9}]`;
+// ─── Constants ───────────────────────────────────────────────────────
 
-// ─── AI Recommendation ───────────────────────────────────────────────
+const AI_TIMEOUT_MS = 15000;
+const RAG_TOP_K = 5;
+const BATCH_PROMPT_THRESHOLD = 400;
+const BATCH_ITEM_SIZE = 5;
+
+// ─── Caches ──────────────────────────────────────────────────────────
+
+const recommendCache = new AICache<AIRecommendation[]>(5 * 60 * 1000, 50);
+const matchCache = new AICache<AIMatchResult[]>(5 * 60 * 1000, 50);
+const queryCache = new AICache<SmartQueryResult>(5 * 60 * 1000, 50);
+const semanticCache = new AICache<AIMatchResult[]>(5 * 60 * 1000, 50);
+
+// ─── System Prompts ──────────────────────────────────────────────────
+
+const AI_RECOMMEND_SYSTEM = `思维脉络分析助手。从感念中发现有意义的思路链。
+只输出JSON数组，不要任何解释或思考过程。
+格式: [{"name":"简短名称","description":"一句话描述","reflectionIndices":[0,1],"confidence":0.8}]
+reflectionIndices引用输入感念的序号。最多返回3条。`;
+
+const AI_MATCH_SYSTEM = `语义搜索助手。从感念中找与查询意思相近的记录，不要求关键词匹配。
+示例: "焦虑"≈"压力大睡不着", "开心"≈"心情不错", "工作"≈"项目deadline"
+输出JSON: [{"reflectionIndex":0,"reason":"...","relevance":0.9}]`;
+
+const AI_SMART_QUERY_SYSTEM = `思维脉络查询助手。分析用户查询意图，提取过滤条件。
+输出JSON: {"filters":{"timeRange":"month","tags":[],"moods":[]},"intent":"filter","question":null,"topic":"..."}`;
+
+const AI_SEMANTIC_SEARCH_SYSTEM = `语义搜索助手。从感念中找与查询意思相近的记录，不要求关键词匹配。
+示例: "焦虑"≈"压力大睡不着", "开心"≈"心情不错", "工作"≈"项目deadline"
+宁可多返回不要漏掉。输出JSON: [{"index":0,"reason":"...","relevance":0.9}]`;
+
+// ─── AbortController wrapper ─────────────────────────────────────────
+
+async function withAbortTimeout<T>(
+  fn: (signal: AbortSignal) => Promise<T>,
+  ms: number,
+  externalSignal?: AbortSignal,
+): Promise<T> {
+  const controller = new AbortController();
+
+  if (externalSignal?.aborted) {
+    throw new Error('Aborted');
+  }
+  if (externalSignal) {
+    externalSignal.addEventListener('abort', () => controller.abort());
+  }
+
+  const timeoutId = setTimeout(() => controller.abort(), ms);
+
+  try {
+    const result = await fn(controller.signal);
+    clearTimeout(timeoutId);
+    return result;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (controller.signal.aborted) {
+      throw new Error('AI调用超时');
+    }
+    throw error;
+  }
+}
+
+// ─── 通用分批 AI 调用 ────────────────────────────────────────────────
+
+interface BatchResult<T> {
+  data: T;
+  batchIdx: number;
+}
+
+/**
+ * 通用分批 AI 调用。
+ * 如果 prompt <= threshold，单次调用；否则按 batchSize 分批并发。
+ * @returns 所有批次的原始 AI 返回字符串（按批次顺序）
+ */
+async function batchedAIGenerate(
+  items: ReflectionIndex[],
+  buildPrompt: (batch: ReflectionIndex[], batchIdx: number) => string,
+  systemPrompt: string,
+  options?: {
+    maxTokens?: number;
+    temperature?: number;
+    timeoutMs?: number;
+    batchSize?: number;
+    promptThreshold?: number;
+    signal?: AbortSignal;
+  }
+): Promise<string[]> {
+  const service = getAIService();
+  const timeoutMs = options?.timeoutMs ?? AI_TIMEOUT_MS;
+  const batchSize = options?.batchSize ?? BATCH_ITEM_SIZE;
+  const threshold = options?.promptThreshold ?? BATCH_PROMPT_THRESHOLD;
+  const maxTokens = options?.maxTokens ?? 400;
+  const temperature = options?.temperature ?? 0.2;
+  const externalSignal = options?.signal;
+
+  // 检测是否需要分批
+  const fullPrompt = buildPrompt(items, 0);
+  const needBatch = fullPrompt.length > threshold && items.length > batchSize;
+
+  if (!needBatch) {
+    console.log('[BatchAI] single call, prompt length:', fullPrompt.length);
+    const result = await withAbortTimeout(
+      (signal) => (service as any).generateCloud(fullPrompt, {
+        systemPrompt, maxTokens, temperature, signal,
+      }),
+      timeoutMs,
+      externalSignal,
+    );
+    const r = result as any;
+    return r?.success && r?.data ? [r.data] : [];
+  }
+
+  // 分批并发
+  const batches: ReflectionIndex[][] = [];
+  for (let i = 0; i < items.length; i += batchSize) {
+    batches.push(items.slice(i, i + batchSize));
+  }
+  console.log('[BatchAI] parallel batches:', batches.length, 'total items:', items.length);
+
+  const promises = batches.map((batch, idx) => {
+    const prompt = buildPrompt(batch, idx);
+    console.log(`[BatchAI] batch ${idx}, prompt:`, prompt.length, 'chars');
+    return withAbortTimeout(
+      (signal) => (service as any).generateCloud(prompt, {
+        systemPrompt, maxTokens, temperature, signal,
+      }),
+      timeoutMs,
+      externalSignal,
+    );
+  });
+
+  const results = await Promise.allSettled(promises);
+  const outputs: string[] = [];
+  for (let i = 0; i < results.length; i++) {
+    const r = results[i];
+    if (r.status === 'fulfilled') {
+      const val = r.value as any;
+      if (val?.success && val?.data) {
+        outputs.push(val.data);
+      } else {
+        console.log(`[BatchAI] batch ${i} failed:`, val?.error);
+      }
+    } else {
+      console.log(`[BatchAI] batch ${i} error:`, r.reason);
+    }
+  }
+  console.log('[BatchAI] success batches:', outputs.length, '/', batches.length);
+  return outputs;
+}
+
+// ─── AI Recommendation (RAG + 分批) ─────────────────────────────────
 
 export async function recommendTrailsViaAI(
   reflections: MindReflection[],
   query?: string,
+  options?: { signal?: AbortSignal },
 ): Promise<AIRecommendation[]> {
   const service = getAIService();
   const config = service.getConfig();
@@ -48,38 +202,52 @@ export async function recommendTrailsViaAI(
     return [];
   }
 
-  // Limit to 30 most recent for token efficiency
-  const limited = reflections
-    .filter(r => !r.deleted)
-    .sort((a, b) => b.timestamp - a.timestamp)
-    .slice(0, 30);
+  const validReflections = reflections.filter(r => !r.deleted);
+  if (validReflections.length < 3) return [];
 
-  if (limited.length < 3) return [];
+  const cacheKey = generateCacheKey(query || '', validReflections.map(r => r.id));
+  const cached = recommendCache.get(cacheKey);
+  if (cached) return cached;
 
-  const summaries = limited.map(r => buildReflectionSummary(r));
-  const list = summaries.map((s, i) => `[${i}] ${s}`).join('\n');
-  const queryPart = query ? `\n\n用户想追踪的主题: "${query}"` : '';
+  const index = buildIndex(validReflections);
+  const topK = retrieveTopK(query || '', index, RAG_TOP_K);
 
-  const prompt = `以下是用户的反思记录：\n${list}${queryPart}\n\n请发现 2-3 条有意义的思路链。`;
+  const targetReflections = topK.length >= 3
+    ? topK.map(s => s.index)
+    : index.slice(0, RAG_TOP_K);
 
   try {
-    const result = await (service as any).generateCloud(prompt, {
-      systemPrompt: AI_RECOMMEND_SYSTEM,
-    });
+    const outputs = await batchedAIGenerate(
+      targetReflections,
+      (batch) => buildRecommendPrompt(query || '', batch),
+      AI_RECOMMEND_SYSTEM,
+      { maxTokens: 2000, temperature: 0.1, signal: options?.signal },
+    );
 
-    if (!result?.success || !result?.data) return [];
+    if (outputs.length === 0) return [];
 
-    return parseAIRecommendations(result.data, limited.length);
-  } catch {
+    // 合并所有批次的推荐结果
+    const allParsed: AIRecommendation[] = [];
+    for (const raw of outputs) {
+      const parsed = parseAIRecommendations(raw, targetReflections.length);
+      allParsed.push(...parsed);
+    }
+
+    const limited = allParsed.slice(0, 2);
+    recommendCache.set(cacheKey, limited);
+    return limited;
+  } catch (e) {
+    console.log('[RAG] recommendTrailsViaAI fallback:', e);
     return [];
   }
 }
 
-// ─── AI Matching ─────────────────────────────────────────────────────
+// ─── AI Matching (RAG + 分批) ────────────────────────────────────────
 
 export async function matchReflectionsToTopic(
   reflections: MindReflection[],
   topic: string,
+  options?: { signal?: AbortSignal },
 ): Promise<AIMatchResult[]> {
   const service = getAIService();
   const config = service.getConfig();
@@ -88,38 +256,196 @@ export async function matchReflectionsToTopic(
     return [];
   }
 
-  const limited = reflections
-    .filter(r => !r.deleted)
-    .sort((a, b) => b.timestamp - a.timestamp)
-    .slice(0, 30);
+  const validReflections = reflections.filter(r => !r.deleted);
+  if (validReflections.length < 2) return [];
 
-  if (limited.length < 2) return [];
+  const cacheKey = generateCacheKey(topic, validReflections.map(r => r.id));
+  const cached = matchCache.get(cacheKey);
+  if (cached) return cached;
 
-  const summaries = limited.map(r => buildReflectionSummary(r));
-  const list = summaries.map((s, i) => `[${i}] ${s}`).join('\n');
+  const index = buildIndex(validReflections);
+  const topK = retrieveTopK(topic, index, RAG_TOP_K);
 
-  const prompt = `以下是用户的反思记录：\n${list}\n\n用户想追踪的主题: "${topic}"\n\n请找到相关的感念。`;
+  const targetReflections = topK.length >= 2
+    ? topK.map(s => s.index)
+    : index.slice(0, RAG_TOP_K);
 
   try {
-    const result = await (service as any).generateCloud(prompt, {
-      systemPrompt: AI_MATCH_SYSTEM,
-    });
+    const outputs = await batchedAIGenerate(
+      targetReflections,
+      (batch) => buildRecommendPrompt(topic, batch),
+      AI_MATCH_SYSTEM,
+      { maxTokens: 500, temperature: 0.3, signal: options?.signal },
+    );
 
-    if (!result?.success || !result?.data) return [];
+    if (outputs.length === 0) return [];
 
-    return parseAIMatchResults(result.data, limited.length);
-  } catch {
+    const allParsed: AIMatchResult[] = [];
+    for (const raw of outputs) {
+      allParsed.push(...parseAIMatchResults(raw, targetReflections.length));
+    }
+
+    matchCache.set(cacheKey, allParsed);
+    return allParsed;
+  } catch (e) {
+    console.log('[RAG] matchReflectionsToTopic fallback:', e);
     return [];
+  }
+}
+
+// ─── Semantic Search (分批并发) ──────────────────────────────────────
+
+const SEMANTIC_TOP_K = 15;
+
+export async function semanticSearchReflections(
+  reflections: MindReflection[],
+  query: string,
+  options?: { signal?: AbortSignal },
+): Promise<AIMatchResult[]> {
+  const service = getAIService();
+  const config = service.getConfig();
+
+  console.log('[SemanticSearch] query:', query, 'mode:', config.mode, 'defaultModel:', service.getDefaultModel()?.id ?? 'none');
+
+  if (config.mode === 'local' || !service.getDefaultModel()) {
+    console.log('[SemanticSearch] skip: no cloud config');
+    return [];
+  }
+
+  const validReflections = reflections.filter(r => !r.deleted);
+  if (validReflections.length < 2) return [];
+
+  const cacheKey = generateCacheKey(`semantic:${query}`, validReflections.map(r => r.id));
+  const cached = semanticCache.get(cacheKey);
+  if (cached) return cached;
+
+  const index = buildIndex(validReflections);
+  const topK = retrieveTopK(query, index, SEMANTIC_TOP_K);
+  console.log('[SemanticSearch] RAG topK:', topK.length);
+
+  const targetReflections = topK.length >= 5
+    ? topK.map(s => s.index)
+    : index.slice(0, SEMANTIC_TOP_K);
+
+  try {
+    const outputs = await batchedAIGenerate(
+      targetReflections,
+      (batch, batchIdx) => {
+        const reflLines = batch
+          .map((r, i) => {
+            const content = r.content.length > 60 ? r.content.slice(0, 60) + '...' : r.content;
+            const mood = r.mood ? ` ${r.mood}` : '';
+            return `[${i}]${mood} ${content}`;
+          })
+          .join('\n');
+        return `查询: "${query}"\n感念:\n${reflLines}\n找出语义相近的，返回JSON: [{"index":0,"reason":"...","relevance":0.9}]`;
+      },
+      AI_SEMANTIC_SEARCH_SYSTEM,
+      { maxTokens: 300, temperature: 0.2, timeoutMs: 12000, batchSize: 5, promptThreshold: 400, signal: options?.signal },
+    );
+
+    if (outputs.length === 0) return [];
+
+    // 汇总并修正批次索引偏移
+    const allMatches: AIMatchResult[] = [];
+    let offset = 0;
+    for (let batchIdx = 0; batchIdx < outputs.length; batchIdx++) {
+      const batchLen = Math.min(BATCH_ITEM_SIZE, targetReflections.length - offset);
+      const parsed = parseAIMatchResults(outputs[batchIdx], batchLen);
+      for (const m of parsed) {
+        allMatches.push({
+          reflectionIndex: offset + m.reflectionIndex,
+          reason: m.reason,
+          relevance: m.relevance,
+        });
+      }
+      offset += batchLen;
+    }
+
+    console.log('[SemanticSearch] total matches:', allMatches.length);
+    semanticCache.set(cacheKey, allMatches);
+    return allMatches;
+  } catch (e) {
+    console.log('[SemanticSearch] exception:', e);
+    return [];
+  }
+}
+
+// ─── Smart Query ─────────────────────────────────────────────────────
+
+const FALLBACK_RESULT: SmartQueryResult = {
+  filters: {},
+  intent: 'filter',
+  question: null,
+  topic: '',
+};
+
+export async function parseSmartQuery(
+  reflections: MindReflection[],
+  input: string,
+  history?: string[],
+  options?: { signal?: AbortSignal },
+): Promise<SmartQueryResult> {
+  const service = getAIService();
+  const config = service.getConfig();
+  const defaultModel = service.getDefaultModel();
+
+  if (config.mode === 'local' || !defaultModel) {
+    return { ...FALLBACK_RESULT, topic: input };
+  }
+
+  const validReflections = reflections.filter(r => !r.deleted);
+  if (validReflections.length < 2) {
+    return { ...FALLBACK_RESULT, topic: input };
+  }
+
+  const cacheKey = generateCacheKey(input, validReflections.map(r => r.id));
+  const cached = queryCache.get(cacheKey);
+  if (cached) return cached;
+
+  const index = buildIndex(validReflections);
+  const topK = retrieveTopK(input, index, RAG_TOP_K);
+
+  const targetReflections = topK.length >= 2
+    ? topK.map(s => s.index)
+    : index.slice(0, RAG_TOP_K);
+
+  const prompt = buildQueryParsePrompt(input, targetReflections, history);
+
+  try {
+    const result: any = await withAbortTimeout(
+      (signal) => (service as any).generateCloud(prompt, {
+        systemPrompt: AI_SMART_QUERY_SYSTEM,
+        maxTokens: 500,
+        temperature: 0.3,
+        signal,
+      }),
+      AI_TIMEOUT_MS,
+      options?.signal,
+    );
+
+    if (!result?.success || !result?.data) {
+      return { ...FALLBACK_RESULT, topic: input };
+    }
+
+    const parsed = parseSmartQueryResult(result.data, input);
+    queryCache.set(cacheKey, parsed);
+    return parsed;
+  } catch (e) {
+    console.log('[SmartQuery] exception:', e);
+    return { ...FALLBACK_RESULT, topic: input };
   }
 }
 
 // ─── Availability check ──────────────────────────────────────────────
 
-export function isAIRecommendAvailable(): boolean {
+export function isAIRecommendAvailable(config?: { mode?: string; models?: any[] }): boolean {
   try {
-    const service = getAIService();
-    const config = service.getConfig();
-    return config.mode !== 'local' && service.getDefaultModel() !== null;
+    const service = config
+      ? getAIService({ mode: config.mode as any, models: config.models })
+      : getAIService();
+    const cfg = service.getConfig();
+    return cfg.mode !== 'local' && service.getDefaultModel() !== null;
   } catch {
     return false;
   }
@@ -129,7 +455,6 @@ export function isAIRecommendAvailable(): boolean {
 
 function parseAIRecommendations(raw: string, maxIndex: number): AIRecommendation[] {
   try {
-    // Extract JSON from potential markdown code block
     const jsonStr = extractJSON(raw);
     const arr = JSON.parse(jsonStr);
     if (!Array.isArray(arr)) return [];
@@ -175,13 +500,79 @@ function parseAIMatchResults(raw: string, maxIndex: number): AIMatchResult[] {
 }
 
 function extractJSON(raw: string): string {
-  // Try to extract JSON from markdown code block
   const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (codeBlockMatch) return codeBlockMatch[1].trim();
 
-  // Try to find JSON array directly
-  const arrayMatch = raw.match(/\[[\s\S]*\]/);
-  if (arrayMatch) return arrayMatch[0];
+  // 找最后一个完整的 JSON 数组（思考文本在前，结果在后）
+  const lastArray = findLastBalancedJSON(raw, '[', ']');
+  if (lastArray) return lastArray;
+
+  const lastObject = findLastBalancedJSON(raw, '{', '}');
+  if (lastObject) return lastObject;
 
   return raw.trim();
+}
+
+function findLastBalancedJSON(text: string, open: string, close: string): string | null {
+  let lastMatch: string | null = null;
+  // 从后往前找，找到最后一个完整的 balanced JSON
+  for (let i = text.length - 1; i >= 0; i--) {
+    if (text[i] === close) {
+      let depth = 0;
+      let inString = false;
+      let escape = false;
+      for (let j = i; j >= 0; j--) {
+        const ch = text[j];
+        if (escape) { escape = false; continue; }
+        if (ch === '\\') { escape = true; continue; }
+        if (ch === '"') { inString = !inString; continue; }
+        if (inString) continue;
+        if (ch === close) depth++;
+        if (ch === open) depth--;
+        if (depth === 0) {
+          const candidate = text.slice(j, i + 1);
+          try {
+            JSON.parse(candidate);
+            lastMatch = candidate;
+          } catch {}
+          break;
+        }
+      }
+    }
+  }
+  return lastMatch;
+}
+
+function parseSmartQueryResult(raw: string, input: string): SmartQueryResult {
+  try {
+    const jsonStr = extractJSON(raw);
+    const obj = JSON.parse(jsonStr);
+
+    const validTimeRanges = ['week', 'month', '3months', 'all'];
+    const validIntents = ['filter', 'analyze', 'explore'];
+
+    const filters: SmartQueryFilters = {};
+    if (obj.filters) {
+      if (obj.filters.timeRange && validTimeRanges.includes(obj.filters.timeRange)) {
+        filters.timeRange = obj.filters.timeRange;
+      }
+      if (Array.isArray(obj.filters.tags)) {
+        filters.tags = obj.filters.tags.filter((t: any) => typeof t === 'string');
+      }
+      if (Array.isArray(obj.filters.moods)) {
+        filters.moods = obj.filters.moods.filter((m: any) => typeof m === 'string');
+      }
+      if (Array.isArray(obj.filters.keywords)) {
+        filters.keywords = obj.filters.keywords.filter((k: any) => typeof k === 'string');
+      }
+    }
+
+    const intent = validIntents.includes(obj.intent) ? obj.intent : 'filter';
+    const question = typeof obj.question === 'string' ? obj.question : null;
+    const topic = typeof obj.topic === 'string' ? obj.topic : input;
+
+    return { filters, intent, question, topic };
+  } catch {
+    return { ...FALLBACK_RESULT, topic: input };
+  }
 }

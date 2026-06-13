@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_SMALL } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
 import { PlanTaskCard } from './PlanTaskCard';
 
@@ -47,7 +47,10 @@ export function PlanTasksSection({
 
       <View style={styles.list}>
         {planItems.map(item => {
-          const itemCheckins = checkins.filter(c => c.planItemId === item.id);
+          const itemCheckins = useMemo(
+            () => checkins.filter(c => c.planItemId === item.id),
+            [checkins, item.id]
+          );
           return (
             <PlanTaskCard
               key={item.id}

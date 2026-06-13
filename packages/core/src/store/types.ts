@@ -189,6 +189,7 @@ export interface RecycleBinSlice {
 
 export interface ThoughtTrailSlice {
   thoughtTrails: ThoughtTrail[];
+  ignoredRecPatterns: string[];  // 用户忽略的推荐模式
   createThoughtTrail: (name: string, description?: string, reflectionIds?: string[], source?: 'auto' | 'manual' | 'recommended') => string;
   updateThoughtTrail: (id: string, patch: Partial<ThoughtTrail>) => void;
   deleteThoughtTrail: (id: string) => void;
@@ -199,6 +200,8 @@ export interface ThoughtTrailSlice {
   setReviewCache: (trailId: string, cache: TrailReviewCache) => void;
   createPlanItemFromTrail: (trailId: string, form: { name: string; description: string; priority: PlanItemPriority; startDate: string; endDate: string }) => boolean;
   getTrailPlanItems: (trailId: string) => PlanItem[];
+  addIgnoredRecPattern: (pattern: string) => void;
+  clearIgnoredRecPatterns: () => void;
 }
 
 export interface TrailNoteSlice {

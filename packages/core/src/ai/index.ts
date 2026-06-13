@@ -70,9 +70,11 @@ export { PROVIDER_TEMPLATES } from './types';
 export {
   recommendTrailsViaAI,
   matchReflectionsToTopic,
+  semanticSearchReflections,
   isAIRecommendAvailable,
+  parseSmartQuery,
 } from './trail-recommender';
-export type { AIRecommendation, AIMatchResult } from './trail-recommender';
+export type { AIRecommendation, AIMatchResult, SmartQueryResult, SmartQueryFilters } from './trail-recommender';
 
 // Insight profile
 export {
@@ -80,3 +82,15 @@ export {
   generateInsightProfile,
 } from './insight-profile';
 export type { InsightProfile, HotTag, MoodEntry, HotTopic } from './insight-profile';
+
+// RAG module
+export {
+  buildIndex,
+  retrieveTopK,
+  buildRecommendPrompt,
+  buildQueryParsePrompt,
+  formatReflectionSummary,
+  AICache,
+  generateCacheKey,
+} from './rag';
+export type { ReflectionIndex, ScoredReflection } from './rag';

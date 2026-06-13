@@ -163,13 +163,13 @@ export class AIService {
   }
   
   // 云端生成
-  private async generateCloud(prompt: string, options?: GenerateOptions & { preferredModelId?: string }): Promise<AIResult<string>> {
+  private async generateCloud(prompt: string, options?: GenerateOptions & { preferredModelId?: string; signal?: AbortSignal }): Promise<AIResult<string>> {
     console.log('[AI Cloud] Getting cloud provider...');
     console.log('[AI Cloud] preferredModelId:', options?.preferredModelId);
     console.log('[AI Cloud] Available providers:', Array.from(this.providers.keys()));
-    
+
     const provider = this.getCloudProvider(options?.preferredModelId);
-    
+
     if (!provider) {
       console.log('[AI Cloud] No provider available!');
       console.log('[AI Cloud] Config models:', this.config.models.map(m => ({ id: m.id, enabled: m.enabled, isDefault: m.isDefault })));
@@ -179,11 +179,11 @@ export class AIService {
         source: 'cloud',
       };
     }
-    
+
     console.log('[AI Cloud] Using provider, generating...');
-    
+
     try {
-      const result = await provider.generate(prompt, options);
+      const result = await provider.generate(prompt, { ...options, signal: options?.signal });
       console.log('[AI Cloud] Generation successful, result length:', result?.length ?? 0);
       return {
         success: true,
@@ -220,7 +220,7 @@ export class AIService {
   // 脉络洞察（增强版，支持脉络感念）
   async generateTrailInsight(
     reflections: Array<{ content: string; mood: string }>,
-    options?: { useCloud?: boolean; preferredModelId?: string; trailNotes?: Array<{ content: string; source: string; guidedQuestion?: string }> }
+    options?: { useCloud?: boolean; preferredModelId?: string; signal?: AbortSignal; trailNotes?: Array<{ content: string; source: string; guidedQuestion?: string }> }
   ): Promise<TrailInsight> {
     const localInsight = this.localEngine.generateTrailInsight(reflections);
 
@@ -247,6 +247,7 @@ ${reflections.map((r, i) => `${i + 1}. [${r.mood}] ${r.content}`).join('\n')}${n
 
     const result = await this.generateCloud(prompt, {
       preferredModelId: options?.preferredModelId,
+      signal: options?.signal,
       systemPrompt: '你是一个帮助用户分析思维脉络的助手。请深入分析感念和反思笔记中的情绪变化、思维模式和成长轨迹。',
     });
 
@@ -260,7 +261,7 @@ ${reflections.map((r, i) => `${i + 1}. [${r.mood}] ${r.content}`).join('\n')}${n
   // 脉络复盘引导
   async generateTrailReviewGuide(
     items: Array<{ content: string; mood?: string; timestamp: number; kind: 'reflection' | 'note' }>,
-    options?: { useCloud?: boolean; preferredModelId?: string }
+    options?: { useCloud?: boolean; preferredModelId?: string; signal?: AbortSignal }
   ): Promise<ReviewGuide> {
     const localGuide: ReviewGuide = {
       questions: ['这段时间最大的变化是什么？', '哪个转折点对你影响最大？', '如果重来，你会怎么做不同？'],
@@ -287,6 +288,7 @@ ${items.map(r => {
 
     const result = await this.generateCloud(prompt, {
       preferredModelId: options?.preferredModelId,
+      signal: options?.signal,
       systemPrompt: '你是一个智慧的复盘引导者，用温暖、启发性的语言帮助用户从思维脉络中发现成长。',
     });
 

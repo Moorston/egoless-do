@@ -342,7 +342,7 @@ export const zh: I18nKeys = {
 
   // Thought Trail
   mindTrail:'思维脉络', thoughtTrail:'思路脉络', tagTrail:'标签脉络',
-  createThoughtTrail:'新建思路链', editThoughtTrail:'编辑思路脉络',
+  createThoughtTrail:'新建思路链', editThoughtTrail:'编辑思维脉络',
   thoughtTrailName:'脉络名称', thoughtTrailDesc:'脉络描述',
   thoughtTrailAddReflection:'添加感念', thoughtTrailRemoveReflection:'移除感念',
   thoughtTrailDelete:'删除思路脉络', thoughtTrailDeleteConfirm:'确定删除此思路脉络吗？',

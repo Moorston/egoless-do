@@ -17,8 +17,7 @@ import {
 import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
-import { runSync, resetSyncState } from '../features/sync/SyncService';
-import { resetMigrationFlag } from '../features/sync/useSync';
+import { runSync, resetSyncState, resetMigrationFlag } from '../features/sync/SyncService';
 import { openDatabase } from '../db/schema';
 import { dbGetAllFoodEntries } from '../db/queries';
 
@@ -128,6 +127,7 @@ export const useAppStore = create<MobileStore>()(
         healthSyncEnabled: s.healthSyncEnabled,
         aiMode: s.aiMode, aiModels: s.aiModels,
         checkinReviews: s.checkinReviews,
+        ignoredRecPatterns: s.ignoredRecPatterns,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

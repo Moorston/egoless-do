@@ -15,16 +15,39 @@ import { useTheme, useT } from '../../components/UI';
 import {
   FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON,
   getMoodIcon, generateTrailName,
-  computeCandidatePool, computeRecommendations, matchByKeyword,
+  computeCandidatePool, matchByKeyword,
   formatDateShort,
-  isAIRecommendAvailable, matchReflectionsToTopic,
+  isAIRecommendAvailable, matchReflectionsToTopic, parseSmartQuery, semanticSearchReflections,
 } from '@egoless-do/core';
-import type { TrailRecommendation, TrailFilters, MindReflection } from '@egoless-do/core';
-import RecommendCard from './RecommendCard';
+import type { TrailFilters, MindReflection, SmartQueryResult, SmartQueryFilters } from '@egoless-do/core';
 import SelectionSummary from './SelectionSummary';
 import InsightPanel from './InsightPanel';
+import { SmartQueryBubble } from './SmartQueryBubble';
+import { FilterTags } from './FilterTags';
+import { AIAnalysisStream, createAnalysisMessages } from './AIAnalysisStream';
 
 type TimeRange = 'week' | 'month' | '3months' | 'all';
+
+// ── Emotional context extraction ───────────────────────────────────
+const EMOTION_KEYWORDS: Record<string, string[]> = {
+  '焦虑': ['焦虑', '紧张', '不安', '担心', '忧虑', '压力', '压力大'],
+  '开心': ['开心', '高兴', '快乐', '愉快', '喜悦', '满足', '幸福'],
+  '平静': ['平静', '安宁', '放松', '淡定', '从容', '安心'],
+  '沮丧': ['沮丧', '失落', '难过', '悲伤', '低落', '郁闷', '烦'],
+  '愤怒': ['愤怒', '生气', '恼火', '烦躁', '气愤', '不满'],
+  '疲惫': ['累', '疲惫', '疲倦', '疲劳', '困', '没精神'],
+};
+
+function extractEmotionalContext(text: string): string[] {
+  const lower = text.toLowerCase();
+  const found: string[] = [];
+  for (const [emotion, keywords] of Object.entries(EMOTION_KEYWORDS)) {
+    if (keywords.some(k => lower.includes(k))) {
+      found.push(emotion);
+    }
+  }
+  return found;
+}
 
 const TIME_RANGE_OPTIONS: { key: TimeRange; labelKey: string }[] = [
   { key: 'week', labelKey: 'freqThisWeek' },
@@ -41,6 +64,7 @@ export default function QuickCreateTrailScreen() {
   const store = useAppStore();
 
   const initialText = route.params?.initialText ?? '';
+  const initialSelectedIds = route.params?.selectedIds ?? [];
 
   // ── Filters ───────────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState(initialText);
@@ -50,23 +74,35 @@ export default function QuickCreateTrailScreen() {
   const [showTimeDropdown, setShowTimeDropdown] = useState(false);
   const [showTagDropdown, setShowTagDropdown] = useState(false);
   const [showMoodDropdown, setShowMoodDropdown] = useState(false);
-  const [searchMode, setSearchMode] = useState<'local' | 'ai'>('local');
+
+  // ── Smart query ───────────────────────────────────────────────
+  const [chatHistory, setChatHistory] = useState<string[]>([]);
+  const [smartResult, setSmartResult] = useState<SmartQueryResult | null>(null);
+  const [isSmartParsing, setIsSmartParsing] = useState(false);
+
+  // ── AI Analysis stream ────────────────────────────────────────
+  const [analysisSteps, setAnalysisSteps] = useState<Array<{
+    id: string;
+    text: string;
+    status: 'pending' | 'loading' | 'done' | 'error';
+    detail?: string;
+  }>>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // ── Results ───────────────────────────────────────────────────
-  const [recommendations, setRecommendations] = useState<TrailRecommendation[]>([]);
   const [matchResults, setMatchResults] = useState<MindReflection[]>([]);
   const [matchMode, setMatchMode] = useState<'idle' | 'local' | 'ai' | 'ai-loading'>('idle');
   const [isMatching, setIsMatching] = useState(false);
 
   // ── Selection ─────────────────────────────────────────────────
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set(initialSelectedIds));
   const [trailName, setTrailName] = useState('');
-  const [expandedCard, setExpandedCard] = useState<number | null>(null);
   const [skipThreshold, setSkipThreshold] = useState(false);
-  const [createdRecIds, setCreatedRecIds] = useState<Set<number>>(new Set());
 
   // ── Debounce ──────────────────────────────────────────────────
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleSmartQueryRef = useRef<() => void>(() => {});
+  const handleLocalSearchRef = useRef<() => void>(() => {});
 
   // ── Data ──────────────────────────────────────────────────────
   const reflections = useMemo(() =>
@@ -81,11 +117,6 @@ export default function QuickCreateTrailScreen() {
     return map;
   }, [reflections]);
 
-  const allTrails = useMemo(() =>
-    (store.thoughtTrails ?? []).filter(t => !t.deleted),
-    [store.thoughtTrails]
-  );
-
   const userTags = useMemo(() => {
     const tagSet = new Set<string>();
     reflections.forEach(r => r.tags.forEach(t => tagSet.add(t)));
@@ -98,7 +129,26 @@ export default function QuickCreateTrailScreen() {
     return Array.from(moodSet).slice(0, 6);
   }, [reflections]);
 
-  const aiAvailable = useMemo(() => isAIRecommendAvailable(), []);
+  const aiAvailable = useMemo(() => {
+    return isAIRecommendAvailable({ mode: store.aiMode, models: store.aiModels });
+  }, [store.aiMode, store.aiModels]);
+
+  const handleRemoveFilter = useCallback((type: keyof SmartQueryFilters, value?: string) => {
+    switch (type) {
+      case 'timeRange':
+        setTimeRange('month');
+        break;
+      case 'tags':
+        if (value) setSelectedTags(prev => prev.filter(t => t !== value));
+        break;
+      case 'moods':
+        if (value) setSelectedMoods(prev => prev.filter(m => m !== value));
+        break;
+      case 'keywords':
+        // keywords are part of searchQuery, just clear smartResult
+        break;
+    }
+  }, []);
 
   // ── Candidate pool + recommendations ──────────────────────────
   const filters: TrailFilters = useMemo(() => ({
@@ -113,25 +163,28 @@ export default function QuickCreateTrailScreen() {
     [reflections, filters]
   );
 
-  // Compute recommendations on filter change (no query)
+  // ── Debounced search (smart mode) ────────────────────────────
   useEffect(() => {
-    if (searchQuery) return;
-    const recs = computeRecommendations(candidates, allTrails);
-    setRecommendations(recs);
-  }, [candidates, allTrails, searchQuery]);
-
-  // ── Debounced search (local mode only) ───────────────────────
-  useEffect(() => {
-    if (searchMode === 'ai') return; // AI mode: manual trigger only
-    if (!searchQuery.trim()) {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) {
       setMatchMode('idle');
       setMatchResults([]);
+      setSmartResult(null);
+      setChatHistory([]);
       return;
     }
+
     if (searchTimer.current) clearTimeout(searchTimer.current);
-    searchTimer.current = setTimeout(() => { handleSearch(); }, 300);
+
+    if (trimmed.length > 1) {
+      // 2+ 字符 → AI 智能查询（内部自动降级为本地匹配）
+      searchTimer.current = setTimeout(() => { handleSmartQueryRef.current(); }, 500);
+    } else {
+      // 单字符 → 本地匹配
+      searchTimer.current = setTimeout(() => { handleLocalSearchRef.current(); }, 300);
+    }
     return () => { if (searchTimer.current) clearTimeout(searchTimer.current); };
-  }, [searchQuery, candidates, aiAvailable, searchMode]);
+  }, [searchQuery, candidates, aiAvailable]);
 
   // ── Selection derived ─────────────────────────────────────────
   const selectedReflections = useMemo(() => {
@@ -174,55 +227,180 @@ export default function QuickCreateTrailScreen() {
     setSelectedMoods(prev => prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood]);
   }, []);
 
-  const handleSearch = useCallback(() => {
+  const handleLocalSearch = useCallback(() => {
     if (!searchQuery.trim()) {
       setMatchMode('idle');
       setMatchResults([]);
       return;
     }
+    setMatchMode('local');
+    const localResults = matchByKeyword(searchQuery, candidates);
+    setMatchResults(localResults);
+  }, [searchQuery, candidates]);
 
-    setIsMatching(true);
+  // Keep local search ref always pointing to latest callback
+  handleLocalSearchRef.current = handleLocalSearch;
 
-    if (searchMode === 'ai' && aiAvailable) {
-      // AI mode: always use AI matching
-      setMatchMode('ai-loading');
-      matchReflectionsToTopic(candidates, searchQuery)
-        .then(aiResults => {
-          const localResults = matchByKeyword(searchQuery, candidates);
-          if (aiResults.length > 0) {
-            const aiReflections = aiResults
-              .map(r => candidates[r.reflectionIndex])
-              .filter(Boolean);
-            const localIds = new Set(localResults.map(r => r.id));
-            const merged = [...localResults];
-            for (const r of aiReflections) {
-              if (!localIds.has(r.id)) merged.push(r);
-            }
-            setMatchResults(merged);
-            setMatchMode('ai');
-          } else {
-            setMatchResults(localResults);
-            setMatchMode('local');
-          }
-        })
-        .catch(() => {
-          setMatchResults(matchByKeyword(searchQuery, candidates));
-          setMatchMode('local');
-        })
-        .finally(() => setIsMatching(false));
-    } else {
-      // Local mode: keyword matching only
-      setMatchMode('local');
-      const localResults = matchByKeyword(searchQuery, candidates);
-      setMatchResults(localResults);
-      setIsMatching(false);
+  const updateStep = useCallback((id: string, updates: Partial<typeof analysisSteps[0]>) => {
+    setAnalysisSteps(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
+  }, []);
+
+  const handleSmartQuery = useCallback(async () => {
+    const trimmed = searchQuery.trim();
+    console.log('[SmartQuery] called, input:', trimmed, 'aiAvailable:', aiAvailable, 'reflections:', reflections.length);
+    if (!trimmed) {
+      setMatchMode('idle');
+      setMatchResults([]);
+      setSmartResult(null);
+      setAnalysisSteps([]);
+      return;
     }
-  }, [searchQuery, candidates, aiAvailable, searchMode]);
+
+    setIsSmartParsing(true);
+    setIsAnalyzing(true);
+    setMatchMode('ai-loading');
+
+    // Initialize analysis steps - multi-round search
+    const steps = [
+      { id: 'local', text: '本地关键词匹配', status: 'loading' as const },
+      { id: 'intent', text: 'AI 理解查询语义', status: 'pending' as const },
+      { id: 'expand', text: 'AI 语义相似搜索', status: 'pending' as const },
+      { id: 'mood', text: '情绪维度匹配', status: 'pending' as const },
+      { id: 'merge', text: '合并排序结果', status: 'pending' as const },
+    ];
+    setAnalysisSteps(steps);
+
+    const allResults = new Map<string, MindReflection>();
+    const addResults = (results: MindReflection[]) => {
+      for (const r of results) {
+        if (!allResults.has(r.id)) allResults.set(r.id, r);
+      }
+    };
+
+    let usedAI = false;
+
+    try {
+      // ── Round 1: Local keyword matching ──────────────────────────
+      const localResults = matchByKeyword(trimmed, candidates);
+      addResults(localResults);
+      updateStep('local', {
+        status: 'done',
+        detail: localResults.length > 0
+          ? `找到 ${localResults.length} 条直接匹配`
+          : '未找到直接匹配，尝试AI语义搜索'
+      });
+
+      // ── Round 2 & 3: 根据本地结果决定策略 ───────────────────────
+      console.log('[SmartQuery] Round 1 done, localResults:', localResults.length);
+
+      // 始终调用 AI 语义搜索（不管本地有没有结果）
+      updateStep('intent', { status: 'done', detail: '跳过意图解析，直接语义搜索' });
+      updateStep('expand', { status: 'loading' });
+
+      try {
+        console.log('[SmartQuery] calling semanticSearchReflections...');
+        const semanticResults = await semanticSearchReflections(reflections, trimmed);
+        console.log('[SmartQuery] semanticResults:', semanticResults.length);
+
+        if (semanticResults.length > 0) {
+          usedAI = true;
+          const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
+          const aiReflections = sorted
+            .map(r => reflections[r.reflectionIndex])
+            .filter(Boolean);
+          addResults(aiReflections);
+          updateStep('expand', {
+            status: 'done',
+            detail: `AI 语义匹配 ${semanticResults.length} 条，共 ${allResults.size} 条`
+          });
+        } else {
+          // AI 无结果，降级为关键词扩展
+          const topicResults = matchByKeyword(trimmed, reflections);
+          addResults(topicResults);
+          updateStep('expand', {
+            status: 'done',
+            detail: `AI 无结果，关键词扩展 ${topicResults.length} 条`
+          });
+        }
+      } catch (e) {
+        console.log('[SmartQuery] semantic search failed:', e);
+        const topicResults = matchByKeyword(trimmed, reflections);
+        addResults(topicResults);
+        updateStep('expand', {
+          status: 'done',
+          detail: `AI 失败，本地扩展 ${topicResults.length} 条`
+        });
+      }
+
+      // ── Round 4: Mood-based search ──────────────────────────────
+      updateStep('mood', { status: 'loading' });
+
+      // 从查询中提取情绪关键词
+      const emotionalKeywords = extractEmotionalContext(trimmed);
+      if (emotionalKeywords.length > 0) {
+        const moodQuery = emotionalKeywords.join(' ');
+        const moodResults = matchByKeyword(moodQuery, reflections);
+        addResults(moodResults);
+        updateStep('mood', {
+          status: 'done',
+          detail: `情绪匹配增加 ${moodResults.length} 条`
+        });
+      } else {
+        updateStep('mood', { status: 'done', detail: '无明显情绪特征' });
+      }
+
+      // ── Round 5: Merge and rank results ─────────────────────────
+      updateStep('merge', { status: 'loading' });
+
+      const finalResults = Array.from(allResults.values());
+
+      // Sort by relevance: direct keyword match first, then by timestamp
+      const keywordSet = new Set(trimmed.toLowerCase().split(/\s+/));
+      finalResults.sort((a, b) => {
+        const aMatch = a.content.toLowerCase().split(/\s+/).some(w => keywordSet.has(w)) ? 1 : 0;
+        const bMatch = b.content.toLowerCase().split(/\s+/).some(w => keywordSet.has(w)) ? 1 : 0;
+        if (aMatch !== bMatch) return bMatch - aMatch;
+        return b.timestamp - a.timestamp;
+      });
+
+      setMatchResults(finalResults);
+      setMatchMode(usedAI ? 'ai' : 'local');
+
+      updateStep('merge', {
+        status: 'done',
+        detail: `最终返回 ${finalResults.length} 条相关感念${usedAI ? ' (AI增强)' : ''}`
+      });
+
+    } catch (e) {
+      console.log('[SmartQuery] error:', e);
+      const fallback = matchByKeyword(trimmed, candidates);
+      setMatchResults(fallback);
+      setMatchMode('local');
+      setSmartResult(null);
+      setAnalysisSteps(prev => prev.map(s =>
+        s.status === 'loading' ? { ...s, status: 'error' as const, detail: '已降级为本地匹配' } : s
+      ));
+    } finally {
+      setIsSmartParsing(false);
+      setTimeout(() => setIsAnalyzing(false), 2000);
+    }
+  }, [searchQuery, reflections, candidates, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep]);
+
+  // Keep ref always pointing to latest handleSmartQuery
+  handleSmartQueryRef.current = handleSmartQuery;
+
+  const handleSmartAnswer = useCallback((answer: string) => {
+    setChatHistory(prev => [...prev, answer]);
+    // 触发重新查询
+    setTimeout(() => { handleSmartQuery(); }, 100);
+  }, [handleSmartQuery]);
 
   const handleClear = useCallback(() => {
     setSearchQuery('');
     setMatchMode('idle');
     setMatchResults([]);
+    setSmartResult(null);
+    setChatHistory([]);
   }, []);
 
   const toggleSelect = useCallback((id: string) => {
@@ -234,46 +412,18 @@ export default function QuickCreateTrailScreen() {
     });
   }, []);
 
-  const handleQuickGenerate = useCallback((rec: TrailRecommendation) => {
-    setSelectedIds(new Set(rec.reflectionIds));
-    setTrailName(rec.name);
-  }, []);
-
   const handleSelectAll = useCallback(() => {
-    const list = expandedCard !== null
-      ? recommendations[expandedCard]?.reflectionIds ?? []
-      : matchResults.map(r => r.id);
-    setSelectedIds(new Set(list));
-  }, [expandedCard, recommendations, matchResults]);
+    setSelectedIds(new Set(matchResults.map(r => r.id)));
+  }, [matchResults]);
 
   const handleDeselectAll = useCallback(() => {
     setSelectedIds(new Set());
   }, []);
 
   const handleOnlyUnassigned = useCallback(() => {
-    const list = expandedCard !== null
-      ? (recommendations[expandedCard]?.reflectionIds ?? [])
-        .filter(id => {
-          const r = reflectionsMap.get(id);
-          return r && !r.thoughtTrailIds?.length;
-        })
-      : matchResults.filter(r => !r.thoughtTrailIds?.length).map(r => r.id);
+    const list = matchResults.filter(r => !r.thoughtTrailIds?.length).map(r => r.id);
     setSelectedIds(new Set(list));
-  }, [expandedCard, recommendations, matchResults, reflectionsMap]);
-
-  const handleExpandCard = useCallback((index: number) => {
-    if (expandedCard === index) {
-      setExpandedCard(null);
-      setSelectedIds(new Set());
-    } else {
-      setExpandedCard(index);
-      const rec = recommendations[index];
-      if (rec) {
-        setSelectedIds(new Set(rec.reflectionIds));
-        setTrailName(rec.name);
-      }
-    }
-  }, [expandedCard, recommendations]);
+  }, [matchResults]);
 
   const handleCreate = useCallback(() => {
     const ids = Array.from(selectedIds);
@@ -286,20 +436,10 @@ export default function QuickCreateTrailScreen() {
 
     const trailId = store.createThoughtTrail(name, '', ids, 'manual');
 
-    // Mark matching recommendation as created
-    const matchIdx = recommendations.findIndex(rec =>
-      rec.reflectionIds.length === ids.length &&
-      rec.reflectionIds.every(id => selectedIds.has(id))
-    );
-    if (matchIdx !== -1) {
-      setCreatedRecIds(prev => new Set(prev).add(matchIdx));
-    }
-
     setSelectedIds(new Set());
     setTrailName('');
-    setExpandedCard(null);
     (nav as any).navigate('ThoughtTrailDetail', { trailId });
-  }, [selectedIds, trailName, reflectionsMap, store, nav, T, recommendations]);
+  }, [selectedIds, trailName, reflectionsMap, store, nav, T]);
 
   const resetFilters = useCallback(() => {
     setTimeRange('month');
@@ -318,15 +458,7 @@ export default function QuickCreateTrailScreen() {
   const timeRangeLabel = TIME_RANGE_OPTIONS.find(o => o.key === timeRange)?.labelKey ?? 'thisMonth';
 
   const showInsightPanel = !searchQuery;
-  const showRecommendations = matchMode === 'idle' && !searchQuery;
   const showMatchResults = matchMode !== 'idle' || searchQuery.length > 0;
-
-  const visibleRecs = useMemo(() =>
-    recommendations
-      .filter((_, i) => !createdRecIds.has(i))
-      .slice(0, 1),
-    [recommendations, createdRecIds]
-  );
 
   // Empty state: not enough reflections (skip if user chose manual mode)
   if (reflections.length < 5 && !skipThreshold) {
@@ -399,6 +531,27 @@ export default function QuickCreateTrailScreen() {
             />
           )}
 
+          {/* Smart query bubble */}
+          {smartResult?.question && chatHistory.length < 3 && (
+            <SmartQueryBubble
+              question={smartResult.question}
+              onAnswer={handleSmartAnswer}
+              onSkip={() => {
+                setSmartResult(prev => prev ? { ...prev, question: null } : null);
+                handleSmartQuery();
+              }}
+            />
+          )}
+
+          {/* AI Analysis stream */}
+          {analysisSteps.length > 0 && (
+            <AIAnalysisStream
+              messages={createAnalysisMessages(analysisSteps)}
+              isAnalyzing={isAnalyzing}
+              onComplete={() => setAnalysisSteps([])}
+            />
+          )}
+
           {/* Conversation input */}
           <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
             <View style={{
@@ -410,7 +563,7 @@ export default function QuickCreateTrailScreen() {
               <TextInput
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                onSubmitEditing={handleSearch}
+                onSubmitEditing={searchQuery.trim().length > 1 ? handleSmartQuery : handleLocalSearch}
                 placeholder={T('quickTrailSearchPlaceholder')}
                 placeholderTextColor={TH.sub}
                 multiline
@@ -424,27 +577,22 @@ export default function QuickCreateTrailScreen() {
                 blurOnSubmit
               />
 
-              {/* Bottom row: mode toggle + actions */}
+              {/* Bottom row: smart indicator + actions */}
               <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 6 }}>
-                {/* Search mode toggle */}
-                <TouchableOpacity
-                  onPress={() => setSearchMode(prev => prev === 'local' ? 'ai' : 'local')}
-                  style={{
-                    flexDirection: 'row', alignItems: 'center', gap: 4,
-                    paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8,
-                    backgroundColor: searchMode === 'ai' ? '#8B5CF615' : `${TH.sub}10`,
-                    borderWidth: 1,
-                    borderColor: searchMode === 'ai' ? '#8B5CF640' : 'transparent',
-                  }}
-                >
+                {/* Smart mode indicator */}
+                <View style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 4,
+                  paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8,
+                  backgroundColor: isSmartParsing ? '#8B5CF615' : `${TH.sub}10`,
+                }}>
                   <Text style={{
                     fontSize: FONT_TINY,
-                    color: searchMode === 'ai' ? '#8B5CF6' : TH.sub,
-                    fontWeight: searchMode === 'ai' ? '600' : '400',
+                    color: isSmartParsing ? '#8B5CF6' : TH.sub,
+                    fontWeight: isSmartParsing ? '600' : '400',
                   }}>
-                    {searchMode === 'ai' ? T('quickTrailMatchAI') : T('quickTrailMatchLocal')}
+                    {isSmartParsing ? '🧠 智能解析中...' : '🧠 智能'}
                   </Text>
-                </TouchableOpacity>
+                </View>
 
                 {/* Action buttons */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -457,7 +605,7 @@ export default function QuickCreateTrailScreen() {
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity
-                    onPress={handleSearch}
+                    onPress={searchQuery.trim().length > 1 ? handleSmartQuery : handleLocalSearch}
                     style={{
                       width: 36, height: 36, borderRadius: 18,
                       backgroundColor: searchQuery.trim() ? TH.primary : `${TH.sub}20`,
@@ -663,6 +811,15 @@ export default function QuickCreateTrailScreen() {
             </View>
           </View>
 
+          {/* Smart query filter tags */}
+          {smartResult && Object.keys(smartResult.filters).length > 0 && (
+            <FilterTags
+              filters={smartResult.filters}
+              onRemoveFilter={handleRemoveFilter}
+              onAddPress={() => { setShowTimeDropdown(true); }}
+            />
+          )}
+
           {/* Reset filters */}
           {(selectedTags.length > 0 || selectedMoods.length > 0 || timeRange !== 'month') && (
             <View style={{ alignItems: 'flex-end', paddingHorizontal: 16, marginTop: 6 }}>
@@ -742,88 +899,6 @@ export default function QuickCreateTrailScreen() {
               onMoodPress={(mood) => setSearchQuery(mood)}
               onGoRecord={handleGoRecord}
             />
-            </View>
-          )}
-
-          {/* ── Recommendations section ── */}
-          {showRecommendations && (
-            <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>
-                {T('quickTrailRecommend')}
-              </Text>
-
-              {visibleRecs.length > 0 ? (
-                visibleRecs.map((rec) => {
-                  const realIdx = recommendations.indexOf(rec);
-                  return (
-                    <View key={realIdx}>
-                      <TouchableOpacity onPress={() => handleExpandCard(realIdx)}>
-                        <RecommendCard rec={rec} onQuickGenerate={handleQuickGenerate} />
-                      </TouchableOpacity>
-
-                      {/* Expanded reflection list */}
-                      {expandedCard === realIdx && (
-                        <View style={{
-                          marginBottom: 12,
-                          backgroundColor: TH.card,
-                          borderRadius: 12,
-                          borderWidth: 1,
-                          borderColor: TH.border,
-                          padding: 12,
-                        }}>
-                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                            <Text style={{ fontSize: FONT_SMALL, color: TH.text, fontWeight: '600' }}>
-                              💡 "{rec.name}"
-                            </Text>
-                            <TouchableOpacity onPress={() => { setExpandedCard(null); setSelectedIds(new Set()); }}>
-                              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('quickTrailCollapse')}</Text>
-                            </TouchableOpacity>
-                          </View>
-
-                          {/* Bulk actions - top */}
-                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                            <View style={{ flexDirection: 'row', gap: 14 }}>
-                              <TouchableOpacity onPress={handleSelectAll}>
-                                <Text style={{ fontSize: FONT_SMALL, color: TH.primary, fontWeight: '500' }}>{T('quickTrailSelectAll')}</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity onPress={handleDeselectAll}>
-                                <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('quickTrailDeselectAll')}</Text>
-                              </TouchableOpacity>
-                              <TouchableOpacity onPress={handleOnlyUnassigned}>
-                                <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('quickTrailOnlyUnassigned')}</Text>
-                              </TouchableOpacity>
-                            </View>
-                            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
-                              {T('quickTrailSelected').replace('{n}', String(selectedIds.size))}
-                            </Text>
-                          </View>
-
-                          {rec.reflectionIds.map(id => {
-                            const ref = reflectionsMap.get(id);
-                            if (!ref) return null;
-                            const isSelected = selectedIds.has(id);
-                            return (
-                              <ReflectionCheckItem
-                                key={id}
-                                ref={ref}
-                                isSelected={isSelected}
-                                onToggle={() => toggleSelect(id)}
-                              />
-                            );
-                          })}
-                        </View>
-                      )}
-                    </View>
-                  );
-                })
-              ) : (
-                <View style={{ alignItems: 'center', paddingVertical: 32 }}>
-                  <Text style={{ fontSize: 32, marginBottom: 8 }}>🔍</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>
-                    {T('quickTrailNoResults')}
-                  </Text>
-                </View>
-              )}
             </View>
           )}
 

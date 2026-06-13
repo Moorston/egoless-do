@@ -6,6 +6,7 @@ import type { TimelineItem } from '@egoless-do/core';
 import type { MindReflection, TrailNote, LinkType } from '@egoless-do/core';
 import { TimelineReflectionItem } from './TimelineReflectionItem';
 import { TimelineNoteItem } from './TimelineNoteItem';
+import { SwipeableRow } from './SwipeableRow';
 
 interface TimelineListProps {
   items: TimelineItem[];
@@ -33,48 +34,60 @@ export function TimelineList({
   if (items.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={[styles.emptyText, { color: TH.sub }]}>暂无感念</Text>
+        <Text style={[styles.emptyIcon, { color: TH.sub }]}>🌱</Text>
+        <Text style={[styles.emptyTitle, { color: TH.text }]}>还没有内容</Text>
+        <Text style={[styles.emptyText, { color: TH.sub }]}>
+          点击右下角 + 号添加感念、记录反思笔记{'\n'}或将已有的感念加入此脉络
+        </Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      {items.map((item, idx) => {
+      {items.map((ti, idx) => {
         const isLast = idx === items.length - 1;
         const nextItem = !isLast ? items[idx + 1] : null;
 
         // 计算时间间隔
         let dayGap = 0;
         if (nextItem) {
-          dayGap = Math.round((nextItem.timestamp - item.timestamp) / DAY_MS);
+          dayGap = Math.round((nextItem.timestamp - ti.timestamp) / DAY_MS);
         }
 
         // 查找与下一条的连接
         const linkToNext = !isLast
-          ? links.find(l => l.fromId === getId(item) && l.toId === getId(items[idx + 1]))
+          ? links.find(l => l.fromId === getId(ti) && l.toId === getId(items[idx + 1]))
           : null;
 
+        const itemEl = ti.kind === 'reflection' ? (
+          <TimelineReflectionItem
+            reflection={ti.data as MindReflection}
+            primaryColor={P}
+            isLast={isLast}
+            linkToNext={linkToNext}
+            onRemove={onRemoveReflection}
+            onCreatePlan={onCreatePlanFromReflection}
+          />
+        ) : (
+          <TimelineNoteItem
+            note={ti.data as TrailNote}
+            primaryColor={P}
+            isLast={isLast}
+            onDelete={onDeleteNote}
+            onCreatePlan={onCreatePlanFromNote}
+          />
+        );
+
+        const deleteAction = ti.kind === 'reflection'
+          ? () => onRemoveReflection((ti.data as MindReflection).id)
+          : () => onDeleteNote((ti.data as TrailNote).id);
+
         return (
-          <View key={getId(item)}>
-            {item.kind === 'reflection' ? (
-              <TimelineReflectionItem
-                reflection={item.data as MindReflection}
-                primaryColor={P}
-                isLast={isLast}
-                linkToNext={linkToNext}
-                onRemove={onRemoveReflection}
-                onCreatePlan={onCreatePlanFromReflection}
-              />
-            ) : (
-              <TimelineNoteItem
-                note={item.data as TrailNote}
-                primaryColor={P}
-                isLast={isLast}
-                onDelete={onDeleteNote}
-                onCreatePlan={onCreatePlanFromNote}
-              />
-            )}
+          <View key={getId(ti)}>
+            <SwipeableRow onDelete={deleteAction}>
+              {itemEl}
+            </SwipeableRow>
 
             {/* 时间间隔标签 */}
             {!isLast && dayGap > 3 && (
@@ -106,10 +119,22 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     alignItems: 'center',
-    paddingVertical: 48,
+    paddingVertical: 64,
+    paddingHorizontal: 32,
+  },
+  emptyIcon: {
+    fontSize: 40,
+    marginBottom: 12,
+  },
+  emptyTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
   },
   emptyText: {
     fontSize: FONT_SMALL,
+    textAlign: 'center',
+    lineHeight: 22,
   },
   gapContainer: {
     flexDirection: 'row',

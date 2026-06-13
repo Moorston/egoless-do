@@ -6,9 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
-import { computeCandidatePool, computeRecommendations } from '@egoless-do/core';
+import { computeCandidatePool, computeRecommendations, buildIgnoredPattern } from '@egoless-do/core';
 
-const DISMISSED_KEY = 'trailSuggestionDismissed';
+const TRAIL_IGNORED_KEY = 'trailIgnoredPatterns';
 
 export default function TrailSuggestionBanner() {
   const TH = useTheme();
@@ -22,48 +22,53 @@ export default function TrailSuggestionBanner() {
     const allTrails = (store.thoughtTrails ?? []).filter(t => !t.deleted);
     if (reflections.length < 5) return null;
 
-    const candidates = computeCandidatePool(reflections, {
-      timeRange: 'month',
-      tags: [],
-      moods: [],
-    });
+    const thirtyDaysAgo = Date.now() - 30 * 86400000;
+    const candidates = reflections.filter(r =>
+      r.timestamp >= thirtyDaysAgo &&
+      (!r.thoughtTrailIds || r.thoughtTrailIds.length === 0)
+    );
+    if (candidates.length < 3) return null;
 
     const recs = computeRecommendations(candidates, allTrails);
     return recs.length > 0 ? recs[0] : null;
   }, [store.reflections, store.thoughtTrails]);
 
-  // Check dismissed state: re-show on re-login or new recommendation
-  const isSignedIn = useAppStore(s => s.auth.isSignedIn);
-  const prevSignedIn = React.useRef(isSignedIn);
-
+  // Check if current topRec is ignored
   useEffect(() => {
-    // Re-login: clear dismissed
-    if (prevSignedIn.current !== isSignedIn) {
-      prevSignedIn.current = isSignedIn;
-      AsyncStorage.removeItem(DISMISSED_KEY);
-      setDismissed(false);
-      return;
-    }
-    // On mount or topRec change: compare stored name with current
     if (!topRec) { setDismissed(false); return; }
-    AsyncStorage.getItem(DISMISSED_KEY).then(stored => {
-      if (stored && stored === topRec.name) {
-        setDismissed(true);
+    const pattern = buildIgnoredPattern(topRec);
+    AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
+      if (raw) {
+        try {
+          const ignored: string[] = JSON.parse(raw);
+          setDismissed(ignored.includes(pattern));
+        } catch {
+          setDismissed(false);
+        }
       } else {
-        // No stored value or new recommendation — show banner
         setDismissed(false);
       }
     });
-  }, [isSignedIn, topRec]);
+  }, [topRec]);
 
   if (dismissed || !topRec) return null;
+
+  const handleDismiss = () => {
+    const pattern = buildIgnoredPattern(topRec);
+    AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
+      let ignored: string[] = [];
+      try { if (raw) ignored = JSON.parse(raw); } catch {}
+      const next = [...new Set([...ignored, pattern])];
+      AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch(console.error);
+    });
+    setDismissed(true);
+  };
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       onPress={() => {
-        if (topRec) AsyncStorage.setItem(DISMISSED_KEY, topRec.name);
-        setDismissed(true);
+        handleDismiss();
         (nav as any).navigate('QuickCreateTrail');
       }}
       style={{
@@ -99,7 +104,7 @@ export default function TrailSuggestionBanner() {
         {T('trailSuggestionAction')}
       </Text>
 
-      <TouchableOpacity onPress={() => { if (topRec) AsyncStorage.setItem(DISMISSED_KEY, topRec.name); setDismissed(true); }} style={{ padding: 4 }}>
+      <TouchableOpacity onPress={handleDismiss} style={{ padding: 4 }}>
         <X size={14} color={TH.sub} />
       </TouchableOpacity>
     </TouchableOpacity>

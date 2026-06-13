@@ -18,6 +18,8 @@ export interface TrailRecommendation {
   assignedCount: number;
   score: number;
   type: 'mood' | 'tag' | 'time';
+  reason?: string;  // 推荐理由
+  source: 'local' | 'ai' | 'hybrid';  // 推荐来源
 }
 
 export interface TrailFilters {
@@ -123,6 +125,7 @@ export function computeRecommendations(
   candidates: MindReflection[],
   allTrails: ThoughtTrail[],
 ): TrailRecommendation[] {
+  if (candidates.length < 3) return [];
   const recs: TrailRecommendation[] = [];
 
   const moodRec = detectMoodNarrative(candidates);
@@ -136,7 +139,7 @@ export function computeRecommendations(
 
   return recs
     .sort((a, b) => b.score - a.score)
-    .slice(0, 3)
+    .slice(0, 2)
     .map(rec => ({
       ...rec,
       assignedCount: rec.reflectionIds.filter(id => {
@@ -185,6 +188,7 @@ export function detectMoodNarrative(refs: MindReflection[]): TrailRecommendation
     assignedCount: 0,
     score: bestScore,
     type: 'mood',
+    source: 'local',
   };
 }
 
@@ -235,6 +239,7 @@ export function detectTagFocus(refs: MindReflection[]): TrailRecommendation | nu
     assignedCount: 0,
     score: bestScore,
     type: 'tag',
+    source: 'local',
   };
 }
 
@@ -282,6 +287,7 @@ export function detectTimePattern(refs: MindReflection[]): TrailRecommendation |
     assignedCount: 0,
     score: bestRefs.length,
     type: 'time',
+    source: 'local',
   };
 }
 
@@ -516,4 +522,171 @@ export function analyzeTrailGaps(refs: MindReflection[]): TrailGap[] {
   }
 
   return gaps;
+}
+
+// ─── Recommendation reason generation ─────────────────────────────────
+
+export function generateRecommendationReason(rec: TrailRecommendation): string {
+  const startDate = formatDateShort(rec.startDate);
+  const endDate = formatDateShort(rec.endDate);
+
+  switch (rec.type) {
+    case 'mood': {
+      const firstMood = rec.moods[0];
+      const lastMood = rec.moods[rec.moods.length - 1];
+      if (firstMood === lastMood) {
+        return `发现你在 ${startDate}~${endDate} 期间持续的${firstMood}状态`;
+      }
+      return `发现你在 ${startDate}~${endDate} 的情绪从${firstMood}转向${lastMood}`;
+    }
+    case 'tag': {
+      const count = rec.reflectionIds.length;
+      return `围绕 #${rec.primaryTag} 的 ${count} 条感念，展现了持续的思考`;
+    }
+    case 'time': {
+      const name = rec.name;
+      return `${name}，记录了独处时的深度反思`;
+    }
+    default:
+      return rec.narrative;
+  }
+}
+
+// ─── Merge and rank recommendations ──────────────────────────────────
+
+function calcOverlap(a: string[], b: string[]): number {
+  const setA = new Set(a);
+  const setB = new Set(b);
+  let overlap = 0;
+  for (const id of setA) {
+    if (setB.has(id)) overlap++;
+  }
+  return overlap / Math.max(setA.size, setB.size);
+}
+
+export function mergeAndRank(
+  localRecs: TrailRecommendation[],
+  aiRecs: TrailRecommendation[],
+): TrailRecommendation[] {
+  const merged: TrailRecommendation[] = [];
+  const usedAiIndices = new Set<number>();
+
+  // 先添加本地推荐
+  for (const local of localRecs) {
+    let bestOverlap = 0;
+    let bestAiIdx = -1;
+
+    for (let i = 0; i < aiRecs.length; i++) {
+      if (usedAiIndices.has(i)) continue;
+      const overlap = calcOverlap(local.reflectionIds, aiRecs[i].reflectionIds);
+      if (overlap > bestOverlap) {
+        bestOverlap = overlap;
+        bestAiIdx = i;
+      }
+    }
+
+    if (bestOverlap > 0.5 && bestAiIdx >= 0) {
+      // 高重叠度：合并，使用 AI 的 reason
+      const ai = aiRecs[bestAiIdx];
+      merged.push({
+        ...local,
+        reason: ai.reason || local.reason,
+        source: 'hybrid',
+      });
+      usedAiIndices.add(bestAiIdx);
+    } else {
+      // 低重叠度：保留本地推荐
+      merged.push(local);
+    }
+  }
+
+  // 添加未使用的 AI 推荐
+  for (let i = 0; i < aiRecs.length; i++) {
+    if (!usedAiIndices.has(i)) {
+      merged.push(aiRecs[i]);
+    }
+  }
+
+  // 按 score 排序
+  return merged.sort((a, b) => b.score - a.score);
+}
+
+// ─── Hybrid recommendations ──────────────────────────────────────────
+
+export async function computeHybridRecommendations(
+  candidates: MindReflection[],
+  allTrails: ThoughtTrail[],
+  aiAvailable: boolean,
+): Promise<TrailRecommendation[]> {
+  // 1. 本地推荐
+  const localRecs = computeRecommendations(candidates, allTrails);
+  const localWithReason = localRecs.map(rec => ({
+    ...rec,
+    reason: rec.reason || generateRecommendationReason(rec),
+    source: 'local' as const,
+  }));
+
+  // 2. AI 推荐（如果可用）
+  if (!aiAvailable) {
+    return localWithReason;
+  }
+
+  try {
+    const { recommendTrailsViaAI } = await import('../ai/trail-recommender');
+    const aiResult = await recommendTrailsViaAI(candidates);
+
+    if (aiResult.length === 0) {
+      return localWithReason;
+    }
+
+    // 转换 AI 推荐为 TrailRecommendation 格式
+    const aiRecs: TrailRecommendation[] = aiResult.map(rec => ({
+      name: rec.name,
+      narrative: rec.description,
+      reflectionIds: rec.reflectionIndices.map(i => candidates[i]?.id).filter(Boolean),
+      moods: rec.reflectionIndices.map(i => candidates[i]?.mood).filter(Boolean),
+      primaryTag: getMostFrequentTag(rec.reflectionIndices.map(i => candidates[i]).filter(Boolean)),
+      startDate: Math.min(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? Infinity)),
+      endDate: Math.max(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? -Infinity)),
+      spanDays: daysBetween(
+        Math.min(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? Infinity)),
+        Math.max(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? -Infinity))
+      ),
+      trend: computeMoodTrendSimple(rec.reflectionIndices.map(i => candidates[i]).filter(Boolean)),
+      assignedCount: 0,
+      score: rec.confidence * 10,
+      type: 'mood',
+      reason: rec.description,
+      source: 'ai',
+    }));
+
+    // 3. 合并 + 去重 + 排序
+    return mergeAndRank(localWithReason, aiRecs);
+  } catch (e) {
+    console.log('[HybridRecommend] AI failed, using local only:', e);
+    return localWithReason;
+  }
+}
+
+// ─── User preferences ────────────────────────────────────────────────
+
+export function buildIgnoredPattern(rec: TrailRecommendation): string {
+  const ids = [...rec.reflectionIds].sort().join(',');
+  let hash = 5381;
+  for (let i = 0; i < ids.length; i++) {
+    hash = ((hash << 5) + hash + ids.charCodeAt(i)) | 0;
+  }
+  return `${rec.type}:${hash}`;
+}
+
+export function applyUserPreferences(
+  recs: TrailRecommendation[],
+  ignored: string[],
+): TrailRecommendation[] {
+  if (ignored.length === 0) return recs;
+
+  return recs.filter(rec => {
+    const pattern = buildIgnoredPattern(rec);
+    return !ignored.includes(pattern);
+  });
 }

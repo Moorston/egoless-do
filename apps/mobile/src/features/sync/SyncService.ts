@@ -9,6 +9,13 @@ let _syncingSince = 0;
 let _syncGeneration = 0;
 let _abortController: AbortController | null = null;
 const SYNC_TIMEOUT_MS = 60_000; // 60s timeout to prevent stuck sync
+export let _migrationDone = false;
+export function resetMigrationFlag() {
+  _migrationDone = false;
+}
+export function setMigrationDone() {
+  _migrationDone = true;
+}
 let _tokenProvider: (() => string | null) | null = null;
 let _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
 let _deletedIdsProvider: (() => Set<string>) | null = null;
@@ -501,11 +508,11 @@ export async function runSync(): Promise<void> {
   const token = _tokenProvider?.();
   if (!token) return;
 
-  // Ensure persisted _lastSyncAt is loaded before first sync
-  await loadLastSyncAt();
-
   _syncing = true;
   _syncingSince = Date.now();
+
+  // Ensure persisted _lastSyncAt is loaded before first sync
+  await loadLastSyncAt();
   _abortController = new AbortController();
   const { signal } = _abortController;
   const myGeneration = ++_syncGeneration;

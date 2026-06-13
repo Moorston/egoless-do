@@ -1,15 +1,14 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, Modal, StyleSheet } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, RefreshControl, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { ArrowLeft, Trash2, Pencil, X } from 'lucide-react-native';
-import { useAppStore } from '../../store/useAppStore';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { ArrowLeft, Trash2, Pencil, Target } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SMALL, getTrailOverview, getRelatedTrails, getTrailTimelineItems } from '@egoless-do/core';
-import type { TrailInsightCache, TrailReviewCache } from '@egoless-do/core';
-import { AIService } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import { useTrailData } from './useTrailData';
+import { useTrailAI } from './useTrailAI';
+import { useTrailActions } from './useTrailActions';
 
-import { TrailOverviewCard } from './TrailOverviewCard';
 import { InsightSection } from './InsightSection';
 import { ReviewGuideSection } from './ReviewGuideSection';
 import { TimelineList } from './TimelineList';
@@ -19,135 +18,49 @@ import { SelectReflectionModal } from './SelectReflectionModal';
 import { PlanTasksSection } from './PlanTasksSection';
 import { CreatePlanFromTrailModal } from './CreatePlanFromTrailModal';
 import { RelatedTrailsSection } from './RelatedTrailsSection';
+import { SegmentBar } from './SegmentBar';
 
 export default function ThoughtTrailDetailScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
-  const nav = useNavigation();
   const route = useRoute();
-
+  const nav = useNavigation();
   const { trailId } = route.params as { trailId: string };
-  const trail = useMemo(() =>
-    (store.thoughtTrails ?? []).find(t => t.id === trailId),
-    [store.thoughtTrails, trailId]
-  );
 
-  // ─── Modal states ───────────────────────────────────────────────
-  const [showEditModal, setShowEditModal] = useState(false);
+  const {
+    trail, overview, timelineItems, links, reflections,
+    trailPlanItems, trailPlanCheckins, relatedTrails,
+  } = useTrailData(trailId);
+
+  const { handleGenerateInsight, handleGenerateReview, insightCacheStale, reviewCacheStale } = useTrailAI(trailId, trail);
+
+  const {
+    handleWriteReflection,
+    handleSelectReflectionsConfirm,
+    handleRemoveReflection,
+    handleDeleteNote,
+    handleSaveNote,
+    handleCreatePlan,
+    handleUpdateName,
+    handleUpdateDescription,
+    handleDeleteTrail,
+    handleNavigateToPlan,
+    handleNavigateToTrail,
+  } = useTrailActions(trailId);
+
+  // ─── Inline editing ─────────────────────────────────────────────
+  const [editingName, setEditingName] = useState(false);
   const [editName, setEditName] = useState('');
+  const [editingDesc, setEditingDesc] = useState(false);
   const [editDesc, setEditDesc] = useState('');
   const [showWriteNote, setShowWriteNote] = useState(false);
   const [guidedQuestion, setGuidedQuestion] = useState<string | undefined>();
   const [showSelectReflection, setShowSelectReflection] = useState(false);
   const [showCreatePlan, setShowCreatePlan] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
 
-  // ─── Data ───────────────────────────────────────────────────────
-  const reflections = store.reflections ?? [];
-  const trailNotes = store.trailNotes ?? [];
-  const allTrails = useMemo(() =>
-    (store.thoughtTrails ?? []).filter(t => !t.deleted),
-    [store.thoughtTrails]
-  );
-
-  const overview = useMemo(() => {
-    if (!trail) return null;
-    return getTrailOverview(trail, reflections, trailNotes);
-  }, [trail, reflections, trailNotes]);
-
-  const timelineItems = useMemo(() => {
-    if (!trail) return [];
-    return getTrailTimelineItems(trail, reflections, trailNotes);
-  }, [trail, reflections, trailNotes]);
-
-  const links = useMemo(() => {
-    if (!trail) return [];
-    const ids = new Set(trail.reflectionIds);
-    return (store.reflectionLinks ?? [])
-      .filter(l => !l.deleted && ids.has(l.fromId) && ids.has(l.toId))
-      .map(l => ({ fromId: l.fromId, toId: l.toId, type: l.type }));
-  }, [trail, store.reflectionLinks]);
-
-  const planItems = useMemo(() => {
-    if (!trail) return [];
-    return store.getTrailPlanItems(trailId);
-  }, [trail, trailId, store.planItems]);
-
-  const planCheckins = useMemo(() => {
-    const planItemIds = new Set(planItems.map(p => p.id));
-    return (store.planItemCheckins ?? []).filter(c => planItemIds.has(c.planItemId));
-  }, [planItems, store.planItemCheckins]);
-
-  const relatedTrails = useMemo(() => {
-    if (!trail) return [];
-    return getRelatedTrails(trail, allTrails, reflections, trailNotes, 3);
-  }, [trail, allTrails, reflections, trailNotes]);
-
-  // ─── AI generation ──────────────────────────────────────────────
-  const handleGenerateInsight = useCallback(async () => {
-    if (!trail) return;
-    const aiService = AIService.getInstance();
-    const trailReflections = trail.reflectionIds
-      .map(id => reflections.find(r => r.id === id))
-      .filter((r): r is NonNullable<typeof r> => r != null && !r.deleted);
-    const notes = (trail.noteIds ?? [])
-      .map(id => trailNotes.find(n => n.id === id))
-      .filter((n): n is NonNullable<typeof n> => n != null && !n.deleted);
-
-    const result = await aiService.generateTrailInsight(
-      trailReflections.map(r => ({ content: r.content, mood: r.mood ?? '' })),
-      {
-        useCloud: store.aiMode !== 'local',
-        trailNotes: notes.map(n => ({ content: n.content, source: n.source, guidedQuestion: n.guidedQuestion })),
-      }
-    );
-
-    const cache: TrailInsightCache = {
-      summary: result.summary,
-      keyPoints: result.keyPoints,
-      turningPoints: result.turningPoints,
-      suggestions: result.suggestions,
-      generatedAt: Date.now(),
-      source: store.aiMode === 'local' ? 'local' : 'cloud',
-    };
-    store.setInsightCache(trailId, cache);
-  }, [trail, trailId, reflections, trailNotes, store]);
-
-  const handleGenerateReview = useCallback(async () => {
-    if (!trail) return;
-    const aiService = AIService.getInstance();
-    const trailReflections = trail.reflectionIds
-      .map(id => reflections.find(r => r.id === id))
-      .filter((r): r is NonNullable<typeof r> => r != null && !r.deleted);
-    const notes = (trail.noteIds ?? [])
-      .map(id => trailNotes.find(n => n.id === id))
-      .filter((n): n is NonNullable<typeof n> => n != null && !n.deleted);
-
-    const items = [
-      ...trailReflections.map(r => ({ content: r.content, mood: r.mood, timestamp: r.timestamp, kind: 'reflection' as const })),
-      ...notes.map(n => ({ content: n.content, mood: n.mood, timestamp: n.createdAt, kind: 'note' as const })),
-    ].sort((a, b) => a.timestamp - b.timestamp);
-
-    const result = await aiService.generateTrailReviewGuide(items, {
-      useCloud: store.aiMode !== 'local',
-    });
-
-    const cache: TrailReviewCache = {
-      questions: result.questions,
-      observations: result.observations,
-      suggestions: result.suggestions,
-      generatedAt: Date.now(),
-      source: store.aiMode === 'local' ? 'local' : 'cloud',
-    };
-    store.setReviewCache(trailId, cache);
-  }, [trail, trailId, reflections, trailNotes, store]);
-
-  // ─── Actions ────────────────────────────────────────────────────
-  const handleWriteReflection = useCallback(() => {
-    (nav as any).navigate('Reflections', { showNew: true, trailId });
-  }, [nav, trailId]);
-
+  // ─── Local UI handlers ──────────────────────────────────────────
   const handleSelectExisting = useCallback(() => {
     setShowSelectReflection(true);
   }, []);
@@ -157,107 +70,56 @@ export default function ThoughtTrailDetailScreen() {
     setShowWriteNote(true);
   }, []);
 
-  const handleSaveNote = useCallback((form: { content: string; tags: string[]; mood?: string; source: 'guided' | 'free'; guidedQuestion?: string }) => {
-    store.addTrailNote(trailId, form);
-    setShowWriteNote(false);
-    setGuidedQuestion(undefined);
-  }, [store, trailId]);
-
-  const handleSelectReflectionsConfirm = useCallback((selectedIds: string[]) => {
-    for (const id of selectedIds) {
-      store.addReflectionToTrail(trailId, id);
-    }
-    setShowSelectReflection(false);
-  }, [store, trailId]);
-
-  const handleRemoveReflection = useCallback((reflectionId: string) => {
-    Alert.alert(
-      T('thoughtTrailRemoveReflection'),
-      T('thoughtTrailRemoveReflectionConfirm'),
-      [
-        { text: T('commonCancel'), style: 'cancel' },
-        {
-          text: T('commonConfirm'),
-          style: 'destructive',
-          onPress: () => store.removeReflectionFromTrail(trailId, reflectionId),
-        },
-      ]
-    );
-  }, [store, trailId]);
-
-  const handleDeleteNote = useCallback((noteId: string) => {
-    Alert.alert(
-      T('trailNoteDelete'),
-      T('trailNoteDeleteConfirm'),
-      [
-        { text: T('commonCancel'), style: 'cancel' },
-        {
-          text: T('commonConfirm'),
-          style: 'destructive',
-          onPress: () => store.deleteTrailNote(noteId),
-        },
-      ]
-    );
-  }, [store]);
-
-  const handleCreatePlanFromReflection = useCallback((reflectionId: string) => {
+  const handleCreatePlanFromReflection = useCallback(() => {
     setShowCreatePlan(true);
   }, []);
 
-  const handleCreatePlanFromNote = useCallback((noteId: string) => {
-    setShowCreatePlan(true);
-  }, []);
-
-  const handleCreatePlan = useCallback((form: { name: string; description: string; priority: any; startDate: string; endDate: string }) => {
-    store.createPlanItemFromTrail(trailId, form);
-    setShowCreatePlan(false);
-  }, [store, trailId]);
-
-  const handleNavigateToPlan = useCallback((planItemId: string) => {
-    nav.navigate('PlanDetail' as never, { planId: planItemId } as never);
-  }, [nav]);
-
-  const handleNavigateToTrail = useCallback((targetTrailId: string) => {
-    if (targetTrailId === trailId) return;
-    nav.push('ThoughtTrailDetail' as never, { trailId: targetTrailId } as never);
-  }, [nav, trailId]);
-
-  // ─── Edit & Delete ──────────────────────────────────────────────
-  const handleOpenEdit = useCallback(() => {
-    if (trail) {
-      setEditName(trail.name);
-      setEditDesc(trail.description ?? '');
-      setShowEditModal(true);
-    }
+  const handleStartEditName = useCallback(() => {
+    if (trail) { setEditName(trail.name); setEditingName(true); }
   }, [trail]);
 
-  const handleSaveEdit = useCallback(() => {
-    if (editName.trim()) {
-      store.updateThoughtTrail(trailId, {
-        name: editName.trim(),
-        description: editDesc.trim() || undefined,
-      });
-      setShowEditModal(false);
-    }
-  }, [store, trailId, editName, editDesc]);
+  const handleFinishEditName = useCallback(() => {
+    handleUpdateName(editName);
+    setEditingName(false);
+  }, [editName, handleUpdateName]);
 
-  const handleDeleteTrail = useCallback(() => {
-    Alert.alert(
-      T('thoughtTrailDelete'),
-      T('thoughtTrailDeleteConfirm'),
-      [
-        { text: T('commonCancel'), style: 'cancel' },
-        {
-          text: T('commonConfirm'),
-          style: 'destructive',
-          onPress: () => {
-            store.deleteThoughtTrail(trailId);
-            nav.goBack();
-          },
-        },
-      ]
-    );
-  }, [store, trailId, nav]);
+  const handleStartEditDesc = useCallback(() => {
+    if (trail) { setEditDesc(trail.description ?? ''); setEditingDesc(true); }
+  }, [trail]);
+
+  const handleFinishEditDesc = useCallback(() => {
+    handleUpdateDescription(editDesc);
+    setEditingDesc(false);
+  }, [editDesc, handleUpdateDescription]);
+
+  const handleSaveNoteAndClose = useCallback((form: Parameters<typeof handleSaveNote>[0]) => {
+    handleSaveNote(form);
+    setShowWriteNote(false);
+    setGuidedQuestion(undefined);
+  }, [handleSaveNote]);
+
+  const handlePlanCreateAndClose = useCallback((form: Parameters<typeof handleCreatePlan>[0]) => {
+    handleCreatePlan(form);
+    setShowCreatePlan(false);
+  }, [handleCreatePlan]);
+
+  const handleConfirmReflections = useCallback((selectedIds: string[]) => {
+    handleSelectReflectionsConfirm(selectedIds);
+    setShowSelectReflection(false);
+  }, [handleSelectReflectionsConfirm]);
+
+  // ─── Pull to refresh ────────────────────────────────────────────
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      if (trail?.insightCache) await handleGenerateInsight();
+      if (trail?.reviewCache) await handleGenerateReview();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [trail, handleGenerateInsight, handleGenerateReview]);
 
   // ─── Render ─────────────────────────────────────────────────────
   if (!trail) {
@@ -277,12 +139,26 @@ export default function ThoughtTrailDetailScreen() {
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
           <ArrowLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: TH.text }]} numberOfLines={1}>
-          {trail.name}
-        </Text>
+        {editingName ? (
+          <TextInput
+            value={editName}
+            onChangeText={setEditName}
+            onBlur={handleFinishEditName}
+            onSubmitEditing={handleFinishEditName}
+            autoFocus
+            style={[styles.headerTitleInput, { color: TH.text, borderColor: P, backgroundColor: TH.card }]}
+          />
+        ) : (
+          <TouchableOpacity style={styles.headerTitleArea} onPress={handleStartEditName}>
+            <Text style={[styles.headerTitle, { color: TH.text }]} numberOfLines={1}>
+              {trail.name}
+            </Text>
+            <Pencil size={12} color={TH.sub} />
+          </TouchableOpacity>
+        )}
         <View style={styles.headerActions}>
-          <TouchableOpacity onPress={handleOpenEdit} style={styles.headerButton}>
-            <Pencil size={20} color={P} />
+          <TouchableOpacity onPress={() => setShowCreatePlan(true)} style={styles.headerButton}>
+            <Target size={20} color={P} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleDeleteTrail} style={styles.headerButton}>
             <Trash2 size={20} color="#EF4444" />
@@ -290,52 +166,101 @@ export default function ThoughtTrailDetailScreen() {
         </View>
       </View>
 
-      {/* Overview - compact inline */}
-      {overview && <TrailOverviewCard overview={overview} />}
+      {/* Description inline edit */}
+      {editingDesc ? (
+        <View style={styles.descEditRow}>
+          <TextInput
+            value={editDesc}
+            onChangeText={setEditDesc}
+            onBlur={handleFinishEditDesc}
+            onSubmitEditing={handleFinishEditDesc}
+            placeholder="添加描述..."
+            placeholderTextColor={TH.sub}
+            style={[styles.descInput, { color: TH.text, borderColor: P, backgroundColor: TH.card }]}
+            autoFocus
+          />
+        </View>
+      ) : (
+        trail.description ? (
+          <TouchableOpacity onPress={handleStartEditDesc} style={styles.descRow}>
+            <Text style={[styles.descText, { color: TH.sub }]} numberOfLines={2}>{trail.description}</Text>
+          </TouchableOpacity>
+        ) : null
+      )}
+
+      {/* Overview + Segment bar */}
+      {overview && (
+        <View style={styles.overviewRow}>
+          <Text style={[styles.overviewText, { color: TH.sub }]} numberOfLines={1}>
+            {overview.reflectionCount} 感念 · {overview.noteCount} 笔记 · {overview.daySpan} 天 {overview.moodChanges.length > 0 ? `· ${overview.moodChanges.join('→')}` : ''}
+          </Text>
+        </View>
+      )}
+
+      <SegmentBar
+        segments={['时间线', '洞察', '复盘', '计划']}
+        selectedIndex={tabIndex}
+        onSelect={setTabIndex}
+      />
 
       <ScrollView
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={P}
+            colors={[P]}
+          />
+        }
       >
-        {/* Timeline - 核心内容置顶 */}
-        <TimelineList
-          items={timelineItems}
-          links={links}
-          onRemoveReflection={handleRemoveReflection}
-          onDeleteNote={handleDeleteNote}
-          onCreatePlanFromReflection={handleCreatePlanFromReflection}
-          onCreatePlanFromNote={handleCreatePlanFromNote}
-        />
+        {tabIndex === 0 && (
+          <TimelineList
+            items={timelineItems}
+            links={links}
+            onRemoveReflection={handleRemoveReflection}
+            onDeleteNote={handleDeleteNote}
+            onCreatePlanFromReflection={handleCreatePlanFromReflection}
+            onCreatePlanFromNote={handleCreatePlanFromReflection}
+          />
+        )}
 
-        {/* AI sections - 折叠 */}
-        <InsightSection
-          insightCache={trail.insightCache}
-          onGenerate={handleGenerateInsight}
-        />
+        {tabIndex === 1 && (
+          <InsightSection
+            insightCache={trail.insightCache}
+            onGenerate={handleGenerateInsight}
+            stale={insightCacheStale}
+          />
+        )}
 
-        <ReviewGuideSection
-          reviewCache={trail.reviewCache}
-          onGenerate={handleGenerateReview}
-          onStartWrite={handleWriteNote}
-        />
+        {tabIndex === 2 && (
+          <ReviewGuideSection
+            reviewCache={trail.reviewCache}
+            onGenerate={handleGenerateReview}
+            onStartWrite={handleWriteNote}
+            stale={reviewCacheStale}
+          />
+        )}
 
-        {/* Plan Tasks - 紧凑 */}
-        <PlanTasksSection
-          planItems={planItems}
-          checkins={planCheckins}
-          onNavigateToPlan={handleNavigateToPlan}
-          onCreatePlan={() => setShowCreatePlan(true)}
-        />
-
-        {/* Related Trails - 紧凑 */}
-        <RelatedTrailsSection
-          relatedTrails={relatedTrails}
-          onNavigateToTrail={handleNavigateToTrail}
-        />
+        {tabIndex === 3 && (
+          <>
+            <PlanTasksSection
+              planItems={trailPlanItems}
+              checkins={trailPlanCheckins}
+              onNavigateToPlan={handleNavigateToPlan}
+              onCreatePlan={() => setShowCreatePlan(true)}
+            />
+            <RelatedTrailsSection
+              relatedTrails={relatedTrails}
+              onNavigateToTrail={handleNavigateToTrail}
+            />
+          </>
+        )}
       </ScrollView>
 
-      {/* FAB - 浮动添加按钮 */}
+      {/* FAB */}
       <AddReflectionFAB
         onWriteReflection={handleWriteReflection}
         onSelectExisting={handleSelectExisting}
@@ -346,72 +271,23 @@ export default function ThoughtTrailDetailScreen() {
       <WriteNoteModal
         visible={showWriteNote}
         guidedQuestion={guidedQuestion}
-        onSave={handleSaveNote}
+        onSave={handleSaveNoteAndClose}
         onClose={() => { setShowWriteNote(false); setGuidedQuestion(undefined); }}
       />
 
       <SelectReflectionModal
         visible={showSelectReflection}
-        reflections={reflections}
-        onConfirm={handleSelectReflectionsConfirm}
+        reflections={reflections ?? []}
+        onConfirm={handleConfirmReflections}
         onClose={() => setShowSelectReflection(false)}
       />
 
       <CreatePlanFromTrailModal
         visible={showCreatePlan}
         insightCache={trail.insightCache}
-        onCreate={handleCreatePlan}
+        onCreate={handlePlanCreateAndClose}
         onClose={() => setShowCreatePlan(false)}
       />
-
-      {/* Edit Modal */}
-      <Modal visible={showEditModal} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: TH.cardSolid }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: TH.text }]}>{T('editThoughtTrail')}</Text>
-              <TouchableOpacity onPress={() => setShowEditModal(false)}>
-                <X size={24} color={TH.sub} />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={[styles.inputLabel, { color: TH.sub }]}>{T('thoughtTrailName')}</Text>
-            <TextInput
-              value={editName}
-              onChangeText={setEditName}
-              placeholder={T('thoughtTrailNamePlaceholder')}
-              placeholderTextColor={TH.sub}
-              style={[styles.input, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
-            />
-
-            <Text style={[styles.inputLabel, { color: TH.sub }]}>{T('thoughtTrailDesc')}</Text>
-            <TextInput
-              value={editDesc}
-              onChangeText={setEditDesc}
-              placeholder={T('thoughtTrailDescPlaceholder')}
-              placeholderTextColor={TH.sub}
-              multiline
-              numberOfLines={3}
-              style={[styles.input, styles.textArea, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
-            />
-
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                onPress={() => setShowEditModal(false)}
-                style={[styles.modalButton, { borderColor: TH.border }]}
-              >
-                <Text style={{ color: TH.sub }}>{T('commonCancel')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleSaveEdit}
-                style={[styles.modalButton, { backgroundColor: P }]}
-              >
-                <Text style={{ color: '#fff', fontWeight: '600' }}>{T('commonConfirm')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -422,7 +298,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: 12,
   },
   backButton: {
     width: 40,
@@ -430,22 +306,59 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerTitleArea: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginHorizontal: 8,
+  },
   headerTitle: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  headerTitleInput: {
     flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
     textAlign: 'center',
     marginHorizontal: 8,
+    borderBottomWidth: 1,
+    paddingVertical: 4,
   },
   headerActions: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 4,
   },
   headerButton: {
     width: 40,
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  descRow: {
+    paddingHorizontal: 16,
+    paddingBottom: 4,
+  },
+  descText: {
+    fontSize: FONT_SMALL,
+  },
+  descEditRow: {
+    paddingHorizontal: 16,
+    paddingBottom: 4,
+  },
+  descInput: {
+    fontSize: FONT_SMALL,
+    borderBottomWidth: 1,
+    paddingVertical: 4,
+  },
+  overviewRow: {
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  overviewText: {
+    fontSize: FONT_SMALL,
   },
   errorContainer: {
     flex: 1,
@@ -454,52 +367,5 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: FONT_BODY,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,.5)',
-    justifyContent: 'center',
-    padding: 24,
-  },
-  modalContent: {
-    borderRadius: 20,
-    padding: 24,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  modalTitle: {
-    fontSize: FONT_TITLE,
-    fontWeight: '700',
-  },
-  inputLabel: {
-    fontSize: FONT_SMALL,
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 12,
-    fontSize: FONT_BODY,
-    marginBottom: 16,
-  },
-  textArea: {
-    minHeight: 80,
-    textAlignVertical: 'top',
-  },
-  modalActions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  modalButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
 });

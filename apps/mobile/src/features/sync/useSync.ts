@@ -3,20 +3,13 @@
 // token comes from Zustand store, server changes update store.
 import { useEffect, useRef } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime } from './SyncService';
+import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, _migrationDone, setMigrationDone, resetMigrationFlag } from './SyncService';
 import { migrateToSyncQueue } from './migrateToSyncQueue';
 import { useAppStore } from '../../store/useAppStore';
 import { mobileStorageAdapter } from '../../store/storageAdapter';
 import { registerPushToken } from '@egoless-do/core';
 
 const getNotifications = () => import('expo-notifications');
-
-// Module-level guards to avoid repeated DB queries and concurrent syncs
-let _migrationDone = false;
-
-export function resetMigrationFlag() {
-  _migrationDone = false;
-}
 
 export function useSync() {
   const token = useAppStore(s => s.auth.token);
@@ -220,7 +213,7 @@ export function useSync() {
         // One-time migration: move old unsynced records to sync_queue
         if (!_migrationDone) {
           await migrateToSyncQueue().catch((e) => console.error('[Migration] Error:', e));
-          _migrationDone = true;
+          setMigrationDone();
         }
 
         // runSync() manages _lastSyncAt internally — no need to set it here

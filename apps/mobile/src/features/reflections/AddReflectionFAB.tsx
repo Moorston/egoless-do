@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, Animated } from 'react-native';
 import { Plus } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
@@ -19,15 +19,49 @@ export function AddReflectionFAB({
   const T = useT();
   const P = TH.primary;
   const [expanded, setExpanded] = useState(false);
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  const menuAnims = useRef([0, 1, 2].map(() => new Animated.Value(0))).current;
+
+  const animate = useCallback((toExpanded: boolean) => {
+    Animated.parallel([
+      Animated.spring(rotateAnim, {
+        toValue: toExpanded ? 1 : 0,
+        useNativeDriver: true,
+        friction: 8,
+        tension: 80,
+      }),
+      ...menuAnims.map((anim, i) =>
+        Animated.spring(anim, {
+          toValue: toExpanded ? 1 : 0,
+          useNativeDriver: true,
+          friction: 8,
+          tension: 80,
+          delay: toExpanded ? i * 40 : 0,
+        })
+      ),
+    ]).start();
+  }, [rotateAnim, menuAnims]);
 
   const handleToggle = useCallback(() => {
-    setExpanded(prev => !prev);
-  }, []);
+    const next = !expanded;
+    setExpanded(next);
+    animate(next);
+  }, [expanded, animate]);
 
   const handleAction = useCallback((action: () => void) => {
     setExpanded(false);
+    animate(false);
     action();
+  }, [animate]);
+
+  useEffect(() => {
+    if (!expanded) animate(false);
   }, []);
+
+  const rotate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '45deg'],
+  });
 
   return (
     <>
@@ -41,35 +75,34 @@ export function AddReflectionFAB({
       {/* Menu items */}
       {expanded && (
         <View style={styles.menuContainer}>
-          <TouchableOpacity
-            style={[styles.menuItem, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
-            onPress={() => handleAction(onWriteReflection)}
-          >
-            <Text style={styles.menuIcon}>📝</Text>
-            <Text style={[styles.menuText, { color: TH.text }]}>
-              {T('thoughtTrailAddReflection')}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.menuItem, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
-            onPress={() => handleAction(onSelectExisting)}
-          >
-            <Text style={styles.menuIcon}>📋</Text>
-            <Text style={[styles.menuText, { color: TH.text }]}>
-              {T('thoughtTrailSelectReflection')}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.menuItem, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
-            onPress={() => handleAction(onWriteNote)}
-          >
-            <Text style={styles.menuIcon}>🤔</Text>
-            <Text style={[styles.menuText, { color: P, fontWeight: '600' }]}>
-              {T('trailNoteWrite')}
-            </Text>
-          </TouchableOpacity>
+          {[
+            { icon: '📝', label: T('thoughtTrailAddReflection'), action: onWriteReflection },
+            { icon: '📋', label: T('thoughtTrailSelectReflection'), action: onSelectExisting },
+            { icon: '🤔', label: T('trailNoteWrite'), action: onWriteNote, highlight: true },
+          ].map((item, i) => (
+            <Animated.View
+              key={i}
+              style={{
+                opacity: menuAnims[i],
+                transform: [{
+                  translateY: menuAnims[i].interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                }],
+              }}
+            >
+              <TouchableOpacity
+                style={[styles.menuItem, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
+                onPress={() => handleAction(item.action)}
+              >
+                <Text style={styles.menuIcon}>{item.icon}</Text>
+                <Text style={[styles.menuText, item.highlight ? { color: P, fontWeight: '600' } : { color: TH.text }]}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            </Animated.View>
+          ))}
         </View>
       )}
 
@@ -79,9 +112,9 @@ export function AddReflectionFAB({
         onPress={handleToggle}
         activeOpacity={0.8}
       >
-        <Plus size={28} color="#fff" style={{
-          transform: [{ rotate: expanded ? '45deg' : '0deg' }],
-        }} />
+        <Animated.View style={{ transform: [{ rotate }] }}>
+          <Plus size={28} color="#fff" />
+        </Animated.View>
       </TouchableOpacity>
     </>
   );

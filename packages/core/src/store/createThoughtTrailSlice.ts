@@ -201,5 +201,18 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         (item: PlanItem) => item.trailId === trailId && !item.deleted
       );
     },
+
+    // ─── User preferences for recommendations ───────────────────────
+    ignoredRecPatterns: [],
+
+    addIgnoredRecPattern: (pattern) => {
+      set(s => ({
+        ignoredRecPatterns: [...new Set([...(s.ignoredRecPatterns ?? []), pattern])],
+      }));
+    },
+
+    clearIgnoredRecPatterns: () => {
+      set({ ignoredRecPatterns: [] });
+    },
   });
 }

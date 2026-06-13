@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { Brain, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
@@ -8,14 +8,23 @@ import type { TrailInsightCache } from '@egoless-do/core';
 interface InsightSectionProps {
   insightCache?: TrailInsightCache;
   onGenerate: () => Promise<void>;
+  stale?: boolean;
 }
 
-export function InsightSection({ insightCache, onGenerate }: InsightSectionProps) {
+export function InsightSection({ insightCache, onGenerate, stale }: InsightSectionProps) {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const prevCacheRef = useRef(insightCache);
+
+  useEffect(() => {
+    if (!prevCacheRef.current && insightCache) {
+      setExpanded(true);
+    }
+    prevCacheRef.current = insightCache;
+  }, [insightCache]);
 
   const handleGenerate = useCallback(async () => {
     setLoading(true);
@@ -35,8 +44,11 @@ export function InsightSection({ insightCache, onGenerate }: InsightSectionProps
           <Text style={[styles.title, { color: TH.text }]}>AI 洞察</Text>
         </View>
         {loading ? (
-          <View style={styles.loadingRow}>
-            <ActivityIndicator size="small" color={P} />
+          <View style={styles.skeletonContainer}>
+            <View style={[styles.skeletonLine, { width: '80%', backgroundColor: TH.sub + '20' }]} />
+            <View style={[styles.skeletonLine, { width: '60%', backgroundColor: TH.sub + '20' }]} />
+            <View style={[styles.skeletonLine, { width: '90%', backgroundColor: TH.sub + '15' }]} />
+            <View style={[styles.skeletonLine, { width: '45%', backgroundColor: TH.sub + '15' }]} />
             <Text style={[styles.loadingText, { color: TH.sub }]}>
               {T('trailInsightGenerating')}
             </Text>
@@ -127,6 +139,18 @@ export function InsightSection({ insightCache, onGenerate }: InsightSectionProps
             </>
           )}
 
+          {stale && (
+            <View style={styles.staleRow}>
+              <Text style={[styles.staleText, { color: '#F59E0B' }]}>
+                已有洞察（可能已过期）
+              </Text>
+              <TouchableOpacity onPress={handleGenerate} disabled={loading}>
+                <Text style={[styles.actionText, { color: P }]}>
+                  {T('trailInsightRegenerate')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <View style={styles.footerRow}>
             <TouchableOpacity onPress={handleGenerate} disabled={loading}>
               <Text style={[styles.actionText, { color: P }]}>
@@ -186,6 +210,16 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: FONT_SMALL,
+    marginTop: 12,
+    textAlign: 'center',
+  },
+  skeletonContainer: {
+    marginTop: 12,
+    gap: 8,
+  },
+  skeletonLine: {
+    height: 12,
+    borderRadius: 6,
   },
   sectionLabel: {
     fontSize: FONT_SMALL,
@@ -201,6 +235,19 @@ const styles = StyleSheet.create({
     fontSize: FONT_SMALL,
     lineHeight: 20,
     marginLeft: 4,
+  },
+  staleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(245,158,11,0.3)',
+  },
+  staleText: {
+    fontSize: FONT_SMALL,
+    fontWeight: '500',
   },
   footerRow: {
     flexDirection: 'row',

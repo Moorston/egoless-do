@@ -21,18 +21,48 @@ export interface TrailOverview {
 
 /**
  * 自动生成思路脉络名称
- * 优先使用第一个标签，无标签时使用内容前 20 字
+ * 综合分析所有感念的情绪变化和主题标签
  * @param t optional i18n translation function for localized default names
  */
 export function generateTrailName(reflections: MindReflection[], t?: (key: string, vars?: Record<string, string>) => string): string {
   if (reflections.length === 0) return t?.('thoughtTrailEmpty') ?? 'New Trail';
 
-  const first = reflections[0];
-  if (first.tags.length > 0) {
-    return t?.('thoughtTrailAutoName', { tag: first.tags[0] }) ?? `${first.tags[0]} trail`;
+  if (reflections.length === 1) {
+    const r = reflections[0];
+    if (r.tags.length > 0) return `${r.tags[0]}的${r.mood}`;
+    const content = r.content.trim();
+    return content.length <= 20 ? content : `${content.slice(0, 20)}...`;
   }
 
-  const content = first.content.trim();
+  // 按时间排序
+  const sorted = [...reflections].sort((a, b) => a.timestamp - b.timestamp);
+  const firstMood = sorted[0].mood;
+  const lastMood = sorted[sorted.length - 1].mood;
+
+  // 找最常出现的标签
+  const tagCounts = new Map<string, number>();
+  for (const r of reflections) {
+    for (const tag of r.tags) {
+      tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+    }
+  }
+  let primaryTag = '';
+  let bestCount = 0;
+  for (const [tag, count] of tagCounts) {
+    if (count > bestCount) { primaryTag = tag; bestCount = count; }
+  }
+
+  // 情绪有变化
+  if (firstMood !== lastMood) {
+    if (primaryTag) return `${primaryTag}·从${firstMood}到${lastMood}`;
+    return `从${firstMood}到${lastMood}`;
+  }
+
+  // 情绪一致
+  if (primaryTag) return `${primaryTag}的${firstMood}`;
+
+  // 无标签：取第一条有内容的感念
+  const content = sorted[0].content.trim();
   if (content.length <= 20) return content;
   return `${content.slice(0, 20)}...`;
 }

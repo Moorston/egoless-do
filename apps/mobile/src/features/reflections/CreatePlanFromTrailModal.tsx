@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet,
 } from 'react-native';
@@ -41,6 +41,17 @@ export function CreatePlanFromTrailModal({
     return d.toISOString().slice(0, 10);
   });
   const [selectedSuggestions, setSelectedSuggestions] = useState<number[]>([]);
+  const autoFilled = useRef(false);
+
+  useEffect(() => {
+    if (visible && insightCache?.summary && !autoFilled.current) {
+      setName(insightCache.summary);
+      autoFilled.current = true;
+    }
+    if (!visible) {
+      autoFilled.current = false;
+    }
+  }, [visible, insightCache]);
 
   const suggestions = useMemo(() => {
     return insightCache?.suggestions ?? [];

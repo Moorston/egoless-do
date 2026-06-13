@@ -23,7 +23,7 @@ export type RootStackParamList = {
   Stats: undefined;
   ReflectionStats: undefined;
   MindTrail: undefined;
-  QuickCreateTrail: { initialText?: string } | undefined;
+  QuickCreateTrail: { initialText?: string; selectedIds?: string[] } | undefined;
   ThoughtTrailDetail: { trailId: string };
   ReflectionDetail: { reflectionId: string };
   HabitDetail: { habitId: string };

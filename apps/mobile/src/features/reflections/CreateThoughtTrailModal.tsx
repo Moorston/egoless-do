@@ -134,6 +134,8 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                 placeholder={T('thoughtTrailNamePlaceholder')}
                 placeholderTextColor={TH.sub}
                 style={[styles.input, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
+                blurOnSubmit
+                onSubmitEditing={() => Keyboard.dismiss()}
               />
 
               <Text style={[styles.label, { color: TH.sub }]}>{T('thoughtTrailDesc')}</Text>
@@ -145,6 +147,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                 multiline
                 numberOfLines={3}
                 style={[styles.input, styles.textArea, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
+                onBlur={() => Keyboard.dismiss()}
               />
 
               <TouchableOpacity
@@ -169,6 +172,8 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                   placeholderTextColor={TH.sub}
                   style={[styles.searchInput, { color: TH.text }]}
                   autoCorrect={false}
+                  blurOnSubmit
+                  onSubmitEditing={() => Keyboard.dismiss()}
                 />
                 {search.length > 0 && (
                   <TouchableOpacity onPress={() => setSearch('')}>

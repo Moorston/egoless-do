@@ -3,37 +3,38 @@ import type { ModelConfig, GenerateOptions } from './types';
 
 export interface CloudProvider {
   name: string;
-  generate(prompt: string, options?: GenerateOptions): Promise<string>;
+  generate(prompt: string, options?: GenerateOptions & { signal?: AbortSignal }): Promise<string>;
 }
 
 // 通用 OpenAI 兼容提供商
 export class OpenAICompatibleProvider implements CloudProvider {
   constructor(private config: ModelConfig) {}
-  
+
   get name() { return this.config.name; }
-  
-  async generate(prompt: string, options?: GenerateOptions): Promise<string> {
+
+  async generate(prompt: string, options?: GenerateOptions & { signal?: AbortSignal }): Promise<string> {
     const { apiKey, baseUrl, model, maxTokens, temperature } = this.config;
-    
+
     // 本地模型（如Ollama）不需要API Key
     const isLocal = baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1');
     if (!apiKey && !isLocal) {
       throw new Error('请先配置API Key');
     }
-    
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-    
+
     if (apiKey) {
       headers['Authorization'] = `Bearer ${apiKey}`;
     }
-    
+
     const url = `${baseUrl.replace(/\/$/, '')}/chat/completions`;
-    
+
     const response = await fetch(url, {
       method: 'POST',
       headers,
+      signal: options?.signal,
       body: JSON.stringify({
         model,
         messages: [
@@ -44,15 +45,16 @@ export class OpenAICompatibleProvider implements CloudProvider {
         temperature: options?.temperature || temperature,
       }),
     });
-    
+
     if (!response.ok) {
       const error = await response.text();
       throw new Error(`API错误: ${response.status} - ${error}`);
     }
-    
+
     const data = await response.json();
-    console.log('[CloudProvider] Response choices:', data.choices?.length, 'content:', data.choices?.[0]?.message?.content?.slice(0, 50));
-    const content = data.choices?.[0]?.message?.content;
+    const msg = data.choices?.[0]?.message;
+    const content = msg?.content || msg?.reasoning_content;
+    console.log('[CloudProvider] Response choices:', data.choices?.length, 'content:', content?.slice(0, 50), 'finish_reason:', data.choices?.[0]?.finish_reason);
     if (!content) {
       throw new Error(`API返回空内容，响应: ${JSON.stringify(data).slice(0, 200)}`);
     }
