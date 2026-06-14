@@ -174,6 +174,7 @@ CREATE TABLE IF NOT EXISTS plan_items (
   link_config       TEXT    NOT NULL DEFAULT '{}',
   item_order        INTEGER NOT NULL DEFAULT 0,
   frequency         TEXT,
+  tags              TEXT,
   updated_at        INTEGER,
   deleted           INTEGER NOT NULL DEFAULT 0,
   synced            INTEGER NOT NULL DEFAULT 0
@@ -409,6 +410,9 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
 
   // Add trail_id column to plan_items if missing
   await tryAddCol('plan_items', 'trail_id', 'TEXT');
+
+  // Add tags column to plan_items if missing
+  await tryAddCol('plan_items', 'tags', 'TEXT');
 
   // Ensure trail_notes table exists
   const trailNotesTableCheck = await db.getFirstAsync<{ name: string }>(

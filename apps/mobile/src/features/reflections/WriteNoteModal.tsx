@@ -1,21 +1,31 @@
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet,
+  View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert,
 } from 'react-native';
-import { X } from 'lucide-react-native';
+import { X, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_SMALL, FONT_BODY, FONT_TITLE } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, FONT_TITLE, FONT_TINY } from '@egoless-do/core';
+import { getMoodIcon } from '@egoless-do/core';
+import type { Mood } from '@egoless-do/core';
 
 interface WriteNoteModalProps {
   visible: boolean;
   guidedQuestion?: string;
+  reviewPerspectives?: string[];
   onSave: (form: { content: string; tags: string[]; mood?: string; source: 'guided' | 'free'; guidedQuestion?: string }) => void;
   onClose: () => void;
 }
 
-const MOOD_OPTIONS = ['😊', '🌿', '😰', '😢', '🎉', '🙏', '💭'];
+const MOOD_OPTIONS: { mood: Mood; label: string }[] = [
+  { mood: 'happy', label: '开心' },
+  { mood: 'calm', label: '平静' },
+  { mood: 'neutral', label: '平常' },
+  { mood: 'sad', label: '难过' },
+  { mood: 'anxious', label: '焦虑' },
+  { mood: 'grateful', label: '感恩' },
+];
 
-export function WriteNoteModal({ visible, guidedQuestion, onSave, onClose }: WriteNoteModalProps) {
+export function WriteNoteModal({ visible, guidedQuestion, reviewPerspectives, onSave, onClose }: WriteNoteModalProps) {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
@@ -23,7 +33,8 @@ export function WriteNoteModal({ visible, guidedQuestion, onSave, onClose }: Wri
   const [content, setContent] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
-  const [selectedMood, setSelectedMood] = useState<string | undefined>();
+  const [selectedMood, setSelectedMood] = useState<Mood | undefined>();
+  const [perspectivesExpanded, setPerspectivesExpanded] = useState(true);
 
   const handleAddTag = useCallback(() => {
     const tag = tagInput.trim();
@@ -53,12 +64,36 @@ export function WriteNoteModal({ visible, guidedQuestion, onSave, onClose }: Wri
   }, [content, tags, selectedMood, guidedQuestion, onSave]);
 
   const handleClose = useCallback(() => {
-    setContent('');
-    setTags([]);
-    setSelectedMood(undefined);
-    setTagInput('');
-    onClose();
-  }, [onClose]);
+    if (content.trim()) {
+      Alert.alert(
+        '放弃草稿',
+        '当前内容未保存，确定要关闭吗？',
+        [
+          { text: '继续编辑', style: 'cancel' },
+          {
+            text: '放弃',
+            style: 'destructive',
+            onPress: () => {
+              setContent('');
+              setTags([]);
+              setSelectedMood(undefined);
+              setTagInput('');
+              onClose();
+            },
+          },
+        ]
+      );
+    } else {
+      setContent('');
+      setTags([]);
+      setSelectedMood(undefined);
+      setTagInput('');
+      onClose();
+    }
+  }, [content, onClose]);
+
+  const charCount = content.length;
+  const hasPerspectives = reviewPerspectives && reviewPerspectives.length > 0;
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -74,56 +109,74 @@ export function WriteNoteModal({ visible, guidedQuestion, onSave, onClose }: Wri
           </View>
 
           <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
-            {/* 引导问题 */}
+            {/* 引导问题 - 高亮区块 */}
             {guidedQuestion && (
-              <View style={[styles.guidedBox, { borderColor: TH.border }]}>
-                <Text style={[styles.guidedText, { color: TH.sub }]}>
-                  💭 {T('trailNoteGuidedBy')}:
-                </Text>
-                <Text style={[styles.guidedQuestion, { color: TH.text }]}>
+              <View style={[styles.guidedHighlight, { backgroundColor: P + '10', borderColor: P + '30' }]}>
+                <Text style={[styles.guidedHighlightLabel, { color: P }]}>💭 引导问题</Text>
+                <Text style={[styles.guidedHighlightText, { color: TH.text }]}>
                   {guidedQuestion}
                 </Text>
               </View>
             )}
 
+            {/* 复盘思路 - 可折叠 */}
+            {hasPerspectives && (
+              <View style={[styles.perspectivesBox, { borderColor: TH.border }]}>
+                <TouchableOpacity
+                  onPress={() => setPerspectivesExpanded(prev => !prev)}
+                  style={styles.perspectivesHeader}
+                >
+                  <Text style={[styles.perspectivesLabel, { color: TH.sub }]}>💡 复盘思路</Text>
+                  {perspectivesExpanded
+                    ? <ChevronUp size={16} color={TH.sub} />
+                    : <ChevronDown size={16} color={TH.sub} />
+                  }
+                </TouchableOpacity>
+                {perspectivesExpanded && (
+                  <View style={styles.perspectivesList}>
+                    {reviewPerspectives!.map((p, i) => (
+                      <Text key={i} style={[styles.perspectiveItem, { color: TH.text }]}>
+                        ▎ {p}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+            )}
+
             {/* 内容输入 */}
-            <TextInput
-              value={content}
-              onChangeText={setContent}
-              placeholder="写下你的思考..."
-              placeholderTextColor={TH.sub}
-              multiline
-              style={[styles.contentInput, { color: TH.text, borderColor: TH.border }]}
-              textAlignVertical="top"
-            />
+            <View style={styles.contentWrapper}>
+              <TextInput
+                value={content}
+                onChangeText={setContent}
+                placeholder="写下你的思考..."
+                placeholderTextColor={TH.sub}
+                multiline
+                style={[styles.contentInput, { color: TH.text, borderColor: TH.border }]}
+                textAlignVertical="top"
+              />
+              <Text style={[styles.charCount, { color: TH.sub }]}>已写 {charCount} 字</Text>
+            </View>
 
             {/* 标签输入 */}
             <View style={styles.tagSection}>
-              <View style={styles.tagInputRow}>
-                <TextInput
-                  value={tagInput}
-                  onChangeText={setTagInput}
-                  placeholder="添加标签"
-                  placeholderTextColor={TH.sub}
-                  style={[styles.tagInput, { color: TH.text, borderColor: TH.border }]}
-                  onSubmitEditing={handleAddTag}
-                />
-                <TouchableOpacity
-                  onPress={handleAddTag}
-                  style={[styles.tagAddButton, { backgroundColor: P }]}
-                >
-                  <Text style={styles.tagAddText}>+</Text>
-                </TouchableOpacity>
-              </View>
+              <TextInput
+                value={tagInput}
+                onChangeText={setTagInput}
+                placeholder="输入标签，回车添加"
+                placeholderTextColor={TH.sub}
+                style={[styles.tagInput, { color: TH.text, borderColor: TH.border }]}
+                onSubmitEditing={handleAddTag}
+              />
               {tags.length > 0 && (
                 <View style={styles.tagsRow}>
                   {tags.map(tag => (
                     <TouchableOpacity
                       key={tag}
                       onPress={() => handleRemoveTag(tag)}
-                      style={[styles.tagChip, { borderColor: TH.border }]}
+                      style={[styles.tagPill, { backgroundColor: P + '15' }]}
                     >
-                      <Text style={[styles.tagChipText, { color: TH.text }]}>{tag} ×</Text>
+                      <Text style={[styles.tagPillText, { color: P }]}>{tag} ×</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -134,7 +187,7 @@ export function WriteNoteModal({ visible, guidedQuestion, onSave, onClose }: Wri
             <View style={styles.moodSection}>
               <Text style={[styles.moodLabel, { color: TH.sub }]}>心情</Text>
               <View style={styles.moodRow}>
-                {MOOD_OPTIONS.map(mood => (
+                {MOOD_OPTIONS.map(({ mood, label }) => (
                   <TouchableOpacity
                     key={mood}
                     onPress={() => setSelectedMood(selectedMood === mood ? undefined : mood)}
@@ -143,7 +196,10 @@ export function WriteNoteModal({ visible, guidedQuestion, onSave, onClose }: Wri
                       selectedMood === mood && { backgroundColor: `${P}30` },
                     ]}
                   >
-                    <Text style={styles.moodEmoji}>{mood}</Text>
+                    <Text style={styles.moodEmoji}>{getMoodIcon(mood)}</Text>
+                    <Text style={[styles.moodText, { color: selectedMood === mood ? P : TH.sub }]}>
+                      {label}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -195,57 +251,76 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   scrollContent: {
-    maxHeight: 400,
+    maxHeight: 450,
   },
-  guidedBox: {
-    padding: 12,
+  // 引导问题高亮
+  guidedHighlight: {
+    padding: 14,
+    borderRadius: 12,
     borderWidth: 1,
-    borderRadius: 8,
-    borderStyle: 'dashed',
     marginBottom: 16,
   },
-  guidedText: {
+  guidedHighlightLabel: {
     fontSize: FONT_SMALL,
-    marginBottom: 4,
+    fontWeight: '600',
+    marginBottom: 6,
   },
-  guidedQuestion: {
+  guidedHighlightText: {
     fontSize: FONT_BODY,
-    fontWeight: '500',
-    lineHeight: 22,
+    fontWeight: '600',
+    lineHeight: 24,
+  },
+  // 复盘思路
+  perspectivesBox: {
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  perspectivesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 12,
+  },
+  perspectivesLabel: {
+    fontSize: FONT_SMALL,
+    fontWeight: '600',
+  },
+  perspectivesList: {
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+    gap: 6,
+  },
+  perspectiveItem: {
+    fontSize: FONT_SMALL,
+    lineHeight: 20,
+  },
+  // 内容输入
+  contentWrapper: {
+    marginBottom: 16,
   },
   contentInput: {
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
     fontSize: FONT_BODY,
-    minHeight: 120,
-    marginBottom: 16,
+    minHeight: 200,
   },
+  charCount: {
+    fontSize: FONT_TINY,
+    textAlign: 'right',
+    marginTop: 4,
+  },
+  // 标签
   tagSection: {
     marginBottom: 16,
   },
-  tagInputRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
   tagInput: {
-    flex: 1,
     borderWidth: 1,
     borderRadius: 8,
     padding: 10,
     fontSize: FONT_SMALL,
-  },
-  tagAddButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tagAddText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
   },
   tagsRow: {
     flexDirection: 'row',
@@ -253,15 +328,16 @@ const styles = StyleSheet.create({
     gap: 6,
     marginTop: 8,
   },
-  tagChip: {
+  tagPill: {
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderWidth: 1,
     borderRadius: 12,
   },
-  tagChipText: {
+  tagPillText: {
     fontSize: FONT_SMALL,
+    fontWeight: '500',
   },
+  // 心情
   moodSection: {
     marginBottom: 16,
   },
@@ -271,18 +347,24 @@ const styles = StyleSheet.create({
   },
   moodRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
   moodButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   moodEmoji: {
-    fontSize: 20,
+    fontSize: 18,
   },
+  moodText: {
+    fontSize: FONT_SMALL,
+  },
+  // 操作按钮
   actions: {
     flexDirection: 'row',
     gap: 12,

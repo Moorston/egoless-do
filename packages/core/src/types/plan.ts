@@ -3,8 +3,12 @@ import type { Syncable } from './shared';
 
 export type PlanStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'cancelled';
 export type PlanItemStatus = 'not_started' | 'in_progress' | 'paused' | 'completed' | 'cancelled' | 'delayed';
-export type PlanItemLink = 'manual' | 'checkin' | 'fasting' | 'meditation' | 'exercise' | 'habit' | 'reflection';
+export type PlanItemLink = 'manual' | 'checkin' | 'fasting' | 'meditation' | 'exercise' | 'habit' | 'reflection' | 'trail';
 export type PlanItemPriority = 'high' | 'medium' | 'low';
+
+export type PlanItemSource =
+  | { type: 'reflection'; id: string }
+  | { type: 'trail'; id: string };
 
 export type CheckinFrequency =
   | { mode: 'daily' }
@@ -49,6 +53,7 @@ export interface PlanItem extends Syncable {
   trailId?: string;       // 来源脉络 ID
   order: number;
   frequency?: CheckinFrequency;
+  tags?: string[];
 }
 
 export interface PlanItemCheckin extends Syncable {
@@ -68,6 +73,17 @@ export interface DailyCustomTodo extends Syncable {
   done: boolean;
   order: number;
   recurring?: boolean;
+}
+
+export interface UnifiedPlanItemForm {
+  name: string;
+  description?: string;
+  targetMetric?: string;
+  startDate: string;
+  endDate: string;
+  priority: PlanItemPriority;
+  frequency?: CheckinFrequency;
+  tags?: string[];
 }
 
 export interface DailyTodoHistory extends Syncable {

@@ -37,7 +37,7 @@ export interface TrailInsight {
 }
 
 export interface ReviewGuide {
-  questions: string[];
+  perspectives: string[];  // 复盘思路（多维度视角）
   observations: string[];
   suggestions: string[];
 }

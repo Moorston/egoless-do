@@ -1,25 +1,29 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_SMALL, FONT_BODY, FONT_TINY } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, FONT_TINY, computeExpectedDays } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
+import { Trash2, Network } from 'lucide-react-native';
 
 interface PlanTaskCardProps {
   planItem: PlanItem;
   checkins: PlanItemCheckin[];
   onPress: () => void;
+  onDelete: () => void;
 }
 
 const PRIORITY_COLORS = { high: '#EF4444', medium: '#F59E0B', low: '#10B981' };
 const PRIORITY_LABELS = { high: '高', medium: '中', low: '低' };
 
-export function PlanTaskCard({ planItem, checkins, onPress }: PlanTaskCardProps) {
+export function PlanTaskCard({ planItem, checkins, onPress, onDelete }: PlanTaskCardProps) {
   const TH = useTheme();
   const T = useT();
+  const nav = useNavigation();
 
-  const doneCount = checkins.filter(c => c.done && !c.deleted).length;
-  const totalDays = planItem.totalCheckinDays || 1;
-  const progress = Math.min(doneCount / totalDays, 1);
+  const doneCount = planItem.totalCheckinDays;
+  const totalExpectedDays = computeExpectedDays(planItem.frequency, planItem.startDate, planItem.endDate, planItem.endDate);
+  const progress = totalExpectedDays > 0 ? Math.min(doneCount / totalExpectedDays, 1) : 0;
   const isCompleted = planItem.status === 'completed';
 
   return (
@@ -37,6 +41,15 @@ export function PlanTaskCard({ planItem, checkins, onPress }: PlanTaskCardProps)
             {PRIORITY_LABELS[planItem.priority]}
           </Text>
         </View>
+        <TouchableOpacity
+          onPress={() => (nav as any).navigate('RelationMap', { context: { type: 'planItem', id: planItem.id } })}
+          style={{ padding: 4, marginLeft: 4 }}
+        >
+          <Network size={14} color={TH.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onDelete} style={{ padding: 4, marginLeft: 4 }}>
+          <Trash2 size={14} color="#EF4444" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.progressRow}>
@@ -49,7 +62,7 @@ export function PlanTaskCard({ planItem, checkins, onPress }: PlanTaskCardProps)
           />
         </View>
         <Text style={[styles.progressText, { color: TH.sub }]}>
-          {T('trailPlanProgress').replace('{done}', String(doneCount)).replace('{total}', String(totalDays))}
+          {T('trailPlanProgress').replace('{done}', String(doneCount)).replace('{total}', String(totalExpectedDays))}
         </Text>
       </View>
 

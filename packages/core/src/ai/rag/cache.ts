@@ -62,13 +62,16 @@ export class AICache<T = any> {
 }
 
 /**
- * 生成缓存键：基于查询内容和感念 ID 集合的哈希
- * 取 SHA-256 前 16 位十六进制字符串
+ * 生成缓存键：基于查询内容和数据指纹的哈希
+ * 支持两种调用方式:
+ * - generateCacheKey(query, dataFingerprint) — 新方式，用 count:latestTimestamp
+ * - generateCacheKey(query, reflectionIds) — 旧方式，兼容
  */
-export function generateCacheKey(query: string, reflectionIds: string[]): string {
-  const sortedIds = [...reflectionIds].sort().join(',');
-  const raw = `${query}|${sortedIds}`;
-  return simpleHash(raw);
+export function generateCacheKey(query: string, fingerprintOrIds: string | string[]): string {
+  const fingerprint = typeof fingerprintOrIds === 'string'
+    ? fingerprintOrIds
+    : [...fingerprintOrIds].sort().join(',');
+  return simpleHash(`${query}|${fingerprint}`);
 }
 
 /**

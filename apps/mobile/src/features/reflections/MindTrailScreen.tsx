@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Plus, Zap, Send, RefreshCw, X } from 'lucide-react-native';
+import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
@@ -28,7 +28,6 @@ export default function MindTrailScreen() {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [inputText, setInputText] = useState('');
-  const [expandedRec, setExpandedRec] = useState<number | null>(null);
   const [createdRecIds, setCreatedRecIds] = useState<Set<number>>(new Set());
   const [recommendations, setRecommendations] = useState<TrailRecommendation[]>([]);
   const [isLoadingRecs, setIsLoadingRecs] = useState(false);
@@ -75,12 +74,17 @@ export default function MindTrailScreen() {
     [thoughtTrails]
   );
 
+  const aiTrails = useMemo(() =>
+    thoughtTrails.filter(t => t.source === 'ai'),
+    [thoughtTrails]
+  );
+
   const reflections = useMemo(() =>
     (store.reflections ?? []).filter(r => !r.deleted),
     [store.reflections]
   );
 
-  // 推荐候选源：最近 30 天内、未分配到任何思维链的感念
+  // 推荐候选源：最近 30 天内、未分配到任何思维脉络的感念
   const recommendationCandidates = useMemo(() => {
     const thirtyDaysAgo = Date.now() - 30 * 86400000;
     return reflections.filter(r =>
@@ -183,11 +187,15 @@ export default function MindTrailScreen() {
     (nav as any).navigate('ThoughtTrailDetail', { trailId });
   }, [nav]);
 
-  const handleExpandRec = useCallback((index: number) => {
-    setExpandedRec(prev => prev === index ? null : index);
-  }, []);
+  const handleOneClickCreate = useCallback((rec: TrailRecommendation) => {
+    const trailId = store.createThoughtTrail(rec.name, rec.reason || rec.narrative, rec.reflectionIds, 'ai');
+    Alert.alert('创建成功', `「${rec.name}」已创建`, [
+      { text: '查看详情', onPress: () => (nav as any).navigate('ThoughtTrailDetail', { trailId }) },
+      { text: '继续浏览', style: 'cancel' },
+    ]);
+  }, [store, nav]);
 
-  const handleQuickCreate = useCallback((rec: TrailRecommendation) => {
+  const handleCustomCreate = useCallback((rec: TrailRecommendation) => {
     (nav as any).navigate('QuickCreateTrail', { selectedIds: rec.reflectionIds });
   }, [nav]);
 
@@ -205,9 +213,23 @@ export default function MindTrailScreen() {
 
   const handleRefresh = useCallback(() => {
     setCreatedRecIds(new Set());
-    setExpandedRec(null);
     setRefreshKey(k => k + 1);
   }, []);
+
+  const handleDeleteTrail = useCallback((trailId: string, trailName: string) => {
+    Alert.alert(
+      '删除思维脉络',
+      `确定要删除「${trailName}」吗？`,
+      [
+        { text: '取消', style: 'cancel' },
+        {
+          text: '删除',
+          style: 'destructive',
+          onPress: () => store.deleteThoughtTrail(trailId),
+        },
+      ]
+    );
+  }, [store]);
 
   // Smart query handlers
   const handleSmartQuery = useCallback(async (text?: string) => {
@@ -341,9 +363,17 @@ export default function MindTrailScreen() {
                 <TouchableOpacity
                   key={trail.id}
                   onPress={() => (nav as any).navigate('ThoughtTrailDetail', { trailId: trail.id })}
-                  style={[styles.trailCard, { backgroundColor: TH.card, borderColor: TH.border }]}
+                  style={[styles.trailCard, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
                 >
-                  <Text style={[styles.trailName, { color: TH.text }]}>{trail.name}</Text>
+                  <View style={styles.trailCardHeader}>
+                    <Text style={[styles.trailName, { color: TH.text, flex: 1 }]}>{trail.name}</Text>
+                    <TouchableOpacity
+                      onPress={() => handleDeleteTrail(trail.id, trail.name)}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Trash2 size={16} color={TH.sub} />
+                    </TouchableOpacity>
+                  </View>
                   <Text style={[styles.trailInfo, { color: TH.sub }]}>
                     {stats.count} {T('thoughtTrailReflections')}
                     {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
@@ -359,11 +389,60 @@ export default function MindTrailScreen() {
           )}
         </View>
 
+        {/* AI Created Trails */}
+        {aiTrails.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={[styles.sectionTitle, { color: TH.text }]}>
+                AI 创建的脉络 ({aiTrails.length})
+              </Text>
+            </View>
+
+            {aiTrails.map(trail => {
+              const stats = getTrailStats(trail, reflections);
+              return (
+                <TouchableOpacity
+                  key={trail.id}
+                  onPress={() => (nav as any).navigate('ThoughtTrailDetail', { trailId: trail.id })}
+                  style={[styles.trailCard, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
+                >
+                  <View style={styles.trailCardHeader}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                      <View style={{
+                        backgroundColor: '#8B5CF620', borderRadius: 4,
+                        paddingHorizontal: 6, paddingVertical: 2,
+                      }}>
+                        <Text style={{ fontSize: FONT_TINY, color: '#8B5CF6' }}>AI</Text>
+                      </View>
+                      <Text style={[styles.trailName, { color: TH.text, marginBottom: 0 }]}>{trail.name}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => handleDeleteTrail(trail.id, trail.name)}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <Trash2 size={16} color={TH.sub} />
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={[styles.trailInfo, { color: TH.sub }]}>
+                    {stats.count} {T('thoughtTrailReflections')}
+                    {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
+                  </Text>
+                  {stats.moodChanges.length > 0 && (
+                    <Text style={[styles.moodChanges, { color: TH.sub }]}>
+                      心情变化: {stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
+
         {/* Recommended Thought Chains */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
-              推荐思维链
+              推荐思维脉络
             </Text>
             {isLoadingRecs && (
               <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>加载中...</Text>
@@ -381,9 +460,8 @@ export default function MindTrailScreen() {
                   <RecommendCard
                     key={realIdx}
                     rec={rec}
-                    isExpanded={expandedRec === realIdx}
-                    onToggleExpand={() => handleExpandRec(realIdx)}
-                    onQuickGenerate={handleQuickCreate}
+                    onOneClickCreate={handleOneClickCreate}
+                    onCustomCreate={handleCustomCreate}
                     onNotInterested={handleNotInterested}
                   />
                 );
@@ -507,7 +585,7 @@ export default function MindTrailScreen() {
             <Zap size={16} color="#8B5CF6" />
             <TextInput
               style={[styles.input, { color: TH.text }]}
-              placeholder="描述你想追踪的思维链..."
+              placeholder="描述你想追踪的思维脉络..."
               placeholderTextColor={TH.sub}
               value={inputText}
               onChangeText={setInputText}
@@ -592,6 +670,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     marginBottom: 12,
+  },
+  trailCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
   },
   trailName: {
     fontSize: FONT_BODY,

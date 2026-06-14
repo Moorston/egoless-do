@@ -3,6 +3,7 @@ import type {
   Plan, PlanStatus, PlanItem, PlanItemStatus, PlanItemCheckin, PlanItemLink, PlanItemPriority,
   Habit, FastingSession, MedHistoryEntry, ExerciseEntry, CheckinEntry, DailyCustomTodo, DailyTodoHistory,
   MindReflection, CheckinFrequency,
+  PlanItemSource, UnifiedPlanItemForm,
 } from '../types';
 import { uid, dateStr } from '../utils';
 import { COLORS } from '../constants';
@@ -492,7 +493,7 @@ export function performDailyReset(
 export function addPlanItem(planItems: PlanItem[], form: {
   planId: string; name: string; description?: string;
   startDate: string; endDate: string; contentUrl?: string;
-  link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number; frequency?: PlanItem['frequency'];
+  link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number; frequency?: PlanItem['frequency']; tags?: string[];
 }, plans?: Plan[], today?: string): PlanItem[] {
   // Check if the plan is active (not completed or cancelled)
   if (plans) {
@@ -518,6 +519,7 @@ export function addPlanItem(planItems: PlanItem[], form: {
     linkConfig: form.linkConfig,
     order: form.order ?? 0,
     frequency: form.frequency,
+    tags: form.tags,
     updatedAt: Date.now(),
     deleted: false,
   };
@@ -567,6 +569,52 @@ export function createPlanItemFromReflection(
     targetMetric: targetMetric || defaultTargetMetric,
     reflectionId: reflection.id,
     order: 0,
+  };
+}
+
+/**
+ * Create a plan item from a generic source (reflection or trail).
+ * Returns the plan item data and the source ID for linking.
+ */
+export function createPlanItem(
+  source: PlanItemSource,
+  planId: string,
+  form: UnifiedPlanItemForm,
+): Omit<PlanItem, 'id' | 'updatedAt' | 'deleted'> & { linkedSourceId: string } {
+  const today = dateStr();
+  const status: PlanItemStatus = form.startDate <= today ? 'in_progress' : 'not_started';
+
+  const base = {
+    planId,
+    name: form.name,
+    description: form.description ?? '',
+    startDate: form.startDate,
+    endDate: form.endDate,
+    contentUrl: '',
+    totalCheckinDays: 0,
+    status,
+    progress: 0,
+    priority: form.priority,
+    targetMetric: form.targetMetric ?? '',
+    frequency: form.frequency,
+    order: 0,
+    tags: form.tags,
+  };
+
+  if (source.type === 'reflection') {
+    return {
+      ...base,
+      link: 'reflection' as PlanItemLink,
+      reflectionId: source.id,
+      linkedSourceId: source.id,
+    };
+  }
+
+  return {
+    ...base,
+    link: 'trail' as PlanItemLink,
+    trailId: source.id,
+    linkedSourceId: source.id,
   };
 }
 

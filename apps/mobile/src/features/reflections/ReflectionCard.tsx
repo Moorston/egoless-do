@@ -83,7 +83,7 @@ function ReflectionCardComponent({
           {linkedPlanItem && (
             <TouchableOpacity
               onPress={handlePlanPress}
-              style={[styles.badge, { backgroundColor: `${P}30` }]}
+              style={[styles.badge, { backgroundColor: 'rgba(255,255,255,.2)' }]}
             >
               <ExternalLink size={10} color="#fff" />
               <Text style={styles.badgeText}>{linkedPlanItem.name.slice(0, 6)}</Text>

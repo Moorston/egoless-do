@@ -13,6 +13,9 @@ export function createHabitFromForm(form: {
   goal?: string;
   insight?: string;
   createTag?: boolean;
+  alarmEnabled?: boolean;
+  alarmHour?: number;
+  alarmMinute?: number;
 }): Habit {
   return {
     id: uid(),
@@ -29,6 +32,9 @@ export function createHabitFromForm(form: {
     checkedDates: [],
     pauseReason: '',
     abandonReason: '',
+    alarmEnabled: form.alarmEnabled ?? false,
+    alarmHour: form.alarmHour ?? 8,
+    alarmMinute: form.alarmMinute ?? 0,
     updatedAt: Date.now(),
     deleted: false,
   };

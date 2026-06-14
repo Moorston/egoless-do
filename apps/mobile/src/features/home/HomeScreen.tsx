@@ -281,9 +281,19 @@ export default function HomeScreen() {
       .filter(h => h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
       .map(h => h.name);
     if (checkedHabits.length) noteData.habits = checkedHabits;
+    // 每日自定义待办
+    const doneCustomTodos = dailyCustomTodos
+      .filter(t => t.done)
+      .map(t => t.name);
+    if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
+    // 计划事项
+    const donePlanItems = todayPlanItems
+      .filter(item => planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done))
+      .map(item => item.name);
+    if (donePlanItems.length) noteData.planItems = donePlanItems;
     if (totalCal > 0) noteData.food = totalCal;
     return JSON.stringify(noteData);
-  }, [note, practices, totalCal, viewDate]);
+  }, [note, practices, totalCal, viewDate, dailyCustomTodos, todayPlanItems, planCheckins]);
 
   // ── Real-time save ──
   const saveField = useCallback((doneOverride?: boolean) => {
@@ -310,13 +320,23 @@ export default function HomeScreen() {
           .filter(h => h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
           .map(h => h.name);
         if (checkedHabits.length) noteData.habits = checkedHabits;
+        // 每日自定义待办
+        const doneCustomTodos = dailyCustomTodos
+          .filter(t => t.done)
+          .map(t => t.name);
+        if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
+        // 计划事项
+        const donePlanItems = todayPlanItems
+          .filter(item => planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done))
+          .map(item => item.name);
+        if (donePlanItems.length) noteData.planItems = donePlanItems;
         if (totalCal > 0) noteData.food = totalCal;
         const w = weight ? parseFloat(weight) : undefined;
         store.submitCheckin(localDone ?? false, JSON.stringify(noteData), undefined, w);
       }, 0);
       return next;
     });
-  }, [isReadOnly, note, store, totalCal, weight, localDone, viewDate]);
+  }, [isReadOnly, note, store, totalCal, weight, localDone, viewDate, dailyCustomTodos, todayPlanItems, planCheckins]);
 
   const toggleHabit = useCallback((id: string) => {
     if (isReadOnly) return;

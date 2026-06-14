@@ -252,6 +252,7 @@ export default function AppNavigator() {
   const theme = useAppStore(s => s.theme);
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
   const TH = THEMES[theme];
+  const navRef = useRef<any>(null);
   useSync();
 
   // Auth expiry check on startup
@@ -267,11 +268,26 @@ export default function AppNavigator() {
     }
   }, [isSignedIn]);
 
+  // Handle habit alarm notification tap
+  useEffect(() => {
+    let sub: any;
+    import('expo-notifications').then(Notifications => {
+      sub = Notifications.addNotificationResponseReceivedListener(response => {
+        const habitId = response.notification.request.content.data?.habitId;
+        if (habitId && navRef.current) {
+          navRef.current.navigate('HabitDetail', { habitId });
+        }
+      });
+    });
+    return () => { sub?.remove?.(); };
+  }, []);
+
   return (
     <ErrorBoundary theme={theme}>
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
     {TH.starfield && <StarfieldBackground />}
     <NavigationContainer
+      ref={navRef}
       theme={{
         dark: theme !== 'light',
         colors: {

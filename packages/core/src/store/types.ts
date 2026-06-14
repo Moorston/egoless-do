@@ -6,6 +6,7 @@ import type {
   RecycleBinItem, RecycleBinEntityType, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
   ReflectionFilters, ThoughtTrail, ReflectionLink, LinkType, CheckinReview,
   TrailNote, TrailInsightCache, TrailReviewCache,
+  PlanItemSource, UnifiedPlanItemForm,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -154,7 +155,7 @@ export interface PlanSlice {
   addPlanItem: (form: {
     planId: string; name: string; description?: string;
     startDate: string; endDate: string; contentUrl?: string;
-    link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; reflectionId?: string; order?: number; frequency?: PlanItem['frequency'];
+    link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; reflectionId?: string; order?: number; frequency?: PlanItem['frequency']; tags?: string[];
   }) => void;
   updatePlanItem: (id: string, patch: Partial<PlanItem>) => void;
   deletePlanItem: (id: string) => void;
@@ -168,7 +169,9 @@ export interface PlanSlice {
   performDailyReset: (previousDate: string) => void;
   /** 获取活跃计划 */
   getActivePlan: () => Plan | null;
-  /** 从感念创建计划任务 */
+  /** 统一创建计划任务 */
+  createPlanItem: (source: PlanItemSource, form: UnifiedPlanItemForm) => boolean;
+  /** @deprecated 使用 createPlanItem({ type: 'reflection', id }, form) */
   createPlanItemFromReflection: (reflectionId: string, startDate: string, endDate: string, priority?: PlanItemPriority, name?: string, description?: string, targetMetric?: string) => boolean;
   /** 检查计划是否可以废弃/取消/删除 */
   canArchivePlan: (planId: string) => { allowed: boolean; linkedReflectionCount: number };

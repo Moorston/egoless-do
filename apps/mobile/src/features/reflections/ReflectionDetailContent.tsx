@@ -5,7 +5,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useT } from '../../components/UI';
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL } from '@egoless-do/core';
-import { ArrowLeft, ExternalLink, Link, Pin } from 'lucide-react-native';
+import { ArrowLeft, ExternalLink, Link, Pin, Network } from 'lucide-react-native';
 
 interface ReflectionDetailContentProps {
   reflectionId: string;
@@ -114,6 +114,11 @@ export default function ReflectionDetailContent({
 
         {/* Action buttons */}
         <View style={{ flexDirection: 'row', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
+          <TouchableOpacity onPress={() => { onClose(); nav.navigate('RelationMap', { context: { type: 'reflection', id: reflectionId } }); }}
+            style={{ backgroundColor: 'rgba(255,255,255,.25)', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, alignItems: 'center', flexDirection: 'row', gap: 6 }}>
+            <Network size={16} color="#fff" />
+            <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>关系图</Text>
+          </TouchableOpacity>
           {onEdit && (
             <TouchableOpacity onPress={() => { onClose(); onEdit(r); }}
               style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.25)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>

@@ -2,11 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle } from 'lucide-react-native';
+import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle, Bell, BellOff } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth, MOOD_DISPLAY } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
+import TimePickerModal from '../../components/TimePickerModal';
+import { Toggle } from '../../components/UI';
+import { requestNotificationPermission, rescheduleAllHabitReminders } from '../notifications/NotificationService';
 
 const STATUS_CONFIG: Record<HabitStatus, { label: string; color: string }> = {
   notStarted: { label: '未开始', color: COLORS.GRAY },
@@ -28,6 +31,9 @@ export default function HabitDetailScreen() {
     (store.habits ?? []).find(h => h.id === habitId),
     [store.habits, habitId]
   );
+
+  // Alarm editing
+  const [showAlarmPicker, setShowAlarmPicker] = useState(false);
 
   // Related reflections (exact tag match, sorted by newest first)
   const [expanded, setExpanded] = useState(false);
@@ -123,6 +129,38 @@ export default function HabitDetailScreen() {
               <Text style={[styles.infoLabel, { color: TH.sub }]}>我的愿景</Text>
               <Text style={[styles.infoValue, { color: TH.text }]}>{habit.insight}</Text>
             </View>
+          )}
+        </View>
+
+        {/* Alarm reminder */}
+        <View style={[styles.infoCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              {habit.alarmEnabled ? <Bell size={18} color={P} /> : <BellOff size={18} color={TH.sub} />}
+              <Text style={[styles.infoTitle, { color: TH.text, marginBottom: 0 }]}>{'每日提醒'}</Text>
+            </View>
+            <Toggle
+              on={habit.alarmEnabled}
+              onChange={async () => {
+                store.updateHabit(habitId, { alarmEnabled: !habit.alarmEnabled });
+                const granted = await requestNotificationPermission();
+                if (granted) {
+                  const habits = (store.habits ?? []).filter(h => !h.deleted);
+                  await rescheduleAllHabitReminders(habits).catch(() => {});
+                }
+              }}
+            />
+          </View>
+          {habit.alarmEnabled && (
+            <TouchableOpacity
+              onPress={() => setShowAlarmPicker(true)}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, backgroundColor: `${P}10` }}
+            >
+              <Text style={{ fontSize: 24, fontWeight: '700', color: P }}>
+                {String(habit.alarmHour).padStart(2, '0')}:{String(habit.alarmMinute).padStart(2, '0')}
+              </Text>
+              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>· 点击修改</Text>
+            </TouchableOpacity>
           )}
         </View>
 
@@ -254,6 +292,22 @@ export default function HabitDetailScreen() {
           </View>
         </TouchableOpacity>
       </ScrollView>
+      {/* Alarm time picker */}
+      <TimePickerModal
+        visible={showAlarmPicker}
+        value={`${String(habit.alarmHour).padStart(2, '0')}:${String(habit.alarmMinute).padStart(2, '0')}`}
+        onConfirm={async (time) => {
+          const [h, m] = time.split(':').map(Number);
+          store.updateHabit(habitId, { alarmHour: h, alarmMinute: m });
+          setShowAlarmPicker(false);
+          const granted = await requestNotificationPermission();
+          if (granted) {
+            const habits = (store.habits ?? []).filter(h => !h.deleted);
+            await rescheduleAllHabitReminders(habits).catch(() => {});
+          }
+        }}
+        onClose={() => setShowAlarmPicker(false)}
+      />
     </SafeAreaView>
   );
 }

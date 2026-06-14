@@ -69,7 +69,7 @@ export default function TrailSuggestionBanner() {
       activeOpacity={0.7}
       onPress={() => {
         handleDismiss();
-        (nav as any).navigate('QuickCreateTrail');
+        (nav as any).navigate('MindTrail');
       }}
       style={{
         backgroundColor: `${TH.primary}10`,

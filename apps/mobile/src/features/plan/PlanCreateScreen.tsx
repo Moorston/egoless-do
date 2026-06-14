@@ -16,6 +16,27 @@ import DatePickerModal from '../../components/DatePickerModal';
 import DateRangePickerModal from '../../components/DateRangePickerModal';
 import { ChevronLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react-native';
 
+function FrequencyNumberInput({ value, prefix, suffix, min, max, editable, inputStyle, onCommit }: {
+  value: number; prefix: string; suffix: string; min: number; max: number; editable: boolean; inputStyle: object; onCommit: (n: number) => void;
+}) {
+  const [text, setText] = React.useState(String(value));
+  React.useEffect(() => { setText(String(value)); }, [value]);
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+      <Text style={{ fontSize: FONT_LABEL, color: '#888' }}>{prefix}</Text>
+      <TextInput
+        value={text}
+        onChangeText={v => { setText(v); const n = parseInt(v); if (!isNaN(n) && n >= min && n <= max) onCommit(n); }}
+        onBlur={() => { const n = parseInt(text); const clamped = Math.max(min, Math.min(max, n || min)); setText(String(clamped)); onCommit(clamped); }}
+        keyboardType="number-pad"
+        editable={editable}
+        style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
+      />
+      <Text style={{ fontSize: FONT_LABEL, color: '#888' }}>{suffix}</Text>
+    </View>
+  );
+}
+
 export default function PlanCreateScreen() {
   const TH = useTheme();
   const T = useT();
@@ -38,7 +59,7 @@ export default function PlanCreateScreen() {
       id: i.id, name: i.name, description: i.description,
       startDate: i.startDate, endDate: i.endDate, contentUrl: i.contentUrl,
       link: i.link, priority: i.priority ?? 'medium', targetMetric: i.targetMetric ?? '', linkConfig: i.linkConfig,
-      frequency: i.frequency,
+      frequency: i.frequency, tags: i.tags,
     }))
   );
   const [expandedItems, setExpandedItems] = useState<Set<string>>(() => new Set(existingItems.map(i => i.id)));
@@ -47,6 +68,7 @@ export default function PlanCreateScreen() {
   const [showRangePicker, setShowRangePicker] = useState(false);
 
   const isEdit = !!existingPlan;
+  const isActive = existingPlan ? isPlanActive(existingPlan.status) : false;
 
   // Auto-adjust item dates when plan dates change
   useEffect(() => {
@@ -92,7 +114,7 @@ export default function PlanCreateScreen() {
             name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
-            frequency: item.frequency,
+            frequency: item.frequency, tags: item.tags,
             order: idx,
           });
         } else {
@@ -100,7 +122,7 @@ export default function PlanCreateScreen() {
             planId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
-            frequency: item.frequency,
+            frequency: item.frequency, tags: item.tags,
             order: idx,
           });
         }
@@ -113,7 +135,7 @@ export default function PlanCreateScreen() {
             planId: newPlanId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
-            frequency: item.frequency,
+            frequency: item.frequency, tags: item.tags,
             order: idx,
           });
         });
@@ -174,7 +196,8 @@ export default function PlanCreateScreen() {
           <TextInput
             value={name} onChangeText={setName} placeholder={T('planName')}
             placeholderTextColor={TH.sub}
-            style={[inputStyle, { marginBottom: errors.name ? 4 : 12, borderColor: errors.name ? COLORS.RED : TH.border }]}
+            editable={!isActive}
+            style={[inputStyle, { marginBottom: errors.name ? 4 : 12, borderColor: errors.name ? COLORS.RED : TH.border, ...(isActive ? { opacity: 0.5 } : {}) }]}
           />
           {errors.name ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginBottom: 8 }}>{errors.name}</Text> : null}
 
@@ -221,10 +244,11 @@ export default function PlanCreateScreen() {
             ))}
           </ScrollView>
 
-          <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planPeriod')} *</Text>
+          <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planTime')} *</Text>
           <TouchableOpacity
-            onPress={() => setShowRangePicker(true)}
-            style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: (errors.startDate || errors.endDate) ? COLORS.RED : TH.border }]}
+            onPress={() => !isActive && setShowRangePicker(true)}
+            disabled={isActive}
+            style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: (errors.startDate || errors.endDate) ? COLORS.RED : TH.border, ...(isActive ? { opacity: 0.5 } : {}) }]}
           >
             <Text style={{ fontSize: FONT_BODY, color: (startDate && endDate) ? TH.text : TH.sub }}>
               {startDate && endDate ? `${startDate}  —  ${endDate}` : T('planDateRangePlaceholder')}
@@ -251,6 +275,8 @@ export default function PlanCreateScreen() {
 
         {items.map((item, idx) => {
           const isExpanded = expandedItems.has(item.id);
+          const _existingItem = existingItems.find(i => i.id === item.id);
+          const _editable = !_existingItem || canEditPlanItem(_existingItem.status);
           return (
             <Card key={item.id} style={{ padding: 0, overflow: 'hidden' }}>
               {/* Header */}
@@ -266,12 +292,17 @@ export default function PlanCreateScreen() {
                 <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
                   {item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
                 </Text>
+                {item.tags && item.tags.length > 0 && item.tags.map((tag, ti) => (
+                  <View key={ti} style={{ paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}>
+                    <Text style={{ fontSize: FONT_BADGE, color: P }}>{tag}</Text>
+                  </View>
+                ))}
               </TouchableOpacity>
 
               {/* Expanded content */}
               {isExpanded && (
                 <View style={{ paddingHorizontal: 14, paddingBottom: 14, borderTopWidth: 1, borderTopColor: TH.border }}>
-                  {/* Check if existing item is in_progress */}
+                  {/* Check if existing item is editable */}
                   {(() => {
                     const existingItem = existingItems.find(i => i.id === item.id);
                     if (existingItem && !canEditPlanItem(existingItem.status)) {
@@ -283,11 +314,12 @@ export default function PlanCreateScreen() {
                     }
                     return null;
                   })()}
-
+                  <View pointerEvents={_editable ? 'auto' : 'none'} style={_editable ? {} : { opacity: 0.5 }}>
                   <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4, marginTop: 10 }}>{T('planItemName')} *</Text>
                   <TextInput
                     value={item.name} onChangeText={v => updateItem(item.id, { name: v })}
                     placeholder={T('planItemName')} placeholderTextColor={TH.sub}
+                    editable={_editable}
                     style={[inputStyle, { marginBottom: 4, borderColor: errors[`item_${idx}_name`] ? COLORS.RED : TH.border }]}
                   />
                   {errors[`item_${idx}_name`] ? <Text style={{ fontSize: FONT_BADGE, color: COLORS.RED, marginBottom: 6 }}>{errors[`item_${idx}_name`]}</Text> : null}
@@ -320,6 +352,7 @@ export default function PlanCreateScreen() {
                   <TextInput
                     value={item.targetMetric} onChangeText={v => updateItem(item.id, { targetMetric: v })}
                     placeholder={T('planItemTarget')} placeholderTextColor={TH.sub}
+                    editable={_editable}
                     style={[inputStyle, { borderColor: errors[`item_${idx}_targetMetric`] ? COLORS.RED : TH.border, marginBottom: 8 }]}
                   />
 
@@ -327,6 +360,7 @@ export default function PlanCreateScreen() {
                   <TextInput
                     value={item.description} onChangeText={v => updateItem(item.id, { description: v })}
                     placeholder={T('planItemDesc')} placeholderTextColor={TH.sub} multiline
+                    editable={_editable}
                     style={[inputStyle, { minHeight: 40, textAlignVertical: 'top', borderColor: errors[`item_${idx}_description`] ? COLORS.RED : TH.border, marginBottom: 8 }]}
                   />
 
@@ -334,7 +368,7 @@ export default function PlanCreateScreen() {
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemStart')} *</Text>
                       <TouchableOpacity
-                        onPress={() => setDatePicker({ field: `itemStart_${item.id}`, value: item.startDate, min: startDate || undefined, max: endDate || undefined })}
+                        onPress={() => { const today = dateStr(); const minStart = startDate ? (today < startDate ? startDate : today) : today; setDatePicker({ field: `itemStart_${item.id}`, value: item.startDate, min: minStart, max: endDate || undefined }); }}
                         style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: errors[`item_${idx}_startDate`] ? COLORS.RED : TH.border }]}
                       >
                         <Text style={{ fontSize: FONT_BODY, color: item.startDate ? TH.text : TH.sub }}>{item.startDate || 'YYYY-MM-DD'}</Text>
@@ -359,11 +393,20 @@ export default function PlanCreateScreen() {
                   ) : null}
 
                   <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemContent')}</Text>
-                  <TextInput
-                    value={item.contentUrl} onChangeText={v => updateItem(item.id, { contentUrl: v })}
-                    placeholder="https://..." placeholderTextColor={TH.sub}
-                    style={[inputStyle, { marginBottom: 8 }]}
-                  />
+                  {item.tags && item.tags.length > 0 ? (
+                    <TextInput
+                      value={item.tags.join(', ')}
+                      editable={false}
+                      style={[inputStyle, { marginBottom: 8, color: TH.sub }]}
+                    />
+                  ) : (
+                    <TextInput
+                      value={item.contentUrl} onChangeText={v => updateItem(item.id, { contentUrl: v })}
+                      placeholder="https://..." placeholderTextColor={TH.sub}
+                      editable={_editable}
+                      style={[inputStyle, { marginBottom: 8 }]}
+                    />
+                  )}
 
                   <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemLink')}</Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
@@ -410,37 +453,23 @@ export default function PlanCreateScreen() {
                   {/* Frequency config */}
                   {item.frequency && item.frequency.mode === 'interval' && (() => {
                     const [prefix, suffix] = T('freqEveryNDays').split('{n}');
-                    const [text, setText] = React.useState(String(item.frequency.every));
                     return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
-                      <TextInput
-                        value={text}
-                        onChangeText={v => { setText(v); const n = parseInt(v); if (n > 0) updateItem(item.id, { frequency: { mode: 'interval', every: n } }); }}
-                        onBlur={() => { const n = parseInt(text); setText(String(Math.max(1, n || 1))); updateItem(item.id, { frequency: { mode: 'interval', every: Math.max(1, n || 1) } }); }}
-                        keyboardType="number-pad"
-                        style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
+                      <FrequencyNumberInput
+                        value={item.frequency.every} prefix={prefix} suffix={suffix} min={1} max={365}
+                        editable={_editable} inputStyle={inputStyle}
+                        onCommit={n => updateItem(item.id, { frequency: { mode: 'interval', every: n } })}
                       />
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{suffix}</Text>
-                    </View>
                     );
                   })()}
 
                   {item.frequency && item.frequency.mode === 'weekly' && (() => {
                     const [prefix, suffix] = T('freqNTimesPerWeek').split('{n}');
-                    const [text, setText] = React.useState(String(item.frequency.target));
                     return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
-                      <TextInput
-                        value={text}
-                        onChangeText={v => { setText(v); const n = parseInt(v); if (n >= 1 && n <= 7) updateItem(item.id, { frequency: { mode: 'weekly', target: n } }); }}
-                        onBlur={() => { const n = parseInt(text); const clamped = Math.max(1, Math.min(7, n || 1)); setText(String(clamped)); updateItem(item.id, { frequency: { mode: 'weekly', target: clamped } }); }}
-                        keyboardType="number-pad"
-                        style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
+                      <FrequencyNumberInput
+                        value={item.frequency.target} prefix={prefix} suffix={suffix} min={1} max={7}
+                        editable={_editable} inputStyle={inputStyle}
+                        onCommit={n => updateItem(item.id, { frequency: { mode: 'weekly', target: n } })}
                       />
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{suffix}</Text>
-                    </View>
                     );
                   })()}
 
@@ -472,19 +501,12 @@ export default function PlanCreateScreen() {
 
                   {item.frequency && item.frequency.mode === 'monthly' && (() => {
                     const [prefix, suffix] = T('freqNTimesPerMonth').split('{n}');
-                    const [text, setText] = React.useState(String(item.frequency.target));
                     return (
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{prefix}</Text>
-                      <TextInput
-                        value={text}
-                        onChangeText={v => { setText(v); const n = parseInt(v); if (n >= 1 && n <= 31) updateItem(item.id, { frequency: { mode: 'monthly', target: n } }); }}
-                        onBlur={() => { const n = parseInt(text); const clamped = Math.max(1, Math.min(31, n || 1)); setText(String(clamped)); updateItem(item.id, { frequency: { mode: 'monthly', target: clamped } }); }}
-                        keyboardType="number-pad"
-                        style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
+                      <FrequencyNumberInput
+                        value={item.frequency.target} prefix={prefix} suffix={suffix} min={1} max={31}
+                        editable={_editable} inputStyle={inputStyle}
+                        onCommit={n => updateItem(item.id, { frequency: { mode: 'monthly', target: n } })}
                       />
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub }}>{suffix}</Text>
-                    </View>
                     );
                   })()}
 
@@ -538,6 +560,7 @@ export default function PlanCreateScreen() {
                       </ScrollView>
                     </>
                   )}
+                  </View>
 
                   <TouchableOpacity
                     onPress={() => removeItem(item.id)}

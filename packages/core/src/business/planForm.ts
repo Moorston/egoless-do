@@ -14,6 +14,7 @@ export interface ItemForm {
   targetMetric: string;
   linkConfig?: { targetMinutes?: number; targetHours?: number; habitId?: string };
   frequency?: CheckinFrequency;
+  tags?: string[];
 }
 
 /** Link type options for plan items. */

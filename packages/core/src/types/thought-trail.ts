@@ -14,7 +14,7 @@ export interface TrailInsightCache {
 }
 
 export interface TrailReviewCache {
-  questions: string[];     // 引导问题
+  perspectives: string[];  // 复盘思路（多维度视角）
   observations: string[];  // 观察发现
   suggestions: string[];   // 复盘建议
   generatedAt: number;
@@ -32,6 +32,7 @@ export interface ThoughtTrail extends Syncable {
   insightSummary?: string;      // 核心洞察摘要（旧字段，兼容用）
   insightCache?: TrailInsightCache;  // AI 洞察缓存
   reviewCache?: TrailReviewCache;    // 复盘引导缓存
+  linkedPlanItemIds?: string[];      // 关联的计划项 ID 列表
   createdAt: number;
   updatedAt: number;
 }

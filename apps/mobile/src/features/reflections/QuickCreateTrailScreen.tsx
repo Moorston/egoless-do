@@ -4,20 +4,21 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
 import {
   ArrowLeft, X, Send, Check, ChevronDown,
-  RefreshCw,
+  RefreshCw, Plus, Sparkles, Loader2,
 } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import {
   FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON,
   getMoodIcon, generateTrailName,
-  computeCandidatePool, matchByKeyword,
+  computeCandidatePool, buildIndex, retrieveTopK,
   formatDateShort,
-  isAIRecommendAvailable, matchReflectionsToTopic, parseSmartQuery, semanticSearchReflections,
+  isAIRecommendAvailable, parseSmartQuery, semanticSearchReflections,
 } from '@egoless-do/core';
 import type { TrailFilters, MindReflection, SmartQueryResult, SmartQueryFilters } from '@egoless-do/core';
 import SelectionSummary from './SelectionSummary';
@@ -28,26 +29,8 @@ import { AIAnalysisStream, createAnalysisMessages } from './AIAnalysisStream';
 
 type TimeRange = 'week' | 'month' | '3months' | 'all';
 
-// ── Emotional context extraction ───────────────────────────────────
-const EMOTION_KEYWORDS: Record<string, string[]> = {
-  '焦虑': ['焦虑', '紧张', '不安', '担心', '忧虑', '压力', '压力大'],
-  '开心': ['开心', '高兴', '快乐', '愉快', '喜悦', '满足', '幸福'],
-  '平静': ['平静', '安宁', '放松', '淡定', '从容', '安心'],
-  '沮丧': ['沮丧', '失落', '难过', '悲伤', '低落', '郁闷', '烦'],
-  '愤怒': ['愤怒', '生气', '恼火', '烦躁', '气愤', '不满'],
-  '疲惫': ['累', '疲惫', '疲倦', '疲劳', '困', '没精神'],
-};
-
-function extractEmotionalContext(text: string): string[] {
-  const lower = text.toLowerCase();
-  const found: string[] = [];
-  for (const [emotion, keywords] of Object.entries(EMOTION_KEYWORDS)) {
-    if (keywords.some(k => lower.includes(k))) {
-      found.push(emotion);
-    }
-  }
-  return found;
-}
+const SEARCH_HISTORY_KEY = 'quickTrailSearchHistory';
+const PAGE_SIZE = 20;
 
 const TIME_RANGE_OPTIONS: { key: TimeRange; labelKey: string }[] = [
   { key: 'week', labelKey: 'freqThisWeek' },
@@ -99,9 +82,17 @@ export default function QuickCreateTrailScreen() {
   const [trailName, setTrailName] = useState('');
   const [skipThreshold, setSkipThreshold] = useState(false);
 
+  // ── Pagination ───────────────────────────────────────────────
+  const [page, setPage] = useState(1);
+
+  // ── Search history ───────────────────────────────────────────
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+
+  // ── AI degradation ───────────────────────────────────────────
+  const [aiDegraded, setAiDegraded] = useState(false);
+
   // ── Debounce ──────────────────────────────────────────────────
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleSmartQueryRef = useRef<() => void>(() => {});
   const handleLocalSearchRef = useRef<() => void>(() => {});
 
   // ── Data ──────────────────────────────────────────────────────
@@ -163,7 +154,7 @@ export default function QuickCreateTrailScreen() {
     [reflections, filters]
   );
 
-  // ── Debounced search (smart mode) ────────────────────────────
+  // ── Debounced search (local only, AI on-demand) ──────────────
   useEffect(() => {
     const trimmed = searchQuery.trim();
     if (!trimmed) {
@@ -171,20 +162,15 @@ export default function QuickCreateTrailScreen() {
       setMatchResults([]);
       setSmartResult(null);
       setChatHistory([]);
+      setPage(1);
+      setAiDegraded(false);
       return;
     }
 
     if (searchTimer.current) clearTimeout(searchTimer.current);
-
-    if (trimmed.length > 1) {
-      // 2+ 字符 → AI 智能查询（内部自动降级为本地匹配）
-      searchTimer.current = setTimeout(() => { handleSmartQueryRef.current(); }, 500);
-    } else {
-      // 单字符 → 本地匹配
-      searchTimer.current = setTimeout(() => { handleLocalSearchRef.current(); }, 300);
-    }
+    searchTimer.current = setTimeout(() => { handleLocalSearchRef.current(); }, 300);
     return () => { if (searchTimer.current) clearTimeout(searchTimer.current); };
-  }, [searchQuery, candidates, aiAvailable]);
+  }, [searchQuery, candidates]);
 
   // ── Selection derived ─────────────────────────────────────────
   const selectedReflections = useMemo(() => {
@@ -220,22 +206,58 @@ export default function QuickCreateTrailScreen() {
 
   // ── Handlers ──────────────────────────────────────────────────
   const toggleTag = useCallback((tag: string) => {
-    setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+    setSelectedTags(prev => {
+      const isRemoving = prev.includes(tag);
+      // Inject/clear tag text in search input
+      setSearchQuery(q => {
+        if (isRemoving) return q.replace(new RegExp(`(?:^|\\s)${tag}(?=\\s|$)`, 'g'), '').replace(/\s+/g, ' ').trim();
+        return q ? `${q} ${tag}` : tag;
+      });
+      return isRemoving ? prev.filter(t => t !== tag) : [...prev, tag];
+    });
   }, []);
 
   const toggleMood = useCallback((mood: string) => {
-    setSelectedMoods(prev => prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood]);
+    setSelectedMoods(prev => {
+      const isRemoving = prev.includes(mood);
+      // Inject/clear mood text in search input
+      setSearchQuery(q => {
+        if (isRemoving) return q.replace(new RegExp(`(?:^|\\s)${mood}(?=\\s|$)`, 'g'), '').replace(/\s+/g, ' ').trim();
+        return q ? `${q} ${mood}` : mood;
+      });
+      return isRemoving ? prev.filter(m => m !== mood) : [...prev, mood];
+    });
+  }, []);
+
+  // ── Search history load/save ───────────────────────────────────
+  useEffect(() => {
+    AsyncStorage.getItem(SEARCH_HISTORY_KEY).then(raw => {
+      if (raw) { try { setSearchHistory(JSON.parse(raw)); } catch {} }
+    });
+  }, []);
+
+  const addToHistory = useCallback((query: string) => {
+    setSearchHistory(prev => {
+      const next = [query, ...prev.filter(q => q !== query)].slice(0, 5);
+      AsyncStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(next)).catch(() => {});
+      return next;
+    });
   }, []);
 
   const handleLocalSearch = useCallback(() => {
-    if (!searchQuery.trim()) {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) {
       setMatchMode('idle');
       setMatchResults([]);
       return;
     }
     setMatchMode('local');
-    const localResults = matchByKeyword(searchQuery, candidates);
-    setMatchResults(localResults);
+    setAiDegraded(false);
+    setPage(1);
+    const index = buildIndex(candidates);
+    const scored = retrieveTopK(trimmed, index, 50);
+    const results = scored.map(s => candidates.find(r => r.id === s.index.id)).filter(Boolean) as MindReflection[];
+    setMatchResults(results);
   }, [searchQuery, candidates]);
 
   // Keep local search ref always pointing to latest callback
@@ -245,9 +267,9 @@ export default function QuickCreateTrailScreen() {
     setAnalysisSteps(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
   }, []);
 
+  // ── Three-phase search pipeline ────────────────────────────────
   const handleSmartQuery = useCallback(async () => {
     const trimmed = searchQuery.trim();
-    console.log('[SmartQuery] called, input:', trimmed, 'aiAvailable:', aiAvailable, 'reflections:', reflections.length);
     if (!trimmed) {
       setMatchMode('idle');
       setMatchResults([]);
@@ -259,139 +281,295 @@ export default function QuickCreateTrailScreen() {
     setIsSmartParsing(true);
     setIsAnalyzing(true);
     setMatchMode('ai-loading');
+    setAiDegraded(false);
+    setPage(1);
 
-    // Initialize analysis steps - multi-round search
     const steps = [
-      { id: 'local', text: '本地关键词匹配', status: 'loading' as const },
-      { id: 'intent', text: 'AI 理解查询语义', status: 'pending' as const },
-      { id: 'expand', text: 'AI 语义相似搜索', status: 'pending' as const },
-      { id: 'mood', text: '情绪维度匹配', status: 'pending' as const },
-      { id: 'merge', text: '合并排序结果', status: 'pending' as const },
+      { id: 'phase1', text: T('searchPhaseLocal'), status: 'loading' as const },
+      { id: 'phase2', text: T('searchPhaseIntent'), status: 'pending' as const },
+      { id: 'phase3', text: T('searchPhaseSemantic'), status: 'pending' as const },
+      { id: 'merge', text: T('searchPhaseMerge'), status: 'pending' as const },
     ];
     setAnalysisSteps(steps);
 
-    const allResults = new Map<string, MindReflection>();
-    const addResults = (results: MindReflection[]) => {
-      for (const r of results) {
-        if (!allResults.has(r.id)) allResults.set(r.id, r);
-      }
-    };
-
-    let usedAI = false;
-
     try {
-      // ── Round 1: Local keyword matching ──────────────────────────
-      const localResults = matchByKeyword(trimmed, candidates);
-      addResults(localResults);
-      updateStep('local', {
+      // ── Phase 1: RAG local multi-dimensional search (candidates) ─
+      const index = buildIndex(candidates);
+      const scored = retrieveTopK(trimmed, index, 20);
+
+      const directResults: Array<{ ref: MindReflection; score: number; source: 'direct' }> = [];
+      for (const s of scored) {
+        const ref = candidates.find(r => r.id === s.index.id);
+        if (ref) directResults.push({ ref, score: s.score, source: 'direct' });
+      }
+
+      updateStep('phase1', {
         status: 'done',
-        detail: localResults.length > 0
-          ? `找到 ${localResults.length} 条直接匹配`
-          : '未找到直接匹配，尝试AI语义搜索'
+        detail: directResults.length > 0
+          ? T('searchPhaseLocalResult').replace('{n}', String(directResults.length))
+          : T('searchPhaseLocalEmpty')
       });
 
-      // ── Round 2 & 3: 根据本地结果决定策略 ───────────────────────
-      console.log('[SmartQuery] Round 1 done, localResults:', localResults.length);
+      let allResults = directResults;
 
-      // 始终调用 AI 语义搜索（不管本地有没有结果）
-      updateStep('intent', { status: 'done', detail: '跳过意图解析，直接语义搜索' });
-      updateStep('expand', { status: 'loading' });
+      // ── Phase 2: Intent understanding (if <= 3 results) ─────────
+      if (directResults.length <= 3 && aiAvailable) {
+        updateStep('phase2', { status: 'loading' });
 
-      try {
-        console.log('[SmartQuery] calling semanticSearchReflections...');
-        const semanticResults = await semanticSearchReflections(reflections, trimmed);
-        console.log('[SmartQuery] semanticResults:', semanticResults.length);
+        try {
+          const result = await parseSmartQuery(reflections, trimmed, chatHistory);
 
-        if (semanticResults.length > 0) {
-          usedAI = true;
-          const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
-          const aiReflections = sorted
-            .map(r => reflections[r.reflectionIndex])
-            .filter(Boolean);
-          addResults(aiReflections);
-          updateStep('expand', {
-            status: 'done',
-            detail: `AI 语义匹配 ${semanticResults.length} 条，共 ${allResults.size} 条`
-          });
-        } else {
-          // AI 无结果，降级为关键词扩展
-          const topicResults = matchByKeyword(trimmed, reflections);
-          addResults(topicResults);
-          updateStep('expand', {
-            status: 'done',
-            detail: `AI 无结果，关键词扩展 ${topicResults.length} 条`
-          });
+          if (result.question && chatHistory.length < 3) {
+            setSmartResult(result);
+            updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
+            const sorted = allResults.sort((a, b) => b.score - a.score);
+            setMatchResults(sorted.map(r => r.ref));
+            setMatchMode(allResults.length > 0 ? 'local' : 'idle');
+            setIsSmartParsing(false);
+            setTimeout(() => setIsAnalyzing(false), 2000);
+            return;
+          }
+
+          if (result.topic || (result.filters && Object.keys(result.filters).length > 0)) {
+            setSmartResult(result);
+            const newFilters: TrailFilters = {
+              timeRange: result.filters.timeRange || timeRange,
+              tags: result.filters.tags?.length ? result.filters.tags : selectedTags,
+              moods: result.filters.moods?.length ? result.filters.moods : selectedMoods,
+            };
+            const newCandidates = computeCandidatePool(reflections, newFilters);
+            const newIndex = buildIndex(newCandidates);
+            const topic = result.topic || trimmed;
+            const newScored = retrieveTopK(topic, newIndex, 20);
+
+            const existingIds = new Set(allResults.map(r => r.ref.id));
+            for (const s of newScored) {
+              if (!existingIds.has(s.index.id)) {
+                const ref = newCandidates.find(r => r.id === s.index.id);
+                if (ref) {
+                  allResults.push({ ref, score: s.score, source: 'direct' });
+                  existingIds.add(ref.id);
+                }
+              }
+            }
+            updateStep('phase2', {
+              status: 'done',
+              detail: T('searchPhaseIntentResult').replace('{n}', String(allResults.length))
+            });
+          } else {
+            updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
+          }
+        } catch (e) {
+          console.log('[SmartQuery] Phase 2 failed:', e);
+          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentFail') });
         }
-      } catch (e) {
-        console.log('[SmartQuery] semantic search failed:', e);
-        const topicResults = matchByKeyword(trimmed, reflections);
-        addResults(topicResults);
-        updateStep('expand', {
-          status: 'done',
-          detail: `AI 失败，本地扩展 ${topicResults.length} 条`
-        });
-      }
-
-      // ── Round 4: Mood-based search ──────────────────────────────
-      updateStep('mood', { status: 'loading' });
-
-      // 从查询中提取情绪关键词
-      const emotionalKeywords = extractEmotionalContext(trimmed);
-      if (emotionalKeywords.length > 0) {
-        const moodQuery = emotionalKeywords.join(' ');
-        const moodResults = matchByKeyword(moodQuery, reflections);
-        addResults(moodResults);
-        updateStep('mood', {
-          status: 'done',
-          detail: `情绪匹配增加 ${moodResults.length} 条`
-        });
       } else {
-        updateStep('mood', { status: 'done', detail: '无明显情绪特征' });
+        updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
       }
 
-      // ── Round 5: Merge and rank results ─────────────────────────
+      // ── Phase 3: Semantic expansion (if still <= 3 results) ─────
+      if (allResults.length <= 3 && aiAvailable) {
+        updateStep('phase3', { status: 'loading' });
+
+        try {
+          const semanticResults = await semanticSearchReflections(reflections, trimmed);
+
+          if (semanticResults.length > 0) {
+            const existingIds = new Set(allResults.map(r => r.ref.id));
+            const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
+            for (const sr of sorted) {
+              const ref = reflections[sr.reflectionIndex];
+              if (ref && !existingIds.has(ref.id)) {
+                allResults.push({ ref, score: sr.relevance * 0.5, source: 'extended' });
+                existingIds.add(ref.id);
+              }
+            }
+            updateStep('phase3', {
+              status: 'done',
+              detail: T('searchPhaseSemanticResult').replace('{n}', String(semanticResults.length))
+            });
+          } else {
+            updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticEmpty') });
+          }
+        } catch (e) {
+          console.log('[SmartQuery] Phase 3 failed:', e);
+          setAiDegraded(true);
+          updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') });
+        }
+      } else {
+        updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticSkip') });
+      }
+
+      // ── Merge: sort direct first, then extended ─────────────────
       updateStep('merge', { status: 'loading' });
 
-      const finalResults = Array.from(allResults.values());
+      const direct = allResults.filter(r => r.source === 'direct').sort((a, b) => b.score - a.score);
+      const extended = allResults.filter(r => r.source === 'extended').sort((a, b) => b.score - a.score);
+      const finalResults = [...direct, ...extended];
 
-      // Sort by relevance: direct keyword match first, then by timestamp
-      const keywordSet = new Set(trimmed.toLowerCase().split(/\s+/));
-      finalResults.sort((a, b) => {
-        const aMatch = a.content.toLowerCase().split(/\s+/).some(w => keywordSet.has(w)) ? 1 : 0;
-        const bMatch = b.content.toLowerCase().split(/\s+/).some(w => keywordSet.has(w)) ? 1 : 0;
-        if (aMatch !== bMatch) return bMatch - aMatch;
-        return b.timestamp - a.timestamp;
-      });
+      setMatchResults(finalResults.map(r => r.ref));
+      setMatchMode(finalResults.length > 0 ? 'ai' : 'idle');
 
-      setMatchResults(finalResults);
-      setMatchMode(usedAI ? 'ai' : 'local');
+      if (finalResults.length > 0) {
+        addToHistory(trimmed);
+      }
 
       updateStep('merge', {
         status: 'done',
-        detail: `最终返回 ${finalResults.length} 条相关感念${usedAI ? ' (AI增强)' : ''}`
+        detail: T('searchPhaseMergeResult')
+          .replace('{n}', String(finalResults.length))
+          .replace('{d}', String(direct.length))
+          .replace('{e}', String(extended.length))
       });
 
     } catch (e) {
-      console.log('[SmartQuery] error:', e);
-      const fallback = matchByKeyword(trimmed, candidates);
+      console.log('[SmartQuery] pipeline error:', e);
+      const index = buildIndex(candidates);
+      const scored = retrieveTopK(trimmed, index, 20);
+      const fallback = scored.map(s => candidates.find(r => r.id === s.index.id)).filter(Boolean) as MindReflection[];
       setMatchResults(fallback);
       setMatchMode('local');
+      setAiDegraded(true);
       setSmartResult(null);
       setAnalysisSteps(prev => prev.map(s =>
-        s.status === 'loading' ? { ...s, status: 'error' as const, detail: '已降级为本地匹配' } : s
+        s.status === 'loading' ? { ...s, status: 'error' as const, detail: T('searchDegraded') } : s
       ));
     } finally {
       setIsSmartParsing(false);
       setTimeout(() => setIsAnalyzing(false), 2000);
     }
-  }, [searchQuery, reflections, candidates, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep]);
+  }, [searchQuery, reflections, candidates, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep, addToHistory, T]);
 
-  // Keep ref always pointing to latest handleSmartQuery
-  handleSmartQueryRef.current = handleSmartQuery;
+  // ── AI on-demand search (Phase 2 + 3, appends to local results) ─
+  const [isAISearching, setIsAISearching] = useState(false);
+
+  const handleAISearch = useCallback(async () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed || !aiAvailable) return;
+
+    setIsAISearching(true);
+    setIsSmartParsing(true);
+    setIsAnalyzing(true);
+    setAiDegraded(false);
+
+    const steps = [
+      { id: 'phase2', text: T('searchPhaseIntent'), status: 'loading' as const },
+      { id: 'phase3', text: T('searchPhaseSemantic'), status: 'pending' as const },
+      { id: 'merge', text: T('searchPhaseMerge'), status: 'pending' as const },
+    ];
+    setAnalysisSteps(steps);
+
+    try {
+      // Existing local results as base
+      const existingIds = new Set(matchResults.map(r => r.id));
+      const allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }> = matchResults.map(r => ({ ref: r, score: 0, source: 'direct' as const }));
+
+      // ── Phase 2: Intent understanding ─────────────────────────
+      try {
+        const result = await parseSmartQuery(reflections, trimmed, chatHistory);
+
+        if (result.question && chatHistory.length < 3) {
+          setSmartResult(result);
+          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
+          setIsSmartParsing(false);
+          setIsAISearching(false);
+          setTimeout(() => setIsAnalyzing(false), 2000);
+          return;
+        }
+
+        if (result.topic || (result.filters && Object.keys(result.filters).length > 0)) {
+          setSmartResult(result);
+          const newFilters: TrailFilters = {
+            timeRange: result.filters.timeRange || timeRange,
+            tags: result.filters.tags?.length ? result.filters.tags : selectedTags,
+            moods: result.filters.moods?.length ? result.filters.moods : selectedMoods,
+          };
+          const newCandidates = computeCandidatePool(reflections, newFilters);
+          const newIndex = buildIndex(newCandidates);
+          const topic = result.topic || trimmed;
+          const newScored = retrieveTopK(topic, newIndex, 20);
+
+          for (const s of newScored) {
+            if (!existingIds.has(s.index.id)) {
+              const ref = newCandidates.find(r => r.id === s.index.id);
+              if (ref) {
+                allResults.push({ ref, score: s.score, source: 'direct' });
+                existingIds.add(ref.id);
+              }
+            }
+          }
+          updateStep('phase2', {
+            status: 'done',
+            detail: T('searchPhaseIntentResult').replace('{n}', String(allResults.length))
+          });
+        } else {
+          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
+        }
+      } catch (e) {
+        console.log('[AISearch] Phase 2 failed:', e);
+        updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentFail') });
+      }
+
+      // ── Phase 3: Semantic expansion ───────────────────────────
+      updateStep('phase3', { status: 'loading' });
+      try {
+        const semanticResults = await semanticSearchReflections(reflections, trimmed);
+
+        if (semanticResults.length > 0) {
+          const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
+          for (const sr of sorted) {
+            const ref = reflections[sr.reflectionIndex];
+            if (ref && !existingIds.has(ref.id)) {
+              allResults.push({ ref, score: sr.relevance * 0.5, source: 'extended' });
+              existingIds.add(ref.id);
+            }
+          }
+          updateStep('phase3', {
+            status: 'done',
+            detail: T('searchPhaseSemanticResult').replace('{n}', String(semanticResults.length))
+          });
+        } else {
+          updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticEmpty') });
+        }
+      } catch (e) {
+        console.log('[AISearch] Phase 3 failed:', e);
+        setAiDegraded(true);
+        updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') });
+      }
+
+      // ── Merge: direct first, then extended ────────────────────
+      updateStep('merge', { status: 'loading' });
+      const direct = allResults.filter(r => r.source === 'direct').sort((a, b) => b.score - a.score);
+      const extended = allResults.filter(r => r.source === 'extended').sort((a, b) => b.score - a.score);
+      const finalResults = [...direct, ...extended];
+
+      setMatchResults(finalResults.map(r => r.ref));
+      setMatchMode(finalResults.length > 0 ? 'ai' : 'idle');
+
+      if (finalResults.length > 0) {
+        addToHistory(trimmed);
+      }
+
+      updateStep('merge', {
+        status: 'done',
+        detail: T('searchPhaseMergeResult')
+          .replace('{n}', String(finalResults.length))
+          .replace('{d}', String(direct.length))
+          .replace('{e}', String(extended.length))
+      });
+
+    } catch (e) {
+      console.log('[AISearch] pipeline error:', e);
+      setAiDegraded(true);
+    } finally {
+      setIsSmartParsing(false);
+      setIsAISearching(false);
+      setTimeout(() => setIsAnalyzing(false), 2000);
+    }
+  }, [searchQuery, reflections, matchResults, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep, addToHistory, T]);
 
   const handleSmartAnswer = useCallback((answer: string) => {
     setChatHistory(prev => [...prev, answer]);
-    // 触发重新查询
     setTimeout(() => { handleSmartQuery(); }, 100);
   }, [handleSmartQuery]);
 
@@ -401,6 +579,8 @@ export default function QuickCreateTrailScreen() {
     setMatchResults([]);
     setSmartResult(null);
     setChatHistory([]);
+    setPage(1);
+    setAiDegraded(false);
   }, []);
 
   const toggleSelect = useCallback((id: string) => {
@@ -454,11 +634,15 @@ export default function QuickCreateTrailScreen() {
     (nav as any).navigate('Reflections', { showNew: true });
   }, [nav]);
 
+  // ── Preview mode ───────────────────────────────────────────────
+  const [showPreview, setShowPreview] = useState(initialSelectedIds.length > 0);
+
   // ── Render helpers ────────────────────────────────────────────
   const timeRangeLabel = TIME_RANGE_OPTIONS.find(o => o.key === timeRange)?.labelKey ?? 'thisMonth';
 
-  const showInsightPanel = !searchQuery;
+  const showInsightPanel = !searchQuery && !showPreview;
   const showMatchResults = matchMode !== 'idle' || searchQuery.length > 0;
+  const showPreviewSection = showPreview && selectedIds.size > 0 && !showMatchResults;
 
   // Empty state: not enough reflections (skip if user chose manual mode)
   if (reflections.length < 5 && !skipThreshold) {
@@ -510,9 +694,18 @@ export default function QuickCreateTrailScreen() {
             <ArrowLeft size={24} color={TH.text} />
           </TouchableOpacity>
           <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('quickCreateTrail')}</Text>
-          <TouchableOpacity onPress={() => nav.goBack()}>
-            <X size={24} color={TH.sub} />
-          </TouchableOpacity>
+          {selectedIds.size > 0 ? (
+            <TouchableOpacity
+              onPress={handleCreate}
+              style={{ backgroundColor: TH.primary, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 }}
+            >
+              <Text style={{ color: '#fff', fontSize: FONT_SMALL, fontWeight: '700' }}>确认创建</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => nav.goBack()}>
+              <X size={24} color={TH.sub} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <ScrollView
@@ -563,7 +756,7 @@ export default function QuickCreateTrailScreen() {
               <TextInput
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                onSubmitEditing={searchQuery.trim().length > 1 ? handleSmartQuery : handleLocalSearch}
+                onSubmitEditing={handleLocalSearch}
                 placeholder={T('quickTrailSearchPlaceholder')}
                 placeholderTextColor={TH.sub}
                 multiline
@@ -577,35 +770,16 @@ export default function QuickCreateTrailScreen() {
                 blurOnSubmit
               />
 
-              {/* Bottom row: smart indicator + actions */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 6 }}>
-                {/* Smart mode indicator */}
-                <View style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 4,
-                  paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8,
-                  backgroundColor: isSmartParsing ? '#8B5CF615' : `${TH.sub}10`,
-                }}>
-                  <Text style={{
-                    fontSize: FONT_TINY,
-                    color: isSmartParsing ? '#8B5CF6' : TH.sub,
-                    fontWeight: isSmartParsing ? '600' : '400',
-                  }}>
-                    {isSmartParsing ? '🧠 智能解析中...' : '🧠 智能'}
-                  </Text>
-                </View>
-
-                {/* Action buttons */}
+              {/* Bottom row: actions */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: 6 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  {matchMode === 'ai-loading' && (
-                    <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>⏳</Text>
-                  )}
                   {searchQuery.length > 0 && (
                     <TouchableOpacity onPress={handleClear} style={{ padding: 4 }}>
                       <X size={16} color={TH.sub} />
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity
-                    onPress={searchQuery.trim().length > 1 ? handleSmartQuery : handleLocalSearch}
+                    onPress={handleLocalSearch}
                     style={{
                       width: 36, height: 36, borderRadius: 18,
                       backgroundColor: searchQuery.trim() ? TH.primary : `${TH.sub}20`,
@@ -618,6 +792,39 @@ export default function QuickCreateTrailScreen() {
               </View>
             </View>
           </View>
+
+          {/* AI on-demand search button */}
+          {searchQuery.trim().length > 0 && aiAvailable && (
+            <View style={{ paddingHorizontal: 16, marginTop: 8 }}>
+              <TouchableOpacity
+                onPress={handleAISearch}
+                disabled={isAISearching}
+                style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 6,
+                  alignSelf: 'flex-start',
+                  paddingHorizontal: 14, paddingVertical: 8,
+                  borderRadius: 20,
+                  backgroundColor: isAISearching ? `${TH.sub}15` : '#8B5CF615',
+                  borderWidth: 1,
+                  borderColor: isAISearching ? TH.border : '#8B5CF630',
+                  opacity: isAISearching ? 0.7 : 1,
+                }}
+              >
+                {isAISearching ? (
+                  <Loader2 size={16} color="#8B5CF6" />
+                ) : (
+                  <Sparkles size={16} color="#8B5CF6" />
+                )}
+                <Text style={{
+                  fontSize: FONT_SMALL,
+                  color: '#8B5CF6',
+                  fontWeight: '600',
+                }}>
+                  {isAISearching ? T('aiSearching') : T('aiSearchButton')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* Filter row: dropdowns */}
           <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginTop: 12, gap: 8 }}>
@@ -647,7 +854,17 @@ export default function QuickCreateTrailScreen() {
                   {TIME_RANGE_OPTIONS.map(opt => (
                     <TouchableOpacity
                       key={opt.key}
-                      onPress={() => { setTimeRange(opt.key); setShowTimeDropdown(false); }}
+                      onPress={() => {
+                        setTimeRange(opt.key);
+                        setShowTimeDropdown(false);
+                        // Inject time range label into search input
+                        const label = T(opt.labelKey);
+                        setSearchQuery(q => {
+                          // Remove any previous time range labels
+                          const cleaned = q.replace(new RegExp(`(?:^|\\s)(?:${TIME_RANGE_OPTIONS.map(o => T(o.labelKey)).join('|')})(?=\\s|$)`, 'g'), '').replace(/\s+/g, ' ').trim();
+                          return cleaned ? `${cleaned} ${label}` : label;
+                        });
+                      }}
                       style={{
                         paddingHorizontal: 14, paddingVertical: 10,
                         backgroundColor: timeRange === opt.key ? `${TH.primary}15` : 'transparent',
@@ -889,6 +1106,69 @@ export default function QuickCreateTrailScreen() {
             </View>
           )}
 
+          {/* ── Preview: pre-selected reflections ── */}
+          {showPreviewSection && (
+            <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+                  已选感念 · {selectedIds.size}{T('quickTrailReflections')}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => { setShowPreview(false); }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+                >
+                  <Plus size={14} color={TH.primary} />
+                  <Text style={{ fontSize: FONT_SMALL, color: TH.primary, fontWeight: '500' }}>添加更多</Text>
+                </TouchableOpacity>
+              </View>
+
+              {selectedReflections.map(ref => (
+                <View
+                  key={ref.id}
+                  style={{
+                    flexDirection: 'row', alignItems: 'flex-start',
+                    backgroundColor: TH.card, borderRadius: 12,
+                    borderWidth: 1, borderColor: TH.primary,
+                    padding: 12, marginBottom: 8, gap: 10,
+                  }}
+                >
+                  {/* Content */}
+                  <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+                        {formatDateShort(ref.timestamp)}
+                      </Text>
+                      <Text style={{ fontSize: FONT_SMALL }}>{getMoodIcon(ref.mood)}</Text>
+                      {ref.tags.slice(0, 2).map(tag => (
+                        <Text key={tag} style={{
+                          fontSize: FONT_TINY, color: TH.primary,
+                          backgroundColor: `${TH.primary}15`,
+                          paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8,
+                        }}>
+                          {tag}
+                        </Text>
+                      ))}
+                    </View>
+                    <Text style={{
+                      fontSize: FONT_BODY, color: TH.text, marginTop: 4,
+                      lineHeight: 20,
+                    }} numberOfLines={2}>
+                      {ref.content}
+                    </Text>
+                  </View>
+
+                  {/* Remove button */}
+                  <TouchableOpacity
+                    onPress={() => toggleSelect(ref.id)}
+                    style={{ padding: 4, marginTop: 2 }}
+                  >
+                    <X size={18} color={TH.sub} />
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+
           {/* ── Insight Panel (empty input) ── */}
           {showInsightPanel && (
             <View style={{ marginTop: 8 }}>
@@ -902,9 +1182,43 @@ export default function QuickCreateTrailScreen() {
             </View>
           )}
 
+          {/* ── Search history ── */}
+          {showInsightPanel && searchHistory.length > 0 && (
+            <View style={{ paddingHorizontal: 16, marginTop: 12 }}>
+              <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginBottom: 8 }}>{T('searchHistory')}</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {searchHistory.map((q, i) => (
+                  <TouchableOpacity
+                    key={`${q}-${i}`}
+                    onPress={() => setSearchQuery(q)}
+                    style={{
+                      paddingHorizontal: 12, paddingVertical: 6,
+                      borderRadius: 16, backgroundColor: TH.card,
+                      borderWidth: 1, borderColor: TH.border,
+                    }}
+                  >
+                    <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>{q}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
+
           {/* ── Match results section ── */}
           {showMatchResults && (
             <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+              {/* AI degradation indicator */}
+              {aiDegraded && (
+                <View style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 6,
+                  backgroundColor: '#FEF3C7', borderRadius: 8,
+                  paddingHorizontal: 12, paddingVertical: 8, marginBottom: 12,
+                }}>
+                  <Text style={{ fontSize: FONT_TINY }}>⚠️</Text>
+                  <Text style={{ fontSize: FONT_TINY, color: '#92400E' }}>{T('searchDegraded')}</Text>
+                </View>
+              )}
+
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                 <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
                   {T('quickTrailMatch')} · {matchResults.length}{T('quickTrailReflections')}
@@ -931,7 +1245,7 @@ export default function QuickCreateTrailScreen() {
                     </Text>
                   </View>
 
-                  {matchResults.map(ref => (
+                  {matchResults.slice(0, page * PAGE_SIZE).map(ref => (
                     <ReflectionCheckItem
                       key={ref.id}
                       ref={ref}
@@ -939,6 +1253,22 @@ export default function QuickCreateTrailScreen() {
                       onToggle={() => toggleSelect(ref.id)}
                     />
                   ))}
+
+                  {/* Load more button */}
+                  {matchResults.length > page * PAGE_SIZE && (
+                    <TouchableOpacity
+                      onPress={() => setPage(p => p + 1)}
+                      style={{
+                        alignItems: 'center', paddingVertical: 12,
+                        marginTop: 4, borderRadius: 10,
+                        backgroundColor: `${TH.primary}10`,
+                      }}
+                    >
+                      <Text style={{ fontSize: FONT_SMALL, color: TH.primary }}>
+                        {T('searchLoadMore').replace('{n}', String(Math.min(PAGE_SIZE, matchResults.length - page * PAGE_SIZE)))}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </>
               ) : !isMatching ? (
                 <View style={{ alignItems: 'center', paddingVertical: 32 }}>

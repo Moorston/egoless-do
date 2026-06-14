@@ -15,7 +15,10 @@ import type { Habit, HabitStatus } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Target, Pause, Play, X, Pencil, Trash2, ChevronRight, ChevronLeft, CheckCircle,
+  Bell,
 } from 'lucide-react-native';
+import TimePickerModal from '../../components/TimePickerModal';
+import { requestNotificationPermission, scheduleHabitReminder, rescheduleAllHabitReminders } from '../notifications/NotificationService';
 
 const STATUS_LABELS: Record<HabitStatus, string> = {
   notStarted:'habitStatusNotStarted', inProgress:'habitStatusInProgress',
@@ -34,7 +37,7 @@ const ALL_FILTERS: [string, string][] = [
   ['paused','habitStatusPaused'],['abandoned','habitStatusAbandoned'],['completed','habitStatusCompleted'],
 ];
 
-const emptyForm = { name:'', startDate:tomorrow(), targetDays:21, goal:'', insight:'', createTag:false };
+const emptyForm = { name:'', startDate:tomorrow(), targetDays:21, goal:'', insight:'', createTag:false, alarmEnabled:false, alarmHour:8, alarmMinute:0 };
 
 export default function HabitsScreen() {
   const TH    = useTheme();
@@ -54,6 +57,7 @@ export default function HabitsScreen() {
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
   const [confirmDelete, setConfirmDelete] = useState<string|null>(null);
   const [actionMenuHabit, setActionMenuHabit] = useState<Habit|null>(null);
+  const [showAlarmPicker, setShowAlarmPicker] = useState(false);
 
   useEffect(() => {
     store.checkHabitAutoStatus();
@@ -73,14 +77,25 @@ export default function HabitsScreen() {
   const openAdd = () => { setEditingId(null); setForm({...emptyForm}); setShowAdd(true); };
   const openEdit = (h: Habit) => {
     setEditingId(h.id);
-    setForm({ name:h.name, startDate:h.startDate, targetDays:h.targetDays, goal:h.goal, insight:h.insight, createTag:h.createTag });
+    setForm({ name:h.name, startDate:h.startDate, targetDays:h.targetDays, goal:h.goal, insight:h.insight, createTag:h.createTag, alarmEnabled:h.alarmEnabled, alarmHour:h.alarmHour, alarmMinute:h.alarmMinute });
     setShowAdd(true);
   };
-  const saveHabit = () => {
+  const saveHabit = async () => {
     if (!form.name.trim()) return;
-    if (editingId) store.updateHabit(editingId, { ...form, targetDays:+form.targetDays });
-    else store.addHabit({ ...form, targetDays:+form.targetDays });
+    if (editingId) {
+      store.updateHabit(editingId, { ...form, targetDays:+form.targetDays });
+    } else {
+      store.addHabit({ ...form, targetDays:+form.targetDays });
+    }
     setShowAdd(false);
+    // Reschedule notifications
+    if (form.alarmEnabled) {
+      const granted = await requestNotificationPermission();
+      if (granted) {
+        const habits = (store.habits ?? []).filter(h => !h.deleted);
+        await rescheduleAllHabitReminders(habits).catch(() => {});
+      }
+    }
   };
   const changeStatus = (id: string, ns: HabitStatus) => {
     if (ns==='paused'||ns==='abandoned') { setStatusModal({id,ns}); setReason(''); return; }
@@ -254,12 +269,37 @@ export default function HabitsScreen() {
                 <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:6 }}>{T('habitTargetDays')}</Text>
                 <ThemedInput value={String(form.targetDays)} onChangeText={v => setForm(f => ({...f,targetDays:v===''?0:+v}))} keyboardType="numeric" />
               </View>
-              <RowItem label={T('habitAutoTag')} sub={T('habitAutoTagDesc')} last
+              <RowItem label={T('habitAutoTag')} sub={T('habitAutoTagDesc')}
                 right={<Toggle on={form.createTag} onChange={() => setForm(f => ({...f,createTag:!f.createTag}))} />} />
+              {/* Alarm reminder */}
+              <RowItem label={T('habitAlarm')} sub={form.alarmEnabled ? `${String(form.alarmHour).padStart(2,'0')}:${String(form.alarmMinute).padStart(2,'0')}` : T('habitAlarmOff')} last
+                right={<Toggle on={form.alarmEnabled} onChange={() => setForm(f => ({...f,alarmEnabled:!f.alarmEnabled}))} />}
+              />
+              {form.alarmEnabled && (
+                <TouchableOpacity onPress={() => setShowAlarmPicker(true)} activeOpacity={0.7}
+                  style={{ flexDirection:'row', alignItems:'center', gap:8, paddingVertical:10, paddingHorizontal:14, borderRadius:10, backgroundColor:`${TH.primary}10`, marginBottom:14 }}>
+                  <Bell size={16} color={TH.primary} />
+                  <Text style={{ color:TH.primary, fontSize:FONT_BODY, fontWeight:'600' }}>
+                    {String(form.alarmHour).padStart(2,'0')}:{String(form.alarmMinute).padStart(2,'0')}
+                  </Text>
+                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>· 点击修改</Text>
+                </TouchableOpacity>
+              )}
               <View style={{ height:20 }} />
               <PrimaryButton label={editingId?T('save'):T('createHabit')} onPress={saveHabit} />
             </ScrollView>
           </View>
+          {/* Alarm time picker - inside create modal */}
+          <TimePickerModal
+            visible={showAlarmPicker}
+            value={`${String(form.alarmHour).padStart(2,'0')}:${String(form.alarmMinute).padStart(2,'0')}`}
+            onConfirm={(time) => {
+              const [h, m] = time.split(':').map(Number);
+              setForm(f => ({ ...f, alarmHour: h, alarmMinute: m }));
+              setShowAlarmPicker(false);
+            }}
+            onClose={() => setShowAlarmPicker(false)}
+          />
         </KeyboardAvoidingView>
       </Modal>
 

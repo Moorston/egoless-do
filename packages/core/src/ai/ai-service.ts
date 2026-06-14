@@ -258,13 +258,17 @@ ${reflections.map((r, i) => `${i + 1}. [${r.mood}] ${r.content}`).join('\n')}${n
     return localInsight;
   }
 
-  // 脉络复盘引导
+  // 脉络复盘思路
   async generateTrailReviewGuide(
     items: Array<{ content: string; mood?: string; timestamp: number; kind: 'reflection' | 'note' }>,
     options?: { useCloud?: boolean; preferredModelId?: string; signal?: AbortSignal }
   ): Promise<ReviewGuide> {
     const localGuide: ReviewGuide = {
-      questions: ['这段时间最大的变化是什么？', '哪个转折点对你影响最大？', '如果重来，你会怎么做不同？'],
+      perspectives: [
+        '从成长角度看，这段时间你经历了哪些变化？',
+        '从挑战角度看，哪些困难推动了你的思考？',
+        '从关系角度看，他人的影响如何塑造了你的认知？',
+      ],
       observations: [`这条脉络包含 ${items.length} 条记录`],
       suggestions: [],
     };
@@ -273,7 +277,7 @@ ${reflections.map((r, i) => `${i + 1}. [${r.mood}] ${r.content}`).join('\n')}${n
       return localGuide;
     }
 
-    const prompt = `基于用户思维脉络的记录，生成复盘引导：
+    const prompt = `基于用户思维脉络的记录，从多个维度给出复盘思路和启示：
 
 ${items.map(r => {
   const date = new Date(r.timestamp).toLocaleDateString();
@@ -282,14 +286,14 @@ ${items.map(r => {
 }).join('\n')}
 
 请用中文提供：
-1. 3个引导性问题（帮助用户深入反思）
+1. 3-4个不同维度的复盘思路（如成长角度、挑战角度、关系角度、价值观角度等），每个思路用一句话点明该维度的思考方向
 2. 2-3个观察发现（基于记录中的模式和变化）
-3. 1-2个建议`;
+3. 1-2个行动建议`;
 
     const result = await this.generateCloud(prompt, {
       preferredModelId: options?.preferredModelId,
       signal: options?.signal,
-      systemPrompt: '你是一个智慧的复盘引导者，用温暖、启发性的语言帮助用户从思维脉络中发现成长。',
+      systemPrompt: '你是一个善于多维度思考的复盘顾问，帮助用户从不同视角审视自己的思维脉络，发现深层的成长启示。',
     });
 
     if (result.success && result.data) {
@@ -352,11 +356,11 @@ ${weekReflections.map(r => `[${new Date(r.timestamp).toLocaleDateString()}] ${r.
   private parseReviewGuide(aiResult: string, fallback: ReviewGuide): ReviewGuide {
     try {
       const lines = aiResult.split('\n').filter(l => l.trim());
-      const questions = lines.filter(l => l.includes('？')).slice(0, 3);
-      const observations = lines.filter(l => l.match(/^\d+\./)).slice(0, 3);
-      
+      const perspectives = lines.filter(l => l.match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '')).slice(0, 4);
+      const observations = lines.filter(l => l.match(/^[-•]/)).map(l => l.replace(/^[-•]\s*/, '')).slice(0, 3);
+
       return {
-        questions: questions.length > 0 ? questions : fallback.questions,
+        perspectives: perspectives.length > 0 ? perspectives : fallback.perspectives,
         observations: observations.length > 0 ? observations : fallback.observations,
         suggestions: fallback.suggestions,
       };

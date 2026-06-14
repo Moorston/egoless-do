@@ -23,6 +23,7 @@ export const LINK_COLORS: Record<PlanItemLink, string> = {
   manual: COLORS.GRAY, checkin: '#6366F1', fasting: '#F59E0B',
   meditation: '#8B5CF6', exercise: '#10B981', habit: '#EC4899',
   reflection: '#F97316',
+  trail: '#8B5CF6',
 };
 
 /** Level 1: 主题主渐变 — 从 theme.primary 派生，色相不变，只变明度 */

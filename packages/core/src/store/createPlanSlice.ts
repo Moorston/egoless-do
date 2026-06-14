@@ -1,4 +1,4 @@
-import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
+import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm } from '../types';
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
   startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
@@ -11,6 +11,7 @@ import {
   deleteDailyCustomTodo as deleteDailyCustomTodoBiz,
   saveDailyTodoHistory as saveDailyTodoHistoryBiz,
   getActivePlan as getActivePlanBiz,
+  createPlanItem as createPlanItemBiz,
   createPlanItemFromReflection as createPlanItemFromReflectionBiz,
   canArchivePlan as canArchivePlanBiz,
   unlinkAllReflectionsFromPlan as unlinkAllReflectionsFromPlanBiz,
@@ -204,6 +205,11 @@ export function createPlanSlice(
         reflections: (prev.reflections ?? []).map(r =>
           r.linkedPlanItemId === id ? { ...r, linkedPlanItemId: undefined, updatedAt: now } : r,
         ),
+        thoughtTrails: (prev.thoughtTrails ?? []).map(t =>
+          t.linkedPlanItemIds?.includes(id)
+            ? { ...t, linkedPlanItemIds: t.linkedPlanItemIds.filter(pid => pid !== id), updatedAt: now }
+            : t,
+        ),
       }));
       adapter.markDeleted('planItem', id).catch(console.error);
       deletedCheckinIds.forEach(checkinId => adapter.markDeleted('planItemCheckin', checkinId).catch(console.error));
@@ -211,6 +217,10 @@ export function createPlanSlice(
       (get().reflections ?? [])
         .filter(r => r.linkedPlanItemId === id)
         .forEach(r => adapter.persistChange('reflection', r.id, r).catch(console.error));
+      // 清除关联脉络的 linkedPlanItemIds
+      (get().thoughtTrails ?? [])
+        .filter(t => t.linkedPlanItemIds?.includes(id))
+        .forEach(t => adapter.persistChange('thoughtTrail', t.id, t).catch(console.error));
     },
 
     checkinPlanItem(planItemId, date) {
@@ -417,20 +427,13 @@ export function createPlanSlice(
       return getActivePlanBiz(get().plans ?? []);
     },
 
-    createPlanItemFromReflection(reflectionId, startDate, endDate, priority, name, description, targetMetric) {
+    createPlanItem(source: PlanItemSource, form: UnifiedPlanItemForm) {
       const s = get();
-      const reflections = s.reflections ?? [];
-      const reflection = reflections.find(r => r.id === reflectionId && !r.deleted);
-      if (!reflection) return false;
-
       const activePlan = getActivePlanBiz(s.plans ?? []);
       if (!activePlan) return false;
 
-      const planItemData = createPlanItemFromReflectionBiz(
-        reflection, activePlan.id, startDate, endDate, priority, name, description, targetMetric
-      );
+      const planItemData = createPlanItemBiz(source, activePlan.id, form);
 
-      // Add plan item
       set(prev => {
         const items = prev.planItems ?? [];
         const newItem: PlanItem = {
@@ -439,24 +442,50 @@ export function createPlanSlice(
           updatedAt: Date.now(),
           deleted: false,
         };
-        const updatedItems = [...items, newItem];
+        let updatedReflections = prev.reflections ?? [];
+        let updatedTrails = prev.thoughtTrails ?? [];
 
-        // Link reflection to plan item
-        const updatedReflections = linkReflectionToPlanItem(
-          prev.reflections ?? [], reflectionId, newItem.id
-        );
-
-        // Persist
-        adapter.persistChange('planItem', newItem.id, newItem).catch(console.error);
-        const updatedReflection = updatedReflections.find(r => r.id === reflectionId);
-        if (updatedReflection) {
-          adapter.persistChange('reflection', reflectionId, updatedReflection).catch(console.error);
+        if (source.type === 'reflection') {
+          updatedReflections = linkReflectionToPlanItem(
+            updatedReflections, source.id, newItem.id,
+          );
+        } else if (source.type === 'trail') {
+          updatedTrails = updatedTrails.map(t =>
+            t.id === source.id
+              ? {
+                  ...t,
+                  linkedPlanItemIds: [...(t.linkedPlanItemIds ?? []), newItem.id],
+                  updatedAt: Date.now(),
+                }
+              : t,
+          );
         }
 
-        return { planItems: updatedItems, reflections: updatedReflections };
+        adapter.persistChange('planItem', newItem.id, newItem).catch(console.error);
+        if (source.type === 'reflection') {
+          const updatedReflection = updatedReflections.find(r => r.id === source.id);
+          if (updatedReflection) {
+            adapter.persistChange('reflection', source.id, updatedReflection).catch(console.error);
+          }
+        } else if (source.type === 'trail') {
+          const updatedTrail = updatedTrails.find(t => t.id === source.id);
+          if (updatedTrail) {
+            adapter.persistChange('thoughtTrail', source.id, updatedTrail).catch(console.error);
+          }
+        }
+
+        return { planItems: [...items, newItem], reflections: updatedReflections, thoughtTrails: updatedTrails };
       });
 
       return true;
+    },
+
+    /** @deprecated Use createPlanItem({ type: 'reflection', id }, form) instead */
+    createPlanItemFromReflection(reflectionId, startDate, endDate, priority = 'medium', name = '', description = '', targetMetric = '') {
+      return get().createPlanItem(
+        { type: 'reflection', id: reflectionId },
+        { name, description, targetMetric, startDate, endDate, priority },
+      );
     },
 
     canArchivePlan(planId) {

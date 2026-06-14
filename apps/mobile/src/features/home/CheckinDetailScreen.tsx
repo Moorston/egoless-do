@@ -168,6 +168,25 @@ export default function CheckinDetailScreen() {
           </View>
         )}
 
+        {/* Plan items */}
+        {parsed.planItems.length > 0 && (
+          <View style={{ backgroundColor: TH.card, borderRadius: 16, paddingHorizontal: 16, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+              <CheckCircle2 size={18} color={TH.text} />
+              <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY }}>{T('planTodoList')}</Text>
+            </View>
+            {parsed.planItems.map((item, i) => (
+              <View key={item} style={{
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                paddingVertical: 13, borderBottomWidth: i === parsed.planItems.length - 1 ? 0 : 1, borderBottomColor: TH.border,
+              }}>
+                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{item}</Text>
+                <Check size={16} color={COLORS.GREEN} />
+              </View>
+            ))}
+          </View>
+        )}
+
         {/* Note */}
         {parsed.userNote ? (
           <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: TH.border }}>

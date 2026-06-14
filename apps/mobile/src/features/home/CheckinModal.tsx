@@ -142,6 +142,16 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
       .filter(Boolean);
     if (checkedHabits.length) noteData.habits = checkedHabits;
+    // 每日自定义待办
+    const doneCustomTodos = dailyCustomTodos
+      .filter(t => t.done)
+      .map(t => t.name);
+    if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
+    // 计划事项
+    const donePlanItems = todayPlanItems
+      .filter(item => planToggles[item.id] ?? planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done))
+      .map(item => item.name);
+    if (donePlanItems.length) noteData.planItems = donePlanItems;
     if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
     if (reasonOverride) noteData.incompleteReason = reasonOverride;
     if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
@@ -155,7 +165,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       // Show reflection prompt instead of closing immediately
       setShowReflection(true);
     }
-  }, [localDone, habitCheckins, planToggles, planCheckins, targetDate, isGraceMode, waterMl, note, practices, totalCal, weight, store, onClose]);
+  }, [localDone, habitCheckins, planToggles, planCheckins, dailyCustomTodos, todayPlanItems, targetDate, isGraceMode, waterMl, note, practices, totalCal, weight, store, onClose]);
 
   const handleDone = useCallback(() => {
     // Grace mode: skip incomplete items check, submit directly

@@ -16,4 +16,7 @@ export interface Habit extends Syncable {
   checkedDates: string[];
   pauseReason: string;
   abandonReason: string;
+  alarmEnabled: boolean;
+  alarmHour: number;
+  alarmMinute: number;
 }
