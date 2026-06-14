@@ -176,29 +176,21 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
       if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
     },
 
+    /** @deprecated Use get().createPlanItem({ type: 'trail', id }, form) instead */
     createPlanItemFromTrail: (trailId, form) => {
-      const trail = (get().thoughtTrails ?? []).find(t => t.id === trailId);
-      if (!trail) return false;
-
-      const activePlan = get().getActivePlan?.();
-      if (!activePlan) return false;
-
-      get().addPlanItem({
-        planId: activePlan.id,
-        name: form.name,
-        description: form.description,
-        startDate: form.startDate,
-        endDate: form.endDate,
-        priority: form.priority,
-        trailId,
-      });
-
-      return true;
+      return get().createPlanItem?.(
+        { type: 'trail', id: trailId },
+        form,
+      ) ?? false;
     },
 
     getTrailPlanItems: (trailId) => {
+      const trail = (get().thoughtTrails ?? []).find(t => t.id === trailId);
+      const linkedIds = new Set(trail?.linkedPlanItemIds ?? []);
       return (get().planItems ?? []).filter(
-        (item: PlanItem) => item.trailId === trailId && !item.deleted
+        (item: PlanItem) => !item.deleted && (
+          item.trailId === trailId || linkedIds.has(item.id)
+        )
       );
     },
 

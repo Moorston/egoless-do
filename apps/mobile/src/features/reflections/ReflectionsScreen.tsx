@@ -14,9 +14,9 @@ import {
   ThemedInput, useT, PillSelector,
 } from '../../components/UI';
 import ItemManagerPanel from '../../components/ItemManagerPanel';
-import DatePickerModal from '../../components/DatePickerModal';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import ShareCard from './ShareCard';
+import { CreatePlanFromReflectionModal } from './CreatePlanFromReflectionModal';
 import FilterDrawer from './FilterDrawer';
 import MindTrailEntryCard from './MindTrailEntryCard';
 import TrailSuggestionBanner from './TrailSuggestionBanner';
@@ -169,8 +169,8 @@ export default function ReflectionsScreen() {
   useEffect(() => {
     if (!initializedCollapse.current) {
       const days = Object.keys(byDay);
-      if (days.length > 1) {
-        setCollapsedDays(new Set(days.slice(1))); // collapse all except the first (most recent)
+      if (days.length > 3) {
+        setCollapsedDays(new Set(days.slice(3))); // collapse all except the first 3 days
       }
       initializedCollapse.current = true;
     }
@@ -222,29 +222,8 @@ export default function ReflectionsScreen() {
   const [pendingTrailIds, setPendingTrailIds] = useState<string[]>([]);
 
   // Create plan item state
-  const [showCreatePlanItem, setShowCreatePlanItem] = useState(false);
-  const [selectedReflectionId, setSelectedReflectionId] = useState<string | null>(null);
-  const [planItemName, setPlanItemName] = useState('');
-  const [planItemDescription, setPlanItemDescription] = useState('');
-  const [planItemTargetMetric, setPlanItemTargetMetric] = useState('');
-  const [planItemStartDate, setPlanItemStartDate] = useState(() => {
-    const today = dateStr();
-    const activePlan = store.getActivePlan();
-    if (activePlan) {
-      return today >= activePlan.startDate ? today : activePlan.startDate;
-    }
-    return today;
-  });
-  const [planItemEndDate, setPlanItemEndDate] = useState(() => {
-    const activePlan = store.getActivePlan();
-    if (activePlan) return activePlan.endDate;
-    const d = new Date();
-    d.setDate(d.getDate() + 30);
-    return d.toISOString().slice(0, 10);
-  });
-  const [planItemPriority, setPlanItemPriority] = useState<'high' | 'medium' | 'low'>('medium');
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [showCreatePlanRefModal, setShowCreatePlanRefModal] = useState(false);
+  const [createPlanReflection, setCreatePlanReflection] = useState<any>(null);
 
   // Calendar heatmap data (last 35 days = 5 weeks)
   const calendarData = useMemo(() => {
@@ -336,9 +315,16 @@ export default function ReflectionsScreen() {
         Alert.alert('提示', '暂无活跃计划，请先创建一个计划。');
         return;
       }
-      setSelectedReflectionId(id);
-      setShowCreatePlanItem(true);
+      setCreatePlanReflection(r);
+      setShowCreatePlanRefModal(true);
     }
+  }, [store]);
+
+  const handleCreatePlanRef = useCallback((reflectionId: string, form: any) => {
+    store.createPlanItem({ type: 'reflection', id: reflectionId }, form);
+    setShowCreatePlanRefModal(false);
+    setCreatePlanReflection(null);
+    Alert.alert('成功', '计划任务已创建');
   }, [store]);
 
   const handleCardPress = useCallback((id: string) => {
@@ -425,7 +411,7 @@ export default function ReflectionsScreen() {
         {Object.entries(byDay).map(([day, items]) => {
           const isCollapsed = collapsedDays.has(day) && !hasActiveFilters;
 
-          if (isCollapsed) {
+            if (isCollapsed) {
             // Compute summary for collapsed card
             const tagCounts: Record<string, number> = {};
             const moodCounts: Record<string, number> = {};
@@ -489,10 +475,10 @@ export default function ReflectionsScreen() {
                             {linkedPlanItem && (
                               <TouchableOpacity
                                 onPress={() => handleNavigateToPlan(linkedPlanItem.planId)}
-                                style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:`${P}15` }}
+                                style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:'rgba(255,255,255,.2)' }}
                               >
-                                <ExternalLink size={10} color={P} />
-                                <Text style={{ fontSize:FONT_TINY, color:P, fontWeight:'500' }}>{linkedPlanItem.name.slice(0, 6)}</Text>
+                                <ExternalLink size={10} color="#fff" />
+                                <Text style={{ fontSize:FONT_TINY, color:'#fff', fontWeight:'500' }}>{linkedPlanItem.name.slice(0, 6)}</Text>
                               </TouchableOpacity>
                             )}
                           </View>
@@ -676,8 +662,8 @@ export default function ReflectionsScreen() {
                     setActionMenuId(null);
                     return;
                   }
-                  setSelectedReflectionId(actionMenuId);
-                  setShowCreatePlanItem(true);
+                  const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
+                  if (r) { setCreatePlanReflection(r); setShowCreatePlanRefModal(true); }
                   setActionMenuId(null);
                 }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(16,185,129,.15)', alignItems:'center' }}>
                   <Text style={{ color:'#10B981', fontSize:FONT_BUTTON, fontWeight:'600' }}>🎯 创建为计划任务</Text>
@@ -728,170 +714,12 @@ export default function ReflectionsScreen() {
       </Modal>
 
       {/* 创建计划任务弹窗 */}
-      <Modal visible={showCreatePlanItem} transparent animationType="slide">
-        <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.7)' }}>
-          <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingTop:24, paddingBottom:40, maxHeight:'90%' }}>
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-              <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:16 }}>
-                <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>创建计划任务</Text>
-                <TouchableOpacity onPress={() => { 
-                  setShowCreatePlanItem(false); 
-                  setSelectedReflectionId(null);
-                  setPlanItemName('');
-                  setPlanItemDescription('');
-                  setPlanItemTargetMetric('');
-                }}>
-                  <X size={24} color={TH.sub} />
-                </TouchableOpacity>
-              </View>
-              <Text style={{ fontSize:FONT_BODY, fontWeight:'600', color:TH.text, marginBottom:16 }}>
-                关联计划: {store.getActivePlan()?.name || '无活跃计划'}（进行中）
-              </Text>
-              
-              {/* 获取当前选中的感念 */}
-              {(() => {
-                const reflection = (store.reflections ?? []).find(r => r.id === selectedReflectionId);
-                if (!reflection) return null;
-                const lines = reflection.content.split('\n').filter(l => l.trim());
-                const defaultName = lines[0]?.slice(0, 50) || reflection.content.slice(0, 50);
-                
-                return (
-                  <>
-                    {/* 任务名称（必填） */}
-                    <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:6 }}>任务名称 *</Text>
-                    <TextInput
-                      value={planItemName || defaultName}
-                      onChangeText={setPlanItemName}
-                      placeholder="请输入任务名称"
-                      style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, color:TH.text, backgroundColor:TH.card }}
-                    />
-                    
-                    {/* 任务指标（必填） */}
-                    <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:6 }}>任务指标 *</Text>
-                    <TextInput
-                      value={planItemTargetMetric}
-                      onChangeText={setPlanItemTargetMetric}
-                      placeholder="例如：每天练习30分钟"
-                      style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, color:TH.text, backgroundColor:TH.card }}
-                    />
-                    
-                    {/* 任务描述 */}
-                    <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:6 }}>任务描述</Text>
-                    <TextInput
-                      value={planItemDescription || reflection.content}
-                      onChangeText={setPlanItemDescription}
-                      placeholder="请输入任务描述"
-                      multiline
-                      numberOfLines={2}
-                      style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, color:TH.text, backgroundColor:TH.card, minHeight:60, textAlignVertical:'top' }}
-                    />
-
-                    {/* 任务链接（只读，自动填入感念标签） */}
-                    <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:6 }}>任务链接</Text>
-                    <TextInput
-                      value={reflection.tags.join(', ')}
-                      editable={false}
-                      style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, color:TH.sub, backgroundColor:TH.card }}
-                    />
-                  </>
-                );
-              })()}
-              
-              <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:6 }}>开始日期</Text>
-              <TouchableOpacity
-                onPress={() => setShowStartDatePicker(true)}
-                style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, backgroundColor:TH.card }}
-              >
-                <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{planItemStartDate}</Text>
-              </TouchableOpacity>
-              <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:6 }}>结束日期</Text>
-              <TouchableOpacity
-                onPress={() => setShowEndDatePicker(true)}
-                style={{ borderWidth:1, borderColor:TH.border, borderRadius:8, padding:12, marginBottom:12, backgroundColor:TH.card }}
-              >
-                <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{planItemEndDate}</Text>
-              </TouchableOpacity>
-              <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:6 }}>优先级</Text>
-              <View style={{ flexDirection:'row', gap:8, marginBottom:18 }}>
-                {[
-                  { value: 'high' as const, label: '高', color: '#FF4444' },
-                  { value: 'medium' as const, label: '中', color: '#FFAA00' },
-                  { value: 'low' as const, label: '低', color: '#44AA44' },
-                ].map(p => (
-                  <TouchableOpacity
-                    key={p.value}
-                    onPress={() => setPlanItemPriority(p.value)}
-                    style={{ flex:1, padding:10, borderRadius:8, borderWidth:1, borderColor: planItemPriority === p.value ? p.color : TH.border, backgroundColor: planItemPriority === p.value ? `${p.color}20` : 'transparent', alignItems:'center' }}
-                  >
-                    <Text style={{ color: planItemPriority === p.value ? p.color : TH.text, fontWeight: planItemPriority === p.value ? '600' : '400' }}>{p.label}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <View style={{ flexDirection:'row', gap:10 }}>
-                <OutlineButton label="取消" onPress={() => { 
-                  setShowCreatePlanItem(false); 
-                  setSelectedReflectionId(null);
-                  setPlanItemName('');
-                  setPlanItemDescription('');
-                  setPlanItemTargetMetric('');
-                }} style={{ flex:1 }} />
-                <PrimaryButton label="创建" onPress={() => {
-                  if (selectedReflectionId) {
-                    const reflection = (store.reflections ?? []).find(r => r.id === selectedReflectionId);
-                    const lines = reflection?.content.split('\n').filter(l => l.trim()) || [];
-                    const defaultName = lines[0]?.slice(0, 50) || reflection?.content.slice(0, 50) || '';
-                    const finalName = planItemName || defaultName;
-                    
-                    if (!finalName.trim()) {
-                      Alert.alert('提示', '请输入任务名称');
-                      return;
-                    }
-                    if (!planItemTargetMetric.trim()) {
-                      Alert.alert('提示', '请输入任务指标');
-                      return;
-                    }
-                    
-                    const success = store.createPlanItemFromReflection(
-                      selectedReflectionId, 
-                      planItemStartDate, 
-                      planItemEndDate, 
-                      planItemPriority,
-                      finalName,
-                      planItemDescription || reflection?.content || '',
-                      planItemTargetMetric
-                    );
-                    if (success) {
-                      setShowCreatePlanItem(false);
-                      setSelectedReflectionId(null);
-                      setPlanItemName('');
-                      setPlanItemDescription('');
-                      setPlanItemTargetMetric('');
-                      Alert.alert('成功', '计划任务已创建');
-                    }
-                  }
-                }} style={{ flex:1 }} />
-              </View>
-            </ScrollView>
-          </View>
-        </KeyboardAvoidingView>
-        {/* Date pickers for plan item */}
-        <DatePickerModal
-          visible={showStartDatePicker}
-          value={planItemStartDate}
-          onConfirm={(date) => { setPlanItemStartDate(date); setShowStartDatePicker(false); }}
-          onClose={() => setShowStartDatePicker(false)}
-          minDate={(() => { const today = dateStr(); const plan = store.getActivePlan(); const planStart = plan?.startDate ?? today; return today >= planStart ? today : planStart; })()}
-          maxDate={planItemEndDate}
-        />
-        <DatePickerModal
-          visible={showEndDatePicker}
-          value={planItemEndDate}
-          onConfirm={(date) => { setPlanItemEndDate(date); setShowEndDatePicker(false); }}
-          onClose={() => setShowEndDatePicker(false)}
-          minDate={planItemStartDate}
-          maxDate={store.getActivePlan()?.endDate}
-        />
-      </Modal>
+      <CreatePlanFromReflectionModal
+        visible={showCreatePlanRefModal}
+        reflection={createPlanReflection}
+        onClose={() => { setShowCreatePlanRefModal(false); setCreatePlanReflection(null); }}
+        onCreate={handleCreatePlanRef}
+      />
 
       {/* Share card modal */}
       <ShareCard

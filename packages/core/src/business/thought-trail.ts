@@ -20,7 +20,7 @@ export interface TrailOverview {
 }
 
 /**
- * 自动生成思路脉络名称
+ * 自动生成思维脉络名称
  * 综合分析所有感念的情绪变化和主题标签
  * @param t optional i18n translation function for localized default names
  */
@@ -68,7 +68,7 @@ export function generateTrailName(reflections: MindReflection[], t?: (key: strin
 }
 
 /**
- * 获取思路脉络统计信息
+ * 获取思维脉络统计信息
  */
 export function getTrailStats(
   trail: ThoughtTrail,
@@ -110,7 +110,7 @@ export function getTrailStats(
 }
 
 /**
- * 获取感念所属的思路脉络
+ * 获取感念所属的思维脉络
  */
 export function getTrailsByReflection(
   reflectionId: string,
@@ -145,11 +145,19 @@ export function getReflectionsByTag(
  */
 export function getMoodIcon(mood: string): string {
   switch (mood) {
+    case 'happy':
     case '开心': return '😊';
+    case 'calm':
     case '平静': return '🌿';
+    case 'neutral':
+    case '平常': return '😐';
+    case 'anxious':
     case '焦虑': return '😰';
+    case 'sad':
     case '难过': return '😢';
+    case 'excited':
     case '兴奋': return '🎉';
+    case 'grateful':
     case '感恩': return '🙏';
     default: return '💭';
   }

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_SMALL } from '@egoless-do/core';
@@ -9,6 +9,7 @@ interface PlanTasksSectionProps {
   planItems: PlanItem[];
   checkins: PlanItemCheckin[];
   onNavigateToPlan: (planItemId: string) => void;
+  onDeletePlanItem: (planItemId: string) => void;
   onCreatePlan: () => void;
 }
 
@@ -16,6 +17,7 @@ export function PlanTasksSection({
   planItems,
   checkins,
   onNavigateToPlan,
+  onDeletePlanItem,
   onCreatePlan,
 }: PlanTasksSectionProps) {
   const TH = useTheme();
@@ -46,20 +48,15 @@ export function PlanTasksSection({
       </View>
 
       <View style={styles.list}>
-        {planItems.map(item => {
-          const itemCheckins = useMemo(
-            () => checkins.filter(c => c.planItemId === item.id),
-            [checkins, item.id]
-          );
-          return (
-            <PlanTaskCard
-              key={item.id}
-              planItem={item}
-              checkins={itemCheckins}
-              onPress={() => onNavigateToPlan(item.id)}
-            />
-          );
-        })}
+        {planItems.map(item => (
+          <PlanTaskCard
+            key={item.id}
+            planItem={item}
+            checkins={checkins.filter(c => c.planItemId === item.id)}
+            onPress={() => onNavigateToPlan(item.id)}
+            onDelete={() => onDeletePlanItem(item.id)}
+          />
+        ))}
       </View>
     </View>
   );

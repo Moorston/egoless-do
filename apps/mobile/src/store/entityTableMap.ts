@@ -115,7 +115,9 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
         updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
       };
       if (d.reflectionId !== undefined) row.reflection_id = d.reflectionId;
+      if (d.trailId !== undefined) row.trail_id = d.trailId;
       row.frequency = d.frequency ? JSON.stringify(d.frequency) : null;
+      row.tags = d.tags ? JSON.stringify(d.tags) : null;
       return row;
     },
   },

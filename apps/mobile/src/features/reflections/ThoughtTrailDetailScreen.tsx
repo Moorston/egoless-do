@@ -1,17 +1,19 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, RefreshControl, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, RefreshControl, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Trash2, Pencil, Target } from 'lucide-react-native';
+import { ArrowLeft, Trash2, Pencil, ListChecks, Network } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import type { TrailNote } from '@egoless-do/core';
 import { useTrailData } from './useTrailData';
 import { useTrailAI } from './useTrailAI';
 import { useTrailActions } from './useTrailActions';
 
-import { InsightSection } from './InsightSection';
-import { ReviewGuideSection } from './ReviewGuideSection';
+import { ReviewAIPanel } from './ReviewAIPanel';
 import { TimelineList } from './TimelineList';
+import { ReviewNoteCard } from './ReviewNoteCard';
+import { EditNoteModal } from './EditNoteModal';
 import { AddReflectionFAB } from './AddReflectionFAB';
 import { WriteNoteModal } from './WriteNoteModal';
 import { SelectReflectionModal } from './SelectReflectionModal';
@@ -29,7 +31,7 @@ export default function ThoughtTrailDetailScreen() {
   const { trailId } = route.params as { trailId: string };
 
   const {
-    trail, overview, timelineItems, links, reflections,
+    trail, overview, timelineItems, links, reflections, trailNotes,
     trailPlanItems, trailPlanCheckins, relatedTrails,
   } = useTrailData(trailId);
 
@@ -45,8 +47,10 @@ export default function ThoughtTrailDetailScreen() {
     handleUpdateName,
     handleUpdateDescription,
     handleDeleteTrail,
+    handleDeletePlanItem,
     handleNavigateToPlan,
     handleNavigateToTrail,
+    handleUpdateNote,
   } = useTrailActions(trailId);
 
   // ─── Inline editing ─────────────────────────────────────────────
@@ -56,6 +60,8 @@ export default function ThoughtTrailDetailScreen() {
   const [editDesc, setEditDesc] = useState('');
   const [showWriteNote, setShowWriteNote] = useState(false);
   const [guidedQuestion, setGuidedQuestion] = useState<string | undefined>();
+  const [showEditNote, setShowEditNote] = useState(false);
+  const [editingNote, setEditingNote] = useState<TrailNote | null>(null);
   const [showSelectReflection, setShowSelectReflection] = useState(false);
   const [showCreatePlan, setShowCreatePlan] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
@@ -68,6 +74,11 @@ export default function ThoughtTrailDetailScreen() {
   const handleWriteNote = useCallback((question?: string) => {
     setGuidedQuestion(question);
     setShowWriteNote(true);
+  }, []);
+
+  const handleEditNote = useCallback((note: TrailNote) => {
+    setEditingNote(note);
+    setShowEditNote(true);
   }, []);
 
   const handleCreatePlanFromReflection = useCallback(() => {
@@ -126,7 +137,7 @@ export default function ThoughtTrailDetailScreen() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
         <View style={styles.errorContainer}>
-          <Text style={[styles.errorText, { color: TH.sub }]}>思路脉络不存在</Text>
+          <Text style={[styles.errorText, { color: TH.sub }]}>思维脉络不存在</Text>
         </View>
       </SafeAreaView>
     );
@@ -134,6 +145,11 @@ export default function ThoughtTrailDetailScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
@@ -157,8 +173,14 @@ export default function ThoughtTrailDetailScreen() {
           </TouchableOpacity>
         )}
         <View style={styles.headerActions}>
-          <TouchableOpacity onPress={() => setShowCreatePlan(true)} style={styles.headerButton}>
-            <Target size={20} color={P} />
+          <TouchableOpacity
+            onPress={() => (nav as any).navigate('RelationMap', { context: { type: 'trail', id: trailId } })}
+            style={styles.headerButton}
+          >
+            <Network size={20} color={P} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSelectExisting} style={styles.headerButton}>
+            <ListChecks size={20} color={P} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleDeleteTrail} style={styles.headerButton}>
             <Trash2 size={20} color="#EF4444" />
@@ -198,7 +220,7 @@ export default function ThoughtTrailDetailScreen() {
       )}
 
       <SegmentBar
-        segments={['时间线', '洞察', '复盘', '计划']}
+        segments={['感念脉络', '复盘', '计划']}
         selectedIndex={tabIndex}
         onSelect={setTabIndex}
       />
@@ -207,6 +229,8 @@ export default function ThoughtTrailDetailScreen() {
         style={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
+        automaticallyAdjustKeyboardInsets
+        keyboardShouldPersistTaps="handled"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -218,7 +242,7 @@ export default function ThoughtTrailDetailScreen() {
       >
         {tabIndex === 0 && (
           <TimelineList
-            items={timelineItems}
+            items={timelineItems.filter(ti => ti.kind === 'reflection')}
             links={links}
             onRemoveReflection={handleRemoveReflection}
             onDeleteNote={handleDeleteNote}
@@ -228,28 +252,48 @@ export default function ThoughtTrailDetailScreen() {
         )}
 
         {tabIndex === 1 && (
-          <InsightSection
-            insightCache={trail.insightCache}
-            onGenerate={handleGenerateInsight}
-            stale={insightCacheStale}
-          />
+          <>
+            <ReviewAIPanel
+              insightCache={trail.insightCache}
+              reviewCache={trail.reviewCache}
+              onGenerateInsight={handleGenerateInsight}
+              onGenerateReview={handleGenerateReview}
+              onStartWrite={handleWriteNote}
+              insightStale={insightCacheStale}
+              reviewStale={reviewCacheStale}
+            />
+            {timelineItems.filter(ti => ti.kind === 'note').length > 0 ? (
+              timelineItems.filter(ti => ti.kind === 'note').map(ti => (
+                <ReviewNoteCard
+                  key={ti.data.id}
+                  note={ti.data as any}
+                  onDelete={handleDeleteNote}
+                  onEdit={handleEditNote}
+                />
+              ))
+            ) : (
+              <View style={styles.emptyNotes}>
+                <Text style={[styles.emptyNotesText, { color: TH.sub }]}>
+                  暂无复盘记录
+                </Text>
+                <TouchableOpacity
+                  style={[styles.emptyNotesButton, { backgroundColor: P }]}
+                  onPress={() => handleWriteNote()}
+                >
+                  <Text style={styles.emptyNotesButtonText}>开始复盘</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </>
         )}
 
         {tabIndex === 2 && (
-          <ReviewGuideSection
-            reviewCache={trail.reviewCache}
-            onGenerate={handleGenerateReview}
-            onStartWrite={handleWriteNote}
-            stale={reviewCacheStale}
-          />
-        )}
-
-        {tabIndex === 3 && (
           <>
             <PlanTasksSection
               planItems={trailPlanItems}
               checkins={trailPlanCheckins}
               onNavigateToPlan={handleNavigateToPlan}
+              onDeletePlanItem={handleDeletePlanItem}
               onCreatePlan={() => setShowCreatePlan(true)}
             />
             <RelatedTrailsSection
@@ -262,8 +306,6 @@ export default function ThoughtTrailDetailScreen() {
 
       {/* FAB */}
       <AddReflectionFAB
-        onWriteReflection={handleWriteReflection}
-        onSelectExisting={handleSelectExisting}
         onWriteNote={() => handleWriteNote()}
       />
 
@@ -271,8 +313,16 @@ export default function ThoughtTrailDetailScreen() {
       <WriteNoteModal
         visible={showWriteNote}
         guidedQuestion={guidedQuestion}
+        reviewPerspectives={(trail.reviewCache as any)?.perspectives ?? (trail.reviewCache as any)?.questions ?? []}
         onSave={handleSaveNoteAndClose}
         onClose={() => { setShowWriteNote(false); setGuidedQuestion(undefined); }}
+      />
+
+      <EditNoteModal
+        visible={showEditNote}
+        note={editingNote}
+        onSave={handleUpdateNote}
+        onClose={() => { setShowEditNote(false); setEditingNote(null); }}
       />
 
       <SelectReflectionModal
@@ -288,6 +338,7 @@ export default function ThoughtTrailDetailScreen() {
         onCreate={handlePlanCreateAndClose}
         onClose={() => setShowCreatePlan(false)}
       />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -367,5 +418,24 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: FONT_BODY,
+  },
+  emptyNotes: {
+    alignItems: 'center',
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+  },
+  emptyNotesText: {
+    fontSize: FONT_SMALL,
+    marginBottom: 12,
+  },
+  emptyNotesButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  emptyNotesButtonText: {
+    color: '#fff',
+    fontSize: FONT_SMALL,
+    fontWeight: '600',
   },
 });

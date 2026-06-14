@@ -87,6 +87,8 @@ export type { InsightProfile, HotTag, MoodEntry, HotTopic } from './insight-prof
 export {
   buildIndex,
   retrieveTopK,
+  expandTerms,
+  SYNONYM_MAP,
   buildRecommendPrompt,
   buildQueryParsePrompt,
   formatReflectionSummary,

@@ -1,16 +1,20 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
+import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+// Gesture handling via native touch events (no gesture handler library)
+import Svg, { G, Circle, Line, Rect, Text as SvgText } from 'react-native-svg';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ArrowLeft, ZoomIn, ZoomOut, Brain } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+// SVG viewBox dimensions (logical coordinate space)
+const VB_W = 800;
+const VB_H = 1200;
 
 // Node types
-type NodeType = 'reflection' | 'plan' | 'habit';
+type NodeType = 'reflection' | 'plan' | 'habit' | 'trail' | 'planItem';
 
 interface RelationNode {
   id: string;
@@ -32,28 +36,59 @@ interface RelationEdge {
   label: string;
 }
 
-// Color map for node types
+// Edge style types
+type EdgeStyleType = 'related' | 'linked' | 'inspire' | 'evolve' | 'contrast' | 'respond' | 'same_tag' | 'contains' | 'belongs';
+
+interface EdgeStyle {
+  color: string;
+  lineStyle: 'solid' | 'dashed' | 'dotted';
+  label: string;
+  thickness: number;
+}
+
 const NODE_COLORS: Record<NodeType, string> = {
   reflection: '#3B82F6',
   plan: '#10B981',
   habit: '#F59E0B',
+  trail: '#06B6D4',
+  planItem: '#8B5CF6',
 };
 
 const NODE_LABELS: Record<NodeType, string> = {
   reflection: '感念',
   plan: '计划',
   habit: '习惯',
+  trail: '思维脉络',
+  planItem: '计划任务',
 };
 
 const NODE_ICONS: Record<NodeType, string> = {
   reflection: '💭',
   plan: '📋',
   habit: '🌱',
+  trail: '🧵',
+  planItem: '📌',
 };
 
-// Context type for filtering
+const EDGE_STYLES: Record<EdgeStyleType, EdgeStyle> = {
+  contains: { color: '#06B6D4', lineStyle: 'solid', label: '包含', thickness: 3 },
+  linked: { color: '#F59E0B', lineStyle: 'solid', label: '关联', thickness: 2 },
+  related: { color: '#3B82F6', lineStyle: 'solid', label: '相关', thickness: 2 },
+  inspire: { color: '#8B5CF6', lineStyle: 'dashed', label: '启发', thickness: 2 },
+  evolve: { color: '#8B5CF6', lineStyle: 'dashed', label: '演进', thickness: 2 },
+  contrast: { color: '#8B5CF6', lineStyle: 'dashed', label: '对比', thickness: 2 },
+  respond: { color: '#8B5CF6', lineStyle: 'dashed', label: '回应', thickness: 2 },
+  same_tag: { color: '#9CA3AF', lineStyle: 'dotted', label: '同标签', thickness: 1 },
+  belongs: { color: '#06B6D4', lineStyle: 'dashed', label: '所属', thickness: 2 },
+};
+
+const DASH_PATTERNS: Record<string, string> = {
+  dashed: '8,4',
+  dotted: '2,4',
+};
+
 interface RelationContext {
-  type: 'plan' | 'habit' | 'reflection';
+  type: 'plan' | 'habit' | 'reflection' | 'trail' | 'planItem';
   id: string;
 }
 
@@ -64,33 +99,51 @@ export default function RelationMapView() {
   const nav = useNavigation();
   const route = useRoute();
 
-  // Get context from route params
   const context = (route.params as any)?.context as RelationContext | undefined;
 
-  // State
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [renderTick, setRenderTick] = useState(0);
 
-  // Build graph data based on context
+  // Refs for gesture handler (synchronous access)
+  const nodesRef = useRef<RelationNode[]>([]);
+  const nodeMapRef = useRef<Map<string, RelationNode>>(new Map());
+  const edgesRef = useRef<RelationEdge[]>([]);
+  const panOffsetRef = useRef({ x: 0, y: 0 });
+  const zoomRef = useRef(1);
+  const selectedNodeRef = useRef<string | null>(null);
+  const containerLayoutRef = useRef({ w: 1, h: 1 });
+  const draggingNodeIdRef = useRef<string | null>(null);
+  const fixedNodeIdsRef = useRef<Set<string>>(new Set());
+  const simulationRunningRef = useRef(true);
+  const nodesAtPanStartRef = useRef<Map<string, { x: number; y: number }>>(new Map());
+  const shouldRenderRef = useRef(true);
+  const contextNodeRef = useRef<RelationNode | null>(null);
+
+  // Sync state to refs
+  useEffect(() => { zoomRef.current = zoom; }, [zoom]);
+  useEffect(() => { panOffsetRef.current = panOffset; }, [panOffset]);
+  useEffect(() => { selectedNodeRef.current = selectedNode; }, [selectedNode]);
+
+  // Build graph data
   const { nodes, edges, insights, contextNode } = useMemo(() => {
     const nodes: RelationNode[] = [];
     const edges: RelationEdge[] = [];
     const nodeMap = new Map<string, RelationNode>();
     let contextNode: RelationNode | null = null;
 
-    // Helper to add a node
     const addNode = (id: string, type: NodeType, label: string, data: any, x?: number, y?: number) => {
       if (nodeMap.has(id)) return nodeMap.get(id)!;
       const node: RelationNode = {
         id,
         type,
         label: label.slice(0, 20) + (label.length > 20 ? '...' : ''),
-        x: x ?? SCREEN_WIDTH / 2 + (Math.random() - 0.5) * SCREEN_WIDTH * 0.6,
-        y: y ?? SCREEN_HEIGHT / 2 + (Math.random() - 0.5) * SCREEN_HEIGHT * 0.4,
-        vx: 0,
-        vy: 0,
+        x: x ?? VB_W / 2 + (Math.random() - 0.5) * VB_W * 0.6,
+        y: y ?? VB_H / 2 + (Math.random() - 0.5) * VB_H * 0.4,
+        vx: 0, vy: 0,
         color: NODE_COLORS[type],
-        size: type === 'plan' || type === 'habit' ? 40 : 30,
+        size: type === 'reflection' ? 30 : 40,
         data,
       };
       nodes.push(node);
@@ -98,92 +151,78 @@ export default function RelationMapView() {
       return node;
     };
 
-    // Helper to add an edge
     const addEdge = (from: string, to: string, type: string, label: string) => {
-      // Avoid duplicate edges
-      const exists = edges.some(e => e.from === from && e.to === to && e.type === type);
-      if (!exists) {
+      if (!edges.some(e => e.from === from && e.to === to && e.type === type)) {
         edges.push({ from, to, type, label });
       }
     };
 
     if (context) {
-      // Context-based filtering: show related nodes only
       switch (context.type) {
         case 'plan': {
           const plan = (store.plans ?? []).find(p => p.id === context.id);
           if (!plan) break;
-
-          // Add the plan as center node
-          const planNode = addNode(plan.id, 'plan', plan.name, plan, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+          const planNode = addNode(plan.id, 'plan', plan.name, plan, VB_W / 2, VB_H / 2);
           contextNode = planNode;
-
-          // Find reflections linked to plan items
           const planItems = (store.planItems ?? []).filter(pi => pi.planId === plan.id && !pi.deleted);
           planItems.forEach(item => {
+            addNode(item.id, 'planItem', item.name, item);
+            addEdge(plan.id, item.id, 'contains', '包含');
             if (item.reflectionId) {
               const reflection = (store.reflections ?? []).find(r => r.id === item.reflectionId);
               if (reflection && !reflection.deleted) {
                 addNode(reflection.id, 'reflection', reflection.content, reflection);
-                addEdge(reflection.id, plan.id, 'related', '相关');
+                addEdge(reflection.id, item.id, 'related', '相关');
               }
             }
-          });
-
-          // Find habits linked to plan items
-          planItems.forEach(item => {
+            if (item.trailId) {
+              const trail = (store.thoughtTrails ?? []).find(t => t.id === item.trailId);
+              if (trail && !trail.deleted) {
+                addNode(trail.id, 'trail', trail.name, trail);
+                addEdge(trail.id, item.id, 'related', '相关');
+              }
+            }
             if (item.linkConfig?.habitId) {
               const habit = (store.habits ?? []).find(h => h.id === item.linkConfig!.habitId);
               if (habit && !habit.deleted) {
                 addNode(habit.id, 'habit', habit.name, habit);
-                addEdge(habit.id, plan.id, 'linked', '关联');
+                addEdge(habit.id, item.id, 'linked', '关联');
               }
             }
           });
           break;
         }
-
         case 'habit': {
           const habit = (store.habits ?? []).find(h => h.id === context.id);
           if (!habit) break;
-
-          // Add the habit as center node
-          const habitNode = addNode(habit.id, 'habit', habit.name, habit, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+          const habitNode = addNode(habit.id, 'habit', habit.name, habit, VB_W / 2, VB_H / 2);
           contextNode = habitNode;
-
-          // Find related reflections (from tags)
           const tagReflections = (store.reflections ?? []).filter(r =>
             !r.deleted && r.tags.some(t => t.includes(habit.name))
           );
-
           tagReflections.forEach(reflection => {
             addNode(reflection.id, 'reflection', reflection.content, reflection);
             addEdge(reflection.id, habit.id, 'related', '相关');
           });
-
-          // Find plans that link to this habit
           const linkedPlanItems = (store.planItems ?? []).filter(i =>
             !i.deleted && i.linkConfig?.habitId === habit.id
           );
           linkedPlanItems.forEach(item => {
+            addNode(item.id, 'planItem', item.name, item);
+            addEdge(habit.id, item.id, 'linked', '关联');
             const plan = (store.plans ?? []).find(p => p.id === item.planId);
             if (plan && !plan.deleted) {
               addNode(plan.id, 'plan', plan.name, plan);
-              addEdge(plan.id, habit.id, 'linked', '关联');
+              addEdge(plan.id, item.id, 'contains', '包含');
             }
           });
           break;
         }
-
         case 'reflection': {
           const reflection = (store.reflections ?? []).find(r => r.id === context.id);
           if (!reflection) break;
-
-          // Add the reflection as center node
-          const reflectionNode = addNode(reflection.id, 'reflection', reflection.content, reflection, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+          const reflectionNode = addNode(reflection.id, 'reflection', reflection.content, reflection, VB_W / 2, VB_H / 2);
           contextNode = reflectionNode;
-
-          // Find related reflections (from links)
           const relatedLinks = (store.reflectionLinks ?? []).filter(l =>
             !l.deleted && (l.fromId === reflection.id || l.toId === reflection.id)
           );
@@ -195,30 +234,110 @@ export default function RelationMapView() {
               addEdge(link.fromId, link.toId, link.type, link.type);
             }
           });
-
-          // Find same-tag reflections
           const sameTagReflections = (store.reflections ?? []).filter(r =>
-            !r.deleted &&
-            r.id !== reflection.id &&
-            r.tags.some(t => reflection.tags.includes(t))
-          ).slice(0, 3); // Limit to 3
-
+            !r.deleted && r.id !== reflection.id && r.tags.some(t => reflection.tags.includes(t))
+          ).slice(0, 3);
           sameTagReflections.forEach(r => {
             if (!nodeMap.has(r.id)) {
               addNode(r.id, 'reflection', r.content, r);
               addEdge(reflection.id, r.id, 'same_tag', '同标签');
             }
           });
-
-          // Find linked plan item
           if (reflection.linkedPlanItemId) {
             const planItem = (store.planItems ?? []).find(i => i.id === reflection.linkedPlanItemId);
             if (planItem && !planItem.deleted) {
+              addNode(planItem.id, 'planItem', planItem.name, planItem);
+              addEdge(reflection.id, planItem.id, 'related', '相关');
               const plan = (store.plans ?? []).find(p => p.id === planItem.planId);
               if (plan && !plan.deleted) {
                 addNode(plan.id, 'plan', plan.name, plan);
-                addEdge(reflection.id, plan.id, 'related', '相关');
+                addEdge(plan.id, planItem.id, 'contains', '包含');
               }
+            }
+          }
+          const containingTrails = (store.thoughtTrails ?? []).filter(
+            t => !t.deleted && t.reflectionIds.includes(reflection.id)
+          );
+          containingTrails.forEach(trail => {
+            addNode(trail.id, 'trail', trail.name, trail);
+            addEdge(trail.id, reflection.id, 'contains', '包含');
+          });
+          break;
+        }
+        case 'trail': {
+          const trail = (store.thoughtTrails ?? []).find(t => t.id === context.id);
+          if (!trail) break;
+          const trailNode = addNode(trail.id, 'trail', trail.name, trail, VB_W / 2, VB_H / 2);
+          contextNode = trailNode;
+          (trail.reflectionIds ?? []).forEach(reflectionId => {
+            const reflection = (store.reflections ?? []).find(r => r.id === reflectionId);
+            if (reflection && !reflection.deleted) {
+              addNode(reflection.id, 'reflection', reflection.content, reflection);
+              addEdge(trail.id, reflection.id, 'contains', '包含');
+            }
+          });
+          (trail.linkedPlanItemIds ?? []).forEach(itemId => {
+            const planItem = (store.planItems ?? []).find(i => i.id === itemId);
+            if (planItem && !planItem.deleted) {
+              addNode(planItem.id, 'planItem', planItem.name, planItem);
+              addEdge(trail.id, planItem.id, 'related', '相关');
+              const plan = (store.plans ?? []).find(p => p.id === planItem.planId);
+              if (plan && !plan.deleted) {
+                addNode(plan.id, 'plan', plan.name, plan);
+                addEdge(planItem.id, plan.id, 'linked', '关联');
+              }
+            }
+          });
+          const relatedTrailIds = new Set<string>();
+          (store.thoughtTrails ?? []).forEach(t => {
+            if (t.id === trail.id || t.deleted) return;
+            if (t.reflectionIds.some(rid => trail.reflectionIds.includes(rid))) relatedTrailIds.add(t.id);
+          });
+          relatedTrailIds.forEach(tid => {
+            const t = (store.thoughtTrails ?? []).find(tt => tt.id === tid);
+            if (t && !t.deleted) {
+              addNode(t.id, 'trail', t.name, t);
+              addEdge(trail.id, t.id, 'related', '关联');
+            }
+          });
+          break;
+        }
+        case 'planItem': {
+          const planItem = (store.planItems ?? []).find(i => i.id === context.id);
+          if (!planItem || planItem.deleted) break;
+          const planItemNode = addNode(planItem.id, 'planItem', planItem.name, planItem, VB_W / 2, VB_H / 2);
+          contextNode = planItemNode;
+          const plan = (store.plans ?? []).find(p => p.id === planItem.planId);
+          if (plan && !plan.deleted) {
+            addNode(plan.id, 'plan', plan.name, plan);
+            addEdge(planItem.id, plan.id, 'linked', '关联');
+          }
+          if (planItem.reflectionId) {
+            const reflection = (store.reflections ?? []).find(r => r.id === planItem.reflectionId);
+            if (reflection && !reflection.deleted) {
+              addNode(reflection.id, 'reflection', reflection.content, reflection);
+              addEdge(reflection.id, planItem.id, 'related', '相关');
+            }
+          }
+          if (planItem.trailId) {
+            const trail = (store.thoughtTrails ?? []).find(t => t.id === planItem.trailId);
+            if (trail && !trail.deleted) {
+              addNode(trail.id, 'trail', trail.name, trail);
+              addEdge(trail.id, planItem.id, 'related', '相关');
+              (trail.reflectionIds ?? []).slice(0, 3).forEach(reflectionId => {
+                const reflection = (store.reflections ?? []).find(r => r.id === reflectionId);
+                if (reflection && !reflection.deleted) {
+                  addNode(reflection.id, 'reflection', reflection.content, reflection);
+                  addEdge(trail.id, reflection.id, 'contains', '包含');
+                }
+              });
+            }
+          }
+          if (planItem.linkConfig?.habitId) {
+            const habit = (store.habits ?? []).find(h => h.id === planItem.linkConfig!.habitId);
+            if (habit && !habit.deleted) {
+              addNode(habit.id, 'habit', habit.name, habit);
+              addEdge(habit.id, planItem.id, 'linked', '关联');
             }
           }
           break;
@@ -226,77 +345,40 @@ export default function RelationMapView() {
       }
     }
 
-    // Generate insights
-    const insights = generateInsights(nodes, edges, context?.type);
+    // Limit nodes
+    const MAX_NODES = 20;
+    if (nodes.length > MAX_NODES) {
+      const edgeCounts = new Map<string, number>();
+      edges.forEach(e => {
+        edgeCounts.set(e.from, (edgeCounts.get(e.from) ?? 0) + 1);
+        edgeCounts.set(e.to, (edgeCounts.get(e.to) ?? 0) + 1);
+      });
+      const keepIds = new Set<string>();
+      if (contextNode) keepIds.add(contextNode.id);
+      const sorted = nodes.filter(n => !keepIds.has(n.id)).sort((a, b) => (edgeCounts.get(b.id) ?? 0) - (edgeCounts.get(a.id) ?? 0));
+      sorted.slice(0, MAX_NODES - keepIds.size).forEach(n => keepIds.add(n.id));
+      nodes.splice(0, nodes.length, ...nodes.filter(n => keepIds.has(n.id)));
+      edges.splice(0, edges.length, ...edges.filter(e => keepIds.has(e.from) && keepIds.has(e.to)));
+    }
 
+    const insights = generateInsights(nodes, edges, context?.type);
     return { nodes, edges, insights, contextNode };
   }, [store, context]);
 
-  // Simple force-directed layout
+  // Sync to refs
   useEffect(() => {
-    if (nodes.length === 0) return;
-
-    const timer = setInterval(() => {
-      const centerX = SCREEN_WIDTH / 2;
-      const centerY = SCREEN_HEIGHT / 2;
-
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i];
-        let fx = 0, fy = 0;
-
-        // Repulsion from other nodes
-        for (let j = 0; j < nodes.length; j++) {
-          if (i === j) continue;
-          const other = nodes[j];
-          const dx = node.x - other.x;
-          const dy = node.y - other.y;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          const force = 1000 / (dist * dist);
-          fx += (dx / dist) * force;
-          fy += (dy / dist) * force;
-        }
-
-        // Attraction along edges
-        edges.forEach(e => {
-          let other: RelationNode | undefined;
-          if (e.from === node.id) other = nodes.find(n => n.id === e.to);
-          if (e.to === node.id) other = nodes.find(n => n.id === e.from);
-          if (other) {
-            const dx = other.x - node.x;
-            const dy = other.y - node.y;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const force = (dist - 120) * 0.008;
-            fx += (dx / dist) * force;
-            fy += (dy / dist) * force;
-          }
-        });
-
-        // Center gravity (stronger for context node)
-        const gravity = contextNode && node.id === contextNode.id ? 0.02 : 0.005;
-        fx += (centerX - node.x) * gravity;
-        fy += (centerY - node.y) * gravity;
-
-        // Update velocity
-        node.vx = (node.vx + fx) * 0.85;
-        node.vy = (node.vy + fy) * 0.85;
-
-        // Update position
-        node.x += node.vx;
-        node.y += node.vy;
-
-        // Bounds
-        node.x = Math.max(50, Math.min(SCREEN_WIDTH - 50, node.x));
-        node.y = Math.max(100, Math.min(SCREEN_HEIGHT - 150, node.y));
-      }
-    }, 50);
-
-    return () => clearInterval(timer);
+    nodesRef.current = nodes;
+    const map = new Map<string, RelationNode>();
+    nodes.forEach(n => map.set(n.id, n));
+    nodeMapRef.current = map;
+    edgesRef.current = edges;
+    contextNodeRef.current = contextNode;
   }, [nodes, edges, contextNode]);
 
-  // Handle node tap
+  // Node tap
   const handleNodeTap = useCallback((nodeId: string) => {
-    setSelectedNode(nodeId === selectedNode ? null : nodeId);
-  }, [selectedNode]);
+    setSelectedNode(nodeId === selectedNodeRef.current ? null : nodeId);
+  }, []);
 
   // Navigate to detail
   const handleNavigateToDetail = useCallback((node: RelationNode) => {
@@ -307,23 +389,181 @@ export default function RelationMapView() {
       case 'habit':
         (nav as any).navigate('HabitDetail', { habitId: node.id });
         break;
+      case 'trail':
+        (nav as any).navigate('ThoughtTrailDetail', { trailId: node.id });
+        break;
+      case 'planItem': {
+        const pi = (store.planItems ?? []).find(i => i.id === node.id);
+        if (pi) (nav as any).navigate('PlanDetail', { planId: pi.planId });
+        break;
+      }
       case 'reflection':
-        // 感念详情在当前页面展示，不需要导航
         break;
     }
-  }, [nav]);
+  }, [nav, store.planItems]);
 
-  // Get selected node details
   const selectedNodeData = useMemo(() => {
     if (!selectedNode) return null;
-    return nodes.find(n => n.id === selectedNode);
+    return nodes.find(n => n.id === selectedNode) ?? null;
   }, [selectedNode, nodes]);
 
-  // Get context title
   const contextTitle = useMemo(() => {
     if (!contextNode) return '关系全景图';
     return `${NODE_LABELS[contextNode.type]}关系`;
   }, [contextNode]);
+
+  // Force-directed simulation
+  useEffect(() => {
+    if (nodes.length === 0) return;
+    simulationRunningRef.current = true;
+    let rafId: number;
+
+    const simulate = () => {
+      if (!simulationRunningRef.current) return;
+      let totalEnergy = 0;
+      const ns = nodesRef.current;
+
+      for (let i = 0; i < ns.length; i++) {
+        const node = ns[i];
+        if (draggingNodeIdRef.current === node.id || fixedNodeIdsRef.current.has(node.id)) {
+          node.vx = 0; node.vy = 0;
+          continue;
+        }
+        let fx = 0, fy = 0;
+
+        for (let j = 0; j < ns.length; j++) {
+          if (i === j) continue;
+          const other = ns[j];
+          const dx = node.x - other.x;
+          const dy = node.y - other.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const force = 50000 / (dist * dist);
+          fx += (dx / dist) * force;
+          fy += (dy / dist) * force;
+        }
+
+        edgesRef.current.forEach(e => {
+          let other: RelationNode | undefined;
+          if (e.from === node.id) other = nodeMapRef.current.get(e.to);
+          if (e.to === node.id) other = nodeMapRef.current.get(e.from);
+          if (other) {
+            const dx = other.x - node.x;
+            const dy = other.y - node.y;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            const force = (dist - 100) * 0.05;
+            fx += (dx / dist) * force;
+            fy += (dy / dist) * force;
+          }
+        });
+
+        const gravity = contextNodeRef.current && node.id === contextNodeRef.current.id ? 0.02 : 0.01;
+        fx += (VB_W / 2 - node.x) * gravity;
+        fy += (VB_H / 2 - node.y) * gravity;
+
+        node.vx = (node.vx + fx) * 0.9;
+        node.vy = (node.vy + fy) * 0.9;
+        node.x += node.vx;
+        node.y += node.vy;
+        node.x = Math.max(50, Math.min(VB_W - 50, node.x));
+        node.y = Math.max(80, Math.min(VB_H - 100, node.y));
+        totalEnergy += Math.abs(node.vx) + Math.abs(node.vy);
+      }
+
+      if (totalEnergy < 0.5) {
+        simulationRunningRef.current = false;
+        return;
+      }
+
+      // Trigger re-render (throttled)
+      if (shouldRenderRef.current) {
+        shouldRenderRef.current = false;
+        setRenderTick(t => t + 1);
+      } else {
+        shouldRenderRef.current = true;
+      }
+      rafId = requestAnimationFrame(simulate);
+    };
+
+    rafId = requestAnimationFrame(simulate);
+    return () => cancelAnimationFrame(rafId);
+  }, [nodes, edges, contextNode]);
+
+  // Touch gesture handling (pan/pinch via native touch events on Svg background)
+  const touchState = useRef({
+    startX: 0,
+    startY: 0,
+    startPanX: 0,
+    startPanY: 0,
+    moved: false,
+    pinchActive: false,
+    pinchStartDist: 0,
+    pinchStartZoom: 1,
+  });
+
+  const handleTouchStart = useCallback((e: any) => {
+    const touches = e.nativeEvent.touches;
+    const ts = touchState.current;
+
+    // Pinch start (2+ fingers)
+    if (touches.length >= 2) {
+      const [t1, t2] = touches;
+      const dist = Math.sqrt(
+        Math.pow(t2.pageX - t1.pageX, 2) + Math.pow(t2.pageY - t1.pageY, 2)
+      );
+      ts.pinchActive = true;
+      ts.pinchStartDist = dist;
+      ts.pinchStartZoom = zoomRef.current;
+      return;
+    }
+
+    // Single finger - start pan
+    const touch = touches[0];
+    ts.startX = touch.pageX;
+    ts.startY = touch.pageY;
+    ts.startTime = Date.now();
+    ts.moved = false;
+    ts.startPanX = panOffsetRef.current.x;
+    ts.startPanY = panOffsetRef.current.y;
+    simulationRunningRef.current = true;
+  }, []);
+
+  const handleTouchMove = useCallback((e: any) => {
+    const touches = e.nativeEvent.touches;
+    const ts = touchState.current;
+
+    // Pinch zoom
+    if (touches.length >= 2 && ts.pinchActive) {
+      const [t1, t2] = touches;
+      const dist = Math.sqrt(
+        Math.pow(t2.pageX - t1.pageX, 2) + Math.pow(t2.pageY - t1.pageY, 2)
+      );
+      const newZoom = Math.max(0.5, Math.min(2.0, ts.pinchStartZoom * (dist / ts.pinchStartDist)));
+      zoomRef.current = newZoom;
+      setZoom(newZoom);
+      return;
+    }
+
+    // Single finger - pan canvas
+    if (touches.length !== 1) return;
+    const touch = touches[0];
+    const dx = touch.pageX - ts.startX;
+    const dy = touch.pageY - ts.startY;
+
+    if (!ts.moved && (dx * dx + dy * dy) > 100) {
+      ts.moved = true;
+    }
+
+    panOffsetRef.current = {
+      x: ts.startPanX + dx,
+      y: ts.startPanY + dy,
+    };
+    setPanOffset({ ...panOffsetRef.current });
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    touchState.current.pinchActive = false;
+    simulationRunningRef.current = true;
+  }, []);
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -340,82 +580,101 @@ export default function RelationMapView() {
       {contextNode && (
         <View style={[styles.contextInfo, { backgroundColor: `${contextNode.color}15`, borderColor: contextNode.color }]}>
           <Text style={styles.contextIcon}>{NODE_ICONS[contextNode.type]}</Text>
-          <Text style={[styles.contextLabel, { color: TH.text }]} numberOfLines={1}>
-            {contextNode.label}
-          </Text>
-          <Text style={[styles.contextType, { color: TH.sub }]}>
-            {NODE_LABELS[contextNode.type]}
-          </Text>
+          <Text style={[styles.contextLabel, { color: TH.text }]} numberOfLines={1}>{contextNode.label}</Text>
+          <Text style={[styles.contextType, { color: TH.sub }]}>{NODE_LABELS[contextNode.type]}</Text>
         </View>
       )}
 
-      {/* Graph Area */}
-      <View style={styles.graphContainer}>
-        {/* Edges */}
-        {edges.map((edge, idx) => {
-          const fromNode = nodes.find(n => n.id === edge.from);
-          const toNode = nodes.find(n => n.id === edge.to);
-          if (!fromNode || !toNode) return null;
+      {/* SVG Graph */}
+      <View
+        style={styles.graphContainer}
+        onLayout={(e) => {
+          containerLayoutRef.current = { w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height };
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <Svg
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${VB_W} ${VB_H}`}
+          preserveAspectRatio="xMidYMid meet"
+          pointerEvents="box-none"
+        >
+          <G transform={`translate(${panOffset.x}, ${panOffset.y}) scale(${zoom})`}>
+              {/* Edges */}
+              {edges.map((edge, idx) => {
+                const fromNode = nodeMapRef.current.get(edge.from);
+                const toNode = nodeMapRef.current.get(edge.to);
+                if (!fromNode || !toNode) return null;
+                const edgeStyle = EDGE_STYLES[edge.type as EdgeStyleType] ?? EDGE_STYLES.related;
+                const midX = (fromNode.x + toNode.x) / 2;
+                const midY = (fromNode.y + toNode.y) / 2;
+                return (
+                  <React.Fragment key={`edge-${idx}`}>
+                    <Line
+                      x1={fromNode.x} y1={fromNode.y}
+                      x2={toNode.x} y2={toNode.y}
+                      stroke={edgeStyle.color}
+                      strokeWidth={edgeStyle.thickness}
+                      strokeDasharray={DASH_PATTERNS[edgeStyle.lineStyle]}
+                    />
+                    {edgeStyle.label && (
+                      <>
+                        <Rect x={midX - 16} y={midY - 8} width={32} height={14} rx={3} fill="rgba(0,0,0,0.6)" />
+                        <SvgText x={midX} y={midY + 3} textAnchor="middle" fill={edgeStyle.color} fontSize={9} fontWeight="500">
+                          {edgeStyle.label}
+                        </SvgText>
+                      </>
+                    )}
+                  </React.Fragment>
+                );
+              })}
 
-          return (
-            <View
-              key={`edge-${idx}`}
-              style={[
-                styles.edge,
-                {
-                  left: fromNode.x,
-                  top: fromNode.y,
-                  width: Math.sqrt(
-                    Math.pow(toNode.x - fromNode.x, 2) +
-                    Math.pow(toNode.y - fromNode.y, 2)
-                  ),
-                  transform: [
-                    { rotate: `${Math.atan2(toNode.y - fromNode.y, toNode.x - fromNode.x)}rad` }
-                  ],
-                  backgroundColor: TH.border,
-                },
-              ]}
-            />
-          );
-        })}
-
-        {/* Nodes */}
-        {nodes.map(node => {
-          const isContext = contextNode && node.id === contextNode.id;
-          return (
-            <TouchableOpacity
-              key={node.id}
-              onPress={() => handleNodeTap(node.id)}
-              onLongPress={() => handleNavigateToDetail(node)}
-              style={[
-                styles.node,
-                {
-                  left: node.x - node.size / 2,
-                  top: node.y - node.size / 2,
-                  width: node.size,
-                  height: node.size,
-                  borderRadius: node.size / 2,
-                  backgroundColor: node.color,
-                  borderWidth: isContext ? 4 : selectedNode === node.id ? 3 : 0,
-                  borderColor: isContext ? '#fff' : selectedNode === node.id ? '#fff' : 'transparent',
-                  transform: isContext ? [{ scale: 1.2 }] : [],
-                },
-              ]}
-            >
-              <Text style={styles.nodeIcon}>{NODE_ICONS[node.type]}</Text>
-            </TouchableOpacity>
-          );
-        })}
-
-        {/* Zoom Controls */}
-        <View style={styles.zoomControls}>
-          <TouchableOpacity onPress={() => setZoom(z => Math.min(z + 0.2, 2))} style={styles.zoomButton}>
-            <ZoomIn size={20} color={TH.text} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setZoom(z => Math.max(z - 0.2, 0.5))} style={styles.zoomButton}>
-            <ZoomOut size={20} color={TH.text} />
-          </TouchableOpacity>
+              {/* Nodes */}
+              {nodes.map(node => {
+                const isContext = contextNode && node.id === contextNode.id;
+                const isSelected = selectedNode === node.id;
+                const r = isContext ? node.size * 0.6 : node.size / 2;
+                const hitR = r + 20;
+                const truncatedLabel = node.label.length > 8 ? node.label.slice(0, 8) + '..' : node.label;
+                return (
+                  <React.Fragment key={node.id}>
+                    {/* Invisible larger hit area */}
+                    <Circle
+                      cx={node.x} cy={node.y} r={hitR}
+                      fill="transparent"
+                      onPress={() => handleNodeTap(node.id)}
+                    />
+                    <Circle
+                      cx={node.x} cy={node.y} r={r}
+                      fill={node.color}
+                      stroke={isContext ? '#fff' : isSelected ? '#fff' : 'transparent'}
+                      strokeWidth={isContext ? 4 : isSelected ? 3 : 0}
+                      onPress={() => handleNodeTap(node.id)}
+                    />
+                    <SvgText x={node.x} y={node.y + 5} textAnchor="middle" fontSize={isContext ? 16 : 14}>
+                      {NODE_ICONS[node.type]}
+                    </SvgText>
+                    <SvgText x={node.x} y={node.y + r + 14} textAnchor="middle" fill={TH.text} fontSize={10} fontWeight="500">
+                      {truncatedLabel}
+                    </SvgText>
+                  </React.Fragment>
+                );
+              })}
+            </G>
+          </Svg>
         </View>
+
+      {/* Zoom Controls */}
+      <View style={styles.zoomControls}>
+        <TouchableOpacity onPress={() => { setZoom(z => { const n = Math.min(z + 0.2, 2); zoomRef.current = n; return n; }); }} style={styles.zoomButton}>
+          <ZoomIn size={20} color={TH.text} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => { setZoom(z => { const n = Math.max(z - 0.2, 0.5); zoomRef.current = n; return n; }); }} style={styles.zoomButton}>
+          <ZoomOut size={20} color={TH.text} />
+        </TouchableOpacity>
       </View>
 
       {/* Selected Node Detail */}
@@ -423,17 +682,10 @@ export default function RelationMapView() {
         <View style={[styles.detailPanel, { backgroundColor: TH.card, borderColor: TH.border }]}>
           <View style={styles.detailHeader}>
             <View style={[styles.detailDot, { backgroundColor: selectedNodeData.color }]} />
-            <Text style={[styles.detailType, { color: TH.sub }]}>
-              {NODE_LABELS[selectedNodeData.type]}
-            </Text>
+            <Text style={[styles.detailType, { color: TH.sub }]}>{NODE_LABELS[selectedNodeData.type]}</Text>
           </View>
-          <Text style={[styles.detailLabel, { color: TH.text }]} numberOfLines={2}>
-            {selectedNodeData.label}
-          </Text>
-          <TouchableOpacity
-            onPress={() => handleNavigateToDetail(selectedNodeData)}
-            style={[styles.detailButton, { backgroundColor: P }]}
-          >
+          <Text style={[styles.detailLabel, { color: TH.text }]} numberOfLines={2}>{selectedNodeData.label}</Text>
+          <TouchableOpacity onPress={() => handleNavigateToDetail(selectedNodeData)} style={[styles.detailButton, { backgroundColor: P }]}>
             <Text style={styles.detailButtonText}>查看详情</Text>
           </TouchableOpacity>
         </View>
@@ -441,18 +693,16 @@ export default function RelationMapView() {
 
       {/* Stats Summary */}
       <View style={[styles.statsBar, { backgroundColor: TH.card, borderColor: TH.border }]}>
-        <View style={styles.statItem}>
-          <Text style={[styles.statNumber, { color: P }]}>{nodes.filter(n => n.type === 'reflection').length}</Text>
-          <Text style={[styles.statLabel, { color: TH.sub }]}>感念</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={[styles.statNumber, { color: P }]}>{nodes.filter(n => n.type === 'plan').length}</Text>
-          <Text style={[styles.statLabel, { color: TH.sub }]}>计划</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={[styles.statNumber, { color: P }]}>{nodes.filter(n => n.type === 'habit').length}</Text>
-          <Text style={[styles.statLabel, { color: TH.sub }]}>习惯</Text>
-        </View>
+        {(['reflection', 'plan', 'habit', 'trail', 'planItem'] as NodeType[]).map(type => {
+          const count = nodes.filter(n => n.type === type).length;
+          if (count === 0) return null;
+          return (
+            <View key={type} style={styles.statItem}>
+              <Text style={[styles.statNumber, { color: NODE_COLORS[type] }]}>{count}</Text>
+              <Text style={[styles.statLabel, { color: TH.sub }]}>{NODE_LABELS[type]}</Text>
+            </View>
+          );
+        })}
       </View>
 
       {/* Insights */}
@@ -475,42 +725,38 @@ export default function RelationMapView() {
   );
 }
 
-// Generate insights from graph data
-function generateInsights(
-  nodes: RelationNode[],
-  edges: RelationEdge[],
-  contextType?: string
-): string[] {
+function generateInsights(nodes: RelationNode[], edges: RelationEdge[], contextType?: string): string[] {
   const insights: string[] = [];
 
-  // Context-specific insights
   if (contextType === 'plan') {
-    const reflectionNodes = nodes.filter(n => n.type === 'reflection');
-    if (reflectionNodes.length > 0) {
-      insights.push(`关联了 ${reflectionNodes.length} 条感念`);
-    }
-    const habitNodes = nodes.filter(n => n.type === 'habit');
-    if (habitNodes.length > 0) {
-      insights.push(`关联了 ${habitNodes.length} 个习惯`);
-    }
+    const rc = nodes.filter(n => n.type === 'reflection').length;
+    if (rc > 0) insights.push(`关联了 ${rc} 条感念`);
+    const hc = nodes.filter(n => n.type === 'habit').length;
+    if (hc > 0) insights.push(`关联了 ${hc} 个习惯`);
   }
-
   if (contextType === 'habit') {
-    const reflectionNodes = nodes.filter(n => n.type === 'reflection');
-    if (reflectionNodes.length > 0) {
-      insights.push(`有 ${reflectionNodes.length} 条相关感念`);
-    }
-    const planNodes = nodes.filter(n => n.type === 'plan');
-    if (planNodes.length > 0) {
-      insights.push(`关联了 ${planNodes.length} 个计划`);
-    }
+    const rc = nodes.filter(n => n.type === 'reflection').length;
+    if (rc > 0) insights.push(`有 ${rc} 条相关感念`);
+    const pc = nodes.filter(n => n.type === 'plan').length;
+    if (pc > 0) insights.push(`关联了 ${pc} 个计划`);
   }
-
   if (contextType === 'reflection') {
-    const linkEdges = edges.filter(e => e.type === 'same_tag');
-    if (linkEdges.length > 0) {
-      insights.push(`有 ${linkEdges.length} 条同标签感念`);
-    }
+    const lc = edges.filter(e => e.type === 'same_tag').length;
+    if (lc > 0) insights.push(`有 ${lc} 条同标签感念`);
+  }
+  if (contextType === 'trail') {
+    const rc = nodes.filter(n => n.type === 'reflection').length;
+    if (rc > 0) insights.push(`包含 ${rc} 条感念`);
+    const pc = nodes.filter(n => n.type === 'planItem').length;
+    if (pc > 0) insights.push(`关联了 ${pc} 个计划任务`);
+    const tc = nodes.filter(n => n.type === 'trail').length;
+    if (tc > 0) insights.push(`发现 ${tc} 条关联脉络`);
+  }
+  if (contextType === 'planItem') {
+    const types = new Set(nodes.filter(n => n.type !== 'planItem').map(n => n.type));
+    if (types.size > 0) insights.push(`关联了 ${types.size} 种实体类型`);
+    const total = nodes.filter(n => n.type !== 'planItem').length;
+    if (total > 0) insights.push(`共 ${total} 个关联节点`);
   }
 
   return insights.slice(0, 3);
@@ -545,38 +791,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  contextIcon: {
-    fontSize: 18,
-  },
-  contextLabel: {
-    fontSize: FONT_BODY,
-    fontWeight: '600',
-    flex: 1,
-  },
-  contextType: {
-    fontSize: FONT_SMALL,
-  },
+  contextIcon: { fontSize: 18 },
+  contextLabel: { fontSize: FONT_BODY, fontWeight: '600', flex: 1 },
+  contextType: { fontSize: FONT_SMALL },
   graphContainer: {
     flex: 1,
     position: 'relative',
-  },
-  edge: {
-    position: 'absolute',
-    height: 2,
-    transformOrigin: '0 0',
-  },
-  node: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  nodeIcon: {
-    fontSize: 14,
+    overflow: 'hidden',
   },
   zoomControls: {
     position: 'absolute',
@@ -599,7 +820,7 @@ const styles = StyleSheet.create({
   },
   detailPanel: {
     position: 'absolute',
-    bottom: 120,
+    bottom: 200,
     left: 16,
     right: 16,
     padding: 16,
@@ -617,68 +838,23 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
-  detailDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  detailType: {
-    fontSize: FONT_SMALL,
-  },
-  detailLabel: {
-    fontSize: FONT_BODY,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  detailButton: {
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  detailButtonText: {
-    color: '#fff',
-    fontSize: FONT_SMALL,
-    fontWeight: '600',
-  },
+  detailDot: { width: 10, height: 10, borderRadius: 5 },
+  detailType: { fontSize: FONT_SMALL },
+  detailLabel: { fontSize: FONT_BODY, fontWeight: '600', marginBottom: 12 },
+  detailButton: { paddingVertical: 8, borderRadius: 8, alignItems: 'center' },
+  detailButtonText: { color: '#fff', fontSize: FONT_SMALL, fontWeight: '600' },
   statsBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 12,
     borderTopWidth: 1,
   },
-  statItem: {
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: FONT_BODY,
-    fontWeight: '700',
-  },
-  statLabel: {
-    fontSize: FONT_TINY,
-    marginTop: 2,
-  },
-  insightsPanel: {
-    padding: 12,
-    borderTopWidth: 1,
-  },
-  insightsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 8,
-  },
-  insightsTitle: {
-    fontSize: FONT_SMALL,
-    fontWeight: '600',
-  },
-  insightCard: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    marginRight: 8,
-  },
-  insightText: {
-    fontSize: FONT_SMALL,
-  },
+  statItem: { alignItems: 'center' },
+  statNumber: { fontSize: FONT_BODY, fontWeight: '700' },
+  statLabel: { fontSize: FONT_TINY, marginTop: 2 },
+  insightsPanel: { padding: 12, borderTopWidth: 1 },
+  insightsHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
+  insightsTitle: { fontSize: FONT_SMALL, fontWeight: '600' },
+  insightCard: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, borderWidth: 1, marginRight: 8 },
+  insightText: { fontSize: FONT_SMALL },
 });

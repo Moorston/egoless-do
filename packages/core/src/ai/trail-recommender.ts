@@ -205,7 +205,8 @@ export async function recommendTrailsViaAI(
   const validReflections = reflections.filter(r => !r.deleted);
   if (validReflections.length < 3) return [];
 
-  const cacheKey = generateCacheKey(query || '', validReflections.map(r => r.id));
+  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const cacheKey = generateCacheKey(query || '', dataFingerprint);
   const cached = recommendCache.get(cacheKey);
   if (cached) return cached;
 
@@ -259,7 +260,8 @@ export async function matchReflectionsToTopic(
   const validReflections = reflections.filter(r => !r.deleted);
   if (validReflections.length < 2) return [];
 
-  const cacheKey = generateCacheKey(topic, validReflections.map(r => r.id));
+  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const cacheKey = generateCacheKey(topic, dataFingerprint);
   const cached = matchCache.get(cacheKey);
   if (cached) return cached;
 
@@ -315,7 +317,8 @@ export async function semanticSearchReflections(
   const validReflections = reflections.filter(r => !r.deleted);
   if (validReflections.length < 2) return [];
 
-  const cacheKey = generateCacheKey(`semantic:${query}`, validReflections.map(r => r.id));
+  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const cacheKey = generateCacheKey(`semantic:${query}`, dataFingerprint);
   const cached = semanticCache.get(cacheKey);
   if (cached) return cached;
 
@@ -399,7 +402,8 @@ export async function parseSmartQuery(
     return { ...FALLBACK_RESULT, topic: input };
   }
 
-  const cacheKey = generateCacheKey(input, validReflections.map(r => r.id));
+  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const cacheKey = generateCacheKey(input, dataFingerprint);
   const cached = queryCache.get(cacheKey);
   if (cached) return cached;
 

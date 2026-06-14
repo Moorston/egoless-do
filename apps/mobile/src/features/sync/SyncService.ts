@@ -417,6 +417,7 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       // Only include reflection_id when server sends it, to preserve local value
       if (r.reflectionId !== undefined) row.reflection_id = r.reflectionId;
       row.frequency = r.frequency ? safeJson(r.frequency) : null;
+      row.tags = r.tags ? safeJson(r.tags) : null;
       return row;
     }
     case 'planItemCheckin':

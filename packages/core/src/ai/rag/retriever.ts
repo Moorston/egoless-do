@@ -19,7 +19,7 @@ const WEIGHTS = {
 const TIME_DECAY_HALF_LIFE = 30 * 86400000;
 
 // ─── 语义同义词表 ──────────────────────────────────────────────
-const SYNONYM_MAP: Record<string, string[]> = {
+export const SYNONYM_MAP: Record<string, string[]> = {
   // 情绪类
   '焦虑': ['紧张', '不安', '担心', '忧虑', '压力', '压力大', '睡不着', '失眠', '烦躁', '恐慌'],
   '开心': ['高兴', '快乐', '愉快', '喜悦', '满足', '幸福', '不错', '很好', '挺好', '棒'],
@@ -53,7 +53,7 @@ for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
 /**
  * 扩展查询词：将查询中的词替换/扩展为包含同义词
  */
-function expandTerms(terms: string[]): string[] {
+export function expandTerms(terms: string[]): string[] {
   const expanded = new Set<string>(terms);
   for (const term of terms) {
     // 如果是某个主词的同义词，加入主词和所有同义词

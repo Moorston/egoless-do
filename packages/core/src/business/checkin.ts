@@ -99,6 +99,7 @@ export interface ParsedCheckinNote {
   userNote: string;
   practices: string[];
   customs: string[];
+  planItems: string[];
   fasted: boolean;
   waterMl: number;
   habits: string[];
@@ -109,7 +110,7 @@ export interface ParsedCheckinNote {
 
 /** Parse checkin note from JSON or legacy format */
 export function parseCheckinNote(raw: string): ParsedCheckinNote {
-  if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [], food: 0, incompleteReason: '', incompleteNote: '' };
+  if (!raw) return { userNote: '', practices: [], customs: [], planItems: [], fasted: false, waterMl: 0, habits: [], food: 0, incompleteReason: '', incompleteNote: '' };
   
   try {
     const data = JSON.parse(raw);
@@ -118,6 +119,7 @@ export function parseCheckinNote(raw: string): ParsedCheckinNote {
         userNote: data.note ?? '',
         practices: data.practices ?? [],
         customs: data.customs ?? [],
+        planItems: data.planItems ?? [],
         fasted: !!data.fasted,
         waterMl: typeof data.water === 'number' ? data.water : 0,
         habits: data.habits ?? [],
@@ -148,5 +150,5 @@ export function parseCheckinNote(raw: string): ParsedCheckinNote {
     }
   }
   
-  return { userNote: noteParts.join(' · '), practices, customs, fasted: false, waterMl: 0, habits: [], food: 0, incompleteReason: '', incompleteNote: '' };
+  return { userNote: noteParts.join(' · '), practices, customs, planItems: [], fasted: false, waterMl: 0, habits: [], food: 0, incompleteReason: '', incompleteNote: '' };
 }

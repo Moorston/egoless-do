@@ -156,22 +156,32 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     return { items: all.slice(0, 3), total: all.length };
   }, [store.reflections, plan, planItemIds]);
 
-  // Pre-build reflectionId→planItemId index for O(1) trail lookup
+  // Find related trails: direct trailId first, then reflection-based fallback
   const relatedTrails = useMemo(() => {
     if (!plan) return [];
+    const trailIds = new Set<string>();
+    // Direct: items with trailId
+    for (const item of items) {
+      if (item.trailId) trailIds.add(item.trailId);
+    }
+    // Indirect: via reflection chain
     const reflectionIdToPlanItemId = new Map<string, string>();
     for (const r of (store.reflections ?? [])) {
       if (!r.deleted && r.linkedPlanItemId) {
         reflectionIdToPlanItemId.set(r.id, r.linkedPlanItemId);
       }
     }
-    return (store.thoughtTrails ?? []).filter(t =>
-      !t.deleted && t.reflectionIds.some(rid => {
+    for (const t of (store.thoughtTrails ?? [])) {
+      if (t.deleted || trailIds.has(t.id)) continue;
+      if (t.reflectionIds.some(rid => {
         const linkedItemId = reflectionIdToPlanItemId.get(rid);
         return linkedItemId != null && planItemIds.has(linkedItemId);
-      })
-    ).slice(0, 2);
-  }, [store.reflections, store.thoughtTrails, plan, planItemIds]);
+      })) {
+        trailIds.add(t.id);
+      }
+    }
+    return (store.thoughtTrails ?? []).filter(t => trailIds.has(t.id)).slice(0, 2);
+  }, [items, store.reflections, store.thoughtTrails, plan, planItemIds]);
 
   if (!plan) {
     return (
@@ -198,6 +208,17 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     if (item.status === 'in_progress' && item.endDate < today) return 'delayed';
     return item.status;
   };
+
+  const sortedItems = useMemo(() => {
+    const order: Record<string, number> = { delayed: 0, in_progress: 1, not_started: 2, completed: 3 };
+    return [...items].sort((a, b) => {
+      const oa = order[getItemEffectiveStatus(a)] ?? 9;
+      const ob = order[getItemEffectiveStatus(b)] ?? 9;
+      if (oa !== ob) return oa - ob;
+      if (a.startDate !== b.startDate) return a.startDate.localeCompare(b.startDate);
+      return a.endDate.localeCompare(b.endDate);
+    });
+  }, [items, today]);
 
   const checkCanArchive = (onConfirm: () => void) => {
     const result = store.canArchivePlan(plan.id);
@@ -287,7 +308,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
           <Card>
             {/* Plan name with icon */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <ClipboardList size={20} color={P} />
+              <ClipboardList size={18} color={P} />
               <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, flex: 1 }} numberOfLines={1}>{plan.name}</Text>
               <StatusLabel status={plan.status} T={T} />
             </View>
@@ -328,9 +349,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
           {/* Goal */}
           <Card>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-              <Target size={14} color={P} />
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.sub }}>{T('planGoal')}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <Target size={18} color={P} />
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planGoal')}</Text>
             </View>
             <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 22 }}>{plan.goal}</Text>
           </Card>
@@ -338,22 +359,22 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
           {/* Items */}
           <Card>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <ListChecks size={16} color={P} />
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('planItems')}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <ListChecks size={18} color={P} />
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planItems')}</Text>
               </View>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{items.length}</Text>
             </View>
             {items.length === 0 ? (
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</Text>
             ) : (
-              items.map((item, idx) => {
+              sortedItems.map((item, idx) => {
                 const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, progress: 0 };
                 const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
                 const effectiveStatus = getItemEffectiveStatus(item);
                 return (
                   <View key={item.id} style={{
-                    padding: 12, marginBottom: idx < items.length - 1 ? 8 : 0, borderRadius: 10,
+                    padding: 12, marginBottom: idx < sortedItems.length - 1 ? 8 : 0, borderRadius: 10,
                     backgroundColor: `${TH.card}80`, borderWidth: 1, borderColor: TH.border,
                   }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
@@ -367,6 +388,15 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                     </Text>
                     {item.targetMetric ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }} numberOfLines={1}>🎯 {item.targetMetric}</Text> : null}
                     {item.description ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }} numberOfLines={2}>{item.description}</Text> : null}
+                    {item.tags && item.tags.length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+                        {item.tags.map((tag, ti) => (
+                          <View key={ti} style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}>
+                            <Text style={{ fontSize: FONT_BADGE, color: P }}>{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                       <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
                         <View style={{ height: 4, width: `${prog.progress}%`, backgroundColor: P, borderRadius: 2 }} />
@@ -383,8 +413,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                       onPress={() => toggleHeatmap(item.id)}
                       style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8 }}
                     >
-                      <BarChart2 size={14} color={TH.sub} />
-                      <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
+                      <BarChart2 size={14} color={P} />
+                      <Text style={{ fontSize: FONT_BADGE, color: P }}>
                         {expandedHeatmaps.has(item.id) ? T('planHideHeatmap') : T('planShowHeatmap')}
                       </Text>
                       {expandedHeatmaps.has(item.id)
@@ -413,9 +443,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 style={{ flexDirection: 'row', alignItems: 'center' }}
               >
                 <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <Link2 size={14} color={P} />
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('planLinkedContent')}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <Link2 size={18} color={P} />
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planLinkedContent')}</Text>
                   </View>
                   <View style={{ flexDirection: 'row', gap: 16 }}>
                     {relatedReflections.total > 0 && (
@@ -488,13 +518,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
           {/* Relation Map Entry */}
           <TouchableOpacity
             onPress={() => nav.navigate('RelationMap' as never, { context: { type: 'plan', id: planId } } as never)}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16, backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }}
           >
-            <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: `${P}20`, alignItems: 'center', justifyContent: 'center' }}>
-              <Link size={20} color={P} />
-            </View>
+            <Link size={18} color={P} />
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('planRelationMap')}</Text>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planRelationMap')}</Text>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planRelationMapDesc')}</Text>
             </View>
             <ChevronRight size={18} color={TH.sub} />
@@ -506,7 +534,10 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
               onPress={() => setShowHeatmap(v => !v)}
               style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
             >
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('planHeatmap')}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <BarChart2 size={18} color={P} />
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planHeatmap')}</Text>
+              </View>
               {showHeatmap
                 ? <ChevronDown size={18} color={TH.sub} />
                 : <ChevronRight size={18} color={TH.sub} />}
@@ -541,9 +572,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                   <>
                     {/* Plan items group header */}
                     {todayItems.length > 0 && (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8, paddingHorizontal: 12 }}>
-                        <ClipboardList size={14} color={TH.sub} />
-                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.sub }}>{T('planTodoList')} ({todayItems.length})</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 }}>
+                        <ClipboardList size={14} color={P} />
+                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T('planTodoList')} ({todayItems.length})</Text>
                       </View>
                     )}
                     {todayItems.map((item, i, arr) => {
@@ -599,9 +630,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
                     {/* Custom todos group header */}
                     {dailyCustomTodos.length > 0 && (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8, paddingHorizontal: 12, borderTopWidth: todayItems.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
-                        <Pencil size={14} color={TH.sub} />
-                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.sub }}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12, borderTopWidth: todayItems.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
+                        <Pencil size={14} color={P} />
+                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
                       </View>
                     )}
                     {/* Custom todos */}

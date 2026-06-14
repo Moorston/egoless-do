@@ -109,7 +109,7 @@ export default function StatsScreen() {
 
   // ── Plan stats ──
   const plans = store.plans ?? [];
-  const planItems = store.planItems ?? [];
+  const planItems = (store.planItems ?? []).filter(i => !i.deleted);
   const activePlans = plans.filter(p => p.status === 'in_progress');
   const totalPlanTasks = planItems.length;
   const completedPlanTasks = planItems.filter(i => i.status === 'completed').length;

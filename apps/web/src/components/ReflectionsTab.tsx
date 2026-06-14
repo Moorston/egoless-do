@@ -800,9 +800,9 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
               />
             </div>
             
-            {/* 任务指标（必填） */}
+            {/* 任务目标（必填） */}
             <div style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>任务指标 *</div>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>任务目标 *</div>
               <input 
                 type="text" 
                 value={planItemTargetMetric} 
@@ -875,7 +875,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
                     return;
                   }
                   if (!planItemTargetMetric.trim()) {
-                    alert('请输入任务指标');
+                    alert('请输入任务目标');
                     return;
                   }
                   const success = store.createPlanItemFromReflection(

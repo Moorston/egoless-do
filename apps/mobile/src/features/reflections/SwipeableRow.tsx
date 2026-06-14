@@ -1,15 +1,15 @@
 import React, { useRef, useCallback } from 'react';
 import { Animated, PanResponder, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { Trash2 } from 'lucide-react-native';
 
 interface SwipeableRowProps {
   children: React.ReactNode;
   onDelete: () => void;
-  deleteLabel?: string;
 }
 
 const SWIPE_THRESHOLD = -80;
 
-export function SwipeableRow({ children, onDelete, deleteLabel = '删除' }: SwipeableRowProps) {
+export function SwipeableRow({ children, onDelete }: SwipeableRowProps) {
   const translateX = useRef(new Animated.Value(0)).current;
 
   const panResponder = useRef(
@@ -17,13 +17,13 @@ export function SwipeableRow({ children, onDelete, deleteLabel = '删除' }: Swi
       onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 10 && Math.abs(g.dx) > Math.abs(g.dy),
       onPanResponderMove: (_, g) => {
         if (g.dx < 0) {
-          translateX.setValue(Math.max(g.dx, -120));
+          translateX.setValue(Math.max(g.dx, -100));
         }
       },
       onPanResponderRelease: (_, g) => {
         if (g.dx < SWIPE_THRESHOLD) {
           Animated.spring(translateX, {
-            toValue: -100,
+            toValue: -80,
             useNativeDriver: true,
             friction: 10,
           }).start();
@@ -59,7 +59,8 @@ export function SwipeableRow({ children, onDelete, deleteLabel = '删除' }: Swi
     <View style={styles.container}>
       <View style={styles.deleteContainer}>
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.deleteText}>{deleteLabel}</Text>
+          <Trash2 size={20} color="#fff" />
+          <Text style={styles.deleteText}>删除</Text>
         </TouchableOpacity>
       </View>
       <Animated.View
@@ -82,19 +83,22 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    width: 100,
+    width: 80,
     justifyContent: 'center',
     alignItems: 'center',
   },
   deleteButton: {
     backgroundColor: '#EF4444',
-    borderRadius: 8,
-    paddingVertical: 8,
+    borderRadius: 12,
+    paddingVertical: 12,
     paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
   },
   deleteText: {
     color: '#fff',
-    fontWeight: '600',
-    fontSize: 14,
+    fontWeight: '500',
+    fontSize: 12,
   },
 });
