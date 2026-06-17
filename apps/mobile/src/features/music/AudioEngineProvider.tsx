@@ -40,23 +40,25 @@ export function AudioEngineProvider({ children }: { children: React.ReactNode })
     player.loop = loop;
   }, [player, loop]);
 
-  useEffect(() => {
-    if (!currentTrack) return;
-    if (isPlaying) {
-      player.play();
-    } else {
-      if (player.playing) player.pause();
-    }
-  }, [isPlaying, currentTrack, player]);
-
+  // Unified play/pause/track-change effect — avoids double play() on track switch
   const prevTrackRef = useRef<MusicTrack | null>(null);
   useEffect(() => {
-    if (currentTrack && currentTrack.id !== prevTrackRef.current?.id) {
-      player.seekTo(0);
-      if (isPlaying) player.play();
+    if (!currentTrack) {
+      if (player.playing) player.pause();
+      prevTrackRef.current = null;
+      return;
     }
+    const trackChanged = currentTrack.id !== prevTrackRef.current?.id;
     prevTrackRef.current = currentTrack;
-  }, [currentTrack, player, isPlaying]);
+    if (trackChanged) {
+      player.seekTo(0);
+    }
+    if (isPlaying) {
+      player.play();
+    } else if (player.playing) {
+      player.pause();
+    }
+  }, [isPlaying, currentTrack, player]);
 
   return <>{children}</>;
 }

@@ -5,12 +5,13 @@ import { setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDat
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice, ThoughtTrailSlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice,
 } from '@egoless-do/core';
 import {
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice,
+  createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice,
 } from '@egoless-do/core';
 
 // Configure API base (empty = same origin)
@@ -24,7 +25,8 @@ const noopAdapter = {
 
 export type WebStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice
+  & { resetData: () => void };
 
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
@@ -47,6 +49,10 @@ export const useWebStore = create<WebStore>()(
       ...createPlanSlice(noopAdapter)(...a),
       ...createRecycleBinSlice(noopAdapter)(...a),
       ...createThoughtTrailSlice()(...a),
+      ...createTrailNoteSlice(noopAdapter)(...a),
+      ...createReflectionLinkSlice(noopAdapter)(...a),
+      ...createAISlice()( ...a),
+      ...createReviewSlice(noopAdapter, triggerAutoSync)(...a),
       resetData() {
         const [set, get] = a;
         const { auth, theme, language } = get();

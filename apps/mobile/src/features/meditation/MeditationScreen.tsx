@@ -13,6 +13,7 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Globe, Binary, ChevronRight } from 'lucide-react-native';
 import { useMusicStore } from '../music/useMusicStore';
+import { audioSessionManager } from '../music/AudioSessionManager';
 import MusicPickerModal from '../music/MusicPickerModal';
 import MeditationMusicBar from './MeditationMusicBar';
 
@@ -31,9 +32,10 @@ export default function MeditationScreen() {
   const [showShare, setShowShare]   = useState(false);
   const [showMusicPicker, setShowMusicPicker] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<MusicTrack | null>(null);
-  const timerRef     = useRef<ReturnType<typeof setInterval> | null>(null);
-  const completedRef = useRef(false);
-  const shareCardRef = useRef<ViewShot>(null);
+  const timerRef        = useRef<ReturnType<typeof setInterval> | null>(null);
+  const completedRef    = useRef(false);
+  const shareCardRef    = useRef<ViewShot>(null);
+  const musicStartedRef = useRef(false);
 
   const targetSec = durMin * 60;
   const remaining = targetSec - sec;
@@ -44,6 +46,7 @@ export default function MeditationScreen() {
   const musicPlay = useMusicStore(s => s.play);
   const musicPause = useMusicStore(s => s.pause);
   const musicStop = useMusicStore(s => s.stop);
+  const musicIsPlaying = useMusicStore(s => s.isPlaying);
 
   // Bell sound player (one-shot, 50% volume)
   const bellPlayer = useAudioPlayer(BELL_FILE);
@@ -67,10 +70,14 @@ export default function MeditationScreen() {
     } catch {}
   }, [bellPlayer]);
 
-  // Cleanup timer on unmount
+  // Cleanup timer + music on unmount
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current);
-  }, []);
+    if (musicStartedRef.current) {
+      musicStop();
+      audioSessionManager.notifyStopped('music');
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (active) {
@@ -86,10 +93,16 @@ export default function MeditationScreen() {
     };
   }, [active]);
 
-  // Start music when meditation begins
+  // Start music when meditation begins — route through AudioSessionManager
   useEffect(() => {
     if (active && selectedTrack) {
-      musicPlay(selectedTrack);
+      const allowed = audioSessionManager.requestPlay('music');
+      if (allowed) {
+        musicStartedRef.current = true;
+        musicPlay(selectedTrack);
+      } else {
+        musicStartedRef.current = false;
+      }
     }
   }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -103,7 +116,11 @@ export default function MeditationScreen() {
         completedRef.current = true;
         addMedMinutes(durMin);
       }
-      musicStop();
+      if (musicStartedRef.current) {
+        musicStop();
+        audioSessionManager.notifyStopped('music');
+        musicStartedRef.current = false;
+      }
       playBell();
     }
   }, [sec, active, targetSec, durMin, addMedMinutes, playBell, musicStop]);
@@ -115,7 +132,11 @@ export default function MeditationScreen() {
       if (elapsedMin > 0) store.addMedMinutes(elapsedMin);
     }
     setActive(false);
-    musicStop();
+    if (musicStartedRef.current) {
+      musicStop();
+      audioSessionManager.notifyStopped('music');
+      musicStartedRef.current = false;
+    }
     playBell();
   };
 
@@ -127,12 +148,14 @@ export default function MeditationScreen() {
   const handleMusicPickerClose = useCallback(() => {
     // Pause preview music, keep selectedTrack for display
     musicPause();
+    audioSessionManager.notifyStopped('music');
     setShowMusicPicker(false);
   }, [musicPause]);
 
   const handleSelectNoMusic = useCallback(() => {
     setSelectedTrack(null);
     musicStop();
+    audioSessionManager.notifyStopped('music');
     setShowMusicPicker(false);
   }, [musicStop]);
 
@@ -199,7 +222,7 @@ export default function MeditationScreen() {
           {active ? (
             <View style={{ alignItems:'center' }}>
               {/* Music display during meditation — non-interactive */}
-              <MeditationMusicBar track={selectedTrack} isActive isPlaying={!!selectedTrack} primaryColor={P} />
+              <MeditationMusicBar track={selectedTrack} isActive isPlaying={musicIsPlaying} primaryColor={P} />
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
                 <Text style={{ fontSize:FONT_HERO, fontWeight:'800', color:P, letterSpacing:2 }}>
                   {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}

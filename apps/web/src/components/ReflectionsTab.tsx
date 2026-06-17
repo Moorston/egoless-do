@@ -752,7 +752,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
                   style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(255,255,255,.25)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
                   {T('reflEditTitle')}
                 </button>
-                <button onClick={() => { store.updateReflection(r.id, { isPinned: !r.isPinned }); }}
+                <button onClick={() => { store.togglePin(r.id); }}
                   style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(255,255,255,.25)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
                   {r.isPinned ? '取消置顶' : '置顶'}
                 </button>

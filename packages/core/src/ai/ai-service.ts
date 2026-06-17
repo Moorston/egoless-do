@@ -323,7 +323,7 @@ ${items.map(r => {
     options?: { useCloud?: boolean; preferredModelId?: string }
   ): Promise<ReviewGuide> {
     const localGuide: ReviewGuide = {
-      questions: ['这周整体感觉如何？', '有什么特别的时刻吗？', '下周想继续保持什么？'],
+      perspectives: ['这周整体感觉如何？', '有什么特别的时刻吗？', '下周想继续保持什么？'],
       observations: [`这周记录了 ${weekReflections.length} 条感念`],
       suggestions: [],
     };

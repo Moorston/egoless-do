@@ -366,7 +366,7 @@ function calculateMetrics(
   
   // 冥想
   const medInRange = medHistory.filter(m => {
-    const date = new Date(m.timestamp || 0).toISOString().slice(0, 10);
+    const date = m.date || new Date(0).toISOString().slice(0, 10);
     return date >= startDate && date <= endDate && !m.deleted;
   });
   const totalMeditationMin = medInRange.length > 0 ? medInRange.reduce((a, b) => {

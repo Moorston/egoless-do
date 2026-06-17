@@ -18,19 +18,19 @@ source .env.production
 
 # 停止旧容器
 echo "⏹  停止旧容器..."
-docker-compose down
+docker compose down
 
 # 拉取最新镜像
 echo "📥 拉取最新镜像..."
-docker-compose pull
+docker compose pull
 
 # 构建 Web 应用
 echo "🔨 构建 Web 应用..."
-docker-compose build --no-cache web
+docker compose build --no-cache web
 
 # 启动服务
 echo "▶️  启动服务..."
-docker-compose --env-file .env.production up -d
+docker compose --env-file .env.production up -d
 
 # 等待服务启动
 echo "⏳ 等待服务启动..."
@@ -38,7 +38,7 @@ sleep 10
 
 # 检查服务状态
 echo "📊 服务状态："
-docker-compose ps
+docker compose ps
 
 # 检查健康状态
 echo ""
