@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EXERCISE_SOUNDS } from '@egoless-do/core';
-import { useMusicStore } from '../../music/useMusicStore';
+import { audioSessionManager } from '../../music/AudioSessionManager';
 
 const SOUND_FILES: Record<string, number> = {
   '海潮': require('../../../../assets/sounds/ocean.mp3'),
@@ -18,17 +18,13 @@ export function useExerciseAudio() {
   const [selectedSound, setSelectedSound] = useState<string>('无');
   const [showSoundPicker, setShowSoundPicker] = useState(false);
 
-  // 音乐 store（用于从音乐库播放的背景音乐）
-  const musicCurrentTrack = useMusicStore(s => s.currentTrack);
-  const musicIsPlaying = useMusicStore(s => s.isPlaying);
-
-  // 环境音播放器（保留给 ExerciseTopBar 的音效选择器）
+  // 环境音播放器
   const bgSource = SOUND_FILES[selectedSound];
   const bgPlayer = useAudioPlayer(bgSource ?? undefined);
   bgPlayer.loop = true;
   bgPlayer.volume = 0.25;
 
-  // 钟声播放器（独立，不受音乐模块影响）
+  // 钟声播放器（独立，不受管理器影响）
   const bellPlayer = useAudioPlayer(BELL_FILE);
   bellPlayer.volume = 0.5;
 
@@ -45,13 +41,6 @@ export function useExerciseAudio() {
     AsyncStorage.setItem('sport_selected_sound', selectedSound).catch(() => {});
   }, [selectedSound]);
 
-  // 如果音乐模块正在播放，暂停环境音
-  useEffect(() => {
-    if (musicCurrentTrack && musicIsPlaying) {
-      if (bgPlayer.playing) bgPlayer.pause();
-    }
-  }, [musicCurrentTrack, musicIsPlaying, bgPlayer]);
-
   const playBell = useCallback(() => {
     bellPlayer.seekTo(0);
     bellPlayer.play();
@@ -59,14 +48,28 @@ export function useExerciseAudio() {
 
   const selectSound = useCallback((key: string) => {
     setSelectedSound(key);
-    // 如果音乐模块正在播放，先停止音乐
-    if (key !== '无' && musicCurrentTrack) {
-      useMusicStore.getState().stop();
+
+    if (key === '无') {
+      bgPlayer.pause();
+      audioSessionManager.notifyStopped('ambient');
+    } else {
+      // 通过管理器请求播放环境音（会自动暂停音乐）
+      const allowed = audioSessionManager.requestPlay('ambient');
+      if (allowed) {
+        bgPlayer.play();
+      }
     }
-    if (key === '无') { bgPlayer.pause(); }
-    else { bgPlayer.play(); }
     setShowSoundPicker(false);
-  }, [bgPlayer, musicCurrentTrack]);
+  }, [bgPlayer]);
+
+  // 环境音停止时通知管理器
+  useEffect(() => {
+    return () => {
+      if (selectedSound !== '无') {
+        audioSessionManager.notifyStopped('ambient');
+      }
+    };
+  }, [selectedSound]);
 
   const cycleSound = useCallback(() => {
     const idx = EXERCISE_SOUNDS.findIndex(s => s.key === selectedSound);

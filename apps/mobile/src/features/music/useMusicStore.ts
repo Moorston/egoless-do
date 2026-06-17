@@ -30,6 +30,8 @@ interface MusicState {
   isPlaying: boolean;
   volume: number;
   loop: boolean;
+  currentTime: number;
+  duration: number;
 
   play: (track: MusicTrack) => void;
   pause: () => void;
@@ -38,6 +40,8 @@ interface MusicState {
   setVolume: (v: number) => void;
   toggleLoop: () => void;
   setIsPlaying: (v: boolean) => void;
+  setCurrentTime: (v: number) => void;
+  setDuration: (v: number) => void;
   addUserTrack: (name: string, uri: string) => Promise<void>;
   removeUserTrack: (id: string) => Promise<void>;
   loadUserTracks: () => Promise<void>;
@@ -55,52 +59,64 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   isPlaying: false,
   volume: 0.3,
   loop: true,
+  currentTime: 0,
+  duration: 0,
 
-  play: (track) => set({ currentTrack: track, isPlaying: true }),
+  play: (track) => set({ currentTrack: track, isPlaying: true, currentTime: 0 }),
   pause: () => set({ isPlaying: false }),
   resume: () => set({ isPlaying: true }),
   stop: () => set({ currentTrack: null, isPlaying: false }),
   setVolume: (v) => set({ volume: v }),
   toggleLoop: () => set(s => ({ loop: !s.loop })),
   setIsPlaying: (v) => set({ isPlaying: v }),
+  setCurrentTime: (v) => set({ currentTime: v }),
+  setDuration: (v) => set({ duration: v }),
 
   addUserTrack: async (name, uri) => {
-    // 确保目录存在
-    const dirInfo = await FileSystem.getInfoAsync(USER_MUSIC_DIR);
-    if (!dirInfo.exists) {
-      await FileSystem.makeDirectoryAsync(USER_MUSIC_DIR, { intermediates: true });
+    try {
+      // 确保目录存在
+      const dirInfo = await FileSystem.getInfoAsync(USER_MUSIC_DIR);
+      if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(USER_MUSIC_DIR, { intermediates: true });
+      }
+      // 生成唯一文件名
+      const ext = name.split('.').pop() ?? 'mp3';
+      const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const destUri = `${USER_MUSIC_DIR}${id}.${ext}`;
+      await FileSystem.copyAsync({ from: uri, to: destUri });
+
+      const track: MusicTrack = {
+        id,
+        name: name.replace(/\.[^.]+$/, ''),
+        nameEn: name.replace(/\.[^.]+$/, ''),
+        category: 'user',
+        uri: destUri,
+      };
+
+      const updated = [...get().userTracks, track];
+      set({ userTracks: updated });
+      await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {
+      console.error('添加用户音乐失败:', e);
     }
-    // 生成唯一文件名
-    const ext = name.split('.').pop() ?? 'mp3';
-    const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const destUri = `${USER_MUSIC_DIR}${id}.${ext}`;
-    await FileSystem.copyAsync({ from: uri, to: destUri });
-
-    const track: MusicTrack = {
-      id,
-      name: name.replace(/\.[^.]+$/, ''),
-      nameEn: name.replace(/\.[^.]+$/, ''),
-      category: 'user',
-      uri: destUri,
-    };
-
-    const updated = [...get().userTracks, track];
-    set({ userTracks: updated });
-    await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
   },
 
   removeUserTrack: async (id) => {
-    const track = get().userTracks.find(t => t.id === id);
-    if (track?.uri) {
-      const info = await FileSystem.getInfoAsync(track.uri);
-      if (info.exists) await FileSystem.deleteAsync(track.uri);
-    }
-    const updated = get().userTracks.filter(t => t.id !== id);
-    set({ userTracks: updated });
-    await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
-    // 如果删除的是当前播放曲目，停止播放
-    if (get().currentTrack?.id === id) {
-      set({ currentTrack: null, isPlaying: false });
+    try {
+      const track = get().userTracks.find(t => t.id === id);
+      if (track?.uri) {
+        const info = await FileSystem.getInfoAsync(track.uri);
+        if (info.exists) await FileSystem.deleteAsync(track.uri);
+      }
+      const updated = get().userTracks.filter(t => t.id !== id);
+      set({ userTracks: updated });
+      await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
+      // 如果删除的是当前播放曲目，停止播放
+      if (get().currentTrack?.id === id) {
+        set({ currentTrack: null, isPlaying: false });
+      }
+    } catch (e) {
+      console.error('删除用户音乐失败:', e);
     }
   },
 
@@ -126,12 +142,16 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   },
 
   toggleFavorite: async (id) => {
-    const { favorites } = get();
-    const updated = favorites.includes(id)
-      ? favorites.filter(fid => fid !== id)
-      : [...favorites, id];
-    set({ favorites: updated });
-    await AsyncStorage.setItem(MUSIC_FAVORITES_KEY, JSON.stringify(updated));
+    try {
+      const { favorites } = get();
+      const updated = favorites.includes(id)
+        ? favorites.filter(fid => fid !== id)
+        : [...favorites, id];
+      set({ favorites: updated });
+      await AsyncStorage.setItem(MUSIC_FAVORITES_KEY, JSON.stringify(updated));
+    } catch (e) {
+      console.error('切换收藏失败:', e);
+    }
   },
 
   loadFavorites: async () => {

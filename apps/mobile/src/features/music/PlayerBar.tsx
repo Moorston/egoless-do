@@ -40,7 +40,6 @@ export default function PlayerBar({ primaryColor, category }: Props) {
   // 播放下一首（循环当前分类）
   const handleNext = useCallback(() => {
     if (!currentTrack) return;
-    // 优先用传入的分类，否则用当前曲目的分类
     const cat = category ?? currentTrack.category;
     const tracks = useMusicStore.getState().getTracksByCategory(cat);
     if (tracks.length === 0) return;
