@@ -13,7 +13,6 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Globe, Binary, ChevronRight } from 'lucide-react-native';
 import { useMusicStore } from '../music/useMusicStore';
-import { useAudioEngine } from '../music/useAudioEngine';
 import MusicPickerModal from '../music/MusicPickerModal';
 import MeditationMusicBar from './MeditationMusicBar';
 
@@ -25,9 +24,6 @@ export default function MeditationScreen() {
   const store = useAppStore();
   const nav   = useRootNavigation();
   const T     = useT();
-
-  // Mount audio engine so music store play/pause actually produces sound
-  useAudioEngine();
 
   const [durMin, setDurMin]       = useState(10);
   const [sec, setSec]             = useState(0);
@@ -51,7 +47,10 @@ export default function MeditationScreen() {
 
   // Bell sound player (one-shot, 50% volume)
   const bellPlayer = useAudioPlayer(BELL_FILE);
-  bellPlayer.volume = 0.5;
+
+  useEffect(() => {
+    bellPlayer.volume = 0.5;
+  }, [bellPlayer]);
 
   // Init audio session
   useEffect(() => {

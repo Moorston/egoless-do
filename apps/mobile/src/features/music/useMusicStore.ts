@@ -30,8 +30,6 @@ interface MusicState {
   isPlaying: boolean;
   volume: number;
   loop: boolean;
-  currentTime: number;
-  duration: number;
 
   play: (track: MusicTrack) => void;
   pause: () => void;
@@ -40,8 +38,6 @@ interface MusicState {
   setVolume: (v: number) => void;
   toggleLoop: () => void;
   setIsPlaying: (v: boolean) => void;
-  setCurrentTime: (v: number) => void;
-  setDuration: (v: number) => void;
   addUserTrack: (name: string, uri: string) => Promise<void>;
   removeUserTrack: (id: string) => Promise<void>;
   loadUserTracks: () => Promise<void>;
@@ -59,18 +55,14 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   isPlaying: false,
   volume: 0.3,
   loop: true,
-  currentTime: 0,
-  duration: 0,
 
-  play: (track) => set({ currentTrack: track, isPlaying: true, currentTime: 0 }),
+  play: (track) => set({ currentTrack: track, isPlaying: true }),
   pause: () => set({ isPlaying: false }),
   resume: () => set({ isPlaying: true }),
   stop: () => set({ currentTrack: null, isPlaying: false }),
   setVolume: (v) => set({ volume: v }),
   toggleLoop: () => set(s => ({ loop: !s.loop })),
   setIsPlaying: (v) => set({ isPlaying: v }),
-  setCurrentTime: (v) => set({ currentTime: v }),
-  setDuration: (v) => set({ duration: v }),
 
   addUserTrack: async (name, uri) => {
     try {

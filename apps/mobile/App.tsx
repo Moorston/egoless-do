@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation';
+import { AudioEngineProvider } from './src/features/music/AudioEngineProvider';
 import SplashScreen from './src/features/splash/SplashScreen';
 
 const AMAP_KEY = Platform.select({
@@ -28,7 +29,9 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <AppNavigator />
+        <AudioEngineProvider>
+          <AppNavigator />
+        </AudioEngineProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

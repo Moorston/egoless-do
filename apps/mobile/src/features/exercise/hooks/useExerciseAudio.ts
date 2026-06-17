@@ -21,12 +21,18 @@ export function useExerciseAudio() {
   // 环境音播放器
   const bgSource = SOUND_FILES[selectedSound];
   const bgPlayer = useAudioPlayer(bgSource ?? undefined);
-  bgPlayer.loop = true;
-  bgPlayer.volume = 0.25;
 
   // 钟声播放器（独立，不受管理器影响）
   const bellPlayer = useAudioPlayer(BELL_FILE);
-  bellPlayer.volume = 0.5;
+
+  useEffect(() => {
+    bgPlayer.loop = true;
+    bgPlayer.volume = 0.25;
+  }, [bgPlayer]);
+
+  useEffect(() => {
+    bellPlayer.volume = 0.5;
+  }, [bellPlayer]);
 
   // Init audio session + restore last selected sound
   useEffect(() => {
