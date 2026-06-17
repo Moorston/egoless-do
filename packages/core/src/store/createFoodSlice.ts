@@ -5,7 +5,7 @@ import type { StorageAdapter, FoodSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () => void): SliceCreator<FoodSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     foodLog: [],
     calGoal: 2000,
     customFoodPresets: [],

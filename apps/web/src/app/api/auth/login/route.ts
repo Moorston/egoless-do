@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const authData = await pb.collection('users').authWithPassword(email, password);
 
     // Note: refreshToken === token is a PocketBase limitation (no separate refresh token mechanism).
-    // TOKEN_EXPIRES_IN is set to 2 hours; client should use /auth/refresh before expiry.
+    // TOKEN_EXPIRES_IN is set to 7 days; client should use /auth/refresh before expiry.
     return NextResponse.json({
       user: { id: authData.record.id, email: authData.record.email, name: authData.record.name },
       token: authData.token,

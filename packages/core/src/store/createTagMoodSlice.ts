@@ -4,7 +4,7 @@ import type { TagMoodSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createTagMoodSlice(onPersist?: () => void): SliceCreator<TagMoodSlice> {
-  return (set) => ({
+  return (set: any) => ({
     customTags: [],
     customMoods: [],
     allTagsOrder: [],

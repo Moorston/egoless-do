@@ -256,6 +256,20 @@ CREATE TABLE IF NOT EXISTS trail_notes (
 );
 CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id);
 
+CREATE TABLE IF NOT EXISTS reflection_links (
+  link_id      TEXT PRIMARY KEY,
+  from_id      TEXT NOT NULL,
+  to_id        TEXT NOT NULL,
+  link_type    TEXT NOT NULL,
+  note         TEXT,
+  created_at   INTEGER NOT NULL,
+  updated_at   INTEGER,
+  deleted      INTEGER NOT NULL DEFAULT 0,
+  synced       INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_reflection_links_from ON reflection_links(from_id);
+CREATE INDEX IF NOT EXISTS idx_reflection_links_to   ON reflection_links(to_id);
+
 CREATE TABLE IF NOT EXISTS ai_configs (
   config_id  TEXT PRIMARY KEY,
   mode       TEXT NOT NULL DEFAULT 'hybrid',
@@ -427,6 +441,20 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id)');
+  }
+
+  // Ensure reflection_links table exists
+  const reflectionLinksTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='reflection_links'"
+  );
+  if (!reflectionLinksTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS reflection_links (
+      link_id TEXT PRIMARY KEY, from_id TEXT NOT NULL, to_id TEXT NOT NULL,
+      link_type TEXT NOT NULL, note TEXT, created_at INTEGER NOT NULL,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_reflection_links_from ON reflection_links(from_id)');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_reflection_links_to   ON reflection_links(to_id)');
   }
 
   // Ensure ai_configs table exists

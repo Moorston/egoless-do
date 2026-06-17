@@ -19,7 +19,7 @@ export function detectHabitAbandonRisk(habits: Habit[]): RiskWarning[] {
   const today = dateStr();
 
   habits.filter(h => h.status === 'inProgress').forEach(habit => {
-    const checkedDates = habit.checkedDates ?? [];
+    const checkedDates = [...(habit.checkedDates ?? [])].sort();
     const lastChecked = checkedDates[checkedDates.length - 1];
     
     if (!lastChecked) return;
@@ -121,28 +121,36 @@ export function detectPlanDelayRisk(plans: Plan[]): RiskWarning[] {
 export function detectStreakBreakRisk(checkinHistory: CheckinEntry[]): RiskWarning[] {
   const warnings: RiskWarning[] = [];
   const today = dateStr();
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterday = dateStr(yesterdayDate);
 
   const todayCheckin = checkinHistory.find(c => c.date === today);
   const yesterdayCheckin = checkinHistory.find(c => c.date === yesterday);
 
-  // 计算连续天数
+  // 计算连续天数（只计已完成的打卡，从最近一次打卡往前数）
   let streak = 0;
   const sortedDates = checkinHistory
+    .filter(c => c.done)
     .map(c => c.date)
     .sort()
     .reverse();
 
-  for (let i = 0; i < sortedDates.length; i++) {
-    const expected = new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-    if (sortedDates[i] === expected) {
-      streak++;
-    } else {
-      break;
+  if (sortedDates.length > 0) {
+    streak = 1;
+    for (let i = 1; i < sortedDates.length; i++) {
+      const prev = new Date(sortedDates[i - 1] + 'T00:00:00');
+      const curr = new Date(sortedDates[i] + 'T00:00:00');
+      const diff = (prev.getTime() - curr.getTime()) / 86400000;
+      if (diff === 1) {
+        streak++;
+      } else {
+        break;
+      }
     }
   }
 
-  // 连续记录即将中断
+  // 连续记录即将中断：最近一次打卡不是今天，且连续天数 >= 3
   if (streak >= 3 && !todayCheckin) {
     const hour = new Date().getHours();
     if (hour >= 20) {

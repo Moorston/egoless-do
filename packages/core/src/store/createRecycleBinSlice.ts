@@ -14,7 +14,7 @@ const ENTITY_TYPE_MAP: Record<RecycleBinEntityType, SyncEntity> = {
 };
 
 export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<RecycleBinSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     recycleBin: [],
 
     addToRecycleBin(item: Omit<RecycleBinItem, 'deletedAt'>) {

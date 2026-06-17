@@ -72,6 +72,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ success: true, results });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Setup failed', results }, { status: 500 });
+    console.error('[Setup] Error:', err);
+    return NextResponse.json({ error: '集合初始化失败，请检查管理员凭据', results }, { status: 500 });
   }
 }

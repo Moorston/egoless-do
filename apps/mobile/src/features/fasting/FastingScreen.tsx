@@ -29,7 +29,8 @@ export default function FastingScreen() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const bellPlayedRef = useRef(false);
   const bellPlayer = useAudioPlayer(BELL_FILE);
-  bellPlayer.volume = 0.5;
+
+  useEffect(() => { bellPlayer.volume = 0.5; }, [bellPlayer]);
 
   useEffect(() => {
     if (store.activeFasting) {

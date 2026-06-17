@@ -271,7 +271,9 @@ export default function AppNavigator() {
   // Handle habit alarm notification tap
   useEffect(() => {
     let sub: any;
+    let mounted = true;
     import('expo-notifications').then(Notifications => {
+      if (!mounted) return;
       sub = Notifications.addNotificationResponseReceivedListener(response => {
         const habitId = response.notification.request.content.data?.habitId;
         if (habitId && navRef.current) {
@@ -279,7 +281,7 @@ export default function AppNavigator() {
         }
       });
     });
-    return () => { sub?.remove?.(); };
+    return () => { mounted = false; sub?.remove?.(); };
   }, []);
 
   return (

@@ -25,27 +25,34 @@ function daysBetween(a: string, b: string): number {
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000);
 }
 
+/** Parse a YYYY-MM-DD date string into [year, month (0-based), day]. */
+function parseDateParts(date: string): [number, number, number] {
+  const [y, m, d] = date.split('-').map(Number);
+  return [y, m - 1, d];
+}
+
 /** Get the day of week (0=Sun, 1=Mon, ..., 6=Sat) for a date string. */
 function dayOfWeek(date: string): number {
-  return new Date(date).getDay();
+  const [y, m, d] = parseDateParts(date);
+  return new Date(y, m, d).getDay();
 }
 
 /** Get the day of month (1-31) for a date string. */
 function dayOfMonth(date: string): number {
-  return new Date(date).getDate();
+  return parseDateParts(date)[2];
 }
 
 /** Get the number of days in the month of a given date string. */
 function daysInMonth(date: string): number {
-  const d = new Date(date);
-  return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  const [y, m] = parseDateParts(date);
+  return new Date(y, m + 1, 0).getDate();
 }
 
 /** Add N days to a date string, returning a new date string. */
 function addDays(date: string, n: number): string {
   const d = new Date(date);
   d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0, 10);
+  return dateStr(d);
 }
 
 /** Get start of week (Monday) for a date string. */
@@ -54,7 +61,7 @@ function weekStart(date: string): string {
   const day = d.getDay();
   const diff = day === 0 ? 6 : day - 1; // Monday = 0
   d.setDate(d.getDate() - diff);
-  return d.toISOString().slice(0, 10);
+  return dateStr(d);
 }
 
 /** Get start of month for a date string. */
@@ -100,7 +107,7 @@ export function computeExpectedDays(
         const periodStart = cursor > ws ? cursor : ws;
         const periodEnd = clampedEnd < we ? clampedEnd : we;
         const periodDays = daysBetween(periodStart, periodEnd) + 1;
-        expected += Math.min(Math.ceil((periodDays / 7) * target), target);
+        expected += Math.min(Math.round((periodDays / 7) * target), target);
         cursor = addDays(we, 1);
       }
       return expected;

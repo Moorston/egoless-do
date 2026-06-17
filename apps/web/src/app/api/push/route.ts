@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : '注册推送令牌失败' }, { status: 500 });
+    return NextResponse.json({ error: '注册推送令牌失败' }, { status: 500 });
   }
 }
 
@@ -81,6 +81,11 @@ export async function PUT(req: NextRequest) {
 
     if (!targetUserId || !payload) {
       return NextResponse.json({ error: '缺少参数' }, { status: 400 });
+    }
+
+    // 只允许给自己发推送通知
+    if (targetUserId !== auth.userId) {
+      return NextResponse.json({ error: '无权给其他用户发送推送' }, { status: 403 });
     }
 
     const pb = getPb();
@@ -112,8 +117,12 @@ export async function PUT(req: NextRequest) {
       })
     );
 
-    // Clean up failed tokens
-    const failedTokens = tokens.filter((_, i) => results[i].status === 'rejected');
+    // Clean up permanently invalid tokens (not transient failures)
+    const failedTokens = tokens.filter((_, i) => {
+      if (results[i].status !== 'rejected') return false;
+      const msg = (results[i] as PromiseRejectedResult).reason?.message ?? '';
+      return msg.includes('NotRegistered') || msg.includes('InvalidRegistration') || msg.includes('404');
+    });
     if (failedTokens.length > 0) {
       await Promise.all(
         failedTokens.map((token) =>
@@ -128,7 +137,7 @@ export async function PUT(req: NextRequest) {
       failed: failedTokens.length,
     });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : '发送推送通知失败' }, { status: 500 });
+    return NextResponse.json({ error: '发送推送通知失败' }, { status: 500 });
   }
 }
 

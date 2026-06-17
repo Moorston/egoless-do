@@ -11,7 +11,7 @@ import type { SliceCreator } from './sliceHelper';
 export function createReflectionSlice(
   adapter: StorageAdapter,
 ): SliceCreator<ReflectionSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     reflections: [],
     reflectionFilters: { ...DEFAULT_REFLECTION_FILTERS },
 

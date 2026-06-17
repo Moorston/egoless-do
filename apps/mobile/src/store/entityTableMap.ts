@@ -10,6 +10,10 @@ interface EntityConfig {
 function bool(v: unknown): number { return v ? 1 : 0; }
 function json(v: unknown): string { return typeof v === 'string' ? v : JSON.stringify(v ?? []); }
 function num(v: unknown, d = 0): number { return typeof v === 'number' ? v : d; }
+function localDate(ts: number): string {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
 
 export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
   habit: {
@@ -48,7 +52,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     table: 'food_entries', pk: 'id',
     toRow: (d) => ({
       id: d.id, name: d.name, cal: num(d.calories), note: d.note ?? '',
-      entry_date: d.timestamp ? new Date(d.timestamp as number).toISOString().slice(0, 10) : '', ts: d.timestamp,
+      entry_date: d.timestamp ? localDate(d.timestamp as number) : '', ts: d.timestamp,
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
@@ -159,6 +163,27 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       reflection_ids: json(d.reflectionIds),
       source: d.source ?? 'manual',
       insight_summary: d.insightSummary ?? null,
+      created_at: d.createdAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+  },
+  trailNote: {
+    table: 'trail_notes', pk: 'id',
+    toRow: (d) => ({
+      id: d.id, trail_id: d.trailId, content: d.content ?? '',
+      tags: json(d.tags), mood: d.mood ?? null,
+      source: d.source ?? 'free',
+      guided_question: d.guidedQuestion ?? null,
+      note_order: num(d.order),
+      created_at: d.createdAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+  },
+  reflectionLink: {
+    table: 'reflection_links', pk: 'link_id',
+    toRow: (d) => ({
+      link_id: d.id, from_id: d.fromId, to_id: d.toId,
+      link_type: d.type, note: d.note ?? null,
       created_at: d.createdAt ?? Date.now(),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),

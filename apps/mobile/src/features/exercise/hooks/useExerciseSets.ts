@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import type { ExerciseSet } from '@egoless-do/core';
@@ -21,6 +21,13 @@ export function useExerciseSets(onCompleteSet: () => void) {
     if (longPressTimerRef.current) { clearTimeout(longPressTimerRef.current); longPressTimerRef.current = null; }
     if (longPressIntervalRef.current) { clearTimeout(longPressIntervalRef.current); longPressIntervalRef.current = null; }
     longPressStartedRef.current = false;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+      if (longPressIntervalRef.current) clearTimeout(longPressIntervalRef.current);
+    };
   }, []);
 
   const startLongPress = useCallback((delta: 1 | -1) => {

@@ -468,7 +468,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
                   <>{contentText.slice(0, 80)}...</>
                 ) : contentText}
               </div>
-              {r.link && (
+              {r.link && /^(https?:\/\/|mailto:)/i.test(r.link) && (
                 <a href={r.link} target="_blank" rel="noopener noreferrer" style={{ display: 'block', fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', textDecoration: 'underline', marginBottom: 8 }}>
                   <Link size={14} style={{verticalAlign:'middle',marginRight:4}} />{r.link}
                 </a>
@@ -729,7 +729,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
               )}
 
               {/* Link */}
-              {r.link && (
+              {r.link && /^(https?:\/\/|mailto:)/i.test(r.link) && (
                 <a href={r.link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL, textDecoration: 'underline', marginBottom: 12 }}>
                   <Link size={14} />{r.link}
                 </a>

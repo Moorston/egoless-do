@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { getPb } from '../../_pb';
+import { getPb, escapeFilter } from '../../_pb';
 import db from '../../_db';
 import { sanitizeError } from '../../_errors';
 import { getClientIp, createRateLimiter } from '../../_rateLimit';
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     ).get(email) as { code: string; expires_at: number } | undefined;
 
     if (!record) return NextResponse.json({ error: '请先获取验证码' }, { status: 400 });
-    if (!crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
+    if (record.code.length !== code.length || !crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
       return NextResponse.json({ error: '验证码错误' }, { status: 400 });
     }
     if (Date.now() > record.expires_at) return NextResponse.json({ error: '验证码已过期' }, { status: 400 });
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     // Find user by email and update password
     const pb = getPb();
-    const user = await pb.collection('users').getFirstListItem(`email = "${email.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`);
+    const user = await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
     await pb.collection('users').update(user.id, {
       password,
       passwordConfirm: password,

@@ -16,8 +16,10 @@ interface StarProps {
 function Star({ x, y, size, delay }: StarProps) {
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.5)).current;
+  const mountedRef = useRef(true);
 
   useEffect(() => {
+    mountedRef.current = true;
     const animate = () => {
       Animated.sequence([
         Animated.delay(delay),
@@ -36,6 +38,7 @@ function Star({ x, y, size, delay }: StarProps) {
         ]),
       ]).start(() => {
         const twinkle = () => {
+          if (!mountedRef.current) return;
           Animated.sequence([
             Animated.timing(opacity, {
               toValue: 0.3 + Math.random() * 0.7,
@@ -53,6 +56,7 @@ function Star({ x, y, size, delay }: StarProps) {
       });
     };
     animate();
+    return () => { mountedRef.current = false; };
   }, []);
 
   return (
@@ -77,9 +81,13 @@ function Meteor({ delay }: { delay: number }) {
   const translateX = useRef(new Animated.Value(-100)).current;
   const translateY = useRef(new Animated.Value(-100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+  const mountedRef = useRef(true);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
+    mountedRef.current = true;
     const animate = () => {
+      if (!mountedRef.current) return;
       const startX = Math.random() * SCREEN_WIDTH * 0.5;
       const startY = -50;
       const endX = startX + SCREEN_WIDTH * 0.6;
@@ -113,10 +121,13 @@ function Meteor({ delay }: { delay: number }) {
           useNativeDriver: true,
         }),
       ]).start(() => {
-        setTimeout(animate, 2000 + Math.random() * 4000);
+        if (mountedRef.current) {
+          timerRef.current = setTimeout(animate, 2000 + Math.random() * 4000);
+        }
       });
     };
     animate();
+    return () => { mountedRef.current = false; if (timerRef.current) clearTimeout(timerRef.current); };
   }, []);
 
   return (
@@ -143,7 +154,9 @@ function Nebula() {
   const opacity2 = useRef(new Animated.Value(0.2)).current;
 
   useEffect(() => {
+    let mounted = true;
     const animate1 = () => {
+      if (!mounted) return;
       Animated.sequence([
         Animated.parallel([
           Animated.timing(scale1, {
@@ -173,6 +186,7 @@ function Nebula() {
     };
 
     const animate2 = () => {
+      if (!mounted) return;
       Animated.sequence([
         Animated.parallel([
           Animated.timing(scale2, {
@@ -202,7 +216,8 @@ function Nebula() {
     };
 
     animate1();
-    setTimeout(animate2, 2000);
+    const timer = setTimeout(animate2, 2000);
+    return () => { mounted = false; clearTimeout(timer); };
   }, []);
 
   return (
@@ -241,16 +256,19 @@ function GlowText({ text, style, delay: baseDelay = 0 }: { text: string; style: 
   const glows = useRef(chars.map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
     chars.forEach((_, i) => {
       const delay = baseDelay + i * 120;
-      setTimeout(() => {
+      const t = setTimeout(() => {
         Animated.timing(opacities[i], { toValue: 1, duration: 400, useNativeDriver: false }).start();
         Animated.sequence([
           Animated.timing(glows[i], { toValue: 1, duration: 300, useNativeDriver: false }),
           Animated.timing(glows[i], { toValue: 0.4, duration: 600, useNativeDriver: false }),
         ]).start();
       }, delay);
+      timers.push(t);
     });
+    return () => { timers.forEach(clearTimeout); };
   }, []);
 
   return (
@@ -285,6 +303,7 @@ function BreathingText({ text, style, delay: baseDelay = 0 }: { text: string; st
   const breathe = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
+    let mounted = true;
     Animated.sequence([
       Animated.delay(baseDelay),
       Animated.parallel([
@@ -293,6 +312,7 @@ function BreathingText({ text, style, delay: baseDelay = 0 }: { text: string; st
       ]),
     ]).start(() => {
       const pulse = () => {
+        if (!mounted) return;
         Animated.sequence([
           Animated.timing(breathe, { toValue: 1.03, duration: 2000, useNativeDriver: true }),
           Animated.timing(breathe, { toValue: 1, duration: 2000, useNativeDriver: true }),
@@ -300,6 +320,7 @@ function BreathingText({ text, style, delay: baseDelay = 0 }: { text: string; st
       };
       pulse();
     });
+    return () => { mounted = false; };
   }, []);
 
   return (

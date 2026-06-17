@@ -3,7 +3,7 @@ import type { StorageAdapter, ProfileSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createProfileSlice(adapter: StorageAdapter): SliceCreator<ProfileSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     userProfile: {},
     waterMl: 0,
     waterGoal: 2000,

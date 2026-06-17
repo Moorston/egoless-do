@@ -15,7 +15,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "pocketbase": "^0.26.9"
+    "pocketbase": "^0.26.9",
+    "zustand": "^5.0.0"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

@@ -6,7 +6,7 @@ import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
 
 export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<ThoughtTrailSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     thoughtTrails: [],
 
     createThoughtTrail: (name, description, reflectionIds = [], source = 'manual') => {

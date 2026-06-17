@@ -26,7 +26,7 @@ import type { SliceCreator } from './sliceHelper';
 export function createPlanSlice(
   adapter: StorageAdapter,
 ): SliceCreator<PlanSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     plans: [],
     planItems: [],
     planItemCheckins: [],
@@ -535,10 +535,11 @@ export function createPlanSlice(
     async notifyPlanDelayed(delayedPlans) {
       const s = get();
       const userId = s.auth?.user?.id;
-      if (!userId) return;
+      const token = s.auth?.token;
+      if (!userId || !token) return;
 
       const now = Date.now();
-      
+
       for (const plan of delayedPlans) {
         // Skip if already notified
         if (plan.lastDelayedNotifyAt) continue;
@@ -548,7 +549,10 @@ export function createPlanSlice(
           const apiBase = process.env.EXPO_PUBLIC_API_BASE || 'https://egoless-do.vercel.app';
           await fetch(`${apiBase}/api/plan/notify-delayed`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
             body: JSON.stringify({
               planId: plan.id,
               planName: plan.name,

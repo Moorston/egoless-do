@@ -46,7 +46,8 @@ export default function StatsScreen() {
   // ── Common data ──
   const exerciseLog = store.exerciseLog ?? [];
   const now = Date.now();
-  const today = new Date(now).toISOString().slice(0, 10);
+  const todayD = new Date(now);
+  const today = `${todayD.getFullYear()}-${String(todayD.getMonth() + 1).padStart(2, '0')}-${String(todayD.getDate()).padStart(2, '0')}`;
   const weekStart = now - 7 * 24 * 3600 * 1000;
   const monthStart = now - 30 * 24 * 3600 * 1000;
 

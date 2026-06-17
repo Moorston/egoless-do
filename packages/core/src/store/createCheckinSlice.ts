@@ -8,7 +8,7 @@ export function createCheckinSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<CheckinSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     checkinHistory: [],
     streak: 0,
     graceHistory: [],

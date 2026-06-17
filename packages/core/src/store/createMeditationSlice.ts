@@ -7,7 +7,7 @@ export function createMeditationSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<MeditationSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     totalMedMinutes: 0,
     medHistory: [],
 

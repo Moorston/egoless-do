@@ -9,7 +9,7 @@ export function createReviewSlice(
   adapter: StorageAdapter,
   triggerAutoSync?: () => void,
 ): SliceCreator<ReviewSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     checkinReviews: [],
     
     async generateReview(period: 'week' | 'month'): Promise<CheckinReview> {

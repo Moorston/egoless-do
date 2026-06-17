@@ -4,7 +4,7 @@ import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
 
 export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<TrailNoteSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     trailNotes: [],
 
     addTrailNote: (trailId, form) => {

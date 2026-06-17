@@ -12,7 +12,7 @@ export function createHabitSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<HabitSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     habits: [],
 
     addHabit(form: CreateHabitForm) {

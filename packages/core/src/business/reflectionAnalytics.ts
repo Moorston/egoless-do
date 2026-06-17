@@ -1,4 +1,5 @@
 import type { MindReflection } from '../types/reflection';
+import { dateStr as fmtDate } from '../utils';
 
 // ── Mood scoring ──────────────────────────────────────────────
 
@@ -31,11 +32,11 @@ export function computeMoodTrend(
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().slice(0, 10);
+    const dateStr = fmtDate(d);
 
     const dayReflections = reflections.filter(r => {
       if (r.deleted) return false;
-      const rDate = new Date(r.timestamp ?? 0).toISOString().slice(0, 10);
+      const rDate = fmtDate(new Date(r.timestamp ?? 0));
       return rDate === dateStr;
     });
 

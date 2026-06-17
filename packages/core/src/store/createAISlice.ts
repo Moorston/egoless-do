@@ -3,7 +3,7 @@ import type { AISlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
-  return (set) => ({
+  return (set: any) => ({
     aiMode: 'hybrid' as AIMode,
     aiModels: [],
 

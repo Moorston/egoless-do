@@ -5,7 +5,7 @@ import type {
 } from '../types';
 import type { CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry } from '../types';
 import { INCOMPLETE_REASONS, parseCheckinNote } from './checkin';
-import { uid } from '../utils';
+import { uid, dateStr } from '../utils';
 
 /** 格式化日期为YYYY-MM-DD */
 function formatDate(date: Date): string {
@@ -337,7 +337,7 @@ function calculateMetrics(
   // 体重
   const weights = checkins.filter(c => c.weight != null).map(c => c.weight!);
   const avgWeight = weights.length > 0 ? Math.round((weights.reduce((a, b) => a + b, 0) / weights.length) * 10) / 10 : undefined;
-  const weightChange = weights.length >= 2 ? Math.round((weights[weights.length - 1] - weights[0]) * 10) / 10 : undefined;
+  const weightChange = weights.length >= 2 ? Math.round((weights[0] - weights[weights.length - 1]) * 10) / 10 : undefined;
   
   // 饮水
   const waterValues = checkins
@@ -351,14 +351,14 @@ function calculateMetrics(
   
   // 热量
   const foodInRange = foodLog.filter(f => {
-    const date = new Date(f.timestamp).toISOString().slice(0, 10);
+    const date = dateStr(new Date(f.timestamp));
     return date >= startDate && date <= endDate && !f.deleted;
   });
   const avgCalories = foodInRange.length > 0 ? Math.round(foodInRange.reduce((a, b) => a + b.calories, 0) / foodInRange.length) : undefined;
   
   // 运动
   const exerciseInRange = exerciseLog.filter(e => {
-    const date = new Date(e.timestamp).toISOString().slice(0, 10);
+    const date = dateStr(new Date(e.timestamp));
     return date >= startDate && date <= endDate && !e.deleted;
   });
   const totalExerciseMin = exerciseInRange.length > 0 ? Math.round(exerciseInRange.reduce((a, b) => a + b.durationSec, 0) / 60) : undefined;
@@ -376,7 +376,7 @@ function calculateMetrics(
   
   // 禁食
   const fastingInRange = fastingHistory.filter(f => {
-    const date = new Date(f.startedAt || 0).toISOString().slice(0, 10);
+    const date = dateStr(new Date(f.startedAt || 0));
     return date >= startDate && date <= endDate && !f.deleted;
   });
   const fastingCount = fastingInRange.length > 0 ? fastingInRange.length : undefined;

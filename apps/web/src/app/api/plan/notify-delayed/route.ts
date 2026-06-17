@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { getPb } from '../../_pb';
+import { verifyAuth } from '../../_auth';
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
 function getTransporter() {
   return nodemailer.createTransport({
@@ -16,10 +21,19 @@ function getTransporter() {
 
 export async function POST(req: NextRequest) {
   try {
+    // Authenticate
+    const auth = await verifyAuth(req.headers.get('authorization'));
+    if (!auth) return NextResponse.json({ error: '未授权' }, { status: 401 });
+
     const { planId, planName, endDate, userId } = await req.json();
 
     if (!planId || !planName || !endDate || !userId) {
       return NextResponse.json({ error: '缺少必要参数' }, { status: 400 });
+    }
+
+    // Only allow sending notifications to self
+    if (userId !== auth.userId) {
+      return NextResponse.json({ error: '无权操作' }, { status: 403 });
     }
 
     // 获取用户邮箱
@@ -47,8 +61,8 @@ export async function POST(req: NextRequest) {
           <p style="text-align:center;color:#818cf8;font-size:13px;margin-bottom:24px;">Egoless Do</p>
           <p style="font-size:15px;margin-bottom:16px;">您的计划已超期：</p>
           <div style="text-align:center;padding:16px;background:rgba(239,68,68,.1);border-radius:12px;margin-bottom:24px;border:1px solid rgba(239,68,68,.3);">
-            <p style="font-size:18px;font-weight:700;color:#ef4444;margin:0 0 8px 0;">${planName}</p>
-            <p style="font-size:14px;color:#888;margin:0;">原定结束日期：${endDate}</p>
+            <p style="font-size:18px;font-weight:700;color:#ef4444;margin:0 0 8px 0;">${escapeHtml(planName)}</p>
+            <p style="font-size:14px;color:#888;margin:0;">原定结束日期：${escapeHtml(endDate)}</p>
           </div>
           <p style="font-size:13px;color:#888;">请及时处理您的计划。</p>
         </div>

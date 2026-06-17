@@ -3,7 +3,7 @@ import type { SettingsSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createSettingsSlice(onPersist?: () => void, onSettingChange?: () => void): SliceCreator<SettingsSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     theme: 'light' as ThemeName,
     language: 'zh',
     remindEnabled: false,

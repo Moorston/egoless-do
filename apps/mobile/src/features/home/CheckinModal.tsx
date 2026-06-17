@@ -333,8 +333,8 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 <View style={{ marginBottom:12 }}>
                   <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('planTodoList')}</Text>
                   {todayPlanItems.map(item => {
-                    const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-                    const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
+                    const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
+                    const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done && c.linkedModule);
                     const done = planToggles[item.id] ?? storeDone;
                     return (
                       <View key={item.id} style={{

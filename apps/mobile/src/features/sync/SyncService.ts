@@ -64,6 +64,10 @@ const ENTITY_CONFIG: Record<string, { table: string; pk: string }> = {
   dailyCustomTodo:  { table: 'daily_custom_todos',  pk: 'id'   },
   dailyTodoHistory: { table: 'daily_todo_history',  pk: 'id'   },
   thoughtTrail:     { table: 'thought_trails',      pk: 'id'   },
+  trailNote:        { table: 'trail_notes',         pk: 'id'   },
+  reflectionLink:   { table: 'reflection_links',    pk: 'link_id' },
+  aiConfig:         { table: 'ai_configs',          pk: 'config_id' },
+  checkinReview:    { table: 'checkin_reviews',     pk: 'id' },
 };
 
 // ── Configure ─────────────────────────────────────────────────────
@@ -453,6 +457,37 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
         created_at: r.createdAt ?? null,
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
+    case 'trailNote':
+      return {
+        id: r.id, trail_id: r.trailId, content: r.content,
+        tags: safeJson(r.tags), mood: r.mood ?? null,
+        source: r.source ?? 'free',
+        guided_question: r.guidedQuestion ?? null,
+        note_order: r.order ?? 0,
+        created_at: r.createdAt ?? null,
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    case 'reflectionLink':
+      return {
+        link_id: r.linkId ?? r.id, from_id: r.fromId, to_id: r.toId,
+        link_type: r.type, note: r.note ?? null,
+        created_at: r.createdAt ?? null,
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    case 'aiConfig':
+      return {
+        config_id: r.configId ?? r.id, mode: r.mode ?? 'hybrid',
+        models: safeJson(r.models, []),
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    case 'checkinReview':
+      return {
+        id: r.id, review_id: r.reviewId ?? r.id,
+        period: r.period ?? 'week',
+        start_date: r.startDate, end_date: r.endDate,
+        review_data: typeof r.reviewData === 'string' ? r.reviewData : JSON.stringify(r.reviewData ?? {}),
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
     default:
       return null;
   }
@@ -491,6 +526,9 @@ const ENTITY_STORE_KEY: Record<string, string> = {
   plan: 'plans', planItem: 'planItems', planItemCheckin: 'planItemCheckins',
   grace: 'graceHistory', dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
   thoughtTrail: 'thoughtTrails',
+  trailNote: 'trailNotes',
+  reflectionLink: 'reflectionLinks',
+  checkinReview: 'checkinReviews',
 };
 
 // ── Main sync entry point ─────────────────────────────────────────

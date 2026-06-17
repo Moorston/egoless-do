@@ -2,11 +2,17 @@
 import { getPb } from './_pb';
 import db from './_db';
 
+function base64UrlDecode(str: string): string {
+  const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = base64 + '='.repeat((4 - base64.length % 4) % 4);
+  return atob(padded);
+}
+
 export function jwtPayload(token: string): Record<string, unknown> | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3 || !parts[1]) return null;
-    return JSON.parse(atob(parts[1]));
+    return JSON.parse(base64UrlDecode(parts[1]));
   } catch {
     return null;
   }

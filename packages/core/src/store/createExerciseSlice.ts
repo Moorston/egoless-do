@@ -8,7 +8,7 @@ export function createExerciseSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<ExerciseSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     exerciseLog: [],
 
     addExercise(entry: Omit<ExerciseEntry, 'id' | 'updatedAt' | 'deleted'>) {

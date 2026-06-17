@@ -13,7 +13,7 @@ export function createAuthSlice(
   // Guard against concurrent refresh calls (shared across the slice lifetime)
   let _refreshInFlight: Promise<void> | null = null;
 
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     auth: defaultAuthState,
 
     async login(email: string, password: string) {

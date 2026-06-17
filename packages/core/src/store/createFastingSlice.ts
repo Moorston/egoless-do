@@ -7,7 +7,7 @@ export function createFastingSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<FastingSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     activeFasting: null,
     fastingHistory: [],
 

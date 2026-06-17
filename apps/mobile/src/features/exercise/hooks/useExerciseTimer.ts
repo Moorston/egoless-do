@@ -12,6 +12,7 @@ export function useExerciseTimer() {
   const [pausedSec, setPausedSec] = useState(0);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const holdAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const pulseAnim = useRef(new Animated.Value(0)).current;
@@ -74,13 +75,14 @@ export function useExerciseTimer() {
         Animated.timing(pulseAnim, { toValue: 1, duration: 400, easing: Easing.out(Easing.ease), useNativeDriver: true }).start();
         // Spring back scale
         Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start();
-        setTimeout(() => setPage('report'), 400);
+        holdTimeoutRef.current = setTimeout(() => setPage('report'), 400);
       }
     });
     anim.start();
   }, [holdAnim, scaleAnim, pulseAnim]);
 
   const handleHoldEnd = useCallback(() => {
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     holdAnim.removeAllListeners();
     // Spring back scale
     Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start();
