@@ -25,7 +25,8 @@ import { dbGetAllFoodEntries } from '../db/queries';
 const hostUri = Constants.expoConfig?.hostUri ?? Constants.experienceUrl?.split('?')[0]?.split('://')[1];
 const devHost = hostUri?.split(':')[0] ?? 'localhost';
 const DEV_API = `http://${devHost}:3000`;
-const apiBase = __DEV__ ? DEV_API : 'https://your-production-domain.com';
+const PROD_API = process.env.EXPO_PUBLIC_API_URL ?? 'https://your-production-domain.com';
+const apiBase = __DEV__ ? DEV_API : PROD_API;
 setApiBase(apiBase);
 
 const adapter = mobileStorageAdapter;

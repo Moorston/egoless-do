@@ -11,8 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#0F0A1E"
     },
-
-
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -21,6 +19,7 @@
       "bundleIdentifier": "com.egolessdo.app",
       "buildNumber": "1",
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "NSLocationAlwaysAndWhenInUseUsageDescription": "允许心流纪在后台访问位置以记录运动轨迹",
         "NSLocationWhenInUseUsageDescription": "用于记录运动轨迹和全球打卡地图",
         "NSHealthShareUsageDescription": "用于读取健康数据，追踪运动目标",
@@ -54,12 +53,14 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-localization"
     ],
     "extra": {
       "eas": {
-        "projectId": "YOUR_EAS_PROJECT_ID"
+        "projectId": "961d8730-6f6e-4e53-bdb5-527c0bb4dd2c"
       }
-    }
+    },
+    "owner": "freebytes"
   }
 }
