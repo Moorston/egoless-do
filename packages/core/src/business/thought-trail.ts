@@ -2,6 +2,7 @@
 import type { ThoughtTrail } from '../types/thought-trail';
 import type { MindReflection } from '../types/reflection';
 import type { TrailNote } from '../types/trail-note';
+import { dateStr } from '../utils';
 
 /** 时间线条目类型 */
 export type TimelineItem =
@@ -25,11 +26,13 @@ export interface TrailOverview {
  * @param t optional i18n translation function for localized default names
  */
 export function generateTrailName(reflections: MindReflection[], t?: (key: string, vars?: Record<string, string>) => string): string {
-  if (reflections.length === 0) return t?.('thoughtTrailEmpty') ?? 'New Trail';
+  const active = reflections.filter(r => !r.deleted);
+  if (active.length === 0) return t?.('thoughtTrailEmpty') ?? 'New Trail';
+  reflections = active;
 
   if (reflections.length === 1) {
     const r = reflections[0];
-    if (r.tags.length > 0) return `${r.tags[0]}的${r.mood}`;
+    if ((r.tags ?? []).length > 0) return `${r.tags[0]}的${r.mood}`;
     const content = r.content.trim();
     return content.length <= 20 ? content : `${content.slice(0, 20)}...`;
   }
@@ -42,7 +45,7 @@ export function generateTrailName(reflections: MindReflection[], t?: (key: strin
   // 找最常出现的标签
   const tagCounts = new Map<string, number>();
   for (const r of reflections) {
-    for (const tag of r.tags) {
+    for (const tag of (r.tags ?? [])) {
       tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
     }
   }
@@ -79,7 +82,7 @@ export function getTrailStats(
   moodChanges: string[];
 } {
   const trailReflections = trail.reflectionIds
-    .map(id => reflections.find(r => r.id === id))
+    .map(id => reflections.find(r => !r.deleted && r.id === id))
     .filter((r): r is MindReflection => r != null);
 
   if (trailReflections.length === 0) {
@@ -89,8 +92,8 @@ export function getTrailStats(
   // Sort by timestamp
   const sorted = [...trailReflections].sort((a, b) => a.timestamp - b.timestamp);
 
-  const startDate = new Date(sorted[0].timestamp).toISOString().slice(0, 10);
-  const endDate = new Date(sorted[sorted.length - 1].timestamp).toISOString().slice(0, 10);
+  const startDate = dateStr(new Date(sorted[0].timestamp));
+  const endDate = dateStr(new Date(sorted[sorted.length - 1].timestamp));
 
   // Extract mood changes (consecutive different moods)
   const moodChanges: string[] = [];
@@ -129,7 +132,7 @@ export function getReflectionsByTag(
 
   for (const r of reflections) {
     if (r.deleted) continue;
-    for (const tag of r.tags) {
+    for (const tag of (r.tags ?? [])) {
       const existing = tagMap.get(tag) ?? [];
       existing.push(r);
       tagMap.set(tag, existing);
@@ -196,8 +199,8 @@ export function getTrailOverview(
     };
   }
 
-  const startDate = new Date(allItems[0]).toISOString().slice(0, 10);
-  const endDate = new Date(allItems[allItems.length - 1]).toISOString().slice(0, 10);
+  const startDate = dateStr(new Date(allItems[0]));
+  const endDate = dateStr(new Date(allItems[allItems.length - 1]));
   const daySpan = Math.ceil((allItems[allItems.length - 1] - allItems[0]) / (1000 * 60 * 60 * 24));
 
   // 心情变化
@@ -213,7 +216,8 @@ export function getTrailOverview(
 
   // 趋势判断（基于最近 3 条感念的情绪）
   const moodOrder: Record<string, number> = {
-    '难过': 0, '焦虑': 1, '平静': 2, '开心': 3, '兴奋': 4, '感恩': 3,
+    '难过': 0, 'sad': 0, '焦虑': 1, 'anxious': 1, '平静': 2, 'calm': 2,
+    '开心': 3, 'happy': 3, '兴奋': 4, 'excited': 4, '感恩': 3, 'grateful': 3,
   };
   let trend: 'up' | 'down' | 'flat' = 'flat';
   if (sorted.length >= 3) {
@@ -229,12 +233,12 @@ export function getTrailOverview(
   // 标签聚合
   const tagCounts = new Map<string, number>();
   for (const r of trailReflections) {
-    for (const tag of r.tags) {
+    for (const tag of r.tags ?? []) {
       tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
     }
   }
   for (const n of trailNoteItems) {
-    for (const tag of n.tags) {
+    for (const tag of n.tags ?? []) {
       tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
     }
   }
@@ -303,7 +307,7 @@ function getTrailTagSet(
   for (const id of trail.reflectionIds) {
     const r = reflections.find(r => r.id === id);
     if (r && !r.deleted) {
-      for (const tag of r.tags) {
+      for (const tag of r.tags ?? []) {
         tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
       }
     }
@@ -312,7 +316,7 @@ function getTrailTagSet(
   for (const id of trail.noteIds ?? []) {
     const n = trailNotes.find(n => n.id === id);
     if (n && !n.deleted) {
-      for (const tag of n.tags) {
+      for (const tag of n.tags ?? []) {
         tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
       }
     }

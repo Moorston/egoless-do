@@ -37,12 +37,12 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
   const targetDate = graceDate ?? today;
   const isGraceMode = !!graceDate;
   const existing = useMemo(() =>
-    (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === targetDate),
+    (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === targetDate),
     [store.checkinHistory, targetDate],
   );
   const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
 
-  const totalCal = useMemo(() => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + f.calories, 0), [store.foodLog]);
+  const totalCal = useMemo(() => getTodayFoodLog(store.foodLog ?? []).filter(f => !f.deleted).reduce((a, f) => a + f.calories, 0), [store.foodLog]);
 
   const [weight, setWeight] = useState(() => existing?.weight != null ? String(existing.weight) : '65');
   const [waterMl, setWaterMl] = useState(() => parsed.waterMl || (store.waterMl ?? 0));
@@ -69,7 +69,7 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
   const [reasonNote, setReasonNote] = useState('');
   const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
-    (store.habits ?? []).filter(h => h.status === 'inProgress').forEach(h => {
+    (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress').forEach(h => {
       initial[h.id] = h.checkedDates?.includes(targetDate) ?? false;
     });
     return initial;
@@ -77,7 +77,7 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
 
   // Today's plan items
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
-  const planCheckins = store.planItemCheckins ?? [];
+  const planCheckins = useMemo(() => (store.planItemCheckins ?? []).filter(c => !c.deleted), [store.planItemCheckins]);
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
     return getTodayItems(store.planItems ?? [], activePlan, targetDate, planCheckins);
@@ -90,7 +90,7 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
     const initial: Record<string, boolean> = {};
     if (!activePlan) return initial;
     const items = (store.planItems ?? []).filter(i => !i.deleted && i.planId === activePlan.id);
-    const checkins = store.planItemCheckins ?? [];
+    const checkins = (store.planItemCheckins ?? []).filter(c => !c.deleted);
     items.forEach(item => {
       // manual 和 reflection 类型支持手动切换
       if (item.link === 'manual' || item.link === 'reflection') {
@@ -104,12 +104,12 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
     const done = doneOverride ?? localDone;
     if (done === null) return;
     Object.entries(habitCheckins).forEach(([id, checked]) => {
-      const habit = (store.habits ?? []).find(h => h.id === id);
+      const habit = (store.habits ?? []).find(h => h.id === id && !h.deleted);
       const alreadyDone = habit?.checkedDates?.includes(targetDate) ?? false;
       if (checked !== alreadyDone) store.checkinHabit(id, targetDate);
     });
     Object.entries(planToggles).forEach(([itemId, desired]) => {
-      const current = planCheckins.some(c => c.planItemId === itemId && c.date === targetDate && c.done);
+      const current = planCheckins.some(c => !c.deleted && c.planItemId === itemId && c.date === targetDate && c.done);
       if (desired && !current) store.checkinPlanItem(itemId, targetDate);
       if (!desired && current) store.uncheckinPlanItem(itemId, targetDate);
     });
@@ -130,13 +130,14 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
     if (customs.length) noteData.customs = customs;
     const checkedHabits = Object.entries(habitCheckins)
       .filter(([, checked]) => checked)
-      .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
+      .map(([id]) => (store.habits ?? []).find(h => h.id === id && !h.deleted)?.name)
       .filter(Boolean);
     if (checkedHabits.length) noteData.habits = checkedHabits;
     if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
     if (reasonOverride) noteData.incompleteReason = reasonOverride;
     if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
-    const weightNum = weight ? parseFloat(weight) : undefined;
+    const parsed = weight ? parseFloat(weight) : undefined;
+    const weightNum = parsed != null && !isNaN(parsed) ? parsed : undefined;
     store.submitCheckin(done, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
     // In grace mode, also record grace history
     if (isGraceMode) {
@@ -154,7 +155,7 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
     }
     const items = getIncompleteItems({
       practices,
-      habits: (store.habits ?? []).filter(h => h.status === 'inProgress'),
+      habits: (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
       planItems: todayPlanItems,
       planItemCheckins: planCheckins,
       today: targetDate,
@@ -168,40 +169,7 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
       return;
     }
     setLocalDone(true);
-    // Submit directly with done=true
-    Object.entries(habitCheckins).forEach(([id, checked]) => {
-      const habit = (store.habits ?? []).find(h => h.id === id);
-      const alreadyDone = habit?.checkedDates?.includes(targetDate) ?? false;
-      if (checked !== alreadyDone) store.checkinHabit(id, targetDate);
-    });
-    Object.entries(planToggles).forEach(([itemId, desired]) => {
-      const current = planCheckins.some(c => c.planItemId === itemId && c.date === targetDate && c.done);
-      if (desired && !current) store.checkinPlanItem(itemId, targetDate);
-      if (!desired && current) store.uncheckinPlanItem(itemId, targetDate);
-    });
-    if (!isGraceMode && waterMl > 0) { store.resetWater(); store.addWater(waterMl); }
-    const noteData: Record<string, unknown> = {};
-    if (note) noteData.note = note;
-    if (!isGraceMode && waterMl > 0) noteData.water = waterMl;
-    const pr: string[] = [];
-    if (practices.sit) pr.push('sit');
-    if (practices.stand) pr.push('stand');
-    if (practices.chant) pr.push('chant');
-    if (pr.length) noteData.practices = pr;
-    const customs = freeItems.filter(item => freeCheckins[item.id] && item.name).map(item => item.name);
-    if (customs.length) noteData.customs = customs;
-    const checkedHabits = Object.entries(habitCheckins)
-      .filter(([, checked]) => checked)
-      .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
-      .filter(Boolean);
-    if (checkedHabits.length) noteData.habits = checkedHabits;
-    if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
-    const weightNum = weight ? parseFloat(weight) : undefined;
-    store.submitCheckin(true, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
-    if (isGraceMode) {
-      store.addGraceRecord(targetDate);
-    }
-    onClose();
+    submit(undefined, undefined, true);
   }, [isGraceMode, submit, practices, habitCheckins, planToggles, planCheckins, targetDate, waterMl, note, freeItems, freeCheckins, totalCal, weight, store, onClose, todayPlanItems]);
 
 
@@ -322,10 +290,10 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
           )}
 
           {/* Habits */}
-          {(store.habits ?? []).filter((h) => h.status === 'inProgress').length > 0 && (
+          {(store.habits ?? []).filter((h) => !h.deleted && h.status === 'inProgress').length > 0 && (
             <div>
               <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, paddingLeft: 4 }}>{T('checkinHabitCheck')}</div>
-              {(store.habits ?? []).filter((h) => h.status === 'inProgress').map(h => (
+              {(store.habits ?? []).filter((h) => !h.deleted && h.status === 'inProgress').map(h => (
                 <div key={h.id} style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '8px 4px', borderRadius: 8,

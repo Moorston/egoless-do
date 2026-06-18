@@ -22,7 +22,9 @@ export function statusToI18nKey(status: string): string {
 // ── Helpers ───────────────────────────────────────────────────
 
 function daysBetween(a: string, b: string): number {
-  return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000);
+  const [ay, am, ad] = parseDateParts(a);
+  const [by, bm, bd] = parseDateParts(b);
+  return Math.round((new Date(by, bm, bd).getTime() - new Date(ay, am, ad).getTime()) / 86400000);
 }
 
 /** Parse a YYYY-MM-DD date string into [year, month (0-based), day]. */
@@ -50,18 +52,19 @@ function daysInMonth(date: string): number {
 
 /** Add N days to a date string, returning a new date string. */
 function addDays(date: string, n: number): string {
-  const d = new Date(date);
-  d.setDate(d.getDate() + n);
-  return dateStr(d);
+  const [y, m, d] = parseDateParts(date);
+  const result = new Date(y, m, d + n);
+  return dateStr(result);
 }
 
 /** Get start of week (Monday) for a date string. */
 function weekStart(date: string): string {
-  const d = new Date(date);
-  const day = d.getDay();
+  const [y, m, d] = parseDateParts(date);
+  const dt = new Date(y, m, d);
+  const day = dt.getDay();
   const diff = day === 0 ? 6 : day - 1; // Monday = 0
-  d.setDate(d.getDate() - diff);
-  return dateStr(d);
+  dt.setDate(dt.getDate() - diff);
+  return dateStr(dt);
 }
 
 /** Get start of month for a date string. */
@@ -107,7 +110,7 @@ export function computeExpectedDays(
         const periodStart = cursor > ws ? cursor : ws;
         const periodEnd = clampedEnd < we ? clampedEnd : we;
         const periodDays = daysBetween(periodStart, periodEnd) + 1;
-        expected += Math.min(Math.round((periodDays / 7) * target), target);
+        expected += Math.min(Math.ceil((periodDays / 7) * target), target);
         cursor = addDays(we, 1);
       }
       return expected;
@@ -183,14 +186,14 @@ export function shouldShowToday(
       // Today must be the start of a period
       if (elapsed % every !== 0) return false;
       // Check if already checked in today
-      return !checkins.some(c => c.date === today && c.done);
+      return !checkins.some(c => c.date === today && c.done && !c.deleted);
     }
 
     case 'weekly': {
       // Show if this week's target hasn't been met yet
       const ws = weekStart(today);
       const we = addDays(ws, 6);
-      const doneThisWeek = checkins.filter(c => c.done && c.date >= ws && c.date <= we).length;
+      const doneThisWeek = checkins.filter(c => c.done && !c.deleted && c.date >= ws && c.date <= we).length;
       return doneThisWeek < freq.target;
     }
 
@@ -202,7 +205,7 @@ export function shouldShowToday(
       // Show if this month's target hasn't been met yet
       const ms = monthStart(today);
       const me = addDays(addDays(ms, daysInMonth(ms) - 1), 0);
-      const doneThisMonth = checkins.filter(c => c.done && c.date >= ms && c.date <= me).length;
+      const doneThisMonth = checkins.filter(c => c.done && !c.deleted && c.date >= ms && c.date <= me).length;
       return doneThisMonth < freq.target;
     }
 
@@ -267,79 +270,81 @@ export function addPlan(plans: Plan[], form: {
 }
 
 export function updatePlan(plans: Plan[], id: string, patch: Partial<Plan>): Plan[] {
-  const plan = plans.find(p => p.id === id);
+  const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan) return plans;
-  // Don't allow changing status directly via updatePlan (use dedicated status functions)
-  if (patch.status && patch.status !== plan.status) return plans;
   // Don't allow editing completed or cancelled plans
   if (plan.status === 'completed' || plan.status === 'cancelled') return plans;
-  return plans.map(p => p.id === id ? { ...p, ...patch, updatedAt: Date.now() } : p);
+  // Don't allow changing status directly via updatePlan (use dedicated status functions)
+  const { status, ...rest } = patch;
+  if (status && status !== plan.status) return plans; // Block status change entirely
+  return plans.map(p => p.id === id ? { ...p, ...rest, updatedAt: Date.now() } : p);
 }
 
 export function deletePlan(plans: Plan[], id: string): Plan[] {
-  return plans.map(p => p.id === id ? { ...p, deleted: true, updatedAt: Date.now() } : p);
+  return plans.map(p => p.id === id && !p.deleted ? { ...p, deleted: true, updatedAt: Date.now() } : p);
 }
 
 // ── Plan status operations ────────────────────────────────────
 
 export function startPlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
   const now = Date.now();
-  const plan = plans.find(p => p.id === id);
+  const today = dateStr();
+  const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status !== 'not_started') return { plans, planItems };
   // Check if there's already another active plan
   const hasActive = plans.some(p => p.id !== id && !p.deleted && isPlanActive(p.status));
   if (hasActive) return { plans, planItems };
   return {
     plans: plans.map(p => p.id === id ? { ...p, status: 'in_progress' as PlanStatus, updatedAt: now } : p),
-    planItems: planItems.map(i => i.planId === id && i.status === 'not_started'
+    planItems: planItems.map(i => i.planId === id && !i.deleted && i.status === 'not_started' && i.startDate <= today
       ? { ...i, status: 'in_progress' as PlanItemStatus, updatedAt: now } : i),
   };
 }
 
 export function pausePlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
   const now = Date.now();
-  const plan = plans.find(p => p.id === id);
+  const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status !== 'in_progress') return { plans, planItems };
   return {
     plans: plans.map(p => p.id === id ? { ...p, status: 'paused' as PlanStatus, updatedAt: now } : p),
-    planItems: planItems.map(i => i.planId === id && i.status === 'in_progress'
+    planItems: planItems.map(i => i.planId === id && !i.deleted && i.status === 'in_progress'
       ? { ...i, status: 'paused' as PlanItemStatus, updatedAt: now } : i),
   };
 }
 
 export function resumePlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
   const now = Date.now();
-  const plan = plans.find(p => p.id === id);
+  const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status !== 'paused') return { plans, planItems };
   // Check if there's already another active plan
   const hasActive = plans.some(p => p.id !== id && !p.deleted && isPlanActive(p.status));
   if (hasActive) return { plans, planItems };
   return {
     plans: plans.map(p => p.id === id ? { ...p, status: 'in_progress' as PlanStatus, updatedAt: now } : p),
-    planItems: planItems.map(i => i.planId === id && i.status === 'paused'
+    planItems: planItems.map(i => i.planId === id && !i.deleted && i.status === 'paused'
       ? { ...i, status: 'in_progress' as PlanItemStatus, updatedAt: now } : i),
   };
 }
 
 export function completePlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
   const now = Date.now();
-  const plan = plans.find(p => p.id === id);
+  const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return { plans, planItems };
   const progress = computePlanProgress(plan, planItems);
   return {
     plans: plans.map(p => p.id === id ? { ...p, status: 'completed' as PlanStatus, progress, updatedAt: now } : p),
-    planItems: planItems.map(i => i.planId === id && i.status !== 'completed' && i.status !== 'cancelled'
+    planItems: planItems.map(i => i.planId === id && !i.deleted && i.status !== 'completed' && i.status !== 'cancelled'
       ? { ...i, status: 'completed' as PlanItemStatus, updatedAt: now } : i),
   };
 }
 
 export function cancelPlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
   const now = Date.now();
-  const plan = plans.find(p => p.id === id);
+  const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return { plans, planItems };
   return {
     plans: plans.map(p => p.id === id ? { ...p, status: 'cancelled' as PlanStatus, updatedAt: now } : p),
-    planItems: planItems.map(i => i.planId === id && i.status !== 'completed' && i.status !== 'cancelled'
+    planItems: planItems.map(i => i.planId === id && !i.deleted && i.status !== 'completed' && i.status !== 'cancelled'
       ? { ...i, status: 'cancelled' as PlanItemStatus, updatedAt: now } : i),
   };
 }
@@ -349,7 +354,7 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
   let plansChanged = false;
   let itemsChanged = false;
   const delayedPlans: Plan[] = [];
-  const now = new Date(today).getTime();
+  const now = Date.now();
 
   // Pre-build: does any non-deleted active plan already exist?
   let hasActivePlan = plans.some(p => !p.deleted && isPlanActive(p.status));
@@ -361,17 +366,17 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
       if (hasActivePlan) return p;
       hasActivePlan = true; // Prevent multiple auto-starts
       plansChanged = true;
-      const started = { ...p, status: 'in_progress' as PlanStatus, updatedAt: now };
+      let started = { ...p, status: 'in_progress' as PlanStatus, updatedAt: now };
       // Check delayed in same pass — plan may already be past endDate
       if (started.endDate < today && !started.lastDelayedNotifyAt) {
         delayedPlans.push(started);
       }
       return started;
     }
-    // Mark paused plans as delayed if endDate has passed (keep paused status, just update timestamp)
-    if (p.status === 'paused' && p.endDate < today) {
+    // Mark paused plans as delayed if endDate has passed (keep paused status)
+    if (p.status === 'paused' && p.endDate < today && !p.lastDelayedNotifyAt) {
       plansChanged = true;
-      return { ...p, updatedAt: now };
+      return { ...p, lastDelayedNotifyAt: now, updatedAt: now };
     }
     // Detect delayed plans: in_progress but endDate has passed
     if (p.status === 'in_progress' && p.endDate < today && !p.lastDelayedNotifyAt) {
@@ -394,11 +399,12 @@ export function checkAutoStatus(plans: Plan[], planItems: PlanItem[], today: str
       return { ...item, status: 'in_progress' as PlanItemStatus, updatedAt: now };
     }
 
-    // Mark overdue items as delayed
+    // Mark overdue items as delayed (skip if already delayed to avoid redundant updates)
     if (item.status === 'in_progress' && item.endDate < today) {
       itemsChanged = true;
       return { ...item, status: 'delayed' as PlanItemStatus, updatedAt: now };
     }
+    if (item.status === 'delayed') return item;
 
     return item;
   });
@@ -504,8 +510,8 @@ export function addPlanItem(planItems: PlanItem[], form: {
 }, plans?: Plan[], today?: string): PlanItem[] {
   // Check if the plan is active (not completed or cancelled)
   if (plans) {
-    const plan = plans.find(p => p.id === form.planId);
-    if (!plan || plan.deleted || plan.status === 'completed' || plan.status === 'cancelled') return planItems;
+    const plan = plans.find(p => p.id === form.planId && !p.deleted);
+    if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return planItems;
   }
   const now = today ?? dateStr();
   const status: PlanItemStatus = form.startDate <= now ? 'in_progress' : 'not_started';
@@ -534,11 +540,11 @@ export function addPlanItem(planItems: PlanItem[], form: {
 }
 
 export function updatePlanItem(planItems: PlanItem[], id: string, patch: Partial<PlanItem>): PlanItem[] {
-  return planItems.map(i => i.id === id ? { ...i, ...patch, updatedAt: Date.now() } : i);
+  return planItems.map(i => i.id === id && !i.deleted ? { ...i, ...patch, updatedAt: Date.now() } : i);
 }
 
 export function deletePlanItem(planItems: PlanItem[], id: string): PlanItem[] {
-  return planItems.map(i => i.id === id ? { ...i, deleted: true, updatedAt: Date.now() } : i);
+  return planItems.map(i => i.id === id && !i.deleted ? { ...i, deleted: true, updatedAt: Date.now() } : i);
 }
 
 /** Create a plan item from a reflection */
@@ -575,6 +581,7 @@ export function createPlanItemFromReflection(
     priority,
     targetMetric: targetMetric || defaultTargetMetric,
     reflectionId: reflection.id,
+    frequency: undefined,
     order: 0,
   };
 }
@@ -643,7 +650,7 @@ export function unlinkAllReflectionsFromPlan(
 ): PlanItem[] {
   const now = Date.now();
   return planItems.map(i =>
-    i.planId === planId && i.reflectionId
+    i.planId === planId && !i.deleted && i.reflectionId
       ? { ...i, reflectionId: undefined, updatedAt: now }
       : i
   );
@@ -652,10 +659,10 @@ export function unlinkAllReflectionsFromPlan(
 // ── PlanItemCheckin ───────────────────────────────────────────
 
 export function checkinItem(checkins: PlanItemCheckin[], planItemId: string, date: string, linkedModule?: string): PlanItemCheckin[] {
-  const existing = checkins.find(c => c.planItemId === planItemId && c.date === date);
+  const existing = checkins.find(c => c.planItemId === planItemId && c.date === date && !c.deleted);
   if (existing) {
     return checkins.map(c =>
-      c.planItemId === planItemId && c.date === date
+      c.planItemId === planItemId && c.date === date && !c.deleted
         ? { ...c, done: true, linkedModule, updatedAt: Date.now() }
         : c
     );
@@ -664,10 +671,10 @@ export function checkinItem(checkins: PlanItemCheckin[], planItemId: string, dat
 }
 
 export function uncheckinItem(checkins: PlanItemCheckin[], planItemId: string, date: string): PlanItemCheckin[] {
-  const existing = checkins.find(c => c.planItemId === planItemId && c.date === date);
+  const existing = checkins.find(c => c.planItemId === planItemId && c.date === date && !c.deleted);
   if (existing) {
     return checkins.map(c =>
-      c.planItemId === planItemId && c.date === date
+      c.planItemId === planItemId && c.date === date && !c.deleted
         ? { ...c, done: false, updatedAt: Date.now() }
         : c
     );
@@ -707,7 +714,7 @@ export function syncPlanItemsFromModules(
   }
   const doneTodaySet = new Set<string>();
   for (const c of checkins) {
-    if (c.date === today && c.done) doneTodaySet.add(c.planItemId);
+    if (c.date === today && c.done && !c.deleted) doneTodaySet.add(c.planItemId);
   }
 
   // Pre-compute module state booleans
@@ -715,7 +722,7 @@ export function syncPlanItemsFromModules(
   const meditationDone = state.medHistory.some(m => m.date === today && !m.deleted);
   const habitById = new Map<string, boolean>();
   for (const h of state.habits) {
-    if (!h.deleted) habitById.set(h.id, h.checkedDates.includes(today));
+    if (!h.deleted) habitById.set(h.id, (h.checkedDates ?? []).includes(today));
   }
   // Pre-compute max fasting hours and exercise minutes for today (single pass)
   let maxFastingHours = 0;
@@ -725,8 +732,11 @@ export function syncPlanItemsFromModules(
       maxFastingHours = Math.max(maxFastingHours, (f.endedAt - f.startedAt) / 3600000);
     }
   }
-  if (state.activeFasting != null && dateStr(new Date(state.activeFasting.startedAt)) === today) {
-    maxFastingHours = Math.max(maxFastingHours, (Date.now() - state.activeFasting.startedAt) / 3600000);
+  if (state.activeFasting != null) {
+    const activeStart = dateStr(new Date(state.activeFasting.startedAt));
+    if (activeStart === today || activeStart < today) {
+      maxFastingHours = Math.max(maxFastingHours, (Date.now() - state.activeFasting.startedAt) / 3600000);
+    }
   }
   let maxExerciseMinutes = 0;
   for (const e of state.exerciseLog) {
@@ -804,19 +814,19 @@ function countDoneCheckins(
   if (!arr) return 0;
   const doneDates = new Set<string>();
   for (const c of arr) {
-    if (c.done && c.date >= startDate && c.date <= endDate) doneDates.add(c.date);
+    if (c.done && !c.deleted && c.date >= startDate && c.date <= endDate) doneDates.add(c.date);
   }
   return doneDates.size;
 }
 
 export function computeItemProgress(item: PlanItem, checkins: PlanItemCheckin[], today: string): number {
   const clampedToday = today > item.endDate ? item.endDate : today;
-  const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
+  const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, clampedToday);
   if (expectedDays <= 0) return 0;
 
   const doneDates = new Set<string>();
   for (const c of checkins) {
-    if (c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday) {
+    if (c.planItemId === item.id && c.done && !c.deleted && c.date >= item.startDate && c.date <= clampedToday) {
       doneDates.add(c.date);
     }
   }
@@ -878,7 +888,7 @@ export function refreshPlanItemStats(planItems: PlanItem[], checkins: PlanItemCh
     if (item.deleted) return item;
     const clampedToday = today > item.endDate ? item.endDate : today;
     const doneCount = countDoneCheckins(index, item.id, item.startDate, clampedToday);
-    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
+    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, clampedToday);
     const progress = expectedDays > 0 ? Math.min(Math.round((doneCount / expectedDays) * 100), 100) : 0;
     if (item.totalCheckinDays !== doneCount || item.progress !== progress) {
       return { ...item, totalCheckinDays: doneCount, progress, updatedAt: Date.now() };
@@ -908,13 +918,13 @@ export function addDailyCustomTodo(todos: DailyCustomTodo[], planId: string, nam
 
 export function toggleDailyCustomTodo(todos: DailyCustomTodo[], id: string, date: string): DailyCustomTodo[] {
   return todos.map(t => {
-    if (t.id !== id || t.date !== date) return t;
+    if (t.id !== id || t.date !== date || t.deleted) return t;
     return { ...t, done: !t.done, updatedAt: Date.now() };
   });
 }
 
 export function deleteDailyCustomTodo(todos: DailyCustomTodo[], id: string): DailyCustomTodo[] {
-  return todos.map(t => t.id === id ? { ...t, deleted: true, updatedAt: Date.now() } : t);
+  return todos.map(t => t.id === id && !t.deleted ? { ...t, deleted: true, updatedAt: Date.now() } : t);
 }
 
 export function getTodayCustomTodos(todos: DailyCustomTodo[], planId: string, date: string): DailyCustomTodo[] {
@@ -939,7 +949,7 @@ export function saveDailyTodoHistory(
   // Pre-build done checkin set for O(1) lookup
   const doneCheckinSet = new Set<string>();
   for (const c of planItemCheckins) {
-    if (c.date === date && c.done) doneCheckinSet.add(c.planItemId);
+    if (c.date === date && c.done && !c.deleted) doneCheckinSet.add(c.planItemId);
   }
 
   // 获取当天的计划任务完成情况

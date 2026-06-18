@@ -18,7 +18,7 @@ export default function CheckinDetailScreen() {
   const nav = useRootNavigation();
   const route = useRoute<DetailRoute>();
   const date = route.params?.date ?? '';
-  const record = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === date);
+  const record = (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === date);
 
   if (!record) {
     return (
@@ -33,7 +33,7 @@ export default function CheckinDetailScreen() {
     );
   }
 
-  const streak = record.done ? calculateCheckinStreak(store.checkinHistory ?? [], date) : 0;
+  const streak = record.done ? calculateCheckinStreak((store.checkinHistory ?? []).filter(c => !c.deleted), date) : 0;
   const parsed = parseCheckinNote(record.note ?? '');
 
   const detailRows: { label: string; value: string; color?: string }[] = [

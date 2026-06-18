@@ -345,7 +345,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
   const containerOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    Animated.sequence([
+    const seq = Animated.sequence([
       Animated.delay(800),
       Animated.parallel([
         Animated.timing(titleOpacity, {
@@ -366,16 +366,18 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
         duration: 500,
         useNativeDriver: true,
       }),
-    ]).start(() => {
+    ]);
+    seq.start(() => {
       onFinish();
     });
-    setTimeout(() => {
+    const t = setTimeout(() => {
       Animated.timing(titleGlow, {
         toValue: 1,
         duration: 1200,
         useNativeDriver: false,
       }).start();
     }, 800);
+    return () => { seq.stop(); clearTimeout(t); };
   }, []);
 
   const titleShadowRadius = titleGlow.interpolate({

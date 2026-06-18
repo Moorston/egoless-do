@@ -128,8 +128,9 @@ export default function StarfieldBackground() {
     const handleVisibility = () => {
       if (document.hidden) {
         if (animRef.current) cancelAnimationFrame(animRef.current);
+        animRef.current = 0;
       } else {
-        animate();
+        if (!animRef.current) animate();
       }
     };
     document.addEventListener('visibilitychange', handleVisibility);

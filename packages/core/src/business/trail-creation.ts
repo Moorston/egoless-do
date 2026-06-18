@@ -112,7 +112,7 @@ export function computeCandidatePool(
     pool = pool.filter(r =>
       r.content.toLowerCase().includes(q) ||
       r.tags.some(t => t.toLowerCase().includes(q)) ||
-      r.mood.toLowerCase().includes(q)
+      (r.mood ?? '').toLowerCase().includes(q)
     );
   }
 
@@ -223,7 +223,7 @@ export function detectTagFocus(refs: MindReflection[]): TrailRecommendation | nu
   if (!bestTag) return null;
 
   const tagRefs = tagCounts.get(bestTag)!;
-  const sorted = tagRefs.sort((a, b) => a.timestamp - b.timestamp);
+  const sorted = [...tagRefs].sort((a, b) => a.timestamp - b.timestamp);
   const limited = sorted.slice(0, 8);
 
   return {
@@ -271,7 +271,7 @@ export function detectTimePattern(refs: MindReflection[]): TrailRecommendation |
 
   if (bestRefs.length < 3) return null;
 
-  const sorted = bestRefs.sort((a, b) => a.timestamp - b.timestamp);
+  const sorted = [...bestRefs].sort((a, b) => a.timestamp - b.timestamp);
   const limited = sorted.slice(0, 8);
 
   return {
@@ -304,7 +304,7 @@ export function matchByKeyword(
     let score = 0;
     const content = r.content.toLowerCase();
     const tags = r.tags.map(t => t.toLowerCase());
-    const mood = r.mood.toLowerCase();
+    const mood = (r.mood ?? '').toLowerCase();
 
     for (const term of terms) {
       if (content.includes(term)) score += 3;
@@ -430,7 +430,7 @@ export function formatDateShort(ts: number): string {
 }
 
 export function daysBetween(a: number, b: number): number {
-  return Math.max(1, Math.round(Math.abs(b - a) / 86400000));
+  return Math.round(Math.abs(b - a) / 86400000);
 }
 
 export function getMostFrequentTag(refs: MindReflection[]): string {
@@ -490,11 +490,6 @@ export function analyzeTrailGaps(refs: MindReflection[]): TrailGap[] {
   }
 
   // Mood gaps: detect missing emotional transitions
-  const MOOD_SCORES: Record<string, number> = {
-    '难过': 1, '焦虑': 2, '生气': 2, '疲惫': 2,
-    '平静': 3, '释然': 3, '淡定': 3,
-    '开心': 4, '满足': 4, '感恩': 4, '兴奋': 4,
-  };
 
   const moods = sorted.map(r => r.mood);
   const uniqueMoods = [...new Set(moods)];
@@ -561,7 +556,8 @@ function calcOverlap(a: string[], b: string[]): number {
   for (const id of setA) {
     if (setB.has(id)) overlap++;
   }
-  return overlap / Math.max(setA.size, setB.size);
+  const max = Math.max(setA.size, setB.size);
+  return max === 0 ? 0 : overlap / max;
 }
 
 export function mergeAndRank(
@@ -635,30 +631,31 @@ export async function computeHybridRecommendations(
     const { recommendTrailsViaAI } = await import('../ai/trail-recommender');
     const aiResult = await recommendTrailsViaAI(candidates);
 
-    if (aiResult.length === 0) {
+    if (aiResult.recommendations.length === 0) {
       return localWithReason;
     }
 
-    // 转换 AI 推荐为 TrailRecommendation 格式
-    const aiRecs: TrailRecommendation[] = aiResult.map(rec => ({
+    // Map indices from targetReflections (RAG subset) back to candidates
+    const tgt = aiResult.targetReflections;
+    const aiRecs: TrailRecommendation[] = aiResult.recommendations.map(rec => {
+      const validItems = rec.reflectionIndices.map(i => tgt[i]).filter(Boolean) as typeof tgt;
+      const timestamps = validItems.map(r => r!.timestamp);
+      return {
       name: rec.name,
       narrative: rec.description,
-      reflectionIds: rec.reflectionIndices.map(i => candidates[i]?.id).filter(Boolean),
-      moods: rec.reflectionIndices.map(i => candidates[i]?.mood).filter(Boolean),
-      primaryTag: getMostFrequentTag(rec.reflectionIndices.map(i => candidates[i]).filter(Boolean)),
-      startDate: Math.min(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? Infinity)),
-      endDate: Math.max(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? -Infinity)),
-      spanDays: daysBetween(
-        Math.min(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? Infinity)),
-        Math.max(...rec.reflectionIndices.map(i => candidates[i]?.timestamp ?? -Infinity))
-      ),
-      trend: computeMoodTrendSimple(rec.reflectionIndices.map(i => candidates[i]).filter(Boolean)),
+      reflectionIds: validItems.map(r => r!.id),
+      moods: validItems.map(r => r!.mood ?? ''),
+      primaryTag: getMostFrequentTag(validItems as any),
+      startDate: timestamps.length > 0 ? Math.min(...timestamps) : Date.now(),
+      endDate: timestamps.length > 0 ? Math.max(...timestamps) : Date.now(),
+      spanDays: timestamps.length > 0 ? daysBetween(Math.min(...timestamps), Math.max(...timestamps)) : 1,
+      trend: computeMoodTrendSimple(validItems as any),
       assignedCount: 0,
       score: rec.confidence * 10,
       type: 'mood',
       reason: rec.description,
       source: 'ai',
-    }));
+    }});
 
     // 3. 合并 + 去重 + 排序
     return mergeAndRank(localWithReason, aiRecs);

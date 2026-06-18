@@ -70,7 +70,7 @@ const MoodManagerPanel = React.memo(function MoodManagerPanel({ onClose }: { onC
 
   const confirmMessage = useMemo(() => {
     if (!confirmDel) return '';
-    const usedCount = (store.reflections ?? []).filter(r => r.mood === confirmDel).length;
+    const usedCount = (store.reflections ?? []).filter(r => !r.deleted && r.mood === confirmDel).length;
     return usedCount > 0
       ? `${T('moodDeleteConfirm')} ${T('moodUsedBy').replace('{count}', String(usedCount))}`
       : T('moodDeleteConfirm');

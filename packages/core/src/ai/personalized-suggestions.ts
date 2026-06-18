@@ -2,6 +2,7 @@
 import type { MindReflection, Habit, Plan, CheckinEntry } from '../types';
 import type { ThoughtPattern } from './thought-patterns';
 import type { RiskWarning } from './risk-warning';
+import { dateStr } from '../utils';
 
 export interface PersonalizedSuggestion {
   id: string;
@@ -73,10 +74,10 @@ export function generateHabitSuggestions(
   const suggestions: PersonalizedSuggestion[] = [];
 
   // 检查进行中的习惯
-  const activeHabits = habits.filter(h => h.status === 'inProgress');
+  const activeHabits = habits.filter(h => !h.deleted && h.status === 'inProgress');
   
   activeHabits.forEach(habit => {
-    const progress = habit.doneDays / habit.targetDays;
+    const progress = habit.targetDays > 0 ? habit.doneDays / habit.targetDays : 0;
     
     // 即将完成的习惯
     if (progress >= 0.8 && progress < 1) {
@@ -93,8 +94,8 @@ export function generateHabitSuggestions(
     }
 
     // 习惯与感念的关联
-    const relatedReflections = reflections.filter(r => 
-      !r.deleted && r.tags.some(t => t.includes(habit.name))
+    const relatedReflections = reflections.filter(r =>
+      !r.deleted && (r.tags ?? []).some(t => t.includes(habit.name))
     );
     
     if (relatedReflections.length >= 3) {
@@ -210,8 +211,8 @@ export function generateTimeBasedSuggestions(
 
   // 晚间建议
   if (hour >= 21 && hour <= 23) {
-    const todayCheckin = checkinHistory.find(c => 
-      c.date === today.toISOString().slice(0, 10)
+    const todayCheckin = checkinHistory.find(c =>
+      c.date === dateStr(today) && !c.deleted
     );
 
     if (!todayCheckin) {

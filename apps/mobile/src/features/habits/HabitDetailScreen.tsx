@@ -28,7 +28,7 @@ export default function HabitDetailScreen() {
 
   const { habitId } = route.params as { habitId: string };
   const habit = useMemo(() =>
-    (store.habits ?? []).find(h => h.id === habitId),
+    (store.habits ?? []).find(h => !h.deleted && h.id === habitId),
     [store.habits, habitId]
   );
 
@@ -103,10 +103,10 @@ export default function HabitDetailScreen() {
           {/* Progress Bar */}
           <View style={styles.progressContainer}>
             <View style={[styles.progressBar, { backgroundColor: TH.border }]}>
-              <View style={[styles.progressFill, { width: `${Math.min(100, (habit.doneDays / habit.targetDays) * 100)}%`, backgroundColor: P }]} />
+              <View style={[styles.progressFill, { width: `${habit.targetDays > 0 ? Math.min(100, (habit.doneDays / habit.targetDays) * 100) : 0}%`, backgroundColor: P }]} />
             </View>
             <Text style={[styles.progressText, { color: TH.sub }]}>
-              {Math.round((habit.doneDays / habit.targetDays) * 100)}%
+              {habit.targetDays > 0 ? Math.round((habit.doneDays / habit.targetDays) * 100) : 0}%
             </Text>
           </View>
         </View>
@@ -145,8 +145,10 @@ export default function HabitDetailScreen() {
                 store.updateHabit(habitId, { alarmEnabled: !habit.alarmEnabled });
                 const granted = await requestNotificationPermission();
                 if (granted) {
-                  const habits = (store.habits ?? []).filter(h => !h.deleted);
-                  await rescheduleAllHabitReminders(habits).catch(() => {});
+                  const s = useAppStore.getState();
+                  const habits = s.habits.filter(h => !h.deleted);
+                  const [gh, gm] = (s.remindTime ?? '21:00').split(':').map(Number);
+                  await rescheduleAllHabitReminders(habits, gh, gm).catch(() => {});
                 }
               }}
             />
@@ -280,7 +282,7 @@ export default function HabitDetailScreen() {
 
         {/* Relation Map Entry */}
         <TouchableOpacity
-          onPress={() => (nav as any).navigate('RelationMap', { context: { type: 'habit', id: habitId } })}
+          onPress={() => nav.navigate('RelationMap', { context: { type: 'habit', id: habitId } })}
           style={[styles.relationEntry, { backgroundColor: TH.card, borderColor: TH.border }]}
         >
           <View style={[styles.relationIcon, { backgroundColor: `${P}20` }]}>
@@ -302,8 +304,10 @@ export default function HabitDetailScreen() {
           setShowAlarmPicker(false);
           const granted = await requestNotificationPermission();
           if (granted) {
-            const habits = (store.habits ?? []).filter(h => !h.deleted);
-            await rescheduleAllHabitReminders(habits).catch(() => {});
+            const s = useAppStore.getState();
+            const habits = s.habits.filter(h => !h.deleted);
+            const [gh, gm] = (s.remindTime ?? '21:00').split(':').map(Number);
+            await rescheduleAllHabitReminders(habits, gh, gm).catch(() => {});
           }
         }}
         onClose={() => setShowAlarmPicker(false)}

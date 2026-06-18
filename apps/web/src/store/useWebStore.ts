@@ -40,7 +40,7 @@ export const useWebStore = create<WebStore>()(
       ...createReflectionSlice(noopAdapter)(...a),
       ...createFastingSlice(noopAdapter, triggerAutoSync)(...a),
       ...createMeditationSlice(noopAdapter, triggerAutoSync)(...a),
-      ...createFoodSlice(noopAdapter)(...a),
+      ...createFoodSlice(noopAdapter, undefined, triggerAutoSync)(...a),
       ...createExerciseSlice(noopAdapter, triggerAutoSync)(...a),
       ...createCheckinSlice(noopAdapter, triggerAutoSync)(...a),
       ...createProfileSlice(noopAdapter)(...a),
@@ -61,9 +61,9 @@ export const useWebStore = create<WebStore>()(
     }),
     {
       name: 'egoless-do-web',
-      storage: createJSONStorage(() =>
-        typeof window !== 'undefined' ? localStorage : ({} as Storage)
-      ),
+      storage: typeof window !== 'undefined'
+        ? createJSONStorage(() => localStorage)
+        : undefined,
       partialize: s => ({
         auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
         waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
@@ -75,11 +75,17 @@ export const useWebStore = create<WebStore>()(
         weightUnit: s.weightUnit, customTags: s.customTags, customMoods: s.customMoods,
         allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,
         customFoodPresets: s.customFoodPresets,
+        reflectionFilters: s.reflectionFilters,
         exerciseLog: s.exerciseLog,
         plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
         dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
         graceHistory: s.graceHistory, thoughtTrails: s.thoughtTrails,
+        trailNotes: s.trailNotes, reflectionLinks: s.reflectionLinks,
         recycleBin: s.recycleBin,
+        healthSyncEnabled: s.healthSyncEnabled,
+        aiMode: s.aiMode, aiModels: s.aiModels,
+        checkinReviews: s.checkinReviews,
+        ignoredRecPatterns: s.ignoredRecPatterns,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

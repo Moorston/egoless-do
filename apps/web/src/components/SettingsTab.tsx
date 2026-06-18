@@ -8,7 +8,7 @@ import { Toggle, useTheme, useT, cs } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
 import { ConfirmDialog } from './ManagerPanelShared';
-import { BarChart3, ClipboardList, CalendarCheck, Utensils, Shield, HeartCrack, Heart, RefreshCw, Share2, PersonStanding, Trash2, LogOut, ChevronRight, Check, X, Bell, Clock, Globe, Palette, Scale, Cloud, CloudUpload, History, Info, Lock } from 'lucide-react';
+import { BarChart3, ClipboardList, CalendarCheck, Utensils, Shield, HeartCrack, RefreshCw, Share2, PersonStanding, Trash2, LogOut, ChevronRight, Check, X, Bell, Clock, Globe, Palette, Scale, Info, Lock } from 'lucide-react';
 
 interface SettingsRow {
   label: string;
@@ -29,7 +29,6 @@ export default function SettingsTab({ onOpenStats }: { onOpenStats?: () => void 
   const [showLang, setShowLang] = useState(false);
   const [showTheme, setShowTheme] = useState(false);
   const [showWeightUnit, setShowWeightUnit] = useState(false);
-  const [healthSync, setHealthSync] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const sections = [
@@ -55,24 +54,21 @@ export default function SettingsTab({ onOpenStats }: { onOpenStats?: () => void 
       { label: T('settingsTheme'), icon: <Palette size={18} />, right: <span style={{ color: TH.sub }}>{THEMES[store.theme].name} <ChevronRight size={18} style={{verticalAlign:'middle'}} /></span>, onClick: () => setShowTheme(true) },
       { label: T('settingsWeightUnit'), icon: <Scale size={18} />, right: <span style={{ color: TH.sub }}>{T(store.weightUnit === 'kg' ? 'weightUnitKg' : 'weightUnitLb')} <ChevronRight size={18} style={{verticalAlign:'middle'}} /></span>, onClick: () => setShowWeightUnit(true) },
     ]},
-    { title: T('settingsHealthSection'), rows: [
-      { label: T('settingsAppleHealth'), icon: <Heart size={18} />, sub: healthSync ? T('settingsConnected') : T('settingsNotEnabled'), right: <Toggle on={healthSync} onChange={() => setHealthSync(v => !v)} />, last: true },
-    ]},
     { title: T('settingsAbout'), rows: [
       { label: T('settingsShareFriend'), icon: <Share2 size={18} />, sub: T('settingsShareDesc'), right: <ChevronRight size={18} color={TH.sub} />, onClick: async () => {
         const url = 'https://egoless-do.app';
         try {
           if (navigator.share) {
-            await navigator.share({ title: '心流纪 Egoless Do', url });
+            await navigator.share({ title: T('shareTitle'), url });
           } else {
             await navigator.clipboard.writeText(url);
-            alert('链接已复制');
+            alert(T('linkCopied'));
           }
         } catch { /* cancelled */ }
       }},
       { label: T('settingsVersion'), icon: <Info size={18} />, right: <span style={{ color: TH.sub }}>1.0.0</span> },
       { label: T('settingsPrivacy'), icon: <Lock size={18} />, right: <ChevronRight size={18} color={TH.sub} />, onClick: () => overlay.open('privacyPolicy') },
-      { label: T('settingsResetWelcome'), icon: <RefreshCw size={18} />, sub: T('settingsResetWelcomeDesc'), right: <ChevronRight size={18} color={TH.sub} />, last: true },
+      { label: T('settingsResetWelcome'), icon: <RefreshCw size={18} />, sub: T('settingsResetWelcomeDesc'), last: true },
     ]},
     { title: T('settingsAccount'), rows: [
       { label: T('settingsClearData'), icon: <Trash2 size={18} />, sub: T('settingsClearDataDesc'), right: <span style={{ color: '#EF4444' }}>{T('settingsClearData')}</span>, onClick: () => setShowClearConfirm(true) },

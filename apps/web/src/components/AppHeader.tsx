@@ -17,7 +17,7 @@ export default function AppHeader() {
 
   const yStr = yesterday();
   const currentMonth = dateStr().slice(0, 7);
-  const yesterdayRecord = checkinHistory?.find((h) => h.date === yStr);
+  const yesterdayRecord = checkinHistory?.find((h) => h.date === yStr && !h.deleted);
   const showGrace = yesterdayRecord?.done !== true;
   const graceAvailable = isGraceAvailable(graceHistory ?? [], graceQuota, currentMonth, yStr);
 

@@ -40,7 +40,7 @@ export default function MeditationScreen() {
   const targetSec = durMin * 60;
   const remaining = targetSec - sec;
   const pct = sec / targetSec * 100;
-  const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory ?? []), [store.medHistory]);
+  const todayMedMin = useMemo(() => getTodayMedMinutes((store.medHistory ?? []).filter(m => !m.deleted)), [store.medHistory]);
 
   // Music store — only for playback control
   const musicPlay = useMusicStore(s => s.play);
@@ -104,7 +104,7 @@ export default function MeditationScreen() {
         musicStartedRef.current = false;
       }
     }
-  }, [active]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [active, selectedTrack, musicPlay]);
 
   // Detect timer completion
   const addMedMinutes = store.addMedMinutes;
@@ -126,7 +126,8 @@ export default function MeditationScreen() {
   }, [sec, active, targetSec, durMin, addMedMinutes, playBell, musicStop]);
 
   const handleStop = () => {
-    if (active && !completedRef.current) {
+    const wasCompleted = completedRef.current;
+    if (active && !wasCompleted) {
       completedRef.current = true;
       const elapsedMin = Math.round((sec) / 60);
       if (elapsedMin > 0) store.addMedMinutes(elapsedMin);
@@ -137,7 +138,7 @@ export default function MeditationScreen() {
       audioSessionManager.notifyStopped('music');
       musicStartedRef.current = false;
     }
-    playBell();
+    if (!wasCompleted) playBell();
   };
 
   const handleStart = () => {
@@ -203,7 +204,7 @@ export default function MeditationScreen() {
               </View>
               <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
               <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.medHistory ?? []).length}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.medHistory ?? []).filter(m => !m.deleted).length}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('shareCardSession')}</Text>
               </View>
@@ -276,7 +277,7 @@ export default function MeditationScreen() {
                   <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('medTitle')}</Text>
                 </View>
                 <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{(store.medHistory ?? []).length}</Text>
+                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{(store.medHistory ?? []).filter(m => !m.deleted).length}</Text>
                   <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('shareCardSession')}</Text>
                 </View>
               </View>

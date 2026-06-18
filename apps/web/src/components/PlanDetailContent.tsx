@@ -14,22 +14,23 @@ const EMPTY_CHECKINS: PlanItemCheckin[] = [];
 
 const WEEKDAY_LABELS = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'];
 
-function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string): string {
+function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string, itemId?: string): string {
   switch (freq.mode) {
     case 'daily':
       return T('freqSummaryDaily');
     case 'interval':
       return T('freqSummaryInterval').replace('{n}', String(freq.every));
     case 'weekly': {
-      const d = new Date(today);
+      const [y, m, d2] = today.split('-').map(Number);
+      const d = new Date(y, m - 1, d2);
       const day = d.getDay();
       const ws = new Date(d);
       ws.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
-      const wsStr = ws.toISOString().slice(0, 10);
+      const wsStr = dateStr(ws);
       const we = new Date(ws);
       we.setDate(ws.getDate() + 6);
-      const weStr = we.toISOString().slice(0, 10);
-      const doneThisWeek = checkins.filter(c => c.done && c.date >= wsStr && c.date <= weStr).length;
+      const weStr = dateStr(we);
+      const doneThisWeek = checkins.filter(c => c.done && (!itemId || c.planItemId === itemId) && c.date >= wsStr && c.date <= weStr).length;
       return `📅 ${T('freqSummaryWeekly').replace('{n}', String(freq.target))} | ${T('freqThisWeek')} ${doneThisWeek}/${freq.target}`;
     }
     case 'weekly_fixed': {
@@ -105,8 +106,10 @@ const Heatmap = memo(function Heatmap({ checkins, items, plan, theme, T }: { che
       if (c.done) doneSet.add(`${c.planItemId}:${c.date}`);
     }
     const activeItems = items.filter(i => !i.deleted);
-    const start = new Date(plan.startDate);
-    const end = new Date(plan.endDate);
+    const [sy, sm, sd] = plan.startDate.split('-').map(Number);
+    const [ey, em, ed] = plan.endDate.split('-').map(Number);
+    const start = new Date(sy, sm - 1, sd);
+    const end = new Date(ey, em - 1, ed);
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const ds = dateStr(d);
       let total = 0;
@@ -123,10 +126,12 @@ const Heatmap = memo(function Heatmap({ checkins, items, plan, theme, T }: { che
   }, [checkins, items, plan.startDate, plan.endDate]);
 
   const { weeks } = useMemo(() => {
-    const start = new Date(plan.startDate);
+    const [sy, sm, sd] = plan.startDate.split('-').map(Number);
+    const [ey, em, ed] = plan.endDate.split('-').map(Number);
+    const start = new Date(sy, sm - 1, sd);
     const startDay = start.getDay();
     const dates: string[] = [];
-    for (let d = new Date(start); d <= new Date(plan.endDate); d.setDate(d.getDate() + 1)) {
+    for (let d = new Date(start); d <= new Date(ey, em - 1, ed); d.setDate(d.getDate() + 1)) {
       dates.push(dateStr(d));
     }
     const weeks: (string | null)[][] = [];
@@ -224,9 +229,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     return () => { document.removeEventListener('visibilitychange', handleVisibilityChange); clearInterval(interval); };
   }, []);
 
-  const plan = useMemo(() => (store.plans ?? []).find(p => p.id === planId), [store.plans, planId]);
+  const plan = useMemo(() => (store.plans ?? []).find(p => !p.deleted && p.id === planId), [store.plans, planId]);
   const items = useMemo(() => getPlanItems(store.planItems ?? [], planId), [store.planItems, planId]);
-  const checkins = store.planItemCheckins ?? EMPTY_CHECKINS;
+  const checkins = useMemo(() => (store.planItemCheckins ?? EMPTY_CHECKINS).filter(c => !c.deleted), [store.planItemCheckins]);
 
   // Pre-compute progress for all items (avoids O(N*M) per render)
   const itemProgressMap = useMemo(() => {
@@ -260,8 +265,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   // 历史记录手风琴状态，默认展开最近一天
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
   useEffect(() => {
-    if (historyGroups.length > 0 && expandedDates.size === 0) {
-      setExpandedDates(new Set([historyGroups[0].date]));
+    if (historyGroups.length > 0) {
+      setExpandedDates(prev => prev.size === 0 ? new Set([historyGroups[0].date]) : prev);
     }
   }, [historyGroups]);
 
@@ -452,7 +457,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 {/* Frequency summary */}
                 {(() => { const freq = item.frequency ?? { mode: 'daily' as const }; return (
                   <div style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
-                    {getFrequencySummary(freq, T, checkins, today)}
+                    {getFrequencySummary(freq, T, checkins, today, item.id)}
                   </div>
                 ); })()}
                 {/* Heatmap toggle */}
@@ -552,7 +557,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                           }}>{item.name}</div>
                           {(() => { const freq = item.frequency ?? { mode: 'daily' as const }; return (
                             <div style={{ fontSize: FONT_TINY, color: P, marginTop: 1 }}>
-                              {getFrequencySummary(freq, T, checkins, today)}
+                              {getFrequencySummary(freq, T, checkins, today, item.id)}
                             </div>
                           ); })()}
                           {item.description && (

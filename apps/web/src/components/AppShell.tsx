@@ -75,15 +75,17 @@ export default function AppShell() {
   const scrollPosRef = useRef<Map<number, number>>(new Map());
 
   // Switch tab and preserve scroll position
+  const tabRef = useRef(tab);
+  tabRef.current = tab;
   const switchTab = useCallback((targetIndex: number) => {
-    scrollPosRef.current.set(tab, window.scrollY);
+    scrollPosRef.current.set(tabRef.current, window.scrollY);
     setHeaderTab('home');
     setTab(targetIndex);
     requestAnimationFrame(() => {
       const savedY = scrollPosRef.current.get(targetIndex) ?? 0;
       window.scrollTo(0, savedY);
     });
-  }, [tab]);
+  }, []);
 
   // Initialize PocketBase for community features
   useEffect(() => {
@@ -105,7 +107,7 @@ export default function AppShell() {
     } else if (expiresAt - Date.now() < 3600000) {
       refreshAuth().catch((e) => console.error('[err]', e));
     }
-  }, []);
+  }, [isSignedIn, auth.expiresAt]);
 
   // Auth guard
   useEffect(() => {
@@ -271,7 +273,7 @@ function FabButton({ onClick }: { onClick: () => void }) {
       onMouseLeave={onEnd}
       onTouchStart={(e) => { const t = e.touches[0]; startPos.current = { x: t.clientX, y: t.clientY }; }}
       onTouchMove={(e) => { const t = e.touches[0]; const dx = Math.abs(t.clientX - startPos.current.x), dy = Math.abs(t.clientY - startPos.current.y); if (dx > 4 || dy > 4) onMove(t.clientX, t.clientY); }}
-      onTouchEnd={(e) => { if (!drag.current) onClick(); onEnd(); }}
+      onTouchEnd={(e) => { if (!drag.current) onClick(); onEnd(); e.preventDefault(); }}
       onClick={(e) => { if (drag.current) { e.preventDefault(); return; } onClick(); }}
       style={fabStyle}>
       <Plus size={24} color="#fff" />

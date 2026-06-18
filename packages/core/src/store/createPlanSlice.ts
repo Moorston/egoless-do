@@ -1,4 +1,4 @@
-import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm } from '../types';
+import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm, RecycleBinItem } from '../types';
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
   startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
@@ -42,72 +42,71 @@ export function createPlanSlice(
         return { plans: result.plans };
       });
       if (!planId) return '';
-      const p = get().plans.find(p => p.id === planId);
+      const p = get().plans.find(p => p.id === planId && !p.deleted);
       if (p) adapter.persistChange('plan', p.id, p).catch(console.error);
       return planId;
     },
 
     updatePlan(id, patch) {
       set(s => ({ plans: updatePlan(s.plans ?? [], id, patch) }));
-      const updated = get().plans.find(p => p.id === id);
+      const updated = get().plans.find(p => p.id === id && !p.deleted);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
     },
 
     deletePlan(id) {
       const s = get();
-      const plan = (s.plans ?? []).find(p => p.id === id);
+      const plan = (s.plans ?? []).find(p => p.id === id && !p.deleted);
       if (!plan || !canDeletePlan(plan.status)) return;
-      s.addToRecycleBin({ id, entityType: 'plan', data: plan });
       const now = Date.now();
-      const deletedItemIds: string[] = [];
-      const deletedCheckinIds: string[] = [];
-      const deletedItemIdsSet = new Set<string>();
-      set(prev => {
-        // Pre-build planId index for O(1) checkin lookup
-        const planIdByItemId = new Map<string, string>();
-        for (const i of (prev.planItems ?? [])) {
-          planIdByItemId.set(i.id, i.planId);
-        }
-        return {
-          plans: deletePlan(prev.plans ?? [], id),
-          planItems: (prev.planItems ?? []).map(i => {
-            if (i.planId === id) {
-              deletedItemIds.push(i.id);
-              deletedItemIdsSet.add(i.id);
-              return { ...i, deleted: true, updatedAt: now };
-            }
-            return i;
-          }),
-          planItemCheckins: (prev.planItemCheckins ?? []).map(c => {
-            if (planIdByItemId.get(c.planItemId) === id) {
-              deletedCheckinIds.push(c.id);
-              return { ...c, deleted: true, updatedAt: now };
-            }
-            return c;
-          }),
-          reflections: (prev.reflections ?? []).map(r =>
-            r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId)
-              ? { ...r, linkedPlanItemId: undefined, updatedAt: now }
-              : r,
-          ),
-        };
-      });
+      // Pre-compute ALL affected IDs BEFORE set() to keep updater pure
+      const planItemsToDelete = (s.planItems ?? []).filter(i => i.planId === id && !i.deleted);
+      const deletedItemIdsSet = new Set(planItemsToDelete.map(i => i.id));
+      const deletedItemIds = planItemsToDelete.map(i => i.id);
+      const planIdByItemId = new Map<string, string>();
+      for (const i of (s.planItems ?? [])) {
+        planIdByItemId.set(i.id, i.planId);
+      }
+      const deletedCheckinIds = (s.planItemCheckins ?? [])
+        .filter(c => planIdByItemId.get(c.planItemId) === id && !c.deleted)
+        .map(c => c.id);
+      const affectedReflectionIds = (s.reflections ?? [])
+        .filter(r => !r.deleted && r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId))
+        .map(r => r.id);
+      const recycleEntry: RecycleBinItem = { id, entityType: 'plan', data: plan, deletedAt: now };
+
+      // Atomic: recycle bin + deletion in one set()
+      set(prev => ({
+        recycleBin: [recycleEntry, ...(prev.recycleBin ?? [])],
+        plans: deletePlan(prev.plans ?? [], id),
+        planItems: (prev.planItems ?? []).map(i =>
+          i.planId === id && !i.deleted ? { ...i, deleted: true, updatedAt: now } : i,
+        ),
+        planItemCheckins: (prev.planItemCheckins ?? []).map(c =>
+          deletedCheckinIds.includes(c.id) ? { ...c, deleted: true, updatedAt: now } : c,
+        ),
+        reflections: (prev.reflections ?? []).map(r =>
+          r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId)
+            ? { ...r, linkedPlanItemId: undefined, updatedAt: now }
+            : r,
+        ),
+      }));
       adapter.markDeleted('plan', id).catch(console.error);
       deletedItemIds.forEach(itemId => adapter.markDeleted('planItem', itemId).catch(console.error));
       deletedCheckinIds.forEach(checkinId => adapter.markDeleted('planItemCheckin', checkinId).catch(console.error));
-      // 清除关联感念的 linkedPlanItemId
-      (get().reflections ?? [])
-        .filter(r => r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId))
-        .forEach(r => adapter.persistChange('reflection', r.id, r).catch(console.error));
+      // Persist affected reflections by ID (linkedPlanItemId already cleared in set())
+      affectedReflectionIds.forEach(rid => {
+        const r = get().reflections.find(x => x.id === rid && !x.deleted);
+        if (r) adapter.persistChange('reflection', rid, r).catch(console.error);
+      });
     },
 
     startPlan(id) {
       const s = get();
       const result = startPlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = result.plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id && !p.deleted);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      result.planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id && !i.deleted)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -115,9 +114,9 @@ export function createPlanSlice(
       const s = get();
       const result = pausePlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = result.plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id && !p.deleted);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      result.planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id && !i.deleted)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -125,9 +124,9 @@ export function createPlanSlice(
       const s = get();
       const result = resumePlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = result.plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id && !p.deleted);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      result.planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id && !i.deleted)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -135,9 +134,9 @@ export function createPlanSlice(
       const s = get();
       const result = completePlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = result.plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id && !p.deleted);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      result.planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id && !i.deleted)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -145,9 +144,9 @@ export function createPlanSlice(
       const s = get();
       const result = cancelPlan(s.plans ?? [], s.planItems ?? [], id);
       set({ plans: result.plans, planItems: result.planItems });
-      const updated = result.plans.find(p => p.id === id);
+      const updated = result.plans.find(p => p.id === id && !p.deleted);
       if (updated) adapter.persistChange('plan', id, updated).catch(console.error);
-      result.planItems.filter(i => i.planId === id)
+      result.planItems.filter(i => i.planId === id && !i.deleted)
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
     },
 
@@ -178,30 +177,38 @@ export function createPlanSlice(
     },
 
     addPlanItem(form) {
+      const prevCount = (get().planItems ?? []).filter(i => !i.deleted).length;
       set(s => ({ planItems: addPlanItem(s.planItems ?? [], form, s.plans) }));
       const items = get().planItems;
-      const item = items[items.length - 1];
-      if (item) adapter.persistChange('planItem', item.id, item).catch(console.error);
+      if (items.filter(i => !i.deleted).length > prevCount) {
+        const item = items[items.length - 1];
+        if (item) adapter.persistChange('planItem', item.id, item).catch(console.error);
+      }
     },
 
     updatePlanItem(id, patch) {
       set(s => ({ planItems: updatePlanItem(s.planItems ?? [], id, patch) }));
-      const updated = get().planItems.find(i => i.id === id);
+      const updated = get().planItems.find(i => i.id === id && !i.deleted);
       if (updated) adapter.persistChange('planItem', id, updated).catch(console.error);
     },
 
     deletePlanItem(id) {
       const now = Date.now();
-      const deletedCheckinIds: string[] = [];
+      // Pre-compute ALL affected IDs BEFORE set() to keep updater pure
+      const deletedCheckinIds = (get().planItemCheckins ?? [])
+        .filter(c => c.planItemId === id && !c.deleted)
+        .map(c => c.id);
+      const affectedReflectionIds = (get().reflections ?? [])
+        .filter(r => !r.deleted && r.linkedPlanItemId === id)
+        .map(r => r.id);
+      const affectedTrailIds = (get().thoughtTrails ?? [])
+        .filter(t => !t.deleted && t.linkedPlanItemIds?.includes(id))
+        .map(t => t.id);
       set(prev => ({
         planItems: deletePlanItem(prev.planItems ?? [], id),
-        planItemCheckins: (prev.planItemCheckins ?? []).map(c => {
-          if (c.planItemId === id) {
-            deletedCheckinIds.push(c.id);
-            return { ...c, deleted: true, updatedAt: now };
-          }
-          return c;
-        }),
+        planItemCheckins: (prev.planItemCheckins ?? []).map(c =>
+          c.planItemId === id && !c.deleted ? { ...c, deleted: true, updatedAt: now } : c,
+        ),
         reflections: (prev.reflections ?? []).map(r =>
           r.linkedPlanItemId === id ? { ...r, linkedPlanItemId: undefined, updatedAt: now } : r,
         ),
@@ -213,23 +220,24 @@ export function createPlanSlice(
       }));
       adapter.markDeleted('planItem', id).catch(console.error);
       deletedCheckinIds.forEach(checkinId => adapter.markDeleted('planItemCheckin', checkinId).catch(console.error));
-      // 清除关联感念的 linkedPlanItemId
-      (get().reflections ?? [])
-        .filter(r => r.linkedPlanItemId === id)
-        .forEach(r => adapter.persistChange('reflection', r.id, r).catch(console.error));
-      // 清除关联脉络的 linkedPlanItemIds
-      (get().thoughtTrails ?? [])
-        .filter(t => t.linkedPlanItemIds?.includes(id))
-        .forEach(t => adapter.persistChange('thoughtTrail', t.id, t).catch(console.error));
+      // Persist affected reflections by captured IDs (linkedPlanItemId already cleared in set())
+      affectedReflectionIds.forEach(rid => {
+        const r = get().reflections.find(x => x.id === rid && !x.deleted);
+        if (r) adapter.persistChange('reflection', rid, r).catch(console.error);
+      });
+      // Persist affected thought trails by captured IDs (linkedPlanItemIds already filtered in set())
+      affectedTrailIds.forEach(tid => {
+        const t = get().thoughtTrails.find(x => x.id === tid && !x.deleted);
+        if (t) adapter.persistChange('thoughtTrail', tid, t).catch(console.error);
+      });
     },
 
     checkinPlanItem(planItemId, date) {
       const today = date ?? dateStr();
-      const todayStr = dateStr();
       set(s => {
         const newCheckins = checkinItem(s.planItemCheckins ?? [], planItemId, today);
-        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, todayStr);
-        const item = newItems.find(i => i.id === planItemId);
+        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, today);
+        const item = newItems.find(i => i.id === planItemId && !i.deleted);
         const newHistory = item
           ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], item.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
           : s.dailyTodoHistory;
@@ -237,22 +245,21 @@ export function createPlanSlice(
       });
       // Persist
       const state = get();
-      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today);
+      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today && !c.deleted);
       if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
-      const item = state.planItems.find(i => i.id === planItemId);
+      const item = state.planItems.find(i => i.id === planItemId && !i.deleted);
       if (item) {
-        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today);
+        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today && !h.deleted);
         if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(console.error);
       }
     },
 
     uncheckinPlanItem(planItemId, date) {
       const today = date ?? dateStr();
-      const todayStr = dateStr();
       set(s => {
         const newCheckins = uncheckinItem(s.planItemCheckins ?? [], planItemId, today);
-        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, todayStr);
-        const item = newItems.find(i => i.id === planItemId);
+        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, today);
+        const item = newItems.find(i => i.id === planItemId && !i.deleted);
         const newHistory = item
           ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], item.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
           : s.dailyTodoHistory;
@@ -260,11 +267,11 @@ export function createPlanSlice(
       });
       // Persist
       const state = get();
-      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today);
+      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today && !c.deleted);
       if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(console.error);
-      const item = state.planItems.find(i => i.id === planItemId);
+      const item = state.planItems.find(i => i.id === planItemId && !i.deleted);
       if (item) {
-        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today);
+        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today && !h.deleted);
         if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(console.error);
       }
     },
@@ -296,7 +303,11 @@ export function createPlanSlice(
         return false;
       })();
       if (changed) {
-        set({ planItemCheckins: updatedCheckins });
+        // Atomic: update checkins and refresh plan item stats in one set()
+        set(prev => ({
+          planItemCheckins: updatedCheckins,
+          planItems: refreshPlanItemStats(prev.planItems ?? [], updatedCheckins, today),
+        }));
         // Persist all changed/new checkins
         for (const c of updatedCheckins) {
           const prev = existingMap.get(c.id);
@@ -304,9 +315,6 @@ export function createPlanSlice(
             adapter.persistChange('planItemCheckin', c.id, c).catch(console.error);
           }
         }
-        set(prev => ({
-          planItems: refreshPlanItemStats(prev.planItems ?? [], updatedCheckins, today),
-        }));
       }
     },
 
@@ -315,27 +323,30 @@ export function createPlanSlice(
       set(s => ({
         dailyCustomTodos: addDailyCustomTodoBiz(s.dailyCustomTodos ?? [], planId, name, today, recurring),
       }));
-      const todos = get().dailyCustomTodos;
-      const newTodo = todos[todos.length - 1];
+      const newTodo = [...get().dailyCustomTodos].reverse().find(t => !t.deleted);
       if (newTodo) adapter.persistChange('dailyCustomTodo', newTodo.id, newTodo).catch(console.error);
     },
 
     toggleDailyCustomTodo(id, date) {
       const today = date ?? dateStr();
-      set(s => ({
-        dailyCustomTodos: toggleDailyCustomTodoBiz(s.dailyCustomTodos ?? [], id, today),
-      }));
-      const updated = get().dailyCustomTodos.find(t => t.id === id);
+      // Atomic: toggle todo and save history snapshot in one set()
+      set(s => {
+        const toggledTodos = toggleDailyCustomTodoBiz(s.dailyCustomTodos ?? [], id, today);
+        const updated = toggledTodos.find((t: any) => t.id === id && !t.deleted);
+        const updatedHistory = updated
+          ? saveDailyTodoHistoryBiz(
+              s.dailyTodoHistory ?? [], updated.planId, today,
+              s.planItems ?? [], s.planItemCheckins ?? [], toggledTodos,
+            )
+          : s.dailyTodoHistory;
+        return { dailyCustomTodos: toggledTodos, dailyTodoHistory: updatedHistory };
+      });
+      const updated = get().dailyCustomTodos.find(t => t.id === id && !t.deleted);
       if (updated) adapter.persistChange('dailyCustomTodo', id, updated).catch(console.error);
       // 自动保存当天待办历史
       if (updated) {
         const s = get();
-        const updatedHistory = saveDailyTodoHistoryBiz(
-          s.dailyTodoHistory ?? [], updated.planId, today,
-          s.planItems ?? [], s.planItemCheckins ?? [], s.dailyCustomTodos ?? [],
-        );
-        set({ dailyTodoHistory: updatedHistory });
-        const entry = updatedHistory.find(h => h.planId === updated.planId && h.date === today);
+        const entry = (s.dailyTodoHistory ?? []).find(h => h.planId === updated.planId && h.date === today && !h.deleted);
         if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(console.error);
       }
     },
@@ -360,13 +371,14 @@ export function createPlanSlice(
       );
       set({ dailyTodoHistory: updatedHistory });
       // 持久化新的或更新的历史记录
-      const entry = updatedHistory.find(h => h.planId === planId && h.date === today);
+      const entry = updatedHistory.find(h => h.planId === planId && h.date === today && !h.deleted);
       if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(console.error);
     },
 
     performDailyReset(previousDate) {
       // Derive today from previousDate to handle backfill correctly
-      const d = new Date(previousDate);
+      const [py, pm, pd] = previousDate.split('-').map(Number);
+      const d = new Date(py, pm - 1, pd);
       d.setDate(d.getDate() + 1);
       const today = dateStr(d);
       const s = get();
@@ -433,12 +445,13 @@ export function createPlanSlice(
       if (!activePlan) return false;
 
       const planItemData = createPlanItemBiz(source, activePlan.id, form);
+      const newItemId = uid();
 
       set(prev => {
         const items = prev.planItems ?? [];
         const newItem: PlanItem = {
           ...planItemData,
-          id: uid(),
+          id: newItemId,
           updatedAt: Date.now(),
           deleted: false,
         };
@@ -461,21 +474,19 @@ export function createPlanSlice(
           );
         }
 
-        adapter.persistChange('planItem', newItem.id, newItem).catch(console.error);
-        if (source.type === 'reflection') {
-          const updatedReflection = updatedReflections.find(r => r.id === source.id);
-          if (updatedReflection) {
-            adapter.persistChange('reflection', source.id, updatedReflection).catch(console.error);
-          }
-        } else if (source.type === 'trail') {
-          const updatedTrail = updatedTrails.find(t => t.id === source.id);
-          if (updatedTrail) {
-            adapter.persistChange('thoughtTrail', source.id, updatedTrail).catch(console.error);
-          }
-        }
-
         return { planItems: [...items, newItem], reflections: updatedReflections, thoughtTrails: updatedTrails };
       });
+
+      // Persist AFTER set() to keep updater pure
+      const newItem = get().planItems.find(i => i.id === newItemId && !i.deleted);
+      if (newItem) adapter.persistChange('planItem', newItemId, newItem).catch(console.error);
+      if (source.type === 'reflection') {
+        const updatedReflection = get().reflections.find(r => r.id === source.id && !r.deleted);
+        if (updatedReflection) adapter.persistChange('reflection', source.id, updatedReflection).catch(console.error);
+      } else if (source.type === 'trail') {
+        const updatedTrail = get().thoughtTrails.find(t => t.id === source.id && !t.deleted);
+        if (updatedTrail) adapter.persistChange('thoughtTrail', source.id, updatedTrail).catch(console.error);
+      }
 
       return true;
     },
@@ -561,12 +572,14 @@ export function createPlanSlice(
             }),
           });
 
-          // Update plan with notification timestamp
-          const updatedPlan = { ...plan, lastDelayedNotifyAt: now, updatedAt: now };
+          // Update plan with notification timestamp — re-read to avoid stale overwrite
+          const currentPlan = get().plans.find(p => p.id === plan.id && !p.deleted);
+          if (!currentPlan) continue; // Plan was deleted while notification was in flight
+          const updatedPlan = { ...currentPlan, lastDelayedNotifyAt: now, updatedAt: now };
           set(s => ({
             plans: (s.plans ?? []).map(p => p.id === plan.id ? updatedPlan : p),
           }));
-          
+
           // Persist change
           adapter.persistChange('plan', plan.id, updatedPlan).catch(console.error);
         } catch (err) {

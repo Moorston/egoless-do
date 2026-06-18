@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { X } from 'lucide-react-native';
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
-import { FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_BODY } from '@egoless-do/core';
+import { FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_BODY, dateStr } from '@egoless-do/core';
 import type { TrailInsightCache, UnifiedPlanItemForm } from '@egoless-do/core';
 import { PlanItemForm, validatePlanItemForm } from '../plans/PlanItemForm';
 import { useAppStore } from '../../store/useAppStore';
@@ -35,7 +35,7 @@ export function CreatePlanFromTrailModal({
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = dateStr();
   const planStart = activePlan?.startDate ?? today;
   const planEnd = activePlan?.endDate;
 
@@ -43,7 +43,7 @@ export function CreatePlanFromTrailModal({
   const defaultEnd = planEnd ?? (() => {
     const d = new Date();
     d.setDate(d.getDate() + 30);
-    return d.toISOString().slice(0, 10);
+    return dateStr(d);
   })();
 
   const [form, setForm] = useState<UnifiedPlanItemForm>({

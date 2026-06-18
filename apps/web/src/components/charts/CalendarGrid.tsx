@@ -1,17 +1,16 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useTheme } from '../helpers';
+import { useTheme, useT } from '../helpers';
 import { FONT_BODY, FONT_BADGE, FONT_CHART_AXIS, COLORS } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface CalendarGridProps {
   /** checkin history entries */
-  history: Array<{ date: string; done: boolean; grace?: boolean }>;
+  history: Array<{ date: string; done: boolean; grace?: boolean; deleted?: boolean }>;
 }
 
-const DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
-const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+const MONTH_NAMES_KEYS = ['month1','month2','month3','month4','month5','month6','month7','month8','month9','month10','month11','month12'];
 
 /** Parse 'YYYY-MM-DD' as local date */
 function parseLocal(s: string): Date {
@@ -28,12 +27,13 @@ function dateStr(d: Date): string {
 
 export default function CalendarGrid({ history }: CalendarGridProps) {
   const { TH } = useTheme();
+  const T = useT();
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth()); // 0-indexed
 
-  const doneSet = useMemo(() => new Set(history.filter(e => e.done).map(e => e.date)), [history]);
-  const graceSet = useMemo(() => new Set(history.filter(e => e.grace).map(e => e.date)), [history]);
+  const doneSet = useMemo(() => new Set(history.filter(e => e.done && !e.deleted).map(e => e.date)), [history]);
+  const graceSet = useMemo(() => new Set(history.filter(e => e.grace && !e.deleted).map(e => e.date)), [history]);
 
   const weeks = useMemo(() => {
     const firstDay = new Date(viewYear, viewMonth, 1);
@@ -93,10 +93,10 @@ export default function CalendarGrid({ history }: CalendarGridProps) {
         }}><ChevronLeft size={18} /></button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: FONT_BODY, fontWeight: 700, color: TH.text }}>
-            {viewYear}年 {MONTH_NAMES[viewMonth]}
+            {T('dateYearMonth').replace('{year}', String(viewYear)).replace('{month}', T(MONTH_NAMES_KEYS[viewMonth]))}
           </span>
           <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>
-            {monthDone}/{monthTotal} 天
+            {monthDone}/{monthTotal} {T('calendarDays')}
           </span>
         </div>
         <button onClick={goNext} disabled={isCurrentMonth} style={{
@@ -107,7 +107,7 @@ export default function CalendarGrid({ history }: CalendarGridProps) {
 
       {/* Day-of-week headers */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 4 }}>
-        {DAY_LABELS.map(d => (
+        {[T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat'), T('weekdaySun')].map(d => (
           <div key={d} style={{
             textAlign: 'center', fontSize: FONT_CHART_AXIS, color: 'rgba(128,128,128,.5)',
             fontWeight: 500, padding: '2px 0',

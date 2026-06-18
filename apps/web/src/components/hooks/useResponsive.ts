@@ -14,9 +14,10 @@ export function useResponsive() {
   useEffect(() => {
     setMounted(true);
     setWidth(window.innerWidth);
-    const handleResize = () => setWidth(window.innerWidth);
+    let raf: number;
+    const handleResize = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => setWidth(window.innerWidth)); };
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', handleResize); };
   }, []);
   
   return {

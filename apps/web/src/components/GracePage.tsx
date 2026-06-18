@@ -17,7 +17,7 @@ export default function GracePage({ onClose }: { onClose: () => void }) {
   const yStr = yesterday();
   const currentMonth = dateStr().slice(0, 7);
 
-  const yesterdayRecord = store.checkinHistory?.find((h) => h.date === yStr);
+  const yesterdayRecord = store.checkinHistory?.find((h) => h.date === yStr && !h.deleted);
   const yesterdayDone = yesterdayRecord?.done === true;
   const missed = !yesterdayDone;
 

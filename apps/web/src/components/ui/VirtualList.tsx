@@ -28,11 +28,16 @@ export default function VirtualList<T>({
 
   // 动态计算列表高度
   useEffect(() => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const availableHeight = window.innerHeight - rect.top - 100; // 留出底部空间
-      setListHeight(Math.min(maxHeight, Math.max(200, availableHeight)));
-    }
+    const update = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const availableHeight = window.innerHeight - rect.top - 100;
+        setListHeight(Math.min(maxHeight, Math.max(200, availableHeight)));
+      }
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, [maxHeight]);
 
   const Row = useCallback(({ index, style }: ListChildComponentProps) => {

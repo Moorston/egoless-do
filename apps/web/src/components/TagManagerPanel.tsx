@@ -16,7 +16,7 @@ const TagManagerPanel = React.memo(function TagManagerPanel({ onClose }: { onClo
   const [editingTag, setEditingTag] = useState<{ old: string; new: string } | null>(null);
   const [confirmDel, setConfirmDel] = useState<string | null>(null);
 
-  const habitTagsList = useMemo(() => (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`), [store.habits]);
+  const habitTagsList = useMemo(() => (store.habits ?? []).filter(h => !h.deleted && h.createTag).map(h => `#${h.name}`), [store.habits]);
 
   const orderedTags = useMemo(() => {
     const required = [...TAGS_PRESET, ...(store.customTags ?? []), ...habitTagsList];
@@ -77,7 +77,7 @@ const TagManagerPanel = React.memo(function TagManagerPanel({ onClose }: { onClo
 
   const confirmMessage = useMemo(() => {
     if (!confirmDel) return '';
-    const usedCount = (store.reflections ?? []).filter(r => r.tags.includes(confirmDel)).length;
+    const usedCount = (store.reflections ?? []).filter(r => !r.deleted && r.tags.includes(confirmDel)).length;
     return usedCount > 0
       ? `${T('tagDeleteConfirm')} ${T('tagUsedBy').replace('{count}', String(usedCount))}`
       : T('tagDeleteConfirm');

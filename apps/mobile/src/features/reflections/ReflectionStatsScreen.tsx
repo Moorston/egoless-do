@@ -6,7 +6,7 @@ import { ArrowLeft, Share2, TrendingUp, Grid3x3, Heart, Tag, ListChecks } from '
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import CalendarGrid from '../../components/charts/CalendarGrid';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BUTTON, COLORS } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BUTTON, COLORS, dateStr } from '@egoless-do/core';
 
 type TabKey = 'tags' | 'mood' | 'linkedTask' | 'trend' | 'heatmap';
 
@@ -28,7 +28,7 @@ export default function ReflectionStatsScreen() {
     const dates = [
       ...new Set(
         reflections.map((r) =>
-          new Date(r.timestamp ?? 0).toISOString().slice(0, 10)
+          dateStr(new Date(r.timestamp ?? 0))
         )
       ),
     ].sort().reverse();
@@ -36,7 +36,7 @@ export default function ReflectionStatsScreen() {
     let streakDays = 0;
     let current = new Date(); // eslint-disable-line prefer-const
     for (const d of dates) {
-      const expected = current.toISOString().slice(0, 10);
+      const expected = dateStr(current);
       if (d === expected) {
         streakDays++;
         current.setDate(current.getDate() - 1);
@@ -72,10 +72,10 @@ export default function ReflectionStatsScreen() {
     for (let i = 29; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const ds = d.toISOString().slice(0, 10);
+      const ds = dateStr(d);
       const count = reflections.filter(
         (r) =>
-          new Date(r.timestamp ?? 0).toISOString().slice(0, 10) === ds
+          dateStr(new Date(r.timestamp ?? 0)) === ds
       ).length;
       data.push({ date: ds, count });
     }
@@ -88,7 +88,7 @@ export default function ReflectionStatsScreen() {
     const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
     const dateMap = new Map<string, number>();
     reflections.forEach((r) => {
-      const ds = new Date(r.timestamp ?? 0).toISOString().slice(0, 10);
+      const ds = dateStr(new Date(r.timestamp ?? 0));
       dateMap.set(ds, (dateMap.get(ds) ?? 0) + 1);
     });
     return Array.from(dateMap.entries()).map(([date, count]) => ({ date, done: count > 0 }));

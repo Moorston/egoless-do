@@ -29,15 +29,15 @@ export default function ExerciseTab() {
   const weeklyStats = useMemo(() => {
     const now = Date.now();
     const weekStart = now - 7 * 24 * 3600 * 1000;
-    const weekEntries = exerciseLog.filter(e => e.timestamp >= weekStart);
+    const weekEntries = exerciseLog.filter(e => !e.deleted && e.timestamp >= weekStart);
     const weekKm = weekEntries.reduce((s, e) => s + (e.distanceKm ?? 0), 0);
     const weekCount = weekEntries.length;
-    const allPaces = exerciseLog.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
+    const allPaces = exerciseLog.filter(e => !e.deleted && e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
     const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
     return { weekKm, weekCount, bestPace };
   }, [exerciseLog]);
 
-  const recentEntries = exerciseLog.slice(0, 3);
+  const recentEntries = useMemo(() => exerciseLog.filter(e => !e.deleted).slice(0, 3), [exerciseLog]);
 
   const quickSports = [
     { Icon: Footprints, label: T('exerciseWalk'), key: '行走', color: '#10B981', gps: true },
@@ -158,7 +158,7 @@ export default function ExerciseTab() {
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: FONT_BUTTON, fontWeight: 600, color: TH.text }}>{e.sportKey}</div>
                 <div style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>
-                  {new Date(e.timestamp).toLocaleDateString('zh-CN')}
+                  {new Date(e.timestamp).toLocaleDateString(store.language === 'en' ? 'en-US' : 'zh-CN')}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>

@@ -13,7 +13,7 @@ export default function MedHistoryPage({ onClose }: { onClose: () => void }) {
   const T = useT();
 
   const sorted = useMemo(() =>
-    [...(store.medHistory ?? [])].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
+    [...(store.medHistory ?? [])].filter(m => !m.deleted).sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
     [store.medHistory]
   );
 
@@ -30,7 +30,7 @@ export default function MedHistoryPage({ onClose }: { onClose: () => void }) {
 
   const formatMonth = (key: string) => {
     const [y, mo] = key.split('-');
-    return `${y}年${parseInt(mo)}月`;
+    return T('dateYearMonth').replace('{year}', y).replace('{month}', T(`month${parseInt(mo)}`));
   };
 
   const formatDay = (dateStr: string) => {
@@ -38,10 +38,11 @@ export default function MedHistoryPage({ onClose }: { onClose: () => void }) {
     return parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : dateStr;
   };
 
-  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-  const getWeekday = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? '' : weekdays[d.getDay()];
+  const weekdays = [T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')];
+  const getWeekday = (ds: string) => {
+    const [y, m, d] = ds.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return isNaN(date.getTime()) ? '' : weekdays[date.getDay()];
   };
 
   return (
@@ -84,7 +85,7 @@ export default function MedHistoryPage({ onClose }: { onClose: () => void }) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatDay(m.date)}</span>
-                        <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(m.date)}</span>
+                        <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('dateWeekdayPrefix')}{getWeekday(m.date)}</span>
                       </div>
                       <span style={{
                         background: `${P}15`, padding: '3px 10px', borderRadius: 8,

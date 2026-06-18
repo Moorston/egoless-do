@@ -50,7 +50,7 @@ export default function InsightScreen() {
   const tagStats = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const r of reflections) {
-      for (const tag of r.tags) {
+      for (const tag of (r.tags ?? [])) {
         counts[tag] = (counts[tag] ?? 0) + 1;
       }
     }
@@ -167,7 +167,7 @@ export default function InsightScreen() {
               >
                 <Text style={[styles.trailName, { color: TH.text }]}>{trail.name}</Text>
                 <Text style={[styles.trailInfo, { color: TH.sub }]}>
-                  {trail.reflectionIds.length} 条感念 · {new Date(trail.updatedAt).toLocaleDateString()}
+                  {(trail.reflectionIds ?? []).length} 条感念 · {new Date(trail.updatedAt).toLocaleDateString()}
                 </Text>
               </TouchableOpacity>
             ))}

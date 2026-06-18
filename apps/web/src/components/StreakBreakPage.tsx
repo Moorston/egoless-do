@@ -20,7 +20,7 @@ export default function StreakBreakPage({ onClose }: { onClose: () => void }) {
   const T = useT();
   const overlay = useOverlay();
 
-  const history = store.checkinHistory ?? [];
+  const history = useMemo(() => (store.checkinHistory ?? []).filter(c => !c.deleted), [store.checkinHistory]);
   const graceHistory = store.graceHistory ?? [];
   const quota = store.userProfile?.graceMonthlyQuota ?? 2;
 
@@ -44,11 +44,11 @@ export default function StreakBreakPage({ onClose }: { onClose: () => void }) {
   }, [overlay]);
 
   // Weekday labels: Mon-Sun
-  const weekdayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+  const weekdayLabels = [T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat'), T('weekdaySun')];
   // Month labels: last 6 months
   const monthLabels = insight.monthlyTrend.map(t => {
     const m = parseInt(t.month.split('-')[1]);
-    return `${m}月`;
+    return T(`month${m}`);
   });
 
   return (

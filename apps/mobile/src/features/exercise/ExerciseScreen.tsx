@@ -28,8 +28,8 @@ export default function ExerciseScreen() {
   };
 
   // ── Weekly stats ──
-  const exerciseLog = store.exerciseLog ?? [];
   const weeklyStats = useMemo(() => {
+    const exerciseLog = (store.exerciseLog ?? []).filter(e => !e.deleted);
     const now = Date.now();
     const weekStart = now - 7 * 24 * 3600 * 1000;
     const weekEntries = exerciseLog.filter(e => e.timestamp >= weekStart);
@@ -38,10 +38,11 @@ export default function ExerciseScreen() {
     const allPaces = exerciseLog.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
     const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
     return { weekKm, weekCount, bestPace };
-  }, [exerciseLog]);
+  }, [store.exerciseLog]);
 
   // Recent sports (unique by sportKey)
   const recentSports = useMemo(() => {
+    const exerciseLog = (store.exerciseLog ?? []).filter(e => !e.deleted);
     const seen = new Set<string>();
     const result: { key: string; icon: string; color?: string; gps?: boolean }[] = [];
     for (const e of exerciseLog) {
@@ -57,7 +58,7 @@ export default function ExerciseScreen() {
       }
     }
     return result;
-  }, [exerciseLog]);
+  }, [store.exerciseLog]);
 
   // My sports (first group)
   const mySports = SPORT_GROUPS[0]?.items ?? [];

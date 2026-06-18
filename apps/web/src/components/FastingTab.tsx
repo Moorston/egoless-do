@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { COLORS, WARM_CORAL, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
+import { COLORS, WARM_CORAL, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -32,6 +32,10 @@ export default function FastingTab() {
   const bellPlayedRef = useRef(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
+  useEffect(() => {
+    return () => { audioCtxRef.current?.close().catch(() => {}); };
+  }, []);
+
   const playBell = useCallback(async () => {
     try {
       if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
@@ -58,10 +62,12 @@ export default function FastingTab() {
     return () => { if (ref.current !== null) window.clearInterval(ref.current); };
   }, [activeFasting]);
 
-  const pct = useMemo(() =>
-    activeFasting ? Math.min(elapsed / (activeFasting.targetHours * 3600), 1) : 0,
-    [activeFasting, elapsed]
-  );
+  const pct = useMemo(() => {
+    if (!activeFasting) return 0;
+    const target = activeFasting.targetHours;
+    if (!target || target <= 0) return 0;
+    return Math.min(elapsed / (target * 3600), 1);
+  }, [activeFasting, elapsed]);
 
   useEffect(() => {
     if (pct >= 1 && !bellPlayedRef.current) {
@@ -78,7 +84,7 @@ export default function FastingTab() {
   const kg = useMemo(() => (kcal / 7700).toFixed(2), [kcal]);
 
   const totalFastHours = useMemo(() => {
-    const totalSec = (fastingHistory ?? []).reduce((sum, f) => {
+    const totalSec = (fastingHistory ?? []).filter(f => !f.deleted).reduce((sum, f) => {
       if (f.endedAt && f.startedAt) return sum + (f.endedAt - f.startedAt) / 1000;
       return sum;
     }, 0);
@@ -86,18 +92,23 @@ export default function FastingTab() {
   }, [fastingHistory]);
 
   const fastingDates = useMemo(() => {
-    if (!(fastingHistory ?? []).length) return [] as string[];
-    return [...new Set((fastingHistory ?? []).map(f => {
+    if (!(fastingHistory ?? []).filter(f => !f.deleted).length) return [] as string[];
+    return [...new Set((fastingHistory ?? []).filter(f => !f.deleted).map(f => {
       if (!f.startedAt) return null;
       const d = new Date(f.startedAt);
       if (isNaN(d.getTime())) return null;
-      return d.toISOString().slice(0, 10);
+      return dateStr(d);
     }).filter(Boolean as unknown as <T>(x: T) => x is NonNullable<T>))].sort();
   }, [fastingHistory]);
 
   const currentFastingStreak = useMemo(() => {
     if (!fastingDates.length) return 0;
     const reversed = [...fastingDates].reverse();
+    const todayStr = dateStr();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = dateStr(yesterday);
+    if (reversed[0] !== todayStr && reversed[0] !== yesterdayStr) return 0;
     let streak = 1;
     for (let i = 1; i < reversed.length; i++) {
       const prev = new Date(reversed[i - 1]);
@@ -123,11 +134,11 @@ export default function FastingTab() {
   }, [fastingDates]);
 
   const statsData = useMemo(() => [
-    { Icon: Hourglass, label: T('fastTotal'), value: (fastingHistory ?? []).length, unit: T('fastTimes') },
+    { Icon: Hourglass, label: T('fastTotal'), value: (fastingHistory ?? []).filter(f => !f.deleted).length, unit: T('fastTimes') },
     { Icon: Clock, label: T('fastTotalHours'), value: totalFastHours, unit: T('fastHours') },
     { Icon: Flame, label: T('fastStreak'), value: currentFastingStreak, unit: T('days') },
     { Icon: Trophy, label: T('fastLongest'), value: longestStreak, unit: T('days') },
-  ], [(fastingHistory ?? []).length, currentFastingStreak, T, totalFastHours, longestStreak]);
+  ], [fastingHistory, currentFastingStreak, T, totalFastHours, longestStreak]);
 
   const cardStyle = useCachedStyle(() => cs(TH), [TH]);
 

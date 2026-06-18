@@ -22,7 +22,7 @@ export default function StreakBreakScreen() {
 
   const [showCheckin, setShowCheckin] = useState(false);
 
-  const history = store.checkinHistory ?? [];
+  const history = (store.checkinHistory ?? []).filter(c => !c.deleted);
   const graceHistory = store.graceHistory ?? [];
   const quota = store.userProfile?.graceMonthlyQuota ?? 2;
 

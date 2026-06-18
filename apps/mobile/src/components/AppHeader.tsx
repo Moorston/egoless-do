@@ -41,9 +41,9 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
   const P = TH.primary;
   const T = (k: string) => t(k, language);
 
-  const today = useMemo(() => new Date().toLocaleDateString('zh-CN', {
+  const today = new Date().toLocaleDateString(language === 'en' ? 'en-US' : 'zh-CN', {
     month: 'long', day: 'numeric', weekday: 'short',
-  }), []);
+  });
 
   const handleTabLayout = (key: string, x: number, width: number) => {
     tabLayoutsRef.current[key] = { x, width };

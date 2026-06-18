@@ -94,7 +94,7 @@ export function useTrailActions(trailId: string) {
   }, [deleteThoughtTrail, trailId, nav, T]);
 
   const handleNavigateToPlan = useCallback((planItemId: string) => {
-    const item = (useAppStore.getState().planItems ?? []).find((i: any) => i.id === planItemId);
+    const item = (useAppStore.getState().planItems ?? []).find((i: any) => !i.deleted && i.id === planItemId);
     if (item) {
       nav.navigate('PlanDetail' as never, { planId: item.planId } as never);
     }

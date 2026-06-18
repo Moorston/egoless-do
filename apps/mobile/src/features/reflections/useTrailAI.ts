@@ -11,14 +11,15 @@ function isCacheStale(
   reflections: unknown[] | undefined,
   trailNotes: unknown[] | undefined,
 ): boolean {
-  if (!cache || !trail) return false;
+  if (!trail) return false;
+  if (!cache) return true;
   const reflectionTimestamps = trail.reflectionIds
     .map(id => (reflections as any[] ?? []).find(r => r.id === id))
-    .filter(Boolean)
+    .filter((r): r is NonNullable<typeof r> => r != null && !r.deleted)
     .map(r => r.timestamp);
   const noteTimestamps = (trail.noteIds ?? [])
     .map(id => (trailNotes as any[] ?? []).find(n => n.id === id))
-    .filter(Boolean)
+    .filter((n): n is NonNullable<typeof n> => n != null && !n.deleted)
     .map(n => n.createdAt);
   const allTimestamps = [...reflectionTimestamps, ...noteTimestamps];
   if (allTimestamps.length === 0) return false;
@@ -111,7 +112,7 @@ export function useTrailAI(trailId: string, trail: ThoughtTrail | undefined) {
       if (controller.signal.aborted) return;
 
       const cache: TrailReviewCache = {
-        questions: result.questions,
+        perspectives: result.perspectives,
         observations: result.observations,
         suggestions: result.suggestions,
         generatedAt: Date.now(),

@@ -25,6 +25,8 @@ export default function RegisterScreen() {
   const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'ok' | 'taken'>('idle');
   const [emailError, setEmailError] = useState('');
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
 
   const startCooldown = useCallback(() => {
     setCooldown(COOLDOWN);
@@ -58,9 +60,11 @@ export default function RegisterScreen() {
     setEmailStatus('checking');
     try {
       const res = await apiCheckEmail(em);
+      if (!mountedRef.current) return;
       setEmailStatus(res.available ? 'ok' : 'taken');
       if (!res.available) setEmailError(res.error || '该邮箱已注册，请直接登录或使用其他邮箱');
     } catch (e: any) {
+      if (!mountedRef.current) return;
       setEmailStatus('idle');
       setEmailError(e.message || '检查失败');
     }

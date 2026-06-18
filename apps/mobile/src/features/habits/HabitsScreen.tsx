@@ -64,9 +64,11 @@ export default function HabitsScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const allHabits = (store.habits ?? []).filter(h => !h.deleted);
-  const filtered = (filter==='all' ? allHabits : allHabits.filter(h => h.status===filter))
-    .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || (b.startDate.localeCompare(a.startDate)));
+  const allHabits = useMemo(() => (store.habits ?? []).filter(h => !h.deleted), [store.habits]);
+  const filtered = useMemo(() =>
+    (filter==='all' ? allHabits : allHabits.filter(h => h.status===filter))
+      .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || (b.startDate.localeCompare(a.startDate))),
+    [allHabits, filter]);
 
   const filterCounts = useMemo(() => {
     const counts: Record<string, number> = { all: allHabits.length };
@@ -88,11 +90,11 @@ export default function HabitsScreen() {
       store.addHabit({ ...form, targetDays:+form.targetDays });
     }
     setShowAdd(false);
-    // Reschedule notifications
+    // Reschedule notifications — re-read from store to get the just-saved habit
     if (form.alarmEnabled) {
       const granted = await requestNotificationPermission();
       if (granted) {
-        const habits = (store.habits ?? []).filter(h => !h.deleted);
+        const habits = useAppStore.getState().habits.filter(h => !h.deleted);
         await rescheduleAllHabitReminders(habits).catch(() => {});
       }
     }
@@ -412,7 +414,7 @@ export default function HabitsScreen() {
               {Array.from({ length: calDays }).map((_, i) => {
                 const day = i + 1;
                 const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                const checked = calHabit?.checkedDates.includes(ds);
+                const checked = calHabit?.checkedDates?.includes(ds);
                 const isToday = ds === dateStr();
                 return (
                   <View key={day} style={{ width:'14.28%', aspectRatio:1, alignItems:'center', justifyContent:'center' }}>

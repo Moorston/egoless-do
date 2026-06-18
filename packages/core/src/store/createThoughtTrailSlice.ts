@@ -28,20 +28,26 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
 
       // Update reflection thoughtTrailIds and persist
       if (reflectionIds.length > 0) {
+        // Capture affected IDs BEFORE set() to keep updater pure
+        const affectedIds = (get().reflections ?? [])
+          .filter(r => reflectionIds.includes(r.id) && !r.deleted)
+          .map(r => r.id);
         set(s => ({
           reflections: (s.reflections ?? []).map(r => {
-            if (reflectionIds.includes(r.id)) {
-              const updated = {
+            if (reflectionIds.includes(r.id) && !r.deleted) {
+              return {
                 ...r,
                 thoughtTrailIds: [...(r.thoughtTrailIds ?? []), id],
                 updatedAt: Date.now(),
               };
-              adapter?.persistChange('reflection', r.id, updated).catch(console.error);
-              return updated;
             }
             return r;
           }),
         }));
+        for (const rid of affectedIds) {
+          const r = get().reflections.find(x => x.id === rid && !x.deleted);
+          if (r) adapter?.persistChange('reflection', rid, r).catch(console.error);
+        }
       }
 
       adapter?.persistChange('thoughtTrail', id, trail).catch(console.error);
@@ -54,105 +60,95 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
           t.id === id ? { ...t, ...patch, updatedAt: Date.now() } : t
         ),
       }));
-      const trail = get().thoughtTrails.find(t => t.id === id);
+      const trail = get().thoughtTrails.find(t => t.id === id && !t.deleted);
       if (trail) adapter?.persistChange('thoughtTrail', id, trail).catch(console.error);
     },
 
     deleteThoughtTrail: (id) => {
-      const trail = (get().thoughtTrails ?? []).find(t => t.id === id);
+      const now = Date.now();
+      const trail = (get().thoughtTrails ?? []).find(t => t.id === id && !t.deleted);
       if (!trail) return;
 
-      // Remove trail ID from all reflections and persist
+      // Capture affected IDs BEFORE set() to keep updater pure
+      const affectedReflectionIds = trail.reflectionIds;
+      const notesToDelete = (get().trailNotes ?? []).filter(n => n.trailId === id && !n.deleted);
+
+      // Atomic: unlink reflections + cascade delete notes + delete trail in one set()
       set(s => ({
         reflections: (s.reflections ?? []).map(r => {
-          if (trail.reflectionIds.includes(r.id)) {
-            const updated = {
+          if (affectedReflectionIds.includes(r.id) && !r.deleted) {
+            return {
               ...r,
               thoughtTrailIds: (r.thoughtTrailIds ?? []).filter(tid => tid !== id),
               updatedAt: Date.now(),
             };
-            adapter?.persistChange('reflection', r.id, updated).catch(console.error);
-            return updated;
           }
           return r;
         }),
+        trailNotes: (s.trailNotes ?? []).map(n => n.trailId === id && !n.deleted ? { ...n, deleted: true, updatedAt: now } : n),
+        thoughtTrails: (s.thoughtTrails ?? []).map(t => t.id === id ? { ...t, deleted: true, updatedAt: now } : t),
       }));
 
-      // Cascade delete trail notes
-      const notes = (get().trailNotes ?? []).filter(n => n.trailId === id);
-      for (const note of notes) {
+      for (const rid of affectedReflectionIds) {
+        const r = get().reflections.find(x => x.id === rid && !x.deleted);
+        if (r) adapter?.persistChange('reflection', rid, r).catch(console.error);
+      }
+      for (const note of notesToDelete) {
         adapter?.markDeleted('trailNote', note.id).catch(console.error);
       }
-      set(s => ({
-        trailNotes: (s.trailNotes ?? []).filter(n => n.trailId !== id),
-      }));
-
-      // Delete the trail
-      set(s => ({
-        thoughtTrails: (s.thoughtTrails ?? []).filter(t => t.id !== id),
-      }));
-
       adapter?.markDeleted('thoughtTrail', id).catch(console.error);
     },
 
     addReflectionToTrail: (trailId, reflectionId) => {
-      const trail = (get().thoughtTrails ?? []).find(t => t.id === trailId);
+      const trail = (get().thoughtTrails ?? []).find(t => t.id === trailId && !t.deleted);
       if (!trail || trail.reflectionIds.includes(reflectionId)) return;
 
-      // Add reflection to trail
+      // Atomic: add reflection to trail + add trail ID to reflection
       set(s => ({
         thoughtTrails: (s.thoughtTrails ?? []).map(t =>
           t.id === trailId
             ? { ...t, reflectionIds: [...t.reflectionIds, reflectionId], updatedAt: Date.now() }
             : t
         ),
-      }));
-
-      // Add trail ID to reflection and persist
-      set(s => ({
         reflections: (s.reflections ?? []).map(r => {
-          if (r.id !== reflectionId) return r;
-          const updated = { ...r, thoughtTrailIds: [...(r.thoughtTrailIds ?? []), trailId], updatedAt: Date.now() };
-          adapter?.persistChange('reflection', r.id, updated).catch(console.error);
-          return updated;
+          if (r.id !== reflectionId || r.deleted) return r;
+          return { ...r, thoughtTrailIds: [...(r.thoughtTrailIds ?? []), trailId], updatedAt: Date.now() };
         }),
       }));
+      const updatedReflection = get().reflections.find(r => r.id === reflectionId && !r.deleted);
+      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(console.error);
 
-      const updated = get().thoughtTrails.find(t => t.id === trailId);
+      const updated = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
       if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(console.error);
     },
 
     removeReflectionFromTrail: (trailId, reflectionId) => {
-      // Remove reflection from trail
+      // Atomic: remove reflection from trail + remove trail ID from reflection
       set(s => ({
         thoughtTrails: (s.thoughtTrails ?? []).map(t =>
-          t.id === trailId
+          t.id === trailId && !t.deleted
             ? { ...t, reflectionIds: t.reflectionIds.filter((rid: string) => rid !== reflectionId), updatedAt: Date.now() }
             : t
         ),
-      }));
-
-      // Remove trail ID from reflection and persist
-      set(s => ({
         reflections: (s.reflections ?? []).map(r => {
-          if (r.id !== reflectionId) return r;
-          const updated = { ...r, thoughtTrailIds: (r.thoughtTrailIds ?? []).filter(tid => tid !== trailId), updatedAt: Date.now() };
-          adapter?.persistChange('reflection', r.id, updated).catch(console.error);
-          return updated;
+          if (r.id !== reflectionId || r.deleted) return r;
+          return { ...r, thoughtTrailIds: (r.thoughtTrailIds ?? []).filter(tid => tid !== trailId), updatedAt: Date.now() };
         }),
       }));
+      const updatedReflection = get().reflections.find(r => r.id === reflectionId && !r.deleted);
+      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(console.error);
 
-      const updated = get().thoughtTrails.find(t => t.id === trailId);
+      const updated = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
       if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(console.error);
     },
 
     setInsightSummary: (trailId, summary) => {
       set(s => ({
         thoughtTrails: (s.thoughtTrails ?? []).map(t =>
-          t.id === trailId ? { ...t, insightSummary: summary, updatedAt: Date.now() } : t
+          t.id === trailId && !t.deleted ? { ...t, insightSummary: summary, updatedAt: Date.now() } : t
         ),
       }));
-      const trail = get().thoughtTrails.find(t => t.id === trailId);
+      const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
       if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
     },
 
@@ -162,7 +158,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
           t.id === trailId ? { ...t, insightCache: cache, updatedAt: Date.now() } : t
         ),
       }));
-      const trail = get().thoughtTrails.find(t => t.id === trailId);
+      const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
       if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
     },
 
@@ -172,7 +168,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
           t.id === trailId ? { ...t, reviewCache: cache, updatedAt: Date.now() } : t
         ),
       }));
-      const trail = get().thoughtTrails.find(t => t.id === trailId);
+      const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
       if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
     },
 
@@ -185,7 +181,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
     },
 
     getTrailPlanItems: (trailId) => {
-      const trail = (get().thoughtTrails ?? []).find(t => t.id === trailId);
+      const trail = (get().thoughtTrails ?? []).find(t => !t.deleted && t.id === trailId);
       const linkedIds = new Set(trail?.linkedPlanItemIds ?? []);
       return (get().planItems ?? []).filter(
         (item: PlanItem) => !item.deleted && (

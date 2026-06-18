@@ -41,8 +41,8 @@ export class OpenAICompatibleProvider implements CloudProvider {
           ...(options?.systemPrompt ? [{ role: 'system', content: options.systemPrompt }] : []),
           { role: 'user', content: prompt },
         ],
-        max_tokens: options?.maxTokens || maxTokens,
-        temperature: options?.temperature || temperature,
+        max_tokens: options?.maxTokens ?? maxTokens,
+        temperature: options?.temperature ?? temperature,
       }),
     });
 
@@ -51,7 +51,12 @@ export class OpenAICompatibleProvider implements CloudProvider {
       throw new Error(`API错误: ${response.status} - ${error}`);
     }
 
-    const data = await response.json();
+    let data: any;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(`API返回非JSON响应 (status: ${response.status})`);
+    }
     const msg = data.choices?.[0]?.message;
     const content = msg?.content || msg?.reasoning_content;
     console.log('[CloudProvider] Response choices:', data.choices?.length, 'content:', content?.slice(0, 50), 'finish_reason:', data.choices?.[0]?.finish_reason);

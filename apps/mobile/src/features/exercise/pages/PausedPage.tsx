@@ -24,6 +24,7 @@ export default function PausedPage(props: ExercisePageProps) {
   const [ringOffset, setRingOffset] = useState(ringCircumference);
   const startTimeRef = useRef(0);
   const rafRef = useRef<number | null>(null);
+  const navigateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stopAnimation = useCallback(() => {
     if (rafRef.current != null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
@@ -54,7 +55,8 @@ export default function PausedPage(props: ExercisePageProps) {
           pulseAnim.setValue(0);
           Animated.timing(pulseAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start();
           Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start();
-          setTimeout(() => setPage?.('report'), 400);
+          if (navigateTimerRef.current) clearTimeout(navigateTimerRef.current);
+          navigateTimerRef.current = setTimeout(() => setPage?.('report'), 400);
         }
       }
     };
@@ -70,6 +72,7 @@ export default function PausedPage(props: ExercisePageProps) {
   }, [stopAnimation, scaleAnim, handleHoldEnd, ringCircumference]);
 
   useEffect(() => () => stopAnimation(), [stopAnimation]);
+  useEffect(() => () => { if (navigateTimerRef.current) clearTimeout(navigateTimerRef.current); }, []);
 
   const strokeDashoffset = holding ? ringOffset : ringCircumference;
 

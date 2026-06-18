@@ -50,7 +50,7 @@ export default function DateRangePickerModal({ visible, startDate, endDate, onCo
       setSelEnd(endDate);
       setSelecting(!startDate ? 'start' : 'end');
     }
-  }, [visible]);
+  }, [visible, startDate, endDate]);
 
   const days = daysInMonth(year, month);
   const firstDayOfWeek = new Date(year, month, 1).getDay();

@@ -72,7 +72,8 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         await FileSystem.makeDirectoryAsync(USER_MUSIC_DIR, { intermediates: true });
       }
       // 生成唯一文件名
-      const ext = name.split('.').pop() ?? 'mp3';
+      const parts = name.split('.');
+      const ext = parts.length > 1 ? parts[parts.length - 1] : 'mp3';
       const id = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
       const destUri = `${USER_MUSIC_DIR}${id}.${ext}`;
       await FileSystem.copyAsync({ from: uri, to: destUri });
@@ -95,12 +96,13 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   removeUserTrack: async (id) => {
     try {
-      const track = get().userTracks.find(t => t.id === id);
+      const currentTracks = get().userTracks;
+      const track = currentTracks.find(t => t.id === id);
       if (track?.uri) {
         const info = await FileSystem.getInfoAsync(track.uri);
         if (info.exists) await FileSystem.deleteAsync(track.uri);
       }
-      const updated = get().userTracks.filter(t => t.id !== id);
+      const updated = currentTracks.filter(t => t.id !== id);
       set({ userTracks: updated });
       await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
       // 如果删除的是当前播放曲目，停止播放
@@ -120,9 +122,15 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         // 验证文件仍存在
         const valid: MusicTrack[] = [];
         for (const t of tracks) {
-          if (t.uri) {
-            const info = await FileSystem.getInfoAsync(t.uri);
-            if (info.exists) valid.push(t);
+          try {
+            if (t.uri) {
+              const info = await FileSystem.getInfoAsync(t.uri);
+              if (info.exists) valid.push(t);
+            } else {
+              valid.push(t);
+            }
+          } catch {
+            // Skip tracks that fail validation
           }
         }
         set({ userTracks: valid });
@@ -130,7 +138,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
           await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(valid));
         }
       }
-    } catch {}
+    } catch (e) { console.error('加载用户音乐失败:', e); }
   },
 
   toggleFavorite: async (id) => {
@@ -152,7 +160,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       if (raw) {
         set({ favorites: JSON.parse(raw) });
       }
-    } catch {}
+    } catch (e) { console.error('加载收藏失败:', e); }
   },
 
   getTracksByCategory: (cat) => {

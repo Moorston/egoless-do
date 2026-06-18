@@ -18,14 +18,15 @@ export function detectHabitAbandonRisk(habits: Habit[]): RiskWarning[] {
   const warnings: RiskWarning[] = [];
   const today = dateStr();
 
-  habits.filter(h => h.status === 'inProgress').forEach(habit => {
+  habits.filter(h => !h.deleted && h.status === 'inProgress').forEach(habit => {
     const checkedDates = [...(habit.checkedDates ?? [])].sort();
     const lastChecked = checkedDates[checkedDates.length - 1];
     
     if (!lastChecked) return;
 
-    const lastDate = new Date(lastChecked);
-    const todayDate = new Date(today);
+    const parseLocal = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+    const lastDate = parseLocal(lastChecked);
+    const todayDate = parseLocal(today);
     const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / (24 * 60 * 60 * 1000));
 
     // 高风险：连续3天以上未打卡
@@ -71,17 +72,19 @@ export function detectPlanDelayRisk(plans: Plan[]): RiskWarning[] {
   const warnings: RiskWarning[] = [];
   const today = dateStr();
 
-  plans.filter(p => p.status === 'in_progress').forEach(plan => {
-    const endDate = new Date(plan.endDate);
-    const todayDate = new Date(today);
-    const startDate = new Date(plan.startDate);
-    
+  const parseLocal = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+
+  plans.filter(p => !p.deleted && p.status === 'in_progress').forEach(plan => {
+    const endDate = parseLocal(plan.endDate);
+    const todayDate = parseLocal(today);
+    const startDate = parseLocal(plan.startDate);
+
     const totalDays = Math.floor((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
     const elapsedDays = Math.floor((todayDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
     const progress = plan.progress ?? 0;
-    
+
     // 计算预期进度
-    const expectedProgress = Math.min(100, (elapsedDays / totalDays) * 100);
+    const expectedProgress = totalDays > 0 ? Math.min(100, (elapsedDays / totalDays) * 100) : 100;
     const delay = expectedProgress - progress;
 
     // 高风险：进度严重落后
@@ -100,7 +103,7 @@ export function detectPlanDelayRisk(plans: Plan[]): RiskWarning[] {
 
     // 中风险：即将到期但进度不足
     const daysLeft = Math.floor((endDate.getTime() - todayDate.getTime()) / (24 * 60 * 60 * 1000));
-    if (daysLeft <= 7 && progress < 80) {
+    if (daysLeft >= 0 && daysLeft <= 7 && progress < 80) {
       warnings.push({
         id: `plan_deadline_${plan.id}`,
         type: 'plan_delay',
@@ -125,14 +128,14 @@ export function detectStreakBreakRisk(checkinHistory: CheckinEntry[]): RiskWarni
   yesterdayDate.setDate(yesterdayDate.getDate() - 1);
   const yesterday = dateStr(yesterdayDate);
 
-  const todayCheckin = checkinHistory.find(c => c.date === today);
-  const yesterdayCheckin = checkinHistory.find(c => c.date === yesterday);
+  const todayCheckin = checkinHistory.find(c => c.date === today && !c.deleted);
+  const yesterdayCheckin = checkinHistory.find(c => c.date === yesterday && !c.deleted);
 
   // 计算连续天数（只计已完成的打卡，从最近一次打卡往前数）
   let streak = 0;
-  const sortedDates = checkinHistory
-    .filter(c => c.done)
-    .map(c => c.date)
+  const sortedDates = [...new Set(checkinHistory
+    .filter(c => c.done && !c.deleted)
+    .map(c => c.date))]
     .sort()
     .reverse();
 
@@ -142,7 +145,7 @@ export function detectStreakBreakRisk(checkinHistory: CheckinEntry[]): RiskWarni
       const prev = new Date(sortedDates[i - 1] + 'T00:00:00');
       const curr = new Date(sortedDates[i] + 'T00:00:00');
       const diff = (prev.getTime() - curr.getTime()) / 86400000;
-      if (diff === 1) {
+      if (Math.abs(diff - 1) < 0.1) {
         streak++;
       } else {
         break;

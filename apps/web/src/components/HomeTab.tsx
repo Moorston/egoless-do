@@ -74,7 +74,7 @@ export default function HomeTab() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const totalCal = useMemo(() => getTodayFoodLog(foodLog ?? []).reduce((a, f) => a + f.calories, 0), [foodLog]);
+  const totalCal = useMemo(() => getTodayFoodLog(foodLog ?? []).filter(f => !f.deleted).reduce((a, f) => a + f.calories, 0), [foodLog]);
   const recentFoods = useMemo(() => getRecentFoods(foodLog ?? [], 3), [foodLog]);
   const todayFoods = useMemo(() => getTodayFoodLog(foodLog ?? []).filter(f => !f.deleted).slice(0, 3), [foodLog]);
   const todayFoodTotal = useMemo(() => getTodayFoodLog(foodLog ?? []).filter(f => !f.deleted).length, [foodLog]);
@@ -83,7 +83,7 @@ export default function HomeTab() {
 
   const todayWeight = useMemo(() => {
     const today = dateStr();
-    const todayCheckin = (checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
+    const todayCheckin = (checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === today);
     return todayCheckin?.weight;
   }, [checkinHistory]);
 
@@ -92,7 +92,7 @@ export default function HomeTab() {
     height: 6,
     background: P,
     borderRadius: 3,
-    width: `${Math.min(waterMl / waterGoal * 100, 100)}%`,
+    width: `${Math.min(waterGoal > 0 ? waterMl / waterGoal * 100 : 0, 100)}%`,
     transition: 'width .4s'
   }), [waterMl, waterGoal, P]);
 
@@ -100,15 +100,15 @@ export default function HomeTab() {
     height: 4,
     background: P,
     borderRadius: 2,
-    width: `${Math.min(totalCal / calGoal * 100, 100)}%`,
+    width: `${Math.min(calGoal > 0 ? totalCal / calGoal * 100 : 0, 100)}%`,
     transition: 'width .4s'
   }), [totalCal, calGoal, P]);
 
-  const savedKcal = useMemo(() => (fastingHistory ?? []).reduce((sum, f) => sum + (f.estimatedKcal ?? 0), 0), [fastingHistory]);
+  const savedKcal = useMemo(() => (fastingHistory ?? []).filter(f => !f.deleted).reduce((sum, f) => sum + (f.estimatedKcal ?? 0), 0), [fastingHistory]);
 
-  const totalCompleted = useMemo(() => (checkinHistory ?? []).filter((c: CheckinEntry) => c.done).length, [checkinHistory]);
-  const longestStreak = useMemo(() => computeLongestStreak((checkinHistory ?? []).filter((c: CheckinEntry) => c.done).map(c => c.date)), [checkinHistory]);
-  const savedMeals = useMemo(() => (fastingHistory ?? []).length, [fastingHistory]);
+  const totalCompleted = useMemo(() => (checkinHistory ?? []).filter((c: CheckinEntry) => !c.deleted && c.done).length, [checkinHistory]);
+  const longestStreak = useMemo(() => computeLongestStreak((checkinHistory ?? []).filter((c: CheckinEntry) => !c.deleted && c.done).map(c => c.date)), [checkinHistory]);
+  const savedMeals = useMemo(() => (fastingHistory ?? []).filter(f => !f.deleted).length, [fastingHistory]);
 
   const statsOps = [0.12, 0.17, 0.22, 0.27];
 
@@ -121,7 +121,7 @@ export default function HomeTab() {
 
   const today = dateStr();
 
-  const todayRecord = (checkinHistory ?? []).find((c: CheckinEntry) => c.date === today);
+  const todayRecord = (checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === today);
   const bannerState: 'notChecked' | 'notDone' | 'done' = !todayRecord ? 'notChecked' : todayRecord.done ? 'done' : 'notDone';
 
   const bannerBg = cardAccent(TH.primary, TH.bg, 0.45);
@@ -149,7 +149,7 @@ export default function HomeTab() {
       {/* Grace reminder banner */}
       {(() => {
         const yStr = yesterday();
-        const yesterdayRecord = (checkinHistory ?? []).find((h: CheckinEntry) => h.date === yStr);
+        const yesterdayRecord = (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr);
         const yesterdayDone = yesterdayRecord?.done === true;
         if (yesterdayDone) return null;
         return (
@@ -332,7 +332,7 @@ export default function HomeTab() {
                               fontWeight: editPortion === p ? 700 : 400, fontSize: FONT_SUB,
                               outline: editPortion === p ? 'none' : `1px solid ${TH.border}`,
                             }}>
-                            {p}份
+                            {p}{T('servingsUnit')}
                           </button>
                         ))}
                       </div>
@@ -411,7 +411,7 @@ export default function HomeTab() {
                     fontWeight: portion === p ? 700 : 400, fontSize: FONT_BODY,
                     outline: portion === p ? 'none' : `1px solid ${TH.border}`,
                   }}>
-                  {p}份
+                  {p}{T('servingsUnit')}
                 </button>
               ))}
             </div>

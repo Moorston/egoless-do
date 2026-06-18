@@ -4,6 +4,7 @@ import { getMoodIcon } from '../business/thought-trail';
 import { buildReflectionSummary } from '../business/trail-creation';
 import { getAIService } from './ai-service';
 import { isAIRecommendAvailable } from './trail-recommender';
+import { dateStr } from '../utils';
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -88,16 +89,14 @@ function computeStreakDays(reflections: MindReflection[], maxDays: number): numb
 
   const dateSet = new Set<string>();
   for (const r of active) {
-    const d = new Date(r.timestamp);
-    dateSet.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
+    dateSet.add(dateStr(new Date(r.timestamp)));
   }
 
   let streak = 0;
   for (let i = 0; i < maxDays; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-    if (dateSet.has(key)) {
+    if (dateSet.has(dateStr(d))) {
       streak++;
     } else {
       break;
@@ -192,10 +191,18 @@ export async function generateInsightProfile(
 
   try {
     const service = getAIService();
-    const result = await (service as any).generateCloud(prompt, {
-      systemPrompt: INSIGHT_PROFILE_SYSTEM,
-      maxTokens: 4000,
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
+    let result: any;
+    try {
+      result = await (service as any).generateCloud(prompt, {
+        systemPrompt: INSIGHT_PROFILE_SYSTEM,
+        maxTokens: 4000,
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!result?.success || !result?.data) return null;
     return parseInsightResponse(result.data, active);
@@ -257,17 +264,35 @@ function extractJSON(raw: string): string {
 
 function repairJSON(str: string): string {
   let s = str.trim();
-  // 截断到最后一个完整的 topics 项
-  const lastComplete = s.lastIndexOf('}');
-  if (lastComplete > 0) {
-    s = s.slice(0, lastComplete + 1);
+  // 截断到最后一个结构性的 } (忽略字符串内的 })
+  let lastStructuralClose = -1;
+  let depth = 0, inStr = false, esc = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (esc) { esc = false; continue; }
+    if (ch === '\\') { esc = true; continue; }
+    if (ch === '"') { inStr = !inStr; continue; }
+    if (inStr) continue;
+    if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) lastStructuralClose = i; }
   }
-  // 补全缺失的 ] 和 }
-  const openBrackets = (s.match(/\[/g) || []).length;
-  const closeBrackets = (s.match(/\]/g) || []).length;
+  if (lastStructuralClose >= 0) {
+    s = s.slice(0, lastStructuralClose + 1);
+  }
+  // 补全缺失的 ] 和 } (只计 structural brackets, 忽略字符串内的)
+  let openBrackets = 0, closeBrackets = 0, openBraces = 0, closeBraces = 0;
+  let inString = false, escaped = false;
+  for (const ch of s) {
+    if (escaped) { escaped = false; continue; }
+    if (ch === '\\') { escaped = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '[') openBrackets++;
+    else if (ch === ']') closeBrackets++;
+    else if (ch === '{') openBraces++;
+    else if (ch === '}') closeBraces++;
+  }
   for (let i = closeBrackets; i < openBrackets; i++) s += ']';
-  const openBraces = (s.match(/\{/g) || []).length;
-  const closeBraces = (s.match(/\}/g) || []).length;
   for (let i = closeBraces; i < openBraces; i++) s += '}';
   return s;
 }

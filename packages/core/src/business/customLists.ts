@@ -11,12 +11,13 @@ export function removeCustomItem(list: string[], item: string): string[] {
 
 export function updateCustomItem(list: string[], oldItem: string, newItem: string): string[] {
   if (!newItem.trim()) return list;
+  if (newItem !== oldItem && list.includes(newItem)) return list;
   return list.map(t => t === oldItem ? newItem : t);
 }
 
 export function reorderItem(list: string[], fromIndex: number, toIndex: number): string[] {
   if (fromIndex < 0 || fromIndex >= list.length) return list;
-  if (toIndex < 0 || toIndex >= list.length) return list;
+  if (toIndex < 0 || toIndex > list.length) return list;
   if (fromIndex === toIndex) return list;
   const result = [...list];
   const [item] = result.splice(fromIndex, 1);

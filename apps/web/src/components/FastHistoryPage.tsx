@@ -13,7 +13,7 @@ export default function FastHistoryPage({ onClose }: { onClose: () => void }) {
   const T = useT();
 
   const sorted = useMemo(() =>
-    [...(store.fastingHistory ?? [])].sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0)),
+    [...(store.fastingHistory ?? [])].filter(f => !f.deleted).sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0)),
     [store.fastingHistory]
   );
 
@@ -35,7 +35,7 @@ export default function FastHistoryPage({ onClose }: { onClose: () => void }) {
 
   const formatMonth = (key: string) => {
     const [y, m] = key.split('-');
-    return `${y}年${parseInt(m)}月`;
+    return T('dateYearMonth').replace('{year}', y).replace('{month}', T(`month${parseInt(m)}`));
   };
 
   return (

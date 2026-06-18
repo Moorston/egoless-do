@@ -7,6 +7,7 @@ import {
   computeSmartCollections, type SmartCollection,
   type ReflectionFilters, DEFAULT_REFLECTION_FILTERS,
   type MoodTrendPoint, type HeatmapDay, type TagGraph,
+  dateStr,
 } from '@egoless-do/core';
 
 /** Debounce hook */
@@ -32,10 +33,11 @@ export function useReflections() {
 
   // Sync debounced search back to filters
   useEffect(() => {
-    if (debouncedSearch !== filters.search) {
-      setFilters({ ...filters, search: debouncedSearch });
+    const current = useWebStore.getState().reflectionFilters ?? { ...DEFAULT_REFLECTION_FILTERS };
+    if (debouncedSearch !== current.search) {
+      setFilters({ ...current, search: debouncedSearch });
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, setFilters]);
 
   // Sync filters.search to local input when filters change externally
   useEffect(() => {
@@ -52,12 +54,12 @@ export function useReflections() {
 
   // ── Tag options ──────────────────────────────────────────────
   const habitTags = useMemo(() =>
-    (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`),
+    (store.habits ?? []).filter(h => !h.deleted && h.createTag).map(h => `#${h.name}`),
     [store.habits],
   );
 
   const allTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).flatMap(r => r.tags))];
+    const reflTags = [...new Set((store.reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags))];
     const allAvailable = [...new Set([...reflTags, ...habitTags])];
     const order = store.allTagsOrder ?? [];
     if (order.length > 0) {
@@ -72,7 +74,7 @@ export function useReflections() {
   }, [store.reflections, store.customTags, store.allTagsOrder, habitTags]);
 
   const allUsedTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).flatMap(r => r.tags))];
+    const reflTags = [...new Set((store.reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags))];
     return [...new Set([...reflTags, ...habitTags])];
   }, [store.reflections, habitTags]);
 
@@ -129,7 +131,7 @@ export function useReflections() {
   );
 
   // ── Stats ────────────────────────────────────────────────────
-  const totalCount = (store.reflections ?? []).filter(r => !r.deleted).length;
+  const totalCount = useMemo(() => (store.reflections ?? []).filter(r => !r.deleted).length, [store.reflections]);
 
   const topTag = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -143,13 +145,13 @@ export function useReflections() {
   const streakDays = useMemo(() => {
     const dates = [...new Set(
       (store.reflections ?? []).filter(r => !r.deleted).map(r =>
-        new Date(r.timestamp ?? 0).toISOString().slice(0, 10),
+        dateStr(new Date(r.timestamp ?? 0)),
       ),
     )].sort().reverse();
     let streak = 0;
     let current = new Date();
     for (const d of dates) {
-      const expected = current.toISOString().slice(0, 10);
+      const expected = dateStr(current);
       if (d === expected) { streak++; current.setDate(current.getDate() - 1); }
       else break;
     }
@@ -162,9 +164,9 @@ export function useReflections() {
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const ds = d.toISOString().slice(0, 10);
+      const ds = dateStr(d);
       const count = (store.reflections ?? []).filter(r =>
-        !r.deleted && new Date(r.timestamp ?? 0).toISOString().slice(0, 10) === ds,
+        !r.deleted && dateStr(new Date(r.timestamp ?? 0)) === ds,
       ).length;
       data.push(count);
     }

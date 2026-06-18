@@ -27,7 +27,8 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   const TH = useTheme();
   const T  = useT();
   const P  = TH.primary;
-  const store = useAppStore();
+  const language = useAppStore(s => s.language);
+  const customFoodPresets = useAppStore(s => s.customFoodPresets);
   const insets = useSafeAreaInsets();
 
   const [search, setSearch]     = useState('');
@@ -43,13 +44,13 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
 
   const allTabs = useMemo(() => [
     { key: 'my', label: T('foodMyPresets'), iconComp: Star as React.ComponentType<any>, items: [] as { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] },
-    ...FOOD_PRESETS.map(c => ({ key: c.key, label: store.language === 'en' ? c.labelEn : c.label, iconComp: (FOOD_ICON_MAP[c.icon] ?? Utensils) as React.ComponentType<any>, items: c.items })),
-  ], [T, store.language]);
+    ...FOOD_PRESETS.map(c => ({ key: c.key, label: language === 'en' ? c.labelEn : c.label, iconComp: (FOOD_ICON_MAP[c.icon] ?? Utensils) as React.ComponentType<any>, items: c.items })),
+  ], [T, language]);
 
   const getFilteredItems = useCallback(() => {
     const q = search.trim().toLowerCase();
     const presetItems: { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] =
-      (store.customFoodPresets ?? []).map(p => ({ name: p.name, nameEn: p.name, cal: p.calories, unit: '份', unitEn: 'serving' }));
+      (customFoodPresets ?? []).map(p => ({ name: p.name, nameEn: p.name, cal: p.calories, unit: '份', unitEn: 'serving' }));
 
     if (q) {
       const allItems = [
@@ -62,18 +63,22 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
     const t = allTabs[tab];
     if (!t) return [];
     return t.key === 'my' ? presetItems : t.items;
-  }, [allTabs, tab, search, store.customFoodPresets]);
+  }, [allTabs, tab, search, customFoodPresets]);
 
   const resetAll = useCallback(() => {
     setSearch(''); setTab(0); setShowManual(false);
     setEditing(null); setFn(''); setFc(''); setFnote(''); setPortion(1);
   }, []);
 
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (toastTimerRef.current) clearTimeout(toastTimerRef.current); }, []);
+
   const showToast = useCallback((msg: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
     setToast(msg);
     toastAnim.setValue(0);
     Animated.timing(toastAnim, { toValue: 1, duration: 200, useNativeDriver: true }).start();
-    setTimeout(() => {
+    toastTimerRef.current = setTimeout(() => {
       Animated.timing(toastAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => setToast(''));
     }, 2000);
   }, [toastAnim]);
@@ -87,39 +92,40 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
 
   // Long press → quick add
   const handleQuickAdd = useCallback((name: string, cal: number) => {
-    store.addFood({ name, calories: cal, note: '', timestamp: Date.now() });
+    useAppStore.getState().addFood({ name, calories: cal, note: '', timestamp: Date.now() });
     showToast(`${T('foodAdded')}: ${name}`);
     onFoodAdded?.();
-  }, [store, T, showToast, onFoodAdded]);
+  }, [T, showToast, onFoodAdded]);
 
   // Confirm editing preset
   const handleConfirmEdit = useCallback(() => {
     if (!editing) return;
     const totalCal = Math.round(editing.cal * portion);
-    store.addFood({ name: editing.name, calories: totalCal, note: editing.note, timestamp: Date.now() });
+    useAppStore.getState().addFood({ name: editing.name, calories: totalCal, note: editing.note, timestamp: Date.now() });
     showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);
     setEditing(null);
     setPortion(1);
     onFoodAdded?.();
-  }, [editing, portion, store, T, showToast, onFoodAdded]);
+  }, [editing, portion, T, showToast, onFoodAdded]);
 
   // Confirm manual input
   const handleConfirmManual = useCallback(() => {
     if (!fn.trim()) return;
-    store.addFood({ name: fn, calories: +fc || 0, note: fnote, timestamp: Date.now() });
+    const cal = Math.max(0, Math.round(+fc || 0));
+    useAppStore.getState().addFood({ name: fn, calories: cal, note: fnote, timestamp: Date.now() });
     showToast(`${T('foodAdded')}: ${fn}`);
     setFn(''); setFc(''); setFnote(''); setShowManual(false);
     onFoodAdded?.();
-  }, [fn, fc, fnote, store, T, showToast, onFoodAdded]);
+  }, [fn, fc, fnote, T, showToast, onFoodAdded]);
 
   // Save as preset
   const handleSavePreset = useCallback(() => {
     const name = editing?.name ?? fn;
-    const cal = editing ? Math.round(editing.cal * portion) : (+fc || 0);
-    if (!name.trim()) return;
-    store.addCustomFoodPreset(name, cal, editing?.note ?? fnote);
+    const cal = Math.max(0, editing ? Math.round(editing.cal * portion) : Math.round(+fc || 0));
+    if (!name.trim() || cal <= 0) return;
+    useAppStore.getState().addCustomFoodPreset(name, cal, editing?.note ?? fnote);
     showToast(T('foodSavePreset'));
-  }, [editing, fn, fc, fnote, portion, store, T, showToast]);
+  }, [editing, fn, fc, fnote, portion, T, showToast]);
 
   const searchFocused = search.trim().length > 0;
   const filteredItems = getFilteredItems();

@@ -39,7 +39,7 @@ export default function GpsActive({
         {mode === 'target' && (
           <View style={{ marginBottom: 16 }}>
             <View style={{ height: 6, backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
-              <View style={{ height: 6, width: `${targetProgress * 100}%`, backgroundColor: COLORS.GREEN, borderRadius: 3 }} />
+              <View style={{ height: 6, width: `${Math.min(targetProgress * 100, 100)}%`, backgroundColor: COLORS.GREEN, borderRadius: 3 }} />
             </View>
           </View>
         )}

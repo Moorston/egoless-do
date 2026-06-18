@@ -66,16 +66,18 @@ export function expandTerms(terms: string[]): string[] {
     if (SYNONYM_MAP[term]) {
       for (const syn of SYNONYM_MAP[term]) expanded.add(syn);
     }
-    // 部分匹配：检查是否是某个同义词表中词的子串
-    for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
-      if (term.includes(main) || main.includes(term)) {
-        expanded.add(main);
-        for (const syn of synonyms) expanded.add(syn);
-      }
-      for (const syn of synonyms) {
-        if (term.includes(syn) || syn.includes(term)) {
+    // 部分匹配：检查是否是某个同义词表中词的子串（要求至少2字符避免误匹配）
+    if (term.length >= 2) {
+      for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
+        if (term.includes(main) || main.includes(term)) {
           expanded.add(main);
-          for (const s of synonyms) expanded.add(s);
+          for (const syn of synonyms) expanded.add(syn);
+        }
+        for (const syn of synonyms) {
+          if (term.includes(syn) || syn.includes(term)) {
+            expanded.add(main);
+            for (const s of synonyms) expanded.add(s);
+          }
         }
       }
     }
@@ -156,7 +158,7 @@ function calcSynonymScore(expandedTerms: string[], item: ReflectionIndex): numbe
     }
   }
   // 归一化：扩展词数量可能很多，用原始词数量归一化
-  return Math.min(1, matchCount / Math.max(3, expandedTerms.length / 3));
+  return Math.min(1, matchCount / Math.max(3, Math.min(expandedTerms.length, 10) / 3));
 }
 
 /**

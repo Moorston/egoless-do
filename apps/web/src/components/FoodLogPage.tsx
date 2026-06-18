@@ -12,9 +12,9 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
   const TH = THEMES[store.theme];
   const P = TH.primary;
   const T = useT();
-  const foodLog = store.foodLog || [];
-  const todayLog = getTodayFoodLog(foodLog);
-  const totalCal = todayLog.reduce((a, f) => a + f.calories, 0);
+  const foodLog = useMemo(() => (store.foodLog || []).filter(f => !f.deleted), [store.foodLog]);
+  const todayLog = useMemo(() => getTodayFoodLog(foodLog), [foodLog]);
+  const totalCal = useMemo(() => todayLog.reduce((a, f) => a + f.calories, 0), [todayLog]);
   const [showAdd, setShowAdd] = useState(false);
   const [showHistory, setShowHistory] = useState(true);
 
@@ -64,7 +64,7 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
             <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_BACK, cursor: 'pointer' }}><ChevronLeft size={20} /></button>
             <div>
               <div style={{ fontWeight: 700, fontSize: FONT_STAT_CARD, color: TH.text }}>{T('foodTitle')}</div>
-              <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}</div>
+              <div style={{ fontSize: FONT_BODY, color: TH.sub }}>{new Date().toLocaleDateString(store.language === 'en' ? 'en-US' : 'zh-CN', { month: 'long', day: 'numeric' })}</div>
             </div>
           </div>
         </div>
@@ -122,8 +122,8 @@ export default function FoodLogPage({ onClose }: { onClose: () => void }) {
                     background: TH.card, border: `1px solid ${TH.border}`, borderRadius: 14, padding: '14px 8px',
                   }}>
                     {[
-                      { value: String(historyGroups.length), label: '天' },
-                      { value: String(totalRecords), label: '条记录' },
+                      { value: String(historyGroups.length), label: T('foodDays') },
+                      { value: String(totalRecords), label: T('foodRecords') },
                       { value: String(totalHistoryCal), label: 'kcal' },
                     ].map(s => (
                       <div key={s.label} style={{ textAlign: 'center' }}>

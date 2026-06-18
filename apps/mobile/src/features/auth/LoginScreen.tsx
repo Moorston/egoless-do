@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -20,6 +20,8 @@ export default function LoginScreen() {
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'registered' | 'not_registered'>('idle');
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
 
   const handleEmailBlur = async () => {
     if (email && !EMAIL_REGEX.test(email)) {
@@ -35,6 +37,7 @@ export default function LoginScreen() {
     setEmailStatus('checking');
     try {
       const res = await apiCheckEmail(email.trim());
+      if (!mountedRef.current) return;
       if (res.available) {
         setEmailStatus('not_registered');
         setEmailError('该邮箱未注册，请先注册');
@@ -42,6 +45,7 @@ export default function LoginScreen() {
         setEmailStatus('registered');
       }
     } catch {
+      if (!mountedRef.current) return;
       setEmailStatus('idle');
     }
   };

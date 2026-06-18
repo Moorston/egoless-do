@@ -27,8 +27,10 @@ export const ItemHeatmap = React.memo(function ItemHeatmap({ item, checkins, TH,
 
   // Build weeks grid
   const { weeks } = useMemo(() => {
-    const start = new Date(item.startDate);
-    const end = new Date(item.endDate);
+    const [sy, sm, sd] = item.startDate.split('-').map(Number);
+    const [ey, em, ed] = item.endDate.split('-').map(Number);
+    const start = new Date(sy, sm - 1, sd);
+    const end = new Date(ey, em - 1, ed);
     const startDay = start.getDay();
 
     const dates: string[] = [];

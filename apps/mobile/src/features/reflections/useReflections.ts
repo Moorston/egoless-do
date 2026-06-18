@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Share } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
-import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES } from '@egoless-do/core';
+import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr } from '@egoless-do/core';
 import {
   filterReflections, groupReflectionsByDate, computeDynamicTagCounts, computeDynamicMoodCounts,
   computeMoodTrend, computeWritingHeatmap, computeTagCooccurrence,
@@ -34,9 +34,9 @@ export function useReflections() {
   // Sync debounced search back to filters
   useEffect(() => {
     if (debouncedSearch !== filters.search) {
-      setFilters({ ...filters, search: debouncedSearch });
+      setFilters(prev => ({ ...prev, search: debouncedSearch }));
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, setFilters, filters.search]);
 
   // Sync filters.search to local input when filters change externally
   useEffect(() => {
@@ -54,12 +54,12 @@ export function useReflections() {
 
   // ── Tag options ──────────────────────────────────────────────
   const habitTags = useMemo(() =>
-    (store.habits ?? []).filter(h => h.createTag).map(h => `#${h.name}`),
+    (store.habits ?? []).filter(h => !h.deleted && h.createTag).map(h => `#${h.name}`),
     [store.habits],
   );
 
   const allTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).flatMap(r => r.tags))];
+    const reflTags = [...new Set((store.reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags ?? []))];
     const allAvailable = [...new Set([...reflTags, ...habitTags])];
     const order = store.allTagsOrder ?? [];
     if (order.length > 0) {
@@ -74,7 +74,7 @@ export function useReflections() {
   }, [store.reflections, store.customTags, store.allTagsOrder, habitTags]);
 
   const allUsedTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).flatMap(r => r.tags))];
+    const reflTags = [...new Set((store.reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags ?? []))];
     return [...new Set([...reflTags, ...habitTags])];
   }, [store.reflections, habitTags]);
 
@@ -145,13 +145,13 @@ export function useReflections() {
   const streakDays = useMemo(() => {
     const dates = [...new Set(
       (store.reflections ?? []).filter(r => !r.deleted).map(r =>
-        new Date(r.timestamp ?? 0).toISOString().slice(0, 10),
+        dateStr(new Date(r.timestamp ?? 0)),
       ),
     )].sort().reverse();
     let streak = 0;
     let current = new Date(); // eslint-disable-line prefer-const
     for (const d of dates) {
-      const expected = current.toISOString().slice(0, 10);
+      const expected = dateStr(current);
       if (d === expected) { streak++; current.setDate(current.getDate() - 1); }
       else break;
     }
@@ -164,9 +164,9 @@ export function useReflections() {
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const ds = d.toISOString().slice(0, 10);
+      const ds = dateStr(d);
       const count = (store.reflections ?? []).filter(r =>
-        !r.deleted && new Date(r.timestamp ?? 0).toISOString().slice(0, 10) === ds,
+        !r.deleted && dateStr(new Date(r.timestamp ?? 0)) === ds,
       ).length;
       data.push(count);
     }
@@ -209,46 +209,44 @@ export function useReflections() {
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
   }, [store.reflections]);
 
-  // ── Filter actions ───────────────────────────────────────────
+  // ── Filter actions (use functional updater to avoid stale closures) ──
   const toggleTag = useCallback((tag: string) => {
-    const tags = filters.tags.includes(tag)
-      ? filters.tags.filter(t => t !== tag)
-      : [...filters.tags, tag];
-    setFilters({ ...filters, tags, collectionId: undefined });
-  }, [filters, setFilters]);
+    setFilters(prev => {
+      const tags = prev.tags.includes(tag) ? prev.tags.filter(t => t !== tag) : [...prev.tags, tag];
+      return { ...prev, tags, collectionId: undefined };
+    });
+  }, [setFilters]);
 
   const toggleMood = useCallback((mood: string) => {
     if (!mood) {
-      setFilters({ ...filters, moods: [], collectionId: undefined });
+      setFilters(prev => ({ ...prev, moods: [], collectionId: undefined }));
       return;
     }
-    const moods = filters.moods.includes(mood)
-      ? filters.moods.filter(m => m !== mood)
-      : [...filters.moods, mood];
-    setFilters({ ...filters, moods, collectionId: undefined });
-  }, [filters, setFilters]);
+    setFilters(prev => {
+      const moods = prev.moods.includes(mood) ? prev.moods.filter(m => m !== mood) : [...prev.moods, mood];
+      return { ...prev, moods, collectionId: undefined };
+    });
+  }, [setFilters]);
 
   const setDateRange = useCallback((from?: number, to?: number) => {
-    setFilters({
-      ...filters,
+    setFilters(prev => ({
+      ...prev,
       dateRange: from !== undefined ? { from, to: to ?? Date.now() } : undefined,
       collectionId: undefined,
-    });
-  }, [filters, setFilters]);
+    }));
+  }, [setFilters]);
 
   const setHasLink = useCallback((v?: boolean) => {
-    setFilters({ ...filters, hasLink: v, collectionId: undefined });
-  }, [filters, setFilters]);
+    setFilters(prev => ({ ...prev, hasLink: v, collectionId: undefined }));
+  }, [setFilters]);
 
   const setHasLinkedTask = useCallback((v?: boolean) => {
-    setFilters({ ...filters, hasLinkedTask: v, collectionId: undefined });
-  }, [filters, setFilters]);
+    setFilters(prev => ({ ...prev, hasLinkedTask: v, collectionId: undefined }));
+  }, [setFilters]);
 
   const applyCollection = useCallback((col: SmartCollection) => {
-    // Smart collection sets a collectionId; the actual filtering is done by the collection's filter fn
-    // We store collectionId and also derive tag/mood filters for display
-    setFilters({ ...filters, collectionId: col.id, tags: [], moods: [] });
-  }, [filters, setFilters]);
+    setFilters(prev => ({ ...prev, collectionId: col.id, tags: [], moods: [] }));
+  }, [setFilters]);
 
   const clearAllFilters = useCallback(() => {
     setFilters({ ...DEFAULT_REFLECTION_FILTERS });
@@ -257,22 +255,22 @@ export function useReflections() {
 
   const removeFilter = useCallback((key: string, value?: string) => {
     if (key === 'search') {
-      setFilters({ ...filters, search: '' });
+      setFilters(prev => ({ ...prev, search: '' }));
       setSearchInput('');
     } else if (key === 'tag' && value) {
-      setFilters({ ...filters, tags: filters.tags.filter(t => t !== value), collectionId: undefined });
+      setFilters(prev => ({ ...prev, tags: prev.tags.filter(t => t !== value), collectionId: undefined }));
     } else if (key === 'mood' && value) {
-      setFilters({ ...filters, moods: filters.moods.filter(m => m !== value), collectionId: undefined });
+      setFilters(prev => ({ ...prev, moods: prev.moods.filter(m => m !== value), collectionId: undefined }));
     } else if (key === 'dateRange') {
-      setFilters({ ...filters, dateRange: undefined, datePreset: undefined, collectionId: undefined });
+      setFilters(prev => ({ ...prev, dateRange: undefined, datePreset: undefined, collectionId: undefined }));
     } else if (key === 'hasLink') {
-      setFilters({ ...filters, hasLink: undefined, collectionId: undefined });
+      setFilters(prev => ({ ...prev, hasLink: undefined, collectionId: undefined }));
     } else if (key === 'hasLinkedTask') {
-      setFilters({ ...filters, hasLinkedTask: undefined, collectionId: undefined });
+      setFilters(prev => ({ ...prev, hasLinkedTask: undefined, collectionId: undefined }));
     } else if (key === 'collectionId') {
-      setFilters({ ...filters, collectionId: undefined });
+      setFilters(prev => ({ ...prev, collectionId: undefined }));
     }
-  }, [filters, setFilters]);
+  }, [setFilters]);
 
   // ── Active filters list for display ──────────────────────────
   const activeFilters = useMemo(() => {

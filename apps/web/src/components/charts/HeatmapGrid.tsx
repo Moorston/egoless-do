@@ -1,6 +1,6 @@
 'use client';
 
-import { useTheme } from '../helpers';
+import { useTheme, useT } from '../helpers';
 import { FONT_CHART_AXIS, COLORS } from '@egoless-do/core';
 
 export interface HeatmapCell {
@@ -16,12 +16,12 @@ export interface WebHeatmapGridProps {
   inactiveColor: string;
 }
 
-const DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
-
 export default function HeatmapGrid({
   grid, activeColor, inactiveColor,
 }: WebHeatmapGridProps) {
   const { TH } = useTheme();
+  const T = useT();
+  const DAY_LABELS = [T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat'), T('weekdaySun')];
   if (!grid.length) return null;
 
   const cellSize = 32;
@@ -49,7 +49,7 @@ export default function HeatmapGrid({
               height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: FONT_CHART_AXIS, color: 'rgba(128,128,128,.4)',
             }}>
-              {wi < grid.length - 1 ? `W${wi + 1}` : '本周'}
+              {wi < grid.length - 1 ? `W${wi + 1}` : T('calendarThisWeek')}
             </div>
             {/* Cells */}
             {grid[wi].map((cell, di) => {

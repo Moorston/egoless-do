@@ -19,7 +19,7 @@ export default function PlanDetailScreen() {
   const planId = route.params?.planId as string;
   const today = dateStr();
 
-  const plan = useMemo(() => (store.plans ?? []).find(p => p.id === planId), [store.plans, planId]);
+  const plan = useMemo(() => (store.plans ?? []).find(p => !p.deleted && p.id === planId), [store.plans, planId]);
   const delayed = plan ? isPlanDelayed(plan, today) : false;
 
   return (

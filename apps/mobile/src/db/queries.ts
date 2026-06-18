@@ -60,9 +60,26 @@ export async function dbGetAllFoodEntries(db: SQLiteDatabase): Promise<FoodEntry
 
 // ── Checkins ──────────────────────────────────────────────────────
 export async function dbGetCheckins(db: SQLiteDatabase): Promise<CheckinEntry[]> {
-  return db.getAllAsync<CheckinEntry>(
-    'SELECT date,done,note,streak,weight,timestamp,grace,updated_at,deleted FROM checkin_records WHERE deleted = 0 ORDER BY date DESC'
+  const rows = await db.getAllAsync<Record<string, unknown>>(
+    'SELECT date,done,note,streak,weight,timestamp,grace,total_days,updated_at,deleted FROM checkin_records WHERE deleted = 0 ORDER BY date DESC'
   );
+  return rows.map(r => ({
+    date: r.date as string,
+    done: (r.done as number) === 1,
+    note: (r.note as string) ?? '',
+    streak: (r.streak as number) ?? 0,
+    weight: r.weight as number | undefined,
+    timestamp: (r.timestamp as number) ?? 0,
+    grace: (r.grace as number) === 1,
+    totalDays: r.total_days as number | undefined,
+    updatedAt: (r.updated_at as number) ?? 0,
+    deleted: false,
+  }));
+}
+
+// ── Safe JSON parse ──────────────────────────────────────────────
+function safeParse<T>(raw: string | null | undefined, fallback: T): T {
+  try { return JSON.parse(raw ?? '') as T; } catch { return fallback; }
 }
 
 // ── Row mappers ───────────────────────────────────────────────────
@@ -78,11 +95,14 @@ function rowToHabit(r: Record<string, unknown>): Habit {
     streak: r.streak as number,
     interrupted: r.interrupted as number,
     status: r.status as Habit['status'],
-    checkedDates: JSON.parse((r.checked_dates as string) ?? '[]'),
+    checkedDates: safeParse<string[]>(r.checked_dates as string, []),
     pauseReason: (r.pause_reason as string) ?? '',
     abandonReason: (r.abandon_reason as string) ?? '',
     updatedAt: (r.updated_at as number) ?? 0,
     deleted: (r.deleted as number) === 1,
+    alarmEnabled: (r.alarm_enabled as number) === 1,
+    alarmHour: (r.alarm_hour as number) ?? 8,
+    alarmMinute: (r.alarm_minute as number) ?? 0,
   };
 }
 
@@ -90,16 +110,14 @@ function rowToReflection(r: Record<string, unknown>): MindReflection {
   const defaultColors: readonly [string, string] = ['#6366f1', '#8b5cf6'];
   let colors = defaultColors;
   if (r.colors) {
-    try {
-      const parsed = JSON.parse(r.colors as string);
-      if (Array.isArray(parsed) && parsed.length === 2) colors = parsed;
-    } catch {}
+    const parsed = safeParse<unknown>(r.colors as string, null);
+    if (Array.isArray(parsed) && parsed.length === 2) colors = parsed as [string, string];
   }
   return {
     id: r.id as string,
     timestamp: r.created_at as number,
     content: r.content as string,
-    tags: JSON.parse((r.tags as string) ?? '[]'),
+    tags: safeParse<string[]>(r.tags as string, []),
     mood: r.mood as MindReflection['mood'],
     cardTheme: r.card_theme as string | undefined,
     link: r.link as string | undefined,
@@ -125,9 +143,13 @@ function rowToThoughtTrail(r: Record<string, unknown>): ThoughtTrail {
     id: r.id as string,
     name: r.name as string,
     description: (r.description as string) ?? '',
-    reflectionIds: JSON.parse((r.reflection_ids as string) ?? '[]'),
+    reflectionIds: safeParse<string[]>(r.reflection_ids as string, []),
+    noteIds: safeParse<string[]>(r.note_ids as string, []),
     source: (r.source as ThoughtTrail['source']) ?? 'manual',
     insightSummary: r.insight_summary as string | undefined,
+    insightCache: r.insight_cache ? safeParse(r.insight_cache as string, undefined) : undefined,
+    reviewCache: r.review_cache ? safeParse(r.review_cache as string, undefined) : undefined,
+    linkedPlanItemIds: r.linked_plan_item_ids ? safeParse(r.linked_plan_item_ids as string, undefined) : undefined,
     createdAt: (r.created_at as number) ?? 0,
     updatedAt: (r.updated_at as number) ?? 0,
     deleted: (r.deleted as number) === 1,

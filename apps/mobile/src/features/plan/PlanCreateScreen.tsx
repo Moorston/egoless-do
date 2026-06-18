@@ -26,7 +26,7 @@ function FrequencyNumberInput({ value, prefix, suffix, min, max, editable, input
       <Text style={{ fontSize: FONT_LABEL, color: '#888' }}>{prefix}</Text>
       <TextInput
         value={text}
-        onChangeText={v => { setText(v); const n = parseInt(v); if (!isNaN(n) && n >= min && n <= max) onCommit(n); }}
+        onChangeText={v => setText(v)}
         onBlur={() => { const n = parseInt(text); const clamped = Math.max(min, Math.min(max, n || min)); setText(String(clamped)); onCommit(clamped); }}
         keyboardType="number-pad"
         editable={editable}
@@ -46,7 +46,7 @@ export default function PlanCreateScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'PlanCreate'>>();
   const planId = route.params?.planId as string | undefined;
 
-  const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => p.id === planId) : null, [store.plans, planId]);
+  const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => !p.deleted && p.id === planId) : null, [store.plans, planId]);
   const existingItems = useMemo(() => planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [], [store.planItems, planId]);
 
   const [name, setName] = useState(existingPlan?.name ?? '');

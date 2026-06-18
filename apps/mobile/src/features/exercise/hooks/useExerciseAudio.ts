@@ -92,10 +92,19 @@ export function useExerciseAudio() {
   }, []);
 
   const cycleSound = useCallback(() => {
-    const idx = EXERCISE_SOUNDS.findIndex(s => s.key === selectedSound);
-    const next = EXERCISE_SOUNDS[(idx + 1) % EXERCISE_SOUNDS.length];
-    selectSound(next.key);
-  }, [selectedSound, selectSound]);
+    setSelectedSound(prev => {
+      const idx = EXERCISE_SOUNDS.findIndex(s => s.key === prev);
+      const next = EXERCISE_SOUNDS[(idx + 1) % EXERCISE_SOUNDS.length];
+      if (next.key === '无') {
+        bgPlayer.pause();
+        audioSessionManager.notifyStopped('ambient');
+      } else {
+        shouldAutoPlayRef.current = true;
+      }
+      setShowSoundPicker(false);
+      return next.key;
+    });
+  }, [bgPlayer, audioSessionManager]);
 
   return {
     selectedSound, setSelectedSound,

@@ -28,12 +28,14 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
     },
 
     updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => {
+      const existing = get().reflectionLinks?.find(l => l.id === id && !l.deleted);
+      if (!existing) return;
       set(s => ({
         reflectionLinks: (s.reflectionLinks ?? []).map(l =>
-          l.id === id ? { ...l, ...patch, updatedAt: Date.now() } : l
+          l.id === id && !l.deleted ? { ...l, ...patch, updatedAt: Date.now() } : l
         ),
       }));
-      const link = get().reflectionLinks.find(l => l.id === id);
+      const link = get().reflectionLinks.find(l => l.id === id && !l.deleted);
       if (link) adapter?.persistChange('reflectionLink', id, link).catch(console.error);
     },
 

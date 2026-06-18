@@ -60,7 +60,7 @@ export default function HomeScreen() {
 
   // ── Existing checkin ──
   const todayRecord = useMemo(
-    () => (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === viewDate),
+    () => (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === viewDate),
     [store.checkinHistory, viewDate],
   );
   const parsed = useMemo(() => parseCheckinNote(todayRecord?.note ?? ''), [todayRecord]);
@@ -79,7 +79,7 @@ export default function HomeScreen() {
 
   // ── Plan items ──
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
-  const planCheckins = store.planItemCheckins ?? [];
+  const planCheckins = useMemo(() => (store.planItemCheckins ?? []).filter(c => !c.deleted), [store.planItemCheckins]);
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
     return getTodayItems(store.planItems ?? [], activePlan, viewDate, planCheckins);
@@ -102,15 +102,15 @@ export default function HomeScreen() {
   const [cgi, setCgi] = useState(String(store.calGoal));
 
   // ── Derived data ──
-  const viewDateFoods = useMemo(() => getFoodLogByDate(store.foodLog ?? [], viewDate), [store.foodLog, viewDate]);
+  const viewDateFoods = useMemo(() => getFoodLogByDate((store.foodLog ?? []).filter(f => !f.deleted), viewDate), [store.foodLog, viewDate]);
   const totalCal = useMemo(() => viewDateFoods.reduce((a, f) => a + f.calories, 0), [viewDateFoods]);
-  const recentFoods = useMemo(() => getRecentFoods(store.foodLog ?? [], 3), [store.foodLog]);
+  const recentFoods = useMemo(() => getRecentFoods((store.foodLog ?? []).filter(f => !f.deleted), 3), [store.foodLog]);
   const todayFoods = viewDateFoods.slice(0, 3);
   const todayFoodTotal = viewDateFoods.length;
   const [portionFood, setPortionFood] = useState<{ name: string; calories: number } | null>(null);
   const [portion, setPortion] = useState(1);
   const totalCompleted = useMemo(
-    () => (store.checkinHistory ?? []).filter((c: CheckinEntry) => c.done).length,
+    () => (store.checkinHistory ?? []).filter((c: CheckinEntry) => c.done && !c.deleted).length,
     [store.checkinHistory],
   );
   const viewDateStats = useMemo(
@@ -118,13 +118,13 @@ export default function HomeScreen() {
     [store.checkinHistory, viewDate],
   );
   const activeHabits = useMemo(
-    () => (store.habits ?? []).filter(h => h.status === 'inProgress'),
+    () => (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
     [store.habits],
   );
 
   // ── Practice streaks ──
   const practiceStreaks = useMemo(() => {
-    const history = store.checkinHistory ?? [];
+    const history = (store.checkinHistory ?? []).filter(c => !c.deleted);
     const streaks: Record<string, number> = { sit: 0, stand: 0, chant: 0 };
     
     // 创建日期到记录的映射
@@ -143,7 +143,7 @@ export default function HomeScreen() {
       let currentDate = viewDate;
       const d = new Date(viewDate + 'T00:00:00');
       d.setDate(d.getDate() - 1);
-      currentDate = d.toISOString().slice(0, 10);
+      currentDate = dateStr(d);
       
       while (true) {
         const record = recordMap.get(currentDate);
@@ -156,7 +156,7 @@ export default function HomeScreen() {
         // 移动到前一天
         const prev = new Date(currentDate + 'T00:00:00');
         prev.setDate(prev.getDate() - 1);
-        currentDate = prev.toISOString().slice(0, 10);
+        currentDate = dateStr(prev);
       }
       
       // 如果 viewDate 的记录中包含该修行项目，连续天数+1
@@ -172,7 +172,7 @@ export default function HomeScreen() {
   // ── Status derivation ──
   const status: CheckinStatus = todayRecord
     ? (todayRecord.done ? 'done' : 'editing')
-    : (localDone !== null ? 'draft' : 'draft');
+    : 'draft';
 
   // Whether fields are locked (read-only from done status)
   const isLocked = status === 'done';
@@ -184,6 +184,12 @@ export default function HomeScreen() {
   const touchStartY = useRef(0);
   const viewDateRef = useRef(viewDate);
   viewDateRef.current = viewDate;
+  const noteRef = useRef(note);
+  noteRef.current = note;
+  const weightRef = useRef(weight);
+  weightRef.current = weight;
+  const localDoneRef = useRef(localDone);
+  localDoneRef.current = localDone;
 
   const onTouchStart = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
     touchStartX.current = e.nativeEvent.pageX;
@@ -278,7 +284,7 @@ export default function HomeScreen() {
     if (practices.chant) pr.push('chant');
     if (pr.length) noteData.practices = pr;
     const checkedHabits = (s.habits ?? [])
-      .filter(h => h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
+      .filter(h => !h.deleted && h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
       .map(h => h.name);
     if (checkedHabits.length) noteData.habits = checkedHabits;
     // 每日自定义待办
@@ -297,10 +303,10 @@ export default function HomeScreen() {
 
   // ── Real-time save ──
   const saveField = useCallback((doneOverride?: boolean) => {
-    const done = doneOverride ?? localDone ?? false;
-    const weightNum = weight ? parseFloat(weight) : undefined;
-    store.submitCheckin(done, buildNote(), undefined, weightNum);
-  }, [localDone, buildNote, weight, store]);
+    const done = doneOverride ?? localDoneRef.current ?? false;
+    const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+    useAppStore.getState().submitCheckin(done, buildNote(), undefined, weightNum);
+  }, [buildNote]);
 
   // ── Field change handlers ──
   const togglePractice = useCallback((key: 'sit' | 'stand' | 'chant') => {
@@ -308,35 +314,25 @@ export default function HomeScreen() {
     setPractices(p => {
       const next = { ...p, [key]: !p[key] };
       setTimeout(() => {
+        const s = useAppStore.getState();
         const pr: string[] = [];
         if (next.sit) pr.push('sit');
         if (next.stand) pr.push('stand');
         if (next.chant) pr.push('chant');
         const noteData: Record<string, unknown> = {};
-        if (note) noteData.note = note;
-        if (store.waterMl > 0) noteData.water = store.waterMl;
+        if (noteRef.current) noteData.note = noteRef.current;
+        if (s.waterMl > 0) noteData.water = s.waterMl;
         if (pr.length) noteData.practices = pr;
-        const checkedHabits = (store.habits ?? [])
-          .filter(h => h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
+        const checkedHabits = (s.habits ?? [])
+          .filter(h => !h.deleted && h.status === 'inProgress' && h.checkedDates?.includes(viewDateRef.current))
           .map(h => h.name);
         if (checkedHabits.length) noteData.habits = checkedHabits;
-        // 每日自定义待办
-        const doneCustomTodos = dailyCustomTodos
-          .filter(t => t.done)
-          .map(t => t.name);
-        if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
-        // 计划事项
-        const donePlanItems = todayPlanItems
-          .filter(item => planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done))
-          .map(item => item.name);
-        if (donePlanItems.length) noteData.planItems = donePlanItems;
-        if (totalCal > 0) noteData.food = totalCal;
-        const w = weight ? parseFloat(weight) : undefined;
-        store.submitCheckin(localDone ?? false, JSON.stringify(noteData), undefined, w);
+        const w = weightRef.current ? parseFloat(weightRef.current) : undefined;
+        s.submitCheckin(localDoneRef.current ?? false, JSON.stringify(noteData), undefined, w);
       }, 0);
       return next;
     });
-  }, [isReadOnly, note, store, totalCal, weight, localDone, viewDate, dailyCustomTodos, todayPlanItems, planCheckins]);
+  }, [isReadOnly]);
 
   const toggleHabit = useCallback((id: string) => {
     if (isReadOnly) return;
@@ -349,17 +345,19 @@ export default function HomeScreen() {
     store.addWater(ml);
     // 无论打卡状态如何，都更新饮水数据
     setTimeout(() => {
-      const weightNum = weight ? parseFloat(weight) : undefined;
-      store.submitCheckin(localDone ?? true, buildNote(), undefined, weightNum);
+      const s = useAppStore.getState();
+      const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+      s.submitCheckin(localDoneRef.current ?? false, buildNote(), undefined, weightNum);
     }, 0);
-  }, [store, buildNote, weight, localDone, isToday]);
+  }, [store, buildNote, isToday]);
 
   const saveWeight = useCallback((val: string) => {
     setWeight(val);
-    const w = val ? parseFloat(val) : undefined;
+    const parsed = val ? parseFloat(val) : undefined;
+    const w = parsed !== undefined && !isNaN(parsed) ? parsed : undefined;
     // 无论打卡状态如何，都更新体重数据
-    store.submitCheckin(localDone ?? true, buildNote(), undefined, w);
-  }, [localDone, buildNote, store]);
+    useAppStore.getState().submitCheckin(localDoneRef.current ?? false, buildNote(), undefined, w);
+  }, [buildNote]);
 
   const saveNote = useCallback((val: string) => {
     setNote(val);
@@ -375,7 +373,7 @@ export default function HomeScreen() {
     const s = useAppStore.getState();
     const items = getIncompleteItems({
       practices,
-      habits: (s.habits ?? []).filter(h => h.status === 'inProgress'),
+      habits: (s.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
       planItems: todayPlanItems,
       planItemCheckins: planCheckins,
       today: viewDate,
@@ -432,7 +430,7 @@ export default function HomeScreen() {
   useEffect(() => {
     if (!store.healthSyncEnabled) return;
     import('../health/HealthService').then(({ performHealthSync }) => {
-      performHealthSync(store);
+      return performHealthSync(useAppStore.getState());
     }).catch(console.error);
   }, [store.healthSyncEnabled]);
 
@@ -459,7 +457,7 @@ export default function HomeScreen() {
 
   // ── Grace reminder ──
   const yStr = yesterday();
-  const yesterdayRecord = (store.checkinHistory ?? []).find((h: CheckinEntry) => h.date === yStr);
+  const yesterdayRecord = useMemo(() => (store.checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr), [store.checkinHistory, yStr]);
   const showGrace = isToday && yesterdayRecord?.done !== true;
   const currentMonth = dateStr().slice(0, 7);
   const graceQuota = store.userProfile?.graceMonthlyQuota ?? 2;
@@ -643,20 +641,20 @@ export default function HomeScreen() {
 
                 {/* Practices */}
                 <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 8 }}>{T('checkinPractice')}</Text>
-                {([
+                {(() => {
+                  const viewDateRecord = (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === viewDate && c.done);
+                  return [
                   { key: 'sit' as const, icon: <Moon size={16} color={P} />, label: T('checkinSit') },
                   { key: 'stand' as const, icon: <Sunrise size={16} color={P} />, label: T('checkinStand') },
                   { key: 'chant' as const, icon: <Binary size={16} color={P} />, label: T('checkinSutra') },
-                ]).map(({ key, icon, label }) => {
+                ].map(({ key, icon, label }) => {
                   const isChecked = practices[key];
                   const baseStreak = practiceStreaks[key];
-                  // 检查历史记录中是否包含该修行项目
-                  const viewDateRecord = (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === viewDate && c.done);
                   const hasInHistory = viewDateRecord ? parseCheckinNote(viewDateRecord.note ?? '').practices.includes(key) : false;
                   // 选中时+1，取消时-1
-                  const displayStreak = isChecked 
-                    ? (hasInHistory ? baseStreak : baseStreak + 1) 
-                    : (hasInHistory ? baseStreak - 1 : baseStreak);
+                  const displayStreak = isChecked
+                    ? (hasInHistory ? baseStreak : baseStreak + 1)
+                    : Math.max(0, hasInHistory ? baseStreak - 1 : baseStreak);
                   return (
                     <View key={key} style={{
                       flexDirection: 'row', alignItems: 'center',
@@ -681,7 +679,7 @@ export default function HomeScreen() {
                       )}
                     </View>
                   );
-                })}
+                })()}
 
                 {/* Plan items */}
                 {todayPlanItems.length > 0 && (
@@ -702,7 +700,7 @@ export default function HomeScreen() {
                             <View>
                               <Text style={{ color: TH.text, fontSize: FONT_BODY }} numberOfLines={1}>{item.name}</Text>
                               <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                                {item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
+                                {!item.link || item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
                               </Text>
                             </View>
                           </View>
@@ -884,7 +882,7 @@ export default function HomeScreen() {
                 </View>
                 {isToday ? (
                   <>
-                    <ProgressBar pct={store.waterMl / store.waterGoal * 100} color={P} />
+                    <ProgressBar pct={store.waterGoal > 0 ? store.waterMl / store.waterGoal * 100 : 0} color={P} />
                     <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
                       {[200, 250, 350, 500].map(ml => (
                         <TouchableOpacity key={ml} onPress={() => addWater(ml)}
@@ -895,7 +893,7 @@ export default function HomeScreen() {
                     </View>
                   </>
                 ) : (
-                  <ProgressBar pct={parsed.waterMl / store.waterGoal * 100} color={P} />
+                  <ProgressBar pct={store.waterGoal > 0 ? parsed.waterMl / store.waterGoal * 100 : 0} color={P} />
                 )}
               </View>
 
@@ -923,7 +921,7 @@ export default function HomeScreen() {
                     )}
                   </View>
                 </View>
-                <ProgressBar pct={Math.min(totalCal / store.calGoal * 100, 100)} color={P} />
+                <ProgressBar pct={store.calGoal > 0 ? Math.min(totalCal / store.calGoal * 100, 100) : 0} color={P} />
 
                 {/* Recent Foods (today only) */}
                 {isToday && recentFoods.length > 0 && (
@@ -1029,8 +1027,9 @@ export default function HomeScreen() {
       <AddFoodModal visible={showFood} onClose={() => setShowFood(false)} onFoodAdded={() => {
         // 添加食物后更新打卡记录
         setTimeout(() => {
-          const weightNum = weight ? parseFloat(weight) : undefined;
-          store.submitCheckin(localDone ?? true, buildNote(), undefined, weightNum);
+          const s = useAppStore.getState();
+          const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+          s.submitCheckin(localDoneRef.current ?? true, buildNote(), undefined, weightNum);
         }, 0);
       }} />
 
@@ -1071,8 +1070,9 @@ export default function HomeScreen() {
                   setPortionFood(null);
                   // 添加食物后更新打卡记录
                   setTimeout(() => {
-                    const weightNum = weight ? parseFloat(weight) : undefined;
-                    store.submitCheckin(localDone ?? true, buildNote(), undefined, weightNum);
+                    const s = useAppStore.getState();
+                    const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+                    s.submitCheckin(localDoneRef.current ?? true, buildNote(), undefined, weightNum);
                   }, 0);
                 }
               }}

@@ -39,7 +39,8 @@ function DayGroupComponent({
 
   const dayNum = date.slice(8, 10);
   const month = date.slice(5, 7);
-  const dateObj = new Date(date);
+  const [dy, dm, dd] = date.split('-').map(Number);
+  const dateObj = new Date(dy, dm - 1, dd);
   const weekday = dateObj.toLocaleDateString('zh-CN', { weekday: 'short' });
 
   return (

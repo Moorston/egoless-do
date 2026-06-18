@@ -101,7 +101,7 @@ function SportPrepPageInner({
             ) : (
               <>
                 <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>0.00</div>
-                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>km</div>
+                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.6)', marginTop: 4 }}>{T('exerciseKm')}</div>
               </>
             )}
           </div>

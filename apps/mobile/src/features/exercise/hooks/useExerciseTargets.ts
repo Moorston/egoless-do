@@ -33,6 +33,7 @@ export function useExerciseTargets(params: UseExerciseTargetsParams) {
 
   // Target progress
   const targetProgress = mode === 'target' ? (() => {
+    if (targetValue <= 0) return 0;
     if (targetType === 'distance') return Math.min(distKm / targetValue, 1);
     if (targetType === 'time')     return Math.min(sec / targetValue, 1);
     if (targetType === 'calories') return Math.min(calories / targetValue, 1);
@@ -62,7 +63,8 @@ export function useExerciseTargets(params: UseExerciseTargetsParams) {
     ]).start(() => setShowCelebration(false));
   }, [celebrateAnim]);
 
-  // Check target reached
+  // Check target reached (fire once)
+  const targetReachedRef = useRef(false);
   const checkTargetReached = useCallback(() => {
     if (mode !== 'target') return;
     let reached = false;
@@ -70,7 +72,8 @@ export function useExerciseTargets(params: UseExerciseTargetsParams) {
     if (targetType === 'time' && sec >= targetValue) reached = true;
     if (targetType === 'calories' && calories >= targetValue) reached = true;
     if (targetType === 'reps' && totalReps >= targetValue) reached = true;
-    if (reached) {
+    if (reached && !targetReachedRef.current) {
+      targetReachedRef.current = true;
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       triggerCelebration();
       playBell();

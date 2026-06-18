@@ -26,10 +26,11 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
       const [h, m] = value.split(':').map(Number);
       setHour(h);
       setMinute(m);
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         hourRef.current?.scrollTo({ y: h * ITEM_HEIGHT, animated: false });
         minuteRef.current?.scrollTo({ y: (m / 5) * ITEM_HEIGHT, animated: false });
       }, 100);
+      return () => clearTimeout(timer);
     }
   }, [visible, value]);
 

@@ -11,6 +11,7 @@ export function createTagMoodSlice(onPersist?: () => void): SliceCreator<TagMood
     allMoodsOrder: [],
 
     addCustomTag(tag: string) {
+      if (!tag.trim()) return;
       set(s => ({
         customTags: addCustomItem(s.customTags ?? [], tag),
         allTagsOrder: (s.allTagsOrder ?? []).includes(tag) ? s.allTagsOrder : [...(s.allTagsOrder ?? []), tag],
@@ -25,13 +26,19 @@ export function createTagMoodSlice(onPersist?: () => void): SliceCreator<TagMood
       onPersist?.();
     },
     updateCustomTag(oldTag: string, newTag: string) {
-      set(s => ({
-        customTags: updateCustomItem(s.customTags ?? [], oldTag, newTag),
-        allTagsOrder: (s.allTagsOrder ?? []).map(t => t === oldTag ? newTag : t),
-      }));
+      set(s => {
+        const updated = updateCustomItem(s.customTags ?? [], oldTag, newTag);
+        return {
+          customTags: updated,
+          allTagsOrder: updated !== (s.customTags ?? [])
+            ? (s.allTagsOrder ?? []).map(t => t === oldTag ? newTag : t)
+            : s.allTagsOrder,
+        };
+      });
       onPersist?.();
     },
     addCustomMood(mood: string) {
+      if (!mood.trim()) return;
       set(s => ({
         customMoods: addCustomItem(s.customMoods ?? [], mood),
         allMoodsOrder: (s.allMoodsOrder ?? []).includes(mood) ? s.allMoodsOrder : [...(s.allMoodsOrder ?? []), mood],
@@ -46,10 +53,15 @@ export function createTagMoodSlice(onPersist?: () => void): SliceCreator<TagMood
       onPersist?.();
     },
     updateCustomMood(oldMood: string, newMood: string) {
-      set(s => ({
-        customMoods: updateCustomItem(s.customMoods ?? [], oldMood, newMood),
-        allMoodsOrder: (s.allMoodsOrder ?? []).map(m => m === oldMood ? newMood : m),
-      }));
+      set(s => {
+        const updated = updateCustomItem(s.customMoods ?? [], oldMood, newMood);
+        return {
+          customMoods: updated,
+          allMoodsOrder: updated !== (s.customMoods ?? [])
+            ? (s.allMoodsOrder ?? []).map(m => m === oldMood ? newMood : m)
+            : s.allMoodsOrder,
+        };
+      });
       onPersist?.();
     },
     reorderCustomTag(fromIndex: number, toIndex: number) { set(s => ({ customTags: reorderItem(s.customTags ?? [], fromIndex, toIndex) })); onPersist?.(); },

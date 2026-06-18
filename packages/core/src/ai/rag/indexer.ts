@@ -26,8 +26,8 @@ export function buildIndex(reflections: MindReflection[]): ReflectionIndex[] {
       keywords: extractKeywords(r.content),
       mood: r.mood ?? '',
       moodLower: (r.mood ?? '').toLowerCase(),
-      tags: r.tags,
-      tagsLower: r.tags.map(t => t.toLowerCase()),
+      tags: r.tags ?? [],
+      tagsLower: (r.tags ?? []).map(t => t.toLowerCase()),
       timestamp: r.timestamp,
     }));
 }

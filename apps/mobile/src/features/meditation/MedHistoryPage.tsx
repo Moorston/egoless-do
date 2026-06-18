@@ -14,7 +14,7 @@ export default function MedHistoryPage() {
   const store = useAppStore();
 
   const sorted = useMemo(() =>
-    [...(store.medHistory ?? [])].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
+    [...(store.medHistory ?? [])].filter(m => !m.deleted).sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
     [store.medHistory]
   );
 
@@ -40,9 +40,10 @@ export default function MedHistoryPage() {
   };
 
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-  const getWeekday = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? '' : weekdays[d.getDay()];
+  const getWeekday = (ds: string) => {
+    const [y, m, d] = ds.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return isNaN(date.getTime()) ? '' : weekdays[date.getDay()];
   };
 
   return (

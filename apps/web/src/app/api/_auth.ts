@@ -38,7 +38,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
 
   // Fast local checks first
   const payload = jwtPayload(token);
-  const userId = payload?.id as string | undefined;
+  const userId = typeof payload?.id === 'string' ? payload.id : undefined;
   if (!userId) return null;
 
   // Check blacklist (for logged-out tokens)
@@ -49,6 +49,19 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
     const pb = getPb();
     pb.authStore.save(token, null);
     await pb.collection('users').authRefresh();
+
+    // Check if token was issued before the last password reset
+    const iat = typeof payload.iat === 'number' ? payload.iat * 1000 : 0;
+    if (iat > 0) {
+      try {
+        const user = await pb.collection('users').getOne(userId);
+        const pwdChangedAt = (user as any).password_changed_at;
+        if (pwdChangedAt && iat < pwdChangedAt) return null;
+      } catch {
+        // If user lookup fails, continue (signature already verified)
+      }
+    }
+
     return { userId };
   } catch {
     return null;

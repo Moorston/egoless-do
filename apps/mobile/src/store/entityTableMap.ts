@@ -24,6 +24,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       done_days: num(d.doneDays), streak: num(d.streak), interrupted: num(d.interrupted),
       status: d.status ?? 'notStarted', checked_dates: json(d.checkedDates),
       pause_reason: d.pauseReason ?? '', abandon_reason: d.abandonReason ?? '',
+      alarm_enabled: bool(d.alarmEnabled), alarm_hour: num(d.alarmHour, 8), alarm_minute: num(d.alarmMinute, 0),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
@@ -61,7 +62,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       date: d.date, done: bool(d.done), note: d.note ?? '',
       streak: num(d.streak), timestamp: d.timestamp ?? null, weight: d.weight ?? null,
-      grace: bool(d.grace),
+      grace: bool(d.grace), total_days: d.totalDays ?? null,
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
@@ -72,6 +73,10 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       duration_sec: num(d.durationSec), distance_km: d.distanceKm ?? 0,
       calories: d.calories ?? 0, avg_pace: d.avgPace ?? 0,
       track_points: json(d.trackPoints), is_gps_sport: bool(d.isGpsSport),
+      mode: d.mode ?? null, target: d.target ? json(d.target) : null,
+      segment_paces: d.segmentPaces ? json(d.segmentPaces) : null,
+      elevation_gain: d.elevationGain ?? null, paused_duration: d.pausedDuration ?? null,
+      reps: d.reps ?? null, sets: d.sets ? json(d.sets) : null, met: d.met ?? null,
       ts: d.timestamp,
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
@@ -102,7 +107,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
       start_date: d.startDate, end_date: d.endDate,
       status: d.status ?? 'not_started', progress: num(d.progress),
       last_delayed_notify_at: d.lastDelayedNotifyAt ?? null,
-      updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   planItem: {
@@ -116,7 +121,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
         priority: d.priority ?? 'medium',
         target_metric: d.targetMetric ?? '',
         link_config: json(d.linkConfig), item_order: num(d.order),
-        updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
+        updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
       };
       if (d.reflectionId !== undefined) row.reflection_id = d.reflectionId;
       if (d.trailId !== undefined) row.trail_id = d.trailId;
@@ -130,7 +135,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       id: d.id, plan_item_id: d.planItemId, date: d.date,
       done: bool(d.done), note: d.note ?? '', linked_module: d.linkedModule ?? '',
-      updated_at: d.updatedAt ?? null, deleted: bool(d.deleted),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
   },
   grace: {
@@ -161,8 +166,12 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
     toRow: (d) => ({
       id: d.id, name: d.name, description: d.description ?? '',
       reflection_ids: json(d.reflectionIds),
+      note_ids: json(d.noteIds ?? []),
       source: d.source ?? 'manual',
       insight_summary: d.insightSummary ?? null,
+      insight_cache: d.insightCache ? json(d.insightCache) : null,
+      review_cache: d.reviewCache ? json(d.reviewCache) : null,
+      linked_plan_item_ids: d.linkedPlanItemIds ? json(d.linkedPlanItemIds) : null,
       created_at: d.createdAt ?? Date.now(),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
@@ -222,6 +231,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
         highlights: d.highlights,
         improvements: d.improvements,
         generatedAt: d.generatedAt,
+        aiModel: d.aiModel,
         lastAutoUpdateAt: d.lastAutoUpdateAt,
       }),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),

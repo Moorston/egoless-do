@@ -20,15 +20,13 @@ export default function CheckinHistoryScreen() {
   
   const [activeTab, setActiveTab] = useState<'history' | 'weekReview' | 'monthReview'>('weekReview');
 
-  const history = store.checkinHistory ?? [];
-
   const sorted = useMemo(() =>
-    [...history].sort((a, b) => {
+    (store.checkinHistory ?? []).filter(c => !c.deleted).sort((a, b) => {
       const ta = a.timestamp ?? new Date(a.date).getTime();
       const tb = b.timestamp ?? new Date(b.date).getTime();
       return tb - ta;
     }),
-    [history]
+    [store.checkinHistory]
   );
 
   const grouped = useMemo(() => {
@@ -52,9 +50,10 @@ export default function CheckinHistoryScreen() {
   };
 
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-  const getWeekday = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? '' : weekdays[d.getDay()];
+  const getWeekday = (ds: string) => {
+    const [y, m, d] = ds.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return isNaN(date.getTime()) ? '' : weekdays[date.getDay()];
   };
 
   const handleClearReviews = () => {

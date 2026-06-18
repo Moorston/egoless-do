@@ -55,7 +55,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
   const P = TH.primary;
   const T = useT();
 
-  const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => p.id === planId) : null, [store.plans, planId]);
+  const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => !p.deleted && p.id === planId) : null, [store.plans, planId]);
   const existingItems = useMemo(() => planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [], [store.planItems, planId]);
 
   const [name, setName] = useState(existingPlan?.name ?? '');
@@ -112,36 +112,40 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
       }
     }
     setSaving(true);
-    if (isEdit && planId) {
-      store.updatePlan(planId, { name, goal, slogan, startDate, endDate });
-      const existingIds = new Set(existingItems.map(i => i.id));
-      const currentIds = new Set(items.map(i => i.id));
-      // Delete removed existing items
-      existingIds.forEach(id => {
-        if (!currentIds.has(id)) store.deletePlanItem(id);
-      });
-      items.forEach((item, idx) => {
-        if (existingIds.has(item.id)) {
-          store.updatePlanItem(item.id, {
-            name: item.name, description: item.description,
-            startDate: item.startDate, endDate: item.endDate,
-            contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
-            frequency: item.frequency,
-            order: idx,
-          });
-        } else {
-          store.addPlanItem({
-            planId, name: item.name, description: item.description,
-            startDate: item.startDate, endDate: item.endDate,
-            contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
-            frequency: item.frequency,
-            order: idx,
-          });
+    try {
+      if (isEdit && planId) {
+        store.updatePlan(planId, { name, goal, slogan, startDate, endDate });
+        const existingIds = new Set(existingItems.map(i => i.id));
+        const currentIds = new Set(items.map(i => i.id));
+        // Delete removed existing items
+        existingIds.forEach(id => {
+          if (!currentIds.has(id)) store.deletePlanItem(id);
+        });
+        items.forEach((item, idx) => {
+          if (existingIds.has(item.id)) {
+            store.updatePlanItem(item.id, {
+              name: item.name, description: item.description,
+              startDate: item.startDate, endDate: item.endDate,
+              contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+              frequency: item.frequency,
+              order: idx,
+            });
+          } else {
+            store.addPlanItem({
+              planId, name: item.name, description: item.description,
+              startDate: item.startDate, endDate: item.endDate,
+              contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
+              frequency: item.frequency,
+              order: idx,
+            });
+          }
+        });
+      } else {
+        const newPlanId = store.addPlan({ name, goal, slogan, startDate, endDate });
+        if (!newPlanId) {
+          setSaving(false);
+          return;
         }
-      });
-    } else {
-      const newPlanId = store.addPlan({ name, goal, slogan, startDate, endDate });
-      if (newPlanId) {
         items.forEach((item, idx) => {
           store.addPlanItem({
             planId: newPlanId, name: item.name, description: item.description,
@@ -152,8 +156,11 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
           });
         });
       }
+      onClose();
+    } catch (e) {
+      console.error('[PlanCreatePage] save error:', e);
+      setSaving(false);
     }
-    onClose();
   };
 
   const addItem = () => {

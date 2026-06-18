@@ -21,7 +21,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   const insets = useSafeAreaInsets();
 
   const checkinHistory = store.checkinHistory ?? [];
-  const totalCompleted = useMemo(() => checkinHistory.filter((c: CheckinEntry) => c.done).length, [checkinHistory]);
+  const totalCompleted = useMemo(() => checkinHistory.filter((c: CheckinEntry) => c.done && !c.deleted).length, [checkinHistory]);
   const streak = store.streak;
 
   const today = new Date();
@@ -31,14 +31,15 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   // 本月打卡天数
   const monthDone = useMemo(() => {
     return checkinHistory.filter((c: CheckinEntry) => {
-      if (!c.done) return false;
-      const d = new Date(c.date);
+      if (!c.done || c.deleted) return false;
+      const [cy, cm, cd] = c.date.split('-').map(Number);
+      const d = new Date(cy, cm - 1, cd);
       return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
     }).length;
   }, [checkinHistory, currentYear, currentMonth]);
 
   // 本月已过天数
-  const monthPassed = useMemo(() => today.getDate(), [today]);
+  const monthPassed = today.getDate();
 
   // 本月完成率
   const monthRate = useMemo(() => {
@@ -48,16 +49,18 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
 
   // 最长连续记录
   const longestStreak = useMemo(() => {
-    return computeLongestStreak(checkinHistory.filter((c: CheckinEntry) => c.done).map(c => c.date));
+    return computeLongestStreak(checkinHistory.filter((c: CheckinEntry) => c.done && !c.deleted).map(c => c.date));
   }, [checkinHistory]);
 
   // 平均每周打卡
   const avgPerWeek = useMemo(() => {
     if (checkinHistory.length === 0) return 0;
-    const dates = checkinHistory.filter((c: CheckinEntry) => c.done).map(c => c.date).sort();
+    const dates = checkinHistory.filter((c: CheckinEntry) => c.done && !c.deleted).map(c => c.date).sort();
     if (dates.length === 0) return 0;
-    const firstDate = new Date(dates[0]);
-    const lastDate = new Date(dates[dates.length - 1]);
+    const [fy, fm, fd] = dates[0].split('-').map(Number);
+    const firstDate = new Date(fy, fm - 1, fd);
+    const [ly, lm, ld] = dates[dates.length - 1].split('-').map(Number);
+    const lastDate = new Date(ly, lm - 1, ld);
     const weeks = Math.max(1, Math.ceil((lastDate.getTime() - firstDate.getTime()) / (7 * 24 * 60 * 60 * 1000)));
     return Math.round((totalCompleted / weeks) * 10) / 10;
   }, [checkinHistory, totalCompleted]);
@@ -76,8 +79,9 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
     const counts: Record<string, number> = {};
     checkinHistory
       .filter((c: CheckinEntry) => {
-        if (!c.done) return false;
-        const d = new Date(c.date);
+        if (c.done || c.deleted) return false;
+        const [cy, cm, cd] = c.date.split('-').map(Number);
+        const d = new Date(cy, cm - 1, cd);
         return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
       })
       .forEach((c: CheckinEntry) => {
@@ -108,7 +112,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             {/* Calendar */}
             <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
               <CalendarGrid
-                history={checkinHistory.map((c: CheckinEntry) => ({ date: c.date, done: c.done, grace: c.grace }))}
+                history={checkinHistory.filter((c: CheckinEntry) => !c.deleted).map((c: CheckinEntry) => ({ date: c.date, done: c.done, grace: c.grace }))}
                 primaryColor={P}
                 textColor={TH.text}
                 subColor={TH.sub}

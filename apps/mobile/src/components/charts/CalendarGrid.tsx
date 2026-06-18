@@ -29,8 +29,8 @@ export default function CalendarGrid({
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
 
-  const doneSet = useMemo(() => new Set(history.filter(e => e.done).map(e => e.date)), [history]);
-  const graceSet = useMemo(() => new Set(history.filter(e => e.grace).map(e => e.date)), [history]);
+  const doneSet = useMemo(() => new Set(history.filter(e => e.done && !e.deleted).map(e => e.date)), [history]);
+  const graceSet = useMemo(() => new Set(history.filter(e => e.grace && !e.deleted).map(e => e.date)), [history]);
 
   const weeks = useMemo(() => {
     const firstDay = new Date(viewYear, viewMonth, 1);

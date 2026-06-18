@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
-  View, Text, Image, TouchableOpacity, Animated, PanResponder, StyleSheet, Dimensions,
+  View, Text, Image, TouchableOpacity, Animated, PanResponder, StyleSheet, useWindowDimensions,
 } from 'react-native';
 import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
@@ -80,7 +80,9 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
   const tabNav = useContext(TabNavContext);
   const tabNavRef = useRef<any>(tabNav);
   tabNavRef.current = tabNav;
-  const { width: vw, height: vh } = Dimensions.get('window');
+  const { width: vw, height: vh } = useWindowDimensions();
+  const dimsRef = useRef({ vw, vh });
+  dimsRef.current = { vw, vh };
   const pos = useRef({ x: vw - FAB_SIZE - 20, y: vh - 85 - FAB_SIZE - 20 }).current;
   const animPos = useRef(new Animated.ValueXY({ x: pos.x, y: pos.y })).current;
   const moved = useRef(false);
@@ -100,47 +102,41 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
       }),
       onPanResponderRelease() {
         animPos.flattenOffset();
-        
+        const { vw: w, vh: h } = dimsRef.current;
+
         if (!moved.current) {
           if (isHidden.current) {
-            // If hidden, tap to show
             isHidden.current = false;
-            const targetX = vw - FAB_SIZE - 20;
+            const targetX = w - FAB_SIZE - 20;
             Animated.spring(animPos, {
               toValue: { x: targetX, y: animPos.y.__getValue() },
               useNativeDriver: false,
               bounciness: 8,
             }).start();
           } else {
-            // If visible, tap to navigate
             const nav = tabNavRef.current;
             if (nav) nav.navigate('Reflections', { showNew: true });
           }
           return;
         }
 
-        // Get current position
         const currentX = animPos.x.__getValue();
         const currentY = animPos.y.__getValue();
-        
-        // Snap to nearest horizontal edge
+
         const distToLeft = currentX;
-        const distToRight = vw - currentX - FAB_SIZE;
-        
+        const distToRight = w - currentX - FAB_SIZE;
+
         let targetX: number;
         if (distToLeft < distToRight) {
-          // Snap to left (hide partially)
           targetX = -FAB_HIDE_OFFSET;
           isHidden.current = true;
         } else {
-          // Snap to right (hide partially)
-          targetX = vw - FAB_SIZE + FAB_HIDE_OFFSET;
+          targetX = w - FAB_SIZE + FAB_HIDE_OFFSET;
           isHidden.current = true;
         }
 
-        // Clamp Y position
         const minY = 100;
-        const maxY = vh - 85 - FAB_SIZE - 10;
+        const maxY = h - 85 - FAB_SIZE - 10;
         const targetY = Math.max(minY, Math.min(maxY, currentY));
 
         Animated.spring(animPos, {

@@ -19,21 +19,25 @@ function PulseMarker({ u, primaryColor, onPress }: { u: typeof USERS_WITH_STREAK
 
   useEffect(() => {
     const delay = Math.random() * 2000;
+    let pulseLoop: Animated.CompositeAnimation | null = null;
+    let scaleLoop: Animated.CompositeAnimation | null = null;
     const timer = setTimeout(() => {
-      Animated.loop(
+      pulseLoop = Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, { toValue: 1, duration: 1500, useNativeDriver: true }),
           Animated.timing(pulseAnim, { toValue: 0, duration: 1500, useNativeDriver: true }),
         ])
-      ).start();
-      Animated.loop(
+      );
+      pulseLoop.start();
+      scaleLoop = Animated.loop(
         Animated.sequence([
           Animated.timing(scaleAnim, { toValue: 1.15, duration: 1200, useNativeDriver: true }),
           Animated.timing(scaleAnim, { toValue: 1, duration: 1200, useNativeDriver: true }),
         ])
-      ).start();
+      );
+      scaleLoop.start();
     }, delay);
-    return () => clearTimeout(timer);
+    return () => { clearTimeout(timer); pulseLoop?.stop(); scaleLoop?.stop(); };
   }, []);
 
   const left = ((u.lng + 180) / 360) * 100;
@@ -88,12 +92,14 @@ export default function GlobalMapPage({ route }: { route?: { params?: { icon?: s
   const floatAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.loop(
+    const anim = Animated.loop(
       Animated.sequence([
         Animated.timing(floatAnim, { toValue: -6, duration: 2000, useNativeDriver: true }),
         Animated.timing(floatAnim, { toValue: 0, duration: 2000, useNativeDriver: true }),
       ])
-    ).start();
+    );
+    anim.start();
+    return () => anim.stop();
   }, []);
 
   if (showBoard) {

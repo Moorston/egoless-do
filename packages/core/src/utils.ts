@@ -52,7 +52,7 @@ export const formatAgoT = (ts: number, T: (key: string) => string) => {
 };
 
 let _uidCounter = 0;
-export const uid = () => Date.now().toString(36) + (_uidCounter++).toString(36) + Math.random().toString(36).slice(2, 6);
+export const uid = () => Date.now().toString(36) + (_uidCounter++).toString(36) + Math.random().toString(36).slice(2, 10);
 
 /** Compute habit streak from checked dates (validates most recent is today/yesterday) */
 export const computeStreak = (checkedDates: string[]): number => {
@@ -64,26 +64,30 @@ export const computeStreak = (checkedDates: string[]): number => {
   if (unique[0] !== today && unique[0] !== yest) return 0;
   let streak = 1;
   for (let i = 1; i < unique.length; i++) {
-    const prev = new Date(unique[i - 1]);
-    const curr = new Date(unique[i]);
-    const diff = (prev.getTime() - curr.getTime()) / 86400000;
+    const diff = (parseLocalDate(unique[i - 1]).getTime() - parseLocalDate(unique[i]).getTime()) / 86400000;
     if (Math.abs(diff - 1) < 0.1) streak++;
     else break;
   }
   return streak;
 };
 
+/** Parse YYYY-MM-DD into a local Date (avoids UTC midnight shift). */
+function parseLocalDate(s: string): Date {
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 /** Calculate streak from checkin history (allows 1-day gap for reference date) */
-export const calculateCheckinStreak = (history: Array<{ date: string; done: boolean }>, refDate?: string): number => {
+export const calculateCheckinStreak = (history: Array<{ date: string; done: boolean; deleted?: boolean }>, refDate?: string): number => {
   if (!history.length) return 0;
   const ref = refDate ?? dateStr();
   const sorted = [...history]
-    .filter(e => e.done && e.date <= ref)
+    .filter(e => e.done && !e.deleted && e.date <= ref)
     .sort((a, b) => b.date.localeCompare(a.date));
   if (!sorted.length) return 0;
 
   let streak = 0;
-  const d0 = new Date(ref);
+  const d0 = parseLocalDate(ref);
   d0.setDate(d0.getDate() - 1);
   const prev = dateStr(d0);
   let expectedDate: string | null = null;
@@ -91,12 +95,12 @@ export const calculateCheckinStreak = (history: Array<{ date: string; done: bool
   // Start from most recent: must be refDate or the day before
   if (sorted[0].date === ref) {
     streak = 1;
-    const d = new Date(ref);
+    const d = parseLocalDate(ref);
     d.setDate(d.getDate() - 1);
     expectedDate = dateStr(d);
   } else if (sorted[0].date === prev) {
     streak = 1;
-    const d = new Date(prev);
+    const d = parseLocalDate(prev);
     d.setDate(d.getDate() - 1);
     expectedDate = dateStr(d);
   } else {
@@ -106,7 +110,7 @@ export const calculateCheckinStreak = (history: Array<{ date: string; done: bool
   for (let i = 1; i < sorted.length; i++) {
     if (sorted[i].date === expectedDate) {
       streak++;
-      const d = new Date(expectedDate);
+      const d = parseLocalDate(expectedDate);
       d.setDate(d.getDate() - 1);
       expectedDate = dateStr(d);
     } else {
@@ -132,21 +136,21 @@ export const estimateFastingKcal = (
 
 /** Aggregate weight data from check-in history (last N days). */
 export const aggregateWeightData = (
-  history: Array<{ date: string; weight?: number }>,
+  history: Array<{ date: string; weight?: number; deleted?: boolean }>,
   days: number = 30,
 ): { date: string; value: number }[] => {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
   const cutoffStr = dateStr(cutoff);
   return history
-    .filter(e => e.weight != null && e.date >= cutoffStr)
+    .filter(e => !e.deleted && e.weight != null && e.date >= cutoffStr)
     .sort((a, b) => a.date.localeCompare(b.date))
     .map(e => ({ date: e.date.slice(5), value: e.weight! }));
 };
 
 /** Aggregate daily calories from food log (last N days). */
 export const aggregateDailyCalories = (
-  foodLog: Array<{ timestamp: number; calories?: number }>,
+  foodLog: Array<{ timestamp: number; calories?: number; deleted?: boolean }>,
   days: number = 7,
 ): { label: string; value: number }[] => {
   const map = new Map<string, number>();
@@ -156,6 +160,7 @@ export const aggregateDailyCalories = (
     map.set(dateStr(d), 0);
   }
   for (const f of foodLog) {
+    if (f.deleted) continue;
     const key = dateStr(new Date(f.timestamp));
     if (map.has(key)) map.set(key, (map.get(key) ?? 0) + (f.calories ?? 0));
   }
@@ -167,7 +172,7 @@ export const aggregateDailyCalories = (
 
 /** Aggregate daily water intake from checkin history (last N days). */
 export const aggregateDailyWater = (
-  history: Array<{ date: string; note?: string }>,
+  history: Array<{ date: string; note?: string; deleted?: boolean }>,
   days: number = 7,
 ): { label: string; value: number }[] => {
   const map = new Map<string, number>();
@@ -177,7 +182,7 @@ export const aggregateDailyWater = (
     map.set(dateStr(d), 0);
   }
   for (const e of history) {
-    if (!e.note || !map.has(e.date)) continue;
+    if (e.deleted || !e.note || !map.has(e.date)) continue;
     try {
       const data = JSON.parse(e.note);
       if (typeof data === 'object' && data !== null && typeof data.water === 'number') {
@@ -193,7 +198,7 @@ export const aggregateDailyWater = (
 
 /** Aggregate weekly km from exercise log (last N weeks). */
 export const aggregateWeeklyKm = (
-  exerciseLog: Array<{ timestamp: number; distanceKm?: number }>,
+  exerciseLog: Array<{ timestamp: number; distanceKm?: number; deleted?: boolean }>,
   weeks: number = 8,
 ): { label: string; value: number }[] => {
   const now = new Date();
@@ -204,7 +209,7 @@ export const aggregateWeeklyKm = (
     const weekStart = new Date(weekEnd);
     weekStart.setDate(weekStart.getDate() - 7);
     const sum = exerciseLog
-      .filter(e => e.timestamp >= weekStart.getTime() && e.timestamp < weekEnd.getTime())
+      .filter(e => !e.deleted && e.timestamp >= weekStart.getTime() && e.timestamp < weekEnd.getTime())
       .reduce((s, e) => s + (e.distanceKm ?? 0), 0);
     const label = `${weekStart.getMonth() + 1}/${weekStart.getDate()}`;
     result.push({ label, value: Math.round(sum * 10) / 10 });
@@ -214,11 +219,11 @@ export const aggregateWeeklyKm = (
 
 /** Build a heatmap grid for check-in history (last N weeks, Mon-Sun rows). */
 export const buildHeatmapGrid = (
-  history: Array<{ date: string; done: boolean; grace?: boolean }>,
+  history: Array<{ date: string; done: boolean; grace?: boolean; deleted?: boolean }>,
   weeks: number = 4,
 ): { date: string; done: boolean; grace: boolean; isToday: boolean }[][] => {
-  const doneSet = new Set(history.filter(e => e.done).map(e => e.date));
-  const graceSet = new Set(history.filter(e => e.grace).map(e => e.date));
+  const doneSet = new Set(history.filter(e => e.done && !e.deleted).map(e => e.date));
+  const graceSet = new Set(history.filter(e => e.grace && !e.deleted).map(e => e.date));
   const today = dateStr();
   const todayDate = new Date();
   const dayOfWeek = todayDate.getDay(); // 0=Sun, 1=Mon...
@@ -253,9 +258,9 @@ export interface StreakBreakEntry {
 
 /** Detect streak breaks from checkin history (gaps of ≥2 consecutive missed days). */
 export const detectStreakBreaks = (
-  history: Array<{ date: string; done: boolean }>,
+  history: Array<{ date: string; done: boolean; deleted?: boolean }>,
 ): StreakBreakEntry[] => {
-  const doneDates = history.filter(e => e.done).map(e => e.date).sort();
+  const doneDates = history.filter(e => e.done && !e.deleted).map(e => e.date).sort();
   if (doneDates.length < 2) return [];
 
   const breaks: StreakBreakEntry[] = [];
@@ -263,17 +268,15 @@ export const detectStreakBreaks = (
   let streakLen = 1;
 
   for (let i = 1; i < doneDates.length; i++) {
-    const prev = new Date(doneDates[i - 1]);
-    const curr = new Date(doneDates[i]);
-    const diff = (curr.getTime() - prev.getTime()) / 86400000;
+    const diff = (parseLocalDate(doneDates[i]).getTime() - parseLocalDate(doneDates[i - 1]).getTime()) / 86400000;
 
     if (diff === 0) {
       continue; // Skip same-day duplicates without breaking streak
-    } else if (diff === 1) {
+    } else if (Math.abs(diff - 1) < 0.1) {
       streakLen++;
     } else if (diff >= 2) {
       // Gap found — this is a streak break
-      const breakDate = new Date(prev);
+      const breakDate = parseLocalDate(doneDates[i - 1]);
       breakDate.setDate(breakDate.getDate() + 1);
       breaks.push({
         breakDate: dateStr(breakDate),
@@ -297,10 +300,8 @@ export function computeLongestStreak(dates: string[]): number {
   const sorted = [...new Set(dates)].sort();
   let max = 1, current = 1;
   for (let i = 1; i < sorted.length; i++) {
-    const prev = new Date(sorted[i - 1]);
-    const curr = new Date(sorted[i]);
-    const diff = (curr.getTime() - prev.getTime()) / 86400000;
-    if (diff === 1) { current++; max = Math.max(max, current); }
+    const diff = (parseLocalDate(sorted[i]).getTime() - parseLocalDate(sorted[i - 1]).getTime()) / 86400000;
+    if (Math.abs(diff - 1) < 0.1) { current++; max = Math.max(max, current); }
     else if (diff > 1) current = 1;
   }
   return max;
@@ -333,8 +334,8 @@ export interface RecoveryData {
 }
 
 /** Compute current streak (consecutive done days ending at today or yesterday). */
-export function computeCurrentStreak(history: Array<{ date: string; done: boolean }>): number {
-  const doneSet = new Set(history.filter(e => e.done).map(e => e.date));
+export function computeCurrentStreak(history: Array<{ date: string; done: boolean; deleted?: boolean }>): number {
+  const doneSet = new Set(history.filter(e => e.done && !e.deleted).map(e => e.date));
   let streak = 0;
   const d = new Date();
   // If today is not done, start checking from yesterday
@@ -351,13 +352,13 @@ export function computeCurrentStreak(history: Array<{ date: string; done: boolea
 /** Compute break pattern insights. */
 export function computeBreakInsights(
   breaks: StreakBreakEntry[],
-  history: Array<{ date: string; done: boolean }>,
+  history: Array<{ date: string; done: boolean; deleted?: boolean }>,
 ): BreakInsight {
   const weekdayDist = [0, 0, 0, 0, 0, 0, 0]; // Mon-Sun
   const monthDist = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   for (const b of breaks) {
-    const d = new Date(b.breakDate);
+    const d = parseLocalDate(b.breakDate);
     const day = d.getDay(); // 0=Sun
     weekdayDist[day === 0 ? 6 : day - 1]++; // Map to Mon=0, Sun=6
     monthDist[d.getMonth()]++;
@@ -368,12 +369,12 @@ export function computeBreakInsights(
     : 0;
 
   // Recovery: days from breakDate to next done date
-  const doneDates = history.filter(e => e.done).map(e => e.date).sort();
+  const doneDates = history.filter(e => e.done && !e.deleted).map(e => e.date).sort();
   let totalRecovery = 0, recoveryCount = 0;
   for (const b of breaks) {
     const nextDone = doneDates.find(d => d > b.breakDate);
     if (nextDone) {
-      const diff = (new Date(nextDone).getTime() - new Date(b.breakDate).getTime()) / 86400000;
+      const diff = (parseLocalDate(nextDone).getTime() - parseLocalDate(b.breakDate).getTime()) / 86400000;
       totalRecovery += diff;
       recoveryCount++;
     }
@@ -397,7 +398,7 @@ export function computeBreakInsights(
 /** Compute hypothetical streak if grace was used on a break date. */
 export function computeHypotheticalStreak(
   breakEntry: StreakBreakEntry,
-  history: Array<{ date: string; done: boolean }>,
+  history: Array<{ date: string; done: boolean; deleted?: boolean }>,
   graceHistory: Array<{ date: string; deleted?: boolean }>,
   quota: number,
 ): HypotheticalResult {
@@ -413,9 +414,10 @@ export function computeHypotheticalStreak(
   if (!available) return { available: false, hypotheticalStreak: 0 };
 
   // Count consecutive done days after breakDate
-  const doneDates = new Set(history.filter(e => e.done).map(e => e.date));
+  const doneDates = new Set(history.filter(e => e.done && !e.deleted).map(e => e.date));
   let consecutive = 0;
-  const d = new Date(breakEntry.breakDate);
+  const d = parseLocalDate(breakEntry.breakDate);
+  d.setDate(d.getDate() + 1); // Start from day AFTER break
   while (doneDates.has(dateStr(d))) {
     consecutive++;
     d.setDate(d.getDate() + 1);
@@ -464,23 +466,33 @@ export function generateEncouragement(
 
 /** Get recovery state data for the streak break page. */
 export function getRecoveryData(
-  checkinHistory: Array<{ date: string; done: boolean }>,
+  checkinHistory: Array<{ date: string; done: boolean; deleted?: boolean }>,
   breaks: StreakBreakEntry[],
 ): RecoveryData {
   const currentStreak = computeCurrentStreak(checkinHistory);
   const today = dateStr();
-  const yesterdayDate = new Date(Date.now() - 86400000);
-  const yesterday = dateStr(yesterdayDate);
-  const todayDone = checkinHistory.some(c => c.date === today && c.done);
-  const yesterdayDone = checkinHistory.some(c => c.date === yesterday && c.done);
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  const yesterday = dateStr(d);
+  const todayDone = checkinHistory.some(c => c.date === today && c.done && !c.deleted);
+  const yesterdayDone = checkinHistory.some(c => c.date === yesterday && c.done && !c.deleted);
+
+  // No checkin history at all — new user, not a streak break
+  if (checkinHistory.length === 0 || !checkinHistory.some(c => c.done && !c.deleted)) {
+    return { state: 'active', currentStreak: 0, daysSinceLastBreak: 0 };
+  }
+
+  if (!todayDone && yesterdayDone && currentStreak > 0) {
+    return { state: 'at_risk', currentStreak };
+  }
 
   if (currentStreak > 0) {
     // Compute days since last break
-    const doneDates = checkinHistory.filter(c => c.done).map(c => c.date).sort();
+    const doneDates = checkinHistory.filter(c => c.done && !c.deleted).map(c => c.date).sort();
     let daysSinceLastBreak = 0;
     if (breaks.length > 0 && doneDates.length > 0) {
-      const lastBreakDate = new Date(breaks[0].breakDate);
-      const lastDoneDate = new Date(doneDates[doneDates.length - 1]);
+      const lastBreakDate = parseLocalDate(breaks[0].breakDate);
+      const lastDoneDate = parseLocalDate(doneDates[doneDates.length - 1]);
       daysSinceLastBreak = Math.floor((lastDoneDate.getTime() - lastBreakDate.getTime()) / 86400000);
       if (daysSinceLastBreak < 0) daysSinceLastBreak = 0;
     }
@@ -488,24 +500,28 @@ export function getRecoveryData(
   }
 
   if (!todayDone && !yesterdayDone) {
-    return {
-      state: 'just_broke',
-      previousStreak: breaks.length > 0 ? breaks[0].lostStreak : 0,
-    };
-  }
+    const doneDates = checkinHistory.filter(c => c.done && !c.deleted).map(c => c.date).sort();
 
-  if (!todayDone && yesterdayDone) {
-    return { state: 'at_risk', currentStreak: 1 }; // yesterday counts
-  }
-
-  // Long absence: find last done date
-  const doneDates = checkinHistory.filter(c => c.done).map(c => c.date).sort();
-  if (doneDates.length > 0) {
-    const lastDone = doneDates[doneDates.length - 1];
-    const daysSince = Math.floor((Date.now() - new Date(lastDone).getTime()) / 86400000);
-    if (daysSince > 7) {
-      return { state: 'long_absence', daysSinceLastCheckin: daysSince };
+    // Long absence: last done was >7 days ago
+    if (doneDates.length > 0) {
+      const lastDone = doneDates[doneDates.length - 1];
+      const daysSince = Math.floor((Date.now() - parseLocalDate(lastDone).getTime()) / 86400000);
+      if (daysSince > 7) {
+        return { state: 'long_absence', daysSinceLastCheckin: daysSince };
+      }
     }
+
+    // Recent break
+    let prevStreak = 0;
+    for (let i = doneDates.length - 1; i >= 0; i--) {
+      if (i === doneDates.length - 1) { prevStreak = 1; }
+      else {
+        const diff = (parseLocalDate(doneDates[i + 1]).getTime() - parseLocalDate(doneDates[i]).getTime()) / 86400000;
+        if (Math.abs(diff - 1) < 0.1) prevStreak++;
+        else break;
+      }
+    }
+    return { state: 'just_broke', previousStreak: prevStreak };
   }
 
   return { state: 'active', currentStreak: 0 };
@@ -513,7 +529,7 @@ export function getRecoveryData(
 
 /** Format timestamp or date string to readable date-time format */
 export const formatTime = (ts?: number, date?: string): string => {
-  if (ts) {
+  if (ts != null) {
     const d = new Date(ts);
     const pad = (n: number) => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;

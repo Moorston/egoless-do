@@ -50,13 +50,17 @@ export function AudioEngineProvider({ children }: { children: React.ReactNode })
     }
     const trackChanged = currentTrack.id !== prevTrackRef.current?.id;
     prevTrackRef.current = currentTrack;
-    if (trackChanged) {
-      player.seekTo(0);
-    }
-    if (isPlaying) {
-      player.play();
-    } else if (player.playing) {
-      player.pause();
+    try {
+      if (trackChanged) {
+        player.seekTo(0);
+      }
+      if (isPlaying) {
+        player.play();
+      } else if (player.playing) {
+        player.pause();
+      }
+    } catch (e) {
+      console.warn('[AudioEngine] playback error:', e);
     }
   }, [isPlaying, currentTrack, player]);
 

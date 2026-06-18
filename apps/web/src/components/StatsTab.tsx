@@ -30,35 +30,38 @@ export default function StatsTab() {
   const TH = THEMES[theme];
   const P = TH.primary;
   const T = useT();
-  const activeHabits = (habits ?? []).filter((h) => h.status === 'inProgress').length;
+  const activeHabits = (habits ?? []).filter((h) => !h.deleted && h.status === 'inProgress').length;
 
-  const exerciseLogData = exerciseLog ?? [];
-  const now = Date.now();
-  const weekStart = now - 7 * 24 * 3600 * 1000;
-  const monthStart = now - 30 * 24 * 3600 * 1000;
-  const weekKm = exerciseLogData.filter(e => e.timestamp >= weekStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
-  const monthKm = exerciseLogData.filter(e => e.timestamp >= monthStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
-  const allPaces = exerciseLogData.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
-  const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
-  const bestPaceStr = bestPace > 0 ? `${Math.floor(bestPace / 60)}:${String(Math.floor(bestPace % 60)).padStart(2, '0')}` : '--';
+  const { exerciseLogData, weekKm, monthKm, bestPace, bestPaceStr } = useMemo(() => {
+    const data = (exerciseLog ?? []).filter(e => !e.deleted);
+    const now = Date.now();
+    const weekStart = now - 7 * 24 * 3600 * 1000;
+    const monthStart = now - 30 * 24 * 3600 * 1000;
+    const wk = data.filter(e => e.timestamp >= weekStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
+    const mk = data.filter(e => e.timestamp >= monthStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
+    const paces = data.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
+    const bp = paces.length > 0 ? Math.min(...paces) : 0;
+    const bps = bp > 0 ? `${Math.floor(bp / 60)}:${String(Math.floor(bp % 60)).padStart(2, '0')}` : '--';
+    return { exerciseLogData: data, weekKm: wk, monthKm: mk, bestPace: bp, bestPaceStr: bps };
+  }, [exerciseLog]);
 
-  const totalFastHours = (() => {
-    const totalSec = (fastingHistory ?? []).reduce((sum, f) => {
+  const totalFastHours = useMemo(() => {
+    const totalSec = (fastingHistory ?? []).filter(f => !f.deleted).reduce((sum, f) => {
       if (f.endedAt && f.startedAt) return sum + (f.endedAt - f.startedAt) / 1000;
       return sum;
     }, 0);
     return Math.round(totalSec / 3600);
-  })();
+  }, [fastingHistory]);
 
   // Chart data (memoized)
   const weightData = useMemo(() => aggregateWeightData(checkinHistory ?? [], 30), [checkinHistory]);
   const caloriesData = useMemo(() => aggregateDailyCalories(foodLog ?? [], 7), [foodLog]);
   const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLogData, 8), [exerciseLogData]);
 
-  const graceCount = (graceHistory ?? []).length;
+  const graceCount = useMemo(() => (graceHistory ?? []).filter(g => !g.deleted).length, [graceHistory]);
   const keyMetrics = [
     { label: T('streak'), value: `${streak}`, unit: T('days'), Icon: Flame },
-    { label: T('statsReflections'), value: `${(reflections ?? []).length}`, unit: T('fastTimes'), Icon: Sparkles },
+    { label: T('statsReflections'), value: `${(reflections ?? []).filter(r => !r.deleted).length}`, unit: T('fastTimes'), Icon: Sparkles },
     { label: T('statsMeditation'), value: `${totalMedMinutes}`, unit: T('medMinutes'), Icon: Brain },
     { label: T('statsActiveHabits'), value: `${activeHabits}`, unit: T('habitDays'), Icon: Circle },
     { label: T('totalFasting'), value: `${totalFastHours}`, unit: 'h', Icon: Timer },

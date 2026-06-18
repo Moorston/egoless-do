@@ -1,7 +1,8 @@
 // ─── Shared Zustand store (platform-agnostic logic) ──────────────
 import { uid, dateStr } from './utils';
 import { MIND_COLORS_EXTENDED } from './constants';
-import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory, ThoughtTrail, ReflectionLink, CheckinReview } from './types';
+import type { MindReflection, Habit, FoodEntry, CheckinEntry, MedHistoryEntry, UserProfile, AppState, FastingSession, ExerciseEntry, CustomFoodPreset, Plan, PlanItem, PlanItemCheckin, RecycleBinItem, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory, ThoughtTrail, TrailNote, ReflectionLink, CheckinReview } from './types';
+import type { AIMode, ModelConfig } from './ai/types';
 import { defaultAuthState } from './types';
 
 // ── Initial seed data ─────────────────────────────────────────────
@@ -82,8 +83,12 @@ export const defaultDataState = {
   recycleBin: [] as RecycleBinItem[],
   graceHistory: [] as GraceHistoryEntry[],
   thoughtTrails: [] as ThoughtTrail[],
+  trailNotes: [] as TrailNote[],
   reflectionLinks: [] as ReflectionLink[],
   checkinReviews: [] as CheckinReview[],
+  ignoredRecPatterns: [] as string[],
+  aiMode: 'hybrid' as AIMode,
+  aiModels: [] as ModelConfig[],
   customTags: [] as string[],
   customMoods: [] as string[],
   allTagsOrder: [] as string[],

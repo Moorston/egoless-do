@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPb, escapeFilter } from '../../_pb';
+import { getPb, getAdminPb, escapeFilter } from '../../_pb';
 import crypto from 'crypto';
 import { TOKEN_EXPIRES_IN } from '../../constants';
 import { sanitizeError } from '../../_errors';
@@ -28,25 +28,40 @@ export async function POST(req: NextRequest) {
     if (!appid || !secret) return NextResponse.json({ error: '微信登录未配置' }, { status: 500 });
 
     const wxRes = await fetch(
-      `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${code}&grant_type=authorization_code`
+      `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${encodeURIComponent(code)}&grant_type=authorization_code`
     );
     const wxData = await wxRes.json();
     if (wxData.errcode) return NextResponse.json({ error: '微信登录失败' }, { status: 401 });
 
     const { openid } = wxData;
+    if (!openid) return NextResponse.json({ error: '微信登录失败：无效响应' }, { status: 401 });
     const pb = getPb();
     const password = wechatPassword(openid);
 
     let user;
     try {
-      user = await pb.collection('users').getFirstListItem(`wechat_openid = "${escapeFilter(openid)}"`);
-    } catch {
-      user = await pb.collection('users').create({
-        email: `wechat_${openid}@egoless.do`,
-        password, passwordConfirm: password,
-        name: `微信用户${openid.slice(-4)}`,
-        wechat_openid: openid,
-      });
+      // Use admin client to bypass default viewRule on users collection
+      const adminPb = await getAdminPb();
+      user = await adminPb.collection('users').getFirstListItem(`wechat_openid = "${escapeFilter(openid)}"`);
+    } catch (lookupErr: any) {
+      if (lookupErr?.status !== 404) throw lookupErr;
+      try {
+        const adminPbForCreate = await getAdminPb();
+        user = await adminPbForCreate.collection('users').create({
+          email: `wechat_${openid}@egoless.do`,
+          password, passwordConfirm: password,
+          name: `微信用户${openid.slice(-4)}`,
+          wechat_openid: openid,
+        });
+      } catch (createErr: any) {
+        // Race condition: concurrent request created the user — retry lookup
+        if (createErr?.status === 400 && createErr?.message?.includes('already exists')) {
+          const adminPb = await getAdminPb();
+          user = await adminPb.collection('users').getFirstListItem(`wechat_openid = "${escapeFilter(openid)}"`);
+        } else {
+          throw createErr;
+        }
+      }
     }
 
     const authData = await pb.collection('users').authWithPassword(user.email, password);

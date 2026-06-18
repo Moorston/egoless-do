@@ -62,7 +62,7 @@ export default function GlobalMapScreen() {
         <Text style={{ color:TH.sub, fontSize:FONT_BODY, fontWeight:'600', marginBottom:10 }}>
           打卡排行榜
         </Text>
-        {GLOBAL_USERS.sort((a,b) => b.days-a.days).map((u, i) => (
+        {[...GLOBAL_USERS].sort((a,b) => b.days-a.days).map((u, i) => (
           <View key={u.id} style={{
             flexDirection:'row', alignItems:'center', gap:12,
             paddingVertical:12, borderBottomWidth: i<GLOBAL_USERS.length-1 ? 1 : 0,

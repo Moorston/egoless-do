@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { getPb } from '../../_pb';
+import { getAdminPb } from '../../_pb';
 import { verifyAuth } from '../../_auth';
+import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const notifyRateLimit = createRateLimiter(10, 60_000); // 10 req/min
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -20,6 +23,11 @@ function getTransporter() {
 }
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  if (!notifyRateLimit(ip)) {
+    return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
+  }
+
   try {
     // Authenticate
     const auth = await verifyAuth(req.headers.get('authorization'));
@@ -30,6 +38,9 @@ export async function POST(req: NextRequest) {
     if (!planId || !planName || !endDate || !userId) {
       return NextResponse.json({ error: '缺少必要参数' }, { status: 400 });
     }
+    if (typeof planId !== 'string' || typeof planName !== 'string' || typeof endDate !== 'string') {
+      return NextResponse.json({ error: '参数类型错误' }, { status: 400 });
+    }
 
     // Only allow sending notifications to self
     if (userId !== auth.userId) {
@@ -37,12 +48,14 @@ export async function POST(req: NextRequest) {
     }
 
     // 获取用户邮箱
-    const pb = getPb();
+    const pb = await getAdminPb();
     let user;
     try {
       user = await pb.collection('users').getOne(userId);
-    } catch {
-      return NextResponse.json({ error: '用户不存在' }, { status: 404 });
+    } catch (e: any) {
+      const status = e?.status ?? e?.response?.status;
+      if (status === 404) return NextResponse.json({ error: '用户不存在' }, { status: 404 });
+      return NextResponse.json({ error: '服务器错误' }, { status: 500 });
     }
 
     if (!user.email) {

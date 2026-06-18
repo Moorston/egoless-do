@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useMemo, useState } from 'react';
-import { View, Animated, Dimensions, StyleSheet, Platform } from 'react-native';
+import { View, Animated, Dimensions, StyleSheet, Platform, useWindowDimensions } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: INITIAL_WIDTH, height: INITIAL_HEIGHT } = Dimensions.get('window');
 
 // 检测是否为低端设备（基于平台和屏幕尺寸）
-const isLowEndDevice = Platform.OS === 'android' && (SCREEN_WIDTH < 400 || SCREEN_HEIGHT < 800);
+const isLowEndDevice = Platform.OS === 'android' && (INITIAL_WIDTH < 400 || INITIAL_HEIGHT < 800);
 
 // ─── 星星层次配置 ───────────────────────────────────────────────
 // 根据设备性能动态调整星星数量
@@ -66,8 +66,11 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.3)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
+  const mountedRef = useRef(true);
+  const loopRef = useRef<Animated.CompositeAnimation | null>(null);
 
   useEffect(() => {
+    mountedRef.current = true;
     const animate = () => {
       Animated.sequence([
         Animated.delay(Math.random() * 3000),
@@ -77,6 +80,7 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
         ]),
       ]).start(() => {
         const twinkle = () => {
+          if (!mountedRef.current) return;
           const d1 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
           const d2 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
           Animated.sequence([
@@ -85,12 +89,17 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
           ]).start(twinkle);
         };
         twinkle();
-        Animated.loop(
+        loopRef.current = Animated.loop(
           Animated.timing(rotateAnim, { toValue: 1, duration: 20000, useNativeDriver: true })
-        ).start();
+        );
+        loopRef.current.start();
       });
     };
     animate();
+    return () => {
+      mountedRef.current = false;
+      loopRef.current?.stop();
+    };
   }, []);
 
   const rotation = rotateAnim.interpolate({
@@ -158,8 +167,10 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
 function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowColor }: StarProps) {
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.3)).current;
+  const mountedRef = useRef(true);
 
   useEffect(() => {
+    mountedRef.current = true;
     const animate = () => {
       Animated.sequence([
         Animated.delay(Math.random() * 2000),
@@ -169,6 +180,7 @@ function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowCol
         ]),
       ]).start(() => {
         const twinkle = () => {
+          if (!mountedRef.current) return;
           const d1 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
           const d2 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
           Animated.sequence([
@@ -180,6 +192,7 @@ function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowCol
       });
     };
     animate();
+    return () => { mountedRef.current = false; };
   }, []);
 
   return (
@@ -204,19 +217,23 @@ function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowCol
 }
 
 // ─── 流星组件 ────────────────────────────────────────────────────
-function ShootingStar({ delay: initialDelay }: { delay: number }) {
+function ShootingStar({ delay: initialDelay, screenW, screenH }: { delay: number; screenW: number; screenH: number }) {
   const translateX = useRef(new Animated.Value(-100)).current;
   const translateY = useRef(new Animated.Value(-100)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const tailScale = useRef(new Animated.Value(0)).current;
+  const mountedRef = useRef(true);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
+    mountedRef.current = true;
     const animate = () => {
-      const startX = Math.random() * SCREEN_WIDTH * 0.5;
-      const startY = Math.random() * SCREEN_HEIGHT * 0.3;
+      if (!mountedRef.current) return;
+      const startX = Math.random() * screenW * 0.5;
+      const startY = Math.random() * screenH * 0.3;
       const distance = 0.4 + Math.random() * 0.4;
-      const endX = startX + SCREEN_WIDTH * distance;
-      const endY = startY + SCREEN_HEIGHT * distance * 0.6;
+      const endX = startX + screenW * distance;
+      const endY = startY + screenH * distance * 0.6;
       const duration = 600 + Math.random() * 400;
 
       translateX.setValue(startX);
@@ -237,10 +254,12 @@ function ShootingStar({ delay: initialDelay }: { delay: number }) {
           Animated.timing(tailScale, { toValue: 0, duration: 200, useNativeDriver: true }),
         ]),
       ]).start(() => {
-        setTimeout(animate, 3000 + Math.random() * 8000);
+        if (!mountedRef.current) return;
+        timerRef.current = setTimeout(animate, 3000 + Math.random() * 8000);
       });
     };
     animate();
+    return () => { mountedRef.current = false; if (timerRef.current) clearTimeout(timerRef.current); };
   }, []);
 
   return (
@@ -309,13 +328,16 @@ function generateConstellations(stars: StarProps[]): ConstellationLine[] {
 
 // ─── 主组件 ──────────────────────────────────────────────────────
 export default function StarfieldBackground() {
+  const { width: screenW, height: screenH } = useWindowDimensions();
+  const scaleX = screenW / INITIAL_WIDTH;
+  const scaleY = screenH / INITIAL_HEIGHT;
   const allStars = useRef<StarProps[]>(
     LAYERS.flatMap(layer =>
       Array.from({ length: layer.count }, () => {
         const { color, glowColor } = getStarColor();
         return {
-          x: Math.random() * SCREEN_WIDTH,
-          y: Math.random() * SCREEN_HEIGHT,
+          x: Math.random() * INITIAL_WIDTH,
+          y: Math.random() * INITIAL_HEIGHT,
           size: layer.minSize + Math.random() * (layer.maxSize - layer.minSize),
           minOpacity: layer.minOpacity,
           maxOpacity: layer.maxOpacity,
@@ -327,12 +349,18 @@ export default function StarfieldBackground() {
     )
   ).current;
 
-  const brightStars = allStars.filter(s => s.size >= 4);
-  const normalStars = allStars.filter(s => s.size < 4);
+  // Scale star positions to current dimensions (star sizes stay constant)
+  const scaledStars = useMemo(
+    () => allStars.map(s => ({ ...s, x: s.x * scaleX, y: s.y * scaleY })),
+    [scaleX, scaleY]
+  );
+
+  const brightStars = scaledStars.filter(s => s.size >= 4);
+  const normalStars = scaledStars.filter(s => s.size < 4);
   // 低端设备跳过星座连线计算
   const constellationLines = useMemo(
     () => isLowEndDevice ? [] : generateConstellations(brightStars),
-    []
+    [brightStars, isLowEndDevice]
   );
 
   return (
@@ -341,8 +369,8 @@ export default function StarfieldBackground() {
       {!isLowEndDevice && (
         <Svg
           style={StyleSheet.absoluteFill}
-          width={SCREEN_WIDTH}
-          height={SCREEN_HEIGHT}
+          width={screenW}
+          height={screenH}
         >
           {constellationLines.map((line, index) => (
             <Line
@@ -370,7 +398,7 @@ export default function StarfieldBackground() {
 
       {/* 流星层（最顶层） */}
       {Array.from({ length: SHOOTING_STAR_COUNT }, (_, i) => (
-        <ShootingStar key={`shooting-${i}`} delay={2000 + i * 4000} />
+        <ShootingStar key={`shooting-${i}`} delay={2000 + i * 4000} screenW={screenW} screenH={screenH} />
       ))}
     </View>
   );

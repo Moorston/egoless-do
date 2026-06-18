@@ -20,12 +20,14 @@ export function createExerciseSlice(
 
     deleteExercise(id: string) {
       const state = get();
-      const exercise = (state.exerciseLog ?? []).find(e => e.id === id);
-      if (exercise) {
-        state.addToRecycleBin({ id, entityType: 'exercise', data: exercise });
-      }
-      set(s => ({ exerciseLog: deleteExerciseFromList(s.exerciseLog ?? [], id) }));
+      const exercise = (state.exerciseLog ?? []).find(e => e.id === id && !e.deleted);
+      // Atomic: recycle bin + soft-delete in one set()
+      set(s => ({
+        exerciseLog: deleteExerciseFromList(s.exerciseLog ?? [], id),
+        ...(exercise ? { recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'exercise' as const, data: exercise, deletedAt: Date.now() }] } : {}),
+      }));
       adapter.markDeleted('exercise', id).catch(console.error);
+      onSync?.();
     },
   });
 }

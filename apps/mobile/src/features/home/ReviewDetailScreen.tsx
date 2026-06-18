@@ -23,7 +23,7 @@ export default function ReviewDetailScreen() {
   const route = useRoute<DetailRoute>();
   const reviewId = route.params?.reviewId ?? '';
   
-  const review = (store.checkinReviews ?? []).find((r: CheckinReview) => r.id === reviewId);
+  const review = (store.checkinReviews ?? []).find((r: CheckinReview) => !r.deleted && r.id === reviewId);
 
   if (!review) {
     return (

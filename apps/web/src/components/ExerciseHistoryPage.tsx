@@ -10,20 +10,23 @@ import { ChevronLeft, X } from 'lucide-react';
 
 function DetailCard({ e, TH, P, T }: { e: ExerciseEntry; TH: any; P: string; T: (k: string) => string }) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const trackCoords = e.trackPoints ?? [];
+  const trackCoords = useMemo(() => e.trackPoints ?? [], [e.trackPoints]);
   const bestPace = (e.segmentPaces ?? []).length > 0 ? Math.min(...(e.segmentPaces ?? [])) : 0;
   const sportType = e.isGpsSport ? 'gps' as const : getSportType(e.sportKey, false);
 
   useEffect(() => {
     if (!mapRef.current || trackCoords.length < 2) return;
+    let map: any = null;
+    let cancelled = false;
     loadAMap().then((AMap) => {
-      if (!mapRef.current) return;
-      const map = new AMap.Map(mapRef.current, { zoom: 14, resizeEnable: false, touchZoom: false, dragEnable: false });
+      if (cancelled || !mapRef.current) return;
+      map = new AMap.Map(mapRef.current, { zoom: 14, resizeEnable: false, touchZoom: false, dragEnable: false });
       const polyline = new AMap.Polyline({ path: trackCoords.map(c => [c.lng, c.lat]), strokeColor: P, strokeWeight: 4, lineJoin: 'round' });
       map.add(polyline);
       map.setFitView([polyline], false, [20, 20, 20, 20]);
-    });
-  }, []);
+    }).catch(err => console.warn('[AMap] load failed:', err));
+    return () => { cancelled = true; if (map) { map.destroy(); map = null; } };
+  }, [trackCoords, P]);
 
   return (
     <div style={{ marginTop: 12, borderTop: `1px solid ${TH.border}`, paddingTop: 12 }}>
@@ -100,11 +103,9 @@ export default function ExerciseHistoryPage({ onClose }: { onClose: () => void }
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
 
-  const allLog = store.exerciseLog ?? [];
-
   const sorted = useMemo(() =>
-    [...allLog].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
-    [allLog]
+    (store.exerciseLog ?? []).filter(e => !e.deleted).sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
+    [store.exerciseLog]
   );
 
   const sportKeys = useMemo(() => {
@@ -154,7 +155,7 @@ export default function ExerciseHistoryPage({ onClose }: { onClose: () => void }
 
   const formatMonth = (key: string) => {
     const [y, m] = key.split('-');
-    return `${y}年${parseInt(m)}月`;
+    return T('dateYearMonth').replace('{year}', y).replace('{month}', T(`month${parseInt(m)}`));
   };
 
   const formatDuration = (min: number) => {
@@ -262,7 +263,7 @@ export default function ExerciseHistoryPage({ onClose }: { onClose: () => void }
                     style={{
                       flex: 1, background: TH.card, borderRadius: 12, padding: '12px 14px',
                       marginBottom: 10, marginLeft: 8, cursor: 'pointer',
-                      borderLeft: `3px solid ${P}`,
+                      borderLeft: `3px solid ${P}`, position: 'relative',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>

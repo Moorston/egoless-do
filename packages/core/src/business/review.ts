@@ -9,10 +9,13 @@ import { uid, dateStr } from '../utils';
 
 /** 格式化日期为YYYY-MM-DD */
 function formatDate(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+  return dateStr(date);
+}
+
+/** Parse YYYY-MM-DD into a local Date (avoids UTC midnight shift). */
+function parseLocalDate(s: string): Date {
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, m - 1, d);
 }
 
 /** 计算周起止日期（周一到周日） */
@@ -47,17 +50,17 @@ export function getMonthRange(date: Date): { start: string; end: string } {
 
 /** 获取日期范围内的天数 */
 function getDaysInRange(start: string, end: string): number {
-  const startDate = new Date(start + 'T00:00:00');
-  const endDate = new Date(end + 'T00:00:00');
+  const startDate = parseLocalDate(start);
+  const endDate = parseLocalDate(end);
   const diffTime = endDate.getTime() - startDate.getTime();
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
 }
 
 /** 获取日期范围内的所有日期 */
 function getDatesInRange(start: string, end: string): string[] {
   const dates: string[] = [];
-  const current = new Date(start + 'T00:00:00');
-  const endDate = new Date(end + 'T00:00:00');
+  const current = parseLocalDate(start);
+  const endDate = parseLocalDate(end);
   
   while (current <= endDate) {
     dates.push(formatDate(current));
@@ -115,7 +118,7 @@ export function calculateReviewData(
   previousReview?: CheckinReview,
 ): Omit<CheckinReview, 'id' | 'updatedAt' | 'deleted' | 'aiSummary' | 'highlights' | 'improvements'> {
   // 计算日期范围
-  const target = new Date(targetDate + 'T00:00:00');
+  const target = parseLocalDate(targetDate);
   const range = period === 'week' ? getWeekRange(target) : getMonthRange(target);
   const datesInRange = getDatesInRange(range.start, range.end);
   const totalDays = datesInRange.length;
@@ -132,11 +135,14 @@ export function calculateReviewData(
   // 计算完成率
   const completionRate = totalDays > 0 ? Math.round((doneDays / totalDays) * 100) : 0;
   
-  // 计算连续天数（从今天向前）
-  const todayStr = formatDate(new Date());
-  const todayIndex = datesInRange.indexOf(todayStr);
-  const datesToCheck = todayIndex >= 0 ? datesInRange.slice(0, todayIndex + 1) : datesInRange;
-  const streakDays = calculateStreakForRange([...datesToCheck].reverse(), doneDates);
+  // 计算连续天数（从最后完成日向前）
+  const doneDatesInRange = datesInRange.filter(d => doneDates.has(d));
+  let streakDays = 0;
+  if (doneDatesInRange.length > 0) {
+    const lastDoneIndex = datesInRange.lastIndexOf(doneDatesInRange[doneDatesInRange.length - 1]);
+    const datesToCheck = datesInRange.slice(0, lastDoneIndex + 1);
+    streakDays = calculateStreakForRange([...datesToCheck].reverse(), doneDates);
+  }
   
   // 计算最长连续天数
   const longestStreak = calculateLongestStreak(datesInRange, doneDates);
@@ -175,7 +181,7 @@ export function calculateReviewData(
     metrics,
     comparison,
     generatedAt: Date.now(),
-    lastAutoUpdateAt: todayStr,
+    lastAutoUpdateAt: targetDate,
   };
 }
 
@@ -231,12 +237,25 @@ function calculateIncompleteItems(
       }
       
       // 统计未完成的habits
-      const activeHabits = habits.filter(h => h.status === 'inProgress');
+      const activeHabits = habits.filter(h => !h.deleted && h.status === 'inProgress');
       for (const habit of activeHabits) {
         if (!parsed.habits.includes(habit.name)) {
           const key = `habit:${habit.id}`;
           if (!itemCounts[key]) {
             itemCounts[key] = { type: 'habit', name: habit.name, count: 0 };
+          }
+          itemCounts[key].count++;
+        }
+      }
+
+      // 统计未完成的planItems
+      const activePlanItems = planItems.filter(p => !p.deleted && p.status !== 'completed');
+      for (const item of activePlanItems) {
+        const completedIds = parsed.planItems.map((p: any) => typeof p === 'string' ? p : p.id);
+        if (!completedIds.includes(item.id)) {
+          const key = `planItem:${item.id}`;
+          if (!itemCounts[key]) {
+            itemCounts[key] = { type: 'planItem', name: item.name, count: 0 };
           }
           itemCounts[key].count++;
         }
@@ -260,14 +279,14 @@ function calculateHabitProgress(
     .filter(h => h.status === 'inProgress' && !h.deleted)
     .map(habit => {
       // 计算日期范围内完成的天数
-      const doneDays = habit.checkedDates.filter(d => 
+      const doneDays = (habit.checkedDates ?? []).filter(d =>
         d >= startDate && d <= endDate
       ).length;
       
       // 计算目标天数（根据习惯的目标和日期范围）
-      const habitStart = new Date(habit.startDate + 'T00:00:00');
-      const rangeStart = new Date(startDate + 'T00:00:00');
-      const rangeEnd = new Date(endDate + 'T00:00:00');
+      const habitStart = parseLocalDate(habit.startDate);
+      const rangeStart = parseLocalDate(startDate);
+      const rangeEnd = parseLocalDate(endDate);
       
       // 如果习惯在日期范围内开始，使用习惯的目标天数
       // 否则使用日期范围内的天数
@@ -283,7 +302,7 @@ function calculateHabitProgress(
       const todayIndex = datesInRange.indexOf(todayStr);
       if (todayIndex >= 0) {
         for (let i = todayIndex; i >= 0; i--) {
-          if (habit.checkedDates.includes(datesInRange[i])) {
+          if ((habit.checkedDates ?? []).includes(datesInRange[i])) {
             streak++;
           } else {
             break;
@@ -334,14 +353,15 @@ function calculateMetrics(
   startDate: string,
   endDate: string
 ): ReviewMetrics {
-  // 体重
-  const weights = checkins.filter(c => c.weight != null).map(c => c.weight!);
+  // 体重 — sort by date ascending to ensure oldest-first for weightChange
+  const sortedForWeight = checkins.filter(c => !c.deleted && c.weight != null).sort((a, b) => a.date.localeCompare(b.date));
+  const weights = sortedForWeight.map(c => c.weight!);
   const avgWeight = weights.length > 0 ? Math.round((weights.reduce((a, b) => a + b, 0) / weights.length) * 10) / 10 : undefined;
-  const weightChange = weights.length >= 2 ? Math.round((weights[0] - weights[weights.length - 1]) * 10) / 10 : undefined;
+  const weightChange = weights.length >= 2 ? Math.round((weights[weights.length - 1] - weights[0]) * 10) / 10 : undefined;
   
   // 饮水
   const waterValues = checkins
-    .filter(c => c.note)
+    .filter(c => !c.deleted && c.note)
     .map(c => {
       const parsed = parseCheckinNote(c.note!);
       return parsed.waterMl;
@@ -354,7 +374,13 @@ function calculateMetrics(
     const date = dateStr(new Date(f.timestamp));
     return date >= startDate && date <= endDate && !f.deleted;
   });
-  const avgCalories = foodInRange.length > 0 ? Math.round(foodInRange.reduce((a, b) => a + b.calories, 0) / foodInRange.length) : undefined;
+  const caloriesByDay = new Map<string, number>();
+  for (const f of foodInRange) {
+    const d = dateStr(new Date(f.timestamp));
+    caloriesByDay.set(d, (caloriesByDay.get(d) ?? 0) + f.calories);
+  }
+  const dailyCalories = [...caloriesByDay.values()];
+  const avgCalories = dailyCalories.length > 0 ? Math.round(dailyCalories.reduce((a, b) => a + b, 0) / dailyCalories.length) : undefined;
   
   // 运动
   const exerciseInRange = exerciseLog.filter(e => {
@@ -366,7 +392,7 @@ function calculateMetrics(
   
   // 冥想
   const medInRange = medHistory.filter(m => {
-    const date = m.date || new Date(0).toISOString().slice(0, 10);
+    const date = m.date || '1970-01-01';
     return date >= startDate && date <= endDate && !m.deleted;
   });
   const totalMeditationMin = medInRange.length > 0 ? medInRange.reduce((a, b) => {
@@ -376,7 +402,8 @@ function calculateMetrics(
   
   // 禁食
   const fastingInRange = fastingHistory.filter(f => {
-    const date = dateStr(new Date(f.startedAt || 0));
+    if (!f.startedAt || !f.endedAt) return false;
+    const date = dateStr(new Date(f.startedAt));
     return date >= startDate && date <= endDate && !f.deleted;
   });
   const fastingCount = fastingInRange.length > 0 ? fastingInRange.length : undefined;

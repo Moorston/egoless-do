@@ -42,7 +42,7 @@ export function PlanTaskCard({ planItem, checkins, onPress, onDelete }: PlanTask
           </Text>
         </View>
         <TouchableOpacity
-          onPress={() => (nav as any).navigate('RelationMap', { context: { type: 'planItem', id: planItem.id } })}
+          onPress={() => nav.navigate('RelationMap', { context: { type: 'planItem', id: planItem.id } })}
           style={{ padding: 4, marginLeft: 4 }}
         >
           <Network size={14} color={TH.primary} />

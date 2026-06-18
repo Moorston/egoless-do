@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemProgress, computeExpectedDays } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemProgress, computeExpectedDays, dateStr } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, CheckinFrequency } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -83,16 +83,16 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     return () => { subscription.remove(); clearInterval(interval); };
   }, []);
 
-  const plan = useMemo(() => (store.plans ?? []).find(p => p.id === planId), [store.plans, planId]);
+  const plan = useMemo(() => (store.plans ?? []).find(p => !p.deleted && p.id === planId), [store.plans, planId]);
   const items = useMemo(() => getPlanItems(store.planItems ?? [], planId), [store.planItems, planId]);
-  const checkins = store.planItemCheckins ?? EMPTY_CHECKINS;
+  const checkins = useMemo(() => (store.planItemCheckins ?? EMPTY_CHECKINS).filter(c => !c.deleted), [store.planItemCheckins]);
 
   // Pre-compute progress for all items
   const itemProgressMap = useMemo(() => {
     const map = new Map<string, { doneCount: number; expectedDays: number; progress: number }>();
     for (const item of items) {
       const doneCount = item.totalCheckinDays;
-      const totalExpectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
+      const totalExpectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
       const progress = totalExpectedDays > 0 ? Math.min(Math.round((doneCount / totalExpectedDays) * 100), 100) : 0;
       map.set(item.id, { doneCount, expectedDays: totalExpectedDays, progress });
     }
@@ -180,7 +180,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
         trailIds.add(t.id);
       }
     }
-    return (store.thoughtTrails ?? []).filter(t => trailIds.has(t.id)).slice(0, 2);
+    return (store.thoughtTrails ?? []).filter(t => !t.deleted && trailIds.has(t.id)).slice(0, 2);
   }, [items, store.reflections, store.thoughtTrails, plan, planItemIds]);
 
   if (!plan) {
@@ -218,7 +218,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       if (a.startDate !== b.startDate) return a.startDate.localeCompare(b.startDate);
       return a.endDate.localeCompare(b.endDate);
     });
-  }, [items, today]);
+  }, [items, today, itemProgressMap]);
 
   const checkCanArchive = (onConfirm: () => void) => {
     const result = store.canArchivePlan(plan.id);
@@ -517,7 +517,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
           {/* Relation Map Entry */}
           <TouchableOpacity
-            onPress={() => nav.navigate('RelationMap' as never, { context: { type: 'plan', id: planId } } as never)}
+            onPress={() => nav.navigate('RelationMap', { context: { type: 'plan', id: planId } })}
             style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16, backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }}
           >
             <Link size={18} color={P} />

@@ -11,7 +11,7 @@ export interface TodoItemStatus {
 function buildCheckinIndex(checkins: PlanItemCheckin[], date: string): Map<string, PlanItemCheckin> {
   const map = new Map<string, PlanItemCheckin>();
   for (const c of checkins) {
-    if (c.date === date && c.done) {
+    if (c.date === date && c.done && !c.deleted) {
       map.set(c.planItemId, c);
     }
   }
@@ -24,7 +24,7 @@ export function getTodoItemStatus(
   date: string,
 ): TodoItemStatus {
   const checkin = checkins.find(
-    c => c.planItemId === item.id && c.date === date && c.done,
+    c => c.planItemId === item.id && c.date === date && c.done && !c.deleted,
   );
   if (!checkin) return { done: false, autoChecked: false };
   return {
@@ -74,14 +74,15 @@ export function computeDailyTodoStats(
 ): DailyTodoStats {
   const index = buildCheckinIndex(checkins, date);
   const planItemsDone = planItems.filter(item => index.has(item.id)).length;
-  const customTodosDone = customTodos.filter(t => t.done).length;
+  const activeCustomTodos = customTodos.filter(t => !t.deleted);
+  const customTodosDone = activeCustomTodos.filter(t => t.done).length;
   const totalDone = planItemsDone + customTodosDone;
-  const totalItems = planItems.length + customTodos.length;
+  const totalItems = planItems.length + activeCustomTodos.length;
   return {
     planItemsDone,
     planItemsTotal: planItems.length,
     customTodosDone,
-    customTodosTotal: customTodos.length,
+    customTodosTotal: activeCustomTodos.length,
     totalDone,
     totalItems,
     progressPercent: totalItems > 0 ? Math.round((totalDone / totalItems) * 100) : 0,
