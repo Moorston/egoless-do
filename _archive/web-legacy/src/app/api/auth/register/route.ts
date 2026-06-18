@@ -30,9 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '邮箱格式不正确' }, { status: 400 });
     }
 
-    const pwdError = validatePassword(password);
-    if (pwdError) return NextResponse.json({ error: pwdError }, { status: 400 });
-
     const record = db.prepare(
       'SELECT code, expires_at FROM verification_codes WHERE email = ? ORDER BY created_at DESC LIMIT 1'
     ).get(email) as { code: string; expires_at: number } | undefined;
@@ -48,6 +45,9 @@ export async function POST(req: NextRequest) {
 
     // Delete used verification code + prune expired codes
     db.prepare('DELETE FROM verification_codes WHERE email = ? OR expires_at < ?').run(email, Date.now());
+
+    const pwdError = validatePassword(password);
+    if (pwdError) return NextResponse.json({ error: pwdError }, { status: 400 });
 
     const pb = getPb();
     const user = await pb.collection('users').create({

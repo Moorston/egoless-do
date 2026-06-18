@@ -27,9 +27,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
         let persistData: Record<string, unknown> | undefined;
         set(s => {
           const waterMl = (s.waterMl ?? 0) + ml;
-          const updated = { ...s.userProfile, waterMl, updatedAt: now };
-          persistData = { ...updated, waterGoal: s.waterGoal };
-          return { waterMl, userProfile: updated };
+          return { waterMl, userProfile: { ...s.userProfile, waterMl, updatedAt: now } };
         });
         if (persistData) adapter.persistChange('profile', 'self', persistData).catch(e => log.error(e));
       }
