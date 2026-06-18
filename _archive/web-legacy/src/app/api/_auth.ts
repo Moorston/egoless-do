@@ -66,7 +66,8 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
         const pwdChangedAt = (user as any).password_changed_at;
         if (pwdChangedAt && iat < pwdChangedAt) return null;
       } catch {
-        // If user lookup fails, continue (signature already verified)
+        // If user lookup fails, reject the token to be safe
+        return null;
       }
     }
 

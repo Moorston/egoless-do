@@ -374,8 +374,8 @@ export default function StarfieldBackground() {
     [scaleX, scaleY]
   );
 
-  const brightStars = scaledStars.filter(s => s.size >= 4);
-  const normalStars = scaledStars.filter(s => s.size < 4);
+  const brightStars = useMemo(() => scaledStars.filter(s => s.size >= 4), [scaledStars]);
+  const normalStars = useMemo(() => scaledStars.filter(s => s.size < 4), [scaledStars]);
   // 低端设备跳过星座连线计算
   // NOTE: isLowEndDevice is a module-level constant — including it in deps is harmless
   // but unnecessary. Kept for clarity that the computation depends on device capability.

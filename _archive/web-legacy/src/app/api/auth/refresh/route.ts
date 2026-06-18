@@ -32,6 +32,21 @@ export async function POST(req: NextRequest) {
     pb.authStore.save(token, null);
     const authData = await pb.collection('users').authRefresh();
 
+    // Check if token was issued before the last password reset
+    const iat = typeof payload.iat === 'number' ? payload.iat * 1000 : 0;
+    if (iat > 0) {
+      try {
+        const user = await pb.collection('users').getOne(payload.id as string);
+        const pwdChangedAt = (user as any).password_changed_at;
+        if (pwdChangedAt && iat < pwdChangedAt) {
+          return NextResponse.json({ error: '密码已修改，请重新登录' }, { status: 401 });
+        }
+      } catch {
+        // If user lookup fails, reject the token to be safe
+        return NextResponse.json({ error: 'Token 验证失败，请重新登录' }, { status: 401 });
+      }
+    }
+
     // Note: refreshToken === token is a PocketBase limitation (no separate refresh token mechanism).
     return NextResponse.json({
       token: authData.token,
