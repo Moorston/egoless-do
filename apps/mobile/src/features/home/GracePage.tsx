@@ -21,7 +21,7 @@ export default function GracePage() {
   const yStr = yesterday();
   const currentMonth = dateStr().slice(0, 7); // "2026-06"
 
-  const yesterdayRecord = store.checkinHistory?.find(h => h.date === yStr);
+  const yesterdayRecord = store.checkinHistory?.find(h => !h.deleted && h.date === yStr);
   const yesterdayDone = yesterdayRecord?.done === true;
   const missed = !yesterdayDone;
 

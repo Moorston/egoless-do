@@ -7,7 +7,7 @@ export function createFastingSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<FastingSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     activeFasting: null,
     fastingHistory: [],
 
@@ -21,14 +21,14 @@ export function createFastingSlice(
     },
 
     stopFasting(opts?: StopFastingOpts) {
-      const active = get().activeFasting;
-      if (!active) return;
-      const finished = stopFastingSession(active, opts);
+      const current = get().activeFasting;
+      if (!current) return;
+      const result = stopFastingSession(current, opts);
       set(s => ({
         activeFasting: null,
-        fastingHistory: [finished, ...(s.fastingHistory ?? [])],
+        fastingHistory: [result, ...(s.fastingHistory ?? [])],
       }));
-      adapter.persistChange('fasting', finished.id, finished).catch(console.error);
+      adapter.persistChange('fasting', result.id, result).catch(console.error);
       onSync?.();
     },
   });

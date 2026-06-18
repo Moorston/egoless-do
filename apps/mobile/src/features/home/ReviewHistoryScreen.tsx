@@ -18,7 +18,7 @@ export default function ReviewHistoryScreen() {
   
   const reviews = useMemo(() => {
     return (store.checkinReviews ?? [])
-      .filter(r => r.period === activeTab && r.deleted !== true)
+      .filter(r => r.period === activeTab && !r.deleted)
       .sort((a, b) => b.generatedAt - a.generatedAt);
   }, [store.checkinReviews, activeTab]);
   

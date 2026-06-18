@@ -40,12 +40,14 @@ export default function PlayerBar({ primaryColor, category }: Props) {
   // 播放下一首（循环当前分类）
   const handleNext = useCallback(() => {
     if (!currentTrack) return;
-    const cat = category ?? currentTrack.category;
-    const tracks = useMusicStore.getState().getTracksByCategory(cat);
-    if (tracks.length === 0) return;
-    const idx = tracks.findIndex(t => t.id === currentTrack.id);
-    const nextIdx = (idx + 1) % tracks.length;
-    play(tracks[nextIdx]);
+    try {
+      const cat = category ?? currentTrack.category;
+      const tracks = useMusicStore.getState().getTracksByCategory(cat);
+      if (tracks.length === 0) return;
+      const idx = tracks.findIndex(t => t.id === currentTrack.id);
+      const nextIdx = (idx + 1) % tracks.length;
+      play(tracks[nextIdx]);
+    } catch (e) { console.error('播放下一首失败:', e); }
   }, [currentTrack, category, play]);
 
   if (!currentTrack) return null;
@@ -56,11 +58,11 @@ export default function PlayerBar({ primaryColor, category }: Props) {
   const durationStr = formatTime(duration);
 
   const handleSeek = (ratio: number) => {
-    if (player) player.seekTo(ratio * duration);
+    try { if (player) player.seekTo(ratio * duration); } catch (e) { console.error('seek失败:', e); }
   };
 
   const handleTogglePlay = () => {
-    isPlaying ? pause() : resume();
+    try { isPlaying ? pause() : resume(); } catch (e) { console.error('播放/暂停失败:', e); }
   };
 
   return (

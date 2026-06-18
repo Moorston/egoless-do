@@ -85,7 +85,7 @@ function SportActivePageInner({
     return (
       <div style={{ ...overlayStyle, background: '#1a1a2e', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0 24px' }}>
         <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>{isGpsSport ? distKm.toFixed(2) : sportType === 'repetition' ? pausedReps : Math.floor(sec / 60)}</div>
-        <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>{isGpsSport ? 'km' : sportType === 'repetition' ? T('exerciseReps') : 'min'}</div>
+        <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>{isGpsSport ? T('exerciseKm') : sportType === 'repetition' ? T('exerciseReps') : T('exerciseMin')}</div>
         <div style={{ fontSize: FONT_STAT_CARD, color: 'rgba(255,255,255,.7)', marginTop: 16 }}>{fmt(sec)}</div>
 
         <div style={{ display: 'flex', marginTop: 60, gap: 20, alignItems: 'center' }}>
@@ -148,7 +148,7 @@ function SportActivePageInner({
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24, flex: 1, alignItems: 'center' }}>
               <div style={{ textAlign: 'center', flex: 1 }}>
                 <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{distKm.toFixed(2)}</div>
-                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>km</div>
+                <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseKm')}</div>
               </div>
               <div style={{ textAlign: 'center', flex: 1 }}>
                 <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</div>
@@ -258,7 +258,7 @@ function SportActivePageInner({
         ) : (
           <>
             <div style={{ fontSize: FONT_HERO, fontWeight: 900, color: '#fff' }}>{Math.floor(sec / 60) || 0}</div>
-            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.45)', marginTop: 6 }}>{T('exerciseTotalBurn')}</div>
+            <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.45)', marginTop: 6 }}>{T('exerciseTotalDuration')}</div>
             <div style={{ fontSize: FONT_STAT_CARD, color: COLORS.ORANGE, marginTop: 8 }}>{calories} kcal</div>
             <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.3)', marginTop: 6 }}>{MET_MAP[sport.key] ?? 4} {T('exerciseMet')}</div>
             {mode === 'target' && targetType === 'time' && sec < targetValue && (

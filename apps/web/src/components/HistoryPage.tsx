@@ -17,15 +17,13 @@ export default function HistoryPage({ onClose }: { onClose: () => void }) {
   const T = useT();
   const overlay = useOverlay();
 
-  const history = store.checkinHistory || [];
-
   const sorted = useMemo(() =>
-    [...history].sort((a, b) => {
+    (store.checkinHistory || []).filter(c => !c.deleted).sort((a, b) => {
       const ta = a.timestamp ?? new Date(a.date).getTime();
       const tb = b.timestamp ?? new Date(b.date).getTime();
       return tb - ta;
     }),
-    [history]
+    [store.checkinHistory]
   );
 
   const grouped = useMemo(() => {
@@ -40,7 +38,7 @@ export default function HistoryPage({ onClose }: { onClose: () => void }) {
 
   const formatMonth = (key: string) => {
     const [y, m] = key.split('-');
-    return `${y}年${parseInt(m)}月`;
+    return T('dateYearMonth').replace('{year}', y).replace('{month}', T(`month${parseInt(m)}`));
   };
 
   const formatDay = (dateStr: string) => {
@@ -48,10 +46,11 @@ export default function HistoryPage({ onClose }: { onClose: () => void }) {
     return parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : dateStr;
   };
 
-  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
-  const getWeekday = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? '' : weekdays[d.getDay()];
+  const weekdays = [T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')];
+  const getWeekday = (ds: string) => {
+    const [y, m, d] = ds.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return isNaN(date.getTime()) ? '' : weekdays[date.getDay()];
   };
 
   return (
@@ -110,7 +109,7 @@ export default function HistoryPage({ onClose }: { onClose: () => void }) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatDay(h.date)}</span>
-                        <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(h.date)}</span>
+                        <span style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('dateWeekdayPrefix')}{getWeekday(h.date)}</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         {h.grace && (

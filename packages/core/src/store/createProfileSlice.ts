@@ -3,7 +3,7 @@ import type { StorageAdapter, ProfileSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createProfileSlice(adapter: StorageAdapter): SliceCreator<ProfileSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     userProfile: {},
     waterMl: 0,
     waterGoal: 2000,
@@ -21,42 +21,47 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
 
     addWater(ml: number) {
       if (ml > 0) {
+        const now = Date.now();
+        let persistData: any;
         set(s => {
-          const waterMl = Math.min((s.waterMl ?? 0) + ml, s.waterGoal ?? 2000);
-          return { waterMl, userProfile: { ...s.userProfile, waterMl, updatedAt: Date.now() } };
+          const waterMl = (s.waterMl ?? 0) + ml;
+          const updated = { ...s.userProfile, waterMl, updatedAt: now };
+          persistData = { ...updated, waterGoal: s.waterGoal };
+          return { waterMl, userProfile: updated };
         });
-        const s = get();
-        adapter.persistChange('profile', 'self', {
-          ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, updatedAt: Date.now(),
-        }).catch(console.error);
+        if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
       }
     },
 
     resetWater() {
-      set(s => ({ waterMl: 0, userProfile: { ...s.userProfile, waterMl: 0, updatedAt: Date.now() } }));
-      const s = get();
-      adapter.persistChange('profile', 'self', {
-        ...s.userProfile, waterMl: 0, waterGoal: s.waterGoal, updatedAt: Date.now(),
-      }).catch(console.error);
+      const now = Date.now();
+      let persistData: any;
+      set(s => {
+        persistData = { ...s.userProfile, waterMl: 0, waterGoal: s.waterGoal, updatedAt: now };
+        return { waterMl: 0, userProfile: { ...s.userProfile, waterMl: 0, updatedAt: now } };
+      });
+      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
     },
 
     setWaterGoal(ml: number) {
+      const now = Date.now();
+      let persistData: any;
       set(s => {
         const waterGoal = Math.max(100, ml);
-        return { waterGoal, userProfile: { ...s.userProfile, waterGoal, updatedAt: Date.now() } };
+        persistData = { ...s.userProfile, waterMl: s.waterMl, waterGoal, updatedAt: now };
+        return { waterGoal, userProfile: { ...s.userProfile, waterGoal, updatedAt: now } };
       });
-      const s = get();
-      adapter.persistChange('profile', 'self', {
-        ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, updatedAt: Date.now(),
-      }).catch(console.error);
+      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
     },
 
     setWeightUnit(u: 'kg' | 'lb') {
-      set(s => ({ weightUnit: u, userProfile: { ...s.userProfile, weightUnit: u, updatedAt: Date.now() } }));
-      const s = get();
-      adapter.persistChange('profile', 'self', {
-        ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, weightUnit: u, updatedAt: Date.now(),
-      }).catch(console.error);
+      const now = Date.now();
+      let persistData: any;
+      set(s => {
+        persistData = { ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, weightUnit: u, updatedAt: now };
+        return { weightUnit: u, userProfile: { ...s.userProfile, weightUnit: u, updatedAt: now } };
+      });
+      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
     },
   });
 }

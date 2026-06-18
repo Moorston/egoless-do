@@ -72,4 +72,9 @@ export interface AppState {
   healthSyncEnabled: boolean;
   remindEnabled: boolean;
   remindTime: string;
+  trailNotes: import('./trail-note').TrailNote[];
+  checkinReviews: import('./review').CheckinReview[];
+  aiMode: string;
+  aiModels: import('../ai/types').ModelConfig[];
+  ignoredRecPatterns: string[];
 }

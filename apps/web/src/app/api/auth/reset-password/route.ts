@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { getPb } from '../../_pb';
+import { getAdminPb, escapeFilter } from '../../_pb';
 import db from '../../_db';
 import { sanitizeError } from '../../_errors';
 import { getClientIp, createRateLimiter } from '../../_rateLimit';
@@ -26,6 +26,9 @@ export async function POST(req: NextRequest) {
     if (!email || !code || !password) {
       return NextResponse.json({ error: '缺少必填字段' }, { status: 400 });
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: '邮箱格式不正确' }, { status: 400 });
+    }
 
     const pwdError = validatePassword(password);
     if (pwdError) return NextResponse.json({ error: pwdError }, { status: 400 });
@@ -35,7 +38,7 @@ export async function POST(req: NextRequest) {
     ).get(email) as { code: string; expires_at: number } | undefined;
 
     if (!record) return NextResponse.json({ error: '请先获取验证码' }, { status: 400 });
-    if (!crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
+    if (record.code.length !== code.length || !crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
       return NextResponse.json({ error: '验证码错误' }, { status: 400 });
     }
     if (Date.now() > record.expires_at) return NextResponse.json({ error: '验证码已过期' }, { status: 400 });
@@ -44,15 +47,35 @@ export async function POST(req: NextRequest) {
     db.prepare('DELETE FROM verification_codes WHERE email = ?').run(email);
 
     // Find user by email and update password
-    const pb = getPb();
-    const user = await pb.collection('users').getFirstListItem(`email = "${email.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`);
+    const pb = await getAdminPb();
+    const user = await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
     await pb.collection('users').update(user.id, {
       password,
       passwordConfirm: password,
+      password_changed_at: Date.now(),
     });
 
-    return NextResponse.json({ ok: true, message: '密码重置成功' });
+    // Invalidate the current token by blacklisting it
+    try {
+      const authHeader = req.headers.get('authorization');
+      if (authHeader?.startsWith('Bearer ')) {
+        const token = authHeader.slice(7);
+        const parts = token.split('.');
+        if (parts.length === 3 && parts[1]) {
+          const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
+          const expiresAt = payload.exp ? payload.exp * 1000 : Date.now() + 7 * 24 * 3600 * 1000;
+          db.prepare('INSERT OR IGNORE INTO token_blacklist (token, expires_at) VALUES (?, ?)').run(token, expiresAt);
+        }
+      }
+    } catch (e) {
+      console.error('[reset-password] Failed to blacklist token:', e);
+    }
+
+    return NextResponse.json({ ok: true, message: '密码重置成功，请重新登录' });
   } catch (err: unknown) {
-    return NextResponse.json({ error: sanitizeError(err, '密码重置失败') }, { status: 400 });
+    const msg = err instanceof Error ? err.message : '';
+    const pbStatus = (err as any)?.status;
+    const isServerError = pbStatus >= 500 || msg.includes('ECONNREFUSED') || msg.includes('fetch failed') || msg.includes('timeout');
+    return NextResponse.json({ error: sanitizeError(err, '密码重置失败') }, { status: isServerError ? 500 : 400 });
   }
 }

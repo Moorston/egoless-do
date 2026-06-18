@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, useT } from '../../components/UI';
-import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, dateStr, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -44,14 +44,15 @@ export default function StatsScreen() {
   const [activeChart, setActiveChart] = useState<ChartKey>('exercise');
 
   // ── Common data ──
-  const exerciseLog = store.exerciseLog ?? [];
+  const exerciseLog = useMemo(() => (store.exerciseLog ?? []).filter(e => !e.deleted), [store.exerciseLog]);
   const now = Date.now();
-  const today = new Date(now).toISOString().slice(0, 10);
+  const todayD = new Date(now);
+  const today = `${todayD.getFullYear()}-${String(todayD.getMonth() + 1).padStart(2, '0')}-${String(todayD.getDate()).padStart(2, '0')}`;
   const weekStart = now - 7 * 24 * 3600 * 1000;
   const monthStart = now - 30 * 24 * 3600 * 1000;
 
   // ── Fasting stats ──
-  const fastingHistory = store.fastingHistory ?? [];
+  const fastingHistory = useMemo(() => (store.fastingHistory ?? []).filter(f => !f.deleted), [store.fastingHistory]);
   const totalFastCount = fastingHistory.length;
   const totalFastHours = useMemo(() => {
     const totalSec = fastingHistory.reduce((sum, f) => {
@@ -64,13 +65,20 @@ export default function StatsScreen() {
   const fastingDates = useMemo(() => {
     if (!fastingHistory.length) return [] as string[];
     return [...new Set(fastingHistory.map(f => {
-      const d = new Date(f.startedAt ?? 0);
-      return d.toISOString().slice(0, 10);
-    }))].sort();
+      if (!f.startedAt) return null;
+      const d = new Date(f.startedAt);
+      if (isNaN(d.getTime())) return null;
+      return dateStr(d);
+    }).filter(Boolean as unknown as <T>(x: T) => x is NonNullable<T>))].sort();
   }, [fastingHistory]);
   const fastStreak = useMemo(() => {
     if (!fastingDates.length) return 0;
     const reversed = [...fastingDates].reverse();
+    const todayStr = dateStr();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = dateStr(yesterday);
+    if (reversed[0] !== todayStr && reversed[0] !== yesterdayStr) return 0;
     let streak = 1;
     for (let i = 1; i < reversed.length; i++) {
       const prev = new Date(reversed[i - 1]);
@@ -92,31 +100,39 @@ export default function StatsScreen() {
 
   // ── Meditation stats ──
   const totalMedMin = store.totalMedMinutes;
-  const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory ?? []), [store.medHistory]);
-  const medSessionCount = (store.medHistory ?? []).length;
+  const todayMedMin = useMemo(() => getTodayMedMinutes((store.medHistory ?? []).filter(m => !m.deleted)), [store.medHistory]);
+  const medSessionCount = (store.medHistory ?? []).filter(m => !m.deleted).length;
 
   // ── Exercise stats ──
-  const weekKm = exerciseLog.filter(e => e.timestamp >= weekStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
-  const monthKm = exerciseLog.filter(e => e.timestamp >= monthStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
-  const allPaces = exerciseLog.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
-  const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
-  const totalExerciseMin = Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60);
-  const totalExerciseCount = exerciseLog.length;
+  const exerciseStats = useMemo(() => {
+    const weekKm = exerciseLog.filter(e => e.timestamp >= weekStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
+    const monthKm = exerciseLog.filter(e => e.timestamp >= monthStart).reduce((s, e) => s + (e.distanceKm ?? 0), 0);
+    const allPaces = exerciseLog.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
+    const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
+    const totalExerciseMin = Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60);
+    const totalExerciseCount = exerciseLog.length;
+    return { weekKm, monthKm, bestPace, totalExerciseMin, totalExerciseCount };
+  }, [exerciseLog, weekStart, monthStart]);
+  const { weekKm, monthKm, bestPace, totalExerciseMin, totalExerciseCount } = exerciseStats;
 
   // ── Reflections stats ──
   const reflections = store.reflections ?? [];
-  const reflCount = reflections.length;
+  const reflCount = reflections.filter(r => !r.deleted).length;
 
   // ── Plan stats ──
   const plans = store.plans ?? [];
-  const planItems = (store.planItems ?? []).filter(i => !i.deleted);
-  const activePlans = plans.filter(p => p.status === 'in_progress');
-  const totalPlanTasks = planItems.length;
-  const completedPlanTasks = planItems.filter(i => i.status === 'completed').length;
+  const planStats = useMemo(() => {
+    const planItems = (store.planItems ?? []).filter(i => !i.deleted);
+    const activePlans = plans.filter(p => !p.deleted && p.status === 'in_progress');
+    const totalPlanTasks = planItems.length;
+    const completedPlanTasks = planItems.filter(i => i.status === 'completed').length;
+    return { planItems, activePlans, totalPlanTasks, completedPlanTasks };
+  }, [store.planItems, plans]);
+  const { planItems, activePlans, totalPlanTasks, completedPlanTasks } = planStats;
 
   // ── Other stats ──
-  const activeHabits = (store.habits ?? []).filter(h => h.status === 'inProgress').length;
-  const graceCount = (store.graceHistory ?? []).length;
+  const activeHabits = (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress').length;
+  const graceCount = (store.graceHistory ?? []).filter(g => !g.deleted).length;
 
   // ── Chart data ──
   const weightData = useMemo(() => aggregateWeightData(store.checkinHistory ?? [], 30), [store.checkinHistory]);
@@ -184,7 +200,7 @@ export default function StatsScreen() {
   );
 
   const renderHabitList = () => {
-    const habits = (store.habits ?? []).filter(h => h.status === 'inProgress');
+    const habits = (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress');
     if (!habits.length) return null;
     return (
       <Card style={{ marginBottom: 12 }}>
@@ -195,9 +211,9 @@ export default function StatsScreen() {
             <Text style={{ flex: 1, fontSize: FONT_BODY, color: TH.text }} numberOfLines={1}>{h.name}</Text>
             <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE, fontWeight: '600' }}>{h.streak}{T('days')}</Text>
             <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-              <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${Math.min(h.doneDays / h.targetDays * 100, 100)}%` }} />
+              <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${h.targetDays > 0 ? Math.min(h.doneDays / h.targetDays * 100, 100) : 0}%` }} />
             </View>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{Math.round(h.doneDays / h.targetDays * 100)}%</Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{h.targetDays > 0 ? Math.round(h.doneDays / h.targetDays * 100) : 0}%</Text>
           </View>
         ))}
       </Card>
@@ -230,7 +246,7 @@ export default function StatsScreen() {
                 <View style={{ marginLeft: 8 }}>
                   {items.map((item, idx) => {
                     const checkedDays = item.totalCheckinDays;
-                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
+                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, dateStr());
                     const itemPct = expectedDays > 0 ? Math.min(Math.round((checkedDays / expectedDays) * 100), 100) : 0;
                     const isLast = idx === items.length - 1;
                     return (
@@ -268,7 +284,7 @@ export default function StatsScreen() {
         <CalendarDays size={15} color={TH.text} />
         <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('statsCheckinHeatmap')}</Text>
       </View>
-      <CalendarGrid history={store.checkinHistory ?? []}
+      <CalendarGrid history={(store.checkinHistory ?? []).filter(c => !c.deleted)}
         primaryColor={P} textColor={TH.text} subColor={TH.sub} borderColor={TH.border}
         onDayPress={(date) => nav.navigate('CheckinDetail', { date })} />
     </Card>
@@ -282,10 +298,10 @@ export default function StatsScreen() {
           <>
             {renderStatGrid([
               { value: `${store.streak}`, unit: T('days'), label: T('streak'), icon: Flame },
-              { value: `${(store.checkinHistory ?? []).length}`, unit: T('days'), label: T('statsTotalCheckinDays'), icon: CalendarDays },
-              { value: `${plans.length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
+              { value: `${(store.checkinHistory ?? []).filter(c => !c.deleted).length}`, unit: T('days'), label: T('statsTotalCheckinDays'), icon: CalendarDays },
+              { value: `${plans.filter(p => !p.deleted).length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
               { value: `${completedPlanTasks}`, unit: '', label: T('statsCompletedTasks'), icon: Target },
-              { value: `${(store.habits ?? []).length}`, unit: '', label: T('statsHabitCount'), icon: Star },
+              { value: `${(store.habits ?? []).filter(h => !h.deleted).length}`, unit: '', label: T('statsHabitCount'), icon: Star },
               { value: `${reflCount}`, unit: '', label: T('statsReflections'), icon: Sparkles },
               { value: `${totalExerciseMin}`, unit: T('exerciseMin'), label: T('statsExerciseDuration'), icon: Dumbbell },
               { value: `${totalMedMin}`, unit: T('medMinutes'), label: T('statsMeditation'), icon: Target },
@@ -351,8 +367,8 @@ export default function StatsScreen() {
       case 'reflections':
         return renderStatGrid([
           { value: `${reflCount}`, unit: '', label: T('statsReflections') },
-          { value: `${(store.reflections ?? []).filter(r => r.mood).length}`, unit: '', label: T('mood') },
-          { value: `${Object.keys((store.reflections ?? []).reduce((acc, r) => { (r.tags ?? []).forEach(t => (acc as any)[t] = 1); return acc; }, {} as Record<string, number>)).length}`, unit: '', label: T('addTags') },
+          { value: `${(store.reflections ?? []).filter(r => !r.deleted && r.mood).length}`, unit: '', label: T('mood') },
+          { value: `${Object.keys((store.reflections ?? []).filter(r => !r.deleted).reduce((acc, r) => { (r.tags ?? []).forEach(t => (acc as any)[t] = 1); return acc; }, {} as Record<string, number>)).length}`, unit: '', label: T('addTags') },
         ], 3);
       case 'plan':
         return (

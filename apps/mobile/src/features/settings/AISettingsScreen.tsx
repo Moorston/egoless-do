@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Switch, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -19,6 +19,8 @@ export default function AISettingsScreen() {
   const store = useAppStore();
   const mode = store.aiMode;
   const models = store.aiModels;
+  const testTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (testTimerRef.current) clearTimeout(testTimerRef.current); }, []);
 
   // 编辑状态
   const [showAddModal, setShowAddModal] = useState(false);
@@ -136,7 +138,8 @@ export default function AISettingsScreen() {
     setTestResults(prev => ({ ...prev, [model.id]: undefined as any }));
 
     // 模拟测试（实际应该调用AI Service）
-    setTimeout(() => {
+    if (testTimerRef.current) clearTimeout(testTimerRef.current);
+    testTimerRef.current = setTimeout(() => {
       const isLocal = model.baseUrl.includes('localhost');
       const hasKey = !!model.apiKey;
 

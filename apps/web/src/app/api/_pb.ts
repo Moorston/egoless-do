@@ -13,16 +13,10 @@ export function getPb(): PocketBase {
 /** Get a PocketBase instance authenticated as admin (for querying users collection). */
 let _adminToken: string | null = null;
 let _adminAuthAt = 0;
+let _adminAuthPromise: Promise<string> | null = null;
 const ADMIN_AUTH_TTL = 5 * 60 * 1000; // Re-auth every 5 min
 
-export async function getAdminPb(): Promise<PocketBase> {
-  const now = Date.now();
-  if (_adminToken && now - _adminAuthAt < ADMIN_AUTH_TTL) {
-    const pb = getPb();
-    pb.authStore.save(_adminToken, null);
-    return pb;
-  }
-
+async function authenticateAdmin(): Promise<string> {
   const pb = getPb();
   const adminEmail = process.env.PB_ADMIN_EMAIL;
   const adminPass = process.env.PB_ADMIN_PASSWORD;
@@ -34,8 +28,9 @@ export async function getAdminPb(): Promise<PocketBase> {
   // PocketBase v0.22 uses 'admins', v0.23+ uses '_superusers'
   try {
     const authData = await pb.collection('_superusers').authWithPassword(adminEmail, adminPass);
-    _adminToken = authData.token;
-  } catch {
+    return authData.token;
+  } catch (e: any) {
+    if (e?.status !== 404) throw e;
     // Fallback: try /api/admins/auth-with-password (v0.22)
     const res = await fetch(`${PB_URL}/api/admins/auth-with-password`, {
       method: 'POST',
@@ -44,18 +39,48 @@ export async function getAdminPb(): Promise<PocketBase> {
     });
     if (!res.ok) throw new Error(`Admin auth failed: ${res.status}`);
     const data = await res.json();
-    _adminToken = data.token;
+    return data.token;
   }
-  _adminAuthAt = now;
+}
+
+export async function getAdminPb(): Promise<PocketBase> {
+  const now = Date.now();
+  if (_adminToken && now - _adminAuthAt < ADMIN_AUTH_TTL) {
+    const pb = getPb();
+    pb.authStore.save(_adminToken, null);
+    return pb;
+  }
+
+  // Serialize concurrent auth requests — atomically update all state on settle
+  if (!_adminAuthPromise) {
+    _adminAuthPromise = authenticateAdmin().then(
+      (token) => { _adminToken = token; _adminAuthAt = Date.now(); _adminAuthPromise = null; return token; },
+      (err) => { _adminToken = null; _adminAuthAt = 0; _adminAuthPromise = null; throw err; },
+    );
+  }
+  try {
+    _adminToken = await _adminAuthPromise;
+    // _adminAuthAt already set by the .then() callback above
+  } catch (e) {
+    _adminToken = null;
+    _adminAuthAt = 0;
+    throw e;
+  }
 
   const adminPb = getPb();
-  adminPb.authStore.save(_adminToken!, null);
+  adminPb.authStore.save(_adminToken, null);
   return adminPb;
 }
 
 /** Escape special characters for PocketBase filter strings. */
 export function escapeFilter(value: string): string {
-  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/'/g, "\\'")
+    .replace(/\(/g, '\\(')
+    .replace(/\)/g, '\\)')
+    .replace(/\0/g, '');
 }
 
 export { PocketBase };

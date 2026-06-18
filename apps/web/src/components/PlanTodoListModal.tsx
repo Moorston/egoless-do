@@ -14,7 +14,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
   const today = dateStr();
 
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
-  const checkins = store.planItemCheckins ?? [];
+  const checkins = useMemo(() => (store.planItemCheckins ?? []).filter(c => !c.deleted), [store.planItemCheckins]);
   const todayItems = useMemo(() => {
     if (!activePlan) return [];
     return getTodayItems(store.planItems ?? [], activePlan, today, checkins);
@@ -47,7 +47,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
         {todayItems.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 32, color: TH.sub }}>
             <div style={{ fontSize: FONT_STAT_CARD, marginBottom: 8 }}><CheckCircle2 size={32} style={{verticalAlign:'middle'}} /></div>
-            <div style={{ fontSize: FONT_BODY }}>今日无待办项目</div>
+            <div style={{ fontSize: FONT_BODY }}>{T('noTodoToday')}</div>
           </div>
         ) : (
           <>

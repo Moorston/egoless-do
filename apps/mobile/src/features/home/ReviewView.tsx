@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
@@ -24,32 +24,48 @@ export default function ReviewView({ period }: ReviewViewProps) {
   const [review, setReview] = useState<CheckinReview | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
+  const mountedRef = useRef(true);
+
   useEffect(() => {
-    loadReview();
+    return () => { mountedRef.current = false; };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    store.generateReview(period).then(result => {
+      if (!cancelled) setReview(result);
+    }).catch(error => {
+      if (!cancelled) console.error('Failed to generate review:', error);
+    }).finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+    return () => { cancelled = true; };
   }, [period]);
-  
+
   const loadReview = async () => {
+    if (!mountedRef.current) return;
     setLoading(true);
     try {
       const result = await store.generateReview(period);
-      setReview(result);
+      if (mountedRef.current) setReview(result);
     } catch (error) {
       console.error('Failed to generate review:', error);
     } finally {
-      setLoading(false);
+      if (mountedRef.current) setLoading(false);
     }
   };
-  
+
   const handleRefresh = async () => {
+    if (!mountedRef.current) return;
     setRefreshing(true);
     try {
       const result = await store.generateReview(period);
-      setReview(result);
+      if (mountedRef.current) setReview(result);
     } catch (error) {
       console.error('Failed to refresh review:', error);
     } finally {
-      setRefreshing(false);
+      if (mountedRef.current) setRefreshing(false);
     }
   };
   

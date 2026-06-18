@@ -41,7 +41,7 @@ function getManagerProps(
 ) {
   if (mode === 'tag') {
     // Get all tags (preset + custom + habit)
-    const habitTags = (store.habits ?? []).filter((h: any) => h.createTag).map((h: any) => `#${h.name}`);
+    const habitTags = (store.habits ?? []).filter((h: any) => !h.deleted && h.createTag).map((h: any) => `#${h.name}`);
     const allTags = [...new Set([...TAGS_PRESET, ...(store.customTags ?? []), ...habitTags])];
     
     const sections = [
@@ -56,7 +56,7 @@ function getManagerProps(
       updateItem: (o: string, n: string) => store.updateCustomTag(o, n),
       removeItem: (s: string) => store.removeCustomTag(s),
       reorderItem: (from: number, to: number, _ordered: string[]) => store.reorderAllTag(from, to),
-      getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => (r as any).tags?.includes(s)).length,
+      getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => !r.deleted && (r as any).tags?.includes(s)).length,
       customItems: store.customTags ?? [],
       formatInput: (s: string) => s.startsWith('#') ? s : `#${s}`,
       hiddenItems,
@@ -79,7 +79,7 @@ function getManagerProps(
     updateItem: (o: string, n: string) => store.updateCustomMood(o, n),
     removeItem: (s: string) => store.removeCustomMood(s),
     reorderItem: (from: number, to: number, _ordered: string[]) => store.reorderAllMood(from, to),
-    getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => (r as any).mood === s).length,
+    getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => !r.deleted && (r as any).mood === s).length,
     customItems: store.customMoods ?? [],
     hiddenItems,
     onToggleHidden,
@@ -132,7 +132,7 @@ export default function ReflectionsScreen() {
       if (moodsData) {
         try { setHiddenMoods(JSON.parse(moodsData)); } catch {}
       }
-    });
+    }).catch(console.error);
   }, []);
 
   const handleToggleHiddenTag = useCallback((tag: string) => {
@@ -232,9 +232,9 @@ export default function ReflectionsScreen() {
     for (let i = 34; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const ds = d.toISOString().slice(0, 10);
+      const ds = dateStr(d);
       const count = (store.reflections ?? []).filter(r =>
-        new Date(r.timestamp ?? 0).toISOString().slice(0, 10) === ds
+        !r.deleted && dateStr(new Date(r.timestamp ?? 0)) === ds
       ).length;
       const dayLabel = d.toLocaleDateString('zh-CN', { weekday: 'narrow' });
       data.push({ date: ds, count, dayLabel });
@@ -245,7 +245,8 @@ export default function ReflectionsScreen() {
   const saveReflection = () => {
     if (!content.trim()) return;
     // Add category tag if selected
-    const categoryTag = category ? `#${REFLECTION_CATEGORIES.find(c => c.key === category)?.label}` : '';
+    const found = REFLECTION_CATEGORIES.find(c => c.key === category);
+    const categoryTag = found ? `#${found.label}` : '';
     const finalTags = categoryTag && !tags.includes(categoryTag) ? [categoryTag, ...tags] : tags;
     const newR = store.addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
     // Link pending trails to the newly created reflection
@@ -274,7 +275,8 @@ export default function ReflectionsScreen() {
     if (!editId || !editContent.trim()) return;
     const idx = Math.min(Math.max(editColorIdx, 0), MIND_COLORS_EXTENDED.length - 1);
     // Handle category tag
-    const categoryTag = editCategory ? `#${REFLECTION_CATEGORIES.find(c => c.key === editCategory)?.label}` : '';
+    const foundEdit = REFLECTION_CATEGORIES.find(c => c.key === editCategory);
+    const categoryTag = foundEdit ? `#${foundEdit.label}` : '';
     const oldCategoryTags = REFLECTION_CATEGORIES.map(c => `#${c.label}`);
     // Remove old category tags and add new one
     let finalTags = editTags.filter(t => !oldCategoryTags.includes(t));
@@ -303,12 +305,12 @@ export default function ReflectionsScreen() {
   };
 
   const handleEdit = useCallback((id: string) => {
-    const r = (store.reflections ?? []).find(x => x.id === id);
+    const r = (store.reflections ?? []).find(x => !x.deleted && x.id === id);
     if (r) openEdit(r);
   }, [store]);
 
   const handleCreatePlanItem = useCallback((id: string) => {
-    const r = (store.reflections ?? []).find(x => x.id === id);
+    const r = (store.reflections ?? []).find(x => !x.deleted && x.id === id);
     if (r) {
       const activePlan = store.getActivePlan();
       if (!activePlan) {
@@ -497,7 +499,7 @@ export default function ReflectionsScreen() {
                         )}
 
                         {r.link && (
-                          <TouchableOpacity onPress={() => Linking.openURL(r.link!).catch(console.error)} style={{ marginBottom:8 }}>
+                          <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch(console.error)} style={{ marginBottom:8 }}>
                             <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
                               <Link size={12} color="rgba(255,255,255,.7)" />
                               <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL, textDecorationLine:'underline' }} numberOfLines={1}>{r.link}</Text>
@@ -505,9 +507,9 @@ export default function ReflectionsScreen() {
                           </TouchableOpacity>
                         )}
 
-                        {(r.tags.length > 0 || r.mood) && (
+                        {((r.tags ?? []).length > 0 || r.mood) && (
                           <View style={{ flexDirection:'row', flexWrap:'wrap', gap:4, rowGap:2 }}>
-                            {r.tags.map(tag => {
+                            {(r.tags ?? []).map(tag => {
                               const category = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
                               return (
                                 <Text key={tag} style={{ color:'rgba(255,255,255,.9)', fontSize:FONT_SMALL }}>
@@ -587,7 +589,7 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
-              linkedTrailNames={pendingTrailIds.map(id => (store.thoughtTrails ?? []).find(t => t.id === id)?.name ?? '').filter(Boolean)}
+              linkedTrailNames={pendingTrailIds.map(id => (store.thoughtTrails ?? []).find(t => !t.deleted && t.id === id)?.name ?? '').filter(Boolean)}
               onOpenTrailPicker={() => setTrailPickerId('__new__')}
             />
           </View>
@@ -625,7 +627,7 @@ export default function ReflectionsScreen() {
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingBottom:40, paddingTop:20 }}>
             <View style={{ width:40, height:4, borderRadius:2, backgroundColor:TH.border, alignSelf:'center', marginBottom:20 }} />
             <TouchableOpacity onPress={() => {
-              const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
+              const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
               if (r) openEdit(r);
               setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:P, alignItems:'center' }}>
@@ -633,7 +635,7 @@ export default function ReflectionsScreen() {
             </TouchableOpacity>
             {/* 创建/解除计划任务 */}
             {(() => {
-              const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
+              const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
               const isLinked = r?.linkedPlanItemId;
               return isLinked ? (
                 <TouchableOpacity onPress={() => {
@@ -662,7 +664,7 @@ export default function ReflectionsScreen() {
                     setActionMenuId(null);
                     return;
                   }
-                  const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
+                  const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
                   if (r) { setCreatePlanReflection(r); setShowCreatePlanRefModal(true); }
                   setActionMenuId(null);
                 }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(16,185,129,.15)', alignItems:'center' }}>
@@ -677,15 +679,15 @@ export default function ReflectionsScreen() {
               <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON, fontWeight:'600' }}>🔗 关联思维脉络</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
-              const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
+              const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
               if (r) onShare(r);
               else setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(59,130,246,.15)', alignItems:'center' }}>
               <Text style={{ color:'#3B82F6', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflShare')}</Text>
             </TouchableOpacity>
             {(() => {
-              const r = (store.reflections ?? []).find(x => x.id === actionMenuId);
-              const isToday = r && new Date(r.timestamp ?? 0).toISOString().slice(0,10) === new Date().toISOString().slice(0,10);
+              const r = (store.reflections ?? []).find(x => x.id === actionMenuId && !x.deleted);
+              const isToday = r && dateStr(new Date(r.timestamp ?? 0)) === dateStr();
               return isToday ? (
                 <TouchableOpacity onPress={() => {
                   setConfirmDel(actionMenuId);
@@ -765,7 +767,7 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
-              linkedTrailNames={getTrailsByReflection(editId ?? '', store.thoughtTrails ?? []).map(t => t.name)}
+              linkedTrailNames={getTrailsByReflection(editId ?? '', store.thoughtTrails ?? []).filter(t => !t.deleted).map(t => t.name)}
               onOpenTrailPicker={() => setTrailPickerId(editId)}
             />
           </View>

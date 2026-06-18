@@ -36,8 +36,10 @@ export default function TrailSuggestionBanner() {
   // Check if current topRec is ignored
   useEffect(() => {
     if (!topRec) { setDismissed(false); return; }
+    let mounted = true;
     const pattern = buildIgnoredPattern(topRec);
     AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
+      if (!mounted) return;
       if (raw) {
         try {
           const ignored: string[] = JSON.parse(raw);
@@ -48,7 +50,8 @@ export default function TrailSuggestionBanner() {
       } else {
         setDismissed(false);
       }
-    });
+    }).catch(console.error);
+    return () => { mounted = false; };
   }, [topRec]);
 
   if (dismissed || !topRec) return null;
@@ -60,7 +63,7 @@ export default function TrailSuggestionBanner() {
       try { if (raw) ignored = JSON.parse(raw); } catch {}
       const next = [...new Set([...ignored, pattern])];
       AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch(console.error);
-    });
+    }).catch(console.error);
     setDismissed(true);
   };
 

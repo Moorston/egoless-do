@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, formatPace } from '@egoless-do/core';
+import { useWebStore } from '../../store/useWebStore';
 import type { SportItem, SportType, ExerciseSet } from '@egoless-do/core';
 
 
@@ -44,15 +45,17 @@ function SportReportPageInner({
   onSave,
   T,
 }: SportReportPageProps) {
+  const language = useWebStore(s => s.language);
   const overlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, zIndex: 300, overflowY: 'auto' };
-  const bestPace = segmentPaces.length > 0 ? Math.min(...segmentPaces) : 0;
+  const finitePaces = segmentPaces.filter(p => isFinite(p) && p > 0);
+  const bestPace = finitePaces.length > 0 ? Math.min(...finitePaces) : 0;
 
   return (
     <div style={{ ...overlayStyle, background: '#f5f5f5' }}>
       <div style={{ maxWidth: 390, margin: '0 auto' }}>
         <div style={{ padding: '20px 20px 16px', background: '#fff' }}>
           <div style={{ fontSize: FONT_TITLE, fontWeight: 700, color: '#333' }}>{T('exerciseReport')}</div>
-          <div style={{ fontSize: FONT_SUB, color: '#888', marginTop: 4 }}>{sport.key} · {new Date().toLocaleDateString('zh-CN')}</div>
+          <div style={{ fontSize: FONT_SUB, color: '#888', marginTop: 4 }}>{sport.key} · {new Date().toLocaleDateString(language === 'en' ? 'en-US' : 'zh-CN')}</div>
         </div>
 
         {/* Static map */}

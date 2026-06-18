@@ -78,7 +78,7 @@ export class LocalAIEngine {
     
     for (const tag of history) {
       const tagClean = tag.replace('#', '').toLowerCase();
-      if (contentLower.includes(tagClean)) {
+      if (tagClean && contentLower.includes(tagClean)) {
         suggestions.push({ tag, confidence: 0.9, reason: '内容包含此标签' });
       }
     }
@@ -124,10 +124,10 @@ export class LocalAIEngine {
   
   generateTrailInsight(reflections: Array<{ content: string; mood: string }>): TrailInsight {
     const moods = reflections.map(r => r.mood);
-    const moodChanges = moods.filter((m, i) => i === 0 || m !== moods[i - 1]);
-    
+    const transitionCount = moods.filter((m, i) => i > 0 && m !== moods[i - 1]).length;
+
     return {
-      summary: `这条脉络包含 ${reflections.length} 条感念，心情经历了 ${moodChanges.length} 次变化`,
+      summary: `这条脉络包含 ${reflections.length} 条感念，心情经历了 ${transitionCount} 次变化`,
       keyPoints: this.extractKeyPoints(reflections.map(r => r.content)),
       turningPoints: this.findTurningPoints(reflections),
       suggestions: this.generateSuggestions(reflections),

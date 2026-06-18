@@ -28,6 +28,7 @@ export function useWebDragReorder(
 ) {
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
+  const dragOverIdxRef = useRef<number | null>(null);
   const startIdx = useRef(0);
   const startY = useRef(0);
   const rowHeight = 44;
@@ -37,6 +38,7 @@ export function useWebDragReorder(
     const idx = orderedItems.indexOf(id);
     setDraggedId(id);
     setDragOverIdx(idx);
+    dragOverIdxRef.current = idx;
     startIdx.current = idx;
     startY.current = e.clientY;
   }, [orderedItems]);
@@ -46,17 +48,20 @@ export function useWebDragReorder(
     const handleMouseMove = (e: MouseEvent) => {
       const offset = Math.round((e.clientY - startY.current) / rowHeight);
       const target = Math.max(0, Math.min(orderedItems.length - 1, startIdx.current + offset));
+      dragOverIdxRef.current = target;
       setDragOverIdx(target);
     };
     const handleMouseUp = () => {
-      if (dragOverIdx !== null) {
+      const idx = dragOverIdxRef.current;
+      if (idx !== null) {
         const currentIdx = orderedItems.indexOf(draggedId);
-        if (currentIdx >= 0 && currentIdx !== dragOverIdx) {
-          onReorder(currentIdx, dragOverIdx);
+        if (currentIdx >= 0 && currentIdx !== idx) {
+          onReorder(currentIdx, idx);
         }
       }
       setDraggedId(null);
       setDragOverIdx(null);
+      dragOverIdxRef.current = null;
     };
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
@@ -64,7 +69,7 @@ export function useWebDragReorder(
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [draggedId, dragOverIdx, orderedItems, onReorder]);
+  }, [draggedId, orderedItems, onReorder]);
 
   return { draggedId, dragOverIdx, handleMouseDown };
 }

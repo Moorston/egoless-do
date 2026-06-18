@@ -16,8 +16,10 @@ export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, 
     }
     // Pre-filter active items
     const activeItems = items.filter(i => !i.deleted);
-    const start = new Date(plan.startDate);
-    const end = new Date(plan.endDate);
+    const [sy, sm, sd] = plan.startDate.split('-').map(Number);
+    const [ey, em, ed] = plan.endDate.split('-').map(Number);
+    const start = new Date(sy, sm - 1, sd);
+    const end = new Date(ey, em - 1, ed);
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const ds = dateStr(d);
       let total = 0;
@@ -34,8 +36,10 @@ export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, 
   }, [checkins, items, plan.startDate, plan.endDate]);
 
   const { weeks } = useMemo(() => {
-    const start = new Date(plan.startDate);
-    const end = new Date(plan.endDate);
+    const [sy, sm, sd] = plan.startDate.split('-').map(Number);
+    const [ey, em, ed] = plan.endDate.split('-').map(Number);
+    const start = new Date(sy, sm - 1, sd);
+    const end = new Date(ey, em - 1, ed);
     const startDay = start.getDay();
 
     const dates: string[] = [];

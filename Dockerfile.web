@@ -7,6 +7,9 @@ RUN npm install -g pnpm
 FROM base AS deps
 WORKDIR /app
 
+# Install build dependencies for native modules (better-sqlite3)
+RUN apk add --no-cache python3 make g++
+
 # Copy root package files
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/core/package.json ./packages/core/

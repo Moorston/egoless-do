@@ -30,8 +30,10 @@ export default function HabitsTab() {
   const STATUS_LABELS_R: Record<string, string> = { all: T('habitStatusAll'), notStarted: T('habitStatusNotStarted'), inProgress: T('habitStatusInProgress'), paused: T('habitStatusPaused'), abandoned: T('habitStatusAbandoned'), completed: T('habitStatusCompleted') };
   const STATUS_COLORS_R: Record<string, string> = { notStarted: TH.sub, inProgress: COLORS.GREEN, paused: COLORS.YELLOW, abandoned: COLORS.RED, completed: P };
   const STATUS_ORDER: Record<string, number> = { inProgress: 0, notStarted: 1, paused: 2, completed: 3, abandoned: 4 };
-  const filtered = (filter === 'all' ? (store.habits ?? []).filter(h => !h.deleted) : (store.habits ?? []).filter((h) => !h.deleted && h.status === filter))
-    .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || (b.startDate.localeCompare(a.startDate)));
+  const filtered = useMemo(() => {
+    const base = (store.habits ?? []).filter(h => !h.deleted && (filter === 'all' || h.status === filter));
+    return base.sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || (b.startDate.localeCompare(a.startDate)));
+  }, [store.habits, filter]);
 
   const filterCounts = useMemo(() => {
     const active = (store.habits ?? []).filter(h => !h.deleted);
@@ -94,7 +96,7 @@ export default function HabitsTab() {
 
                 <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</div>
 
-                {h.insight && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, fontStyle: 'italic' }}>愿景：&ldquo;{h.insight}&rdquo;</div>}
+                {h.insight && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, fontStyle: 'italic' }}>{T('habitVision')}&ldquo;{h.insight}&rdquo;</div>}
                 {h.createTag && <span style={{ fontSize: FONT_SUB, padding: '2px 8px', borderRadius: 10, background: `${P}30`, color: P, marginBottom: 8, display: 'inline-block' }}>#{h.name}</span>}
                 {h.pauseReason && <div style={{ fontSize: FONT_SUB, color: COLORS.YELLOW, marginBottom: 4 }}>{T('habitPause')}{h.pauseReason}</div>}
                 {h.abandonReason && <div style={{ fontSize: FONT_SUB, color: COLORS.RED, marginBottom: 4 }}>{T('habitAbandon')}{h.abandonReason}</div>}
@@ -159,7 +161,7 @@ export default function HabitsTab() {
               <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{editingId ? T('habitEditTitle') : T('habitAddTitle')}</div>
               <button onClick={() => { setShowAdd(false); setEditingId(null); }} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
             </div>
-            {[{ label: T('habitName'), key: 'name' as const, ph: '例：每日冥想' }, { label: T('habitGoal'), key: 'goal' as const, ph: '每天打坐5分钟' }, { label: T('habitInsight'), key: 'insight' as const, ph: '每天进步一点点...' }].map(({ label, key, ph }) => (
+            {[{ label: T('habitName'), key: 'name' as const, ph: T('habitExample1') }, { label: T('habitGoal'), key: 'goal' as const, ph: T('habitExample2') }, { label: T('habitInsight'), key: 'insight' as const, ph: T('habitExample3') }].map(({ label, key, ph }) => (
               <div key={key} style={{ marginBottom: 14 }}>
                 <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 6 }}>{label}</div>
                 <input value={form[key]} onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))} placeholder={ph} style={inp(TH)} />
@@ -286,7 +288,7 @@ function HabitCalendarModal({ habitId, onClose }: { habitId: string; onClose: ()
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
           <button onClick={() => { if (vm === 0) { setVy((y) => y - 1); setVm(11); } else setVm((m) => m - 1); }}
             style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_CLOSE, cursor: 'pointer' }}><ChevronLeft size={22} /></button>
-            <div style={{ fontWeight: 700, fontSize: FONT_BODY, color: TH.text }}>{vy}年{vm + 1}月</div>
+            <div style={{ fontWeight: 700, fontSize: FONT_BODY, color: TH.text }}>{T('dateYearMonth').replace('{year}', String(vy)).replace('{month}', T(`month${vm + 1}`))}</div>
           <button onClick={() => { if (vm === 11) { setVy((y) => y + 1); setVm(0); } else setVm((m) => m + 1); }}
             style={{ background: 'transparent', border: 'none', color: TH.text, fontSize: FONT_CLOSE, cursor: 'pointer' }}><ChevronRight size={22} /></button>
         </div>

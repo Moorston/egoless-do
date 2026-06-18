@@ -25,7 +25,7 @@ function getCountdownType(plan: Plan, now: Date): CountdownType {
     return 'none';
   }
   
-  const today = now.toISOString().slice(0, 10);
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   
   // 未开始计划
   if (status === 'not_started') {

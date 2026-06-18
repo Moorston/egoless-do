@@ -19,7 +19,8 @@ export function stopFastingSession(
   activeFasting: FastingSession,
   opts?: StopFastingOpts
 ): FastingSession {
-  const durHours = (Date.now() - activeFasting.startedAt) / 3600000;
+  const now = Date.now();
+  const durHours = Math.max(0, (now - activeFasting.startedAt) / 3600000);
   const kcal = estimateFastingKcal(
     durHours,
     opts?.weight ?? 70,
@@ -29,8 +30,8 @@ export function stopFastingSession(
   );
   return {
     ...activeFasting,
-    endedAt: Date.now(),
+    endedAt: now,
     estimatedKcal: kcal,
-    updatedAt: Date.now(),
+    updatedAt: now,
   };
 }

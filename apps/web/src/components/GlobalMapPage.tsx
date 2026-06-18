@@ -1,19 +1,25 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { GLOBAL_USERS, FONT_TITLE, FONT_SUB, FONT_BACK, FONT_STAT_CARD, FONT_BODY, FONT_BUTTON, FONT_STAT_SECTION } from '@egoless-do/core';
 import { useT, useTheme } from './helpers';
 import AmapContainer from './AmapContainer';
 import { Globe, X, Trophy, ChevronLeft, Flame } from 'lucide-react';
 
-const USERS_WITH_STREAK = GLOBAL_USERS.map((u) => ({
-  ...u,
-  streak: Math.round(u.days * (0.6 + Math.random() * 0.35)),
-  online: Math.random() > 0.4,
-}));
+// Deterministic hash for stable SSR/client values
+function hashSeed(seed: string, i: number): number {
+  let h = 0;
+  for (let c = 0; c < seed.length; c++) h = ((h << 5) - h + seed.charCodeAt(c) + i) | 0;
+  return Math.abs(h) / 2147483647;
+}
 
 export default function GlobalMapPage({ onClose, title, icon }: { onClose: () => void; title?: string; icon?: string }) {
   const { TH, P } = useTheme();
+  const USERS_WITH_STREAK = useMemo(() => GLOBAL_USERS.map((u, i) => ({
+    ...u,
+    streak: Math.round(u.days * (0.6 + hashSeed(u.name, i) * 0.35)),
+    online: hashSeed(u.name, i + 100) > 0.4,
+  })), []);
   const [sel, setSel] = useState<typeof USERS_WITH_STREAK[0] | null>(null);
   const [showBoard, setShowBoard] = useState(false);
   const T = useT();
@@ -126,7 +132,7 @@ export default function GlobalMapPage({ onClose, title, icon }: { onClose: () =>
                   background: sel.id === 1 ? P : 'rgba(255,107,53,.9)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <span style={{ color: '#fff', fontWeight: 800, fontSize: FONT_TITLE }}>{sel.name[0]}</span>
+                  <span style={{ color: '#fff', fontWeight: 800, fontSize: FONT_TITLE }}>{sel.name?.[0] ?? '?'}</span>
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -232,7 +238,7 @@ function LeaderboardPage({ users, onClose }: { users: typeof USERS_WITH_STREAK; 
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 border: '3px solid rgba(255,255,255,.3)', margin: '0 auto 8px',
               }}>
-                <span style={{ color: '#fff', fontWeight: 900, fontSize: isFirst ? FONT_STAT_CARD : FONT_TITLE }}>{u.name[0]}</span>
+                <span style={{ color: '#fff', fontWeight: 900, fontSize: isFirst ? FONT_STAT_CARD : FONT_TITLE }}>{u.name?.[0] ?? '?'}</span>
               </div>
               <div style={{ fontWeight: 700, fontSize: isFirst ? FONT_BODY : FONT_SUB, color: TH.text }} title={u.name}>
                 {u.name}

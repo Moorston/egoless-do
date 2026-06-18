@@ -65,17 +65,32 @@ export default function DatePickerModal({ visible, value, onConfirm, onClose, mi
   };
 
   const prevMonth = () => {
-    if (month === 0) { setYear(y => y - 1); setMonth(11); }
-    else setMonth(m => m - 1);
+    if (month === 0) {
+      setYear(y => y - 1);
+      setMonth(11);
+      setSelectedDay(d => Math.min(d, daysInMonth(year - 1, 11)));
+    } else {
+      setMonth(m => m - 1);
+      setSelectedDay(d => Math.min(d, daysInMonth(year, month - 1)));
+    }
   };
 
   const nextMonth = () => {
-    if (month === 11) { setYear(y => y + 1); setMonth(0); }
-    else setMonth(m => m + 1);
+    if (month === 11) {
+      setYear(y => y + 1);
+      setMonth(0);
+      setSelectedDay(d => Math.min(d, daysInMonth(year + 1, 0)));
+    } else {
+      setMonth(m => m + 1);
+      setSelectedDay(d => Math.min(d, daysInMonth(year, month + 1)));
+    }
   };
 
   const handleConfirm = () => {
-    onConfirm(formatDate(year, month, selectedDay));
+    const result = formatDate(year, month, selectedDay);
+    if (minDate && result < minDate) { onConfirm(minDate); return; }
+    if (maxDate && result > maxDate) { onConfirm(maxDate); return; }
+    onConfirm(result);
   };
 
   const P = TH.primary;

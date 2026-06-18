@@ -27,6 +27,15 @@ export async function POST(req: NextRequest) {
     if (!email || !password || !name || !code) {
       return NextResponse.json({ error: '缺少必填字段' }, { status: 400 });
     }
+    if (typeof name !== 'string' || name.trim().length === 0) {
+      return NextResponse.json({ error: '昵称不能为空' }, { status: 400 });
+    }
+    if (name.length > 50) {
+      return NextResponse.json({ error: '昵称不能超过50个字符' }, { status: 400 });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: '邮箱格式不正确' }, { status: 400 });
+    }
 
     const pwdError = validatePassword(password);
     if (pwdError) return NextResponse.json({ error: pwdError }, { status: 400 });
@@ -37,7 +46,7 @@ export async function POST(req: NextRequest) {
 
     if (!record) return NextResponse.json({ error: '请先获取验证码' }, { status: 400 });
     // Constant-time comparison to prevent timing attacks
-    if (!crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
+    if (record.code.length !== code.length || !crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
       return NextResponse.json({ error: '验证码错误' }, { status: 400 });
     }
     if (Date.now() > record.expires_at) return NextResponse.json({ error: '验证码已过期' }, { status: 400 });
@@ -53,7 +62,7 @@ export async function POST(req: NextRequest) {
     const authData = await pb.collection('users').authWithPassword(email, password);
 
     // Note: refreshToken === token is a PocketBase limitation (no separate refresh token mechanism).
-    // TOKEN_EXPIRES_IN is set to 2 hours; client should use /auth/refresh before expiry.
+    // TOKEN_EXPIRES_IN is set to 7 days; client should use /auth/refresh before expiry.
     return NextResponse.json({
       user: { id: user.id, email: user.email, name: user.name },
       token: authData.token,
@@ -61,6 +70,9 @@ export async function POST(req: NextRequest) {
       expiresAt: Date.now() + TOKEN_EXPIRES_IN,
     });
   } catch (err: unknown) {
-    return NextResponse.json({ error: sanitizeError(err, '注册失败') }, { status: 400 });
+    const msg = err instanceof Error ? err.message : '';
+    const pbStatus = (err as any)?.status;
+    const isServerError = pbStatus >= 500 || msg.includes('ECONNREFUSED') || msg.includes('fetch failed') || msg.includes('timeout');
+    return NextResponse.json({ error: sanitizeError(err, '注册失败') }, { status: isServerError ? 500 : 400 });
   }
 }

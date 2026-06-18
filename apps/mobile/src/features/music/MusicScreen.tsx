@@ -5,7 +5,6 @@ import { ArrowLeft, Upload } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import { useMusicStore } from './useMusicStore';
-import { useAudioEngine } from './useAudioEngine';
 import { useRootNavigation } from '../../navigation/hooks';
 import CategoryCard from './CategoryCard';
 import PlayerBar from './PlayerBar';
@@ -20,9 +19,6 @@ export default function MusicScreen() {
   const getCategoryMeta = useMusicStore(s => s.getCategoryMeta);
   const loadFavorites = useMusicStore(s => s.loadFavorites);
   const loadUserTracks = useMusicStore(s => s.loadUserTracks);
-
-  // 挂载音频引擎
-  useAudioEngine();
 
   useEffect(() => {
     loadFavorites();

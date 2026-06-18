@@ -64,6 +64,12 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const holdTimerRef  = useRef<ReturnType<typeof setInterval> | null>(null);
   const holdStartRef  = useRef(0);
+  const secRef        = useRef(0);
+  const lastKmMarkRef = useRef(0);
+  const lastKmTsRef   = useRef(0);
+  secRef.current = sec;
+  lastKmMarkRef.current = lastKmMark;
+  lastKmTsRef.current = lastKmTs;
 
   const distKm = computeDistance(coords);
   const calories = estimateCalories(sport.key, sec, weight);
@@ -90,13 +96,14 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
     if (navigator.vibrate) navigator.vibrate(50);
     const t = setTimeout(() => setCountdown(c => c - 1), 1000);
     return () => clearTimeout(t);
-  }, [page, countdown]);
+  }, [page, countdown, isGpsSport, startGpsTracking]);
 
   // ── Init map when entering active GPS page or report ──
   useEffect(() => {
+    let cancelled = false;
     if ((page === 'active' || page === 'report') && isGpsSport && mapContainerRef.current) {
       loadAMap().then((AMap) => {
-        if (!mapContainerRef.current) return;
+        if (cancelled || !mapContainerRef.current) return;
         const map = new AMap.Map(mapContainerRef.current, {
           zoom: 16,
           resizeEnable: true,
@@ -117,7 +124,13 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
         }
       }).catch(err => console.warn('AMap load failed:', err));
     }
-  }, [page]);
+    return () => {
+      cancelled = true;
+      polylineRef.current = null;
+      mapRef.current?.destroy();
+      mapRef.current = null;
+    };
+  }, [page, isGpsSport, sport.color, P]);
 
   // ── Update polyline when coords change ──
   useEffect(() => {
@@ -125,8 +138,9 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
     if (polylineRef.current) {
       polylineRef.current.setPath(coords.map(c => [c.lng, c.lat]));
     } else {
+      let cancelled = false;
       loadAMap().then((AMap) => {
-        if (!mapRef.current) return;
+        if (cancelled || !mapRef.current) return;
         const polyline = new AMap.Polyline({
           path: coords.map(c => [c.lng, c.lat]),
           strokeColor: sport.color || P,
@@ -136,6 +150,7 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
         mapRef.current.add(polyline);
         polylineRef.current = polyline;
       }).catch(err => console.warn('AMap load failed:', err));
+      return () => { cancelled = true; };
     }
   }, [coords]);
 
@@ -143,13 +158,13 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   useEffect(() => {
     if (!isGpsSport || page !== 'active') return;
     const currentKm = Math.floor(distKm);
-    if (currentKm > lastKmMark && lastKmMark >= 0) {
-      const segTime = sec - lastKmTs;
+    if (currentKm > lastKmMarkRef.current && lastKmMarkRef.current >= 0) {
+      const segTime = secRef.current - lastKmTsRef.current;
       setSegmentPaces(prev => [...prev, segTime]);
       setLastKmMark(currentKm);
-      setLastKmTs(sec);
+      setLastKmTs(secRef.current);
     }
-  }, [distKm]);
+  }, [distKm, isGpsSport, page]);
 
   // ── Rest timer ──
   useEffect(() => {
@@ -172,7 +187,7 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
     if (targetType === 'calories' && calories >= targetValue) reached = true;
     if (targetType === 'reps' && totalReps >= targetValue) reached = true;
     if (reached && navigator.vibrate) navigator.vibrate([100, 50, 100]);
-  }, [sec, distKm, calories, reps, currentSetReps, sets]);
+  }, [mode, page, active, targetType, targetValue, sec, distKm, calories, reps, currentSetReps, sets]);
 
   // ── GPS tracking ──
   const startGpsTracking = useCallback(() => {
@@ -235,6 +250,10 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
   const handleHoldEnd = useCallback(() => {
     if (holdTimerRef.current) { clearInterval(holdTimerRef.current); holdTimerRef.current = null; }
     setHoldProgress(0);
+  }, []);
+
+  useEffect(() => {
+    return () => { if (holdTimerRef.current) { clearInterval(holdTimerRef.current); holdTimerRef.current = null; } };
   }, []);
 
   const handleCancel = useCallback(() => { stopGpsTracking(); onClose(); }, [stopGpsTracking, onClose]);

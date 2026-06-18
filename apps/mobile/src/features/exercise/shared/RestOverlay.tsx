@@ -5,6 +5,7 @@ import { COLORS, FONT_HERO, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 
 interface Props {
   restSec: number;
+  totalSec?: number;
   lastSetReps: number | null;
   setIndex: number;
   targetReps?: number;
@@ -13,9 +14,9 @@ interface Props {
   T: (key: string) => string;
 }
 
-export default function RestOverlay({ restSec, lastSetReps, setIndex, targetReps, onSkip, label, T }: Props) {
+export default function RestOverlay({ restSec, totalSec = 60, lastSetReps, setIndex, targetReps, onSkip, label, T }: Props) {
   const circumference = 2 * Math.PI * 44;
-  const progress = restSec > 0 ? restSec / 60 : 0;
+  const progress = restSec > 0 && totalSec > 0 ? restSec / totalSec : 0;
   const strokeDashoffset = circumference * (1 - progress);
 
   return (

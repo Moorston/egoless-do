@@ -18,8 +18,6 @@ interface Props {
 }
 
 const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const MONTH_NAMES = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-const WEEK_LABELS = ['日','一','二','三','四','五','六'];
 
 function parseDate(s: string): { y: number; m: number; d: number } | null {
   if (!s || s.length !== 10) return null;
@@ -39,6 +37,8 @@ export default function DateRangePickerModal({ visible, startDate, endDate, onCo
   const P = TH.primary;
   const T = useT();
   const now = new Date();
+  const MONTH_NAMES = [T('month1'), T('month2'), T('month3'), T('month4'), T('month5'), T('month6'), T('month7'), T('month8'), T('month9'), T('month10'), T('month11'), T('month12')];
+  const WEEK_LABELS = [T('weekdaySun'), T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat')];
 
   const parsed = startDate ? parseDate(startDate) : null;
   const [year, setYear] = useState(parsed?.y ?? now.getFullYear());
@@ -55,7 +55,7 @@ export default function DateRangePickerModal({ visible, startDate, endDate, onCo
       setSelEnd(endDate);
       setSelecting(!startDate ? 'start' : 'end');
     }
-  }, [visible]);
+  }, [visible, startDate, endDate]);
 
   const days = daysInMonth(year, month);
   const firstDayOfWeek = new Date(year, month, 1).getDay();
@@ -123,7 +123,7 @@ export default function DateRangePickerModal({ visible, startDate, endDate, onCo
           <button onClick={prevMonth} style={{ background: 'transparent', border: 'none', color: TH.text, cursor: 'pointer', padding: 8 }}>
             <ChevronLeft size={20} />
           </button>
-          <div style={{ fontSize: FONT_TITLE, fontWeight: 700, color: TH.text }}>{year}年 {MONTH_NAMES[month]}</div>
+          <div style={{ fontSize: FONT_TITLE, fontWeight: 700, color: TH.text }}>{T('dateYearMonth').replace('{year}', String(year)).replace('{month}', MONTH_NAMES[month])}</div>
           <button onClick={nextMonth} style={{ background: 'transparent', border: 'none', color: TH.text, cursor: 'pointer', padding: 8 }}>
             <ChevronRight size={20} />
           </button>
@@ -140,7 +140,7 @@ export default function DateRangePickerModal({ visible, startDate, endDate, onCo
               color: selecting === 'start' ? P : TH.sub,
               fontWeight: selecting === 'start' ? 600 : 400, cursor: 'pointer',
             }}
-          >{selStart || '开始日期'}</button>
+          >{selStart || T('dateRangeStart')}</button>
           <span style={{ fontSize: FONT_SUB, color: TH.sub }}>—</span>
           <button
             onClick={() => setSelecting('end')}
@@ -151,7 +151,7 @@ export default function DateRangePickerModal({ visible, startDate, endDate, onCo
               color: selecting === 'end' ? P : TH.sub,
               fontWeight: selecting === 'end' ? 600 : 400, cursor: 'pointer',
             }}
-          >{selEnd || '结束日期'}</button>
+          >{selEnd || T('dateRangeEnd')}</button>
         </div>
 
         {/* Week labels */}

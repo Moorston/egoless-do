@@ -7,7 +7,17 @@ export function addMedMinutesToList(
   currentTotal: number,
   min: number,
 ): { total: number; history: MedHistoryEntry[] } {
+  if (min <= 0) return { total: currentTotal, history: medHistory };
   const today = dateStr();
+  const existing = medHistory.find(m => m.date === today && !m.deleted);
+  if (existing) {
+    const prevMin = parseInt(existing.dur) || 0;
+    const updated: MedHistoryEntry = { ...existing, dur: `${prevMin + min}min`, updatedAt: Date.now() };
+    return {
+      total: currentTotal + min,
+      history: medHistory.map(m => m.date === today && !m.deleted ? updated : m),
+    };
+  }
   const entry: MedHistoryEntry = { date: today, dur: `${min}min`, mood: '🌿 平静', updatedAt: Date.now(), deleted: false };
   return {
     total: currentTotal + min,

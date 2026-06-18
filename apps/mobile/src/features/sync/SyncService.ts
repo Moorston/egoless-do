@@ -64,6 +64,10 @@ const ENTITY_CONFIG: Record<string, { table: string; pk: string }> = {
   dailyCustomTodo:  { table: 'daily_custom_todos',  pk: 'id'   },
   dailyTodoHistory: { table: 'daily_todo_history',  pk: 'id'   },
   thoughtTrail:     { table: 'thought_trails',      pk: 'id'   },
+  trailNote:        { table: 'trail_notes',         pk: 'id'   },
+  reflectionLink:   { table: 'reflection_links',    pk: 'link_id' },
+  aiConfig:         { table: 'ai_configs',          pk: 'config_id' },
+  checkinReview:    { table: 'checkin_reviews',     pk: 'id' },
 };
 
 // ── Configure ─────────────────────────────────────────────────────
@@ -246,8 +250,13 @@ async function applyEntityToTable(
         await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
         continue;
       }
-      if (await isLocalDeleted(db, table, pk, id)) continue;
-      if (await isLocalNewer(db, table, pk, id, r.updatedAt)) continue;
+      if (await isLocalDeleted(db, table, pk, id)) {
+        // Local is deleted — only skip if local is newer (local delete wins).
+        // If server is newer, apply it to allow un-delete from other devices.
+        if (await isLocalNewer(db, table, pk, id, r.updatedAt)) continue;
+      } else if (await isLocalNewer(db, table, pk, id, r.updatedAt)) {
+        continue;
+      }
 
       // Entity-specific pre-processing
       let processedRecord = r;
@@ -337,6 +346,7 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
         done_days: r.doneDays ?? 0, streak: r.streak ?? 0, interrupted: r.interrupted ?? 0,
         status: r.status ?? 'notStarted', checked_dates: safeJson(r.checkedDates),
         pause_reason: r.pauseReason ?? '', abandon_reason: r.abandonReason ?? '',
+        alarm_enabled: r.alarmEnabled ? 1 : 0, alarm_hour: r.alarmHour ?? 8, alarm_minute: r.alarmMinute ?? 0,
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
     case 'reflection':
@@ -360,7 +370,7 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       };
     case 'food': {
       const ts = r.timestamp ?? r.ts ?? Date.now();
-      const entryDate = r.entry_date || r.entryDate || (ts ? new Date(Number(ts)).toISOString().slice(0, 10) : '');
+      const entryDate = r.entry_date || r.entryDate || (ts ? (() => { const d = new Date(Number(ts)); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })() : '');
       return {
         id: r.id, name: r.name, cal: r.calories ?? r.cal ?? 0, note: r.note ?? '',
         entry_date: entryDate, ts,
@@ -370,7 +380,8 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
     case 'checkin':
       return {
         date: r.date, done: r.done ? 1 : 0, note: r.note ?? '', streak: r.streak ?? 0,
-        timestamp: r.timestamp ?? null, weight: r.weight ?? null,
+        timestamp: r.timestamp ?? null, weight: r.weight ?? null, grace: r.grace ? 1 : 0,
+        total_days: r.totalDays ?? r.total_days ?? null,
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
     case 'exercise':
@@ -380,6 +391,10 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
         calories: r.calories ?? 0, avg_pace: r.avgPace ?? r.avg_pace ?? 0,
         track_points: safeJson(r.trackPoints ?? r.track_points),
         is_gps_sport: (r.isGpsSport ?? r.is_gps_sport) ? 1 : 0,
+        mode: r.mode ?? null, target: r.target ? safeJson(r.target) : null,
+        segment_paces: r.segmentPaces ? safeJson(r.segmentPaces) : null,
+        elevation_gain: r.elevationGain ?? null, paused_duration: r.pausedDuration ?? null,
+        reps: r.reps ?? null, sets: r.sets ? safeJson(r.sets) : null, met: r.met ?? null,
         ts: r.timestamp ?? r.ts ?? Date.now(), updated_at: r.updatedAt ?? null, deleted: 0,
       };
     case 'meditation':
@@ -414,8 +429,9 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
         target_metric: r.targetMetric ?? '',
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
-      // Only include reflection_id when server sends it, to preserve local value
+      // Only include reflection_id/trail_id when server sends them, to preserve local value
       if (r.reflectionId !== undefined) row.reflection_id = r.reflectionId;
+      if (r.trailId !== undefined) row.trail_id = r.trailId;
       row.frequency = r.frequency ? safeJson(r.frequency) : null;
       row.tags = r.tags ? safeJson(r.tags) : null;
       return row;
@@ -448,9 +464,45 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       return {
         id: r.id, name: r.name, description: r.description ?? '',
         reflection_ids: safeJson(r.reflectionIds),
+        note_ids: safeJson(r.noteIds ?? []),
         source: r.source ?? 'manual',
         insight_summary: r.insightSummary ?? null,
+        insight_cache: r.insightCache ? safeJson(r.insightCache) : null,
+        review_cache: r.reviewCache ? safeJson(r.reviewCache) : null,
+        linked_plan_item_ids: r.linkedPlanItemIds ? safeJson(r.linkedPlanItemIds) : null,
         created_at: r.createdAt ?? null,
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    case 'trailNote':
+      return {
+        id: r.id, trail_id: r.trailId, content: r.content,
+        tags: safeJson(r.tags), mood: r.mood ?? null,
+        source: r.source ?? 'free',
+        guided_question: r.guidedQuestion ?? null,
+        note_order: r.order ?? 0,
+        created_at: r.createdAt ?? null,
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    case 'reflectionLink':
+      return {
+        link_id: r.linkId ?? r.id, from_id: r.fromId, to_id: r.toId,
+        link_type: r.type, note: r.note ?? null,
+        created_at: r.createdAt ?? null,
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    case 'aiConfig':
+      return {
+        config_id: r.configId ?? r.id, mode: r.mode ?? 'hybrid',
+        models: safeJson(r.models, []),
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    case 'checkinReview':
+      return {
+        id: r.id, review_id: r.reviewId ?? r.id,
+        user_id: r.userId ?? 'self',
+        period: r.period ?? 'week',
+        start_date: r.startDate, end_date: r.endDate,
+        review_data: typeof r.reviewData === 'string' ? r.reviewData : JSON.stringify(r.reviewData ?? {}),
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
     default:
@@ -473,6 +525,15 @@ async function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: 
       patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
     }
 
+    // Special: update aiMode/aiModels from aiConfig sync
+    if (entity === 'aiConfig' && applied.length > 0) {
+      const latest = applied[applied.length - 1] as Record<string, unknown>;
+      if (latest.mode) patch.aiMode = latest.mode;
+      if (latest.models) {
+        try { patch.aiModels = typeof latest.models === 'string' ? JSON.parse(latest.models) : latest.models; } catch {}
+      }
+    }
+
     // Map entity to store key for patch
     const storeKey = ENTITY_STORE_KEY[entity];
     if (storeKey && applied.length > 0) {
@@ -491,6 +552,9 @@ const ENTITY_STORE_KEY: Record<string, string> = {
   plan: 'plans', planItem: 'planItems', planItemCheckin: 'planItemCheckins',
   grace: 'graceHistory', dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
   thoughtTrail: 'thoughtTrails',
+  trailNote: 'trailNotes',
+  reflectionLink: 'reflectionLinks',
+  checkinReview: 'checkinReviews',
 };
 
 // ── Main sync entry point ─────────────────────────────────────────
@@ -531,12 +595,23 @@ export async function runSync(): Promise<void> {
       pushedAnything = true;
 
       console.log(`[Sync] Pushing batch ${batch + 1}: ${items.length} queued changes`);
-      const changes = items.map(item => ({
-        entity: item.entity,
-        entityId: item.entity_id,
-        payload: JSON.parse(item.payload),
-        op: item.operation === 'delete' ? 'delete' : 'upsert',
-      }));
+      const changes: Array<{ entity: string; entityId: string; payload: any; op: string }> = [];
+      const corruptIds: string[] = [];
+      for (const item of items) {
+        try {
+          changes.push({
+            entity: item.entity,
+            entityId: item.entity_id,
+            payload: JSON.parse(item.payload),
+            op: item.operation === 'delete' ? 'delete' : 'upsert',
+          });
+        } catch {
+          console.warn(`[Sync] Corrupt queue item ${item.id}, skipping`);
+          corruptIds.push(item.id);
+        }
+      }
+      if (corruptIds.length) await removeQueueItems(corruptIds);
+      if (!changes.length) continue;
 
       const pushResult = await apiSyncPush(token, _lastSyncAt, changes);
 
@@ -597,8 +672,10 @@ export async function runSync(): Promise<void> {
         if (Object.keys(patch).length) _onChanges?.(patch);
       }
 
-      _lastSyncAt = pushResult.serverTime;
-      saveLastSyncAt(_lastSyncAt);
+      if (_syncGeneration === myGeneration) {
+        _lastSyncAt = pushResult.serverTime;
+        await saveLastSyncAt(_lastSyncAt);
+      }
     }
 
     if (pushedAnything) {
@@ -614,8 +691,10 @@ export async function runSync(): Promise<void> {
       if (Object.keys(patch).length) _onChanges?.(patch);
     }
 
-    _lastSyncAt = pullResult.serverTime;
-    saveLastSyncAt(_lastSyncAt);
+    if (_syncGeneration === myGeneration) {
+      _lastSyncAt = pullResult.serverTime;
+      await saveLastSyncAt(_lastSyncAt);
+    }
     console.log('[Sync] Pull complete');
     if (_hasSyncedDeletes) {
       await purgeDeletedRecords();

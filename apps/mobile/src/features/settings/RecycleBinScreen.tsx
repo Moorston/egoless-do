@@ -52,7 +52,6 @@ export default function RecycleBinScreen() {
   const T = useT();
   const P = TH.primary;
   const nav = useRootNavigation();
-  const store = useAppStore();
   const recycleBin = useAppStore(s => s.recycleBin ?? []);
   const restoreFromRecycleBin = useAppStore(s => s.restoreFromRecycleBin);
   const removeFromRecycleBin = useAppStore(s => s.removeFromRecycleBin);

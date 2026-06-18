@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
@@ -18,10 +18,15 @@ export default function ForgotPasswordScreen() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [sending, setSending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [step, setStep] = useState<1 | 2>(1);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    return () => { if (navTimerRef.current) clearTimeout(navTimerRef.current); };
+  }, []);
 
   const startCooldown = useCallback(() => {
     setCooldown(COOLDOWN);
@@ -34,6 +39,10 @@ export default function ForgotPasswordScreen() {
         return prev - 1;
       });
     }, 1000);
+  }, []);
+
+  useEffect(() => {
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
   const handleSendCode = async () => {
@@ -83,7 +92,7 @@ export default function ForgotPasswordScreen() {
     try {
       await apiResetPassword(email, code, password);
       setSuccess('密码重置成功，正在跳转登录...');
-      setTimeout(() => nav.navigate('Login'), 1500);
+      navTimerRef.current = setTimeout(() => nav.navigate('Login'), 1500);
     } catch (e: any) {
       setError(e.message || '密码重置失败');
     } finally {

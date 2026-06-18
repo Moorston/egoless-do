@@ -101,11 +101,9 @@ export default function ExerciseHistoryScreen() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
 
-  const allLog = store.exerciseLog ?? [];
-
   const sorted = useMemo(() =>
-    [...allLog].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
-    [allLog]
+    [...(store.exerciseLog ?? [])].filter(e => !e.deleted).sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
+    [store.exerciseLog]
   );
 
   // Unique sport keys for filter
@@ -279,7 +277,7 @@ export default function ExerciseHistoryScreen() {
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                         <Text style={{ fontSize: FONT_STAT_SECTION }}>{e.sportIcon}</Text>
-                        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(e.timestamp)}</Text>
+                        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(e.timestamp ?? 0)}</Text>
                       </View>
                       <View style={{ backgroundColor: `${P}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
                         <Text style={{ color: P, fontWeight: '700', fontSize: FONT_SUB }}>{durMin}:{String(durSec).padStart(2, '0')}</Text>

@@ -43,6 +43,7 @@ function useAudio() {
     const ctx = getCtx();
     const buf = await loadBuffer(`/sounds/${file}`);
     if (!buf) return;
+    stopBg();
     const gain = ctx.createGain();
     gain.gain.value = 0.3;
     gain.connect(ctx.destination);
@@ -124,8 +125,7 @@ export default function MeditateTab() {
   }, [running, remain, stopBg, playBell]);
 
   useEffect(() => {
-    if (running) {
-      completedRef.current = false;
+    if (running && !completedRef.current) {
       playBg(SOUNDS[soundIdx].file);
       ref.current = window.setInterval(() => setRemain((r) => Math.max(0, r - 1)), 1000);
     } else {
@@ -159,7 +159,7 @@ export default function MeditateTab() {
   }), [P]);
 
   const durationButtons = useMemo(() => [1, 5, 10, 15, 30, 60, 120, 180, 300], []);
-  const todayMedMin = useMemo(() => getTodayMedMinutes(store.medHistory || []), [store.medHistory]);
+  const todayMedMin = useMemo(() => getTodayMedMinutes((store.medHistory || []).filter(m => !m.deleted)), [store.medHistory]);
 
   const handleShare = useCallback(() => {
     const W = 750, H = 1000;
@@ -191,7 +191,7 @@ export default function MeditateTab() {
     // Date
     ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.font = '28px sans-serif';
-    ctx.fillText(new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }), W / 2, 400);
+    ctx.fillText(new Date().toLocaleDateString(store.language === 'en' ? 'en-US' : 'zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }), W / 2, 400);
     // Divider
     ctx.strokeStyle = 'rgba(255,255,255,0.15)';
     ctx.lineWidth = 1;
@@ -200,7 +200,7 @@ export default function MeditateTab() {
     const stats = [
       { value: String(store.totalMedMinutes), label: T('accMed').replace(/\s*\(.*\)/, '') },
       { value: String(todayMedMin), label: T('medTitle') },
-      { value: String((store.medHistory || []).length), label: T('shareCardSession') },
+      { value: String((store.medHistory || []).filter(m => !m.deleted).length), label: T('shareCardSession') },
     ];
     const statY = [530, 680, 830];
     stats.forEach((s, i) => {
@@ -220,7 +220,7 @@ export default function MeditateTab() {
     a.download = 'meditation-share.png';
     a.href = canvas.toDataURL('image/png');
     a.click();
-  }, [store.totalMedMinutes, store.medHistory, todayMedMin, T]);
+  }, [store.totalMedMinutes, store.medHistory, todayMedMin, T, store.language]);
 
   return (
     <>
@@ -261,7 +261,7 @@ export default function MeditateTab() {
                   style={{ padding: '10px 0', borderRadius: 10, border: `1px solid ${dur === d ? P : TH.border}`, background: dur === d ? P : 'transparent', color: dur === d ? '#fff' : TH.sub, fontWeight: dur === d ? 700 : 400, fontSize: FONT_BODY, cursor: 'pointer' }}>{d}{T('medMinutes')}</button>
               ))}
             </div>
-            <button onClick={() => { setRemain(dur * 60); setRunning(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('startMed')}</button>
+            <button onClick={() => { completedRef.current = false; setRemain(dur * 60); setRunning(true); }} style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: P, color: '#fff', fontWeight: 700, fontSize: FONT_BODY, cursor: 'pointer' }}>{T('startMed')}</button>
           </>
         )}
       </div>

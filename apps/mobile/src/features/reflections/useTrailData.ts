@@ -11,7 +11,7 @@ export function useTrailData(trailId: string) {
   const getTrailPlanItems = useAppStore(s => s.getTrailPlanItems);
 
   const trail = useMemo(() =>
-    (thoughtTrails ?? []).find(t => t.id === trailId),
+    (thoughtTrails ?? []).find(t => !t.deleted && t.id === trailId),
     [thoughtTrails, trailId]
   );
 
@@ -45,7 +45,7 @@ export function useTrailData(trailId: string) {
 
   const trailPlanCheckins = useMemo(() => {
     const ids = new Set(trailPlanItems.map(p => p.id));
-    return (planItemCheckins ?? []).filter(c => ids.has(c.planItemId));
+    return (planItemCheckins ?? []).filter(c => !c.deleted && ids.has(c.planItemId));
   }, [trailPlanItems, planItemCheckins]);
 
   const relatedTrails = useMemo(() => {

@@ -47,19 +47,19 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
 
   // Load existing checkin for re-edit support
   const existing = useMemo(() =>
-    (store.checkinHistory ?? []).find((c: CheckinEntry) => c.date === targetDate),
+    (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === targetDate),
     [store.checkinHistory, targetDate],
   );
   const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
 
   const totalCal = useMemo(
-    () => getTodayFoodLog(store.foodLog ?? []).reduce((a, f) => a + f.calories, 0),
+    () => getTodayFoodLog((store.foodLog ?? []).filter(f => !f.deleted)).reduce((a, f) => a + f.calories, 0),
     [store.foodLog],
   );
 
   // Today's plan items
   const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
-  const planCheckins = store.planItemCheckins ?? [];
+  const planCheckins = (store.planItemCheckins ?? []).filter(c => !c.deleted);
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
     return getTodayItems(store.planItems ?? [], activePlan, targetDate, planCheckins);
@@ -96,7 +96,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
   const [note, setNote] = useState(() => parsed.userNote);
   const [habitCheckins, setHabitCheckins] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
-    (store.habits ?? []).filter(h => h.status === 'inProgress').forEach(h => {
+    (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress').forEach(h => {
       initial[h.id] = h.checkedDates?.includes(targetDate) ?? false;
     });
     return initial;
@@ -113,7 +113,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     if (done === null) return;
     // Process habit checkins (toggle: already checked → uncheck, not checked → check)
     Object.entries(habitCheckins).forEach(([id, checked]) => {
-      const habit = (store.habits ?? []).find(h => h.id === id);
+      const habit = (store.habits ?? []).find(h => !h.deleted && h.id === id);
       const alreadyDone = habit?.checkedDates?.includes(targetDate) ?? false;
       if (checked !== alreadyDone) store.checkinHabit(id, targetDate);
     });
@@ -139,7 +139,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     if (pr.length) noteData.practices = pr;
     const checkedHabits = Object.entries(habitCheckins)
       .filter(([, checked]) => checked)
-      .map(([id]) => (store.habits ?? []).find(h => h.id === id)?.name)
+      .map(([id]) => (store.habits ?? []).find(h => !h.deleted && h.id === id)?.name)
       .filter(Boolean);
     if (checkedHabits.length) noteData.habits = checkedHabits;
     // 每日自定义待办
@@ -176,7 +176,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     }
     const items = getIncompleteItems({
       practices,
-      habits: (store.habits ?? []).filter(h => h.status === 'inProgress'),
+      habits: (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
       planItems: todayPlanItems,
       planItemCheckins: planCheckins,
       today: targetDate,
@@ -190,7 +190,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       return;
     }
     setLocalDone(true);
-    submit();
+    submit(undefined, undefined, true);
   }, [isGraceMode, practices, store, todayPlanItems, planCheckins, targetDate, submit]);
 
   const confirmDoneWithReason = useCallback(() => {
@@ -333,8 +333,8 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 <View style={{ marginBottom:12 }}>
                   <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('planTodoList')}</Text>
                   {todayPlanItems.map(item => {
-                    const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done);
-                    const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === today && c.done && c.linkedModule);
+                    const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
+                    const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done && c.linkedModule);
                     const done = planToggles[item.id] ?? storeDone;
                     return (
                       <View key={item.id} style={{
@@ -382,10 +382,10 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               )}
 
               {/* Habits */}
-              {(store.habits ?? []).filter(h => h.status==='inProgress').length > 0 && (
+              {(store.habits ?? []).filter(h => !h.deleted && h.status==='inProgress').length > 0 && (
                 <View>
                   <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('checkinHabitCheck')}</Text>
-                  {(store.habits ?? []).filter(h => h.status==='inProgress').map(h => (
+                  {(store.habits ?? []).filter(h => !h.deleted && h.status==='inProgress').map(h => (
                     <View key={h.id} style={{
                       flexDirection:'row', alignItems:'center', paddingVertical:8,
                       paddingHorizontal:4, borderRadius:8, marginBottom:4,

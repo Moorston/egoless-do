@@ -3,19 +3,20 @@ import type { CheckinReview } from '../types';
 import type { StorageAdapter, ReviewSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { calculateReviewData, getWeekRange, getMonthRange } from '../business/review';
-import { getAIService, resetAIService } from '../ai/ai-service';
+import { getAIService } from '../ai/ai-service';
+import { dateStr } from '../utils';
 
 export function createReviewSlice(
   adapter: StorageAdapter,
   triggerAutoSync?: () => void,
 ): SliceCreator<ReviewSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     checkinReviews: [],
     
     async generateReview(period: 'week' | 'month'): Promise<CheckinReview> {
       const state = get();
       const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
+      const todayStr = dateStr(today);
       
       // 计算日期范围
       const range = period === 'week' 
@@ -55,17 +56,25 @@ export function createReviewSlice(
       console.log('[Review Slice] AI Models from store:', aiModels.length);
       console.log('[Review Slice] AI Mode:', aiMode);
       
-      // 重置AIService单例以使用最新配置
-      resetAIService();
       const aiService = getAIService({ mode: aiMode, models: aiModels });
+
+      let aiResult: { summary: string; highlights: string[]; improvements: string[] };
+      try {
+        aiResult = await aiService.generateCheckinReview(reviewData, {
+          useCloud: true,
+        });
+      } catch (e) {
+        console.error('[ReviewSlice] AI call failed, using defaults:', e);
+        aiResult = { summary: '', highlights: [], improvements: [] };
+      }
       
-      const aiResult = await aiService.generateCheckinReview(reviewData, {
-        useCloud: true,
-      });
-      
+      // Re-read checkinReviews after await to avoid stale-overwrite
+      const reviewId = existingReview?.id ?? `review-${period}-${range.start}`;
+      const latestReviews = get().checkinReviews ?? [];
+
       // 构建完整复盘记录
       const review: CheckinReview = {
-        id: existingReview?.id ?? `review-${period}-${range.start}`,
+        id: reviewId,
         ...reviewData,
         aiSummary: aiResult.summary,
         highlights: aiResult.highlights,
@@ -75,17 +84,21 @@ export function createReviewSlice(
         generatedAt: Date.now(),
         lastAutoUpdateAt: todayStr,
       };
-      
-      // 保存到Store
+
+      // 保存到Store — merge with latest list, not the stale capture
       set(state => ({
         checkinReviews: [
           review,
-          ...state.checkinReviews.filter(r => r.id !== review.id),
+          ...latestReviews.filter(r => r.id !== review.id),
         ],
       }));
       
       // 持久化
-      await adapter.persistChange('checkinReview', review.id, review);
+      try {
+        await adapter.persistChange('checkinReview', review.id, review);
+      } catch (e) {
+        console.error('[ReviewSlice] Failed to persist review:', e);
+      }
       
       // 触发同步
       triggerAutoSync?.();
@@ -112,25 +125,25 @@ export function createReviewSlice(
         ),
       }));
       
-      adapter.markDeleted('checkinReview', id);
+      adapter.markDeleted('checkinReview', id).catch(console.error);
       triggerAutoSync?.();
     },
     
     clearAllReviews() {
       const reviews = get().checkinReviews ?? [];
-      
-      // Mark all reviews as deleted
+
+      // Mark all non-deleted reviews as deleted
       set({
-        checkinReviews: reviews.map(r => ({
-          ...r,
-          deleted: true,
-          updatedAt: Date.now(),
-        })),
+        checkinReviews: reviews.map(r =>
+          r.deleted ? r : { ...r, deleted: true, updatedAt: Date.now() }
+        ),
       });
-      
-      // Persist deletions
+
+      // Persist deletions only for those not already deleted
       for (const review of reviews) {
-        adapter.markDeleted('checkinReview', review.id).catch(console.error);
+        if (!review.deleted) {
+          adapter.markDeleted('checkinReview', review.id).catch(console.error);
+        }
       }
       
       triggerAutoSync?.();

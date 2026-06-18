@@ -64,14 +64,15 @@ export function detectHabitRisks(habits: Habit[]): ContextReminder[] {
   const reminders: ContextReminder[] = [];
   const today = dateStr();
 
-  habits.filter(h => h.status === 'inProgress').forEach(habit => {
-    const checkedDates = habit.checkedDates ?? [];
+  habits.filter(h => !h.deleted && h.status === 'inProgress').forEach(habit => {
+    const checkedDates = [...(habit.checkedDates ?? [])].sort();
     const lastChecked = checkedDates[checkedDates.length - 1];
     
     // 检测连续未打卡
     if (lastChecked && lastChecked !== today) {
-      const lastDate = new Date(lastChecked);
-      const todayDate = new Date(today);
+      const parseLocal = (s: string) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+      const lastDate = parseLocal(lastChecked);
+      const todayDate = parseLocal(today);
       const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / (24 * 60 * 60 * 1000));
       
       if (daysDiff >= 2) {
@@ -88,7 +89,7 @@ export function detectHabitRisks(habits: Habit[]): ContextReminder[] {
     }
 
     // 检测即将完成
-    const progress = habit.doneDays / habit.targetDays;
+    const progress = habit.targetDays > 0 ? habit.doneDays / habit.targetDays : 0;
     if (progress >= 0.8 && progress < 1) {
       reminders.push({
         id: `habit_almost_${habit.id}`,
@@ -109,10 +110,10 @@ export function detectHabitRisks(habits: Habit[]): ContextReminder[] {
 export function detectStreakRisks(checkinHistory: CheckinEntry[]): ContextReminder[] {
   const reminders: ContextReminder[] = [];
   const today = dateStr();
-  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const yesterday = dateStr(new Date(Date.now() - 24 * 60 * 60 * 1000));
 
-  const todayCheckin = checkinHistory.find(c => c.date === today);
-  const yesterdayCheckin = checkinHistory.find(c => c.date === yesterday);
+  const todayCheckin = checkinHistory.find(c => c.date === today && !c.deleted);
+  const yesterdayCheckin = checkinHistory.find(c => c.date === yesterday && !c.deleted);
 
   // 今天还没打卡
   if (!todayCheckin) {

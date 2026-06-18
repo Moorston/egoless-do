@@ -1,5 +1,6 @@
 // ─── Thought Pattern Detection ──────────────────────────────────
 import type { MindReflection } from '../types';
+import { dateStr } from '../utils';
 
 export interface ThoughtPattern {
   id: string;
@@ -198,13 +199,14 @@ export function detectKeywordPatterns(reflections: MindReflection[]): ThoughtPat
         moodCounts.set(r.mood, (moodCounts.get(r.mood) ?? 0) + 1);
       });
 
-      const dominantMood = [...moodCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+      const sortedMoods = [...moodCounts.entries()].sort((a, b) => b[1] - a[1]);
+      const dominantMoodLabel = sortedMoods.length > 0 ? sortedMoods[0][0] : '未知';
 
       patterns.push({
         id: `keyword_${word}`,
         type: 'trigger',
         name: `「${word}」频繁出现`,
-        description: `与${category}相关的「${word}」出现${matchedReflections.length}次，多伴随${dominantMood[0]}情绪`,
+        description: `与${category}相关的「${word}」出现${matchedReflections.length}次，多伴随${dominantMoodLabel}情绪`,
         reflections: matchedReflections.map(r => r.id),
         frequency: matchedReflections.length,
         confidence: 0.65,
@@ -224,8 +226,9 @@ export function detectGrowthPatterns(reflections: MindReflection[]): ThoughtPatt
   const weeklyGroups = new Map<string, MindReflection[]>();
   reflections.filter(r => !r.deleted).forEach(r => {
     const weekStart = new Date(r.timestamp);
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-    const weekKey = weekStart.toISOString().slice(0, 10);
+    const day = weekStart.getDay();
+    weekStart.setDate(weekStart.getDate() - (day + 6) % 7); // Monday as week start
+    const weekKey = dateStr(weekStart);
     const group = weeklyGroups.get(weekKey) ?? [];
     group.push(r);
     weeklyGroups.set(weekKey, group);

@@ -306,11 +306,34 @@ ${items.map(r => {
   private parseTrailInsight(aiResult: string, fallback: TrailInsight): TrailInsight {
     try {
       const lines = aiResult.split('\n').filter(l => l.trim());
+      const summary = lines[0] || fallback.summary;
+      const keyPoints = lines.filter(l => l.match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '')).slice(0, 3);
+
+      // 提取转折点：查找"转折"相关段落
+      const turningPoints: string[] = [];
+      const tpSection = lines.findIndex(l => /转折|关键|节点/.test(l));
+      if (tpSection >= 0) {
+        for (let i = tpSection + 1; i < lines.length; i++) {
+          if (/^\d+\./.test(lines[i])) turningPoints.push(lines[i].replace(/^\d+\.\s*/, ''));
+          else if (lines[i].trim() === '' || /[：:]$/.test(lines[i])) break;
+        }
+      }
+
+      // 提取建议：查找"建议"相关段落
+      const suggestions: string[] = [];
+      const sgSection = lines.findIndex(l => /建议|推荐|可以/.test(l));
+      if (sgSection >= 0) {
+        for (let i = sgSection + 1; i < lines.length; i++) {
+          if (/^\d+\./.test(lines[i])) suggestions.push(lines[i].replace(/^\d+\.\s*/, ''));
+          else if (lines[i].trim() === '' || /[：:]$/.test(lines[i])) break;
+        }
+      }
+
       return {
-        summary: lines[0] || fallback.summary,
-        keyPoints: lines.filter(l => l.match(/^\d+\./)).map(l => l.replace(/^\d+\.\s*/, '')).slice(0, 3),
-        turningPoints: fallback.turningPoints,
-        suggestions: fallback.suggestions,
+        summary,
+        keyPoints: keyPoints.length > 0 ? keyPoints : fallback.keyPoints,
+        turningPoints: turningPoints.length > 0 ? turningPoints : fallback.turningPoints,
+        suggestions: suggestions.length > 0 ? suggestions : fallback.suggestions,
       };
     } catch {
       return fallback;
@@ -323,7 +346,7 @@ ${items.map(r => {
     options?: { useCloud?: boolean; preferredModelId?: string }
   ): Promise<ReviewGuide> {
     const localGuide: ReviewGuide = {
-      questions: ['这周整体感觉如何？', '有什么特别的时刻吗？', '下周想继续保持什么？'],
+      perspectives: ['这周整体感觉如何？', '有什么特别的时刻吗？', '下周想继续保持什么？'],
       observations: [`这周记录了 ${weekReflections.length} 条感念`],
       suggestions: [],
     };

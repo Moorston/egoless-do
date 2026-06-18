@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useT } from '../../components/UI';
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr } from '@egoless-do/core';
 import { ArrowLeft, ExternalLink, Link, Pin, Network } from 'lucide-react-native';
 
 interface ReflectionDetailContentProps {
@@ -28,7 +28,7 @@ export default function ReflectionDetailContent({
   const nav = useRootNavigation();
   const T = useT();
 
-  const r = useMemo(() => (store.reflections ?? []).find(x => x.id === reflectionId), [store.reflections, reflectionId]);
+  const r = useMemo(() => (store.reflections ?? []).find(x => !x.deleted && x.id === reflectionId), [store.reflections, reflectionId]);
 
   if (!r) return null;
 
@@ -36,7 +36,7 @@ export default function ReflectionDetailContent({
     ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
     : null;
   const colors: [string, string] = [r.colors?.[0] || MIND_COLORS_EXTENDED[0][0], r.colors?.[1] || MIND_COLORS_EXTENDED[0][1]];
-  const isToday = new Date(r.timestamp ?? 0).toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10);
+  const isToday = dateStr(new Date(r.timestamp ?? 0)) === dateStr();
 
   const handleUnlink = () => {
     Alert.alert('解除关联', '确定解除与计划任务的关联吗？关联的计划任务将被删除。', [
@@ -94,7 +94,7 @@ export default function ReflectionDetailContent({
 
           {/* Link */}
           {r.link && (
-            <TouchableOpacity onPress={() => Linking.openURL(r.link!).catch(console.error)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch(console.error)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
               <Link size={14} color="rgba(255,255,255,.7)" />
               <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL, textDecorationLine: 'underline', flex: 1 }} numberOfLines={2}>{r.link}</Text>
             </TouchableOpacity>

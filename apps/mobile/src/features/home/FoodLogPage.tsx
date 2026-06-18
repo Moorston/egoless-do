@@ -17,7 +17,7 @@ export default function FoodLogPage() {
   const [showAdd, setShowAdd]     = useState(false);
   const [showHistory, setShowHistory] = useState(true);
 
-  const foodLog = store.foodLog ?? [];
+  const foodLog = useMemo(() => (store.foodLog ?? []).filter(f => !f.deleted), [store.foodLog]);
   const totalCal = useMemo(() => getTodayFoodLog(foodLog).reduce((a, f) => a + (f.calories ?? 0), 0), [foodLog]);
 
   const historyGroups = useMemo(() => {
@@ -53,7 +53,7 @@ export default function FoodLogPage() {
             <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:P }}>{totalCal}</Text>
             <Text style={{ fontSize:FONT_BACK, color:TH.sub }}>/ {store.calGoal}</Text>
           </View>
-          <Text style={{ color:COLORS.GREEN, fontSize:FONT_BODY, marginTop:6 }}>{T('foodRemaining')}: {Math.max(0, store.calGoal - totalCal)} kcal</Text>
+          <Text style={{ color: totalCal > store.calGoal ? COLORS.RED : COLORS.GREEN, fontSize:FONT_BODY, marginTop:6 }}>{T('foodRemaining')}: {Math.max(0, store.calGoal - totalCal)} kcal</Text>
         </Card>
 
         <Card>

@@ -10,17 +10,17 @@ export function addReflectionToList(reflections: MindReflection[], params: Creat
 
 export function togglePinInList(reflections: MindReflection[], id: string): MindReflection[] {
   const now = Date.now();
-  return reflections.map(r => r.id === id ? { ...r, isPinned: !r.isPinned, updatedAt: now } : r);
+  return reflections.map(r => r.id === id && !r.deleted ? { ...r, isPinned: !r.isPinned, updatedAt: now } : r);
 }
 
 export function deleteReflectionFromList(reflections: MindReflection[], id: string): MindReflection[] {
   const now = Date.now();
-  return reflections.map(r => r.id === id ? { ...r, deleted: true, updatedAt: now } : r);
+  return reflections.map(r => r.id === id && !r.deleted ? { ...r, deleted: true, updatedAt: now } : r);
 }
 
 export function updateReflectionInList(reflections: MindReflection[], id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>): MindReflection[] {
   const now = Date.now();
-  return reflections.map(r => r.id === id ? { ...r, ...updates, updatedAt: now } : r);
+  return reflections.map(r => r.id === id && !r.deleted ? { ...r, ...updates, updatedAt: now } : r);
 }
 
 /** Link reflection to a plan item */
@@ -31,7 +31,7 @@ export function linkReflectionToPlanItem(
 ): MindReflection[] {
   const now = Date.now();
   return reflections.map(r =>
-    r.id === reflectionId ? { ...r, linkedPlanItemId: planItemId, updatedAt: now } : r
+    r.id === reflectionId && !r.deleted ? { ...r, linkedPlanItemId: planItemId, updatedAt: now } : r
   );
 }
 
@@ -42,7 +42,7 @@ export function unlinkReflectionFromPlanItem(
 ): MindReflection[] {
   const now = Date.now();
   return reflections.map(r =>
-    r.id === reflectionId ? { ...r, linkedPlanItemId: undefined, updatedAt: now } : r
+    r.id === reflectionId && !r.deleted ? { ...r, linkedPlanItemId: undefined, updatedAt: now } : r
   );
 }
 
@@ -72,8 +72,8 @@ export function filterReflections(
     if (filters.hasLinkedTask) {
       if (!r.linkedPlanItemId) return false;
       if (planItems) {
-        const item = planItems.find(i => i.id === r.linkedPlanItemId);
-        if (!item || item.deleted) return false;
+        const item = planItems.find(i => i.id === r.linkedPlanItemId && !i.deleted);
+        if (!item) return false;
       }
     }
     if (filters.dateRange) {
@@ -98,6 +98,7 @@ export function groupReflectionsByDate(
   const m: Record<string, MindReflection[]> = {};
   const sorted = [...reflections].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
   sorted.forEach(r => {
+    if (!r.timestamp) return;
     const d = new Date(r.timestamp).toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
     if (!m[d]) m[d] = [];
     m[d].push(r);
@@ -144,7 +145,7 @@ export function computeDynamicMoodCounts(
 ): Record<string, number> {
   const preFiltered = reflections.filter(r => {
     if (r.deleted) return false;
-    if (filters.tags.length > 0 && !filters.tags.some(t => r.tags.includes(t))) return false;
+    if (filters.tags.length > 0 && !filters.tags.some(t => (r.tags ?? []).includes(t))) return false;
     if (filters.hasLink && !r.link) return false;
     if (filters.hasLinkedTask && !r.linkedPlanItemId) return false;
     if (filters.dateRange) {

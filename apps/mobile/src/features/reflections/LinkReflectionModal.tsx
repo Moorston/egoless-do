@@ -123,7 +123,7 @@ export default function LinkReflectionModal({ visible, onClose, reflection }: Pr
                 >
                   <View style={styles.reflectionContent}>
                     <Text style={[styles.reflectionDate, { color: TH.sub }]}>
-                      {new Date(r.timestamp).toISOString().slice(0, 10)}
+                      {(() => { const d = new Date(r.timestamp); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })()}
                     </Text>
                     <Text style={[styles.reflectionText, { color: TH.text }]} numberOfLines={2}>
                       {r.content}

@@ -46,7 +46,7 @@ const BATCH_ITEM_SIZE = 5;
 
 // ─── Caches ──────────────────────────────────────────────────────────
 
-const recommendCache = new AICache<AIRecommendation[]>(5 * 60 * 1000, 50);
+const recommendCache = new AICache<{ recommendations: AIRecommendation[]; targetReflections: ReflectionIndex[] }>(5 * 60 * 1000, 50);
 const matchCache = new AICache<AIMatchResult[]>(5 * 60 * 1000, 50);
 const queryCache = new AICache<SmartQueryResult>(5 * 60 * 1000, 50);
 const semanticCache = new AICache<AIMatchResult[]>(5 * 60 * 1000, 50);
@@ -81,22 +81,26 @@ async function withAbortTimeout<T>(
   if (externalSignal?.aborted) {
     throw new Error('Aborted');
   }
+  const onExternalAbort = () => controller.abort();
   if (externalSignal) {
-    externalSignal.addEventListener('abort', () => controller.abort());
+    externalSignal.addEventListener('abort', onExternalAbort);
   }
 
   const timeoutId = setTimeout(() => controller.abort(), ms);
 
   try {
     const result = await fn(controller.signal);
-    clearTimeout(timeoutId);
     return result;
   } catch (error) {
-    clearTimeout(timeoutId);
     if (controller.signal.aborted) {
       throw new Error('AI调用超时');
     }
     throw error;
+  } finally {
+    clearTimeout(timeoutId);
+    if (externalSignal) {
+      externalSignal.removeEventListener('abort', onExternalAbort);
+    }
   }
 }
 
@@ -124,7 +128,7 @@ async function batchedAIGenerate(
     promptThreshold?: number;
     signal?: AbortSignal;
   }
-): Promise<string[]> {
+): Promise<Array<{ batchIdx: number; data: string }>> {
   const service = getAIService();
   const timeoutMs = options?.timeoutMs ?? AI_TIMEOUT_MS;
   const batchSize = options?.batchSize ?? BATCH_ITEM_SIZE;
@@ -147,7 +151,7 @@ async function batchedAIGenerate(
       externalSignal,
     );
     const r = result as any;
-    return r?.success && r?.data ? [r.data] : [];
+    return r?.success && r?.data ? [{ batchIdx: 0, data: r.data }] : [];
   }
 
   // 分批并发
@@ -170,13 +174,13 @@ async function batchedAIGenerate(
   });
 
   const results = await Promise.allSettled(promises);
-  const outputs: string[] = [];
+  const outputs: Array<{ batchIdx: number; data: string }> = [];
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
     if (r.status === 'fulfilled') {
       const val = r.value as any;
       if (val?.success && val?.data) {
-        outputs.push(val.data);
+        outputs.push({ batchIdx: i, data: val.data });
       } else {
         console.log(`[BatchAI] batch ${i} failed:`, val?.error);
       }
@@ -194,18 +198,19 @@ export async function recommendTrailsViaAI(
   reflections: MindReflection[],
   query?: string,
   options?: { signal?: AbortSignal },
-): Promise<AIRecommendation[]> {
+): Promise<{ recommendations: AIRecommendation[]; targetReflections: ReflectionIndex[] }> {
   const service = getAIService();
   const config = service.getConfig();
 
+  const emptyResult = { recommendations: [] as AIRecommendation[], targetReflections: [] as ReflectionIndex[] };
   if (config.mode === 'local' || !service.getDefaultModel()) {
-    return [];
+    return emptyResult;
   }
 
   const validReflections = reflections.filter(r => !r.deleted);
-  if (validReflections.length < 3) return [];
+  if (validReflections.length < 3) return emptyResult;
 
-  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const dataFingerprint = `${validReflections.length}:${Math.max(...validReflections.map(r => r.updatedAt ?? r.timestamp ?? 0))}`;
   const cacheKey = generateCacheKey(query || '', dataFingerprint);
   const cached = recommendCache.get(cacheKey);
   if (cached) return cached;
@@ -225,21 +230,28 @@ export async function recommendTrailsViaAI(
       { maxTokens: 2000, temperature: 0.1, signal: options?.signal },
     );
 
-    if (outputs.length === 0) return [];
+    if (outputs.length === 0) return { recommendations: [], targetReflections };
 
-    // 合并所有批次的推荐结果
+    // 合并所有批次的推荐结果（修正批次索引偏移）
     const allParsed: AIRecommendation[] = [];
-    for (const raw of outputs) {
-      const parsed = parseAIRecommendations(raw, targetReflections.length);
-      allParsed.push(...parsed);
+    for (const { batchIdx, data } of outputs) {
+      const batchOffset = batchIdx * BATCH_ITEM_SIZE;
+      const batchLen = Math.min(BATCH_ITEM_SIZE, targetReflections.length - batchOffset);
+      const parsed = parseAIRecommendations(data, batchLen);
+      for (const rec of parsed) {
+        allParsed.push({
+          ...rec,
+          reflectionIndices: rec.reflectionIndices.map(i => batchOffset + i),
+        });
+      }
     }
 
-    const limited = allParsed.slice(0, 2);
-    recommendCache.set(cacheKey, limited);
-    return limited;
+    const result = { recommendations: allParsed.slice(0, 2), targetReflections };
+    recommendCache.set(cacheKey, result);
+    return result;
   } catch (e) {
     console.log('[RAG] recommendTrailsViaAI fallback:', e);
-    return [];
+    return { recommendations: [], targetReflections };
   }
 }
 
@@ -260,7 +272,7 @@ export async function matchReflectionsToTopic(
   const validReflections = reflections.filter(r => !r.deleted);
   if (validReflections.length < 2) return [];
 
-  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const dataFingerprint = `${validReflections.length}:${Math.max(...validReflections.map(r => r.updatedAt ?? r.timestamp ?? 0))}`;
   const cacheKey = generateCacheKey(topic, dataFingerprint);
   const cached = matchCache.get(cacheKey);
   if (cached) return cached;
@@ -283,8 +295,17 @@ export async function matchReflectionsToTopic(
     if (outputs.length === 0) return [];
 
     const allParsed: AIMatchResult[] = [];
-    for (const raw of outputs) {
-      allParsed.push(...parseAIMatchResults(raw, targetReflections.length));
+    for (const { batchIdx, data } of outputs) {
+      const batchOffset = batchIdx * BATCH_ITEM_SIZE;
+      const batchLen = Math.min(BATCH_ITEM_SIZE, targetReflections.length - batchOffset);
+      const parsed = parseAIMatchResults(data, batchLen);
+      for (const m of parsed) {
+        allParsed.push({
+          reflectionIndex: batchOffset + m.reflectionIndex,
+          reason: m.reason,
+          relevance: m.relevance,
+        });
+      }
     }
 
     matchCache.set(cacheKey, allParsed);
@@ -317,7 +338,7 @@ export async function semanticSearchReflections(
   const validReflections = reflections.filter(r => !r.deleted);
   if (validReflections.length < 2) return [];
 
-  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const dataFingerprint = `${validReflections.length}:${Math.max(...validReflections.map(r => r.updatedAt ?? r.timestamp ?? 0))}`;
   const cacheKey = generateCacheKey(`semantic:${query}`, dataFingerprint);
   const cached = semanticCache.get(cacheKey);
   if (cached) return cached;
@@ -351,18 +372,17 @@ export async function semanticSearchReflections(
 
     // 汇总并修正批次索引偏移
     const allMatches: AIMatchResult[] = [];
-    let offset = 0;
-    for (let batchIdx = 0; batchIdx < outputs.length; batchIdx++) {
-      const batchLen = Math.min(BATCH_ITEM_SIZE, targetReflections.length - offset);
-      const parsed = parseAIMatchResults(outputs[batchIdx], batchLen);
+    for (const { batchIdx, data } of outputs) {
+      const batchOffset = batchIdx * BATCH_ITEM_SIZE;
+      const batchLen = Math.min(BATCH_ITEM_SIZE, targetReflections.length - batchOffset);
+      const parsed = parseAIMatchResults(data, batchLen);
       for (const m of parsed) {
         allMatches.push({
-          reflectionIndex: offset + m.reflectionIndex,
+          reflectionIndex: batchOffset + m.reflectionIndex,
           reason: m.reason,
           relevance: m.relevance,
         });
       }
-      offset += batchLen;
     }
 
     console.log('[SemanticSearch] total matches:', allMatches.length);
@@ -402,7 +422,7 @@ export async function parseSmartQuery(
     return { ...FALLBACK_RESULT, topic: input };
   }
 
-  const dataFingerprint = `${validReflections.length}:${validReflections[0]?.timestamp ?? 0}`;
+  const dataFingerprint = `${validReflections.length}:${Math.max(...validReflections.map(r => r.updatedAt ?? r.timestamp ?? 0))}`;
   const cacheKey = generateCacheKey(input, dataFingerprint);
   const cached = queryCache.get(cacheKey);
   if (cached) return cached;
@@ -518,8 +538,7 @@ function extractJSON(raw: string): string {
 }
 
 function findLastBalancedJSON(text: string, open: string, close: string): string | null {
-  let lastMatch: string | null = null;
-  // 从后往前找，找到最后一个完整的 balanced JSON
+  // 从后往前找，找到最后一个完整的 balanced JSON (rightmost)
   for (let i = text.length - 1; i >= 0; i--) {
     if (text[i] === close) {
       let depth = 0;
@@ -537,14 +556,14 @@ function findLastBalancedJSON(text: string, open: string, close: string): string
           const candidate = text.slice(j, i + 1);
           try {
             JSON.parse(candidate);
-            lastMatch = candidate;
+            return candidate; // First valid match scanning right-to-left is the last JSON
           } catch {}
           break;
         }
       }
     }
   }
-  return lastMatch;
+  return null;
 }
 
 function parseSmartQueryResult(raw: string, input: string): SmartQueryResult {

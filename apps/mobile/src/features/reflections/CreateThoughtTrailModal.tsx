@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { X, Check, Search } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
@@ -58,14 +58,14 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   }, [reflections, search]);
 
   // Auto-generate name when initial reflections change
-  useMemo(() => {
+  useEffect(() => {
     if (initialReflectionIds.length > 0 && !name) {
       const initialReflections = initialReflectionIds
         .map(id => reflections.find(r => r.id === id))
         .filter((r): r is MindReflection => r != null);
       setName(generateTrailName(initialReflections, T));
     }
-  }, [initialReflectionIds, reflections]);
+  }, [initialReflectionIds, reflections, name, T]);
 
   const handleToggleReflection = useCallback((id: string) => {
     setSelectedIds(prev => {
@@ -226,7 +226,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                           {/* Date + mood */}
                           <View style={styles.reflectionMeta}>
                             <Text style={[styles.reflectionDate, { color: TH.sub }]}>
-                              {new Date(r.timestamp).toISOString().slice(0, 10)}
+                              {(() => { const d = new Date(r.timestamp); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })()}
                             </Text>
                             {r.mood ? (
                               <Text style={styles.reflectionMood}>{getMoodIcon(r.mood)}</Text>

@@ -63,7 +63,7 @@ export async function migrateToSyncQueue(): Promise<number> {
       entity: 'food', table: 'food_entries', pk: 'id',
       toPayload: (r) => ({
         id: r.id, name: r.name, calories: r.cal, note: r.note, timestamp: r.ts,
-        entryDate: r.entry_date || (r.ts ? new Date(Number(r.ts)).toISOString().slice(0, 10) : ''),
+        entryDate: r.entry_date || (r.ts ? (() => { const d = new Date(Number(r.ts)); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })() : ''),
         updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
       }),
     },
@@ -72,6 +72,7 @@ export async function migrateToSyncQueue(): Promise<number> {
       toPayload: (r) => ({
         date: r.date, done: (r.done as number) === 1, note: r.note,
         streak: r.streak, timestamp: r.timestamp, weight: r.weight,
+        grace: (r.grace as number) === 1,
         updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
       }),
     },
@@ -164,6 +165,42 @@ export async function migrateToSyncQueue(): Promise<number> {
         reflectionIds: safeJson(r.reflection_ids),
         createdAt: r.created_at, updatedAt: r.updated_at,
         deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'trailNote', table: 'trail_notes', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, trailId: r.trail_id, content: r.content,
+        tags: safeJson(r.tags), mood: r.mood, source: r.source,
+        guidedQuestion: r.guided_question, noteOrder: r.note_order,
+        createdAt: r.created_at, updatedAt: r.updated_at,
+        deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'reflectionLink', table: 'reflection_links', pk: 'link_id',
+      toPayload: (r) => ({
+        linkId: r.link_id, fromId: r.from_id, toId: r.to_id,
+        linkType: r.link_type, note: r.note,
+        createdAt: r.created_at, updatedAt: r.updated_at,
+        deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'aiConfig', table: 'ai_configs', pk: 'config_id',
+      toPayload: (r) => ({
+        configId: r.config_id, mode: r.mode,
+        models: safeJson(r.models),
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
+      }),
+    },
+    {
+      entity: 'checkinReview', table: 'checkin_reviews', pk: 'id',
+      toPayload: (r) => ({
+        id: r.id, userId: r.user_id, reviewId: r.review_id,
+        period: r.period, startDate: r.start_date, endDate: r.end_date,
+        reviewData: safeJson(r.review_data),
+        updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
       }),
     },
   ];

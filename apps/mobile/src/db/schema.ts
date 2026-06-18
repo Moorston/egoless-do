@@ -3,15 +3,21 @@ import * as SQLite from 'expo-sqlite';
 
 export const DB_NAME = 'egoless_do.db';
 
-let _db: SQLite.SQLiteDatabase | null = null;
+let _dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
-export async function openDatabase(): Promise<SQLite.SQLiteDatabase> {
-  if (_db) return _db;
-  const instance = await SQLite.openDatabaseAsync(DB_NAME);
-  await initDatabase(instance);
-  await migrateDatabase(instance);
-  _db = instance;
-  return instance;
+export function openDatabase(): Promise<SQLite.SQLiteDatabase> {
+  if (!_dbPromise) {
+    _dbPromise = (async () => {
+      const instance = await SQLite.openDatabaseAsync(DB_NAME);
+      await initDatabase(instance);
+      await migrateDatabase(instance);
+      return instance;
+    })().catch(err => {
+      _dbPromise = null;
+      throw err;
+    });
+  }
+  return _dbPromise;
 }
 
 export const SCHEMA_SQL = `
@@ -89,6 +95,7 @@ CREATE TABLE IF NOT EXISTS checkin_records (
   timestamp  INTEGER,
   weight     REAL,
   grace      INTEGER NOT NULL DEFAULT 0,
+  total_days INTEGER,
   updated_at INTEGER,
   deleted    INTEGER NOT NULL DEFAULT 0,
   synced     INTEGER NOT NULL DEFAULT 0
@@ -256,6 +263,20 @@ CREATE TABLE IF NOT EXISTS trail_notes (
 );
 CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id);
 
+CREATE TABLE IF NOT EXISTS reflection_links (
+  link_id      TEXT PRIMARY KEY,
+  from_id      TEXT NOT NULL,
+  to_id        TEXT NOT NULL,
+  link_type    TEXT NOT NULL,
+  note         TEXT,
+  created_at   INTEGER NOT NULL,
+  updated_at   INTEGER,
+  deleted      INTEGER NOT NULL DEFAULT 0,
+  synced       INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_reflection_links_from ON reflection_links(from_id);
+CREATE INDEX IF NOT EXISTS idx_reflection_links_to   ON reflection_links(to_id);
+
 CREATE TABLE IF NOT EXISTS ai_configs (
   config_id  TEXT PRIMARY KEY,
   mode       TEXT NOT NULL DEFAULT 'hybrid',
@@ -286,7 +307,15 @@ export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
 
 export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
   const tryAddCol = async (table: string, column: string, type: string) => {
-    try { await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`); } catch {}
+    try {
+      await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+    } catch (err: any) {
+      // Only ignore "duplicate column" errors; re-throw others
+      const msg = String(err?.message ?? err ?? '');
+      if (!msg.includes('duplicate column') && !msg.includes('already exists')) {
+        throw err;
+      }
+    }
   };
 
   await tryAddCol('habits', 'synced', 'INTEGER NOT NULL DEFAULT 0');
@@ -295,6 +324,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('checkin_records', 'timestamp', 'INTEGER');
   await tryAddCol('checkin_records', 'weight', 'REAL');
   await tryAddCol('checkin_records', 'grace', 'INTEGER NOT NULL DEFAULT 0');
+  await tryAddCol('checkin_records', 'total_days', 'INTEGER');
 
   // Ensure exercise_entries table exists
   const exerciseTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -407,6 +437,22 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('thought_trails', 'note_ids', "TEXT NOT NULL DEFAULT '[]'");
   await tryAddCol('thought_trails', 'insight_cache', 'TEXT');
   await tryAddCol('thought_trails', 'review_cache', 'TEXT');
+  await tryAddCol('thought_trails', 'linked_plan_item_ids', 'TEXT');
+
+  // Add alarm columns to habits if missing
+  await tryAddCol('habits', 'alarm_enabled', 'INTEGER NOT NULL DEFAULT 0');
+  await tryAddCol('habits', 'alarm_hour', 'INTEGER NOT NULL DEFAULT 8');
+  await tryAddCol('habits', 'alarm_minute', 'INTEGER NOT NULL DEFAULT 0');
+
+  // Add exercise metadata columns if missing
+  await tryAddCol('exercise_entries', 'mode', "TEXT DEFAULT 'free'");
+  await tryAddCol('exercise_entries', 'target', 'TEXT');
+  await tryAddCol('exercise_entries', 'segment_paces', 'TEXT');
+  await tryAddCol('exercise_entries', 'elevation_gain', 'REAL');
+  await tryAddCol('exercise_entries', 'paused_duration', 'INTEGER');
+  await tryAddCol('exercise_entries', 'reps', 'INTEGER');
+  await tryAddCol('exercise_entries', 'sets', 'TEXT');
+  await tryAddCol('exercise_entries', 'met', 'REAL');
 
   // Add trail_id column to plan_items if missing
   await tryAddCol('plan_items', 'trail_id', 'TEXT');
@@ -427,6 +473,20 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_trail_notes_trail ON trail_notes(trail_id)');
+  }
+
+  // Ensure reflection_links table exists
+  const reflectionLinksTableCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='reflection_links'"
+  );
+  if (!reflectionLinksTableCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS reflection_links (
+      link_id TEXT PRIMARY KEY, from_id TEXT NOT NULL, to_id TEXT NOT NULL,
+      link_type TEXT NOT NULL, note TEXT, created_at INTEGER NOT NULL,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_reflection_links_from ON reflection_links(from_id)');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_reflection_links_to   ON reflection_links(to_id)');
   }
 
   // Ensure ai_configs table exists

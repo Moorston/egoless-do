@@ -8,7 +8,7 @@ export function createCheckinSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<CheckinSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     checkinHistory: [],
     streak: 0,
     graceHistory: [],
@@ -24,7 +24,7 @@ export function createCheckinSlice(
 
     calculateStreak() {
       const { checkinHistory } = get();
-      set({ streak: calculateCheckinStreak(checkinHistory ?? []) });
+      set({ streak: calculateCheckinStreak((checkinHistory ?? []).filter(c => !c.deleted)) });
     },
 
     addGraceRecord(date: string) {
@@ -34,6 +34,7 @@ export function createCheckinSlice(
         graceHistory: [...(s.graceHistory ?? []), entry],
       }));
       adapter.persistChange('grace', date, entry).catch(console.error);
+      onSync?.();
     },
   });
 }

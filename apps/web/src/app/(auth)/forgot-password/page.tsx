@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { apiCheckEmail, apiSendCode, apiResetPassword, validatePassword, FONT_BODY, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
@@ -19,7 +19,13 @@ export default function ForgotPasswordPage() {
   const [cooldown, setCooldown] = useState(0);
   const [step, setStep] = useState<1 | 2>(1); // 1: email+code, 2: new password
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
+
+  useEffect(() => () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (navTimerRef.current) clearTimeout(navTimerRef.current);
+  }, []);
 
   const startCooldown = useCallback(() => {
     setCooldown(COOLDOWN);
@@ -74,7 +80,8 @@ export default function ForgotPasswordPage() {
     try {
       await apiResetPassword(email, code, password);
       setSuccess('密码重置成功，正在跳转登录...');
-      setTimeout(() => router.push('/login'), 1500);
+      if (navTimerRef.current) clearTimeout(navTimerRef.current);
+      navTimerRef.current = setTimeout(() => router.push('/login'), 1500);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {

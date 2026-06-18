@@ -48,6 +48,8 @@ export default function QuickCreateTrailScreen() {
 
   const initialText = route.params?.initialText ?? '';
   const initialSelectedIds = route.params?.selectedIds ?? [];
+  const analyzingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current); }, []);
 
   // ── Filters ───────────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState(initialText);
@@ -60,6 +62,7 @@ export default function QuickCreateTrailScreen() {
 
   // ── Smart query ───────────────────────────────────────────────
   const [chatHistory, setChatHistory] = useState<string[]>([]);
+  const chatHistoryRef = useRef<string[]>([]);
   const [smartResult, setSmartResult] = useState<SmartQueryResult | null>(null);
   const [isSmartParsing, setIsSmartParsing] = useState(false);
 
@@ -202,7 +205,7 @@ export default function QuickCreateTrailScreen() {
     } else if (selectedIds.size === 0) {
       setTrailName('');
     }
-  }, [selectedIds.size]);
+  }, [selectedIds.size, selectedReflections, trailName, T]);
 
   // ── Handlers ──────────────────────────────────────────────────
   const toggleTag = useCallback((tag: string) => {
@@ -317,16 +320,17 @@ export default function QuickCreateTrailScreen() {
         updateStep('phase2', { status: 'loading' });
 
         try {
-          const result = await parseSmartQuery(reflections, trimmed, chatHistory);
+          const result = await parseSmartQuery(reflections, trimmed, chatHistoryRef.current);
 
-          if (result.question && chatHistory.length < 3) {
+          if (result.question && chatHistoryRef.current.length < 3) {
             setSmartResult(result);
             updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
             const sorted = allResults.sort((a, b) => b.score - a.score);
             setMatchResults(sorted.map(r => r.ref));
             setMatchMode(allResults.length > 0 ? 'local' : 'idle');
             setIsSmartParsing(false);
-            setTimeout(() => setIsAnalyzing(false), 2000);
+            if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
+            analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
             return;
           }
 
@@ -436,7 +440,8 @@ export default function QuickCreateTrailScreen() {
       ));
     } finally {
       setIsSmartParsing(false);
-      setTimeout(() => setIsAnalyzing(false), 2000);
+      if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
+      analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
   }, [searchQuery, reflections, candidates, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep, addToHistory, T]);
 
@@ -466,14 +471,15 @@ export default function QuickCreateTrailScreen() {
 
       // ── Phase 2: Intent understanding ─────────────────────────
       try {
-        const result = await parseSmartQuery(reflections, trimmed, chatHistory);
+        const result = await parseSmartQuery(reflections, trimmed, chatHistoryRef.current);
 
-        if (result.question && chatHistory.length < 3) {
+        if (result.question && chatHistoryRef.current.length < 3) {
           setSmartResult(result);
           updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
           setIsSmartParsing(false);
           setIsAISearching(false);
-          setTimeout(() => setIsAnalyzing(false), 2000);
+          if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
+          analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
           return;
         }
 
@@ -564,13 +570,19 @@ export default function QuickCreateTrailScreen() {
     } finally {
       setIsSmartParsing(false);
       setIsAISearching(false);
-      setTimeout(() => setIsAnalyzing(false), 2000);
+      if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
+      analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
   }, [searchQuery, reflections, matchResults, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep, addToHistory, T]);
 
   const handleSmartAnswer = useCallback((answer: string) => {
-    setChatHistory(prev => [...prev, answer]);
-    setTimeout(() => { handleSmartQuery(); }, 100);
+    setChatHistory(prev => {
+      const next = [...prev, answer];
+      chatHistoryRef.current = next;
+      return next;
+    });
+    if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
+    analyzingTimerRef.current = setTimeout(() => { handleSmartQuery(); }, 100);
   }, [handleSmartQuery]);
 
   const handleClear = useCallback(() => {

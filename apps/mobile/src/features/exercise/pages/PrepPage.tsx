@@ -11,7 +11,7 @@ export default function PrepPage(props: ExercisePageProps) {
     handleGo, onGoBack, exerciseLog, T, TH,
   } = props;
 
-  const presets = TARGET_PRESETS[sportType];
+  const presets = TARGET_PRESETS[sportType] ?? {};
   const availableTargetTypes = Object.keys(presets) as Array<'distance' | 'time' | 'calories' | 'reps'>;
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customInputValue, setCustomInputValue] = useState('');
@@ -154,7 +154,7 @@ export default function PrepPage(props: ExercisePageProps) {
 
         {/* Last workout data */}
         {(() => {
-          const lastEntry = exerciseLog?.filter((e: any) => e.sportKey === sportName).slice(-1)[0];
+          const lastEntry = exerciseLog?.filter((e: any) => !e.deleted && e.sportKey === sportName).slice(-1)[0];
           if (!lastEntry) return null;
           return (
             <View style={{ marginTop: 12, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' }}>

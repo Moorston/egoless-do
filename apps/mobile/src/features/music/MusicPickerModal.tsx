@@ -5,6 +5,7 @@ import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useMusicStore } from './useMusicStore';
+import { audioSessionManager } from './AudioSessionManager';
 import TrackListItem from './TrackListItem';
 
 interface Props {
@@ -40,7 +41,6 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
   // Group tracks by category
   const grouped = useMemo(() => {
     const groups: { key: string; label: string; tracks: typeof library }[] = [];
-    const allTracks = [...library, ...userTracks];
 
     // Group by category
     const cats = ['focus', 'meditate', 'exercise', 'user'] as const;
@@ -57,11 +57,17 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
     if (currentTrack?.id === track.id) {
       // Same track: toggle play/pause
       if (isPlaying) pause();
-      else resume();
+      else {
+        const allowed = audioSessionManager.requestPlay('music');
+        if (allowed) resume();
+      }
     } else {
-      // New track: start playing
-      play(track);
-      onSelectTrack?.(track);
+      // New track: check with session manager before playing
+      const allowed = audioSessionManager.requestPlay('music');
+      if (allowed) {
+        play(track);
+        onSelectTrack?.(track);
+      }
     }
   };
 

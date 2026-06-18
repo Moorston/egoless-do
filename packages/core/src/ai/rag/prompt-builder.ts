@@ -32,13 +32,15 @@ export function buildRecommendPrompt(
     .slice(0, 5)
     .map((r, i) => `[${i}] ${formatReflectionSummary(r)}`)
     .join('\n');
+  const queryLine = query ? `主题: "${query}"\n` : '';
   const footer = '只输出JSON: [{"name":"","description":"","reflectionIndices":[0,1],"confidence":0.8}]';
 
-  let prompt = `感念:\n${reflLines}\n${footer}`;
+  let prompt = `${queryLine}感念:\n${reflLines}\n${footer}`;
 
-  // 截断到限制长度
+  // 截断到限制长度（保留完整的 footer）
   if (prompt.length > MAX_PROMPT_LENGTH) {
-    prompt = prompt.slice(0, MAX_PROMPT_LENGTH);
+    const footerLen = footer.length + 1;
+    prompt = prompt.slice(0, MAX_PROMPT_LENGTH - footerLen) + '\n' + footer;
   }
 
   return prompt;
@@ -68,7 +70,8 @@ export function buildQueryParsePrompt(
   let prompt = `${header}\n${inputLine}${historyPart}\n感念:\n${reflLines}\n${footer}`;
 
   if (prompt.length > MAX_PROMPT_LENGTH) {
-    prompt = prompt.slice(0, MAX_PROMPT_LENGTH);
+    const footerLen = footer.length + 1;
+    prompt = prompt.slice(0, MAX_PROMPT_LENGTH - footerLen) + '\n' + footer;
   }
 
   return prompt;

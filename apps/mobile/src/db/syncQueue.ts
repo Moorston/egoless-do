@@ -2,6 +2,8 @@
 import type { SyncEntity } from '@egoless-do/core';
 import { openDatabase } from './schema';
 
+let _enqueueMutex: Promise<void> = Promise.resolve();
+
 export interface SyncQueueItem {
   id: number;
   entity: SyncEntity;
@@ -11,24 +13,32 @@ export interface SyncQueueItem {
   created_at: number;
 }
 
-/** Enqueue a change for later sync. Deduplicates by (entity, entity_id). */
-export async function enqueueChange(
+/** Enqueue a change for later sync. Deduplicates by (entity, entity_id). Serialized via mutex. */
+export function enqueueChange(
   entity: SyncEntity,
   entityId: string,
   operation: 'upsert' | 'delete',
   payload: unknown,
 ): Promise<void> {
-  const db = await openDatabase();
-  // Use individual statements instead of withTransactionAsync to avoid
-  // "cannot start a transaction within a transaction" when called concurrently
-  await db.runAsync(
-    'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
-    [entity, entityId],
-  );
-  await db.runAsync(
-    'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at) VALUES (?, ?, ?, ?, ?)',
-    [entity, entityId, operation, JSON.stringify(payload), Date.now()],
-  );
+  const result = _enqueueMutex.then(async () => {
+    try {
+      const db = await openDatabase();
+      await db.runAsync(
+        'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
+        [entity, entityId],
+      );
+      await db.runAsync(
+        'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at) VALUES (?, ?, ?, ?, ?)',
+        [entity, entityId, operation, JSON.stringify(payload), Date.now()],
+      );
+    } catch (err) {
+      console.error('[syncQueue] enqueue failed:', err);
+      throw err;
+    }
+  });
+  // Decouple: swallow rejection on the mutex chain so subsequent callers aren't poisoned
+  _enqueueMutex = result.catch(() => {});
+  return result;
 }
 
 /** Drain up to `limit` items from the queue, ordered by creation time. */

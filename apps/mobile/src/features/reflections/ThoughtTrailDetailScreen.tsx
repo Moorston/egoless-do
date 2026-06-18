@@ -28,7 +28,8 @@ export default function ThoughtTrailDetailScreen() {
   const P = TH.primary;
   const route = useRoute();
   const nav = useNavigation();
-  const { trailId } = route.params as { trailId: string };
+  const trailId = (route.params as any)?.trailId;
+  if (!trailId) return null;
 
   const {
     trail, overview, timelineItems, links, reflections, trailNotes,
@@ -125,8 +126,8 @@ export default function ThoughtTrailDetailScreen() {
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      if (trail?.insightCache) await handleGenerateInsight();
-      if (trail?.reviewCache) await handleGenerateReview();
+      if (trail?.reflectionIds?.length) await handleGenerateInsight();
+      await handleGenerateReview();
     } finally {
       setRefreshing(false);
     }
@@ -137,7 +138,7 @@ export default function ThoughtTrailDetailScreen() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
         <View style={styles.errorContainer}>
-          <Text style={[styles.errorText, { color: TH.sub }]}>思维脉络不存在</Text>
+          <Text style={[styles.errorText, { color: TH.sub }]}>{T('trailNotFound')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -174,7 +175,7 @@ export default function ThoughtTrailDetailScreen() {
         )}
         <View style={styles.headerActions}>
           <TouchableOpacity
-            onPress={() => (nav as any).navigate('RelationMap', { context: { type: 'trail', id: trailId } })}
+            onPress={() => nav.navigate('RelationMap', { context: { type: 'trail', id: trailId } })}
             style={styles.headerButton}
           >
             <Network size={20} color={P} />
@@ -196,7 +197,7 @@ export default function ThoughtTrailDetailScreen() {
             onChangeText={setEditDesc}
             onBlur={handleFinishEditDesc}
             onSubmitEditing={handleFinishEditDesc}
-            placeholder="添加描述..."
+            placeholder={T('thoughtTrailDescPlaceholder')}
             placeholderTextColor={TH.sub}
             style={[styles.descInput, { color: TH.text, borderColor: P, backgroundColor: TH.card }]}
             autoFocus
@@ -214,13 +215,13 @@ export default function ThoughtTrailDetailScreen() {
       {overview && (
         <View style={styles.overviewRow}>
           <Text style={[styles.overviewText, { color: TH.sub }]} numberOfLines={1}>
-            {overview.reflectionCount} 感念 · {overview.noteCount} 笔记 · {overview.daySpan} 天 {overview.moodChanges.length > 0 ? `· ${overview.moodChanges.join('→')}` : ''}
+            {overview.reflectionCount} {T('trailOverviewReflections')} · {overview.noteCount} {T('trailOverviewNotes')} · {overview.daySpan} {T('trailOverviewDays')} {overview.moodChanges.length > 0 ? `· ${overview.moodChanges.join('→')}` : ''}
           </Text>
         </View>
       )}
 
       <SegmentBar
-        segments={['感念脉络', '复盘', '计划']}
+        segments={[T('trailTabReflections'), T('trailTabReview'), T('trailTabPlan')]}
         selectedIndex={tabIndex}
         onSelect={setTabIndex}
       />
@@ -274,13 +275,13 @@ export default function ThoughtTrailDetailScreen() {
             ) : (
               <View style={styles.emptyNotes}>
                 <Text style={[styles.emptyNotesText, { color: TH.sub }]}>
-                  暂无复盘记录
+                  {T('trailReviewEmpty')}
                 </Text>
                 <TouchableOpacity
                   style={[styles.emptyNotesButton, { backgroundColor: P }]}
                   onPress={() => handleWriteNote()}
                 >
-                  <Text style={styles.emptyNotesButtonText}>开始复盘</Text>
+                  <Text style={styles.emptyNotesButtonText}>{T('trailReviewStart')}</Text>
                 </TouchableOpacity>
               </View>
             )}

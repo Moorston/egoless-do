@@ -6,7 +6,7 @@ import { useAudioPlayer } from 'expo-audio';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
-import { estimateFastingKcal, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION } from '@egoless-do/core';
+import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION } from '@egoless-do/core';
 import {
   Clock, Flame, Globe, Scale,
   AlertTriangle, Check, ChevronRight, StopCircle,
@@ -29,7 +29,8 @@ export default function FastingScreen() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const bellPlayedRef = useRef(false);
   const bellPlayer = useAudioPlayer(BELL_FILE);
-  bellPlayer.volume = 0.5;
+
+  useEffect(() => { bellPlayer.volume = 0.5; }, [bellPlayer]);
 
   useEffect(() => {
     if (store.activeFasting) {
@@ -44,7 +45,11 @@ export default function FastingScreen() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [store.activeFasting?.id]);
 
-  const pct  = useMemo(() => store.activeFasting ? Math.min(elapsed / (store.activeFasting.targetHours * 3600), 1) : 0, [store.activeFasting, elapsed]);
+  const pct  = useMemo(() => {
+    if (!store.activeFasting) return 0;
+    const divisor = (store.activeFasting.targetHours ?? 8) * 3600;
+    return divisor > 0 ? Math.min(elapsed / divisor, 1) : 0;
+  }, [store.activeFasting, elapsed]);
   const kcal = useMemo(() => estimateFastingKcal(elapsed / 3600, store.userProfile.weight ?? 70, store.userProfile.gender ?? 'male', store.userProfile.age ?? 30), [elapsed, store.userProfile]);
 
   useEffect(() => {
@@ -52,10 +57,10 @@ export default function FastingScreen() {
       bellPlayedRef.current = true;
       try { bellPlayer.seekTo(0); bellPlayer.play(); } catch {}
     }
-  }, [pct]);
+  }, [pct, bellPlayer]);
 
   const totalFastHours = useMemo(() => {
-    const totalSec = (store.fastingHistory ?? []).reduce((sum, f) => {
+    const totalSec = (store.fastingHistory ?? []).filter(f => !f.deleted).reduce((sum, f) => {
       const s = f.startedAt ?? 0;
       const e = f.endedAt ?? 0;
       return sum + (e > 0 ? (e - s) / 1000 : 0);
@@ -64,17 +69,24 @@ export default function FastingScreen() {
   }, [store.fastingHistory]);
 
   const fastingDates = useMemo(() => {
-    const history = store.fastingHistory ?? [];
+    const history = (store.fastingHistory ?? []).filter(f => !f.deleted);
     if (!history.length) return [] as string[];
     return [...new Set(history.map(f => {
-      const d = new Date(f.startedAt ?? 0);
-      return d.toISOString().slice(0, 10);
-    }))].sort();
+      if (!f.startedAt) return null;
+      const d = new Date(f.startedAt);
+      if (isNaN(d.getTime())) return null;
+      return dateStr(d);
+    }).filter(Boolean as unknown as <T>(x: T) => x is NonNullable<T>))].sort();
   }, [store.fastingHistory]);
 
   const currentFastingStreak = useMemo(() => {
     if (!fastingDates.length) return 0;
     const reversed = [...fastingDates].reverse();
+    const todayStr = dateStr();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = dateStr(yesterday);
+    if (reversed[0] !== todayStr && reversed[0] !== yesterdayStr) return 0;
     let streak = 1;
     for (let i = 1; i < reversed.length; i++) {
       const prev = new Date(reversed[i - 1]);
@@ -112,7 +124,7 @@ export default function FastingScreen() {
             {/* Stats 3 columns */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.fastingHistory ?? []).length}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.fastingHistory ?? []).filter(f => !f.deleted).length}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('fastTotal')}</Text>
               </View>
@@ -147,7 +159,7 @@ export default function FastingScreen() {
               </View>
             </View>
             {/* Global fasting entry */}
-            <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: 'Globe', title: `${T('linkWorld')} — ${T('globalFasting')}` })}
+            <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('globalFasting')}` })}
               style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.2)' }}>
               <Globe size={18} color="rgba(255,255,255,.8)" />
               <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600', flex: 1 }}>{T('linkWorld')} — {T('globalFasting')}</Text>
@@ -177,7 +189,7 @@ export default function FastingScreen() {
                 }} />
                 <View style={{ alignItems:'center' }}>
                 <Text style={{ fontSize:26, fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
-                <Text style={{ fontSize:16, color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize:22 }}>{store.activeFasting!.targetHours}h</Text></Text>
+                <Text style={{ fontSize:16, color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize:22 }}>{store.activeFasting?.targetHours}h</Text></Text>
                 </View>
               </View>
               <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:16 }}>
@@ -185,7 +197,7 @@ export default function FastingScreen() {
                 <Flame size={16} color={COLORS.ORANGE} />
                 <Text style={{ color:TH.sub, fontSize:22 }}>{Math.round(pct * 100)}%</Text>
               </View>
-              <PrimaryButton label={T('stopFasting')} onPress={() => store.stopFasting({ weight: store.userProfile.weight, gender: store.userProfile.gender, age: store.userProfile.age })} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
+              <PrimaryButton label={T('stopFasting')} onPress={() => store.stopFasting({ weight: store.userProfile?.weight, gender: store.userProfile?.gender, age: store.userProfile?.age })} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
             </>
           ) : (
             <View style={{ gap:10, width:'100%' }}>

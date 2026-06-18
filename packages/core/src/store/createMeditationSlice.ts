@@ -7,22 +7,26 @@ export function createMeditationSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<MeditationSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     totalMedMinutes: 0,
     medHistory: [],
 
     addMedMinutes(min: number) {
-      const { totalMedMinutes, medHistory } = get();
-      const result = addMedMinutesToList(medHistory ?? [], totalMedMinutes ?? 0, min);
-      set({ totalMedMinutes: result.total, medHistory: result.history });
-      const entry = result.history[0];
+      const { medHistory } = get();
+      const result = addMedMinutesToList(medHistory ?? [], get().totalMedMinutes, min);
+      // Reconcile totalMedMinutes from history to avoid drift from sync-deleted entries
+      const reconciledTotal = result.history.filter(m => !m.deleted).reduce((s, m) => s + (parseInt(m.dur) || 0), 0);
+      set({ totalMedMinutes: reconciledTotal, medHistory: result.history });
+      const today = new Date();
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      const entry = result.history.find(m => m.date === todayStr && !m.deleted);
       if (entry) adapter.persistChange('meditation', entry.date, entry).catch(console.error);
       onSync?.();
     },
 
     calculateTotalMedMin() {
       const medHistory = get().medHistory;
-      const total = (medHistory ?? []).reduce((s, m) => {
+      const total = (medHistory ?? []).filter(m => !m.deleted).reduce((s, m) => {
         const n = parseInt(m.dur) || 0;
         return s + n;
       }, 0);

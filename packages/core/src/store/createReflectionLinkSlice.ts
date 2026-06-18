@@ -5,7 +5,7 @@ import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
 
 export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreator<ReflectionLinkSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     reflectionLinks: [],
 
     createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => {
@@ -28,18 +28,22 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
     },
 
     updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => {
+      const existing = get().reflectionLinks?.find(l => l.id === id && !l.deleted);
+      if (!existing) return;
       set(s => ({
         reflectionLinks: (s.reflectionLinks ?? []).map(l =>
-          l.id === id ? { ...l, ...patch, updatedAt: Date.now() } : l
+          l.id === id && !l.deleted ? { ...l, ...patch, updatedAt: Date.now() } : l
         ),
       }));
-      const link = get().reflectionLinks.find(l => l.id === id);
+      const link = get().reflectionLinks.find(l => l.id === id && !l.deleted);
       if (link) adapter?.persistChange('reflectionLink', id, link).catch(console.error);
     },
 
     deleteReflectionLink: (id: string) => {
       set(s => ({
-        reflectionLinks: (s.reflectionLinks ?? []).filter(l => l.id !== id),
+        reflectionLinks: (s.reflectionLinks ?? []).map(l =>
+          l.id === id ? { ...l, deleted: true, updatedAt: Date.now() } : l
+        ),
       }));
       adapter?.markDeleted('reflectionLink', id).catch(console.error);
     },
@@ -63,13 +67,14 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
     },
 
     deleteLinksByReflection: (reflectionId: string) => {
-      const linksToDelete = (get().reflectionLinks ?? []).filter(l => 
+      const linksToDelete = (get().reflectionLinks ?? []).filter(l =>
         !l.deleted && (l.fromId === reflectionId || l.toId === reflectionId)
       );
-      
+
       set(s => ({
-        reflectionLinks: (s.reflectionLinks ?? []).filter(l => 
-          l.fromId !== reflectionId && l.toId !== reflectionId
+        reflectionLinks: (s.reflectionLinks ?? []).map(l =>
+          (l.fromId === reflectionId || l.toId === reflectionId) && !l.deleted
+            ? { ...l, deleted: true, updatedAt: Date.now() } : l
         ),
       }));
 

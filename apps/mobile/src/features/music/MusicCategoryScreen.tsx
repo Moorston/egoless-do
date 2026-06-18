@@ -7,7 +7,6 @@ import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useMusicStore } from './useMusicStore';
-import { useAudioEngine } from './useAudioEngine';
 import { useRootNavigation } from '../../navigation/hooks';
 import type { RootStackParamList } from '../../navigation/hooks';
 import TrackListItem from './TrackListItem';
@@ -22,9 +21,6 @@ export default function MusicCategoryScreen() {
   const route = useRoute<Route>();
   const { category } = route.params;
   const P = TH.primary;
-
-  // 挂载音频引擎
-  useAudioEngine();
 
   const currentTrack = useMusicStore(s => s.currentTrack);
   const isPlaying = useMusicStore(s => s.isPlaying);

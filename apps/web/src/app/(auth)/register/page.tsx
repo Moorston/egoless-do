@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useWebStore } from '../../../store/useWebStore';
@@ -23,6 +23,8 @@ export default function RegisterPage() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const register = useWebStore(s => s.register);
   const router = useRouter();
+
+  useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current); }, []);
 
   const startCooldown = useCallback(() => {
     setCooldown(COOLDOWN);

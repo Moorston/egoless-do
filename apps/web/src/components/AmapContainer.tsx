@@ -23,9 +23,11 @@ export default function AmapContainer({
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
+    let cancelled = false;
 
     loadAMap().then((AMap) => {
-      const map = new AMap.Map(containerRef.current!, {
+      if (cancelled || !containerRef.current) return;
+      const map = new AMap.Map(containerRef.current, {
         zoom,
         center,
         resizeEnable: true,
@@ -37,6 +39,7 @@ export default function AmapContainer({
     }).catch(err => console.warn('AMap load failed:', err));
 
     return () => {
+      cancelled = true;
       mapRef.current?.destroy();
       mapRef.current = null;
     };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform,
 } from 'react-native';
@@ -52,6 +52,7 @@ export default function SettingsScreen() {
   // Sync state
   const [online, setOnline]       = useState(true);
   const [syncing, setSyncing]     = useState(false);
+  const syncingRef = useRef(false);
   const [lastSyncAt, setLastSyncAt] = useState<number | null>(null);
   const [pendingCount, setPendingCount] = useState(0);
   const syncTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -64,16 +65,9 @@ export default function SettingsScreen() {
     return () => unsub();
   }, []);
 
-  // Periodic sync (15 min)
-  useEffect(() => {
-    syncTimerRef.current = setInterval(() => {
-      if (online) runSync();
-    }, 15 * 60 * 1000);
-    return () => { if (syncTimerRef.current) clearInterval(syncTimerRef.current); };
-  }, [online]);
-
-  const runSync = async () => {
-    if (syncing) return;
+  const runSync = useCallback(async () => {
+    if (syncingRef.current) return;
+    syncingRef.current = true;
     setSyncing(true);
     try {
       const { runSync: runSyncService } = await import('../sync/SyncService');
@@ -83,8 +77,19 @@ export default function SettingsScreen() {
     } catch (e) {
       console.warn('[Sync] Error:', e);
     }
+    syncingRef.current = false;
     setSyncing(false);
-  };
+  }, []);
+
+  // Periodic sync (15 min)
+  const onlineRef = useRef(online);
+  useEffect(() => { onlineRef.current = online; }, [online]);
+  useEffect(() => {
+    syncTimerRef.current = setInterval(() => {
+      if (onlineRef.current) runSync();
+    }, 15 * 60 * 1000);
+    return () => { if (syncTimerRef.current) clearInterval(syncTimerRef.current); };
+  }, [runSync]);
 
   const triggerSync = () => {
     if (!online) return;
@@ -98,16 +103,18 @@ export default function SettingsScreen() {
         {
           label: T('settingsRemindOn'), icon: <Bell size={20} color={P} />,
           right: <Toggle on={store.remindEnabled} onChange={async () => {
-            const next = !store.remindEnabled;
-            if (next) {
-              const granted = await requestNotificationPermission();
-              if (!granted) { Alert.alert('需要通知权限', '请在系统设置中允许通知'); return; }
-              const [h, m] = store.remindTime.split(':').map(Number);
-              await scheduleDailyReminder(h, m);
-            } else {
-              await cancelAllReminders();
-            }
-            store.setRemindEnabled(next);
+            try {
+              const next = !store.remindEnabled;
+              if (next) {
+                const granted = await requestNotificationPermission();
+                if (!granted) { Alert.alert(T('notifPermDenied'), T('notifPermDeniedMsg')); return; }
+                const [h, m] = store.remindTime.split(':').map(Number);
+                await scheduleDailyReminder(h, m);
+              } else {
+                await cancelAllReminders();
+              }
+              store.setRemindEnabled(next);
+            } catch (e) { console.error('[Settings] Reminder toggle error:', e); }
           }} />,
         },
         {
@@ -223,8 +230,8 @@ export default function SettingsScreen() {
           ),
         },
         {
-          label: 'AI模型配置',
-          sub: '配置云端AI功能',
+          label: T('settingsAIModel'),
+          sub: T('settingsAIModelDesc'),
           icon: <Brain size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('AISettings' as never),
@@ -240,21 +247,23 @@ export default function SettingsScreen() {
           sub: healthSyncEnabled ? T('settingsConnected') : T('settingsNotEnabled'),
           icon: <Heart size={20} color={P} />,
           right: <Toggle on={healthSyncEnabled} onChange={async () => {
-            if (!healthSyncEnabled) {
-              const { isHealthAvailable, requestHealthPermissions } = await import('../health/HealthService');
-              if (!isHealthAvailable()) {
-                Alert.alert(T('healthUnavailable'), T('healthUnavailableMsg'));
-                return;
+            try {
+              if (!healthSyncEnabled) {
+                const { isHealthAvailable, requestHealthPermissions } = await import('../health/HealthService');
+                if (!isHealthAvailable()) {
+                  Alert.alert(T('healthUnavailable'), T('healthUnavailableMsg'));
+                  return;
+                }
+                const granted = await requestHealthPermissions();
+                if (!granted) {
+                  Alert.alert(T('healthPermDenied'), T('healthPermDeniedMsg'));
+                  return;
+                }
+                setHealthSyncEnabled(true);
+              } else {
+                setHealthSyncEnabled(false);
               }
-              const granted = await requestHealthPermissions();
-              if (!granted) {
-                Alert.alert(T('healthPermDenied'), T('healthPermDeniedMsg'));
-                return;
-              }
-              setHealthSyncEnabled(true);
-            } else {
-              setHealthSyncEnabled(false);
-            }
+            } catch (e) { console.error('[Settings] Health sync toggle error:', e); }
           }} />,
           last: true,
         },
@@ -421,7 +430,7 @@ export default function SettingsScreen() {
             <Card style={{ padding: 0 }}>
               <View style={{ paddingHorizontal: 16 }}>
                 <TouchableOpacity
-                  onPress={() => { store.logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
+                  onPress={async () => { await store.logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16 }}
                 >
                   <LogOut size={18} color="#EF4444" style={{ marginRight: 12 }} />
@@ -446,12 +455,14 @@ export default function SettingsScreen() {
         visible={showTimePicker}
         value={timeEdit}
         onConfirm={async (time) => {
-          store.setRemindTime(time);
-          setShowTimePicker(false);
-          if (store.remindEnabled) {
-            const [h, m] = time.split(':').map(Number);
-            await scheduleDailyReminder(h, m);
-          }
+          try {
+            store.setRemindTime(time);
+            setShowTimePicker(false);
+            if (store.remindEnabled) {
+              const [h, m] = time.split(':').map(Number);
+              await scheduleDailyReminder(h, m);
+            }
+          } catch (e) { console.error('[Settings] Time picker error:', e); }
         }}
         onClose={() => setShowTimePicker(false)}
       />

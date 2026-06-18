@@ -99,7 +99,7 @@ export default function RelationMapView() {
   const nav = useNavigation();
   const route = useRoute();
 
-  const context = (route.params as any)?.context as RelationContext | undefined;
+  const context = route.params?.context as RelationContext | undefined;
 
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -160,7 +160,7 @@ export default function RelationMapView() {
     if (context) {
       switch (context.type) {
         case 'plan': {
-          const plan = (store.plans ?? []).find(p => p.id === context.id);
+          const plan = (store.plans ?? []).find(p => !p.deleted && p.id === context.id);
           if (!plan) break;
           const planNode = addNode(plan.id, 'plan', plan.name, plan, VB_W / 2, VB_H / 2);
           contextNode = planNode;
@@ -193,12 +193,12 @@ export default function RelationMapView() {
           break;
         }
         case 'habit': {
-          const habit = (store.habits ?? []).find(h => h.id === context.id);
+          const habit = (store.habits ?? []).find(h => !h.deleted && h.id === context.id);
           if (!habit) break;
           const habitNode = addNode(habit.id, 'habit', habit.name, habit, VB_W / 2, VB_H / 2);
           contextNode = habitNode;
           const tagReflections = (store.reflections ?? []).filter(r =>
-            !r.deleted && r.tags.some(t => t.includes(habit.name))
+            !r.deleted && r.tags.some(t => t === `#${habit.name}` || t === habit.name)
           );
           tagReflections.forEach(reflection => {
             addNode(reflection.id, 'reflection', reflection.content, reflection);
@@ -219,7 +219,7 @@ export default function RelationMapView() {
           break;
         }
         case 'reflection': {
-          const reflection = (store.reflections ?? []).find(r => r.id === context.id);
+          const reflection = (store.reflections ?? []).find(r => !r.deleted && r.id === context.id);
           if (!reflection) break;
           const reflectionNode = addNode(reflection.id, 'reflection', reflection.content, reflection, VB_W / 2, VB_H / 2);
           contextNode = reflectionNode;
@@ -265,7 +265,7 @@ export default function RelationMapView() {
           break;
         }
         case 'trail': {
-          const trail = (store.thoughtTrails ?? []).find(t => t.id === context.id);
+          const trail = (store.thoughtTrails ?? []).find(t => !t.deleted && t.id === context.id);
           if (!trail) break;
           const trailNode = addNode(trail.id, 'trail', trail.name, trail, VB_W / 2, VB_H / 2);
           contextNode = trailNode;
@@ -393,7 +393,7 @@ export default function RelationMapView() {
         (nav as any).navigate('ThoughtTrailDetail', { trailId: node.id });
         break;
       case 'planItem': {
-        const pi = (store.planItems ?? []).find(i => i.id === node.id);
+        const pi = (store.planItems ?? []).find(i => !i.deleted && i.id === node.id);
         if (pi) (nav as any).navigate('PlanDetail', { planId: pi.planId });
         break;
       }

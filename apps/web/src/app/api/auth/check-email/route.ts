@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json({ available: false, error: '请输入有效的邮箱地址' });
+      return NextResponse.json({ available: false, error: '请输入有效的邮箱地址' }, { status: 400 });
     }
 
     const pb = await getAdminPb();
@@ -23,10 +23,10 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ available: true });
       }
       console.error('[check-email] error:', err?.status, err?.message);
-      return NextResponse.json({ available: false, error: '检查失败' });
+      return NextResponse.json({ available: false, error: '检查失败' }, { status: 500 });
     }
   } catch (err) {
     console.error('[check-email] unexpected error:', err);
-    return NextResponse.json({ available: false, error: '检查失败' });
+    return NextResponse.json({ available: false, error: '检查失败' }, { status: 500 });
   }
 }

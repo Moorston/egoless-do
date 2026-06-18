@@ -15,6 +15,7 @@ export function useExerciseRest() {
   }, [isResting, restSec]);
 
   const startRest = useCallback((seconds = 60) => {
+    if (seconds <= 0) return;
     setIsResting(true);
     setRestSec(seconds);
   }, []);

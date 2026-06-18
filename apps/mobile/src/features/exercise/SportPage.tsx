@@ -70,17 +70,10 @@ export default function SportPage() {
   }, [audio, rest]);
 
   const sets = useExerciseSets(onBellAndRest);
-  const targets = useExerciseTargets({
-    sportName, sportType,
-    mode: timer.page === 'prep' ? 'free' : 'free', // will be set properly below
-    targetType: '', targetValue: 0,
-    sec: timer.sec, distKm: 0, calories: 0, totalReps: sets.totalReps,
-    playBell: audio.playBell,
-  });
 
   // ── Mode & target state ──
   const [mode, setMode] = useState<'free' | 'target'>('free');
-  const presets = TARGET_PRESETS[sportType];
+  const presets = TARGET_PRESETS[sportType] ?? {};
   const availableTargetTypes = Object.keys(presets) as Array<'distance' | 'time' | 'calories' | 'reps'>;
   const [targetType, setTargetType] = useState<string>(availableTargetTypes[0]);
   const [targetValue, setTargetValue] = useState(presets[availableTargetTypes[0]]?.[0]?.value ?? 0);
@@ -96,8 +89,8 @@ export default function SportPage() {
   const [coords, setCoords] = useState<{ latitude: number; longitude: number; ts: number }[]>([]);
   const [initialPos, setInitialPos] = useState({ latitude: 39.9042, longitude: 116.4074 });
   const [segmentPaces, setSegmentPaces] = useState<number[]>([]);
-  const [lastKmMark, setLastKmMark] = useState(0);
-  const [lastKmTs, setLastKmTs] = useState(0);
+  const lastKmMarkRef = useRef(0);
+  const lastKmTsRef = useRef(0);
   const locationSub = useRef<any>(null);
   const mapRef = useRef<any>(null);
   const pauseHoldAnim = useRef(new Animated.Value(1)).current;
@@ -145,6 +138,7 @@ export default function SportPage() {
 
   // ── GPS tracking ──
   const startGpsTracking = useCallback(async () => {
+    if (locationSub.current) return;
     const { status } = await reqLocPerm();
     if (status !== 'granted') return;
     locationSub.current = await watchPos(loc => {
@@ -165,32 +159,37 @@ export default function SportPage() {
       startGpsTracking();
     }
     return () => { stopGpsTracking(); };
-  }, [timer.page, timer.active]);
+  }, [timer.page, timer.active, isGpsSport, startGpsTracking, stopGpsTracking]);
 
   // Init GPS position
   useEffect(() => {
+    let mounted = true;
     if (isGpsSport) {
       (async () => {
-        const { status } = await reqLocPerm();
-        if (status === 'granted') {
-          const loc = await getCurPos();
-          if (loc) setInitialPos({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
-        }
+        try {
+          const { status } = await reqLocPerm();
+          if (!mounted) return;
+          if (status === 'granted') {
+            const loc = await getCurPos();
+            if (mounted && loc) setInitialPos({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
+          }
+        } catch (e) { console.warn('[SportPage] Location error:', e); }
       })();
     }
+    return () => { mounted = false; };
   }, []);
 
   // Segment pace tracking
   useEffect(() => {
     if (!isGpsSport || timer.page !== 'active') return;
     const currentKm = Math.floor(distKm);
-    if (currentKm > lastKmMark && lastKmMark >= 0) {
-      const segTime = timer.sec - lastKmTs;
+    if (currentKm > lastKmMarkRef.current && lastKmMarkRef.current >= 0) {
+      const segTime = timer.sec - lastKmTsRef.current;
       setSegmentPaces(prev => [...prev, segTime]);
-      setLastKmMark(currentKm);
-      setLastKmTs(timer.sec);
+      lastKmMarkRef.current = currentKm;
+      lastKmTsRef.current = timer.sec;
     }
-  }, [distKm]);
+  }, [distKm, isGpsSport, timer.page, timer.sec]);
 
   // Target/milestone checks
   useEffect(() => {
@@ -199,7 +198,7 @@ export default function SportPage() {
       actualTargets.checkMilestone();
       actualTargets.checkSoftTargetBell();
     }
-  }, [timer.sec, sets.currentSetReps, sets.sets.length]);
+  }, [timer.sec, timer.page, timer.active, sets.currentSetReps, sets.sets.length]);
 
   // Triggers bounce on rep change
   useEffect(() => {
@@ -221,30 +220,39 @@ export default function SportPage() {
     if (isGpsSport) startGpsTracking();
   }, [timer, isGpsSport, startGpsTracking]);
 
+  const savingRef = useRef(false);
   const handleSave = useCallback(() => {
-    stopGpsTracking();
-    const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
-    if (timer.sec > 0 || (finalReps && finalReps > 0)) {
-      const entry = {
-        sportKey: sportName, sportIcon: icon, durationSec: timer.sec,
-        timestamp: Date.now(), isGpsSport,
-        distanceKm: isGpsSport ? distKm : undefined,
-        calories,
-        avgPace: isGpsSport && distKm > 0 ? timer.sec / distKm : undefined,
-        trackPoints: isGpsSport ? coords.map(c => ({ lat: c.latitude, lng: c.longitude, ts: c.ts })) : undefined,
-        segmentPaces: segmentPaces.length > 0 ? segmentPaces : undefined,
-        mode,
-        target: mode === 'target' ? { type: targetType, value: targetValue } : undefined,
-        reps: finalReps,
-        sets: sets.sets.length > 0 ? sets.sets : undefined,
-        met: MET_MAP[sportName],
-      };
-      store.addExercise(entry);
-      if (useAppStore.getState().healthSyncEnabled) {
-        import('../health/HealthService').then(({ writeWorkout }) => {
-          writeWorkout({ ...entry, id: '', updatedAt: 0 }).catch(e => console.warn('[Health] write failed:', e));
-        });
+    if (savingRef.current) return;
+    savingRef.current = true;
+    try {
+      stopGpsTracking();
+      const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
+      if (timer.sec > 0 || (finalReps && finalReps > 0)) {
+        const entry = {
+          sportKey: sportName, sportIcon: icon, durationSec: timer.sec,
+          timestamp: Date.now(), isGpsSport,
+          distanceKm: isGpsSport ? distKm : undefined,
+          calories,
+          avgPace: isGpsSport && distKm > 0 ? timer.sec / distKm : undefined,
+          trackPoints: isGpsSport ? coords.map(c => ({ lat: c.latitude, lng: c.longitude, ts: c.ts })) : undefined,
+          segmentPaces: segmentPaces.length > 0 ? segmentPaces : undefined,
+          mode,
+          target: mode === 'target' ? { type: targetType, value: targetValue } : undefined,
+          reps: finalReps,
+          sets: sets.sets.length > 0 ? sets.sets : undefined,
+          met: MET_MAP[sportName],
+        };
+        store.addExercise(entry);
+        if (useAppStore.getState().healthSyncEnabled) {
+          import('../health/HealthService').then(({ writeWorkout }) => {
+            return writeWorkout({ ...entry, id: '', updatedAt: 0 });
+          }).catch(e => console.warn('[Health] write failed:', e));
+        }
       }
+    } catch (e) {
+      console.error('[SportPage] save failed:', e);
+      savingRef.current = false;
+      return;
     }
     nav.goBack();
   }, [timer.sec, sets, sportName, icon, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, store, nav]);
@@ -288,7 +296,7 @@ export default function SportPage() {
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
         handleSave={handleSave} onGoBack={() => nav.goBack()}
-        exerciseLog={store.exerciseLog ?? []}
+        exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
     );
@@ -318,7 +326,7 @@ export default function SportPage() {
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
         handleSave={handleSave} onGoBack={() => nav.goBack()} setPage={timer.setPage}
-        exerciseLog={store.exerciseLog ?? []}
+        exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
     );
@@ -343,7 +351,7 @@ export default function SportPage() {
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
         handleSave={handleSave} onGoBack={() => nav.goBack()}
-        exerciseLog={store.exerciseLog ?? []}
+        exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
     );

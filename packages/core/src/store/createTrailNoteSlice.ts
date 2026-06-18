@@ -4,13 +4,13 @@ import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
 
 export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<TrailNoteSlice> {
-  return (set, get) => ({
+  return (set: any, get: any) => ({
     trailNotes: [],
 
     addTrailNote: (trailId, form) => {
       const id = uid();
       const now = Date.now();
-      const existingNotes = (get().trailNotes ?? []).filter(n => n.trailId === trailId);
+      const existingNotes = (get().trailNotes ?? []).filter(n => n.trailId === trailId && !n.deleted);
       const note: TrailNote = {
         id,
         trailId,
@@ -25,10 +25,9 @@ export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<Tra
         deleted: false,
       };
 
-      set(s => ({ trailNotes: [...(s.trailNotes ?? []), note] }));
-
-      // Add note ID to trail's noteIds
+      // Add note and link to trail atomically
       set(s => ({
+        trailNotes: [...(s.trailNotes ?? []), note],
         thoughtTrails: (s.thoughtTrails ?? []).map(t =>
           t.id === trailId
             ? { ...t, noteIds: [...(t.noteIds ?? []), note.id], updatedAt: Date.now() }
@@ -36,7 +35,7 @@ export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<Tra
         ),
       }));
 
-      const trail = get().thoughtTrails.find(t => t.id === trailId);
+      const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
       if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
       adapter?.persistChange('trailNote', note.id, note).catch(console.error);
 
@@ -49,29 +48,27 @@ export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<Tra
           n.id === noteId ? { ...n, ...patch, updatedAt: Date.now() } : n
         ),
       }));
-      const note = get().trailNotes.find(n => n.id === noteId);
+      const note = get().trailNotes.find(n => n.id === noteId && !n.deleted);
       if (note) adapter?.persistChange('trailNote', noteId, note).catch(console.error);
     },
 
     deleteTrailNote: (noteId) => {
-      const note = (get().trailNotes ?? []).find(n => n.id === noteId);
+      const note = (get().trailNotes ?? []).find(n => n.id === noteId && !n.deleted);
       if (!note) return;
 
-      // Remove note ID from trail's noteIds
+      // Unlink from trail and soft-delete atomically
       set(s => ({
         thoughtTrails: (s.thoughtTrails ?? []).map(t =>
           t.id === note.trailId
             ? { ...t, noteIds: (t.noteIds ?? []).filter((nid: string) => nid !== noteId), updatedAt: Date.now() }
             : t
         ),
+        trailNotes: (s.trailNotes ?? []).map(n =>
+          n.id === noteId ? { ...n, deleted: true, updatedAt: Date.now() } : n
+        ),
       }));
 
-      // Delete the note
-      set(s => ({
-        trailNotes: (s.trailNotes ?? []).filter(n => n.id !== noteId),
-      }));
-
-      const trail = get().thoughtTrails.find(t => t.id === note.trailId);
+      const trail = get().thoughtTrails.find(t => t.id === note.trailId && !t.deleted);
       if (trail) adapter?.persistChange('thoughtTrail', note.trailId, trail).catch(console.error);
       adapter?.markDeleted('trailNote', noteId).catch(console.error);
     },

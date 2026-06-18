@@ -22,22 +22,22 @@ export default function BottomNav({ tabs, activeTab, onTabChange }: {
   const P = TH.primary;
   const T = (k: string) => t(k, language);
 
-  const btnTabs = tabs.filter(t => BOTTOM_NAV_KEYS.includes(t.key));
+  const btnTabs = tabs.filter(tab => BOTTOM_NAV_KEYS.includes(tab.key));
 
   return (
     <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%',
       background: TH.navBg, backdropFilter: 'blur(20px)', borderTop: `1px solid ${TH.border}`,
       display: 'flex', padding: '8px 0 18px', zIndex: 50 }}>
-      {btnTabs.map((t) => {
-        const idx = tabs.findIndex(x => x.key === t.key);
+      {btnTabs.map((tab) => {
+        const idx = tabs.findIndex(x => x.key === tab.key);
         const isActive = activeTab === idx;
         return (
-          <button key={t.key} onClick={() => onTabChange(idx)}
+          <button key={tab.key} onClick={() => onTabChange(idx)}
             style={{ flex: 1, border: 'none', background: 'transparent', cursor: 'pointer',
               color: isActive ? P : TH.sub,
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, padding: '4px 0' }}>
-            <t.Icon size={20} />
-            <span style={{ fontSize: FONT_BODY, fontWeight: isActive ? 700 : 500 }}>{T(t.labelKey)}</span>
+            <tab.Icon size={20} />
+            <span style={{ fontSize: FONT_BODY, fontWeight: isActive ? 700 : 500 }}>{T(tab.labelKey)}</span>
           </button>
         );
       })}

@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
   }
 
+  const authToken = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
@@ -38,8 +39,12 @@ export async function POST(req: NextRequest) {
     if (!platform || !token) {
       return NextResponse.json({ error: '缺少参数' }, { status: 400 });
     }
+    if (!['web', 'android', 'ios'].includes(platform)) {
+      return NextResponse.json({ error: '不支持的平台类型' }, { status: 400 });
+    }
 
     const pb = getPb();
+    if (authToken) pb.authStore.save(authToken, null);
 
     // Check if token already exists
     try {
@@ -51,8 +56,9 @@ export async function POST(req: NextRequest) {
         platform,
         updated_at: new Date().toISOString(),
       });
-    } catch {
-      // Create new token
+    } catch (lookupErr: any) {
+      if (lookupErr?.status !== 404) throw lookupErr;
+      // Create new token only if not found
       await pb.collection('push_tokens').create({
         user_id: auth.userId,
         platform,
@@ -62,7 +68,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : '注册推送令牌失败' }, { status: 500 });
+    return NextResponse.json({ error: '注册推送令牌失败' }, { status: 500 });
   }
 }
 
@@ -73,6 +79,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: '请求过于频繁，请稍后再试' }, { status: 429 });
   }
 
+  const authToken = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
   if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
@@ -82,8 +89,17 @@ export async function PUT(req: NextRequest) {
     if (!targetUserId || !payload) {
       return NextResponse.json({ error: '缺少参数' }, { status: 400 });
     }
+    if (typeof payload.title !== 'string' || typeof payload.body !== 'string') {
+      return NextResponse.json({ error: 'payload.title 和 payload.body 必须是字符串' }, { status: 400 });
+    }
+
+    // 只允许给自己发推送通知
+    if (targetUserId !== auth.userId) {
+      return NextResponse.json({ error: '无权给其他用户发送推送' }, { status: 403 });
+    }
 
     const pb = getPb();
+    if (authToken) pb.authStore.save(authToken, null);
 
     // Get all push tokens for target user
     const tokens = await pb.collection('push_tokens').getFullList({
@@ -112,8 +128,12 @@ export async function PUT(req: NextRequest) {
       })
     );
 
-    // Clean up failed tokens
-    const failedTokens = tokens.filter((_, i) => results[i].status === 'rejected');
+    // Clean up permanently invalid tokens (not transient failures)
+    const failedTokens = tokens.filter((_, i) => {
+      if (results[i].status !== 'rejected') return false;
+      const msg = (results[i] as PromiseRejectedResult).reason?.message ?? '';
+      return msg.includes('NotRegistered') || msg.includes('InvalidRegistration') || msg.includes('404');
+    });
     if (failedTokens.length > 0) {
       await Promise.all(
         failedTokens.map((token) =>
@@ -128,7 +148,7 @@ export async function PUT(req: NextRequest) {
       failed: failedTokens.length,
     });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : '发送推送通知失败' }, { status: 500 });
+    return NextResponse.json({ error: '发送推送通知失败' }, { status: 500 });
   }
 }
 
@@ -159,12 +179,24 @@ async function sendFCM(token: string, payload: PushPayload): Promise<void> {
   if (!response.ok) {
     throw new Error(`FCM request failed: ${response.status}`);
   }
+
+  // Check for per-recipient errors in the response body
+  const body = await response.json().catch(() => null);
+  if (body?.results) {
+    for (const result of body.results) {
+      if (result.error) {
+        throw new Error(`FCM recipient error: ${result.error}`);
+      }
+    }
+  }
 }
 
 async function sendAPNs(token: string, payload: PushPayload): Promise<void> {
-  throw new Error('APNs not implemented yet');
+  // TODO: implement APNs support
+  console.warn('[Push] APNs not yet implemented, skipping token:', token.slice(0, 8) + '...');
 }
 
 async function sendWebPush(token: string, payload: PushPayload): Promise<void> {
-  throw new Error('WebPush not implemented yet');
+  // TODO: implement WebPush support
+  console.warn('[Push] WebPush not yet implemented, skipping token:', token.slice(0, 8) + '...');
 }

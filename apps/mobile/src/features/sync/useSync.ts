@@ -29,6 +29,8 @@ export function useSync() {
         planItemCheckins: 'planItemCheckins', dailyCustomTodos: 'dailyCustomTodos',
         dailyTodoHistory: 'dailyTodoHistory', graceHistory: 'graceHistory',
         thoughtTrails: 'thoughtTrails',
+        trailNotes: 'trailNotes', reflectionLinks: 'reflectionLinks',
+        checkinReviews: 'checkinReviews',
       };
       // Explicit PK field per store key (don't guess from field presence)
       const KEY_FIELD: Record<string, string> = {
@@ -132,10 +134,8 @@ export function useSync() {
           return updatedR;
         });
         if (changedReflections.length) {
+          // Only update store — thoughtTrailIds is computed from trail data, not persisted
           useAppStore.setState({ reflections: updated } as any);
-          for (const r of changedReflections) {
-            mobileStorageAdapter.persistChange('reflection', r.id, r).catch(console.error);
-          }
         }
       }
 
@@ -212,7 +212,7 @@ export function useSync() {
       try {
         // One-time migration: move old unsynced records to sync_queue
         if (!_migrationDone) {
-          await migrateToSyncQueue().catch((e) => console.error('[Migration] Error:', e));
+          await migrateToSyncQueue();
           setMigrationDone();
         }
 

@@ -1,10 +1,4 @@
 import type { NextConfig } from 'next';
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-  register: true,
-  skipWaiting: true,
-});
 
 const config: NextConfig = {
   transpilePackages: ['@egoless-do/core', 'pocketbase'],
@@ -12,4 +6,17 @@ const config: NextConfig = {
   output: 'standalone',
 };
 
-export default withPWA(config);
+// next-pwa uses webpack plugins incompatible with Turbopack;
+// only apply in production builds where webpack is used.
+const isProd = process.env.NODE_ENV === 'production';
+let finalConfig: NextConfig = config;
+if (isProd) {
+  const withPWA = require('next-pwa')({
+    dest: 'public',
+    register: true,
+    skipWaiting: true,
+  });
+  finalConfig = withPWA(config);
+}
+
+export default finalConfig;

@@ -24,7 +24,7 @@ export function getIncompleteItems(params: {
   practices: { sit: boolean; stand: boolean; chant: boolean };
   habits: Array<{ name: string; status: string; checkedDates?: string[] }>;
   planItems: Array<{ id: string; name: string }>;
-  planItemCheckins: Array<{ planItemId: string; date: string; done: boolean; linkedModule?: string }>;
+  planItemCheckins: Array<{ planItemId: string; date: string; done: boolean; linkedModule?: string; deleted?: boolean }>;
   today: string;
 }): IncompleteItem[] {
   const { practices, habits, planItems, planItemCheckins, today } = params;
@@ -45,7 +45,7 @@ export function getIncompleteItems(params: {
 
   // Plan items (exclude auto-checked via linkedModule)
   for (const item of planItems) {
-    const checkin = planItemCheckins.find(c => c.planItemId === item.id && c.date === today);
+    const checkin = planItemCheckins.find(c => !c.deleted && c.planItemId === item.id && c.date === today);
     if (!checkin?.done && !checkin?.linkedModule) {
       result.push({ type: 'planItem', name: item.name });
     }
@@ -60,13 +60,13 @@ export function getFoodLogByDate<T extends { timestamp: number; deleted?: boolea
 }
 
 export function computeLongestStreakFromHistory(history: CheckinEntry[]): number {
-  return computeLongestStreakRaw(history.filter(c => c.done).map(c => c.date));
+  return computeLongestStreakRaw(history.filter(c => c.done && !c.deleted).map(c => c.date));
 }
 
 /** Get streak and totalDays for a specific date from history (handles legacy records without totalDays) */
 export function getStatsForDate(history: CheckinEntry[], date: string): { streak: number; totalDays: number } {
-  const record = history.find(c => c.date === date);
-  const doneRecords = history.filter(c => c.done);
+  const record = history.find(c => c.date === date && !c.deleted);
+  const doneRecords = history.filter(c => c.done && !c.deleted);
   const totalDays = record?.totalDays ?? doneRecords.filter(c => c.date <= date).length;
   const streak = record?.streak ?? calculateCheckinStreak(doneRecords.filter(c => c.date <= date).map(c => ({ date: c.date, done: true })), date);
   return { streak, totalDays };
@@ -88,7 +88,7 @@ export function submitCheckinEntry(
   };
   const newHistory = [tempRecord, ...history.filter(c => c.date !== today)];
   const newStreak = calculateCheckinStreak(newHistory);
-  const totalDays = newHistory.filter(c => c.done).length;
+  const totalDays = newHistory.filter(c => c.done && !c.deleted).length;
   const record: CheckinEntry = { ...tempRecord, streak: newStreak, totalDays };
   const finalHistory = [record, ...history.filter(c => c.date !== today)];
   return { record, history: finalHistory, streak: newStreak };
@@ -99,7 +99,7 @@ export interface ParsedCheckinNote {
   userNote: string;
   practices: string[];
   customs: string[];
-  planItems: string[];
+  planItems: Array<string | { id: string; [key: string]: unknown }>;
   fasted: boolean;
   waterMl: number;
   habits: string[];

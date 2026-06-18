@@ -28,16 +28,18 @@ export default function MindTrailScreen() {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [inputText, setInputText] = useState('');
-  const [createdRecIds, setCreatedRecIds] = useState<Set<number>>(new Set());
   const [recommendations, setRecommendations] = useState<TrailRecommendation[]>([]);
   const [isLoadingRecs, setIsLoadingRecs] = useState(false);
   const [isAILoading, setIsAILoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const aiGenerationRef = useRef(0);
+  const smartAnswerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (smartAnswerTimerRef.current) clearTimeout(smartAnswerTimerRef.current); }, []);
 
   // Smart query state (integrated into bottom input)
   const [smartResult, setSmartResult] = useState<SmartQueryResult | null>(null);
   const [chatHistory, setChatHistory] = useState<string[]>([]);
+  const chatHistoryRef = useRef<string[]>([]);
   const [isSmartParsing, setIsSmartParsing] = useState(false);
   const [queryResults, setQueryResults] = useState<MindReflection[]>([]);
   const [showQueryPanel, setShowQueryPanel] = useState(false);
@@ -95,6 +97,8 @@ export default function MindTrailScreen() {
 
   // Progressive loading: local first, then AI
   // 用 ref 读取 thoughtTrails 和 ignoredPatterns，避免 store rehydration 触发 effect 重新执行
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
   const thoughtTrailsRef = useRef(thoughtTrails);
   thoughtTrailsRef.current = thoughtTrails;
   const ignoredPatternsForRecsRef = useRef(allIgnoredPatterns);
@@ -126,6 +130,7 @@ export default function MindTrailScreen() {
           source: 'local' as const,
         }));
         const withPrefs = applyUserPreferences(localWithReason, currentIgnored);
+        if (!mountedRef.current) return;
         setRecommendations(withPrefs);
         setIsLoadingRecs(false);
 
@@ -137,15 +142,16 @@ export default function MindTrailScreen() {
             const aiResult = await recommendTrailsViaAI(recommendationCandidates);
             // 如果 effect 已经重新执行（新一轮），忽略旧结果
             if (aiGenerationRef.current !== gen) return;
-            if (aiResult.length > 0) {
-              const aiRecs: TrailRecommendation[] = aiResult.slice(0, 2).map(rec => ({
+            if (aiResult.recommendations.length > 0) {
+              const tgt = aiResult.targetReflections;
+              const aiRecs: TrailRecommendation[] = aiResult.recommendations.slice(0, 2).map(rec => ({
                 name: rec.name,
                 narrative: rec.description,
-                reflectionIds: rec.reflectionIndices.map(i => recommendationCandidates[i]?.id).filter(Boolean),
-                moods: rec.reflectionIndices.map(i => recommendationCandidates[i]?.mood).filter(Boolean) as string[],
+                reflectionIds: rec.reflectionIndices.map(i => tgt[i]?.id).filter(Boolean),
+                moods: rec.reflectionIndices.map(i => tgt[i]?.mood).filter(Boolean) as string[],
                 primaryTag: '',
-                startDate: Math.min(...rec.reflectionIndices.map(i => recommendationCandidates[i]?.timestamp ?? Infinity)),
-                endDate: Math.max(...rec.reflectionIndices.map(i => recommendationCandidates[i]?.timestamp ?? -Infinity)),
+                startDate: rec.reflectionIndices.length > 0 ? Math.min(...rec.reflectionIndices.map(i => tgt[i]?.timestamp ?? Infinity)) : Date.now(),
+                endDate: rec.reflectionIndices.length > 0 ? Math.max(...rec.reflectionIndices.map(i => tgt[i]?.timestamp ?? -Infinity)) : Date.now(),
                 spanDays: 1,
                 trend: 'flat' as const,
                 assignedCount: 0,
@@ -159,7 +165,7 @@ export default function MindTrailScreen() {
               const latestIgnored = ignoredPatternsForRecsRef.current;
               const merged = mergeAndRank(localWithReason, aiRecs).slice(0, 2);
               const mergedWithPrefs = applyUserPreferences(merged, latestIgnored);
-              setRecommendations(mergedWithPrefs);
+              if (mountedRef.current) setRecommendations(mergedWithPrefs);
             }
           } catch (e) {
             console.log('[MindTrail] AI recommendations failed (using local only):', e);
@@ -171,17 +177,14 @@ export default function MindTrailScreen() {
         }
       } catch (e) {
         console.error('[MindTrail] Failed to load recommendations:', e);
-        setIsLoadingRecs(false);
+        if (mountedRef.current) setIsLoadingRecs(false);
       }
     };
 
     loadRecs();
   }, [recommendationCandidates, aiAvailable, refreshKey]);
 
-  const visibleRecs = useMemo(() =>
-    recommendations.filter((_, i) => !createdRecIds.has(i)),
-    [recommendations, createdRecIds]
-  );
+  const visibleRecs = recommendations;
 
   const handleCreateTrail = useCallback((trailId: string) => {
     (nav as any).navigate('ThoughtTrailDetail', { trailId });
@@ -189,6 +192,7 @@ export default function MindTrailScreen() {
 
   const handleOneClickCreate = useCallback((rec: TrailRecommendation) => {
     const trailId = store.createThoughtTrail(rec.name, rec.reason || rec.narrative, rec.reflectionIds, 'ai');
+    setRecommendations(prev => prev.filter(r => r !== rec));
     Alert.alert('创建成功', `「${rec.name}」已创建`, [
       { text: '查看详情', onPress: () => (nav as any).navigate('ThoughtTrailDetail', { trailId }) },
       { text: '继续浏览', style: 'cancel' },
@@ -196,6 +200,7 @@ export default function MindTrailScreen() {
   }, [store, nav]);
 
   const handleCustomCreate = useCallback((rec: TrailRecommendation) => {
+    setRecommendations(prev => prev.filter(r => r !== rec));
     (nav as any).navigate('QuickCreateTrail', { selectedIds: rec.reflectionIds });
   }, [nav]);
 
@@ -212,7 +217,6 @@ export default function MindTrailScreen() {
   }, [store]);
 
   const handleRefresh = useCallback(() => {
-    setCreatedRecIds(new Set());
     setRefreshKey(k => k + 1);
   }, []);
 
@@ -267,11 +271,11 @@ export default function MindTrailScreen() {
     }
 
     try {
-      const result = await parseSmartQuery(reflections, trimmed, chatHistory, { signal: controller.signal });
+      const result = await parseSmartQuery(reflections, trimmed, chatHistoryRef.current, { signal: controller.signal });
       if (controller.signal.aborted) return;
       setSmartResult(result);
 
-      if (result.question && chatHistory.length < 3) {
+      if (result.question && chatHistoryRef.current.length < 3) {
         setIsSmartParsing(false);
         return;
       }
@@ -311,11 +315,16 @@ export default function MindTrailScreen() {
         setIsSmartParsing(false);
       }
     }
-  }, [inputText, reflections, chatHistory, aiAvailable, nav]);
+  }, [inputText, reflections, aiAvailable, nav]);
 
   const handleSmartAnswer = useCallback((answer: string) => {
-    setChatHistory(prev => [...prev, answer]);
-    setTimeout(() => { handleSmartQuery(); }, 100);
+    setChatHistory(prev => {
+      const next = [...prev, answer];
+      chatHistoryRef.current = next;
+      return next;
+    });
+    if (smartAnswerTimerRef.current) clearTimeout(smartAnswerTimerRef.current);
+    smartAnswerTimerRef.current = setTimeout(() => { handleSmartQuery(answer); }, 100);
   }, [handleSmartQuery]);
 
   const handleCloseQueryPanel = useCallback(() => {

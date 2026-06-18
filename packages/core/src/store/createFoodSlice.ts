@@ -4,8 +4,8 @@ import { deleteFoodFromList } from '../business';
 import type { StorageAdapter, FoodSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
-export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () => void): SliceCreator<FoodSlice> {
-  return (set, get) => ({
+export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () => void, onSync?: () => void): SliceCreator<FoodSlice> {
+  return (set: any, get: any) => ({
     foodLog: [],
     calGoal: 2000,
     customFoodPresets: [],
@@ -14,16 +14,19 @@ export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () 
       const e: FoodEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false };
       set(s => ({ foodLog: [e, ...(s.foodLog ?? [])] }));
       adapter.persistChange('food', e.id, e).catch(console.error);
+      onSync?.();
     },
 
     deleteFood(id: string) {
       const state = get();
-      const food = (state.foodLog ?? []).find(f => f.id === id);
-      if (food) {
-        state.addToRecycleBin({ id, entityType: 'food', data: food });
-      }
-      set(s => ({ foodLog: deleteFoodFromList(s.foodLog ?? [], id) }));
+      const food = (state.foodLog ?? []).find(f => f.id === id && !f.deleted);
+      // Atomic: recycle bin + soft-delete in one set()
+      set(s => ({
+        foodLog: deleteFoodFromList(s.foodLog ?? [], id),
+        ...(food ? { recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'food' as const, data: food, deletedAt: Date.now() }] } : {}),
+      }));
       adapter.markDeleted('food', id).catch(console.error);
+      onSync?.();
     },
 
     setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); onSettingsPersist?.(); },

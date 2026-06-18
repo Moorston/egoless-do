@@ -142,7 +142,7 @@ export function SelectReflectionModal({
                     <View style={styles.reflectionContent}>
                       <View style={styles.reflectionMeta}>
                         <Text style={[styles.reflectionDate, { color: TH.sub }]}>
-                          {new Date(r.timestamp).toISOString().slice(0, 10)}
+                          {(() => { const d = new Date(r.timestamp); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })()}
                         </Text>
                         {r.mood && <Text style={styles.reflectionMood}>{getMoodIcon(r.mood)}</Text>}
                       </View>

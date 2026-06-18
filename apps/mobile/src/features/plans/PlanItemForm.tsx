@@ -3,7 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
 } from 'react-native';
 import { useTheme } from '../../components/UI';
-import { FONT_SMALL, FONT_BODY } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, dateStr } from '@egoless-do/core';
 import type { PlanItemPriority, UnifiedPlanItemForm, CheckinFrequency } from '@egoless-do/core';
 import { FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 
@@ -44,11 +44,11 @@ const FREQ_MODE_LABELS: Record<string, string> = {
   monthly_fixed: '每月固定',
 };
 
-const today = new Date().toISOString().slice(0, 10);
+const today = dateStr();
 const defaultEnd = (() => {
   const d = new Date();
   d.setDate(d.getDate() + 30);
-  return d.toISOString().slice(0, 10);
+  return dateStr(d);
 })();
 
 export function PlanItemForm({

@@ -58,7 +58,7 @@ export default function LoginPage() {
         <p style={{ fontSize: FONT_BODY, color: '#818cf8', textAlign: 'center', marginBottom: 8, letterSpacing: 1 }}>Egoless Do</p>
         <p style={{ fontSize: FONT_BODY, color: '#888', textAlign: 'center', marginBottom: 32 }}>登录你的账号</p>
 
-        <input type="email" placeholder="邮箱" value={email}
+        <input type="email" placeholder="邮箱" value={email} required
           onChange={e => { setEmail(e.target.value); setEmailError(''); }}
           onBlur={e => validateEmail(e.target.value)}
           style={{ ...inputStyle, marginBottom: 0, borderColor: emailError ? '#ef4444' : inputStyle.borderColor }}

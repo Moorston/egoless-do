@@ -11,18 +11,18 @@ export function addHabitToList(habits: Habit[], form: CreateHabitForm): Habit[] 
 
 export function updateHabitInList(habits: Habit[], id: string, patch: Partial<Habit>): Habit[] {
   const now = Date.now();
-  return habits.map(h => h.id === id ? { ...h, ...patch, updatedAt: now } : h);
+  return habits.map(h => h.id === id && !h.deleted ? { ...h, ...patch, updatedAt: now } : h);
 }
 
 export function deleteHabitFromList(habits: Habit[], id: string): Habit[] {
   const now = Date.now();
-  return habits.map(h => h.id === id ? { ...h, deleted: true, updatedAt: now } : h);
+  return habits.map(h => (h.id === id && !h.deleted) ? { ...h, deleted: true, updatedAt: now } : h);
 }
 
 export function checkinHabitInList(habits: Habit[], id: string, date: string): Habit[] {
   const now = Date.now();
   return habits.map(h => {
-    if (h.id !== id) return h;
+    if (h.id !== id || h.deleted) return h;
     const checked = (h.checkedDates ?? []).includes(date)
       ? (h.checkedDates ?? []).filter(d => d !== date)
       : [...(h.checkedDates ?? []), date];
@@ -40,7 +40,7 @@ export function changeHabitStatusInList(
   habits: Habit[], id: string, status: HabitStatus, reason?: string
 ): Habit[] {
   const now = Date.now();
-  return habits.map(h => h.id === id ? {
+  return habits.map(h => h.id === id && !h.deleted ? {
     ...h,
     status,
     pauseReason: status === 'paused' ? (reason ?? '') : h.pauseReason,

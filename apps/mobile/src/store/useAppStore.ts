@@ -6,13 +6,13 @@ import { AppState } from 'react-native';
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, AISlice, ReviewSlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice,
 } from '@egoless-do/core';
 import {
   setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
-  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createAISlice, createReviewSlice,
+  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
@@ -78,7 +78,7 @@ function persistAIConfig() {
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & AISlice & ReviewSlice;
+  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice;
 
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
@@ -97,11 +97,12 @@ export const useAppStore = create<MobileStore>()(
       ...createReflectionSlice(adapter)(...a),
       ...createFastingSlice(adapter, triggerAutoSync)(...a),
       ...createMeditationSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as any); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); }, persistProfileSettings)(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as any); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); }, persistProfileSettings)(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
       ...createThoughtTrailSlice(adapter)(...a),
       ...createTrailNoteSlice(adapter)(...a),
+      ...createReflectionLinkSlice(adapter)(...a),
       ...createAISlice(persistAIConfig)(...a),
       ...createReviewSlice(adapter, triggerAutoSync)(...a),
     }),
@@ -114,6 +115,7 @@ export const useAppStore = create<MobileStore>()(
         foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
         thoughtTrails: s.thoughtTrails,
         trailNotes: s.trailNotes,
+        reflectionLinks: s.reflectionLinks,
         activeFasting: s.activeFasting,
         fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,
         medHistory: s.medHistory, checkinHistory: s.checkinHistory,
@@ -121,6 +123,7 @@ export const useAppStore = create<MobileStore>()(
         weightUnit: s.weightUnit, customTags: s.customTags, customMoods: s.customMoods,
         allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,
         customFoodPresets: s.customFoodPresets,
+        reflectionFilters: s.reflectionFilters,
         exerciseLog: s.exerciseLog,
         plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
         dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
@@ -178,10 +181,17 @@ export const useAppStore = create<MobileStore>()(
         openDatabase().then(db => dbGetAllFoodEntries(db)).then(entries => {
           if (!entries || entries.length === 0) return;
           const store = useAppStore.getState();
-          const existing = new Set((store.foodLog ?? []).map(f => f.id));
-          const newEntries = entries.filter(f => !existing.has(f.id));
-          if (newEntries.length > 0) {
-            const merged = [...newEntries, ...(store.foodLog ?? [])].sort((a, b) => b.timestamp - a.timestamp);
+          const storeMap = new Map((store.foodLog ?? []).map(f => [f.id, f]));
+          let changed = false;
+          for (const entry of entries) {
+            const existing = storeMap.get(entry.id);
+            if (!existing || (entry.updatedAt ?? 0) > (existing.updatedAt ?? 0)) {
+              storeMap.set(entry.id, entry);
+              changed = true;
+            }
+          }
+          if (changed) {
+            const merged = Array.from(storeMap.values()).sort((a, b) => b.timestamp - a.timestamp);
             useAppStore.setState({ foodLog: merged });
           }
         }).catch(err => console.error('[rehydrate] food load error:', err));

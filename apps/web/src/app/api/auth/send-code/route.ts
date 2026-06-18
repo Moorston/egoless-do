@@ -36,6 +36,9 @@ export async function POST(req: NextRequest) {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: '请输入有效的邮箱地址' }, { status: 400 });
     }
+    if (type !== undefined && type !== 'reset' && type !== 'register') {
+      return NextResponse.json({ error: '无效的验证码类型' }, { status: 400 });
+    }
 
     // Check email registration status based on type
     const pb = await getAdminPb();
@@ -74,6 +77,8 @@ export async function POST(req: NextRequest) {
     db.prepare(
       'INSERT INTO verification_codes(email, code, expires_at) VALUES(?,?,?)'
     ).run(email, code, expiresAt);
+    // Prune expired codes to prevent unbounded table growth
+    db.prepare('DELETE FROM verification_codes WHERE expires_at < ?').run(Date.now());
 
     const transporter = getTransporter();
     const subject = type === 'reset' ? '【心流纪】密码重置验证码' : '【心流纪】邮箱验证码';

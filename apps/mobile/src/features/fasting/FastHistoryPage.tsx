@@ -14,7 +14,7 @@ export default function FastHistoryPage() {
   const store = useAppStore();
 
   const sorted = useMemo(() =>
-    [...(store.fastingHistory ?? [])].sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0)),
+    [...(store.fastingHistory ?? [])].filter(f => !f.deleted).sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0)),
     [store.fastingHistory]
   );
 

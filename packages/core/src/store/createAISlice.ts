@@ -3,7 +3,7 @@ import type { AISlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
-  return (set) => ({
+  return (set: any) => ({
     aiMode: 'hybrid' as AIMode,
     aiModels: [],
 
@@ -13,7 +13,11 @@ export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
     },
 
     addAIModel(model: ModelConfig) {
-      set(s => ({ aiModels: [...s.aiModels, model] }));
+      set(s => ({
+        aiModels: s.aiModels.some(m => m.id === model.id)
+          ? s.aiModels.map(m => m.id === model.id ? model : m)
+          : [...s.aiModels, model],
+      }));
       onPersist?.();
     },
 
@@ -30,10 +34,13 @@ export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
     },
 
     setDefaultAIModel(modelId: string) {
-      set(s => ({
-        aiModels: s.aiModels.map(m => ({ ...m, isDefault: m.id === modelId })),
-      }));
-      onPersist?.();
+      let changed = false;
+      set(s => {
+        if (!s.aiModels.some(m => m.id === modelId)) return s;
+        changed = true;
+        return { aiModels: s.aiModels.map(m => ({ ...m, isDefault: m.id === modelId })) };
+      });
+      if (changed) onPersist?.();
     },
 
     toggleAIModel(modelId: string) {

@@ -58,6 +58,11 @@ class AudioSessionManager {
       this.activeSource = null;
     }
 
+    // 音乐显式停止时，清除自动恢复标志
+    if (source === 'music') {
+      this.musicWasPlayingBeforeAmbient = false;
+    }
+
     // 环境音停止后，如果之前音乐在播放，自动恢复
     if (source === 'ambient' && this.musicWasPlayingBeforeAmbient) {
       this.musicWasPlayingBeforeAmbient = false;

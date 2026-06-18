@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Animated } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import type { ExerciseSet } from '@egoless-do/core';
@@ -6,6 +6,10 @@ import type { ExerciseSet } from '@egoless-do/core';
 export function useExerciseSets(onCompleteSet: () => void) {
   const [sets, setSets]               = useState<ExerciseSet[]>([]);
   const [currentSetReps, setCurrentSetReps] = useState(0);
+  const currentSetRepsRef = useRef(currentSetReps);
+  currentSetRepsRef.current = currentSetReps;
+  const onCompleteSetRef = useRef(onCompleteSet);
+  onCompleteSetRef.current = onCompleteSet;
 
   // Long press refs
   const longPressTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -23,6 +27,13 @@ export function useExerciseSets(onCompleteSet: () => void) {
     longPressStartedRef.current = false;
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+      if (longPressIntervalRef.current) clearTimeout(longPressIntervalRef.current);
+    };
+  }, []);
+
   const startLongPress = useCallback((delta: 1 | -1) => {
     clearLongPress();
     longPressStartedRef.current = false;
@@ -32,7 +43,9 @@ export function useExerciseSets(onCompleteSet: () => void) {
       const tick = () => {
         const elapsed = Date.now() - startTime;
         const interval = elapsed > 2000 ? 50 : 150;
-        setCurrentSetReps(r => Math.max(0, r + delta));
+        if (longPressStartedRef.current) {
+          setCurrentSetReps(r => Math.max(0, r + delta));
+        }
         longPressIntervalRef.current = setTimeout(tick, interval);
       };
       tick();
@@ -63,11 +76,11 @@ export function useExerciseSets(onCompleteSet: () => void) {
   }, [bounceAnim]);
 
   const handleCompleteSet = useCallback(() => {
-    setSets(prev => [...prev, { reps: currentSetReps, restSec: 60 }]);
+    setSets(prev => [...prev, { reps: currentSetRepsRef.current, restSec: 60 }]);
     setCurrentSetReps(0);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    onCompleteSet();
-  }, [currentSetReps, onCompleteSet]);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    onCompleteSetRef.current();
+  }, []);
 
   const totalReps = sets.reduce((s, set) => s + set.reps, 0) + currentSetReps;
 

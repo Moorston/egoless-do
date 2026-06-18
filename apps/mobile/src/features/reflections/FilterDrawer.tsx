@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { X, Link, ListChecks, Calendar } from 'lucide-react-native';
-import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL, dateStr } from '@egoless-do/core';
 import { useTheme, useT, PillSelector } from '../../components/UI';
 import DateRangePickerModal from '../../components/DateRangePickerModal';
 
@@ -252,8 +252,8 @@ function FilterDrawerComponent({
 
       <DateRangePickerModal
         visible={showRangePicker}
-        startDate={filters.dateRange ? new Date(filters.dateRange.from).toLocaleDateString('sv-SE') : new Date().toISOString().slice(0, 10)}
-        endDate={filters.dateRange ? new Date(filters.dateRange.to).toLocaleDateString('sv-SE') : new Date().toISOString().slice(0, 10)}
+        startDate={filters.dateRange ? new Date(filters.dateRange.from).toLocaleDateString('sv-SE') : dateStr()}
+        endDate={filters.dateRange ? new Date(filters.dateRange.to).toLocaleDateString('sv-SE') : dateStr()}
         onConfirm={handleCustomRangeConfirm}
         onClose={() => setShowRangePicker(false)}
       />

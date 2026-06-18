@@ -32,8 +32,8 @@ export function computeDistance(coords: { latitude: number; longitude: number }[
     const prev = coords[i - 1];
     const dlat = (c.latitude - prev.latitude) * Math.PI / 180;
     const dlng = (c.longitude - prev.longitude) * Math.PI / 180;
-    const a = Math.sin(dlat / 2) ** 2 + Math.cos(prev.latitude * Math.PI / 180) *
-              Math.cos(c.latitude * Math.PI / 180) * Math.sin(dlng / 2) ** 2;
+    const a = Math.min(Math.sin(dlat / 2) ** 2 + Math.cos(prev.latitude * Math.PI / 180) *
+              Math.cos(c.latitude * Math.PI / 180) * Math.sin(dlng / 2) ** 2, 1);
     return total + 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }, 0);
 }

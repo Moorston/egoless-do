@@ -23,6 +23,7 @@ export const LINK_OPTIONS: { value: PlanItemLink; labelKey: string }[] = [
   { value: 'fasting', labelKey: 'planLinkFasting' },
   { value: 'meditation', labelKey: 'planLinkMeditation' },
   { value: 'exercise', labelKey: 'planLinkExercise' },
+  { value: 'habit', labelKey: 'planLinkHabit' },
   { value: 'reflection', labelKey: 'planLinkReflection' },
 ];
 
@@ -74,7 +75,8 @@ export function validatePlanForm(
     if (!item.endDate) e[`item_${idx}_endDate`] = T('planItemTimeError');
     if (item.startDate && item.endDate && item.endDate <= item.startDate) e[`item_${idx}_endDate`] = T('planItemTimeOrderError');
     if (form.startDate && form.endDate) {
-      if (item.startDate < form.startDate || item.endDate > form.endDate) e[`item_${idx}_startDate`] = T('planItemTimeError');
+      if (item.startDate < form.startDate) e[`item_${idx}_startDate`] = T('planItemTimeError');
+      if (item.endDate > form.endDate) e[`item_${idx}_endDate`] = T('planItemTimeError');
     }
   });
   return e;

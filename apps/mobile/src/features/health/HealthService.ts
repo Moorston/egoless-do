@@ -170,7 +170,7 @@ export async function readLatestWeight(): Promise<{ value: number; date: string 
       if (!HK) return null;
       return new Promise((resolve) => {
         HK.getLatestWeight(
-          { unit: 'kg' },
+          { unit: 'kg', startDate: thirtyDaysAgo.toISOString(), endDate: now.toISOString() },
           (err: string, result: { value: number; startDate: string }) => {
             if (err || !result) {
               resolve(null);
@@ -285,8 +285,8 @@ export async function performHealthSync(store: {
 
     // Read weight — only if user hasn't entered weight today
     const today = dateStr();
-    const todayCheckin = (store.checkinHistory ?? []).find((c) => c.date === today);
-    if (!todayCheckin?.weight) {
+    const todayCheckin = (store.checkinHistory ?? []).find((c) => !c.deleted && c.date === today);
+    if (todayCheckin?.weight == null) {
       const weight = await readLatestWeight();
       if (weight && weight.date === today) {
         store.syncWeightFromHealth(weight.value);

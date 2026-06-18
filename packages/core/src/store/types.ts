@@ -273,7 +273,7 @@ export interface SyncDataMap {
   trailNote: TrailNote;
   reflectionLink: ReflectionLink;
   checkinReview: CheckinReview;
-  aiConfig: { config_id: string; mode: AIMode; models: ModelConfig[]; updatedAt: number };
+  aiConfig: { config_id: string; mode: AIMode; models: ModelConfig[]; updatedAt: number; deleted: boolean };
 }
 
 /** Type-safe storage adapter */

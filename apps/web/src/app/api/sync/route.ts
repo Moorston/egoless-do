@@ -30,11 +30,11 @@ export async function POST(req: NextRequest) {
 
   const token = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
-  if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
+  if (!auth || !token) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
   try {
     const pb = getPb();
-    pb.authStore.save(token!, null);
+    pb.authStore.save(token, null);
     const userId = auth.userId;
     const body = await req.json();
     const { lastSyncAt, changes } = body;
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
       }
       if (typeof change.entityId !== 'string' || !change.entityId) continue;
       if (change.op !== 'upsert' && change.op !== 'delete') continue;
-      if (change.payload != null && typeof change.payload !== 'object') continue;
+      if (change.payload != null && (typeof change.payload !== 'object' || Array.isArray(change.payload))) continue;
 
       const clientPayload = change.payload ?? {};
       const clientUpdated = Number(clientPayload.updatedAt ?? 0);
@@ -93,12 +93,16 @@ export async function POST(req: NextRequest) {
               // Stamp with server time so client's isLocalNewer recognizes server wins
               rejected.push({ entity: change.entity, entityId: change.entityId, op: 'delete', payload: { ...existingPayload, updatedAt: serverTimestamp }, deleted: existingPayload.deleted === true });
             }
-          } catch {
-            await pb.collection(collection).create({
-              user_id: userId,
-              [idField]: change.entityId,
-              data: { deleted: true, updatedAt: serverTimestamp },
-            });
+          } catch (e: any) {
+            if (e?.status === 404 || e?.message?.includes('Not found')) {
+              await pb.collection(collection).create({
+                user_id: userId,
+                [idField]: change.entityId,
+                data: { deleted: true, updatedAt: serverTimestamp },
+              });
+            } else {
+              throw e;
+            }
           }
         } else {
           try {
@@ -116,17 +120,21 @@ export async function POST(req: NextRequest) {
               // Stamp with server time so client's isLocalNewer recognizes server wins
               rejected.push({ entity: change.entity, entityId: change.entityId, op: 'upsert', payload: { ...existingPayload, updatedAt: serverTimestamp } });
             }
-          } catch {
-            await pb.collection(collection).create({
-              user_id: userId,
-              [idField]: change.entityId,
-              data: { ...clientPayload, updatedAt: serverTimestamp },
-            });
+          } catch (e: any) {
+            if (e?.status === 404 || e?.message?.includes('Not found')) {
+              await pb.collection(collection).create({
+                user_id: userId,
+                [idField]: change.entityId,
+                data: { ...clientPayload, updatedAt: serverTimestamp },
+              });
+            } else {
+              throw e;
+            }
           }
         }
       } catch (err) {
         console.error(`[Sync POST] Error processing ${change.entity}/${change.entityId}:`, err);
-        // Continue processing other changes instead of failing the entire sync
+        rejected.push({ entity: change.entity, entityId: change.entityId, op: change.op, payload: change.payload });
       }
     }
 
@@ -150,8 +158,10 @@ export async function POST(req: NextRequest) {
             deleted: payload.deleted === true,
           });
         }
-      } catch {
-        // Collection might not exist yet
+      } catch (pullErr: any) {
+        if (pullErr?.status !== 404) {
+          console.error(`[Sync POST] Error pulling ${entity} (${collection}):`, pullErr);
+        }
       }
     }
 
@@ -175,11 +185,11 @@ export async function GET(req: NextRequest) {
 
   const token = req.headers.get('authorization')?.slice(7);
   const auth = await verifyAuth(req.headers.get('authorization'));
-  if (!auth) return NextResponse.json({ error: '未登录' }, { status: 401 });
+  if (!auth || !token) return NextResponse.json({ error: '未登录' }, { status: 401 });
 
   try {
     const pb = getPb();
-    pb.authStore.save(token!, null);
+    pb.authStore.save(token, null);
     const userId = auth.userId;
     const data: Record<string, unknown[]> = {};
 

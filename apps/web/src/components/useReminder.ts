@@ -25,7 +25,7 @@ export function useReminder() {
       const key = `${today}-${hm}`;
       if (hm === remindTime && lastNotified.current !== key) {
         lastNotified.current = key;
-        new Notification('Egoless Do', {
+        new Notification(t('appName', lang), {
           body: t('reminderBody', lang) + ' 🧘',
           icon: '/favicon.ico',
         });

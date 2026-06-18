@@ -12,6 +12,7 @@ export function useExerciseTimer() {
   const [pausedSec, setPausedSec] = useState(0);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const holdAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const pulseAnim = useRef(new Animated.Value(0)).current;
@@ -39,13 +40,19 @@ export function useExerciseTimer() {
     return () => clearTimeout(t);
   }, [page, countdown]);
 
+  // Cleanup hold timeout and animation listener on unmount
+  useEffect(() => () => {
+    if (holdTimeoutRef.current) clearTimeout(holdTimeoutRef.current);
+    holdAnim.removeAllListeners();
+    holdAnim.stopAnimation();
+  }, []);
+
   const handleGo = useCallback(() => { setCountdown(3); setPage('countdown'); }, []);
 
   const handlePause = useCallback(() => {
     setActive(false);
-    setPausedSec(sec);
     setPage('paused');
-  }, [sec]);
+  }, []);
 
   const handleContinue = useCallback(() => {
     setPage('active');
@@ -53,6 +60,7 @@ export function useExerciseTimer() {
   }, []);
 
   const handleHoldStart = useCallback(() => {
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     holdAnim.setValue(0);
     holdAnim.removeAllListeners();
 
@@ -74,13 +82,16 @@ export function useExerciseTimer() {
         Animated.timing(pulseAnim, { toValue: 1, duration: 400, easing: Easing.out(Easing.ease), useNativeDriver: true }).start();
         // Spring back scale
         Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start();
-        setTimeout(() => setPage('report'), 400);
+        holdTimeoutRef.current = setTimeout(() => {
+          if (holdTimeoutRef.current !== null) setPage('report');
+        }, 400);
       }
     });
     anim.start();
   }, [holdAnim, scaleAnim, pulseAnim]);
 
   const handleHoldEnd = useCallback(() => {
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     holdAnim.removeAllListeners();
     // Spring back scale
     Animated.spring(scaleAnim, { toValue: 1, damping: 10, useNativeDriver: true }).start();
