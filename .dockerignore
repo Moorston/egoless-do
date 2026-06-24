@@ -9,3 +9,5 @@ pb_data
 nginx/ssl
 .expo
 apps/mobile
+apps/web/data
+packages/core/dist

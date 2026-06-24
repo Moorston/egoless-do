@@ -1,7 +1,7 @@
 FROM node:20-alpine AS base
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9.0.0
 
 # Dependencies stage
 FROM base AS deps
@@ -13,7 +13,9 @@ RUN apk add --no-cache python3 make g++
 # Copy root package files
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/core/package.json ./packages/core/
+COPY packages/config/package.json ./packages/config/
 COPY apps/web/package.json ./apps/web/
+COPY apps/mobile/package.json ./apps/mobile/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
