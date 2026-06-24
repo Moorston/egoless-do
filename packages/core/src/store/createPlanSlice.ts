@@ -557,7 +557,7 @@ export function createPlanSlice(
 
         try {
           // Call API to send email notification
-          const apiBase = process.env.EXPO_PUBLIC_API_BASE || 'https://egoless-do.vercel.app';
+          const apiBase = process.env.EXPO_PUBLIC_API_BASE || 'https://egolessdo.freebytes.net';
           await fetch(`${apiBase}/api/plan/notify-delayed`, {
             method: 'POST',
             headers: {
