@@ -10,7 +10,7 @@ const makeHabit = (overrides: Partial<Habit> = {}): Habit => ({
   id: 'h1', name: 'Test', startDate: '2026-01-01', targetDays: 30,
   goal: '', insight: '', createTag: false, doneDays: 0, streak: 0,
   interrupted: 0, status: 'inProgress', checkedDates: [],
-  pauseReason: '', abandonReason: '', updatedAt: 0, deleted: false, ...overrides,
+  pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7, alarmMinute: 0, updatedAt: 0, deleted: false, ...overrides,
 });
 
 describe('addHabitToList', () => {

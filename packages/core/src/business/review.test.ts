@@ -60,24 +60,24 @@ describe('getMonthRange', () => {
 
 describe('calculateReviewData', () => {
   const mockCheckinHistory: CheckinEntry[] = [
-    { id: '1', date: '2026-06-08', done: true, note: '{"practices":["sit","stand"],"water":2000}', streak: 1, weight: 70, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
-    { id: '2', date: '2026-06-09', done: true, note: '{"practices":["sit"],"water":1800}', streak: 2, weight: 69.5, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
-    { id: '3', date: '2026-06-10', done: false, note: '{"incompleteReason":"time"}', streak: 0, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
-    { id: '4', date: '2026-06-11', done: true, note: '{"practices":["sit","stand","chant"],"water":2200}', streak: 1, weight: 69, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
+    { date: '2026-06-08', done: true, note: '{"practices":["sit","stand"],"water":2000}', streak: 1, weight: 70, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
+    { date: '2026-06-09', done: true, note: '{"practices":["sit"],"water":1800}', streak: 2, weight: 69.5, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
+    { date: '2026-06-10', done: false, note: '{"incompleteReason":"time"}', streak: 0, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
+    { date: '2026-06-11', done: true, note: '{"practices":["sit","stand","chant"],"water":2200}', streak: 1, weight: 69, timestamp: Date.now(), updatedAt: Date.now(), deleted: false },
   ];
 
   const mockHabits: Habit[] = [
-    { id: 'h1', name: '早睡', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 10, streak: 3, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-08', '2026-06-09', '2026-06-11'], pauseReason: '', abandonReason: '', updatedAt: Date.now(), deleted: false },
-    { id: 'h2', name: '冥想', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 5, streak: 1, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-11'], pauseReason: '', abandonReason: '', updatedAt: Date.now(), deleted: false },
+    { id: 'h1', name: '早睡', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 10, streak: 3, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-08', '2026-06-09', '2026-06-11'], pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7, alarmMinute: 0, updatedAt: Date.now(), deleted: false },
+    { id: 'h2', name: '冥想', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 5, streak: 1, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-11'], pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7, alarmMinute: 0, updatedAt: Date.now(), deleted: false },
   ];
 
   const mockPlans: Plan[] = [
-    { id: 'p1', name: '学习计划', goal: '学习React', status: 'in_progress', startDate: '2026-06-01', endDate: '2026-06-30', updatedAt: Date.now(), deleted: false },
+    { id: 'p1', name: '学习计划', goal: '学习React', slogan: '', progress: 0, status: 'in_progress', startDate: '2026-06-01', endDate: '2026-06-30', updatedAt: Date.now(), deleted: false },
   ];
 
   const mockPlanItems: PlanItem[] = [
-    { id: 'pi1', planId: 'p1', name: '学习Hooks', status: 'completed', startDate: '2026-06-01', endDate: '2026-06-15', updatedAt: Date.now(), deleted: false },
-    { id: 'pi2', planId: 'p1', name: '学习Context', status: 'in_progress', startDate: '2026-06-01', endDate: '2026-06-30', updatedAt: Date.now(), deleted: false },
+    { id: 'pi1', planId: 'p1', name: '学习Hooks', description: '', contentUrl: '', totalCheckinDays: 0, progress: 0, link: 'manual', priority: 'medium', targetMetric: '', order: 0, status: 'completed', startDate: '2026-06-01', endDate: '2026-06-15', updatedAt: Date.now(), deleted: false },
+    { id: 'pi2', planId: 'p1', name: '学习Context', description: '', contentUrl: '', totalCheckinDays: 0, progress: 0, link: 'manual', priority: 'medium', targetMetric: '', order: 0, status: 'in_progress', startDate: '2026-06-01', endDate: '2026-06-30', updatedAt: Date.now(), deleted: false },
   ];
 
   it('should calculate completion rate correctly', () => {

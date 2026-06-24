@@ -14,7 +14,8 @@ function makeTestStore(initialState: any = {}) {
     state = { ...state, ...patch };
   };
   const get = () => state;
-  return { state, set, get: get as any };
+  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} };
+  return { state, set, get: get as any, api };
 }
 
 const makeTrail = (overrides: Partial<ThoughtTrail> = {}): ThoughtTrail => ({
@@ -32,10 +33,10 @@ const makeTrail = (overrides: Partial<ThoughtTrail> = {}): ThoughtTrail => ({
 describe('createTrailNoteSlice', () => {
   describe('addTrailNote', () => {
     it('creates a note and adds to trail noteIds', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createTrailNoteSlice()(set, get);
+      const slice = createTrailNoteSlice()(set, get, api);
 
       const note = slice.addTrailNote('t1', {
         content: 'test note',
@@ -55,13 +56,13 @@ describe('createTrailNoteSlice', () => {
     });
 
     it('sets correct order for multiple notes', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail({ noteIds: ['existing'] })],
         trailNotes: [
           { id: 'existing', trailId: 't1', content: 'old', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice()(set, get);
+      const slice = createTrailNoteSlice()(set, get, api);
 
       const note = slice.addTrailNote('t1', { content: 'new', source: 'guided', guidedQuestion: 'why?' });
       expect(note.order).toBe(1);
@@ -71,12 +72,12 @@ describe('createTrailNoteSlice', () => {
 
   describe('updateTrailNote', () => {
     it('updates note content and tags', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         trailNotes: [
           { id: 'n1', trailId: 't1', content: 'old', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice()(set, get);
+      const slice = createTrailNoteSlice()(set, get, api);
 
       slice.updateTrailNote('n1', { content: 'updated', tags: ['#new'] });
 
@@ -88,14 +89,14 @@ describe('createTrailNoteSlice', () => {
 
   describe('deleteTrailNote', () => {
     it('removes note and updates trail noteIds', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail({ noteIds: ['n1', 'n2'] })],
         trailNotes: [
           { id: 'n1', trailId: 't1', content: 'a', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
           { id: 'n2', trailId: 't1', content: 'b', tags: [], source: 'free', order: 1, createdAt: 2000, updatedAt: 2000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice()(set, get);
+      const slice = createTrailNoteSlice()(set, get, api);
 
       slice.deleteTrailNote('n1');
 
@@ -109,7 +110,7 @@ describe('createTrailNoteSlice', () => {
 
   describe('getNotesByTrail', () => {
     it('returns non-deleted notes for a trail sorted by createdAt', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         trailNotes: [
           { id: 'n2', trailId: 't1', content: 'b', tags: [], source: 'free', order: 1, createdAt: 3000, updatedAt: 3000, deleted: false },
           { id: 'n1', trailId: 't1', content: 'a', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
@@ -117,7 +118,7 @@ describe('createTrailNoteSlice', () => {
           { id: 'n4', trailId: 't2', content: 'd', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice()(set, get);
+      const slice = createTrailNoteSlice()(set, get, api);
 
       const notes = slice.getNotesByTrail('t1');
       expect(notes).toHaveLength(2);

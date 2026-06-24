@@ -159,7 +159,7 @@ describe('shouldShowToday', () => {
   it('should not show on interval day if already checked in', () => {
     const freq: CheckinFrequency = { mode: 'interval', every: 3 };
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
     ];
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', checkins)).toBe(false);
   });
@@ -167,7 +167,7 @@ describe('shouldShowToday', () => {
   it('should show if weekly target not met', () => {
     const freq: CheckinFrequency = { mode: 'weekly', target: 3 };
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-06', done: true, updatedAt: 0 }, // Mon
+      { id: 'c1', planItemId: 'item1', date: '2026-01-06', done: true, updatedAt: 0, deleted: false }, // Mon
     ];
     // 2026-01-07 is Wednesday, week starts Mon Jan 5
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-07', checkins)).toBe(true);
@@ -176,8 +176,8 @@ describe('shouldShowToday', () => {
   it('should not show if weekly target met', () => {
     const freq: CheckinFrequency = { mode: 'weekly', target: 2 };
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-06', done: true, updatedAt: 0 },
-      { id: 'c2', planItemId: 'item1', date: '2026-01-07', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-06', done: true, updatedAt: 0, deleted: false },
+      { id: 'c2', planItemId: 'item1', date: '2026-01-07', done: true, updatedAt: 0, deleted: false },
     ];
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-07', checkins)).toBe(false);
   });
@@ -199,8 +199,8 @@ describe('shouldShowToday', () => {
   it('should not show if monthly target met', () => {
     const freq: CheckinFrequency = { mode: 'monthly', target: 2 };
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
-      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
+      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
     ];
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-15', checkins)).toBe(false);
   });
@@ -232,8 +232,8 @@ describe('computeItemProgress', () => {
 
   it('should calculate progress for daily mode', () => {
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
-      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
+      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
     ];
     // 2 done / 5 expected = 40%
     expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(40);
@@ -242,8 +242,8 @@ describe('computeItemProgress', () => {
   it('should calculate progress for interval mode', () => {
     const item = { ...baseItem, frequency: { mode: 'interval' as const, every: 3 } };
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
-      { id: 'c2', planItemId: 'item1', date: '2026-01-04', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
+      { id: 'c2', planItemId: 'item1', date: '2026-01-04', done: true, updatedAt: 0, deleted: false },
     ];
     // 2 done / 4 expected (day 1,4,7,10) = 50%
     expect(computeItemProgress(item, checkins, '2026-01-10')).toBe(50);
@@ -252,15 +252,15 @@ describe('computeItemProgress', () => {
   it('should cap progress at 100%', () => {
     const checkins: PlanItemCheckin[] = Array.from({ length: 15 }, (_, i) => ({
       id: `c${i}`, planItemId: 'item1', date: `2026-01-${String(i + 1).padStart(2, '0')}`,
-      done: true, updatedAt: 0,
+      done: true, updatedAt: 0, deleted: false,
     }));
     expect(computeItemProgress(baseItem, checkins, '2026-01-10')).toBe(100);
   });
 
   it('should ignore checkins for other items', () => {
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'other', date: '2026-01-01', done: true, updatedAt: 0 },
-      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'other', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
+      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
     ];
     // 1 done / 5 expected = 20%
     expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(20);
@@ -268,8 +268,8 @@ describe('computeItemProgress', () => {
 
   it('should ignore undone checkins', () => {
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
-      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: false, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
+      { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: false, updatedAt: 0, deleted: false },
     ];
     // 1 done / 5 expected = 20%
     expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(20);
@@ -277,7 +277,7 @@ describe('computeItemProgress', () => {
 
   it('should clamp today to endDate', () => {
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
     ];
     // Today is past endDate, but progress should still work
     // 1 done / 10 expected = 10%
@@ -286,10 +286,10 @@ describe('computeItemProgress', () => {
 
   it('should deduplicate checkins by date', () => {
     const checkins: PlanItemCheckin[] = [
-      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
-      { id: 'c2', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0 },
-      { id: 'c3', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0 },
-      { id: 'c4', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0 },
+      { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
+      { id: 'c2', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
+      { id: 'c3', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
+      { id: 'c4', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
     ];
     // 2 unique dates done / 5 expected = 40%
     expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(40);

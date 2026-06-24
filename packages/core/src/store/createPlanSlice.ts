@@ -156,8 +156,8 @@ export function createPlanSlice(
       const result = checkAutoStatus(s.plans ?? [], s.planItems ?? [], today);
       set({ plans: result.plans, planItems: result.planItems });
       // Persist changed plans/items — pre-build maps for O(1) lookup
-      const origPlanMap = new Map((s.plans ?? []).map(p => [p.id, p]));
-      const origItemMap = new Map((s.planItems ?? []).map(i => [i.id, i]));
+      const origPlanMap = new Map<string, Plan>((s.plans ?? []).map((p: Plan) => [p.id, p]));
+      const origItemMap = new Map<string, PlanItem>((s.planItems ?? []).map((i: PlanItem) => [i.id, i]));
       for (const p of result.plans) {
         const orig = origPlanMap.get(p.id);
         if (orig && orig.updatedAt !== p.updatedAt) {
@@ -293,7 +293,7 @@ export function createPlanSlice(
         s.planItems ?? [], existingCheckins, s.plans ?? [], state, today
       );
       // Compare content, not just length — checkinItem may modify existing records in-place
-      const existingMap = new Map(existingCheckins.map(c => [c.id, c]));
+      const existingMap = new Map<string, PlanItemCheckin>(existingCheckins.map((c: PlanItemCheckin) => [c.id, c]));
       const changed = (() => {
         if (updatedCheckins.length !== existingCheckins.length) return true;
         for (const c of updatedCheckins) {
@@ -401,10 +401,10 @@ export function createPlanSlice(
         });
 
         // 持久化变更 — pre-build maps for O(1) lookup
-        const origPlanMap = new Map((s.plans ?? []).map(p => [p.id, p]));
-        const origItemMap = new Map((s.planItems ?? []).map(i => [i.id, i]));
-        const origTodoMap = new Map((s.dailyCustomTodos ?? []).map(t => [t.id, t]));
-        const origHistMap = new Map((s.dailyTodoHistory ?? []).map(h => [h.id, h]));
+        const origPlanMap = new Map<string, Plan>((s.plans ?? []).map((p: Plan) => [p.id, p]));
+        const origItemMap = new Map<string, PlanItem>((s.planItems ?? []).map((i: PlanItem) => [i.id, i]));
+        const origTodoMap = new Map<string, DailyCustomTodo>((s.dailyCustomTodos ?? []).map((t: DailyCustomTodo) => [t.id, t]));
+        const origHistMap = new Map<string, DailyTodoHistory>((s.dailyTodoHistory ?? []).map((h: DailyTodoHistory) => [h.id, h]));
         for (const p of result.plans) {
           const orig = origPlanMap.get(p.id);
           if (orig && orig.updatedAt !== p.updatedAt) {
@@ -527,8 +527,8 @@ export function createPlanSlice(
       set({ planItems: updatedPlanItems, reflections: updatedReflections });
 
       // Persist changes — pre-build maps for O(1) lookup
-      const origItemMap = new Map(planItems.map(i => [i.id, i]));
-      const origReflectionMap = new Map(reflections.map(r => [r.id, r]));
+      const origItemMap = new Map<string, PlanItem>(planItems.map((i: PlanItem) => [i.id, i]));
+      const origReflectionMap = new Map<string, any>(reflections.map((r: any) => [r.id, r]));
       for (const item of updatedPlanItems) {
         const orig = origItemMap.get(item.id);
         if (orig && orig.updatedAt !== item.updatedAt) {

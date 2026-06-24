@@ -90,10 +90,10 @@ export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<Re
         // For plans, also persist child entities
         if (item.entityType === 'plan' && adapter) {
           for (const ci of childItems) {
-            adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now }).catch(console.error);
+            adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now } as any).catch(console.error);
           }
           for (const cic of childCheckins) {
-            adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false, updatedAt: now }).catch(console.error);
+            adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false, updatedAt: now } as any).catch(console.error);
           }
           for (const todo of childTodos) {
             adapter.persistChange('dailyCustomTodo', todo.id, { ...todo, deleted: false, updatedAt: now } as any).catch(console.error);

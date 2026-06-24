@@ -4,6 +4,7 @@ import { createHabitFromForm } from '../defaults';
 import { computeStreak } from '../utils';
 
 export type CreateHabitForm = Parameters<typeof createHabitFromForm>[0];
+export { createHabitFromForm };
 
 export function addHabitToList(habits: Habit[], form: CreateHabitForm): Habit[] {
   return [...habits, createHabitFromForm(form)];

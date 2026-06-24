@@ -15,7 +15,8 @@ function makeTestStore(initialState: any = {}) {
     state = { ...state, ...patch };
   };
   const get = () => state;
-  return { state, set, get: get as any };
+  const api = { setState: set, getState: get, getInitialState: () => state, subscribe: () => () => {}, destroy: () => {} };
+  return { state, set, get: get as any, api };
 }
 
 const makeTrail = (overrides: Partial<ThoughtTrail> = {}): ThoughtTrail => ({
@@ -33,10 +34,10 @@ const makeTrail = (overrides: Partial<ThoughtTrail> = {}): ThoughtTrail => ({
 describe('createThoughtTrailSlice', () => {
   describe('setInsightCache', () => {
     it('sets insightCache on the trail', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
 
       const cache = {
         summary: 'test summary',
@@ -62,10 +63,10 @@ describe('createThoughtTrailSlice', () => {
         generatedAt: 1000,
         source: 'local' as const,
       };
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail({ insightCache: existingCache })],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
 
       const newCache = { ...existingCache, summary: 'new', generatedAt: 2000 };
       slice.setInsightCache('t1', newCache);
@@ -77,13 +78,13 @@ describe('createThoughtTrailSlice', () => {
 
   describe('setReviewCache', () => {
     it('sets reviewCache on the trail', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
 
       const cache = {
-        questions: ['q1', 'q2'],
+        perspectives: ['persp1'],
         observations: ['obs1'],
         suggestions: ['s1'],
         generatedAt: Date.now(),
@@ -99,8 +100,8 @@ describe('createThoughtTrailSlice', () => {
 
   describe('createPlanItemFromTrail', () => {
     it('returns false when trail not found', () => {
-      const { set, get } = makeTestStore();
-      const slice = createThoughtTrailSlice()(set, get);
+      const { set, get, api } = makeTestStore();
+      const slice = createThoughtTrailSlice()(set, get, api);
       const result = slice.createPlanItemFromTrail('missing', {
         name: 'test',
         description: '',
@@ -112,10 +113,10 @@ describe('createThoughtTrailSlice', () => {
     });
 
     it('returns false when no active plan', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
       const result = slice.createPlanItemFromTrail('t1', {
         name: 'test',
         description: '',
@@ -129,7 +130,7 @@ describe('createThoughtTrailSlice', () => {
 
   describe('getTrailPlanItems', () => {
     it('returns plan items with matching trailId', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         planItems: [
           { id: 'p1', trailId: 't1', name: 'task 1', deleted: false },
           { id: 'p2', trailId: 't1', name: 'task 2', deleted: false },
@@ -137,7 +138,7 @@ describe('createThoughtTrailSlice', () => {
           { id: 'p4', trailId: 't1', name: 'task 4', deleted: true },
         ],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
       const items = slice.getTrailPlanItems('t1');
       expect(items).toHaveLength(2);
       expect(items[0].id).toBe('p1');
@@ -145,10 +146,10 @@ describe('createThoughtTrailSlice', () => {
     });
 
     it('returns empty array when no matching items', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         planItems: [{ id: 'p1', trailId: 't2', name: 'task', deleted: false }],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
       const items = slice.getTrailPlanItems('t1');
       expect(items).toEqual([]);
     });
@@ -156,7 +157,7 @@ describe('createThoughtTrailSlice', () => {
 
   describe('deleteThoughtTrail', () => {
     it('cascade deletes trail notes', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail({ noteIds: ['n1', 'n2'] })],
         trailNotes: [
           { id: 'n1', trailId: 't1', content: 'a', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
@@ -164,7 +165,7 @@ describe('createThoughtTrailSlice', () => {
           { id: 'n3', trailId: 't2', content: 'c', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
 
       slice.deleteThoughtTrail('t1');
 
@@ -175,14 +176,14 @@ describe('createThoughtTrailSlice', () => {
     });
 
     it('removes trail ID from reflections', () => {
-      const { set, get } = makeTestStore({
+      const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail({ reflectionIds: ['r1', 'r2'] })],
         reflections: [
           { id: 'r1', thoughtTrailIds: ['t1'], updatedAt: 0, deleted: false },
           { id: 'r2', thoughtTrailIds: ['t1', 't2'], updatedAt: 0, deleted: false },
         ],
       });
-      const slice = createThoughtTrailSlice()(set, get);
+      const slice = createThoughtTrailSlice()(set, get, api);
 
       slice.deleteThoughtTrail('t1');
 
