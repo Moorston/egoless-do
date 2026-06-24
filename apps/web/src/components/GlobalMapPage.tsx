@@ -203,7 +203,7 @@ export default function GlobalMapPage({ onClose, title, icon }: { onClose: () =>
 }
 
 // ── Leaderboard ──
-function LeaderboardPage({ users, onClose }: { users: Array<{ name: string; days: number; lat: number; lng: number; streak: number; online: boolean }>; onClose: () => void }) {
+function LeaderboardPage({ users, onClose }: { users: Array<{ id: number; name: string; days: number; lat: number; lng: number; sport: string; since: string; duration: string; streak: number; online: boolean }>; onClose: () => void }) {
   const [tab, setTab] = useState(0);
   const T = useT();
   const { TH, P } = useTheme();

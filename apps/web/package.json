@@ -27,6 +27,7 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.2.3",
+    "@types/react-window": "^1.8.8",
     "eslint-config-next": "^14.2.35",
     "vitest": "^3.0.0"
   }

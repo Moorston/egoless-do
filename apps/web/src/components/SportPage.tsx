@@ -84,6 +84,29 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [page, active]);
 
+  // ── GPS tracking (defined before countdown due to hoisting) ──
+  const startGpsTracking = useCallback(() => {
+    if (!navigator.geolocation) return;
+    watchRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        const point = { lat: pos.coords.latitude, lng: pos.coords.longitude, ts: Date.now() };
+        setCoords(prev => [...prev, point]);
+        if (mapRef.current) {
+          mapRef.current.setCenter([point.lng, point.lat]);
+        }
+      },
+      (err) => console.warn('GPS error:', err),
+      { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
+    );
+  }, []);
+
+  const stopGpsTracking = useCallback(() => {
+    if (watchRef.current !== null) {
+      navigator.geolocation.clearWatch(watchRef.current);
+      watchRef.current = null;
+    }
+  }, []);
+
   // ── Countdown ──
   useEffect(() => {
     if (page !== 'countdown') return;
@@ -188,29 +211,6 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
     if (targetType === 'reps' && totalReps >= targetValue) reached = true;
     if (reached && navigator.vibrate) navigator.vibrate([100, 50, 100]);
   }, [mode, page, active, targetType, targetValue, sec, distKm, calories, reps, currentSetReps, sets]);
-
-  // ── GPS tracking ──
-  const startGpsTracking = useCallback(() => {
-    if (!navigator.geolocation) return;
-    watchRef.current = navigator.geolocation.watchPosition(
-      (pos) => {
-        const point = { lat: pos.coords.latitude, lng: pos.coords.longitude, ts: Date.now() };
-        setCoords(prev => [...prev, point]);
-        if (mapRef.current) {
-          mapRef.current.setCenter([point.lng, point.lat]);
-        }
-      },
-      (err) => console.warn('GPS error:', err),
-      { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
-    );
-  }, []);
-
-  const stopGpsTracking = useCallback(() => {
-    if (watchRef.current !== null) {
-      navigator.geolocation.clearWatch(watchRef.current);
-      watchRef.current = null;
-    }
-  }, []);
 
   // ── Cleanup on unmount ──
   useEffect(() => {

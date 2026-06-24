@@ -13,39 +13,39 @@ export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
     },
 
     addAIModel(model: ModelConfig) {
-      set(s => ({
-        aiModels: s.aiModels.some(m => m.id === model.id)
-          ? s.aiModels.map(m => m.id === model.id ? model : m)
-          : [...s.aiModels, model],
+      set((s: any) => ({
+        aiModels: (s.aiModels as ModelConfig[]).some((m: ModelConfig) => m.id === model.id)
+          ? (s.aiModels as ModelConfig[]).map((m: ModelConfig) => m.id === model.id ? model : m)
+          : [...s.aiModels as ModelConfig[], model],
       }));
       onPersist?.();
     },
 
     updateAIModel(modelId: string, updates: Partial<ModelConfig>) {
-      set(s => ({
-        aiModels: s.aiModels.map(m => m.id === modelId ? { ...m, ...updates } : m),
+      set((s: any) => ({
+        aiModels: (s.aiModels as ModelConfig[]).map((m: ModelConfig) => m.id === modelId ? { ...m, ...updates } : m),
       }));
       onPersist?.();
     },
 
     removeAIModel(modelId: string) {
-      set(s => ({ aiModels: s.aiModels.filter(m => m.id !== modelId) }));
+      set((s: any) => ({ aiModels: (s.aiModels as ModelConfig[]).filter((m: ModelConfig) => m.id !== modelId) }));
       onPersist?.();
     },
 
     setDefaultAIModel(modelId: string) {
       let changed = false;
-      set(s => {
-        if (!s.aiModels.some(m => m.id === modelId)) return s;
+      set((s: any) => {
+        if (!(s.aiModels as ModelConfig[]).some((m: ModelConfig) => m.id === modelId)) return s;
         changed = true;
-        return { aiModels: s.aiModels.map(m => ({ ...m, isDefault: m.id === modelId })) };
+        return { aiModels: (s.aiModels as ModelConfig[]).map((m: ModelConfig) => ({ ...m, isDefault: m.id === modelId })) };
       });
       if (changed) onPersist?.();
     },
 
     toggleAIModel(modelId: string) {
-      set(s => ({
-        aiModels: s.aiModels.map(m =>
+      set((s: any) => ({
+        aiModels: (s.aiModels as ModelConfig[]).map((m: ModelConfig) =>
           m.id === modelId ? { ...m, enabled: !m.enabled } : m
         ),
       }));

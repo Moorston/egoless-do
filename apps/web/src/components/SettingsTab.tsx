@@ -12,7 +12,7 @@ import { BarChart3, ClipboardList, CalendarCheck, Utensils, Shield, HeartCrack, 
 
 interface SettingsRow {
   label: string;
-  right: React.ReactNode;
+  right?: React.ReactNode;
   icon?: React.ReactNode;
   sub?: string;
   onClick?: () => void;

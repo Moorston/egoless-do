@@ -82,7 +82,7 @@ export const useWebStore = create<WebStore>()(
         graceHistory: s.graceHistory, thoughtTrails: s.thoughtTrails,
         trailNotes: s.trailNotes, reflectionLinks: s.reflectionLinks,
         recycleBin: s.recycleBin,
-        healthSyncEnabled: s.healthSyncEnabled,
+
         aiMode: s.aiMode, aiModels: s.aiModels,
         checkinReviews: s.checkinReviews,
         ignoredRecPatterns: s.ignoredRecPatterns,
