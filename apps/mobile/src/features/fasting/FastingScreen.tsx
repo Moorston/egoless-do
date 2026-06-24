@@ -233,7 +233,7 @@ export default function FastingScreen() {
           <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24 }}>
             <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, textAlign:'center', marginBottom:20, color:TH.text }}>{T('durationSelect')}</Text>
             <View style={{ flexDirection:'row', flexWrap:'wrap', gap:10, justifyContent:'center', marginBottom:20 }}>
-              {[1,2,4,6,8,10,12].map(d => (
+              {[8,10,12,14,16,18,20,24,36,48,60,72].map(d => (
                 <TouchableOpacity key={d} onPress={() => setTmpDur(d)}
                   style={{
                     width:72, paddingVertical:12, borderRadius:12, alignItems:'center',
