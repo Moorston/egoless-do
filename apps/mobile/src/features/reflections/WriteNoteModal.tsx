@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert,
+  View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { X, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
@@ -97,7 +97,10 @@ export function WriteNoteModal({ visible, guidedQuestion, reviewPerspectives, on
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.overlay}
+      >
         <View style={[styles.modal, { backgroundColor: TH.cardSolid }]}>
           <View style={styles.header}>
             <Text style={[styles.title, { color: TH.text }]}>
@@ -223,7 +226,7 @@ export function WriteNoteModal({ visible, guidedQuestion, reviewPerspectives, on
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

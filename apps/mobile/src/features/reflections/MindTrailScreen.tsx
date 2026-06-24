@@ -588,7 +588,7 @@ export default function MindTrailScreen() {
       )}
 
       {/* Bottom Bar */}
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={[styles.bottomBar, { backgroundColor: TH.bg, borderTopColor: TH.border }]}>
           <View style={[styles.inputRow, { backgroundColor: TH.card, borderColor: TH.border }]}>
             <Zap size={16} color="#8B5CF6" />

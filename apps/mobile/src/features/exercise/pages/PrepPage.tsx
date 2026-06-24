@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { X } from 'lucide-react-native';
 import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_HERO, FONT_STAT_SECTION, fmt, TARGET_PRESETS, getSoftTarget } from '@egoless-do/core';
 import type { ExercisePageProps } from './types';
@@ -31,7 +31,10 @@ export default function PrepPage(props: ExercisePageProps) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: bg }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1, backgroundColor: bg }}
+    >
       {/* Header */}
       <View style={{ paddingTop: 56, paddingHorizontal: 20 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -192,6 +195,6 @@ export default function PrepPage(props: ExercisePageProps) {
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: bg, letterSpacing: 4 }}>GO</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

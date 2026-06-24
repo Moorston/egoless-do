@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, ChevronRight, Check, Calendar, Heart, Lightbulb } from 'lucide-react-native';
@@ -178,68 +178,73 @@ export default function ReviewScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <ArrowLeft size={24} color={TH.text} />
-        </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: TH.text }]}>本周回顾</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            <ArrowLeft size={24} color={TH.text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: TH.text }]}>本周回顾</Text>
+          <View style={{ width: 40 }} />
+        </View>
 
-      {/* Progress */}
-      <View style={styles.progressContainer}>
-        {(['mood', 'insight', 'action'] as Step[]).map((s, idx) => (
-          <View key={s} style={styles.progressItem}>
-            <View
-              style={[
-                styles.progressDot,
-                {
-                  backgroundColor: step === s ? P : idx < ['mood', 'insight', 'action'].indexOf(step) ? P : TH.border,
-                },
-              ]}
-            >
-              {idx < ['mood', 'insight', 'action'].indexOf(step) && (
-                <Check size={12} color="#fff" />
-              )}
-            </View>
-            {idx < 2 && (
+        {/* Progress */}
+        <View style={styles.progressContainer}>
+          {(['mood', 'insight', 'action'] as Step[]).map((s, idx) => (
+            <View key={s} style={styles.progressItem}>
               <View
                 style={[
-                  styles.progressLine,
+                  styles.progressDot,
                   {
-                    backgroundColor: idx < ['mood', 'insight', 'action'].indexOf(step) ? P : TH.border,
+                    backgroundColor: step === s ? P : idx < ['mood', 'insight', 'action'].indexOf(step) ? P : TH.border,
                   },
                 ]}
-              />
-            )}
-          </View>
-        ))}
-      </View>
+              >
+                {idx < ['mood', 'insight', 'action'].indexOf(step) && (
+                  <Check size={12} color="#fff" />
+                )}
+              </View>
+              {idx < 2 && (
+                <View
+                  style={[
+                    styles.progressLine,
+                    {
+                      backgroundColor: idx < ['mood', 'insight', 'action'].indexOf(step) ? P : TH.border,
+                    },
+                  ]}
+                />
+              )}
+            </View>
+          ))}
+        </View>
 
-      {/* Content */}
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
-        {step === 'mood' && renderMoodStep()}
-        {step === 'insight' && renderInsightStep()}
-        {step === 'action' && renderActionStep()}
-      </ScrollView>
+        {/* Content */}
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+          {step === 'mood' && renderMoodStep()}
+          {step === 'insight' && renderInsightStep()}
+          {step === 'action' && renderActionStep()}
+        </ScrollView>
 
-      {/* Action Button */}
-      <View style={styles.actionContainer}>
-        <TouchableOpacity
-          onPress={handleNext}
-          style={[
-            styles.actionButton,
-            { backgroundColor: canProceed ? P : TH.border },
-          ]}
-          disabled={!canProceed}
-        >
-          <Text style={[styles.actionButtonText, { color: canProceed ? '#fff' : TH.sub }]}>
-            {step === 'action' ? '完成回顾' : '下一步'}
-          </Text>
-          {step !== 'action' && <ChevronRight size={20} color={canProceed ? '#fff' : TH.sub} />}
-        </TouchableOpacity>
-      </View>
+        {/* Action Button */}
+        <View style={styles.actionContainer}>
+          <TouchableOpacity
+            onPress={handleNext}
+            style={[
+              styles.actionButton,
+              { backgroundColor: canProceed ? P : TH.border },
+            ]}
+            disabled={!canProceed}
+          >
+            <Text style={[styles.actionButtonText, { color: canProceed ? '#fff' : TH.sub }]}>
+              {step === 'action' ? '完成回顾' : '下一步'}
+            </Text>
+            {step !== 'action' && <ChevronRight size={20} color={canProceed ? '#fff' : TH.sub} />}
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { X, Link2, Check } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
@@ -63,7 +63,10 @@ export default function LinkReflectionModal({ visible, onClose, reflection }: Pr
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.overlay}
+      >
         <View style={[styles.container, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
           <View style={styles.header}>
@@ -164,7 +167,7 @@ export default function LinkReflectionModal({ visible, onClose, reflection }: Pr
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

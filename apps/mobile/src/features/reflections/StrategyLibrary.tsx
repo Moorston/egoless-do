@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Plus, Lightbulb, TrendingUp, AlertTriangle, X } from 'lucide-react-native';
@@ -158,7 +158,10 @@ export default function StrategyLibrary() {
 
       {/* Add Modal */}
       <Modal visible={showAddModal} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalOverlay}
+        >
           <View style={[styles.modalContent, { backgroundColor: TH.cardSolid }]}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: TH.text }]}>添加策略</Text>
@@ -203,7 +206,7 @@ export default function StrategyLibrary() {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );
