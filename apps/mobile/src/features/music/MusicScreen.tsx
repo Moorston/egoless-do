@@ -93,6 +93,7 @@ export default function MusicScreen() {
                   trackId={currentTrack.id}
                   progress={nowPlayingProgress}
                   primaryColor={gradient[0]}
+                  inactiveColor={TH.border}
                   barCount={30}
                   height={16}
                 />

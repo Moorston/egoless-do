@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft, Music, Heart } from 'lucide-react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
@@ -68,7 +68,12 @@ export default function MusicCategoryScreen() {
 
       {/* Track List */}
       {tracks.length === 0 ? (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40, gap: 12 }}>
+          {category === 'favorites' ? (
+            <Heart size={48} color={TH.border} />
+          ) : (
+            <Music size={48} color={TH.border} />
+          )}
           <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>
             {category === 'favorites' ? T('musicEmptyFavorites') : T('musicNoTracks')}
           </Text>

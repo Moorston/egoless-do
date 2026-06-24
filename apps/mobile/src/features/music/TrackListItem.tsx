@@ -1,17 +1,13 @@
 import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell, Trash2 } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, TRACK_VISUAL, MUSIC_CATEGORY_META } from '@egoless-do/core';
+import { Trash2 } from 'lucide-react-native';
+import { FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import { useMusicStore } from './useMusicStore';
 import FavoriteButton from './FavoriteButton';
 import AnimatedMusicIcon from './AnimatedMusicIcon';
 import WaveformBar from './WaveformBar';
-
-const ICON_MAP: Record<string, React.ComponentType<any>> = {
-  Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell,
-};
 
 interface Props {
   track: MusicTrack;
@@ -27,9 +23,6 @@ interface Props {
 export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor, showFavorite = true }: Props) {
   const TH = useTheme();
   const T = useT();
-  const visual = TRACK_VISUAL[track.id];
-  const IconComp = visual ? (ICON_MAP[visual.icon] ?? Music) : Music;
-  const iconColor = visual ? visual.gradient[0] : 'rgba(255,255,255,.4)';
 
   const removeUserTrack = useMusicStore(s => s.removeUserTrack);
   const isUserTrack = track.category === 'user';
@@ -68,10 +61,9 @@ export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite,
           </Text>
         </View>
 
-        {/* Right: favorite + animated icon + category icon + delete */}
+        {/* Right: favorite + animated icon + delete */}
         {showFavorite && <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} size={20} />}
         <AnimatedMusicIcon isPlaying={isCurrent && isPlaying} color={isCurrent ? primaryColor : TH.text} size={22} />
-        <IconComp size={20} color={iconColor} />
         {isUserTrack && (
           <TouchableOpacity onPress={handleDelete} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 4 }}>
             <Trash2 size={16} color={TH.sub} />
@@ -86,6 +78,7 @@ export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite,
             trackId={track.id}
             progress={progress}
             primaryColor={primaryColor}
+            inactiveColor={TH.border}
             barCount={40}
             height={22}
           />

@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Upload } from 'lucide-react-native';
 import { FONT_BODY } from '@egoless-do/core';
+import { useTheme } from '../../components/UI';
 import { useMusicStore } from './useMusicStore';
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function ImportMusicButton({ T, primaryColor }: Props) {
+  const TH = useTheme();
   const addUserTrack = useMusicStore(s => s.addUserTrack);
   const [importing, setImporting] = useState(false);
 
@@ -35,7 +37,7 @@ export default function ImportMusicButton({ T, primaryColor }: Props) {
 
   return (
     <TouchableOpacity onPress={handleImport} disabled={importing}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.1)', opacity: importing ? 0.5 : 1 }}>
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, opacity: importing ? 0.5 : 1 }}>
       <Upload size={14} color={primaryColor} />
       <Text style={{ fontSize: FONT_BODY, color: primaryColor }}>{T('musicImport')}</Text>
     </TouchableOpacity>

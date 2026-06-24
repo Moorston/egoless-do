@@ -44,12 +44,13 @@ interface Props {
   trackId: string;
   progress: number; // 0~1
   primaryColor: string;
+  inactiveColor?: string;
   barCount?: number;
   height?: number;
   onPress?: (progress: number) => void;
 }
 
-export default function WaveformBar({ trackId, progress, primaryColor, barCount = 40, height = 28, onPress }: Props) {
+export default function WaveformBar({ trackId, progress, primaryColor, inactiveColor = 'rgba(255,255,255,.15)', barCount = 40, height = 28, onPress }: Props) {
   const bars = useMemo(() => generateWaveform(trackId, barCount), [trackId, barCount]);
   const barWidth = 3;
   const gap = 2;
@@ -73,7 +74,7 @@ export default function WaveformBar({ trackId, progress, primaryColor, barCount 
             width: barWidth,
             height: Math.max(4, h + playedOffset),
             borderRadius: 1.5,
-            backgroundColor: filled ? primaryColor : 'rgba(255,255,255,.15)',
+            backgroundColor: filled ? primaryColor : inactiveColor,
             marginRight: i < barCount - 1 ? gap : 0,
             opacity: filled ? 0.85 + Math.sin(ratio * Math.PI * 2) * 0.15 : 1,
           }} />

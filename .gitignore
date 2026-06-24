@@ -56,3 +56,10 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+#openspec
+openspec/
+
+#speckit
+.specify/
+specs/

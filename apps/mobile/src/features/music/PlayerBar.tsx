@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX, Clock } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
-import { useT } from '../../components/UI';
+import { useTheme, useT } from '../../components/UI';
 import { useMusicStore } from './useMusicStore';
 import type { PlayMode } from './useMusicStore';
 import { audioPlayerRef } from './audioPlayerRef';
@@ -17,6 +17,7 @@ interface Props {
 }
 
 export default function PlayerBar({ primaryColor, category }: Props) {
+  const TH = useTheme();
   const T = useT();
   const currentTrack = useMusicStore(s => s.currentTrack);
   const isPlaying = useMusicStore(s => s.isPlaying);
@@ -87,7 +88,7 @@ export default function PlayerBar({ primaryColor, category }: Props) {
 
   return (
     <>
-      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0,0,0,.9)', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.08)', paddingHorizontal: 16, paddingTop: 10, paddingBottom: 28 }}>
+      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: TH.cardSolid, borderTopWidth: 1, borderTopColor: TH.border, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 28 }}>
         {/* Error banner */}
         {error && (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(239,68,68,.2)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
@@ -101,10 +102,10 @@ export default function PlayerBar({ primaryColor, category }: Props) {
         {/* Track info + controls */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, color: '#fff', fontWeight: '600' }} numberOfLines={1}>
+            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600' }} numberOfLines={1}>
               {currentTrack.name}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
               {currentTimeStr} / {durationStr}
             </Text>
           </View>
@@ -118,37 +119,37 @@ export default function PlayerBar({ primaryColor, category }: Props) {
             </TouchableOpacity>
           )}
           <TouchableOpacity onPress={() => setShowSleepModal(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
-            <Clock size={18} color={sleepTimerMinutes ? primaryColor : 'rgba(255,255,255,.5)'} />
+            <Clock size={18} color={sleepTimerMinutes ? primaryColor : TH.sub} />
           </TouchableOpacity>
 
           {/* Volume */}
           <TouchableOpacity onPress={handleToggleVolume} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
-            {volume > 0 ? <Volume2 size={18} color="rgba(255,255,255,.5)" /> : <VolumeX size={18} color="rgba(255,255,255,.5)" />}
+            {volume > 0 ? <Volume2 size={18} color={TH.sub} /> : <VolumeX size={18} color={TH.sub} />}
           </TouchableOpacity>
 
           {/* Play mode */}
           <TouchableOpacity onPress={handleCycleMode} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
-            <ModeIcon size={18} color={playMode !== 'sequential' ? primaryColor : 'rgba(255,255,255,.5)'} />
+            <ModeIcon size={18} color={playMode !== 'sequential' ? primaryColor : TH.sub} />
           </TouchableOpacity>
         </View>
 
         {/* Playback controls row */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 8 }}>
           <TouchableOpacity onPress={playPrevious} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
-            <SkipBack size={22} color="rgba(255,255,255,.7)" />
+            <SkipBack size={22} color={TH.text} />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleTogglePlay} style={{ padding: 8 }}>
-            <AnimatedMusicIcon isPlaying={isPlaying} color="#fff" size={28} />
+            <AnimatedMusicIcon isPlaying={isPlaying} color={TH.text} size={28} />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={playNext} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} style={{ padding: 8 }}>
-            <SkipForward size={22} color="rgba(255,255,255,.7)" />
+            <SkipForward size={22} color={TH.text} />
           </TouchableOpacity>
 
           <View style={{ flex: 1 }} />
 
-          <Text style={{ color: 'rgba(255,255,255,.3)', fontSize: FONT_SUB }}>{modeLabel}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{modeLabel}</Text>
         </View>
 
         {/* Waveform progress bar */}
@@ -156,6 +157,7 @@ export default function PlayerBar({ primaryColor, category }: Props) {
           trackId={currentTrack.id}
           progress={progress}
           primaryColor={primaryColor}
+          inactiveColor={TH.border}
           barCount={50}
           height={26}
           onPress={handleSeek}
@@ -164,25 +166,25 @@ export default function PlayerBar({ primaryColor, category }: Props) {
 
       {/* Sleep Timer Modal */}
       <Modal visible={showSleepModal} transparent animationType="fade" onRequestClose={() => setShowSleepModal(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)', justifyContent: 'center', padding: 24 }}>
-          <View style={{ backgroundColor: '#1a1a2e', borderRadius: 20, padding: 24 }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: '#fff', marginBottom: 16, textAlign: 'center' }}>{T('musicSleepTimer')}</Text>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'center', padding: 24 }}>
+          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, borderWidth: 1, borderColor: TH.border }}>
+            <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 16, textAlign: 'center' }}>{T('musicSleepTimer')}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
               {SLEEP_PRESETS.map(min => (
                 <TouchableOpacity key={min} onPress={() => handleSleepSelect(min)}
-                  style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: sleepTimerMinutes === min ? primaryColor : 'rgba(255,255,255,.1)' }}>
-                  <Text style={{ color: '#fff', fontWeight: '600', fontSize: FONT_BODY }}>{T('musicMinutes').replace('{n}', String(min))}</Text>
+                  style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: sleepTimerMinutes === min ? primaryColor : TH.card }}>
+                  <Text style={{ color: sleepTimerMinutes === min ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('musicMinutes').replace('{n}', String(min))}</Text>
                 </TouchableOpacity>
               ))}
               {sleepTimerMinutes && (
                 <TouchableOpacity onPress={() => handleSleepSelect(null)}
-                  style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: 'rgba(239,68,68,.2)', width: '100%', alignItems: 'center' }}>
+                  style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: 'rgba(239,68,68,.15)', width: '100%', alignItems: 'center' }}>
                   <Text style={{ color: '#EF4444', fontWeight: '600', fontSize: FONT_BODY }}>{T('musicSleepTimerOff')}</Text>
                 </TouchableOpacity>
               )}
             </View>
             <TouchableOpacity onPress={() => setShowSleepModal(false)} style={{ marginTop: 16, padding: 12, alignItems: 'center' }}>
-              <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_BODY }}>{T('cancel')}</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>

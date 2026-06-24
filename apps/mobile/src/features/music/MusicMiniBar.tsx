@@ -6,6 +6,7 @@ import type { MusicTrack } from '@egoless-do/core';
 import type { PlayMode } from './useMusicStore';
 import WaveformBar from './WaveformBar';
 import { useMusicStore } from './useMusicStore';
+import { useTheme } from '../../components/UI';
 
 const MODE_ICONS: Record<string, typeof Repeat> = {
   sequential: Repeat,
@@ -22,19 +23,16 @@ interface Props {
   onToggleLoop: () => void;
   onPressTrackName?: () => void;
   primaryColor: string;
-  darkBackground?: boolean;
 }
 
-export default function MusicMiniBar({ currentTrack, isPlaying, loop, onTogglePlay, onToggleLoop, onPressTrackName, primaryColor, darkBackground = true }: Props) {
+export default function MusicMiniBar({ currentTrack, isPlaying, loop, onTogglePlay, onToggleLoop, onPressTrackName, primaryColor }: Props) {
+  const TH = useTheme();
   const playMode = useMusicStore(s => s.playMode);
   const currentTime = useMusicStore(s => s.currentTime);
   const duration = useMusicStore(s => s.duration);
 
   if (!currentTrack) return null;
 
-  const textColor = darkBackground ? 'rgba(255,255,255,.7)' : 'rgba(0,0,0,.6)';
-  const iconColor = darkBackground ? '#fff' : '#333';
-  const inactiveLoop = darkBackground ? 'rgba(255,255,255,.3)' : 'rgba(0,0,0,.2)';
   const progress = duration > 0 ? currentTime / duration : 0;
 
   const ModeIcon = MODE_ICONS[playMode] ?? Repeat;
@@ -45,20 +43,20 @@ export default function MusicMiniBar({ currentTrack, isPlaying, loop, onTogglePl
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
         <Music size={14} color={primaryColor} />
         <TouchableOpacity onPress={onPressTrackName} style={{ flex: 1 }}>
-          <Text style={{ fontSize: FONT_SUB, color: textColor }} numberOfLines={1}>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub }} numberOfLines={1}>
             {currentTrack.name}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onTogglePlay} style={{ padding: 4 }}>
-          {isPlaying ? <Pause size={16} color={iconColor} /> : <Play size={16} color={iconColor} />}
+          {isPlaying ? <Pause size={16} color={TH.text} /> : <Play size={16} color={TH.text} />}
         </TouchableOpacity>
         <TouchableOpacity onPress={onToggleLoop} style={{ padding: 4 }}>
-          <ModeIcon size={14} color={isActive ? primaryColor : inactiveLoop} />
+          <ModeIcon size={14} color={isActive ? primaryColor : TH.border} />
         </TouchableOpacity>
       </View>
       {/* Progress bar */}
       {duration > 0 && (
-        <View style={{ height: 2, backgroundColor: darkBackground ? 'rgba(255,255,255,.1)' : 'rgba(0,0,0,.1)', borderRadius: 1 }}>
+        <View style={{ height: 2, backgroundColor: TH.border, borderRadius: 1 }}>
           <View style={{ height: 2, width: `${progress * 100}%`, backgroundColor: primaryColor, borderRadius: 1 }} />
         </View>
       )}
