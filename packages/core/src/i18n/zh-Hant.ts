@@ -585,6 +585,13 @@ export const zhHant: I18nKeys = {
   musicPlaying:'正在播放', musicPaused:'已暫停', musicLoop:'循環',
   musicNoTracks:'暫無音樂', musicEmptyMy:'暫無匯入音樂，點擊上方按鈕匯入', musicSection:'音樂',
   musicFavorites:'收藏', musicTrackCount:'{n}首', musicEmptyFavorites:'暫無收藏曲目',
+  musicPlayModeSequential:'順序', musicPlayModeRepeatAll:'列表循環',
+  musicPlayModeRepeatOne:'單曲循環', musicPlayModeShuffle:'隨機',
+  musicPlayFailed:'播放失敗', musicRetry:'重試',
+  musicSleepTimer:'定時關閉', musicSleepTimerOff:'關閉定時',
+  musicMinutes:'{n}分鐘',
+  musicImportSuccess:'已匯入: {name}', musicImportFailed:'匯入失敗',
+  musicCategory:'分類',
 
   // Calendar weekdays
   weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',

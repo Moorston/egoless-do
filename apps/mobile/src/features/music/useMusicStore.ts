@@ -341,18 +341,18 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       return;
     }
 
-    const remaining = minutes * 60;
+    const endTime = Date.now() + minutes * 60 * 1000;
     sleepTimerRef = setInterval(() => {
-      const { sleepTimerRemaining } = get();
-      if (sleepTimerRemaining <= 1) {
+      const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+      if (remaining <= 0) {
         if (sleepTimerRef) { clearInterval(sleepTimerRef); sleepTimerRef = null; }
         get().pause();
         set({ sleepTimerMinutes: null, sleepTimerRemaining: 0 });
       } else {
-        set({ sleepTimerRemaining: sleepTimerRemaining - 1 });
+        set({ sleepTimerRemaining: remaining });
       }
     }, 1000);
 
-    set({ sleepTimerMinutes: minutes, sleepTimerRemaining: remaining });
+    set({ sleepTimerMinutes: minutes, sleepTimerRemaining: minutes * 60 });
   },
 }));

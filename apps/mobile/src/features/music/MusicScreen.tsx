@@ -63,9 +63,7 @@ export default function MusicScreen() {
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 100 }}>
         {/* Now Playing Card */}
         {currentTrack && (
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => isPlaying ? pause() : resume()}
+          <View
             style={{
               borderRadius: 16, padding: 16, marginBottom: 16,
               backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border,
@@ -87,7 +85,7 @@ export default function MusicScreen() {
                 {currentTrack.name}
               </Text>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
-                {isPlaying ? '正在播放' : '已暂停'}
+                {isPlaying ? T('musicPlaying') : T('musicPaused')}
               </Text>
               {/* Mini waveform */}
               <View style={{ marginTop: 6 }}>
@@ -101,12 +99,15 @@ export default function MusicScreen() {
               </View>
             </View>
 
-            {/* Play/Pause indicator */}
-            <View style={{
-              width: 36, height: 36, borderRadius: 18,
-              backgroundColor: gradient[0],
-              alignItems: 'center', justifyContent: 'center',
-            }}>
+            {/* Play/Pause button */}
+            <TouchableOpacity
+              onPress={() => isPlaying ? pause() : resume()}
+              style={{
+                width: 36, height: 36, borderRadius: 18,
+                backgroundColor: gradient[0],
+                alignItems: 'center', justifyContent: 'center',
+              }}
+            >
               {isPlaying ? (
                 <View style={{ flexDirection: 'row', gap: 2 }}>
                   <View style={{ width: 3, height: 12, backgroundColor: '#fff', borderRadius: 1 }} />
@@ -117,8 +118,8 @@ export default function MusicScreen() {
                   <View style={{ width: 0, height: 0, borderLeftWidth: 10, borderLeftColor: '#fff', borderTopWidth: 6, borderTopColor: 'transparent', borderBottomWidth: 6, borderBottomColor: 'transparent' }} />
                 </View>
               )}
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         )}
 
         {/* Category Cards Grid */}

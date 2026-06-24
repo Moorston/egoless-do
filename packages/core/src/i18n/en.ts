@@ -585,6 +585,13 @@ export const en: I18nKeys = {
   musicPlaying:'Now Playing', musicPaused:'Paused', musicLoop:'Loop',
   musicNoTracks:'No music', musicEmptyMy:'No imported music, tap above to import', musicSection:'Music',
   musicFavorites:'Favorites', musicTrackCount:'{n} tracks', musicEmptyFavorites:'No favorite tracks',
+  musicPlayModeSequential:'Sequential', musicPlayModeRepeatAll:'Repeat All',
+  musicPlayModeRepeatOne:'Repeat One', musicPlayModeShuffle:'Shuffle',
+  musicPlayFailed:'Playback Failed', musicRetry:'Retry',
+  musicSleepTimer:'Sleep Timer', musicSleepTimerOff:'Turn Off Timer',
+  musicMinutes:'{n} min',
+  musicImportSuccess:'Imported: {name}', musicImportFailed:'Import Failed',
+  musicCategory:'Category',
 
   // Calendar weekdays
   weekdaySun:'Sun', weekdayMon:'Mon', weekdayTue:'Tue', weekdayWed:'Wed',

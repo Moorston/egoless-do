@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { X, Music } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useMusicStore } from './useMusicStore';
 import { audioSessionManager } from './AudioSessionManager';
@@ -16,13 +16,6 @@ interface Props {
   primaryColor: string;
   selectedTrackId?: string | null;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-  focus: '专注',
-  meditate: '冥想',
-  exercise: '运动',
-  user: '我的',
-};
 
 export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSelectNoMusic, primaryColor, selectedTrackId }: Props) {
   const TH = useTheme();
@@ -38,31 +31,29 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
   const resume = useMusicStore(s => s.resume);
   const toggleFavorite = useMusicStore(s => s.toggleFavorite);
 
-  // Group tracks by category
+  // Group tracks by category with translated labels
   const grouped = useMemo(() => {
     const groups: { key: string; label: string; tracks: typeof library }[] = [];
-
-    // Group by category
     const cats = ['focus', 'meditate', 'exercise', 'user'] as const;
     for (const cat of cats) {
       const tracks = cat === 'user' ? userTracks : library.filter(t => t.category === cat);
       if (tracks.length > 0) {
-        groups.push({ key: cat, label: CATEGORY_LABELS[cat] ?? cat, tracks });
+        const meta = MUSIC_CATEGORY_META.find(m => m.key === cat);
+        const label = meta ? T(meta.nameKey) : (cat === 'user' ? T('musicMy') : cat);
+        groups.push({ key: cat, label, tracks });
       }
     }
     return groups;
-  }, [library, userTracks]);
+  }, [library, userTracks, T]);
 
   const handlePlay = (track: typeof library[0]) => {
     if (currentTrack?.id === track.id) {
-      // Same track: toggle play/pause
       if (isPlaying) pause();
       else {
         const allowed = audioSessionManager.requestPlay('music');
         if (allowed) resume();
       }
     } else {
-      // New track: check with session manager before playing
       const allowed = audioSessionManager.requestPlay('music');
       if (allowed) {
         play(track);
@@ -86,7 +77,7 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
           <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 20 }}>
             {/* No music option */}
             <TouchableOpacity
-              onPress={() => { onSelectNoMusic?.(); }}
+              onPress={() => { onSelectNoMusic?.(); onClose(); }}
               activeOpacity={0.7}
               style={[styles.noMusicItem, { backgroundColor: !selectedTrackId ? `${primaryColor}10` : 'transparent' }]}
             >
@@ -110,22 +101,12 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
                     onPlay={() => handlePlay(track)}
                     onToggleFavorite={() => toggleFavorite(track.id)}
                     primaryColor={primaryColor}
-                    showFavorite={false}
+                    showFavorite={true}
                   />
                 ))}
               </View>
             ))}
           </ScrollView>
-
-          {/* Confirm button */}
-          <View style={styles.footer}>
-            <TouchableOpacity
-              onPress={onClose}
-              style={[styles.confirmBtn, { backgroundColor: primaryColor }]}
-            >
-              <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '600' }}>{T('confirm')}</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </KeyboardAvoidingView>
     </Modal>

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, Text, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Upload } from 'lucide-react-native';
@@ -12,6 +12,7 @@ interface Props {
 
 export default function ImportMusicButton({ T, primaryColor }: Props) {
   const addUserTrack = useMusicStore(s => s.addUserTrack);
+  const [importing, setImporting] = useState(false);
 
   const handleImport = useCallback(async () => {
     try {
@@ -21,15 +22,20 @@ export default function ImportMusicButton({ T, primaryColor }: Props) {
       });
       if (result.canceled || !result.assets?.[0]) return;
       const asset = result.assets[0];
+      setImporting(true);
       await addUserTrack(asset.name, asset.uri);
+      Alert.alert(T('musicImportSuccess').replace('{name}', asset.name));
     } catch (e) {
       console.warn('Import failed:', e);
+      Alert.alert(T('musicImportFailed'));
+    } finally {
+      setImporting(false);
     }
-  }, [addUserTrack]);
+  }, [addUserTrack, T]);
 
   return (
-    <TouchableOpacity onPress={handleImport}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.1)' }}>
+    <TouchableOpacity onPress={handleImport} disabled={importing}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.1)', opacity: importing ? 0.5 : 1 }}>
       <Upload size={14} color={primaryColor} />
       <Text style={{ fontSize: FONT_BODY, color: primaryColor }}>{T('musicImport')}</Text>
     </TouchableOpacity>
