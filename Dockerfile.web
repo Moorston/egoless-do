@@ -17,7 +17,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY packages/core/package.json ./packages/core/
 COPY packages/config/package.json ./packages/config/
 COPY apps/web/package.json ./apps/web/
-COPY apps/mobile/package.json ./apps/mobile/
+# COPY apps/mobile/package.json excluded by .dockerignore; pnpm handles it
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
