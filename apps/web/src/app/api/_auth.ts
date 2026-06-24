@@ -39,7 +39,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
   // Fast local checks first
   const payload = jwtPayload(token);
   const userId = typeof payload?.id === 'string' ? payload.id : undefined;
-  if (!userId) return null;
+  if (!userId || !payload) return null;
 
   // Check blacklist (for logged-out tokens)
   if (isBlacklisted(token)) return null;
