@@ -585,6 +585,13 @@ export const zh: I18nKeys = {
   musicPlaying:'正在播放', musicPaused:'已暂停', musicLoop:'循环',
   musicNoTracks:'暂无音乐', musicEmptyMy:'暂无导入音乐，点击上方按钮导入', musicSection:'音乐',
   musicFavorites:'收藏', musicTrackCount:'{n}首', musicEmptyFavorites:'暂无收藏曲目',
+  musicPlayModeSequential:'顺序', musicPlayModeRepeatAll:'列表循环',
+  musicPlayModeRepeatOne:'单曲循环', musicPlayModeShuffle:'随机',
+  musicPlayFailed:'播放失败', musicRetry:'重试',
+  musicSleepTimer:'定时关闭', musicSleepTimerOff:'关闭定时',
+  musicMinutes:'{n}分钟',
+  musicImportSuccess:'已导入: {name}', musicImportFailed:'导入失败',
+  musicCategory:'分类',
 
   // Calendar weekdays
   weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',
