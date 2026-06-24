@@ -17,7 +17,7 @@ import {
   Utensils, Scale, Footprints,
   Droplets, Pencil, Check, X, Shield, Star, Sparkles,
   PersonStanding, ClipboardList, Target, BarChart3, AlertTriangle,
-  ChevronLeft, ChevronRight, Calendar, Moon, Sunrise, Binary,
+  ChevronLeft, ChevronRight, Calendar,
 } from 'lucide-react-native';
 import CheckinStatsModal from './CheckinStatsModal';
 
@@ -68,11 +68,6 @@ export default function HomeScreen() {
   // ── Local state (initialized from existing record) ──
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [localDone, setLocalDone] = useState<boolean | null>(() => todayRecord?.done ?? null);
-  const [practices, setPractices] = useState(() => ({
-    sit: parsed.practices.includes('sit'),
-    stand: parsed.practices.includes('stand'),
-    chant: parsed.practices.includes('chant'),
-  }));
   const [note, setNote] = useState(() => parsed.userNote);
   const [weight, setWeight] = useState(() => todayRecord?.weight != null ? String(todayRecord.weight) : '');
   // habitCheckins derived from store — no local state needed
@@ -121,53 +116,6 @@ export default function HomeScreen() {
     () => (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
     [store.habits],
   );
-
-  // ── Practice streaks ──
-  const practiceStreaks = useMemo(() => {
-    const history = (store.checkinHistory ?? []).filter(c => !c.deleted);
-    const streaks: Record<string, number> = { sit: 0, stand: 0, chant: 0 };
-    
-    // 创建日期到记录的映射
-    const recordMap = new Map<string, CheckinEntry>();
-    for (const c of history) {
-      if (c.done) recordMap.set(c.date, c);
-    }
-    
-    // 检查 viewDate 的记录中是否包含各修行项目
-    const viewDateRecord = recordMap.get(viewDate);
-    const viewDatePractices = viewDateRecord ? parseCheckinNote(viewDateRecord.note ?? '').practices : [];
-    
-    for (const key of ['sit', 'stand', 'chant'] as const) {
-      let streak = 0;
-      // 从 viewDate 的前一天开始向前检查连续天数
-      let currentDate = viewDate;
-      const d = new Date(viewDate + 'T00:00:00');
-      d.setDate(d.getDate() - 1);
-      currentDate = dateStr(d);
-      
-      while (true) {
-        const record = recordMap.get(currentDate);
-        if (!record) break;
-        
-        const parsed = parseCheckinNote(record.note ?? '');
-        if (!parsed.practices.includes(key)) break;
-        
-        streak++;
-        // 移动到前一天
-        const prev = new Date(currentDate + 'T00:00:00');
-        prev.setDate(prev.getDate() - 1);
-        currentDate = dateStr(prev);
-      }
-      
-      // 如果 viewDate 的记录中包含该修行项目，连续天数+1
-      if (viewDatePractices.includes(key)) {
-        streak++;
-      }
-      
-      streaks[key] = streak;
-    }
-    return streaks;
-  }, [store.checkinHistory, viewDate]);
 
   // ── Status derivation ──
   const status: CheckinStatus = todayRecord
@@ -256,18 +204,12 @@ export default function HomeScreen() {
     if (!todayRecord) {
       // No record for this date — reset local state
       setLocalDone(null);
-      setPractices({ sit: false, stand: false, chant: false });
       setNote('');
       setWeight('');
       return;
     }
     const p = parseCheckinNote(todayRecord.note ?? '');
     setLocalDone(todayRecord.done ?? null);
-    setPractices({
-      sit: p.practices.includes('sit'),
-      stand: p.practices.includes('stand'),
-      chant: p.practices.includes('chant'),
-    });
     setNote(p.userNote);
     setWeight(todayRecord.weight != null ? String(todayRecord.weight) : '');
   }, [todayRecord?.date, todayRecord?.updatedAt]);
@@ -278,11 +220,6 @@ export default function HomeScreen() {
     const noteData: Record<string, unknown> = {};
     if (note) noteData.note = note;
     if (s.waterMl > 0) noteData.water = s.waterMl;
-    const pr: string[] = [];
-    if (practices.sit) pr.push('sit');
-    if (practices.stand) pr.push('stand');
-    if (practices.chant) pr.push('chant');
-    if (pr.length) noteData.practices = pr;
     const checkedHabits = (s.habits ?? [])
       .filter(h => !h.deleted && h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
       .map(h => h.name);
@@ -299,7 +236,7 @@ export default function HomeScreen() {
     if (donePlanItems.length) noteData.planItems = donePlanItems;
     if (totalCal > 0) noteData.food = totalCal;
     return JSON.stringify(noteData);
-  }, [note, practices, totalCal, viewDate, dailyCustomTodos, todayPlanItems, planCheckins]);
+  }, [note, totalCal, viewDate, dailyCustomTodos, todayPlanItems, planCheckins]);
 
   // ── Real-time save ──
   const saveField = useCallback((doneOverride?: boolean) => {
@@ -309,31 +246,6 @@ export default function HomeScreen() {
   }, [buildNote]);
 
   // ── Field change handlers ──
-  const togglePractice = useCallback((key: 'sit' | 'stand' | 'chant') => {
-    if (isReadOnly) return;
-    setPractices(p => {
-      const next = { ...p, [key]: !p[key] };
-      setTimeout(() => {
-        const s = useAppStore.getState();
-        const pr: string[] = [];
-        if (next.sit) pr.push('sit');
-        if (next.stand) pr.push('stand');
-        if (next.chant) pr.push('chant');
-        const noteData: Record<string, unknown> = {};
-        if (noteRef.current) noteData.note = noteRef.current;
-        if (s.waterMl > 0) noteData.water = s.waterMl;
-        if (pr.length) noteData.practices = pr;
-        const checkedHabits = (s.habits ?? [])
-          .filter(h => !h.deleted && h.status === 'inProgress' && h.checkedDates?.includes(viewDateRef.current))
-          .map(h => h.name);
-        if (checkedHabits.length) noteData.habits = checkedHabits;
-        const w = weightRef.current ? parseFloat(weightRef.current) : undefined;
-        s.submitCheckin(localDoneRef.current ?? false, JSON.stringify(noteData), undefined, w);
-      }, 0);
-      return next;
-    });
-  }, [isReadOnly]);
-
   const toggleHabit = useCallback((id: string) => {
     if (isReadOnly) return;
     store.checkinHabit(id, viewDate);
@@ -372,7 +284,6 @@ export default function HomeScreen() {
   const handleSetDone = useCallback(() => {
     const s = useAppStore.getState();
     const items = getIncompleteItems({
-      practices,
       habits: (s.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
       planItems: todayPlanItems,
       planItemCheckins: planCheckins,
@@ -387,7 +298,7 @@ export default function HomeScreen() {
     }
     setLocalDone(true);
     store.submitCheckin(true, buildNote(), undefined, weight ? parseFloat(weight) : undefined);
-  }, [store, buildNote, weight, practices, todayPlanItems, planCheckins, viewDate]);
+  }, [store, buildNote, weight, todayPlanItems, planCheckins, viewDate]);
 
   const handleEdit = useCallback(() => {
     setLocalDone(false);
@@ -638,48 +549,6 @@ export default function HomeScreen() {
                     {isReadOnly ? (isToday && status === 'done' ? '今日目标已达成，点赞 👍' : viewDateLabel) : (isToday ? T('checkinDoneToday') : viewDateLabel)}
                   </Text>
                 </View>
-
-                {/* Practices */}
-                <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 8 }}>{T('checkinPractice')}</Text>
-                {(() => {
-                  const viewDateRecord = (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === viewDate && c.done);
-                  return [
-                  { key: 'sit' as const, icon: <Moon size={16} color={P} />, label: T('checkinSit') },
-                  { key: 'stand' as const, icon: <Sunrise size={16} color={P} />, label: T('checkinStand') },
-                  { key: 'chant' as const, icon: <Binary size={16} color={P} />, label: T('checkinSutra') },
-                ].map(({ key, icon, label }) => {
-                  const isChecked = practices[key];
-                  const baseStreak = practiceStreaks[key];
-                  const hasInHistory = viewDateRecord ? parseCheckinNote(viewDateRecord.note ?? '').practices.includes(key) : false;
-                  // 选中时+1，取消时-1
-                  const displayStreak = isChecked
-                    ? (hasInHistory ? baseStreak : baseStreak + 1)
-                    : Math.max(0, hasInHistory ? baseStreak - 1 : baseStreak);
-                  return (
-                    <View key={key} style={{
-                      flexDirection: 'row', alignItems: 'center',
-                      justifyContent: 'space-between', paddingVertical: 12,
-                      borderBottomWidth: 1, borderBottomColor: TH.border,
-                    }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                        {icon}
-                        <View>
-                          <Text style={{ color: isReadOnly && !isChecked ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !isChecked ? 0.5 : 1 }}>
-                            {label}
-                          </Text>
-                          <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{displayStreak} {T('checkinStreak')}</Text>
-                        </View>
-                      </View>
-                      {isReadOnly ? (
-                        isChecked
-                          ? <Check size={18} color={COLORS.GREEN} />
-                          : <X size={18} color={TH.sub} />
-                      ) : (
-                        <Checkbox on={isChecked} onChange={() => togglePractice(key)} />
-                      )}
-                    </View>
-                  );
-                })()}
 
                 {/* Plan items */}
                 {todayPlanItems.length > 0 && (

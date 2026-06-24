@@ -154,7 +154,6 @@ export default function CheckinPage({ onClose, graceDate }: { onClose: () => voi
       return;
     }
     const items = getIncompleteItems({
-      practices,
       habits: (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
       planItems: todayPlanItems,
       planItemCheckins: planCheckins,

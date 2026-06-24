@@ -21,20 +21,13 @@ export interface IncompleteItem {
 
 /** Detect incomplete checkin items for today */
 export function getIncompleteItems(params: {
-  practices: { sit: boolean; stand: boolean; chant: boolean };
   habits: Array<{ name: string; status: string; checkedDates?: string[] }>;
   planItems: Array<{ id: string; name: string }>;
   planItemCheckins: Array<{ planItemId: string; date: string; done: boolean; linkedModule?: string; deleted?: boolean }>;
   today: string;
 }): IncompleteItem[] {
-  const { practices, habits, planItems, planItemCheckins, today } = params;
+  const { habits, planItems, planItemCheckins, today } = params;
   const result: IncompleteItem[] = [];
-
-  // Practices
-  const practiceNames: Record<string, string> = { sit: '早睡', stand: '早起', chant: '冥想' };
-  for (const [key, checked] of Object.entries(practices)) {
-    if (!checked) result.push({ type: 'practice', name: practiceNames[key] ?? key });
-  }
 
   // Habits (inProgress only)
   for (const h of habits) {
