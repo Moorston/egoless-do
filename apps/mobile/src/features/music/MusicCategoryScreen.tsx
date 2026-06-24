@@ -1,12 +1,12 @@
-import React, { useEffect, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useCallback, useMemo } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'lucide-react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import { useMusicStore } from './useMusicStore';
+import { useMusicStore, computeTracksByCategory } from './useMusicStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import type { RootStackParamList } from '../../navigation/hooks';
 import TrackListItem from './TrackListItem';
@@ -28,8 +28,10 @@ export default function MusicCategoryScreen() {
   const pause = useMusicStore(s => s.pause);
   const resume = useMusicStore(s => s.resume);
   const favorites = useMusicStore(s => s.favorites);
+  const library = useMusicStore(s => s.library);
+  const userTracks = useMusicStore(s => s.userTracks);
   const toggleFavorite = useMusicStore(s => s.toggleFavorite);
-  const getTracksByCategory = useMusicStore(s => s.getTracksByCategory);
+  const setQueue = useMusicStore(s => s.setQueue);
   const loadFavorites = useMusicStore(s => s.loadFavorites);
   const loadUserTracks = useMusicStore(s => s.loadUserTracks);
 
@@ -39,15 +41,18 @@ export default function MusicCategoryScreen() {
   }, [loadFavorites, loadUserTracks]);
 
   const meta = MUSIC_CATEGORY_META.find(m => m.key === category);
-  const tracks = getTracksByCategory(category);
+  const tracks = useMemo(() => computeTracksByCategory(library, userTracks, favorites, category), [library, userTracks, favorites, category]);
 
   const handlePlay = useCallback((track: MusicTrack) => {
     if (currentTrack?.id === track.id) {
       isPlaying ? pause() : resume();
     } else {
+      // Set queue for the category and play
+      const idx = tracks.findIndex(t => t.id === track.id);
+      setQueue(tracks, idx >= 0 ? idx : 0);
       play(track);
     }
-  }, [currentTrack, isPlaying, play, pause, resume]);
+  }, [currentTrack, isPlaying, play, pause, resume, tracks, setQueue]);
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>

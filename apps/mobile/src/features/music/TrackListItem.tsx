@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, TRACK_VISUAL } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useTheme } from '../../components/UI';
+import { useMusicStore } from './useMusicStore';
 import FavoriteButton from './FavoriteButton';
 import AnimatedMusicIcon from './AnimatedMusicIcon';
 import WaveformBar from './WaveformBar';
-import { audioPlayerRef } from './audioPlayerRef';
 
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell,
@@ -30,19 +30,10 @@ export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite,
   const IconComp = visual ? (ICON_MAP[visual.icon] ?? Music) : Music;
   const iconColor = visual ? visual.gradient[0] : 'rgba(255,255,255,.4)';
 
-  // 使用轮询获取播放进度
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    if (!isCurrent) { setProgress(0); return; }
-    const interval = setInterval(() => {
-      const p = audioPlayerRef.current;
-      if (p && p.duration > 0) {
-        setProgress(p.currentTime / p.duration);
-      }
-    }, 250);
-    return () => clearInterval(interval);
-  }, [isCurrent]);
+  // Read progress from store instead of polling
+  const currentTime = useMusicStore(s => s.currentTime);
+  const duration = useMusicStore(s => s.duration);
+  const progress = isCurrent && duration > 0 ? currentTime / duration : 0;
 
   return (
     <TouchableOpacity onPress={onPlay} activeOpacity={0.7} style={{ paddingVertical: 14, paddingHorizontal: 16 }}>

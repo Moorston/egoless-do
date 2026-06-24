@@ -21,6 +21,12 @@ const LIBRARY: MusicTrack[] = BUILTIN_TRACKS.map(t => ({
 }));
 
 const USER_MUSIC_DIR = `${FileSystem.documentDirectory}user-music/`;
+const VOLUME_STORAGE_KEY = 'music_volume';
+
+// Module-level timer ref (non-serializable, not in store)
+let sleepTimerRef: ReturnType<typeof setInterval> | null = null;
+
+export type PlayMode = 'sequential' | 'shuffle' | 'repeat-one' | 'repeat-all';
 
 interface MusicState {
   library: MusicTrack[];
@@ -31,6 +37,22 @@ interface MusicState {
   volume: number;
   loop: boolean;
 
+  // Playback status (synced from AudioEngineProvider)
+  currentTime: number;
+  duration: number;
+
+  // Play queue
+  queue: MusicTrack[];
+  queueIndex: number;
+  playMode: PlayMode;
+
+  // Sleep timer
+  sleepTimerMinutes: number | null;
+  sleepTimerRemaining: number;
+
+  // Error state
+  error: string | null;
+
   play: (track: MusicTrack) => void;
   pause: () => void;
   resume: () => void;
@@ -38,13 +60,50 @@ interface MusicState {
   setVolume: (v: number) => void;
   toggleLoop: () => void;
   setIsPlaying: (v: boolean) => void;
+  setPlaybackStatus: (currentTime: number, duration: number) => void;
   addUserTrack: (name: string, uri: string) => Promise<void>;
   removeUserTrack: (id: string) => Promise<void>;
   loadUserTracks: () => Promise<void>;
   toggleFavorite: (id: string) => Promise<void>;
   loadFavorites: () => Promise<void>;
+  loadVolume: () => Promise<void>;
   getTracksByCategory: (cat: string) => MusicTrack[];
   getCategoryMeta: () => { key: string; name: string; icon: string; count: number; isFavorite?: boolean }[];
+
+  // Queue & mode
+  setQueue: (tracks: MusicTrack[], startIndex?: number) => void;
+  playNext: () => void;
+  playPrevious: () => void;
+  setPlayMode: (mode: PlayMode) => void;
+
+  // Sleep timer
+  setSleepTimer: (minutes: number | null) => void;
+
+  // Error
+  setError: (e: string | null) => void;
+}
+
+// ── Pure selector functions (outside store for memoization) ──
+
+export function computeTracksByCategory(library: MusicTrack[], userTracks: MusicTrack[], favorites: string[], cat: string): MusicTrack[] {
+  if (cat === 'all') return [...library, ...userTracks];
+  if (cat === 'my') return userTracks;
+  if (cat === 'favorites') {
+    const all = [...library, ...userTracks];
+    return all.filter(t => favorites.includes(t.id));
+  }
+  return library.filter(t => t.category === cat);
+}
+
+export function computeCategoryMeta(library: MusicTrack[], userTracks: MusicTrack[], favorites: string[]) {
+  const allTracks = [...library, ...userTracks];
+  return [
+    { key: 'focus', name: '专注', icon: 'Waves', count: library.filter(t => t.category === 'focus').length },
+    { key: 'meditate', name: '冥想', icon: 'Bell', count: library.filter(t => t.category === 'meditate').length },
+    { key: 'exercise', name: '运动', icon: 'Dumbbell', count: library.filter(t => t.category === 'exercise').length },
+    { key: 'my', name: '我的', icon: 'Music', count: userTracks.length },
+    { key: 'favorites', name: '收藏', icon: 'Heart', count: allTracks.filter(t => favorites.includes(t.id)).length, isFavorite: true },
+  ];
 }
 
 export const useMusicStore = create<MusicState>((set, get) => ({
@@ -56,13 +115,37 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   volume: 0.3,
   loop: true,
 
-  play: (track) => set({ currentTrack: track, isPlaying: true }),
+  // Playback status
+  currentTime: 0,
+  duration: 0,
+
+  // Play queue
+  queue: [],
+  queueIndex: -1,
+  playMode: 'sequential' as PlayMode,
+
+  // Sleep timer
+  sleepTimerMinutes: null,
+  sleepTimerRemaining: 0,
+
+  // Error
+  error: null,
+
+  play: (track) => set({ currentTrack: track, isPlaying: true, error: null }),
   pause: () => set({ isPlaying: false }),
   resume: () => set({ isPlaying: true }),
-  stop: () => set({ currentTrack: null, isPlaying: false }),
-  setVolume: (v) => set({ volume: v }),
-  toggleLoop: () => set(s => ({ loop: !s.loop })),
+  stop: () => set({ currentTrack: null, isPlaying: false, currentTime: 0, duration: 0 }),
+  setVolume: (v) => {
+    set({ volume: v });
+    AsyncStorage.setItem(VOLUME_STORAGE_KEY, String(v)).catch(() => {});
+  },
+  toggleLoop: () => set(s => {
+    const newLoop = !s.loop;
+    return { loop: newLoop, playMode: newLoop ? 'repeat-one' : 'sequential' };
+  }),
   setIsPlaying: (v) => set({ isPlaying: v }),
+  setPlaybackStatus: (currentTime, duration) => set({ currentTime, duration }),
+  setError: (e) => set({ error: e }),
 
   addUserTrack: async (name, uri) => {
     try {
@@ -165,24 +248,111 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   getTracksByCategory: (cat) => {
     const { library, userTracks, favorites } = get();
-    if (cat === 'all') return [...library, ...userTracks];
-    if (cat === 'my') return userTracks;
-    if (cat === 'favorites') {
-      const all = [...library, ...userTracks];
-      return all.filter(t => favorites.includes(t.id));
-    }
-    return library.filter(t => t.category === cat);
+    return computeTracksByCategory(library, userTracks, favorites, cat);
   },
 
   getCategoryMeta: () => {
     const { library, userTracks, favorites } = get();
-    const allTracks = [...library, ...userTracks];
-    return [
-      { key: 'focus', name: '专注', icon: 'Waves', count: library.filter(t => t.category === 'focus').length },
-      { key: 'meditate', name: '冥想', icon: 'Bell', count: library.filter(t => t.category === 'meditate').length },
-      { key: 'exercise', name: '运动', icon: 'Dumbbell', count: library.filter(t => t.category === 'exercise').length },
-      { key: 'my', name: '我的', icon: 'Music', count: userTracks.length },
-      { key: 'favorites', name: '收藏', icon: 'Heart', count: allTracks.filter(t => favorites.includes(t.id)).length, isFavorite: true },
-    ];
+    return computeCategoryMeta(library, userTracks, favorites);
+  },
+
+  loadVolume: async () => {
+    try {
+      const raw = await AsyncStorage.getItem(VOLUME_STORAGE_KEY);
+      if (raw) {
+        const v = parseFloat(raw);
+        if (!isNaN(v) && v >= 0 && v <= 1) set({ volume: v });
+      }
+    } catch { /* ignore */ }
+  },
+
+  // ── Queue & mode ──
+
+  setQueue: (tracks, startIndex = 0) => {
+    set({ queue: tracks, queueIndex: startIndex });
+  },
+
+  playNext: () => {
+    const { queue, queueIndex, playMode, currentTrack } = get();
+    if (queue.length === 0) return;
+
+    let nextIndex: number;
+    if (playMode === 'repeat-one') {
+      // Replay current track
+      if (currentTrack) set({ isPlaying: true });
+      return;
+    }
+
+    if (playMode === 'shuffle') {
+      // Pick random index different from current
+      if (queue.length === 1) {
+        nextIndex = 0;
+      } else {
+        do { nextIndex = Math.floor(Math.random() * queue.length); }
+        while (nextIndex === queueIndex);
+      }
+    } else {
+      // sequential / repeat-all
+      nextIndex = queueIndex + 1;
+      if (nextIndex >= queue.length) {
+        if (playMode === 'repeat-all') {
+          nextIndex = 0;
+        } else {
+          // sequential: stop at end
+          set({ isPlaying: false });
+          return;
+        }
+      }
+    }
+
+    set({ queueIndex: nextIndex, currentTrack: queue[nextIndex], isPlaying: true, error: null });
+  },
+
+  playPrevious: () => {
+    const { queue, queueIndex, currentTime } = get();
+    if (queue.length === 0) return;
+
+    // If more than 3 seconds into the track, restart it
+    if (currentTime > 3) {
+      set({ currentTime: 0 });
+      // seekTo will be handled by AudioEngineProvider
+      return;
+    }
+
+    const prevIndex = queueIndex > 0 ? queueIndex - 1 : queue.length - 1;
+    set({ queueIndex: prevIndex, currentTrack: queue[prevIndex], isPlaying: true, error: null });
+  },
+
+  setPlayMode: (mode) => {
+    set({ playMode: mode, loop: mode === 'repeat-one' });
+    AsyncStorage.setItem('music_play_mode', mode).catch(() => {});
+  },
+
+  // ── Sleep timer ──
+
+  setSleepTimer: (minutes) => {
+    if (sleepTimerRef) {
+      clearInterval(sleepTimerRef);
+      sleepTimerRef = null;
+    }
+
+    if (minutes === null) {
+      set({ sleepTimerMinutes: null, sleepTimerRemaining: 0 });
+      return;
+    }
+
+    const remaining = minutes * 60;
+    sleepTimerRef = setInterval(() => {
+      const { sleepTimerRemaining } = get();
+      if (sleepTimerRemaining <= 1) {
+        if (sleepTimerRef) { clearInterval(sleepTimerRef); sleepTimerRef = null; }
+        get().pause();
+        set({ sleepTimerMinutes: null, sleepTimerRemaining: 0 });
+      } else {
+        set({ sleepTimerRemaining: sleepTimerRemaining - 1 });
+      }
+    }, 1000);
+
+    set({ sleepTimerMinutes: minutes, sleepTimerRemaining: remaining });
   },
 }));
