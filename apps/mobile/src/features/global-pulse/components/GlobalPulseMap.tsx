@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { formatDisplayName } from '../services/globalPulseApi';
-import MapView, { UrlTile, Marker, Callout } from 'react-native-maps';
+import MapView, { UrlTile, Marker } from 'react-native-maps';
 import { useTheme, useT } from '../../../components/UI';
 import { GlobalCheckin, LeaderboardEntry } from '../types/globalPulse';
 import { useGlobalPulse } from '../hooks/useGlobalPulse';
@@ -100,20 +100,16 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
               latitude: checkin.lat,
               longitude: checkin.lng
             }}
+            title={markerTitle}
+            description={`🔥${checkin.streak}天 📅${checkin.total_days}天`}
             onPress={() => handleMarkerPress(checkin)}
             opacity={isSelected ? 1 : 0.9}
+            tracksViewChanges={true}
           >
-            <PulseMarker type={checkin.type} />
-            <Callout tooltip>
-              <View style={[styles.calloutContainer, { backgroundColor: theme.card }]}>
-                <Text style={[styles.calloutTitle, { color: theme.text }]}>
-                  {markerTitle}
-                </Text>
-                <Text style={[styles.calloutDesc, { color: theme.sub }]}>
-                  🔥{checkin.streak}天  📅{checkin.total_days}天
-                </Text>
-              </View>
-            </Callout>
+            <View style={styles.markerWrapper}>
+              <PulseMarker type={checkin.type} />
+              <Text style={styles.markerLabel}>{markerTitle}</Text>
+            </View>
           </Marker>
         );
       }
@@ -462,25 +458,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  calloutContainer: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 10,
-    minWidth: 120,
+  markerWrapper: {
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  calloutTitle: {
-    fontSize: 14,
+  markerLabel: {
+    fontSize: 10,
     fontWeight: '600',
-    marginBottom: 4,
-  },
-  calloutDesc: {
-    fontSize: 12,
+    color: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginTop: 2,
   },
 });
 
