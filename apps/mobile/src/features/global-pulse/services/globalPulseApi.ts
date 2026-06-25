@@ -345,13 +345,16 @@ export function generateAnonymousId(userHash: string): string {
 
 /**
  * 格式化显示名称
- * 有昵称显示昵称（超过4字截断），无昵称显示匿名标识
+ * 始终显示序号，有昵称则昵称+序号，无昵称则"修行者"+序号
  */
 export function formatDisplayName(nickname?: string, userHash?: string): string {
+  const id = generateAnonymousId(userHash || '');
+  const num = id.replace('修行者 ', ''); // "#1234"
   if (nickname) {
-    return nickname.length > 4 ? nickname.slice(0, 4) + '...' : nickname;
+    const name = nickname.length > 4 ? nickname.slice(0, 4) + '...' : nickname;
+    return `${name} ${num}`;
   }
-  return generateAnonymousId(userHash || '');
+  return id;
 }
 
 /**
