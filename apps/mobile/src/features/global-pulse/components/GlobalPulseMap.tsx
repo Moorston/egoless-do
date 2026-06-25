@@ -86,12 +86,25 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
     [checkins, currentZoom]
   );
 
+  // 按 streak 排序计算排名
+  const rankMap = useMemo(() => {
+    const sorted = [...checkins].sort((a, b) => b.streak - a.streak);
+    const map = new Map<string, number>();
+    sorted.forEach((c, i) => {
+      if (!map.has(c.user_hash)) {
+        map.set(c.user_hash, i + 1);
+      }
+    });
+    return map;
+  }, [checkins]);
+
   const markers = useMemo(() => {
     return clusters.map((cluster) => {
       if (cluster.count === 1) {
         const checkin = cluster.checkins[0];
         const isSelected = selectedUserId === checkin.user_hash;
         const markerTitle = formatDisplayName(checkin.nickname, checkin.user_hash);
+        const rank = rankMap.get(checkin.user_hash);
 
         return (
           <Marker
@@ -107,7 +120,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
             tracksViewChanges={true}
           >
             <View style={styles.markerWrapper}>
-              <PulseMarker type={checkin.type} />
+              <PulseMarker type={checkin.type} rank={rank} />
               <Text style={styles.markerLabel}>{markerTitle}</Text>
             </View>
           </Marker>
