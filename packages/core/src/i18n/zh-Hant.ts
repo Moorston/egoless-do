@@ -370,6 +370,21 @@ export const zhHant: I18nKeys = {
   'globalPulse.deleteConfirmTitle':'確認刪除', 'globalPulse.deleteConfirmMessage':'確定要刪除你的所有全球資料嗎？此操作不可撤銷',
   'globalPulse.deleteSuccess':'資料已刪除', 'globalPulse.deleteFailed':'刪除失敗',
 
+  // 即時脈動
+  'globalPulse.realtimePulse':'即時脈動',
+  'globalPulse.activeType.exercise':'正在運動',
+  'globalPulse.activeType.meditation':'正在冥想',
+  'globalPulse.activeType.fasting':'正在禁食',
+  'globalPulse.liveNow':'進行中',
+  'globalPulse.me':'我',
+  'globalPulse.goalLabel':'目標',
+  'globalPulse.insightLabel':'感悟',
+  'globalPulse.insightPlaceholder':'此刻想說...',
+  'globalPulse.noActiveUsers':'暫無在線用戶',
+  'globalPulse.peopleDoingTogether':'{count} 人正在一起修行',
+  'globalPulse.totalUsers':'位修行者',
+  'globalPulse.activeToday':'今日活躍',
+
   // Grace
   graceTitle:'寬限期恢復',
   graceDesc:'寬限期機制：中斷1天內補打卡，連勝不斷。',

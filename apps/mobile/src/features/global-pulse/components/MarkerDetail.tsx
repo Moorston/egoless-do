@@ -1,9 +1,9 @@
 /**
  * 标记详情卡片组件
- * 显示打卡记录的详细信息
+ * 支持打卡记录和实时活跃会话
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,31 +14,72 @@ import {
 } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
-import { GlobalCheckin } from '../types/globalPulse';
+import { GlobalCheckin, ActiveSession } from '../types/globalPulse';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 
 interface MarkerDetailProps {
-  checkin: GlobalCheckin;
+  checkin?: GlobalCheckin;
+  activeSession?: ActiveSession;
   onClose: () => void;
+}
+
+function formatDuration(startedAt: string): string {
+  const start = new Date(startedAt).getTime();
+  const now = Date.now();
+  const diff = Math.floor((now - start) / 1000);
+  const hours = Math.floor(diff / 3600);
+  const minutes = Math.floor((diff % 3600) / 60);
+  const seconds = diff % 60;
+
+  if (hours > 0) {
+    return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
 export const MarkerDetail: React.FC<MarkerDetailProps> = ({
   checkin,
+  activeSession,
   onClose
 }) => {
   const theme = useTheme();
   const t = useT();
-  const { city, loading: cityLoading } = useCityName(checkin.lat, checkin.lng, checkin.city);
 
-  const displayName = formatDisplayName(checkin.nickname, checkin.user_hash);
-  const typeIcon = getCheckinTypeIcon(checkin.type);
-  const typeColor = getCheckinTypeColor(checkin.type);
+  // 确定数据源
+  const session = activeSession;
+  const type = session?.type || checkin?.type || 'exercise';
+  const nickname = session?.nickname || checkin?.nickname;
+  const userHash = session?.user_hash || checkin?.user_hash || '';
+  const lat = session?.lat || checkin?.lat || 0;
+  const lng = session?.lng || checkin?.lng || 0;
+  const cityData = session?.city || checkin?.city;
+
+  const { city, loading: cityLoading } = useCityName(lat, lng, cityData);
+
+  const displayName = formatDisplayName(nickname, userHash);
+  const typeIcon = getCheckinTypeIcon(type);
+  const typeColor = getCheckinTypeColor(type);
+
+  // 实时会话的持续时间
+  const [duration, setDuration] = useState(() =>
+    session ? formatDuration(session.started_at) : ''
+  );
+
+  useEffect(() => {
+    if (!session) return;
+    const interval = setInterval(() => {
+      setDuration(formatDuration(session.started_at));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [session]);
 
   // 格式化日期
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return `${date.getFullYear()}年${date.getMonth() + 1}月`;
   };
+
+  const isActive = !!session;
 
   return (
     <Modal
@@ -59,7 +100,9 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
                 </Text>
                 <View style={[styles.typeBadge, { backgroundColor: typeColor }]}>
                   <Text style={styles.typeBadgeText}>
-                    {t(`globalPulse.type.${checkin.type}`)}
+                    {isActive
+                      ? t('globalPulse.activeType.' + type)
+                      : t(`globalPulse.type.${type}`)}
                   </Text>
                 </View>
               </View>
@@ -70,6 +113,19 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* 实时状态行 */}
+          {isActive && (
+            <View style={[styles.activeStatusRow, { backgroundColor: '#10B98115' }]}>
+              <View style={styles.liveDot} />
+              <Text style={[styles.activeStatusText, { color: '#10B981' }]}>
+                {t('globalPulse.liveNow')}
+              </Text>
+              <Text style={[styles.durationText, { color: theme.primary }]}>
+                {duration}
+              </Text>
+            </View>
+          )}
 
           {/* 位置信息 */}
           {cityLoading ? (
@@ -88,41 +144,66 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
             </View>
           ) : null}
 
-          {/* 统计信息 */}
-          <View style={styles.statsContainer}>
-            {/* 当前连续打卡 */}
-            <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
-              <Text style={styles.statIcon}>🔥</Text>
-              <Text style={[styles.statValue, { color: theme.text }]}>
-                {checkin.streak}
+          {/* 目标行（实时会话） */}
+          {session?.goal ? (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoIcon}>🎯</Text>
+              <Text style={[styles.infoLabel, { color: theme.sub }]}>
+                {t('globalPulse.goalLabel')}
               </Text>
-              <Text style={[styles.statLabel, { color: theme.sub }]}>
-                {t('globalPulse.currentStreak')}
+              <Text style={[styles.infoValue, { color: theme.text }]}>
+                {session.goal}
               </Text>
             </View>
+          ) : null}
 
-            {/* 总打卡天数 */}
-            <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
-              <Text style={styles.statIcon}>📅</Text>
-              <Text style={[styles.statValue, { color: theme.text }]}>
-                {checkin.total_days}
+          {/* 感悟行（实时会话） */}
+          {session?.insight ? (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoIcon}>💭</Text>
+              <Text style={[styles.infoLabel, { color: theme.sub }]}>
+                {t('globalPulse.insightLabel')}
               </Text>
-              <Text style={[styles.statLabel, { color: theme.sub }]}>
-                {t('globalPulse.totalDays')}
+              <Text style={[styles.infoValue, { color: theme.text }]}>
+                {session.insight}
               </Text>
             </View>
+          ) : null}
 
-            {/* 开始日期 */}
-            <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
-              <Text style={styles.statIcon}>🗓️</Text>
-              <Text style={[styles.statValue, { color: theme.text, fontSize: 12 }]}>
-                {formatDate(checkin.created_at)}
-              </Text>
-              <Text style={[styles.statLabel, { color: theme.sub }]}>
-                {t('globalPulse.startDate')}
-              </Text>
+          {/* 统计信息（历史打卡数据） */}
+          {checkin && (
+            <View style={styles.statsContainer}>
+              <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
+                <Text style={styles.statIcon}>🔥</Text>
+                <Text style={[styles.statValue, { color: theme.text }]}>
+                  {checkin.streak}
+                </Text>
+                <Text style={[styles.statLabel, { color: theme.sub }]}>
+                  {t('globalPulse.currentStreak')}
+                </Text>
+              </View>
+
+              <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
+                <Text style={styles.statIcon}>📅</Text>
+                <Text style={[styles.statValue, { color: theme.text }]}>
+                  {checkin.total_days}
+                </Text>
+                <Text style={[styles.statLabel, { color: theme.sub }]}>
+                  {t('globalPulse.totalDays')}
+                </Text>
+              </View>
+
+              <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
+                <Text style={styles.statIcon}>🗓️</Text>
+                <Text style={[styles.statValue, { color: theme.text, fontSize: 12 }]}>
+                  {formatDate(checkin.created_at)}
+                </Text>
+                <Text style={[styles.statLabel, { color: theme.sub }]}>
+                  {t('globalPulse.startDate')}
+                </Text>
+              </View>
             </View>
-          </View>
+          )}
 
           {/* 隐私提示 */}
           <View style={styles.privacyNote}>
@@ -211,6 +292,51 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 11,
     textAlign: 'center',
+  },
+  activeStatusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#10B981',
+  },
+  activeStatusText: {
+    fontSize: 13,
+    fontWeight: '600',
+    flex: 1,
+  },
+  durationText: {
+    fontSize: 16,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    paddingHorizontal: 4,
+    marginBottom: 12,
+  },
+  infoIcon: {
+    fontSize: 16,
+    marginTop: 1,
+  },
+  infoLabel: {
+    fontSize: 13,
+    fontWeight: '500',
+    minWidth: 36,
+  },
+  infoValue: {
+    fontSize: 13,
+    flex: 1,
   },
   locationContainer: {
     flexDirection: 'row',

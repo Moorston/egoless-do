@@ -17,6 +17,12 @@ import { audioSessionManager } from '../music/AudioSessionManager';
 import MusicPickerModal from '../music/MusicPickerModal';
 import MeditationMusicBar from './MeditationMusicBar';
 
+// 实时会话
+import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
+import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
+import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
+import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
+
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
 export default function MeditationScreen() {
@@ -41,6 +47,52 @@ export default function MeditationScreen() {
   const remaining = targetSec - sec;
   const pct = sec / targetSec * 100;
   const todayMedMin = useMemo(() => getTodayMedMinutes((store.medHistory ?? []).filter(m => !m.deleted)), [store.medHistory]);
+
+  // ── 实时会话管理 ──
+  const sessionIdRef = useRef<string | null>(null);
+  const [insight, setInsight] = useState('');
+  const { resolveGoal } = useGoalResolver();
+
+  // 心跳
+  useSessionHeartbeat(sessionIdRef.current, sessionIdRef.current ? 'meditation' : null);
+
+  // 创建会话
+  const createMeditationSession = useCallback(async () => {
+    const userHash = store.auth.user?.id || '';
+    if (!userHash) return;
+    const goal = resolveGoal('meditation');
+    const result = await createSession({
+      user_hash: userHash,
+      nickname: store.userProfile?.nickname || '',
+      type: 'meditation',
+      goal: goal || undefined,
+    });
+    if (result.success && result.data) {
+      sessionIdRef.current = result.data.session_id;
+    }
+  }, [store, resolveGoal]);
+
+  // 删除会话
+  const cleanupSession = useCallback(() => {
+    if (sessionIdRef.current) {
+      deleteSession(sessionIdRef.current);
+      sessionIdRef.current = null;
+    }
+  }, []);
+
+  // 更新感悟
+  const handleInsightChange = useCallback((text: string) => {
+    setInsight(text);
+    if (sessionIdRef.current) {
+      clearTimeout((handleInsightChange as any)._timer);
+      (handleInsightChange as any)._timer = setTimeout(() => {
+        updateSession(sessionIdRef.current!, { insight: text });
+      }, 1000);
+    }
+  }, []);
+
+  // 组件卸载时清理
+  useEffect(() => () => { cleanupSession(); }, [cleanupSession]);
 
   // Music store — only for playback control
   const musicPlay = useMusicStore(s => s.play);
@@ -112,6 +164,7 @@ export default function MeditationScreen() {
     if (active && sec >= targetSec) {
       if (timerRef.current) clearInterval(timerRef.current);
       setActive(false);
+      cleanupSession();
       if (!completedRef.current) {
         completedRef.current = true;
         addMedMinutes(durMin);
@@ -123,7 +176,7 @@ export default function MeditationScreen() {
       }
       playBell();
     }
-  }, [sec, active, targetSec, durMin, addMedMinutes, playBell, musicStop]);
+  }, [sec, active, targetSec, durMin, addMedMinutes, playBell, musicStop, cleanupSession]);
 
   const handleStop = () => {
     const wasCompleted = completedRef.current;
@@ -133,6 +186,7 @@ export default function MeditationScreen() {
       if (elapsedMin > 0) store.addMedMinutes(elapsedMin);
     }
     setActive(false);
+    cleanupSession();
     if (musicStartedRef.current) {
       musicStop();
       audioSessionManager.notifyStopped('music');
@@ -144,6 +198,7 @@ export default function MeditationScreen() {
   const handleStart = () => {
     setSec(0);
     setActive(true);
+    createMeditationSession();
   };
 
   const handleMusicPickerClose = useCallback(() => {
@@ -222,6 +277,13 @@ export default function MeditationScreen() {
         <Card style={{ paddingVertical:32 }}>
           {active ? (
             <View style={{ alignItems:'center' }}>
+              {/* 在线人数 + 感悟输入 */}
+              <ActiveInsightBar
+                type="meditation"
+                insight={insight}
+                onInsightChange={handleInsightChange}
+                goal={resolveGoal('meditation')}
+              />
               {/* Music display during meditation — non-interactive */}
               <MeditationMusicBar track={selectedTrack} isActive isPlaying={musicIsPlaying} primaryColor={P} />
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>

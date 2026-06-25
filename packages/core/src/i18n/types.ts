@@ -329,6 +329,12 @@ export interface I18nKeys {
   'globalPulse.networkError': string;
   'globalPulse.deleteConfirmTitle': string; 'globalPulse.deleteConfirmMessage': string;
   'globalPulse.deleteSuccess': string; 'globalPulse.deleteFailed': string;
+  'globalPulse.realtimePulse': string;
+  'globalPulse.activeType.exercise': string; 'globalPulse.activeType.meditation': string; 'globalPulse.activeType.fasting': string;
+  'globalPulse.liveNow': string; 'globalPulse.me': string;
+  'globalPulse.goalLabel': string; 'globalPulse.insightLabel': string; 'globalPulse.insightPlaceholder': string;
+  'globalPulse.noActiveUsers': string; 'globalPulse.peopleDoingTogether': string;
+  'globalPulse.totalUsers': string; 'globalPulse.activeToday': string;
   graceTitle: string; graceDesc: string; graceYesterday: string;
   graceNotDone: string; graceDone: string; graceSuccess: string;
   graceButton: string; graceNote: string; graceNeedRestore: string;

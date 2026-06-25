@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioPlayer } from 'expo-audio';
@@ -12,6 +12,11 @@ import {
   AlertTriangle, Check, ChevronRight, StopCircle,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
+
+// 实时会话
+import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
+import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
+import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
@@ -100,6 +105,53 @@ export default function FastingScreen() {
 
   const isActive = !!store.activeFasting;
 
+  // ── 实时会话管理 ──
+  const sessionIdRef = useRef<string | null>(null);
+  const [insight, setInsight] = useState('');
+  const { resolveGoal } = useGoalResolver();
+
+  // 禁食开始/结束时创建/删除会话
+  useEffect(() => {
+    if (isActive && !sessionIdRef.current) {
+      const userHash = store.auth.user?.id || '';
+      if (!userHash) return;
+      const goal = resolveGoal('fasting');
+      createSession({
+        user_hash: userHash,
+        nickname: store.userProfile?.nickname || '',
+        type: 'fasting',
+        goal: goal || undefined,
+        insight: insight || undefined,
+      }).then(result => {
+        if (result.success && result.data) {
+          sessionIdRef.current = result.data.session_id;
+        }
+      });
+    } else if (!isActive && sessionIdRef.current) {
+      deleteSession(sessionIdRef.current);
+      sessionIdRef.current = null;
+    }
+  }, [isActive]);
+
+  // 更新感悟
+  const handleInsightChange = (text: string) => {
+    setInsight(text);
+    if (sessionIdRef.current) {
+      clearTimeout((handleInsightChange as any)._timer);
+      (handleInsightChange as any)._timer = setTimeout(() => {
+        updateSession(sessionIdRef.current!, { insight: text });
+      }, 1000);
+    }
+  };
+
+  // 组件卸载时清理
+  useEffect(() => () => {
+    if (sessionIdRef.current) {
+      deleteSession(sessionIdRef.current);
+      sessionIdRef.current = null;
+    }
+  }, []);
+
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Fasting" />
@@ -172,6 +224,13 @@ export default function FastingScreen() {
         <Card style={{ alignItems:'center', paddingVertical:32 }}>
           {isActive ? (
             <>
+              {/* 在线人数 + 感悟输入 */}
+              <ActiveInsightBar
+                type="fasting"
+                insight={insight}
+                onInsightChange={handleInsightChange}
+                goal={resolveGoal('fasting')}
+              />
               {/* SVG Ring Progress */}
               <View style={{ width:160, height:160, marginBottom:16, position:'relative', alignItems:'center', justifyContent:'center' }}>
                 <View style={{
@@ -243,6 +302,21 @@ export default function FastingScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            {/* 可选感悟输入 */}
+            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('globalPulse.insightLabel')}</Text>
+            <TextInput
+              style={{
+                backgroundColor: TH.card, borderRadius: 12, padding: 10,
+                marginBottom: 16, color: TH.text, fontSize: FONT_BODY,
+                minHeight: 40, maxHeight: 80, textAlignVertical: 'top',
+              }}
+              placeholder={T('globalPulse.insightPlaceholder')}
+              placeholderTextColor={TH.sub}
+              value={insight}
+              onChangeText={setInsight}
+              multiline
+              maxLength={200}
+            />
             <View style={{ backgroundColor:'rgba(255,248,200,.08)', borderRadius:12, padding:12, marginBottom:16, flexDirection:'row', gap:8 }}>
               <AlertTriangle size={18} color={COLORS.YELLOW} />
               <View>

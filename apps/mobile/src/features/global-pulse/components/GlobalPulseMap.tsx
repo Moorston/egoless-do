@@ -9,13 +9,15 @@ import {
 import { formatDisplayName } from '../services/globalPulseApi';
 import MapView, { UrlTile, Marker } from 'react-native-maps';
 import { useTheme, useT } from '../../../components/UI';
-import { GlobalCheckin, LeaderboardEntry } from '../types/globalPulse';
+import { GlobalCheckin, LeaderboardEntry, ActiveSession } from '../types/globalPulse';
 import { useGlobalPulse } from '../hooks/useGlobalPulse';
+import { useActiveSessions } from '../hooks/useActiveSessions';
 import { aggregateMarkers } from '../services/markerAggregation';
 import { PulseMarker } from './PulseMarker';
+import { ActiveMarker } from './ActiveMarker';
 import { MarkerDetail } from './MarkerDetail';
 import { OfflineBanner } from './OfflineBanner';
-import { Leaderboard } from './Leaderboard';
+import { BottomPanel } from './BottomPanel';
 
 const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -53,7 +55,13 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
     refresh
   } = useGlobalPulse({ type, autoRefresh: true });
 
+  const {
+    sessions: activeSessions,
+    onlineCount,
+  } = useActiveSessions(type);
+
   const [selectedCheckin, setSelectedCheckin] = useState<GlobalCheckin | null>(null);
+  const [selectedActiveSession, setSelectedActiveSession] = useState<ActiveSession | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(2);
@@ -67,8 +75,18 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
     setSelectedCheckin(checkin);
   }, []);
 
+  const handleActiveMarkerPress = useCallback((session: ActiveSession) => {
+    setSelectedActiveSession(session);
+    // 查找匹配的历史打卡记录
+    const matchingCheckin = checkins.find(c => c.user_hash === session.user_hash);
+    if (matchingCheckin) {
+      setSelectedCheckin(matchingCheckin);
+    }
+  }, [checkins]);
+
   const handleCloseDetail = useCallback(() => {
     setSelectedCheckin(null);
+    setSelectedActiveSession(null);
   }, []);
 
   const handleUserPress = useCallback((entry: LeaderboardEntry) => {
@@ -221,6 +239,24 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
               tileSize={256}
             />
             {markers}
+
+            {/* 实时活跃标记 */}
+            {activeSessions.map(session => {
+              if (!session.lat || !session.lng) return null;
+              return (
+                <Marker
+                  key={`active-${session.session_id}`}
+                  coordinate={{
+                    latitude: session.lat,
+                    longitude: session.lng,
+                  }}
+                  onPress={() => handleActiveMarkerPress(session)}
+                  tracksViewChanges={true}
+                >
+                  <ActiveMarker session={session} city={session.city} />
+                </Marker>
+              );
+            })}
           </MapView>
 
           {stats && (
@@ -268,36 +304,25 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
           )}
 
           {showInlineLeaderboard && (
-            <View style={[styles.inlineLeaderboard, { backgroundColor: theme.bg }]}>
-              <View style={styles.leaderboardHeader}>
-                <Text style={[styles.leaderboardTitle, { color: theme.text }]}>
-                  🏆 {t('globalPulse.leaderboard')}
-                </Text>
-                <TouchableOpacity
-                  style={[styles.refreshSmall, { backgroundColor: `${theme.primary}15` }]}
-                  onPress={refresh}
-                  disabled={isRefreshing}
-                >
-                  <Text style={[styles.refreshSmallText, { color: theme.primary }]}>
-                    {isRefreshing ? '◌' : '↻'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <Leaderboard
-                checkins={checkins}
-                type={type}
-                compact={true}
-                onUserPress={handleUserPress}
-                selectedUserId={selectedUserId}
-              />
-            </View>
+            <BottomPanel
+              sessions={activeSessions}
+              onlineCount={onlineCount}
+              checkins={checkins}
+              type={type}
+              onUserPress={handleActiveMarkerPress}
+              onLeaderboardUserPress={handleUserPress}
+              selectedUserId={selectedUserId}
+              onRefresh={refresh}
+              isRefreshing={isRefreshing}
+            />
           )}
         </>
       )}
 
-      {selectedCheckin && (
+      {(selectedCheckin || selectedActiveSession) && (
         <MarkerDetail
-          checkin={selectedCheckin}
+          checkin={selectedCheckin || undefined}
+          activeSession={selectedActiveSession || undefined}
           onClose={handleCloseDetail}
         />
       )}

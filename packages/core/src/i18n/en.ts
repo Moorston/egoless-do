@@ -370,6 +370,21 @@ export const en: I18nKeys = {
   'globalPulse.deleteConfirmTitle':'Confirm Delete', 'globalPulse.deleteConfirmMessage':'Delete all your global data? This cannot be undone',
   'globalPulse.deleteSuccess':'Data deleted', 'globalPulse.deleteFailed':'Delete failed',
 
+  // Realtime Pulse
+  'globalPulse.realtimePulse':'Live Pulse',
+  'globalPulse.activeType.exercise':'Exercising',
+  'globalPulse.activeType.meditation':'Meditating',
+  'globalPulse.activeType.fasting':'Fasting',
+  'globalPulse.liveNow':'Live Now',
+  'globalPulse.me':'Me',
+  'globalPulse.goalLabel':'Goal',
+  'globalPulse.insightLabel':'Thought',
+  'globalPulse.insightPlaceholder':'Share what you feel...',
+  'globalPulse.noActiveUsers':'No active users',
+  'globalPulse.peopleDoingTogether':'{count} people practicing together',
+  'globalPulse.totalUsers':'practitioners',
+  'globalPulse.activeToday':'active today',
+
   // Grace
   graceTitle:'Grace Restore',
   graceDesc:'Catch up within 1 day to keep your streak.',

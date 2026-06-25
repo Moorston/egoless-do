@@ -10,6 +10,12 @@ import { useAppStore } from '../../store/useAppStore';
 import { Pause } from 'lucide-react-native';
 import type { RootStackParamList } from '../../navigation/hooks';
 
+// 实时会话
+import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
+import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
+import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
+import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
+
 // Hooks
 import { useExerciseTimer } from './hooks/useExerciseTimer';
 import { useExerciseAudio } from './hooks/useExerciseAudio';
@@ -63,6 +69,55 @@ export default function SportPage() {
   const musicPause = useMusicStore(s => s.pause);
   const musicResume = useMusicStore(s => s.resume);
   const musicToggleLoop = useMusicStore(s => s.toggleLoop);
+
+  // ── 实时会话管理 ──
+  const sessionIdRef = useRef<string | null>(null);
+  const [insight, setInsight] = useState('');
+  const { resolveGoal } = useGoalResolver();
+
+  // 心跳
+  useSessionHeartbeat(sessionIdRef.current, sessionIdRef.current ? 'exercise' : null);
+
+  // 创建/删除会话
+  useEffect(() => {
+    if (timer.page === 'active' && timer.active && !sessionIdRef.current) {
+      const userHash = store.auth.user?.id || '';
+      if (!userHash) return;
+      const goal = resolveGoal('exercise');
+      createSession({
+        user_hash: userHash,
+        nickname: store.userProfile?.nickname || '',
+        type: 'exercise',
+        goal: goal || undefined,
+        sport_key: sportName,
+        sport_icon: icon,
+      }).then(result => {
+        if (result.success && result.data) {
+          sessionIdRef.current = result.data.session_id;
+        }
+      });
+    }
+  }, [timer.page, timer.active]);
+
+  // 更新感悟
+  const handleInsightChange = useCallback((text: string) => {
+    setInsight(text);
+    if (sessionIdRef.current) {
+      // debounce: 只在停止输入 1s 后更新
+      clearTimeout((handleInsightChange as any)._timer);
+      (handleInsightChange as any)._timer = setTimeout(() => {
+        updateSession(sessionIdRef.current!, { insight: text });
+      }, 1000);
+    }
+  }, []);
+
+  // 删除会话（通用清理）
+  const cleanupSession = useCallback(() => {
+    if (sessionIdRef.current) {
+      deleteSession(sessionIdRef.current);
+      sessionIdRef.current = null;
+    }
+  }, []);
 
   const onBellAndRest = useCallback(() => {
     audio.playBell();
@@ -220,11 +275,17 @@ export default function SportPage() {
     if (isGpsSport) startGpsTracking();
   }, [timer, isGpsSport, startGpsTracking]);
 
+  // 组件卸载时清理会话
+  useEffect(() => {
+    return () => { cleanupSession(); };
+  }, [cleanupSession]);
+
   const savingRef = useRef(false);
   const handleSave = useCallback(() => {
     if (savingRef.current) return;
     savingRef.current = true;
     try {
+      cleanupSession();
       stopGpsTracking();
       const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
       if (timer.sec > 0 || (finalReps && finalReps > 0)) {
@@ -362,13 +423,21 @@ export default function SportPage() {
   // GPS active page
   if (page === 'active' && isGpsSport) {
     return (
-      <GpsActive
-        MapView={MapView} Polyline={Polyline} amapReady={amapReady}
-        mapRef={mapRef} initialPos={initialPos} coords={coords} color={color}
-        mode={mode} targetProgress={actualTargets.targetProgress}
-        distKm={distKm} sec={timer.sec} calories={calories}
-        handlePause={handleGpsPause} T={T}
-      />
+      <View style={{ flex: 1 }}>
+        <GpsActive
+          MapView={MapView} Polyline={Polyline} amapReady={amapReady}
+          mapRef={mapRef} initialPos={initialPos} coords={coords} color={color}
+          mode={mode} targetProgress={actualTargets.targetProgress}
+          distKm={distKm} sec={timer.sec} calories={calories}
+          handlePause={handleGpsPause} T={T}
+        />
+        <ActiveInsightBar
+          type="exercise"
+          insight={insight}
+          onInsightChange={handleInsightChange}
+          goal={resolveGoal('exercise')}
+        />
+      </View>
     );
   }
 
@@ -405,10 +474,24 @@ export default function SportPage() {
     T,
   };
 
-  switch (experienceType) {
-    case 'meditative': return <MeditativeActive {...layoutProps} />;
-    case 'endurance':  return <EnduranceActive {...layoutProps} />;
-    case 'interval':   return <StrengthActive {...layoutProps} restMode="inline" />;
-    default:           return <StrengthActive {...layoutProps} />;
-  }
+  const activeLayout = (() => {
+    switch (experienceType) {
+      case 'meditative': return <MeditativeActive {...layoutProps} />;
+      case 'endurance':  return <EnduranceActive {...layoutProps} />;
+      case 'interval':   return <StrengthActive {...layoutProps} restMode="inline" />;
+      default:           return <StrengthActive {...layoutProps} />;
+    }
+  })();
+
+  return (
+    <View style={{ flex: 1 }}>
+      {activeLayout}
+      <ActiveInsightBar
+        type="exercise"
+        insight={insight}
+        onInsightChange={handleInsightChange}
+        goal={resolveGoal('exercise')}
+      />
+    </View>
+  );
 }

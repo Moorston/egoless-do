@@ -106,3 +106,20 @@ export interface NetworkStatus {
   is_online: boolean;       // 是否在线
   connection_type: string;  // 连接类型
 }
+
+// 活跃会话（实时在线）
+export interface ActiveSession {
+  session_id: string;       // UUID
+  user_hash: string;        // SHA256 匿名哈希
+  nickname?: string;        // 用户昵称
+  type: CheckinType;        // 活动类型
+  started_at: string;       // 活动开始时间 (ISO)
+  last_heartbeat: string;   // 最后心跳时间 (ISO)
+  goal?: string;            // 目标（来自计划/习惯）
+  insight?: string;         // 感悟
+  sport_key?: string;       // 运动类型 key（exercise 专用）
+  sport_icon?: string;      // 运动图标（exercise 专用）
+  lat?: number;             // 模糊纬度
+  lng?: number;             // 模糊经度
+  city?: string;            // 城市名
+}

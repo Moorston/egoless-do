@@ -370,6 +370,21 @@ export const zh: I18nKeys = {
   'globalPulse.deleteConfirmTitle':'确认删除', 'globalPulse.deleteConfirmMessage':'确定要删除你的所有全球数据吗？此操作不可撤销',
   'globalPulse.deleteSuccess':'数据已删除', 'globalPulse.deleteFailed':'删除失败',
 
+  // 实时脉动
+  'globalPulse.realtimePulse':'实时脉动',
+  'globalPulse.activeType.exercise':'正在运动',
+  'globalPulse.activeType.meditation':'正在冥想',
+  'globalPulse.activeType.fasting':'正在禁食',
+  'globalPulse.liveNow':'进行中',
+  'globalPulse.me':'我',
+  'globalPulse.goalLabel':'目标',
+  'globalPulse.insightLabel':'感悟',
+  'globalPulse.insightPlaceholder':'此刻想说...',
+  'globalPulse.noActiveUsers':'暂无在线用户',
+  'globalPulse.peopleDoingTogether':'{count} 人正在一起修行',
+  'globalPulse.totalUsers':'位修行者',
+  'globalPulse.activeToday':'今日活跃',
+
   // Grace
   graceTitle:'宽限期恢复',
   graceDesc:'宽限期机制：中断1天内补打卡，连胜不断。',
