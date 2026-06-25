@@ -1,16 +1,11 @@
-/**
- * 隐私设置管理 Hook
- */
-
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { UserPreferences } from '../types/globalPulse';
 import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';
+import { getUserHash } from '../services/userHash';
 
-// 存储键
 const STORAGE_KEY = 'global_pulse_preferences';
 
-// 默认偏好
 const DEFAULT_PREFERENCES: UserPreferences = {
   show_on_global_map: true,
   global_map_intro_shown: false
@@ -28,9 +23,12 @@ interface UsePrivacyReturn {
 export function usePrivacy(): UsePrivacyReturn {
   const [preferences, setPreferences] = useState<UserPreferences>(DEFAULT_PREFERENCES);
   const [isLoading, setIsLoading] = useState(false);
+  const userHashRef = useRef<string>('');
 
-  // 加载偏好设置
   useEffect(() => {
+    getUserHash().then(hash => {
+      userHashRef.current = hash;
+    });
     loadPreferences();
   }, []);
 
@@ -46,7 +44,6 @@ export function usePrivacy(): UsePrivacyReturn {
     }
   };
 
-  // 保存偏好设置
   const savePreferences = async (newPreferences: UserPreferences) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newPreferences));
@@ -56,15 +53,18 @@ export function usePrivacy(): UsePrivacyReturn {
     }
   };
 
-  // 设置是否显示在全球地图
   const setShowOnMap = useCallback(async (show: boolean): Promise<boolean> => {
     setIsLoading(true);
 
     try {
-      const response = show ? await optIn() : await optOut();
+      const hash = userHashRef.current;
+      if (!hash) return false;
+
+      const response = show ? await optIn(hash) : await optOut(hash);
 
       if (response.success) {
         await savePreferences({
+          ...DEFAULT_PREFERENCES,
           ...preferences,
           show_on_global_map: show
         });
@@ -81,7 +81,6 @@ export function usePrivacy(): UsePrivacyReturn {
     }
   }, [preferences]);
 
-  // 标记隐私提示已显示
   const markIntroShown = useCallback(async () => {
     await savePreferences({
       ...preferences,
@@ -89,12 +88,14 @@ export function usePrivacy(): UsePrivacyReturn {
     });
   }, [preferences]);
 
-  // 删除所有数据
   const deleteAllData = useCallback(async (): Promise<boolean> => {
     setIsLoading(true);
 
     try {
-      const response = await deleteGlobalData();
+      const hash = userHashRef.current;
+      if (!hash) return false;
+
+      const response = await deleteGlobalData(hash);
 
       if (response.success) {
         await savePreferences({
@@ -114,7 +115,6 @@ export function usePrivacy(): UsePrivacyReturn {
     }
   }, [preferences]);
 
-  // 重置偏好设置
   const resetPreferences = useCallback(async () => {
     await savePreferences(DEFAULT_PREFERENCES);
   }, []);

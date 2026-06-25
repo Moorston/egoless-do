@@ -3,7 +3,7 @@
  * 提供全球地图隐私设置
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,9 +13,12 @@ import {
   Alert,
   ActivityIndicator
 } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme, useT } from '../../../components/UI';
 import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';
+import { getUserHash } from '../services/userHash';
+
+const PREFERENCES_KEY = 'global_pulse_preferences';
 
 interface PrivacyControlProps {
   isVisible: boolean;
@@ -30,33 +33,51 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
   onOptIn,
   onDelete
 }) => {
-  const { theme } = useTheme();
-  const { t } = useTranslation();
+  const theme = useTheme();
+  const t = useT();
+  const userHashRef = useRef<string>('');
 
   const [showOnMap, setShowOnMap] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    getUserHash().then(hash => {
+      userHashRef.current = hash;
+    });
+    AsyncStorage.getItem(PREFERENCES_KEY).then(stored => {
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.show_on_global_map !== undefined) {
+          setShowOnMap(parsed.show_on_global_map);
+        }
+      }
+      setIsInitialized(true);
+    });
+  }, []);
+
+  const savePref = async (show: boolean) => {
+    try {
+      await AsyncStorage.setItem(PREFERENCES_KEY, JSON.stringify({ show_on_global_map: show }));
+    } catch {}
+  };
 
   // 处理开关切换
   const handleToggle = async (value: boolean) => {
+    if (!isInitialized) return;
+    const hash = userHashRef.current;
+    if (!hash) return;
+
     setIsLoading(true);
 
     try {
-      if (value) {
-        const response = await optIn();
-        if (response.success) {
-          setShowOnMap(true);
-          onOptIn?.();
-        } else {
-          Alert.alert(t('error'), response.error?.message || t('globalPulse.optInFailed'));
-        }
+      const response = value ? await optIn(hash) : await optOut(hash);
+      if (response.success) {
+        setShowOnMap(value);
+        await savePref(value);
+        value ? onOptIn?.() : onOptOut?.();
       } else {
-        const response = await optOut();
-        if (response.success) {
-          setShowOnMap(false);
-          onOptOut?.();
-        } else {
-          Alert.alert(t('error'), response.error?.message || t('globalPulse.optOutFailed'));
-        }
+        Alert.alert(t('error'), response.error?.message || (value ? t('globalPulse.optInFailed') : t('globalPulse.optOutFailed')));
       }
     } catch (error) {
       Alert.alert(t('error'), t('globalPulse.networkError'));
@@ -79,8 +100,12 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
             setIsLoading(true);
 
             try {
-              const response = await deleteGlobalData();
+              const hash = userHashRef.current;
+              if (!hash) return;
+              const response = await deleteGlobalData(hash);
               if (response.success) {
+                setShowOnMap(false);
+                await savePref(false);
                 onDelete?.();
                 Alert.alert(t('success'), t('globalPulse.deleteSuccess'));
               } else {
@@ -100,29 +125,29 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
   if (!isVisible) return null;
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.card }]}>
+    <View style={[styles.container, { backgroundColor: theme.card }]}>
       {/* 标题 */}
-      <Text style={[styles.title, { color: theme.colors.text }]}>
+      <Text style={[styles.title, { color: theme.text }]}>
         {t('globalPulse.privacySettings')}
       </Text>
 
       {/* 显示在全球地图开关 */}
       <View style={styles.settingRow}>
         <View style={styles.settingInfo}>
-          <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+          <Text style={[styles.settingLabel, { color: theme.text }]}>
             {t('globalPulse.showOnMap')}
           </Text>
-          <Text style={[styles.settingDescription, { color: theme.colors.textSecondary }]}>
+          <Text style={[styles.settingDescription, { color: theme.sub }]}>
             {t('globalPulse.showOnMapDescription')}
           </Text>
         </View>
         {isLoading ? (
-          <ActivityIndicator size="small" color={theme.colors.primary} />
+          <ActivityIndicator size="small" color={theme.primary} />
         ) : (
           <Switch
             value={showOnMap}
             onValueChange={handleToggle}
-            trackColor={{ false: '#767577', true: theme.colors.primary }}
+            trackColor={{ false: '#767577', true: theme.primary }}
             thumbColor={showOnMap ? '#fff' : '#f4f3f4'}
           />
         )}
@@ -131,7 +156,7 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
       {/* 隐私说明 */}
       <View style={styles.privacyInfo}>
         <Text style={styles.privacyIcon}>🔒</Text>
-        <Text style={[styles.privacyText, { color: theme.colors.textSecondary }]}>
+        <Text style={[styles.privacyText, { color: theme.sub }]}>
           {t('globalPulse.privacyDescription')}
         </Text>
       </View>

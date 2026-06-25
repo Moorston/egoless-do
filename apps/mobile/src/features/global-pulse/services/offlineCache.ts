@@ -130,30 +130,33 @@ async function cleanupTileCache(): Promise<void> {
 }
 
 /**
- * 缓存打卡记录
+ * 缓存打卡记录（事务批量写入）
  */
 export async function cacheCheckins(checkins: GlobalCheckin[]): Promise<void> {
+  if (checkins.length === 0) return;
+
   const db = await openDatabase();
 
-  for (const checkin of checkins) {
-    await db.runAsync(
-      `INSERT OR REPLACE INTO checkin_cache
-       (checkin_id, user_hash, lat, lng, type, streak, total_days, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        checkin.checkin_id,
-        checkin.user_hash,
-        checkin.lat,
-        checkin.lng,
-        checkin.type,
-        checkin.streak,
-        checkin.total_days,
-        new Date(checkin.created_at).getTime()
-      ]
-    );
-  }
+  await db.withTransactionAsync(async () => {
+    for (const checkin of checkins) {
+      await db.runAsync(
+        `INSERT OR REPLACE INTO checkin_cache
+         (checkin_id, user_hash, lat, lng, type, streak, total_days, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          checkin.checkin_id,
+          checkin.user_hash,
+          checkin.lat,
+          checkin.lng,
+          checkin.type,
+          checkin.streak,
+          checkin.total_days,
+          new Date(checkin.created_at).getTime()
+        ]
+      );
+    }
+  });
 
-  // 清理旧缓存
   await cleanupCheckinCache();
 }
 

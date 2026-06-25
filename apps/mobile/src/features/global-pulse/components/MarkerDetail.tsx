@@ -9,12 +9,13 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Modal
+  Modal,
+  ActivityIndicator
 } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { useTranslation } from 'react-i18next';
+import { useTheme, useT } from '../../../components/UI';
+import { useCityName } from '../hooks/useCityName';
 import { GlobalCheckin } from '../types/globalPulse';
-import { generateAnonymousId, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
+import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 
 interface MarkerDetailProps {
   checkin: GlobalCheckin;
@@ -25,10 +26,11 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
   checkin,
   onClose
 }) => {
-  const { theme } = useTheme();
-  const { t } = useTranslation();
+  const theme = useTheme();
+  const t = useT();
+  const { city, loading: cityLoading } = useCityName(checkin.lat, checkin.lng, checkin.city);
 
-  const anonymousId = generateAnonymousId(checkin.user_hash);
+  const displayName = formatDisplayName(checkin.nickname, checkin.user_hash);
   const typeIcon = getCheckinTypeIcon(checkin.type);
   const typeColor = getCheckinTypeColor(checkin.type);
 
@@ -46,14 +48,14 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
-        <View style={[styles.container, { backgroundColor: theme.colors.card }]}>
+        <View style={[styles.container, { backgroundColor: theme.card }]}>
           {/* 头部 */}
           <View style={styles.header}>
             <View style={styles.headerLeft}>
               <Text style={styles.typeIcon}>{typeIcon}</Text>
               <View>
-                <Text style={[styles.anonymousId, { color: theme.colors.text }]}>
-                  {anonymousId}
+                <Text style={[styles.anonymousId, { color: theme.text }]}>
+                  {displayName}
                 </Text>
                 <View style={[styles.typeBadge, { backgroundColor: typeColor }]}>
                   <Text style={styles.typeBadgeText}>
@@ -63,43 +65,60 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
               </View>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={[styles.closeButtonText, { color: theme.colors.text }]}>
+              <Text style={[styles.closeButtonText, { color: theme.text }]}>
                 ✕
               </Text>
             </TouchableOpacity>
           </View>
 
+          {/* 位置信息 */}
+          {cityLoading ? (
+            <View style={styles.locationContainer}>
+              <ActivityIndicator size="small" color={theme.sub} />
+              <Text style={[styles.locationText, { color: theme.sub }]}>
+                {t('loading')}
+              </Text>
+            </View>
+          ) : city ? (
+            <View style={styles.locationContainer}>
+              <Text style={styles.locationIcon}>📍</Text>
+              <Text style={[styles.locationText, { color: theme.primary }]}>
+                {city}
+              </Text>
+            </View>
+          ) : null}
+
           {/* 统计信息 */}
           <View style={styles.statsContainer}>
             {/* 当前连续打卡 */}
-            <View style={[styles.statItem, { backgroundColor: theme.colors.background }]}>
+            <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
               <Text style={styles.statIcon}>🔥</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+              <Text style={[styles.statValue, { color: theme.text }]}>
                 {checkin.streak}
               </Text>
-              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+              <Text style={[styles.statLabel, { color: theme.sub }]}>
                 {t('globalPulse.currentStreak')}
               </Text>
             </View>
 
             {/* 总打卡天数 */}
-            <View style={[styles.statItem, { backgroundColor: theme.colors.background }]}>
+            <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
               <Text style={styles.statIcon}>📅</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text }]}>
+              <Text style={[styles.statValue, { color: theme.text }]}>
                 {checkin.total_days}
               </Text>
-              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+              <Text style={[styles.statLabel, { color: theme.sub }]}>
                 {t('globalPulse.totalDays')}
               </Text>
             </View>
 
             {/* 开始日期 */}
-            <View style={[styles.statItem, { backgroundColor: theme.colors.background }]}>
+            <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
               <Text style={styles.statIcon}>🗓️</Text>
-              <Text style={[styles.statValue, { color: theme.colors.text, fontSize: 12 }]}>
+              <Text style={[styles.statValue, { color: theme.text, fontSize: 12 }]}>
                 {formatDate(checkin.created_at)}
               </Text>
-              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>
+              <Text style={[styles.statLabel, { color: theme.sub }]}>
                 {t('globalPulse.startDate')}
               </Text>
             </View>
@@ -108,7 +127,7 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
           {/* 隐私提示 */}
           <View style={styles.privacyNote}>
             <Text style={styles.privacyIcon}>🔒</Text>
-            <Text style={[styles.privacyText, { color: theme.colors.textSecondary }]}>
+            <Text style={[styles.privacyText, { color: theme.sub }]}>
               {t('globalPulse.privacyNote')}
             </Text>
           </View>
@@ -192,6 +211,20 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 11,
     textAlign: 'center',
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 4,
+    marginBottom: 16,
+  },
+  locationIcon: {
+    fontSize: 16,
+  },
+  locationText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   privacyNote: {
     flexDirection: 'row',

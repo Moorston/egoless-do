@@ -11,8 +11,7 @@ import {
   Modal,
   TouchableOpacity
 } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { useTranslation } from 'react-i18next';
+import { useTheme, useT } from '../../../components/UI';
 
 interface PrivacyIntroModalProps {
   isVisible: boolean;
@@ -25,8 +24,8 @@ export const PrivacyIntroModal: React.FC<PrivacyIntroModalProps> = ({
   onAccept,
   onDecline
 }) => {
-  const { theme } = useTheme();
-  const { t } = useTranslation();
+  const theme = useTheme();
+  const t = useT();
 
   return (
     <Modal
@@ -35,14 +34,14 @@ export const PrivacyIntroModal: React.FC<PrivacyIntroModalProps> = ({
       animationType="fade"
     >
       <View style={styles.overlay}>
-        <View style={[styles.container, { backgroundColor: theme.colors.card }]}>
+        <View style={[styles.container, { backgroundColor: theme.card }]}>
           {/* 图标 */}
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>🌍</Text>
           </View>
 
           {/* 标题 */}
-          <Text style={[styles.title, { color: theme.colors.text }]}>
+          <Text style={[styles.title, { color: theme.text }]}>
             {t('globalPulse.introTitle')}
           </Text>
 
@@ -50,28 +49,28 @@ export const PrivacyIntroModal: React.FC<PrivacyIntroModalProps> = ({
           <View style={styles.content}>
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>📍</Text>
-              <Text style={[styles.featureText, { color: theme.colors.text }]}>
+              <Text style={[styles.featureText, { color: theme.text }]}>
                 {t('globalPulse.introFeature1')}
               </Text>
             </View>
 
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>🔒</Text>
-              <Text style={[styles.featureText, { color: theme.colors.text }]}>
+              <Text style={[styles.featureText, { color: theme.text }]}>
                 {t('globalPulse.introFeature2')}
               </Text>
             </View>
 
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>🎭</Text>
-              <Text style={[styles.featureText, { color: theme.colors.text }]}>
+              <Text style={[styles.featureText, { color: theme.text }]}>
                 {t('globalPulse.introFeature3')}
               </Text>
             </View>
 
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>🚪</Text>
-              <Text style={[styles.featureText, { color: theme.colors.text }]}>
+              <Text style={[styles.featureText, { color: theme.text }]}>
                 {t('globalPulse.introFeature4')}
               </Text>
             </View>
@@ -80,7 +79,7 @@ export const PrivacyIntroModal: React.FC<PrivacyIntroModalProps> = ({
           {/* 隐私承诺 */}
           <View style={[styles.privacyCommitment, { backgroundColor: 'rgba(139, 92, 246, 0.1)' }]}>
             <Text style={styles.privacyIcon}>🛡️</Text>
-            <Text style={[styles.privacyText, { color: theme.colors.textSecondary }]}>
+            <Text style={[styles.privacyText, { color: theme.sub }]}>
               {t('globalPulse.privacyCommitment')}
             </Text>
           </View>
@@ -97,10 +96,10 @@ export const PrivacyIntroModal: React.FC<PrivacyIntroModalProps> = ({
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, styles.declineButton, { borderColor: theme.colors.border }]}
+              style={[styles.button, styles.declineButton, { borderColor: theme.border }]}
               onPress={onDecline}
             >
-              <Text style={[styles.declineButtonText, { color: theme.colors.textSecondary }]}>
+              <Text style={[styles.declineButtonText, { color: theme.sub }]}>
                 {t('globalPulse.notNow')}
               </Text>
             </TouchableOpacity>

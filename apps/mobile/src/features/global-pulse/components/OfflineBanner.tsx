@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useTranslation } from 'react-i18next';
+import { useT } from '../../../components/UI';
 
 export const OfflineBanner: React.FC = () => {
-  const { t } = useTranslation();
+  const t = useT();
 
   return (
     <View style={styles.container}>

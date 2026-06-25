@@ -11,8 +11,7 @@ import {
   ActivityIndicator,
   Animated
 } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { useTranslation } from 'react-i18next';
+import { useTheme, useT } from '../../../components/UI';
 
 interface LoadingOverlayProps {
   isLoading: boolean;
@@ -25,8 +24,8 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   text,
   showSkeleton = false
 }) => {
-  const { theme } = useTheme();
-  const { t } = useTranslation();
+  const theme = useTheme();
+  const t = useT();
 
   if (!isLoading) return null;
 
@@ -52,8 +51,8 @@ export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
         </View>
       ) : (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
-          <Text style={[styles.loadingText, { color: theme.colors.text }]}>
+          <ActivityIndicator size="large" color={theme.primary} />
+          <Text style={[styles.loadingText, { color: theme.text }]}>
             {text || t('loading')}
           </Text>
         </View>

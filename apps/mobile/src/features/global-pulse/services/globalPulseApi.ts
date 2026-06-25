@@ -19,6 +19,8 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8090';
 const CHECKINS_COLLECTION = 'global_checkins';
 const STATS_COLLECTION = 'global_stats';
 
+const REQUEST_TIMEOUT = 10000;
+
 /**
  * 通用 PocketBase 请求方法
  */
@@ -26,15 +28,21 @@ async function pbRequest<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
   try {
     const url = `${API_BASE_URL}${endpoint}`;
     const response = await fetch(url, {
       ...options,
+      signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
       },
     });
+
+    clearTimeout(timeoutId);
 
     const data = await response.json();
 
@@ -49,7 +57,17 @@ async function pbRequest<T>(
     }
 
     return { success: true, data };
-  } catch (error) {
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error?.name === 'AbortError') {
+      return {
+        success: false,
+        error: {
+          code: 'TIMEOUT',
+          message: '请求超时，请检查网络连接'
+        }
+      };
+    }
     return {
       success: false,
       error: {
@@ -120,11 +138,20 @@ export async function getCheckins(params?: {
   );
 
   if (result.success && result.data) {
-    // 转换 PocketBase 响应格式
+    // 转换 PocketBase 响应格式，确保数值字段为数字类型
+    const checkins = (result.data.items || []).map((item: any) => ({
+      ...item,
+      checkin_id: item.id || item.checkin_id,
+      nickname: item.nickname || '',
+      lat: Number(item.lat),
+      lng: Number(item.lng),
+      streak: Number(item.streak),
+      total_days: Number(item.total_days),
+    }));
     return {
       success: true,
       data: {
-        checkins: result.data.items || [],
+        checkins,
         total: result.data.totalItems || 0,
         has_more: result.data.page < result.data.totalPages
       }
@@ -161,15 +188,21 @@ export async function getGlobalStats(): Promise<ApiResponse<GlobalStats>> {
 export async function getLeaderboard(params?: {
   sort?: LeaderboardSort;
   limit?: number;
+  type?: string;
 }): Promise<ApiResponse<{ leaderboard: LeaderboardEntry[]; user_rank?: number }>> {
   // PocketBase 不直接支持 GROUP BY，需要获取所有记录后在客户端排序
   const sortField = params?.sort === 'total_days' ? 'total_days' : 'streak';
   const limit = params?.limit || 100;
 
+  const filters: string[] = ['opted_out != true'];
+  if (params?.type) {
+    filters.push(`type = "${params.type}"`);
+  }
+
   const queryParams = new URLSearchParams();
   queryParams.set('sort', `-${sortField}`);
   queryParams.set('perPage', limit.toString());
-  queryParams.set('filter', 'opted_out != true');
+  queryParams.set('filter', filters.join(' && '));
 
   const result = await pbRequest<any>(
     `/api/collections/${CHECKINS_COLLECTION}/records?${queryParams.toString()}`
@@ -190,10 +223,12 @@ export async function getLeaderboard(params?: {
     const leaderboard: LeaderboardEntry[] = uniqueCheckins.map((item: any, index: number) => ({
       rank: index + 1,
       user_hash: item.user_hash,
-      anonymous_id: generateAnonymousId(item.user_hash),
-      streak: item.streak,
-      total_days: item.total_days,
-      type: item.type
+      lat: Number(item.lat),
+      lng: Number(item.lng),
+      streak: Number(item.streak),
+      total_days: Number(item.total_days),
+      type: item.type,
+      created_at: item.created_at
     }));
 
     return {
@@ -208,34 +243,115 @@ export async function getLeaderboard(params?: {
 /**
  * 退出全球地图
  */
-export async function optOut(userHash?: string): Promise<ApiResponse<{ message: string }>> {
-  // 需要先获取用户的记录，然后更新 opted_out 字段
-  // 简化处理：返回成功
-  return { success: true, data: { message: '已退出全球地图' } };
+export async function optOut(userHash: string): Promise<ApiResponse<{ message: string }>> {
+  try {
+    // 获取用户的所有记录
+    const filter = encodeURIComponent(`user_hash = "${userHash}"`);
+    const listResult = await pbRequest<any>(
+      `/api/collections/${CHECKINS_COLLECTION}/records?filter=${filter}&perPage=500`
+    );
+
+    if (!listResult.success || !listResult.data?.items) {
+      return { success: false, error: { code: 'FETCH_FAILED', message: '获取记录失败' } };
+    }
+
+    // 批量更新 opted_out 字段
+    const updatePromises = listResult.data.items.map((item: any) =>
+      pbRequest(`/api/collections/${CHECKINS_COLLECTION}/records/${item.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ opted_out: true }),
+      })
+    );
+
+    await Promise.all(updatePromises);
+
+    return { success: true, data: { message: '已退出全球地图' } };
+  } catch (error) {
+    return { success: false, error: { code: 'OPT_OUT_FAILED', message: '退出失败' } };
+  }
 }
 
 /**
  * 重新加入全球地图
  */
-export async function optIn(userHash?: string): Promise<ApiResponse<{ message: string }>> {
-  return { success: true, data: { message: '已重新加入全球地图' } };
+export async function optIn(userHash: string): Promise<ApiResponse<{ message: string }>> {
+  try {
+    // 获取用户的所有记录
+    const filter = encodeURIComponent(`user_hash = "${userHash}"`);
+    const listResult = await pbRequest<any>(
+      `/api/collections/${CHECKINS_COLLECTION}/records?filter=${filter}&perPage=500`
+    );
+
+    if (!listResult.success || !listResult.data?.items) {
+      return { success: false, error: { code: 'FETCH_FAILED', message: '获取记录失败' } };
+    }
+
+    // 批量更新 opted_out 字段
+    const updatePromises = listResult.data.items.map((item: any) =>
+      pbRequest(`/api/collections/${CHECKINS_COLLECTION}/records/${item.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ opted_out: false }),
+      })
+    );
+
+    await Promise.all(updatePromises);
+
+    return { success: true, data: { message: '已重新加入全球地图' } };
+  } catch (error) {
+    return { success: false, error: { code: 'OPT_IN_FAILED', message: '重新加入失败' } };
+  }
 }
 
 /**
  * 删除全球数据
  */
-export async function deleteGlobalData(userHash?: string): Promise<ApiResponse<{ message: string }>> {
-  return { success: true, data: { message: '已删除全球数据' } };
+export async function deleteGlobalData(userHash: string): Promise<ApiResponse<{ message: string }>> {
+  try {
+    // 获取用户的所有记录
+    const filter = encodeURIComponent(`user_hash = "${userHash}"`);
+    const listResult = await pbRequest<any>(
+      `/api/collections/${CHECKINS_COLLECTION}/records?filter=${filter}&perPage=500`
+    );
+
+    if (!listResult.success || !listResult.data?.items) {
+      return { success: false, error: { code: 'FETCH_FAILED', message: '获取记录失败' } };
+    }
+
+    // 批量删除记录
+    const deletePromises = listResult.data.items.map((item: any) =>
+      pbRequest(`/api/collections/${CHECKINS_COLLECTION}/records/${item.id}`, {
+        method: 'DELETE',
+      })
+    );
+
+    await Promise.all(deletePromises);
+
+    return { success: true, data: { message: '已删除全球数据' } };
+  } catch (error) {
+    return { success: false, error: { code: 'DELETE_FAILED', message: '删除失败' } };
+  }
 }
 
 /**
  * 生成匿名标识
  */
 export function generateAnonymousId(userHash: string): string {
-  // 从哈希中提取数字作为 ID
+  if (!userHash || userHash.length < 2) return '修行者';
   const hashNum = parseInt(userHash.substring(0, 8), 16);
+  if (isNaN(hashNum)) return '修行者';
   const id = hashNum % 10000;
   return `修行者 #${id.toString().padStart(4, '0')}`;
+}
+
+/**
+ * 格式化显示名称
+ * 有昵称显示昵称（超过4字截断），无昵称显示匿名标识
+ */
+export function formatDisplayName(nickname?: string, userHash?: string): string {
+  if (nickname) {
+    return nickname.length > 4 ? nickname.slice(0, 4) + '...' : nickname;
+  }
+  return generateAnonymousId(userHash || '');
 }
 
 /**

@@ -1,231 +1,175 @@
 /**
  * 排行榜组件
  * 显示全球匿名用户排行
+ * 直接使用已加载的 checkin 数据，无需额外 API 请求
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator
 } from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { useTranslation } from 'react-i18next';
-import { LeaderboardEntry, LeaderboardSort, CheckinType } from '../types/globalPulse';
-import { getLeaderboard, generateAnonymousId, getCheckinTypeIcon } from '../services/globalPulseApi';
+import { useTheme, useT } from '../../../components/UI';
+import { GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType } from '../types/globalPulse';
+import { LeaderboardItem } from './LeaderboardItem';
+import { PodiumItem } from './PodiumItem';
 
 interface LeaderboardProps {
+  checkins: GlobalCheckin[];
   type?: CheckinType;
-  onBack: () => void;
+  onBack?: () => void;
+  onUserPress?: (entry: LeaderboardEntry) => void;
+  selectedUserId?: string | null;
+  compact?: boolean;
+}
+
+// 从 checkins 数据生成排行榜
+function buildLeaderboard(checkins: GlobalCheckin[], sortBy: LeaderboardSort): LeaderboardEntry[] {
+  // 按 user_hash 去重，保留最新记录
+  const seen = new Map<string, GlobalCheckin>();
+  for (const c of checkins) {
+    const existing = seen.get(c.user_hash);
+    if (!existing || new Date(c.created_at) > new Date(existing.created_at)) {
+      seen.set(c.user_hash, c);
+    }
+  }
+
+  // 转换为 LeaderboardEntry 并排序
+  const entries: LeaderboardEntry[] = Array.from(seen.values()).map(c => ({
+    rank: 0,
+    user_hash: c.user_hash,
+    nickname: c.nickname,
+    lat: c.lat,
+    lng: c.lng,
+    streak: c.streak,
+    total_days: c.total_days,
+    type: c.type,
+    city: c.city,
+    created_at: c.created_at,
+  }));
+
+  entries.sort((a, b) => b[sortBy] - a[sortBy]);
+  entries.forEach((e, i) => { e.rank = i + 1; });
+
+  return entries;
 }
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({
+  checkins,
   type,
-  onBack
+  onBack,
+  onUserPress,
+  selectedUserId,
+  compact = false
 }) => {
-  const { theme } = useTheme();
-  const { t } = useTranslation();
-
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
-  const [userRank, setUserRank] = useState<number | undefined>();
+  const theme = useTheme();
+  const t = useT();
   const [sortBy, setSortBy] = useState<LeaderboardSort>('streak');
-  const [isLoading, setIsLoading] = useState(true);
 
-  // 加载排行榜数据
-  useEffect(() => {
-    loadLeaderboard();
-  }, [sortBy]);
+  // 直接从 checkins 计算排行榜，无需额外请求
+  const entries = useMemo(
+    () => buildLeaderboard(checkins, sortBy),
+    [checkins, sortBy]
+  );
 
-  const loadLeaderboard = async () => {
-    setIsLoading(true);
+  const displayEntries = useMemo(() => {
+    return compact ? entries.slice(0, 10) : entries.slice(3);
+  }, [entries, compact]);
 
-    try {
-      const response = await getLeaderboard({
-        sort: sortBy,
-        limit: 100
-      });
-
-      if (response.success && response.data) {
-        setEntries(response.data.leaderboard);
-        setUserRank(response.data.user_rank);
-      }
-    } catch (error) {
-      console.error('Failed to load leaderboard:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 渲染领奖台
   const renderPodium = () => {
     if (entries.length < 3) return null;
 
     const top3 = entries.slice(0, 3);
     const medals = ['🥇', '🥈', '🥉'];
+    const podiumStyles = [
+      [styles.podiumItem, styles.podiumFirst],
+      [styles.podiumItem, styles.podiumSecond],
+      [styles.podiumItem, styles.podiumThird],
+    ];
 
     return (
       <View style={styles.podiumContainer}>
-        {/* 第二名 */}
-        <View style={[styles.podiumItem, styles.podiumSecond]}>
-          <Text style={styles.podiumMedal}>{medals[1]}</Text>
-          <Text style={[styles.podiumName, { color: theme.colors.text }]}>
-            {generateAnonymousId(top3[1].user_hash)}
-          </Text>
-          <Text style={[styles.podiumValue, { color: theme.colors.primary }]}>
-            {sortBy === 'streak' ? top3[1].streak : top3[1].total_days}
-          </Text>
-          <Text style={[styles.podiumUnit, { color: theme.colors.textSecondary }]}>
-            {t('globalPulse.days')}
-          </Text>
-        </View>
-
-        {/* 第一名 */}
-        <View style={[styles.podiumItem, styles.podiumFirst]}>
-          <Text style={styles.podiumMedal}>{medals[0]}</Text>
-          <Text style={[styles.podiumName, { color: theme.colors.text }]}>
-            {generateAnonymousId(top3[0].user_hash)}
-          </Text>
-          <Text style={[styles.podiumValue, { color: theme.colors.primary }]}>
-            {sortBy === 'streak' ? top3[0].streak : top3[0].total_days}
-          </Text>
-          <Text style={[styles.podiumUnit, { color: theme.colors.textSecondary }]}>
-            {t('globalPulse.days')}
-          </Text>
-        </View>
-
-        {/* 第三名 */}
-        <View style={[styles.podiumItem, styles.podiumThird]}>
-          <Text style={styles.podiumMedal}>{medals[2]}</Text>
-          <Text style={[styles.podiumName, { color: theme.colors.text }]}>
-            {generateAnonymousId(top3[2].user_hash)}
-          </Text>
-          <Text style={[styles.podiumValue, { color: theme.colors.primary }]}>
-            {sortBy === 'streak' ? top3[2].streak : top3[2].total_days}
-          </Text>
-          <Text style={[styles.podiumUnit, { color: theme.colors.textSecondary }]}>
-            {t('globalPulse.days')}
-          </Text>
-        </View>
+        {top3.map((entry, index) => (
+          <PodiumItem
+            key={entry.user_hash}
+            entry={entry}
+            medal={medals[index]}
+            isSelected={selectedUserId === entry.user_hash}
+            podiumStyle={podiumStyles[index]}
+            onPress={onUserPress}
+          />
+        ))}
       </View>
     );
   };
 
-  // 渲染列表项
   const renderItem = ({ item, index }: { item: LeaderboardEntry; index: number }) => {
-    const rank = index + 1;
-    const isTop3 = rank <= 3;
-    const anonymousId = generateAnonymousId(item.user_hash);
-    const typeIcon = getCheckinTypeIcon(item.type);
+    const rank = compact ? index + 1 : index + 4;
+    const isSelected = selectedUserId === item.user_hash;
 
     return (
-      <View style={[
-        styles.listItem,
-        { backgroundColor: theme.colors.card },
-        isTop3 && styles.listItemTop3
-      ]}>
-        <Text style={[styles.rank, { color: theme.colors.text }]}>
-          {rank}
-        </Text>
-        <Text style={styles.typeIcon}>{typeIcon}</Text>
-        <View style={styles.listItemInfo}>
-          <Text style={[styles.listItemName, { color: theme.colors.text }]}>
-            {anonymousId}
-          </Text>
-        </View>
-        <View style={styles.listItemValue}>
-          <Text style={[styles.listItemNumber, { color: theme.colors.primary }]}>
-            {sortBy === 'streak' ? item.streak : item.total_days}
-          </Text>
-          <Text style={[styles.listItemUnit, { color: theme.colors.textSecondary }]}>
-            {t('globalPulse.days')}
-          </Text>
-        </View>
-      </View>
+      <LeaderboardItem
+        entry={item}
+        rank={rank}
+        isSelected={isSelected}
+        onPress={onUserPress}
+      />
     );
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      {/* 头部 */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Text style={[styles.backButtonText, { color: theme.colors.text }]}>
-            ←
+    <View style={[styles.container, compact && styles.containerCompact, { backgroundColor: compact ? 'transparent' : theme.bg }]}>
+      {/* 头部 - 紧凑模式下隐藏 */}
+      {!compact && (
+        <View style={styles.header}>
+          {onBack && (
+            <TouchableOpacity onPress={onBack} style={styles.backButton}>
+              <Text style={[styles.backButtonText, { color: theme.text }]}>←</Text>
+            </TouchableOpacity>
+          )}
+          <Text style={[styles.title, { color: theme.text }]}>
+            {t('globalPulse.leaderboard')}
           </Text>
-        </TouchableOpacity>
-        <Text style={[styles.title, { color: theme.colors.text }]}>
-          {t('globalPulse.leaderboard')}
-        </Text>
-        <View style={styles.placeholder} />
-      </View>
-
-      {/* 排序切换 */}
-      <View style={styles.sortContainer}>
-        <TouchableOpacity
-          style={[
-            styles.sortButton,
-            sortBy === 'streak' && { backgroundColor: theme.colors.primary }
-          ]}
-          onPress={() => setSortBy('streak')}
-        >
-          <Text style={[
-            styles.sortButtonText,
-            { color: sortBy === 'streak' ? '#fff' : theme.colors.text }
-          ]}>
-            {t('globalPulse.currentStreak')}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.sortButton,
-            sortBy === 'total_days' && { backgroundColor: theme.colors.primary }
-          ]}
-          onPress={() => setSortBy('total_days')}
-        >
-          <Text style={[
-            styles.sortButtonText,
-            { color: sortBy === 'total_days' ? '#fff' : theme.colors.text }
-          ]}>
-            {t('globalPulse.totalDays')}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* 用户排名 */}
-      {userRank && (
-        <View style={[styles.userRankContainer, { backgroundColor: theme.colors.card }]}>
-          <Text style={[styles.userRankLabel, { color: theme.colors.textSecondary }]}>
-            {t('globalPulse.yourRank')}
-          </Text>
-          <Text style={[styles.userRankValue, { color: theme.colors.primary }]}>
-            #{userRank}
-          </Text>
+          <View style={styles.placeholder} />
         </View>
       )}
 
-      {/* 加载中 */}
-      {isLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary} />
+      {/* 排序切换 - 紧凑模式下隐藏 */}
+      {!compact && (
+        <View style={styles.sortContainer}>
+          <TouchableOpacity
+            style={[styles.sortButton, sortBy === 'streak' && { backgroundColor: theme.primary }]}
+            onPress={() => setSortBy('streak')}
+          >
+            <Text style={[styles.sortButtonText, { color: sortBy === 'streak' ? '#fff' : theme.text }]}>
+              {t('globalPulse.currentStreak')}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.sortButton, sortBy === 'total_days' && { backgroundColor: theme.primary }]}
+            onPress={() => setSortBy('total_days')}
+          >
+            <Text style={[styles.sortButtonText, { color: sortBy === 'total_days' ? '#fff' : theme.text }]}>
+              {t('globalPulse.totalDays')}
+            </Text>
+          </TouchableOpacity>
         </View>
-      ) : (
-        <>
-          {/* 领奖台 */}
-          {renderPodium()}
-
-          {/* 排行榜列表 */}
-          <FlatList
-            data={entries.slice(3)}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.user_hash}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
-        </>
       )}
+
+      {/* 领奖台 - 紧凑模式下隐藏 */}
+      {!compact && renderPodium()}
+
+      {/* 排行榜列表 */}
+      <FlatList
+        data={displayEntries}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.user_hash}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -233,6 +177,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  containerCompact: {
+    paddingTop: 8,
   },
   header: {
     flexDirection: 'row',
@@ -273,27 +220,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
-  userRankContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 12,
-  },
-  userRankLabel: {
-    fontSize: 14,
-  },
-  userRankValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   podiumContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -317,64 +243,9 @@ const styles = StyleSheet.create({
   podiumThird: {
     paddingBottom: 8,
   },
-  podiumMedal: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  podiumName: {
-    fontSize: 12,
-    fontWeight: '500',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  podiumValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  podiumUnit: {
-    fontSize: 11,
-  },
   listContent: {
     paddingHorizontal: 16,
     paddingBottom: 20,
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 8,
-  },
-  listItemTop3: {
-    borderWidth: 1,
-    borderColor: 'rgba(245, 158, 11, 0.3)',
-  },
-  rank: {
-    width: 32,
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  typeIcon: {
-    fontSize: 20,
-    marginHorizontal: 8,
-  },
-  listItemInfo: {
-    flex: 1,
-  },
-  listItemName: {
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  listItemValue: {
-    alignItems: 'flex-end',
-  },
-  listItemNumber: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  listItemUnit: {
-    fontSize: 11,
   },
 });
 

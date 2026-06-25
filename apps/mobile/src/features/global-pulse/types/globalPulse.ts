@@ -9,6 +9,7 @@ export type CheckinType = 'exercise' | 'fasting' | 'meditation';
 export interface GlobalCheckin {
   checkin_id: string;       // UUID
   user_hash: string;        // SHA256 匿名哈希
+  nickname?: string;        // 用户昵称
   lat: number;              // 模糊纬度（±500m）
   lng: number;              // 模糊经度（±500m）
   type: CheckinType;        // 打卡类型
@@ -16,6 +17,7 @@ export interface GlobalCheckin {
   total_days: number;       // 总打卡天数
   created_at: string;       // UTC 时间戳
   opted_out?: boolean;      // 是否退出全球地图
+  city?: string;            // 城市名（客户端反向编码）
 }
 
 // 全球统计
@@ -37,9 +39,14 @@ export interface UserPreferences {
 export interface LeaderboardEntry {
   rank: number;             // 排名
   user_hash: string;        // 匿名用户哈希
+  nickname?: string;        // 用户昵称
+  lat: number;              // 纬度
+  lng: number;              // 经度
   streak: number;           // 当前连续打卡天数
   total_days: number;       // 总打卡天数
   type: CheckinType;        // 打卡类型
+  created_at: string;       // 开始日期
+  city?: string;            // 城市名（客户端反向编码）
 }
 
 // 排行榜排序方式
@@ -73,6 +80,8 @@ export interface ApiResponse<T> {
 // 打卡提交请求
 export interface CheckinRequest {
   type: CheckinType;
+  user_hash: string;
+  nickname?: string;
   lat: number;
   lng: number;
   streak: number;

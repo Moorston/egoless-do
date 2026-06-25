@@ -38,7 +38,7 @@ import HabitDetailScreen from '../features/habits/HabitDetailScreen';
 import RelationMapView from '../features/reflections/RelationMapView';
 import HabitsScreen      from '../features/habits/HabitsScreen';
 import StatsScreen       from '../features/stats/StatsScreen';
-import GlobalMapPage     from '../features/home/GlobalMapPage';
+import GlobalPulseScreen from '../features/home/GlobalPulseScreen';
 import SportPage         from '../features/exercise/SportPage';
 import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
 import FastHistoryPage   from '../features/fasting/FastHistoryPage';
@@ -309,7 +309,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Register"     component={RegisterScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="MainTabs"     component={MainTabs} />
-        <Stack.Screen name="GlobalMap"    component={GlobalMapPage} />
+        <Stack.Screen name="GlobalMap"    component={GlobalPulseScreen} />
         <Stack.Screen name="Sport"        component={SportPage} />
         <Stack.Screen name="FastHistory"  component={FastHistoryPage} />
         <Stack.Screen name="MedHistory"   component={MedHistoryPage} />

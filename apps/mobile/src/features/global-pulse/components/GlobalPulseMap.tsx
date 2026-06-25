@@ -1,168 +1,98 @@
-/**
- * 全球脉动地图组件
- * 使用 OpenStreetMap 显示全球修行者分布
- */
-
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Text,
   ActivityIndicator,
-  PanResponder,
-  Animated,
 } from 'react-native';
-import MapView, { UrlTile, Marker, Callout } from 'react-native-maps';
-import { useTheme } from '@/hooks/useTheme';
-import { useTranslation } from 'react-i18next';
-import { GlobalCheckin, ClusterMarker as ClusterMarkerType } from '../types/globalPulse';
+import { formatDisplayName } from '../services/globalPulseApi';
+import MapView, { UrlTile, Marker } from 'react-native-maps';
+import { useTheme, useT } from '../../../components/UI';
+import { GlobalCheckin, LeaderboardEntry } from '../types/globalPulse';
+import { useGlobalPulse } from '../hooks/useGlobalPulse';
 import { aggregateMarkers } from '../services/markerAggregation';
-import { getCheckins, getGlobalStats } from '../services/globalPulseApi';
-import { getCachedCheckins, cacheCheckins } from '../services/offlineCache';
 import { PulseMarker } from './PulseMarker';
 import { MarkerDetail } from './MarkerDetail';
 import { OfflineBanner } from './OfflineBanner';
 import { Leaderboard } from './Leaderboard';
 
-// OpenStreetMap 瓦片服务器
 const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-// 默认地图中心（全球视野）
 const DEFAULT_REGION = {
-  latitude: 20,
-  longitude: 105,
-  latitudeDelta: 100,
-  longitudeDelta: 100,
+  latitude: 35,
+  longitude: 110,
+  latitudeDelta: 30,
+  longitudeDelta: 30,
 };
 
 interface GlobalPulseMapProps {
   onClose?: () => void;
   type?: 'exercise' | 'fasting' | 'meditation';
+  title?: string;
+  showInlineLeaderboard?: boolean;
 }
 
 export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
   onClose,
-  type
+  type,
+  title,
+  showInlineLeaderboard = false
 }) => {
-  const { theme } = useTheme();
-  const { t } = useTranslation();
+  const theme = useTheme();
+  const t = useT();
   const mapRef = useRef<MapView>(null);
 
-  const [checkins, setCheckins] = useState<GlobalCheckin[]>([]);
-  const [clusters, setClusters] = useState<ClusterMarkerType[]>([]);
+  const {
+    checkins,
+    stats,
+    isLoading,
+    isRefreshing,
+    isOffline,
+    error,
+    refresh
+  } = useGlobalPulse({ type, autoRefresh: true });
+
   const [selectedCheckin, setSelectedCheckin] = useState<GlobalCheckin | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isOffline, setIsOffline] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(2);
 
-  // 下拉刷新动画值
-  const pullDistance = useRef(new Animated.Value(0)).current;
-  const pullThreshold = 80;
-
-  // 下拉刷新手势
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        // 只在向下拉且垂直移动大于水平移动时响应
-        return gestureState.dy > 10 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx) && !isRefreshing;
-      },
-      onPanResponderGrant: () => {},
-      onPanResponderMove: (_, gestureState) => {
-        // 限制最大拉动距离
-        const distance = Math.max(0, Math.min(gestureState.dy, pullThreshold * 1.5));
-        pullDistance.setValue(distance);
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dy >= pullThreshold && !isRefreshing) {
-          // 触发刷新
-          handleRefresh();
-        }
-        // 回弹
-        Animated.spring(pullDistance, {
-          toValue: 0,
-          useNativeDriver: true,
-        }).start();
-      },
-    })
-  ).current;
-
-  // 加载打卡数据
-  const loadCheckins = useCallback(async (showLoading: boolean = true) => {
-    if (showLoading) setIsLoading(true);
-
-    try {
-      const response = await getCheckins({ type, limit: 1000 });
-
-      if (response.success && response.data) {
-        setCheckins(response.data.checkins);
-        setIsOffline(false);
-
-        // 缓存数据
-        await cacheCheckins(response.data.checkins);
-      } else {
-        // 尝试从缓存加载
-        const cached = await getCachedCheckins();
-        if (cached.length > 0) {
-          setCheckins(cached);
-          setIsOffline(true);
-        }
-      }
-    } catch (error) {
-      // 离线模式，从缓存加载
-      const cached = await getCachedCheckins();
-      if (cached.length > 0) {
-        setCheckins(cached);
-        setIsOffline(true);
-      }
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [type]);
-
-  // 初始加载
-  useEffect(() => {
-    loadCheckins();
-  }, [loadCheckins]);
-
-  // 更新聚合标记
-  useEffect(() => {
-    const newClusters = aggregateMarkers(checkins, currentZoom);
-    setClusters(newClusters);
-  }, [checkins, currentZoom]);
-
-  // 下拉刷新
-  const handleRefresh = useCallback(() => {
-    setIsRefreshing(true);
-    loadCheckins(false);
-  }, [loadCheckins]);
-
-  // 处理地图区域变化
   const handleRegionChange = useCallback((region: any) => {
-    // 根据 latitudeDelta 估算缩放级别
     const zoom = Math.round(Math.log2(360 / region.latitudeDelta));
     setCurrentZoom(Math.max(1, Math.min(20, zoom)));
   }, []);
 
-  // 处理标记点击
   const handleMarkerPress = useCallback((checkin: GlobalCheckin) => {
     setSelectedCheckin(checkin);
   }, []);
 
-  // 关闭详情
   const handleCloseDetail = useCallback(() => {
     setSelectedCheckin(null);
   }, []);
 
-  // 渲染标记
-  const renderMarkers = () => {
+  const handleUserPress = useCallback((entry: LeaderboardEntry) => {
+    setSelectedUserId(entry.user_hash);
+    mapRef.current?.animateToRegion({
+      latitude: entry.lat,
+      longitude: entry.lng,
+      latitudeDelta: 5,
+      longitudeDelta: 5,
+    }, 500);
+  }, []);
+
+  const clusters = useMemo(
+    () => aggregateMarkers(checkins, currentZoom),
+    [checkins, currentZoom]
+  );
+
+  const markers = useMemo(() => {
     return clusters.map((cluster) => {
       if (cluster.count === 1) {
         const checkin = cluster.checkins[0];
+        const isSelected = selectedUserId === checkin.user_hash;
+        const markerTitle = formatDisplayName(checkin.nickname, checkin.user_hash);
+
         return (
           <Marker
             key={checkin.checkin_id}
@@ -170,14 +100,16 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
               latitude: checkin.lat,
               longitude: checkin.lng
             }}
+            title={markerTitle}
+            description={`🔥${checkin.streak}天 📅${checkin.total_days}天`}
             onPress={() => handleMarkerPress(checkin)}
+            opacity={isSelected ? 1 : 0.9}
           >
             <PulseMarker type={checkin.type} />
           </Marker>
         );
       }
 
-      // 聚合标记
       return (
         <Marker
           key={cluster.id}
@@ -186,7 +118,6 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
             longitude: cluster.lng
           }}
           onPress={() => {
-            // 放大到该区域
             mapRef.current?.animateToRegion({
               latitude: cluster.lat,
               longitude: cluster.lng,
@@ -201,124 +132,152 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
         </Marker>
       );
     });
-  };
+  }, [clusters, selectedUserId, handleMarkerPress]);
 
-  // 加载中状态
-  if (isLoading) {
-    return (
-      <View style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={[styles.loadingText, { color: theme.colors.text }]}>
-          {t('loading')}
-        </Text>
-      </View>
-    );
-  }
-
-  // 排行榜页面
-  if (showLeaderboard) {
+  if (showLeaderboard && !showInlineLeaderboard) {
     return (
       <Leaderboard
+        checkins={checkins}
         type={type}
         onBack={() => setShowLeaderboard(false)}
       />
     );
   }
 
-  // 下拉刷新指示器样式
-  const pullIndicatorStyle = {
-    transform: [{
-      translateY: pullDistance.interpolate({
-        inputRange: [0, pullThreshold * 1.5],
-        outputRange: [-60, 20],
-        extrapolate: 'clamp',
-      }),
-    }],
-    opacity: pullDistance.interpolate({
-      inputRange: [0, pullThreshold * 0.5, pullThreshold],
-      outputRange: [0, 0.5, 1],
-      extrapolate: 'clamp',
-    }),
-  };
-
   return (
-    <View style={styles.container} {...panResponder.panHandlers}>
-      {/* 离线提示 */}
-      {isOffline && <OfflineBanner />}
-
-      {/* 下拉刷新指示器 */}
-      <Animated.View style={[styles.pullIndicator, pullIndicatorStyle]}>
-        <ActivityIndicator size="small" color={theme.colors.primary} />
-        <Text style={[styles.pullText, { color: theme.colors.text }]}>
-          {isRefreshing ? t('refreshing') : t('pullToRefresh')}
-        </Text>
-      </Animated.View>
-
-      {/* 地图 */}
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        initialRegion={DEFAULT_REGION}
-        onRegionChangeComplete={handleRegionChange}
-        mapType="none"
-        showsUserLocation={false}
-        showsMyLocationButton={false}
-        showsCompass={true}
-        showsScale={true}
-      >
-        {/* OpenStreetMap 瓦片 */}
-        <UrlTile
-          urlTemplate={OSM_TILE_URL}
-          maximumZ={19}
-          tileSize={256}
-        />
-
-        {/* 打卡标记 */}
-        {renderMarkers()}
-      </MapView>
-
-      {/* 归属信息 */}
-      <View style={styles.attribution}>
-        <Text style={styles.attributionText}>
-          © OpenStreetMap contributors
-        </Text>
-      </View>
-
-      {/* 工具栏 */}
-      <View style={styles.toolbar}>
-        {/* 关闭按钮 */}
-        <TouchableOpacity
-          style={[styles.toolbarButton, { backgroundColor: theme.colors.card }]}
-          onPress={onClose}
-        >
-          <Text style={[styles.toolbarButtonText, { color: theme.colors.text }]}>
-            ✕
-          </Text>
+    <View style={styles.container}>
+      <View style={[styles.headerBar, { backgroundColor: theme.bg }]}>
+        <TouchableOpacity onPress={onClose} style={styles.headerButton}>
+          <Text style={[styles.headerButtonText, { color: theme.text }]}>←</Text>
         </TouchableOpacity>
-
-        {/* 排行榜按钮 */}
+        <Text style={[styles.headerTitle, { color: theme.text }]}>
+          {title || t('globalPulse')}
+        </Text>
         <TouchableOpacity
-          style={[styles.toolbarButton, { backgroundColor: theme.colors.card }]}
-          onPress={() => setShowLeaderboard(true)}
-        >
-          <Text style={[styles.toolbarButtonText, { color: theme.colors.text }]}>
-            🏆
-          </Text>
-        </TouchableOpacity>
-
-        {/* 刷新按钮 */}
-        <TouchableOpacity
-          style={[styles.toolbarButton, { backgroundColor: theme.colors.card }]}
-          onPress={handleRefresh}
+          onPress={refresh}
+          style={styles.headerButton}
           disabled={isRefreshing}
         >
-          <Text style={[styles.toolbarButtonText, { color: theme.colors.text }]}>
-            {isRefreshing ? '⏳' : '🔄'}
+          <Text style={[styles.headerButtonText, { color: theme.primary }]}>
+            {isRefreshing ? '◌' : '↻'}
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* 标记详情 */}
+      {isOffline && <OfflineBanner />}
+
+      {isLoading ? (
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={theme.primary} />
+          <Text style={[styles.loadingText, { color: theme.text }]}>
+            {t('loading')}
+          </Text>
+        </View>
+      ) : error && checkins.length === 0 ? (
+        <View style={styles.centered}>
+          <Text style={[styles.errorText, { color: theme.text }]}>
+            {error}
+          </Text>
+          <TouchableOpacity
+            style={[styles.retryButton, { backgroundColor: theme.primary }]}
+            onPress={() => refresh()}
+          >
+            <Text style={styles.retryButtonText}>重新加载</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <>
+          <MapView
+            ref={mapRef}
+            style={showInlineLeaderboard ? styles.inlineMap : styles.map}
+            initialRegion={DEFAULT_REGION}
+            onRegionChangeComplete={handleRegionChange}
+            mapType="none"
+            showsUserLocation={false}
+            showsMyLocationButton={false}
+            showsCompass={true}
+            showsScale={true}
+          >
+            <UrlTile
+              urlTemplate={OSM_TILE_URL}
+              maximumZ={19}
+              tileSize={256}
+            />
+            {markers}
+          </MapView>
+
+          {stats && (
+            <View style={styles.statsBar}>
+              <Text style={styles.statsItem}>
+                👥 {stats.total_users} {t('globalPulse.totalUsers')}
+              </Text>
+              <Text style={styles.statsDot}>·</Text>
+              <Text style={styles.statsItem}>
+                🔥 {stats.active_today} {t('globalPulse.activeToday')}
+              </Text>
+            </View>
+          )}
+
+          <View style={styles.attribution}>
+            <Text style={styles.attributionText}>
+              © OpenStreetMap contributors
+            </Text>
+          </View>
+
+          {!showInlineLeaderboard && (
+            <View style={styles.toolbar}>
+              <TouchableOpacity
+                style={[styles.toolbarButton, { backgroundColor: theme.card }]}
+                onPress={onClose}
+              >
+                <Text style={[styles.toolbarButtonText, { color: theme.text }]}>✕</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.toolbarButton, { backgroundColor: theme.card }]}
+                onPress={() => setShowLeaderboard(true)}
+              >
+                <Text style={[styles.toolbarButtonText, { color: theme.text }]}>🏆</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.toolbarButton, { backgroundColor: theme.card }]}
+                onPress={refresh}
+                disabled={isRefreshing}
+              >
+                <Text style={[styles.toolbarButtonText, { color: theme.text }]}>
+                  {isRefreshing ? '⏳' : '🔄'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {showInlineLeaderboard && (
+            <View style={[styles.inlineLeaderboard, { backgroundColor: theme.bg }]}>
+              <View style={styles.leaderboardHeader}>
+                <Text style={[styles.leaderboardTitle, { color: theme.text }]}>
+                  🏆 {t('globalPulse.leaderboard')}
+                </Text>
+                <TouchableOpacity
+                  style={[styles.refreshSmall, { backgroundColor: `${theme.primary}15` }]}
+                  onPress={refresh}
+                  disabled={isRefreshing}
+                >
+                  <Text style={[styles.refreshSmallText, { color: theme.primary }]}>
+                    {isRefreshing ? '◌' : '↻'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <Leaderboard
+                checkins={checkins}
+                type={type}
+                compact={true}
+                onUserPress={handleUserPress}
+                selectedUserId={selectedUserId}
+              />
+            </View>
+          )}
+        </>
+      )}
+
       {selectedCheckin && (
         <MarkerDetail
           checkin={selectedCheckin}
@@ -333,12 +292,86 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  headerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.08)',
+  },
+  headerButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerButtonText: {
+    fontSize: 22,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
   centered: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   map: {
     flex: 1,
+  },
+  inlineMap: {
+    height: 300,
+  },
+  inlineLeaderboard: {
+    flex: 1,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.1)',
+  },
+  leaderboardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)',
+  },
+  leaderboardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  refreshSmall: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  refreshSmallText: {
+    fontSize: 16,
+  },
+  statsBar: {
+    position: 'absolute',
+    bottom: 32,
+    left: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    gap: 4,
+  },
+  statsItem: {
+    fontSize: 11,
+    color: '#fff',
+    fontWeight: '500',
+  },
+  statsDot: {
+    fontSize: 11,
+    color: '#fff',
+    opacity: 0.5,
   },
   attribution: {
     position: 'absolute',
@@ -367,47 +400,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
   },
   toolbarButtonText: {
     fontSize: 20,
   },
   clusterContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: '#6366F1',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   clusterText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   loadingText: {
-    marginTop: 12,
+    marginTop: 16,
     fontSize: 16,
+    fontWeight: '500',
   },
-  pullIndicator: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    zIndex: 10,
-    gap: 8,
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 24,
+    paddingHorizontal: 40,
+    lineHeight: 24,
   },
-  pullText: {
-    fontSize: 14,
+  retryButton: {
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 28,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

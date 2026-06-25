@@ -75,8 +75,8 @@ export function aggregateMarkers(
   checkins: GlobalCheckin[],
   zoom: number
 ): ClusterMarker[] {
-  // 高缩放级别不聚合
-  if (zoom >= 15) {
+  // 标记数量少或高缩放级别时不聚合
+  if (checkins.length <= 50 || zoom >= 10) {
     return checkins.map(checkin => ({
       id: checkin.checkin_id,
       lat: checkin.lat,

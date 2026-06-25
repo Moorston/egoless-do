@@ -45,7 +45,7 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
   const [isOffline, setIsOffline] = useState(false);
   const [lastSync, setLastSync] = useState<Date | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [offset, setOffset] = useState(0);
+  const offsetRef = useRef(0);
 
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -64,7 +64,7 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
       if (response.success && response.data) {
         setCheckins(response.data.checkins);
         setIsOffline(false);
-        setOffset(response.data.checkins.length);
+        offsetRef.current = response.data.checkins.length;
 
         // 缓存数据
         await cacheCheckins(response.data.checkins);
@@ -121,20 +121,22 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
       const response = await getCheckins({
         type,
         limit: 1000,
-        offset
+        offset: offsetRef.current
       });
 
       if (response.success && response.data && response.data.checkins.length > 0) {
-        setCheckins(prev => [...prev, ...response.data!.checkins]);
-        setOffset(prev => prev + response.data!.checkins.length);
-
-        // 更新缓存
-        await cacheCheckins([...checkins, ...response.data.checkins]);
+        const newCheckins = response.data.checkins;
+        setCheckins(prev => {
+          const updated = [...prev, ...newCheckins];
+          offsetRef.current = updated.length;
+          cacheCheckins(updated);
+          return updated;
+        });
       }
     } catch (err) {
       // 忽略加载更多错误
     }
-  }, [type, offset, checkins]);
+  }, [type]);
 
   // 初始加载
   useEffect(() => {
