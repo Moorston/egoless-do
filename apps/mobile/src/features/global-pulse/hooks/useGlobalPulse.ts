@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import NetInfo from '@react-native-community/netinfo';
-import { GlobalCheckin, GlobalStats, SyncStatus, NetworkStatus } from '../types/globalPulse';
+import { GlobalCheckin, GlobalStats } from '../types/globalPulse';
 import { getCheckins, getGlobalStats } from '../services/globalPulseApi';
 import {
   getCachedCheckins,
