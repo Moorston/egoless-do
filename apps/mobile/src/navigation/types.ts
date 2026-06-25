@@ -3,7 +3,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;
-  GlobalMap: { icon?: string; title?: string } | undefined;
+  GlobalMap: { icon?: string; title?: string; type?: 'exercise' | 'fasting' | 'meditation' } | undefined;
   Sport: { key: string; icon: string; color: string; gps?: boolean };
   FastHistory: undefined;
   MedHistory: undefined;

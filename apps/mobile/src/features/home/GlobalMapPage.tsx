@@ -1,330 +1,510 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Animated } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import MapView, { Marker, UrlTile, Callout } from 'react-native-maps';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
-import { GLOBAL_USERS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK } from '@egoless-do/core';
-import { Globe, X, Trophy, Flame, ChevronLeft } from 'lucide-react-native';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import { Globe, ChevronLeft, Trophy, RefreshCw } from 'lucide-react-native';
 
-const USERS_WITH_STREAK = GLOBAL_USERS.map(u => ({
-  ...u,
-  streak: Math.round(u.days * (0.6 + Math.random() * 0.35)),
-  online: Math.random() > 0.4,
-}));
+// API 配置
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8090';
 
-// ── Pulse Marker ──
-function PulseMarker({ u, primaryColor, onPress }: { u: typeof USERS_WITH_STREAK[0]; primaryColor: string; onPress: () => void }) {
-  const pulseAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+// OpenStreetMap 瓦片服务器
+const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-  useEffect(() => {
-    const delay = Math.random() * 2000;
-    let pulseLoop: Animated.CompositeAnimation | null = null;
-    let scaleLoop: Animated.CompositeAnimation | null = null;
-    const timer = setTimeout(() => {
-      pulseLoop = Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulseAnim, { toValue: 1, duration: 1500, useNativeDriver: true }),
-          Animated.timing(pulseAnim, { toValue: 0, duration: 1500, useNativeDriver: true }),
-        ])
-      );
-      pulseLoop.start();
-      scaleLoop = Animated.loop(
-        Animated.sequence([
-          Animated.timing(scaleAnim, { toValue: 1.15, duration: 1200, useNativeDriver: true }),
-          Animated.timing(scaleAnim, { toValue: 1, duration: 1200, useNativeDriver: true }),
-        ])
-      );
-      scaleLoop.start();
-    }, delay);
-    return () => { clearTimeout(timer); pulseLoop?.stop(); scaleLoop?.stop(); };
-  }, []);
+// 默认区域（亚洲）
+const DEFAULT_REGION = {
+  latitude: 35,
+  longitude: 110,
+  latitudeDelta: 30,
+  longitudeDelta: 30,
+};
 
-  const left = ((u.lng + 180) / 360) * 100;
-  const top = ((90 - u.lat) / 180) * 100;
-  const color = u.id === 1 ? primaryColor : 'rgba(255,107,53,.9)';
-  const pulseOpacity = pulseAnim.interpolate({ inputRange: [0, 1], outputRange: [0.6, 0] });
-  const pulseScale = pulseAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 2.5] });
-
-  return (
-    <TouchableOpacity onPress={onPress}
-      style={{ position: 'absolute', left: `${left}%`, top: `${top}%`, zIndex: 2, alignItems: 'center', justifyContent: 'center' }}>
-      {/* Pulse ring */}
-      <Animated.View style={{
-        position: 'absolute', width: 40, height: 40, borderRadius: 20,
-        backgroundColor: color, opacity: pulseOpacity,
-        transform: [{ scale: pulseScale }],
-      }} />
-      {/* Marker */}
-      <Animated.View style={{
-        width: 30, height: 30, borderRadius: 15,
-        backgroundColor: color, borderWidth: 2, borderColor: '#fff',
-        alignItems: 'center', justifyContent: 'center',
-        transform: [{ scale: scaleAnim }],
-        shadowColor: color, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.6, shadowRadius: 6,
-        elevation: 4,
-      }}>
-        <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_SUB }}>{u.name[0]}</Text>
-      </Animated.View>
-      {/* Online dot */}
-      {u.online && (
-        <View style={{
-          position: 'absolute', top: -2, right: -2,
-          width: 10, height: 10, borderRadius: 5,
-          backgroundColor: '#22C55E', borderWidth: 1.5, borderColor: '#fff',
-        }} />
-      )}
-    </TouchableOpacity>
-  );
+interface GlobalUser {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  days: number;
+  sport: string;
+  streak: number;
+  type: string;
+  since: string;
 }
 
-export default function GlobalMapPage({ route }: { route?: { params?: { icon?: string; title?: string } } }) {
-  const nav = useRootNavigation();
-  const TH  = useTheme();
-  const T   = useT();
-  const P   = TH.primary;
-  const pageIconName = route?.params?.icon ?? 'Globe';
-  const pageTitle = route?.params?.title ?? T('globalPulse');
-  const [sel, setSel]         = useState<typeof USERS_WITH_STREAK[0] | null>(null);
-  const [showBoard, setShowBoard] = useState(false);
+// 生成匿名名称
+function generateAnonymousId(userHash: string): string {
+  const hashNum = parseInt(userHash.substring(0, 8), 16);
+  const id = hashNum % 10000;
+  return `修行者 #${id.toString().padStart(4, '0')}`;
+}
 
-  const onlineCount = USERS_WITH_STREAK.filter(u => u.online).length;
-  const floatAnim = useRef(new Animated.Value(0)).current;
+// 获取运动类型显示
+function getSportLabel(type: string): string {
+  switch (type) {
+    case 'exercise': return '运动';
+    case 'fasting': return '禁食';
+    case 'meditation': return '冥想';
+    default: return '修行';
+  }
+}
 
-  useEffect(() => {
-    const anim = Animated.loop(
-      Animated.sequence([
-        Animated.timing(floatAnim, { toValue: -6, duration: 2000, useNativeDriver: true }),
-        Animated.timing(floatAnim, { toValue: 0, duration: 2000, useNativeDriver: true }),
-      ])
-    );
-    anim.start();
-    return () => anim.stop();
-  }, []);
+// 获取类型颜色
+function getTypeColor(type: string): string {
+  switch (type) {
+    case 'exercise': return '#3B82F6';
+    case 'fasting': return '#F59E0B';
+    case 'meditation': return '#8B5CF6';
+    default: return '#6B7280';
+  }
+}
 
-  if (showBoard) {
-    return <LeaderboardPage users={USERS_WITH_STREAK} TH={TH} P={P} onClose={() => setShowBoard(false)} nav={nav} />;
+// 从 PocketBase 获取全球打卡数据
+async function fetchGlobalCheckins(type?: string): Promise<GlobalUser[]> {
+  // 构建过滤条件
+  let filter = 'opted_out != true';
+  if (type) {
+    filter += ` && type = "${type}"`;
   }
 
+  const url = `${API_BASE_URL}/api/collections/global_checkins/records?perPage=200&sort=-created_at&filter=${encodeURIComponent(filter)}`;
+  console.log('Fetching:', url);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.warn('Fetch failed:', response.status);
+      return [];
+    }
+
+    const data = await response.json();
+    const items = data.items || [];
+    console.log('Fetched:', items.length, 'items');
+
+    // 按 user_hash 去重
+    const seen = new Set<string>();
+    const uniqueUsers: GlobalUser[] = [];
+
+    for (const item of items) {
+      if (!seen.has(item.user_hash)) {
+        seen.add(item.user_hash);
+        uniqueUsers.push({
+          id: item.id,
+          name: generateAnonymousId(item.user_hash),
+          lat: item.lat,
+          lng: item.lng,
+          days: item.total_days,
+          sport: getSportLabel(item.type),
+          streak: item.streak,
+          type: item.type,
+          since: new Date(item.created_at).toISOString().slice(0, 7),
+        });
+      }
+    }
+
+    return uniqueUsers;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error;
+  }
+}
+
+export default function GlobalMapPage({ route }: { route?: { params?: { icon?: string; title?: string; type?: 'exercise' | 'fasting' | 'meditation' } } }) {
+  const nav = useRootNavigation();
+  const TH = useTheme();
+  const T = useT();
+  const P = TH.primary;
+  const filterType = route?.params?.type;
+  const pageTitle = route?.params?.title ?? T('globalPulse');
+
+  const mapRef = useRef<MapView>(null);
+  const [users, setUsers] = useState<GlobalUser[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  // 加载数据
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await fetchGlobalCheckins(filterType);
+      setUsers(data);
+      if (data.length === 0) {
+        setError('暂无全球打卡数据');
+      }
+    } catch (e: any) {
+      setError(e.message || '加载失败');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [filterType]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // 点击排行榜用户，地图定位到该用户
+  const handleUserPress = useCallback((user: GlobalUser) => {
+    setSelectedUserId(user.id);
+    mapRef.current?.animateToRegion({
+      latitude: user.lat,
+      longitude: user.lng,
+      latitudeDelta: 5,
+      longitudeDelta: 5,
+    }, 500);
+  }, []);
+
+  // 渲染标记
+  const renderMarkers = () => {
+    return users.map((user) => {
+      const color = getTypeColor(user.type);
+      const isSelected = selectedUserId === user.id;
+      return (
+        <Marker
+          key={user.id}
+          coordinate={{
+            latitude: user.lat,
+            longitude: user.lng,
+          }}
+          onPress={() => setSelectedUserId(user.id)}
+          opacity={isSelected ? 1 : 0.8}
+        >
+          <View style={[
+            styles.markerContainer,
+            { backgroundColor: color },
+            isSelected && styles.markerSelected
+          ]}>
+            <Text style={styles.markerText}>{user.streak}</Text>
+          </View>
+          <Callout tooltip>
+            <View style={[styles.callout, { backgroundColor: TH.card }]}>
+              <Text style={[styles.calloutName, { color: TH.text }]}>{user.name}</Text>
+              <Text style={[styles.calloutInfo, { color: TH.sub }]}>
+                {user.sport} · 连续 {user.streak} 天
+              </Text>
+              <Text style={[styles.calloutInfo, { color: TH.sub }]}>
+                累计 {user.days} 天 · {user.since}
+              </Text>
+            </View>
+          </Callout>
+        </Marker>
+      );
+    });
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
-      <View style={{ flex: 1, position: 'relative' }}>
-        {/* Map background with gradient grid effect */}
-        <View style={{ flex: 1, backgroundColor: '#0a0f1e', position: 'relative', overflow: 'hidden' }}>
-          {/* Grid lines for atmosphere */}
-          {[0.2, 0.4, 0.6, 0.8].map(pct => (
-            <View key={`h${pct}`} style={{ position: 'absolute', top: `${pct * 100}%`, left: 0, right: 0, height: 1, backgroundColor: 'rgba(255,255,255,.04)' }} />
-          ))}
-          {[0.25, 0.5, 0.75].map(pct => (
-            <View key={`v${pct}`} style={{ position: 'absolute', left: `${pct * 100}%`, top: 0, bottom: 0, width: 1, backgroundColor: 'rgba(255,255,255,.04)' }} />
-          ))}
+    <SafeAreaView style={[styles.container, { backgroundColor: '#000' }]}>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: 'rgba(0,0,0,0.8)' }]}>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
+            <ChevronLeft size={20} color="#fff" />
+          </TouchableOpacity>
+          <Globe size={20} color={P} />
+          <Text style={styles.headerTitle}>{pageTitle}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={loadData}
+          style={[styles.refreshButton, { backgroundColor: `${P}30` }]}
+        >
+          <RefreshCw size={16} color={P} />
+          <Text style={[styles.refreshText, { color: P }]}>{users.length}</Text>
+        </TouchableOpacity>
+      </View>
 
-          {/* User markers */}
-          {USERS_WITH_STREAK.map(u => (
-            <PulseMarker key={u.id} u={u} primaryColor={P} onPress={() => setSel(u)} />
-          ))}
+      {/* Map */}
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={P} />
+          <Text style={[styles.loadingText, { color: '#fff' }]}>{T('loading')}</Text>
+        </View>
+      ) : (
+        <View style={styles.mapContainer}>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={DEFAULT_REGION}
+            mapType="none"
+            showsUserLocation={false}
+            showsMyLocationButton={false}
+            showsCompass={true}
+            showsScale={true}
+            zoomEnabled={true}
+            scrollEnabled={true}
+            pitchEnabled={true}
+            rotateEnabled={true}
+          >
+            {/* OpenStreetMap 瓦片 */}
+            <UrlTile
+              urlTemplate={OSM_TILE_URL}
+              maximumZ={19}
+              tileSize={256}
+            />
 
-          {/* Selected user info */}
-          {sel && (
-            <View style={{
-              position: 'absolute', bottom: 100, left: 16, right: 16,
-              backgroundColor: 'rgba(10,15,30,.92)', borderRadius: 16, padding: 16, zIndex: 3,
-              borderWidth: 1, borderColor: 'rgba(255,255,255,.1)',
-            }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-                  <View style={{
-                    width: 44, height: 44, borderRadius: 22,
-                    backgroundColor: sel.id === 1 ? P : 'rgba(255,107,53,.9)',
-                    alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_TITLE }}>{sel.name[0]}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: '#fff' }}>{sel.name}</Text>
-                      {sel.online && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#22C55E' }} />}
-                    </View>
-                    <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 3 }}>
-                      {sel.sport} · {sel.duration}
+            {/* 标记 */}
+            {renderMarkers()}
+          </MapView>
+
+          {/* 归属信息 */}
+          <View style={styles.attribution}>
+            <Text style={styles.attributionText}>© OpenStreetMap contributors</Text>
+          </View>
+        </View>
+      )}
+
+      {/* 错误提示 */}
+      {error && !isLoading && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity onPress={loadData} style={[styles.retryButton, { backgroundColor: P }]}>
+            <Text style={styles.retryText}>重新加载</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* 排行榜 */}
+      <View style={[styles.leaderboardSection, { backgroundColor: TH.bg }]}>
+        <View style={styles.leaderboardHeader}>
+          <Trophy size={16} color={TH.sub} />
+          <Text style={[styles.leaderboardTitle, { color: TH.sub }]}>
+            {filterType ? `${getSportLabel(filterType)}排行榜` : '打卡排行榜'}
+          </Text>
+        </View>
+        {users.length === 0 ? (
+          <Text style={[styles.emptyText, { color: TH.sub }]}>
+            {filterType ? `暂无${getSportLabel(filterType)}数据` : '暂无数据'}
+          </Text>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {[...users]
+              .sort((a, b) => b.days - a.days)
+              .slice(0, 10)
+              .map((user, index) => (
+                <TouchableOpacity
+                  key={user.id}
+                  style={[
+                    styles.leaderboardItem,
+                    { borderBottomColor: TH.border },
+                    selectedUserId === user.id && { backgroundColor: `${TH.primary}15` }
+                  ]}
+                  onPress={() => handleUserPress(user)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[
+                    styles.rankBadge,
+                    { backgroundColor: index < 3 ? ['#FFD700', '#C0C0C0', '#CD7F32'][index] : `${TH.primary}30` }
+                  ]}>
+                    <Text style={[styles.rankText, { color: index < 3 ? '#000' : '#fff' }]}>
+                      {index + 1}
                     </Text>
                   </View>
-                </View>
-                <TouchableOpacity onPress={() => setSel(null)} style={{ padding: 4 }}>
-                  <X size={18} color="rgba(255,255,255,.5)" />
+                  <View style={styles.userInfo}>
+                    <Text style={[styles.userName, { color: TH.text }]}>{user.name}</Text>
+                    <Text style={[styles.userSport, { color: TH.sub }]}>
+                      {user.sport} · 连续 {user.streak} 天
+                    </Text>
+                  </View>
+                  <View style={styles.daysContainer}>
+                    <Text style={[styles.userDays, { color: TH.primary }]}>{user.days}</Text>
+                    <Text style={[styles.daysLabel, { color: TH.sub }]}>天</Text>
+                  </View>
                 </TouchableOpacity>
-              </View>
-              <View style={{ flexDirection: 'row', marginTop: 14, gap: 8 }}>
-                <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, alignItems: 'center' }}>
-                  <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#FF6B35' }}>{sel.streak}</Text>
-                  <Text style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalCurrentStreak')}</Text>
-                </View>
-                <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, alignItems: 'center' }}>
-                  <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{sel.days}</Text>
-                  <Text style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('globalDaysTotal')}</Text>
-                </View>
-                <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 10, padding: 10, alignItems: 'center' }}>
-                  <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: 'rgba(255,255,255,.7)' }}>{sel.since}</Text>
-                  <Text style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('startDate')}</Text>
-                </View>
-              </View>
-            </View>
-          )}
-        </View>
-
-        {/* Top overlay */}
-        <View style={{
-          position: 'absolute', top: 0, left: 0, right: 0,
-          paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16,
-          flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-          backgroundColor: 'rgba(10,15,30,.8)', zIndex: 10,
-        }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-            <TouchableOpacity onPress={() => nav.goBack()} style={{ padding: 4 }}>
-              <ChevronLeft size={20} color="#fff" />
-            </TouchableOpacity>
-            <Globe size={20} color={P} />
-            <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: '#fff' }}>{pageTitle}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(34,197,94,.15)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 5 }}>
-            <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: '#22C55E' }} />
-            <Text style={{ fontSize: FONT_SUB, color: '#22C55E', fontWeight: '600' }}>{onlineCount} online</Text>
-          </View>
-        </View>
-
-        {/* Bottom actions */}
-        <View style={{ position: 'absolute', bottom: 28, left: 0, right: 0, alignItems: 'center', zIndex: 10, gap: 10 }}>
-          <Animated.View style={{ transform: [{ translateY: floatAnim }] }}>
-            <TouchableOpacity onPress={() => setShowBoard(true)}
-              style={{
-                paddingHorizontal: 28, paddingVertical: 14, borderRadius: 28,
-                backgroundColor: `${P}E0`,
-                shadowColor: P, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.5, shadowRadius: 12,
-                elevation: 6,
-              }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Trophy size={18} color="#fff" />
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('globalLeaderboard')}</Text>
-              </View>
-            </TouchableOpacity>
-          </Animated.View>
-        </View>
+              ))}
+          </ScrollView>
+        )}
       </View>
     </SafeAreaView>
   );
 }
 
-// ── Leaderboard ──
-function LeaderboardPage({ users, TH, P, onClose, nav }: {
-  users: typeof USERS_WITH_STREAK;
-  TH: ReturnType<typeof useTheme>;
-  P: string;
-  onClose: () => void;
-  nav: { goBack: () => void };
-}) {
-  const [tab, setTab] = useState(0);
-  const T = useT();
-  const sorted = tab === 0
-    ? [...users].sort((a, b) => b.streak - a.streak)
-    : [...users].sort((a, b) => b.days - a.days);
-
-  const medalColors = ['#FFD700', '#C0C0C0', '#CD7F32'];
-
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
-      {/* Header */}
-      <View style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 10, flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
-          <ChevronLeft size={20} color={TH.text} />
-        </TouchableOpacity>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <Trophy size={20} color={TH.text} />
-          <Text style={{ fontWeight: '700', fontSize: FONT_BACK, color: TH.text }}>{T('globalLeaderboard')}</Text>
-        </View>
-      </View>
-
-      {/* Top 3 podium */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', paddingHorizontal: 16, paddingVertical: 16, gap: 8 }}>
-        {[1, 0, 2].map(rank => {
-          const u = sorted[rank];
-          if (!u) return null;
-          const isFirst = rank === 0;
-          const heights = [140, 110, 90];
-          const sizes = [56, 44, 40];
-          return (
-            <View key={u.id} style={{ alignItems: 'center', flex: isFirst ? 1.2 : 1 }}>
-              <View style={{
-                width: sizes[rank], height: sizes[rank], borderRadius: sizes[rank] / 2,
-                backgroundColor: medalColors[rank],
-                alignItems: 'center', justifyContent: 'center',
-                borderWidth: 3, borderColor: 'rgba(255,255,255,.3)',
-                marginBottom: 8,
-              }}>
-                <Text style={{ color: '#fff', fontWeight: '900', fontSize: isFirst ? FONT_STAT_CARD : FONT_TITLE }}>{u.name[0]}</Text>
-              </View>
-              <Text style={{ fontWeight: '700', fontSize: isFirst ? FONT_BODY : FONT_SUB, color: TH.text, textAlign: 'center' }} numberOfLines={1}>{u.name}</Text>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:2, marginTop:2 }}>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{tab === 0 ? u.streak : `${u.days} ${T('days')}`}</Text>
-                {tab === 0 && <Flame size={12} color={TH.sub} />}
-              </View>
-              <View style={{
-                width: '100%', height: heights[rank], borderRadius: 12,
-                backgroundColor: medalColors[rank] + '30',
-                marginTop: 8, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 10,
-              }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: medalColors[rank] }}>{rank + 1}</Text>
-              </View>
-            </View>
-          );
-        })}
-      </View>
-
-      {/* Tab switch */}
-      <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 12, gap: 8 }}>
-        {[T('globalCurrentStreak'), T('globalDaysTotal')].map((l, i) => (
-          <TouchableOpacity key={l} onPress={() => setTab(i)}
-            style={{
-              flex: 1, paddingVertical: 10, borderRadius: 12,
-              backgroundColor: tab === i ? P : TH.card,
-              alignItems: 'center',
-              borderWidth: tab === i ? 0 : 1, borderColor: TH.border,
-            }}>
-            <Text style={{ color: tab === i ? '#fff' : TH.sub, fontWeight: tab === i ? '700' : '500', fontSize: FONT_BODY }}>{l}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* List */}
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 30 }}>
-        {sorted.map((u, i) => (
-          <View key={u.id} style={{
-            backgroundColor: TH.card, borderRadius: 14, marginBottom: 8,
-            borderWidth: 1, borderColor: TH.border,
-            flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14,
-          }}>
-            <View style={{
-              width: 28, height: 28, borderRadius: 14,
-              backgroundColor: i < 3 ? medalColors[i] : P,
-              alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_SUB }}>{i + 1}</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text style={{ fontWeight: '600', fontSize: FONT_BODY, color: TH.text }}>{u.name}</Text>
-                {u.online && <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#22C55E' }} />}
-              </View>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{u.sport} · {u.since}</Text>
-            </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ fontWeight: '800', fontSize: FONT_TITLE, color: i < 3 ? medalColors[i] : P }}>
-                {tab === 0 ? u.streak : u.days}
-              </Text>
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{tab === 0 ? T('globalDaysCurrent') : T('globalDaysTotal')}</Text>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: FONT_BODY,
+  },
+  refreshButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  refreshText: {
+    fontSize: FONT_SUB,
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: FONT_SUB,
+  },
+  mapContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  map: {
+    flex: 1,
+  },
+  attribution: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  attributionText: {
+    fontSize: 10,
+    color: '#666',
+  },
+  markerContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  markerSelected: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  markerText: {
+    color: '#fff',
+    fontWeight: '800',
+    fontSize: 12,
+  },
+  callout: {
+    padding: 12,
+    borderRadius: 12,
+    minWidth: 150,
+  },
+  calloutName: {
+    fontWeight: '700',
+    fontSize: FONT_BODY,
+    marginBottom: 4,
+  },
+  calloutInfo: {
+    fontSize: FONT_SUB,
+    marginTop: 2,
+  },
+  errorContainer: {
+    position: 'absolute',
+    top: '40%',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: '#fff',
+    fontSize: FONT_BODY,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  retryText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  leaderboardSection: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  leaderboardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  leaderboardTitle: {
+    fontSize: FONT_BODY,
+    fontWeight: '600',
+  },
+  emptyText: {
+    textAlign: 'center',
+    paddingVertical: 20,
+    fontSize: FONT_SUB,
+  },
+  leaderboardItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  rankBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rankText: {
+    fontWeight: '800',
+    fontSize: FONT_SUB,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontWeight: '600',
+    fontSize: FONT_BODY,
+  },
+  userSport: {
+    fontSize: FONT_SUB,
+    marginTop: 2,
+  },
+  userDays: {
+    fontWeight: '800',
+    fontSize: FONT_TITLE,
+  },
+  daysContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 2,
+  },
+  daysLabel: {
+    fontSize: FONT_SUB,
+  },
+});

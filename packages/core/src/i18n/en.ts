@@ -650,4 +650,7 @@ export const en: I18nKeys = {
   streakBreakHighDay:'Most common day', streakBreakAvgStreak:'Avg Streak',
   streakBreakAvgRecovery:'Avg Recovery', streakBreakTrend:'Trend',
   streakBreakHypothetical:'Hypothetical streak: {n} days', streakBreakGraceHint:'Grace available but unused',
+
+  // Global Pulse
+  loading:'Loading...', refreshing:'Refreshing...', pullToRefresh:'Pull to refresh',
 };

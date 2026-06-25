@@ -534,6 +534,7 @@ export interface I18nKeys {
   streakBreakHighDay: string; streakBreakAvgStreak: string;
   streakBreakAvgRecovery: string; streakBreakTrend: string;
   streakBreakHypothetical: string; streakBreakGraceHint: string;
+  loading: string; refreshing: string; pullToRefresh: string;
 }
 
 export type I18nKey = keyof I18nKeys;

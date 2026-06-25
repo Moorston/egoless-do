@@ -650,4 +650,7 @@ export const zh: I18nKeys = {
   streakBreakHighDay:'高发日', streakBreakAvgStreak:'平均连胜',
   streakBreakAvgRecovery:'恢复平均', streakBreakTrend:'趋势',
   streakBreakHypothetical:'假设连胜 {n} 天', streakBreakGraceHint:'可用宽限期未使用',
+
+  // Global Pulse
+  loading:'加载中...', refreshing:'刷新中...', pullToRefresh:'下拉刷新',
 };

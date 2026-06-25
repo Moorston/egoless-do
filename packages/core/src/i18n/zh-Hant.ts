@@ -648,4 +648,7 @@ export const zhHant: I18nKeys = {
   streakBreakHighDay:'高發日', streakBreakAvgStreak:'平均連勝',
   streakBreakAvgRecovery:'恢復平均', streakBreakTrend:'趨勢',
   streakBreakHypothetical:'假設連勝 {n} 天', streakBreakGraceHint:'可用寬限期未使用',
+
+  // Global Pulse
+  loading:'載入中...', refreshing:'更新中...', pullToRefresh:'下拉更新',
 };
