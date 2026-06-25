@@ -6,6 +6,7 @@ import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle, Bell, BellOff } fro
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth, MOOD_DISPLAY } from '@egoless-do/core';
+import { HABIT_LINK_COLORS } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
 import TimePickerModal from '../../components/TimePickerModal';
 import { Toggle } from '../../components/UI';
@@ -128,6 +129,16 @@ export default function HabitDetailScreen() {
             <View style={styles.infoRow}>
               <Text style={[styles.infoLabel, { color: TH.sub }]}>我的愿景</Text>
               <Text style={[styles.infoValue, { color: TH.text }]}>{habit.insight}</Text>
+            </View>
+          )}
+          {(habit.link && habit.link !== 'none') && (
+            <View style={styles.infoRow}>
+              <Text style={[styles.infoLabel, { color: TH.sub }]}>关联</Text>
+              <Text style={[styles.infoValue, { color: HABIT_LINK_COLORS[habit.link] }]}>
+                {habit.link === 'fasting' ? `禁食（${habit.linkConfig?.targetHours ?? 16}h）`
+                  : habit.link === 'exercise' ? `锻炼（${habit.linkConfig?.targetMinutes ?? 30}min）`
+                  : '冥想'}
+              </Text>
             </View>
           )}
         </View>

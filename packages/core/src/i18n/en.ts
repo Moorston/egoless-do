@@ -84,6 +84,7 @@ export const en: I18nKeys = {
   habitInsight:'My Vision', habitTargetDays:'Target Days',
   habitAutoTag:'Auto-create Tag', habitAutoTagDesc:'Add habit name as reflection tag',
   habitAlarm:'Daily Reminder', habitAlarmOff:'Off', habitAlarmTime:'Reminder Time',
+  habitLink:'Linked Module', habitLinkNone:'None', habitLinkFasting:'Fasting', habitLinkMeditation:'Meditation', habitLinkExercise:'Exercise',
   habitPauseReason:'Pause Reason', habitAbandonReason:'Abandon Reason',
   habitReasonPlaceholder:'Enter reason...', habitCalendar:'Check-in Calendar',
   habitChecked:'Checked', habitToday:'Today', habitCheckinBtn:'Daily Check-in',

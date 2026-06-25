@@ -84,6 +84,7 @@ export const zh: I18nKeys = {
   habitInsight:'我的愿景', habitTargetDays:'目标天数',
   habitAutoTag:'自动创建感念标签', habitAutoTagDesc:'将习惯名称添加为感念标签',
   habitAlarm:'每日提醒', habitAlarmOff:'未开启', habitAlarmTime:'提醒时间',
+  habitLink:'关联模块', habitLinkNone:'无', habitLinkFasting:'禁食', habitLinkMeditation:'冥想', habitLinkExercise:'锻炼',
   habitPauseReason:'暂停原因', habitAbandonReason:'废弃原因',
   habitReasonPlaceholder:'请填写原因...', habitCalendar:'打卡日历',
   habitChecked:'已打卡', habitToday:'今天', habitCheckinBtn:'每日打卡',

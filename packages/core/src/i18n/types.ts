@@ -67,6 +67,7 @@ export interface I18nKeys {
   habitEditTitle: string; habitAddTitle: string; habitName: string;
   habitInsight: string; habitTargetDays: string; habitAutoTag: string;
   habitAutoTagDesc: string; habitAlarm: string; habitAlarmOff: string; habitAlarmTime: string; habitPauseReason: string;
+  habitLink: string; habitLinkNone: string; habitLinkFasting: string; habitLinkMeditation: string; habitLinkExercise: string;
   habitAbandonReason: string; habitReasonPlaceholder: string;
   habitCalendar: string; habitChecked: string; habitToday: string;
   habitCheckinBtn: string; habitConfirmDelete: string;

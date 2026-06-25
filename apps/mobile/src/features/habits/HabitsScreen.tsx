@@ -11,7 +11,8 @@ import {
   ScreenHeader, TagPill, ThemedInput, ProgressBar, RowItem, useT,
 } from '../../components/UI';
 import { COLORS, tomorrow, dateStr, daysInMonth, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_SMALL, FONT_TINY, FONT_LABEL, FONT_BADGE, FONT_STAT_CARD, FONT_CLOSE, FONT_EMPTY } from '@egoless-do/core';
-import type { Habit, HabitStatus } from '@egoless-do/core';
+import type { Habit, HabitStatus, HabitLink } from '@egoless-do/core';
+import { HABIT_LINK_COLORS } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Target, Pause, Play, X, Pencil, Trash2, ChevronRight, ChevronLeft, CheckCircle,
@@ -37,7 +38,7 @@ const ALL_FILTERS: [string, string][] = [
   ['paused','habitStatusPaused'],['abandoned','habitStatusAbandoned'],['completed','habitStatusCompleted'],
 ];
 
-const emptyForm = { name:'', startDate:tomorrow(), targetDays:21, goal:'', insight:'', createTag:false, alarmEnabled:false, alarmHour:8, alarmMinute:0 };
+const emptyForm = { name:'', startDate:tomorrow(), targetDays:21, goal:'', insight:'', createTag:false, alarmEnabled:false, alarmHour:8, alarmMinute:0, link:'none' as HabitLink, linkConfig:{} as { targetHours?:number; targetMinutes?:number } };
 
 export default function HabitsScreen() {
   const TH    = useTheme();
@@ -61,6 +62,7 @@ export default function HabitsScreen() {
 
   useEffect(() => {
     store.checkHabitAutoStatus();
+    store.autoSyncHabits?.();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -79,7 +81,7 @@ export default function HabitsScreen() {
   const openAdd = () => { setEditingId(null); setForm({...emptyForm}); setShowAdd(true); };
   const openEdit = (h: Habit) => {
     setEditingId(h.id);
-    setForm({ name:h.name, startDate:h.startDate, targetDays:h.targetDays, goal:h.goal, insight:h.insight, createTag:h.createTag, alarmEnabled:h.alarmEnabled, alarmHour:h.alarmHour, alarmMinute:h.alarmMinute });
+    setForm({ name:h.name, startDate:h.startDate, targetDays:h.targetDays, goal:h.goal, insight:h.insight, createTag:h.createTag, alarmEnabled:h.alarmEnabled, alarmHour:h.alarmHour, alarmMinute:h.alarmMinute, link:h.link??'none', linkConfig:h.linkConfig??{} });
     setShowAdd(true);
   };
   const saveHabit = async () => {
@@ -177,6 +179,11 @@ export default function HabitsScreen() {
                 <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
 
                 {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>愿景："{h.insight}"</Text> : null}
+                {(h.link && h.link !== 'none') ? (
+                  <Text style={{ color:HABIT_LINK_COLORS[h.link], fontSize:FONT_SUB, marginBottom:8 }}>
+                    关联：{h.link === 'fasting' ? `禁食（${h.linkConfig?.targetHours ?? 16}h）` : h.link === 'exercise' ? `锻炼（${h.linkConfig?.targetMinutes ?? 30}min）` : '冥想'}
+                  </Text>
+                ) : null}
                 {h.createTag && (
                   <View style={{ marginBottom:8, alignSelf:'flex-start', backgroundColor:`${P}30`, borderRadius:10, paddingHorizontal:10, paddingVertical:3 }}>
                     <Text style={{ color:P, fontSize:FONT_SUB }}>#{h.name}</Text>
@@ -286,6 +293,36 @@ export default function HabitsScreen() {
                   </Text>
                   <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>· 点击修改</Text>
                 </TouchableOpacity>
+              )}
+              {/* Linked module */}
+              <View style={{ marginBottom:14 }}>
+                <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:8 }}>{T('habitLink')}</Text>
+                <View style={{ flexDirection:'row', gap:8 }}>
+                  {(['none','fasting','meditation','exercise'] as HabitLink[]).map(v => {
+                    const isActive = (form.link ?? 'none') === v;
+                    const color = HABIT_LINK_COLORS[v];
+                    return (
+                      <TouchableOpacity key={v} onPress={() => setForm(f => ({...f, link:v }))}
+                        style={{ flex:1, paddingVertical:8, borderRadius:10, alignItems:'center', backgroundColor: isActive ? `${color}20` : TH.card, borderWidth:1, borderColor: isActive ? color : TH.border }}>
+                        <Text style={{ color: isActive ? color : TH.text, fontSize:FONT_SMALL, fontWeight: isActive ? '700' : '400' }}>
+                          {T(`habitLink${v.charAt(0).toUpperCase()+v.slice(1)}`)}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+              {form.link === 'fasting' && (
+                <View style={{ marginBottom:14 }}>
+                  <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:6 }}>{T('planLinkFasting')} {T('planItemTarget')}（h）</Text>
+                  <ThemedInput value={String(form.linkConfig?.targetHours ?? 16)} onChangeText={v => setForm(f => ({...f, linkConfig:{...f.linkConfig, targetHours: v===''?0:+v}}))} keyboardType="numeric" />
+                </View>
+              )}
+              {form.link === 'exercise' && (
+                <View style={{ marginBottom:14 }}>
+                  <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:6 }}>{T('planLinkExercise')} {T('planItemTarget')}（min）</Text>
+                  <ThemedInput value={String(form.linkConfig?.targetMinutes ?? 30)} onChangeText={v => setForm(f => ({...f, linkConfig:{...f.linkConfig, targetMinutes: v===''?0:+v}}))} keyboardType="numeric" />
+                </View>
               )}
               <View style={{ height:20 }} />
               <PrimaryButton label={editingId?T('save'):T('createHabit')} onPress={saveHabit} />

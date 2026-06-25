@@ -1,10 +1,19 @@
 // ─── Habit business logic (pure functions) ─────────────────────
-import type { Habit, HabitStatus } from '../types';
+import type { Habit, HabitStatus, HabitLink } from '../types';
+import type { FastingSession, MedHistoryEntry, ExerciseEntry } from '../types';
 import { createHabitFromForm } from '../defaults';
-import { computeStreak } from '../utils';
+import { computeStreak, dateStr } from '../utils';
 
 export type CreateHabitForm = Parameters<typeof createHabitFromForm>[0];
 export { createHabitFromForm };
+
+/** Link type options for habits */
+export const HABIT_LINK_OPTIONS: { value: HabitLink; labelKey: string }[] = [
+  { value: 'none', labelKey: 'habitLinkNone' },
+  { value: 'fasting', labelKey: 'habitLinkFasting' },
+  { value: 'meditation', labelKey: 'habitLinkMeditation' },
+  { value: 'exercise', labelKey: 'habitLinkExercise' },
+];
 
 export function addHabitToList(habits: Habit[], form: CreateHabitForm): Habit[] {
   return [...habits, createHabitFromForm(form)];
@@ -60,4 +69,85 @@ export function checkAutoStatus(habits: Habit[], today: string): Habit[] {
     }
     return h;
   });
+}
+
+// ── Module state for habit auto-sync ──────────────────────────
+
+export interface HabitModuleState {
+  fastingHistory: FastingSession[];
+  activeFasting: FastingSession | null;
+  medHistory: MedHistoryEntry[];
+  exerciseLog: ExerciseEntry[];
+}
+
+/**
+ * Auto-check habits whose linked module condition is met for today.
+ * Returns updated habits array (new references only for changed items).
+ */
+export function syncHabitsFromModules(
+  habits: Habit[],
+  state: HabitModuleState,
+  today: string,
+): Habit[] {
+  // Pre-compute module state
+  let maxFastingHours = 0;
+  for (const f of state.fastingHistory) {
+    if (!f.endedAt) continue;
+    if (dateStr(new Date(f.endedAt)) === today) {
+      maxFastingHours = Math.max(maxFastingHours, (f.endedAt - f.startedAt) / 3600000);
+    }
+  }
+  if (state.activeFasting != null) {
+    const activeStart = dateStr(new Date(state.activeFasting.startedAt));
+    if (activeStart === today || activeStart < today) {
+      maxFastingHours = Math.max(maxFastingHours, (Date.now() - state.activeFasting.startedAt) / 3600000);
+    }
+  }
+
+  const meditationDone = state.medHistory.some(m => m.date === today && !m.deleted);
+
+  let maxExerciseMinutes = 0;
+  for (const e of state.exerciseLog) {
+    if (e.deleted) continue;
+    if (dateStr(new Date(e.timestamp)) === today) {
+      maxExerciseMinutes = Math.max(maxExerciseMinutes, e.durationSec / 60);
+    }
+  }
+
+  let changed = false;
+  const result = habits.map(h => {
+    if (h.deleted) return h;
+    if (h.status !== 'inProgress') return h;
+    if (h.link === 'none') return h;
+    if ((h.checkedDates ?? []).includes(today)) return h;
+
+    let linkedDone = false;
+    switch (h.link) {
+      case 'fasting':
+        linkedDone = maxFastingHours >= (h.linkConfig?.targetHours ?? 16);
+        break;
+      case 'meditation':
+        linkedDone = meditationDone;
+        break;
+      case 'exercise':
+        linkedDone = maxExerciseMinutes >= (h.linkConfig?.targetMinutes ?? 30);
+        break;
+      default:
+        break;
+    }
+
+    if (!linkedDone) return h;
+
+    changed = true;
+    const checked = [...(h.checkedDates ?? []), today];
+    return {
+      ...h,
+      checkedDates: checked,
+      doneDays: checked.length,
+      streak: computeStreak(checked),
+      updatedAt: Date.now(),
+    };
+  });
+
+  return changed ? result : habits;
 }

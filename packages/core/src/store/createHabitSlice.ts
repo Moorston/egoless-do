@@ -2,6 +2,7 @@ import type { Habit } from '../types';
 import {
   addHabitToList, updateHabitInList, deleteHabitFromList,
   checkinHabitInList, changeHabitStatusInList, checkAutoStatus,
+  syncHabitsFromModules,
   createHabitFromForm,
   type CreateHabitForm,
 } from '../business/habits';
@@ -79,6 +80,24 @@ export function createHabitSlice(
       if (changed.length === 0) return;
       set({ habits: next });
       changed.forEach(h => adapter.persistChange('habit', h.id, h).catch(console.error));
+    },
+
+    autoSyncHabits() {
+      const s = get();
+      const today = dateStr();
+      const prev = s.habits ?? [];
+      const state = {
+        fastingHistory: s.fastingHistory ?? [],
+        activeFasting: s.activeFasting,
+        medHistory: s.medHistory ?? [],
+        exerciseLog: s.exerciseLog ?? [],
+      };
+      const next = syncHabitsFromModules(prev, state, today);
+      if (next === prev) return;
+      set({ habits: next });
+      next.forEach((h, i) => {
+        if (h !== prev[i]) adapter.persistChange('habit', h.id, h).catch(console.error);
+      });
     },
   });
 }

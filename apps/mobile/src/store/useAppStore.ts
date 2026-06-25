@@ -139,6 +139,7 @@ export const useAppStore = create<MobileStore>()(
         // Set the auto sync callback after store is created
         _autoSyncCallback = () => {
           useAppStore.getState().autoSyncPlanItems?.();
+          useAppStore.getState().autoSyncHabits?.();
         };
 
         const dailyReset = new DailyResetManager({

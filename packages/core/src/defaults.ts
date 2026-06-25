@@ -17,6 +17,8 @@ export function createHabitFromForm(form: {
   alarmEnabled?: boolean;
   alarmHour?: number;
   alarmMinute?: number;
+  link?: import('./types').HabitLink;
+  linkConfig?: { targetHours?: number; targetMinutes?: number };
 }): Habit {
   return {
     id: uid(),
@@ -36,6 +38,8 @@ export function createHabitFromForm(form: {
     alarmEnabled: form.alarmEnabled ?? false,
     alarmHour: form.alarmHour ?? 8,
     alarmMinute: form.alarmMinute ?? 0,
+    link: form.link ?? 'none',
+    linkConfig: form.linkConfig,
     updatedAt: Date.now(),
     deleted: false,
   };

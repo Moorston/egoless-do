@@ -115,6 +115,7 @@ export interface HabitSlice {
   checkinHabit: (id: string, date: string) => void;
   changeHabitStatus: (id: string, ns: Habit['status'], reason?: string) => void;
   checkHabitAutoStatus: () => void;
+  autoSyncHabits: () => void;
 }
 
 export interface ReflectionSlice {

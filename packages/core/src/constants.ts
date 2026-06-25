@@ -26,6 +26,10 @@ export const LINK_COLORS: Record<PlanItemLink, string> = {
   trail: '#8B5CF6',
 };
 
+export const HABIT_LINK_COLORS: Record<import('./types').HabitLink, string> = {
+  none: COLORS.GRAY, fasting: '#F59E0B', meditation: '#8B5CF6', exercise: '#10B981',
+};
+
 /** Level 1: 主题主渐变 — 从 theme.primary 派生，色相不变，只变明度 */
 export const THEME_GRADIENTS: Record<ThemeName, [string, string]> = {
   cosmos: ['#8B5CF6', '#6D28D9'],
