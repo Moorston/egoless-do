@@ -50,6 +50,7 @@ export default function MeditationScreen() {
 
   // ── 实时会话管理 ──
   const sessionIdRef = useRef<string | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [insight, setInsight] = useState('');
   const { resolveGoal } = useGoalResolver();
 
@@ -84,8 +85,8 @@ export default function MeditationScreen() {
   const handleInsightChange = useCallback((text: string) => {
     setInsight(text);
     if (sessionIdRef.current) {
-      clearTimeout((handleInsightChange as any)._timer);
-      (handleInsightChange as any)._timer = setTimeout(() => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => {
         updateSession(sessionIdRef.current!, { insight: text });
       }, 1000);
     }

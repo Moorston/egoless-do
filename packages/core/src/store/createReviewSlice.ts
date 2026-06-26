@@ -140,10 +140,9 @@ export function createReviewSlice(
       });
 
       // Persist deletions only for those not already deleted
-      for (const review of reviews) {
-        if (!review.deleted) {
-          adapter.markDeleted('checkinReview', review.id).catch(console.error);
-        }
+      const toDelete = reviews.filter(r => !r.deleted).map(r => ({ entity: 'checkinReview' as const, id: r.id }));
+      if (toDelete.length > 0) {
+        adapter.batchDelete(toDelete).catch(console.error);
       }
       
       triggerAutoSync?.();

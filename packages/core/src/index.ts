@@ -13,3 +13,5 @@ export * from './business';
 export * from './sync';
 export * from './typography';
 export * from './ai';
+export * from './data';
+export * from './logger';

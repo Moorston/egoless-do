@@ -7,7 +7,6 @@ import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice,
-  AIMode,
 } from '@egoless-do/core';
 import {
   setApiBase, setPushApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
@@ -19,8 +18,15 @@ import Constants from 'expo-constants';
 import { mobileStorageAdapter } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
 import { runSync, resetSyncState, resetMigrationFlag } from '../features/sync/SyncService';
-import { openDatabase } from '../db/schema';
+import { openDatabase, setState as setAppState } from '../db/schema';
 import { dbGetAllFoodEntries } from '../db/queries';
+import {
+  rowToHabit, rowToReflection, rowToFasting, rowToCheckin,
+  rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
+  rowToPlanItemCheckin, rowToGrace, rowToDailyCustomTodo, rowToDailyTodoHistory,
+  rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
+} from './rowMappers';
+import { migrateAsyncStorageToSQLite } from './migrateAsyncStorage';
 
 // Configure API base for mobile
 const hostUri = Constants.expoConfig?.hostUri ?? Constants.experienceUrl?.split('?')[0]?.split('://')[1];
@@ -115,28 +121,17 @@ export const useAppStore = create<MobileStore>()(
       name: 'egoless-do-mobile',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: s => ({
+        // Only persist settings, auth, and UI preferences — entities rehydrate from SQLite
         auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
         waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
-        foodLog: s.foodLog, habits: s.habits, reflections: s.reflections,
-        thoughtTrails: s.thoughtTrails,
-        trailNotes: s.trailNotes,
-        reflectionLinks: s.reflectionLinks,
-        activeFasting: s.activeFasting,
-        fastingHistory: s.fastingHistory, totalMedMinutes: s.totalMedMinutes,
-        medHistory: s.medHistory, checkinHistory: s.checkinHistory,
-        userProfile: s.userProfile, remindEnabled: s.remindEnabled, remindTime: s.remindTime,
+        remindEnabled: s.remindEnabled, remindTime: s.remindTime,
         weightUnit: s.weightUnit, customTags: s.customTags, customMoods: s.customMoods,
         allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,
         customFoodPresets: s.customFoodPresets,
         reflectionFilters: s.reflectionFilters,
-        exerciseLog: s.exerciseLog,
-        plans: s.plans, planItems: s.planItems, planItemCheckins: s.planItemCheckins,
-        dailyCustomTodos: s.dailyCustomTodos, dailyTodoHistory: s.dailyTodoHistory,
-        graceHistory: s.graceHistory, recycleBin: s.recycleBin,
         healthSyncEnabled: s.healthSyncEnabled,
-        aiMode: s.aiMode, aiModels: s.aiModels,
-        checkinReviews: s.checkinReviews,
         ignoredRecPatterns: s.ignoredRecPatterns,
+        recycleBin: s.recycleBin, // Not in SQLite — persist in AsyncStorage for recovery
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
@@ -180,44 +175,90 @@ export const useAppStore = create<MobileStore>()(
         });
         dailyReset.start();
 
-        // 习惯自动启动检查
-        useAppStore.getState().checkHabitAutoStatus?.();
-
-        // Load food entries from SQLite into store
-        openDatabase().then(db => dbGetAllFoodEntries(db)).then(entries => {
-          if (!entries || entries.length === 0) return;
-          const store = useAppStore.getState();
-          const storeMap = new Map((store.foodLog ?? []).map(f => [f.id, f]));
-          let changed = false;
-          for (const entry of entries) {
-            const existing = storeMap.get(entry.id);
-            if (!existing || (entry.updatedAt ?? 0) > (existing.updatedAt ?? 0)) {
-              storeMap.set(entry.id, entry);
-              changed = true;
+        // Rehydrate ALL entity data from SQLite (replaces AsyncStorage dual storage)
+        openDatabase().then(async db => {
+          try {
+            // Step 1: Migrate old AsyncStorage entity data to SQLite (one-time, idempotent)
+            const didMigrate = await migrateAsyncStorageToSQLite(db, adapter);
+            if (didMigrate) {
+              // Mark that a full sync push is needed to send migrated data to server
+              await setAppState(db, 'needs_initial_sync', '1');
             }
+
+            // Step 2: Load all entities from SQLite (each query independently caught)
+            const safe = <T>(p: Promise<T>, label: string): Promise<T | null> =>
+              p.catch(e => { console.error(`[rehydrate] ${label} failed:`, e); return null; });
+
+            const [
+              habits, reflections, fastings, foods, checkins, exercises, meditations,
+              profiles, plans, planItems, planItemCheckins, graces, dailyTodos,
+              todoHistory, trails, trailNotes, refLinks, aiConfigs, reviews,
+            ] = await Promise.all([
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM habits WHERE deleted = 0"), 'habits'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM mind_reflections WHERE deleted = 0"), 'reflections'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM fasting_sessions WHERE deleted = 0"), 'fastings'),
+              safe(dbGetAllFoodEntries(db), 'foods'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM checkin_records WHERE deleted = 0"), 'checkins'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM exercise_entries WHERE deleted = 0"), 'exercises'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM meditation_history WHERE deleted = 0"), 'meditations'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM user_profiles WHERE deleted = 0"), 'profiles'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM plans WHERE deleted = 0"), 'plans'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM plan_items WHERE deleted = 0"), 'planItems'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM plan_item_checkins WHERE deleted = 0"), 'planItemCheckins'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM grace_history WHERE deleted = 0"), 'graces'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM daily_custom_todos WHERE deleted = 0"), 'dailyTodos'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM daily_todo_history WHERE deleted = 0"), 'todoHistory'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM thought_trails WHERE deleted = 0"), 'trails'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM trail_notes WHERE deleted = 0"), 'trailNotes'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM reflection_links WHERE deleted = 0"), 'refLinks'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM ai_configs WHERE config_id = 'self' AND deleted = 0"), 'aiConfigs'),
+              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM checkin_reviews WHERE deleted = 0"), 'reviews'),
+            ]);
+
+            // Convert rows to entities and build state patch (null from failed queries is safely skipped)
+            const patch: Record<string, unknown> = {};
+
+            if (habits?.length) patch.habits = habits.map(rowToHabit);
+            if (reflections?.length) patch.reflections = reflections.map(rowToReflection);
+            if (fastings?.length) patch.fastingHistory = fastings.map(rowToFasting);
+            if (foods?.length) patch.foodLog = foods.sort((a, b) => b.timestamp - a.timestamp);
+            if (checkins?.length) patch.checkinHistory = checkins.map(rowToCheckin);
+            if (exercises?.length) patch.exerciseLog = exercises.map(rowToExercise);
+            if (meditations?.length) {
+              const medEntries = meditations.map(rowToMeditation);
+              patch.medHistory = medEntries;
+              patch.totalMedMinutes = medEntries.reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
+            }
+            if (profiles?.length) {
+              const profile = profiles.map(rowToProfile)[0];
+              if (profile) patch.userProfile = profile;
+            }
+            if (plans?.length) patch.plans = plans.map(rowToPlan);
+            if (planItems?.length) patch.planItems = planItems.map(rowToPlanItem);
+            if (planItemCheckins?.length) patch.planItemCheckins = planItemCheckins.map(rowToPlanItemCheckin);
+            if (graces?.length) patch.graceHistory = graces.map(rowToGrace);
+            if (dailyTodos?.length) patch.dailyCustomTodos = dailyTodos.map(rowToDailyCustomTodo);
+            if (todoHistory?.length) patch.dailyTodoHistory = todoHistory.map(rowToDailyTodoHistory);
+            if (trails?.length) patch.thoughtTrails = trails.map(rowToThoughtTrail);
+            if (trailNotes?.length) patch.trailNotes = trailNotes.map(rowToTrailNote);
+            if (refLinks?.length) patch.reflectionLinks = refLinks.map(rowToReflectionLink);
+            if (reviews?.length) patch.checkinReviews = reviews.map(rowToCheckinReview);
+            if (aiConfigs?.length) {
+              const ai = rowToAIConfig(aiConfigs[0]);
+              patch.aiMode = ai.mode;
+              patch.aiModels = ai.models;
+            }
+
+            if (Object.keys(patch).length > 0) {
+              useAppStore.setState(patch as PartialMobileStore);
+            }
+          } catch (err) {
+            console.error('[rehydrate] SQLite entity load error:', err);
           }
-          if (changed) {
-            const merged = Array.from(storeMap.values()).sort((a, b) => b.timestamp - a.timestamp);
-            useAppStore.setState({ foodLog: merged });
-          }
-        }).catch(err => console.error('[rehydrate] food load error:', err));
+        }).catch(err => console.error('[rehydrate] database open error:', err));
 
         // Clean up expired recycle bin items
         useAppStore.getState().cleanupRecycleBin();
-
-        // Load AI config from SQLite into store
-        openDatabase().then(async db => {
-          try {
-            const row = await db.getFirstAsync<{ mode: string; models: string }>(
-              "SELECT mode, models FROM ai_configs WHERE config_id = 'self' AND deleted = 0"
-            );
-            if (row) {
-              let models: any[] = [];
-              try { models = JSON.parse(row.models); } catch {}
-              useAppStore.setState({ aiMode: row.mode as AIMode, aiModels: models });
-            }
-          } catch {}
-        }).catch(() => {});
       },
     }
   )

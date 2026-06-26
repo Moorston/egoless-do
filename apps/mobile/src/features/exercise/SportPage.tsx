@@ -72,6 +72,7 @@ export default function SportPage() {
 
   // ── 实时会话管理 ──
   const sessionIdRef = useRef<string | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [insight, setInsight] = useState('');
   const { resolveGoal } = useGoalResolver();
 
@@ -104,8 +105,8 @@ export default function SportPage() {
     setInsight(text);
     if (sessionIdRef.current) {
       // debounce: 只在停止输入 1s 后更新
-      clearTimeout((handleInsightChange as any)._timer);
-      (handleInsightChange as any)._timer = setTimeout(() => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => {
         updateSession(sessionIdRef.current!, { insight: text });
       }, 1000);
     }

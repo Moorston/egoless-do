@@ -123,7 +123,7 @@ export const zhHant: I18nKeys = {
   tagDelete:'刪除標籤', tagDeleteConfirm:'確定刪除該標籤？', tagUsedBy:'該標籤被 {count} 條感念使用，刪除後仍可通過過濾欄檢索這些感念。',
   moodDelete:'刪除心情', moodDeleteConfirm:'確定刪除該心情？', moodUsedBy:'該心情被 {count} 條感念使用，刪除後仍可通過過濾欄檢索這些感念。',
   showDeletedTags:'顯示已刪除標籤', hideDeletedTags:'隱藏已刪除標籤',
-  reflEditTitle:'編輯感念', reflSaveEdit:'保存修改', reflShare:'分享感念', reflDelete:'刪除感念', reflBack:'返回',
+  reflEditTitle:'編輯', reflSaveEdit:'保存修改', reflShare:'分享', reflDelete:'刪除', reflBack:'返回',
   tagSectionPreset:'預設標籤', tagSectionCustom:'自定義標籤', tagSectionHabit:'習慣標籤',
   moodSectionPreset:'預設心情', moodSectionCustom:'自定義心情',
   moveToTop:'移至頂部',

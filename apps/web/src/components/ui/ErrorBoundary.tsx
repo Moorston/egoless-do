@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Component } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import { t, FONT_CLOSE } from '@egoless-do/core';
 import { useWebStore } from '../../store/useWebStore';
 import { AlertTriangle } from 'lucide-react';
@@ -21,6 +22,7 @@ export class ErrorBoundaryInner extends Component<
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error('ErrorBoundary caught:', error, info);
+    Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
   }
 
   render() {

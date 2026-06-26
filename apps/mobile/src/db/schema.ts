@@ -128,9 +128,20 @@ CREATE TABLE IF NOT EXISTS sync_queue (
   entity_id  TEXT NOT NULL,
   operation  TEXT NOT NULL CHECK(operation IN ('upsert','delete')),
   payload    TEXT NOT NULL,
-  created_at INTEGER NOT NULL
+  created_at INTEGER NOT NULL,
+  retry_count INTEGER NOT NULL DEFAULT 0,
+  last_error  TEXT,
+  status      TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','syncing','failed','conflict')),
+  next_retry_at INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id);
+
+CREATE TABLE IF NOT EXISTS sync_metadata (
+  entity               TEXT PRIMARY KEY,
+  last_sync_timestamp  TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z',
+  last_sync_status     TEXT DEFAULT 'success',
+  updated_at           TEXT DEFAULT (datetime('now'))
+);
 
 CREATE TABLE IF NOT EXISTS meditation_history (
   date       TEXT PRIMARY KEY,
@@ -343,7 +354,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   // Add health_synced column to exercise_entries for HealthKit/Health Connect tracking
   await tryAddCol('exercise_entries', 'health_synced', 'INTEGER NOT NULL DEFAULT 0');
 
-  // Ensure sync_queue table exists
+  // Ensure sync_queue table exists with retry/status fields
   const syncQueueCheck = await db.getFirstAsync<{ name: string }>(
     "SELECT name FROM sqlite_master WHERE type='table' AND name='sync_queue'"
   );
@@ -351,9 +362,45 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync(`CREATE TABLE IF NOT EXISTS sync_queue (
       id INTEGER PRIMARY KEY AUTOINCREMENT, entity TEXT NOT NULL, entity_id TEXT NOT NULL,
       operation TEXT NOT NULL CHECK(operation IN ('upsert','delete')),
-      payload TEXT NOT NULL, created_at INTEGER NOT NULL
+      payload TEXT NOT NULL, created_at INTEGER NOT NULL,
+      retry_count INTEGER NOT NULL DEFAULT 0, last_error TEXT,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','syncing','failed','conflict')),
+      next_retry_at INTEGER NOT NULL DEFAULT 0
     )`);
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)');
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
+  } else {
+    // Migrate existing sync_queue: check each column by pragma before adding
+    const sqCols = await db.getAllAsync<{ name: string }>(
+      "PRAGMA table_info(sync_queue)"
+    );
+    const sqColNames = new Set(sqCols.map(c => c.name));
+    if (!sqColNames.has('retry_count')) {
+      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0");
+    }
+    if (!sqColNames.has('last_error')) {
+      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN last_error TEXT");
+    }
+    if (!sqColNames.has('status')) {
+      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN status TEXT NOT NULL DEFAULT 'pending'");
+    }
+    if (!sqColNames.has('next_retry_at')) {
+      await db.execAsync("ALTER TABLE sync_queue ADD COLUMN next_retry_at INTEGER NOT NULL DEFAULT 0");
+    }
+    try {
+      await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
+    } catch {}
+  }
+
+  // Ensure sync_metadata table exists
+  const syncMetaCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='sync_metadata'"
+  );
+  if (!syncMetaCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS sync_metadata (
+      entity TEXT PRIMARY KEY, last_sync_timestamp TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z',
+      last_sync_status TEXT DEFAULT 'success', updated_at TEXT DEFAULT (datetime('now'))
+    )`);
   }
 
   // Ensure meditation_history table exists

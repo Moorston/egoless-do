@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore } from '../../store/useAppStore';
 import {
   Card, useTheme, PrimaryButton, OutlineButton, Toggle,
@@ -45,7 +47,7 @@ export default function HabitsScreen() {
   const P     = TH.primary;
   const store = useAppStore();
   const T     = useT();
-  const nav   = useNavigation();
+  const nav   = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [filter, setFilter]     = useState('all');
   const [showAdd, setShowAdd]   = useState(false);
@@ -367,7 +369,7 @@ export default function HabitsScreen() {
             {/* View Detail */}
             <TouchableOpacity onPress={() => {
               if (actionMenuHabit) {
-                (nav as any).navigate('HabitDetail', { habitId: actionMenuHabit.id });
+                nav.navigate('HabitDetail', { habitId: actionMenuHabit.id });
               }
               setActionMenuHabit(null);
             }}

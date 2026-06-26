@@ -54,7 +54,8 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-localization"
+      "expo-localization",
+      "sentry-expo"
     ],
     "extra": {
       "eas": {

@@ -72,8 +72,11 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
       // Capture affected IDs BEFORE set() to keep updater pure
       const affectedReflectionIds = trail.reflectionIds;
       const notesToDelete = (get().trailNotes ?? []).filter(n => n.trailId === id && !n.deleted);
+      const affectedPlanItemIds = (get().planItems ?? [])
+        .filter(i => !i.deleted && i.trailId === id)
+        .map(i => i.id);
 
-      // Atomic: unlink reflections + cascade delete notes + delete trail in one set()
+      // Atomic: unlink reflections + cascade delete notes + unlink planItems + delete trail in one set()
       set(s => ({
         reflections: (s.reflections ?? []).map(r => {
           if (affectedReflectionIds.includes(r.id) && !r.deleted) {
@@ -87,16 +90,24 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         }),
         trailNotes: (s.trailNotes ?? []).map(n => n.trailId === id && !n.deleted ? { ...n, deleted: true, updatedAt: now } : n),
         thoughtTrails: (s.thoughtTrails ?? []).map(t => t.id === id ? { ...t, deleted: true, updatedAt: now } : t),
+        planItems: (s.planItems ?? []).map(i =>
+          i.trailId === id && !i.deleted ? { ...i, trailId: undefined, updatedAt: now } : i,
+        ),
       }));
 
       for (const rid of affectedReflectionIds) {
         const r = get().reflections.find(x => x.id === rid && !x.deleted);
         if (r) adapter?.persistChange('reflection', rid, r).catch(console.error);
       }
-      for (const note of notesToDelete) {
-        adapter?.markDeleted('trailNote', note.id).catch(console.error);
+      // Atomic batch delete: trail notes + trail in one transaction
+      adapter?.batchDelete([
+        ...notesToDelete.map(n => ({ entity: 'trailNote' as const, id: n.id })),
+        { entity: 'thoughtTrail', id },
+      ]).catch(console.error);
+      for (const itemId of affectedPlanItemIds) {
+        const item = get().planItems.find(x => x.id === itemId && !x.deleted);
+        if (item) adapter?.persistChange('planItem', itemId, item).catch(console.error);
       }
-      adapter?.markDeleted('thoughtTrail', id).catch(console.error);
     },
 
     addReflectionToTrail: (trailId, reflectionId) => {

@@ -1,6 +1,6 @@
 /**
  * 活跃会话列表 Hook
- * 初始加载 + SSE 订阅 + 客户端超时过滤
+ * 初始加载 + PocketBase SSE 订阅 + 客户端超时过滤
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
@@ -8,6 +8,9 @@ import { ActiveSession, CheckinType } from '../types/globalPulse';
 import {
   getActiveSessions,
   subscribeSessions,
+  getConnectionState,
+  onConnectionStateChange,
+  type ConnectionState,
 } from '../services/activeSessionApi';
 import { useAppStore } from '../../../store/useAppStore';
 
@@ -24,12 +27,14 @@ interface UseActiveSessionsResult {
   sessions: ActiveSession[];
   onlineCount: OnlineCount;
   isLoading: boolean;
+  connectionState: ConnectionState;
   refresh: () => void;
 }
 
 export function useActiveSessions(type?: CheckinType): UseActiveSessionsResult {
   const [sessions, setSessions] = useState<ActiveSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [connectionState, setConnectionState] = useState<ConnectionState>(getConnectionState());
   const currentUserHash = useAppStore(s => s.auth.user?.id || '');
   const mountedRef = useRef(true);
 
@@ -76,6 +81,16 @@ export function useActiveSessions(type?: CheckinType): UseActiveSessionsResult {
     };
   }, [type, refresh]);
 
+  // 监听连接状态变化
+  useEffect(() => {
+    const unsub = onConnectionStateChange(state => {
+      if (mountedRef.current) {
+        setConnectionState(state);
+      }
+    });
+    return unsub;
+  }, []);
+
   // 客户端超时过滤（每 5s 检查一次）
   useEffect(() => {
     const interval = setInterval(() => {
@@ -116,6 +131,7 @@ export function useActiveSessions(type?: CheckinType): UseActiveSessionsResult {
     sessions: sortedSessions,
     onlineCount,
     isLoading,
+    connectionState,
     refresh,
   };
 }

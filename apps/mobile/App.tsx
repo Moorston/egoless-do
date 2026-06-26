@@ -1,11 +1,13 @@
 // ─── App entry point ──────────────────────────────────────────────
+import './src/sentry';
 import './src/i18n';
 import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as Sentry from 'sentry-expo';
 import AppNavigator from './src/navigation';
-import { AudioEngineProvider } from './src/features/music/AudioEngineProvider';
+import { AudioEngineProvider } from './src/features/music';
 import SplashScreen from './src/features/splash/SplashScreen';
 
 const AMAP_KEY = Platform.select({
@@ -27,12 +29,14 @@ export default function App() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <AudioEngineProvider>
-          <AppNavigator />
-        </AudioEngineProvider>
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <Sentry.ErrorBoundary>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <AudioEngineProvider>
+            <AppNavigator />
+          </AudioEngineProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
+    </Sentry.ErrorBoundary>
   );
 }

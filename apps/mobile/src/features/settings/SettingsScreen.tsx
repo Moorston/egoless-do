@@ -17,7 +17,7 @@ import {
   Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
   Check, X, ChevronRight, Scale, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload,   History, Info, Lock, ClipboardList,
-  Music, Brain, Dumbbell, Timer, Map,
+  Music, Brain, Dumbbell, Timer,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import {
@@ -265,61 +265,6 @@ export default function SettingsScreen() {
               }
             } catch (e) { console.error('[Settings] Health sync toggle error:', e); }
           }} />,
-          last: true,
-        },
-      ],
-    },
-    {
-      title: T('settingsGlobalPulse') || '全球脉动',
-      rows: [
-        {
-          label: T('settingsShowOnMap') || '显示在全球地图',
-          sub: T('settingsShowOnMapDesc') || '匿名分享你的打卡位置',
-          icon: <Map size={20} color={P} />,
-          right: <Toggle on={store.showOnGlobalMap ?? true} onChange={() => {
-            const next = !(store.showOnGlobalMap ?? true);
-            store.setShowOnGlobalMap?.(next);
-            if (!next) {
-              Alert.alert(
-                T('settingsOptOutTitle') || '退出全球地图',
-                T('settingsOptOutMessage') || '退出后，你的位置将不再显示在全球地图上。',
-                [
-                  { text: T('cancel') || '取消', style: 'cancel' },
-                  { text: T('confirm') || '确认', onPress: () => {} }
-                ]
-              );
-            }
-          }} />,
-        },
-        {
-          label: T('settingsDeleteGlobalData') || '删除全球地图数据',
-          sub: T('settingsDeleteGlobalDataDesc') || '从全球地图上移除你的所有数据',
-          icon: <Trash2 size={20} color="#EF4444" />,
-          right: <ChevronRight size={18} color={TH.sub} />,
-          onPress: () => {
-            Alert.alert(
-              T('settingsDeleteConfirmTitle') || '删除确认',
-              T('settingsDeleteConfirmMessage') || '确定要删除你的全球地图数据吗？此操作不可撤销。',
-              [
-                { text: T('cancel') || '取消', style: 'cancel' },
-                {
-                  text: T('delete') || '删除',
-                  style: 'destructive',
-                  onPress: async () => {
-                    try {
-                      const { deleteGlobalData } = await import('../global-pulse/services/globalPulseApi');
-                      const result = await deleteGlobalData();
-                      if (result.success) {
-                        Alert.alert(T('success') || '成功', T('settingsDeleteSuccess') || '数据已删除');
-                      }
-                    } catch (e) {
-                      console.error('[Settings] Delete global data error:', e);
-                    }
-                  }
-                }
-              ]
-            );
-          },
           last: true,
         },
       ],

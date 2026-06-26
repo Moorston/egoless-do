@@ -35,6 +35,9 @@ apps/web/data/
 *.db-shm
 *.db-wal
 
+# Backups
+backups/
+
 # CI / coverage
 coverage/
 

@@ -37,8 +37,8 @@ export function createMobileUiSlice(
     healthSyncEnabled: false,
     todaySteps: null,
 
-    setHealthSyncEnabled(v: boolean) { set({ healthSyncEnabled: v } as any); onSettingsPersist?.(); },
-    setTodaySteps(n: number) { set({ todaySteps: n } as any); },
+    setHealthSyncEnabled(v: boolean) { set({ healthSyncEnabled: v } as Partial<FullStore>); onSettingsPersist?.(); },
+    setTodaySteps(n: number) { set({ todaySteps: n } as Partial<FullStore>); },
 
     syncWeightFromHealth(weight: number) {
       const s = get();
@@ -48,7 +48,7 @@ export function createMobileUiSlice(
         checkinHistory: result.history,
         streak: result.streak,
         userProfile: updatedProfile,
-      } as any);
+      } as Partial<FullStore>);
       const entry = result.history[0];
       if (entry) adapter.persistChange('checkin', entry.date, entry).catch(console.error);
       adapter.persistChange('profile', 'self', updatedProfile).catch(console.error);
@@ -56,7 +56,7 @@ export function createMobileUiSlice(
 
     resetData() {
       const { auth, theme, language } = get();
-      set(createResetDataPatch(auth, theme, language) as any);
+      set(createResetDataPatch(auth, theme, language) as Partial<FullStore>);
       onReset?.();
     },
   });

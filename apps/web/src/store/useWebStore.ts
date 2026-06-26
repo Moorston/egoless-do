@@ -21,6 +21,7 @@ setApiBase('');
 const noopAdapter = {
   persistChange: async () => {},
   markDeleted: async () => {},
+  batchDelete: async () => {},
 };
 
 export type WebStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice

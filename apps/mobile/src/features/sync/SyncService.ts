@@ -1,8 +1,16 @@
 // ─── Mobile Sync Service ──────────────────────────────────────────
 // Pushes queued local changes to the server, then pulls server changes.
 import { openDatabase, getState, setState } from '../../db/schema';
-import { drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems } from '../../db/syncQueue';
-import { apiSyncPush, apiSyncPull, apiSyncCheck } from '@egoless-do/core';
+import {
+  drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems,
+  markQueueItemFailed, markQueueItemConflict, markQueueItemRetry, resetAllPendingForRetry,
+  getLastSyncTimestamp, setLastSyncTimestamp,
+  type SyncQueueItem,
+} from '../../db/syncQueue';
+import { apiSyncPush, apiSyncPull, apiSyncCheck, createLogger } from '@egoless-do/core';
+import NetInfo from '@react-native-community/netinfo';
+
+const log = createLogger('Sync');
 
 let _syncing = false;
 let _syncingSince = 0;
@@ -87,6 +95,36 @@ export function setLastSyncAt(ts: number) {
   _lastSyncAt = ts;
 }
 
+// ── Exponential backoff ───────────────────────────────────────────
+const MAX_RETRY_ATTEMPTS = 5;
+
+function getBackoffDelay(attempt: number): number {
+  return Math.min(Math.pow(2, attempt) * 1000, 60000);
+}
+
+// ── Network recovery listener ────────────────────────────────────
+let _netInfoUnsubscribe: (() => void) | null = null;
+
+export function startNetworkRecoveryListener(): void {
+  if (_netInfoUnsubscribe) return;
+  _netInfoUnsubscribe = NetInfo.addEventListener(state => {
+    if (state.isConnected && state.isInternetReachable) {
+      // Network recovered — reset failed items and trigger sync
+      resetAllPendingForRetry().then(count => {
+        if (count > 0) {
+          console.log(`[Sync] Network recovered, resetting ${count} failed items for retry`);
+          runSync();
+        }
+      }).catch(() => {});
+    }
+  });
+}
+
+export function stopNetworkRecoveryListener(): void {
+  _netInfoUnsubscribe?.();
+  _netInfoUnsubscribe = null;
+}
+
 // ── Real-time sync (short polling for React Native) ──────────────
 
 export function connectRealtime(): void {
@@ -95,6 +133,7 @@ export function connectRealtime(): void {
 
   disconnectRealtime();
   pollForChanges(token);
+  startNetworkRecoveryListener();
 
   _pollTimer = setInterval(() => {
     const currentToken = _tokenProvider?.();
@@ -109,6 +148,7 @@ export function disconnectRealtime(): void {
     clearInterval(_pollTimer);
     _pollTimer = null;
   }
+  stopNetworkRecoveryListener();
 }
 
 export function onRealtimeEvent(listener: (event: any) => void): () => void {
@@ -178,19 +218,6 @@ async function unmarkDeleted(entity: string, ids: string[]) {
 
 // ── Pull server changes & upsert into local DB (generic) ─────────
 
-async function isLocalNewer(
-  db: Awaited<ReturnType<typeof openDatabase>>,
-  table: string, pk: string, id: string, serverUpdatedAt: unknown
-): Promise<boolean> {
-  const serverTs = Number(serverUpdatedAt ?? 0);
-  if (!serverTs) return false;
-  const local = await db.getFirstAsync<{ updated_at: number | null }>(
-    `SELECT updated_at FROM ${table} WHERE ${pk} = ?`, [id]
-  );
-  if (!local) return false;
-  return (local.updated_at ?? 0) > serverTs;
-}
-
 /** Extract entity ID from server payload, trying both snake_case and camelCase variants. */
 function resolveEntityId(r: Record<string, unknown>, pk: string, fallback?: string): string | undefined {
   const val = r[pk] ?? r.id ?? r.date;
@@ -240,6 +267,15 @@ async function applyEntityToTable(
   const dead = records.filter(r => r.deleted);
   const applied: unknown[] = [];
 
+  // Bulk preload local metadata for conflict resolution (replaces 2N per-record queries)
+  const localMetaRows = await db.getAllAsync<{ pk_val: string; updated_at: number | null; deleted: number | null }>(
+    `SELECT ${pk} as pk_val, updated_at, deleted FROM ${table}`
+  );
+  const localMeta = new Map<string, { updated_at: number; deleted: number }>();
+  for (const row of localMetaRows) {
+    localMeta.set(row.pk_val, { updated_at: row.updated_at ?? 0, deleted: row.deleted ?? 0 });
+  }
+
   for (const r of alive) {
     try {
       if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
@@ -248,13 +284,17 @@ async function applyEntityToTable(
       if (!id) continue;
       if (deletedIds?.has(id)) {
         await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
+        localMeta.set(id, { updated_at: localMeta.get(id)?.updated_at ?? 0, deleted: 1 });
         continue;
       }
-      if (await isLocalDeleted(db, table, pk, id)) {
+
+      const local = localMeta.get(id);
+      const serverTs = Number(r.updatedAt ?? 0);
+
+      if (local?.deleted === 1) {
         // Local is deleted — only skip if local is newer (local delete wins).
-        // If server is newer, apply it to allow un-delete from other devices.
-        if (await isLocalNewer(db, table, pk, id, r.updatedAt)) continue;
-      } else if (await isLocalNewer(db, table, pk, id, r.updatedAt)) {
+        if (local.updated_at > serverTs) continue;
+      } else if (local && local.updated_at > serverTs) {
         continue;
       }
 
@@ -273,11 +313,12 @@ async function applyEntityToTable(
 
       // Use UPDATE+INSERT instead of INSERT OR REPLACE to preserve local-only columns
       // (e.g. exercise.health_synced, plan_items.reflection_id)
+      // Reset deleted=0 when server has a newer alive version (fixes ghost deletion after cross-device edit)
       const columns = Object.keys(row);
       const setClause = columns.map(c => `${c}=?`).join(',');
       const values = Object.values(row);
       const result = await db.runAsync(
-        `UPDATE ${table} SET ${setClause},synced=1 WHERE ${pk}=?`,
+        `UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`,
         [...values, id],
       );
       if (result.changes === 0) {
@@ -291,7 +332,7 @@ async function applyEntityToTable(
           // Race condition: concurrent sync inserted the row between UPDATE and INSERT
           if (insertErr?.message?.includes('UNIQUE constraint')) {
             await db.runAsync(
-              `UPDATE ${table} SET ${setClause},synced=1 WHERE ${pk}=?`,
+              `UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`,
               [...values, id],
             );
           } else {
@@ -299,6 +340,8 @@ async function applyEntityToTable(
           }
         }
       }
+      // Update local meta map so subsequent records for same id see the new state
+      localMeta.set(id, { updated_at: Number(r.updatedAt ?? 0), deleted: 0 });
       applied.push(processedRecord);
     } catch (e) {
       console.error(`[Sync] Failed to apply ${entity} record:`, e);
@@ -310,15 +353,19 @@ async function applyEntityToTable(
       if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
       const id = resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
       if (id) {
-        if (!(await isLocalNewer(db, table, pk, id, r.updatedAt))) {
+        const local = localMeta.get(id);
+        const serverTs = Number(r.updatedAt ?? 0);
+        if (!(local && local.updated_at > serverTs)) {
           await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
           _hasSyncedDeletes = true;
-          // Cascade plan deletion to child entities
+          // Cascade plan deletion to child entities (transactional)
           if (entity === 'plan') {
-            await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-            await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
-            await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-            await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+            await db.withTransactionAsync(async () => {
+              await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+              await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
+              await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+              await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+            });
           }
         }
       }
@@ -582,6 +629,7 @@ export async function runSync(): Promise<void> {
   const { signal } = _abortController;
   const myGeneration = ++_syncGeneration;
   console.log('[Sync] Starting sync...');
+  log.info('Starting sync');
 
   // Prune stale queue items (>30 days old) to prevent unbounded growth
   pruneStaleQueueItems().catch(e => console.error('[Sync] pruneStaleQueueItems error:', e));
@@ -613,7 +661,24 @@ export async function runSync(): Promise<void> {
       if (corruptIds.length) await removeQueueItems(corruptIds);
       if (!changes.length) continue;
 
-      const pushResult = await apiSyncPush(token, _lastSyncAt, changes);
+      let pushResult: any;
+      try {
+        pushResult = await apiSyncPush(token, _lastSyncAt, changes);
+      } catch (pushErr: any) {
+        // Network or server error — apply exponential backoff
+        console.error('[Sync] Push request failed:', pushErr);
+      log.error(pushErr, { phase: 'push' });
+        for (const item of items) {
+          const newAttempt = item.retry_count + 1;
+          if (newAttempt >= MAX_RETRY_ATTEMPTS) {
+            await markQueueItemFailed(item.id, pushErr?.message || 'Push request failed');
+          } else {
+            const delay = getBackoffDelay(newAttempt);
+            await markQueueItemRetry(item.id, newAttempt, Date.now() + delay);
+          }
+        }
+        continue;
+      }
 
       // Build set of rejected entity+id pairs (before removing from queue)
       const rejectedSet = new Set<string>();
@@ -625,13 +690,24 @@ export async function runSync(): Promise<void> {
         }
       }
 
-      // Remove all pushed items from queue (accepted + rejected)
-      await removeQueueItems(items.map(i => i.id));
+      // Separate accepted and rejected items
+      const acceptedItems = items.filter(i => !rejectedSet.has(`${i.entity}:${i.entity_id}`));
+      const rejectedItems = items.filter(i => rejectedSet.has(`${i.entity}:${i.entity_id}`));
 
-      // Mark pushed records as synced / cleanup deleted
+      // Remove accepted items from queue
+      if (acceptedItems.length) {
+        await removeQueueItems(acceptedItems.map(i => i.id));
+      }
+
+      // Mark rejected items as conflict (server rejected the data)
+      for (const item of rejectedItems) {
+        await markQueueItemConflict(item.id, 'Server rejected this change');
+      }
+
+      // Mark pushed records as synced / cleanup deleted (only accepted items)
       const upserted: Record<string, string[]> = {};
       const deleted: Record<string, string[]> = {};
-      for (const item of items) {
+      for (const item of acceptedItems) {
         if (item.operation === 'delete') {
           (deleted[item.entity] ??= []).push(item.entity_id);
         } else {
@@ -640,15 +716,10 @@ export async function runSync(): Promise<void> {
       }
 
       for (const [entity, ids] of Object.entries(upserted)) {
-        const acceptedIds = ids.filter(id => !rejectedSet.has(`${entity}:${id}`));
-        if (acceptedIds.length) await markSynced(entity, acceptedIds);
+        if (ids.length) await markSynced(entity, ids);
       }
       for (const [entity, ids] of Object.entries(deleted)) {
-        const acceptedIds = ids.filter(id => !rejectedSet.has(`${entity}:${id}`));
-        if (acceptedIds.length) await cleanupDeleted(entity, acceptedIds);
-        // Un-mark rejected deletes so the server's non-deleted version can be applied on next pull
-        const rejectedIds = ids.filter(id => rejectedSet.has(`${entity}:${id}`));
-        if (rejectedIds.length) await unmarkDeleted(entity, rejectedIds);
+        if (ids.length) await cleanupDeleted(entity, ids);
       }
 
       // Apply server changes returned by push (includes server's conflict resolution)
@@ -682,13 +753,29 @@ export async function runSync(): Promise<void> {
       console.log('[Sync] Push complete');
     }
 
-    // 2. Pull server changes
+    // 2. Pull server changes (delta sync with per-entity timestamps)
     if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
+
+    // Collect per-entity last sync timestamps for delta pull
+    const entityTimestamps: Record<string, string> = {};
+    for (const entity of Object.keys(ENTITY_CONFIG)) {
+      entityTimestamps[entity] = await getLastSyncTimestamp(entity);
+    }
+
     const pullResult = await apiSyncPull(token);
     if (pullResult.data && Object.keys(pullResult.data).length > 0) {
       const deletedIds = _deletedIdsProvider?.();
       const patch = await applyServerChanges(pullResult.data, deletedIds, signal);
       if (Object.keys(patch).length) _onChanges?.(patch);
+
+      // Update per-entity sync timestamps based on applied records
+      const serverTime = pullResult.serverTime;
+      const serverTimeIso = serverTime ? new Date(serverTime).toISOString() : new Date().toISOString();
+      for (const entity of Object.keys(pullResult.data)) {
+        if (pullResult.data[entity]?.length > 0) {
+          await setLastSyncTimestamp(entity, serverTimeIso);
+        }
+      }
     }
 
     if (_syncGeneration === myGeneration) {
@@ -705,6 +792,7 @@ export async function runSync(): Promise<void> {
       console.warn('[Sync] Aborted (timed out)');
     } else {
       console.error('[Sync] Error:', err);
+      log.error(err, { phase: 'sync' });
     }
   } finally {
     // Only reset if this is still the current sync (not a stale timed-out call)
@@ -741,6 +829,7 @@ export async function resetSyncState(): Promise<void> {
     const db = await openDatabase();
     await setState(db, 'lastSyncAt', '0');
     await db.runAsync('DELETE FROM sync_queue');
+    await db.runAsync('DELETE FROM sync_metadata');
     // Clear all entity tables to prevent stale data contaminating next user
     const tables = Object.values(ENTITY_CONFIG).map(c => c.table);
     for (const table of new Set(tables)) {

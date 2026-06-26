@@ -158,7 +158,7 @@ export async function getCheckins(params?: {
     };
   }
 
-  return result as any;
+  return result as ApiResponse<{ checkins: GlobalCheckin[]; total: number; has_more: boolean }>;
 }
 
 /**
@@ -183,52 +183,34 @@ export async function getGlobalStats(): Promise<ApiResponse<GlobalStats>> {
 }
 
 /**
- * 获取排行榜
+ * 获取排行榜（从 leaderboard 集合，服务端维护）
  */
 export async function getLeaderboard(params?: {
   sort?: LeaderboardSort;
   limit?: number;
   type?: string;
 }): Promise<ApiResponse<{ leaderboard: LeaderboardEntry[]; user_rank?: number }>> {
-  // PocketBase 不直接支持 GROUP BY，需要获取所有记录后在客户端排序
-  const sortField = params?.sort === 'total_days' ? 'total_days' : 'streak';
+  const sortField = params?.sort === 'total_days' ? 'total_days' : 'best_streak';
   const limit = params?.limit || 100;
-
-  const filters: string[] = ['opted_out != true'];
-  if (params?.type) {
-    filters.push(`type = "${params.type}"`);
-  }
 
   const queryParams = new URLSearchParams();
   queryParams.set('sort', `-${sortField}`);
   queryParams.set('perPage', limit.toString());
-  queryParams.set('filter', filters.join(' && '));
 
   const result = await pbRequest<any>(
-    `/api/collections/${CHECKINS_COLLECTION}/records?${queryParams.toString()}`
+    `/api/collections/leaderboard/records?${queryParams.toString()}`
   );
 
   if (result.success && result.data) {
-    // 按 user_hash 去重，保留最新的记录
-    const seen = new Set<string>();
-    const uniqueCheckins: any[] = [];
-
-    for (const item of result.data.items || []) {
-      if (!seen.has(item.user_hash)) {
-        seen.add(item.user_hash);
-        uniqueCheckins.push(item);
-      }
-    }
-
-    const leaderboard: LeaderboardEntry[] = uniqueCheckins.map((item: any, index: number) => ({
+    const leaderboard: LeaderboardEntry[] = (result.data.items || []).map((item: any, index: number) => ({
       rank: index + 1,
       user_hash: item.user_hash,
-      lat: Number(item.lat),
-      lng: Number(item.lng),
-      streak: Number(item.streak),
+      lat: 0,
+      lng: 0,
+      streak: Number(item.best_streak),
       total_days: Number(item.total_days),
-      type: item.type,
-      created_at: item.created_at
+      type: '',
+      created_at: item.last_active_at
     }));
 
     return {
@@ -237,99 +219,52 @@ export async function getLeaderboard(params?: {
     };
   }
 
-  return result as any;
+  return result as ApiResponse<{ leaderboard: LeaderboardEntry[]; user_rank?: number }>;
 }
 
 /**
  * 退出全球地图
  */
 export async function optOut(userHash: string): Promise<ApiResponse<{ message: string }>> {
-  try {
-    // 获取用户的所有记录
-    const filter = encodeURIComponent(`user_hash = "${userHash}"`);
-    const listResult = await pbRequest<any>(
-      `/api/collections/${CHECKINS_COLLECTION}/records?filter=${filter}&perPage=500`
-    );
+  const result = await pbRequest<any>('/api/global-pulse/opt-out', {
+    method: 'POST',
+    body: JSON.stringify({ user_hash: userHash }),
+  });
 
-    if (!listResult.success || !listResult.data?.items) {
-      return { success: false, error: { code: 'FETCH_FAILED', message: '获取记录失败' } };
-    }
-
-    // 批量更新 opted_out 字段
-    const updatePromises = listResult.data.items.map((item: any) =>
-      pbRequest(`/api/collections/${CHECKINS_COLLECTION}/records/${item.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ opted_out: true }),
-      })
-    );
-
-    await Promise.all(updatePromises);
-
+  if (result.success) {
     return { success: true, data: { message: '已退出全球地图' } };
-  } catch (error) {
-    return { success: false, error: { code: 'OPT_OUT_FAILED', message: '退出失败' } };
   }
+  return { success: false, error: { code: 'OPT_OUT_FAILED', message: '退出失败' } };
 }
 
 /**
  * 重新加入全球地图
  */
 export async function optIn(userHash: string): Promise<ApiResponse<{ message: string }>> {
-  try {
-    // 获取用户的所有记录
-    const filter = encodeURIComponent(`user_hash = "${userHash}"`);
-    const listResult = await pbRequest<any>(
-      `/api/collections/${CHECKINS_COLLECTION}/records?filter=${filter}&perPage=500`
-    );
+  const result = await pbRequest<any>('/api/global-pulse/opt-in', {
+    method: 'POST',
+    body: JSON.stringify({ user_hash: userHash }),
+  });
 
-    if (!listResult.success || !listResult.data?.items) {
-      return { success: false, error: { code: 'FETCH_FAILED', message: '获取记录失败' } };
-    }
-
-    // 批量更新 opted_out 字段
-    const updatePromises = listResult.data.items.map((item: any) =>
-      pbRequest(`/api/collections/${CHECKINS_COLLECTION}/records/${item.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ opted_out: false }),
-      })
-    );
-
-    await Promise.all(updatePromises);
-
+  if (result.success) {
     return { success: true, data: { message: '已重新加入全球地图' } };
-  } catch (error) {
-    return { success: false, error: { code: 'OPT_IN_FAILED', message: '重新加入失败' } };
   }
+  return { success: false, error: { code: 'OPT_IN_FAILED', message: '重新加入失败' } };
 }
 
 /**
  * 删除全球数据
  */
 export async function deleteGlobalData(userHash: string): Promise<ApiResponse<{ message: string }>> {
-  try {
-    // 获取用户的所有记录
-    const filter = encodeURIComponent(`user_hash = "${userHash}"`);
-    const listResult = await pbRequest<any>(
-      `/api/collections/${CHECKINS_COLLECTION}/records?filter=${filter}&perPage=500`
-    );
+  const result = await pbRequest<any>('/api/global-pulse/delete-data', {
+    method: 'POST',
+    body: JSON.stringify({ user_hash: userHash }),
+  });
 
-    if (!listResult.success || !listResult.data?.items) {
-      return { success: false, error: { code: 'FETCH_FAILED', message: '获取记录失败' } };
-    }
-
-    // 批量删除记录
-    const deletePromises = listResult.data.items.map((item: any) =>
-      pbRequest(`/api/collections/${CHECKINS_COLLECTION}/records/${item.id}`, {
-        method: 'DELETE',
-      })
-    );
-
-    await Promise.all(deletePromises);
-
+  if (result.success) {
     return { success: true, data: { message: '已删除全球数据' } };
-  } catch (error) {
-    return { success: false, error: { code: 'DELETE_FAILED', message: '删除失败' } };
   }
+  return { success: false, error: { code: 'DELETE_FAILED', message: '删除失败' } };
 }
 
 /**

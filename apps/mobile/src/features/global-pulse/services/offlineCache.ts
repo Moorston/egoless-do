@@ -4,7 +4,7 @@
  */
 
 import * as SQLite from 'expo-sqlite';
-import { GlobalCheckin, GlobalStats } from '../types/globalPulse';
+import { GlobalCheckin, GlobalStats, CheckinType } from '../types/globalPulse';
 
 // 数据库名称
 const DB_NAME = 'global_pulse.db';
@@ -185,7 +185,7 @@ export async function getCachedCheckins(limit: number = 1000): Promise<GlobalChe
     user_hash: row.user_hash,
     lat: row.lat,
     lng: row.lng,
-    type: row.type as any,
+    type: row.type as CheckinType,
     streak: row.streak,
     total_days: row.total_days,
     created_at: new Date(row.created_at).toISOString()

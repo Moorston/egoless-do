@@ -91,7 +91,7 @@ export const ENTITY_TABLE_MAP: Record<SyncEntity, EntityConfig> = {
   profile: {
     table: 'user_profiles', pk: 'profile_id',
     toRow: (d) => {
-      const { profileId, data, ...rest } = d as any;
+      const { profileId, data, ...rest } = d as Record<string, unknown>;
       return {
         profile_id: profileId ?? 'self',
         data: typeof data === 'string' ? data : JSON.stringify(rest),

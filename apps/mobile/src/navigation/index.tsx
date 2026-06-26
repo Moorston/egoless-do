@@ -18,38 +18,40 @@ import StarfieldBackground from '../components/StarfieldBackground';
 import SimpleHeaderComponent from './SimpleHeader';
 
 // Tab screens
-import HomeScreen       from '../features/home/HomeScreen';
+import HomeScreen       from '../features/home/screens/HomeScreen';
 import FastingScreen    from '../features/fasting/FastingScreen';
 import MeditationScreen from '../features/meditation/MeditationScreen';
 import ExerciseScreen   from '../features/exercise/ExerciseScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
 
-// Stack screens
-import ReflectionsScreen from '../features/reflections/ReflectionsScreen';
-import ReflectionStatsScreen from '../features/reflections/ReflectionStatsScreen';
-import MindTrailScreen from '../features/reflections/MindTrailScreen';
-import ThoughtTrailDetailScreen from '../features/reflections/ThoughtTrailDetailScreen';
-import QuickCreateTrailScreen from '../features/reflections/QuickCreateTrailScreen';
-import ReflectionDetailScreen from '../features/reflections/ReflectionDetailScreen';
-import InsightScreen from '../features/reflections/InsightScreen';
-import ReviewScreen from '../features/reflections/ReviewScreen';
-import StrategyLibrary from '../features/reflections/StrategyLibrary';
+// Stack screens — reflections (via barrel exports)
+import {
+  ReflectionsScreen,
+  ReflectionStatsScreen,
+  MindTrailScreen,
+  ThoughtTrailDetailScreen,
+  QuickCreateTrailScreen,
+  ReflectionDetailScreen,
+  InsightScreen,
+  ReviewScreen,
+  StrategyLibrary,
+  RelationMapView,
+} from '../features/reflections';
 import HabitDetailScreen from '../features/habits/HabitDetailScreen';
-import RelationMapView from '../features/reflections/RelationMapView';
 import HabitsScreen      from '../features/habits/HabitsScreen';
 import StatsScreen       from '../features/stats/StatsScreen';
-import GlobalPulseScreen from '../features/home/GlobalPulseScreen';
+import GlobalPulseScreen from '../features/home/screens/GlobalPulseScreen';
 import SportPage         from '../features/exercise/SportPage';
 import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
 import FastHistoryPage   from '../features/fasting/FastHistoryPage';
 import MedHistoryPage    from '../features/meditation/MedHistoryPage';
-import FoodLogPage       from '../features/home/FoodLogPage';
-import GracePage         from '../features/home/GracePage';
-import StreakBreakScreen from '../features/home/StreakBreakScreen';
-import CheckinHistoryScreen from '../features/home/CheckinHistoryScreen';
-import CheckinDetailScreen from '../features/home/CheckinDetailScreen';
-import ReviewHistoryScreen from '../features/home/ReviewHistoryScreen';
-import ReviewDetailScreen from '../features/home/ReviewDetailScreen';
+import FoodLogPage       from '../features/home/screens/FoodLogPage';
+import GracePage         from '../features/home/screens/GracePage';
+import StreakBreakScreen from '../features/home/screens/StreakBreakScreen';
+import CheckinHistoryScreen from '../features/home/screens/CheckinHistoryScreen';
+import CheckinDetailScreen from '../features/home/screens/CheckinDetailScreen';
+import ReviewHistoryScreen from '../features/home/screens/ReviewHistoryScreen';
+import ReviewDetailScreen from '../features/home/screens/ReviewDetailScreen';
 import PlanScreen from '../features/plan/PlanScreen';
 import PlanCreateScreen from '../features/plan/PlanCreateScreen';
 import PlanDetailScreen from '../features/plan/PlanDetailScreen';
@@ -60,8 +62,8 @@ import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
 import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
 import AISettingsScreen from '../features/settings/AISettingsScreen';
-import MusicScreen from '../features/music/MusicScreen';
-import MusicCategoryScreen from '../features/music/MusicCategoryScreen';
+import MusicScreen from '../features/music/screens/MusicScreen';
+import MusicCategoryScreen from '../features/music/screens/MusicCategoryScreen';
 import { useSync }       from '../features/sync/useSync';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 

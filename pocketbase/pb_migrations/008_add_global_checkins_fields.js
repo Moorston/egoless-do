@@ -35,7 +35,7 @@ migrate((db) => {
     }
   }));
 
-  // 允许公开创建（测试用）
+  // ⚠️  TEST-ONLY: public create rule. Production uses "@request.auth.id != ''"
   collection.createRule = "";
 
   return dao.saveCollection(collection);

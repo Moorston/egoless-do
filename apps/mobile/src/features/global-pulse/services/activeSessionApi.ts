@@ -214,7 +214,7 @@ export async function getActiveSessions(
   return result as ApiResponse<ActiveSession[]>;
 }
 
-// ── Realtime subscription (polling for PocketBase v0.22 compat) ───
+// ── Realtime subscription (adaptive polling) ─────────────────
 
 export type SessionSubscriptionCallback = {
   onCreate?: (session: ActiveSession) => void;
@@ -222,44 +222,68 @@ export type SessionSubscriptionCallback = {
   onDelete?: (sessionId: string) => void;
 };
 
-const POLL_INTERVAL = 15_000; // 15 seconds
+const POLL_INTERVAL_ACTIVE = 5_000;   // 5 seconds when map is visible
+const POLL_INTERVAL_IDLE = 30_000;    // 30 seconds when backgrounded
+const POLL_INTERVAL_INITIAL = 2_000;  // 2 seconds for first few polls after change
 
 /**
- * Subscribe to active_sessions collection changes via short polling.
- * Compatible with PocketBase v0.22 which doesn't support POST /api/realtime.
+ * Subscribe to active_sessions collection changes via adaptive polling.
+ * Polls faster (5s) when visible, slower (30s) when backgrounded.
  * Returns unsubscribe function.
  */
 export function subscribeSessions(
   callbacks: SessionSubscriptionCallback
 ): () => void {
   let isActive = true;
-  let pollTimer: ReturnType<typeof setInterval> | null = null;
+  let pollTimer: ReturnType<typeof setTimeout> | null = null;
   let previousSessions: ActiveSession[] = [];
+  let consecutiveNoChange = 0;
+  let _isVisible = true;
+  let _polling = false;
 
   const cleanup = () => {
     if (pollTimer) {
-      clearInterval(pollTimer);
+      clearTimeout(pollTimer);
       pollTimer = null;
     }
   };
 
-  const poll = async () => {
+  const getInterval = () => {
+    if (!_isVisible) return POLL_INTERVAL_IDLE;
+    if (consecutiveNoChange < 3) return POLL_INTERVAL_INITIAL;
+    return POLL_INTERVAL_ACTIVE;
+  };
+
+  const scheduleNext = () => {
     if (!isActive) return;
+    pollTimer = setTimeout(() => { void poll(); }, getInterval());
+  };
+
+  const poll = async () => {
+    if (!isActive || _polling) return;
+    _polling = true;
     try {
       const result = await getActiveSessions();
-      if (!result.success || !result.data) return;
+      if (!result.success || !result.data) {
+        scheduleNext();
+        return;
+      }
 
       const current = result.data;
       const prevMap = new Map(previousSessions.map(s => [s.session_id, s]));
       const currMap = new Map(current.map(s => [s.session_id, s]));
+
+      let hasChanges = false;
 
       // Detect creates and updates
       for (const session of current) {
         const prev = prevMap.get(session.session_id);
         if (!prev) {
           callbacks.onCreate?.(session);
+          hasChanges = true;
         } else if (prev.last_heartbeat !== session.last_heartbeat || prev.insight !== session.insight) {
           callbacks.onUpdate?.(session);
+          hasChanges = true;
         }
       }
 
@@ -267,25 +291,42 @@ export function subscribeSessions(
       for (const prev of previousSessions) {
         if (!currMap.has(prev.session_id)) {
           callbacks.onDelete?.(prev.session_id);
+          hasChanges = true;
         }
       }
 
       previousSessions = current;
+      consecutiveNoChange = hasChanges ? 0 : consecutiveNoChange + 1;
       setConnectionState('connected');
     } catch {
       // Ignore poll errors silently
+    } finally {
+      _polling = false;
     }
+    scheduleNext();
   };
 
   setConnectionState('connecting');
-  // Initial fetch
   void poll();
-  // Start polling
-  pollTimer = setInterval(() => { void poll(); }, POLL_INTERVAL);
+
+  // Visibility listener for adaptive interval
+  let _appStateSub: { remove?: () => void } | null = null;
+  try {
+    const { AppState } = require('react-native');
+    _appStateSub = AppState.addEventListener('change', (s: string) => {
+      _isVisible = s === 'active';
+      // Reset timer with new interval (in-flight poll will reschedule itself via scheduleNext)
+      cleanup();
+      scheduleNext();
+    });
+  } catch {
+    // Not in React Native context (tests, SSR) — skip visibility listener
+  }
 
   return () => {
     isActive = false;
     cleanup();
+    _appStateSub?.remove?.();
     setConnectionState('idle');
   };
 }

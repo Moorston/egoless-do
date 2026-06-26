@@ -1,6 +1,18 @@
-import type { Animated } from 'react-native';
-import type { SportType, ExerciseSet } from '@egoless-do/core';
+import type { Animated, ViewStyle } from 'react-native';
+import type { SportType, ExerciseSet, ExerciseLogEntry } from '@egoless-do/core';
 import type { SportExperienceType } from '@egoless-do/core';
+
+/** GPS coordinate */
+interface GpsCoord {
+  latitude: number;
+  longitude: number;
+}
+
+/** AMap native component props (react-native-amap3d) */
+interface MapComponentProps {
+  style?: ViewStyle;
+  [key: string]: unknown;
+}
 
 export interface ExercisePageProps {
   // Identity
@@ -35,7 +47,7 @@ export interface ExercisePageProps {
   selectedSound: string;
   cycleSound: () => void;
   selectSound: (key: string) => void;
-  bgPlayer: any;
+  bgPlayer: { loadAsync: (src: unknown) => Promise<void>; playAsync: () => Promise<void>; unloadAsync: () => Promise<void> } | null;
 
   // Sets
   sets: ExerciseSet[];
@@ -45,12 +57,12 @@ export interface ExercisePageProps {
   // GPS
   distKm: number;
   calories: number;
-  coords: any[];
-  initialPos: any;
+  coords: GpsCoord[];
+  initialPos: GpsCoord | null;
   amapReady: boolean;
-  MapView: any;
-  Polyline: any;
-  mapRef: any;
+  MapView: React.ComponentType<MapComponentProps> | null;
+  Polyline: React.ComponentType<{ coordinates: GpsCoord[]; color?: string; width?: number }> | null;
+  mapRef: React.RefObject<unknown>;
 
   // Report
   segmentPaces: number[];
@@ -63,12 +75,12 @@ export interface ExercisePageProps {
   handleHoldEnd: () => void;
   handleSave: () => void;
   onGoBack: () => void;
-  setPage?: (page: any) => void;
+  setPage?: (page: 'countdown' | 'active' | 'report') => void;
 
   // Store
-  exerciseLog: any[];
+  exerciseLog: ExerciseLogEntry[];
 
   // Theme & i18n
-  TH: any;
+  TH: Record<string, string>;
   T: (key: string) => string;
 }

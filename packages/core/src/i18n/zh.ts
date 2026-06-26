@@ -123,7 +123,7 @@ export const zh: I18nKeys = {
   tagDelete:'删除标签', tagDeleteConfirm:'确定删除该标签？', tagUsedBy:'该标签被 {count} 条感念使用，删除后仍可通过过滤栏检索这些感念。',
   moodDelete:'删除心情', moodDeleteConfirm:'确定删除该心情？', moodUsedBy:'该心情被 {count} 条感念使用，删除后仍可通过过滤栏检索这些感念。',
   showDeletedTags:'显示已删除标签', hideDeletedTags:'隐藏已删除标签',
-  reflEditTitle:'编辑感念', reflSaveEdit:'保存修改', reflShare:'分享感念', reflDelete:'删除感念', reflBack:'返回',
+  reflEditTitle:'编辑', reflSaveEdit:'保存修改', reflShare:'分享', reflDelete:'删除', reflBack:'返回',
   tagSectionPreset:'预设标签', tagSectionCustom:'自定义标签', tagSectionHabit:'习惯标签',
   moodSectionPreset:'预设心情', moodSectionCustom:'自定义心情',
   moveToTop:'移至顶部',

@@ -281,4 +281,6 @@ export interface SyncDataMap {
 export interface StorageAdapter {
   persistChange<K extends SyncEntity>(entity: K, id: string, data: SyncDataMap[K]): Promise<void>;
   markDeleted(entity: SyncEntity, id: string): Promise<void>;
+  /** Atomically delete multiple entities in a single transaction. */
+  batchDelete(operations: Array<{ entity: SyncEntity; id: string }>): Promise<void>;
 }

@@ -78,9 +78,9 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
         ),
       }));
 
-      linksToDelete.forEach(l => {
-        adapter?.markDeleted('reflectionLink', l.id).catch(console.error);
-      });
+      if (linksToDelete.length > 0) {
+        adapter?.batchDelete(linksToDelete.map(l => ({ entity: 'reflectionLink' as const, id: l.id }))).catch(console.error);
+      }
     },
   });
 }

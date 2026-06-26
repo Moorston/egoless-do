@@ -72,6 +72,9 @@ export function createPlanSlice(
       const affectedReflectionIds = (s.reflections ?? [])
         .filter(r => !r.deleted && r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId))
         .map(r => r.id);
+      const affectedTrailIds = (s.thoughtTrails ?? [])
+        .filter(t => !t.deleted && t.linkedPlanItemIds?.some(pid => deletedItemIdsSet.has(pid)))
+        .map(t => t.id);
       const recycleEntry: RecycleBinItem = { id, entityType: 'plan', data: plan, deletedAt: now };
 
       // Atomic: recycle bin + deletion in one set()
@@ -89,14 +92,27 @@ export function createPlanSlice(
             ? { ...r, linkedPlanItemId: undefined, updatedAt: now }
             : r,
         ),
+        thoughtTrails: (prev.thoughtTrails ?? []).map(t =>
+          t.linkedPlanItemIds?.some(pid => deletedItemIdsSet.has(pid))
+            ? { ...t, linkedPlanItemIds: t.linkedPlanItemIds.filter(pid => !deletedItemIdsSet.has(pid)), updatedAt: now }
+            : t,
+        ),
       }));
-      adapter.markDeleted('plan', id).catch(console.error);
-      deletedItemIds.forEach(itemId => adapter.markDeleted('planItem', itemId).catch(console.error));
-      deletedCheckinIds.forEach(checkinId => adapter.markDeleted('planItemCheckin', checkinId).catch(console.error));
+      // Atomic batch delete: plan + planItems + planItemCheckins in one transaction
+      adapter.batchDelete([
+        { entity: 'plan', id },
+        ...deletedItemIds.map(itemId => ({ entity: 'planItem' as const, id: itemId })),
+        ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),
+      ]).catch(console.error);
       // Persist affected reflections by ID (linkedPlanItemId already cleared in set())
       affectedReflectionIds.forEach(rid => {
         const r = get().reflections.find(x => x.id === rid && !x.deleted);
         if (r) adapter.persistChange('reflection', rid, r).catch(console.error);
+      });
+      // Persist affected thought trails (linkedPlanItemIds already filtered in set())
+      affectedTrailIds.forEach(tid => {
+        const t = get().thoughtTrails.find(x => x.id === tid && !x.deleted);
+        if (t) adapter.persistChange('thoughtTrail', tid, t).catch(console.error);
       });
     },
 
@@ -218,8 +234,11 @@ export function createPlanSlice(
             : t,
         ),
       }));
-      adapter.markDeleted('planItem', id).catch(console.error);
-      deletedCheckinIds.forEach(checkinId => adapter.markDeleted('planItemCheckin', checkinId).catch(console.error));
+      // Atomic batch delete: planItem + planItemCheckins in one transaction
+      adapter.batchDelete([
+        { entity: 'planItem', id },
+        ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),
+      ]).catch(console.error);
       // Persist affected reflections by captured IDs (linkedPlanItemId already cleared in set())
       affectedReflectionIds.forEach(rid => {
         const r = get().reflections.find(x => x.id === rid && !x.deleted);
