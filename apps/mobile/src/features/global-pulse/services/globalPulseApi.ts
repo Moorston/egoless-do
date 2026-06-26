@@ -13,7 +13,7 @@ import {
 } from '../types/globalPulse';
 
 // PocketBase API 基础 URL
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8090';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://egolessdo.freebytes.net';
 
 // PocketBase 集合名称
 const CHECKINS_COLLECTION = 'global_checkins';
