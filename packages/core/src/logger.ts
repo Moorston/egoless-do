@@ -28,9 +28,17 @@ function logToConsole(level: LogLevel, tag: string, args: unknown[]) {
   }
 }
 
+function getSentry(): any {
+  try {
+    return require('sentry-expo');
+  } catch {
+    return null;
+  }
+}
+
 function addBreadcrumb(level: LogLevel, tag: string, message: string) {
   try {
-    const Sentry = require('sentry-expo') ?? require('@sentry/nextjs');
+    const Sentry = getSentry();
     if (Sentry?.addBreadcrumb) {
       Sentry.addBreadcrumb({
         category: tag,
@@ -45,7 +53,7 @@ function addBreadcrumb(level: LogLevel, tag: string, message: string) {
 
 function captureError(tag: string, error: unknown, context?: Record<string, unknown>) {
   try {
-    const Sentry = require('sentry-expo') ?? require('@sentry/nextjs');
+    const Sentry = getSentry();
     if (Sentry?.captureException) {
       Sentry.captureException(error instanceof Error ? error : new Error(String(error)), {
         tags: { module: tag },
