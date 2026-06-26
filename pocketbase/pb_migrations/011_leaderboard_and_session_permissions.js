@@ -52,8 +52,8 @@ migrate((txApp) => {
       }
     ],
     "indexes": [
-      "CREATE INDEX `idx_leaderboard_user_hash` ON `leaderboard` (`user_hash`)",
-      "CREATE INDEX `idx_leaderboard_best_streak` ON `leaderboard` (`best_streak` DESC)"
+      "CREATE INDEX idx_leaderboard_user_hash ON leaderboard (user_hash)",
+      "CREATE INDEX idx_leaderboard_best_streak ON leaderboard (best_streak DESC)"
     ],
     "listRule": "",
     "viewRule": "",
