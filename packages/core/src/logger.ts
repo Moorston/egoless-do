@@ -29,8 +29,14 @@ function logToConsole(level: LogLevel, tag: string, args: unknown[]) {
 }
 
 function getSentry(): any {
+  // Use indirect require to prevent webpack/Metro from statically bundling sentry-expo
+  // (sentry-expo depends on expo-modules-core which breaks Next.js builds)
+  const _req = typeof require !== 'undefined' ? require : null;
+  if (!_req) return null;
   try {
-    return require('sentry-expo');
+    // Dynamic expression prevents static analysis
+    const id = 'sentry' + '-expo';
+    return _req(id);
   } catch {
     return null;
   }
