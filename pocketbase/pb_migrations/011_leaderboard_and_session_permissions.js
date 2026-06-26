@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 migrate((txApp) => {
-  // 1. Create leaderboard collection
+  // 1. Create leaderboard collection (without indexes first)
   const leaderboardCollection = new Collection({
     name: "leaderboard",
     type: "base",
@@ -35,10 +35,6 @@ migrate((txApp) => {
         unique: false
       }
     ],
-    indexes: [
-      "CREATE INDEX idx_leaderboard_user_hash ON leaderboard (user_hash)",
-      "CREATE INDEX idx_leaderboard_best_streak ON leaderboard (best_streak DESC)"
-    ],
     listRule: "",
     viewRule: "",
     createRule: "@request.auth.id != ''",
@@ -47,7 +43,14 @@ migrate((txApp) => {
   });
   txApp.save(leaderboardCollection);
 
-  // 2. Fix active_sessions permissions (was fully open, now requires auth)
+  // 2. Add indexes after table is created
+  leaderboardCollection.indexes = [
+    "CREATE INDEX idx_leaderboard_user_hash ON leaderboard (user_hash)",
+    "CREATE INDEX idx_leaderboard_best_streak ON leaderboard (best_streak DESC)"
+  ];
+  txApp.save(leaderboardCollection);
+
+  // 3. Fix active_sessions permissions (was fully open, now requires auth)
   try {
     const activeSessions = txApp.findCollectionByNameOrId("active_sessions_001");
     activeSessions.createRule = "@request.auth.id != ''";
@@ -61,7 +64,7 @@ migrate((txApp) => {
 }, (txApp) => {
   // Rollback
   try {
-    const lb = txApp.findCollectionByNameOrId("leaderboard_001");
+    const lb = txApp.findCollectionByNameOrId("leaderboard");
     txApp.delete(lb);
   } catch (e) {}
 
