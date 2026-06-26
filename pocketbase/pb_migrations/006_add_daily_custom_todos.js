@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
 
   // Create daily_custom_todos collection
   try {
@@ -61,7 +61,7 @@ migrate((db) => {
 
   dao.saveCollection(todoHistoryCollection);
 }, (db) => {
-  const dao = db.dao();
+  const dao = app.dao();
   try {
     const c = dao.findCollectionByNameOrId('daily_custom_todos');
     if (c) dao.deleteCollection(c);

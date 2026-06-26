@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
 
   try {
     const existing = dao.findCollectionByNameOrId('exercise_entries');
@@ -31,7 +31,7 @@ migrate((db) => {
 
   dao.saveCollection(collection);
 }, (db) => {
-  const dao = db.dao();
+  const dao = app.dao();
   try {
     const c = dao.findCollectionByNameOrId('exercise_entries');
     if (c) dao.deleteCollection(c);

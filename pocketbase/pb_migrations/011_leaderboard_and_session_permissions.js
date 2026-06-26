@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
 
   // 1. Create leaderboard collection
   const leaderboardCollection = new Collection({
@@ -77,9 +77,9 @@ migrate((db) => {
     // Collection may not exist
     console.log("[Migration] active_sessions not found, skipping permission fix");
   }
-}, (db) => {
+}, (app) => {
   // Rollback
-  const dao = db.dao();
+  const dao = app.dao();
   try {
     const lb = dao.findCollectionByNameOrId("leaderboard_001");
     dao.deleteCollection(lb);

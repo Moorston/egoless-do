@@ -1,6 +1,6 @@
 /// <reference path="../pb_data/types.d.ts" />
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
   const collection = dao.findCollectionByNameOrId("global_checkins");
 
   // 添加 nickname 字段
@@ -40,7 +40,7 @@ migrate((db) => {
 
   return dao.saveCollection(collection);
 }, (db) => {
-  const dao = db.dao();
+  const dao = app.dao();
   const collection = dao.findCollectionByNameOrId("global_checkins");
 
   collection.schema.removeField("nickname_field");

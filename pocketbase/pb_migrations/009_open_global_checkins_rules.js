@@ -2,8 +2,8 @@
 // This opens all global_checkins rules to public (no auth required).
 // Production migrations are in backend/pb_migrations/ with proper auth rules.
 /// <reference path="../pb_data/types.d.ts" />
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
   const collection = dao.findCollectionByNameOrId("global_checkins");
 
   // 开放所有规则（仅限本地测试）
@@ -13,7 +13,7 @@ migrate((db) => {
 
   return dao.saveCollection(collection);
 }, (db) => {
-  const dao = db.dao();
+  const dao = app.dao();
   const collection = dao.findCollectionByNameOrId("global_checkins");
 
   collection.createRule = "@request.auth.id != \"\"";

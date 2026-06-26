@@ -1,5 +1,5 @@
 /// <reference path="../pb_data/types.d.ts" />
-migrate((db) => {
+migrate((app) => {
   const collection = new Collection({
     "id": "fa7i032y4xbn58z",
     "created": "2026-06-25 01:54:38.315Z",
@@ -149,7 +149,7 @@ migrate((db) => {
 
   return Dao(db).saveCollection(collection);
 }, (db) => {
-  const dao = db.dao();
+  const dao = app.dao();
   const collection = dao.findCollectionByNameOrId("fa7i032y4xbn58z");
 
   return dao.deleteCollection(collection);

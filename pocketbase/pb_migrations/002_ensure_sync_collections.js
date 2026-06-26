@@ -31,8 +31,8 @@ const PUSH_TOKENS_COLLECTION = {
   deleteRule: '@request.auth.id = user_id',
 };
 
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
 
   // 1. Drop orphaned collections
   for (const name of OLD_NAMES) {
@@ -97,7 +97,7 @@ migrate((db) => {
   dao.saveCollection(pushTokensCollection);
 }, (db) => {
   // rollback — delete all created collections
-  const dao = db.dao();
+  const dao = app.dao();
   for (const { name } of COLLECTIONS) {
     try {
       const c = dao.findCollectionByNameOrId(name);

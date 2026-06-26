@@ -2,8 +2,8 @@
 
 // Migration: Add thought_trails, intents, reflection_links collections
 
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
 
   // 1. thought_trails collection
   try {
@@ -91,7 +91,7 @@ migrate((db) => {
 
 }, (db) => {
   // Rollback: delete the collections
-  const dao = db.dao();
+  const dao = app.dao();
   
   try {
     const c = dao.findCollectionByNameOrId('thought_trails');

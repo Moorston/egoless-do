@@ -4,8 +4,8 @@
  * 适配 PocketBase 0.22.0
  */
 
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
 
   // 创建 global_checkins 集合
   const checkinsCollection = new Collection({
@@ -181,8 +181,8 @@ migrate((db) => {
 });
 
 // 回滚函数
-migrate((db) => {
-  const dao = db.dao();
+migrate((app) => {
+  const dao = app.dao();
 
   try {
     const checkinsCollection = dao.findCollectionByNameOrId("global_checkins");
