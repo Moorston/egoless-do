@@ -3,12 +3,12 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Music, Heart } from 'lucide-react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useTheme, useT } from '../../components/UI';
+import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useMusicStore, computeTracksByCategory } from '../useMusicStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import type { RootStackParamList } from '../../navigation/hooks';
+import { useRootNavigation } from '../../../navigation/hooks';
+import type { RootStackParamList } from '../../../navigation/hooks';
 import TrackListItem from '../components/TrackListItem';
 import PlayerBar from '../components/PlayerBar';
 

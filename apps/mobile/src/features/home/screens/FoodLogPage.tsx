@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
-import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
+import { useRootNavigation } from '../../../navigation/hooks';
+import { useAppStore } from '../../../store/useAppStore';
+import { Card, useTheme, useT, ScreenHeader } from '../../../components/UI';
 import { COLORS, getTodayFoodLog, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK, FONT_EMPTY } from '@egoless-do/core';
-import AddFoodModal from '../../components/AddFoodModal';
+import AddFoodModal from '../../../components/AddFoodModal';
 import { ChevronDown, ChevronRight, X } from 'lucide-react-native';
 
 export default function FoodLogPage() {

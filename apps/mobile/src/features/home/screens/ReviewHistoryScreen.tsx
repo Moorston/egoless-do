@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppStore } from '../../store/useAppStore';
-import { useTheme, useT } from '../../components/UI';
+import { useAppStore } from '../../../store/useAppStore';
+import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
-import { useRootNavigation } from '../../navigation/hooks';
+import { useRootNavigation } from '../../../navigation/hooks';
 import { ChevronLeft, TrendingUp, TrendingDown } from 'lucide-react-native';
 
 export default function ReviewHistoryScreen() {

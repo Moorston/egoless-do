@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useAppStore } from '../../store/useAppStore';
-import { useTheme, useT } from '../../components/UI';
+import { useAppStore } from '../../../store/useAppStore';
+import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
-import { useRootNavigation, type RootStackParamList } from '../../navigation/hooks';
+import { useRootNavigation, type RootStackParamList } from '../../../navigation/hooks';
 import { 
   ChevronLeft, TrendingUp, TrendingDown,
   AlertTriangle, CheckCircle, Target,

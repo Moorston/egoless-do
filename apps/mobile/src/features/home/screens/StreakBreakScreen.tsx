@@ -1,9 +1,9 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
-import { useTheme, useT, ScreenHeader, Card } from '../../components/UI';
+import { useRootNavigation } from '../../../navigation/hooks';
+import { useAppStore } from '../../../store/useAppStore';
+import { useTheme, useT, ScreenHeader, Card } from '../../../components/UI';
 import {
   COLORS,
   detectStreakBreaks, computeLongestStreak, computeCurrentStreak,

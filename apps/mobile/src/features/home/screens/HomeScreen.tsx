@@ -6,13 +6,13 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore } from '../../../store/useAppStore';
 import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
-import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../components/UI';
-import AddFoodModal from '../../components/AddFoodModal';
-import { useRootNavigation } from '../../navigation/hooks';
-import SimpleHeader from '../../navigation/SimpleHeader';
+import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
+import AddFoodModal from '../../../components/AddFoodModal';
+import { useRootNavigation } from '../../../navigation/hooks';
+import SimpleHeader from '../../../navigation/SimpleHeader';
 import {
   Utensils, Scale, Footprints,
   Droplets, Pencil, Check, X, Shield, Star, Sparkles,
