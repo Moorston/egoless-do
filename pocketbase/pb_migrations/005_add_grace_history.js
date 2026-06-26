@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 migrate((db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
 
   try {
     const existing = dao.findCollectionByNameOrId('grace_history');
@@ -31,7 +31,7 @@ migrate((db) => {
 
   dao.saveCollection(collection);
 }, (db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
   try {
     const c = dao.findCollectionByNameOrId('grace_history');
     if (c) dao.deleteCollection(c);

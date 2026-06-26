@@ -32,7 +32,7 @@ const PUSH_TOKENS_COLLECTION = {
 };
 
 migrate((db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
 
   // 1. Drop orphaned collections
   for (const name of OLD_NAMES) {
@@ -97,7 +97,7 @@ migrate((db) => {
   dao.saveCollection(pushTokensCollection);
 }, (db) => {
   // rollback — delete all created collections
-  const dao = new Dao(db);
+  const dao = db.dao();
   for (const { name } of COLLECTIONS) {
     try {
       const c = dao.findCollectionByNameOrId(name);

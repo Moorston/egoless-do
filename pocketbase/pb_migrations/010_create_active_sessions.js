@@ -147,7 +147,7 @@ migrate((db) => {
 
   return Dao(db).saveCollection(collection);
 }, (db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
   const collection = dao.findCollectionByNameOrId("active_sessions_001");
   return dao.deleteCollection(collection);
 });

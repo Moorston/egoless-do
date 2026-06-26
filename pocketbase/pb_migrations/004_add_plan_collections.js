@@ -9,7 +9,7 @@ const COLLECTIONS = [
 ];
 
 migrate((db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
 
   for (const { name, idField } of COLLECTIONS) {
     // Drop if exists (idempotent)
@@ -42,7 +42,7 @@ migrate((db) => {
     dao.saveCollection(collection);
   }
 }, (db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
   for (const { name } of COLLECTIONS) {
     try {
       const c = dao.findCollectionByNameOrId(name);

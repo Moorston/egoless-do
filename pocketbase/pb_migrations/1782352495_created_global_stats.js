@@ -89,7 +89,7 @@ migrate((db) => {
 
   return Dao(db).saveCollection(collection);
 }, (db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
   const collection = dao.findCollectionByNameOrId("3cmdj7itcm6od4f");
 
   return dao.deleteCollection(collection);

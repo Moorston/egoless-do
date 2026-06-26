@@ -3,7 +3,7 @@
 // Migration: Add thought_trails, intents, reflection_links collections
 
 migrate((db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
 
   // 1. thought_trails collection
   try {
@@ -91,7 +91,7 @@ migrate((db) => {
 
 }, (db) => {
   // Rollback: delete the collections
-  const dao = new Dao(db);
+  const dao = db.dao();
   
   try {
     const c = dao.findCollectionByNameOrId('thought_trails');

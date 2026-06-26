@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 migrate((db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
 
   // 1. Create leaderboard collection
   const leaderboardCollection = new Collection({
@@ -79,7 +79,7 @@ migrate((db) => {
   }
 }, (db) => {
   // Rollback
-  const dao = new Dao(db);
+  const dao = db.dao();
   try {
     const lb = dao.findCollectionByNameOrId("leaderboard_001");
     dao.deleteCollection(lb);

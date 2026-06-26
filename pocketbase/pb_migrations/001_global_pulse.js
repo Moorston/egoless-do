@@ -5,7 +5,7 @@
  */
 
 migrate((db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
 
   // 创建 global_checkins 集合
   const checkinsCollection = new Collection({
@@ -182,7 +182,7 @@ migrate((db) => {
 
 // 回滚函数
 migrate((db) => {
-  const dao = new Dao(db);
+  const dao = db.dao();
 
   try {
     const checkinsCollection = dao.findCollectionByNameOrId("global_checkins");
