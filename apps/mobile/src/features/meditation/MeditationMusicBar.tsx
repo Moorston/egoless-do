@@ -5,7 +5,7 @@ import { Music, ChevronRight, Waves, CloudRain, Droplets, Bell, Wind, Bird, Dumb
 import { FONT_BODY, FONT_SUB, TRACK_VISUAL } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
-import AnimatedMusicIcon from '../music/AnimatedMusicIcon';
+import AnimatedMusicIcon from '../music/components/AnimatedMusicIcon';
 
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell,

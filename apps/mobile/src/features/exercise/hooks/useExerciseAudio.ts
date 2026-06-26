@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EXERCISE_SOUNDS } from '@egoless-do/core';
-import { audioSessionManager } from '../../music/AudioSessionManager';
+import { audioSessionManager } from '../../music/services/AudioSessionManager';
 
 const SOUND_FILES: Record<string, number> = {
   '海潮': require('../../../../assets/sounds/ocean.mp3'),

@@ -11,6 +11,6 @@ export { default as ImportMusicButton } from './components/ImportMusicButton';
 export { default as MusicPickerModal } from './components/MusicPickerModal';
 export { default as AnimatedMusicIcon } from './components/AnimatedMusicIcon';
 export { AudioEngineProvider } from './services/AudioEngineProvider';
-export { AudioSessionManager } from './services/AudioSessionManager';
+export { audioSessionManager } from './services/AudioSessionManager';
 export { audioPlayerRef } from './services/audioPlayerRef';
 export { useMusicStore } from './useMusicStore';

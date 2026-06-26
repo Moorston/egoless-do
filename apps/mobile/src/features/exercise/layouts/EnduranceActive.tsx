@@ -6,7 +6,7 @@ import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_TI
 import type { ExerciseLayoutProps } from './types';
 import ExerciseTopBar from '../shared/ExerciseTopBar';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
-import MusicMiniBar from '../../music/MusicMiniBar';
+import MusicMiniBar from '../../music/components/MusicMiniBar';
 
 export default function EnduranceActive(props: ExerciseLayoutProps) {
   const {

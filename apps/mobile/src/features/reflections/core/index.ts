@@ -1,19 +1,19 @@
 // reflections/core barrel export
 export { default as ReflectionsScreen } from './ReflectionsScreen';
 export { default as ReflectionDetailScreen } from './ReflectionDetailScreen';
-export { default as CreateReflectionModal } from './CreateReflectionModal';
+export { CreateReflectionModal } from './CreateReflectionModal';
 export { default as ReflectionCard } from './ReflectionCard';
 export { default as ReflectionForm } from './ReflectionForm';
 export { default as ReflectionDetailContent } from './ReflectionDetailContent';
 export { default as FilterDrawer } from './FilterDrawer';
-export { default as FilterTags } from './FilterTags';
+export { FilterTags } from './FilterTags';
 export { default as DayGroup } from './DayGroup';
 export { default as BatchActionBar } from './BatchActionBar';
-export { default as AddReflectionBar } from './AddReflectionBar';
-export { default as AddReflectionFAB } from './AddReflectionFAB';
+export { AddReflectionBar } from './AddReflectionBar';
+export { AddReflectionFAB } from './AddReflectionFAB';
 export { default as ShareCard } from './ShareCard';
-export { default as SwipeableRow } from './SwipeableRow';
-export { default as CreatePlanFromReflectionModal } from './CreatePlanFromReflectionModal';
-export { default as CreatePlanFromTrailModal } from './CreatePlanFromTrailModal';
-export { default as PlanTaskCard } from './PlanTaskCard';
-export { default as PlanTasksSection } from './PlanTasksSection';
+export { SwipeableRow } from './SwipeableRow';
+export { CreatePlanFromReflectionModal } from './CreatePlanFromReflectionModal';
+export { CreatePlanFromTrailModal } from './CreatePlanFromTrailModal';
+export { PlanTaskCard } from './PlanTaskCard';
+export { PlanTasksSection } from './PlanTasksSection';
