@@ -2,13 +2,13 @@
 
 // Migration: Add thought_trails, intents, reflection_links collections
 
-migrate((app) => {
-  const dao = app.dao();
+migrate((txApp) => {
+  
 
   // 1. thought_trails collection
   try {
-    const existing = dao.findCollectionByNameOrId('thought_trails');
-    if (existing) dao.deleteCollection(existing);
+    const existing = txApp.findCollectionByNameOrId('thought_trails');
+    if (existing) txApp.delete(existing);
   } catch {}
 
   const thoughtTrailsCollection = new Collection({
@@ -31,12 +31,12 @@ migrate((app) => {
     deleteRule: '@request.auth.id = user_id',
     options: {},
   });
-  dao.saveCollection(thoughtTrailsCollection);
+  txApp.save(thoughtTrailsCollection);
 
   // 2. intents collection
   try {
-    const existing = dao.findCollectionByNameOrId('intents');
-    if (existing) dao.deleteCollection(existing);
+    const existing = txApp.findCollectionByNameOrId('intents');
+    if (existing) txApp.delete(existing);
   } catch {}
 
   const intentsCollection = new Collection({
@@ -59,12 +59,12 @@ migrate((app) => {
     deleteRule: '@request.auth.id = user_id',
     options: {},
   });
-  dao.saveCollection(intentsCollection);
+  txApp.save(intentsCollection);
 
   // 3. reflection_links collection
   try {
-    const existing = dao.findCollectionByNameOrId('reflection_links');
-    if (existing) dao.deleteCollection(existing);
+    const existing = txApp.findCollectionByNameOrId('reflection_links');
+    if (existing) txApp.delete(existing);
   } catch {}
 
   const reflectionLinksCollection = new Collection({
@@ -87,24 +87,24 @@ migrate((app) => {
     deleteRule: '@request.auth.id = user_id',
     options: {},
   });
-  dao.saveCollection(reflectionLinksCollection);
+  txApp.save(reflectionLinksCollection);
 
 }, (db) => {
   // Rollback: delete the collections
-  const dao = app.dao();
+  
   
   try {
-    const c = dao.findCollectionByNameOrId('thought_trails');
-    if (c) dao.deleteCollection(c);
+    const c = txApp.findCollectionByNameOrId('thought_trails');
+    if (c) txApp.delete(c);
   } catch {}
 
   try {
-    const c = dao.findCollectionByNameOrId('intents');
-    if (c) dao.deleteCollection(c);
+    const c = txApp.findCollectionByNameOrId('intents');
+    if (c) txApp.delete(c);
   } catch {}
 
   try {
-    const c = dao.findCollectionByNameOrId('reflection_links');
-    if (c) dao.deleteCollection(c);
+    const c = txApp.findCollectionByNameOrId('reflection_links');
+    if (c) txApp.delete(c);
   } catch {}
 });

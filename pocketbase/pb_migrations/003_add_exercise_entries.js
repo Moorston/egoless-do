@@ -1,11 +1,11 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-migrate((app) => {
-  const dao = app.dao();
+migrate((txApp) => {
+  
 
   try {
-    const existing = dao.findCollectionByNameOrId('exercise_entries');
-    if (existing) dao.deleteCollection(existing);
+    const existing = txApp.findCollectionByNameOrId('exercise_entries');
+    if (existing) txApp.delete(existing);
   } catch {}
 
   const collection = new Collection({
@@ -29,11 +29,11 @@ migrate((app) => {
     options: {},
   });
 
-  dao.saveCollection(collection);
+  txApp.save(collection);
 }, (db) => {
-  const dao = app.dao();
+  
   try {
-    const c = dao.findCollectionByNameOrId('exercise_entries');
-    if (c) dao.deleteCollection(c);
+    const c = txApp.findCollectionByNameOrId('exercise_entries');
+    if (c) txApp.delete(c);
   } catch {}
 });

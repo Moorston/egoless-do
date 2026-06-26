@@ -31,22 +31,22 @@ const PUSH_TOKENS_COLLECTION = {
   deleteRule: '@request.auth.id = user_id',
 };
 
-migrate((app) => {
-  const dao = app.dao();
+migrate((txApp) => {
+  
 
   // 1. Drop orphaned collections
   for (const name of OLD_NAMES) {
     try {
-      const c = dao.findCollectionByNameOrId(name);
-      if (c) dao.deleteCollection(c);
+      const c = txApp.findCollectionByNameOrId(name);
+      if (c) txApp.delete(c);
     } catch {}
   }
 
   // 2. Drop old entity collections if they exist (created by 001_init.js with wrong schema)
   for (const { name } of COLLECTIONS) {
     try {
-      const c = dao.findCollectionByNameOrId(name);
-      if (c) dao.deleteCollection(c);
+      const c = txApp.findCollectionByNameOrId(name);
+      if (c) txApp.delete(c);
     } catch {}
   }
 
@@ -72,13 +72,13 @@ migrate((app) => {
       deleteRule: '@request.auth.id = user_id',
       options: {},
     });
-    dao.saveCollection(collection);
+    txApp.save(collection);
   }
 
   // 4. Create push_tokens collection
   try {
-    const existing = dao.findCollectionByNameOrId('push_tokens');
-    if (existing) dao.deleteCollection(existing);
+    const existing = txApp.findCollectionByNameOrId('push_tokens');
+    if (existing) txApp.delete(existing);
   } catch {}
 
   const pushTokensCollection = new Collection({
@@ -94,20 +94,20 @@ migrate((app) => {
     deleteRule: PUSH_TOKENS_COLLECTION.deleteRule,
     options: {},
   });
-  dao.saveCollection(pushTokensCollection);
+  txApp.save(pushTokensCollection);
 }, (db) => {
   // rollback — delete all created collections
-  const dao = app.dao();
+  
   for (const { name } of COLLECTIONS) {
     try {
-      const c = dao.findCollectionByNameOrId(name);
-      if (c) dao.deleteCollection(c);
+      const c = txApp.findCollectionByNameOrId(name);
+      if (c) txApp.delete(c);
     } catch {}
   }
 
   // Delete push_tokens collection
   try {
-    const c = dao.findCollectionByNameOrId('push_tokens');
-    if (c) dao.deleteCollection(c);
+    const c = txApp.findCollectionByNameOrId('push_tokens');
+    if (c) txApp.delete(c);
   } catch {}
 });

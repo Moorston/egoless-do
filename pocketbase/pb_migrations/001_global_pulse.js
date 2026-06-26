@@ -4,8 +4,8 @@
  * 适配 PocketBase 0.22.0
  */
 
-migrate((app) => {
-  const dao = app.dao();
+migrate((txApp) => {
+  
 
   // 创建 global_checkins 集合
   const checkinsCollection = new Collection({
@@ -108,7 +108,7 @@ migrate((app) => {
     deleteRule: "@request.auth.id != '' && user_hash = @request.auth.id"
   });
 
-  dao.saveCollection(checkinsCollection);
+  txApp.save(checkinsCollection);
 
   // 创建 global_stats 集合
   const statsCollection = new Collection({
@@ -167,7 +167,7 @@ migrate((app) => {
     deleteRule: null
   });
 
-  dao.saveCollection(statsCollection);
+  txApp.save(statsCollection);
 
   // 初始化统计数据
   const statsRecord = new Record(statsCollection, {
@@ -177,23 +177,23 @@ migrate((app) => {
     countries: 0,
     updated_at: new Date().toISOString()
   });
-  dao.saveRecord(statsRecord);
+  txApp.save(statsRecord);
 });
 
 // 回滚函数
-migrate((app) => {
-  const dao = app.dao();
+migrate((txApp) => {
+  
 
   try {
-    const checkinsCollection = dao.findCollectionByNameOrId("global_checkins");
-    dao.deleteCollection(checkinsCollection);
+    const checkinsCollection = txApp.findCollectionByNameOrId("global_checkins");
+    txApp.delete(checkinsCollection);
   } catch (e) {
     // 集合不存在，忽略
   }
 
   try {
-    const statsCollection = dao.findCollectionByNameOrId("global_stats");
-    dao.deleteCollection(statsCollection);
+    const statsCollection = txApp.findCollectionByNameOrId("global_stats");
+    txApp.delete(statsCollection);
   } catch (e) {
     // 集合不存在，忽略
   }

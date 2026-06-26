@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
-migrate((app) => {
-  const dao = app.dao();
-  const collection = dao.findCollectionByNameOrId("global_checkins");
+migrate((txApp) => {
+  
+  const collection = txApp.findCollectionByNameOrId("global_checkins");
 
   // 添加 nickname 字段
   collection.schema.addField(new SchemaField({
@@ -38,14 +38,14 @@ migrate((app) => {
   // ⚠️  TEST-ONLY: public create rule. Production uses "@request.auth.id != ''"
   collection.createRule = "";
 
-  return dao.saveCollection(collection);
+  return txApp.save(collection);
 }, (db) => {
-  const dao = app.dao();
-  const collection = dao.findCollectionByNameOrId("global_checkins");
+  
+  const collection = txApp.findCollectionByNameOrId("global_checkins");
 
   collection.schema.removeField("nickname_field");
   collection.schema.removeField("city_field");
   collection.createRule = "@request.auth.id != \"\"";
 
-  return dao.saveCollection(collection);
+  return txApp.save(collection);
 });

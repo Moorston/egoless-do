@@ -1,5 +1,5 @@
 /// <reference path="../pb_data/types.d.ts" />
-migrate((app) => {
+migrate((txApp) => {
   const collection = new Collection({
     "id": "active_sessions_001",
     "created": "2026-06-25T12:00:00Z",
@@ -145,9 +145,9 @@ migrate((app) => {
     "options": {}
   });
 
-  return Dao(db).saveCollection(collection);
+  return txApp.save(collection);
 }, (db) => {
-  const dao = app.dao();
-  const collection = dao.findCollectionByNameOrId("active_sessions_001");
-  return dao.deleteCollection(collection);
+  
+  const collection = txApp.findCollectionByNameOrId("active_sessions_001");
+  return txApp.delete(collection);
 });

@@ -1,5 +1,5 @@
 /// <reference path="../pb_data/types.d.ts" />
-migrate((app) => {
+migrate((txApp) => {
   const collection = new Collection({
     "createRule": "@request.auth.id = user_id",
     "deleteRule": "@request.auth.id = user_id",
@@ -78,9 +78,9 @@ migrate((app) => {
     "viewRule": "@request.auth.id = user_id"
   });
 
-  return app.save(collection);
+  return txApp.save(collection);
 }, (app) => {
-  const collection = app.findCollectionByNameOrId("pbc_1896997850");
+  const collection = txApp.findCollectionByNameOrId("pbc_1896997850");
 
-  return app.delete(collection);
+  return txApp.delete(collection);
 })

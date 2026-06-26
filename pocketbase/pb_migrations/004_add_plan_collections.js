@@ -8,14 +8,14 @@ const COLLECTIONS = [
   { name: 'plan_item_checkins',idField: 'checkin_id'    },
 ];
 
-migrate((app) => {
-  const dao = app.dao();
+migrate((txApp) => {
+  
 
   for (const { name, idField } of COLLECTIONS) {
     // Drop if exists (idempotent)
     try {
-      const existing = dao.findCollectionByNameOrId(name);
-      if (existing) dao.deleteCollection(existing);
+      const existing = txApp.findCollectionByNameOrId(name);
+      if (existing) txApp.delete(existing);
     } catch {}
 
     const collection = new Collection({
@@ -39,14 +39,14 @@ migrate((app) => {
       options: {},
     });
 
-    dao.saveCollection(collection);
+    txApp.save(collection);
   }
 }, (db) => {
-  const dao = app.dao();
+  
   for (const { name } of COLLECTIONS) {
     try {
-      const c = dao.findCollectionByNameOrId(name);
-      if (c) dao.deleteCollection(c);
+      const c = txApp.findCollectionByNameOrId(name);
+      if (c) txApp.delete(c);
     } catch {}
   }
 });

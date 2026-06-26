@@ -1,12 +1,12 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-migrate((app) => {
-  const dao = app.dao();
+migrate((txApp) => {
+  
 
   // Create daily_custom_todos collection
   try {
-    const existing = dao.findCollectionByNameOrId('daily_custom_todos');
-    if (existing) dao.deleteCollection(existing);
+    const existing = txApp.findCollectionByNameOrId('daily_custom_todos');
+    if (existing) txApp.delete(existing);
   } catch {}
 
   const customTodosCollection = new Collection({
@@ -30,12 +30,12 @@ migrate((app) => {
     options: {},
   });
 
-  dao.saveCollection(customTodosCollection);
+  txApp.save(customTodosCollection);
 
   // Create daily_todo_history collection
   try {
-    const existing = dao.findCollectionByNameOrId('daily_todo_history');
-    if (existing) dao.deleteCollection(existing);
+    const existing = txApp.findCollectionByNameOrId('daily_todo_history');
+    if (existing) txApp.delete(existing);
   } catch {}
 
   const todoHistoryCollection = new Collection({
@@ -59,15 +59,15 @@ migrate((app) => {
     options: {},
   });
 
-  dao.saveCollection(todoHistoryCollection);
+  txApp.save(todoHistoryCollection);
 }, (db) => {
-  const dao = app.dao();
+  
   try {
-    const c = dao.findCollectionByNameOrId('daily_custom_todos');
-    if (c) dao.deleteCollection(c);
+    const c = txApp.findCollectionByNameOrId('daily_custom_todos');
+    if (c) txApp.delete(c);
   } catch {}
   try {
-    const c = dao.findCollectionByNameOrId('daily_todo_history');
-    if (c) dao.deleteCollection(c);
+    const c = txApp.findCollectionByNameOrId('daily_todo_history');
+    if (c) txApp.delete(c);
   } catch {}
 });

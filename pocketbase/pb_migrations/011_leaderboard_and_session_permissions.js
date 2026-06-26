@@ -1,8 +1,6 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-migrate((app) => {
-  const dao = app.dao();
-
+migrate((txApp) => {
   // 1. Create leaderboard collection
   const leaderboardCollection = new Collection({
     "id": "leaderboard_001",
@@ -64,32 +62,31 @@ migrate((app) => {
     "deleteRule": null,
     "options": {}
   });
-  dao.saveCollection(leaderboardCollection);
+  txApp.save(leaderboardCollection);
 
   // 2. Fix active_sessions permissions (was fully open, now requires auth)
   try {
-    const activeSessions = dao.findCollectionByNameOrId("active_sessions_001");
+    const activeSessions = txApp.findCollectionByNameOrId("active_sessions_001");
     activeSessions.createRule = "@request.auth.id != ''";
     activeSessions.updateRule = "@request.auth.id != ''";
     activeSessions.deleteRule = "@request.auth.id != ''";
-    dao.saveCollection(activeSessions);
+    txApp.save(activeSessions);
   } catch (e) {
     // Collection may not exist
     console.log("[Migration] active_sessions not found, skipping permission fix");
   }
-}, (app) => {
+}, (txApp) => {
   // Rollback
-  const dao = app.dao();
   try {
-    const lb = dao.findCollectionByNameOrId("leaderboard_001");
-    dao.deleteCollection(lb);
+    const lb = txApp.findCollectionByNameOrId("leaderboard_001");
+    txApp.delete(lb);
   } catch (e) {}
 
   try {
-    const activeSessions = dao.findCollectionByNameOrId("active_sessions_001");
+    const activeSessions = txApp.findCollectionByNameOrId("active_sessions_001");
     activeSessions.createRule = "";
     activeSessions.updateRule = "";
     activeSessions.deleteRule = "";
-    dao.saveCollection(activeSessions);
+    txApp.save(activeSessions);
   } catch (e) {}
 });
