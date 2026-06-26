@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Trash2 } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import { useTheme, useT } from '../../components/UI';
+import { useTheme, useT } from '../../../components/UI';
 import { useMusicStore } from '../useMusicStore';
 import FavoriteButton from './FavoriteButton';
 import AnimatedMusicIcon from './AnimatedMusicIcon';

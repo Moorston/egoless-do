@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useTheme } from '../../../components/UI';
-import { GlobalPulseMap } from '../global-pulse';
+import { GlobalPulseMap } from '../../global-pulse';
 
 interface GlobalPulseScreenProps {
   route?: {

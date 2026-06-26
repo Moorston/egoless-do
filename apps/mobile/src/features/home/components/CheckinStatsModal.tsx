@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
-import { useTheme, useT } from '../../components/UI';
-import CalendarGrid from '../../components/charts/CalendarGrid';
-import { useAppStore } from '../../store/useAppStore';
+import { useTheme, useT } from '../../../components/UI';
+import CalendarGrid from '../../../components/charts/CalendarGrid';
+import { useAppStore } from '../../../store/useAppStore';
 import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 

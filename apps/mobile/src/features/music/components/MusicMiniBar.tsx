@@ -6,7 +6,7 @@ import type { MusicTrack } from '@egoless-do/core';
 import type { PlayMode } from '../useMusicStore';
 import WaveformBar from './WaveformBar';
 import { useMusicStore } from '../useMusicStore';
-import { useTheme } from '../../components/UI';
+import { useTheme } from '../../../components/UI';
 
 const MODE_ICONS: Record<string, typeof Repeat> = {
   sequential: Repeat,

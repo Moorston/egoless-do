@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Upload } from 'lucide-react-native';
 import { FONT_BODY } from '@egoless-do/core';
-import { useTheme } from '../../components/UI';
+import { useTheme } from '../../../components/UI';
 import { useMusicStore } from '../useMusicStore';
 
 interface Props {

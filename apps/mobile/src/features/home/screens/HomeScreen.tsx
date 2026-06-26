@@ -340,7 +340,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (!store.healthSyncEnabled) return;
-    import('../health/HealthService').then(({ performHealthSync }) => {
+    import('../../health/HealthService').then(({ performHealthSync }) => {
       return performHealthSync(useAppStore.getState());
     }).catch(console.error);
   }, [store.healthSyncEnabled]);

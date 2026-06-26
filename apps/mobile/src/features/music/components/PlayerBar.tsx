@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume2, VolumeX, Clock } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
-import { useTheme, useT } from '../../components/UI';
+import { useTheme, useT } from '../../../components/UI';
 import { useMusicStore } from '../useMusicStore';
 import type { PlayMode } from '../useMusicStore';
 import { audioPlayerRef } from '../services/audioPlayerRef';

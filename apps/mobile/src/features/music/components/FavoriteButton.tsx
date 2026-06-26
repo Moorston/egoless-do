@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { TouchableOpacity, Animated } from 'react-native';
 import { Heart } from 'lucide-react-native';
-import { useTheme } from '../../components/UI';
+import { useTheme } from '../../../components/UI';
 
 interface Props {
   isFavorite: boolean;

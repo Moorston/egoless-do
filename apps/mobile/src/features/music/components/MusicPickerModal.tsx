@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { X, Music } from 'lucide-react-native';
-import { useTheme, useT } from '../../components/UI';
+import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useMusicStore } from '../useMusicStore';
