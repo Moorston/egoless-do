@@ -13,8 +13,8 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Globe, Binary, ChevronRight } from 'lucide-react-native';
 import { useMusicStore } from '../music/useMusicStore';
-import { audioSessionManager } from '../music/AudioSessionManager';
-import MusicPickerModal from '../music/MusicPickerModal';
+import { audioSessionManager } from '../music/services/AudioSessionManager';
+import MusicPickerModal from '../music/components/MusicPickerModal';
 import MeditationMusicBar from './MeditationMusicBar';
 
 // 实时会话
