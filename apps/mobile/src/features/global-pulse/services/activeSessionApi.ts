@@ -1,6 +1,6 @@
 /**
  * 活跃会话 API 服务
- * 管理实时在线会话的 CRUD 和 SSE 订阅
+ * 管理实时在线会话的 CRUD 和实时订阅
  */
 
 import { ActiveSession, ApiResponse, CheckinType } from '../types/globalPulse';
@@ -9,6 +9,34 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8090';
 const COLLECTION = 'active_sessions';
 const REQUEST_TIMEOUT = 10000;
 
+// ── Connection state ──────────────────────────────────────────────
+export type ConnectionState = 'idle' | 'connecting' | 'connected' | 'disconnected';
+
+let _connectionState: ConnectionState = 'idle';
+let _connectionListeners: Array<(state: ConnectionState) => void> = [];
+
+export function getConnectionState(): ConnectionState {
+  return _connectionState;
+}
+
+export function onConnectionStateChange(listener: (state: ConnectionState) => void): () => void {
+  _connectionListeners.push(listener);
+  return () => {
+    _connectionListeners = _connectionListeners.filter(l => l !== listener);
+  };
+}
+
+function setConnectionState(state: ConnectionState) {
+  if (_connectionState === state) return;
+  _connectionState = state;
+  for (const listener of _connectionListeners) {
+    try { listener(state); } catch (err) {
+      if (__DEV__) console.warn('[ConnectionState] Listener error:', err);
+    }
+  }
+}
+
+// ── HTTP helpers ──────────────────────────────────────────────────
 async function pbRequest<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -30,7 +58,7 @@ async function pbRequest<T>(
     clearTimeout(timeoutId);
 
     if (options.method === 'DELETE' && response.ok) {
-      return { success: true, data: undefined as any };
+      return { success: true } as ApiResponse<T>;
     }
 
     const data = await response.json();
@@ -78,16 +106,15 @@ function mapSession(item: any): ActiveSession {
   };
 }
 
-/**
- * 创建活跃会话
- */
+// ── CRUD operations ───────────────────────────────────────────────
+
 export async function createSession(
   data: Omit<ActiveSession, 'session_id' | 'last_heartbeat'> & { session_id?: string }
 ): Promise<ApiResponse<ActiveSession>> {
   const sessionId = data.session_id || crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const now = new Date().toISOString();
 
-  const result = await pbRequest<any>(
+  const result = await pbRequest<unknown>(
     `/api/collections/${COLLECTION}/records`,
     {
       method: 'POST',
@@ -112,22 +139,19 @@ export async function createSession(
     return { success: true, data: mapSession(result.data) };
   }
 
-  return result as any;
+  return result as ApiResponse<ActiveSession>;
 }
 
-/**
- * 更新活跃会话（如感悟、心跳等）
- */
 export async function updateSession(
   recordId: string,
   data: Partial<Pick<ActiveSession, 'insight' | 'last_heartbeat' | 'goal'>>
 ): Promise<ApiResponse<ActiveSession>> {
-  const body: any = {};
+  const body: Record<string, unknown> = {};
   if (data.insight !== undefined) body.insight = data.insight;
   if (data.last_heartbeat !== undefined) body.last_heartbeat = data.last_heartbeat;
   if (data.goal !== undefined) body.goal = data.goal;
 
-  const result = await pbRequest<any>(
+  const result = await pbRequest<unknown>(
     `/api/collections/${COLLECTION}/records/${recordId}`,
     {
       method: 'PATCH',
@@ -139,12 +163,9 @@ export async function updateSession(
     return { success: true, data: mapSession(result.data) };
   }
 
-  return result as any;
+  return result as ApiResponse<ActiveSession>;
 }
 
-/**
- * 删除活跃会话
- */
 export async function deleteSession(recordId: string): Promise<ApiResponse<void>> {
   return pbRequest<void>(
     `/api/collections/${COLLECTION}/records/${recordId}`,
@@ -152,9 +173,6 @@ export async function deleteSession(recordId: string): Promise<ApiResponse<void>
   );
 }
 
-/**
- * 根据 user_hash 删除该用户的所有活跃会话
- */
 export async function deleteSessionsByUserHash(userHash: string): Promise<void> {
   const filter = encodeURIComponent(`user_hash = "${userHash}"`);
   const result = await pbRequest<any>(
@@ -168,9 +186,6 @@ export async function deleteSessionsByUserHash(userHash: string): Promise<void> 
   }
 }
 
-/**
- * 获取活跃会话列表
- */
 export async function getActiveSessions(
   type?: CheckinType
 ): Promise<ApiResponse<ActiveSession[]>> {
@@ -187,7 +202,7 @@ export async function getActiveSessions(
   queryParams.set('sort', '-started_at');
 
   const query = queryParams.toString();
-  const result = await pbRequest<any>(
+  const result = await pbRequest<{ items: unknown[] }>(
     `/api/collections/${COLLECTION}/records${query ? `?${query}` : ''}`
   );
 
@@ -196,73 +211,81 @@ export async function getActiveSessions(
     return { success: true, data: sessions };
   }
 
-  return result as any;
+  return result as ApiResponse<ActiveSession[]>;
 }
 
-/**
- * SSE 订阅回调类型
- */
+// ── Realtime subscription (polling for PocketBase v0.22 compat) ───
+
 export type SessionSubscriptionCallback = {
   onCreate?: (session: ActiveSession) => void;
   onUpdate?: (session: ActiveSession) => void;
   onDelete?: (sessionId: string) => void;
 };
 
+const POLL_INTERVAL = 15_000; // 15 seconds
+
 /**
- * 订阅 active_sessions 集合的实时变更
- * 返回取消订阅函数
+ * Subscribe to active_sessions collection changes via short polling.
+ * Compatible with PocketBase v0.22 which doesn't support POST /api/realtime.
+ * Returns unsubscribe function.
  */
 export function subscribeSessions(
   callbacks: SessionSubscriptionCallback
 ): () => void {
-  let eventSource: EventSource | null = null;
   let isActive = true;
+  let pollTimer: ReturnType<typeof setInterval> | null = null;
+  let previousSessions: ActiveSession[] = [];
 
-  const connect = () => {
-    if (!isActive) return;
-
-    const url = `${API_BASE_URL}/api/realtime`;
-    eventSource = new EventSource(url);
-
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (data.action === 'create' && callbacks.onCreate) {
-          callbacks.onCreate(mapSession(data.record));
-        } else if (data.action === 'update' && callbacks.onUpdate) {
-          callbacks.onUpdate(mapSession(data.record));
-        } else if (data.action === 'delete' && callbacks.onDelete) {
-          callbacks.onDelete(data.record?.id || '');
-        }
-      } catch (e) {
-        // ignore parse errors
-      }
-    };
-
-    eventSource.onerror = () => {
-      if (isActive) {
-        eventSource?.close();
-        // 重连延迟
-        setTimeout(connect, 3000);
-      }
-    };
+  const cleanup = () => {
+    if (pollTimer) {
+      clearInterval(pollTimer);
+      pollTimer = null;
+    }
   };
 
-  // PocketBase SSE 需要先订阅集合
-  const subscribeUrl = `${API_BASE_URL}/api/realtime`;
-  fetch(subscribeUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ clientId: `session-${Date.now()}` }),
-  }).then(() => {
-    connect();
-  }).catch(() => {
-    // 如果订阅接口不可用，直接尝试连接
-    connect();
-  });
+  const poll = async () => {
+    if (!isActive) return;
+    try {
+      const result = await getActiveSessions();
+      if (!result.success || !result.data) return;
+
+      const current = result.data;
+      const prevMap = new Map(previousSessions.map(s => [s.session_id, s]));
+      const currMap = new Map(current.map(s => [s.session_id, s]));
+
+      // Detect creates and updates
+      for (const session of current) {
+        const prev = prevMap.get(session.session_id);
+        if (!prev) {
+          callbacks.onCreate?.(session);
+        } else if (prev.last_heartbeat !== session.last_heartbeat || prev.insight !== session.insight) {
+          callbacks.onUpdate?.(session);
+        }
+      }
+
+      // Detect deletes
+      for (const prev of previousSessions) {
+        if (!currMap.has(prev.session_id)) {
+          callbacks.onDelete?.(prev.session_id);
+        }
+      }
+
+      previousSessions = current;
+      setConnectionState('connected');
+    } catch {
+      // Ignore poll errors silently
+    }
+  };
+
+  setConnectionState('connecting');
+  // Initial fetch
+  void poll();
+  // Start polling
+  pollTimer = setInterval(() => { void poll(); }, POLL_INTERVAL);
 
   return () => {
     isActive = false;
-    eventSource?.close();
+    cleanup();
+    setConnectionState('idle');
   };
 }

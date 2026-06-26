@@ -1,21 +1,32 @@
 # PocketBase Setup Script
-# Usage: .\setup.ps1
+# Usage: .\setup.ps1 [-Force]
+
+param(
+    [switch]$Force
+)
 
 $PB_VERSION = "0.38.2"
 $PB_DIR = "$PSScriptRoot"
 $PB_URL = "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_windows_amd64.zip"
 $ZIP_FILE = "$PB_DIR\pocketbase.zip"
 
-Write-Host "Downloading PocketBase v${PB_VERSION}..." -ForegroundColor Cyan
+Write-Host "PocketBase v${PB_VERSION} Setup" -ForegroundColor Cyan
 
-if (!(Test-Path "$PB_DIR\pocketbase.exe")) {
-    Invoke-WebRequest -Uri $PB_URL -OutFile $ZIP_FILE
-    Expand-Archive -Path $ZIP_FILE -DestinationPath $PB_DIR -Force
-    Remove-Item $ZIP_FILE
-    Write-Host "PocketBase downloaded successfully!" -ForegroundColor Green
-} else {
-    Write-Host "PocketBase already exists." -ForegroundColor Yellow
+if ((Test-Path "$PB_DIR\pocketbase.exe") -and -not $Force) {
+    Write-Host "PocketBase already exists. Use -Force to re-download." -ForegroundColor Yellow
+    return
 }
+
+if (Test-Path "$PB_DIR\pocketbase.exe") {
+    Remove-Item "$PB_DIR\pocketbase.exe" -Force
+    Write-Host "Removed old pocketbase.exe" -ForegroundColor Yellow
+}
+
+Write-Host "Downloading PocketBase v${PB_VERSION}..." -ForegroundColor Cyan
+Invoke-WebRequest -Uri $PB_URL -OutFile $ZIP_FILE
+Expand-Archive -Path $ZIP_FILE -DestinationPath $PB_DIR -Force
+Remove-Item $ZIP_FILE
+Write-Host "PocketBase v${PB_VERSION} downloaded successfully!" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "To start PocketBase:" -ForegroundColor Cyan

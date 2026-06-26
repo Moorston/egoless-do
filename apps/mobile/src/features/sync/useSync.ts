@@ -2,12 +2,16 @@
 // Connects SyncService to the app lifecycle: foreground triggers sync,
 // token comes from Zustand store, server changes update store.
 import { useEffect, useRef } from 'react';
-import { AppState, type AppStateStatus } from 'react-native';
+import { AppState, Platform, type AppStateStatus } from 'react-native';
 import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, _migrationDone, setMigrationDone, resetMigrationFlag } from './SyncService';
 import { migrateToSyncQueue } from './migrateToSyncQueue';
 import { useAppStore } from '../../store/useAppStore';
+import type { MobileStore } from '../../store/useAppStore';
 import { mobileStorageAdapter } from '../../store/storageAdapter';
 import { registerPushToken } from '@egoless-do/core';
+
+type SyncableItem = { id?: string; deleted?: boolean; updatedAt?: number; [k: string]: unknown };
+type SyncPatch = Record<string, SyncableItem[] | unknown>;
 
 const getNotifications = () => import('expo-notifications');
 
@@ -19,7 +23,7 @@ export function useSync() {
   // Wire up token provider & change handler once
   useEffect(() => {
     setSyncTokenProvider(() => useAppStore.getState().auth.token);
-    setSyncChangeHandler((patch) => {
+    setSyncChangeHandler((patch: SyncPatch) => {
       const store = useAppStore.getState();
       const merged: Record<string, unknown> = {};
       const ARRAY_KEYS: Record<string, string> = {
@@ -38,12 +42,12 @@ export function useSync() {
       };
       for (const [key, storeKey] of Object.entries(ARRAY_KEYS)) {
         if (!patch[key]) continue;
-        const serverItems = patch[key] as any[];
-        const existing = (store as any)[storeKey] as any[] ?? [];
+        const serverItems = patch[key] as SyncableItem[];
+        const existing = (store as Record<string, unknown>)[storeKey] as SyncableItem[] ?? [];
         const result = [...existing];
         const idField = KEY_FIELD[storeKey] ?? 'id';
         for (const item of serverItems) {
-          const idx = result.findIndex((e: any) => e[idField] === item[idField]);
+          const idx = result.findIndex((e) => e[idField] === item[idField]);
           if (idx >= 0) {
             const local = result[idx];
             if (local.deleted) {
@@ -75,31 +79,31 @@ export function useSync() {
 
       // Extract settings from profile data (piggybacked on profile entity)
       if (merged.userProfile && Array.isArray(merged.userProfile)) {
-        const profileArr = merged.userProfile as any[];
+        const profileArr = merged.userProfile as SyncableItem[];
         if (profileArr.length > 0) {
           // Pick the latest non-deleted profile (matching pullServerData behavior)
           const latest = profileArr
-            .filter((p: any) => !p.deleted)
-            .sort((a: any, b: any) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0];
+            .filter((p) => !p.deleted)
+            .sort((a, b) => ((b.updatedAt ?? 0) as number) - ((a.updatedAt ?? 0) as number))[0];
           if (latest) {
-            let profileData = latest.data ?? latest;
+            let profileData: Record<string, unknown> = (latest.data as Record<string, unknown>) ?? latest;
             if (typeof profileData === 'string') {
               try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
             }
             // Separate settings from profile data to prevent overwriting local settings via merge
             const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
-            const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = profileData as any;
+            const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = profileData as Record<string, unknown>;
             // Flatten profile array back to object (matching pullServerData behavior)
-            merged.userProfile = { ...(store.userProfile ?? {}), ...profileDataWithoutSettings };
+            merged.userProfile = { ...((store.userProfile as Record<string, unknown>) ?? {}), ...profileDataWithoutSettings };
             if (profileData.waterMl !== undefined) merged.waterMl = profileData.waterMl;
             if (profileData.waterGoal !== undefined) merged.waterGoal = profileData.waterGoal;
             if (profileData.weightUnit !== undefined) merged.weightUnit = profileData.weightUnit;
             // Only overwrite local settings if server profile is newer
-            const localProfileUpdated = (store.userProfile as any)?.updatedAt ?? 0;
-            const serverProfileUpdated = latest.updatedAt ?? 0;
+            const localProfileUpdated = ((store.userProfile as Record<string, unknown>)?.updatedAt as number) ?? 0;
+            const serverProfileUpdated = (latest.updatedAt as number) ?? 0;
             if (serverProfileUpdated >= localProfileUpdated) {
               for (const sk of SETTINGS_KEYS) {
-                if (profileData[sk] !== undefined) (merged as any)[sk] = profileData[sk];
+                if (profileData[sk] !== undefined) merged[sk] = profileData[sk];
               }
             }
           } else {
@@ -135,7 +139,7 @@ export function useSync() {
         });
         if (changedReflections.length) {
           // Only update store — thoughtTrailIds is computed from trail data, not persisted
-          useAppStore.setState({ reflections: updated } as any);
+          useAppStore.setState({ reflections: updated } as Partial<MobileStore>);
         }
       }
 
@@ -146,7 +150,7 @@ export function useSync() {
     // Provide recycle bin IDs so sync can skip locally deleted items
     setDeletedIdsProvider(() => {
       const recycleBin = useAppStore.getState().recycleBin ?? [];
-      return new Set(recycleBin.map((r: any) => r.id));
+      return new Set(recycleBin.map((r) => (r as Record<string, unknown>).id as string));
     });
   }, []);
 
@@ -184,7 +188,7 @@ export function useSync() {
       }
     };
 
-    registerPushToken(token, 'ios', getExpoPushToken);
+    registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken);
   }, [isSignedIn, token]);
 
   // Connect realtime on sign in (short polling)

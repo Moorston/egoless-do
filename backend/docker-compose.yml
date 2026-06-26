@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   pocketbase:
-    image: ghcr.io/muchobien/pocketbase:latest
+    image: ghcr.io/muchobien/pocketbase:0.38.2
     container_name: egoless-pocketbase
     restart: unless-stopped
     ports:

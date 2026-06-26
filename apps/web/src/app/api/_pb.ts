@@ -25,22 +25,8 @@ async function authenticateAdmin(): Promise<string> {
     throw new Error('PB_ADMIN_EMAIL or PB_ADMIN_PASSWORD not configured');
   }
 
-  // PocketBase v0.22 uses 'admins', v0.23+ uses '_superusers'
-  try {
-    const authData = await pb.collection('_superusers').authWithPassword(adminEmail, adminPass);
-    return authData.token;
-  } catch (e: any) {
-    if (e?.status !== 404) throw e;
-    // Fallback: try /api/admins/auth-with-password (v0.22)
-    const res = await fetch(`${PB_URL}/api/admins/auth-with-password`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ identity: adminEmail, password: adminPass }),
-    });
-    if (!res.ok) throw new Error(`Admin auth failed: ${res.status}`);
-    const data = await res.json();
-    return data.token;
-  }
+  const authData = await pb.collection('_superusers').authWithPassword(adminEmail, adminPass);
+  return authData.token;
 }
 
 export async function getAdminPb(): Promise<PocketBase> {

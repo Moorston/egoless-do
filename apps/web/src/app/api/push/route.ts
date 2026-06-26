@@ -5,8 +5,9 @@ import { getClientIp, createRateLimiter } from '../_rateLimit';
 
 const pushRateLimit = createRateLimiter(30, 60_000); // 30 req/min
 
-// ── Push notification service ────────────────────────────────────
-// Supports FCM (Android), APNs (iOS), and Web Push
+// ── Push notification service (Expo Push API) ───────────────────
+// All mobile tokens are Expo Push Tokens, so we use the Expo Push API
+// https://docs.expo.dev/push-notifications/sending-notifications/
 
 interface PushToken {
   id: string;
@@ -21,6 +22,26 @@ interface PushPayload {
   body: string;
   data?: Record<string, string>;
 }
+
+interface ExpoPushMessage {
+  to: string;
+  title: string;
+  body: string;
+  data?: Record<string, string>;
+  sound?: string;
+}
+
+interface ExpoPushResponse {
+  data: Array<{
+    status: 'ok' | 'error';
+    id?: string;
+    message?: string;
+    details?: { error?: string };
+  }>;
+}
+
+const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
+const EXPO_BATCH_SIZE = 100;
 
 // ── Register push token ──────────────────────────────────────────
 export async function POST(req: NextRequest) {
@@ -46,19 +67,17 @@ export async function POST(req: NextRequest) {
     const pb = getPb();
     if (authToken) pb.authStore.save(authToken, null);
 
-    // Check if token already exists
+    // Upsert: check if token already exists for this user
     try {
       const existing = await pb.collection('push_tokens').getFirstListItem(
         `user_id = "${escapeFilter(auth.userId)}" && token = "${escapeFilter(token)}"`
       );
-      // Update existing token
       await pb.collection('push_tokens').update(existing.id, {
         platform,
         updated_at: new Date().toISOString(),
       });
     } catch (lookupErr: any) {
       if (lookupErr?.status !== 404) throw lookupErr;
-      // Create new token only if not found
       await pb.collection('push_tokens').create({
         user_id: auth.userId,
         platform,
@@ -110,93 +129,93 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ ok: true, message: '用户没有注册推送令牌' });
     }
 
-    // Send push notifications based on platform
-    const results = await Promise.allSettled(
-      tokens.map(async (tokenRecord) => {
-        const { platform, token } = tokenRecord as unknown as PushToken;
-
-        switch (platform) {
-          case 'android':
-            return sendFCM(token, payload);
-          case 'ios':
-            return sendAPNs(token, payload);
-          case 'web':
-            return sendWebPush(token, payload);
-          default:
-            throw new Error(`Unsupported platform: ${platform}`);
-        }
-      })
+    // Send via Expo Push API (all tokens are Expo tokens)
+    const { sent, failedTokenIds } = await sendExpoPush(
+      tokens as unknown as PushToken[],
+      payload,
     );
 
-    // Clean up permanently invalid tokens (not transient failures)
-    const failedTokens = tokens.filter((_, i) => {
-      if (results[i].status !== 'rejected') return false;
-      const msg = (results[i] as PromiseRejectedResult).reason?.message ?? '';
-      return msg.includes('NotRegistered') || msg.includes('InvalidRegistration') || msg.includes('404');
-    });
-    if (failedTokens.length > 0) {
+    // Clean up permanently invalid tokens
+    if (failedTokenIds.length > 0) {
       await Promise.all(
-        failedTokens.map((token) =>
-          pb.collection('push_tokens').delete(token.id).catch(console.error)
+        failedTokenIds.map((id) =>
+          pb.collection('push_tokens').delete(id).catch(console.error)
         )
       );
     }
 
     return NextResponse.json({
       ok: true,
-      sent: tokens.length - failedTokens.length,
-      failed: failedTokens.length,
+      sent,
+      failed: failedTokenIds.length,
     });
   } catch (err: unknown) {
     return NextResponse.json({ error: '发送推送通知失败' }, { status: 500 });
   }
 }
 
-// ── Platform-specific push implementations ───────────────────────
+// ── Expo Push API sender ─────────────────────────────────────────
 
-async function sendFCM(token: string, payload: PushPayload): Promise<void> {
-  const fcmServerKey = process.env.FCM_SERVER_KEY;
-  if (!fcmServerKey) {
-    throw new Error('FCM_SERVER_KEY not configured');
-  }
+async function sendExpoPush(
+  tokens: PushToken[],
+  payload: PushPayload,
+): Promise<{ sent: number; failedTokenIds: string[] }> {
+  const messages: ExpoPushMessage[] = tokens.map((t) => ({
+    to: t.token,
+    title: payload.title,
+    body: payload.body,
+    data: payload.data,
+    sound: 'default',
+  }));
 
-  const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-    method: 'POST',
-    headers: {
+  const failedTokenIds: string[] = [];
+  let sent = 0;
+
+  // Batch in groups of EXPO_BATCH_SIZE
+  for (let i = 0; i < messages.length; i += EXPO_BATCH_SIZE) {
+    const batch = messages.slice(i, i + EXPO_BATCH_SIZE);
+    const batchTokens = tokens.slice(i, i + EXPO_BATCH_SIZE);
+
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Authorization': `key=${fcmServerKey}`,
-    },
-    body: JSON.stringify({
-      to: token,
-      notification: {
-        title: payload.title,
-        body: payload.body,
-      },
-      data: payload.data || {},
-    }),
-  });
+    };
 
-  if (!response.ok) {
-    throw new Error(`FCM request failed: ${response.status}`);
-  }
+    // EXPO_ACCESS_TOKEN is optional but recommended for higher rate limits
+    const accessToken = process.env.EXPO_ACCESS_TOKEN;
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
 
-  // Check for per-recipient errors in the response body
-  const body = await response.json().catch(() => null);
-  if (body?.results) {
-    for (const result of body.results) {
-      if (result.error) {
-        throw new Error(`FCM recipient error: ${result.error}`);
+    const response = await fetch(EXPO_PUSH_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(batch),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => '');
+      console.error('[Push] Expo Push API error:', response.status, errorText);
+      // All tokens in this batch count as failed
+      continue;
+    }
+
+    const result: ExpoPushResponse = await response.json();
+
+    for (let j = 0; j < result.data.length; j++) {
+      const item = result.data[j];
+      if (item.status === 'ok') {
+        sent++;
+      } else {
+        // DeviceNotRegistered → delete token
+        const errorCode = item.details?.error;
+        if (errorCode === 'DeviceNotRegistered') {
+          failedTokenIds.push(batchTokens[j].id);
+        } else {
+          console.warn('[Push] Expo push error for token:', errorCode, item.message);
+        }
       }
     }
   }
-}
 
-async function sendAPNs(token: string, payload: PushPayload): Promise<void> {
-  // TODO: implement APNs support
-  console.warn('[Push] APNs not yet implemented, skipping token:', token.slice(0, 8) + '...');
-}
-
-async function sendWebPush(token: string, payload: PushPayload): Promise<void> {
-  // TODO: implement WebPush support
-  console.warn('[Push] WebPush not yet implemented, skipping token:', token.slice(0, 8) + '...');
+  return { sent, failedTokenIds };
 }

@@ -33,3 +33,130 @@ cronAdd("cleanup_old_pins", "0 3 * * *", () => {
 routerAdd("GET", "/api/health", (c) => {
   return c.json(200, { status: "ok", ts: new Date().toISOString() });
 });
+
+// ─── Computed fields for Entity-Bag collections ────────────────────
+// Extract key fields from JSON data blob to top-level for indexing/querying.
+
+/**
+ * Extract computed fields from checkin_records JSON data.
+ * Fields: computed_type, computed_user, computed_date
+ */
+function extractCheckinFields(record) {
+  try {
+    const raw = record.get("data");
+    if (!raw) return;
+    const data = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (data.type) record.set("computed_type", String(data.type));
+    if (data.userId) record.set("computed_user", String(data.userId));
+    if (data.date) record.set("computed_date", String(data.date));
+  } catch (e) {
+    console.error("[Hooks] extractCheckinFields error:", e);
+  }
+}
+
+onRecordAfterCreateRequest((e) => {
+  extractCheckinFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "checkin_records");
+
+onRecordAfterUpdateRequest((e) => {
+  extractCheckinFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "checkin_records");
+
+/**
+ * Extract computed fields from reflections JSON data.
+ * Fields: computed_user, computed_is_published
+ */
+function extractReflectionFields(record) {
+  try {
+    const raw = record.get("data");
+    if (!raw) return;
+    const data = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (data.userId) record.set("computed_user", String(data.userId));
+    if (data.isPublished !== undefined) record.set("computed_is_published", data.isPublished ? "1" : "0");
+  } catch (e) {
+    console.error("[Hooks] extractReflectionFields error:", e);
+  }
+}
+
+onRecordAfterCreateRequest((e) => {
+  extractReflectionFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "reflections");
+
+onRecordAfterUpdateRequest((e) => {
+  extractReflectionFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "reflections");
+
+/**
+ * Extract computed fields from goals JSON data.
+ * Fields: computed_user, computed_status
+ */
+function extractGoalFields(record) {
+  try {
+    const raw = record.get("data");
+    if (!raw) return;
+    const data = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (data.userId) record.set("computed_user", String(data.userId));
+    if (data.status) record.set("computed_status", String(data.status));
+  } catch (e) {
+    console.error("[Hooks] extractGoalFields error:", e);
+  }
+}
+
+onRecordAfterCreateRequest((e) => {
+  extractGoalFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "goals");
+
+onRecordAfterUpdateRequest((e) => {
+  extractGoalFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "goals");
+
+/**
+ * Extract computed fields from habits JSON data.
+ * Fields: computed_user, computed_status
+ */
+function extractHabitFields(record) {
+  try {
+    const raw = record.get("data");
+    if (!raw) return;
+    const data = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (data.userId) record.set("computed_user", String(data.userId));
+    if (data.status) record.set("computed_status", String(data.status));
+  } catch (e) {
+    console.error("[Hooks] extractHabitFields error:", e);
+  }
+}
+
+onRecordAfterCreateRequest((e) => {
+  extractHabitFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "habits");
+
+onRecordAfterUpdateRequest((e) => {
+  extractHabitFields(e.record);
+  $app.dao().saveRecord(e.record);
+}, "habits");
+
+/**
+ * Cleanup stale active sessions (no heartbeat for > 2 minutes).
+ * Runs every minute.
+ */
+cronAdd("cleanup_stale_sessions", "* * * * *", () => {
+  const cutoff = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+  try {
+    const records = $app.dao().findRecordsByFilter(
+      "active_sessions", `last_heartbeat < "${cutoff}"`, "-last_heartbeat", 100, 0
+    );
+    records.forEach(r => $app.dao().deleteRecord(r));
+    if (records.length > 0) {
+      console.log(`[Cleanup] Deleted ${records.length} stale active sessions`);
+    }
+  } catch (e) {
+    // Collection may not exist yet
+  }
+});

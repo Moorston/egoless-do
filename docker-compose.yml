@@ -1,7 +1,7 @@
 services:
   # ─── PocketBase 数据库 ──────────────────────────────────────────
   pocketbase:
-    image: ghcr.io/muchobien/pocketbase:latest
+    image: ghcr.io/muchobien/pocketbase:0.38.2
     container_name: egoless-do-pb
     restart: unless-stopped
     ports:

@@ -7,9 +7,10 @@ import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice,
+  AIMode,
 } from '@egoless-do/core';
 import {
-  setApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
+  setApiBase, setPushApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice,
@@ -28,6 +29,7 @@ const DEV_API = `http://${devHost}:3000`;
 const PROD_API = process.env.EXPO_PUBLIC_API_URL ?? 'https://egolessdo.freebytes.net';
 const apiBase = __DEV__ ? DEV_API : PROD_API;
 setApiBase(apiBase);
+setPushApiBase(apiBase);
 
 const adapter = mobileStorageAdapter;
 
@@ -80,6 +82,9 @@ export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlic
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
   & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice;
 
+/** Partial store type for setState calls */
+export type PartialMobileStore = Partial<MobileStore>;
+
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
 const triggerAutoSync = () => _autoSyncCallback?.();
@@ -89,7 +94,7 @@ export const useAppStore = create<MobileStore>()(
     (...a) => ({
       ...createAuthSlice(adapter, () => { runSync().catch(console.error); }, () => {
         const { auth, theme, language } = useAppStore.getState();
-        useAppStore.setState(createResetDataPatch(auth, theme, language) as any);
+        useAppStore.setState(createResetDataPatch(auth, theme, language) as PartialMobileStore);
         resetSyncState().catch(console.error);
         resetMigrationFlag();
       })(...a),
@@ -97,7 +102,7 @@ export const useAppStore = create<MobileStore>()(
       ...createReflectionSlice(adapter)(...a),
       ...createFastingSlice(adapter, triggerAutoSync)(...a),
       ...createMeditationSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as any); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); }, persistProfileSettings)(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); }, persistProfileSettings)(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
       ...createThoughtTrailSlice(adapter)(...a),
@@ -146,7 +151,7 @@ export const useAppStore = create<MobileStore>()(
           getLastReset: () => AsyncStorage.getItem(DAILY_RESET_KEY),
           setLastReset: (date) => { AsyncStorage.setItem(DAILY_RESET_KEY, date).catch(console.error); },
           getCheckinHistory: () => useAppStore.getState().checkinHistory ?? [],
-          applyPatch: (patch) => useAppStore.setState(patch as any),
+          applyPatch: (patch) => useAppStore.setState(patch as PartialMobileStore),
           getProfile: () => (useAppStore.getState().userProfile ?? {}) as Record<string, unknown>,
           getWaterGoal: () => useAppStore.getState().waterGoal ?? 2000,
           persistProfile: (data) => {
@@ -209,7 +214,7 @@ export const useAppStore = create<MobileStore>()(
             if (row) {
               let models: any[] = [];
               try { models = JSON.parse(row.models); } catch {}
-              useAppStore.setState({ aiMode: row.mode as any, aiModels: models });
+              useAppStore.setState({ aiMode: row.mode as AIMode, aiModels: models });
             }
           } catch {}
         }).catch(() => {});

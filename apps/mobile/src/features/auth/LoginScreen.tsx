@@ -96,7 +96,7 @@ export default function LoginScreen() {
           }
         };
 
-        registerPushToken(token, 'ios', getExpoPushToken);
+        registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken);
       }
 
       nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
