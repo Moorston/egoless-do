@@ -1,6 +1,6 @@
 // ─── Mobile sync queue (SQLite-backed) ──────────────────────────
 import type { SyncEntity } from '@egoless-do/core';
-import { openDatabase } from './schema';
+import { openDatabase, withDbLock } from './schema';
 
 let _enqueueMutex: Promise<void> = Promise.resolve();
 
@@ -28,7 +28,7 @@ export function enqueueChange(
     try {
       const db = await openDatabase();
       // Transactional: DELETE + INSERT must be atomic to prevent queue entry loss on crash
-      await db.withTransactionAsync(async () => {
+      await withDbLock(() => db.withTransactionAsync(async () => {
         await db.runAsync(
           'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
           [entity, entityId],
@@ -37,7 +37,7 @@ export function enqueueChange(
           'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status) VALUES (?, ?, ?, ?, ?, ?)',
           [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
         );
-      });
+      }));
     } catch (err) {
       console.error('[syncQueue] enqueue failed:', err);
       throw err;

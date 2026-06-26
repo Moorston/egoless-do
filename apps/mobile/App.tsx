@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Sentry from 'sentry-expo';
+import { ErrorBoundary } from '@sentry/react-native';
 import AppNavigator from './src/navigation';
 import { AudioEngineProvider } from './src/features/music';
 import SplashScreen from './src/features/splash/SplashScreen';
@@ -29,7 +30,7 @@ export default function App() {
   }
 
   return (
-    <Sentry.Native.ErrorBoundary>
+    <ErrorBoundary>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <AudioEngineProvider>
@@ -37,6 +38,6 @@ export default function App() {
           </AudioEngineProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
-    </Sentry.Native.ErrorBoundary>
+    </ErrorBoundary>
   );
 }

@@ -3,6 +3,25 @@ import * as SQLite from 'expo-sqlite';
 
 export const DB_NAME = 'egoless_do.db';
 
+/** Global write mutex — prevents concurrent SQLite transactions. */
+let _writeMutex: Promise<void> = Promise.resolve();
+
+/**
+ * Run an async function with exclusive write access to the database.
+ * Serializes all calls so only one transaction executes at a time.
+ */
+export async function withDbLock<T>(fn: () => Promise<T>): Promise<T> {
+  const release = _writeMutex;
+  let resolve!: () => void;
+  _writeMutex = new Promise<void>(r => { resolve = r; });
+  await release;
+  try {
+    return await fn();
+  } finally {
+    resolve();
+  }
+}
+
 let _dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
 export function openDatabase(): Promise<SQLite.SQLiteDatabase> {

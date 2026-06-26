@@ -1,6 +1,6 @@
 // ─── Mobile Sync Service ──────────────────────────────────────────
 // Pushes queued local changes to the server, then pulls server changes.
-import { openDatabase, getState, setState } from '../../db/schema';
+import { openDatabase, getState, setState, withDbLock } from '../../db/schema';
 import {
   drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems,
   markQueueItemFailed, markQueueItemConflict, markQueueItemRetry, resetAllPendingForRetry,
@@ -360,12 +360,12 @@ async function applyEntityToTable(
           _hasSyncedDeletes = true;
           // Cascade plan deletion to child entities (transactional)
           if (entity === 'plan') {
-            await db.withTransactionAsync(async () => {
+            await withDbLock(() => db.withTransactionAsync(async () => {
               await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE plan_id=?', [id]);
               await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
               await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=1 WHERE plan_id=?', [id]);
               await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-            });
+            }));
           }
         }
       }
