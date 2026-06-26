@@ -3,64 +3,47 @@
 migrate((txApp) => {
   // 1. Create leaderboard collection
   const leaderboardCollection = new Collection({
-    "id": "leaderboard_001",
-    "created": "2026-06-26T00:00:00Z",
-    "updated": "2026-06-26T00:00:00Z",
-    "name": "leaderboard",
-    "type": "base",
-    "system": false,
-    "schema": [
+    name: "leaderboard",
+    type: "base",
+    system: false,
+    schema: [
       {
-        "system": false,
-        "id": "lb_user_hash",
-        "name": "user_hash",
-        "type": "text",
-        "required": true,
-        "presentable": false,
-        "unique": true,
-        "options": { "min": 8, "max": 64, "pattern": "" }
+        name: "user_hash",
+        type: "text",
+        required: true,
+        unique: true,
+        options: { "min": 8, "max": 64, "pattern": "" }
       },
       {
-        "system": false,
-        "id": "lb_best_streak",
-        "name": "best_streak",
-        "type": "number",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": { "min": 0, "max": 99999 }
+        name: "best_streak",
+        type: "number",
+        required: false,
+        unique: false,
+        options: { "min": 0, "max": 99999 }
       },
       {
-        "system": false,
-        "id": "lb_total_days",
-        "name": "total_days",
-        "type": "number",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": { "min": 0, "max": 99999 }
+        name: "total_days",
+        type: "number",
+        required: false,
+        unique: false,
+        options: { "min": 0, "max": 99999 }
       },
       {
-        "system": false,
-        "id": "lb_last_active_at",
-        "name": "last_active_at",
-        "type": "date",
-        "required": false,
-        "presentable": false,
-        "unique": false,
-        "options": { "min": "", "max": "" }
+        name: "last_active_at",
+        type: "date",
+        required: false,
+        unique: false
       }
     ],
-    "indexes": [
+    indexes: [
       "CREATE INDEX idx_leaderboard_user_hash ON leaderboard (user_hash)",
       "CREATE INDEX idx_leaderboard_best_streak ON leaderboard (best_streak DESC)"
     ],
-    "listRule": "",
-    "viewRule": "",
-    "createRule": "@request.auth.id != ''",
-    "updateRule": "@request.auth.id != ''",
-    "deleteRule": null,
-    "options": {}
+    listRule: "",
+    viewRule: "",
+    createRule: "@request.auth.id != ''",
+    updateRule: "@request.auth.id != ''",
+    deleteRule: null
   });
   txApp.save(leaderboardCollection);
 
