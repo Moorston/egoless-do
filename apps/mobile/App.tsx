@@ -29,7 +29,7 @@ export default function App() {
   }
 
   return (
-    <Sentry.ErrorBoundary>
+    <Sentry.Native.ErrorBoundary>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <AudioEngineProvider>
@@ -37,6 +37,6 @@ export default function App() {
           </AudioEngineProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
-    </Sentry.ErrorBoundary>
+    </Sentry.Native.ErrorBoundary>
   );
 }
