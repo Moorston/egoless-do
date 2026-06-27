@@ -852,7 +852,12 @@ export function computePlanProgress(plan: Plan, planItems: PlanItem[]): number {
 // ── Query helpers ─────────────────────────────────────────────
 
 export function getActivePlan(plans: Plan[]): Plan | null {
-  return plans.find(p => !p.deleted && isPlanActive(p.status)) ?? null;
+  const active = plans.filter(p => !p.deleted && isPlanActive(p.status));
+  if (active.length === 0) return null;
+  // Prioritize in_progress > paused > not_started
+  return active.find(p => p.status === 'in_progress')
+    ?? active.find(p => p.status === 'paused')
+    ?? active[0];
 }
 
 export function getPlanItems(planItems: PlanItem[], planId: string): PlanItem[] {

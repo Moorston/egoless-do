@@ -128,7 +128,7 @@ export interface ReflectionSlice {
   /** 解绑感念与计划任务 */
   unlinkReflectionFromPlanItem: (reflectionId: string) => void;
   /** 更新感念筛选条件 */
-  setReflectionFilters: (filters: ReflectionFilters) => void;
+  setReflectionFilters: (filters: ReflectionFilters | ((prev: ReflectionFilters) => ReflectionFilters)) => void;
 }
 
 export interface FastingSlice {
@@ -194,7 +194,7 @@ export interface RecycleBinSlice {
 export interface ThoughtTrailSlice {
   thoughtTrails: ThoughtTrail[];
   ignoredRecPatterns: string[];  // 用户忽略的推荐模式
-  createThoughtTrail: (name: string, description?: string, reflectionIds?: string[], source?: 'auto' | 'manual' | 'recommended') => string;
+  createThoughtTrail: (name: string, description?: string, reflectionIds?: string[], source?: 'auto' | 'manual' | 'recommended' | 'ai') => string;
   updateThoughtTrail: (id: string, patch: Partial<ThoughtTrail>) => void;
   deleteThoughtTrail: (id: string) => void;
   addReflectionToTrail: (trailId: string, reflectionId: string) => void;
@@ -202,7 +202,7 @@ export interface ThoughtTrailSlice {
   setInsightSummary: (trailId: string, summary: string) => void;
   setInsightCache: (trailId: string, cache: TrailInsightCache) => void;
   setReviewCache: (trailId: string, cache: TrailReviewCache) => void;
-  createPlanItemFromTrail: (trailId: string, form: { name: string; description: string; priority: PlanItemPriority; startDate: string; endDate: string }) => boolean;
+  createPlanItemFromTrail: (trailId: string, form: { name: string; description?: string; priority: PlanItemPriority; startDate: string; endDate: string }) => boolean;
   getTrailPlanItems: (trailId: string) => PlanItem[];
   addIgnoredRecPattern: (pattern: string) => void;
   clearIgnoredRecPatterns: () => void;

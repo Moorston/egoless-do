@@ -74,17 +74,8 @@ export function PlanItemForm({
     setDraftInputs({});
   }, [frequency.mode]);
 
-  useEffect(() => {
-    if (initialValues) {
-      if (initialValues.name !== undefined) setName(initialValues.name);
-      if (initialValues.description !== undefined) setDescription(initialValues.description);
-      if (initialValues.targetMetric !== undefined) setTargetMetric(initialValues.targetMetric);
-      if (initialValues.startDate !== undefined) setStartDate(initialValues.startDate);
-      if (initialValues.endDate !== undefined) setEndDate(initialValues.endDate);
-      if (initialValues.priority !== undefined) setPriority(initialValues.priority);
-      if (initialValues.frequency !== undefined) setFrequency(initialValues.frequency);
-    }
-  }, [initialValues]);
+  // Form state is self-managed after initial mount.
+  // Parent should use a key prop to force remount when switching contexts (e.g. different reflection).
 
   const emitChange = useCallback((patch: Partial<UnifiedPlanItemForm>) => {
     const next = { name, description, targetMetric, startDate, endDate, priority, frequency, ...patch };

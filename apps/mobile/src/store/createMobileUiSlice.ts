@@ -13,6 +13,7 @@ export interface MobileUiSlice extends FoodSlice, ExerciseSlice, CheckinSlice, P
   setTodaySteps: (n: number) => void;
   syncWeightFromHealth: (weight: number) => void;
   resetData: () => void;
+  clearLocalData: () => Promise<void>;
 }
 
 export function createMobileUiSlice(
@@ -25,6 +26,8 @@ export function createMobileUiSlice(
   tagMoodSlice: StateCreator<FullStore, [], [], TagMoodSlice>,
   onReset?: () => void,
   onSettingsPersist?: () => void,
+  onRunSync?: () => Promise<void>,
+  onResetSyncState?: () => Promise<void>,
 ): StateCreator<FullStore, [], [], MobileUiSlice> {
   return (set, get, api) => ({
     ...foodSlice(set, get, api),
@@ -58,6 +61,25 @@ export function createMobileUiSlice(
       const { auth, theme, language } = get();
       set(createResetDataPatch(auth, theme, language) as Partial<FullStore>);
       onReset?.();
+    },
+
+    async clearLocalData() {
+      // Step 1: Push all pending sync items to server
+      if (onRunSync) {
+        await onRunSync();
+      }
+
+      // Step 2: Hard-delete all SQLite tables
+      if (onResetSyncState) {
+        await onResetSyncState();
+      }
+
+      // Step 3: Reset store to defaults (preserve auth, theme, language)
+      const { auth, theme, language } = get();
+      set(createResetDataPatch(auth, theme, language) as Partial<FullStore>);
+
+      // Step 4: Pull server data to restore
+      await get().pullServerData();
     },
   });
 }

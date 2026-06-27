@@ -21,7 +21,7 @@ async function enqueueInTx(
 }
 
 export const mobileStorageAdapter: StorageAdapter = {
-  async persistChange(entity: SyncEntity, id: string, data: Record<string, unknown>) {
+  async persistChange(entity: SyncEntity, id: string, data: any): Promise<void> {
     const db = await openDatabase();
     const config = ENTITY_TABLE_MAP[entity];
     if (!config) {
@@ -31,7 +31,7 @@ export const mobileStorageAdapter: StorageAdapter = {
     const row = config.toRow(data);
     const columns = Object.keys(row);
     const placeholders = columns.map(() => '?').join(',');
-    const values = Object.values(row);
+    const values = Object.values(row) as (string | number | null)[];
     const setClause = columns.map(c => `${c}=?`).join(',');
     // Transactional: entity write + sync queue enqueue are atomic
     await withDbLock(() => db.withTransactionAsync(async () => {
@@ -69,21 +69,23 @@ export const mobileStorageAdapter: StorageAdapter = {
       return;
     }
     // Transactional: soft-delete + sync queue enqueue are atomic
+    const now = Date.now();
     await withDbLock(() => db.withTransactionAsync(async () => {
-      await db.runAsync(`UPDATE ${config.table} SET deleted = 1, synced = 2 WHERE ${config.pk} = ?`, [id]);
-      await enqueueInTx(db, entity, id, 'delete', { updatedAt: Date.now(), deleted: true });
+      await db.runAsync(`UPDATE ${config.table} SET deleted = 1, synced = 2, updated_at = ? WHERE ${config.pk} = ?`, [now, id]);
+      await enqueueInTx(db, entity, id, 'delete', { updatedAt: now, deleted: true });
     }));
   },
 
   async batchDelete(operations: Array<{ entity: SyncEntity; id: string }>) {
     const db = await openDatabase();
     // Transactional: all soft-deletes + all sync queue enqueues are atomic
+    const now = Date.now();
     await withDbLock(() => db.withTransactionAsync(async () => {
       for (const { entity, id } of operations) {
         const config = ENTITY_TABLE_MAP[entity];
         if (!config) continue;
-        await db.runAsync(`UPDATE ${config.table} SET deleted = 1, synced = 2 WHERE ${config.pk} = ?`, [id]);
-        await enqueueInTx(db, entity, id, 'delete', { updatedAt: Date.now(), deleted: true });
+        await db.runAsync(`UPDATE ${config.table} SET deleted = 1, synced = 2, updated_at = ? WHERE ${config.pk} = ?`, [now, id]);
+        await enqueueInTx(db, entity, id, 'delete', { updatedAt: now, deleted: true });
       }
     }));
   },

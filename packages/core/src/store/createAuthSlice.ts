@@ -13,7 +13,7 @@ export function createAuthSlice(
   // Guard against concurrent refresh calls (shared across the slice lifetime)
   let _refreshInFlight: Promise<void> | null = null;
 
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     auth: defaultAuthState,
 
     async login(email: string, password: string) {
@@ -58,7 +58,6 @@ export function createAuthSlice(
         apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => console.error('[err]', e));
       }
       set({ auth: defaultAuthState });
-      onLogout?.();
     },
 
     async refreshAuth() {
@@ -89,8 +88,9 @@ export function createAuthSlice(
     async pullServerData(tokenOverride?: string) {
       const token = tokenOverride ?? get().auth.token;
       if (!token) return;
+      const userId = get().auth.user?.id;
       try {
-        const result = await apiSyncPull(token);
+        const result = await apiSyncPull(token, userId);
         if (!result.data) return;
         const data = result.data;
         // Use functional set() to merge with the latest state, avoiding stale-overwrite

@@ -1,5 +1,15 @@
 // ─── Mobile Sync Service ──────────────────────────────────────────
 // Pushes queued local changes to the server, then pulls server changes.
+
+// DOMException polyfill for React Native
+const _global = globalThis as Record<string, unknown>;
+const DOMException = (_global.DOMException as typeof Error | undefined) ?? class DOMException extends Error {
+  constructor(message?: string, name?: string) {
+    super(message);
+    this.name = name ?? 'DOMException';
+  }
+};
+
 import { openDatabase, getState, setState, withDbLock } from '../../db/schema';
 import {
   drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems,
@@ -25,6 +35,7 @@ export function setMigrationDone() {
   _migrationDone = true;
 }
 let _tokenProvider: (() => string | null) | null = null;
+let _userIdProvider: (() => string | null) | null = null;
 let _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
 let _deletedIdsProvider: (() => Set<string>) | null = null;
 let _lastSyncAt = 0;
@@ -81,6 +92,10 @@ const ENTITY_CONFIG: Record<string, { table: string; pk: string }> = {
 // ── Configure ─────────────────────────────────────────────────────
 export function setSyncTokenProvider(fn: () => string | null) {
   _tokenProvider = fn;
+}
+
+export function setSyncUserIdProvider(fn: () => string | null) {
+  _userIdProvider = fn;
 }
 
 export function setSyncChangeHandler(fn: (patch: Record<string, unknown>) => void) {
@@ -172,8 +187,9 @@ async function pollForChanges(token: string): Promise<void> {
     }
 
     // Lightweight check: does the server have changes since last sync?
+    const pollUserId = _userIdProvider?.() ?? undefined;
     try {
-      const { hasChanges } = await apiSyncCheck(token, _lastSyncAt);
+      const { hasChanges } = await apiSyncCheck(token, _lastSyncAt, pollUserId);
       if (!hasChanges) return; // No changes, skip
     } catch {
       // Check endpoint unavailable — fall through to full pull
@@ -316,7 +332,7 @@ async function applyEntityToTable(
       // Reset deleted=0 when server has a newer alive version (fixes ghost deletion after cross-device edit)
       const columns = Object.keys(row);
       const setClause = columns.map(c => `${c}=?`).join(',');
-      const values = Object.values(row);
+      const values = Object.values(row) as (string | number | null)[];
       const result = await db.runAsync(
         `UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`,
         [...values, id],
@@ -467,7 +483,7 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       };
     case 'planItem': {
       const row: Record<string, unknown> = {
-        id: r.id, plan_id: r.planId, name: r.name, description: r.description ?? '',
+        id: r.id, plan_id: r.planId ?? '', name: r.name ?? '', description: r.description ?? '',
         start_date: r.startDate, end_date: r.endDate, content_url: r.contentUrl ?? '',
         total_checkin_days: r.totalCheckinDays ?? 0, status: r.status ?? 'not_started',
         progress: r.progress ?? 0, link: r.link ?? 'manual',
@@ -485,7 +501,7 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
     }
     case 'planItemCheckin':
       return {
-        id: r.id, plan_item_id: r.planItemId, date: r.date,
+        id: r.id, plan_item_id: r.planItemId ?? '', date: r.date ?? '',
         done: r.done ? 1 : 0, note: r.note ?? '', linked_module: r.linkedModule ?? '',
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
@@ -496,20 +512,20 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       };
     case 'dailyCustomTodo':
       return {
-        id: r.id, plan_id: r.planId, date: r.date, name: r.name,
+        id: r.id, plan_id: r.planId ?? '', date: r.date ?? '', name: r.name ?? '',
         done: r.done ? 1 : 0, todo_order: r.order ?? 0, recurring: r.recurring ? 1 : 0,
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
     case 'dailyTodoHistory':
       return {
-        id: r.id, plan_id: r.planId, date: r.date,
+        id: r.id, plan_id: r.planId ?? '', date: r.date ?? '',
         plan_items: safeJson(r.planItems),
         custom_todos: safeJson(r.customTodos),
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
     case 'thoughtTrail':
       return {
-        id: r.id, name: r.name, description: r.description ?? '',
+        id: r.id, name: r.name ?? '', description: r.description ?? '',
         reflection_ids: safeJson(r.reflectionIds),
         note_ids: safeJson(r.noteIds ?? []),
         source: r.source ?? 'manual',
@@ -522,7 +538,7 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       };
     case 'trailNote':
       return {
-        id: r.id, trail_id: r.trailId, content: r.content,
+        id: r.id, trail_id: r.trailId ?? '', content: r.content ?? '',
         tags: safeJson(r.tags), mood: r.mood ?? null,
         source: r.source ?? 'free',
         guided_question: r.guidedQuestion ?? null,
@@ -532,8 +548,8 @@ function serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<
       };
     case 'reflectionLink':
       return {
-        link_id: r.linkId ?? r.id, from_id: r.fromId, to_id: r.toId,
-        link_type: r.type, note: r.note ?? null,
+        link_id: r.linkId ?? r.id, from_id: r.fromId ?? '', to_id: r.toId ?? '',
+        link_type: r.type ?? '', note: r.note ?? null,
         created_at: r.createdAt ?? null,
         updated_at: r.updatedAt ?? null, deleted: 0,
       };
@@ -619,6 +635,7 @@ export async function runSync(): Promise<void> {
   }
   const token = _tokenProvider?.();
   if (!token) return;
+  const userId = _userIdProvider?.() ?? undefined;
 
   _syncing = true;
   _syncingSince = Date.now();
@@ -644,7 +661,7 @@ export async function runSync(): Promise<void> {
 
       console.log(`[Sync] Pushing batch ${batch + 1}: ${items.length} queued changes`);
       const changes: Array<{ entity: string; entityId: string; payload: any; op: string }> = [];
-      const corruptIds: string[] = [];
+      const corruptIds: number[] = [];
       for (const item of items) {
         try {
           changes.push({
@@ -663,7 +680,7 @@ export async function runSync(): Promise<void> {
 
       let pushResult: any;
       try {
-        pushResult = await apiSyncPush(token, _lastSyncAt, changes);
+        pushResult = await apiSyncPush(token, _lastSyncAt, changes, userId);
       } catch (pushErr: any) {
         // Network or server error — apply exponential backoff
         console.error('[Sync] Push request failed:', pushErr);
@@ -762,7 +779,7 @@ export async function runSync(): Promise<void> {
       entityTimestamps[entity] = await getLastSyncTimestamp(entity);
     }
 
-    const pullResult = await apiSyncPull(token);
+    const pullResult = await apiSyncPull(token, userId);
     if (pullResult.data && Object.keys(pullResult.data).length > 0) {
       const deletedIds = _deletedIdsProvider?.();
       const patch = await applyServerChanges(pullResult.data, deletedIds, signal);

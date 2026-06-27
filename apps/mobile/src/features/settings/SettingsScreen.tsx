@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform,
+  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
@@ -17,7 +17,7 @@ import {
   Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
   Check, X, ChevronRight, Scale, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload,   History, Info, Lock, ClipboardList,
-  Music, Brain, Dumbbell, Timer,
+  Music, Brain, Dumbbell, Timer, Database,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import {
@@ -40,6 +40,7 @@ export default function SettingsScreen() {
   const [showWeightUnit, setShowWeightUnit] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeEdit, setTimeEdit]           = useState(store.remindTime);
+  const [clearing, setClearing]           = useState(false);
 
   // Schedule reminder on mount if enabled
   useEffect(() => {
@@ -429,6 +430,42 @@ export default function SettingsScreen() {
           <View style={{ marginBottom: 4, marginTop: 16 }}>
             <Card style={{ padding: 0 }}>
               <View style={{ paddingHorizontal: 16 }}>
+                <TouchableOpacity
+                  disabled={clearing}
+                  onPress={() => {
+                    Alert.alert(
+                      T('settingsClearData'),
+                      T('settingsClearConfirm'),
+                      [
+                        { text: T('commonCancel'), style: 'cancel' },
+                        {
+                          text: T('settingsClearData'),
+                          style: 'destructive',
+                          onPress: async () => {
+                            setClearing(true);
+                            try {
+                              await store.clearLocalData();
+                              Alert.alert(T('clearDataSuccess'));
+                            } catch (e: any) {
+                              Alert.alert(T('clearDataPushFail'));
+                            }
+                            setClearing(false);
+                          },
+                        },
+                      ],
+                    );
+                  }}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16 }}
+                >
+                  {clearing
+                    ? <ActivityIndicator size="small" color={TH.sub} style={{ marginRight: 12 }} />
+                    : <Database size={18} color="#F59E0B" style={{ marginRight: 12 }} />
+                  }
+                  <Text style={{ color: clearing ? TH.sub : '#F59E0B', fontSize: FONT_BODY, flex: 1 }}>
+                    {clearing ? T('clearDataLoading') : T('settingsClearData')}
+                  </Text>
+                </TouchableOpacity>
+                <View style={{ height: 1, backgroundColor: TH.border }} />
                 <TouchableOpacity
                   onPress={async () => { await store.logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16 }}

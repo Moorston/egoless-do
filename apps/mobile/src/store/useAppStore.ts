@@ -9,7 +9,7 @@ import type {
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice,
 } from '@egoless-do/core';
 import {
-  setApiBase, setPushApiBase, dateStr, DAILY_RESET_KEY, DailyResetManager, createResetDataPatch,
+  setApiBase, setPushApiBase, setSyncApiBase, DAILY_RESET_KEY, DailyResetManager,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice,
@@ -37,6 +37,11 @@ const apiBase = __DEV__ ? DEV_API : PROD_API;
 setApiBase(apiBase);
 setPushApiBase(apiBase);
 
+// PocketBase URL for sync endpoints (separate from auth API)
+const DEV_PB = `http://${devHost}:8090`;
+const PROD_PB = process.env.EXPO_PUBLIC_PB_URL ?? 'https://egolessdo.freebytes.net';
+setSyncApiBase(__DEV__ ? DEV_PB : PROD_PB);
+
 const adapter = mobileStorageAdapter;
 
 // Debounced profile settings persistence (piggyback settings onto profile entity)
@@ -63,7 +68,7 @@ function persistProfileSettings() {
       allTagsOrder: s.allTagsOrder,
       allMoodsOrder: s.allMoodsOrder,
       updatedAt: Date.now(),
-    }).catch(console.error);
+    } as Record<string, unknown>).catch(console.error);
   }, 500);
 }
 
@@ -99,16 +104,13 @@ export const useAppStore = create<MobileStore>()(
   persist(
     (...a) => ({
       ...createAuthSlice(adapter, () => { runSync().catch(console.error); }, () => {
-        const { auth, theme, language } = useAppStore.getState();
-        useAppStore.setState(createResetDataPatch(auth, theme, language) as PartialMobileStore);
-        resetSyncState().catch(console.error);
         resetMigrationFlag();
       })(...a),
       ...createHabitSlice(adapter, triggerAutoSync)(...a),
       ...createReflectionSlice(adapter)(...a),
       ...createFastingSlice(adapter, triggerAutoSync)(...a),
       ...createMeditationSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); }, persistProfileSettings)(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
       ...createThoughtTrailSlice(adapter)(...a),
@@ -159,7 +161,7 @@ export const useAppStore = create<MobileStore>()(
               healthSyncEnabled: s.healthSyncEnabled,
               customTags: s.customTags, customMoods: s.customMoods,
               allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,
-            }).catch(console.error);
+            } as Record<string, unknown>).catch(console.error);
           },
           onPlanDailyReset: (previousDate) => {
             useAppStore.getState().performDailyReset?.(previousDate);

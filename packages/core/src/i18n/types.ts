@@ -254,6 +254,7 @@ export interface I18nKeys {
   settingsResetWelcomeDesc: string; settingsAccount: string;
   settingsLogout: string; settingsClearData: string;
   settingsClearDataDesc: string; settingsClearConfirm: string;
+  clearDataLoading: string; clearDataSuccess: string; clearDataPushFail: string;
   settingsFreePlan: string; settingsDefaultName: string;
   settingsLogin: string; settingsLoginDesc: string;
   settingsFooter: string; settingsSetReminder: string;
@@ -525,6 +526,10 @@ export interface I18nKeys {
   musicPlaying: string; musicPaused: string; musicLoop: string;
   musicNoTracks: string; musicEmptyMy: string; musicSection: string;
   musicFavorites: string; musicTrackCount: string; musicEmptyFavorites: string;
+  musicPlayModeSequential: string; musicPlayModeRepeatAll: string; musicPlayModeRepeatOne: string;
+  musicPlayModeShuffle: string; musicPlayFailed: string; musicRetry: string;
+  musicSleepTimer: string; musicSleepTimerOff: string; musicMinutes: string;
+  musicImportSuccess: string; musicImportFailed: string; musicCategory: string;
   weekdaySun: string; weekdayMon: string; weekdayTue: string;
   weekdayWed: string; weekdayThu: string; weekdayFri: string;
   weekdaySat: string;

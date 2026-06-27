@@ -18,4 +18,13 @@ config.resolver.nodeModulesPaths = [
 // Follow symlinks for workspace packages
 config.resolver.unstable_enableSymlinks = true;
 
+// Exclude web app build outputs and other non-mobile directories from Metro's file map
+const blockList = config.resolver.blockList || [];
+config.resolver.blockList = [
+  ...blockList,
+  /apps\/web\/\.next\/.*/,
+  /apps\/web\/node_modules\/.*/,
+  /\.openspec\/.*/,
+];
+
 module.exports = config;

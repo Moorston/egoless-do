@@ -2,13 +2,12 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 
-interface VirtualListProps<T> extends Omit<FlashListProps<T>, 'renderItem'> {
+interface VirtualListProps<T> extends Omit<FlashListProps<T>, 'renderItem' | 'data'> {
   items: T[];
-  renderItem: (item: T, index: number) => React.ReactNode;
+  renderItem: (item: T, index: number) => React.ReactElement | null;
   keyExtractor: (item: T, index: number) => string;
   emptyMessage?: string;
   emptyStyle?: object;
-  estimatedItemSize?: number;
 }
 
 export default function VirtualList<T>({
@@ -17,8 +16,7 @@ export default function VirtualList<T>({
   keyExtractor,
   emptyMessage,
   emptyStyle,
-  estimatedItemSize = 80,
-  ...props
+  ...rest
 }: VirtualListProps<T>) {
   if (items.length === 0 && emptyMessage) {
     return (
@@ -33,8 +31,7 @@ export default function VirtualList<T>({
       data={items}
       renderItem={({ item, index }) => renderItem(item, index)}
       keyExtractor={(item, index) => keyExtractor(item, index)}
-      estimatedItemSize={estimatedItemSize}
-      {...props}
+      {...rest}
     />
   );
 }
