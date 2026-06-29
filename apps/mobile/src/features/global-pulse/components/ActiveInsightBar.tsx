@@ -27,12 +27,8 @@ export const ActiveInsightBar: React.FC<ActiveInsightBarProps> = ({
   const { onlineCount } = useActiveSessions(type);
   const [expanded, setExpanded] = useState(false);
 
-  const typeCount = onlineCount[type];
-
-  // Hide the bar entirely when no users are active
-  if (typeCount <= 0) return null;
-
-  return (
+  // Always hidden — feature disabled on activity pages
+  return null;
     <View style={styles.container}>
       {/* 在线人数 */}
       <TouchableOpacity
