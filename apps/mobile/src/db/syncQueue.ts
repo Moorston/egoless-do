@@ -237,12 +237,19 @@ export async function getAllSyncProgress(): Promise<SyncProgressRow[]> {
 export async function updateSyncProgress(entity: string, fields: Partial<Omit<SyncProgressRow, 'entity'>>): Promise<void> {
   const db = await openDatabase();
   const allowedFields = new Set(['phase', 'status', 'pulled_count', 'total_count', 'last_page', 'last_error', 'retry_count', 'next_retry_at']);
-  const cols = ['entity', 'updated_at'];
-  const vals: (string | number)[] = [entity, Date.now()];
+  // Always include required fields with defaults for INSERT
+  const cols = ['entity', 'updated_at', 'phase', 'status'];
+  const vals: (string | number)[] = [entity, Date.now(), 0, 'pending'];
   for (const [key, value] of Object.entries(fields)) {
     if (value !== undefined && allowedFields.has(key)) {
-      cols.push(key);
-      vals.push(value as string | number);
+      // Override default if provided
+      const idx = cols.indexOf(key);
+      if (idx >= 0) {
+        vals[idx] = value as string | number;
+      } else {
+        cols.push(key);
+        vals.push(value as string | number);
+      }
     }
   }
   const placeholders = cols.map(() => '?').join(',');
