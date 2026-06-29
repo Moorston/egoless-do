@@ -5,20 +5,6 @@
 // (no top-level field exists in the PB schema).
 // sync.pb.js will reject requests whose token epoch doesn't match.
 
-globalThis._getEpochFromData = function(rec) {
-  var d = rec.get("data");
-  if (typeof d === 'string') { try { d = JSON.parse(d); } catch(e) { d = null; } }
-  return (d && d.login_epoch) || 0;
-};
-
-globalThis._setEpochInData = function(rec, epoch) {
-  var d = rec.get("data");
-  if (typeof d === 'string') { try { d = JSON.parse(d); } catch(e) { d = {}; } }
-  if (!d || typeof d !== 'object') d = {};
-  d.login_epoch = epoch;
-  rec.set("data", d);
-};
-
 // ── Password auth hook (users only, NOT superusers) ───────────────
 onRecordAuthWithPasswordRequest(function(e) {
   try {
@@ -28,8 +14,12 @@ onRecordAuthWithPasswordRequest(function(e) {
         var records = $app.findRecordsByFilter("user_profiles", "profile_id = 'self' && user_id = '" + userId + "'", "", 1);
         if (records.length > 0) {
           var profile = records[0];
-          var current = globalThis._getEpochFromData(profile);
-          globalThis._setEpochInData(profile, current + 1);
+          var d = profile.get("data");
+          if (typeof d === 'string') { try { d = JSON.parse(d); } catch(pe) { d = null; } }
+          var current = (d && d.login_epoch) || 0;
+          if (!d || typeof d !== 'object') d = {};
+          d.login_epoch = current + 1;
+          profile.set("data", d);
           $app.save(profile);
           return current + 1;
         }
@@ -65,7 +55,9 @@ onRecordAuthRefreshRequest(function(e) {
       try {
         var records = $app.findRecordsByFilter("user_profiles", "profile_id = 'self' && user_id = '" + userId + "'", "", 1);
         if (records.length > 0) {
-          return globalThis._getEpochFromData(records[0]);
+          var d = records[0].get("data");
+          if (typeof d === 'string') { try { d = JSON.parse(d); } catch(pe) { d = null; } }
+          return (d && d.login_epoch) || 0;
         }
         return 0;
       } catch (err) {
