@@ -79,6 +79,8 @@ export class WriteBatcher {
 
     const db = await openDatabase();
     try {
+      // Ensure sync_queue unique index exists (defensive)
+      await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)');
       await withDbLock(async () => {
         for (const w of writes) {
           const config = ENTITY_TABLE_MAP[w.entity];
@@ -171,11 +173,16 @@ export class WriteBatcher {
             }
           }
           await db2.runAsync(
-            'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
-            [w.entity, w.id],
-          );
-          await db2.runAsync(
-            'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status) VALUES (?, ?, ?, ?, ?, ?)',
+            `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
+             VALUES (?, ?, ?, ?, ?, ?)
+             ON CONFLICT(entity, entity_id) DO UPDATE SET
+               operation = excluded.operation,
+               payload = excluded.payload,
+               created_at = excluded.created_at,
+               status = 'pending',
+               retry_count = 0,
+               next_retry_at = 0,
+               last_error = NULL`,
             [w.entity, w.id, w.operation, JSON.stringify(w.data), Date.now(), 'pending'],
           );
         } catch (reErr) {

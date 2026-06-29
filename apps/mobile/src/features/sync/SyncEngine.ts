@@ -362,9 +362,7 @@ export class SyncEngine {
   }
 
   private resolveEntityId(r: Record<string, unknown>, pk: string, fallback?: string): string | undefined {
-    return (r[pk] ?? r.id ?? r.date) as string | undefined
-      ?? (pk.replace(/_([a-z])/g, (_, c) => c.toUpperCase()) as string | undefined)
-      ?? fallback;
+    return (r[pk] ?? r.id ?? r.date) as string | undefined ?? fallback;
   }
 
   // ── Apply server changes ─────────────────────────────────────────
@@ -496,12 +494,10 @@ export class SyncEngine {
         await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
         this._hasSyncedDeletes = true;
         if (entity === 'plan') {
-          await withDbLock(() => db.withTransactionAsync(async () => {
-            await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-            await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
-            await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-            await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-          }));
+          await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+          await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
+          await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+          await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=1 WHERE plan_id=?', [id]);
         }
       } catch (e) {
         log.error(e, { entity, phase: 'applyEntity-dead' });
@@ -514,7 +510,7 @@ export class SyncEngine {
   private async markSyncedAndRemove(upserted: Record<string, string[]>, deleted: Record<string, string[]>, queueIds: number[]): Promise<void> {
     const db = await openDatabase();
     try {
-      await withDbLock(() => db.withTransactionAsync(async () => {
+      await withDbLock(async () => {
         for (const entity in upserted) {
           const ids = upserted[entity];
           if (!ids?.length) continue;
@@ -535,7 +531,7 @@ export class SyncEngine {
           const ph = queueIds.map(() => '?').join(',');
           await db.runAsync(`DELETE FROM sync_queue WHERE id IN (${ph})`, queueIds);
         }
-      }));
+      });
       if (Object.keys(deleted).length > 0) this._hasSyncedDeletes = true;
     } catch (err) {
       log.error(err, { phase: 'markSyncedAndRemove' });
@@ -994,7 +990,10 @@ export class SyncEngine {
     if (Object.keys(patch).length) this._onChanges(patch);
   }
 
-  // ── Initial sync ─────────────────────────────────────────────────
+  // ── Initial sync (Phase 1 only — priority entities) ─────────────
+  // Phase 2/3 are pulled by resumeInitialSync() called from useSync's
+  // mount effect. This avoids duplicate pulls and ensures pulled data
+  // propagates to the Zustand store via rehydrateFromDb().
   async initialSync(token: string, userId?: string): Promise<'done' | 'partial'> {
     const db = await openDatabase();
     const doneState = await getState(db, 'initialSyncDone');
@@ -1003,24 +1002,10 @@ export class SyncEngine {
     this._initialSyncing = true;
     try {
       const PHASE_1: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace'];
-      const PHASE_2: SyncEntity[] = ['reflection', 'fasting', 'food', 'exercise', 'meditation'];
-      const PHASE_3: SyncEntity[] = ['plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview'];
 
       await this.pullEntitiesParallel(PHASE_1, 1, 1, token, userId);
       await setState(db, 'initialSyncPhase', '2');
       await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
-
-      this.pullEntitiesParallel(PHASE_2, 2, 2, token, userId).then(async () => {
-        await this.pullEntitiesParallel(PHASE_3, 1, 3, token, userId);
-        await setState(db, 'initialSyncDone', 'true');
-        await setState(db, 'initialSyncPhase', 'done');
-      }).catch(err => log.error(err, { phase: 'background sync' })).finally(() => {
-        this._initialSyncing = false;
-        if (this._pendingSyncAfterInit) {
-          this._pendingSyncAfterInit = false;
-          this.runSync();
-        }
-      });
 
       return 'done';
     } catch (err: any) {
