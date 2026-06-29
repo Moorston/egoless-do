@@ -430,7 +430,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     fields: [
       { entity: 'id',           col: 'id',            server: 'id',          fallback: null },
       { entity: 'planItemId',   col: 'plan_item_id',  server: 'planItemId',  fallback: '' },
-      { entity: 'date',         col: 'date',          server: 'date' },
+      { entity: 'date',         col: 'date',          server: 'date',          required: true },
       { entity: 'done',         col: 'done',          server: 'done',        type: 'bool' },
       { entity: 'note',         col: 'note',          server: 'note',        fallback: '' },
       { entity: 'linkedModule', col: 'linked_module',  server: 'linkedModule', fallback: '' },
@@ -472,7 +472,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     fields: [
       { entity: 'id',          col: 'id',            server: 'id',          fallback: null },
       { entity: 'planId',      col: 'plan_id',       server: 'planId',      fallback: '' },
-      { entity: 'date',        col: 'date',          server: 'date' },
+      { entity: 'date',        col: 'date',          server: 'date',          required: true },
       { entity: 'planItems',   col: 'plan_items',    server: 'planItems',   type: 'json' },
       { entity: 'customTodos', col: 'custom_todos',  server: 'customTodos', type: 'json' },
       { entity: 'updatedAt',   col: 'updated_at',    server: 'updatedAt',   fallback: () => Date.now() },
@@ -485,7 +485,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     pocketbase: { collection: 'thought_trails', serverIdField: 'trail_id' },
     fields: [
       { entity: 'id',                col: 'id',                    server: 'id',                fallback: null },
-      { entity: 'name',              col: 'name',                  server: 'name' },
+      { entity: 'name',              col: 'name',                  server: 'name',                required: true },
       { entity: 'description',       col: 'description',           server: 'description',       fallback: '' },
       { entity: 'reflectionIds',     col: 'reflection_ids',        server: 'reflectionIds',     type: 'json' },
       { entity: 'noteIds',           col: 'note_ids',              server: 'noteIds',           type: 'json', fallback: [] },
