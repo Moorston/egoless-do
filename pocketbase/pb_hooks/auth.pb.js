@@ -14,6 +14,7 @@ onRecordAuthWithPasswordRequest(function(e) {
         var records = $app.findRecordsByFilter("user_profiles", "profile_id = 'self' && user_id = '" + userId + "'", "", 1);
         if (records.length > 0) {
           var profile = records[0];
+          if (!profile) return 0;
           var d = profile.get("data");
           if (typeof d === 'string') { try { d = JSON.parse(d); } catch(pe) { d = null; } }
           // Always create a fresh JS object — Go slices/maps can't be mutated
@@ -28,6 +29,10 @@ onRecordAuthWithPasswordRequest(function(e) {
           return current + 1;
         }
         var collection = $app.findCollectionByNameOrId("user_profiles");
+        if (!collection) {
+          console.error("[auth] user_profiles collection not found");
+          return 0;
+        }
         var record = new Record(collection);
         record.set("profile_id", "self");
         record.set("user_id", userId);
@@ -59,7 +64,9 @@ onRecordAuthRefreshRequest(function(e) {
       try {
         var records = $app.findRecordsByFilter("user_profiles", "profile_id = 'self' && user_id = '" + userId + "'", "", 1);
         if (records.length > 0) {
-          var d = records[0].get("data");
+          var profile = records[0];
+          if (!profile) return 0;
+          var d = profile.get("data");
           if (typeof d === 'string') { try { d = JSON.parse(d); } catch(pe) { d = null; } }
           return (d && d.login_epoch) || 0;
         }
