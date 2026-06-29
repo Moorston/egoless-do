@@ -103,6 +103,7 @@ export interface AuthSlice {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string, code: string) => Promise<void>;
   logout: () => void;
+  clearDataAndLogout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
   pullServerData: (token?: string) => Promise<void>;
 }
@@ -150,7 +151,7 @@ export interface PlanSlice {
   startPlan: (id: string) => void;
   pausePlan: (id: string) => void;
   resumePlan: (id: string) => void;
-  completePlan: (id: string) => void;
+  completePlan: (id: string, reason?: string) => void;
   cancelPlan: (id: string) => void;
   checkAutoStatus: () => void;
   addPlanItem: (form: {

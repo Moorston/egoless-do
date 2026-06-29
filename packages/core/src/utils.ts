@@ -1,5 +1,15 @@
 // ─── Shared pure utilities ────────────────────────────────────────
 
+// ── Time constants ────────────────────────────────────────────────
+export const MS_PER_HOUR = 60 * 60 * 1000;
+export const MS_PER_DAY = 24 * MS_PER_HOUR;
+export const MS_PER_WEEK = 7 * MS_PER_DAY;
+
+/** Filter out soft-deleted records. */
+export function activeOnly<T extends { deleted?: boolean }>(items: T[]): T[] {
+  return items.filter(i => !i.deleted);
+}
+
 export const fmt = (s: number) => {
   const sec = Math.max(0, Math.floor(s));
   const h = Math.floor(sec / 3600);

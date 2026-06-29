@@ -9,24 +9,26 @@ import {
 import { dateStr } from '../utils';
 import type { StorageAdapter, HabitSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createHabitSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<HabitSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     habits: [],
 
     addHabit(form: CreateHabitForm) {
       const newHabit = createHabitFromForm(form);
       set(s => ({ habits: [...(s.habits ?? []), newHabit] }));
-      adapter.persistChange('habit', newHabit.id, newHabit).catch(console.error);
+      adapter.persistChange('habit', newHabit.id, newHabit).catch(e => log.error(e));
     },
 
     updateHabit(id: string, patch: Partial<Habit>) {
       set(s => ({ habits: updateHabitInList(s.habits ?? [], id, patch) }));
       const updated = get().habits.find(h => h.id === id && !h.deleted);
-      if (updated) adapter.persistChange('habit', id, updated).catch(console.error);
+      if (updated) adapter.persistChange('habit', id, updated).catch(e => log.error(e));
     },
 
     deleteHabit(id: string) {
@@ -49,27 +51,27 @@ export function createHabitSlice(
         ),
         ...(habit ? { recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'habit' as const, data: habit, deletedAt: Date.now() }] } : {}),
       }));
-      adapter.markDeleted('habit', id).catch(console.error);
+      adapter.markDeleted('habit', id).catch(e => log.error(e));
 
       // Persist affected plan items
       const planItemIdSet = new Set(affectedPlanItemIds);
       (get().planItems ?? [])
         .filter(i => planItemIdSet.has(i.id))
-        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(console.error));
+        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(e => log.error(e)));
       onSync?.();
     },
 
     checkinHabit(id: string, date: string) {
       set(s => ({ habits: checkinHabitInList(s.habits ?? [], id, date) }));
       const updated = get().habits.find(h => h.id === id && !h.deleted);
-      if (updated) adapter.persistChange('habit', id, updated).catch(console.error);
+      if (updated) adapter.persistChange('habit', id, updated).catch(e => log.error(e));
       onSync?.();
     },
 
     changeHabitStatus(id: string, ns: Habit['status'], reason?: string) {
       set(s => ({ habits: changeHabitStatusInList(s.habits ?? [], id, ns, reason) }));
       const updated = get().habits.find(h => h.id === id && !h.deleted);
-      if (updated) adapter.persistChange('habit', id, updated).catch(console.error);
+      if (updated) adapter.persistChange('habit', id, updated).catch(e => log.error(e));
     },
 
     checkHabitAutoStatus() {
@@ -79,7 +81,7 @@ export function createHabitSlice(
       const changed = next.filter((h, i) => h !== prev[i]);
       if (changed.length === 0) return;
       set({ habits: next });
-      changed.forEach(h => adapter.persistChange('habit', h.id, h).catch(console.error));
+      changed.forEach(h => adapter.persistChange('habit', h.id, h).catch(e => log.error(e)));
     },
 
     autoSyncHabits() {
@@ -96,7 +98,7 @@ export function createHabitSlice(
       if (next === prev) return;
       set({ habits: next });
       next.forEach((h, i) => {
-        if (h !== prev[i]) adapter.persistChange('habit', h.id, h).catch(console.error);
+        if (h !== prev[i]) adapter.persistChange('habit', h.id, h).catch(e => log.error(e));
       });
     },
   });

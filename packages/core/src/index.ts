@@ -6,6 +6,7 @@ export * from './i18n';
 export * from './defaults';
 export * from './store';
 export * from './auth';
+export * from './fetch';
 export * from './pocketbase';
 export * from './push';
 export * from './dailyReset';

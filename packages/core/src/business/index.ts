@@ -12,7 +12,7 @@ export {
   addPlan, updatePlan, deletePlan, startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
   checkAutoStatus, performDailyReset, PLAN_STATUS_COLORS, statusToI18nKey,
   addPlanItem, updatePlanItem, deletePlanItem, checkinItem, uncheckinItem,
-  syncPlanItemsFromModules, computeItemProgress, computePlanProgress,
+  syncPlanItemsFromModules, computeItemProgress, computeItemCheckinStats, computePlanProgress,
   getActivePlan, getPlanItems, getTodayItems, getHistoryPlans, refreshPlanItemStats,
   addDailyCustomTodo, toggleDailyCustomTodo, deleteDailyCustomTodo, getTodayCustomTodos,
   saveDailyTodoHistory, getTodoHistory,

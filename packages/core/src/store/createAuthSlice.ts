@@ -4,11 +4,15 @@ import { defaultAuthState } from '../types';
 import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull } from '../auth';
 import { mergeById } from '../sync/merge';
 import { calculateCheckinStreak } from '../utils';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createAuthSlice(
   adapter: StorageAdapter,
   onSyncTrigger: () => void,
-  onLogout?: () => void,
+  onLogout?: () => void | Promise<void>,
+  onPullServerData?: (token: string, userId?: string) => Promise<void>,
+  onClearData?: () => void | Promise<void>,
 ): SliceCreator<AuthSlice> {
   // Guard against concurrent refresh calls (shared across the slice lifetime)
   let _refreshInFlight: Promise<void> | null = null;
@@ -55,9 +59,21 @@ export function createAuthSlice(
     logout() {
       const { auth } = get();
       if (auth.token && auth.refreshToken) {
-        apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => console.error('[err]', e));
+        apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => log.error(e));
       }
       set({ auth: defaultAuthState });
+      onLogout?.();
+    },
+
+    async clearDataAndLogout() {
+      const { auth } = get();
+      set({ auth: defaultAuthState });
+      // Clear data first so UI updates immediately, then fire-and-forget logout API
+      await onClearData?.();
+      onLogout?.();
+      if (auth.token && auth.refreshToken) {
+        apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => log.error(e));
+      }
     },
 
     async refreshAuth() {
@@ -89,6 +105,18 @@ export function createAuthSlice(
       const token = tokenOverride ?? get().auth.token;
       if (!token) return;
       const userId = get().auth.user?.id;
+
+      // Delegate to platform-specific handler if provided (mobile: SQLite path)
+      if (onPullServerData) {
+        try {
+          await onPullServerData(token, userId);
+        } catch (err) {
+          log.error(err, { context: 'pullServerData delegate' });
+        }
+        return;
+      }
+
+      // Default: merge directly into store (web path)
       try {
         const result = await apiSyncPull(token, userId);
         if (!result.data) return;
@@ -97,25 +125,25 @@ export function createAuthSlice(
         set(s => {
           const patch: Record<string, unknown> = {};
 
-          if (data.habit)      patch.habits = mergeById(data.habit, s.habits ?? [], 'id');
-          if (data.reflection) patch.reflections = mergeById(data.reflection, s.reflections ?? [], 'id');
-          if (data.fasting)    patch.fastingHistory = mergeById(data.fasting, s.fastingHistory ?? [], 'id');
-          if (data.food)       patch.foodLog = mergeById(data.food, s.foodLog ?? [], 'id');
-          if (data.checkin)    patch.checkinHistory = mergeById(data.checkin, s.checkinHistory ?? [], 'date');
-          if (data.exercise)   patch.exerciseLog = mergeById(data.exercise, s.exerciseLog ?? [], 'id');
+          if (data.habit)      patch.habits = mergeById(data.habit, s.habits ?? [], 'id').filter(i => !i.deleted);
+          if (data.reflection) patch.reflections = mergeById(data.reflection, s.reflections ?? [], 'id').filter(i => !i.deleted);
+          if (data.fasting)    patch.fastingHistory = mergeById(data.fasting, s.fastingHistory ?? [], 'id').filter(i => !i.deleted);
+          if (data.food)       patch.foodLog = mergeById(data.food, s.foodLog ?? [], 'id').filter(i => !i.deleted);
+          if (data.checkin)    patch.checkinHistory = mergeById(data.checkin, s.checkinHistory ?? [], 'date').filter(i => !i.deleted);
+          if (data.exercise)   patch.exerciseLog = mergeById(data.exercise, s.exerciseLog ?? [], 'id').filter(i => !i.deleted);
           if (data.meditation) {
             const mergedMed = mergeById(data.meditation, s.medHistory ?? [], 'date');
-            patch.medHistory = mergedMed;
+            patch.medHistory = mergedMed.filter(m => !m.deleted);
             patch.totalMedMinutes = (mergedMed as Array<{ dur?: string; deleted?: boolean }>).filter(m => !m.deleted).reduce((sum, m) => sum + (parseInt(m.dur ?? '') || 0), 0);
           }
-          if (data.plan)            patch.plans = mergeById(data.plan, s.plans ?? [], 'id');
-          if (data.planItem)        patch.planItems = mergeById(data.planItem, s.planItems ?? [], 'id');
-          if (data.planItemCheckin) patch.planItemCheckins = mergeById(data.planItemCheckin, s.planItemCheckins ?? [], 'id');
-          if (data.dailyCustomTodo) patch.dailyCustomTodos = mergeById(data.dailyCustomTodo, s.dailyCustomTodos ?? [], 'id');
-          if (data.dailyTodoHistory) patch.dailyTodoHistory = mergeById(data.dailyTodoHistory, s.dailyTodoHistory ?? [], 'id');
-          if (data.grace)           patch.graceHistory = mergeById(data.grace, s.graceHistory ?? [], 'date');
-          if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail, s.thoughtTrails ?? [], 'id');
-          if (data.trailNote)       patch.trailNotes = mergeById(data.trailNote, s.trailNotes ?? [], 'id');
+          if (data.plan)            patch.plans = mergeById(data.plan, s.plans ?? [], 'id').filter(i => !i.deleted);
+          if (data.planItem)        patch.planItems = mergeById(data.planItem, s.planItems ?? [], 'id').filter(i => !i.deleted);
+          if (data.planItemCheckin) patch.planItemCheckins = mergeById(data.planItemCheckin, s.planItemCheckins ?? [], 'id').filter(i => !i.deleted);
+          if (data.dailyCustomTodo) patch.dailyCustomTodos = mergeById(data.dailyCustomTodo, s.dailyCustomTodos ?? [], 'id').filter(i => !i.deleted);
+          if (data.dailyTodoHistory) patch.dailyTodoHistory = mergeById(data.dailyTodoHistory, s.dailyTodoHistory ?? [], 'id').filter(i => !i.deleted);
+          if (data.grace)           patch.graceHistory = mergeById(data.grace, s.graceHistory ?? [], 'date').filter(i => !i.deleted);
+          if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail, s.thoughtTrails ?? [], 'id').filter(i => !i.deleted);
+          if (data.trailNote)       patch.trailNotes = mergeById(data.trailNote, s.trailNotes ?? [], 'id').filter(i => !i.deleted);
 
           if (data.profile?.length) {
             const latest = data.profile
@@ -149,7 +177,7 @@ export function createAuthSlice(
           return patch;
         });
       } catch (err) {
-        console.error('[pullServerData] Error:', err);
+        log.error(err, { context: 'pullServerData' });
       }
     },
   });

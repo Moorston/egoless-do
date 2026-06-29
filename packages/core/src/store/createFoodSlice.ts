@@ -3,9 +3,11 @@ import { uid } from '../utils';
 import { deleteFoodFromList } from '../business';
 import type { StorageAdapter, FoodSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () => void, onSync?: () => void): SliceCreator<FoodSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     foodLog: [],
     calGoal: 2000,
     customFoodPresets: [],
@@ -13,7 +15,7 @@ export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () 
     addFood(entry: Omit<FoodEntry, 'id' | 'updatedAt' | 'deleted'>) {
       const e: FoodEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false };
       set(s => ({ foodLog: [e, ...(s.foodLog ?? [])] }));
-      adapter.persistChange('food', e.id, e).catch(console.error);
+      adapter.persistChange('food', e.id, e).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -25,7 +27,7 @@ export function createFoodSlice(adapter: StorageAdapter, onSettingsPersist?: () 
         foodLog: deleteFoodFromList(s.foodLog ?? [], id),
         ...(food ? { recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'food' as const, data: food, deletedAt: Date.now() }] } : {}),
       }));
-      adapter.markDeleted('food', id).catch(console.error);
+      adapter.markDeleted('food', id).catch(e => log.error(e));
       onSync?.();
     },
 

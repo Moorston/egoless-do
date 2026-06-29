@@ -1,9 +1,11 @@
 import type { UserProfile } from '../types';
 import type { StorageAdapter, ProfileSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createProfileSlice(adapter: StorageAdapter): SliceCreator<ProfileSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     userProfile: {},
     waterMl: 0,
     waterGoal: 2000,
@@ -16,7 +18,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
       // Sync weightUnit to top-level field if changed
       if (profile.weightUnit !== undefined) patch.weightUnit = profile.weightUnit;
       set(patch);
-      adapter.persistChange('profile', 'self', updated).catch(console.error);
+      adapter.persistChange('profile', 'self', updated).catch(e => log.error(e));
     },
 
     addWater(ml: number) {
@@ -29,7 +31,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
           persistData = { ...updated, waterGoal: s.waterGoal };
           return { waterMl, userProfile: updated };
         });
-        if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
+        if (persistData) adapter.persistChange('profile', 'self', persistData).catch(e => log.error(e));
       }
     },
 
@@ -40,7 +42,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
         persistData = { ...s.userProfile, waterMl: 0, waterGoal: s.waterGoal, updatedAt: now };
         return { waterMl: 0, userProfile: { ...s.userProfile, waterMl: 0, updatedAt: now } };
       });
-      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
+      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(e => log.error(e));
     },
 
     setWaterGoal(ml: number) {
@@ -51,7 +53,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
         persistData = { ...s.userProfile, waterMl: s.waterMl, waterGoal, updatedAt: now };
         return { waterGoal, userProfile: { ...s.userProfile, waterGoal, updatedAt: now } };
       });
-      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
+      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(e => log.error(e));
     },
 
     setWeightUnit(u: 'kg' | 'lb') {
@@ -61,7 +63,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
         persistData = { ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, weightUnit: u, updatedAt: now };
         return { weightUnit: u, userProfile: { ...s.userProfile, weightUnit: u, updatedAt: now } };
       });
-      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(console.error);
+      if (persistData) adapter.persistChange('profile', 'self', persistData).catch(e => log.error(e));
     },
   });
 }

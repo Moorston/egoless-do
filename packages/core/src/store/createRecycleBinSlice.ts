@@ -2,8 +2,11 @@ import type { RecycleBinItem, RecycleBinEntityType } from '../types';
 import type { RecycleBinSlice, StorageAdapter } from './types';
 import type { SyncEntity } from '../sync/entities';
 import type { SliceCreator } from './sliceHelper';
+import { MS_PER_WEEK } from '../utils';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
-const EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const EXPIRY_MS = MS_PER_WEEK;
 
 const ENTITY_TYPE_MAP: Record<RecycleBinEntityType, SyncEntity> = {
   habit: 'habit',
@@ -14,7 +17,7 @@ const ENTITY_TYPE_MAP: Record<RecycleBinEntityType, SyncEntity> = {
 };
 
 export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<RecycleBinSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     recycleBin: [],
 
     addToRecycleBin(item: Omit<RecycleBinItem, 'deletedAt'>) {
@@ -84,22 +87,22 @@ export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<Re
         // Persist to SQLite and enqueue for sync (overwrites deleted=1 row)
         const syncEntity = ENTITY_TYPE_MAP[item.entityType as RecycleBinEntityType];
         if (syncEntity && adapter) {
-          adapter.persistChange(syncEntity, item.id, restoredData).catch(console.error);
+          adapter.persistChange(syncEntity, item.id, restoredData).catch(e => log.error(e));
         }
 
         // For plans, also persist child entities
         if (item.entityType === 'plan' && adapter) {
           for (const ci of childItems) {
-            adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now } as any).catch(console.error);
+            adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
           }
           for (const cic of childCheckins) {
-            adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false, updatedAt: now } as any).catch(console.error);
+            adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
           }
           for (const todo of childTodos) {
-            adapter.persistChange('dailyCustomTodo', todo.id, { ...todo, deleted: false, updatedAt: now } as any).catch(console.error);
+            adapter.persistChange('dailyCustomTodo', todo.id, { ...todo, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
           }
           for (const hist of childTodoHistory) {
-            adapter.persistChange('dailyTodoHistory', hist.id, { ...hist, deleted: false, updatedAt: now } as any).catch(console.error);
+            adapter.persistChange('dailyTodoHistory', hist.id, { ...hist, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
           }
         }
       }

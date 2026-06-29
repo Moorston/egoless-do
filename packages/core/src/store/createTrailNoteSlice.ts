@@ -2,9 +2,11 @@ import type { TrailNote } from '../types/trail-note';
 import type { TrailNoteSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<TrailNoteSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     trailNotes: [],
 
     addTrailNote: (trailId, form) => {
@@ -36,8 +38,8 @@ export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<Tra
       }));
 
       const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
-      adapter?.persistChange('trailNote', note.id, note).catch(console.error);
+      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
+      adapter?.persistChange('trailNote', note.id, note).catch(e => log.error(e));
 
       return note;
     },
@@ -49,7 +51,7 @@ export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<Tra
         ),
       }));
       const note = get().trailNotes.find(n => n.id === noteId && !n.deleted);
-      if (note) adapter?.persistChange('trailNote', noteId, note).catch(console.error);
+      if (note) adapter?.persistChange('trailNote', noteId, note).catch(e => log.error(e));
     },
 
     deleteTrailNote: (noteId) => {
@@ -69,8 +71,8 @@ export function createTrailNoteSlice(adapter?: StorageAdapter): SliceCreator<Tra
       }));
 
       const trail = get().thoughtTrails.find(t => t.id === note.trailId && !t.deleted);
-      if (trail) adapter?.persistChange('thoughtTrail', note.trailId, trail).catch(console.error);
-      adapter?.markDeleted('trailNote', noteId).catch(console.error);
+      if (trail) adapter?.persistChange('thoughtTrail', note.trailId, trail).catch(e => log.error(e));
+      adapter?.markDeleted('trailNote', noteId).catch(e => log.error(e));
     },
 
     getNotesByTrail: (trailId) => {

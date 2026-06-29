@@ -3,9 +3,11 @@ import type { ReflectionLink, LinkType } from '../types/reflection-link';
 import type { StorageAdapter, ReflectionLinkSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreator<ReflectionLinkSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     reflectionLinks: [],
 
     createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => {
@@ -23,7 +25,7 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
       };
 
       set(s => ({ reflectionLinks: [...(s.reflectionLinks ?? []), link] }));
-      adapter?.persistChange('reflectionLink', id, link).catch(console.error);
+      adapter?.persistChange('reflectionLink', id, link).catch(e => log.error(e));
       return id;
     },
 
@@ -36,7 +38,7 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
         ),
       }));
       const link = get().reflectionLinks.find(l => l.id === id && !l.deleted);
-      if (link) adapter?.persistChange('reflectionLink', id, link).catch(console.error);
+      if (link) adapter?.persistChange('reflectionLink', id, link).catch(e => log.error(e));
     },
 
     deleteReflectionLink: (id: string) => {
@@ -45,7 +47,7 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
           l.id === id ? { ...l, deleted: true, updatedAt: Date.now() } : l
         ),
       }));
-      adapter?.markDeleted('reflectionLink', id).catch(console.error);
+      adapter?.markDeleted('reflectionLink', id).catch(e => log.error(e));
     },
 
     getLinksByReflection: (reflectionId: string) => {
@@ -79,7 +81,7 @@ export function createReflectionLinkSlice(adapter?: StorageAdapter): SliceCreato
       }));
 
       if (linksToDelete.length > 0) {
-        adapter?.batchDelete(linksToDelete.map(l => ({ entity: 'reflectionLink' as const, id: l.id }))).catch(console.error);
+        adapter?.batchDelete(linksToDelete.map(l => ({ entity: 'reflectionLink' as const, id: l.id }))).catch(e => log.error(e));
       }
     },
   });

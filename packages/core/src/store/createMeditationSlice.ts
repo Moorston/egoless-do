@@ -2,12 +2,14 @@ import type { MedHistoryEntry } from '../types';
 import { addMedMinutesToList } from '../business/meditation';
 import type { StorageAdapter, MeditationSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createMeditationSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
 ): SliceCreator<MeditationSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     totalMedMinutes: 0,
     medHistory: [],
 
@@ -20,7 +22,7 @@ export function createMeditationSlice(
       const today = new Date();
       const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       const entry = result.history.find(m => m.date === todayStr && !m.deleted);
-      if (entry) adapter.persistChange('meditation', entry.date, entry).catch(console.error);
+      if (entry) adapter.persistChange('meditation', entry.date, entry).catch(e => log.error(e));
       onSync?.();
     },
 

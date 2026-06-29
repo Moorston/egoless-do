@@ -5,12 +5,14 @@ import type { SliceCreator } from './sliceHelper';
 import { calculateReviewData, getWeekRange, getMonthRange } from '../business/review';
 import { getAIService } from '../ai/ai-service';
 import { dateStr } from '../utils';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createReviewSlice(
   adapter: StorageAdapter,
   triggerAutoSync?: () => void,
 ): SliceCreator<ReviewSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     checkinReviews: [],
     
     async generateReview(period: 'week' | 'month'): Promise<CheckinReview> {
@@ -53,8 +55,8 @@ export function createReviewSlice(
       const aiModels = state.aiModels ?? [];
       const aiMode = state.aiMode ?? 'hybrid';
       
-      console.log('[Review Slice] AI Models from store:', aiModels.length);
-      console.log('[Review Slice] AI Mode:', aiMode);
+      log.info('[Review Slice] AI Models from store:', aiModels.length);
+      log.info('[Review Slice] AI Mode:', aiMode);
       
       const aiService = getAIService({ mode: aiMode, models: aiModels });
 
@@ -64,7 +66,7 @@ export function createReviewSlice(
           useCloud: true,
         });
       } catch (e) {
-        console.error('[ReviewSlice] AI call failed, using defaults:', e);
+        log.error(e, { context: 'AI call failed, using defaults' });
         aiResult = { summary: '', highlights: [], improvements: [] };
       }
       
@@ -97,7 +99,7 @@ export function createReviewSlice(
       try {
         await adapter.persistChange('checkinReview', review.id, review);
       } catch (e) {
-        console.error('[ReviewSlice] Failed to persist review:', e);
+        log.error(e, { context: 'Failed to persist review' });
       }
       
       // 触发同步
@@ -125,7 +127,7 @@ export function createReviewSlice(
         ),
       }));
       
-      adapter.markDeleted('checkinReview', id).catch(console.error);
+      adapter.markDeleted('checkinReview', id).catch(e => log.error(e));
       triggerAutoSync?.();
     },
     
@@ -142,7 +144,7 @@ export function createReviewSlice(
       // Persist deletions only for those not already deleted
       const toDelete = reviews.filter(r => !r.deleted).map(r => ({ entity: 'checkinReview' as const, id: r.id }));
       if (toDelete.length > 0) {
-        adapter.batchDelete(toDelete).catch(console.error);
+        adapter.batchDelete(toDelete).catch(e => log.error(e));
       }
       
       triggerAutoSync?.();

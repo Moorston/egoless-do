@@ -4,9 +4,11 @@ import type { PlanItem, PlanItemPriority } from '../types/plan';
 import type { ThoughtTrailSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { uid } from '../utils';
+import { createLogger } from '../logger';
+const log = createLogger('Store');
 
 export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<ThoughtTrailSlice> {
-  return (set: any, get: any) => ({
+  return (set, get) => ({
     thoughtTrails: [],
 
     createThoughtTrail: (name, description, reflectionIds = [], source = 'manual') => {
@@ -46,11 +48,11 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         }));
         for (const rid of affectedIds) {
           const r = get().reflections.find(x => x.id === rid && !x.deleted);
-          if (r) adapter?.persistChange('reflection', rid, r).catch(console.error);
+          if (r) adapter?.persistChange('reflection', rid, r).catch(e => log.error(e));
         }
       }
 
-      adapter?.persistChange('thoughtTrail', id, trail).catch(console.error);
+      adapter?.persistChange('thoughtTrail', id, trail).catch(e => log.error(e));
       return id;
     },
 
@@ -61,7 +63,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         ),
       }));
       const trail = get().thoughtTrails.find(t => t.id === id && !t.deleted);
-      if (trail) adapter?.persistChange('thoughtTrail', id, trail).catch(console.error);
+      if (trail) adapter?.persistChange('thoughtTrail', id, trail).catch(e => log.error(e));
     },
 
     deleteThoughtTrail: (id) => {
@@ -97,16 +99,16 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
 
       for (const rid of affectedReflectionIds) {
         const r = get().reflections.find(x => x.id === rid && !x.deleted);
-        if (r) adapter?.persistChange('reflection', rid, r).catch(console.error);
+        if (r) adapter?.persistChange('reflection', rid, r).catch(e => log.error(e));
       }
       // Atomic batch delete: trail notes + trail in one transaction
       adapter?.batchDelete([
         ...notesToDelete.map(n => ({ entity: 'trailNote' as const, id: n.id })),
         { entity: 'thoughtTrail', id },
-      ]).catch(console.error);
+      ]).catch(e => log.error(e));
       for (const itemId of affectedPlanItemIds) {
         const item = get().planItems.find(x => x.id === itemId && !x.deleted);
-        if (item) adapter?.persistChange('planItem', itemId, item).catch(console.error);
+        if (item) adapter?.persistChange('planItem', itemId, item).catch(e => log.error(e));
       }
     },
 
@@ -127,10 +129,10 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         }),
       }));
       const updatedReflection = get().reflections.find(r => r.id === reflectionId && !r.deleted);
-      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(console.error);
+      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(e => log.error(e));
 
       const updated = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
-      if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(console.error);
+      if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(e => log.error(e));
     },
 
     removeReflectionFromTrail: (trailId, reflectionId) => {
@@ -147,10 +149,10 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         }),
       }));
       const updatedReflection = get().reflections.find(r => r.id === reflectionId && !r.deleted);
-      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(console.error);
+      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(e => log.error(e));
 
       const updated = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
-      if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(console.error);
+      if (updated) adapter?.persistChange('thoughtTrail', trailId, updated).catch(e => log.error(e));
     },
 
     setInsightSummary: (trailId, summary) => {
@@ -160,7 +162,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         ),
       }));
       const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
+      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
     },
 
     setInsightCache: (trailId, cache) => {
@@ -170,7 +172,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         ),
       }));
       const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
+      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
     },
 
     setReviewCache: (trailId, cache) => {
@@ -180,7 +182,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         ),
       }));
       const trail = get().thoughtTrails.find(t => t.id === trailId && !t.deleted);
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(console.error);
+      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
     },
 
     /** @deprecated Use get().createPlanItem({ type: 'trail', id }, form) instead */

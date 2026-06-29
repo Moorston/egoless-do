@@ -12,7 +12,7 @@ import { createResetDataPatch } from '../defaults';
 export function createUiSlice(
   adapter: StorageAdapter,
 ): SliceCreator<UiSlice> {
-  return (set: any, get: any, api: any) => ({
+  return (set, get, api) => ({
     // Compose all granular slices
     ...createFoodSlice(adapter)(set, get, api),
     ...createExerciseSlice(adapter)(set, get, api),

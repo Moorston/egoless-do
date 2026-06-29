@@ -3,7 +3,7 @@ import type { AISlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
-  return (set: any) => ({
+  return (set) => ({
     aiMode: 'hybrid' as AIMode,
     aiModels: [],
 
@@ -13,7 +13,7 @@ export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
     },
 
     addAIModel(model: ModelConfig) {
-      set((s: any) => ({
+      set((s) => ({
         aiModels: (s.aiModels as ModelConfig[]).some((m: ModelConfig) => m.id === model.id)
           ? (s.aiModels as ModelConfig[]).map((m: ModelConfig) => m.id === model.id ? model : m)
           : [...s.aiModels as ModelConfig[], model],
@@ -22,20 +22,20 @@ export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
     },
 
     updateAIModel(modelId: string, updates: Partial<ModelConfig>) {
-      set((s: any) => ({
+      set((s) => ({
         aiModels: (s.aiModels as ModelConfig[]).map((m: ModelConfig) => m.id === modelId ? { ...m, ...updates } : m),
       }));
       onPersist?.();
     },
 
     removeAIModel(modelId: string) {
-      set((s: any) => ({ aiModels: (s.aiModels as ModelConfig[]).filter((m: ModelConfig) => m.id !== modelId) }));
+      set((s) => ({ aiModels: (s.aiModels as ModelConfig[]).filter((m: ModelConfig) => m.id !== modelId) }));
       onPersist?.();
     },
 
     setDefaultAIModel(modelId: string) {
       let changed = false;
-      set((s: any) => {
+      set((s) => {
         if (!(s.aiModels as ModelConfig[]).some((m: ModelConfig) => m.id === modelId)) return s;
         changed = true;
         return { aiModels: (s.aiModels as ModelConfig[]).map((m: ModelConfig) => ({ ...m, isDefault: m.id === modelId })) };
@@ -44,7 +44,7 @@ export function createAISlice(onPersist?: () => void): SliceCreator<AISlice> {
     },
 
     toggleAIModel(modelId: string) {
-      set((s: any) => ({
+      set((s) => ({
         aiModels: (s.aiModels as ModelConfig[]).map((m: ModelConfig) =>
           m.id === modelId ? { ...m, enabled: !m.enabled } : m
         ),
