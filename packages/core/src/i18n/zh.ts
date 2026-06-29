@@ -297,6 +297,11 @@ export const zh: I18nKeys = {
   settingsEditProfile:'编辑资料', settingsNickname:'昵称',
   profileStats:'统计概览', profileBodyData:'身体数据', profileWeight:'体重', profileWaterGoal:'饮水目标', profileAccount:'账号',
   profilePermDenied:'权限被拒绝', profilePermDeniedMsg:'需要相册访问权限来更换头像',
+  shareCardShare:'分享', shareCardSave:'保存', shareCardLoading:'加载中...',
+  shareCardSaved:'成功', shareCardSavedMsg:'图片已保存',
+  shareCardError:'错误', shareCardErrorMsg:'截图失败，请重试', shareCardSaveErrorMsg:'保存失败，请重试',
+  shareCardUnavailable:'提示', shareCardUnavailableMsg:'当前设备不支持分享',
+  shareTextShare:'分享文字', shareImageShare:'分享图片', shareSaveImage:'保存图片',
   settingsLogin:'登录 / 注册', settingsLoginDesc:'登录后可同步数据到云端',
   settingsFooter:'Egoless Do · 心流纪 v1.0.0 · 离线优先 · 隐私优先',
   settingsSetReminder:'设置提醒时间', settingsSelectTheme:'选择主题',
@@ -697,7 +702,7 @@ export const zh: I18nKeys = {
   loading:'加载中...', refreshing:'刷新中...', pullToRefresh:'下拉刷新',
 
   // Reflection Detail Actions
-  reflLinkedTrail:'关联脉络', reflUnlinkTask:'解绑任务', reflCreateTask:'创建任务',
+  reflLinkedTrail:'关联脉络', reflLinkTrail:'关联脉络', reflUnlinkTask:'解绑任务', reflCreateTask:'创建任务',
 
   // Navigation Tab Titles
   navTabHome:'首页', navTabExercise:'锻炼', navTabMeditation:'冥想',

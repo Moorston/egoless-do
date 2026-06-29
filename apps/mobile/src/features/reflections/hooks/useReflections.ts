@@ -304,15 +304,20 @@ export function useReflections() {
     });
   }, []);
 
-  const handleShare = useCallback(async (r: any) => {
+  const handleShare = useCallback(async (r: any, mode?: 'text' | 'image') => {
     try {
-      const tagsStr = r.tags?.length ? `\n标签: ${r.tags.join(' ')}` : '';
-      const moodStr = r.mood ? `\n心情: ${r.mood}` : '';
-      const linkStr = r.link ? `\n链接: ${r.link}` : '';
-      const timeStr = new Date(r.timestamp ?? 0).toLocaleString('zh-CN');
+      if (mode === 'image') {
+        // Return the reflection for ShareCard to handle
+        return { type: 'image', reflection: r };
+      }
+      const tagsStr = r.tags?.length ? `\n🏷️ ${r.tags.join(' ')}` : '';
+      const moodStr = r.mood ? `\n💭 ${r.mood}` : '';
+      const linkStr = r.link ? `\n🔗 ${r.link}` : '';
+      const timeStr = new Date(r.timestamp ?? 0).toLocaleString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
       await Share.share({
-        message: `${r.content}${tagsStr}${moodStr}${linkStr}\n\n— ${timeStr}`,
+        message: `「${r.content}」${tagsStr}${moodStr}${linkStr}\n\n📅 ${timeStr}\n— 来自心流纪 · Egoless Do\nhttps://egoless-do.app`,
       });
+      return { type: 'text' };
     } catch {}
   }, []);
 

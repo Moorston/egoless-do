@@ -297,6 +297,11 @@ export const zhHant: I18nKeys = {
   settingsEditProfile:'編輯資料', settingsNickname:'暱稱',
   profileStats:'統計概覽', profileBodyData:'身體數據', profileWeight:'體重', profileWaterGoal:'飲水目標', profileAccount:'帳號',
   profilePermDenied:'權限被拒絕', profilePermDeniedMsg:'需要相簿存取權限來更換頭像',
+  shareCardShare:'分享', shareCardSave:'儲存', shareCardLoading:'載入中...',
+  shareCardSaved:'成功', shareCardSavedMsg:'圖片已儲存',
+  shareCardError:'錯誤', shareCardErrorMsg:'截圖失敗，請重試', shareCardSaveErrorMsg:'儲存失敗，請重試',
+  shareCardUnavailable:'提示', shareCardUnavailableMsg:'當前裝置不支援分享',
+  shareTextShare:'分享文字', shareImageShare:'分享圖片', shareSaveImage:'儲存圖片',
   settingsLogin:'登錄 / 註冊', settingsLoginDesc:'登錄後可同步數據到雲端',
   settingsFooter:'Egoless Do · 心流紀 v1.0.0 · 離線優先 · 隱私優先',
   settingsSetReminder:'設置提醒時間', settingsSelectTheme:'選擇主題',
@@ -695,7 +700,7 @@ export const zhHant: I18nKeys = {
   loading:'載入中...', refreshing:'更新中...', pullToRefresh:'下拉更新',
 
   // Reflection Detail Actions
-  reflLinkedTrail:'關聯脈絡', reflUnlinkTask:'解綁任務', reflCreateTask:'創建任務',
+  reflLinkedTrail:'關聯脈絡', reflLinkTrail:'關聯脈絡', reflUnlinkTask:'解綁任務', reflCreateTask:'創建任務',
 
   // Navigation Tab Titles
   navTabHome:'首頁', navTabExercise:'鍛鍊', navTabMeditation:'冥想',

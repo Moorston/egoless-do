@@ -297,6 +297,11 @@ export const en: I18nKeys = {
   settingsEditProfile:'Edit Profile', settingsNickname:'Nickname',
   profileStats:'Statistics', profileBodyData:'Body Data', profileWeight:'Weight', profileWaterGoal:'Water Goal', profileAccount:'Account',
   profilePermDenied:'Permission Denied', profilePermDeniedMsg:'Photo library access is needed to change your avatar',
+  shareCardShare:'Share', shareCardSave:'Save', shareCardLoading:'Loading...',
+  shareCardSaved:'Success', shareCardSavedMsg:'Image saved',
+  shareCardError:'Error', shareCardErrorMsg:'Capture failed, please retry', shareCardSaveErrorMsg:'Save failed, please retry',
+  shareCardUnavailable:'Notice', shareCardUnavailableMsg:'Sharing is not available on this device',
+  shareTextShare:'Share Text', shareImageShare:'Share Image', shareSaveImage:'Save Image',
   settingsLogin:'Sign In / Register', settingsLoginDesc:'Sign in to sync data to cloud',
   settingsFooter:'Egoless Do v1.0.0 · Offline-first · Privacy-first',
   settingsSetReminder:'Set Reminder Time', settingsSelectTheme:'Select Theme',
@@ -697,7 +702,7 @@ export const en: I18nKeys = {
   loading:'Loading...', refreshing:'Refreshing...', pullToRefresh:'Pull to refresh',
 
   // Reflection Detail Actions
-  reflLinkedTrail:'Linked Trail', reflUnlinkTask:'Unlink Task', reflCreateTask:'Create Task',
+  reflLinkedTrail:'Linked Trail', reflLinkTrail:'Link to Trail', reflUnlinkTask:'Unlink Task', reflCreateTask:'Create Task',
 
   // Navigation Tab Titles
   navTabHome:'Home', navTabExercise:'Exercise', navTabMeditation:'Meditation',

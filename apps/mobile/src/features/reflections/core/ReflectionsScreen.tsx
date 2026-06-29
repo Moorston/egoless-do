@@ -302,8 +302,13 @@ export default function ReflectionsScreen() {
   };
 
   const onShare = async (r: any) => {
-    await handleShare(r);
     setActionMenuId(null);
+    // Show share choice: text or image
+    Alert.alert(T('reflShare'), '', [
+      { text: T('shareTextShare'), onPress: () => handleShare(r) },
+      { text: T('shareImageShare'), onPress: () => setShareReflection(r) },
+      { text: T('cancel'), style: 'cancel' },
+    ]);
   };
 
   const handleEdit = useCallback((id: string) => {

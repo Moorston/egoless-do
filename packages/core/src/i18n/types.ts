@@ -259,6 +259,11 @@ export interface I18nKeys {
   settingsEditProfile: string; settingsNickname: string;
   profileStats: string; profileBodyData: string; profileWeight: string; profileWaterGoal: string; profileAccount: string;
   profilePermDenied: string; profilePermDeniedMsg: string;
+  shareCardShare: string; shareCardSave: string; shareCardLoading: string;
+  shareCardSaved: string; shareCardSavedMsg: string;
+  shareCardError: string; shareCardErrorMsg: string; shareCardSaveErrorMsg: string;
+  shareCardUnavailable: string; shareCardUnavailableMsg: string;
+  shareTextShare: string; shareImageShare: string; shareSaveImage: string;
   settingsLogin: string; settingsLoginDesc: string;
   settingsFooter: string; settingsSetReminder: string;
   settingsSelectTheme: string; settingsSelectLang: string;
@@ -569,7 +574,7 @@ export interface I18nKeys {
   streakBreakAvgRecovery: string; streakBreakTrend: string;
   streakBreakHypothetical: string; streakBreakGraceHint: string;
   loading: string; refreshing: string; pullToRefresh: string;
-  reflLinkedTrail: string; reflUnlinkTask: string; reflCreateTask: string;
+  reflLinkedTrail: string; reflLinkTrail: string; reflUnlinkTask: string; reflCreateTask: string;
   navTabHome: string; navTabExercise: string; navTabMeditation: string;
   navTabFasting: string; navTabSettings: string; navTabPlan: string;
   navTabReflections: string; navTabHabits: string;
