@@ -31,6 +31,11 @@ export class MobileDataGateway implements DataGateway {
 
     if (filter) {
       for (const [key, value] of Object.entries(filter)) {
+        // Sanitize column name: only alphanumeric + underscore allowed
+        if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(key)) {
+          log.warn(`[Gateway] Invalid filter key rejected: ${key}`);
+          continue;
+        }
         sql += ` AND ${key} = ?`;
         params.push(value as string | number | null);
       }
@@ -51,6 +56,10 @@ export class MobileDataGateway implements DataGateway {
     }
 
     const columns = Object.keys(record);
+    // Validate column names to prevent SQL injection
+    for (const col of columns) {
+      if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(col)) throw new Error(`Invalid column name: ${col}`);
+    }
     const values = Object.values(record) as (string | number | null)[];
     const setClause = columns.map(c => `${c}=?`).join(',');
     const placeholders = columns.map(() => '?').join(',');
@@ -67,8 +76,9 @@ export class MobileDataGateway implements DataGateway {
           `INSERT INTO ${meta.collection} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
           values,
         );
-      } catch (err: any) {
-        if (err?.message?.includes('UNIQUE constraint')) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes('UNIQUE constraint')) {
           await db.runAsync(
             `UPDATE ${meta.collection} SET ${setClause},synced=0 WHERE ${meta.localPk}=?`,
             [...values, id],

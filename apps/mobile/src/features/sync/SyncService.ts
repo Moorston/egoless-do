@@ -34,7 +34,7 @@ export function isSyncing(): boolean { return _engine.isSyncing(); }
 export function getClockOffset(): number { return _engine.getClockOffset(); }
 export function isDeviceSyncedBefore(): Promise<boolean> { return _engine.isDeviceSyncedBefore(); }
 export function getSyncMetrics(): SyncMetric[] { return _engine.getSyncMetrics(); }
-export function getSyncStatus(): { lastSyncAt: number; pendingCount: number; isSyncing: boolean } { return _engine.getSyncStatus(); }
+export function getSyncStatus(): Promise<{ lastSyncAt: number; pendingCount: number; isSyncing: boolean }> { return _engine.getSyncStatus(); }
 export type { SyncMetric };
 
 // Realtime
@@ -57,13 +57,13 @@ export function resumeInitialSync(token: string, userId?: string) { return _engi
 export function setSyncTriggerCallback(fn: () => void) { _syncTriggerCallback = fn; }
 export function triggerSyncDebounced(): void {
   if (!_syncTriggerCallback) {
-    console.warn('[Sync] triggerSyncDebounced called but _syncTriggerCallback is null!');
+    log.warn('triggerSyncDebounced called but _syncTriggerCallback is null');
     return;
   }
   if (_syncTriggerTimer) clearTimeout(_syncTriggerTimer);
   _syncTriggerTimer = setTimeout(() => {
     _syncTriggerTimer = null;
-    console.log('[Sync] Debounced sync trigger firing...');
+    log.debug('Debounced sync trigger firing');
     _syncTriggerCallback?.();
   }, SYNC_TRIGGER_DEBOUNCE_MS);
 }

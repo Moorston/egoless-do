@@ -106,8 +106,8 @@ export class WriteBatcher {
             if (result.changes === 0) {
               try {
                 await db.runAsync(
-                  `INSERT INTO ${config.table} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
-                  values,
+                  `INSERT INTO ${config.table} (${columns.join(',')},synced,updated_at) VALUES (${placeholders},0,?)`,
+                  [...values, Date.now()],
                 );
               } catch (insertErr: any) {
                 if (insertErr?.message?.includes('UNIQUE constraint')) {

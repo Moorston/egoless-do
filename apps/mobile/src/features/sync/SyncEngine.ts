@@ -218,8 +218,8 @@ export class SyncEngine {
       }
     } catch (err) {
       if (err instanceof KickedOutError) { this.handleKickedOut(); return; }
-      log.warn('Realtime event handler failed:', err);
-      this.runSync();
+      log.warn(err, { phase: 'realtime-pull' });
+      // Don't trigger full sync — SSE will retry on next event
     }
   }
 
@@ -246,7 +246,10 @@ export class SyncEngine {
           }
           return;
         }
-      } catch { /* fall through */ }
+      } catch (checkErr) {
+        if (checkErr instanceof KickedOutError) { this.handleKickedOut(); return; }
+        log.warn(checkErr, { phase: 'poll-check' });
+      }
       this.runSync();
     } catch (err) {
       log.error(err, { phase: 'poll' });
@@ -547,6 +550,8 @@ export class SyncEngine {
         this._abortController?.abort();
         this._abortController = null;
         this._syncing = false;
+        // Bump generation so old sync's finally block won't interfere
+        this._syncGeneration++;
       } else return;
     }
     if (this._initialSyncing) {
@@ -866,8 +871,9 @@ export class SyncEngine {
 
   getSyncMetrics(): SyncMetric[] { return [...this._syncMetrics]; }
 
-  getSyncStatus(): { lastSyncAt: number; pendingCount: number; isSyncing: boolean } {
-    return { lastSyncAt: this._lastSyncAt, pendingCount: 0, isSyncing: this._syncing };
+  async getSyncStatus(): Promise<{ lastSyncAt: number; pendingCount: number; isSyncing: boolean }> {
+    const pendingCount = await getQueueCount().catch(() => 0);
+    return { lastSyncAt: this._lastSyncAt, pendingCount, isSyncing: this._syncing };
   }
 
   isSyncing(): boolean { return this._syncing; }
@@ -1041,12 +1047,15 @@ export class SyncEngine {
     let page = progress?.last_page || 1;
     await updateSyncProgress(entity, { phase, status: 'downloading' });
 
-    while (true) {
+    const MAX_PAGES = 50; // Safety guard against infinite pagination
+    while (page <= MAX_PAGES) {
       try {
         const result = await apiSyncPullEntity(token, entity, page, 200, userId);
-        if (result.data.length > 0) {
-          await this.applyServerChanges({ [entity]: result.data });
+        if (result.data.length === 0) {
+          await updateSyncProgress(entity, { status: 'done' });
+          return;
         }
+        await this.applyServerChanges({ [entity]: result.data });
         const pulled = (progress?.pulled_count ?? 0) + result.data.length;
         await updateSyncProgress(entity, { pulled_count: pulled, total_count: result.total, last_page: page, retry_count: 0, next_retry_at: 0, last_error: null });
         if (!result.hasMore) {
