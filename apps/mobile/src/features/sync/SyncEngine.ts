@@ -375,7 +375,7 @@ export class SyncEngine {
       if (!Array.isArray(records) || records.length === 0) continue;
       if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
       try {
-        const { storeMapped } = await this.applyEntityToTable(db, entity, records, deletedIds, signal);
+        const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal);
         if (entity === 'meditation') {
           const allMed = await db.getAllAsync<{ dur: string }>('SELECT dur FROM meditation_history WHERE deleted = 0');
           patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
@@ -407,7 +407,7 @@ export class SyncEngine {
 
   private async applyEntityToTable(
     db: Awaited<ReturnType<typeof openDatabase>>,
-    entity: string, records: any[], deletedIds?: Set<string>, signal?: AbortSignal,
+    entity: string, records: Record<string, unknown>[], deletedIds?: Set<string>, signal?: AbortSignal,
   ): Promise<{ applied: unknown[]; storeMapped: unknown[] }> {
     const config = ENTITY_CONFIG[entity];
     if (!config) return { applied: [], storeMapped: [] };
@@ -467,8 +467,8 @@ export class SyncEngine {
           const placeholders = columns.map(() => '?').join(',');
           try {
             await db.runAsync(`INSERT INTO ${table} (${columns.join(',')},synced) VALUES (${placeholders},1)`, values);
-          } catch (insertErr: any) {
-            if (insertErr?.message?.includes('UNIQUE constraint')) {
+          } catch (insertErr: unknown) {
+            if (insertErr instanceof Error && insertErr.message?.includes('UNIQUE constraint')) {
               await db.runAsync(`UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`, [...values, id]);
             } else throw insertErr;
           }
@@ -556,29 +556,29 @@ export class SyncEngine {
     }
     const token = this._tokenProvider?.();
     if (!token) {
-      console.warn('[SyncEngine] runSync: no token, attempting recovery...');
+      log.warn('runSync: no token, attempting recovery...');
       // Try to refresh token if refreshToken is available
       try {
         const { useAppStore } = await import('../../store/useAppStore');
         const auth = useAppStore.getState().auth;
         if (auth.refreshToken) {
-          console.log('[SyncEngine] Attempting token refresh...');
+          log.debug('Attempting token refresh...');
           await useAppStore.getState().refreshAuth();
           const newToken = useAppStore.getState().auth.token;
           if (newToken) {
-            console.log('[SyncEngine] Token refreshed, retrying sync');
+            log.info('Token refreshed, retrying sync');
             return this.runSync();
           }
         }
         // No refreshToken or refresh failed — force re-login
-        console.warn('[SyncEngine] No recovery possible, logging out');
+        log.warn('No recovery possible, logging out');
         useAppStore.getState().logout();
       } catch (e) {
-        console.error('[SyncEngine] Token recovery failed:', e);
+        log.error(e, { msg: 'Token recovery failed' });
       }
       return;
     }
-    console.log('[SyncEngine] runSync starting, token present');
+    log.info('runSync starting, token present');
     const userId = this._userIdProvider?.() ?? undefined;
     const freshToken = () => this._tokenProvider?.() ?? '';
 
@@ -641,12 +641,12 @@ export class SyncEngine {
 
       for (let batch = 0; batch < 10; batch++) {
         const items = await drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
-        console.log(`[SyncEngine] drainQueue batch ${batch + 1}: ${items.length} items`);
+        log.debug(`drainQueue batch ${batch + 1}: ${items.length} items`);
         if (!items.length) break;
         pushedAnything = true;
         pushedItemCount += items.length;
 
-        const changes: Array<{ entity: string; entityId: string; payload: any; operation: string; changedFields?: string[] }> = [];
+        const changes: Array<{ entity: string; entityId: string; payload: Record<string, unknown>; operation: string; changedFields?: string[] }> = [];
         for (const item of items) {
           try {
             const parsed = JSON.parse(item.payload);
@@ -661,13 +661,13 @@ export class SyncEngine {
 
         try {
           pushResult = await apiSyncPush(freshToken(), this._lastSyncAt, changes, userId);
-          console.log(`[SyncEngine] Push OK: ${changes.length} changes, serverTime=${pushResult.serverTime}, rejected=${pushResult.rejected?.length ?? 0}`);
-        } catch (pushErr: any) {
+          log.info(`Push OK: ${changes.length} changes, serverTime=${pushResult.serverTime}, rejected=${pushResult.rejected?.length ?? 0}`);
+        } catch (pushErr: unknown) {
           if (this.isKickedOutError(pushErr)) { this.handleKickedOut(); return; }
           log.error(pushErr, { phase: 'push' });
           for (const item of items) {
             const na = item.retry_count + 1;
-            if (na >= MAX_RETRY_ATTEMPTS) await markQueueItemFailed(item.id, pushErr?.message || 'Push failed');
+            if (na >= MAX_RETRY_ATTEMPTS) await markQueueItemFailed(item.id, (pushErr instanceof Error ? pushErr.message : null) || 'Push failed');
             else await markQueueItemRetry(item.id, na, Date.now() + Math.min(Math.pow(2, na) * 1000, 60000));
           }
           break;
@@ -686,7 +686,9 @@ export class SyncEngine {
         // Auto-resolve conflicts
         const autoResolvedIds: number[] = [];
         for (const item of rejectedItems) {
-          const rejection = pushResult.rejected?.find((r: any) => r?.entity === item.entity && r?.entityId === item.entity_id);
+          const rejection = pushResult.rejected?.find(
+            (r) => r?.entity === item.entity && r?.entityId === item.entity_id,
+          );
           if (rejection?.serverData) {
             try {
               const config = ENTITY_CONFIG[item.entity];
@@ -844,10 +846,11 @@ export class SyncEngine {
       // Cleanup
       await this.internalCleanup();
       this.recordMetric(Date.now() - this._syncingSince, pushedItemCount, 0, true);
-    } catch (err: any) {
-      if (err?.name === 'AbortError') log.warn('Aborted');
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      if (err instanceof Error && err.name === 'AbortError') log.warn('Aborted');
       else log.error(err);
-      this.recordMetric(Date.now() - this._syncingSince, 0, 0, false, err?.message);
+      this.recordMetric(Date.now() - this._syncingSince, 0, 0, false, errMsg);
     } finally {
       if (this._syncGeneration === myGeneration) {
         this._syncing = false;
@@ -950,7 +953,7 @@ export class SyncEngine {
       try {
         if (entity === 'food') {
           const rows = await dbGetAllFoodEntries(db) as unknown as Record<string, unknown>[];
-          if (rows.length) patch.foodLog = rows.sort((a: any, b: any) => b.timestamp - a.timestamp);
+          if (rows.length) patch.foodLog = rows.sort((a, b) => ((b as Record<string, unknown>).timestamp as number) - ((a as Record<string, unknown>).timestamp as number));
           continue;
         }
         const config = REHYDRATE_MAP[entity];
@@ -975,8 +978,8 @@ export class SyncEngine {
     if (patch.plans) {
       try {
         const { computePlanProgress } = await import('@egoless-do/core');
-        (patch.plans as any[]).forEach((p: any) => {
-          if (!p.deleted) p.progress = computePlanProgress(p);
+        (patch.plans as Record<string, unknown>[]).forEach((p) => {
+          if (!p.deleted) p.progress = computePlanProgress(p as unknown as Parameters<typeof computePlanProgress>[0]);
         });
       } catch {} // intentional: computePlanProgress is optional enhancement
     }
@@ -1008,7 +1011,7 @@ export class SyncEngine {
       await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
 
       return 'done';
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (this.isKickedOutError(err)) throw err;
       log.error(err, { phase: 'initialSync' });
       throw err;

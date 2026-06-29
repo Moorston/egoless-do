@@ -75,7 +75,7 @@ export class WriteBatcher {
     const writes = [...this._pendingWrites.values()];
     this._pendingWrites.clear();
     if (writes.length === 0) return;
-    console.log(`[WriteBatcher] Flushing ${writes.length} writes: ${writes.map(w => w.entity).join(', ')}`);
+    log.debug(`Flushing ${writes.length} writes: ${writes.map(w => w.entity).join(', ')}`);
 
     const db = await openDatabase();
     try {
@@ -172,6 +172,9 @@ export class WriteBatcher {
               );
             }
           }
+          const fallbackPayload = w.changedFields
+            ? { ...w.data, _changedFields: w.changedFields }
+            : w.data;
           await db2.runAsync(
             `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
              VALUES (?, ?, ?, ?, ?, ?)
@@ -183,7 +186,7 @@ export class WriteBatcher {
                retry_count = 0,
                next_retry_at = 0,
                last_error = NULL`,
-            [w.entity, w.id, w.operation, JSON.stringify(w.data), Date.now(), 'pending'],
+            [w.entity, w.id, w.operation, JSON.stringify(fallbackPayload), Date.now(), 'pending'],
           );
         } catch (reErr) {
           log.error(reErr, { msg: 'fallback write failed' });
