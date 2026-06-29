@@ -46,7 +46,11 @@ export function useSync() {
 
   // Wire up token provider & change handler once
   useEffect(() => {
-    setSyncTokenProvider(() => useAppStore.getState().auth.token);
+    setSyncTokenProvider(() => {
+      const token = useAppStore.getState().auth.token;
+      return token;
+    });
+    console.log('[useSync] Token provider and sync callbacks registered');
     setSyncUserIdProvider(() => useAppStore.getState().auth.user?.id ?? null);
 
     // Wire up debounced sync trigger: WriteBatcher flush → triggerSyncDebounced → runSync
