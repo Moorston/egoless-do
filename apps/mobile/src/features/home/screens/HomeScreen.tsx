@@ -71,7 +71,12 @@ export default function HomeScreen() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [localDone, setLocalDone] = useState<boolean | null>(() => todayRecord?.done ?? null);
   const [note, setNote] = useState(() => parsed.userNote);
-  const [weight, setWeight] = useState(() => todayRecord?.weight != null ? String(todayRecord.weight) : '');
+  const [weight, setWeight] = useState(() => {
+    if (todayRecord?.weight != null) return String(todayRecord.weight);
+    // Default to profile weight on new day
+    const profileWeight = store.userProfile?.weight;
+    return profileWeight != null ? String(profileWeight) : '';
+  });
   // habitCheckins derived from store — no local state needed
 
   // ── Plan items ──
