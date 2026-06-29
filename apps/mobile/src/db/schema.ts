@@ -428,9 +428,15 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     } catch {} // intentional: index may already exists
     // Migrate entity index to UNIQUE for UPSERT support
     try {
+      // Remove duplicate entries before creating unique index
+      await db.runAsync(`DELETE FROM sync_queue WHERE id NOT IN (
+        SELECT MIN(id) FROM sync_queue GROUP BY entity, entity_id
+      )`);
       await db.execAsync('DROP INDEX IF EXISTS idx_sync_queue_entity');
       await db.execAsync('CREATE UNIQUE INDEX idx_sync_queue_entity ON sync_queue(entity, entity_id)');
-    } catch {} // intentional: may already be unique
+    } catch (e) {
+      console.warn('[DB] sync_queue unique index migration:', e);
+    }
   }
 
   // Ensure sync_metadata table exists
