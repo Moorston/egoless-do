@@ -16,10 +16,14 @@ onRecordAuthWithPasswordRequest(function(e) {
           var profile = records[0];
           var d = profile.get("data");
           if (typeof d === 'string') { try { d = JSON.parse(d); } catch(pe) { d = null; } }
-          var current = (d && d.login_epoch) || 0;
-          if (!d || typeof d !== 'object') d = {};
-          d.login_epoch = current + 1;
-          profile.set("data", d);
+          // Always create a fresh JS object — Go slices/maps can't be mutated
+          var obj = {};
+          if (d && typeof d === 'object' && !Array.isArray(d)) {
+            for (var k in d) { obj[k] = d[k]; }
+          }
+          var current = obj.login_epoch || 0;
+          obj.login_epoch = current + 1;
+          profile.set("data", JSON.stringify(obj));
           $app.save(profile);
           return current + 1;
         }
