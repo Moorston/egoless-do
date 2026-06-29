@@ -560,17 +560,9 @@ export class SyncEngine {
     }
     const token = this._tokenProvider?.();
     if (!token) {
-      // Debug: check auth state directly
-      try {
-        const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
-        const raw = await AsyncStorage.getItem('egoless-do-mobile');
-        const parsed = raw ? JSON.parse(raw) : null;
-        const hasToken = !!parsed?.state?.auth?.token;
-        const isSignedIn = !!parsed?.state?.auth?.isSignedIn;
-        console.warn(`[SyncEngine] runSync: no token! AsyncStorage hasToken=${hasToken}, isSignedIn=${isSignedIn}`);
-      } catch (e) {
-        console.warn('[SyncEngine] runSync: no token, debug failed:', e);
-      }
+      // Debug: check both in-memory store AND AsyncStorage
+      const memToken = this._tokenProvider?.();
+      console.warn(`[SyncEngine] runSync: no token! memToken=${memToken ? 'yes' : 'null'}, provider=${this._tokenProvider ? 'set' : 'null'}`);
       setTimeout(() => { this.runSync(); }, 3000);
       return;
     }

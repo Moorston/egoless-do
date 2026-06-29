@@ -47,7 +47,11 @@ export function useSync() {
   // Wire up token provider & change handler once
   useEffect(() => {
     setSyncTokenProvider(() => {
-      const token = useAppStore.getState().auth.token;
+      const state = useAppStore.getState();
+      const token = state.auth.token;
+      if (!token) {
+        console.warn(`[useSync] tokenProvider: token is null! isSignedIn=${state.auth.isSignedIn}, refreshToken=${state.auth.refreshToken ? 'yes' : 'no'}, expiresAt=${state.auth.expiresAt}`);
+      }
       return token;
     });
     console.log('[useSync] Token provider and sync callbacks registered');
