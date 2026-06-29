@@ -5,7 +5,7 @@ import { useAppStore } from '../../../store/useAppStore';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useT } from '../../../components/UI';
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger } from '@egoless-do/core';
-import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal, BrainCircuit } from 'lucide-react-native';
+import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';
 
 import { TrailPickerModal } from '../trails';
 
@@ -145,7 +145,7 @@ export default function ReflectionDetailContent({
           ) : (
             <TouchableOpacity onPress={() => setShowTrailPicker(true)}
               style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 }}>
-              <BrainCircuit size={16} color="#fff" />
+              <Link size={16} color="#fff" />
               <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflLinkTrail')}</Text>
             </TouchableOpacity>
           )}
@@ -194,9 +194,8 @@ export default function ReflectionDetailContent({
       <TrailPickerModal
         visible={showTrailPicker}
         reflectionId={reflectionId}
-        linkedTrailIds={linkedTrails.map(t => t.id)}
+        linkedTrailIds={new Set(linkedTrails.map(t => t.id))}
         onClose={() => setShowTrailPicker(false)}
-        onToggle={() => {}}
       />
     </View>
   );
