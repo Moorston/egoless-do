@@ -79,6 +79,8 @@ export function createAuthSlice(
     async refreshAuth() {
       const { auth } = get();
       if (!auth.refreshToken) return;
+      // Don't refresh if token is still valid (not expired)
+      if (auth.expiresAt && auth.expiresAt > Date.now()) return;
       if (_refreshInFlight) return _refreshInFlight;
       _refreshInFlight = (async () => {
         try {
@@ -88,10 +90,12 @@ export function createAuthSlice(
             set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
           }
         } catch {
-          // Only clear auth if user is still logged in
-          if (get().auth.refreshToken) {
+          // Only clear auth if token is actually expired (not just a network error)
+          const currentAuth = get().auth;
+          if (currentAuth.refreshToken && currentAuth.expiresAt && currentAuth.expiresAt < Date.now()) {
             set({ auth: defaultAuthState });
           }
+          // If token is still valid, keep the auth state — network error is transient
         }
       })();
       try {

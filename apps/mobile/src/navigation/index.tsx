@@ -296,11 +296,9 @@ export default function AppNavigator() {
     if (!isSignedIn) return;
     const expiresAt = useAppStore.getState().auth.expiresAt;
     const refreshAuth = useAppStore.getState().refreshAuth;
-    const logout = useAppStore.getState().logout;
-    if (!expiresAt || expiresAt < Date.now()) {
-      refreshAuth().catch(() => logout());
-    } else if (expiresAt - Date.now() < 3600000) {
-      refreshAuth().catch((e) => log.error(e));
+    // Only refresh if token is actually expired (not just on startup)
+    if (expiresAt && expiresAt < Date.now()) {
+      refreshAuth().catch(() => {});
     }
   }, [isSignedIn]);
 
