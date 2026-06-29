@@ -9,7 +9,7 @@ import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
 import { getState, openDatabase } from '../../db/schema';
 import { useAppStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
-import { mobileStorageAdapter } from '../../store/storageAdapter';
+import { mobileStorageAdapter, setStorageAdapterTrigger } from '../../store/storageAdapter';
 import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
 import { useMusicStore } from '../music/useMusicStore';
 
@@ -49,9 +49,11 @@ export function useSync() {
     setSyncTokenProvider(() => useAppStore.getState().auth.token);
     setSyncUserIdProvider(() => useAppStore.getState().auth.user?.id ?? null);
 
-    // Wire up debounced sync trigger: enqueueChange → triggerSyncDebounced → runSync
+    // Wire up debounced sync trigger: WriteBatcher flush → triggerSyncDebounced → runSync
     setSyncTriggerCallback(() => { runSync().catch((e) => log.error(e)); });
     setOnEnqueuedCallback(() => { triggerSyncDebounced(); });
+    // Wire WriteBatcher flush → triggerSyncDebounced (breaks circular dependency)
+    setStorageAdapterTrigger(() => { triggerSyncDebounced(); });
 
     // Register kicked out handler
     setKickedOutHandler(async () => {

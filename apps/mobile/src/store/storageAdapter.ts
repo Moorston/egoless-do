@@ -1,10 +1,14 @@
 import type { StorageAdapter, SyncEntity } from '@egoless-do/core';
 import { WriteBatcher } from '../features/sync/WriteBatcher';
-import { triggerSyncDebounced } from '../features/sync/SyncService';
+
+// Lazy reference to avoid circular dependency:
+// storageAdapter → SyncService → SyncEngine → storageAdapter
+let _triggerSync: (() => void) | null = null;
+export function setStorageAdapterTrigger(fn: () => void) { _triggerSync = fn; }
 
 // Global batcher coalesces all writes within a 100ms window into single transaction.
 // Flushes are also triggered on app background via useAppStore.
-const _batcher = new WriteBatcher(100, () => { triggerSyncDebounced(); });
+const _batcher = new WriteBatcher(100, () => { _triggerSync?.(); });
 
 export function flushWrites(): Promise<boolean> {
   return _batcher.flushNow();
