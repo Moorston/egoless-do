@@ -32,9 +32,10 @@ export default function ExerciseTab() {
     const weekEntries = exerciseLog.filter(e => !e.deleted && e.timestamp >= weekStart);
     const weekKm = weekEntries.reduce((s, e) => s + (e.distanceKm ?? 0), 0);
     const weekCount = weekEntries.length;
+    const weekDuration = weekEntries.reduce((s, e) => s + (e.durationSec ?? 0), 0);
     const allPaces = exerciseLog.filter(e => !e.deleted && e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
     const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
-    return { weekKm, weekCount, bestPace };
+    return { weekKm, weekCount, bestPace, weekDuration };
   }, [exerciseLog]);
 
   const recentEntries = useMemo(() => exerciseLog.filter(e => !e.deleted).slice(0, 3), [exerciseLog]);
@@ -66,6 +67,12 @@ export default function ExerciseTab() {
               <div style={{ fontSize: FONT_STAT_SECTION, fontWeight: 900, color: '#fff' }}>{weeklyStats.weekCount}</div>
               <div style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</div>
               <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseWorkouts')}</div>
+            </div>
+            <div style={{ width: 1, background: 'rgba(255,255,255,.2)', margin: '4px 0' }} />
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <div style={{ fontSize: FONT_STAT_SECTION, fontWeight: 900, color: '#fff' }}>{Math.round(weeklyStats.weekDuration / 60)}</div>
+              <div style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseMin')}</div>
+              <div style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseWeekTime')}</div>
             </div>
             <div style={{ width: 1, background: 'rgba(255,255,255,.2)', margin: '4px 0' }} />
             <div style={{ textAlign: 'center', flex: 1 }}>

@@ -24,18 +24,15 @@ export function createAuthSlice(
       set(s => ({ auth: { ...s.auth, isLoading: true } }));
       try {
         const res = await apiLogin(email, password);
-        console.log('[Auth] login response:', { hasToken: !!res.token, hasRefreshToken: !!res.refreshToken, expiresAt: res.expiresAt, tokenLen: res.token?.length });
+        log.debug('login response', { hasToken: !!res.token, hasRefreshToken: !!res.refreshToken, expiresAt: res.expiresAt });
         set({
           auth: {
             user: res.user, token: res.token, refreshToken: res.refreshToken,
             isSignedIn: true, isLoading: false, expiresAt: res.expiresAt,
           },
         });
-        const afterSet = get().auth;
-        console.log('[Auth] after set:', { hasToken: !!afterSet.token, isSignedIn: afterSet.isSignedIn, hasRefreshToken: !!afterSet.refreshToken });
         await get().pullServerData(res.token);
-        const afterPull = get().auth;
-        console.log('[Auth] after pullServerData:', { hasToken: !!afterPull.token, isSignedIn: afterPull.isSignedIn });
+        log.debug('after pull', { signedIn: get().auth.isSignedIn });
         onSyncTrigger();
       } catch (e) {
         set(s => ({ auth: { ...s.auth, isLoading: false } }));
@@ -153,6 +150,19 @@ export function createAuthSlice(
           if (data.grace)           patch.graceHistory = mergeById(data.grace, s.graceHistory ?? [], 'date').filter(i => !i.deleted);
           if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail, s.thoughtTrails ?? [], 'id').filter(i => !i.deleted);
           if (data.trailNote)       patch.trailNotes = mergeById(data.trailNote, s.trailNotes ?? [], 'id').filter(i => !i.deleted);
+          if (data.reflectionLink)  patch.reflectionLinks = mergeById(data.reflectionLink, s.reflectionLinks ?? [], 'id').filter(i => !i.deleted);
+          if (data.checkinReview)   patch.checkinReviews = mergeById(data.checkinReview, s.checkinReviews ?? [], 'id').filter(i => !i.deleted);
+
+          if (data.aiConfig?.length) {
+            const latest = data.aiConfig
+              .filter((c: Record<string, unknown>) => !c.deleted)
+              .sort((a: Record<string, unknown>, b: Record<string, unknown>) => ((b.updatedAt as number) ?? 0) - ((a.updatedAt as number) ?? 0))[0];
+            if (latest) {
+              const cfg = latest as Record<string, unknown>;
+              if (cfg.mode) patch.aiMode = cfg.mode;
+              if (cfg.models) patch.aiModels = cfg.models;
+            }
+          }
 
           if (data.profile?.length) {
             const latest = data.profile

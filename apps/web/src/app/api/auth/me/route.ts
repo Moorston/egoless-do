@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     if (token) pb.authStore.save(token, null);
     const user = await pb.collection('users').getOne(auth.userId);
     return NextResponse.json({
-      user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar },
+      user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar, createdAt: user.created ? new Date(user.created).getTime() : Date.now() },
     });
   } catch (e: any) {
     const status = e?.status ?? e?.response?.status;

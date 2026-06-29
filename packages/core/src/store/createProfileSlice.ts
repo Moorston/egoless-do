@@ -24,7 +24,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
     addWater(ml: number) {
       if (ml > 0) {
         const now = Date.now();
-        let persistData: any;
+        let persistData: Record<string, unknown> | undefined;
         set(s => {
           const waterMl = (s.waterMl ?? 0) + ml;
           const updated = { ...s.userProfile, waterMl, updatedAt: now };
@@ -37,7 +37,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
 
     resetWater() {
       const now = Date.now();
-      let persistData: any;
+      let persistData: Record<string, unknown> | undefined;
       set(s => {
         persistData = { ...s.userProfile, waterMl: 0, waterGoal: s.waterGoal, updatedAt: now };
         return { waterMl: 0, userProfile: { ...s.userProfile, waterMl: 0, updatedAt: now } };
@@ -47,7 +47,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
 
     setWaterGoal(ml: number) {
       const now = Date.now();
-      let persistData: any;
+      let persistData: Record<string, unknown> | undefined;
       set(s => {
         const waterGoal = Math.max(100, ml);
         persistData = { ...s.userProfile, waterMl: s.waterMl, waterGoal, updatedAt: now };
@@ -58,7 +58,7 @@ export function createProfileSlice(adapter: StorageAdapter): SliceCreator<Profil
 
     setWeightUnit(u: 'kg' | 'lb') {
       const now = Date.now();
-      let persistData: any;
+      let persistData: Record<string, unknown> | undefined;
       set(s => {
         persistData = { ...s.userProfile, waterMl: s.waterMl, waterGoal: s.waterGoal, weightUnit: u, updatedAt: now };
         return { weightUnit: u, userProfile: { ...s.userProfile, weightUnit: u, updatedAt: now } };

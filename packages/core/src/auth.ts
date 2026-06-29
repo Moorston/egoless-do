@@ -1,7 +1,7 @@
 // ─── Auth API client (shared across all platforms) ─────────────────
 import type { AuthUser } from './types';
 import type { SyncPushResult, SyncCheckResult, SyncPullPostBody } from './sync/types';
-import { buildHeaders, fetchWithTimeout, handleJsonResponse } from './fetch';
+import { buildHeaders, fetchWithTimeout, handleJsonResponse, SYNC_REQUEST_TIMEOUT } from './fetch';
 
 export interface AuthResponse {
   user: AuthUser;
@@ -136,7 +136,7 @@ export async function apiSyncPush(token: string, _lastSyncAt: number, changes: a
     method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
     body: JSON.stringify({ changes }),
-  });
+  }, SYNC_REQUEST_TIMEOUT);
   return handleJsonResponse<SyncPushResult>(res);
 }
 
@@ -146,7 +146,7 @@ export async function apiSyncPullPost(token: string, body: SyncPullPostBody, use
     method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
     body: JSON.stringify(body),
-  });
+  }, SYNC_REQUEST_TIMEOUT);
   return handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
 }
 
@@ -156,7 +156,7 @@ export async function apiSyncPull(token: string, userId?: string, since?: number
   const res = await fetchWithTimeout(`${getSyncBase()}/api/sync${sinceParam}`, {
     method: 'GET',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
-  });
+  }, SYNC_REQUEST_TIMEOUT);
   return handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
 }
 
@@ -165,7 +165,7 @@ export async function apiSyncCheck(token: string, since: number, userId?: string
   const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/check?since=${since}`, {
     method: 'GET',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
-  });
+  }, SYNC_REQUEST_TIMEOUT);
   return handleJsonResponse<SyncCheckResult>(res);
 }
 
@@ -183,6 +183,6 @@ export async function apiSyncPullEntity(token: string, entity: string, page: num
   const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/pull/${entity}?page=${page}&pageSize=${pageSize}`, {
     method: 'GET',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
-  });
+  }, SYNC_REQUEST_TIMEOUT);
   return handleJsonResponse<SyncPullEntityResult>(res);
 }

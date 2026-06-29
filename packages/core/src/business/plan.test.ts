@@ -156,12 +156,12 @@ describe('shouldShowToday', () => {
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-04', [])).toBe(true);
   });
 
-  it('should not show on interval day if already checked in', () => {
+  it('should still show on interval day even if already checked in', () => {
     const freq: CheckinFrequency = { mode: 'interval', every: 3 };
     const checkins: PlanItemCheckin[] = [
       { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
     ];
-    expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', checkins)).toBe(false);
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', checkins)).toBe(true);
   });
 
   it('should show if weekly target not met', () => {

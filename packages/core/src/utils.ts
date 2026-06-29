@@ -39,6 +39,16 @@ export const dateStr = (d = new Date()) => {
   return `${year}-${month}-${day}`;
 };
 
+export function parseDateParts(date: string): [number, number, number] {
+  const [y, m, d] = date.split('-').map(Number);
+  return [y, m - 1, d];
+}
+
+export function addDays(date: string, n: number): string {
+  const [y, m, d] = parseDateParts(date);
+  return dateStr(new Date(y, m, d + n));
+}
+
 export const yesterday = () => {
   const d = new Date();
   d.setDate(d.getDate() - 1);

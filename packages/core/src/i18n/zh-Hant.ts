@@ -8,11 +8,11 @@ export const zhHant: I18nKeys = {
   done:'已完成', notDone:'未完成', cancel:'取消', save:'保存',
   submit:'提交打卡', note:'感念', freeCheckin:'自由打卡',
   startFasting:'⏰ 開始禁食', quickStart:'⚡ 快速開始 8小時',
-  stopFasting:'停止禁食', accMed:'累計打坐 (分鐘)', bgMusic:'背景音樂',
+  stopFasting:'停止禁食', accMed:'累計打坐', bgMusic:'背景音樂',
   medMusicFocus:'專注 · 自然音', medMusicMeditate:'冥想 · 頌缽', medMusicExercise:'運動 · 節奏', medMusicUser:'我的音樂',
   medSelectMusic:'選擇背景音樂', medTapToSelect:'點擊試聽並選擇', medNoMusic:'無音樂',
   startMed:'開始打坐', stopMed:'停止', shareMed:'☯ 分享我的打坐',
-  shareCardTitle:'心流紀 · 打坐', shareCardSession:'打坐次數', shareCardDownload:'保存圖片',
+  shareCardTitle:'心流紀 · 打坐', shareCardSession:'累計次數', shareCardDownload:'保存圖片',
   mindPulse:'感念脈絡', newReflection:'新建感念', saveReflection:'保存感念 ✦',
   myHabits:'我的習慣', addHabit:'+ 添加習慣',
   startDate:'開始日期', targetDays:'目標天數',
@@ -165,7 +165,7 @@ export const zhHant: I18nKeys = {
   noTodoToday:'今日無待辦項目', servingsUnit:'份',
 
   // Meditation
-  medTitle:'今日打坐', medActive:'打坐中...', medMinutes:'分鐘',
+  medTitle:'今日時長', medTodayCount:'今日次數', medActive:'打坐中...', medMinutes:'分鐘',
   medBgm:'背景音樂', medLoadError:'音效載入失敗，冥想仍可繼續',
   medAttribution:'部分音效來源：Pixabay (royalty-free)',
 
@@ -192,7 +192,7 @@ export const zhHant: I18nKeys = {
   exerciseProgress:'進度', exerciseFinishConfirm:'長按3秒結束',
   exerciseCancel:'取消', exerciseAvgPace:'平均配速', exerciseTotalCal:'消耗卡路里',
   exerciseBestPace:'最佳配速', exerciseWeekKm:'本週跑量', exerciseMonthKm:'本月跑量',
-  exerciseWeeklyKm:'本週跑量', exerciseWorkouts:'運動次數',
+  exerciseWeeklyKm:'本週跑量', exerciseWorkouts:'運動次數', exerciseWeekTime:'運動時長',
   exerciseQuickStart:'快速開始', exerciseRecentActivity:'最近運動', exerciseSearchPlaceholder:'搜尋運動...', exerciseNoResults:'未找到匹配的運動',
   exerciseViewAll:'查看全部', exerciseNoActivity:'暫無運動記錄，開始你的第一次鍛鍊吧',
   exerciseMySports:'我的運動', exerciseMoreSports:'更多運動', exerciseGpsTag:'GPS',
@@ -296,6 +296,7 @@ export const zhHant: I18nKeys = {
   settingsFreePlan:'免費版', settingsDefaultName:'心流行者',
   settingsEditProfile:'編輯資料', settingsNickname:'暱稱',
   profileStats:'統計概覽', profileBodyData:'身體數據', profileWeight:'體重', profileWaterGoal:'飲水目標', profileAccount:'帳號',
+  profileJourney:'修行旅程', profileMotto:'座右銘', profileMottoPlaceholder:'寫下你的座右銘...', profileJoinedDays:'已加入', profileLongestStreak:'最長連續打卡', profileTotalExercise:'累計運動', profileTotalFasting:'累計禁食',
   profilePermDenied:'權限被拒絕', profilePermDeniedMsg:'需要相簿存取權限來更換頭像',
   shareCardShare:'分享', shareCardSave:'儲存', shareCardLoading:'載入中...',
   shareCardSaved:'成功', shareCardSavedMsg:'圖片已儲存',
@@ -399,6 +400,11 @@ export const zhHant: I18nKeys = {
   'globalPulse.peopleDoingTogether':'{count} 人正在一起修行',
   'globalPulse.totalUsers':'位修行者',
   'globalPulse.activeToday':'今日活躍',
+  'globalPulse.myJourney':'我的修行',
+  'globalPulse.globalRank':'全球排名',
+  'globalPulse.rank':'排名',
+  'globalPulse.exceedPercent':'超過',
+  'globalPulse.todayStatus':'今日狀態',
 
   // Grace
   graceTitle:'寬限期恢復',

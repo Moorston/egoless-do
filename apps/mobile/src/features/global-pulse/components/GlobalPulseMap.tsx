@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -19,6 +19,7 @@ import { MarkerDetail } from './MarkerDetail';
 import { OfflineBanner } from './OfflineBanner';
 import { BottomPanel } from './BottomPanel';
 import { Leaderboard } from './Leaderboard';
+import { getUserHash } from '../services/userHash';
 
 const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -66,6 +67,17 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [currentZoom, setCurrentZoom] = useState(2);
+  const [myHash, setMyHash] = useState<string>('');
+  useEffect(() => {
+    let alive = true;
+    getUserHash().then(h => { if (alive) setMyHash(h); }).catch(() => {});
+    return () => { alive = false; };
+  }, []);
+
+  const myCheckin = useMemo(() => {
+    if (!myHash) return null;
+    return checkins.find(c => c.user_hash === myHash) ?? null;
+  }, [checkins, myHash]);
 
   const handleRegionChange = useCallback((region: any) => {
     const zoom = Math.round(Math.log2(360 / region.latitudeDelta));
@@ -100,9 +112,15 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
     }, 500);
   }, []);
 
+  // 过滤掉自己的打卡，避免与专属标记重复
+  const otherCheckins = useMemo(
+    () => myHash ? checkins.filter(c => c.user_hash !== myHash) : checkins,
+    [checkins, myHash],
+  );
+
   const clusters = useMemo(
-    () => aggregateMarkers(checkins, currentZoom),
-    [checkins, currentZoom]
+    () => aggregateMarkers(otherCheckins, currentZoom),
+    [otherCheckins, currentZoom]
   );
 
   // 按 streak 排序计算排名
@@ -258,6 +276,24 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
                 </Marker>
               );
             })}
+
+            {/* 自己的标记 */}
+            {myCheckin && (
+              <Marker
+                key="my-marker"
+                coordinate={{ latitude: myCheckin.lat, longitude: myCheckin.lng }}
+                title={t('globalPulse.me')}
+                description={`🔥${myCheckin.streak}${t('globalPulse.days')} 📅${myCheckin.total_days}${t('globalPulse.days')}`}
+                onPress={() => handleMarkerPress(myCheckin)}
+                tracksViewChanges={false}
+              >
+                <View style={styles.myMarkerWrapper}>
+                  <View style={[styles.myMarkerDot, { backgroundColor: theme.primary }]}>
+                    <Text style={styles.myMarkerText}>{t('globalPulse.me')}</Text>
+                  </View>
+                </View>
+              </Marker>
+            )}
           </MapView>
 
           {stats && (
@@ -315,6 +351,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
               selectedUserId={selectedUserId}
               onRefresh={refresh}
               isRefreshing={isRefreshing}
+              myHash={myHash}
             />
           )}
         </>
@@ -510,6 +547,28 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     overflow: 'hidden',
     marginTop: 2,
+  },
+  myMarkerWrapper: {
+    alignItems: 'center',
+  },
+  myMarkerDot: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 3,
+    borderColor: '#FFD700',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  myMarkerText: {
+    color: '#fff',
+    fontWeight: '900',
+    fontSize: 14,
   },
 });
 

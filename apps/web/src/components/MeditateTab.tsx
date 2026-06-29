@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { getTodayMedMinutes, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
+import { getTodayMedMinutes, dateStr, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 
 const log = createLogger('Web');
 import { useOverlay } from './useOverlay';
@@ -161,7 +161,9 @@ export default function MeditateTab() {
   }), [P]);
 
   const durationButtons = useMemo(() => [1, 5, 10, 15, 30, 60, 120, 180, 300], []);
+  const todayDate = dateStr();
   const todayMedMin = useMemo(() => getTodayMedMinutes((store.medHistory || []).filter(m => !m.deleted)), [store.medHistory]);
+  const todayMedCount = useMemo(() => (store.medHistory || []).filter(m => !m.deleted && m.date === todayDate).length, [store.medHistory, todayDate]);
 
   const handleShare = useCallback(() => {
     const W = 750, H = 1000;
@@ -200,7 +202,7 @@ export default function MeditateTab() {
     ctx.beginPath(); ctx.moveTo(120, 440); ctx.lineTo(W - 120, 440); ctx.stroke();
     // Stats
     const stats = [
-      { value: String(store.totalMedMinutes), label: T('accMed').replace(/\s*\(.*\)/, '') },
+      { value: String(store.totalMedMinutes), label: T('accMed') },
       { value: String(todayMedMin), label: T('medTitle') },
       { value: String((store.medHistory || []).filter(m => !m.deleted).length), label: T('shareCardSession') },
     ];
@@ -272,6 +274,10 @@ export default function MeditateTab() {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ color: TH.text }}>{T('medTitle')}</span>
           <span style={{ color: P, fontWeight: 600 }}>{todayMedMin} {T('medMinutes')}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
+          <span style={{ color: TH.text }}>{T('medTodayCount')}</span>
+          <span style={{ color: P, fontWeight: 600 }}>{todayMedCount} {T('fastTimes')}</span>
         </div>
       </div>
 

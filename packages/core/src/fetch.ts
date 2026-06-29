@@ -1,6 +1,7 @@
 // ─── Shared fetch utilities ───────────────────────────────────────
 
 const REQUEST_TIMEOUT = 15_000;
+export const SYNC_REQUEST_TIMEOUT = 60_000;
 
 export function buildHeaders(token?: string): Record<string, string> {
   const h: Record<string, string> = { 'Content-Type': 'application/json', 'Accept-Encoding': 'gzip' };
@@ -35,9 +36,9 @@ export class ConflictError extends Error {
   constructor(message: string) { super(message); this.name = 'ConflictError'; }
 }
 
-export async function fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
+export async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs?: number): Promise<Response> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+  const timer = setTimeout(() => controller.abort(), timeoutMs ?? REQUEST_TIMEOUT);
   try {
     return await fetch(url, { ...init, signal: controller.signal });
   } catch (err: unknown) {

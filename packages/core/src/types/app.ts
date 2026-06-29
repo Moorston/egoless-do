@@ -16,6 +16,7 @@ import type { CustomFoodPreset } from './food';
 export interface UserProfile {
   nickname?: string;
   avatar?: string; // base64 data URI
+  motto?: string;
   weight?: number;
   gender?: 'male' | 'female';
   age?: number;

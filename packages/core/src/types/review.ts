@@ -96,6 +96,7 @@ export interface CheckinReview extends Syncable {
   improvements: string[];      // 改进建议
   
   // 元数据
+  userId?: string;              // 用户 ID（同步时填充）
   generatedAt: number;         // 生成时间戳
   aiModel?: string;            // 使用的AI模型
   lastAutoUpdateAt?: string;   // 上次自动更新时间 YYYY-MM-DD

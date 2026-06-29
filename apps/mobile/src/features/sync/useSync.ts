@@ -30,13 +30,22 @@ export function useSync() {
   // Kick out handlers
   const handleSyncAndLogout = useCallback(async () => {
     setKickOutVisible(false);
-    try {
-      await runSync(); // Push pending data
-      useAppStore.getState().logout();
-    } catch {
-      // Sync failed — stay logged in so user can retry; don't lose pending data
-      log.error('Sync before logout failed, staying logged in');
+    const auth = useAppStore.getState().auth;
+    if (auth.token) {
+      try {
+        await useAppStore.getState().refreshAuth();
+      } catch (e) { log.debug('Token refresh failed during kick-out:', e); }
     }
+    const newToken = useAppStore.getState().auth.token;
+    if (newToken) {
+      try {
+        await runSync(); // Push pending data with fresh token
+      } catch {
+        log.error('Sync before logout failed, staying logged in');
+        return;
+      }
+    }
+    useAppStore.getState().logout();
   }, []);
 
   const handleLogoutDirectly = useCallback(() => {
@@ -50,11 +59,11 @@ export function useSync() {
       const state = useAppStore.getState();
       const token = state.auth.token;
       if (!token) {
-        console.warn(`[useSync] tokenProvider: token is null! isSignedIn=${state.auth.isSignedIn}, refreshToken=${state.auth.refreshToken ? 'yes' : 'no'}, expiresAt=${state.auth.expiresAt}`);
+        log.warn(`tokenProvider: token is null! isSignedIn=${state.auth.isSignedIn}, refreshToken=${state.auth.refreshToken ? 'yes' : 'no'}, expiresAt=${state.auth.expiresAt}`);
       }
       return token;
     });
-    console.log('[useSync] Token provider and sync callbacks registered');
+    log.info('Token provider and sync callbacks registered');
     setSyncUserIdProvider(() => useAppStore.getState().auth.user?.id ?? null);
 
     // Wire up debounced sync trigger: WriteBatcher flush → triggerSyncDebounced → runSync

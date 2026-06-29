@@ -4,11 +4,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, useT, RowItem } from '../../components/UI';
 import {
-  COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON,
+  COLORS, FONT_TITLE, FONT_BODY, FONT_SUB,
   createLogger,
 } from '@egoless-do/core';
 import {
@@ -24,15 +25,32 @@ export default function ProfileScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const {
+    userProfile, auth, checkinHistory, habits, reflections,
+    exerciseLog, fastingHistory, plans, planItems,
+    waterGoal, streak, totalMedMinutes,
+  } = useAppStore(useShallow(s => ({
+    userProfile: s.userProfile,
+    auth: s.auth,
+    checkinHistory: s.checkinHistory,
+    habits: s.habits,
+    reflections: s.reflections,
+    exerciseLog: s.exerciseLog,
+    fastingHistory: s.fastingHistory,
+    plans: s.plans,
+    planItems: s.planItems,
+    waterGoal: s.waterGoal,
+    streak: s.streak,
+    totalMedMinutes: s.totalMedMinutes,
+  })));
   const nav = useRootNavigation();
 
-  const [editNickname, setEditNickname] = useState(store.userProfile.nickname ?? '');
+  const [editNickname, setEditNickname] = useState(userProfile.nickname ?? '');
   const [editingNickname, setEditingNickname] = useState(false);
-  const [editMotto, setEditMotto] = useState(store.userProfile.motto ?? '');
+  const [editMotto, setEditMotto] = useState(userProfile.motto ?? '');
   const [editingMotto, setEditingMotto] = useState(false);
-  const [editWeight, setEditWeight] = useState(store.userProfile.weight != null ? String(store.userProfile.weight) : '');
-  const [editWaterGoal, setEditWaterGoal] = useState(String(store.waterGoal));
+  const [editWeight, setEditWeight] = useState(userProfile.weight != null ? String(userProfile.weight) : '');
+  const [editWaterGoal, setEditWaterGoal] = useState(String(waterGoal));
   const [clearing, setClearing] = useState(false);
   const weightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -46,42 +64,42 @@ export default function ProfileScreen() {
     // Final save with latest values
     const w = weightRef.current;
     const wn = w ? parseFloat(w) : undefined;
-    store.updateUserProfile({ weight: wn });
+    useAppStore.getState().updateUserProfile({ weight: wn });
     const wg = parseInt(waterRef.current, 10);
-    if (!isNaN(wg) && wg > 0) store.setWaterGoal(wg);
+    if (!isNaN(wg) && wg > 0) useAppStore.getState().setWaterGoal(wg);
   }, []);
 
   const weightUnit = useAppStore(s => s.weightUnit);
   const setWeightUnit = useAppStore(s => s.setWeightUnit);
 
   const profileStats = useMemo(() => {
-    const totalCheckinDays = (store.checkinHistory ?? []).filter(c => c.done && !c.deleted).length;
-    const activeHabits = (store.habits ?? []).filter(h => !h.deleted && h.status !== 'archived').length;
-    const totalReflections = (store.reflections ?? []).filter(r => !r.deleted).length;
+    const totalCheckinDays = (checkinHistory ?? []).filter(c => c.done && !c.deleted).length;
+    const activeHabits = (habits ?? []).filter(h => !h.deleted && h.status !== 'archived').length;
+    const totalReflections = (reflections ?? []).filter(r => !r.deleted).length;
     return { totalCheckinDays, activeHabits, totalReflections };
-  }, [store.checkinHistory, store.habits, store.reflections]);
+  }, [checkinHistory, habits, reflections]);
 
   const journeyStats = useMemo(() => {
-    const createdAt = store.auth.user?.createdAt;
+    const createdAt = auth.user?.createdAt;
     const joinedDays = createdAt ? Math.max(1, Math.floor((Date.now() - createdAt) / 86400000)) : 0;
     // Longest streak
-    const history = (store.checkinHistory ?? []).filter(c => !c.deleted);
+    const history = (checkinHistory ?? []).filter(c => !c.deleted);
     let longestStreak = 0, current = 0;
     for (const c of history) { if (c.done) { current++; longestStreak = Math.max(longestStreak, current); } else { current = 0; } }
     // Total exercise hours
-    const totalExerciseSec = (store.exerciseLog ?? []).filter(e => !e.deleted).reduce((s, e) => s + e.durationSec, 0);
+    const totalExerciseSec = (exerciseLog ?? []).filter(e => !e.deleted).reduce((s, e) => s + e.durationSec, 0);
     const totalExerciseHours = Math.round(totalExerciseSec / 3600);
     // Total fasting hours
-    const totalFastingMs = (store.fastingHistory ?? []).filter(f => !f.deleted && f.endedAt).reduce((s, f) => s + ((f.endedAt ?? 0) - f.startedAt), 0);
+    const totalFastingMs = (fastingHistory ?? []).filter(f => !f.deleted && f.endedAt).reduce((s, f) => s + ((f.endedAt ?? 0) - f.startedAt), 0);
     const totalFastingHours = Math.round(totalFastingMs / 3600000);
     // Plans & tasks
-    const totalPlans = (store.plans ?? []).filter(p => !p.deleted).length;
-    const totalPlanItems = (store.planItems ?? []).filter(i => !i.deleted).length;
+    const totalPlans = (plans ?? []).filter(p => !p.deleted).length;
+    const totalPlanItems = (planItems ?? []).filter(i => !i.deleted).length;
     return { joinedDays, longestStreak, totalExerciseHours, totalFastingHours, totalPlans, totalPlanItems };
-  }, [store.auth.user?.createdAt, store.checkinHistory, store.exerciseLog, store.fastingHistory, store.plans, store.planItems]);
+  }, [auth.user?.createdAt, checkinHistory, exerciseLog, fastingHistory, plans, planItems]);
 
-  const displayName = store.userProfile.nickname ?? store.auth.user?.name ?? T('settingsDefaultName');
-  const avatarUri = store.userProfile.avatar;
+  const displayName = userProfile.nickname ?? auth.user?.name ?? T('settingsDefaultName');
+  const avatarUri = userProfile.avatar;
 
   const pickAvatar = async () => {
     try {
@@ -101,7 +119,7 @@ export default function ProfileScreen() {
         const asset = result.assets[0];
         // Resize to ~200x200 to keep base64 small for sync
         const base64 = `data:image/jpeg;base64,${asset.base64}`;
-        store.updateUserProfile({ avatar: base64 });
+        useAppStore.getState().updateUserProfile({ avatar: base64 });
       }
     } catch (e) {
       log.error(e, { message: 'Avatar pick error' });
@@ -109,22 +127,22 @@ export default function ProfileScreen() {
   };
 
   const removeAvatar = () => {
-    store.updateUserProfile({ avatar: undefined });
+    useAppStore.getState().updateUserProfile({ avatar: undefined });
   };
 
   const saveNickname = () => {
-    store.updateUserProfile({ nickname: editNickname.trim() || undefined });
+    useAppStore.getState().updateUserProfile({ nickname: editNickname.trim() || undefined });
     setEditingNickname(false);
   };
 
   const saveMotto = () => {
-    store.updateUserProfile({ motto: editMotto.trim() || undefined });
+    useAppStore.getState().updateUserProfile({ motto: editMotto.trim() || undefined });
     setEditingMotto(false);
   };
 
   const saveWeight = () => {
     const num = editWeight ? parseFloat(editWeight) : undefined;
-    store.updateUserProfile({ weight: num });
+    useAppStore.getState().updateUserProfile({ weight: num });
   };
 
   const debouncedSaveWeight = useCallback((val: string) => {
@@ -134,13 +152,13 @@ export default function ProfileScreen() {
     weightTimer.current = setTimeout(() => {
       weightTimer.current = null;
       const num = val ? parseFloat(val) : undefined;
-      store.updateUserProfile({ weight: num });
+      useAppStore.getState().updateUserProfile({ weight: num });
     }, 800);
   }, []);
 
   const saveWaterGoal = () => {
     const num = parseInt(editWaterGoal, 10);
-    if (!isNaN(num) && num > 0) store.setWaterGoal(num);
+    if (!isNaN(num) && num > 0) useAppStore.getState().setWaterGoal(num);
   };
 
   const debouncedSaveWaterGoal = useCallback((val: string) => {
@@ -150,7 +168,7 @@ export default function ProfileScreen() {
     waterTimer.current = setTimeout(() => {
       waterTimer.current = null;
       const num = parseInt(val, 10);
-      if (!isNaN(num) && num > 0) store.setWaterGoal(num);
+      if (!isNaN(num) && num > 0) useAppStore.getState().setWaterGoal(num);
     }, 800);
   }, []);
 
@@ -207,7 +225,7 @@ export default function ProfileScreen() {
                 <TouchableOpacity onPress={saveNickname} style={{ padding: 8 }}>
                   <Check size={22} color={COLORS.GREEN} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setEditingNickname(false); setEditNickname(store.userProfile.nickname ?? ''); }} style={{ padding: 8 }}>
+                <TouchableOpacity onPress={() => { setEditingNickname(false); setEditNickname(userProfile.nickname ?? ''); }} style={{ padding: 8 }}>
                   <X size={22} color={TH.sub} />
                 </TouchableOpacity>
               </View>
@@ -219,68 +237,9 @@ export default function ProfileScreen() {
             )}
 
             <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-              {store.auth.user?.email ?? ''}
+              {auth.user?.email ?? ''}
             </Text>
           </View>
-        </Card>
-
-        {/* Journey */}
-        <Card style={{ marginBottom: 12 }}>
-          <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12 }}>
-            {T('profileJourney')}
-          </Text>
-          {/* Motto */}
-          {editingMotto ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <Quote size={16} color={P} />
-              <TextInput
-                value={editMotto}
-                onChangeText={setEditMotto}
-                placeholder={T('profileMottoPlaceholder')}
-                placeholderTextColor={TH.sub}
-                style={{
-                  flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
-                  color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
-                  fontStyle: 'italic',
-                }}
-              />
-              <TouchableOpacity onPress={saveMotto} style={{ padding: 6 }}>
-                <Check size={20} color={COLORS.GREEN} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => { setEditingMotto(false); setEditMotto(store.userProfile.motto ?? ''); }} style={{ padding: 6 }}>
-                <X size={20} color={TH.sub} />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-              <Quote size={16} color={P} />
-              <Text style={{ color: store.userProfile.motto ? TH.text : TH.sub, fontSize: FONT_BODY, fontStyle: 'italic', flex: 1 }}>
-                {store.userProfile.motto || T('profileMottoPlaceholder')}
-              </Text>
-              <Pencil size={12} color={TH.sub} />
-            </TouchableOpacity>
-          )}
-          <View style={{ height: 1, backgroundColor: TH.border, marginBottom: 12 }} />
-          {/* Stats rows */}
-          {[
-            { icon: <CalendarDays size={16} color="#10B981" />, value: `${journeyStats.joinedDays} ${T('calendarDays')}`, label: T('profileJoinedDays') },
-            { icon: <Flame size={16} color="#F59E0B" />, value: `${store.streak} ${T('calendarDays')}`, label: T('checkinStreak') },
-            { icon: <Trophy size={16} color="#F59E0B" />, value: `${journeyStats.longestStreak} ${T('calendarDays')}`, label: T('profileLongestStreak') },
-            { icon: <CalendarDays size={16} color="#10B981" />, value: `${profileStats.totalCheckinDays} ${T('calendarDays')}`, label: T('globalPulse.totalDays') },
-            { icon: <Target size={16} color={P} />, value: `${profileStats.activeHabits}`, label: T('habits') },
-            { icon: <Brain size={16} color="#8B5CF6" />, value: `${profileStats.totalReflections}`, label: T('reflections') },
-            { icon: <ClipboardList size={16} color="#3B82F6" />, value: `${journeyStats.totalPlans}`, label: T('plan') },
-            { icon: <ListChecks size={16} color="#3B82F6" />, value: `${journeyStats.totalPlanItems}`, label: T('planTodoList') },
-            { icon: <Timer size={16} color="#8B5CF6" />, value: `${store.totalMedMinutes} ${T('medMinutes')}`, label: T('accMed') },
-            { icon: <Footprints size={16} color={P} />, value: `${journeyStats.totalExerciseHours} ${T('medMinutes')}`, label: T('profileTotalExercise') },
-            { icon: <Utensils size={16} color="#EF4444" />, value: `${journeyStats.totalFastingHours} ${T('medMinutes')}`, label: T('profileTotalFasting') },
-          ].map((s, i, arr) => (
-            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-              {s.icon}
-              <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1, marginLeft: 10 }}>{s.label}</Text>
-              <Text style={{ color: P, fontSize: FONT_BODY, fontWeight: '600' }}>{s.value}</Text>
-            </View>
-          ))}
         </Card>
 
         {/* Body data */}
@@ -338,6 +297,65 @@ export default function ProfileScreen() {
           </View>
         </Card>
 
+        {/* Journey */}
+        <Card style={{ marginBottom: 12 }}>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12 }}>
+            {T('profileJourney')}
+          </Text>
+          {/* Motto */}
+          {editingMotto ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <Quote size={16} color={P} />
+              <TextInput
+                value={editMotto}
+                onChangeText={setEditMotto}
+                placeholder={T('profileMottoPlaceholder')}
+                placeholderTextColor={TH.sub}
+                style={{
+                  flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
+                  color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                  fontStyle: 'italic',
+                }}
+              />
+              <TouchableOpacity onPress={saveMotto} style={{ padding: 6 }}>
+                <Check size={20} color={COLORS.GREEN} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { setEditingMotto(false); setEditMotto(userProfile.motto ?? ''); }} style={{ padding: 6 }}>
+                <X size={20} color={TH.sub} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+              <Quote size={16} color={P} />
+              <Text style={{ color: userProfile.motto ? TH.text : TH.sub, fontSize: FONT_BODY, fontStyle: 'italic', flex: 1 }}>
+                {userProfile.motto || T('profileMottoPlaceholder')}
+              </Text>
+              <Pencil size={12} color={TH.sub} />
+            </TouchableOpacity>
+          )}
+          <View style={{ height: 1, backgroundColor: TH.border, marginBottom: 12 }} />
+          {/* Stats rows */}
+          {[
+            { icon: <CalendarDays size={16} color="#10B981" />, value: `${journeyStats.joinedDays} ${T('calendarDays')}`, label: T('profileJoinedDays') },
+            { icon: <Flame size={16} color="#F59E0B" />, value: `${streak} ${T('calendarDays')}`, label: T('checkinStreak') },
+            { icon: <Trophy size={16} color="#F59E0B" />, value: `${journeyStats.longestStreak} ${T('calendarDays')}`, label: T('profileLongestStreak') },
+            { icon: <CalendarDays size={16} color="#10B981" />, value: `${profileStats.totalCheckinDays} ${T('calendarDays')}`, label: T('globalPulse.totalDays') },
+            { icon: <Target size={16} color={P} />, value: `${profileStats.activeHabits}`, label: T('habits') },
+            { icon: <Brain size={16} color="#8B5CF6" />, value: `${profileStats.totalReflections}`, label: T('reflections') },
+            { icon: <ClipboardList size={16} color="#3B82F6" />, value: `${journeyStats.totalPlans}`, label: T('plan') },
+            { icon: <ListChecks size={16} color="#3B82F6" />, value: `${journeyStats.totalPlanItems}`, label: T('planTodoList') },
+            { icon: <Timer size={16} color="#8B5CF6" />, value: `${totalMedMinutes} ${T('medMinutes')}`, label: T('accMed') },
+            { icon: <Footprints size={16} color={P} />, value: `${journeyStats.totalExerciseHours} ${T('medMinutes')}`, label: T('profileTotalExercise') },
+            { icon: <Utensils size={16} color="#EF4444" />, value: `${journeyStats.totalFastingHours} ${T('medMinutes')}`, label: T('profileTotalFasting') },
+          ].map((s, i, arr) => (
+            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
+              {s.icon}
+              <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1, marginLeft: 10 }}>{s.label}</Text>
+              <Text style={{ color: P, fontSize: FONT_BODY, fontWeight: '600' }}>{s.value}</Text>
+            </View>
+          ))}
+        </Card>
+
         {/* Account */}
         <Card style={{ marginBottom: 12 }}>
           <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '600', marginBottom: 8 }}>
@@ -357,7 +375,7 @@ export default function ProfileScreen() {
                     onPress: async () => {
                       setClearing(true);
                       try {
-                        await store.clearLocalData();
+                        await useAppStore.getState().clearLocalData();
                       } catch {
                         Alert.alert(T('clearDataPushFail'));
                       }
@@ -379,7 +397,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
           <View style={{ height: 1, backgroundColor: TH.border }} />
           <TouchableOpacity
-            onPress={async () => { await store.logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
+            onPress={async () => { await useAppStore.getState().logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
           >
             <LogOut size={18} color="#EF4444" style={{ marginRight: 12 }} />

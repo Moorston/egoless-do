@@ -4,9 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
-import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
+import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, dateStr, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 
 const log = createLogger('Meditation');
@@ -30,7 +31,13 @@ const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 export default function MeditationScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
-  const store = useAppStore();
+  const {
+    medHistory, totalMedMinutes, addMedMinutes,
+  } = useAppStore(useShallow(s => ({
+    medHistory: s.medHistory,
+    totalMedMinutes: s.totalMedMinutes,
+    addMedMinutes: s.addMedMinutes,
+  })));
   const nav   = useRootNavigation();
   const T     = useT();
 
@@ -48,7 +55,9 @@ export default function MeditationScreen() {
   const targetSec = durMin * 60;
   const remaining = targetSec - sec;
   const pct = sec / targetSec * 100;
-  const todayMedMin = useMemo(() => getTodayMedMinutes((store.medHistory ?? []).filter(m => !m.deleted)), [store.medHistory]);
+  const todayMedMin = useMemo(() => getTodayMedMinutes((medHistory ?? []).filter(m => !m.deleted)), [medHistory]);
+  const todayMedCount = useMemo(() => (medHistory ?? []).filter(m => !m.deleted && m.date === dateStr()).length, [medHistory]);
+  const totalMedCount = useMemo(() => (medHistory ?? []).filter(m => !m.deleted).length, [medHistory]);
 
   // ── 实时会话管理 ──
   const sessionIdRef = useRef<string | null>(null);
@@ -61,19 +70,23 @@ export default function MeditationScreen() {
 
   // 创建会话
   const createMeditationSession = useCallback(async () => {
-    const userHash = store.auth.user?.id || '';
+    const userHash = useAppStore.getState().auth.user?.id || '';
     if (!userHash) return;
     const goal = resolveGoal('meditation');
-    const result = await createSession({
-      user_hash: userHash,
-      nickname: store.userProfile?.nickname || '',
-      type: 'meditation',
-      goal: goal || undefined,
-    });
-    if (result.success && result.data) {
-      sessionIdRef.current = result.data.session_id;
+    try {
+      const result = await createSession({
+        user_hash: userHash,
+        nickname: useAppStore.getState().userProfile?.nickname || '',
+        type: 'meditation',
+        goal: goal || undefined,
+      });
+      if (result.success && result.data) {
+        sessionIdRef.current = result.data.session_id;
+      }
+    } catch (e) {
+      log.warn('Failed to create meditation session', e);
     }
-  }, [store, resolveGoal]);
+  }, [resolveGoal]);
 
   // 删除会话
   const cleanupSession = useCallback(() => {
@@ -162,7 +175,6 @@ export default function MeditationScreen() {
   }, [active, selectedTrack, musicPlay]);
 
   // Detect timer completion
-  const addMedMinutes = store.addMedMinutes;
   useEffect(() => {
     if (active && sec >= targetSec) {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -186,7 +198,7 @@ export default function MeditationScreen() {
     if (active && !wasCompleted) {
       completedRef.current = true;
       const elapsedMin = Math.round((sec) / 60);
-      if (elapsedMin > 0) store.addMedMinutes(elapsedMin);
+      if (elapsedMin > 0) addMedMinutes(elapsedMin);
     }
     setActive(false);
     cleanupSession();
@@ -250,19 +262,25 @@ export default function MeditationScreen() {
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{store.totalMedMinutes}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('accMed')}</Text>
-              </View>
-              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-              <View style={{ alignItems: 'center', flex: 1 }}>
                 <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{todayMedMin}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('medTitle')}</Text>
               </View>
               <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
               <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.medHistory ?? []).filter(m => !m.deleted).length}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{todayMedCount}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('medTodayCount')}</Text>
+              </View>
+              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{totalMedMinutes}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('accMed')}</Text>
+              </View>
+              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
+              <View style={{ alignItems: 'center', flex: 1 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{totalMedCount}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('shareCardSession')}</Text>
               </View>
@@ -329,20 +347,20 @@ export default function MeditationScreen() {
               <Text style={{ color:'#e2d9f3', fontSize:FONT_TITLE, fontWeight:'600', marginBottom:20 }}>{T('shareCardTitle')}</Text>
               <Binary size={64} color="#e2d9f3" style={{ marginBottom:12 }} />
               <Text style={{ color:'rgba(255,255,255,0.5)', fontSize:FONT_SUB, marginBottom:20 }}>
-                {new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric' })}
+                {new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' })}
               </Text>
               <View style={{ width:'100%', height:1, backgroundColor:'rgba(255,255,255,0.15)', marginBottom:28 }} />
               <View style={{ width:'100%', gap:28, alignItems:'center' }}>
                 <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{store.totalMedMinutes}</Text>
-                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('accMed').replace(/\s*\(.*\)/, '')}</Text>
+                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{totalMedMinutes}</Text>
+                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('accMed')}</Text>
                 </View>
                 <View style={{ alignItems:'center' }}>
                   <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{todayMedMin}</Text>
                   <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('medTitle')}</Text>
                 </View>
                 <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{(store.medHistory ?? []).filter(m => !m.deleted).length}</Text>
+                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{totalMedCount}</Text>
                   <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('shareCardSession')}</Text>
                 </View>
               </View>

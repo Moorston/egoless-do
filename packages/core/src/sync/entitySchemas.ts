@@ -123,9 +123,9 @@ export function buildServerPayloadToRow(schema: EntitySchema): (r: Record<string
 }
 
 /** Build a rowToEntity function from schema (SQLite row → entity, for reads) */
-export function buildRowToEntity(schema: EntitySchema): (row: Record<string, unknown>) => Record<string, unknown> {
-  if (schema.customRowToEntity) return schema.customRowToEntity;
-  return (row: Record<string, unknown>) => {
+export function buildRowToEntity<T = Record<string, unknown>>(schema: EntitySchema): (row: Record<string, unknown>) => T {
+  if (schema.customRowToEntity) return schema.customRowToEntity as (row: Record<string, unknown>) => T;
+  return (row: Record<string, unknown>): T => {
     const entity: Record<string, unknown> = {};
     for (const f of schema.fields) {
       const raw = row[f.col];
@@ -144,7 +144,7 @@ export function buildRowToEntity(schema: EntitySchema): (row: Record<string, unk
           break;
       }
     }
-    return entity;
+    return entity as T;
   };
 }
 
@@ -184,6 +184,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'alarmMinute',   col: 'alarm_minute',   server: 'alarmMinute', type: 'num', fallback: 0 },
       { entity: 'updatedAt',     col: 'updated_at',     server: 'updatedAt',   fallback: () => Date.now() },
       { entity: 'link',          col: 'link',           server: 'link',        fallback: 'none' },
+      { entity: 'linkConfig',    col: 'link_config',    server: 'linkConfig',  type: 'json', fallback: null },
       { entity: 'deleted',       col: 'deleted',        type: 'bool' },
     ],
   },
@@ -203,6 +204,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'isPinned',        col: 'is_pinned',       server: 'isPinned',      type: 'bool' },
       { entity: 'isPublished',     col: 'is_published',    server: 'isPublished',   type: 'bool' },
       { entity: 'colors',          col: 'colors',          server: 'colors',        type: 'json', fallback: null },
+      { entity: 'thoughtTrailIds', col: 'thought_trail_ids', server: 'thoughtTrailIds', type: 'json', fallback: null },
       { entity: 'updatedAt',       col: 'updated_at',      server: 'updatedAt',     fallback: () => Date.now() },
       { entity: 'deleted',         col: 'deleted',         type: 'bool' },
     ],
@@ -214,7 +216,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     fields: [
       { entity: 'id',            col: 'id',             server: 'id',          fallback: null },
       { entity: 'targetHours',   col: 'target_hours',   server: 'targetHours', type: 'num' },
-      { entity: 'startedAt',     col: 'started_at',     server: 'startedAt', fallback: '' },
+      { entity: 'startedAt',     col: 'started_at',     server: 'startedAt', type: 'num', fallback: 0 },
       { entity: 'endedAt',       col: 'ended_at',       server: 'endedAt',     fallback: null },
       { entity: 'estimatedKcal', col: 'estimated_kcal', server: 'estimatedKcal', fallback: null },
       { entity: 'insight',       col: 'insight',        server: 'insight',     fallback: null },
@@ -287,6 +289,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       segment_paces: d.segmentPaces ? json(d.segmentPaces) : null,
       elevation_gain: d.elevationGain ?? null, paused_duration: d.pausedDuration ?? null,
       reps: d.reps ?? null, sets: d.sets ? json(d.sets) : null, met: d.met ?? null,
+      health_synced: bool(d.healthSynced),
       ts: d.timestamp,
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
@@ -312,6 +315,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       elevationGain: r.elevation_gain ?? null, pausedDuration: r.paused_duration ?? null,
       reps: r.reps ?? null, sets: r.sets ? parseJson(r.sets, undefined) : undefined,
       met: r.met ?? null, timestamp: r.ts,
+      healthSynced: boolRead(r.health_synced),
       updated_at: r.updated_at, deleted: boolRead(r.deleted),
     }),
     fields: [],
@@ -365,6 +369,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'endDate',           col: 'end_date',              server: 'endDate',           fallback: '' },
       { entity: 'status',            col: 'status',                server: 'status',            fallback: 'not_started' },
       { entity: 'progress',          col: 'progress',              server: 'progress',          type: 'num', fallback: 0 },
+      { entity: 'completeReason',    col: 'complete_reason',       server: 'completeReason',    fallback: null },
       { entity: 'lastDelayedNotifyAt', col: 'last_delayed_notify_at', server: 'lastDelayedNotifyAt', fallback: null },
       { entity: 'updatedAt',         col: 'updated_at',            server: 'updatedAt',         fallback: () => Date.now() },
       { entity: 'deleted',           col: 'deleted',               type: 'bool' },
@@ -397,6 +402,8 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
         start_date: r.startDate ?? '', end_date: r.endDate ?? '', content_url: r.contentUrl ?? '',
         total_checkin_days: r.totalCheckinDays ?? 0, status: r.status ?? 'not_started',
         progress: r.progress ?? 0, link: r.link ?? 'manual',
+        priority: r.priority ?? 'medium',
+        target_metric: r.targetMetric ?? '',
         link_config: typeof r.linkConfig === 'string' ? r.linkConfig : JSON.stringify(r.linkConfig ?? {}),
         item_order: r.order ?? 0,
         updated_at: r.updatedAt ?? null, deleted: 0,
@@ -432,8 +439,8 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'planItemId',   col: 'plan_item_id',  server: 'planItemId',  fallback: '' },
       { entity: 'date',         col: 'date',          server: 'date',          required: true },
       { entity: 'done',         col: 'done',          server: 'done',        type: 'bool' },
-      { entity: 'note',         col: 'note',          server: 'note',        fallback: '' },
-      { entity: 'linkedModule', col: 'linked_module',  server: 'linkedModule', fallback: '' },
+      { entity: 'note',         col: 'note',          server: 'note',        fallback: null },
+      { entity: 'linkedModule', col: 'linked_module',  server: 'linkedModule', fallback: null },
       { entity: 'updatedAt',    col: 'updated_at',    server: 'updatedAt',   fallback: () => Date.now() },
       { entity: 'deleted',      col: 'deleted',       type: 'bool' },
     ],
@@ -549,18 +556,21 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       config_id: d.config_id ?? 'self',
       mode: d.mode ?? 'hybrid',
       models: json(d.models),
+      local_engine_enabled: bool(d.localEngineEnabled ?? true),
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
     customServerPayloadToRow: (r) => ({
       config_id: r.configId ?? r.config_id ?? r.id ?? 'self',
       mode: r.mode ?? 'hybrid',
       models: typeof r.models === 'string' ? r.models : JSON.stringify(r.models ?? []),
+      local_engine_enabled: bool(r.localEngineEnabled ?? true),
       updated_at: r.updatedAt ?? null, deleted: 0,
     }),
     customRowToEntity: (r) => ({
       config_id: r.config_id,
       mode: r.mode ?? 'hybrid',
       models: parseJson(r.models, []),
+      localEngineEnabled: boolRead(r.local_engine_enabled ?? 1),
       updated_at: r.updated_at, deleted: boolRead(r.deleted),
     }),
     fields: [],

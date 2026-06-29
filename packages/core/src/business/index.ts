@@ -19,6 +19,7 @@ export {
   isPlanDelayed, isPlanActive, canDeletePlan, canEditPlan, canEditPlanItem,
   canArchivePlan, unlinkAllReflectionsFromPlan, createPlanItemFromReflection,
   computeExpectedDays, shouldShowToday,
+  WEEKDAY_LABELS, getFrequencySummary,
 } from './plan';
 export * from './planForm';
 export * from './planTodo';

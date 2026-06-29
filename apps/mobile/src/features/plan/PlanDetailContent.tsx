@@ -2,8 +2,8 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, Modal } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemCheckinStats, dateStr, MS_PER_DAY } from '@egoless-do/core';
-import type { Plan, PlanItem, PlanItemCheckin, CheckinFrequency, PlanItemStatus } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemCheckinStats, MS_PER_DAY, getFrequencySummary } from '@egoless-do/core';
+import type { Plan, PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
 import PlanCountdown from '../../components/PlanCountdown';
@@ -16,46 +16,6 @@ import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pa
 
 const EMPTY_CHECKINS: PlanItemCheckin[] = [];
 
-const WEEKDAY_LABELS = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'];
-
-/** Add N days to a YYYY-MM-DD string (pure string math, no timezone issues). */
-function addDaysStr(date: string, n: number): string {
-  const d = new Date(date + 'T00:00:00');
-  d.setDate(d.getDate() + n);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${dd}`;
-}
-
-function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string, itemId?: string): string {
-  switch (freq.mode) {
-    case 'daily':
-      return T('freqSummaryDaily');
-    case 'interval':
-      return T('freqSummaryInterval').replace('{n}', String(freq.every));
-    case 'weekly': {
-      // Count done this week (Mon-Sun), using local-time date math
-      const d = new Date(today + 'T00:00:00');
-      const day = d.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
-      const diffToMon = day === 0 ? 6 : day - 1;
-      const wsStr = addDaysStr(today, -diffToMon);
-      const weStr = addDaysStr(wsStr, 6);
-      const doneThisWeek = checkins.filter(c => c.done && (!itemId || c.planItemId === itemId) && c.date >= wsStr && c.date <= weStr).length;
-      return `📅 ${T('freqSummaryWeekly').replace('{n}', String(freq.target))} | ${T('freqThisWeek')} ${doneThisWeek}/${freq.target}`;
-    }
-    case 'weekly_fixed': {
-      const labels = freq.days.map(d => T(WEEKDAY_LABELS[d])).join(' ');
-      return `📅 ${T('freqSummaryWeeklyFixed').replace('{days}', labels)}`;
-    }
-    case 'monthly':
-      return `📅 ${T('freqSummaryMonthly').replace('{n}', String(freq.target))}`;
-    case 'monthly_fixed':
-      return `📅 ${T('freqSummaryMonthlyFixed').replace('{dates}', freq.dates.join(', '))}`;
-    default:
-      return '';
-  }
-}
 
 export default function PlanDetailContent({ planId, onClose }: { planId: string; onClose: () => void }) {
   const TH = useTheme();

@@ -6,6 +6,7 @@ import { useTheme, useT } from '../../components/UI';
 import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
@@ -18,7 +19,9 @@ export default function ExerciseScreen() {
   const T     = useT();
   const P     = TH.primary;
   const nav   = useRootNavigation();
-  const store = useAppStore();
+  const { exerciseLog } = useAppStore(useShallow(s => ({
+    exerciseLog: s.exerciseLog,
+  })));
   const [showOther, setShowOther] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const SPORT_EMOJI: Record<string, string> = { '行走': '🚶', '跑步': '🏃', '骑行': '🚴' };
@@ -29,23 +32,24 @@ export default function ExerciseScreen() {
 
   // ── Weekly stats ──
   const weeklyStats = useMemo(() => {
-    const exerciseLog = (store.exerciseLog ?? []).filter(e => !e.deleted);
+    const filtered = (exerciseLog ?? []).filter(e => !e.deleted);
     const now = Date.now();
     const weekStart = now - 7 * 24 * 3600 * 1000;
-    const weekEntries = exerciseLog.filter(e => e.timestamp >= weekStart);
+    const weekEntries = filtered.filter(e => e.timestamp >= weekStart);
     const weekKm = weekEntries.reduce((s, e) => s + (e.distanceKm ?? 0), 0);
     const weekCount = weekEntries.length;
-    const allPaces = exerciseLog.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
+    const weekDuration = weekEntries.reduce((s, e) => s + (e.durationSec ?? 0), 0);
+    const allPaces = filtered.filter(e => e.avgPace && e.avgPace > 0).map(e => e.avgPace!);
     const bestPace = allPaces.length > 0 ? Math.min(...allPaces) : 0;
-    return { weekKm, weekCount, bestPace };
-  }, [store.exerciseLog]);
+    return { weekKm, weekCount, bestPace, weekDuration };
+  }, [exerciseLog]);
 
   // Recent sports (unique by sportKey)
   const recentSports = useMemo(() => {
-    const exerciseLog = (store.exerciseLog ?? []).filter(e => !e.deleted && e.sportKey);
+    const filtered = (exerciseLog ?? []).filter(e => !e.deleted && e.sportKey);
     const seen = new Set<string>();
     const result: { key: string; icon: string; color: string; gps: boolean }[] = [];
-    for (const e of exerciseLog) {
+    for (const e of filtered) {
       if (!seen.has(e.sportKey) && result.length < 5) {
         seen.add(e.sportKey);
         const sportDef = SPORT_GROUPS.flatMap(g => g.items).find(s => s.key === e.sportKey);
@@ -58,7 +62,7 @@ export default function ExerciseScreen() {
       }
     }
     return result;
-  }, [store.exerciseLog]);
+  }, [exerciseLog]);
 
   // My sports (first group)
   const mySports = SPORT_GROUPS[0]?.items ?? [];
@@ -118,6 +122,12 @@ export default function ExerciseScreen() {
                   <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{weeklyStats.weekCount}</Text>
                   <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
                   <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseWorkouts')}</Text>
+                </View>
+                <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
+                <View style={{ alignItems: 'center', flex: 1 }}>
+                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{Math.round(weeklyStats.weekDuration / 60)}</Text>
+                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseMin')}</Text>
+                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseWeekTime')}</Text>
                 </View>
                 <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
                 <View style={{ alignItems: 'center', flex: 1 }}>

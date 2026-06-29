@@ -8,11 +8,11 @@ export const en: I18nKeys = {
   done:'Done', notDone:'Not Done', cancel:'Cancel', save:'Save',
   submit:'Submit', note:'Reflection', freeCheckin:'Free Check-in',
   startFasting:'⏰ Start Fast', quickStart:'⚡ Quick 8h Fast',
-  stopFasting:'Stop Fast', accMed:'Total Meditation (min)', bgMusic:'Ambient Sound',
+  stopFasting:'Stop Fast', accMed:'Total Meditation', bgMusic:'Ambient Sound',
   medMusicFocus:'Focus · Nature', medMusicMeditate:'Meditate · Bowls', medMusicExercise:'Exercise · Rhythm', medMusicUser:'My Music',
   medSelectMusic:'Select Background Music', medTapToSelect:'Tap to preview & select', medNoMusic:'No Music',
   startMed:'Start Session', stopMed:'Stop', shareMed:'☯ Share Session',
-  shareCardTitle:'Flow Journal · Meditation', shareCardSession:'Sessions', shareCardDownload:'Save Image',
+  shareCardTitle:'Flow Journal · Meditation', shareCardSession:'Total Sessions', shareCardDownload:'Save Image',
   mindPulse:'Mind Timeline', newReflection:'New Reflection', saveReflection:'Save ✦',
   myHabits:'My Habits', addHabit:'+ Add Habit',
   startDate:'Start Date', targetDays:'Target Days',
@@ -165,7 +165,7 @@ export const en: I18nKeys = {
   noTodoToday:'No pending items today', servingsUnit:' srv',
 
   // Meditation
-  medTitle:"Today's Meditation", medActive:'Meditating...', medMinutes:'min',
+  medTitle:"Today's Duration", medTodayCount:"Today's Sessions", medActive:'Meditating...', medMinutes:'min',
   medBgm:'Background Music', medLoadError:'Audio failed, meditation continues',
   medAttribution:'Audio: Pixabay (royalty-free)',
 
@@ -192,7 +192,7 @@ export const en: I18nKeys = {
   exerciseProgress:'Progress', exerciseFinishConfirm:'Hold 3s to Finish',
   exerciseCancel:'Cancel', exerciseAvgPace:'Avg Pace', exerciseTotalCal:'Calories Burned',
   exerciseBestPace:'Best Pace', exerciseWeekKm:'Weekly Distance', exerciseMonthKm:'Monthly Distance',
-  exerciseWeeklyKm:'Weekly Distance', exerciseWorkouts:'Workouts',
+  exerciseWeeklyKm:'Weekly Distance', exerciseWorkouts:'Workouts', exerciseWeekTime:'Duration',
   exerciseQuickStart:'Quick Start', exerciseRecentActivity:'Recent Activity', exerciseSearchPlaceholder:'Search sports...', exerciseNoResults:'No matching sports found',
   exerciseViewAll:'View All', exerciseNoActivity:'No activity yet. Start your first workout!',
   exerciseMySports:'My Sports', exerciseMoreSports:'More Sports', exerciseGpsTag:'GPS',
@@ -296,6 +296,7 @@ export const en: I18nKeys = {
   settingsFreePlan:'Free', settingsDefaultName:'Practitioner',
   settingsEditProfile:'Edit Profile', settingsNickname:'Nickname',
   profileStats:'Statistics', profileBodyData:'Body Data', profileWeight:'Weight', profileWaterGoal:'Water Goal', profileAccount:'Account',
+  profileJourney:'Journey', profileMotto:'Motto', profileMottoPlaceholder:'Write your motto...', profileJoinedDays:'Joined', profileLongestStreak:'Longest Streak', profileTotalExercise:'Total Exercise', profileTotalFasting:'Total Fasting',
   profilePermDenied:'Permission Denied', profilePermDeniedMsg:'Photo library access is needed to change your avatar',
   shareCardShare:'Share', shareCardSave:'Save', shareCardLoading:'Loading...',
   shareCardSaved:'Success', shareCardSavedMsg:'Image saved',
@@ -399,6 +400,11 @@ export const en: I18nKeys = {
   'globalPulse.peopleDoingTogether':'{count} people practicing together',
   'globalPulse.totalUsers':'practitioners',
   'globalPulse.activeToday':'active today',
+  'globalPulse.myJourney':'My Journey',
+  'globalPulse.globalRank':'Global Rank',
+  'globalPulse.rank':'Rank',
+  'globalPulse.exceedPercent':'Exceeds',
+  'globalPulse.todayStatus':'Today',
 
   // Grace
   graceTitle:'Grace Restore',

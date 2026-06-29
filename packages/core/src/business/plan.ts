@@ -5,10 +5,12 @@ import type {
   MindReflection, CheckinFrequency,
   PlanItemSource, UnifiedPlanItemForm,
 } from '../types';
-import { uid, dateStr, activeOnly } from '../utils';
+import { uid, dateStr, activeOnly, parseDateParts, addDays } from '../utils';
 import { COLORS } from '../constants';
 
 // ── Constants ─────────────────────────────────────────────────
+
+export const WEEKDAY_LABELS: readonly string[] = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'];
 
 export const PLAN_STATUS_COLORS: Record<string, string> = {
   not_started: COLORS.GRAY, in_progress: COLORS.GREEN, paused: COLORS.YELLOW,
@@ -19,18 +21,56 @@ export function statusToI18nKey(status: string): string {
   return `planStatus${status.charAt(0).toUpperCase() + status.slice(1).replace(/_([a-z])/g, (_: string, c: string) => c.toUpperCase())}`;
 }
 
+/**
+ * Get a human-readable summary string for a check-in frequency.
+ * Pure function – no platform dependencies.
+ *
+ * @param freq   The frequency configuration
+ * @param T      i18n translation function (key → string)
+ * @param checkins  All non-deleted plan-item checkins (used for weekly "done this week" count)
+ * @param today     Current date string (YYYY-MM-DD)
+ * @param itemId    Optional plan-item id to scope checkin counting
+ */
+export function getFrequencySummary(
+  freq: CheckinFrequency,
+  T: (k: string) => string,
+  checkins: PlanItemCheckin[],
+  today: string,
+  itemId?: string,
+): string {
+  switch (freq.mode) {
+    case 'daily':
+      return T('freqSummaryDaily');
+    case 'interval':
+      return T('freqSummaryInterval').replace('{n}', String(freq.every));
+    case 'weekly': {
+      const d = new Date(today + 'T00:00:00');
+      const day = d.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+      const diffToMon = day === 0 ? 6 : day - 1;
+      const wsStr = addDays(today, -diffToMon);
+      const weStr = addDays(wsStr, 6);
+      const doneThisWeek = checkins.filter(c => c.done && (!itemId || c.planItemId === itemId) && c.date >= wsStr && c.date <= weStr).length;
+      return `📅 ${T('freqSummaryWeekly').replace('{n}', String(freq.target))} | ${T('freqThisWeek')} ${doneThisWeek}/${freq.target}`;
+    }
+    case 'weekly_fixed': {
+      const labels = freq.days.map(d => T(WEEKDAY_LABELS[d])).join(' ');
+      return `📅 ${T('freqSummaryWeeklyFixed').replace('{days}', labels)}`;
+    }
+    case 'monthly':
+      return `📅 ${T('freqSummaryMonthly').replace('{n}', String(freq.target))}`;
+    case 'monthly_fixed':
+      return `📅 ${T('freqSummaryMonthlyFixed').replace('{dates}', freq.dates.join(', '))}`;
+    default:
+      return '';
+  }
+}
+
 // ── Helpers ───────────────────────────────────────────────────
 
 function daysBetween(a: string, b: string): number {
   const [ay, am, ad] = parseDateParts(a);
   const [by, bm, bd] = parseDateParts(b);
   return Math.round((new Date(by, bm, bd).getTime() - new Date(ay, am, ad).getTime()) / 86400000);
-}
-
-/** Parse a YYYY-MM-DD date string into [year, month (0-based), day]. */
-function parseDateParts(date: string): [number, number, number] {
-  const [y, m, d] = date.split('-').map(Number);
-  return [y, m - 1, d];
 }
 
 /** Get the day of week (0=Sun, 1=Mon, ..., 6=Sat) for a date string. */
@@ -50,12 +90,6 @@ function daysInMonth(date: string): number {
   return new Date(y, m + 1, 0).getDate();
 }
 
-/** Add N days to a date string, returning a new date string. */
-function addDays(date: string, n: number): string {
-  const [y, m, d] = parseDateParts(date);
-  const result = new Date(y, m, d + n);
-  return dateStr(result);
-}
 
 /** Get start of week (Monday) for a date string. */
 function weekStart(date: string): string {
@@ -188,8 +222,7 @@ export function shouldShowToday(
       if (elapsed < 0) return false;
       // Today must be the start of a period
       if (elapsed % every !== 0) return false;
-      // Don't show if already checked in today
-      return !checkins.some(c => !c.deleted && c.date === today && c.done);
+      return true;
     }
 
     case 'weekly': {

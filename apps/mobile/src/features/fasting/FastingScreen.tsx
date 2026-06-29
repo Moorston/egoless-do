@@ -3,6 +3,7 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioPlayer } from 'expo-audio';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
@@ -23,7 +24,16 @@ const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 export default function FastingScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
-  const store = useAppStore();
+  const {
+    activeFasting, fastingHistory, userProfile,
+    startFasting, stopFasting,
+  } = useAppStore(useShallow(s => ({
+    activeFasting: s.activeFasting,
+    fastingHistory: s.fastingHistory,
+    userProfile: s.userProfile,
+    startFasting: s.startFasting,
+    stopFasting: s.stopFasting,
+  })));
   const nav   = useRootNavigation();
   const T     = useT();
 
@@ -38,9 +48,9 @@ export default function FastingScreen() {
   useEffect(() => { bellPlayer.volume = 0.5; }, [bellPlayer]);
 
   useEffect(() => {
-    if (store.activeFasting) {
+    if (activeFasting) {
       bellPlayedRef.current = false;
-      const el = Math.floor((Date.now() - store.activeFasting.startedAt) / 1000);
+      const el = Math.floor((Date.now() - activeFasting.startedAt) / 1000);
       setElapsed(el);
       timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
     } else {
@@ -48,14 +58,14 @@ export default function FastingScreen() {
       setElapsed(0);
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [store.activeFasting?.id]);
+  }, [activeFasting?.id]);
 
   const pct  = useMemo(() => {
-    if (!store.activeFasting) return 0;
-    const divisor = (store.activeFasting.targetHours ?? 8) * 3600;
+    if (!activeFasting) return 0;
+    const divisor = (activeFasting.targetHours ?? 8) * 3600;
     return divisor > 0 ? Math.min(elapsed / divisor, 1) : 0;
-  }, [store.activeFasting, elapsed]);
-  const kcal = useMemo(() => estimateFastingKcal(elapsed / 3600, store.userProfile.weight ?? 70, store.userProfile.gender ?? 'male', store.userProfile.age ?? 30), [elapsed, store.userProfile]);
+  }, [activeFasting, elapsed]);
+  const kcal = useMemo(() => estimateFastingKcal(elapsed / 3600, userProfile.weight ?? 70, userProfile.gender ?? 'male', userProfile.age ?? 30), [elapsed, userProfile]);
 
   useEffect(() => {
     if (pct >= 1 && !bellPlayedRef.current) {
@@ -65,16 +75,16 @@ export default function FastingScreen() {
   }, [pct, bellPlayer]);
 
   const totalFastHours = useMemo(() => {
-    const totalSec = (store.fastingHistory ?? []).filter(f => !f.deleted).reduce((sum, f) => {
+    const totalSec = (fastingHistory ?? []).filter(f => !f.deleted).reduce((sum, f) => {
       const s = f.startedAt ?? 0;
       const e = f.endedAt ?? 0;
       return sum + (e > 0 ? (e - s) / 1000 : 0);
     }, 0);
     return Math.round(totalSec / 3600);
-  }, [store.fastingHistory]);
+  }, [fastingHistory]);
 
   const fastingDates = useMemo(() => {
-    const history = (store.fastingHistory ?? []).filter(f => !f.deleted);
+    const history = (fastingHistory ?? []).filter(f => !f.deleted);
     if (!history.length) return [] as string[];
     return [...new Set(history.map(f => {
       if (!f.startedAt) return null;
@@ -82,7 +92,7 @@ export default function FastingScreen() {
       if (isNaN(d.getTime())) return null;
       return dateStr(d);
     }).filter(Boolean as unknown as <T>(x: T) => x is NonNullable<T>))].sort();
-  }, [store.fastingHistory]);
+  }, [fastingHistory]);
 
   const currentFastingStreak = useMemo(() => {
     if (!fastingDates.length) return 0;
@@ -103,7 +113,7 @@ export default function FastingScreen() {
     return streak;
   }, [fastingDates]);
 
-  const isActive = !!store.activeFasting;
+  const isActive = !!activeFasting;
 
   // ── 实时会话管理 ──
   const sessionIdRef = useRef<string | null>(null);
@@ -114,12 +124,12 @@ export default function FastingScreen() {
   // 禁食开始/结束时创建/删除会话
   useEffect(() => {
     if (isActive && !sessionIdRef.current) {
-      const userHash = store.auth.user?.id || '';
+      const userHash = useAppStore.getState().auth.user?.id || '';
       if (!userHash) return;
       const goal = resolveGoal('fasting');
       createSession({
         user_hash: userHash,
-        nickname: store.userProfile?.nickname || '',
+        nickname: useAppStore.getState().userProfile?.nickname || '',
         type: 'fasting',
         goal: goal || undefined,
         insight: insight || undefined,
@@ -127,6 +137,8 @@ export default function FastingScreen() {
         if (result.success && result.data) {
           sessionIdRef.current = result.data.session_id;
         }
+      }).catch(e => {
+        console.warn('Failed to create fasting session:', e);
       });
     } else if (!isActive && sessionIdRef.current) {
       deleteSession(sessionIdRef.current);
@@ -177,7 +189,7 @@ export default function FastingScreen() {
             {/* Stats 3 columns */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(store.fastingHistory ?? []).filter(f => !f.deleted).length}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(fastingHistory ?? []).filter(f => !f.deleted).length}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
                 <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('fastTotal')}</Text>
               </View>
@@ -249,7 +261,7 @@ export default function FastingScreen() {
                 }} />
                 <View style={{ alignItems:'center' }}>
                 <Text style={{ fontSize:26, fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
-                <Text style={{ fontSize:16, color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize:22 }}>{store.activeFasting?.targetHours}h</Text></Text>
+                <Text style={{ fontSize:16, color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize:22 }}>{activeFasting?.targetHours}h</Text></Text>
                 </View>
               </View>
               <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:16 }}>
@@ -257,13 +269,13 @@ export default function FastingScreen() {
                 <Flame size={16} color={COLORS.ORANGE} />
                 <Text style={{ color:TH.sub, fontSize:22 }}>{Math.round(pct * 100)}%</Text>
               </View>
-              <PrimaryButton label={T('stopFasting')} onPress={() => store.stopFasting({ weight: store.userProfile?.weight, gender: store.userProfile?.gender, age: store.userProfile?.age })} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
+              <PrimaryButton label={T('stopFasting')} onPress={() => stopFasting({ weight: userProfile?.weight ?? 70, gender: userProfile?.gender ?? 'male', age: userProfile?.age ?? 30 })} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
             </>
           ) : (
             <View style={{ gap:10, width:'100%' }}>
               <PrimaryButton label={T('startFasting')} onPress={() => { setTmpDur(8); setAgreed(false); setShowDur(true); }} color={P} />
               <TouchableOpacity
-                onPress={() => store.startFasting(8)}
+                onPress={() => startFasting(8)}
                 style={{ backgroundColor:TH.card, borderRadius:12, padding:15, alignItems:'center', borderWidth:1, borderColor:P }}
               >
                 <Text style={{ color:P, fontWeight:'700', fontSize:FONT_BUTTON }}>{T('quickStart')}</Text>
@@ -340,7 +352,7 @@ export default function FastingScreen() {
             <View style={{ flexDirection:'row', gap:10 }}>
               <OutlineButton label={T('cancel')} onPress={() => setShowDur(false)} style={{ flex:1 }} />
               <TouchableOpacity
-                onPress={() => { store.startFasting(tmpDur); setShowDur(false); }}
+                onPress={() => { startFasting(tmpDur); setShowDur(false); }}
                 style={{ flex:1, borderRadius:12, padding:15, alignItems:'center', backgroundColor: P, opacity: agreed ? 1 : 0.5 }}
                 disabled={!agreed}
               >

@@ -134,7 +134,7 @@ export interface I18nKeys {
   fastTips: string; fastTip2: string; fastTip3: string;
   fastTip4: string; fastSelectDuration: string; fastWarmTitle: string;
   fastWarmText: string; fastAgree: string;
-  medTitle: string; medActive: string; medMinutes: string;
+  medTitle: string; medTodayCount: string; medActive: string; medMinutes: string;
   medBgm: string; medLoadError: string; medAttribution: string;
   exerciseSelect: string; exerciseWalk: string; exerciseRun: string;
   exerciseCycle: string; exerciseOther: string; exerciseGlobal: string;
@@ -162,7 +162,7 @@ export interface I18nKeys {
   exerciseAvgPace: string; exerciseTotalCal: string;
   exerciseBestPace: string; exerciseWeekKm: string;
   exerciseMonthKm: string; exerciseWeeklyKm: string;
-  exerciseWorkouts: string; exerciseQuickStart: string;
+  exerciseWorkouts: string; exerciseWeekTime: string; exerciseQuickStart: string;
   exerciseRecentActivity: string; exerciseSearchPlaceholder: string;
   exerciseNoResults: string; exerciseViewAll: string;
   exerciseNoActivity: string; exerciseMySports: string;
@@ -258,6 +258,7 @@ export interface I18nKeys {
   settingsFreePlan: string; settingsDefaultName: string;
   settingsEditProfile: string; settingsNickname: string;
   profileStats: string; profileBodyData: string; profileWeight: string; profileWaterGoal: string; profileAccount: string;
+  profileJourney: string; profileMotto: string; profileMottoPlaceholder: string; profileJoinedDays: string; profileLongestStreak: string; profileTotalExercise: string; profileTotalFasting: string;
   profilePermDenied: string; profilePermDeniedMsg: string;
   shareCardShare: string; shareCardSave: string; shareCardLoading: string;
   shareCardSaved: string; shareCardSavedMsg: string;
@@ -347,6 +348,7 @@ export interface I18nKeys {
   'globalPulse.goalLabel': string; 'globalPulse.insightLabel': string; 'globalPulse.insightPlaceholder': string;
   'globalPulse.noActiveUsers': string; 'globalPulse.peopleDoingTogether': string;
   'globalPulse.totalUsers': string; 'globalPulse.activeToday': string;
+  'globalPulse.myJourney': string; 'globalPulse.globalRank': string; 'globalPulse.rank': string; 'globalPulse.exceedPercent': string; 'globalPulse.todayStatus': string;
   graceTitle: string; graceDesc: string; graceYesterday: string;
   graceNotDone: string; graceDone: string; graceSuccess: string;
   graceButton: string; graceNote: string; graceNeedRestore: string;

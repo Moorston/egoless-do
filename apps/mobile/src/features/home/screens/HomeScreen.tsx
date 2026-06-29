@@ -2,55 +2,75 @@ import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import {
   View, Text, ScrollView, TouchableOpacity,
   StatusBar, Modal, TextInput,
-  KeyboardAvoidingView, Platform, Animated as RNAnimated,
+  KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
-import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
+import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 
 const log = createLogger('Home');
 import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
-import AddFoodModal from '../../../components/AddFoodModal';
 import { useRootNavigation } from '../../../navigation/hooks';
 import SimpleHeader from '../../../navigation/SimpleHeader';
 import {
-  Utensils, Scale, Footprints,
+  Scale, Footprints,
   Droplets, Pencil, Check, X, Shield, Star, Sparkles,
-  PersonStanding, ClipboardList, Target, BarChart3, AlertTriangle,
+  ClipboardList, Target, BarChart3, AlertTriangle,
   ChevronLeft, ChevronRight, Calendar,
 } from 'lucide-react-native';
 import CheckinStatsModal from '../components/CheckinStatsModal';
+import { formatDateBar } from '../utils/homeDateUtils';
+import HomeBubble from '../components/HomeBubble';
+import HomeFoodSection from '../components/HomeFoodSection';
+import HomePlanSection from '../components/HomePlanSection';
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
-
-// ── Date helpers ──
-const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
-
-function addDays(dateStrVal: string, days: number): string {
-  const d = new Date(dateStrVal + 'T00:00:00');
-  d.setDate(d.getDate() + days);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
-
-function formatDateBar(dateStrVal: string, isToday: boolean, T: (k: string) => string): string {
-  const d = new Date(dateStrVal + 'T00:00:00');
-  const m = d.getMonth() + 1;
-  const day = d.getDate();
-  const w = WEEKDAYS[d.getDay()];
-  const base = `${m}月${day}日 · 周${w}`;
-  return isToday ? `${base} · ${T('dateBarToday')}` : base;
-}
 
 export default function HomeScreen() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const store = useAppStore();
+  const {
+    checkinHistory, plans, planItemCheckins, planItems, dailyCustomTodos,
+    foodLog, habits, streak, waterMl, waterGoal, calGoal,
+    healthSyncEnabled, todaySteps, userProfile, graceHistory,
+    setWeightUnit, submitCheckin, checkinHabit, addWater,
+    setWaterGoal, setCalGoal, checkAutoStatus, autoSyncPlanItems,
+    checkinPlanItem, uncheckinPlanItem, toggleDailyCustomTodo,
+    addFood, deleteFood,
+  } = useAppStore(useShallow(s => ({
+    checkinHistory: s.checkinHistory,
+    plans: s.plans,
+    planItemCheckins: s.planItemCheckins,
+    planItems: s.planItems,
+    dailyCustomTodos: s.dailyCustomTodos,
+    foodLog: s.foodLog,
+    habits: s.habits,
+    streak: s.streak,
+    waterMl: s.waterMl,
+    waterGoal: s.waterGoal,
+    calGoal: s.calGoal,
+    healthSyncEnabled: s.healthSyncEnabled,
+    todaySteps: s.todaySteps,
+    userProfile: s.userProfile,
+    graceHistory: s.graceHistory,
+    setWeightUnit: s.setWeightUnit,
+    submitCheckin: s.submitCheckin,
+    checkinHabit: s.checkinHabit,
+    addWater: s.addWater,
+    setWaterGoal: s.setWaterGoal,
+    setCalGoal: s.setCalGoal,
+    checkAutoStatus: s.checkAutoStatus,
+    autoSyncPlanItems: s.autoSyncPlanItems,
+    checkinPlanItem: s.checkinPlanItem,
+    uncheckinPlanItem: s.uncheckinPlanItem,
+    toggleDailyCustomTodo: s.toggleDailyCustomTodo,
+    addFood: s.addFood,
+    deleteFood: s.deleteFood,
+  })));
   const nav   = useRootNavigation();
 
   // ── Date state ──
@@ -62,8 +82,8 @@ export default function HomeScreen() {
 
   // ── Existing checkin ──
   const todayRecord = useMemo(
-    () => (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === viewDate),
-    [store.checkinHistory, viewDate],
+    () => (checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === viewDate),
+    [checkinHistory, viewDate],
   );
   const parsed = useMemo(() => parseCheckinNote(todayRecord?.note ?? ''), [todayRecord]);
 
@@ -74,54 +94,47 @@ export default function HomeScreen() {
   const [weight, setWeight] = useState(() => {
     if (todayRecord?.weight != null) return String(todayRecord.weight);
     // Default to profile weight on new day
-    const profileWeight = store.userProfile?.weight;
+    const profileWeight = userProfile?.weight;
     return profileWeight != null ? String(profileWeight) : '';
   });
   // habitCheckins derived from store — no local state needed
 
   // ── Plan items ──
-  const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
-  const planCheckins = useMemo(() => (store.planItemCheckins ?? []).filter(c => !c.deleted), [store.planItemCheckins]);
+  const activePlan = useMemo(() => getActivePlan(plans ?? []), [plans]);
+  const planCheckins = useMemo(() => (planItemCheckins ?? []).filter(c => !c.deleted), [planItemCheckins]);
   const todayPlanItems = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayItems(store.planItems ?? [], activePlan, viewDate, planCheckins);
-  }, [store.planItems, activePlan, viewDate, planCheckins]);
-  const dailyCustomTodos = useMemo(() => {
+    return getTodayItems(planItems ?? [], activePlan, viewDate, planCheckins);
+  }, [planItems, activePlan, viewDate, planCheckins]);
+  const dailyCustomTodosMemo = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayCustomTodos(store.dailyCustomTodos ?? [], activePlan.id, viewDate);
-  }, [store.dailyCustomTodos, activePlan, viewDate]);
+    return getTodayCustomTodos(dailyCustomTodos ?? [], activePlan.id, viewDate);
+  }, [dailyCustomTodos, activePlan, viewDate]);
   // planToggles derived from store — no local state needed
 
   // ── Modals ──
-  const [showFood, setShowFood] = useState(false);
   const [showWG, setShowWG] = useState(false);
   const [showReasonModal, setShowReasonModal] = useState(false);
   const [incompleteItems, setIncompleteItems] = useState<ReturnType<typeof getIncompleteItems>>([]);
   const [selectedReason, setSelectedReason] = useState<string>('');
   const [reasonNote, setReasonNote] = useState('');
-  const [wgi, setWgi] = useState(String(store.waterGoal));
-  const [showCG, setShowCG] = useState(false);
-  const [cgi, setCgi] = useState(String(store.calGoal));
+  const [wgi, setWgi] = useState(String(waterGoal));
 
   // ── Derived data ──
-  const viewDateFoods = useMemo(() => getFoodLogByDate((store.foodLog ?? []).filter(f => !f.deleted), viewDate), [store.foodLog, viewDate]);
+  const viewDateFoods = useMemo(() => getFoodLogByDate((foodLog ?? []).filter(f => !f.deleted), viewDate), [foodLog, viewDate]);
   const totalCal = useMemo(() => viewDateFoods.reduce((a, f) => a + f.calories, 0), [viewDateFoods]);
-  const recentFoods = useMemo(() => getRecentFoods((store.foodLog ?? []).filter(f => !f.deleted), 3), [store.foodLog]);
-  const todayFoods = viewDateFoods.slice(0, 3);
-  const todayFoodTotal = viewDateFoods.length;
-  const [portionFood, setPortionFood] = useState<{ name: string; calories: number } | null>(null);
-  const [portion, setPortion] = useState(1);
+  const recentFoods = useMemo(() => getRecentFoods((foodLog ?? []).filter(f => !f.deleted), 3), [foodLog]);
   const totalCompleted = useMemo(
-    () => (store.checkinHistory ?? []).filter((c: CheckinEntry) => c.done && !c.deleted).length,
-    [store.checkinHistory],
+    () => (checkinHistory ?? []).filter((c: CheckinEntry) => c.done && !c.deleted).length,
+    [checkinHistory],
   );
   const viewDateStats = useMemo(
-    () => getStatsForDate(store.checkinHistory ?? [], viewDate),
-    [store.checkinHistory, viewDate],
+    () => getStatsForDate(checkinHistory ?? [], viewDate),
+    [checkinHistory, viewDate],
   );
   const activeHabits = useMemo(
-    () => (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
-    [store.habits],
+    () => (habits ?? []).filter(h => !h.deleted && h.status === 'inProgress'),
+    [habits],
   );
 
   // ── Status derivation ──
@@ -164,44 +177,6 @@ export default function HomeScreen() {
     }
   }, []);
 
-  // ── Draggable bubble (own touch refs to avoid conflict with swipe) ──
-  const bubblePos = useRef({ x: 0, y: 0 }).current;
-  const bubbleOffset = useRef({ x: 0, y: 0 });
-  const bubbleTransX = useRef(new RNAnimated.Value(0)).current;
-  const bubbleTransY = useRef(new RNAnimated.Value(0)).current;
-  const isDragging = useRef(false);
-  const bubbleTouchStartX = useRef(0);
-  const bubbleTouchStartY = useRef(0);
-
-  const onBubbleTouchStart = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    isDragging.current = false;
-    bubbleTouchStartX.current = e.nativeEvent.pageX;
-    bubbleTouchStartY.current = e.nativeEvent.pageY;
-    bubbleOffset.current = { x: bubblePos.x, y: bubblePos.y };
-  }, [bubblePos]);
-
-  const onBubbleTouchMove = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    const dx = e.nativeEvent.pageX - bubbleTouchStartX.current;
-    const dy = e.nativeEvent.pageY - bubbleTouchStartY.current;
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging.current = true;
-    const newX = bubbleOffset.current.x + dx;
-    const newY = bubbleOffset.current.y + dy;
-    bubbleTransX.setValue(newX);
-    bubbleTransY.setValue(newY);
-  }, [bubbleTransX, bubbleTransY, bubbleOffset]);
-
-  const onBubbleTouchEnd = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    const dx = e.nativeEvent.pageX - bubbleTouchStartX.current;
-    const dy = e.nativeEvent.pageY - bubbleTouchStartY.current;
-    const finalX = bubbleOffset.current.x + dx;
-    const finalY = bubbleOffset.current.y + dy;
-    bubblePos.x = finalX;
-    bubblePos.y = finalY;
-    if (!isDragging.current) {
-      setViewDate(dateStr());
-    }
-  }, [bubblePos, bubbleOffset]);
-
   const goToDate = useCallback((target: string) => {
     setViewDate(target);
   }, []);
@@ -232,7 +207,7 @@ export default function HomeScreen() {
       .map(h => h.name);
     if (checkedHabits.length) noteData.habits = checkedHabits;
     // 每日自定义待办
-    const doneCustomTodos = dailyCustomTodos
+    const doneCustomTodos = dailyCustomTodosMemo
       .filter(t => t.done)
       .map(t => t.name);
     if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
@@ -243,7 +218,7 @@ export default function HomeScreen() {
     if (donePlanItems.length) noteData.planItems = donePlanItems;
     if (totalCal > 0) noteData.food = totalCal;
     return JSON.stringify(noteData);
-  }, [note, totalCal, viewDate, dailyCustomTodos, todayPlanItems, planCheckins]);
+  }, [note, totalCal, viewDate, dailyCustomTodosMemo, todayPlanItems, planCheckins]);
 
   // ── Real-time save ──
   const saveField = useCallback((doneOverride?: boolean) => {
@@ -255,20 +230,28 @@ export default function HomeScreen() {
   // ── Field change handlers ──
   const toggleHabit = useCallback((id: string) => {
     if (isReadOnly) return;
-    store.checkinHabit(id, viewDate);
+    checkinHabit(id, viewDate);
     setTimeout(() => saveField(), 0);
-  }, [isReadOnly, store, viewDate, saveField]);
+  }, [isReadOnly, checkinHabit, viewDate, saveField]);
 
-  const addWater = useCallback((ml: number) => {
+  const addWaterCb = useCallback((ml: number) => {
     if (!isToday) return;
-    store.addWater(ml);
+    addWater(ml);
     // 无论打卡状态如何，都更新饮水数据
     setTimeout(() => {
       const s = useAppStore.getState();
       const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
       s.submitCheckin(localDoneRef.current ?? false, buildNote(), undefined, weightNum);
     }, 0);
-  }, [store, buildNote, isToday]);
+  }, [addWater, buildNote, isToday]);
+
+  const handleFoodChanged = useCallback(() => {
+    setTimeout(() => {
+      const s = useAppStore.getState();
+      const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+      s.submitCheckin(localDoneRef.current ?? true, buildNote(), undefined, weightNum);
+    }, 0);
+  }, [buildNote]);
 
   const saveWeight = useCallback((val: string) => {
     setWeight(val);
@@ -304,13 +287,13 @@ export default function HomeScreen() {
       return;
     }
     setLocalDone(true);
-    store.submitCheckin(true, buildNote(), undefined, weight ? parseFloat(weight) : undefined);
-  }, [store, buildNote, weight, todayPlanItems, planCheckins, viewDate]);
+    submitCheckin(true, buildNote(), undefined, weight ? parseFloat(weight) : undefined);
+  }, [submitCheckin, buildNote, weight, todayPlanItems, planCheckins, viewDate]);
 
   const handleEdit = useCallback(() => {
     setLocalDone(false);
-    store.submitCheckin(false, buildNote(), undefined, weight ? parseFloat(weight) : undefined);
-  }, [store, buildNote, weight]);
+    submitCheckin(false, buildNote(), undefined, weight ? parseFloat(weight) : undefined);
+  }, [submitCheckin, buildNote, weight]);
 
   const confirmDoneWithReason = useCallback(() => {
     if (!selectedReason || !reasonNote.trim()) return;
@@ -320,37 +303,37 @@ export default function HomeScreen() {
     const noteData = JSON.parse(noteStr);
     noteData.incompleteReason = selectedReason;
     noteData.incompleteNote = reasonNote.trim();
-    store.submitCheckin(true, JSON.stringify(noteData), undefined, weight ? parseFloat(weight) : undefined);
-  }, [buildNote, selectedReason, reasonNote, store, weight]);
+    submitCheckin(true, JSON.stringify(noteData), undefined, weight ? parseFloat(weight) : undefined);
+  }, [buildNote, selectedReason, reasonNote, submitCheckin, weight]);
 
   const togglePlanItem = useCallback((itemId: string) => {
     if (isReadOnly) return;
     const current = planCheckins.some(c => c.planItemId === itemId && c.date === viewDate && c.done);
     if (current) {
-      store.uncheckinPlanItem(itemId);
+      uncheckinPlanItem(itemId);
     } else {
-      store.checkinPlanItem(itemId);
+      checkinPlanItem(itemId);
     }
-  }, [isReadOnly, planCheckins, viewDate, store]);
+  }, [isReadOnly, planCheckins, viewDate, uncheckinPlanItem, checkinPlanItem]);
 
   const toggleCustomTodo = useCallback((id: string) => {
     if (isReadOnly) return;
-    store.toggleDailyCustomTodo(id);
-  }, [isReadOnly, store]);
+    toggleDailyCustomTodo(id);
+  }, [isReadOnly, toggleDailyCustomTodo]);
 
   // ── Auto-sync plan items and health data on mount ──
   useEffect(() => {
-    store.checkAutoStatus();
-    store.autoSyncPlanItems();
+    checkAutoStatus();
+    autoSyncPlanItems();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (!store.healthSyncEnabled) return;
+    if (!healthSyncEnabled) return;
     import('../../health/HealthService').then(({ performHealthSync }) => {
       return performHealthSync(useAppStore.getState());
     }).catch((e) => log.error(e));
-  }, [store.healthSyncEnabled]);
+  }, [healthSyncEnabled]);
 
   // ── Banner gradient ──
   const bannerGrad: [string, string] = status === 'done'
@@ -375,20 +358,19 @@ export default function HomeScreen() {
 
   // ── Grace reminder ──
   const yStr = yesterday();
-  const yesterdayRecord = useMemo(() => (store.checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr), [store.checkinHistory, yStr]);
+  const yesterdayRecord = useMemo(() => (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr), [checkinHistory, yStr]);
   const dayBeforeYesterdayStr = useMemo(() => { const d = new Date(); d.setDate(d.getDate() - 2); return dateStr(d); }, []);
-  const dayBeforeYesterdayRecord = useMemo(() => (store.checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === dayBeforeYesterdayStr), [store.checkinHistory, dayBeforeYesterdayStr]);
+  const dayBeforeYesterdayRecord = useMemo(() => (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === dayBeforeYesterdayStr), [checkinHistory, dayBeforeYesterdayStr]);
   const showGrace = isToday && yesterdayRecord?.done !== true && dayBeforeYesterdayRecord?.done === true;
   const currentMonth = dateStr().slice(0, 7);
-  const graceQuota = store.userProfile?.graceMonthlyQuota ?? 2;
-  const graceAvailable = isGraceAvailable(store.graceHistory ?? [], graceQuota, currentMonth, yStr);
+  const graceQuota = userProfile?.graceMonthlyQuota ?? 2;
+  const graceAvailable = isGraceAvailable(graceHistory ?? [], graceQuota, currentMonth, yStr);
 
   // ── Delayed plan reminder ──
   const [showDelayedReminder, setShowDelayedReminder] = useState(true);
   const delayedPlan = useMemo(() => {
-    const plans = store.plans ?? [];
-    return plans.find(p => !p.deleted && isPlanDelayed(p, dateStr()));
-  }, [store.plans]);
+    return (plans ?? []).find(p => !p.deleted && isPlanDelayed(p, dateStr()));
+  }, [plans]);
   const showDelayed = isToday && delayedPlan && showDelayedReminder;
 
   const warnBg = cardAccent('#F59E0B', TH.bg, 0.45);
@@ -496,7 +478,7 @@ export default function HomeScreen() {
                   <View style={{ width: 1, height: 40, backgroundColor: 'rgba(255,255,255,.2)' }} />
                   <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
                     <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('streak')}</Text>
-                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? store.streak : viewDateStats.streak}</Text>
+                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? streak : viewDateStats.streak}</Text>
                     <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
                     {isToday && showGrace && graceAvailable ? (
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 4 }}>
@@ -559,70 +541,16 @@ export default function HomeScreen() {
                   </Text>
                 </View>
 
-                {/* Plan items */}
-                {todayPlanItems.length > 0 && (
-                  <>
-                    <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('planTodoList')}</Text>
-                    {todayPlanItems.map(item => {
-                      const done = planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done);
-                      const autoChecked = done && planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done && c.linkedModule);
-                      return (
-                        <View key={item.id} style={{
-                          flexDirection: 'row', alignItems: 'center',
-                          justifyContent: 'space-between', paddingVertical: 12,
-                          borderBottomWidth: 1, borderBottomColor: TH.border,
-                          opacity: autoChecked ? 0.7 : 1,
-                        }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                            <ClipboardList size={16} color={P} />
-                            <View>
-                              <Text style={{ color: TH.text, fontSize: FONT_BODY }} numberOfLines={1}>{item.name}</Text>
-                              {item.link && item.link !== 'manual' && (
-                                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                                  {T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
-                                </Text>
-                              )}
-                            </View>
-                          </View>
-                          {autoChecked ? (
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                              <Check size={14} color={COLORS.GREEN} />
-                              <Text style={{ fontSize: FONT_BADGE, color: COLORS.GREEN, fontWeight: '600' }}>{T('planAutoChecked')}</Text>
-                            </View>
-                          ) : isReadOnly ? (
-                            done ? <Check size={18} color={COLORS.GREEN} /> : <X size={18} color={TH.sub} />
-                          ) : (
-                            <Checkbox on={done} onChange={() => togglePlanItem(item.id)} />
-                          )}
-                        </View>
-                      );
-                    })}
-                  </>
-                )}
-
-                {/* Daily custom todos */}
-                {dailyCustomTodos.length > 0 && (
-                  <>
-                    <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('planDailyCustomTodos')}</Text>
-                    {dailyCustomTodos.map(todo => (
-                      <View key={todo.id} style={{
-                        flexDirection: 'row', alignItems: 'center',
-                        justifyContent: 'space-between', paddingVertical: 12,
-                        borderBottomWidth: 1, borderBottomColor: TH.border,
-                      }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                          <Sparkles size={16} color={P} />
-                          <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{todo.name}</Text>
-                        </View>
-                        {isReadOnly ? (
-                          todo.done ? <Check size={18} color={COLORS.GREEN} /> : <X size={18} color={TH.sub} />
-                        ) : (
-                          <Checkbox on={todo.done} onChange={() => toggleCustomTodo(todo.id)} />
-                        )}
-                      </View>
-                    ))}
-                  </>
-                )}
+                {/* Plan items & custom todos */}
+                <HomePlanSection
+                  todayPlanItems={todayPlanItems}
+                  dailyCustomTodos={dailyCustomTodosMemo}
+                  planCheckins={planCheckins}
+                  viewDate={viewDate}
+                  isReadOnly={isReadOnly}
+                  onTogglePlanItem={togglePlanItem}
+                  onToggleCustomTodo={toggleCustomTodo}
+                />
 
                 {/* Habits */}
                 {activeHabits.length > 0 && (
@@ -707,7 +635,7 @@ export default function HomeScreen() {
                       />
                     )}
                     <TouchableOpacity
-                      onPress={() => store.setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg')}
+                      onPress={() => setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg')}
                       style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, backgroundColor: `${P}20` }}
                     >
                       <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB }}>{weightUnit === 'kg' ? 'kg' : 'lb'}</Text>
@@ -715,14 +643,14 @@ export default function HomeScreen() {
                   </View>
                 </View>
                 {/* Steps */}
-                {isToday && store.healthSyncEnabled && store.todaySteps != null ? (
+                {isToday && healthSyncEnabled && todaySteps != null ? (
                   <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                       <Footprints size={16} color={P} />
                       <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todaySteps')}</Text>
                     </View>
                     <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: P }}>
-                      {store.todaySteps.toLocaleString()}
+                      {todaySteps.toLocaleString()}
                     </Text>
                   </View>
                 ) : !isToday ? (
@@ -747,9 +675,9 @@ export default function HomeScreen() {
                     {isToday ? (
                       <>
                         <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                          <Text style={{ fontWeight: '600', color: P }}>{store.waterMl}</Text> / {store.waterGoal} ml
+                          <Text style={{ fontWeight: '600', color: P }}>{waterMl}</Text> / {waterGoal} ml
                         </Text>
-                        <TouchableOpacity onPress={() => { setWgi(String(store.waterGoal)); setShowWG(true); }}>
+                        <TouchableOpacity onPress={() => { setWgi(String(waterGoal)); setShowWG(true); }}>
                           <Pencil size={14} color={TH.sub} />
                         </TouchableOpacity>
                       </>
@@ -762,10 +690,10 @@ export default function HomeScreen() {
                 </View>
                 {isToday ? (
                   <>
-                    <ProgressBar pct={store.waterGoal > 0 ? store.waterMl / store.waterGoal * 100 : 0} color={P} />
+                    <ProgressBar pct={waterGoal > 0 ? waterMl / waterGoal * 100 : 0} color={P} />
                     <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
                       {[200, 250, 350, 500].map(ml => (
-                        <TouchableOpacity key={ml} onPress={() => addWater(ml)}
+                        <TouchableOpacity key={ml} onPress={() => addWaterCb(ml)}
                           style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
                           <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB }}>{ml}ml</Text>
                         </TouchableOpacity>
@@ -773,78 +701,23 @@ export default function HomeScreen() {
                     </View>
                   </>
                 ) : (
-                  <ProgressBar pct={store.waterGoal > 0 ? parsed.waterMl / store.waterGoal * 100 : 0} color={P} />
+                  <ProgressBar pct={waterGoal > 0 ? parsed.waterMl / waterGoal * 100 : 0} color={P} />
                 )}
               </View>
 
-              {/* ── Food card ── */}
-              <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Utensils size={16} color={P} />
-                    <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todayFood')}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    {isToday ? (
-                      <>
-                        <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                          <Text style={{ fontWeight: '600', color: P }}>{totalCal}</Text> / {store.calGoal} kcal
-                        </Text>
-                        <TouchableOpacity onPress={() => { setCgi(String(store.calGoal)); setShowCG(true); }}>
-                          <Pencil size={14} color={TH.sub} />
-                        </TouchableOpacity>
-                      </>
-                    ) : (
-                      <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                        <Text style={{ fontWeight: '600', color: P }}>{totalCal}</Text> kcal
-                      </Text>
-                    )}
-                  </View>
-                </View>
-                <ProgressBar pct={store.calGoal > 0 ? Math.min(totalCal / store.calGoal * 100, 100) : 0} color={P} />
-
-                {/* Recent Foods (today only) */}
-                {isToday && recentFoods.length > 0 && (
-                  <View style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('recentFoods')}</Text>
-                    <View style={{ flexDirection: 'row', gap: 8 }}>
-                      {recentFoods.map(f => (
-                        <TouchableOpacity key={f.name} onPress={() => { setPortionFood(f); setPortion(1); }}
-                          style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
-                          <Text style={{ color: TH.text, fontSize: FONT_SUB, textAlign: 'center' }} numberOfLines={1}>{f.name}</Text>
-                          <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{f.calories}kcal</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  </View>
-                )}
-
-                {/* Food List */}
-                {todayFoods.length > 0 && (
-                  <View style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('todayFood')} ({todayFoodTotal})</Text>
-                    {todayFoods.map(f => (
-                      <View key={f.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                        <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1 }} numberOfLines={1}>{f.name}</Text>
-                        <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600', marginRight: 8 }}>{f.calories} kcal</Text>
-                        {isToday && (
-                          <TouchableOpacity onPress={() => store.deleteFood(f.id)}>
-                            <X size={16} color={TH.sub} />
-                          </TouchableOpacity>
-                        )}
-                      </View>
-                    ))}
-                  </View>
-                )}
-
-                {/* Add food button (today only) */}
-                {isToday && (
-                  <TouchableOpacity onPress={() => setShowFood(true)}
-                    style={{ marginTop: 10, borderRadius: 10, padding: 11, alignItems: 'center', borderWidth: 1.5, borderColor: P }}>
-                    <Text style={{ color: P, fontWeight: '600', fontSize: FONT_BUTTON }}>{T('addFoodBtn')}</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+              {/* ── Food section ── */}
+              <HomeFoodSection
+                foods={viewDateFoods}
+                totalCal={totalCal}
+                recentFoods={recentFoods}
+                isToday={isToday}
+                calGoal={calGoal}
+                isReadOnly={isReadOnly}
+                onDeleteFood={deleteFood}
+                onAddFood={addFood}
+                onFoodChanged={handleFoodChanged}
+                onSetCalGoal={setCalGoal}
+              />
 
               {/* ── Status button (today only) ── */}
               {isToday && (
@@ -879,90 +752,10 @@ export default function HomeScreen() {
         </View>
 
       {/* ── Floating bubble (draggable) ── */}
-      {!isToday && (
-        <RNAnimated.View
-          style={{
-            position: 'absolute', bottom: 24, left: 16,
-            transform: [{ translateX: bubbleTransX }, { translateY: bubbleTransY }],
-          }}
-        >
-          <View
-            onTouchStart={onBubbleTouchStart}
-            onTouchMove={onBubbleTouchMove}
-            onTouchEnd={onBubbleTouchEnd}
-            style={{
-              flexDirection: 'row', alignItems: 'center', gap: 6,
-              backgroundColor: P, paddingHorizontal: 14, paddingVertical: 10,
-              borderRadius: 20, elevation: 4,
-              shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25, shadowRadius: 4,
-            }}
-          >
-            <Calendar size={16} color="#fff" />
-            <Text style={{ color: '#fff', fontWeight: '600', fontSize: FONT_SMALL }}>{T('dateBarToday')}</Text>
-          </View>
-        </RNAnimated.View>
-      )}
-
-      <AddFoodModal visible={showFood} onClose={() => setShowFood(false)} onFoodAdded={() => {
-        // 添加食物后更新打卡记录
-        setTimeout(() => {
-          const s = useAppStore.getState();
-          const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
-          s.submitCheckin(localDoneRef.current ?? true, buildNote(), undefined, weightNum);
-        }, 0);
-      }} />
-
-      {/* Portion Selector Modal (for recent foods) */}
-      <Modal visible={!!portionFood} transparent animationType="fade" onRequestClose={() => setPortionFood(null)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)', justifyContent: 'center', padding: 24 }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, marginBottom: 4 }}>{portionFood?.name}</Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_BODY, marginBottom: 16 }}>{T('foodPerUnit')} {portionFood?.calories} kcal</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
-              {[0.5, 1, 1.5, 2].map(p => (
-                <TouchableOpacity key={p} onPress={() => setPortion(p)}
-                  style={{
-                    flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: 'center',
-                    backgroundColor: portion === p ? P : TH.card,
-                    borderWidth: portion === p ? 0 : 1, borderColor: TH.border,
-                  }}>
-                  <Text style={{ color: portion === p ? '#fff' : TH.text, fontWeight: portion === p ? '700' : '400', fontSize: FONT_BODY }}>
-                    {p}份
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
-              <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('foodTotalCal')}</Text>
-              <Text style={{ fontSize: 26, fontWeight: '800', color: COLORS.ORANGE }}>
-                {Math.round((portionFood?.calories ?? 0) * portion)} <Text style={{ fontSize: FONT_SUB, fontWeight: '400', color: TH.sub }}>kcal</Text>
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <TouchableOpacity onPress={() => setPortionFood(null)}
-                style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {
-                if (portionFood) {
-                  store.addFood({ name: portionFood.name, calories: Math.round(portionFood.calories * portion), timestamp: Date.now() });
-                  setPortionFood(null);
-                  // 添加食物后更新打卡记录
-                  setTimeout(() => {
-                    const s = useAppStore.getState();
-                    const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
-                    s.submitCheckin(localDoneRef.current ?? true, buildNote(), undefined, weightNum);
-                  }, 0);
-                }
-              }}
-                style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('confirm')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <HomeBubble
+        visible={!isToday}
+        onTap={() => setViewDate(dateStr())}
+      />
 
       {/* Water Goal Modal */}
       <Modal visible={showWG} transparent animationType="fade" onRequestClose={() => setShowWG(false)}>
@@ -984,36 +777,7 @@ export default function HomeScreen() {
                 <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => { store.setWaterGoal(Math.max(500, Math.min(3000, +wgi || 2000))); setShowWG(false); }}
-                style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('save')}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Calorie Goal Modal */}
-      <Modal visible={showCG} transparent animationType="fade" onRequestClose={() => setShowCG(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)', justifyContent: 'center', padding: 24 }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, alignItems: 'center' }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, marginBottom: 6, color: TH.text }}>{T('calGoalSetting')}</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>{T('calGoalHint')}</Text>
-            <TextInput
-              value={cgi} onChangeText={setCgi} keyboardType="numeric"
-              style={{
-                width: '100%', fontSize: FONT_STAT_CARD, fontWeight: '700', textAlign: 'center',
-                backgroundColor: TH.card, borderWidth: 2, borderColor: COLORS.BLUE,
-                borderRadius: 12, padding: 14, color: TH.text, marginBottom: 20,
-              }}
-            />
-            <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>
-              <TouchableOpacity onPress={() => setShowCG(false)}
-                style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { store.setCalGoal(Math.max(500, Math.min(10000, +cgi || 2000))); setShowCG(false); }}
+                onPress={() => { setWaterGoal(Math.max(500, Math.min(3000, +wgi || 2000))); setShowWG(false); }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
                 <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('save')}</Text>
               </TouchableOpacity>

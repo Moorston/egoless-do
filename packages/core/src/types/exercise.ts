@@ -33,6 +33,7 @@ export interface ExerciseEntry extends Syncable {
   reps?: number;
   sets?: ExerciseSet[];
   met?: number;
+  healthSynced?: boolean; // 本地标记：是否已同步到 HealthKit/Health Connect
 }
 
 export interface SportItem {

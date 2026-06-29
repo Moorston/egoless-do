@@ -5,6 +5,13 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
+    "./utils": "./dist/utils.js",
+    "./business": "./dist/business/index.js",
+    "./store": "./dist/store/index.js",
+    "./types": "./dist/types/index.js",
+    "./sync": "./dist/sync/index.js",
+    "./i18n": "./dist/i18n/index.js",
+    "./typography": "./dist/typography.js",
     "./push": "./dist/push.js"
   },
   "scripts": {

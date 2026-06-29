@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo, useState, useRef, useEffect, memo } from 'react';
-import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, dateStr, createDateChangeDetector, PLAN_STATUS_COLORS, statusToI18nKey, computeItemProgress } from '@egoless-do/core';
-import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink, CheckinFrequency } from '@egoless-do/core';
+import { THEMES, COLORS, LINK_COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, dateStr, createDateChangeDetector, PLAN_STATUS_COLORS, statusToI18nKey, computeItemProgress, getFrequencySummary } from '@egoless-do/core';
+import type { Plan, PlanItem, PlanItemCheckin, PlanStatus, PlanItemLink } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { useT, cs } from './helpers';
 import { useOverlay } from './useOverlay';
@@ -11,40 +11,6 @@ import { ChevronLeft, Check, ChevronDown, ChevronRight, ClipboardList, Pencil, C
 import { ItemHeatmap } from './ItemHeatmap';
 
 const EMPTY_CHECKINS: PlanItemCheckin[] = [];
-
-const WEEKDAY_LABELS = ['weekdaySun', 'weekdayMon', 'weekdayTue', 'weekdayWed', 'weekdayThu', 'weekdayFri', 'weekdaySat'];
-
-function getFrequencySummary(freq: CheckinFrequency, T: (k: string) => string, checkins: PlanItemCheckin[], today: string, itemId?: string): string {
-  switch (freq.mode) {
-    case 'daily':
-      return T('freqSummaryDaily');
-    case 'interval':
-      return T('freqSummaryInterval').replace('{n}', String(freq.every));
-    case 'weekly': {
-      const [y, m, d2] = today.split('-').map(Number);
-      const d = new Date(y, m - 1, d2);
-      const day = d.getDay();
-      const ws = new Date(d);
-      ws.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
-      const wsStr = dateStr(ws);
-      const we = new Date(ws);
-      we.setDate(ws.getDate() + 6);
-      const weStr = dateStr(we);
-      const doneThisWeek = checkins.filter(c => c.done && (!itemId || c.planItemId === itemId) && c.date >= wsStr && c.date <= weStr).length;
-      return `📅 ${T('freqSummaryWeekly').replace('{n}', String(freq.target))} | ${T('freqThisWeek')} ${doneThisWeek}/${freq.target}`;
-    }
-    case 'weekly_fixed': {
-      const labels = freq.days.map(d => T(WEEKDAY_LABELS[d])).join(' ');
-      return `📅 ${T('freqSummaryWeeklyFixed').replace('{days}', labels)}`;
-    }
-    case 'monthly':
-      return `📅 ${T('freqSummaryMonthly').replace('{n}', String(freq.target))}`;
-    case 'monthly_fixed':
-      return `📅 ${T('freqSummaryMonthlyFixed').replace('{dates}', freq.dates.join(', '))}`;
-    default:
-      return '';
-  }
-}
 
 const StatusLabel = memo(function StatusLabel({ status, T }: { status: string; T: (k: string) => string }) {
   return (

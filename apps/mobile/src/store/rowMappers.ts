@@ -10,10 +10,13 @@ import type {
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
+// Row mapper type - functions from buildRowToEntity lose generic through Object.fromEntries
+type RowMapper = (row: Record<string, unknown>) => Record<string, unknown>;
+
 // Generate all rowTo* functions from SCHEMAS
 const rowToEntityMap = Object.fromEntries(
   (Object.keys(SCHEMAS) as Array<keyof typeof SCHEMAS>).map(k => [k, buildRowToEntity(SCHEMAS[k])])
-) as Record<string, (row: Record<string, unknown>) => Record<string, unknown>>;
+) as Record<string, RowMapper>;
 
 export function rowToHabit(r: Record<string, unknown>): Habit {
   return rowToEntityMap.habit(r) as unknown as Habit;

@@ -221,10 +221,8 @@ export const useAppStore = create<MobileStore>()(
             });
           },
         });
-        dailyReset.start();
-
         // Rehydrate ALL entity data from SQLite (replaces AsyncStorage dual storage)
-        openDatabase().then(async db => {
+        const dbReady = openDatabase().then(async db => {
           try {
             // Step 1: Migrate old AsyncStorage entity data to SQLite (one-time, idempotent)
             const didMigrate = await migrateAsyncStorageToSQLite(db, adapter);
@@ -247,6 +245,10 @@ export const useAppStore = create<MobileStore>()(
             log.error(err, { message: 'SQLite entity load error' });
           }
         }).catch(err => log.error(err, { message: 'database open error' }));
+
+        // Wait for SQLite rehydration before first daily reset check,
+        // so that checkinHistory is populated and waterMl is not incorrectly zeroed
+        dailyReset.start(dbReady);
 
         // Clean up expired recycle bin items
         useAppStore.getState().cleanupRecycleBin();

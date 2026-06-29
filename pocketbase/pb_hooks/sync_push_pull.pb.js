@@ -50,7 +50,9 @@ routerAdd("POST", "/api/sync/push", function(e) {
             if (typeof rawD === "string") { try { existD = JSON.parse(rawD); } catch(pe) {} }
             else if (rawD && typeof rawD === "object") { for (var ek in rawD) existD[ek] = rawD[ek]; }
             var srvUpd = existD.updatedAt || 0;
-            if (srvUpd > payload.updatedAt) {
+            var srvDel = existD.deleted === true;
+            var cliDel = payload.deleted === true;
+            if (srvUpd > payload.updatedAt || (srvUpd === payload.updatedAt && (srvDel || cliDel))) {
               rejected.push({ entity: entity, entityId: entityId, error: "conflict", serverData: existD });
               continue;
             }

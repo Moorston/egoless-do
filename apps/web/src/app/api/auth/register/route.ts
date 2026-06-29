@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     // Note: refreshToken === token is a PocketBase limitation (no separate refresh token mechanism).
     // TOKEN_EXPIRES_IN is set to 7 days; client should use /auth/refresh before expiry.
     return NextResponse.json({
-      user: { id: user.id, email: user.email, name: user.name },
+      user: { id: user.id, email: user.email, name: user.name, createdAt: user.created ? new Date(user.created).getTime() : Date.now() },
       token: authData.token,
       refreshToken: authData.token,
       expiresAt: Date.now() + TOKEN_EXPIRES_IN,

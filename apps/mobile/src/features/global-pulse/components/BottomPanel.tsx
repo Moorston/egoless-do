@@ -1,16 +1,18 @@
 /**
  * 底部面板组件
- * TabBar（实时脉动 / 排行榜）+ 内容切换
+ * TabBar（实时脉动 / 排行榜 / 我的）+ 内容切换
  */
 
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
+import { FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType } from '../types/globalPulse';
 import { ActiveUsersList } from './ActiveUsersList';
 import { Leaderboard } from './Leaderboard';
+import { useAppStore } from '../../../store/useAppStore';
 
-type TabKey = 'realtime' | 'leaderboard';
+type TabKey = 'realtime' | 'leaderboard' | 'me';
 
 interface BottomPanelProps {
   sessions: ActiveSession[];
@@ -22,6 +24,7 @@ interface BottomPanelProps {
   selectedUserId?: string | null;
   onRefresh?: () => void;
   isRefreshing?: boolean;
+  myHash?: string;
 }
 
 export const BottomPanel: React.FC<BottomPanelProps> = ({
@@ -34,15 +37,37 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
   selectedUserId,
   onRefresh,
   isRefreshing,
+  myHash,
 }) => {
   const theme = useTheme();
   const t = useT();
+  const store = useAppStore();
   const [activeTab, setActiveTab] = useState<TabKey>('realtime');
 
   const tabs: { key: TabKey; label: string }[] = [
     { key: 'realtime', label: t('globalPulse.realtimePulse') },
     { key: 'leaderboard', label: t('globalPulse.leaderboard') },
+    { key: 'me', label: t('globalPulse.me') },
   ];
+
+  // 我的排名和百分位
+  const myRankInfo = useMemo(() => {
+    if (!myHash || checkins.length === 0) return null;
+    const sorted = [...checkins].sort((a, b) => b.streak - a.streak);
+    const rank = sorted.findIndex(c => c.user_hash === myHash) + 1;
+    if (rank === 0) return null;
+    const percentile = Math.round((1 - rank / sorted.length) * 100);
+    return { rank, total: sorted.length, percentile };
+  }, [checkins, myHash]);
+
+  // 我的今日打卡类型
+  const myTodayTypes = useMemo(() => {
+    if (!myHash) return [];
+    const today = dateStr();
+    return checkins
+      .filter(c => c.user_hash === myHash && c.created_at && dateStr(new Date(c.created_at)) === today)
+      .map(c => c.type);
+  }, [checkins, myHash]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.bg }]}>
@@ -98,7 +123,7 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
             onlineCount={onlineCount}
             onUserPress={onUserPress}
           />
-        ) : (
+        ) : activeTab === 'leaderboard' ? (
           <Leaderboard
             checkins={checkins}
             type={type}
@@ -106,6 +131,77 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
             onUserPress={onLeaderboardUserPress}
             selectedUserId={selectedUserId}
           />
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {/* 我的修行 */}
+            <View style={[styles.myCard, { borderColor: theme.border }]}>
+              <Text style={[styles.myCardTitle, { color: theme.text }]}>{t('globalPulse.myJourney')}</Text>
+              <View style={styles.myStatsRow}>
+                <View style={styles.myStatItem}>
+                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{store.streak ?? 0}</Text>
+                  <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('checkinStreak')}</Text>
+                </View>
+                <View style={styles.myStatItem}>
+                  <Text style={[styles.myStatValue, { color: theme.primary }]}>
+                    {(store.checkinHistory ?? []).filter(c => c.done && !c.deleted).length}
+                  </Text>
+                  <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.totalDays')}</Text>
+                </View>
+                <View style={styles.myStatItem}>
+                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{store.totalMedMinutes ?? 0}</Text>
+                  <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('accMed')}</Text>
+                </View>
+              </View>
+            </View>
+
+            {/* 全球排名 */}
+            {myRankInfo && (
+              <View style={[styles.myCard, { borderColor: theme.border }]}>
+                <Text style={[styles.myCardTitle, { color: theme.text }]}>{t('globalPulse.globalRank')}</Text>
+                <View style={styles.myStatsRow}>
+                  <View style={styles.myStatItem}>
+                    <Text style={[styles.myStatValue, { color: theme.primary }]}>#{myRankInfo.rank}</Text>
+                    <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.rank')}</Text>
+                  </View>
+                  <View style={styles.myStatItem}>
+                    <Text style={[styles.myStatValue, { color: theme.primary }]}>{myRankInfo.percentile}%</Text>
+                    <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.exceedPercent')}</Text>
+                  </View>
+                  <View style={styles.myStatItem}>
+                    <Text style={[styles.myStatValue, { color: theme.sub }]}>{myRankInfo.total}</Text>
+                    <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.totalUsers')}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            {/* 今日状态 */}
+            <View style={[styles.myCard, { borderColor: theme.border }]}>
+              <Text style={[styles.myCardTitle, { color: theme.text }]}>{t('globalPulse.todayStatus')}</Text>
+              <View style={styles.todayRow}>
+                {['exercise', 'meditation', 'fasting'].map(tp => {
+                  const done = myTodayTypes.includes(tp as CheckinType);
+                  const icons: Record<string, string> = { exercise: '🏃', meditation: '🧘', fasting: '🍽️' };
+                  const labels: Record<string, string> = {
+                    exercise: t('exercise'),
+                    meditation: t('meditation'),
+                    fasting: t('fasting'),
+                  };
+                  return (
+                    <View key={tp} style={[styles.todayItem, done && { backgroundColor: `${theme.primary}15` }]}>
+                      <Text style={styles.todayIcon}>{icons[tp]}</Text>
+                      <Text style={[styles.todayLabel, { color: done ? theme.primary : theme.sub }]}>
+                        {labels[tp]}
+                      </Text>
+                      <Text style={{ color: done ? theme.primary : theme.sub, fontSize: 12 }}>
+                        {done ? '✓' : '—'}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </ScrollView>
         )}
       </View>
     </View>
@@ -150,6 +246,50 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 16,
+  },
+  myCard: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 10,
+  },
+  myCardTitle: {
+    fontSize: FONT_SUB,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  myStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  myStatItem: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  myStatValue: {
+    fontSize: FONT_STAT_CARD,
+    fontWeight: '800',
+  },
+  myStatLabel: {
+    fontSize: 11,
+  },
+  todayRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  todayItem: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 4,
+  },
+  todayIcon: {
+    fontSize: 20,
+  },
+  todayLabel: {
+    fontSize: 11,
+    fontWeight: '500',
   },
 });
 
