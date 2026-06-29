@@ -75,6 +75,7 @@ export class WriteBatcher {
     const writes = [...this._pendingWrites.values()];
     this._pendingWrites.clear();
     if (writes.length === 0) return;
+    console.log(`[WriteBatcher] Flushing ${writes.length} writes: ${writes.map(w => w.entity).join(', ')}`);
 
     const db = await openDatabase();
     try {

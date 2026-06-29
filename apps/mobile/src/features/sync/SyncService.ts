@@ -56,10 +56,14 @@ export function resumeInitialSync(token: string, userId?: string) { return _engi
 // Debounced sync trigger (cross-module callbacks)
 export function setSyncTriggerCallback(fn: () => void) { _syncTriggerCallback = fn; }
 export function triggerSyncDebounced(): void {
-  if (!_syncTriggerCallback) return;
+  if (!_syncTriggerCallback) {
+    console.warn('[Sync] triggerSyncDebounced called but _syncTriggerCallback is null!');
+    return;
+  }
   if (_syncTriggerTimer) clearTimeout(_syncTriggerTimer);
   _syncTriggerTimer = setTimeout(() => {
     _syncTriggerTimer = null;
+    console.log('[Sync] Debounced sync trigger firing...');
     _syncTriggerCallback?.();
   }, SYNC_TRIGGER_DEBOUNCE_MS);
 }

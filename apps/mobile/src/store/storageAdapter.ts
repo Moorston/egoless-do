@@ -8,7 +8,10 @@ export function setStorageAdapterTrigger(fn: () => void) { _triggerSync = fn; }
 
 // Global batcher coalesces all writes within a 100ms window into single transaction.
 // Flushes are also triggered on app background via useAppStore.
-const _batcher = new WriteBatcher(100, () => { _triggerSync?.(); });
+const _batcher = new WriteBatcher(100, () => {
+  console.log('[StorageAdapter] WriteBatcher flushed, triggering sync...');
+  _triggerSync?.();
+});
 
 export function flushWrites(): Promise<boolean> {
   return _batcher.flushNow();

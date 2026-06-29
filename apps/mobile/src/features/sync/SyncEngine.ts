@@ -558,7 +558,12 @@ export class SyncEngine {
       this._pendingSyncAfterInit = true;
       return;
     }
-    if (!this._tokenProvider?.()) return;
+    const token = this._tokenProvider?.();
+    if (!token) {
+      console.warn('[SyncEngine] runSync: no token, aborting');
+      return;
+    }
+    console.log('[SyncEngine] runSync starting, token present');
     const userId = this._userIdProvider?.() ?? undefined;
     const freshToken = () => this._tokenProvider?.() ?? '';
 
@@ -621,6 +626,7 @@ export class SyncEngine {
 
       for (let batch = 0; batch < 10; batch++) {
         const items = await drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
+        console.log(`[SyncEngine] drainQueue batch ${batch + 1}: ${items.length} items`);
         if (!items.length) break;
         pushedAnything = true;
         pushedItemCount += items.length;
@@ -640,6 +646,7 @@ export class SyncEngine {
 
         try {
           pushResult = await apiSyncPush(freshToken(), this._lastSyncAt, changes, userId);
+          console.log(`[SyncEngine] Push OK: ${changes.length} changes, serverTime=${pushResult.serverTime}, rejected=${pushResult.rejected?.length ?? 0}`);
         } catch (pushErr: any) {
           if (this.isKickedOutError(pushErr)) { this.handleKickedOut(); return; }
           log.error(pushErr, { phase: 'push' });
