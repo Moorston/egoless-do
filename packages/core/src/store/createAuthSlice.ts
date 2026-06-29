@@ -24,13 +24,18 @@ export function createAuthSlice(
       set(s => ({ auth: { ...s.auth, isLoading: true } }));
       try {
         const res = await apiLogin(email, password);
+        console.log('[Auth] login response:', { hasToken: !!res.token, hasRefreshToken: !!res.refreshToken, expiresAt: res.expiresAt, tokenLen: res.token?.length });
         set({
           auth: {
             user: res.user, token: res.token, refreshToken: res.refreshToken,
             isSignedIn: true, isLoading: false, expiresAt: res.expiresAt,
           },
         });
+        const afterSet = get().auth;
+        console.log('[Auth] after set:', { hasToken: !!afterSet.token, isSignedIn: afterSet.isSignedIn, hasRefreshToken: !!afterSet.refreshToken });
         await get().pullServerData(res.token);
+        const afterPull = get().auth;
+        console.log('[Auth] after pullServerData:', { hasToken: !!afterPull.token, isSignedIn: afterPull.isSignedIn });
         onSyncTrigger();
       } catch (e) {
         set(s => ({ auth: { ...s.auth, isLoading: false } }));
