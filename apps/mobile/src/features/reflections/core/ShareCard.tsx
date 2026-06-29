@@ -91,7 +91,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
         {ViewShot ? (
           <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1 }}>
             <View style={{
-              width: 320, borderRadius: 24, overflow: 'hidden',
+              width: 320, overflow: 'hidden',
               backgroundColor: bgColor,
             }}>
               {/* Decorative circles */}
@@ -135,7 +135,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
             </View>
           </ViewShot>
         ) : (
-          <View style={{ width: 320, borderRadius: 24, overflow: 'hidden', backgroundColor: bgColor, padding: 28, alignItems: 'center' }}>
+          <View style={{ width: 320, overflow: 'hidden', backgroundColor: bgColor, padding: 28, alignItems: 'center' }}>
             <Text style={{ color: '#fff', fontSize: FONT_BODY }}>{T('shareCardLoading')}</Text>
           </View>
         )}
