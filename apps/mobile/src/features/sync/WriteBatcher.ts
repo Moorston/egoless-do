@@ -79,7 +79,7 @@ export class WriteBatcher {
 
     const db = await openDatabase();
     try {
-      await withDbLock(() => db.withTransactionAsync(async () => {
+      await withDbLock(async () => {
         for (const w of writes) {
           const config = ENTITY_TABLE_MAP[w.entity];
           if (!config) continue;
@@ -118,21 +118,26 @@ export class WriteBatcher {
             }
           }
 
-          // Enqueue sync — include changedFields for field-level delta push
+          // Enqueue sync using UPSERT (no transaction needed)
           const payload = w.changedFields
             ? { ...w.data, _changedFields: w.changedFields }
             : w.data;
 
           await db.runAsync(
-            'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
-            [w.entity, w.id],
-          );
-          await db.runAsync(
-            'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status) VALUES (?, ?, ?, ?, ?, ?)',
+            `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
+             VALUES (?, ?, ?, ?, ?, ?)
+             ON CONFLICT(entity, entity_id) DO UPDATE SET
+               operation = excluded.operation,
+               payload = excluded.payload,
+               created_at = excluded.created_at,
+               status = 'pending',
+               retry_count = 0,
+               next_retry_at = 0,
+               last_error = NULL`,
             [w.entity, w.id, w.operation, JSON.stringify(payload), Date.now(), 'pending'],
           );
         }
-      }));
+      });
       this._onFlushed?.();
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
