@@ -560,7 +560,8 @@ export class SyncEngine {
     }
     const token = this._tokenProvider?.();
     if (!token) {
-      console.warn('[SyncEngine] runSync: no token, aborting');
+      console.warn('[SyncEngine] runSync: no token, will retry in 3s');
+      setTimeout(() => { this.runSync(); }, 3000);
       return;
     }
     console.log('[SyncEngine] runSync starting, token present');
