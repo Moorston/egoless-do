@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Linking, Alert, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../../store/useAppStore';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -144,8 +144,7 @@ export default function ReflectionDetailContent({
             </TouchableOpacity>
           ) : (
             <TouchableOpacity onPress={() => setShowTrailPicker(true)}
-              style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 }}>
-              <Link size={16} color="#fff" />
+              style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
               <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflLinkTrail')}</Text>
             </TouchableOpacity>
           )}
@@ -161,12 +160,12 @@ export default function ReflectionDetailContent({
             </TouchableOpacity>
           ) : null}
           <View style={{ position: 'relative' }}>
-            <TouchableOpacity onPress={() => setShowMore(!showMore)}
+            <Pressable onPress={() => setShowMore(!showMore)}
               style={{ backgroundColor: 'rgba(255,255,255,.25)', paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, alignItems: 'center' }}>
               <MoreHorizontal size={20} color="#fff" />
-            </TouchableOpacity>
+            </Pressable>
             {showMore && (
-              <View style={{ position: 'absolute', bottom: 52, right: 0, backgroundColor: 'rgba(0,0,0.85)', borderRadius: 12, paddingVertical: 4, minWidth: 140, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8, zIndex: 2 }}>
+              <Pressable style={{ position: 'absolute', bottom: 52, right: 0, backgroundColor: 'rgba(0,0,0,.85)', borderRadius: 12, paddingVertical: 4, minWidth: 140, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8, zIndex: 2 }}>
                 <TouchableOpacity onPress={() => { setShowMore(false); onClose(); nav.navigate('RelationMap', { context: { type: 'reflection', id: reflectionId } }); }}
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 16 }}>
                   <Network size={16} color="#fff" />
@@ -185,7 +184,7 @@ export default function ReflectionDetailContent({
                     <Text style={{ color: '#ff6b6b', fontSize: FONT_BUTTON }}>{T('reflDelete')}</Text>
                   </TouchableOpacity>
                 )}
-              </View>
+              </Pressable>
             )}
           </View>
         </View>
