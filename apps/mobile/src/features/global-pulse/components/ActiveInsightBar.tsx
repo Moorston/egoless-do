@@ -29,6 +29,9 @@ export const ActiveInsightBar: React.FC<ActiveInsightBarProps> = ({
 
   const typeCount = onlineCount[type];
 
+  // Hide the bar entirely when no users are active
+  if (typeCount <= 0) return null;
+
   return (
     <View style={styles.container}>
       {/* 在线人数 */}
