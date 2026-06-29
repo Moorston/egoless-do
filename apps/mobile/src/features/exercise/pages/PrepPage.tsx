@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { X } from 'lucide-react-native';
 import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_HERO, FONT_STAT_SECTION, fmt, TARGET_PRESETS, getSoftTarget } from '@egoless-do/core';
+import type { MusicTrack } from '@egoless-do/core';
 import type { ExercisePageProps } from './types';
+import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function PrepPage(props: ExercisePageProps) {
   const {
     sportName, sportType, bg, mode, setMode, targetType, setTargetType, targetValue, setTargetValue,
     breathGuideEnabled, setBreathGuideEnabled, isMeditative,
     handleGo, onGoBack, exerciseLog, T, TH,
+    musicTrack, onPressMusic,
   } = props;
 
   const presets: Record<string, Array<{ label: string; labelEn: string; value: number }> | undefined> = TARGET_PRESETS[sportType] ?? {};
@@ -42,6 +45,17 @@ export default function PrepPage(props: ExercisePageProps) {
           <TouchableOpacity onPress={onGoBack}>
             <X size={22} color="rgba(255,255,255,.9)" />
           </TouchableOpacity>
+        </View>
+
+        {/* Music selector — same style as meditation page */}
+        <View style={{ marginTop: 16 }}>
+          <MeditationMusicBar
+            track={musicTrack ?? null}
+            isActive={false}
+            isPlaying={false}
+            primaryColor={TH.primary}
+            onPress={onPressMusic}
+          />
         </View>
 
         {/* Mode toggle */}

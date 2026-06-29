@@ -22,6 +22,7 @@ import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useExerciseTimer } from './hooks/useExerciseTimer';
 import { useExerciseAudio } from './hooks/useExerciseAudio';
 import { useMusicStore } from '../music/useMusicStore';
+import MusicPickerModal from '../music/components/MusicPickerModal';
 import { useExerciseRest } from './hooks/useExerciseRest';
 import { useExerciseSets } from './hooks/useExerciseSets';
 import { useExerciseTargets } from './hooks/useExerciseTargets';
@@ -71,6 +72,7 @@ export default function SportPage() {
   const musicPause = useMusicStore(s => s.pause);
   const musicResume = useMusicStore(s => s.resume);
   const musicToggleLoop = useMusicStore(s => s.toggleLoop);
+  const [showMusicPicker, setShowMusicPicker] = useState(false);
 
   // ── 实时会话管理 ──
   const sessionIdRef = useRef<string | null>(null);
@@ -344,6 +346,7 @@ export default function SportPage() {
   // Prep page
   if (page === 'prep') {
     return (
+      <>
       <PrepPage
         icon={icon} sportName={sportName} sportType={sportType} experienceType={experienceType}
         bg={TH.primary} isGpsSport={isGpsSport}
@@ -361,8 +364,15 @@ export default function SportPage() {
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
         handleSave={handleSave} onGoBack={() => nav.goBack()}
         exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
+        musicTrack={musicTrack} onPressMusic={() => setShowMusicPicker(true)}
         TH={TH} T={T}
       />
+      <MusicPickerModal
+        visible={showMusicPicker}
+        onClose={() => setShowMusicPicker(false)}
+        primaryColor={TH.primary}
+      />
+      </>
     );
   }
 
