@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, Image,
+  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
@@ -8,12 +8,13 @@ import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, useT, RowItem } from '../../components/UI';
 import {
-  COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD,
+  COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON,
   createLogger,
 } from '@egoless-do/core';
 import {
   Pencil, Flame, Target, CalendarDays, Brain, Scale, Droplets,
   Database, LogOut, ChevronRight, Check, X, Camera,
+  Trophy, Timer, Utensils, Quote, Footprints, ClipboardList, ListChecks,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 
@@ -28,6 +29,8 @@ export default function ProfileScreen() {
 
   const [editNickname, setEditNickname] = useState(store.userProfile.nickname ?? '');
   const [editingNickname, setEditingNickname] = useState(false);
+  const [editMotto, setEditMotto] = useState(store.userProfile.motto ?? '');
+  const [editingMotto, setEditingMotto] = useState(false);
   const [editWeight, setEditWeight] = useState(store.userProfile.weight != null ? String(store.userProfile.weight) : '');
   const [editWaterGoal, setEditWaterGoal] = useState(String(store.waterGoal));
   const [clearing, setClearing] = useState(false);
@@ -57,6 +60,25 @@ export default function ProfileScreen() {
     const totalReflections = (store.reflections ?? []).filter(r => !r.deleted).length;
     return { totalCheckinDays, activeHabits, totalReflections };
   }, [store.checkinHistory, store.habits, store.reflections]);
+
+  const journeyStats = useMemo(() => {
+    const createdAt = store.auth.user?.createdAt;
+    const joinedDays = createdAt ? Math.max(1, Math.floor((Date.now() - createdAt) / 86400000)) : 0;
+    // Longest streak
+    const history = (store.checkinHistory ?? []).filter(c => !c.deleted);
+    let longestStreak = 0, current = 0;
+    for (const c of history) { if (c.done) { current++; longestStreak = Math.max(longestStreak, current); } else { current = 0; } }
+    // Total exercise hours
+    const totalExerciseSec = (store.exerciseLog ?? []).filter(e => !e.deleted).reduce((s, e) => s + e.durationSec, 0);
+    const totalExerciseHours = Math.round(totalExerciseSec / 3600);
+    // Total fasting hours
+    const totalFastingMs = (store.fastingHistory ?? []).filter(f => !f.deleted && f.endedAt).reduce((s, f) => s + ((f.endedAt ?? 0) - f.startedAt), 0);
+    const totalFastingHours = Math.round(totalFastingMs / 3600000);
+    // Plans & tasks
+    const totalPlans = (store.plans ?? []).filter(p => !p.deleted).length;
+    const totalPlanItems = (store.planItems ?? []).filter(i => !i.deleted).length;
+    return { joinedDays, longestStreak, totalExerciseHours, totalFastingHours, totalPlans, totalPlanItems };
+  }, [store.auth.user?.createdAt, store.checkinHistory, store.exerciseLog, store.fastingHistory, store.plans, store.planItems]);
 
   const displayName = store.userProfile.nickname ?? store.auth.user?.name ?? T('settingsDefaultName');
   const avatarUri = store.userProfile.avatar;
@@ -95,6 +117,11 @@ export default function ProfileScreen() {
     setEditingNickname(false);
   };
 
+  const saveMotto = () => {
+    store.updateUserProfile({ motto: editMotto.trim() || undefined });
+    setEditingMotto(false);
+  };
+
   const saveWeight = () => {
     const num = editWeight ? parseFloat(editWeight) : undefined;
     store.updateUserProfile({ weight: num });
@@ -130,9 +157,11 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Profile" />
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 60 }}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {/* Avatar + Name */}
         <Card style={{ marginBottom: 12 }}>
@@ -195,25 +224,63 @@ export default function ProfileScreen() {
           </View>
         </Card>
 
-        {/* Stats */}
+        {/* Journey */}
         <Card style={{ marginBottom: 12 }}>
           <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12 }}>
-            {T('profileStats')}
+            {T('profileJourney')}
           </Text>
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            {[
-              { icon: <Flame size={16} color="#F59E0B" />, value: store.streak, label: T('checkinStreak') },
-              { icon: <Target size={16} color={P} />, value: profileStats.activeHabits, label: T('habits') },
-              { icon: <CalendarDays size={16} color="#10B981" />, value: profileStats.totalCheckinDays, label: T('globalPulse.totalDays') },
-              { icon: <Brain size={16} color="#8B5CF6" />, value: profileStats.totalReflections, label: T('reflections') },
-            ].map((s, i) => (
-              <View key={i} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
-                {s.icon}
-                <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: TH.text }}>{s.value}</Text>
-                <Text style={{ fontSize: 10, color: TH.sub }}>{s.label}</Text>
-              </View>
-            ))}
-          </View>
+          {/* Motto */}
+          {editingMotto ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+              <Quote size={16} color={P} />
+              <TextInput
+                value={editMotto}
+                onChangeText={setEditMotto}
+                placeholder={T('profileMottoPlaceholder')}
+                placeholderTextColor={TH.sub}
+                style={{
+                  flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
+                  color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                  fontStyle: 'italic',
+                }}
+              />
+              <TouchableOpacity onPress={saveMotto} style={{ padding: 6 }}>
+                <Check size={20} color={COLORS.GREEN} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { setEditingMotto(false); setEditMotto(store.userProfile.motto ?? ''); }} style={{ padding: 6 }}>
+                <X size={20} color={TH.sub} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+              <Quote size={16} color={P} />
+              <Text style={{ color: store.userProfile.motto ? TH.text : TH.sub, fontSize: FONT_BODY, fontStyle: 'italic', flex: 1 }}>
+                {store.userProfile.motto || T('profileMottoPlaceholder')}
+              </Text>
+              <Pencil size={12} color={TH.sub} />
+            </TouchableOpacity>
+          )}
+          <View style={{ height: 1, backgroundColor: TH.border, marginBottom: 12 }} />
+          {/* Stats rows */}
+          {[
+            { icon: <CalendarDays size={16} color="#10B981" />, value: `${journeyStats.joinedDays} ${T('calendarDays')}`, label: T('profileJoinedDays') },
+            { icon: <Flame size={16} color="#F59E0B" />, value: `${store.streak} ${T('calendarDays')}`, label: T('checkinStreak') },
+            { icon: <Trophy size={16} color="#F59E0B" />, value: `${journeyStats.longestStreak} ${T('calendarDays')}`, label: T('profileLongestStreak') },
+            { icon: <CalendarDays size={16} color="#10B981" />, value: `${profileStats.totalCheckinDays} ${T('calendarDays')}`, label: T('globalPulse.totalDays') },
+            { icon: <Target size={16} color={P} />, value: `${profileStats.activeHabits}`, label: T('habits') },
+            { icon: <Brain size={16} color="#8B5CF6" />, value: `${profileStats.totalReflections}`, label: T('reflections') },
+            { icon: <ClipboardList size={16} color="#3B82F6" />, value: `${journeyStats.totalPlans}`, label: T('plan') },
+            { icon: <ListChecks size={16} color="#3B82F6" />, value: `${journeyStats.totalPlanItems}`, label: T('planTodoList') },
+            { icon: <Timer size={16} color="#8B5CF6" />, value: `${store.totalMedMinutes} ${T('medMinutes')}`, label: T('accMed') },
+            { icon: <Footprints size={16} color={P} />, value: `${journeyStats.totalExerciseHours} ${T('medMinutes')}`, label: T('profileTotalExercise') },
+            { icon: <Utensils size={16} color="#EF4444" />, value: `${journeyStats.totalFastingHours} ${T('medMinutes')}`, label: T('profileTotalFasting') },
+          ].map((s, i, arr) => (
+            <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
+              {s.icon}
+              <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1, marginLeft: 10 }}>{s.label}</Text>
+              <Text style={{ color: P, fontSize: FONT_BODY, fontWeight: '600' }}>{s.value}</Text>
+            </View>
+          ))}
         </Card>
 
         {/* Body data */}
@@ -290,8 +357,7 @@ export default function ProfileScreen() {
                     onPress: async () => {
                       setClearing(true);
                       try {
-                        await store.clearDataAndLogout();
-                        nav.reset({ index: 0, routes: [{ name: 'Login' }] });
+                        await store.clearLocalData();
                       } catch {
                         Alert.alert(T('clearDataPushFail'));
                       }
@@ -321,6 +387,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </Card>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
