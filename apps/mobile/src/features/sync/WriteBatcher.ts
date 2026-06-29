@@ -1,6 +1,6 @@
 import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
-import { openDatabase } from '../../db/schema';
+import { openDatabase, withDbLock } from '../../db/schema';
 import { ENTITY_TABLE_MAP } from '../../store/entityTableMap';
 
 const log = createLogger('Sync');
@@ -78,7 +78,7 @@ export class WriteBatcher {
 
     const db = await openDatabase();
     try {
-      await db.withTransactionAsync(async () => {
+      await withDbLock(() => db.withTransactionAsync(async () => {
         for (const w of writes) {
           const config = ENTITY_TABLE_MAP[w.entity];
           if (!config) continue;
@@ -131,7 +131,7 @@ export class WriteBatcher {
             [w.entity, w.id, w.operation, JSON.stringify(payload), Date.now(), 'pending'],
           );
         }
-      });
+      }));
       this._onFlushed?.();
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
