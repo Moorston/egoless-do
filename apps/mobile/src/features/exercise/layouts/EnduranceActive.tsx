@@ -7,6 +7,7 @@ import type { ExerciseLayoutProps } from './types';
 import ExerciseTopBar from '../shared/ExerciseTopBar';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
 import MusicMiniBar from '../../music/components/MusicMiniBar';
+import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function EnduranceActive(props: ExerciseLayoutProps) {
   const {
@@ -35,12 +36,12 @@ export default function EnduranceActive(props: ExerciseLayoutProps) {
         onToggleSoundPicker={onToggleSoundPicker} onSelectSound={onSelectSound}
       />
 
-      {/* Music mini bar */}
-      <MusicMiniBar
-        currentTrack={musicTrack} isPlaying={musicIsPlaying} loop={musicLoop}
-        onTogglePlay={onMusicTogglePlay} onToggleLoop={onMusicToggleLoop}
-        onPressTrackName={onMusicPressTrackName} primaryColor={COLORS.ORANGE}
-      />
+      {/* Music bar — meditation style */}
+      <View style={{ paddingHorizontal: 16 }}>
+        <MeditationMusicBar
+          track={musicTrack} isActive isPlaying={musicIsPlaying} primaryColor={COLORS.ORANGE}
+        />
+      </View>
 
       {/* Zone 2: Main — 1+2+2 data grid */}
       <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 28 }}>

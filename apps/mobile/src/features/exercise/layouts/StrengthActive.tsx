@@ -9,6 +9,7 @@ import RestOverlay from '../shared/RestOverlay';
 import EmbeddedRest from '../shared/EmbeddedRest';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
 import MusicMiniBar from '../../music/components/MusicMiniBar';
+import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function StrengthActive(props: ExerciseLayoutProps) {
   const {
@@ -54,12 +55,12 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
         }
       />
 
-      {/* Music mini bar */}
-      <MusicMiniBar
-        currentTrack={musicTrack} isPlaying={musicIsPlaying} loop={musicLoop}
-        onTogglePlay={onMusicTogglePlay} onToggleLoop={onMusicToggleLoop}
-        onPressTrackName={onMusicPressTrackName} primaryColor={COLORS.RED}
-      />
+      {/* Music bar — meditation style */}
+      <View style={{ paddingHorizontal: 16 }}>
+        <MeditationMusicBar
+          track={musicTrack} isActive isPlaying={musicIsPlaying} primaryColor={COLORS.RED}
+        />
+      </View>
 
       {/* Zone 2: Main interaction */}
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 28 }}>

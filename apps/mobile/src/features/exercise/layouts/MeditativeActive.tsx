@@ -8,6 +8,7 @@ import ExerciseTopBar from '../shared/ExerciseTopBar';
 import RestOverlay from '../shared/RestOverlay';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
 import MusicMiniBar from '../../music/components/MusicMiniBar';
+import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function MeditativeActive(props: ExerciseLayoutProps) {
   const {
@@ -39,12 +40,12 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
         onToggleSoundPicker={onToggleSoundPicker} onSelectSound={onSelectSound}
       />
 
-      {/* Music mini bar */}
-      <MusicMiniBar
-        currentTrack={musicTrack} isPlaying={musicIsPlaying} loop={musicLoop}
-        onTogglePlay={onMusicTogglePlay} onToggleLoop={onMusicToggleLoop}
-        onPressTrackName={onMusicPressTrackName} primaryColor={COLORS.GREEN}
-      />
+      {/* Music bar — meditation style */}
+      <View style={{ paddingHorizontal: 16 }}>
+        <MeditationMusicBar
+          track={musicTrack} isActive isPlaying={musicIsPlaying} primaryColor={COLORS.GREEN}
+        />
+      </View>
 
       {/* Zone 2: Main — breathing guide */}
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 28 }}>
