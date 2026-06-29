@@ -16,7 +16,8 @@ function getUserId(e) { var info = e.requestInfo(); return info.auth ? info.auth
 function getDataEpoch(rec) {
   var d = rec.get("data");
   if (typeof d === 'string') { try { d = JSON.parse(d); } catch(e) { d = null; } }
-  return (d && d.login_epoch) || 0;
+  if (d && typeof d === 'object' && !Array.isArray(d)) return d.login_epoch || 0;
+  return 0;
 }
 
 // ── Epoch cache (5s TTL, avoids DB read on every request) ────────
@@ -275,16 +276,26 @@ function processChangesBulk(changes, userId, tokenEpoch) {
             delRecs = txApp.findRecordsByFilter(coll, delFilter, "", 10);
           }
           for (var j = 0; j < delRecs.length; j++) {
-            var curData = delRecs[j].get("data"); var curObj = (typeof curData === 'string' ? JSON.parse(curData) : (curData || {}));
+            var curData = delRecs[j].get("data");
+            var curObj = {};
+            if (typeof curData === 'string') { try { curObj = JSON.parse(curData); } catch(pe) { curObj = {}; } }
+            else if (curData && typeof curData === 'object' && !Array.isArray(curData)) {
+              for (var ck in curData) { curObj[ck] = curData[ck]; }
+            }
             curObj.deleted = true; curObj.updatedAt = Date.now();
-            delRecs[j].set("data", curObj);
+            delRecs[j].set("data", JSON.stringify(curObj));
             txApp.save(delRecs[j]);
           }
           applied.push({ entity: entity, entityId: entityId, operation: operation });
         } else {
           if (pbRec) {
             if (payload && payload.updatedAt) {
-              var existingData = typeof pbRec.get("data") === 'string' ? JSON.parse(pbRec.get("data")) : (pbRec.get("data") || {});
+              var rawData = pbRec.get("data");
+              var existingData = {};
+              if (typeof rawData === 'string') { try { existingData = JSON.parse(rawData); } catch(pe) {} }
+              else if (rawData && typeof rawData === 'object' && !Array.isArray(rawData)) {
+                for (var ek in rawData) { existingData[ek] = rawData[ek]; }
+              }
               var serverUpdatedAt = existingData.updatedAt || 0;
               var serverWins = (existingData.deleted || payload.deleted)
                 ? (serverUpdatedAt > payload.updatedAt || (serverUpdatedAt === payload.updatedAt && existingData.deleted && !payload.deleted))
@@ -298,7 +309,12 @@ function processChangesBulk(changes, userId, tokenEpoch) {
             pbRec = new Record(colObj);
             pbRec.set(idField, entityId); pbRec.set("user_id", userId);
           }
-          var existingObj = typeof pbRec.get("data") === 'string' ? JSON.parse(pbRec.get("data")) : (pbRec.get("data") || {});
+          var rawExisting = pbRec.get("data");
+          var existingObj = {};
+          if (typeof rawExisting === 'string') { try { existingObj = JSON.parse(rawExisting); } catch(pe) {} }
+          else if (rawExisting && typeof rawExisting === 'object' && !Array.isArray(rawExisting)) {
+            for (var eo in rawExisting) { existingObj[eo] = rawExisting[eo]; }
+          }
           if (payload && payload._clientTs === undefined) payload._clientTs = payload.updatedAt;
 
           // Field-level merge: only apply changedFields if provided
@@ -309,9 +325,9 @@ function processChangesBulk(changes, userId, tokenEpoch) {
               existingObj[fk] = payload[fk];
             }
             existingObj.updatedAt = Date.now();
-            pbRec.set("data", existingObj);
+            pbRec.set("data", JSON.stringify(existingObj));
           } else {
-            pbRec.set("data", mergePayload(existingObj, payload));
+            pbRec.set("data", JSON.stringify(mergePayload(existingObj, payload)));
           }
           txApp.save(pbRec);
           applied.push({ entity: entity, entityId: entityId, operation: operation });
