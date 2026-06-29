@@ -135,11 +135,35 @@ export class WriteBatcher {
       this._onFlushed?.();
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
+      let allFallbacksOk = true;
       for (const w of writes) {
         const config = ENTITY_TABLE_MAP[w.entity];
         if (!config) continue;
         try {
           const db2 = await openDatabase();
+          // Fallback: write to both data table AND sync_queue individually
+          if (w.operation === 'delete') {
+            await db2.runAsync(
+              `UPDATE ${config.table} SET deleted = 1, synced = 0, updated_at = ? WHERE ${config.pk} = ?`,
+              [Date.now(), w.id],
+            );
+          } else {
+            const row = config.toRow(w.data);
+            const cols = Object.keys(row);
+            const vals = Object.values(row) as (string | number | null)[];
+            const setClause = cols.map(c => `${c}=?`).join(',');
+            const placeholders = cols.map(() => '?').join(',');
+            const r = await db2.runAsync(
+              `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
+              [...vals, w.id],
+            );
+            if (r.changes === 0) {
+              await db2.runAsync(
+                `INSERT INTO ${config.table} (${cols.join(',')},synced) VALUES (${placeholders},0)`,
+                vals,
+              );
+            }
+          }
           await db2.runAsync(
             'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
             [w.entity, w.id],
@@ -149,9 +173,21 @@ export class WriteBatcher {
             [w.entity, w.id, w.operation, JSON.stringify(w.data), Date.now(), 'pending'],
           );
         } catch (reErr) {
-          log.error(reErr, { msg: 'fallback enqueue failed' });
+          log.error(reErr, { msg: 'fallback write failed' });
+          allFallbacksOk = false;
         }
       }
+      // If the fallback also failed, re-add writes to _pendingWrites for retry
+      if (!allFallbacksOk) {
+        for (const w of writes) {
+          const key = `${w.entity}:${w.id}`;
+          if (!this._pendingWrites.has(key)) {
+            this._pendingWrites.set(key, w);
+          }
+        }
+      }
+      // Trigger sync callback even in fallback path (some writes may have succeeded)
+      this._onFlushed?.();
     }
   }
 }
