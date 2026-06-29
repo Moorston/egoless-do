@@ -179,6 +179,7 @@ export const useAppStore = create<MobileStore>()(
         healthSyncEnabled: s.healthSyncEnabled,
         ignoredRecPatterns: s.ignoredRecPatterns,
         recycleBin: s.recycleBin, // Not in SQLite — persist in AsyncStorage for recovery
+        userProfile: s.userProfile, // Persist profile (nickname/avatar/weight/water) across restarts
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

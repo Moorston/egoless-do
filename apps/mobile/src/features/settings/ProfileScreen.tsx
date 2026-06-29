@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, Image,
 } from 'react-native';
@@ -31,6 +31,22 @@ export default function ProfileScreen() {
   const [editWeight, setEditWeight] = useState(store.userProfile.weight != null ? String(store.userProfile.weight) : '');
   const [editWaterGoal, setEditWaterGoal] = useState(String(store.waterGoal));
   const [clearing, setClearing] = useState(false);
+  const weightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const weightRef = useRef(editWeight);
+  const waterRef = useRef(editWaterGoal);
+
+  // Flush pending saves on unmount
+  useEffect(() => () => {
+    if (weightTimer.current) { clearTimeout(weightTimer.current); }
+    if (waterTimer.current) { clearTimeout(waterTimer.current); }
+    // Final save with latest values
+    const w = weightRef.current;
+    const wn = w ? parseFloat(w) : undefined;
+    store.updateUserProfile({ weight: wn });
+    const wg = parseInt(waterRef.current, 10);
+    if (!isNaN(wg) && wg > 0) store.setWaterGoal(wg);
+  }, []);
 
   const weightUnit = useAppStore(s => s.weightUnit);
   const setWeightUnit = useAppStore(s => s.setWeightUnit);
@@ -84,10 +100,32 @@ export default function ProfileScreen() {
     store.updateUserProfile({ weight: num });
   };
 
+  const debouncedSaveWeight = useCallback((val: string) => {
+    setEditWeight(val);
+    weightRef.current = val;
+    if (weightTimer.current) clearTimeout(weightTimer.current);
+    weightTimer.current = setTimeout(() => {
+      weightTimer.current = null;
+      const num = val ? parseFloat(val) : undefined;
+      store.updateUserProfile({ weight: num });
+    }, 800);
+  }, []);
+
   const saveWaterGoal = () => {
     const num = parseInt(editWaterGoal, 10);
     if (!isNaN(num) && num > 0) store.setWaterGoal(num);
   };
+
+  const debouncedSaveWaterGoal = useCallback((val: string) => {
+    setEditWaterGoal(val);
+    waterRef.current = val;
+    if (waterTimer.current) clearTimeout(waterTimer.current);
+    waterTimer.current = setTimeout(() => {
+      waterTimer.current = null;
+      const num = parseInt(val, 10);
+      if (!isNaN(num) && num > 0) store.setWaterGoal(num);
+    }, 800);
+  }, []);
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -190,8 +228,7 @@ export default function ProfileScreen() {
             <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileWeight')}</Text>
             <TextInput
               value={editWeight}
-              onChangeText={setEditWeight}
-              onBlur={saveWeight}
+              onChangeText={debouncedSaveWeight}
               placeholder="—"
               placeholderTextColor={TH.sub}
               keyboardType="numeric"
@@ -222,8 +259,7 @@ export default function ProfileScreen() {
             <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileWaterGoal')}</Text>
             <TextInput
               value={editWaterGoal}
-              onChangeText={setEditWaterGoal}
-              onBlur={saveWaterGoal}
+              onChangeText={debouncedSaveWaterGoal}
               keyboardType="numeric"
               style={{
                 flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
