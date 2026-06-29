@@ -66,21 +66,16 @@ export function createMobileUiSlice(
     },
 
     async clearLocalData() {
-      // Step 1: Push all pending sync items to server
-      if (onRunSync) {
-        await onRunSync();
-      }
-
-      // Step 2: Hard-delete all SQLite tables
+      // Step 1: Hard-delete all SQLite tables (skip sync push — data is being cleared anyway)
       if (onResetSyncState) {
         await onResetSyncState();
       }
 
-      // Step 3: Reset store to defaults (preserve auth, theme, language)
+      // Step 2: Reset store to defaults (preserve auth, theme, language)
       const { auth, theme, language } = get();
       set(createResetDataPatch(auth, theme, language) as Partial<FullStore>);
 
-      // Step 4: Pull server data to restore
+      // Step 3: Pull server data to restore
       await get().pullServerData();
     },
   });
