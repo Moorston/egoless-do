@@ -294,6 +294,7 @@ export const zh: I18nKeys = {
   settingsClearConfirm:'将清除本地数据，服务器数据不受影响。确认清除？',
   clearDataLoading:'正在清除...', clearDataSuccess:'本地数据已清除', clearDataPushFail:'数据同步失败，请检查网络后重试',
   settingsFreePlan:'免费版', settingsDefaultName:'心流行者',
+  settingsEditProfile:'编辑资料', settingsNickname:'昵称',
   settingsLogin:'登录 / 注册', settingsLoginDesc:'登录后可同步数据到云端',
   settingsFooter:'Egoless Do · 心流纪 v1.0.0 · 离线优先 · 隐私优先',
   settingsSetReminder:'设置提醒时间', settingsSelectTheme:'选择主题',

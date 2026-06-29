@@ -256,6 +256,7 @@ export interface I18nKeys {
   settingsClearDataDesc: string; settingsClearConfirm: string;
   clearDataLoading: string; clearDataSuccess: string; clearDataPushFail: string;
   settingsFreePlan: string; settingsDefaultName: string;
+  settingsEditProfile: string; settingsNickname: string;
   settingsLogin: string; settingsLoginDesc: string;
   settingsFooter: string; settingsSetReminder: string;
   settingsSelectTheme: string; settingsSelectLang: string;

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import {
-  FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON, MS_PER_DAY,
+  FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON, MS_PER_DAY, activeOnly,
   computeLocalInsights, formatDateShort,
 } from '@egoless-do/core';
 import type { HotTag, MindReflection } from '@egoless-do/core';
@@ -26,7 +26,7 @@ export default function InsightPanel({
   const T = useT();
 
   const { filtered, spanDays } = useMemo(() => {
-    const active = reflections.filter(r => !r.deleted);
+    const active = activeOnly(reflections);
     if (active.length === 0) return { filtered: [], spanDays: 15 };
     const sorted = [...active].sort((a, b) => b.timestamp - a.timestamp);
     const latest = sorted[0].timestamp;
