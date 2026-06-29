@@ -237,32 +237,22 @@ export async function getAllSyncProgress(): Promise<SyncProgressRow[]> {
 export async function updateSyncProgress(entity: string, fields: Partial<Omit<SyncProgressRow, 'entity'>>): Promise<void> {
   const db = await openDatabase();
   const allowedFields = new Set(['phase', 'status', 'pulled_count', 'total_count', 'last_page', 'last_error', 'retry_count', 'next_retry_at']);
-  const existing = await getSyncProgress(entity);
-  if (existing) {
-    const sets: string[] = [];
-    const values: (string | number)[] = [];
-    for (const [key, value] of Object.entries(fields)) {
-      if (value !== undefined && allowedFields.has(key)) {
-        sets.push(`${key} = ?`);
-        values.push(value as string | number);
-      }
+  const cols = ['entity', 'updated_at'];
+  const vals: (string | number)[] = [entity, Date.now()];
+  for (const [key, value] of Object.entries(fields)) {
+    if (value !== undefined && allowedFields.has(key)) {
+      cols.push(key);
+      vals.push(value as string | number);
     }
-    sets.push('updated_at = ?');
-    values.push(Date.now());
-    values.push(entity);
-    await db.runAsync(`UPDATE sync_progress SET ${sets.join(',')} WHERE entity = ?`, values);
-  } else {
-    const cols = ['entity', 'updated_at'];
-    const vals: (string | number)[] = [entity, Date.now()];
-    for (const [key, value] of Object.entries(fields)) {
-      if (value !== undefined && allowedFields.has(key)) {
-        cols.push(key);
-        vals.push(value as string | number);
-      }
-    }
-    const placeholders = cols.map(() => '?').join(',');
-    await db.runAsync(`INSERT INTO sync_progress (${cols.join(',')}) VALUES (${placeholders})`, vals);
   }
+  const placeholders = cols.map(() => '?').join(',');
+  const updateCols = cols.filter(c => c !== 'entity');
+  const updateSets = updateCols.map(c => `${c} = excluded.${c}`).join(', ');
+  await db.runAsync(
+    `INSERT INTO sync_progress (${cols.join(',')}) VALUES (${placeholders})
+     ON CONFLICT(entity) DO UPDATE SET ${updateSets}`,
+    vals,
+  );
 }
 
 /** Reset all sync progress (called before a new initial sync). */
