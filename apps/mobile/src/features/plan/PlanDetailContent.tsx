@@ -1,9 +1,9 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, Modal } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemProgress, computeExpectedDays, dateStr } from '@egoless-do/core';
-import type { Plan, PlanItem, PlanItemCheckin, CheckinFrequency } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemCheckinStats, dateStr, MS_PER_DAY } from '@egoless-do/core';
+import type { Plan, PlanItem, PlanItemCheckin, CheckinFrequency, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
 import PlanCountdown from '../../components/PlanCountdown';
@@ -87,19 +87,24 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const items = useMemo(() => getPlanItems(store.planItems ?? [], planId), [store.planItems, planId]);
   const checkins = useMemo(() => (store.planItemCheckins ?? EMPTY_CHECKINS).filter(c => !c.deleted), [store.planItemCheckins]);
 
-  // Pre-compute progress for all items
+  // Pre-compute progress for all items using live checkin data
   const itemProgressMap = useMemo(() => {
     const map = new Map<string, { doneCount: number; expectedDays: number; progress: number }>();
     for (const item of items) {
-      const doneCount = item.totalCheckinDays;
-      const totalExpectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
-      const progress = totalExpectedDays > 0 ? Math.min(Math.round((doneCount / totalExpectedDays) * 100), 100) : 0;
-      map.set(item.id, { doneCount, expectedDays: totalExpectedDays, progress });
+      map.set(item.id, computeItemCheckinStats(item, checkins, today));
     }
     return map;
-  }, [items, today]);
+  }, [items, checkins, today]);
 
-  // 计划进度基于时间（已过天数/总天数），任务进度单独计算
+  // Plan-level progress: time-based (elapsed / total days)
+  const planProgress = useMemo(() => {
+    if (!plan) return 0;
+    const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1;
+    if (totalDays <= 0) return 0;
+    const clampedToday = today > plan.endDate ? plan.endDate : today;
+    const elapsed = Math.max(0, Math.round((new Date(clampedToday).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1);
+    return Math.min(Math.round((elapsed / totalDays) * 100), 100);
+  }, [plan?.startDate, plan?.endDate, today]);
 
   const [tab, setTab] = useState<'detail' | 'todo'>('detail');
 
@@ -115,6 +120,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
   // 关联内容折叠状态，默认折叠
   const [showRelated, setShowRelated] = useState(false);
+
+  // 完成计划确认弹窗状态
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [completeReason, setCompleteReason] = useState('');
+  const [incompleteCount, setIncompleteCount] = useState(0);
 
   // 热力图折叠状态，默认折叠
   const [showHeatmap, setShowHeatmap] = useState(false);
@@ -191,9 +201,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     );
   }
 
-  const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1;
-  const elapsed = Math.max(0, Math.round((new Date(today > plan.endDate ? plan.endDate : today).getTime() - new Date(plan.startDate).getTime()) / 86400000) + 1);
-  const progress = totalDays > 0 ? Math.min(Math.round((elapsed / totalDays) * 100), 100) : 0;
+  const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1;
+  const elapsed = Math.max(0, Math.round((new Date(today > plan.endDate ? plan.endDate : today).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1);
   const planDelayed = isPlanDelayed(plan, today);
   const deletable = canDeletePlan(plan.status);
   const editable = canEditPlan(plan.status);
@@ -249,10 +258,31 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   };
 
   const handleComplete = () => {
-    Alert.alert(T('planComplete'), T('planCompleteConfirm'), [
-      { text: T('commonCancel'), style: 'cancel' },
-      { text: T('commonConfirm'), onPress: () => store.completePlan(plan.id) },
-    ]);
+    // Check if there are incomplete items
+    const incomplete = items.filter(item => {
+      const prog = itemProgressMap.get(item.id);
+      return !prog || prog.progress < 100;
+    });
+
+    if (incomplete.length === 0) {
+      // All items complete, complete directly
+      store.completePlan(plan.id);
+      return;
+    }
+
+    // Show reason dialog for incomplete tasks
+    setIncompleteCount(incomplete.length);
+    setCompleteReason('');
+    setShowCompleteModal(true);
+  };
+
+  const handleConfirmComplete = () => {
+    if (!completeReason.trim()) {
+      Alert.alert(T('planCompleteReasonRequired'), T('planCompleteReasonRequiredDetail'));
+      return;
+    }
+    setShowCompleteModal(false);
+    store.completePlan(plan.id, completeReason.trim());
   };
 
   const handleResume = () => {
@@ -273,6 +303,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   };
 
   return (
+    <>
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
@@ -321,7 +352,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
             {/* Progress ring + stats */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 12 }}>
-              <ProgressRing progress={progress} color={P} />
+              <ProgressRing progress={planProgress} color={P} />
               <View style={{ flex: 1, gap: 6 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                   <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planStartDate')}</Text>
@@ -340,7 +371,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
             {/* Linear progress bar */}
             <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
-              <View style={{ height: 6, width: `${progress}%`, backgroundColor: P, borderRadius: 3 }} />
+              <View style={{ height: 6, width: `${planProgress}%`, backgroundColor: P, borderRadius: 3 }} />
             </View>
             
             {/* Countdown */}
@@ -369,7 +400,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</Text>
             ) : (
               sortedItems.map((item, idx) => {
-                const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, progress: 0 };
+                const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, expectedDays: 0, progress: 0 };
                 const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
                 const effectiveStatus = getItemEffectiveStatus(item);
                 return (
@@ -851,5 +882,51 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       )}
     </ScrollView>
     </KeyboardAvoidingView>
+
+    {/* Complete Plan with Reason Modal */}
+    <Modal
+      visible={showCompleteModal}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setShowCompleteModal(false)}
+    >
+      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, width: '100%', maxWidth: 400 }}>
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>
+            {T('planCompleteWithIncomplete')}
+          </Text>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16 }}>
+            {T('planCompleteWithIncompleteDetail').replace('{count}', String(incompleteCount))}
+          </Text>
+          <TextInput
+            style={{
+              borderWidth: 1, borderColor: TH.border, borderRadius: 12, padding: 12,
+              fontSize: FONT_BODY, color: TH.text, backgroundColor: TH.bg,
+              minHeight: 80, textAlignVertical: 'top',
+            }}
+            placeholder={T('planCompleteReasonPlaceholder')}
+            placeholderTextColor={TH.sub}
+            value={completeReason}
+            onChangeText={setCompleteReason}
+            multiline
+          />
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
+            <TouchableOpacity
+              onPress={() => setShowCompleteModal(false)}
+              style={{ flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}
+            >
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('commonCancel')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleConfirmComplete}
+              style={{ flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}
+            >
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('planCompleteConfirmBtn')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+    </>
   );
 }

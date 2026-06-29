@@ -45,6 +45,9 @@ export default function PlanCreateScreen() {
   const nav = useRootNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'PlanCreate'>>();
   const planId = route.params?.planId as string | undefined;
+  const reflectionId = route.params?.reflectionId as string | undefined;
+
+  const reflection = useMemo(() => reflectionId ? (store.reflections ?? []).find(r => !r.deleted && r.id === reflectionId) : null, [store.reflections, reflectionId]);
 
   const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => !p.deleted && p.id === planId) : null, [store.plans, planId]);
   const existingItems = useMemo(() => planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [], [store.planItems, planId]);
@@ -54,15 +57,33 @@ export default function PlanCreateScreen() {
   const [slogan, setSlogan] = useState(existingPlan?.slogan ?? '');
   const [startDate, setStartDate] = useState(existingPlan?.startDate ?? '');
   const [endDate, setEndDate] = useState(existingPlan?.endDate ?? '');
-  const [items, setItems] = useState<ItemForm[]>(() =>
-    existingItems.map(i => ({
+  const [items, setItems] = useState<ItemForm[]>(() => {
+    const baseItems = existingItems.map(i => ({
       id: i.id, name: i.name, description: i.description,
       startDate: i.startDate, endDate: i.endDate, contentUrl: i.contentUrl,
       link: i.link, priority: i.priority ?? 'medium', targetMetric: i.targetMetric ?? '', linkConfig: i.linkConfig,
       frequency: i.frequency, tags: i.tags,
-    }))
-  );
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => new Set(existingItems.map(i => i.id)));
+    }));
+    if (reflection) {
+      const lines = (reflection.content ?? '').split('\n').filter((l: string) => l.trim());
+      const defaultName = lines[0]?.slice(0, 50) || reflection.content?.slice(0, 50) || '';
+      const newItem = createNewItem(existingPlan?.startDate ?? '', existingPlan?.endDate ?? '');
+      baseItems.push({
+        ...newItem,
+        name: defaultName,
+        description: reflection.content ?? '',
+      });
+    }
+    return baseItems;
+  });
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
+    const baseExpanded = new Set(existingItems.map(i => i.id));
+    if (reflection) {
+      const newItemId = items[items.length - 1]?.id;
+      if (newItemId) baseExpanded.add(newItemId);
+    }
+    return baseExpanded;
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [datePicker, setDatePicker] = useState<{ field: string; value: string; min?: string; max?: string } | null>(null);
   const [showRangePicker, setShowRangePicker] = useState(false);
@@ -289,9 +310,11 @@ export default function PlanCreateScreen() {
                   {item.name || `${T('planItemName')} ${idx + 1}`}
                 </Text>
                 {(() => { const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium')); return p ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: p.color }} /> : null; })()}
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
-                  {item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
-                </Text>
+                {item.link !== 'manual' && (
+                  <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
+                    {T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
+                  </Text>
+                )}
                 {item.tags && item.tags.length > 0 && item.tags.map((tag, ti) => (
                   <View key={ti} style={{ paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}>
                     <Text style={{ fontSize: FONT_BADGE, color: P }}>{tag}</Text>

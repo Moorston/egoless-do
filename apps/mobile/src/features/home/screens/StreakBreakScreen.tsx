@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -11,7 +11,6 @@ import {
   FONT_STAT_SECTION, FONT_SUB, FONT_BODY, FONT_BADGE, FONT_TINY,
 } from '@egoless-do/core';
 import { PartyPopper, ArrowRight, Flame, Heart, Clock, Sprout, Shield } from 'lucide-react-native';
-import CheckinModal from '../components/CheckinModal';
 
 export default function StreakBreakScreen() {
   const TH = useTheme();
@@ -19,8 +18,6 @@ export default function StreakBreakScreen() {
   const P = TH.primary;
   const store = useAppStore();
   const nav = useRootNavigation();
-
-  const [showCheckin, setShowCheckin] = useState(false);
 
   const history = (store.checkinHistory ?? []).filter(c => !c.deleted);
   const graceHistory = store.graceHistory ?? [];
@@ -41,12 +38,10 @@ export default function StreakBreakScreen() {
     [breaks, history, graceHistory, quota],
   );
 
-  const handleCheckin = useCallback(() => setShowCheckin(true), []);
-  const handleCheckinClose = useCallback(() => setShowCheckin(false), []);
-
-  if (showCheckin) {
-    return <CheckinModal onClose={handleCheckinClose} />;
-  }
+  const handleCheckin = useCallback(() => {
+    // Go back to main tabs and switch to Home tab
+    nav.goBack();
+  }, [nav]);
 
   const weekdayLabels = ['一', '二', '三', '四', '五', '六', '日'];
   const monthLabels = insight.monthlyTrend.map(t => {

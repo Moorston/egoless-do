@@ -67,8 +67,8 @@ describe('calculateReviewData', () => {
   ];
 
   const mockHabits: Habit[] = [
-    { id: 'h1', name: '早睡', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 10, streak: 3, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-08', '2026-06-09', '2026-06-11'], pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7, alarmMinute: 0, updatedAt: Date.now(), deleted: false },
-    { id: 'h2', name: '冥想', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 5, streak: 1, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-11'], pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7, alarmMinute: 0, updatedAt: Date.now(), deleted: false },
+    { id: 'h1', name: '早睡', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 10, streak: 3, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-08', '2026-06-09', '2026-06-11'], pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7, alarmMinute: 0, link: 'none', updatedAt: Date.now(), deleted: false },
+    { id: 'h2', name: '冥想', startDate: '2026-06-01', targetDays: 21, goal: '', insight: '', createTag: false, doneDays: 5, streak: 1, interrupted: 0, status: 'inProgress', checkedDates: ['2026-06-11'], pauseReason: '', abandonReason: '', alarmEnabled: false, alarmHour: 7, alarmMinute: 0, link: 'none', updatedAt: Date.now(), deleted: false },
   ];
 
   const mockPlans: Plan[] = [

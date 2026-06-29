@@ -17,6 +17,7 @@ export default function PlanDetailScreen() {
   const nav = useRootNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'PlanDetail'>>();
   const planId = route.params?.planId as string;
+  const addReflectionId = route.params?.addReflectionId as string | undefined;
   const today = dateStr();
 
   const plan = useMemo(() => (store.plans ?? []).find(p => !p.deleted && p.id === planId), [store.plans, planId]);
@@ -49,7 +50,7 @@ export default function PlanDetailScreen() {
         })()}
       </View>
 
-      <PlanDetailContent planId={planId} onClose={() => nav.goBack()} />
+      <PlanDetailContent planId={planId} onClose={() => nav.goBack()} addReflectionId={addReflectionId} />
     </SafeAreaView>
   );
 }

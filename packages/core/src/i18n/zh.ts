@@ -335,6 +335,12 @@ export const zh: I18nKeys = {
   planDeleteItemConfirm:'确定删除此任务吗？',
   planDeleteConfirm:'确定删除此计划吗？删除后将进入回收箱。',
   planCompleteConfirm:'确定完成此计划吗？',
+  planCompleteWithIncomplete:'完成计划确认',
+  planCompleteWithIncompleteDetail:'当前有 {count} 个任务未完成，请填写完成原因：',
+  planCompleteReasonPlaceholder:'请填写完成原因...',
+  planCompleteReasonRequired:'需要填写原因',
+  planCompleteReasonRequiredDetail:'有未完成任务时，必须填写完成原因才能继续。',
+  planCompleteConfirmBtn:'确认完成',
   planRelationMap:'关系全景图', planRelationMapDesc:'查看感念、习惯的关联关系',
   planLinkedContent:'关联内容', planRelatedReflections:'相关感念',
   planRelatedTrails:'相关脉络', planTrailReflectionCount:'条感念',
@@ -686,4 +692,83 @@ export const zh: I18nKeys = {
 
   // Global Pulse
   loading:'加载中...', refreshing:'刷新中...', pullToRefresh:'下拉刷新',
+
+  // Reflection Detail Actions
+  reflLinkedTrail:'关联脉络', reflUnlinkTask:'解绑任务', reflCreateTask:'创建任务',
+
+  // Navigation Tab Titles
+  navTabHome:'首页', navTabExercise:'锻炼', navTabMeditation:'冥想',
+  navTabFasting:'禁食', navTabSettings:'设置', navTabPlan:'计划',
+  navTabReflections:'感念', navTabHabits:'习惯',
+
+  // Auth
+  authEmailPlaceholder:'邮箱', authPasswordPlaceholder:'密码', authLoginBtn:'登录',
+  authLoginLoading:'登录中...', authForgotPassword:'忘记密码？',
+  authEmailNotRegistered:'该邮箱未注册，请先注册', authFillEmailPassword:'请填写邮箱和密码',
+  authNicknamePlaceholder:'昵称',
+  authVerifyCodePlaceholder:'邮箱验证码', authConfirmPasswordPlaceholder:'确认密码',
+  authRegisterBtn:'注册', authRegisterLoading:'注册中...',
+  authAlreadyRegistered:'已注册', authSendCode:'获取验证码',
+  authCheckFailed:'检查失败', authInvalidEmailAddr:'请输入有效的邮箱地址',
+  authSendFailed:'发送失败', authFillAllFields:'请填写所有字段',
+  authPasswordMismatch:'两次密码不一致',
+  authVerifyEmail:'验证你的邮箱', authSetNewPassword:'设置新密码',
+  authNewPasswordPlaceholder:'新密码（8位以上，含字母+数字+符号）',
+  authConfirmNewPasswordPlaceholder:'确认新密码', authNextStep:'下一步',
+  authResetting:'重置中...', authResetPassword:'重置密码', authBackToLogin:'返回登录',
+  authEmailNotRegisteredShort:'该邮箱未注册',
+  authResetSuccess:'密码重置成功，正在跳转登录...', authResetFailed:'密码重置失败',
+  authEnterVerifyCode:'请输入验证码',
+
+  // Habit Detail
+  habitNotFound:'习惯不存在',
+  habitTotalDays:'总完成天数',
+  habitInfo:'习惯信息', habitStartDate:'开始日期', habitTarget:'目标', habitMyVision:'我的愿景',
+  habitLinked:'关联', habitLinkedFasting:'禁食', habitLinkedExercise:'锻炼',
+  habitLinkedMeditation:'冥想', habitDailyReminder:'每日提醒', habitTapToModify:'· 点击修改',
+  habitCheckinCalendar:'打卡日历', habitWeekdaySun:'日', habitWeekdayMon:'一',
+  habitWeekdayTue:'二', habitWeekdayWed:'三', habitWeekdayThu:'四',
+  habitWeekdayFri:'五', habitWeekdaySat:'六', habitCheckedIn:'已打卡',
+  habitRelatedReflections:'相关感念', habitCollapse:'收起',
+  habitExpandMore:'展开更多', habitRelationMap:'关系全景图',
+  habitRelationMapDesc:'查看感念、计划的关联关系',
+
+  // Review Screen
+  reviewMoodGreat:'很好', reviewMoodOkay:'还行', reviewMoodTough:'有点难',
+  reviewMoodHard:'很艰难', reviewWeekJourney:'本周情绪旅程',
+  reviewReflectionCount:'这周你记录了 {count} 条感念', reviewMoodDistribution:'本周情绪分布：',
+  reviewMoodQuestion:'你觉得这周整体感觉如何？', reviewKeyShift:'关键转变',
+  reviewKeyShiftQuestion:'回顾这周，有没有什么特别的时刻或转变？',
+  reviewKeyShiftInsight:'是什么帮到了你？有什么领悟吗？',
+  reviewCarryForward:'带到下周', reviewCarryForwardDesc:'把这周的领悟变成行动',
+  reviewCarryForwardQuestion:'有什么想法或策略，你想在下周继续实践？',
+  reviewThisWeek:'本周回顾', reviewFinish:'完成回顾', reviewNextStep:'下一步',
+  reviewEnterReflection:'输入你的反思...', reviewEnterPlan:'输入你的计划...',
+
+  // AI Settings
+  aiHint:'提示', aiFillRequired:'请填写必填项', aiDeleteModel:'删除模型',
+  aiDeleteConfirm:'确定要删除这个模型配置吗？', aiCancel:'取消', aiDelete:'删除',
+  aiConfigureApiKey:'请配置API Key', aiDefault:'默认', aiLocal:'本地', aiCloud:'云端',
+  aiConfigure:'配置', aiTesting:'测试中...', aiTest:'测试', aiSetDefault:'设为默认',
+  aiConnectionSuccess:'连接成功', aiConnectionFailed:'失败',
+  aiSettings:'AI设置', aiMode:'AI模式', aiModeLocal:'仅本地',
+  aiModeLocalDesc:'离线可用，基础功能', aiModeCloud:'仅云端',
+  aiModeCloudDesc:'需要网络，功能强大', aiModeHybrid:'混合模式',
+  aiModeHybridDesc:'推荐，自动选择最佳', aiConfiguredModels:'已配置模型',
+  aiAdd:'添加', aiNoModels:'还没有配置任何模型',
+  aiNoModelsHint:'点击上方"添加"按钮开始配置', aiQuickSetup:'快速配置',
+  aiQuickSetupDesc:'选择一个提供商快速添加', aiRecommendedModels:'推荐模型',
+  aiEditModel:'编辑模型', aiAddModel:'添加模型', aiQuickSelect:'快速选择',
+  aiName:'名称', aiNamePlaceholder:'例如: 小米 MIMO', aiApiAddress:'API地址',
+  aiApiAddressPlaceholder:'例如: https://api.mimo.ai/v1', aiRecommendedAddress:'推荐地址',
+  aiUse:'使用', aiModelName:'模型名称', aiModelNamePlaceholder:'例如: MIMO-V2-Flash',
+  aiApiKey:'API Key', aiApiKeyPlaceholder:'本地模型可留空', aiMaxToken:'最大Token',
+  aiTemperature:'温度', aiSave:'保存',
+
+  // Error Boundary & Time Picker
+  errorTitle:'出现了一些问题', errorUnknown:'未知错误', errorRetry:'重试',
+  timePickerTitle:'选择提醒时间', timePickerHour:'时', timePickerMinute:'分',
+  timePickerCancel:'取消', timePickerConfirm:'确定',
+  reflUnlinkConfirmTitle:'解除关联', reflUnlinkConfirmMessage:'确定解除与计划任务的关联吗？关联的计划任务将被删除。',
+  reflRelationMap:'关系图',
 };

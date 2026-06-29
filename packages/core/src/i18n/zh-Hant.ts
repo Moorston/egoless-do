@@ -335,6 +335,12 @@ export const zhHant: I18nKeys = {
   planDeleteItemConfirm:'確定刪除此任務嗎？',
   planDeleteConfirm:'確定刪除此計劃嗎？刪除後將進入回收箱。',
   planCompleteConfirm:'確定完成此計劃嗎？',
+  planCompleteWithIncomplete:'完成計劃確認',
+  planCompleteWithIncompleteDetail:'當前有 {count} 個任務未完成，請填寫完成原因：',
+  planCompleteReasonPlaceholder:'請填寫完成原因...',
+  planCompleteReasonRequired:'需要填寫原因',
+  planCompleteReasonRequiredDetail:'有未完成任務時，必須填寫完成原因才能繼續。',
+  planCompleteConfirmBtn:'確認完成',
   planRelationMap:'關係全景圖', planRelationMapDesc:'查看感念、習慣的關聯關係',
   planLinkedContent:'關聯內容', planRelatedReflections:'相關感念',
   planRelatedTrails:'相關脈絡', planTrailReflectionCount:'條感念',
@@ -684,4 +690,83 @@ export const zhHant: I18nKeys = {
 
   // Global Pulse
   loading:'載入中...', refreshing:'更新中...', pullToRefresh:'下拉更新',
+
+  // Reflection Detail Actions
+  reflLinkedTrail:'關聯脈絡', reflUnlinkTask:'解綁任務', reflCreateTask:'創建任務',
+
+  // Navigation Tab Titles
+  navTabHome:'首頁', navTabExercise:'鍛鍊', navTabMeditation:'冥想',
+  navTabFasting:'禁食', navTabSettings:'設定', navTabPlan:'計劃',
+  navTabReflections:'感念', navTabHabits:'習慣',
+
+  // Auth
+  authEmailPlaceholder:'郵箱', authPasswordPlaceholder:'密碼', authLoginBtn:'登入',
+  authLoginLoading:'登入中...', authForgotPassword:'忘記密碼？',
+  authEmailNotRegistered:'該郵箱未註冊，請先註冊', authFillEmailPassword:'請填寫郵箱和密碼',
+  authNicknamePlaceholder:'暱稱',
+  authVerifyCodePlaceholder:'郵箱驗證碼', authConfirmPasswordPlaceholder:'確認密碼',
+  authRegisterBtn:'註冊', authRegisterLoading:'註冊中...',
+  authAlreadyRegistered:'已註冊', authSendCode:'獲取驗證碼',
+  authCheckFailed:'檢查失敗', authInvalidEmailAddr:'請輸入有效的郵箱地址',
+  authSendFailed:'發送失敗', authFillAllFields:'請填寫所有欄位',
+  authPasswordMismatch:'兩次密碼不一致',
+  authVerifyEmail:'驗證你的郵箱', authSetNewPassword:'設定新密碼',
+  authNewPasswordPlaceholder:'新密碼（8位以上，含字母+數字+符號）',
+  authConfirmNewPasswordPlaceholder:'確認新密碼', authNextStep:'下一步',
+  authResetting:'重置中...', authResetPassword:'重置密碼', authBackToLogin:'返回登入',
+  authEmailNotRegisteredShort:'該郵箱未註冊',
+  authResetSuccess:'密碼重置成功，正在跳轉登入...', authResetFailed:'密碼重置失敗',
+  authEnterVerifyCode:'請輸入驗證碼',
+
+  // Habit Detail
+  habitNotFound:'習慣不存在',
+  habitTotalDays:'總完成天數',
+  habitInfo:'習慣資訊', habitStartDate:'開始日期', habitTarget:'目標', habitMyVision:'我的願景',
+  habitLinked:'關聯', habitLinkedFasting:'禁食', habitLinkedExercise:'鍛鍊',
+  habitLinkedMeditation:'冥想', habitDailyReminder:'每日提醒', habitTapToModify:'· 點擊修改',
+  habitCheckinCalendar:'打卡日曆', habitWeekdaySun:'日', habitWeekdayMon:'一',
+  habitWeekdayTue:'二', habitWeekdayWed:'三', habitWeekdayThu:'四',
+  habitWeekdayFri:'五', habitWeekdaySat:'六', habitCheckedIn:'已打卡',
+  habitRelatedReflections:'相關感念', habitCollapse:'收起',
+  habitExpandMore:'展開更多', habitRelationMap:'關係全景圖',
+  habitRelationMapDesc:'查看感念、計劃的關聯關係',
+
+  // Review Screen
+  reviewMoodGreat:'很好', reviewMoodOkay:'還行', reviewMoodTough:'有點難',
+  reviewMoodHard:'很艱難', reviewWeekJourney:'本週情緒旅程',
+  reviewReflectionCount:'這週你記錄了 {count} 條感念', reviewMoodDistribution:'本週情緒分佈：',
+  reviewMoodQuestion:'你覺得這週整體感覺如何？', reviewKeyShift:'關鍵轉變',
+  reviewKeyShiftQuestion:'回顧這週，有沒有什麼特別的時刻或轉變？',
+  reviewKeyShiftInsight:'是什麼幫到了你？有什麼領悟嗎？',
+  reviewCarryForward:'帶到下週', reviewCarryForwardDesc:'把這週的領悟變成行動',
+  reviewCarryForwardQuestion:'有什麼想法或策略，你想在下週繼續實踐？',
+  reviewThisWeek:'本週回顧', reviewFinish:'完成回顧', reviewNextStep:'下一步',
+  reviewEnterReflection:'輸入你的反思...', reviewEnterPlan:'輸入你的計劃...',
+
+  // AI Settings
+  aiHint:'提示', aiFillRequired:'請填寫必填項', aiDeleteModel:'刪除模型',
+  aiDeleteConfirm:'確定要刪除這個模型配置嗎？', aiCancel:'取消', aiDelete:'刪除',
+  aiConfigureApiKey:'請配置API Key', aiDefault:'預設', aiLocal:'本地', aiCloud:'雲端',
+  aiConfigure:'配置', aiTesting:'測試中...', aiTest:'測試', aiSetDefault:'設為預設',
+  aiConnectionSuccess:'連線成功', aiConnectionFailed:'失敗',
+  aiSettings:'AI設定', aiMode:'AI模式', aiModeLocal:'僅本地',
+  aiModeLocalDesc:'離線可用，基礎功能', aiModeCloud:'僅雲端',
+  aiModeCloudDesc:'需要網路，功能強大', aiModeHybrid:'混合模式',
+  aiModeHybridDesc:'推薦，自動選擇最佳', aiConfiguredModels:'已配置模型',
+  aiAdd:'新增', aiNoModels:'還沒有配置任何模型',
+  aiNoModelsHint:'點擊上方"新增"按鈕開始配置', aiQuickSetup:'快速配置',
+  aiQuickSetupDesc:'選擇一個提供商快速新增', aiRecommendedModels:'推薦模型',
+  aiEditModel:'編輯模型', aiAddModel:'新增模型', aiQuickSelect:'快速選擇',
+  aiName:'名稱', aiNamePlaceholder:'例如: 小米 MIMO', aiApiAddress:'API地址',
+  aiApiAddressPlaceholder:'例如: https://api.mimo.ai/v1', aiRecommendedAddress:'推薦地址',
+  aiUse:'使用', aiModelName:'模型名稱', aiModelNamePlaceholder:'例如: MIMO-V2-Flash',
+  aiApiKey:'API Key', aiApiKeyPlaceholder:'本地模型可留空', aiMaxToken:'最大Token',
+  aiTemperature:'溫度', aiSave:'儲存',
+
+  // Error Boundary & Time Picker
+  errorTitle:'出現了一些問題', errorUnknown:'未知錯誤', errorRetry:'重試',
+  timePickerTitle:'選擇提醒時間', timePickerHour:'時', timePickerMinute:'分',
+  timePickerCancel:'取消', timePickerConfirm:'確定',
+  reflUnlinkConfirmTitle:'解除關聯', reflUnlinkConfirmMessage:'確定解除與計劃任務的關聯嗎？關聯的計劃任務將被刪除。',
+  reflRelationMap:'關係圖',
 };

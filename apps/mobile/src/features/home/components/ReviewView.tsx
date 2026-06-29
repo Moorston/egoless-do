@@ -2,13 +2,15 @@ import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, computeItemCheckinStats, createLogger } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
+
+const log = createLogger('Home');
 import { useRootNavigation } from '../../../navigation/hooks';
-import { 
+import {
   TrendingUp, TrendingDown, Minus,
   AlertTriangle, CheckCircle, Target,
-  Calendar, BarChart3, RefreshCw
+  Calendar, BarChart3, RefreshCw, ClipboardList
 } from 'lucide-react-native';
 
 interface ReviewViewProps {
@@ -36,7 +38,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
     store.generateReview(period).then(result => {
       if (!cancelled) setReview(result);
     }).catch(error => {
-      if (!cancelled) console.error('Failed to generate review:', error);
+      if (!cancelled) log.error(error, { message: 'Failed to generate review' });
     }).finally(() => {
       if (!cancelled) setLoading(false);
     });
@@ -50,7 +52,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       const result = await store.generateReview(period);
       if (mountedRef.current) setReview(result);
     } catch (error) {
-      console.error('Failed to generate review:', error);
+      log.error(error, { message: 'Failed to generate review' });
     } finally {
       if (mountedRef.current) setLoading(false);
     }
@@ -63,7 +65,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       const result = await store.generateReview(period);
       if (mountedRef.current) setReview(result);
     } catch (error) {
-      console.error('Failed to refresh review:', error);
+      log.error(error, { message: 'Failed to refresh review' });
     } finally {
       if (mountedRef.current) setRefreshing(false);
     }
@@ -241,8 +243,13 @@ export default function ReviewView({ period }: ReviewViewProps) {
   };
   
   const renderPlanProgress = () => {
-    if (!review || review.planProgress.length === 0) return null;
-    
+    const allPlans = (store.plans ?? []).filter(p => !p.deleted);
+    if (!review || allPlans.length === 0) return null;
+
+    const allPlanItems = (store.planItems ?? []).filter(i => !i.deleted);
+    const checkins = (store.planItemCheckins ?? []).filter(c => !c.deleted);
+    const today = new Date().toISOString().slice(0, 10);
+
     return (
       <View style={{
         backgroundColor: TH.card, borderRadius: 16, padding: 16,
@@ -254,43 +261,66 @@ export default function ReviewView({ period }: ReviewViewProps) {
             {T('reviewPlanProgress')}
           </Text>
         </View>
-        
-        {review.planProgress.map((plan, i) => (
-          <View key={plan.planId} style={{
-            paddingVertical: 8,
-            borderBottomWidth: i < review.planProgress.length - 1 ? 1 : 0,
-            borderBottomColor: TH.border,
-          }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{plan.planName}</Text>
-              <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
-                {plan.progress}%
-              </Text>
+
+        {allPlans.map((plan, pi) => {
+          const items = allPlanItems.filter(i => i.planId === plan.id);
+          const pct = computePlanProgress(plan);
+          const done = items.filter(i => i.status === 'completed').length;
+
+          return (
+            <View key={plan.id} style={{
+              marginBottom: pi < allPlans.length - 1 ? 16 : 0,
+            }}>
+              {/* Plan header */}
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                <ClipboardList size={14} color={TH.primary} />
+                <Text style={{ flex: 1, fontSize: FONT_BODY, fontWeight: '600', color: TH.text }} numberOfLines={1}>{plan.name}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{done}/{items.length}</Text>
+                <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
+                  <View style={{ height: 4, backgroundColor: TH.primary, borderRadius: 2, width: `${pct}%` }} />
+                </View>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
+              </View>
+
+              {/* Task items */}
+              {items.length > 0 && (
+                <View style={{ marginLeft: 8 }}>
+                  {items.map((item, idx) => {
+                    const stats = computeItemCheckinStats(item, checkins, today);
+                    const isLast = idx === items.length - 1;
+
+                    return (
+                      <View key={item.id} style={{ flexDirection: 'row' }}>
+                        <View style={{ width: 20, alignItems: 'center' }}>
+                          <View style={{ position: 'absolute', top: 0, bottom: isLast ? '50%' : 0, width: 1, backgroundColor: TH.border }} />
+                          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: item.status === 'completed' ? TH.primary : TH.border, marginTop: 8, zIndex: 1 }} />
+                        </View>
+                        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>·</Text>
+                          <Text style={{ flex: 1, fontSize: FONT_SUB, color: item.status === 'completed' ? TH.sub : TH.text, textDecorationLine: item.status === 'completed' ? 'line-through' : 'none' }} numberOfLines={1}>{item.name}</Text>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{stats.doneCount}/{stats.expectedDays}</Text>
+                          <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
+                            <View style={{ height: 4, backgroundColor: item.status === 'completed' ? TH.primary : COLORS.GREEN, borderRadius: 2, width: `${stats.progress}%` }} />
+                          </View>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{stats.progress}%</Text>
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
             </View>
-            
-            <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
-              <View style={{ 
-                height: 6, 
-                width: `${plan.progress}%`, 
-                backgroundColor: TH.primary,
-                borderRadius: 3,
-              }} />
-            </View>
-            
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
-              {plan.completedItems}/{plan.totalItems} {T('reviewTasks')}
-            </Text>
-          </View>
-        ))}
+          );
+        })}
       </View>
     );
   };
-  
+
   const renderHealthMetrics = () => {
     if (!review) return null;
-    
+
     const metrics = [];
-    
+
     if (review.metrics.avgWeight !== undefined) {
       metrics.push({
         icon: '⚖️',

@@ -1,7 +1,10 @@
 // ─── Trail creation: recommendation algorithms + keyword matching ───
 import type { MindReflection } from '../types/reflection';
 import type { ThoughtTrail } from '../types/thought-trail';
+import { createLogger } from '../logger';
 import { getMoodIcon } from './thought-trail';
+
+const log = createLogger('TrailCreation');
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -17,7 +20,7 @@ export interface TrailRecommendation {
   trend: 'up' | 'down' | 'flat';
   assignedCount: number;
   score: number;
-  type: 'mood' | 'tag' | 'time';
+  type: 'mood' | 'tag' | 'time' | 'ai';
   reason?: string;  // 推荐理由
   source: 'local' | 'ai' | 'hybrid';  // 推荐来源
 }
@@ -660,7 +663,7 @@ export async function computeHybridRecommendations(
     // 3. 合并 + 去重 + 排序
     return mergeAndRank(localWithReason, aiRecs);
   } catch (e) {
-    console.log('[HybridRecommend] AI failed, using local only:', e);
+    log.warn('HybridRecommend AI failed, using local only:', e);
     return localWithReason;
   }
 }

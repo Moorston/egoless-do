@@ -160,6 +160,9 @@ export function computeExpectedDays(
       }
       return count;
     }
+
+    default:
+      return totalElapsed;
   }
 }
 
@@ -179,14 +182,12 @@ export function shouldShowToday(
       return true;
 
     case 'interval': {
-      // Show on the first day of each interval period, if not yet checked in this period
+      // Show on the first day of each interval period
       const every = Math.max(1, freq.every);
       const elapsed = daysBetween(startDate, today);
       if (elapsed < 0) return false;
       // Today must be the start of a period
-      if (elapsed % every !== 0) return false;
-      // Check if already checked in today
-      return !checkins.some(c => c.date === today && c.done && !c.deleted);
+      return elapsed % every === 0;
     }
 
     case 'weekly': {
@@ -326,13 +327,13 @@ export function resumePlan(plans: Plan[], planItems: PlanItem[], id: string): { 
   };
 }
 
-export function completePlan(plans: Plan[], planItems: PlanItem[], id: string): { plans: Plan[]; planItems: PlanItem[] } {
+export function completePlan(plans: Plan[], planItems: PlanItem[], id: string, reason?: string): { plans: Plan[]; planItems: PlanItem[] } {
   const now = Date.now();
   const plan = plans.find(p => p.id === id && !p.deleted);
   if (!plan || plan.status === 'completed' || plan.status === 'cancelled') return { plans, planItems };
-  const progress = computePlanProgress(plan, planItems);
+  const progress = computePlanProgress(plan);
   return {
-    plans: plans.map(p => p.id === id ? { ...p, status: 'completed' as PlanStatus, progress, updatedAt: now } : p),
+    plans: plans.map(p => p.id === id ? { ...p, status: 'completed' as PlanStatus, progress, completeReason: reason, updatedAt: now } : p),
     planItems: planItems.map(i => i.planId === id && !i.deleted && i.status !== 'completed' && i.status !== 'cancelled'
       ? { ...i, status: 'completed' as PlanItemStatus, updatedAt: now } : i),
   };
@@ -834,19 +835,31 @@ export function computeItemProgress(item: PlanItem, checkins: PlanItemCheckin[],
   return Math.min(Math.round((doneDates.size / expectedDays) * 100), 100);
 }
 
-export function computePlanProgress(plan: Plan, planItems: PlanItem[]): number {
-  const items = planItems.filter(i => i.planId === plan.id && !i.deleted);
-  if (items.length === 0) {
-    // Time-based fallback
-    const totalDays = daysBetween(plan.startDate, plan.endDate) + 1;
-    if (totalDays <= 0) return 0;
-    const today = dateStr(new Date());
-    const clampedToday = today > plan.endDate ? plan.endDate : today;
-    const elapsed = daysBetween(plan.startDate, clampedToday) + 1;
-    return Math.max(0, Math.min(Math.round((elapsed / totalDays) * 100), 100));
+/** Compute detailed checkin stats for a plan item over its full duration. */
+export function computeItemCheckinStats(
+  item: PlanItem,
+  checkins: PlanItemCheckin[],
+  today: string,
+): { doneCount: number; expectedDays: number; progress: number } {
+  const clampedToday = today > item.endDate ? item.endDate : today;
+  const doneDates = new Set<string>();
+  for (const c of checkins) {
+    if (c.planItemId === item.id && c.done && !c.deleted && c.date >= item.startDate && c.date <= clampedToday) {
+      doneDates.add(c.date);
+    }
   }
-  const total = items.reduce((s, i) => s + i.progress, 0);
-  return Math.round(total / items.length);
+  const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
+  const progress = expectedDays > 0 ? Math.min(Math.round((doneDates.size / expectedDays) * 100), 100) : 0;
+  return { doneCount: doneDates.size, expectedDays, progress };
+}
+
+export function computePlanProgress(plan: Plan): number {
+  const totalDays = daysBetween(plan.startDate, plan.endDate) + 1;
+  if (totalDays <= 0) return 0;
+  const today = dateStr(new Date());
+  const clampedToday = today > plan.endDate ? plan.endDate : today;
+  const elapsed = daysBetween(plan.startDate, clampedToday) + 1;
+  return Math.max(0, Math.min(Math.round((elapsed / totalDays) * 100), 100));
 }
 
 // ── Query helpers ─────────────────────────────────────────────

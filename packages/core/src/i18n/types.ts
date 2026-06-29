@@ -296,6 +296,9 @@ export interface I18nKeys {
   planShowHeatmap: string; planHideHeatmap: string;
   planDeleteItemConfirm: string;
   planDeleteConfirm: string; planCompleteConfirm: string;
+  planCompleteWithIncomplete: string; planCompleteWithIncompleteDetail: string;
+  planCompleteReasonPlaceholder: string; planCompleteReasonRequired: string;
+  planCompleteReasonRequiredDetail: string; planCompleteConfirmBtn: string;
   planRelationMap: string; planRelationMapDesc: string;
   planLinkedContent: string; planRelatedReflections: string;
   planRelatedTrails: string; planTrailReflectionCount: string;
@@ -563,6 +566,67 @@ export interface I18nKeys {
   streakBreakAvgRecovery: string; streakBreakTrend: string;
   streakBreakHypothetical: string; streakBreakGraceHint: string;
   loading: string; refreshing: string; pullToRefresh: string;
+  reflLinkedTrail: string; reflUnlinkTask: string; reflCreateTask: string;
+  navTabHome: string; navTabExercise: string; navTabMeditation: string;
+  navTabFasting: string; navTabSettings: string; navTabPlan: string;
+  navTabReflections: string; navTabHabits: string;
+
+  // Auth
+  authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;
+  authLoginLoading: string; authForgotPassword: string;
+  authEmailNotRegistered: string; authFillEmailPassword: string;
+  authNicknamePlaceholder: string; authVerifyCodePlaceholder: string;
+  authConfirmPasswordPlaceholder: string; authRegisterBtn: string; authRegisterLoading: string;
+  authAlreadyRegistered: string; authSendCode: string;
+  authCheckFailed: string; authInvalidEmailAddr: string; authSendFailed: string;
+  authFillAllFields: string; authPasswordMismatch: string;
+  authVerifyEmail: string; authSetNewPassword: string; authNewPasswordPlaceholder: string;
+  authConfirmNewPasswordPlaceholder: string; authNextStep: string; authResetting: string;
+  authResetPassword: string; authBackToLogin: string; authEmailNotRegisteredShort: string;
+  authResetSuccess: string; authResetFailed: string; authEnterVerifyCode: string;
+
+  // Habit Detail
+  habitNotFound: string;
+  habitTotalDays: string;
+  habitInfo: string; habitStartDate: string; habitTarget: string; habitMyVision: string;
+  habitLinked: string; habitLinkedFasting: string; habitLinkedExercise: string;
+  habitLinkedMeditation: string; habitDailyReminder: string; habitTapToModify: string;
+  habitCheckinCalendar: string; habitWeekdaySun: string; habitWeekdayMon: string;
+  habitWeekdayTue: string; habitWeekdayWed: string; habitWeekdayThu: string;
+  habitWeekdayFri: string; habitWeekdaySat: string; habitCheckedIn: string;
+  habitRelatedReflections: string; habitCollapse: string;
+  habitExpandMore: string; habitRelationMap: string; habitRelationMapDesc: string;
+
+  // Review Screen
+  reviewMoodGreat: string; reviewMoodOkay: string; reviewMoodTough: string;
+  reviewMoodHard: string; reviewWeekJourney: string; reviewReflectionCount: string;
+  reviewMoodDistribution: string; reviewMoodQuestion: string; reviewKeyShift: string;
+  reviewKeyShiftQuestion: string; reviewKeyShiftInsight: string;
+  reviewCarryForward: string; reviewCarryForwardDesc: string; reviewCarryForwardQuestion: string;
+  reviewThisWeek: string; reviewFinish: string; reviewNextStep: string;
+  reviewEnterReflection: string; reviewEnterPlan: string;
+
+  // AI Settings
+  aiHint: string; aiFillRequired: string; aiDeleteModel: string; aiDeleteConfirm: string;
+  aiCancel: string; aiDelete: string; aiConfigureApiKey: string; aiDefault: string;
+  aiLocal: string; aiCloud: string; aiConfigure: string; aiTesting: string; aiTest: string;
+  aiSetDefault: string; aiConnectionSuccess: string; aiConnectionFailed: string;
+  aiSettings: string; aiMode: string; aiModeLocal: string; aiModeLocalDesc: string;
+  aiModeCloud: string; aiModeCloudDesc: string; aiModeHybrid: string; aiModeHybridDesc: string;
+  aiConfiguredModels: string; aiAdd: string; aiNoModels: string; aiNoModelsHint: string;
+  aiQuickSetup: string; aiQuickSetupDesc: string; aiRecommendedModels: string;
+  aiEditModel: string; aiAddModel: string; aiQuickSelect: string; aiName: string;
+  aiNamePlaceholder: string; aiApiAddress: string; aiApiAddressPlaceholder: string;
+  aiRecommendedAddress: string; aiUse: string; aiModelName: string;
+  aiModelNamePlaceholder: string; aiApiKey: string; aiApiKeyPlaceholder: string;
+  aiMaxToken: string; aiTemperature: string; aiSave: string;
+
+  // Error Boundary & Time Picker
+  errorTitle: string; errorUnknown: string; errorRetry: string;
+  timePickerTitle: string; timePickerHour: string; timePickerMinute: string;
+  timePickerCancel: string; timePickerConfirm: string;
+  reflUnlinkConfirmTitle: string; reflUnlinkConfirmMessage: string;
+  reflRelationMap: string;
 }
 
 export type I18nKey = keyof I18nKeys;
