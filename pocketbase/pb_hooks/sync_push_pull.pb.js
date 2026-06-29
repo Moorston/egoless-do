@@ -65,6 +65,11 @@ routerAdd("POST", "/api/sync/push", function(e) {
           var rawE = rec.get("data");
           if (typeof rawE === "string") { try { existObj = JSON.parse(rawE); } catch(pe) {} }
           else if (rawE && typeof rawE === "object") { for (var mk in rawE) existObj[mk] = rawE[mk]; }
+          // Safety: if existing data is corrupted (double-encoded string → numeric keys), reset
+          if (Object.keys(existObj).length > 500) {
+            console.warn("[sync] Corrupted data blob for " + entity + "/" + entityId + ", resetting");
+            existObj = {};
+          }
           var merged = {};
           for (var pk in existObj) merged[pk] = existObj[pk];
           for (var ik in payload) {
