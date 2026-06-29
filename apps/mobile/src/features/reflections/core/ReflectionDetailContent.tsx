@@ -123,12 +123,6 @@ export default function ReflectionDetailContent({
           )}
         </ScrollView>
 
-        {/* Dropdown dismiss backdrop inside gradient (below dropdown at zIndex:2) */}
-        {showMore && (
-          <TouchableOpacity activeOpacity={1} onPress={() => setShowMore(false)}
-            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }} />
-        )}
-
         {/* Action buttons */}
         <View style={{ flexDirection: 'row', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
           {onEdit && (
