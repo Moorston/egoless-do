@@ -28,6 +28,10 @@ const VOLUME_STORAGE_KEY = 'music_volume';
 // Module-level timer ref (non-serializable, not in store)
 let sleepTimerRef: ReturnType<typeof setInterval> | null = null;
 
+// Sync callback — set by useAppStore to trigger profile persistence
+let _onMusicChange: (() => void) | null = null;
+export function setMusicSyncCallback(fn: () => void) { _onMusicChange = fn; }
+
 export type PlayMode = 'sequential' | 'shuffle' | 'repeat-one' | 'repeat-all';
 
 interface MusicState {
@@ -140,6 +144,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   setVolume: (v) => {
     set({ volume: v });
     AsyncStorage.setItem(VOLUME_STORAGE_KEY, String(v)).catch(() => {});
+    _onMusicChange?.();
   },
   toggleLoop: () => set(s => {
     const newLoop = !s.loop;
@@ -174,6 +179,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       const updated = [...get().userTracks, track];
       set({ userTracks: updated });
       await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
+      _onMusicChange?.();
     } catch (e) {
       log.error('添加用户音乐失败:', e);
     }
@@ -190,6 +196,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       const updated = currentTracks.filter(t => t.id !== id);
       set({ userTracks: updated });
       await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
+      _onMusicChange?.();
       // 如果删除的是当前播放曲目，停止播放
       if (get().currentTrack?.id === id) {
         set({ currentTrack: null, isPlaying: false });
@@ -234,6 +241,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         : [...favorites, id];
       set({ favorites: updated });
       await AsyncStorage.setItem(MUSIC_FAVORITES_KEY, JSON.stringify(updated));
+      _onMusicChange?.();
     } catch (e) {
       log.error('切换收藏失败:', e);
     }
@@ -328,6 +336,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   setPlayMode: (mode) => {
     set({ playMode: mode, loop: mode === 'repeat-one' });
     AsyncStorage.setItem('music_play_mode', mode).catch(() => {});
+    _onMusicChange?.();
   },
 
   // ── Sleep timer ──

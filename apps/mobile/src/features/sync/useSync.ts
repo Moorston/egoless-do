@@ -11,6 +11,7 @@ import { useAppStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
 import { mobileStorageAdapter } from '../../store/storageAdapter';
 import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
+import { useMusicStore } from '../music/useMusicStore';
 
 const log = createLogger('Sync');
 
@@ -97,6 +98,18 @@ export function useSync() {
       const changedEntities = Object.keys(patch)
         .map(k => STORE_KEY_TO_ENTITY[k] ?? (k === 'aiMode' || k === 'aiModels' ? 'aiConfig' : null))
         .filter(Boolean) as string[];
+
+      // Restore music data from synced profile
+      if (changedEntities.includes('profile') || storePatch.userProfile) {
+        const up = useAppStore.getState().userProfile;
+        if (up) {
+          const musicPatch: Record<string, unknown> = {};
+          if (up.musicFavorites && Array.isArray(up.musicFavorites)) musicPatch.favorites = up.musicFavorites;
+          if (up.musicVolume !== undefined && typeof up.musicVolume === 'number') musicPatch.volume = up.musicVolume;
+          if (up.musicPlayMode && typeof up.musicPlayMode === 'string') musicPatch.playMode = up.musicPlayMode;
+          if (Object.keys(musicPatch).length) useMusicStore.setState(musicPatch as any);
+        }
+      }
 
       if (changedEntities.includes('meditation')) {
         useAppStore.getState().calculateTotalMedMin();

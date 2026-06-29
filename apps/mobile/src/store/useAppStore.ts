@@ -18,7 +18,7 @@ import {
 import Constants from 'expo-constants';
 import { mobileStorageAdapter, flushWrites } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
-import { useMusicStore } from '../features/music/useMusicStore';
+import { useMusicStore, setMusicSyncCallback } from '../features/music/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
 import { applyServerChanges as _applyServerChanges } from '../features/sync/SyncService';
 import { openDatabase, setState as setAppState } from '../db/schema';
@@ -83,6 +83,9 @@ function persistProfileSettings() {
   if (_settingsPersistTimer) clearTimeout(_settingsPersistTimer);
   _settingsPersistTimer = setTimeout(flushProfileSettings, 500);
 }
+
+// Wire music store changes → profile persistence
+setMusicSyncCallback(persistProfileSettings);
 
 // Debounced AI config persistence
 let _aiConfigPersistTimer: ReturnType<typeof setTimeout> | null = null;
