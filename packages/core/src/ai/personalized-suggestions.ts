@@ -2,7 +2,7 @@
 import type { MindReflection, Habit, Plan, CheckinEntry } from '../types';
 import type { ThoughtPattern } from './thought-patterns';
 import type { RiskWarning } from './risk-warning';
-import { dateStr } from '../utils';
+import { dateStr, activeOnly } from '../utils';
 
 export interface PersonalizedSuggestion {
   id: string;

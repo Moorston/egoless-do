@@ -121,7 +121,6 @@ export function calculateReviewData(
   const target = parseLocalDate(targetDate);
   const range = period === 'week' ? getWeekRange(target) : getMonthRange(target);
   const datesInRange = getDatesInRange(range.start, range.end);
-  const totalDays = datesInRange.length;
   
   // 筛选日期范围内的打卡记录
   const checkinsInRange = checkinHistory.filter(c => 
@@ -131,6 +130,9 @@ export function calculateReviewData(
   // 计算完成天数
   const doneDates = new Set(checkinsInRange.filter(c => c.done).map(c => c.date));
   const doneDays = doneDates.size;
+  
+  // 总天数 = 有打卡记录的天数（非周期总天数）
+  const totalDays = checkinsInRange.length;
   
   // 计算完成率
   const completionRate = totalDays > 0 ? Math.round((doneDays / totalDays) * 100) : 0;

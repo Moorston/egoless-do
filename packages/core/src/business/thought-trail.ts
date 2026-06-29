@@ -2,7 +2,7 @@
 import type { ThoughtTrail } from '../types/thought-trail';
 import type { MindReflection } from '../types/reflection';
 import type { TrailNote } from '../types/trail-note';
-import { dateStr } from '../utils';
+import { dateStr, activeOnly } from '../utils';
 
 /** 时间线条目类型 */
 export type TimelineItem =
@@ -26,7 +26,7 @@ export interface TrailOverview {
  * @param t optional i18n translation function for localized default names
  */
 export function generateTrailName(reflections: MindReflection[], t?: (key: string, vars?: Record<string, string>) => string): string {
-  const active = reflections.filter(r => !r.deleted);
+  const active = activeOnly(reflections);
   if (active.length === 0) return t?.('thoughtTrailEmpty') ?? 'New Trail';
   reflections = active;
 

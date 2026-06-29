@@ -170,9 +170,10 @@ describe('createThoughtTrailSlice', () => {
       slice.deleteThoughtTrail('t1');
 
       const state = get();
-      expect(state.thoughtTrails).toHaveLength(0);
-      expect(state.trailNotes).toHaveLength(1);
-      expect(state.trailNotes[0].id).toBe('n3');
+      expect(state.thoughtTrails).toHaveLength(1);
+      expect(state.thoughtTrails[0].deleted).toBe(true);
+      expect(state.trailNotes.filter((n: any) => !n.deleted)).toHaveLength(1);
+      expect(state.trailNotes.filter((n: any) => !n.deleted)[0].id).toBe('n3');
     });
 
     it('removes trail ID from reflections', () => {

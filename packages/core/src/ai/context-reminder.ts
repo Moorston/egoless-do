@@ -1,6 +1,6 @@
 // ─── Context-aware Reminder Service ────────────────────────────
 import type { MindReflection, Habit, CheckinEntry } from '../types';
-import { dateStr } from '../utils';
+import { dateStr, activeOnly } from '../utils';
 
 export interface ContextReminder {
   id: string;

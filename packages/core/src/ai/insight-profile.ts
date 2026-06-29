@@ -4,7 +4,7 @@ import { getMoodIcon } from '../business/thought-trail';
 import { buildReflectionSummary } from '../business/trail-creation';
 import { getAIService } from './ai-service';
 import { isAIRecommendAvailable } from './trail-recommender';
-import { dateStr } from '../utils';
+import { dateStr, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 
 const log = createLogger('AI');
@@ -84,7 +84,7 @@ export function computeLocalInsights(
 // ─── Streak days ─────────────────────────────────────────────────────
 
 function computeStreakDays(reflections: MindReflection[], maxDays: number): number {
-  const active = reflections.filter(r => !r.deleted);
+  const active = activeOnly(reflections);
   if (active.length === 0) return 0;
 
   const today = new Date();

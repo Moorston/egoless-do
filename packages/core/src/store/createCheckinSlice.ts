@@ -1,5 +1,5 @@
 import type { CheckinEntry, GraceHistoryEntry } from '../types';
-import { calculateCheckinStreak } from '../utils';
+import { calculateCheckinStreak, activeOnly } from '../utils';
 import { submitCheckinEntry } from '../business';
 import type { StorageAdapter, CheckinSlice } from './types';
 import type { SliceCreator } from './sliceHelper';

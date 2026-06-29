@@ -3,7 +3,7 @@ import type { MindReflection } from '../types/reflection';
 import type { PlanItem, PlanItemPriority } from '../types/plan';
 import type { ThoughtTrailSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
-import { uid } from '../utils';
+import { uid, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 

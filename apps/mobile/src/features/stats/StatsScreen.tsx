@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, useT } from '../../components/UI';
-import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB, activeOnly } from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -100,8 +100,9 @@ export default function StatsScreen() {
 
   // ── Meditation stats ──
   const totalMedMin = store.totalMedMinutes;
-  const todayMedMin = useMemo(() => getTodayMedMinutes((store.medHistory ?? []).filter(m => !m.deleted)), [store.medHistory]);
-  const medSessionCount = (store.medHistory ?? []).filter(m => !m.deleted).length;
+  const medHistory = store.medHistory ?? [];
+  const todayMedMin = useMemo(() => getTodayMedMinutes(activeOnly(medHistory)), [medHistory]);
+  const medSessionCount = useMemo(() => activeOnly(medHistory).length, [medHistory]);
 
   // ── Exercise stats ──
   const exerciseStats = useMemo(() => {
@@ -117,7 +118,7 @@ export default function StatsScreen() {
 
   // ── Reflections stats ──
   const reflections = store.reflections ?? [];
-  const reflCount = reflections.filter(r => !r.deleted).length;
+  const reflCount = useMemo(() => activeOnly(reflections).length, [reflections]);
 
   // ── Plan stats ──
   const plans = store.plans ?? [];
@@ -131,7 +132,7 @@ export default function StatsScreen() {
   const { planItems, activePlans, totalPlanTasks, completedPlanTasks } = planStats;
 
   // ── Other stats ──
-  const activeHabits = (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress').length;
+  const activeHabits = useMemo(() => (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress').length, [store.habits]);
   const graceCount = (store.graceHistory ?? []).filter(g => !g.deleted).length;
 
   // ── Chart data ──
@@ -308,7 +309,7 @@ export default function StatsScreen() {
             {renderStatGrid([
               { value: `${store.streak}`, unit: T('days'), label: T('streak'), icon: Flame },
               { value: `${(store.checkinHistory ?? []).filter(c => !c.deleted).length}`, unit: T('days'), label: T('statsTotalCheckinDays'), icon: CalendarDays },
-              { value: `${plans.filter(p => !p.deleted).length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
+              { value: `${activeOnly(plans).length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
               { value: `${completedPlanTasks}`, unit: '', label: T('statsCompletedTasks'), icon: Target },
               { value: `${(store.habits ?? []).filter(h => !h.deleted).length}`, unit: '', label: T('statsHabitCount'), icon: Star },
               { value: `${reflCount}`, unit: '', label: T('statsReflections'), icon: Sparkles },

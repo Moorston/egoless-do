@@ -1,3 +1,4 @@
+import { activeOnly } from '../utils';
 // ─── AI Trail Recommender: RAG + 分批并发 ──────────────────────────
 import { getAIService } from './ai-service';
 import { buildReflectionSummary } from '../business/trail-creation';
@@ -210,7 +211,7 @@ export async function recommendTrailsViaAI(
     return emptyResult;
   }
 
-  const validReflections = reflections.filter(r => !r.deleted);
+  const validReflections = activeOnly(reflections);
   if (validReflections.length < 3) return emptyResult;
 
   const dataFingerprint = `${validReflections.length}:${Math.max(...validReflections.map(r => r.updatedAt ?? r.timestamp ?? 0))}`;
@@ -272,7 +273,7 @@ export async function matchReflectionsToTopic(
     return [];
   }
 
-  const validReflections = reflections.filter(r => !r.deleted);
+  const validReflections = activeOnly(reflections);
   if (validReflections.length < 2) return [];
 
   const dataFingerprint = `${validReflections.length}:${Math.max(...validReflections.map(r => r.updatedAt ?? r.timestamp ?? 0))}`;
@@ -338,7 +339,7 @@ export async function semanticSearchReflections(
     return [];
   }
 
-  const validReflections = reflections.filter(r => !r.deleted);
+  const validReflections = activeOnly(reflections);
   if (validReflections.length < 2) return [];
 
   const dataFingerprint = `${validReflections.length}:${Math.max(...validReflections.map(r => r.updatedAt ?? r.timestamp ?? 0))}`;
@@ -420,7 +421,7 @@ export async function parseSmartQuery(
     return { ...FALLBACK_RESULT, topic: input };
   }
 
-  const validReflections = reflections.filter(r => !r.deleted);
+  const validReflections = activeOnly(reflections);
   if (validReflections.length < 2) {
     return { ...FALLBACK_RESULT, topic: input };
   }

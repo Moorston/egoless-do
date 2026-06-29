@@ -1,3 +1,4 @@
+import { activeOnly } from '../utils';
 import type { MindReflection, ReflectionFilters } from '../types';
 import { DEFAULT_REFLECTION_FILTERS } from '../types';
 import {

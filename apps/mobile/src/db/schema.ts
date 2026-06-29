@@ -422,10 +422,10 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     }
     try {
       await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
-    } catch {}
+    } catch {} // intentional: index may already exist
     try {
       await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id)');
-    } catch {}
+    } catch {} // intentional: index may already exist
   }
 
   // Ensure sync_metadata table exists

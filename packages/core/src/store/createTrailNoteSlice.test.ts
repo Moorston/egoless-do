@@ -101,8 +101,9 @@ describe('createTrailNoteSlice', () => {
       slice.deleteTrailNote('n1');
 
       const state = get();
-      expect(state.trailNotes).toHaveLength(1);
-      expect(state.trailNotes[0].id).toBe('n2');
+      expect(state.trailNotes).toHaveLength(2);
+      expect(state.trailNotes.find((n: any) => n.id === 'n1').deleted).toBe(true);
+      expect(state.trailNotes.find((n: any) => !n.deleted).id).toBe('n2');
       expect(state.thoughtTrails[0].noteIds).not.toContain('n1');
       expect(state.thoughtTrails[0].noteIds).toContain('n2');
     });

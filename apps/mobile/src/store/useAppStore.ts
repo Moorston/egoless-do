@@ -18,6 +18,7 @@ import {
 import Constants from 'expo-constants';
 import { mobileStorageAdapter, flushWrites } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
+import { useMusicStore } from '../features/music/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
 import { applyServerChanges as _applyServerChanges } from '../features/sync/SyncService';
 import { openDatabase, setState as setAppState } from '../db/schema';
@@ -53,6 +54,7 @@ function flushProfileSettings() {
     _settingsPersistTimer = null;
   }
   const s = useAppStore.getState();
+  const ms = useMusicStore.getState();
   adapter.persistChange('profile', 'self', {
     ...s.userProfile,
     waterMl: s.waterMl,
@@ -69,6 +71,10 @@ function flushProfileSettings() {
     customMoods: s.customMoods,
     allTagsOrder: s.allTagsOrder,
     allMoodsOrder: s.allMoodsOrder,
+    musicFavorites: ms.favorites,
+    musicUserTracks: ms.userTracks.map(t => ({ id: t.id, name: t.name, nameEn: t.nameEn, category: t.category })),
+    musicVolume: ms.volume,
+    musicPlayMode: ms.playMode,
     updatedAt: Date.now(),
   } as Record<string, unknown>).catch((e) => log.error(e));
 }
@@ -102,11 +108,11 @@ function persistAIConfig() {
 }
 
 // Flush pending writes when app goes to background
-AppState.addEventListener('change', (state) => {
+AppState.addEventListener('change', async (state) => {
   if (state !== 'active') {
     flushProfileSettings();
     flushAIConfig();
-    flushWrites(); // flush WriteBatcher buffer
+    await flushWrites(); // flush WriteBatcher buffer before suspension
   }
 });
 

@@ -1,3 +1,4 @@
+import { activeOnly } from '../utils';
 // ─── Daily Todo shared logic (used by both Mobile & Web) ──────
 import type { PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemLink } from '../types';
 
@@ -74,7 +75,7 @@ export function computeDailyTodoStats(
 ): DailyTodoStats {
   const index = buildCheckinIndex(checkins, date);
   const planItemsDone = planItems.filter(item => index.has(item.id)).length;
-  const activeCustomTodos = customTodos.filter(t => !t.deleted);
+  const activeCustomTodos = activeOnly(customTodos);
   const customTodosDone = activeCustomTodos.filter(t => t.done).length;
   const totalDone = planItemsDone + customTodosDone;
   const totalItems = planItems.length + activeCustomTodos.length;

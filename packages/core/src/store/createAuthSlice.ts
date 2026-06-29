@@ -3,7 +3,7 @@ import type { SliceCreator } from './sliceHelper';
 import { defaultAuthState } from '../types';
 import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull } from '../auth';
 import { mergeById } from '../sync/merge';
-import { calculateCheckinStreak } from '../utils';
+import { calculateCheckinStreak, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 
@@ -133,7 +133,7 @@ export function createAuthSlice(
           if (data.exercise)   patch.exerciseLog = mergeById(data.exercise, s.exerciseLog ?? [], 'id').filter(i => !i.deleted);
           if (data.meditation) {
             const mergedMed = mergeById(data.meditation, s.medHistory ?? [], 'date');
-            patch.medHistory = mergedMed.filter(m => !m.deleted);
+            patch.medHistory = activeOnly(mergedMed);
             patch.totalMedMinutes = (mergedMed as Array<{ dur?: string; deleted?: boolean }>).filter(m => !m.deleted).reduce((sum, m) => sum + (parseInt(m.dur ?? '') || 0), 0);
           }
           if (data.plan)            patch.plans = mergeById(data.plan, s.plans ?? [], 'id').filter(i => !i.deleted);
@@ -147,24 +147,25 @@ export function createAuthSlice(
 
           if (data.profile?.length) {
             const latest = data.profile
-              .filter((p: any) => !p.deleted)
-              .sort((a: any, b: any) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))[0];
+              .filter((p: Record<string, unknown>) => !p.deleted)
+              .sort((a: Record<string, unknown>, b: Record<string, unknown>) => ((b.updatedAt as number) ?? 0) - ((a.updatedAt as number) ?? 0))[0];
             if (latest) {
-              let profileData = latest.data ?? latest;
+              let profileData = (latest as Record<string, unknown>).data ?? latest;
               if (typeof profileData === 'string') {
                 try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
               }
+              const p = profileData as Record<string, unknown>;
               const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
-              const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = profileData as any;
+              const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = p;
               patch.userProfile = { ...(s.userProfile ?? {}), ...profileDataWithoutSettings };
-              if (profileData.waterMl !== undefined) patch.waterMl = profileData.waterMl;
-              if (profileData.waterGoal !== undefined) patch.waterGoal = profileData.waterGoal;
-              if (profileData.weightUnit !== undefined) patch.weightUnit = profileData.weightUnit;
+              if (p.waterMl !== undefined) patch.waterMl = p.waterMl;
+              if (p.waterGoal !== undefined) patch.waterGoal = p.waterGoal;
+              if (p.weightUnit !== undefined) patch.weightUnit = p.weightUnit;
               const localUpdated = s.userProfile?.updatedAt ?? 0;
-              const serverUpdated = latest.updatedAt ?? 0;
+              const serverUpdated = (latest as Record<string, unknown>).updatedAt as number ?? 0;
               if (serverUpdated >= localUpdated) {
                 for (const sk of SETTINGS_KEYS) {
-                  if (profileData[sk] !== undefined) (patch as any)[sk] = profileData[sk];
+                  if (p[sk] !== undefined) (patch as Record<string, unknown>)[sk] = p[sk];
                 }
               }
             }

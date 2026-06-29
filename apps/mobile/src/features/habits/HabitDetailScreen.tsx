@@ -8,8 +8,7 @@ import type { RootStackParamList } from '../../navigation/types';
 import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle, Bell, BellOff } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth, MOOD_DISPLAY } from '@egoless-do/core';
-import { HABIT_LINK_COLORS } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
 import TimePickerModal from '../../components/TimePickerModal';
 import { Toggle } from '../../components/UI';
@@ -170,7 +169,7 @@ export default function HabitDetailScreen() {
                 const granted = await requestNotificationPermission();
                 if (granted) {
                   const s = useAppStore.getState();
-                  const habits = s.habits.filter(h => !h.deleted);
+                  const habits = activeOnly(s.habits ?? []);
                   const [gh, gm] = (s.remindTime ?? '21:00').split(':').map(Number);
                   await rescheduleAllHabitReminders(habits, gh, gm).catch(() => {});
                 }
@@ -329,7 +328,7 @@ export default function HabitDetailScreen() {
           const granted = await requestNotificationPermission();
           if (granted) {
             const s = useAppStore.getState();
-            const habits = s.habits.filter(h => !h.deleted);
+            const habits = activeOnly(s.habits ?? []);
             const [gh, gm] = (s.remindTime ?? '21:00').split(':').map(Number);
             await rescheduleAllHabitReminders(habits, gh, gm).catch(() => {});
           }

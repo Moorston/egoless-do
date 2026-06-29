@@ -1,5 +1,5 @@
 import type { MindReflection } from '../types/reflection';
-import { dateStr as fmtDate } from '../utils';
+import { dateStr as fmtDate, activeOnly } from '../utils';
 
 // ── Mood scoring ──────────────────────────────────────────────
 
@@ -167,7 +167,7 @@ export interface SmartCollection {
 }
 
 export function computeSmartCollections(reflections: MindReflection[]): SmartCollection[] {
-  const active = reflections.filter(r => !r.deleted);
+  const active = activeOnly(reflections);
   const collections: SmartCollection[] = [];
 
   // Mood-based collections

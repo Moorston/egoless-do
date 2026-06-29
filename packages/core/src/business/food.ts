@@ -1,3 +1,4 @@
+import { activeOnly } from '../utils';
 // ─── Food business logic (pure functions) ──────────────────────
 import type { FoodEntry } from '../types';
 
@@ -8,7 +9,7 @@ export function deleteFoodFromList(foodLog: FoodEntry[], id: string): FoodEntry[
 
 /** Get top N most frequently logged foods (by name), excluding deleted entries */
 export function getRecentFoods(foodLog: FoodEntry[], limit = 3): Array<{ name: string; calories: number }> {
-  const active = foodLog.filter(f => !f.deleted);
+  const active = activeOnly(foodLog);
   if (active.length === 0) return [];
 
   const freq = new Map<string, { count: number; calories: number; latestTs: number }>();

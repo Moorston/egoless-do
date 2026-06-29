@@ -1,5 +1,5 @@
 import type { RecycleBinItem, RecycleBinEntityType } from '../types';
-import type { RecycleBinSlice, StorageAdapter } from './types';
+import type { RecycleBinSlice, StorageAdapter, FullStore } from './types';
 import type { SyncEntity } from '../sync/entities';
 import type { SliceCreator } from './sliceHelper';
 import { MS_PER_WEEK } from '../utils';
@@ -64,21 +64,21 @@ export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<Re
         }
 
         // Single atomic set: recycle bin + target + plan children
-        set((s: any) => ({
-          recycleBin: s.recycleBin.filter((r: any) => r.id !== id),
-          [targetKey]: [...((s[targetKey] as any[]) ?? []).filter((x: any) => x.id !== id), restoredData],
+        set((s: FullStore) => ({
+          recycleBin: s.recycleBin.filter(r => r.id !== id),
+          [targetKey]: [...((s[targetKey] as RecycleBinItem[]) ?? []).filter(x => x.id !== id), restoredData],
           ...(item.entityType === 'plan' ? {
-            planItems: (s.planItems ?? []).map((pi: any) =>
+            planItems: (s.planItems ?? []).map(pi =>
               pi.planId === item.id && pi.deleted ? { ...pi, deleted: false, updatedAt: now } : pi
             ),
-            planItemCheckins: (s.planItemCheckins ?? []).map((pic: any) =>
-              childItems.some((ci: any) => ci.id === pic.planItemId) && pic.deleted
+            planItemCheckins: (s.planItemCheckins ?? []).map(pic =>
+              childItems.some(ci => ci.id === pic.planItemId) && pic.deleted
                 ? { ...pic, deleted: false, updatedAt: now } : pic
             ),
-            dailyCustomTodos: (s.dailyCustomTodos ?? []).map((t: any) =>
+            dailyCustomTodos: (s.dailyCustomTodos ?? []).map(t =>
               t.planId === item.id && t.deleted ? { ...t, deleted: false, updatedAt: now } : t
             ),
-            dailyTodoHistory: (s.dailyTodoHistory ?? []).map((t: any) =>
+            dailyTodoHistory: (s.dailyTodoHistory ?? []).map(t =>
               t.planId === item.id && t.deleted ? { ...t, deleted: false, updatedAt: now } : t
             ),
           } : {}),

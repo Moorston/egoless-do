@@ -1,6 +1,6 @@
 // ─── Risk Warning System ────────────────────────────────────────
 import type { Habit, Plan, CheckinEntry, MindReflection } from '../types';
-import { dateStr } from '../utils';
+import { dateStr, activeOnly } from '../utils';
 
 export interface RiskWarning {
   id: string;

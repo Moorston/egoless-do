@@ -2,7 +2,7 @@
 import type { ReflectionLink, LinkType } from '../types/reflection-link';
 import type { StorageAdapter, ReflectionLinkSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
-import { uid } from '../utils';
+import { uid, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 

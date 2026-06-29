@@ -12,9 +12,8 @@ import {
   Card, useTheme, PrimaryButton, OutlineButton, Toggle,
   ScreenHeader, TagPill, ThemedInput, ProgressBar, RowItem, useT,
 } from '../../components/UI';
-import { COLORS, tomorrow, dateStr, daysInMonth, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_SMALL, FONT_TINY, FONT_LABEL, FONT_BADGE, FONT_STAT_CARD, FONT_CLOSE, FONT_EMPTY } from '@egoless-do/core';
+import { COLORS, tomorrow, dateStr, daysInMonth, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_SMALL, FONT_TINY, FONT_LABEL, FONT_BADGE, FONT_STAT_CARD, FONT_CLOSE, FONT_EMPTY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
 import type { Habit, HabitStatus, HabitLink } from '@egoless-do/core';
-import { HABIT_LINK_COLORS } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Target, Pause, Play, X, Pencil, Trash2, ChevronRight, ChevronLeft, CheckCircle,
@@ -98,7 +97,7 @@ export default function HabitsScreen() {
     if (form.alarmEnabled) {
       const granted = await requestNotificationPermission();
       if (granted) {
-        const habits = useAppStore.getState().habits.filter(h => !h.deleted);
+        const habits = activeOnly(useAppStore.getState().habits ?? []);
         await rescheduleAllHabitReminders(habits).catch(() => {});
       }
     }

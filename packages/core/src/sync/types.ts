@@ -17,6 +17,7 @@ export interface SyncPushResponseItem {
   entityId?: string;
   operation?: string;
   error?: string;
+  serverData?: Record<string, unknown>;
 }
 
 export interface SyncPushResult {

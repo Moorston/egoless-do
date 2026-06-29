@@ -121,6 +121,31 @@ function mergePayload(existing, incoming) {
   return merged;
 }
 
+// ── Auto-create entity collections if missing ─────────────────────
+function ensureEntityCollection(entity) {
+  var coll = ENTITY_COLL_MAP[entity];
+  var idField = ENTITY_ID_FIELD_MAP[entity];
+  if (!coll || !idField) return;
+  try {
+    $app.findCollectionByNameOrId(coll);
+    return; // already exists
+  } catch (e) {
+    // Collection doesn't exist — create it
+  }
+  try {
+    var col = new Collection({ name: coll, schema: [
+      { name: idField, type: "text", required: true },
+      { name: "user_id", type: "text", required: true },
+      { name: "data", type: "json" },
+    ]});
+    col.indexes = ["CREATE INDEX idx_" + coll + "_user ON " + coll + " (user_id)"];
+    $app.dao().saveCollection(col);
+    console.log("[sync] Created collection: " + coll);
+  } catch (nr) {
+    console.error("[sync] Failed to create collection " + coll + ": " + (nr.message || String(nr)));
+  }
+}
+
 // ── CDC: Batch-write to sync_cdc table ─────────────────────────
 var CDC_COLLECTION = "sync_cdc";
 
@@ -210,6 +235,15 @@ function requireAuth(e) {
 
 // ── Bulk push processing (batch DB preload, single transaction) ──
 function processChangesBulk(changes, userId, tokenEpoch) {
+  // 0. Ensure entity collections exist (auto-create if missing)
+  var seenColls = {};
+  for (var i = 0; i < changes.length; i++) {
+    if (!seenColls[changes[i].entity]) {
+      ensureEntityCollection(changes[i].entity);
+      seenColls[changes[i].entity] = true;
+    }
+  }
+
   // 1. Collect changes by collection for batch preload
   var byColl = {}; // coll -> [{entity, entityId, operation, payload, idField, changedFields}]
   for (var i = 0; i < changes.length; i++) {
@@ -590,7 +624,9 @@ function flushSseBatch() {
       } else if (items.length > 1) {
         $app.realtime().broadcast(userId, "sync_batch", { items: items });
       }
-    } catch (nr) {}
+    } catch (nr) {
+      console.error("[sync/sse] flushSseBatch failed for user " + userId + ": " + (nr && nr.message ? nr.message : String(nr)));
+    }
   }
 }
 
@@ -608,7 +644,9 @@ function broadcastChange(collection, record, eventType) {
     if (!_sseBatchTimer) _sseBatchTimer = setTimeout(flushSseBatch, SSE_BATCH_INTERVAL);
 
     logCdc(collection, record, eventType === "record_created" ? "upsert" : eventType === "record_updated" ? "upsert" : "delete");
-  } catch (nr) {}
+  } catch (nr) {
+    console.error("[sync/sse] broadcastChange failed for " + collection + "/" + record.id + ": " + (nr && nr.message ? nr.message : String(nr)));
+  }
 }
 
 var COLLECTION_NAMES = Object.keys(ENTITY_COLL_MAP).map(function(k) { return ENTITY_COLL_MAP[k]; });

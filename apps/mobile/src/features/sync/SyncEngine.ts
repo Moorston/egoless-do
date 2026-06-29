@@ -13,7 +13,7 @@ import {
   createLogger, SCHEMAS, buildServerPayloadToRow, ApiError, KickedOutError, resolveConflict,
   MS_PER_DAY,
 } from '@egoless-do/core';
-import type { SyncEntity } from '@egoless-do/core';
+import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
 import {
   rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
@@ -574,10 +574,12 @@ export class SyncEngine {
     const myGeneration = ++this._syncGeneration;
     log.info('Starting sync');
 
+    // Reset failed/conflict items back to pending so they get another chance
+    await resetAllPendingForRetry().catch(e => log.error(e, { phase: 'resetFailed' }));
     pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
 
-    // Orphan recovery
-    if (!this._orphanRecoveryDone) {
+    // Orphan recovery (run every sync to catch WriteBatcher failures)
+    {
       try {
         const db = await openDatabase();
         let total = 0;
@@ -614,8 +616,8 @@ export class SyncEngine {
       let pushedAnything = false;
       let pushedItemCount = 0;
       let pushApplySucceeded = false;
-      let lastPushResult: any = null;
-      let pushResult: any = null;
+      let lastPushResult: SyncPushResult | null = null;
+      let pushResult: SyncPushResult | null = null;
 
       for (let batch = 0; batch < 10; batch++) {
         const items = await drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
@@ -752,9 +754,10 @@ export class SyncEngine {
       if (!pushAllClean && !pushApplySucceeded) {
         let pullEntities: string[] | undefined;
         // If there were rejections, check only conflicted entities
-        if (lastPushResult?.rejected?.length > 0) {
+        const rejected = lastPushResult?.rejected;
+        if (rejected && rejected.length > 0) {
           const conflicted = new Set<string>();
-          for (const r of lastPushResult.rejected) {
+          for (const r of rejected) {
             if (r?.entity) conflicted.add(r.entity);
           }
           if (conflicted.size > 0) pullEntities = [...conflicted];
@@ -772,7 +775,7 @@ export class SyncEngine {
         }
 
         if (hasChanges) {
-          let pullResult: any = null;
+          let pullResult: SyncPullResult | null = null;
           try {
             if (pullEntities) {
               pullResult = await apiSyncPullPost(freshToken(), { entities: pullEntities, since: this._lastSyncAt > 0 ? this._lastSyncAt : undefined });

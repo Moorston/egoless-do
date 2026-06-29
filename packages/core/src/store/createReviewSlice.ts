@@ -4,7 +4,7 @@ import type { StorageAdapter, ReviewSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { calculateReviewData, getWeekRange, getMonthRange } from '../business/review';
 import { getAIService } from '../ai/ai-service';
-import { dateStr } from '../utils';
+import { dateStr, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 
@@ -142,7 +142,7 @@ export function createReviewSlice(
       });
 
       // Persist deletions only for those not already deleted
-      const toDelete = reviews.filter(r => !r.deleted).map(r => ({ entity: 'checkinReview' as const, id: r.id }));
+      const toDelete = activeOnly(reviews).map(r => ({ entity: 'checkinReview' as const, id: r.id }));
       if (toDelete.length > 0) {
         adapter.batchDelete(toDelete).catch(e => log.error(e));
       }

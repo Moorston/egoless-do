@@ -1,7 +1,7 @@
 import type { TrailNote } from '../types/trail-note';
 import type { TrailNoteSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
-import { uid } from '../utils';
+import { uid, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 

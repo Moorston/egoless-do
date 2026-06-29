@@ -5,7 +5,7 @@ import type {
   MindReflection, CheckinFrequency,
   PlanItemSource, UnifiedPlanItemForm,
 } from '../types';
-import { uid, dateStr } from '../utils';
+import { uid, dateStr, activeOnly } from '../utils';
 import { COLORS } from '../constants';
 
 // ── Constants ─────────────────────────────────────────────────
@@ -187,7 +187,9 @@ export function shouldShowToday(
       const elapsed = daysBetween(startDate, today);
       if (elapsed < 0) return false;
       // Today must be the start of a period
-      return elapsed % every === 0;
+      if (elapsed % every !== 0) return false;
+      // Don't show if already checked in today
+      return !checkins.some(c => !c.deleted && c.date === today && c.done);
     }
 
     case 'weekly': {

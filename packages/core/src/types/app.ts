@@ -24,6 +24,10 @@ export interface UserProfile {
   waterGoal?: number;
   weightUnit?: 'kg' | 'lb';
   graceMonthlyQuota?: number;
+  musicFavorites?: string[];
+  musicUserTracks?: Array<{ id: string; name: string; nameEn: string; category: string }>;
+  musicVolume?: number;
+  musicPlayMode?: string;
   updatedAt?: number;
 }
 

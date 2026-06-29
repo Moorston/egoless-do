@@ -19,7 +19,7 @@ import {
 import {
   linkReflectionToPlanItem,
 } from '../business/reflections';
-import { uid, dateStr } from '../utils';
+import { uid, dateStr, activeOnly } from '../utils';
 import type { StorageAdapter, PlanSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
@@ -198,7 +198,7 @@ export function createPlanSlice(
       const prevCount = (get().planItems ?? []).filter(i => !i.deleted).length;
       set(s => ({ planItems: addPlanItem(s.planItems ?? [], form, s.plans) }));
       const items = get().planItems;
-      if (items.filter(i => !i.deleted).length > prevCount) {
+      if (activeOnly(items).length > prevCount) {
         const item = items[items.length - 1];
         if (item) adapter.persistChange('planItem', item.id, item).catch(e => log.error(e));
       }
@@ -342,7 +342,7 @@ export function createPlanSlice(
         set(prev => {
           const newItems = refreshPlanItemStats(prev.planItems ?? [], updatedCheckins, today);
           // Update progress for all affected plans
-          const affectedPlanIds = new Set(newItems.filter(i => !i.deleted).map(i => i.planId));
+          const affectedPlanIds = new Set(activeOnly(newItems).map(i => i.planId));
           const newPlans = (prev.plans ?? []).map(p => {
             if (!affectedPlanIds.has(p.id) || p.deleted) return p;
             return { ...p, progress: computePlanProgress(p) };

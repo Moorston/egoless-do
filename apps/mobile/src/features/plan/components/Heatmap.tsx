@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
-import { COLORS, dateStr, FONT_SUB } from '@egoless-do/core';
+import { COLORS, dateStr, FONT_SUB, activeOnly } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin } from '@egoless-do/core';
 
 export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, T }: { checkins: PlanItemCheckin[]; items: PlanItem[]; plan: Plan; TH: any; T: (k: string) => string }) {
@@ -15,7 +15,7 @@ export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, 
       if (c.done) doneSet.add(`${c.planItemId}:${c.date}`);
     }
     // Pre-filter active items
-    const activeItems = items.filter(i => !i.deleted);
+    const activeItems = activeOnly(items);
     const [sy, sm, sd] = plan.startDate.split('-').map(Number);
     const [ey, em, ed] = plan.endDate.split('-').map(Number);
     const start = new Date(sy, sm - 1, sd);

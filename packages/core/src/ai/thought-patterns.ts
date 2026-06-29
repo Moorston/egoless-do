@@ -1,6 +1,6 @@
 // ─── Thought Pattern Detection ──────────────────────────────────
 import type { MindReflection } from '../types';
-import { dateStr } from '../utils';
+import { dateStr, activeOnly } from '../utils';
 
 export interface ThoughtPattern {
   id: string;
@@ -92,7 +92,7 @@ export function detectMoodSequencePatterns(reflections: MindReflection[]): Thoug
 // 检测标签模式
 export function detectTagPatterns(reflections: MindReflection[]): ThoughtPattern[] {
   const patterns: ThoughtPattern[] = [];
-  const sortedReflections = reflections.filter(r => !r.deleted);
+  const sortedReflections = activeOnly(reflections);
 
   // 按标签分组
   const tagGroups = new Map<string, MindReflection[]>();
@@ -132,7 +132,7 @@ export function detectTagPatterns(reflections: MindReflection[]): ThoughtPattern
 // 检测时间模式
 export function detectTimePatterns(reflections: MindReflection[]): ThoughtPattern[] {
   const patterns: ThoughtPattern[] = [];
-  const sortedReflections = reflections.filter(r => !r.deleted);
+  const sortedReflections = activeOnly(reflections);
 
   // 按小时分组
   const hourGroups = new Map<number, MindReflection[]>();
@@ -175,7 +175,7 @@ export function detectTimePatterns(reflections: MindReflection[]): ThoughtPatter
 // 检测关键词模式
 export function detectKeywordPatterns(reflections: MindReflection[]): ThoughtPattern[] {
   const patterns: ThoughtPattern[] = [];
-  const sortedReflections = reflections.filter(r => !r.deleted);
+  const sortedReflections = activeOnly(reflections);
 
   // 常见关键词
   const keywords = [
@@ -224,7 +224,7 @@ export function detectGrowthPatterns(reflections: MindReflection[]): ThoughtPatt
   
   // 按周分组
   const weeklyGroups = new Map<string, MindReflection[]>();
-  reflections.filter(r => !r.deleted).forEach(r => {
+  activeOnly(reflections).forEach(r => {
     const weekStart = new Date(r.timestamp);
     const day = weekStart.getDay();
     weekStart.setDate(weekStart.getDate() - (day + 6) % 7); // Monday as week start

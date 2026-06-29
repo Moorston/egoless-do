@@ -1,3 +1,4 @@
+import { activeOnly } from '../../utils';
 // ─── 感念索引构建 ──────────────────────────────────────────────
 import type { MindReflection } from '../../types/reflection';
 

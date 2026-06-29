@@ -97,7 +97,7 @@ describe('calculateReviewData', () => {
 
     expect(result.completionRate).toBe(75); // 3 done out of 4 days in range
     expect(result.doneDays).toBe(3);
-    expect(result.totalDays).toBe(7); // 7 days in a week
+    expect(result.totalDays).toBe(4); // 4 days with checkin data in range
   });
 
   it('should calculate streak days correctly', () => {

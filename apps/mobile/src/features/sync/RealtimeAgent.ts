@@ -167,7 +167,9 @@ export class RealtimeAgent {
         recordId,
         payload: data.payload,
       });
-    } catch {}
+    } catch (e) {
+      log.error(e, { eventType, rawData });
+    }
   }
 
   private async _subscribe() {

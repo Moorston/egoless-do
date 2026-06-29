@@ -1,6 +1,6 @@
 // ─── Checkin business logic (pure functions) ───────────────────
 import type { CheckinEntry } from '../types';
-import { dateStr, calculateCheckinStreak, computeLongestStreak as computeLongestStreakRaw } from '../utils';
+import { dateStr, calculateCheckinStreak, computeLongestStreak as computeLongestStreakRaw, activeOnly } from '../utils';
 
 // ─── Incomplete reason constants ───────────────────────────────
 export const INCOMPLETE_REASONS = [
