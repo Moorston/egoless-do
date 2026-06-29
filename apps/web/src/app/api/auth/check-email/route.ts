@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createLogger } from '@egoless-do/core';
 import { getAdminPb, escapeFilter } from '../../_pb';
 import { getClientIp, checkEmailRateLimit } from '../../_rateLimit';
+
+const log = createLogger('Auth');
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -22,11 +25,11 @@ export async function POST(req: NextRequest) {
       if (err?.status === 404) {
         return NextResponse.json({ available: true });
       }
-      console.error('[check-email] error:', err?.status, err?.message);
+      log.error('check email error:', { status: err?.status, message: err?.message });
       return NextResponse.json({ available: false, error: '检查失败' }, { status: 500 });
     }
   } catch (err) {
-    console.error('[check-email] unexpected error:', err);
+    log.error('unexpected error:', err);
     return NextResponse.json({ available: false, error: '检查失败' }, { status: 500 });
   }
 }

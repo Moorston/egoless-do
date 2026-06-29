@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { createLogger } from '@egoless-do/core';
 import { getAdminPb } from '../../_pb';
 import { verifyAuth } from '../../_auth';
 import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const log = createLogger('Plan');
 
 const notifyRateLimit = createRateLimiter(10, 60_000); // 10 req/min
 
@@ -84,7 +87,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, message: '延期提醒已发送' });
   } catch (err: unknown) {
-    console.error('Send delayed plan notification error:', err);
+    log.error('Send delayed plan notification error:', err);
     return NextResponse.json({ error: '发送延期提醒失败' }, { status: 500 });
   }
 }

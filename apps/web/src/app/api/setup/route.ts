@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { createLogger } from '@egoless-do/core';
 import { getPb } from '../_pb';
 import { createHmac, timingSafeEqual } from 'crypto';
 import { getClientIp, createRateLimiter } from '../_rateLimit';
+
+const log = createLogger('Setup');
 
 const setupRateLimit = createRateLimiter(3, 60_000); // 3 req/min
 
@@ -95,7 +98,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ success: true, results });
   } catch (err: unknown) {
-    console.error('[Setup] Error:', err);
+    log.error('Collection setup error:', err);
     return NextResponse.json({ error: '集合初始化失败，请检查管理员凭据', results }, { status: 500 });
   }
 }

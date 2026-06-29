@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_TINY, FONT_CLOSE, dateStr, REFLECTION_CATEGORIES, highlightSearchMatch } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, ensureOrderContains, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_TINY, FONT_CLOSE, dateStr, REFLECTION_CATEGORIES, highlightSearchMatch, getTrailsByReflection } from '@egoless-do/core';
 import { useTheme, useT, cs, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useOverlay } from './useOverlay';
@@ -58,6 +58,25 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
   const [planItemName, setPlanItemName] = useState('');
   const [planItemDescription, setPlanItemDescription] = useState('');
   const [planItemTargetMetric, setPlanItemTargetMetric] = useState('');
+
+  // Sync form fields when selectedReflectionId changes
+  useEffect(() => {
+    if (selectedReflectionId) {
+      const r = (store.reflections ?? []).find(x => x.id === selectedReflectionId && !x.deleted);
+      if (r) {
+        const lines = (r.content ?? '').split('\n').filter((l: string) => l.trim());
+        const defaultName = lines[0]?.slice(0, 50) || r.content?.slice(0, 50) || '';
+        setPlanItemName(defaultName);
+        setPlanItemDescription(r.content ?? '');
+        setPlanItemTargetMetric('');
+        setPlanItemPriority('medium');
+      }
+    } else {
+      setPlanItemName('');
+      setPlanItemDescription('');
+      setPlanItemTargetMetric('');
+    }
+  }, [selectedReflectionId, store.reflections]);
   const [planItemStartDate, setPlanItemStartDate] = useState(() => {
     const today = dateStr();
     const activePlan = store.getActivePlan();
@@ -660,14 +679,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
                     setActionMenuId(null);
                     return;
                   }
-                  const r = (store.reflections ?? []).find(x => x.id === actionMenuId && !x.deleted);
-                  const lines = (r?.content ?? '').split('\n').filter((l: string) => l.trim());
-                  const defaultName = lines[0]?.slice(0, 50) || r?.content?.slice(0, 50) || '';
                   setSelectedReflectionId(actionMenuId);
-                  setPlanItemName(defaultName);
-                  setPlanItemDescription(r?.content ?? '');
-                  setPlanItemTargetMetric('');
-                  setPlanItemPriority('medium');
                   setShowCreatePlanItem(true);
                   setActionMenuId(null);
                 }}
@@ -710,6 +722,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
       {detailId && (() => {
         const r = (store.reflections ?? []).find(x => x.id === detailId && !x.deleted);
         if (!r) return null;
+        const linkedTrails = getTrailsByReflection(r.id, store.thoughtTrails ?? []);
         const linkedPlanItem = r.linkedPlanItemId
           ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
           : null;
@@ -769,7 +782,7 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
               )}
 
               {/* Action buttons */}
-              <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+              <div style={{ display: 'flex', gap: 8, marginTop: 20, flexWrap: 'wrap' }}>
                 <button onClick={() => { setDetailId(null); openEdit(r); }}
                   style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(255,255,255,.25)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
                   {T('reflEditTitle')}
@@ -777,6 +790,20 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
                 <button onClick={() => { store.togglePin(r.id); }}
                   style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(255,255,255,.25)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
                   {r.isPinned ? T('reflUnpin') : T('reflPin')}
+                </button>
+                {linkedTrails.length > 0 && (
+                  <button onClick={() => { setDetailId(null); overlay.open('thoughtTrailDetail', { trailId: linkedTrails[0].id }); }}
+                    style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(139,92,246,.3)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
+                    关联脉络
+                  </button>
+                )}
+                <button onClick={() => {
+                  setDetailId(null);
+                  setSelectedReflectionId(r.id);
+                  setShowCreatePlanItem(true);
+                }}
+                  style={{ flex: 1, padding: '10px 0', border: 'none', borderRadius: 10, background: 'rgba(16,185,129,.3)', color: '#fff', fontSize: FONT_BUTTON, fontWeight: 600, cursor: 'pointer' }}>
+                  创建任务
                 </button>
                 {isWithin7Days && (
                   <button onClick={() => { if (confirm(T('confirmDeleteReflection'))) { store.deleteReflection(r.id); setDetailId(null); } }}
@@ -799,11 +826,25 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
         const defaultName = lines[0]?.slice(0, 50) || reflection.content.slice(0, 50);
 
         return (
-        <div onClick={(e) => { if (e.target === e.currentTarget) { setShowCreatePlanItem(false); setSelectedReflectionId(null); } }} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div onClick={(e) => {
+                  if (e.target === e.currentTarget) {
+                    setShowCreatePlanItem(false);
+                    setSelectedReflectionId(null);
+                    setPlanItemName('');
+                    setPlanItemDescription('');
+                    setPlanItemTargetMetric('');
+                  }
+                }} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.75)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ width: '100%', maxWidth: 390, background: TH.cardSolid, borderRadius: 24, padding: 24, maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
               <div style={{ fontWeight: 700, fontSize: FONT_TITLE, color: TH.text }}>{T('reflCreatePlanItemTitle')}</div>
-              <button onClick={() => setShowCreatePlanItem(false)} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
+              <button onClick={() => {
+                  setShowCreatePlanItem(false);
+                  setSelectedReflectionId(null);
+                  setPlanItemName('');
+                  setPlanItemDescription('');
+                  setPlanItemTargetMetric('');
+                }} style={{ background: 'transparent', border: 'none', fontSize: FONT_CLOSE, color: TH.sub, cursor: 'pointer' }}><X size={22} /></button>
             </div>
             <div style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>
               {T('reflLinkedPlan')}: {store.getActivePlan()?.name || T('reflNoPlan')}
@@ -882,7 +923,13 @@ export default function ReflectionsTab({ newMindTrigger }: { newMindTrigger?: nu
               </div>
             </div>
             <div style={{ display: 'flex', gap: 12 }}>
-              <button onClick={() => setShowCreatePlanItem(false)}
+              <button onClick={() => {
+                  setShowCreatePlanItem(false);
+                  setSelectedReflectionId(null);
+                  setPlanItemName('');
+                  setPlanItemDescription('');
+                  setPlanItemTargetMetric('');
+                }}
                 style={{ flex: 1, padding: 14, borderRadius: 12, border: `1px solid ${TH.border}`, background: 'transparent', color: TH.text, fontSize: FONT_BODY, fontWeight: 600, cursor: 'pointer' }}>{T('cancel')}</button>
               <button onClick={() => {
                 if (selectedReflectionId) {

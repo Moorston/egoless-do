@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import { createLogger } from '@egoless-do/core';
 import { getAdminPb, escapeFilter } from '../../_pb';
 import db from '../../_db';
 import { getClientIp, sendCodeRateLimit } from '../../_rateLimit';
+
+const log = createLogger('Auth');
 
 const CODE_EXPIRES_MS = 5 * 60 * 1000;
 const CODE_LENGTH = 6;
@@ -48,7 +51,7 @@ export async function POST(req: NextRequest) {
       emailExists = true;
     } catch (err: any) {
       if (err?.status !== 404) {
-        console.error('[send-code] check email error:', err?.status, err?.message);
+        log.error('check email error:', { status: err?.status, message: err?.message });
         throw err;
       }
     }
@@ -103,7 +106,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, message: '验证码已发送' });
   } catch (err: unknown) {
-    console.error('Send code error:', err);
+    log.error('Send code error:', err);
     return NextResponse.json({ error: '发送验证码失败，请稍后重试' }, { status: 500 });
   }
 }

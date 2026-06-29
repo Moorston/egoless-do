@@ -4,7 +4,9 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { useWebStore } from '../store/useWebStore';
-import { THEMES, t, setPocketbaseUrl, FONT_BODY, FONT_SUB, FONT_CLOSE } from '@egoless-do/core';
+import { THEMES, t, setPocketbaseUrl, FONT_BODY, FONT_SUB, FONT_CLOSE, createLogger } from '@egoless-do/core';
+
+const log = createLogger('Web');
 import { useReminder } from './useReminder';
 import { ErrorBoundary, useResponsive } from './helpers';
 import {
@@ -105,7 +107,7 @@ export default function AppShell() {
     if (!expiresAt || expiresAt < Date.now()) {
       refreshAuth().catch(() => logout());
     } else if (expiresAt - Date.now() < 3600000) {
-      refreshAuth().catch((e) => console.error('[err]', e));
+      refreshAuth().catch((e) => log.error(e));
     }
   }, [isSignedIn, auth.expiresAt]);
 

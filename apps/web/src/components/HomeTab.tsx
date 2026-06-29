@@ -152,6 +152,12 @@ export default function HomeTab() {
         const yesterdayRecord = (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr);
         const yesterdayDone = yesterdayRecord?.done === true;
         if (yesterdayDone) return null;
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        const dayBeforeYesterdayStr = dateStr(twoDaysAgo);
+        const dayBeforeYesterdayRecord = (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === dayBeforeYesterdayStr);
+        const dayBeforeYesterdayDone = dayBeforeYesterdayRecord?.done === true;
+        if (!dayBeforeYesterdayDone) return null;
         return (
           <div onClick={() => overlay.open('grace')} style={{
             borderRadius: 14, background: warnBg,

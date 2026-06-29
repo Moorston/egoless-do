@@ -2,9 +2,11 @@
 
 import React, { Component } from 'react';
 import * as Sentry from '@sentry/nextjs';
-import { t, FONT_CLOSE } from '@egoless-do/core';
+import { t, FONT_CLOSE, createLogger } from '@egoless-do/core';
 import { useWebStore } from '../../store/useWebStore';
 import { AlertTriangle } from 'lucide-react';
+
+const log = createLogger('Web');
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -21,7 +23,7 @@ export class ErrorBoundaryInner extends Component<
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error('ErrorBoundary caught:', error, info);
+    log.error('ErrorBoundary caught:', error, info);
     Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
   }
 

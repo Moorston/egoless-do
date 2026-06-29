@@ -40,8 +40,12 @@ export default function StreakBreakPage({ onClose }: { onClose: () => void }) {
   );
 
   const handleCheckin = useCallback(() => {
-    overlay.switch('checkin');
-  }, [overlay]);
+    onClose();
+    // Open checkin overlay after closing streak break page
+    setTimeout(() => {
+      overlay.open('checkin');
+    }, 100);
+  }, [overlay, onClose]);
 
   // Weekday labels: Mon-Sun
   const weekdayLabels = [T('weekdayMon'), T('weekdayTue'), T('weekdayWed'), T('weekdayThu'), T('weekdayFri'), T('weekdaySat'), T('weekdaySun')];

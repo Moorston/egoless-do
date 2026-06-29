@@ -240,7 +240,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       const clampedToday = today > item.endDate ? item.endDate : today;
       let doneCount = 0;
       for (const c of checkins) {
-        if (c.planItemId === item.id && c.done && c.date >= item.startDate && c.date <= clampedToday) doneCount++;
+        if (c.planItemId === item.id && c.done && !c.deleted && c.date >= item.startDate && c.date <= clampedToday) doneCount++;
       }
       const progress = computeItemProgress(item, checkins, today);
       map.set(item.id, { doneCount, progress });

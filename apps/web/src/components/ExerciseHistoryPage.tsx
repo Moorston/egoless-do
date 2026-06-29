@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, getSportType, formatPace } from '@egoless-do/core';
+import { THEMES, COLORS, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_STAT_CARD, FONT_STAT_SECTION, getSportType, formatPace, createLogger } from '@egoless-do/core';
 import type { ExerciseEntry } from '@egoless-do/core';
+
+const log = createLogger('Web');
 import { useWebStore } from '../store/useWebStore';
 import { useT } from './helpers';
 import { loadAMap } from '../lib/amapLoader';
@@ -24,7 +26,7 @@ function DetailCard({ e, TH, P, T }: { e: ExerciseEntry; TH: any; P: string; T: 
       const polyline = new AMap.Polyline({ path: trackCoords.map(c => [c.lng, c.lat]), strokeColor: P, strokeWeight: 4, lineJoin: 'round' });
       map.add(polyline);
       map.setFitView([polyline], false, [20, 20, 20, 20]);
-    }).catch(err => console.warn('[AMap] load failed:', err));
+    }).catch(err => log.warn('AMap load failed:', err));
     return () => { cancelled = true; if (map) { map.destroy(); map = null; } };
   }, [trackCoords, P]);
 

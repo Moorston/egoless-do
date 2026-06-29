@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { createLogger } from '@egoless-do/core';
 import { getAdminPb, escapeFilter } from '../../_pb';
 import db from '../../_db';
 import { sanitizeError } from '../../_errors';
 import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const log = createLogger('Auth');
 
 const resetRateLimit = createRateLimiter(5, 60_000); // 5 req/min
 
@@ -68,7 +71,7 @@ export async function POST(req: NextRequest) {
         }
       }
     } catch (e) {
-      console.error('[reset-password] Failed to blacklist token:', e);
+      log.error('Failed to blacklist token:', e);
     }
 
     return NextResponse.json({ ok: true, message: '密码重置成功，请重新登录' });

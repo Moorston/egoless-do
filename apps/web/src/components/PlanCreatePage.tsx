@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { THEMES, COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_ERROR } from '@egoless-do/core';
+import { THEMES, COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_BACK, FONT_ERROR, createLogger } from '@egoless-do/core';
 import type { ItemForm, PlanItemLink, CheckinFrequency } from '@egoless-do/core';
 import { LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
+
+const log = createLogger('Web');
 import { useT, cs, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -158,7 +160,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
       }
       onClose();
     } catch (e) {
-      console.error('[PlanCreatePage] save error:', e);
+      log.error('save error:', e);
       setSaving(false);
     }
   };
@@ -284,7 +286,7 @@ export default function PlanCreatePage({ planId, onClose }: { planId?: string; o
                   {item.name || `${T('planItemName')} ${idx + 1}`}
                 </span>
                 {(() => { const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium')); return p ? <span style={{ width: 8, height: 8, borderRadius: 4, background: p.color, display: 'inline-block' }} /> : null; })()}
-                <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}</span>
+                {item.link !== 'manual' && <span style={{ fontSize: FONT_SUB, color: TH.sub }}>{T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}</span>}
               </div>
 
               {/* Expanded content */}

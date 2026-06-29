@@ -7,12 +7,12 @@ const config: NextConfig = {
   output: 'standalone',
 };
 
-// next-pwa uses webpack plugins incompatible with Turbopack;
+// @ducanh2912/next-pwa uses webpack plugins incompatible with Turbopack;
 // only apply in production builds where webpack is used.
 const isProd = process.env.NODE_ENV === 'production';
 let finalConfig: NextConfig = config;
 if (isProd) {
-  const withPWA = require('next-pwa')({
+  const withPWA = require('@ducanh2912/next-pwa').default({
     dest: 'public',
     register: true,
     skipWaiting: true,

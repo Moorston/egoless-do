@@ -5,7 +5,7 @@ import { COLORS, tomorrow, daysInMonth, dateStr, FONT_BODY, FONT_BUTTON, FONT_TI
 import type { Habit } from '@egoless-do/core';
 import { Toggle, useTheme, useT, cs, inp } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { Target, Pencil, Trash2, X, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { Target, Pencil, Trash2, X, ChevronLeft, ChevronRight, CheckCircle, Bell, BellOff } from 'lucide-react';
 
 export default function HabitsTab() {
   const store = useWebStore();
@@ -95,6 +95,10 @@ export default function HabitsTab() {
                 )}
 
                 <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</div>
+                <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  {h.alarmEnabled ? <Bell size={14} color={P} /> : <BellOff size={14} color={TH.sub} />}
+                  <span>{T('habitAlarm')}: {h.alarmEnabled ? `${String(h.alarmHour).padStart(2, '0')}:${String(h.alarmMinute).padStart(2, '0')}` : T('habitAlarmOff')}</span>
+                </div>
 
                 {h.insight && <div style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8, fontStyle: 'italic' }}>{T('habitVision')}&ldquo;{h.insight}&rdquo;</div>}
                 {h.createTag && <span style={{ fontSize: FONT_SUB, padding: '2px 8px', borderRadius: 10, background: `${P}30`, color: P, marginBottom: 8, display: 'inline-block' }}>#{h.name}</span>}

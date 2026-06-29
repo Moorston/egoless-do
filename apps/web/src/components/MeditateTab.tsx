@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
-import { getTodayMedMinutes, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import { getTodayMedMinutes, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
+
+const log = createLogger('Web');
 import { useOverlay } from './useOverlay';
 import { CircleDot, Music, ChevronRight } from 'lucide-react';
 
@@ -31,7 +33,7 @@ function useAudio() {
       setAudioError(null);
       return buf;
     } catch (e) {
-      console.warn(`Audio load failed: ${url}`, e);
+      log.warn('Audio load failed: %s', url, e);
       setAudioError('medLoadError');
       return null;
     }

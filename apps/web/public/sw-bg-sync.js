@@ -1,5 +1,5 @@
 // ─── Background Sync event handler (registered alongside main SW) ─
-// This file is registered separately from the next-pwa generated sw.js
+// This file is registered separately from the @ducanh2912/next-pwa generated sw.js
 // to handle Background Sync API events.
 
 self.addEventListener('sync', (event) => {

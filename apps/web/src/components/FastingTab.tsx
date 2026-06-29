@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { COLORS, WARM_CORAL, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import { COLORS, WARM_CORAL, FONT_BODY, FONT_BUTTON, FONT_TITLE, FONT_SUB, FONT_STAT_CARD, dateStr, createLogger } from '@egoless-do/core';
+
+const log = createLogger('Web');
 import { useTheme, useT, cs, LinkWorldBtn, useCachedStyle } from './helpers';
 import { useWebStore } from '../store/useWebStore';
 import { useShallow } from 'zustand/react/shallow';
@@ -50,7 +52,7 @@ export default function FastingTab() {
       src.buffer = buf;
       src.connect(gain);
       src.start();
-    } catch (e) { console.warn('Bell sound failed:', e); }
+    } catch (e) { log.warn('Bell sound failed:', e); }
   }, []);
 
   useEffect(() => {

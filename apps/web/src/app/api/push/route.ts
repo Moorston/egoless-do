@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createLogger } from '@egoless-do/core';
 import { verifyAuth } from '../_auth';
 import { getPb, escapeFilter } from '../_pb';
 import { getClientIp, createRateLimiter } from '../_rateLimit';
+
+const log = createLogger('Push');
 
 const pushRateLimit = createRateLimiter(30, 60_000); // 30 req/min
 
@@ -139,7 +142,7 @@ export async function PUT(req: NextRequest) {
     if (failedTokenIds.length > 0) {
       await Promise.all(
         failedTokenIds.map((id) =>
-          pb.collection('push_tokens').delete(id).catch(console.error)
+          pb.collection('push_tokens').delete(id).catch((e) => log.error(e))
         )
       );
     }
@@ -194,7 +197,7 @@ async function sendExpoPush(
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
-      console.error('[Push] Expo Push API error:', response.status, errorText);
+      log.error('Expo Push API error:', { status: response.status, body: errorText });
       // All tokens in this batch count as failed
       continue;
     }
@@ -211,7 +214,7 @@ async function sendExpoPush(
         if (errorCode === 'DeviceNotRegistered') {
           failedTokenIds.push(batchTokens[j].id);
         } else {
-          console.warn('[Push] Expo push error for token:', errorCode, item.message);
+          log.warn('Expo push error for token:', errorCode, item.message);
         }
       }
     }

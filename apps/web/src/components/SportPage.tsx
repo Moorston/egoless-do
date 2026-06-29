@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { SPORT_BG_COLORS, THEMES, getSportType, TARGET_PRESETS as ALL_TARGET_PRESETS, estimateCalories, MET_MAP } from '@egoless-do/core';
+import { SPORT_BG_COLORS, THEMES, getSportType, TARGET_PRESETS as ALL_TARGET_PRESETS, estimateCalories, MET_MAP, createLogger } from '@egoless-do/core';
 import type { SportItem, SportType, ExerciseSet } from '@egoless-do/core';
+
+const log = createLogger('Web');
 import { useWebStore } from '../store/useWebStore';
 import { useT } from './helpers';
 import { loadAMap } from '../lib/amapLoader';
@@ -95,7 +97,7 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
           mapRef.current.setCenter([point.lng, point.lat]);
         }
       },
-      (err) => console.warn('GPS error:', err),
+      (err) => log.warn('GPS error:', err),
       { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 }
     );
   }, []);
@@ -145,7 +147,7 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
           polylineRef.current = polyline;
           map.setFitView([polyline], false, [40, 40, 40, 40]);
         }
-      }).catch(err => console.warn('AMap load failed:', err));
+      }).catch(err => log.warn('AMap load failed:', err));
     }
     return () => {
       cancelled = true;
@@ -172,7 +174,7 @@ export default function SportPage({ sport, onClose }: { sport: SportItem; onClos
         });
         mapRef.current.add(polyline);
         polylineRef.current = polyline;
-      }).catch(err => console.warn('AMap load failed:', err));
+      }).catch(err => log.warn('AMap load failed:', err));
       return () => { cancelled = true; };
     }
   }, [coords]);

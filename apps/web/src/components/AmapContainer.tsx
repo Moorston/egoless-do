@@ -2,6 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import { loadAMap } from '../lib/amapLoader';
+import { createLogger } from '@egoless-do/core';
+
+const log = createLogger('Web');
 
 interface AmapContainerProps {
   center?: [number, number];
@@ -36,7 +39,7 @@ export default function AmapContainer({
       });
       mapRef.current = map;
       onMapReady?.(map);
-    }).catch(err => console.warn('AMap load failed:', err));
+    }).catch(err => log.warn('AMap load failed:', err));
 
     return () => {
       cancelled = true;
