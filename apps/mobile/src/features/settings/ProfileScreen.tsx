@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator,
+  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'expo-image-picker';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, useT, RowItem } from '../../components/UI';
@@ -12,7 +13,7 @@ import {
 } from '@egoless-do/core';
 import {
   Pencil, Flame, Target, CalendarDays, Brain, Scale, Droplets,
-  Database, LogOut, ChevronRight, Check, X,
+  Database, LogOut, ChevronRight, Check, X, Camera,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 
@@ -42,6 +43,36 @@ export default function ProfileScreen() {
   }, [store.checkinHistory, store.habits, store.reflections]);
 
   const displayName = store.userProfile.nickname ?? store.auth.user?.name ?? T('settingsDefaultName');
+  const avatarUri = store.userProfile.avatar;
+
+  const pickAvatar = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(T('profilePermDenied'), T('profilePermDeniedMsg'));
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+        base64: true,
+      });
+      if (!result.canceled && result.assets[0]) {
+        const asset = result.assets[0];
+        // Resize to ~200x200 to keep base64 small for sync
+        const base64 = `data:image/jpeg;base64,${asset.base64}`;
+        store.updateUserProfile({ avatar: base64 });
+      }
+    } catch (e) {
+      log.error(e, { message: 'Avatar pick error' });
+    }
+  };
+
+  const removeAvatar = () => {
+    store.updateUserProfile({ avatar: undefined });
+  };
 
   const saveNickname = () => {
     store.updateUserProfile({ nickname: editNickname.trim() || undefined });
@@ -68,15 +99,31 @@ export default function ProfileScreen() {
         {/* Avatar + Name */}
         <Card style={{ marginBottom: 12 }}>
           <View style={{ alignItems: 'center', gap: 12 }}>
-            <View style={{
-              width: 80, height: 80, borderRadius: 40,
-              backgroundColor: `${P}30`,
-              alignItems: 'center', justifyContent: 'center',
-            }}>
-              <Text style={{ fontSize: 32, fontWeight: '700', color: P }}>
-                {displayName.charAt(0).toUpperCase()}
-              </Text>
-            </View>
+            <TouchableOpacity onPress={pickAvatar} onLongPress={avatarUri ? removeAvatar : undefined}>
+              <View style={{
+                width: 80, height: 80, borderRadius: 40,
+                backgroundColor: `${P}30`,
+                alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
+              }}>
+                {avatarUri ? (
+                  <Image source={{ uri: avatarUri }} style={{ width: 80, height: 80, borderRadius: 40 }} />
+                ) : (
+                  <Text style={{ fontSize: 32, fontWeight: '700', color: P }}>
+                    {displayName.charAt(0).toUpperCase()}
+                  </Text>
+                )}
+              </View>
+              {/* Camera overlay */}
+              <View style={{
+                position: 'absolute', bottom: 0, right: 0,
+                width: 28, height: 28, borderRadius: 14,
+                backgroundColor: P, alignItems: 'center', justifyContent: 'center',
+                borderWidth: 2, borderColor: TH.card,
+              }}>
+                <Camera size={14} color="#fff" />
+              </View>
+            </TouchableOpacity>
 
             {editingNickname ? (
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, width: '100%' }}>

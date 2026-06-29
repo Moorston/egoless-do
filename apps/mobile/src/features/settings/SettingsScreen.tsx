@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator,
+  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator, Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
@@ -346,10 +346,15 @@ export default function SettingsScreen() {
                 width: 56, height: 56, borderRadius: 28,
                 backgroundColor: `${P}30`,
                 alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
               }}>
-                <Text style={{ fontSize: 22, fontWeight: '700', color: P }}>
-                  {(store.userProfile.nickname ?? store.auth.user?.name ?? '?').charAt(0).toUpperCase()}
-                </Text>
+                {store.userProfile.avatar ? (
+                  <Image source={{ uri: store.userProfile.avatar }} style={{ width: 56, height: 56, borderRadius: 28 }} />
+                ) : (
+                  <Text style={{ fontSize: 22, fontWeight: '700', color: P }}>
+                    {(store.userProfile.nickname ?? store.auth.user?.name ?? '?').charAt(0).toUpperCase()}
+                  </Text>
+                )}
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>

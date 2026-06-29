@@ -296,6 +296,7 @@ export const zh: I18nKeys = {
   settingsFreePlan:'免费版', settingsDefaultName:'心流行者',
   settingsEditProfile:'编辑资料', settingsNickname:'昵称',
   profileStats:'统计概览', profileBodyData:'身体数据', profileWeight:'体重', profileWaterGoal:'饮水目标', profileAccount:'账号',
+  profilePermDenied:'权限被拒绝', profilePermDeniedMsg:'需要相册访问权限来更换头像',
   settingsLogin:'登录 / 注册', settingsLoginDesc:'登录后可同步数据到云端',
   settingsFooter:'Egoless Do · 心流纪 v1.0.0 · 离线优先 · 隐私优先',
   settingsSetReminder:'设置提醒时间', settingsSelectTheme:'选择主题',

@@ -296,6 +296,7 @@ export const zhHant: I18nKeys = {
   settingsFreePlan:'免費版', settingsDefaultName:'心流行者',
   settingsEditProfile:'編輯資料', settingsNickname:'暱稱',
   profileStats:'統計概覽', profileBodyData:'身體數據', profileWeight:'體重', profileWaterGoal:'飲水目標', profileAccount:'帳號',
+  profilePermDenied:'權限被拒絕', profilePermDeniedMsg:'需要相簿存取權限來更換頭像',
   settingsLogin:'登錄 / 註冊', settingsLoginDesc:'登錄後可同步數據到雲端',
   settingsFooter:'Egoless Do · 心流紀 v1.0.0 · 離線優先 · 隱私優先',
   settingsSetReminder:'設置提醒時間', settingsSelectTheme:'選擇主題',

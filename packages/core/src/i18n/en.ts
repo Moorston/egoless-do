@@ -296,6 +296,7 @@ export const en: I18nKeys = {
   settingsFreePlan:'Free', settingsDefaultName:'Practitioner',
   settingsEditProfile:'Edit Profile', settingsNickname:'Nickname',
   profileStats:'Statistics', profileBodyData:'Body Data', profileWeight:'Weight', profileWaterGoal:'Water Goal', profileAccount:'Account',
+  profilePermDenied:'Permission Denied', profilePermDeniedMsg:'Photo library access is needed to change your avatar',
   settingsLogin:'Sign In / Register', settingsLoginDesc:'Sign in to sync data to cloud',
   settingsFooter:'Egoless Do v1.0.0 · Offline-first · Privacy-first',
   settingsSetReminder:'Set Reminder Time', settingsSelectTheme:'Select Theme',
