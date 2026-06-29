@@ -2,6 +2,9 @@
 // Shared across all platforms for registering push tokens and sending notifications
 
 import { buildHeaders, fetchWithTimeout, handleJsonResponse } from './fetch';
+import { createLogger } from './logger';
+
+const log = createLogger('Push');
 
 export type PushPlatform = 'web' | 'android' | 'ios';
 
@@ -66,9 +69,9 @@ export async function registerPushToken(
     const pushToken = await getToken();
     if (pushToken) {
       await apiRegisterPushToken(authToken, platform, pushToken);
-      console.log('[Push] Token registered for', platform);
+      log.info('Token registered for', platform);
     }
   } catch (err) {
-    console.error('[Push] Failed to register token:', err);
+    log.error(err, { message: 'Failed to register token' });
   }
 }

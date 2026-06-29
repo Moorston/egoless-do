@@ -5,6 +5,9 @@ import { buildReflectionSummary } from '../business/trail-creation';
 import { getAIService } from './ai-service';
 import { isAIRecommendAvailable } from './trail-recommender';
 import { dateStr } from '../utils';
+import { createLogger } from '../logger';
+
+const log = createLogger('AI');
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -207,7 +210,7 @@ export async function generateInsightProfile(
     if (!result?.success || !result?.data) return null;
     return parseInsightResponse(result.data, active);
   } catch (e) {
-    console.log('[InsightProfile] Error:', e);
+    log.error(e, { context: '[InsightProfile]' });
     return null;
   }
 }

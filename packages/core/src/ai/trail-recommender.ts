@@ -7,6 +7,9 @@ import { buildIndex } from './rag/indexer';
 import { retrieveTopK } from './rag/retriever';
 import { buildRecommendPrompt, buildQueryParsePrompt } from './rag/prompt-builder';
 import { AICache, generateCacheKey } from './rag/cache';
+import { createLogger } from '../logger';
+
+const log = createLogger('AI');
 
 // ─── Types ───────────────────────────────────────────────────────────
 
@@ -142,7 +145,7 @@ async function batchedAIGenerate(
   const needBatch = fullPrompt.length > threshold && items.length > batchSize;
 
   if (!needBatch) {
-    console.log('[BatchAI] single call, prompt length:', fullPrompt.length);
+    log.debug('[BatchAI] single call, prompt length:', fullPrompt.length);
     const result = await withAbortTimeout(
       (signal) => (service as any).generateCloud(fullPrompt, {
         systemPrompt, maxTokens, temperature, signal,
@@ -159,11 +162,11 @@ async function batchedAIGenerate(
   for (let i = 0; i < items.length; i += batchSize) {
     batches.push(items.slice(i, i + batchSize));
   }
-  console.log('[BatchAI] parallel batches:', batches.length, 'total items:', items.length);
+  log.debug('[BatchAI] parallel batches:', batches.length, 'total items:', items.length);
 
   const promises = batches.map((batch, idx) => {
     const prompt = buildPrompt(batch, idx);
-    console.log(`[BatchAI] batch ${idx}, prompt:`, prompt.length, 'chars');
+    log.debug(`[BatchAI] batch ${idx}, prompt:`, prompt.length, 'chars');
     return withAbortTimeout(
       (signal) => (service as any).generateCloud(prompt, {
         systemPrompt, maxTokens, temperature, signal,
@@ -182,13 +185,13 @@ async function batchedAIGenerate(
       if (val?.success && val?.data) {
         outputs.push({ batchIdx: i, data: val.data });
       } else {
-        console.log(`[BatchAI] batch ${i} failed:`, val?.error);
+        log.warn(`[BatchAI] batch ${i} failed:`, val?.error);
       }
     } else {
-      console.log(`[BatchAI] batch ${i} error:`, r.reason);
+      log.warn(`[BatchAI] batch ${i} error:`, r.reason);
     }
   }
-  console.log('[BatchAI] success batches:', outputs.length, '/', batches.length);
+  log.debug('[BatchAI] success batches:', outputs.length, '/', batches.length);
   return outputs;
 }
 
@@ -250,7 +253,7 @@ export async function recommendTrailsViaAI(
     recommendCache.set(cacheKey, result);
     return result;
   } catch (e) {
-    console.log('[RAG] recommendTrailsViaAI fallback:', e);
+    log.error(e, { context: '[RAG] recommendTrailsViaAI fallback' });
     return { recommendations: [], targetReflections };
   }
 }
@@ -311,7 +314,7 @@ export async function matchReflectionsToTopic(
     matchCache.set(cacheKey, allParsed);
     return allParsed;
   } catch (e) {
-    console.log('[RAG] matchReflectionsToTopic fallback:', e);
+    log.error(e, { context: '[RAG] matchReflectionsToTopic fallback' });
     return [];
   }
 }
@@ -328,10 +331,10 @@ export async function semanticSearchReflections(
   const service = getAIService();
   const config = service.getConfig();
 
-  console.log('[SemanticSearch] query:', query, 'mode:', config.mode, 'defaultModel:', service.getDefaultModel()?.id ?? 'none');
+  log.debug('[SemanticSearch] query:', query, 'mode:', config.mode, 'defaultModel:', service.getDefaultModel()?.id ?? 'none');
 
   if (config.mode === 'local' || !service.getDefaultModel()) {
-    console.log('[SemanticSearch] skip: no cloud config');
+    log.debug('[SemanticSearch] skip: no cloud config');
     return [];
   }
 
@@ -345,7 +348,7 @@ export async function semanticSearchReflections(
 
   const index = buildIndex(validReflections);
   const topK = retrieveTopK(query, index, SEMANTIC_TOP_K);
-  console.log('[SemanticSearch] RAG topK:', topK.length);
+  log.debug('[SemanticSearch] RAG topK:', topK.length);
 
   const targetReflections = topK.length >= 5
     ? topK.map(s => s.index)
@@ -385,11 +388,11 @@ export async function semanticSearchReflections(
       }
     }
 
-    console.log('[SemanticSearch] total matches:', allMatches.length);
+    log.debug('[SemanticSearch] total matches:', allMatches.length);
     semanticCache.set(cacheKey, allMatches);
     return allMatches;
   } catch (e) {
-    console.log('[SemanticSearch] exception:', e);
+    log.error(e, { context: '[SemanticSearch] exception' });
     return [];
   }
 }
@@ -456,7 +459,7 @@ export async function parseSmartQuery(
     queryCache.set(cacheKey, parsed);
     return parsed;
   } catch (e) {
-    console.log('[SmartQuery] exception:', e);
+    log.error(e, { context: '[SmartQuery] exception' });
     return { ...FALLBACK_RESULT, topic: input };
   }
 }

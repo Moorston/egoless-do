@@ -9,6 +9,9 @@ import { buildReviewPrompt, parseReviewAIResponse } from '../business/review';
 import { LocalAIEngine } from './local-engine';
 import { createProvider, testConnection } from './cloud-providers';
 import type { CloudProvider } from './cloud-providers';
+import { createLogger } from '../logger';
+
+const log = createLogger('AI');
 
 export class AIService {
   private localEngine: LocalAIEngine;
@@ -32,12 +35,12 @@ export class AIService {
         try {
           this.providers.set(model.id, createProvider(model));
         } catch (e) {
-          console.warn(`Failed to create provider for ${model.id}:`, e);
+          log.warn('Failed to create provider for', model.id, e);
         }
       }
     }
   }
-  
+
   // 获取配置
   getConfig(): AIConfig {
     return { ...this.config };
@@ -66,7 +69,7 @@ export class AIService {
     if (config.localEngineEnabled !== undefined) {
       this.config.localEngineEnabled = config.localEngineEnabled;
     }
-    console.log('[AIService] Config updated, providers:', this.providers.size);
+    log.debug('Config updated, providers:', this.providers.size);
   }
   
   // 获取所有模型配置
@@ -93,11 +96,11 @@ export class AIService {
       try {
         this.providers.set(model.id, createProvider(model));
       } catch (e) {
-        console.warn(`Failed to create provider:`, e);
+        log.warn('Failed to create provider:', e);
       }
     }
   }
-  
+
   // 更新模型
   updateModel(modelId: string, updates: Partial<ModelConfig>) {
     const index = this.config.models.findIndex(m => m.id === modelId);
@@ -110,7 +113,7 @@ export class AIService {
           try {
             this.providers.set(modelId, createProvider(this.config.models[index]));
           } catch (e) {
-            console.warn(`Failed to update provider:`, e);
+            log.warn('Failed to update provider:', e);
           }
         } else {
           this.providers.delete(modelId);
@@ -164,15 +167,15 @@ export class AIService {
   
   // 云端生成
   private async generateCloud(prompt: string, options?: GenerateOptions & { preferredModelId?: string; signal?: AbortSignal }): Promise<AIResult<string>> {
-    console.log('[AI Cloud] Getting cloud provider...');
-    console.log('[AI Cloud] preferredModelId:', options?.preferredModelId);
-    console.log('[AI Cloud] Available providers:', Array.from(this.providers.keys()));
+    log.debug('Getting cloud provider...');
+    log.debug('preferredModelId:', options?.preferredModelId);
+    log.debug('Available providers:', Array.from(this.providers.keys()));
 
     const provider = this.getCloudProvider(options?.preferredModelId);
 
     if (!provider) {
-      console.log('[AI Cloud] No provider available!');
-      console.log('[AI Cloud] Config models:', this.config.models.map(m => ({ id: m.id, enabled: m.enabled, isDefault: m.isDefault })));
+      log.debug('No provider available!');
+      log.debug('Config models:', this.config.models.map(m => ({ id: m.id, enabled: m.enabled, isDefault: m.isDefault })));
       return {
         success: false,
         error: '没有可用的云端模型，请先配置',
@@ -180,18 +183,18 @@ export class AIService {
       };
     }
 
-    console.log('[AI Cloud] Using provider, generating...');
+    log.debug('Using provider, generating...');
 
     try {
       const result = await provider.generate(prompt, { ...options, signal: options?.signal });
-      console.log('[AI Cloud] Generation successful, result length:', result?.length ?? 0);
+      log.debug('Generation successful, result length:', result?.length ?? 0);
       return {
         success: true,
         data: result,
         source: 'cloud',
       };
     } catch (error) {
-      console.log('[AI Cloud] Generation failed:', error);
+      log.error(error, { section: 'AI Cloud', step: 'generation' });
       return {
         success: false,
         error: error instanceof Error ? error.message : '请求失败',
@@ -403,37 +406,37 @@ ${weekReflections.map(r => `[${new Date(r.timestamp).toLocaleDateString()}] ${r.
       improvements: ['继续保持'],
     };
     
-    console.log('[AI Review] Starting generateCheckinReview...');
-    console.log('[AI Review] useCloud:', options?.useCloud);
-    console.log('[AI Review] config.mode:', this.config.mode);
-    console.log('[AI Review] enabledModels:', this.getEnabledModels().length);
-    console.log('[AI Review] defaultModel:', this.getDefaultModel()?.id ?? 'none');
+    log.debug('Starting generateCheckinReview...');
+    log.debug('useCloud:', options?.useCloud);
+    log.debug('config.mode:', this.config.mode);
+    log.debug('enabledModels:', this.getEnabledModels().length);
+    log.debug('defaultModel:', this.getDefaultModel()?.id ?? 'none');
     
     if (!options?.useCloud || this.config.mode === 'local') {
-      console.log('[AI Review] Skipping cloud AI (useCloud=false or mode=local)');
+      log.debug('Skipping cloud AI (useCloud=false or mode=local)');
       return defaultResult;
     }
     
     const prompt = buildReviewPrompt(reviewData);
-    console.log('[AI Review] Prompt length:', prompt.length);
+    log.debug('Prompt length:', prompt.length);
     
     const result = await this.generateCloud(prompt, {
       preferredModelId: options?.preferredModelId,
       systemPrompt: '你是一位专业的个人成长分析师，同时具备温暖的鼓励能力。你的分析基于数据，既有专业深度，又能给予建设性的鼓励。请用中文回答。',
     });
     
-    console.log('[AI Review] Cloud result:', result.success ? 'SUCCESS' : 'FAILED');
+    log.debug('Cloud result:', result.success ? 'SUCCESS' : 'FAILED');
     if (!result.success) {
-      console.log('[AI Review] Error:', result.error);
+      log.error(new Error(result.error), { section: 'AI Review' });
     }
     
     if (result.success && result.data) {
       const parsed = parseReviewAIResponse(result.data);
-      console.log('[AI Review] Parsed summary length:', parsed.summary.length);
+      log.debug('Parsed summary length:', parsed.summary.length);
       return parsed;
     }
     
-    console.log('[AI Review] Using default result');
+    log.debug('Using default result');
     return defaultResult;
   }
 }

@@ -1,7 +1,10 @@
 // ─── Daily Reset Service ──────────────────────────────────────────
 // Handles resetting daily data at midnight
 import { dateStr } from './utils';
+import { createLogger } from './logger';
 import type { AppState, CheckinEntry } from './types';
+
+const log = createLogger('DailyReset');
 
 export const DAILY_RESET_KEY = 'egoless-do-last-reset-date';
 
@@ -89,7 +92,7 @@ export class DailyResetManager {
       try {
         const noteData = JSON.parse(todayCheckin.note);
         if (typeof noteData.water === 'number') todayWater = noteData.water;
-      } catch (e) { console.warn('[dailyReset] Failed to parse checkin note:', e); }
+      } catch (e) { log.warn('Failed to parse checkin note:', e); }
     }
 
     if (needsReset) {

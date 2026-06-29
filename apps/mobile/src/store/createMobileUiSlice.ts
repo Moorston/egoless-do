@@ -4,7 +4,9 @@ import type {
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
   StorageAdapter, FullStore,
 } from '@egoless-do/core';
-import { submitCheckinEntry, createResetDataPatch } from '@egoless-do/core';
+import { submitCheckinEntry, createResetDataPatch, createLogger } from '@egoless-do/core';
+
+const log = createLogger('App');
 
 export interface MobileUiSlice extends FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice {
   healthSyncEnabled: boolean;
@@ -53,8 +55,8 @@ export function createMobileUiSlice(
         userProfile: updatedProfile,
       } as Partial<FullStore>);
       const entry = result.history[0];
-      if (entry) adapter.persistChange('checkin', entry.date, entry).catch(console.error);
-      adapter.persistChange('profile', 'self', updatedProfile).catch(console.error);
+      if (entry) adapter.persistChange('checkin', entry.date, entry).catch((e) => log.error(e));
+      adapter.persistChange('profile', 'self', updatedProfile).catch((e) => log.error(e));
     },
 
     resetData() {

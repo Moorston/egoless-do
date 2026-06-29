@@ -1,5 +1,8 @@
 // ─── Cloud AI Providers ────────────────────────────────────────
 import type { ModelConfig, GenerateOptions } from './types';
+import { createLogger } from '../logger';
+
+const log = createLogger('AI');
 
 export interface CloudProvider {
   name: string;
@@ -59,7 +62,7 @@ export class OpenAICompatibleProvider implements CloudProvider {
     }
     const msg = data.choices?.[0]?.message;
     const content = msg?.content || msg?.reasoning_content;
-    console.log('[CloudProvider] Response choices:', data.choices?.length, 'content:', content?.slice(0, 50), 'finish_reason:', data.choices?.[0]?.finish_reason);
+    log.debug('[CloudProvider] Response choices:', data.choices?.length, 'content:', content?.slice(0, 50), 'finish_reason:', data.choices?.[0]?.finish_reason);
     if (!content) {
       throw new Error(`API返回空内容，响应: ${JSON.stringify(data).slice(0, 200)}`);
     }
