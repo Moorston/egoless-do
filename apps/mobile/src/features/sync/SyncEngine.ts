@@ -560,10 +560,26 @@ export class SyncEngine {
     }
     const token = this._tokenProvider?.();
     if (!token) {
-      // Debug: check both in-memory store AND AsyncStorage
-      const memToken = this._tokenProvider?.();
-      console.warn(`[SyncEngine] runSync: no token! memToken=${memToken ? 'yes' : 'null'}, provider=${this._tokenProvider ? 'set' : 'null'}`);
-      setTimeout(() => { this.runSync(); }, 3000);
+      console.warn('[SyncEngine] runSync: no token, attempting recovery...');
+      // Try to refresh token if refreshToken is available
+      try {
+        const { useAppStore } = await import('../../store/useAppStore');
+        const auth = useAppStore.getState().auth;
+        if (auth.refreshToken) {
+          console.log('[SyncEngine] Attempting token refresh...');
+          await useAppStore.getState().refreshAuth();
+          const newToken = useAppStore.getState().auth.token;
+          if (newToken) {
+            console.log('[SyncEngine] Token refreshed, retrying sync');
+            return this.runSync();
+          }
+        }
+        // No refreshToken or refresh failed — force re-login
+        console.warn('[SyncEngine] No recovery possible, logging out');
+        useAppStore.getState().logout();
+      } catch (e) {
+        console.error('[SyncEngine] Token recovery failed:', e);
+      }
       return;
     }
     console.log('[SyncEngine] runSync starting, token present');
