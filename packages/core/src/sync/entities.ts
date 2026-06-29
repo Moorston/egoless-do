@@ -1,4 +1,7 @@
 // ─── Sync entity configuration (shared across platforms) ────────
+// ENTITY_COLLECTION and ENTITY_ID_FIELD are now derived from SCHEMAS in entitySchemas.ts.
+
+import { SCHEMA_COLLECTION, SCHEMA_ID_FIELD } from './entitySchemas';
 
 export const SYNC_ENTITIES = [
   'habit', 'reflection', 'fasting', 'food', 'checkin', 'meditation', 'profile', 'exercise',
@@ -8,46 +11,8 @@ export const SYNC_ENTITIES = [
 
 export type SyncEntity = typeof SYNC_ENTITIES[number];
 
-export const ENTITY_COLLECTION: Record<SyncEntity, string> = {
-  habit:      'habits',
-  reflection: 'reflections',
-  fasting:    'fasting_sessions',
-  food:       'food_entries',
-  checkin:    'checkin_records',
-  meditation: 'meditation_history',
-  profile:    'user_profiles',
-  exercise:   'exercise_entries',
-  plan:            'plans',
-  planItem:        'plan_items',
-  planItemCheckin: 'plan_item_checkins',
-  dailyCustomTodo: 'daily_custom_todos',
-  dailyTodoHistory: 'daily_todo_history',
-  grace:           'grace_history',
-  thoughtTrail:    'thought_trails',
-  trailNote:       'trail_notes',
-  reflectionLink:  'reflection_links',
-  aiConfig:        'ai_configs',
-  checkinReview:   'checkin_reviews',
-};
+/** PocketBase collection names — derived from SCHEMAS */
+export const ENTITY_COLLECTION: Record<SyncEntity, string> = SCHEMA_COLLECTION;
 
-export const ENTITY_ID_FIELD: Record<SyncEntity, string> = {
-  habit:      'habit_id',
-  reflection: 'reflection_id',
-  fasting:    'session_id',
-  food:       'food_id',
-  checkin:    'date',
-  meditation: 'date',
-  profile:    'profile_id',
-  exercise:   'exercise_id',
-  plan:            'plan_id',
-  planItem:        'plan_item_id',
-  planItemCheckin: 'checkin_id',
-  dailyCustomTodo: 'todo_id',
-  dailyTodoHistory: 'history_id',
-  grace:           'date',
-  thoughtTrail:    'trail_id',
-  trailNote:       'note_id',
-  reflectionLink:  'link_id',
-  aiConfig:        'config_id',
-  checkinReview:   'review_id',
-};
+/** PocketBase server ID fields — derived from SCHEMAS */
+export const ENTITY_ID_FIELD: Record<SyncEntity, string> = SCHEMA_ID_FIELD;

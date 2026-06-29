@@ -3,9 +3,13 @@
 
 import type { DataGateway, DataChangeEvent } from '@egoless-do/core';
 import type { SyncEntity } from '@egoless-do/core';
+import { createLogger } from '@egoless-do/core';
 import { openDatabase } from '../db/schema';
 import { enqueueChange } from '../db/syncQueue';
 import { ENTITY_REGISTRY, type EntityMeta } from '@egoless-do/core';
+import { getClockOffset, resetOrphanRecoveryFlag } from '../features/sync/SyncService';
+
+const log = createLogger('Data');
 
 export class MobileDataGateway implements DataGateway {
   async get<T>(entity: string, id: string): Promise<T | null> {
@@ -23,12 +27,12 @@ export class MobileDataGateway implements DataGateway {
     const db = await openDatabase();
 
     let sql = `SELECT * FROM ${meta.collection} WHERE deleted = 0`;
-    const params: unknown[] = [];
+    const params: (string | number | null)[] = [];
 
     if (filter) {
       for (const [key, value] of Object.entries(filter)) {
         sql += ` AND ${key} = ?`;
-        params.push(value);
+        params.push(value as string | number | null);
       }
     }
 
@@ -41,8 +45,13 @@ export class MobileDataGateway implements DataGateway {
     const db = await openDatabase();
     const record = data as Record<string, unknown>;
 
+    // Apply clock offset to updatedAt so push payload has server-calibrated time
+    if ('updatedAt' in record) {
+      record.updatedAt = Date.now() + getClockOffset();
+    }
+
     const columns = Object.keys(record);
-    const values = Object.values(record);
+    const values = Object.values(record) as (string | number | null)[];
     const setClause = columns.map(c => `${c}=?`).join(',');
     const placeholders = columns.map(() => '?').join(',');
 
@@ -70,8 +79,13 @@ export class MobileDataGateway implements DataGateway {
       }
     }
 
-    // Enqueue for sync
-    await enqueueChange(entity as SyncEntity, id, 'upsert', data);
+    // Enqueue for sync (non-blocking: failure is recovered by orphan recovery on next startup)
+    try {
+      await enqueueChange(entity as SyncEntity, id, 'upsert', data);
+    } catch (e) {
+      log.error(e, { message: `enqueueChange failed for ${entity}/${id}, will be recovered by orphan scan` });
+      resetOrphanRecoveryFlag();
+    }
   }
 
   async delete(entity: string, id: string): Promise<void> {
@@ -84,8 +98,13 @@ export class MobileDataGateway implements DataGateway {
       [id],
     );
 
-    // Enqueue for sync
-    await enqueueChange(entity as SyncEntity, id, 'delete', { [meta.localPk]: id });
+    // Enqueue for sync (non-blocking: failure is recovered by orphan recovery on next startup)
+    try {
+      await enqueueChange(entity as SyncEntity, id, 'delete', { [meta.localPk]: id });
+    } catch (e) {
+      log.error(e, { message: `enqueueChange(delete) failed for ${entity}/${id}, will be recovered by orphan scan` });
+      resetOrphanRecoveryFlag();
+    }
   }
 
   private getMeta(entity: string): EntityMeta {

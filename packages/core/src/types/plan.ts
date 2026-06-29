@@ -27,6 +27,7 @@ export interface Plan extends Syncable {
   endDate: string;
   status: PlanStatus;
   progress: number;
+  completeReason?: string; // 完成时填写的原因（有未完成任务时）
   lastDelayedNotifyAt?: number; // 上次发送延期邮箱提醒的时间戳
 }
 

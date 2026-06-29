@@ -1,8 +1,15 @@
 // ─── Mobile sync queue (SQLite-backed) ──────────────────────────
 import type { SyncEntity } from '@egoless-do/core';
-import { openDatabase, withDbLock } from './schema';
+import { createLogger } from '@egoless-do/core';
+import { openDatabase } from './schema';
 
-let _enqueueMutex: Promise<void> = Promise.resolve();
+const log = createLogger('DB');
+
+const MAX_QUEUE_SIZE = 1000;
+
+// Callback triggered after successful enqueue (set by SyncService)
+let _onEnqueued: (() => void) | null = null;
+export function setOnEnqueuedCallback(fn: () => void) { _onEnqueued = fn; }
 
 export interface SyncQueueItem {
   id: number;
@@ -17,35 +24,37 @@ export interface SyncQueueItem {
   next_retry_at: number;
 }
 
-/** Enqueue a change for later sync. Deduplicates by (entity, entity_id). Serialized via mutex. */
-export function enqueueChange(
+/** Enqueue a change for later sync. Deduplicates by (entity, entity_id) atomically. */
+export async function enqueueChange(
   entity: SyncEntity,
   entityId: string,
   operation: 'upsert' | 'delete',
   payload: unknown,
 ): Promise<void> {
-  const result = _enqueueMutex.then(async () => {
-    try {
-      const db = await openDatabase();
-      // Transactional: DELETE + INSERT must be atomic to prevent queue entry loss on crash
-      await withDbLock(() => db.withTransactionAsync(async () => {
-        await db.runAsync(
-          'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
-          [entity, entityId],
-        );
-        await db.runAsync(
-          'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status) VALUES (?, ?, ?, ?, ?, ?)',
-          [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
-        );
-      }));
-    } catch (err) {
-      console.error('[syncQueue] enqueue failed:', err);
-      throw err;
+  try {
+    const db = await openDatabase();
+    // Cap queue to prevent unbounded growth during prolonged offline periods
+    const count = await db.getFirstAsync<{ c: number }>('SELECT COUNT(*) as c FROM sync_queue');
+    if ((count?.c ?? 0) >= MAX_QUEUE_SIZE) {
+      log.warn(`Queue full (${MAX_QUEUE_SIZE}), dropping ${entity}:${entityId}`);
+      return;
     }
-  });
-  // Decouple: swallow rejection on the mutex chain so subsequent callers aren't poisoned
-  _enqueueMutex = result.catch(() => {});
-  return result;
+    await db.withTransactionAsync(async () => {
+      await db.runAsync(
+        'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
+        [entity, entityId],
+      );
+      await db.runAsync(
+        'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status) VALUES (?, ?, ?, ?, ?, ?)',
+        [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
+      );
+    });
+    // Trigger debounced sync after successful enqueue
+    _onEnqueued?.();
+  } catch (err) {
+    log.error(err, { message: 'enqueue failed' });
+    throw err;
+  }
 }
 
 /** Drain up to `limit` pending items from the queue, ordered by creation time. Skips items with active backoff. */
@@ -119,11 +128,14 @@ export async function resetQueueItemsForRetry(ids: number[]): Promise<void> {
   );
 }
 
-/** Reset all pending items for network recovery retry. */
-export async function resetAllPendingForRetry(): Promise<number> {
+/** Reset pending items for retry in batches. Prevents push storms when many items accumulated. */
+export async function resetAllPendingForRetry(batchSize = 50): Promise<number> {
   const db = await openDatabase();
   const result = await db.runAsync(
-    "UPDATE sync_queue SET status = 'pending', next_retry_at = 0 WHERE status IN ('failed', 'conflict') AND retry_count < 5"
+    `UPDATE sync_queue SET status = 'pending', next_retry_at = 0, retry_count = 0
+     WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict')
+                  ORDER BY created_at LIMIT ?)`,
+    [batchSize],
   );
   return result.changes;
 }
@@ -189,4 +201,72 @@ export async function getAllSyncMetadata(): Promise<Array<{ entity: string; last
   return db.getAllAsync<{ entity: string; last_sync_timestamp: string; last_sync_status: string }>(
     'SELECT * FROM sync_metadata',
   );
+}
+
+// ── Sync progress (for phased initial sync) ──────────────────────
+
+export interface SyncProgressRow {
+  entity: string;
+  phase: number;
+  status: 'pending' | 'downloading' | 'done' | 'failed';
+  pulled_count: number;
+  total_count: number;
+  last_page: number;
+  last_error: string | null;
+  retry_count: number;
+  next_retry_at: number;
+  updated_at: number;
+}
+
+/** Get sync progress for a specific entity. */
+export async function getSyncProgress(entity: string): Promise<SyncProgressRow | null> {
+  const db = await openDatabase();
+  return db.getFirstAsync<SyncProgressRow>(
+    'SELECT * FROM sync_progress WHERE entity = ?',
+    [entity],
+  );
+}
+
+/** Get all sync progress entries. */
+export async function getAllSyncProgress(): Promise<SyncProgressRow[]> {
+  const db = await openDatabase();
+  return db.getAllAsync<SyncProgressRow>('SELECT * FROM sync_progress ORDER BY phase, entity');
+}
+
+/** Upsert sync progress for an entity. */
+export async function updateSyncProgress(entity: string, fields: Partial<Omit<SyncProgressRow, 'entity'>>): Promise<void> {
+  const db = await openDatabase();
+  const allowedFields = new Set(['phase', 'status', 'pulled_count', 'total_count', 'last_page', 'last_error', 'retry_count', 'next_retry_at']);
+  const existing = await getSyncProgress(entity);
+  if (existing) {
+    const sets: string[] = [];
+    const values: (string | number)[] = [];
+    for (const [key, value] of Object.entries(fields)) {
+      if (value !== undefined && allowedFields.has(key)) {
+        sets.push(`${key} = ?`);
+        values.push(value as string | number);
+      }
+    }
+    sets.push('updated_at = ?');
+    values.push(Date.now());
+    values.push(entity);
+    await db.runAsync(`UPDATE sync_progress SET ${sets.join(',')} WHERE entity = ?`, values);
+  } else {
+    const cols = ['entity', 'updated_at'];
+    const vals: (string | number)[] = [entity, Date.now()];
+    for (const [key, value] of Object.entries(fields)) {
+      if (value !== undefined && allowedFields.has(key)) {
+        cols.push(key);
+        vals.push(value as string | number);
+      }
+    }
+    const placeholders = cols.map(() => '?').join(',');
+    await db.runAsync(`INSERT INTO sync_progress (${cols.join(',')}) VALUES (${placeholders})`, vals);
+  }
+}
+
+/** Reset all sync progress (called before a new initial sync). */
+export async function resetSyncProgress(): Promise<void> {
+  const db = await openDatabase();
+  await db.runAsync('DELETE FROM sync_progress');
 }

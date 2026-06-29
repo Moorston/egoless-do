@@ -14,6 +14,7 @@ import type { ReflectionLink } from './reflection-link';
 import type { CustomFoodPreset } from './food';
 
 export interface UserProfile {
+  nickname?: string;
   weight?: number;
   gender?: 'male' | 'female';
   age?: number;

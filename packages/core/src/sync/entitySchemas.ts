@@ -1,0 +1,639 @@
+// ─── Unified Entity Schema Registry ─────────────────────────────
+// Single source of truth for all entity mappings.
+// Generates toRow, serverPayloadToRow, and rowToEntity from one definition.
+
+import type { SyncEntity } from './entities';
+import type { EntityMeta } from '../data/entityRegistry';
+
+// ── Types ───────────────────────────────────────────────────────
+
+export type FieldType = 'bool' | 'json' | 'num' | 'string';
+
+export interface FieldMapping {
+  /** Entity property name (camelCase) — used in toRow reads and rowToEntity writes */
+  entity: string;
+  /** SQLite column name (snake_case) — used in all DB operations */
+  col: string;
+  /** Server-side field name (camelCase) — defaults to `entity` if omitted */
+  server?: string;
+  /** Type conversion for SQLite storage */
+  type?: FieldType;
+  /** Default value when source is null/undefined */
+  fallback?: unknown;
+  /** If true, serverPayloadToRow skips the entire record when this field is missing */
+  required?: boolean;
+  /** If true, only include in toRow when the source value is not undefined */
+  optional?: boolean;
+  /** If true, exclude from toRow (local write) — used for columns that exist in SQLite but should not be written */
+  readOnly?: boolean;
+}
+
+export interface EntitySchema {
+  sqlite: { table: string; pk: string };
+  pocketbase: { collection: string; serverIdField: string };
+  fields: FieldMapping[];
+  /** Custom toRow override — takes precedence over generated version */
+  customToRow?: (data: Record<string, unknown>) => Record<string, unknown>;
+  /** Custom serverPayloadToRow override */
+  customServerPayloadToRow?: (r: Record<string, unknown>) => Record<string, unknown> | null;
+  /** Custom rowToEntity override */
+  customRowToEntity?: (row: Record<string, unknown>) => Record<string, unknown>;
+}
+
+// ── Helpers ─────────────────────────────────────────────────────
+
+function bool(v: unknown): number { return v ? 1 : 0; }
+function json(v: unknown): string { return typeof v === 'string' ? v : JSON.stringify(v ?? []); }
+function num(v: unknown, d = 0): number { return typeof v === 'number' ? v : d; }
+function nullableNum(v: unknown): number | null { return typeof v === 'number' ? v : null; }
+function localDate(ts: number): string {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function boolRead(v: unknown): boolean { return v === 1 || v === true; }
+function parseJson<T>(v: unknown, fallback: T): T {
+  if (typeof v === 'string') { try { return JSON.parse(v); } catch { return fallback; } }
+  return (v as T) ?? fallback;
+}
+
+function applyType(value: unknown, type?: FieldType): unknown {
+  switch (type) {
+    case 'bool': return bool(value);
+    case 'json': return json(value);
+    case 'num': return num(value);
+    default: return value;
+  }
+}
+
+function applyReadType(value: unknown, type?: FieldType): unknown {
+  switch (type) {
+    case 'bool': return boolRead(value);
+    case 'json': return typeof value === 'string' ? value : JSON.stringify(value ?? []);
+    default: return value;
+  }
+}
+
+function resolveFallback(field: FieldMapping, value: unknown): unknown {
+  if (value !== undefined && value !== null) return value;
+  if (field.fallback !== undefined) {
+    return typeof field.fallback === 'function' ? (field.fallback as () => unknown)() : field.fallback;
+  }
+  return undefined;
+}
+
+// ── Builder functions ───────────────────────────────────────────
+
+/** Build a toRow function from schema (entity → SQLite row, for local writes) */
+export function buildToRow(schema: EntitySchema): (data: Record<string, unknown>) => Record<string, unknown> {
+  if (schema.customToRow) return schema.customToRow;
+  return (data: Record<string, unknown>) => {
+    const row: Record<string, unknown> = {};
+    for (const f of schema.fields) {
+      if (f.readOnly) continue;
+      const raw = data[f.entity];
+      if (f.optional && raw === undefined) continue;
+      const value = resolveFallback(f, raw);
+      row[f.col] = applyType(value, f.type);
+    }
+    return row;
+  };
+}
+
+/** Build a serverPayloadToRow function from schema (server payload → SQLite row, for pull) */
+export function buildServerPayloadToRow(schema: EntitySchema): (r: Record<string, unknown>) => Record<string, unknown> | null {
+  if (schema.customServerPayloadToRow) return schema.customServerPayloadToRow;
+  return (r: Record<string, unknown>) => {
+    const row: Record<string, unknown> = {};
+    for (const f of schema.fields) {
+      if (f.readOnly) continue;
+      // Skip deleted field — always force to 0 for server payloads
+      if (f.entity === 'deleted') { row[f.col] = 0; continue; }
+      // Try camelCase server name first, then snake_case col name
+      const serverName = f.server ?? f.entity;
+      let raw = r[serverName];
+      if (raw === undefined || raw === null) raw = r[f.col];
+      // Check required
+      if (f.required && (raw === undefined || raw === null || raw === '')) return null;
+      const value = resolveFallback(f, raw);
+      row[f.col] = applyType(value, f.type);
+    }
+    return row;
+  };
+}
+
+/** Build a rowToEntity function from schema (SQLite row → entity, for reads) */
+export function buildRowToEntity(schema: EntitySchema): (row: Record<string, unknown>) => Record<string, unknown> {
+  if (schema.customRowToEntity) return schema.customRowToEntity;
+  return (row: Record<string, unknown>) => {
+    const entity: Record<string, unknown> = {};
+    for (const f of schema.fields) {
+      const raw = row[f.col];
+      switch (f.type) {
+        case 'bool':
+          entity[f.entity] = boolRead(raw);
+          break;
+        case 'json':
+          entity[f.entity] = parseJson(raw, f.fallback ?? []);
+          break;
+        case 'num':
+          entity[f.entity] = raw ?? f.fallback ?? 0;
+          break;
+        default:
+          entity[f.entity] = raw ?? f.fallback ?? undefined;
+          break;
+      }
+    }
+    return entity;
+  };
+}
+
+/** Get EntityMeta (table, pk, collection) from schema for ENTITY_REGISTRY */
+export function schemaToEntityMeta(schema: EntitySchema): EntityMeta {
+  return {
+    collection: schema.pocketbase.collection,
+    localPk: schema.sqlite.pk,
+    remotePk: schema.sqlite.pk,
+    softDelete: true,
+  };
+}
+
+// ── SCHEMAS: The single source of truth ─────────────────────────
+
+export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
+  habit: {
+    sqlite: { table: 'habits', pk: 'id' },
+    pocketbase: { collection: 'habits', serverIdField: 'habit_id' },
+    fields: [
+      { entity: 'id',            col: 'id',             server: 'id',          fallback: null },
+      { entity: 'name',          col: 'name',           server: 'name',        fallback: 'Untitled', required: true },
+      { entity: 'startDate',     col: 'start_date',     server: 'startDate',   fallback: '', required: true },
+      { entity: 'targetDays',    col: 'target_days',    server: 'targetDays',  type: 'num', fallback: 0 },
+      { entity: 'goal',          col: 'goal',           server: 'goal',        fallback: '' },
+      { entity: 'insight',       col: 'insight',        server: 'insight',     fallback: '' },
+      { entity: 'createTag',     col: 'create_tag',     server: 'createTag',   type: 'bool' },
+      { entity: 'doneDays',      col: 'done_days',      server: 'doneDays',    type: 'num', fallback: 0 },
+      { entity: 'streak',        col: 'streak',         server: 'streak',      type: 'num', fallback: 0 },
+      { entity: 'interrupted',   col: 'interrupted',    server: 'interrupted', type: 'num', fallback: 0 },
+      { entity: 'status',        col: 'status',         server: 'status',      fallback: 'notStarted' },
+      { entity: 'checkedDates',  col: 'checked_dates',  server: 'checkedDates', type: 'json' },
+      { entity: 'pauseReason',   col: 'pause_reason',   server: 'pauseReason', fallback: '' },
+      { entity: 'abandonReason', col: 'abandon_reason',  server: 'abandonReason', fallback: '' },
+      { entity: 'alarmEnabled',  col: 'alarm_enabled',  server: 'alarmEnabled', type: 'bool' },
+      { entity: 'alarmHour',     col: 'alarm_hour',     server: 'alarmHour',   type: 'num', fallback: 8 },
+      { entity: 'alarmMinute',   col: 'alarm_minute',   server: 'alarmMinute', type: 'num', fallback: 0 },
+      { entity: 'updatedAt',     col: 'updated_at',     server: 'updatedAt',   fallback: () => Date.now() },
+      { entity: 'link',          col: 'link',           server: 'link',        fallback: 'none' },
+      { entity: 'deleted',       col: 'deleted',        type: 'bool' },
+    ],
+  },
+
+  reflection: {
+    sqlite: { table: 'mind_reflections', pk: 'id' },
+    pocketbase: { collection: 'reflections', serverIdField: 'reflection_id' },
+    fields: [
+      { entity: 'id',              col: 'id',              server: 'id',            fallback: null },
+      { entity: 'timestamp',       col: 'created_at',      server: 'timestamp',     fallback: () => Date.now() },
+      { entity: 'content',         col: 'content',         server: 'content',       fallback: '' },
+      { entity: 'tags',            col: 'tags',            server: 'tags',          type: 'json' },
+      { entity: 'mood',            col: 'mood',            server: 'mood',          fallback: null },
+      { entity: 'cardTheme',       col: 'card_theme',      server: 'cardTheme',     fallback: null },
+      { entity: 'link',            col: 'link',            server: 'link',          fallback: null },
+      { entity: 'linkedPlanItemId', col: 'linked_plan_id', server: 'linkedPlanItemId', fallback: null },
+      { entity: 'isPinned',        col: 'is_pinned',       server: 'isPinned',      type: 'bool' },
+      { entity: 'isPublished',     col: 'is_published',    server: 'isPublished',   type: 'bool' },
+      { entity: 'colors',          col: 'colors',          server: 'colors',        type: 'json', fallback: null },
+      { entity: 'updatedAt',       col: 'updated_at',      server: 'updatedAt',     fallback: () => Date.now() },
+      { entity: 'deleted',         col: 'deleted',         type: 'bool' },
+    ],
+  },
+
+  fasting: {
+    sqlite: { table: 'fasting_sessions', pk: 'id' },
+    pocketbase: { collection: 'fasting_sessions', serverIdField: 'session_id' },
+    fields: [
+      { entity: 'id',            col: 'id',             server: 'id',          fallback: null },
+      { entity: 'targetHours',   col: 'target_hours',   server: 'targetHours', type: 'num' },
+      { entity: 'startedAt',     col: 'started_at',     server: 'startedAt', fallback: '' },
+      { entity: 'endedAt',       col: 'ended_at',       server: 'endedAt',     fallback: null },
+      { entity: 'estimatedKcal', col: 'estimated_kcal', server: 'estimatedKcal', fallback: null },
+      { entity: 'insight',       col: 'insight',        server: 'insight',     fallback: null },
+      { entity: 'updatedAt',     col: 'updated_at',     server: 'updatedAt',   fallback: () => Date.now() },
+      { entity: 'deleted',       col: 'deleted',        type: 'bool' },
+    ],
+  },
+
+  food: {
+    sqlite: { table: 'food_entries', pk: 'id' },
+    pocketbase: { collection: 'food_entries', serverIdField: 'food_id' },
+    customToRow: (d) => ({
+      id: d.id, name: d.name, cal: num(d.calories), note: d.note ?? '',
+      entry_date: d.timestamp ? localDate(d.timestamp as number) : '', ts: d.timestamp,
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+    customServerPayloadToRow: (r) => {
+      const ts = r.timestamp ?? r.ts ?? Date.now();
+      const entryDate = r.entry_date || r.entryDate || (ts ? (() => {
+        const d = new Date(Number(ts));
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      })() : '');
+      return {
+        id: r.id, name: r.name ?? '', cal: r.calories ?? r.cal ?? 0, note: r.note ?? '',
+        entry_date: entryDate, ts,
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    },
+    customRowToEntity: (r) => ({
+      id: r.id, name: r.name, calories: r.cal, note: r.note ?? '', timestamp: r.ts,
+      updated_at: r.updated_at, deleted: boolRead(r.deleted),
+    }),
+    fields: [
+      { entity: 'id',        col: 'id',         server: 'id',     fallback: null },
+      { entity: 'name',      col: 'name',       server: 'name',   fallback: '' },
+      { entity: 'calories',  col: 'cal',        server: 'calories', type: 'num' },
+      { entity: 'note',      col: 'note',       server: 'note',   fallback: '' },
+      { entity: 'timestamp', col: 'ts',         server: 'timestamp' },
+      { entity: 'updatedAt', col: 'updated_at', server: 'updatedAt', fallback: () => Date.now() },
+      { entity: 'deleted',   col: 'deleted',    type: 'bool' },
+    ],
+  },
+
+  checkin: {
+    sqlite: { table: 'checkin_records', pk: 'date' },
+    pocketbase: { collection: 'checkin_records', serverIdField: 'date' },
+    fields: [
+      { entity: 'date',      col: 'date',       server: 'date',     fallback: null },
+      { entity: 'done',      col: 'done',       server: 'done',     type: 'bool' },
+      { entity: 'note',      col: 'note',       server: 'note',     fallback: '' },
+      { entity: 'streak',    col: 'streak',     server: 'streak',   type: 'num' },
+      { entity: 'timestamp', col: 'timestamp',  server: 'timestamp', fallback: null },
+      { entity: 'weight',    col: 'weight',     server: 'weight',   fallback: null },
+      { entity: 'grace',     col: 'grace',      server: 'grace',    type: 'bool' },
+      { entity: 'totalDays', col: 'total_days', server: 'totalDays', fallback: null },
+      { entity: 'updatedAt', col: 'updated_at', server: 'updatedAt', fallback: () => Date.now() },
+      { entity: 'deleted',   col: 'deleted',    type: 'bool' },
+    ],
+  },
+
+  exercise: {
+    sqlite: { table: 'exercise_entries', pk: 'id' },
+    pocketbase: { collection: 'exercise_entries', serverIdField: 'exercise_id' },
+    customToRow: (d) => ({
+      id: d.id, sport_key: d.sportKey ?? '', sport_icon: d.sportIcon ?? '',
+      duration_sec: num(d.durationSec), distance_km: d.distanceKm ?? 0,
+      calories: d.calories ?? 0, avg_pace: d.avgPace ?? 0,
+      track_points: json(d.trackPoints), is_gps_sport: bool(d.isGpsSport),
+      mode: d.mode ?? null, target: d.target ? json(d.target) : null,
+      segment_paces: d.segmentPaces ? json(d.segmentPaces) : null,
+      elevation_gain: d.elevationGain ?? null, paused_duration: d.pausedDuration ?? null,
+      reps: d.reps ?? null, sets: d.sets ? json(d.sets) : null, met: d.met ?? null,
+      ts: d.timestamp,
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+    customServerPayloadToRow: (r) => ({
+      id: r.id, sport_key: (r.sportKey ?? r.sport_key) ?? '', sport_icon: r.sportIcon ?? r.sport_icon ?? '',
+      duration_sec: r.durationSec ?? r.duration_sec ?? 0, distance_km: r.distanceKm ?? r.distance_km ?? 0,
+      calories: r.calories ?? 0, avg_pace: r.avgPace ?? r.avg_pace ?? 0,
+      track_points: typeof r.trackPoints === 'string' ? r.trackPoints : JSON.stringify(r.trackPoints ?? []),
+      is_gps_sport: r.isGpsSport ? 1 : 0,
+      mode: r.mode ?? null, target: r.target ? JSON.stringify(r.target) : null,
+      segment_paces: r.segmentPaces ? JSON.stringify(r.segmentPaces) : null,
+      elevation_gain: r.elevationGain ?? null, paused_duration: r.pausedDuration ?? null,
+      reps: r.reps ?? null, sets: r.sets ? JSON.stringify(r.sets) : null, met: r.met ?? null,
+      ts: r.timestamp ?? r.ts ?? 0,
+      updated_at: r.updatedAt ?? null, deleted: 0,
+    }),
+    customRowToEntity: (r) => ({
+      id: r.id, sportKey: r.sport_key, sportIcon: r.sport_icon ?? '', durationSec: r.duration_sec,
+      distanceKm: r.distance_km ?? 0, calories: r.calories ?? 0, avgPace: r.avg_pace ?? 0,
+      trackPoints: parseJson(r.track_points, []), isGpsSport: boolRead(r.is_gps_sport),
+      mode: r.mode ?? null, target: r.target ? parseJson(r.target, undefined) : undefined,
+      segmentPaces: r.segment_paces ? parseJson(r.segment_paces, undefined) : undefined,
+      elevationGain: r.elevation_gain ?? null, pausedDuration: r.paused_duration ?? null,
+      reps: r.reps ?? null, sets: r.sets ? parseJson(r.sets, undefined) : undefined,
+      met: r.met ?? null, timestamp: r.ts,
+      updated_at: r.updated_at, deleted: boolRead(r.deleted),
+    }),
+    fields: [],
+  },
+
+  meditation: {
+    sqlite: { table: 'meditation_history', pk: 'date' },
+    pocketbase: { collection: 'meditation_history', serverIdField: 'date' },
+    fields: [
+      { entity: 'date',      col: 'date',       server: 'date',     fallback: null },
+      { entity: 'dur',       col: 'dur',        server: 'dur',      fallback: '0' },
+      { entity: 'mood',      col: 'mood',       server: 'mood',     fallback: '' },
+      { entity: 'updatedAt', col: 'updated_at', server: 'updatedAt', fallback: () => Date.now() },
+      { entity: 'deleted',   col: 'deleted',    type: 'bool' },
+    ],
+  },
+
+  profile: {
+    sqlite: { table: 'user_profiles', pk: 'profile_id' },
+    pocketbase: { collection: 'user_profiles', serverIdField: 'profile_id' },
+    customToRow: (d) => {
+      const { profileId, data, ...rest } = d as Record<string, unknown>;
+      return {
+        profile_id: profileId ?? 'self',
+        data: typeof data === 'string' ? data : JSON.stringify(rest),
+        updated_at: d.updatedAt ?? Date.now(),
+        deleted: bool(d.deleted),
+      };
+    },
+    customServerPayloadToRow: (r) => ({
+      profile_id: r.profileId ?? r.profile_id ?? 'self',
+      data: typeof r.data === 'string' ? r.data : JSON.stringify(r.data ?? r),
+      updated_at: r.updatedAt ?? null, deleted: 0,
+    }),
+    customRowToEntity: (r) => {
+      const data = parseJson<Record<string, unknown>>(r.data, {});
+      return { ...data, updatedAt: (r.updated_at as number) ?? (data.updatedAt as number) };
+    },
+    fields: [],
+  },
+
+  plan: {
+    sqlite: { table: 'plans', pk: 'id' },
+    pocketbase: { collection: 'plans', serverIdField: 'plan_id' },
+    fields: [
+      { entity: 'id',                col: 'id',                    server: 'id',                fallback: null },
+      { entity: 'name',              col: 'name',                  server: 'name',              fallback: '' },
+      { entity: 'goal',              col: 'goal',                  server: 'goal',              fallback: '' },
+      { entity: 'slogan',            col: 'slogan',                server: 'slogan',            fallback: '' },
+      { entity: 'startDate',         col: 'start_date',            server: 'startDate',         fallback: '' },
+      { entity: 'endDate',           col: 'end_date',              server: 'endDate',           fallback: '' },
+      { entity: 'status',            col: 'status',                server: 'status',            fallback: 'not_started' },
+      { entity: 'progress',          col: 'progress',              server: 'progress',          type: 'num', fallback: 0 },
+      { entity: 'lastDelayedNotifyAt', col: 'last_delayed_notify_at', server: 'lastDelayedNotifyAt', fallback: null },
+      { entity: 'updatedAt',         col: 'updated_at',            server: 'updatedAt',         fallback: () => Date.now() },
+      { entity: 'deleted',           col: 'deleted',               type: 'bool' },
+    ],
+  },
+
+  planItem: {
+    sqlite: { table: 'plan_items', pk: 'id' },
+    pocketbase: { collection: 'plan_items', serverIdField: 'plan_item_id' },
+    customToRow: (d) => {
+      const row: Record<string, unknown> = {
+        id: d.id, plan_id: d.planId, name: d.name, description: d.description ?? '',
+        start_date: d.startDate, end_date: d.endDate, content_url: d.contentUrl ?? '',
+        total_checkin_days: num(d.totalCheckinDays), status: d.status ?? 'not_started',
+        progress: num(d.progress), link: d.link ?? 'manual',
+        priority: d.priority ?? 'medium',
+        target_metric: d.targetMetric ?? '',
+        link_config: json(d.linkConfig), item_order: num(d.order),
+        updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+      };
+      if (d.reflectionId !== undefined) row.reflection_id = d.reflectionId;
+      if (d.trailId !== undefined) row.trail_id = d.trailId;
+      row.frequency = d.frequency ? JSON.stringify(d.frequency) : null;
+      row.tags = d.tags ? JSON.stringify(d.tags) : null;
+      return row;
+    },
+    customServerPayloadToRow: (r) => {
+      const row: Record<string, unknown> = {
+        id: r.id, plan_id: r.planId ?? '', name: r.name ?? '', description: r.description ?? '',
+        start_date: r.startDate ?? '', end_date: r.endDate ?? '', content_url: r.contentUrl ?? '',
+        total_checkin_days: r.totalCheckinDays ?? 0, status: r.status ?? 'not_started',
+        progress: r.progress ?? 0, link: r.link ?? 'manual',
+        link_config: typeof r.linkConfig === 'string' ? r.linkConfig : JSON.stringify(r.linkConfig ?? {}),
+        item_order: r.order ?? 0,
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+      if (r.reflectionId !== undefined) row.reflection_id = r.reflectionId;
+      if (r.trailId !== undefined) row.trail_id = r.trailId;
+      row.frequency = r.frequency ? JSON.stringify(r.frequency) : null;
+      row.tags = r.tags ? JSON.stringify(r.tags) : null;
+      return row;
+    },
+    customRowToEntity: (r) => ({
+      id: r.id, planId: r.plan_id, name: r.name, description: r.description ?? '',
+      startDate: r.start_date, endDate: r.end_date, contentUrl: r.content_url ?? '',
+      totalCheckinDays: r.total_checkin_days ?? 0,
+      status: r.status ?? 'not_started', progress: r.progress ?? 0,
+      link: r.link ?? 'manual', linkConfig: parseJson(r.link_config, {}),
+      order: r.item_order ?? 0, priority: r.priority ?? 'medium',
+      targetMetric: r.target_metric ?? '',
+      reflectionId: r.reflection_id ?? undefined,
+      trailId: r.trail_id ?? undefined,
+      frequency: r.frequency ? parseJson(r.frequency, undefined) : undefined,
+      tags: r.tags ? parseJson(r.tags, undefined) : undefined,
+      updated_at: r.updated_at, deleted: boolRead(r.deleted),
+    }),
+    fields: [],
+  },
+
+  planItemCheckin: {
+    sqlite: { table: 'plan_item_checkins', pk: 'id' },
+    pocketbase: { collection: 'plan_item_checkins', serverIdField: 'checkin_id' },
+    fields: [
+      { entity: 'id',           col: 'id',            server: 'id',          fallback: null },
+      { entity: 'planItemId',   col: 'plan_item_id',  server: 'planItemId',  fallback: '' },
+      { entity: 'date',         col: 'date',          server: 'date' },
+      { entity: 'done',         col: 'done',          server: 'done',        type: 'bool' },
+      { entity: 'note',         col: 'note',          server: 'note',        fallback: '' },
+      { entity: 'linkedModule', col: 'linked_module',  server: 'linkedModule', fallback: '' },
+      { entity: 'updatedAt',    col: 'updated_at',    server: 'updatedAt',   fallback: () => Date.now() },
+      { entity: 'deleted',      col: 'deleted',       type: 'bool' },
+    ],
+  },
+
+  grace: {
+    sqlite: { table: 'grace_history', pk: 'date' },
+    pocketbase: { collection: 'grace_history', serverIdField: 'date' },
+    fields: [
+      { entity: 'date',       col: 'date',        server: 'date',       fallback: null },
+      { entity: 'restoredAt', col: 'restored_at', server: 'restoredAt', fallback: () => Date.now() },
+      { entity: 'updatedAt',  col: 'updated_at',  server: 'updatedAt',  fallback: () => Date.now() },
+      { entity: 'deleted',    col: 'deleted',     type: 'bool' },
+    ],
+  },
+
+  dailyCustomTodo: {
+    sqlite: { table: 'daily_custom_todos', pk: 'id' },
+    pocketbase: { collection: 'daily_custom_todos', serverIdField: 'todo_id' },
+    fields: [
+      { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
+      { entity: 'planId',    col: 'plan_id',    server: 'planId' },
+      { entity: 'date',      col: 'date',       server: 'date' },
+      { entity: 'name',      col: 'name',       server: 'name' },
+      { entity: 'done',      col: 'done',       server: 'done',      type: 'bool' },
+      { entity: 'order',     col: 'todo_order', server: 'order',     type: 'num', fallback: 0 },
+      { entity: 'recurring', col: 'recurring',  server: 'recurring', type: 'bool' },
+      { entity: 'updatedAt', col: 'updated_at', server: 'updatedAt', fallback: () => Date.now() },
+      { entity: 'deleted',   col: 'deleted',    type: 'bool' },
+    ],
+  },
+
+  dailyTodoHistory: {
+    sqlite: { table: 'daily_todo_history', pk: 'id' },
+    pocketbase: { collection: 'daily_todo_history', serverIdField: 'history_id' },
+    fields: [
+      { entity: 'id',          col: 'id',            server: 'id',          fallback: null },
+      { entity: 'planId',      col: 'plan_id',       server: 'planId',      fallback: '' },
+      { entity: 'date',        col: 'date',          server: 'date' },
+      { entity: 'planItems',   col: 'plan_items',    server: 'planItems',   type: 'json' },
+      { entity: 'customTodos', col: 'custom_todos',  server: 'customTodos', type: 'json' },
+      { entity: 'updatedAt',   col: 'updated_at',    server: 'updatedAt',   fallback: () => Date.now() },
+      { entity: 'deleted',     col: 'deleted',       type: 'bool' },
+    ],
+  },
+
+  thoughtTrail: {
+    sqlite: { table: 'thought_trails', pk: 'id' },
+    pocketbase: { collection: 'thought_trails', serverIdField: 'trail_id' },
+    fields: [
+      { entity: 'id',                col: 'id',                    server: 'id',                fallback: null },
+      { entity: 'name',              col: 'name',                  server: 'name' },
+      { entity: 'description',       col: 'description',           server: 'description',       fallback: '' },
+      { entity: 'reflectionIds',     col: 'reflection_ids',        server: 'reflectionIds',     type: 'json' },
+      { entity: 'noteIds',           col: 'note_ids',              server: 'noteIds',           type: 'json', fallback: [] },
+      { entity: 'source',            col: 'source',                server: 'source',            fallback: 'manual' },
+      { entity: 'insightSummary',    col: 'insight_summary',       server: 'insightSummary',    fallback: null },
+      { entity: 'insightCache',      col: 'insight_cache',         server: 'insightCache',      type: 'json', fallback: null },
+      { entity: 'reviewCache',       col: 'review_cache',          server: 'reviewCache',       type: 'json', fallback: null },
+      { entity: 'linkedPlanItemIds', col: 'linked_plan_item_ids',  server: 'linkedPlanItemIds', type: 'json', fallback: null },
+      { entity: 'createdAt',         col: 'created_at',            server: 'createdAt',         fallback: () => Date.now() },
+      { entity: 'updatedAt',         col: 'updated_at',            server: 'updatedAt',         fallback: () => Date.now() },
+      { entity: 'deleted',           col: 'deleted',               type: 'bool' },
+    ],
+  },
+
+  trailNote: {
+    sqlite: { table: 'trail_notes', pk: 'id' },
+    pocketbase: { collection: 'trail_notes', serverIdField: 'note_id' },
+    fields: [
+      { entity: 'id',              col: 'id',               server: 'id',              fallback: null },
+      { entity: 'trailId',         col: 'trail_id',         server: 'trailId' },
+      { entity: 'content',         col: 'content',          server: 'content',         fallback: '' },
+      { entity: 'tags',            col: 'tags',             server: 'tags',            type: 'json' },
+      { entity: 'mood',            col: 'mood',             server: 'mood',            fallback: null },
+      { entity: 'source',          col: 'source',           server: 'source',          fallback: 'free' },
+      { entity: 'guidedQuestion',  col: 'guided_question',  server: 'guidedQuestion',  fallback: null },
+      { entity: 'order',           col: 'note_order',       server: 'order',           type: 'num', fallback: 0 },
+      { entity: 'createdAt',       col: 'created_at',       server: 'createdAt',       fallback: () => Date.now() },
+      { entity: 'updatedAt',       col: 'updated_at',       server: 'updatedAt',       fallback: () => Date.now() },
+      { entity: 'deleted',         col: 'deleted',          type: 'bool' },
+    ],
+  },
+
+  reflectionLink: {
+    sqlite: { table: 'reflection_links', pk: 'link_id' },
+    pocketbase: { collection: 'reflection_links', serverIdField: 'link_id' },
+    customToRow: (d) => ({
+      link_id: d.id, from_id: d.fromId, to_id: d.toId,
+      link_type: d.type, note: d.note ?? null,
+      created_at: d.createdAt ?? Date.now(),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+    customServerPayloadToRow: (r) => ({
+      link_id: r.linkId ?? r.id, from_id: r.fromId ?? '', to_id: r.toId ?? '',
+      link_type: r.type ?? '', note: r.note ?? null,
+      created_at: r.createdAt ?? Date.now(),
+      updated_at: r.updatedAt ?? null, deleted: 0,
+    }),
+    customRowToEntity: (r) => ({
+      id: r.link_id, fromId: r.from_id, toId: r.to_id,
+      type: r.link_type, note: r.note ?? undefined,
+      createdAt: r.created_at,
+      updated_at: r.updated_at, deleted: boolRead(r.deleted),
+    }),
+    fields: [],
+  },
+
+  aiConfig: {
+    sqlite: { table: 'ai_configs', pk: 'config_id' },
+    pocketbase: { collection: 'ai_configs', serverIdField: 'config_id' },
+    customToRow: (d) => ({
+      config_id: d.config_id ?? 'self',
+      mode: d.mode ?? 'hybrid',
+      models: json(d.models),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+    customServerPayloadToRow: (r) => ({
+      config_id: r.configId ?? r.config_id ?? r.id ?? 'self',
+      mode: r.mode ?? 'hybrid',
+      models: typeof r.models === 'string' ? r.models : JSON.stringify(r.models ?? []),
+      updated_at: r.updatedAt ?? null, deleted: 0,
+    }),
+    customRowToEntity: (r) => ({
+      config_id: r.config_id,
+      mode: r.mode ?? 'hybrid',
+      models: parseJson(r.models, []),
+      updated_at: r.updated_at, deleted: boolRead(r.deleted),
+    }),
+    fields: [],
+  },
+
+  checkinReview: {
+    sqlite: { table: 'checkin_reviews', pk: 'id' },
+    pocketbase: { collection: 'checkin_reviews', serverIdField: 'review_id' },
+    customToRow: (d) => ({
+      id: d.id,
+      user_id: d.userId ?? 'self',
+      review_id: d.id,
+      period: d.period ?? 'week',
+      start_date: d.startDate ?? '',
+      end_date: d.endDate ?? '',
+      review_data: json({
+        completionRate: d.completionRate,
+        doneDays: d.doneDays,
+        totalDays: d.totalDays,
+        streakDays: d.streakDays,
+        longestStreak: d.longestStreak,
+        incompleteReasons: d.incompleteReasons,
+        incompleteItems: d.incompleteItems,
+        habitProgress: d.habitProgress,
+        planProgress: d.planProgress,
+        metrics: d.metrics,
+        comparison: d.comparison,
+        aiSummary: d.aiSummary,
+        highlights: d.highlights,
+        improvements: d.improvements,
+        generatedAt: d.generatedAt,
+        aiModel: d.aiModel,
+        lastAutoUpdateAt: d.lastAutoUpdateAt,
+      }),
+      updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
+    }),
+    customServerPayloadToRow: (r) => ({
+      id: r.id, review_id: r.reviewId ?? r.id,
+      user_id: r.userId ?? 'self',
+      period: r.period ?? 'week',
+      start_date: r.startDate ?? '', end_date: r.endDate ?? '',
+      review_data: typeof r.reviewData === 'string' ? r.reviewData : JSON.stringify(r.reviewData ?? {}),
+      updated_at: r.updatedAt ?? null, deleted: 0,
+    }),
+    customRowToEntity: (r) => {
+      const reviewData = parseJson<Record<string, unknown>>(r.review_data, {});
+      return {
+        id: r.id,
+        userId: r.user_id ?? 'self',
+        period: r.period ?? 'week',
+        startDate: r.start_date,
+        endDate: r.end_date,
+        ...reviewData,
+        updatedAt: r.updated_at, deleted: boolRead(r.deleted),
+      };
+    },
+    fields: [],
+  },
+};
+
+// ── Derived exports (replace standalone declarations) ───────────
+
+/** ENTITY_REGISTRY replacement — derived from SCHEMAS */
+export const SCHEMA_REGISTRY: Record<SyncEntity, EntityMeta> = Object.fromEntries(
+  (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, schemaToEntityMeta(SCHEMAS[k])])
+) as Record<SyncEntity, EntityMeta>;
+
+/** ENTITY_COLLECTION replacement */
+export const SCHEMA_COLLECTION: Record<SyncEntity, string> = Object.fromEntries(
+  (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, SCHEMAS[k].pocketbase.collection])
+) as Record<SyncEntity, string>;
+
+/** ENTITY_ID_FIELD replacement */
+export const SCHEMA_ID_FIELD: Record<SyncEntity, string> = Object.fromEntries(
+  (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, SCHEMAS[k].pocketbase.serverIdField])
+) as Record<SyncEntity, string>;

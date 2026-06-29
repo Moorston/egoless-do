@@ -1,7 +1,7 @@
 // ─── ThoughtTrail types ──────────────────────────────────────────
 import type { Syncable } from './shared';
 
-export type ThoughtTrailSource = 'auto' | 'manual' | 'recommended';
+export type ThoughtTrailSource = 'auto' | 'manual' | 'recommended' | 'ai';
 
 export interface TrailInsightCache {
   summary: string;         // 核心摘要
@@ -17,6 +17,7 @@ export interface TrailReviewCache {
   perspectives: string[];  // 复盘思路（多维度视角）
   observations: string[];  // 观察发现
   suggestions: string[];   // 复盘建议
+  questions?: string[];    // 引导性问题
   generatedAt: number;
   model?: string;
   source: 'local' | 'cloud';

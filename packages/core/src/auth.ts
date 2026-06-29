@@ -1,6 +1,6 @@
 // ─── Auth API client (shared across all platforms) ─────────────────
 import type { AuthUser } from './types';
-import type { SyncPushResult } from './sync/types';
+import type { SyncPushResult, SyncCheckResult, SyncPullPostBody } from './sync/types';
 import { buildHeaders, fetchWithTimeout, handleJsonResponse } from './fetch';
 
 export interface AuthResponse {
@@ -17,9 +17,22 @@ export interface RefreshResponse {
 }
 
 let apiBase = '';
+let syncBase = '';
 
 export function setApiBase(base: string) {
   apiBase = base.replace(/\/+$/, '');
+}
+
+export function setSyncApiBase(base: string) {
+  syncBase = base.replace(/\/+$/, '');
+}
+
+function getSyncBase(): string {
+  return syncBase || apiBase;
+}
+
+export function getSyncUrl(): string {
+  return getSyncBase();
 }
 
 export function validatePassword(pwd: string): string | null {
@@ -117,30 +130,59 @@ export async function apiResetPassword(email: string, code: string, password: st
   return handleJsonResponse<{ ok: boolean; message: string }>(res);
 }
 
-// ── Sync: push local changes + pull server changes ───────────────
-export async function apiSyncPush(token: string, lastSyncAt: number, changes: any[]): Promise<SyncPushResult> {
-  const res = await fetchWithTimeout(`${apiBase}/api/sync`, {
+// ── Sync: push local changes (pure push, no pull data) ──────────
+export async function apiSyncPush(token: string, _lastSyncAt: number, changes: any[], userId?: string): Promise<SyncPushResult> {
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/push`, {
     method: 'POST',
-    headers: buildHeaders(token),
-    body: JSON.stringify({ lastSyncAt, changes }),
+    headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
+    body: JSON.stringify({ changes }),
   });
   return handleJsonResponse<SyncPushResult>(res);
 }
 
-// ── Sync: full pull (all user data, used after login) ────────────
-export async function apiSyncPull(token: string): Promise<{ data: Record<string, any[]>; serverTime: number }> {
-  const res = await fetchWithTimeout(`${apiBase}/api/sync`, {
-    method: 'GET',
-    headers: buildHeaders(token),
+// ── Sync: pull user data via POST (entity-filtered) ──────────
+export async function apiSyncPullPost(token: string, body: SyncPullPostBody, userId?: string): Promise<{ data: Record<string, any[]>; serverTime: number }> {
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/pull`, {
+    method: 'POST',
+    headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
+    body: JSON.stringify(body),
   });
   return handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
 }
 
-// ── Sync: lightweight check for server-side changes ──────────────
-export async function apiSyncCheck(token: string, since: number): Promise<{ hasChanges: boolean; count: number }> {
-  const res = await fetchWithTimeout(`${apiBase}/api/sync/check?since=${since}`, {
+// ── Sync: pull user data via GET (full or incremental, backward compat) ──
+export async function apiSyncPull(token: string, userId?: string, since?: number): Promise<{ data: Record<string, any[]>; serverTime: number }> {
+  const sinceParam = since ? `?since=${since}` : '';
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync${sinceParam}`, {
     method: 'GET',
-    headers: buildHeaders(token),
+    headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
   });
-  return handleJsonResponse<{ hasChanges: boolean; count: number }>(res);
+  return handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
+}
+
+// ── Sync: lightweight check (returns per-entity change map) ────
+export async function apiSyncCheck(token: string, since: number, userId?: string): Promise<SyncCheckResult> {
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/check?since=${since}`, {
+    method: 'GET',
+    headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
+  });
+  return handleJsonResponse<SyncCheckResult>(res);
+}
+
+// ── Sync: per-entity paginated pull (for phased initial sync) ────
+export interface SyncPullEntityResult {
+  data: unknown[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+  serverTime: number;
+}
+
+export async function apiSyncPullEntity(token: string, entity: string, page: number, pageSize: number, userId?: string): Promise<SyncPullEntityResult> {
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/pull/${entity}?page=${page}&pageSize=${pageSize}`, {
+    method: 'GET',
+    headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
+  });
+  return handleJsonResponse<SyncPullEntityResult>(res);
 }

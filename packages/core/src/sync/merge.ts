@@ -1,9 +1,10 @@
-// ─── Merge utilities for sync ──────────────────────────────────
+// ── Merge utilities for sync ──────────────────────────────────
+import { resolveConflict } from './conflict';
 
 /** Merge server + local arrays, dedup by idKey, keep newest updatedAt.
  *  Preserves local soft-deletions: if a local record has deleted=true,
  *  server data cannot resurrect it.
- *  Convention: server wins ties (>=) in all branches for consistency. */
+ *  Uses unified resolveConflict() for all timestamp comparisons. */
 export function mergeById<T extends Record<string, any>>(
   server: T[], local: T[], idKey: string
 ): T[] {
@@ -17,20 +18,14 @@ export function mergeById<T extends Record<string, any>>(
     if (!existing) {
       // New from server — skip soft-deleted
       if (!item.deleted) map.set(key, item);
-    } else if (existing.deleted) {
-      // Local is deleted — preserve deletion, only update if server also deleted with newer timestamp
-      if (item.deleted && (item.updatedAt ?? 0) >= (existing.updatedAt ?? 0)) {
-        map.set(key, item);
-      }
-      // Otherwise keep local deleted version
-    } else if (item.deleted) {
-      // Server says deleted, local is not — apply deletion if server is newer
-      if ((item.updatedAt ?? 0) >= (existing.updatedAt ?? 0)) {
-        map.set(key, item);
-      }
     } else {
-      // Neither deleted — keep newest
-      if ((item.updatedAt ?? 0) >= (existing.updatedAt ?? 0)) {
+      const result = resolveConflict({
+        clientUpdated: existing.updatedAt ?? 0,
+        serverUpdated: item.updatedAt ?? 0,
+        clientDeleted: !!existing.deleted,
+        serverDeleted: !!item.deleted,
+      });
+      if (result.winner === 'server') {
         map.set(key, item);
       }
     }

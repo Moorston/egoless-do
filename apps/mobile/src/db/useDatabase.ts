@@ -1,7 +1,10 @@
 // ─── React hook: open DB, run migrations, expose instance ────────
 import { useEffect, useState } from 'react';
 import type { SQLiteDatabase } from 'expo-sqlite';
+import { createLogger } from '@egoless-do/core';
 import { openDatabase } from './schema';
+
+const log = createLogger('DB');
 
 export function useDatabase() {
   const [db, setDb] = useState<SQLiteDatabase | null>(null);
@@ -18,7 +21,7 @@ export function useDatabase() {
         setReady(true);
       } catch (e) {
         if (cancelled) return;
-        console.error('[useDatabase] Failed to open database:', e);
+        log.error(e instanceof Error ? e : new Error(String(e)), { message: 'Failed to open database' });
         setError(e instanceof Error ? e : new Error(String(e)));
       }
     })();

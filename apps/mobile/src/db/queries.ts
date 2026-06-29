@@ -103,6 +103,7 @@ function rowToHabit(r: Record<string, unknown>): Habit {
     alarmEnabled: (r.alarm_enabled as number) === 1,
     alarmHour: (r.alarm_hour as number) ?? 8,
     alarmMinute: (r.alarm_minute as number) ?? 0,
+    link: (r.link as Habit['link']) ?? 'none',
   };
 }
 

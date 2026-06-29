@@ -4,8 +4,11 @@
 import { openDatabase } from '../../db/schema';
 import { enqueueChange } from '../../db/syncQueue';
 import type { SyncEntity } from '@egoless-do/core';
+import { createLogger } from '@egoless-do/core';
 
-const MIGRATION_KEY = 'sync_queue_migrated';
+const log = createLogger('Sync');
+
+const MIGRATION_KEY = 'sync_queue_migrated_v2';
 
 /** Check if migration has already been completed. */
 export async function isMigrationDone(): Promise<boolean> {
@@ -209,14 +212,15 @@ export async function migrateToSyncQueue(): Promise<number> {
 
   for (const { entity, table, pk, toPayload } of migrations) {
     const rows = await db.getAllAsync<Record<string, unknown>>(
-      `SELECT * FROM ${table} WHERE synced = 0 OR synced = 2`
+      `SELECT * FROM ${table}`
     );
     for (const row of rows) {
       const id = row[pk] as string;
       if (!id) continue;
-      const operation = row.synced === 2 ? 'delete' : 'upsert';
+      const isDeleted = (row.deleted as number) === 1;
+      const operation = isDeleted ? 'delete' : 'upsert';
       const payload = toPayload(row);
-      if (operation === 'delete') payload.deleted = true;
+      if (isDeleted) payload.deleted = true;
       await enqueueChange(entity, id, operation, payload);
       count++;
     }
@@ -228,7 +232,7 @@ export async function migrateToSyncQueue(): Promise<number> {
     [MIGRATION_KEY, '1']
   );
 
-  console.log(`[Migration] Migrated ${count} unsynced records to sync_queue`);
+  log.info('Migrated %d unsynced records to sync_queue', count);
   return count;
 }
 

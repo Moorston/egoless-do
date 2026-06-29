@@ -154,12 +154,26 @@ CREATE TABLE IF NOT EXISTS sync_queue (
   next_retry_at INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id);
+CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id);
 
 CREATE TABLE IF NOT EXISTS sync_metadata (
   entity               TEXT PRIMARY KEY,
   last_sync_timestamp  TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z',
   last_sync_status     TEXT DEFAULT 'success',
   updated_at           TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS sync_progress (
+  entity        TEXT PRIMARY KEY,
+  phase         INTEGER NOT NULL,
+  status        TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','downloading','done','failed')),
+  pulled_count  INTEGER NOT NULL DEFAULT 0,
+  total_count   INTEGER NOT NULL DEFAULT 0,
+  last_page     INTEGER NOT NULL DEFAULT 0,
+  last_error    TEXT,
+  retry_count   INTEGER NOT NULL DEFAULT 0,
+  next_retry_at INTEGER NOT NULL DEFAULT 0,
+  updated_at    INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS meditation_history (
@@ -409,6 +423,9 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     try {
       await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
     } catch {}
+    try {
+      await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id)');
+    } catch {}
   }
 
   // Ensure sync_metadata table exists
@@ -419,6 +436,21 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync(`CREATE TABLE IF NOT EXISTS sync_metadata (
       entity TEXT PRIMARY KEY, last_sync_timestamp TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z',
       last_sync_status TEXT DEFAULT 'success', updated_at TEXT DEFAULT (datetime('now'))
+    )`);
+  }
+
+  // Ensure sync_progress table exists
+  const syncProgressCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='sync_progress'"
+  );
+  if (!syncProgressCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS sync_progress (
+      entity TEXT PRIMARY KEY, phase INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','downloading','done','failed')),
+      pulled_count INTEGER NOT NULL DEFAULT 0, total_count INTEGER NOT NULL DEFAULT 0,
+      last_page INTEGER NOT NULL DEFAULT 0, last_error TEXT,
+      retry_count INTEGER NOT NULL DEFAULT 0, next_retry_at INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER
     )`);
   }
 
@@ -509,6 +541,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('habits', 'alarm_enabled', 'INTEGER NOT NULL DEFAULT 0');
   await tryAddCol('habits', 'alarm_hour', 'INTEGER NOT NULL DEFAULT 8');
   await tryAddCol('habits', 'alarm_minute', 'INTEGER NOT NULL DEFAULT 0');
+  await tryAddCol('habits', 'link', "TEXT NOT NULL DEFAULT 'none'");
 
   // Add exercise metadata columns if missing
   await tryAddCol('exercise_entries', 'mode', "TEXT DEFAULT 'free'");

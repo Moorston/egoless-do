@@ -1,14 +1,18 @@
 // ─── useSync hook (mobile) ────────────────────────────────────────
 // Connects SyncService to the app lifecycle: foreground triggers sync,
 // token comes from Zustand store, server changes update store.
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform, type AppStateStatus } from 'react-native';
-import { runSync, setSyncTokenProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, _migrationDone, setMigrationDone, resetMigrationFlag } from './SyncService';
+import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, _migrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger } from './SyncService';
 import { migrateToSyncQueue } from './migrateToSyncQueue';
+import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
+import { getState, openDatabase } from '../../db/schema';
 import { useAppStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
 import { mobileStorageAdapter } from '../../store/storageAdapter';
-import { registerPushToken } from '@egoless-do/core';
+import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
+
+const log = createLogger('Sync');
 
 type SyncableItem = { id?: string; deleted?: boolean; updatedAt?: number; [k: string]: unknown };
 type SyncPatch = Record<string, SyncableItem[] | unknown>;
@@ -19,103 +23,87 @@ export function useSync() {
   const token = useAppStore(s => s.auth.token);
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
   const syncingRef = useRef(false);
+  const [kickOutVisible, setKickOutVisible] = useState(false);
+  const [hasPendingData, setHasPendingData] = useState(false);
+
+  // Kick out handlers
+  const handleSyncAndLogout = useCallback(async () => {
+    setKickOutVisible(false);
+    try {
+      await runSync(); // Push pending data
+      useAppStore.getState().logout();
+    } catch {
+      // Sync failed — stay logged in so user can retry; don't lose pending data
+      log.error('Sync before logout failed, staying logged in');
+    }
+  }, []);
+
+  const handleLogoutDirectly = useCallback(() => {
+    setKickOutVisible(false);
+    useAppStore.getState().logout();
+  }, []);
 
   // Wire up token provider & change handler once
   useEffect(() => {
     setSyncTokenProvider(() => useAppStore.getState().auth.token);
-    setSyncChangeHandler((patch: SyncPatch) => {
-      const store = useAppStore.getState();
-      const merged: Record<string, unknown> = {};
-      const ARRAY_KEYS: Record<string, string> = {
-        habits: 'habits', reflections: 'reflections', fastingHistory: 'fastingHistory',
-        foodLog: 'foodLog', checkinHistory: 'checkinHistory', exerciseLog: 'exerciseLog',
-        medHistory: 'medHistory', plans: 'plans', planItems: 'planItems',
-        planItemCheckins: 'planItemCheckins', dailyCustomTodos: 'dailyCustomTodos',
-        dailyTodoHistory: 'dailyTodoHistory', graceHistory: 'graceHistory',
-        thoughtTrails: 'thoughtTrails',
-        trailNotes: 'trailNotes', reflectionLinks: 'reflectionLinks',
-        checkinReviews: 'checkinReviews',
-      };
-      // Explicit PK field per store key (don't guess from field presence)
-      const KEY_FIELD: Record<string, string> = {
-        checkinHistory: 'date', medHistory: 'date', graceHistory: 'date',
-      };
-      for (const [key, storeKey] of Object.entries(ARRAY_KEYS)) {
-        if (!patch[key]) continue;
-        const serverItems = patch[key] as SyncableItem[];
-        const existing = (store as Record<string, unknown>)[storeKey] as SyncableItem[] ?? [];
-        const result = [...existing];
-        const idField = KEY_FIELD[storeKey] ?? 'id';
-        for (const item of serverItems) {
-          const idx = result.findIndex((e) => e[idField] === item[idField]);
-          if (idx >= 0) {
-            const local = result[idx];
-            if (local.deleted) {
-              if (item.deleted && (item.updatedAt ?? 0) > (local.updatedAt ?? 0)) {
-                result[idx] = item;
-              }
-            } else if (item.deleted) {
-              if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
-                result[idx] = item;
-              }
-            } else {
-              if ((item.updatedAt ?? 0) >= (local.updatedAt ?? 0)) {
-                const itemColorsMissing = storeKey === 'reflections' && (!item.colors || typeof item.colors === 'string');
-                result[idx] = (itemColorsMissing && local.colors && Array.isArray(local.colors))
-                  ? { ...item, colors: local.colors }
-                  : item;
-              }
-            }
-          } else {
-            if (!item.deleted) result.push(item);
-          }
-        }
-        merged[storeKey] = result;
-      }
-      // Non-array fields (userProfile, waterMl, etc.) pass through directly
-      for (const key of Object.keys(patch)) {
-        if (!ARRAY_KEYS[key]) merged[key] = patch[key];
-      }
+    setSyncUserIdProvider(() => useAppStore.getState().auth.user?.id ?? null);
 
-      // Extract settings from profile data (piggybacked on profile entity)
-      if (merged.userProfile && Array.isArray(merged.userProfile)) {
-        const profileArr = merged.userProfile as SyncableItem[];
-        if (profileArr.length > 0) {
-          // Pick the latest non-deleted profile (matching pullServerData behavior)
-          const latest = profileArr
-            .filter((p) => !p.deleted)
-            .sort((a, b) => ((b.updatedAt ?? 0) as number) - ((a.updatedAt ?? 0) as number))[0];
-          if (latest) {
-            let profileData: Record<string, unknown> = (latest.data as Record<string, unknown>) ?? latest;
-            if (typeof profileData === 'string') {
-              try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
-            }
-            // Separate settings from profile data to prevent overwriting local settings via merge
-            const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
-            const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = profileData as Record<string, unknown>;
-            // Flatten profile array back to object (matching pullServerData behavior)
-            merged.userProfile = { ...((store.userProfile as Record<string, unknown>) ?? {}), ...profileDataWithoutSettings };
-            if (profileData.waterMl !== undefined) merged.waterMl = profileData.waterMl;
-            if (profileData.waterGoal !== undefined) merged.waterGoal = profileData.waterGoal;
-            if (profileData.weightUnit !== undefined) merged.weightUnit = profileData.weightUnit;
-            // Only overwrite local settings if server profile is newer
-            const localProfileUpdated = ((store.userProfile as Record<string, unknown>)?.updatedAt as number) ?? 0;
-            const serverProfileUpdated = (latest.updatedAt as number) ?? 0;
-            if (serverProfileUpdated >= localProfileUpdated) {
-              for (const sk of SETTINGS_KEYS) {
-                if (profileData[sk] !== undefined) merged[sk] = profileData[sk];
-              }
-            }
-          } else {
-            // All profiles deleted — remove userProfile from patch, continue with other data
-            delete merged.userProfile;
-          }
+    // Wire up debounced sync trigger: enqueueChange → triggerSyncDebounced → runSync
+    setSyncTriggerCallback(() => { runSync().catch((e) => log.error(e)); });
+    setOnEnqueuedCallback(() => { triggerSyncDebounced(); });
+
+    // Register kicked out handler
+    setKickedOutHandler(async () => {
+      const count = await getQueueCount();
+      setHasPendingData(count > 0);
+      setKickOutVisible(true);
+    });
+
+    setSyncChangeHandler(async (patch: SyncPatch) => {
+      try {
+      // Map store keys back to entity names for rehydrateFromDb
+      const STORE_KEY_TO_ENTITY: Record<string, string> = {
+        habits: 'habit', reflections: 'reflection', fastingHistory: 'fasting',
+        foodLog: 'food', checkinHistory: 'checkin', exerciseLog: 'exercise',
+        medHistory: 'meditation', userProfile: 'profile',
+        plans: 'plan', planItems: 'planItem', planItemCheckins: 'planItemCheckin',
+        dailyCustomTodos: 'dailyCustomTodo', dailyTodoHistory: 'dailyTodoHistory',
+        graceHistory: 'grace', thoughtTrails: 'thoughtTrail',
+        trailNotes: 'trailNote', reflectionLinks: 'reflectionLink',
+        checkinReviews: 'checkinReview',
+      };
+
+      // Patch from applyServerChanges already contains store-mapped entities.
+      // Use them directly instead of re-reading from SQLite.
+      const storePatch: Partial<MobileStore> = {};
+      const isStoreKey = (k: string) => !!STORE_KEY_TO_ENTITY[k];
+      for (const [key, value] of Object.entries(patch)) {
+        if (key === 'totalMedMinutes') {
+          storePatch.totalMedMinutes = value as number;
+        } else if (key === 'aiMode') {
+          (storePatch as any).aiMode = value;
+        } else if (key === 'aiModels') {
+          (storePatch as any).aiModels = value;
+        } else if (isStoreKey(key) && Array.isArray(value)) {
+          (storePatch as any)[key] = value;
         }
       }
-      useAppStore.setState(merged);
 
-      // Reconcile thoughtTrailIds: rebuild from canonical thoughtTrail.reflectionIds
-      if (merged.thoughtTrails || merged.reflections) {
+      if (Object.keys(storePatch).length) {
+        useAppStore.setState(storePatch);
+      }
+
+      // Derived state recalculation
+      const changedEntities = Object.keys(patch)
+        .map(k => STORE_KEY_TO_ENTITY[k] ?? (k === 'aiMode' || k === 'aiModels' ? 'aiConfig' : null))
+        .filter(Boolean) as string[];
+
+      if (changedEntities.includes('meditation')) {
+        useAppStore.getState().calculateTotalMedMin();
+      }
+
+      // thoughtTrailIds reconciliation: rebuild from canonical thoughtTrail.reflectionIds
+      if (changedEntities.includes('thoughtTrail') || changedEntities.includes('reflection')) {
         const state = useAppStore.getState();
         const trails = state.thoughtTrails ?? [];
         const trailMap = new Map<string, string[]>();
@@ -128,29 +116,28 @@ export function useSync() {
           }
         }
         const reflections = state.reflections ?? [];
-        const changedReflections: typeof reflections = [];
         const updated = reflections.map(r => {
           const ids = trailMap.get(r.id) ?? [];
           const current = r.thoughtTrailIds ?? [];
           if (ids.length === current.length && ids.every((id, i) => id === current[i])) return r;
-          const updatedR = { ...r, thoughtTrailIds: ids };
-          changedReflections.push(updatedR);
-          return updatedR;
+          return { ...r, thoughtTrailIds: ids };
         });
-        if (changedReflections.length) {
-          // Only update store — thoughtTrailIds is computed from trail data, not persisted
+        if (updated.some((r, i) => r !== reflections[i])) {
           useAppStore.setState({ reflections: updated } as Partial<MobileStore>);
         }
       }
 
-      if (merged.checkinHistory) {
+      if (changedEntities.includes('checkin')) {
         useAppStore.getState().calculateStreak();
+      }
+      } catch (callbackErr) {
+        log.error(callbackErr, { msg: '_onChanges callback error' });
       }
     });
     // Provide recycle bin IDs so sync can skip locally deleted items
     setDeletedIdsProvider(() => {
       const recycleBin = useAppStore.getState().recycleBin ?? [];
-      return new Set(recycleBin.map((r) => (r as Record<string, unknown>).id as string));
+      return new Set(recycleBin.map((r) => ((r as unknown) as Record<string, unknown>).id as string));
     });
   }, []);
 
@@ -170,20 +157,20 @@ export function useSync() {
         }
 
         if (finalStatus !== 'granted') {
-          console.log('[Push] Permission denied');
+          log.info('Permission denied');
           return null;
         }
 
         const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
         if (!projectId) {
-          console.log('[Push] No project ID configured');
+          log.info('No project ID configured');
           return null;
         }
 
         const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
         return tokenData.data;
       } catch (err) {
-        console.error('[Push] Failed to get push token:', err);
+        log.error(err, { msg: 'Failed to get push token' });
         return null;
       }
     };
@@ -198,8 +185,7 @@ export function useSync() {
       return;
     }
 
-    // Connect to real-time sync (short polling)
-    connectRealtime();
+    connectRealtime(getSyncUrl());
 
     return () => {
       disconnectRealtime();
@@ -220,10 +206,25 @@ export function useSync() {
           setMigrationDone();
         }
 
+        // Check if initial sync was interrupted — resume from breakpoint
+        const db = await openDatabase();
+        const initialDone = await getState(db, 'initialSyncDone');
+        if (initialDone !== 'true' && token) {
+          const userId = useAppStore.getState().auth.user?.id;
+          await resumeInitialSync(token, userId);
+          // Rehydrate after resume
+          const dbPatch = await rehydrateFromDb();
+          if (Object.keys(dbPatch).length) {
+            useAppStore.setState(dbPatch as Partial<MobileStore>);
+          }
+          useAppStore.getState().calculateStreak();
+          if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
+        }
+
         // runSync() manages _lastSyncAt internally — no need to set it here
         await runSync();
       } catch (e) {
-        console.error('[err]', e);
+        log.error(e);
       } finally {
         syncingRef.current = false;
       }
@@ -239,4 +240,11 @@ export function useSync() {
 
     return () => sub.remove();
   }, [isSignedIn, token]);
+
+  return {
+    kickOutVisible,
+    hasPendingData,
+    handleSyncAndLogout,
+    handleLogoutDirectly,
+  };
 }

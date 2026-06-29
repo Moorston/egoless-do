@@ -99,6 +99,7 @@ describe('syncQueue', () => {
       expect(count).toBe(3);
       expect(mockRunAsync).toHaveBeenCalledWith(
         expect.stringContaining("status = 'pending'"),
+        expect.any(Array),
       );
     });
   });
