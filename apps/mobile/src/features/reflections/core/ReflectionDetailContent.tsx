@@ -5,7 +5,9 @@ import { useAppStore } from '../../../store/useAppStore';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useT } from '../../../components/UI';
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger } from '@egoless-do/core';
-import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';
+import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal, BrainCircuit } from 'lucide-react-native';
+
+import { TrailPickerModal } from '../trails';
 
 const log = createLogger('Reflections');
 
@@ -30,6 +32,7 @@ export default function ReflectionDetailContent({
   const nav = useRootNavigation();
   const T = useT();
   const [showMore, setShowMore] = useState(false);
+  const [showTrailPicker, setShowTrailPicker] = useState(false);
 
   const r = useMemo(() => (store.reflections ?? []).find(x => !x.deleted && x.id === reflectionId), [store.reflections, reflectionId]);
 
@@ -59,10 +62,7 @@ export default function ReflectionDetailContent({
 
   return (
     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'flex-end' }}>
-      {showMore && (
-        <TouchableOpacity activeOpacity={1} onPress={() => setShowMore(false)} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }} />
-      )}
-      <TouchableOpacity activeOpacity={1} onPress={onClose} style={{ flex: 1 }} />
+      <TouchableOpacity activeOpacity={1} onPress={() => { if (showMore) setShowMore(false); else onClose(); }} style={{ flex: 1 }} />
       <LinearGradient
         colors={colors}
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
@@ -123,6 +123,12 @@ export default function ReflectionDetailContent({
           )}
         </ScrollView>
 
+        {/* Dropdown dismiss backdrop inside gradient (below dropdown at zIndex:2) */}
+        {showMore && (
+          <TouchableOpacity activeOpacity={1} onPress={() => setShowMore(false)}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }} />
+        )}
+
         {/* Action buttons */}
         <View style={{ flexDirection: 'row', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
           {onEdit && (
@@ -131,10 +137,16 @@ export default function ReflectionDetailContent({
               <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflEditTitle')}</Text>
             </TouchableOpacity>
           )}
-          {linkedTrails.length > 0 && (
+          {linkedTrails.length > 0 ? (
             <TouchableOpacity onPress={() => { onClose(); nav.navigate('ThoughtTrailDetail', { trailId: linkedTrails[0].id }); }}
               style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
               <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflLinkedTrail')}</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => setShowTrailPicker(true)}
+              style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center', flexDirection: 'row', justifyContent: 'center', gap: 6 }}>
+              <BrainCircuit size={16} color="#fff" />
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflLinkTrail')}</Text>
             </TouchableOpacity>
           )}
           {r.linkedPlanItemId ? (
@@ -178,6 +190,14 @@ export default function ReflectionDetailContent({
           </View>
         </View>
       </LinearGradient>
+
+      <TrailPickerModal
+        visible={showTrailPicker}
+        reflectionId={reflectionId}
+        linkedTrailIds={linkedTrails.map(t => t.id)}
+        onClose={() => setShowTrailPicker(false)}
+        onToggle={() => {}}
+      />
     </View>
   );
 }
