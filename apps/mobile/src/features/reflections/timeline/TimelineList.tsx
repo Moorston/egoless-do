@@ -57,7 +57,7 @@ export function TimelineList({
 
         // 查找与下一条的连接
         const linkToNext = !isLast
-          ? links.find(l => l.fromId === getId(ti) && l.toId === getId(items[idx + 1]))
+          ? (links.find(l => l.fromId === getId(ti) && l.toId === getId(items[idx + 1])) ?? null)
           : null;
 
         const itemEl = ti.kind === 'reflection' ? (

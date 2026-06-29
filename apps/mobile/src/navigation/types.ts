@@ -15,8 +15,8 @@ export type RootStackParamList = {
   ReviewHistory: undefined;
   ReviewDetail: { reviewId: string };
   ExerciseHistory: undefined;
-  PlanCreate: { planId?: string } | undefined;
-  PlanDetail: { planId: string };
+  PlanCreate: { planId?: string; reflectionId?: string } | undefined;
+  PlanDetail: { planId: string; addReflectionId?: string };
   PlanHistory: undefined;
   RecycleBin: undefined;
   PrivacyPolicy: undefined;

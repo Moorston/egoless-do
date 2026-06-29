@@ -56,8 +56,8 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
       const uri = await viewShotRef.current?.capture?.();
       if (!uri) return;
 
-      const { status } = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-      if (status === 'granted') {
+      const result = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if ((result as any).granted ?? (result as any).status === 'granted') {
         const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
         const fileUri = await FileSystem.StorageAccessFramework.createFileAsync(
           FileSystem.cacheDirectory ?? '',

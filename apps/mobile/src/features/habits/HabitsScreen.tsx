@@ -18,7 +18,7 @@ import { HABIT_LINK_COLORS } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Target, Pause, Play, X, Pencil, Trash2, ChevronRight, ChevronLeft, CheckCircle,
-  Bell,
+  Bell, BellOff,
 } from 'lucide-react-native';
 import TimePickerModal from '../../components/TimePickerModal';
 import { requestNotificationPermission, scheduleHabitReminder, rescheduleAllHabitReminders } from '../notifications/NotificationService';
@@ -71,7 +71,7 @@ export default function HabitsScreen() {
   const allHabits = useMemo(() => (store.habits ?? []).filter(h => !h.deleted), [store.habits]);
   const filtered = useMemo(() =>
     (filter==='all' ? allHabits : allHabits.filter(h => h.status===filter))
-      .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || (b.startDate.localeCompare(a.startDate))),
+      .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || ((b.startDate ?? '').localeCompare(a.startDate ?? ''))),
     [allHabits, filter]);
 
   const filterCounts = useMemo(() => {
@@ -162,7 +162,7 @@ export default function HabitsScreen() {
                 <View style={{ flex:1, height:1, backgroundColor:TH.border }} />
               </View>
               {/* Card */}
-              <TouchableOpacity onLongPress={() => setActionMenuHabit(h)} activeOpacity={0.9}>
+              <TouchableOpacity onPress={() => nav.navigate('HabitDetail', { habitId: h.id })} onLongPress={() => setActionMenuHabit(h)} activeOpacity={0.9}>
               <Card style={{ padding:14, marginLeft:16, marginBottom:16 }}>
                 <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
                   <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE, flex:1, marginRight:8 }}>{h.name}</Text>
@@ -179,6 +179,10 @@ export default function HabitsScreen() {
                 ) : null}
 
                 <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
+                <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:8 }}>
+                  {h.alarmEnabled ? <Bell size={14} color={P} /> : <BellOff size={14} color={TH.sub} />}
+                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{T('habitAlarm')}: {h.alarmEnabled ? `${String(h.alarmHour).padStart(2,'0')}:${String(h.alarmMinute).padStart(2,'0')}` : T('habitAlarmOff')}</Text>
+                </View>
 
                 {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>愿景："{h.insight}"</Text> : null}
                 {(h.link && h.link !== 'none') ? (

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, useT } from '../../components/UI';
-import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, dateStr, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -205,17 +205,25 @@ export default function StatsScreen() {
     return (
       <Card style={{ marginBottom: 12 }}>
         <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 10 }}>{T('statsHabitProgress')}</Text>
-        {habits.map(h => (
-          <View key={h.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-            <Flame size={16} color={COLORS.ORANGE} />
-            <Text style={{ flex: 1, fontSize: FONT_BODY, color: TH.text }} numberOfLines={1}>{h.name}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE, fontWeight: '600' }}>{h.streak}{T('days')}</Text>
-            <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-              <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${h.targetDays > 0 ? Math.min(h.doneDays / h.targetDays * 100, 100) : 0}%` }} />
+        {habits.map(h => {
+          const pct = h.targetDays > 0 ? Math.min(Math.round(h.doneDays / h.targetDays * 100), 100) : 0;
+          return (
+            <View key={h.id} style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Flame size={16} color={COLORS.ORANGE} />
+                <Text style={{ flex: 1, fontSize: FONT_BODY, color: TH.text }} numberOfLines={1}>{h.name}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE, fontWeight: '600' }}>{h.streak}{T('days')}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
+                  <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${pct}%` }} />
+                </View>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{h.doneDays}/{h.targetDays}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
+              </View>
             </View>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{h.targetDays > 0 ? Math.round(h.doneDays / h.targetDays * 100) : 0}%</Text>
-          </View>
-        ))}
+          );
+        })}
       </Card>
     );
   };
@@ -228,7 +236,7 @@ export default function StatsScreen() {
         {activePlans.map(p => {
           const items = planItems.filter(i => i.planId === p.id);
           const done = items.filter(i => i.status === 'completed').length;
-          const pct = items.length > 0 ? Math.round(done / items.length * 100) : 0;
+          const pct = computePlanProgress(p);
           return (
             <View key={p.id} style={{ marginBottom: 16 }}>
               {/* Plan header */}
@@ -245,8 +253,9 @@ export default function StatsScreen() {
               {items.length > 0 && (
                 <View style={{ marginLeft: 8 }}>
                   {items.map((item, idx) => {
+                    const clampedToday = today > item.endDate ? item.endDate : today;
                     const checkedDays = item.totalCheckinDays;
-                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, dateStr());
+                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
                     const itemPct = expectedDays > 0 ? Math.min(Math.round((checkedDays / expectedDays) * 100), 100) : 0;
                     const isLast = idx === items.length - 1;
                     return (

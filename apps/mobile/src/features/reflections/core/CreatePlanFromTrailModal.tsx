@@ -6,7 +6,7 @@ import { X } from 'lucide-react-native';
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../../components/UI';
 import { FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_BODY, dateStr } from '@egoless-do/core';
 import type { TrailInsightCache, UnifiedPlanItemForm } from '@egoless-do/core';
-import { PlanItemForm, validatePlanItemForm } from '../../plans/PlanItemForm';
+import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
 import { useAppStore } from '../../../store/useAppStore';
 import DatePickerModal from '../../../components/DatePickerModal';
 

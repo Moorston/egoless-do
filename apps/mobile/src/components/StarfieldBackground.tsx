@@ -223,7 +223,7 @@ function ShootingStar({ delay: initialDelay, screenW, screenH }: { delay: number
   const opacity = useRef(new Animated.Value(0)).current;
   const tailScale = useRef(new Animated.Value(0)).current;
   const mountedRef = useRef(true);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     mountedRef.current = true;

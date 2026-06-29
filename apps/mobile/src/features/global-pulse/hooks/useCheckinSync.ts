@@ -5,6 +5,7 @@
 
 import { useCallback } from 'react';
 import * as Location from 'expo-location';
+import { createLogger } from '@egoless-do/core';
 import { CheckinType } from '../types/globalPulse';
 import { fuzzCoordinate } from '../services/coordinateFuzzing';
 import { submitCheckin } from '../services/globalPulseApi';
@@ -12,6 +13,8 @@ import { getUserHash } from '../services/userHash';
 import { usePrivacy } from './usePrivacy';
 import { useNetworkStatus } from './useNetworkStatus';
 import { useAppStore } from '../../../store/useAppStore';
+
+const log = createLogger('GlobalPulse');
 
 interface UseCheckinSyncReturn {
   syncCheckin: (type: CheckinType, streak: number, totalDays: number) => Promise<boolean>;
@@ -57,7 +60,7 @@ export function useCheckinSync(): UseCheckinSyncReturn {
 
       return response.success;
     } catch (error) {
-      console.error('Failed to sync checkin to global pulse:', error);
+      log.error(error, { message: 'Failed to sync checkin to global pulse' });
       return false;
     }
   }, [preferences.show_on_global_map, isOnline, nickname]);

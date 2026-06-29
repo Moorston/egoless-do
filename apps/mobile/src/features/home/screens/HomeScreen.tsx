@@ -7,8 +7,10 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../../store/useAppStore';
-import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable } from '@egoless-do/core';
+import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_BADGE, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
+
+const log = createLogger('Home');
 import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
 import AddFoodModal from '../../../components/AddFoodModal';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -159,7 +161,7 @@ export default function HomeScreen() {
 
   // ── Draggable bubble (own touch refs to avoid conflict with swipe) ──
   const bubblePos = useRef({ x: 0, y: 0 }).current;
-  const bubbleOffset = useRef({ x: 0, y: 0 }).current;
+  const bubbleOffset = useRef({ x: 0, y: 0 });
   const bubbleTransX = useRef(new RNAnimated.Value(0)).current;
   const bubbleTransY = useRef(new RNAnimated.Value(0)).current;
   const isDragging = useRef(false);
@@ -342,7 +344,7 @@ export default function HomeScreen() {
     if (!store.healthSyncEnabled) return;
     import('../../health/HealthService').then(({ performHealthSync }) => {
       return performHealthSync(useAppStore.getState());
-    }).catch(console.error);
+    }).catch((e) => log.error(e));
   }, [store.healthSyncEnabled]);
 
   // ── Banner gradient ──
@@ -369,7 +371,9 @@ export default function HomeScreen() {
   // ── Grace reminder ──
   const yStr = yesterday();
   const yesterdayRecord = useMemo(() => (store.checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr), [store.checkinHistory, yStr]);
-  const showGrace = isToday && yesterdayRecord?.done !== true;
+  const dayBeforeYesterdayStr = useMemo(() => { const d = new Date(); d.setDate(d.getDate() - 2); return dateStr(d); }, []);
+  const dayBeforeYesterdayRecord = useMemo(() => (store.checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === dayBeforeYesterdayStr), [store.checkinHistory, dayBeforeYesterdayStr]);
+  const showGrace = isToday && yesterdayRecord?.done !== true && dayBeforeYesterdayRecord?.done === true;
   const currentMonth = dateStr().slice(0, 7);
   const graceQuota = store.userProfile?.graceMonthlyQuota ?? 2;
   const graceAvailable = isGraceAvailable(store.graceHistory ?? [], graceQuota, currentMonth, yStr);
@@ -522,7 +526,7 @@ export default function HomeScreen() {
               {/* ── Delayed plan reminder ── */}
               {showDelayed && (
                 <TouchableOpacity
-                  onPress={() => nav.navigate('Plan')}
+                  onPress={() => (nav as any).navigate('Plan')}
                   activeOpacity={0.8}
                   style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
                 >
@@ -568,9 +572,11 @@ export default function HomeScreen() {
                             <ClipboardList size={16} color={P} />
                             <View>
                               <Text style={{ color: TH.text, fontSize: FONT_BODY }} numberOfLines={1}>{item.name}</Text>
-                              <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                                {!item.link || item.link === 'manual' ? T('planLinkManual') : T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
-                              </Text>
+                              {item.link && item.link !== 'manual' && (
+                                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+                                  {T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
+                                </Text>
+                              )}
                             </View>
                           </View>
                           {autoChecked ? (

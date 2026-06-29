@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
   View, Text, Image, TouchableOpacity, Animated, PanResponder, StyleSheet, useWindowDimensions,
+  type GestureResponderEvent,
 } from 'react-native';
 import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
@@ -13,9 +14,11 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
+import { THEMES, t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, createLogger } from '@egoless-do/core';
 import StarfieldBackground from '../components/StarfieldBackground';
 import SimpleHeaderComponent from './SimpleHeader';
+
+const log = createLogger('App');
 
 // Tab screens
 import HomeScreen       from '../features/home/screens/HomeScreen';
@@ -65,7 +68,12 @@ import AISettingsScreen from '../features/settings/AISettingsScreen';
 import MusicScreen from '../features/music/screens/MusicScreen';
 import MusicCategoryScreen from '../features/music/screens/MusicCategoryScreen';
 import { useSync }       from '../features/sync/useSync';
+import { isDeviceSyncedBefore } from '../features/sync/SyncService';
+import { KickOutModal }  from '../components/KickOutModal';
+import { SyncProgressOverlay } from '../components/SyncProgressOverlay';
+import { SyncBanner } from '../components/SyncBanner';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import type { RootStackParamList, MainTabParamList } from './types';
 
 export type { RootStackParamList, MainTabParamList } from './types';
 export { useRootNavigation, useTabNavigation } from './hooks';
@@ -89,6 +97,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
   const animPos = useRef(new Animated.ValueXY({ x: pos.x, y: pos.y })).current;
   const moved = useRef(false);
   const isHidden = useRef(false);
+  const currentPosRef = useRef({ x: pos.x, y: pos.y });
 
   const panResponder = useRef(
     PanResponder.create({
@@ -100,10 +109,17 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
       },
       onPanResponderMove: Animated.event([null, { dx: animPos.x, dy: animPos.y }], {
         useNativeDriver: false,
-        listener: () => { moved.current = true; },
+        listener: (event: GestureResponderEvent) => {
+          moved.current = true;
+          const gs = event?.nativeEvent ?? event;
+          if (gs?.dx !== undefined) {
+            currentPosRef.current = { x: pos.x + gs.dx, y: pos.y + gs.dy };
+          }
+        },
       }),
       onPanResponderRelease() {
         animPos.flattenOffset();
+        // Update ref after flattenOffset - position is now baked into the base value
         const { vw: w, vh: h } = dimsRef.current;
 
         if (!moved.current) {
@@ -111,10 +127,10 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
             isHidden.current = false;
             const targetX = w - FAB_SIZE - 20;
             Animated.spring(animPos, {
-              toValue: { x: targetX, y: animPos.y.__getValue() },
+              toValue: { x: targetX, y: currentPosRef.current.y },
               useNativeDriver: false,
               bounciness: 8,
-            }).start();
+            }).start(() => { currentPosRef.current = { x: targetX, y: currentPosRef.current.y }; });
           } else {
             const nav = tabNavRef.current;
             if (nav) nav.navigate('Reflections', { showNew: true });
@@ -122,8 +138,8 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
           return;
         }
 
-        const currentX = animPos.x.__getValue();
-        const currentY = animPos.y.__getValue();
+        const currentX = currentPosRef.current.x;
+        const currentY = currentPosRef.current.y;
 
         const distToLeft = currentX;
         const distToRight = w - currentX - FAB_SIZE;
@@ -145,7 +161,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
           toValue: { x: targetX, y: targetY },
           useNativeDriver: false,
           bounciness: 8,
-        }).start();
+        }).start(() => { currentPosRef.current = { x: targetX, y: targetY }; });
       },
     }),
   ).current;
@@ -190,6 +206,7 @@ const TAB_ROUTES: Record<string, string> = {
 
 function MainTabs() {
   const theme = useAppStore(s => s.theme);
+  const language = useAppStore(s => s.language);
   const TH = THEMES[theme];
   const tabNavRef = useRef<any>(null);
   const [, forceUpdate] = useState(0);
@@ -231,14 +248,14 @@ function MainTabs() {
         };
       }}
     >
-      <Tab.Screen name="Home"        component={HomeScreen}        options={{ title:'首页', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Exercise"    component={ExerciseScreen}    options={{ title:'锻炼', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title:'冥想', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Fasting"     component={FastingScreen}     options={{ title:'禁食', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title:'设置', tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title:'计划', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title:'感念', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title:'习惯', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Home"        component={HomeScreen}        options={{ title: t('navTabHome', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Exercise"    component={ExerciseScreen}    options={{ title: t('navTabExercise', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title: t('navTabMeditation', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Fasting"     component={FastingScreen}     options={{ title: t('navTabFasting', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title: t('navTabSettings', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
     </Tab.Navigator>
     <FabButton primaryColor={TH.primary} />
     </View>
@@ -251,7 +268,27 @@ export default function AppNavigator() {
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
   const TH = THEMES[theme];
   const navRef = useRef<any>(null);
-  useSync();
+  const { kickOutVisible, hasPendingData, handleSyncAndLogout, handleLogoutDirectly } = useSync();
+  const [syncOverlayVisible, setSyncOverlayVisible] = useState(false);
+  const [syncPhase, setSyncPhase] = useState(1);
+
+  // Check initial sync state on mount — only show overlay on first device login
+  useEffect(() => {
+    if (!isSignedIn) return;
+    isDeviceSyncedBefore().then(synced => {
+      if (synced) return; // Device already synced before — no overlay needed
+      import('../db/schema').then(({ openDatabase, getState }) => {
+        openDatabase().then(async (db) => {
+          const done = await getState(db, 'initialSyncDone');
+          if (done !== 'true') {
+            setSyncOverlayVisible(true);
+            const phase = await getState(db, 'initialSyncPhase');
+            setSyncPhase(parseInt(phase || '1', 10));
+          }
+        });
+      }).catch(() => {});
+    });
+  }, [isSignedIn]);
 
   // Auth expiry check on startup
   useEffect(() => {
@@ -262,7 +299,7 @@ export default function AppNavigator() {
     if (!expiresAt || expiresAt < Date.now()) {
       refreshAuth().catch(() => logout());
     } else if (expiresAt - Date.now() < 3600000) {
-      refreshAuth().catch((e) => console.error('[err]', e));
+      refreshAuth().catch((e) => log.error(e));
     }
   }, [isSignedIn]);
 
@@ -344,6 +381,14 @@ export default function AppNavigator() {
         <Stack.Screen name="RelationMap"   component={RelationMapView} />
       </Stack.Navigator>
     </NavigationContainer>
+    <KickOutModal
+      visible={kickOutVisible}
+      hasPendingData={hasPendingData}
+      onSyncAndLogout={handleSyncAndLogout}
+      onLogoutDirectly={handleLogoutDirectly}
+    />
+    <SyncProgressOverlay visible={syncOverlayVisible && isSignedIn} phase={syncPhase} />
+    {isSignedIn && !syncOverlayVisible && <SyncBanner />}
     </View>
     </ErrorBoundary>
   );

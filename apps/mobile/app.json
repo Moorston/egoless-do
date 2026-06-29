@@ -1,5 +1,6 @@
 {
   "expo": {
+    "entryPoint": "index.js",
     "name": "心流纪",
     "slug": "egoless-do",
     "version": "1.0.0",
@@ -12,7 +13,7 @@
       "backgroundColor": "#0F0A1E"
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/**/*"
     ],
     "ios": {
       "supportsTablet": false,
@@ -54,8 +55,7 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-localization",
-      "sentry-expo"
+      "expo-localization"
     ],
     "extra": {
       "eas": {

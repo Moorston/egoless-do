@@ -2,9 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, Text, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { Upload } from 'lucide-react-native';
-import { FONT_BODY } from '@egoless-do/core';
+import { FONT_BODY, createLogger } from '@egoless-do/core';
 import { useTheme } from '../../../components/UI';
 import { useMusicStore } from '../useMusicStore';
+
+const log = createLogger('Music');
 
 interface Props {
   T: (key: string) => string;
@@ -28,7 +30,7 @@ export default function ImportMusicButton({ T, primaryColor }: Props) {
       await addUserTrack(asset.name, asset.uri);
       Alert.alert(T('musicImportSuccess').replace('{name}', asset.name));
     } catch (e) {
-      console.warn('Import failed:', e);
+      log.warn('Import failed:', e);
       Alert.alert(T('musicImportFailed'));
     } finally {
       setImporting(false);

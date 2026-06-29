@@ -4,8 +4,10 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useTheme, useT } from '../../components/UI';
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, FONT_HERO, FONT_SUB, FONT_TITLE, FONT_STAT_CARD, FONT_STAT_SECTION, getSoftTarget, getSportExperienceType, formatPace } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, FONT_HERO, FONT_SUB, FONT_TITLE, FONT_STAT_CARD, FONT_STAT_SECTION, getSoftTarget, getSportExperienceType, formatPace, createLogger } from '@egoless-do/core';
 import type { SportType } from '@egoless-do/core';
+
+const log = createLogger('Exercise');
 import { useAppStore } from '../../store/useAppStore';
 import { Pause } from 'lucide-react-native';
 import type { RootStackParamList } from '../../navigation/hooks';
@@ -229,7 +231,7 @@ export default function SportPage() {
             const loc = await getCurPos();
             if (mounted && loc) setInitialPos({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
           }
-        } catch (e) { console.warn('[SportPage] Location error:', e); }
+        } catch (e) { log.warn('Location error:', e); }
       })();
     }
     return () => { mounted = false; };
@@ -299,7 +301,7 @@ export default function SportPage() {
           trackPoints: isGpsSport ? coords.map(c => ({ lat: c.latitude, lng: c.longitude, ts: c.ts })) : undefined,
           segmentPaces: segmentPaces.length > 0 ? segmentPaces : undefined,
           mode,
-          target: mode === 'target' ? { type: targetType, value: targetValue } : undefined,
+          target: mode === 'target' ? { type: targetType as 'distance' | 'time' | 'calories' | 'reps', value: targetValue } : undefined,
           reps: finalReps,
           sets: sets.sets.length > 0 ? sets.sets : undefined,
           met: MET_MAP[sportName],
@@ -307,12 +309,12 @@ export default function SportPage() {
         store.addExercise(entry);
         if (useAppStore.getState().healthSyncEnabled) {
           import('../health/HealthService').then(({ writeWorkout }) => {
-            return writeWorkout({ ...entry, id: '', updatedAt: 0 });
-          }).catch(e => console.warn('[Health] write failed:', e));
+            return writeWorkout({ ...entry, id: '', updatedAt: 0, deleted: false });
+          }).catch(e => log.warn('Health write failed:', e));
         }
       }
     } catch (e) {
-      console.error('[SportPage] save failed:', e);
+      log.error(e, { message: 'Save failed' });
       savingRef.current = false;
       return;
     }

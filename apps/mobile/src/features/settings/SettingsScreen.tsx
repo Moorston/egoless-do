@@ -10,8 +10,11 @@ import {
   Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
 } from '../../components/UI';
 import TimePickerModal from '../../components/TimePickerModal';
-import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE } from '@egoless-do/core';
+import { SyncConflictPanel } from '../../components/SyncConflictPanel';
+import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE, createLogger } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
+
+const log = createLogger('Settings');
 import {
   BarChart3, CalendarDays, Utensils, Shield, HeartCrack,
   Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
@@ -46,7 +49,7 @@ export default function SettingsScreen() {
   useEffect(() => {
     if (store.remindEnabled) {
       const [h, m] = store.remindTime.split(':').map(Number);
-      scheduleDailyReminder(h, m).catch((e) => console.error('[err]', e));
+      scheduleDailyReminder(h, m).catch((e) => log.error(e));
     }
   }, []);
 
@@ -76,19 +79,20 @@ export default function SettingsScreen() {
       setLastSyncAt(Date.now());
       setPendingCount(0);
     } catch (e) {
-      console.warn('[Sync] Error:', e);
+      log.warn('[Sync] Error:', e);
     }
     syncingRef.current = false;
     setSyncing(false);
   }, []);
 
-  // Periodic sync (15 min)
+  // Periodic sync (fallback when realtime connection is not active)
+  const SYNC_FALLBACK_INTERVAL = 5 * 60 * 1000; // 5 minutes
   const onlineRef = useRef(online);
   useEffect(() => { onlineRef.current = online; }, [online]);
   useEffect(() => {
     syncTimerRef.current = setInterval(() => {
       if (onlineRef.current) runSync();
-    }, 15 * 60 * 1000);
+    }, SYNC_FALLBACK_INTERVAL);
     return () => { if (syncTimerRef.current) clearInterval(syncTimerRef.current); };
   }, [runSync]);
 
@@ -115,7 +119,7 @@ export default function SettingsScreen() {
                 await cancelAllReminders();
               }
               store.setRemindEnabled(next);
-            } catch (e) { console.error('[Settings] Reminder toggle error:', e); }
+            } catch (e) { log.error(e, { message: 'Reminder toggle error' }); }
           }} />,
         },
         {
@@ -264,7 +268,7 @@ export default function SettingsScreen() {
               } else {
                 setHealthSyncEnabled(false);
               }
-            } catch (e) { console.error('[Settings] Health sync toggle error:', e); }
+            } catch (e) { log.error(e, { message: 'Health sync toggle error' }); }
           }} />,
           last: true,
         },
@@ -406,6 +410,8 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         </Card>
 
+        <SyncConflictPanel />
+
         {sections.map(({ title, rows }) => (
           <View key={title} style={{ marginBottom: 4 }}>
             <Text style={{
@@ -444,8 +450,8 @@ export default function SettingsScreen() {
                           onPress: async () => {
                             setClearing(true);
                             try {
-                              await store.clearLocalData();
-                              Alert.alert(T('clearDataSuccess'));
+                              await store.clearDataAndLogout();
+                              nav.reset({ index: 0, routes: [{ name: 'Login' }] });
                             } catch (e: any) {
                               Alert.alert(T('clearDataPushFail'));
                             }
@@ -499,7 +505,7 @@ export default function SettingsScreen() {
               const [h, m] = time.split(':').map(Number);
               await scheduleDailyReminder(h, m);
             }
-          } catch (e) { console.error('[Settings] Time picker error:', e); }
+          } catch (e) { log.error(e, { message: 'Time picker error' }); }
         }}
         onClose={() => setShowTimePicker(false)}
       />

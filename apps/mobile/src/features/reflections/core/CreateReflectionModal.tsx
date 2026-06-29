@@ -54,7 +54,7 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
     const newR = store.addReflection({
       content: content.trim(),
       tags,
-      mood: selectedMood,
+      mood: selectedMood ?? '',
     });
 
     // 关联到思维脉络

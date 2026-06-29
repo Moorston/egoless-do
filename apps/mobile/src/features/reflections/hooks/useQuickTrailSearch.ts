@@ -3,8 +3,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   computeCandidatePool, buildIndex, retrieveTopK,
   isAIRecommendAvailable, parseSmartQuery, semanticSearchReflections,
+  createLogger,
 } from '@egoless-do/core';
 import type { MindReflection, SmartQueryResult, SmartQueryFilters, TrailFilters } from '@egoless-do/core';
+
+const log = createLogger('Reflections');
 
 export type TimeRange = 'week' | 'month' | '3months' | 'all';
 export type MatchMode = 'idle' | 'local' | 'ai' | 'ai-loading';
@@ -105,8 +108,8 @@ export function useQuickTrailSearch(
   // ── Candidate pool + recommendations ──────────────────────────
   const filters: TrailFilters = useMemo(() => ({
     timeRange,
-    tags: selectedTags.length > 0 ? selectedTags : undefined,
-    moods: selectedMoods.length > 0 ? selectedMoods : undefined,
+    tags: selectedTags.length > 0 ? selectedTags : [],
+    moods: selectedMoods.length > 0 ? selectedMoods : [],
   }), [timeRange, selectedTags, selectedMoods]);
 
   const candidates = useMemo(() =>
@@ -161,7 +164,7 @@ export function useQuickTrailSearch(
   useEffect(() => {
     AsyncStorage.getItem(SEARCH_HISTORY_KEY).then(v => {
       if (v) try { setSearchHistory(JSON.parse(v)); } catch {}
-    });
+    }).catch(() => {});
   }, []);
 
   const addToHistory = useCallback((query: string) => {
@@ -248,7 +251,7 @@ export function useQuickTrailSearch(
       const index = buildIndex(candidates);
       const scored = retrieveTopK(trimmed, index, 20);
 
-      const directResults: Array<{ ref: MindReflection; score: number; source: 'direct' }> = [];
+      const directResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }> = [];
       for (const s of scored) {
         const ref = candidates.find(r => r.id === s.index.id);
         if (ref) directResults.push({ ref, score: s.score, source: 'direct' });
@@ -302,7 +305,7 @@ export function useQuickTrailSearch(
             updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
           }
         } catch (e) {
-          console.log('[SmartQuery] Phase 2 failed:', e);
+          log.debug('SmartQuery Phase 2 failed:', e);
           updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentFail') });
         }
       } else {
@@ -329,7 +332,7 @@ export function useQuickTrailSearch(
             updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticEmpty') });
           }
         } catch (e) {
-          console.log('[SmartQuery] Phase 3 failed:', e);
+          log.debug('SmartQuery Phase 3 failed:', e);
           setAiDegraded(true);
           updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') });
         }
@@ -353,7 +356,7 @@ export function useQuickTrailSearch(
           .replace('{e}', String(extended.length))
       });
     } catch (e) {
-      console.log('[SmartQuery] pipeline error:', e);
+      log.warn('SmartQuery pipeline error:', e);
       const index = buildIndex(candidates);
       const scored = retrieveTopK(trimmed, index, 20);
       const fallback = scored.map(s => candidates.find(r => r.id === s.index.id)).filter(Boolean) as MindReflection[];
@@ -427,7 +430,7 @@ export function useQuickTrailSearch(
           updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
         }
       } catch (e) {
-        console.log('[AISearch] Phase 2 failed:', e);
+        log.debug('AISearch Phase 2 failed:', e);
         updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentFail') });
       }
 
@@ -449,7 +452,7 @@ export function useQuickTrailSearch(
           updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticEmpty') });
         }
       } catch (e) {
-        console.log('[AISearch] Phase 3 failed:', e);
+        log.debug('AISearch Phase 3 failed:', e);
         setAiDegraded(true);
         updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') });
       }
@@ -470,7 +473,7 @@ export function useQuickTrailSearch(
           .replace('{e}', String(extended.length))
       });
     } catch (e) {
-      console.log('[AISearch] pipeline error:', e);
+      log.warn('AISearch pipeline error:', e);
       setAiDegraded(true);
     } finally {
       setIsSmartParsing(false);

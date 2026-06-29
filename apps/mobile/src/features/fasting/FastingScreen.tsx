@@ -6,7 +6,7 @@ import { useAudioPlayer } from 'expo-audio';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
-import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION } from '@egoless-do/core';
+import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY } from '@egoless-do/core';
 import {
   Clock, Flame, Globe, Scale,
   AlertTriangle, Check, ChevronRight, StopCircle,
@@ -96,7 +96,7 @@ export default function FastingScreen() {
     for (let i = 1; i < reversed.length; i++) {
       const prev = new Date(reversed[i - 1]);
       const curr = new Date(reversed[i]);
-      const diff = (prev.getTime() - curr.getTime()) / 86400000;
+      const diff = (prev.getTime() - curr.getTime()) / MS_PER_DAY;
       if (Math.abs(diff - 1) < 0.1) streak++;
       else break;
     }

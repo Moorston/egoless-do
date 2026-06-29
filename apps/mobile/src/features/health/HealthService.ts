@@ -1,7 +1,9 @@
 // ─── Health Service — Apple HealthKit / Health Connect abstraction ──
 import { Platform, Alert } from 'react-native';
 import type { ExerciseEntry } from '@egoless-do/core';
-import { dateStr } from '@egoless-do/core';
+import { dateStr, MS_PER_DAY, createLogger } from '@egoless-do/core';
+
+const log = createLogger('Health');
 
 // ── Sport key → HealthKit / Health Connect workout type mapping ──
 const SPORT_TO_HK_WORKOUT: Record<string, string> = {
@@ -86,7 +88,7 @@ export async function requestHealthPermissions(): Promise<boolean> {
           },
           (err: string) => {
             if (err) {
-              console.warn('[Health] iOS init error:', err);
+              log.warn('iOS init error:', err);
               resolve(false);
             } else {
               resolve(true);
@@ -112,7 +114,7 @@ export async function requestHealthPermissions(): Promise<boolean> {
 
     return false;
   } catch (e) {
-    console.warn('[Health] Permission request failed:', e);
+    log.warn('Permission request failed:', e);
     return false;
   }
 }
@@ -130,7 +132,7 @@ export async function readTodaySteps(): Promise<number> {
           { startDate: startOfDay.toISOString(), endDate: now.toISOString() },
           (err: string, result: { value: number }) => {
             if (err) {
-              console.warn('[Health] iOS step count error:', err);
+              log.warn('iOS step count error:', err);
               resolve(0);
             } else {
               resolve(Math.round(result?.value ?? 0));
@@ -155,7 +157,7 @@ export async function readTodaySteps(): Promise<number> {
 
     return 0;
   } catch (e) {
-    console.warn('[Health] readTodaySteps failed:', e);
+    log.warn('readTodaySteps failed:', e);
     return 0;
   }
 }
@@ -163,7 +165,7 @@ export async function readTodaySteps(): Promise<number> {
 export async function readLatestWeight(): Promise<{ value: number; date: string } | null> {
   try {
     const now = new Date();
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * MS_PER_DAY);
 
     if (Platform.OS === 'ios') {
       const HK = getHealthKit();
@@ -207,7 +209,7 @@ export async function readLatestWeight(): Promise<{ value: number; date: string 
 
     return null;
   } catch (e) {
-    console.warn('[Health] readLatestWeight failed:', e);
+    log.warn('readLatestWeight failed:', e);
     return null;
   }
 }
@@ -231,7 +233,7 @@ export async function writeWorkout(entry: ExerciseEntry): Promise<boolean> {
           },
           (err: string) => {
             if (err) {
-              console.warn('[Health] iOS saveWorkout error:', err);
+              log.warn('iOS saveWorkout error:', err);
               resolve(false);
             } else {
               resolve(true);
@@ -265,14 +267,14 @@ export async function writeWorkout(entry: ExerciseEntry): Promise<boolean> {
 
     return false;
   } catch (e) {
-    console.warn('[Health] writeWorkout failed:', e);
+    log.warn('writeWorkout failed:', e);
     return false;
   }
 }
 
 export async function performHealthSync(store: {
   healthSyncEnabled: boolean;
-  checkinHistory: { date: string; weight?: number }[];
+  checkinHistory: { date: string; weight?: number; deleted?: boolean }[];
   setTodaySteps: (n: number) => void;
   syncWeightFromHealth: (w: number) => void;
 }): Promise<void> {
@@ -293,6 +295,6 @@ export async function performHealthSync(store: {
       }
     }
   } catch (e) {
-    console.warn('[Health] performHealthSync failed:', e);
+    log.warn('performHealthSync failed:', e);
   }
 }

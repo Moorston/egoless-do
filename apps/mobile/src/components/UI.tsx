@@ -194,12 +194,12 @@ export function ScreenHeader({
 
 // ── ThemedInput ──────────────────────────────────────────────────
 export function ThemedInput({
-  value, onChangeText, placeholder, multiline, numberOfLines, keyboardType, secureTextEntry, maxLength, onBlur, style,
+  value, onChangeText, placeholder, multiline, numberOfLines, keyboardType, secureTextEntry, maxLength, onBlur, style, autoCapitalize,
 }: {
   value: string; onChangeText: (t: string) => void;
   placeholder?: string; multiline?: boolean; numberOfLines?: number;
-  keyboardType?: 'default' | 'numeric' | 'number-pad'; secureTextEntry?: boolean;
-  maxLength?: number; onBlur?: () => void; style?: TextStyle;
+  keyboardType?: 'default' | 'numeric' | 'number-pad' | 'email-address'; secureTextEntry?: boolean;
+  maxLength?: number; onBlur?: () => void; style?: TextStyle; autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
 }) {
   const TH = useTheme();
   return (
@@ -214,6 +214,7 @@ export function ThemedInput({
       secureTextEntry={secureTextEntry}
       maxLength={maxLength}
       onBlur={onBlur}
+      autoCapitalize={autoCapitalize}
       style={[{
         backgroundColor: TH.card,
         borderWidth: 1, borderColor: TH.border,

@@ -5,17 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, ChevronRight, Check, Calendar, Heart, Lightbulb } from 'lucide-react-native';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK } from '@egoless-do/core';
 import { getMoodIcon } from '@egoless-do/core';
 
 type Step = 'mood' | 'insight' | 'action';
 
-const MOOD_OPTIONS = [
-  { key: 'great', label: '很好', emoji: '😊' },
-  { key: 'good', label: '还行', emoji: '🌿' },
-  { key: 'tough', label: '有点难', emoji: '😰' },
-  { key: 'hard', label: '很艰难', emoji: '😢' },
-];
+const MOOD_KEYS = ['great', 'good', 'tough', 'hard'] as const;
+const MOOD_EMOJIS: Record<(typeof MOOD_KEYS)[number], string> = { great: '😊', good: '🌿', tough: '😰', hard: '😢' };
+const MOOD_LABEL_KEYS: Record<(typeof MOOD_KEYS)[number], string> = { great: 'reviewMoodGreat', good: 'reviewMoodOkay', tough: 'reviewMoodTough', hard: 'reviewMoodHard' };
 
 export default function ReviewScreen() {
   const TH = useTheme();
@@ -35,7 +32,7 @@ export default function ReviewScreen() {
   );
 
   const weekReflections = useMemo(() => {
-    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const weekAgo = Date.now() - MS_PER_WEEK;
     return reflections.filter(r => r.timestamp > weekAgo);
   }, [reflections]);
 
@@ -78,17 +75,17 @@ export default function ReviewScreen() {
     <View style={styles.stepContainer}>
       <View style={styles.stepHeader}>
         <Calendar size={24} color={P} />
-        <Text style={[styles.stepTitle, { color: TH.text }]}>本周情绪旅程</Text>
+        <Text style={[styles.stepTitle, { color: TH.text }]}>{T('reviewWeekJourney')}</Text>
       </View>
 
       <Text style={[styles.stepDescription, { color: TH.sub }]}>
-        这周你记录了 {weekReflections.length} 条感念
+        {T('reviewReflectionCount').replace('{count}', String(weekReflections.length))}
       </Text>
 
       {/* Mood distribution */}
       {moodStats.length > 0 && (
         <View style={[styles.moodDistribution, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <Text style={[styles.moodLabel, { color: TH.sub }]}>本周情绪分布：</Text>
+          <Text style={[styles.moodLabel, { color: TH.sub }]}>{T('reviewMoodDistribution')}</Text>
           <View style={styles.moodRow}>
             {moodStats.map(({ mood, count }) => (
               <Text key={mood} style={styles.moodEmoji}>
@@ -99,10 +96,10 @@ export default function ReviewScreen() {
         </View>
       )}
 
-      <Text style={[styles.question, { color: TH.text }]}>你觉得这周整体感觉如何？</Text>
+      <Text style={[styles.question, { color: TH.text }]}>{T('reviewMoodQuestion')}</Text>
 
       <View style={styles.moodOptions}>
-        {MOOD_OPTIONS.map(({ key, label, emoji }) => (
+        {MOOD_KEYS.map((key) => (
           <TouchableOpacity
             key={key}
             onPress={() => setSelectedMood(key)}
@@ -114,8 +111,8 @@ export default function ReviewScreen() {
               },
             ]}
           >
-            <Text style={styles.moodOptionEmoji}>{emoji}</Text>
-            <Text style={[styles.moodOptionLabel, { color: TH.text }]}>{label}</Text>
+            <Text style={styles.moodOptionEmoji}>{MOOD_EMOJIS[key]}</Text>
+            <Text style={[styles.moodOptionLabel, { color: TH.text }]}>{T(MOOD_LABEL_KEYS[key])}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -126,21 +123,21 @@ export default function ReviewScreen() {
     <View style={styles.stepContainer}>
       <View style={styles.stepHeader}>
         <Heart size={24} color={P} />
-        <Text style={[styles.stepTitle, { color: TH.text }]}>关键转变</Text>
+        <Text style={[styles.stepTitle, { color: TH.text }]}>{T('reviewKeyShift')}</Text>
       </View>
 
       <Text style={[styles.stepDescription, { color: TH.sub }]}>
-        回顾这周，有没有什么特别的时刻或转变？
+        {T('reviewKeyShiftQuestion')}
       </Text>
 
       <Text style={[styles.question, { color: TH.text }]}>
-        是什么帮到了你？有什么领悟吗？
+        {T('reviewKeyShiftInsight')}
       </Text>
 
       <TextInput
         value={insight}
         onChangeText={setInsight}
-        placeholder="输入你的反思..."
+        placeholder={T('reviewEnterReflection')}
         placeholderTextColor={TH.sub}
         multiline
         numberOfLines={4}
@@ -153,21 +150,21 @@ export default function ReviewScreen() {
     <View style={styles.stepContainer}>
       <View style={styles.stepHeader}>
         <Lightbulb size={24} color={P} />
-        <Text style={[styles.stepTitle, { color: TH.text }]}>带到下周</Text>
+        <Text style={[styles.stepTitle, { color: TH.text }]}>{T('reviewCarryForward')}</Text>
       </View>
 
       <Text style={[styles.stepDescription, { color: TH.sub }]}>
-        把这周的领悟变成行动
+        {T('reviewCarryForwardDesc')}
       </Text>
 
       <Text style={[styles.question, { color: TH.text }]}>
-        有什么想法或策略，你想在下周继续实践？
+        {T('reviewCarryForwardQuestion')}
       </Text>
 
       <TextInput
         value={action}
         onChangeText={setAction}
-        placeholder="输入你的计划..."
+        placeholder={T('reviewEnterPlan')}
         placeholderTextColor={TH.sub}
         multiline
         numberOfLines={4}
@@ -187,7 +184,7 @@ export default function ReviewScreen() {
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <ArrowLeft size={24} color={TH.text} />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: TH.text }]}>本周回顾</Text>
+          <Text style={[styles.headerTitle, { color: TH.text }]}>{T('reviewThisWeek')}</Text>
           <View style={{ width: 40 }} />
         </View>
 
@@ -239,7 +236,7 @@ export default function ReviewScreen() {
             disabled={!canProceed}
           >
             <Text style={[styles.actionButtonText, { color: canProceed ? '#fff' : TH.sub }]}>
-              {step === 'action' ? '完成回顾' : '下一步'}
+              {step === 'action' ? T('reviewFinish') : T('reviewNextStep')}
             </Text>
             {step !== 'action' && <ChevronRight size={20} color={canProceed ? '#fff' : TH.sub} />}
           </TouchableOpacity>

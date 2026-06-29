@@ -6,8 +6,10 @@ import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
-import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION } from '@egoless-do/core';
+import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
+
+const log = createLogger('Meditation');
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -113,7 +115,7 @@ export default function MeditationScreen() {
     setAudioModeAsync({
       playsInSilentMode: true,
       shouldPlayInBackground: false,
-    }).catch((e) => console.error('[err]', e));
+    }).catch((e) => log.error(e));
   }, []);
 
   const playBell = useCallback(() => {
@@ -222,7 +224,7 @@ export default function MeditationScreen() {
         const uri = await shareCardRef.current.capture();
         await Sharing.shareAsync(uri, { dialogTitle: T('shareMed'), mimeType: 'image/png' });
       }
-    } catch (e) { console.warn('Share failed:', e); }
+    } catch (e) { log.warn('Share failed:', e); }
     setShowShare(false);
   }, [T]);
 

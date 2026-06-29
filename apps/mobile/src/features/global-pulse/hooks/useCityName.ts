@@ -159,6 +159,14 @@ export function useCityNameBatch(
               return updated;
             });
           }
+        }).catch(() => {
+          if (mountedRef.current) {
+            setResults(prev => {
+              const updated = new Map(prev);
+              updated.set(cacheKey, { city: null, country: null, displayName: null, loading: false });
+              return updated;
+            });
+          }
         });
       }
 

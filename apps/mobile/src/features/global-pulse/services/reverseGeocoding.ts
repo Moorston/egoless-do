@@ -3,6 +3,10 @@
  * 使用 OpenStreetMap Nominatim API 获取城市名
  */
 
+import { createLogger } from '@egoless-do/core';
+
+const log = createLogger('GlobalPulse');
+
 // 缓存：key 为 "lat,lng"（保留2位小数）
 const cache = new Map<string, CityInfo>();
 
@@ -95,13 +99,13 @@ async function processQueue() {
         request.resolve(cityInfo);
       } catch (error: any) {
         if (error?.name !== 'AbortError') {
-          console.warn('Reverse geocoding failed:', error?.message);
+          log.warn('Reverse geocoding failed:', error?.message);
         }
         request.resolve(null);
       }
 
       if (requestQueue.length > 0) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise<void>(resolve => setTimeout(resolve, 1000));
       }
     }
   } finally {

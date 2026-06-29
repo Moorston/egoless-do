@@ -7,7 +7,7 @@ import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Brain, TrendingUp, Calendar, Lightbulb } from 'lucide-react-native';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK } from '@egoless-do/core';
 import { getMoodIcon } from '@egoless-do/core';
 
 const MOOD_EMOJI: Record<string, string> = {
@@ -73,7 +73,7 @@ export default function InsightScreen() {
     totalReflections: reflections.length,
     totalTrails: thoughtTrails.length,
     thisWeekReflections: reflections.filter(r => {
-      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const weekAgo = Date.now() - MS_PER_WEEK;
       return r.timestamp > weekAgo;
     }).length,
   }), [reflections, thoughtTrails]);

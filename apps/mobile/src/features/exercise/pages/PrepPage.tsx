@@ -11,7 +11,7 @@ export default function PrepPage(props: ExercisePageProps) {
     handleGo, onGoBack, exerciseLog, T, TH,
   } = props;
 
-  const presets = TARGET_PRESETS[sportType] ?? {};
+  const presets: Record<string, Array<{ label: string; labelEn: string; value: number }> | undefined> = TARGET_PRESETS[sportType] ?? {};
   const availableTargetTypes = Object.keys(presets) as Array<'distance' | 'time' | 'calories' | 'reps'>;
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customInputValue, setCustomInputValue] = useState('');

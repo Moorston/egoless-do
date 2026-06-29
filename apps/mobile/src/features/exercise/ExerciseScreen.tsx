@@ -42,9 +42,9 @@ export default function ExerciseScreen() {
 
   // Recent sports (unique by sportKey)
   const recentSports = useMemo(() => {
-    const exerciseLog = (store.exerciseLog ?? []).filter(e => !e.deleted);
+    const exerciseLog = (store.exerciseLog ?? []).filter(e => !e.deleted && e.sportKey);
     const seen = new Set<string>();
-    const result: { key: string; icon: string; color?: string; gps?: boolean }[] = [];
+    const result: { key: string; icon: string; color: string; gps: boolean }[] = [];
     for (const e of exerciseLog) {
       if (!seen.has(e.sportKey) && result.length < 5) {
         seen.add(e.sportKey);
@@ -80,10 +80,10 @@ export default function ExerciseScreen() {
   }, [otherGroups, searchQuery]);
 
   const quickSports = [
-    { icon: Footprints, label: T('exerciseWalk'), key: '行走', colors: ['#9A4EFF', '#20ECFF'] as const, gps: true },
-    { icon: Activity, label: T('exerciseRun'), key: '跑步', colors: ['#17EAD9', '#6078EA'] as const, gps: true },
-    { icon: Bike, label: T('exerciseCycle'), key: '骑行', colors: ['#8446FF', '#18CEFF'] as const, gps: true },
-    { icon: Dumbbell, label: T('exerciseOther'), key: '', colors: ['#BB73E0', '#FF8DDB'] as const, gps: false, more: true },
+    { Icon: Footprints, icon: '🦶', label: T('exerciseWalk'), key: '行走', colors: ['#9A4EFF', '#20ECFF'] as const, gps: true },
+    { Icon: Activity, icon: '🏃', label: T('exerciseRun'), key: '跑步', colors: ['#17EAD9', '#6078EA'] as const, gps: true },
+    { Icon: Bike, icon: '🚴', label: T('exerciseCycle'), key: '骑行', colors: ['#8446FF', '#18CEFF'] as const, gps: true },
+    { Icon: Dumbbell, icon: '💪', label: T('exerciseOther'), key: '__more__', colors: ['#BB73E0', '#FF8DDB'] as const, gps: false, more: true },
   ];
 
   return (
@@ -145,7 +145,7 @@ export default function ExerciseScreen() {
           <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseQuickStart')}</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
             {quickSports.map(s => (
-              <TouchableOpacity key={s.label}
+              <TouchableOpacity key={s.key}
                 onPress={() => s.more ? setShowOther(true) : startSport({ key: s.key, icon: s.icon, color: s.colors[0], gps: s.gps })}
                 style={{ width: '47%', borderRadius: 16, overflow: 'hidden', minHeight: 100 }}>
                 <LinearGradient
@@ -155,7 +155,7 @@ export default function ExerciseScreen() {
                   style={{ padding: 16, minHeight: 100, justifyContent: 'space-between' }}
                 >
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <s.icon size={36} color="#fff" />
+                    <s.Icon size={36} color="#fff" />
                     {s.gps && (
                       <View style={{ backgroundColor: 'rgba(255,255,255,.25)', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
                         <Text style={{ fontSize: FONT_BADGE, color: '#fff', fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>

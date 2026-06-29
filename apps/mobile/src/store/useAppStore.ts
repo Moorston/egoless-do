@@ -13,19 +13,16 @@ import {
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice,
+  createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
-import { mobileStorageAdapter } from './storageAdapter';
+import { mobileStorageAdapter, flushWrites } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
-import { runSync, resetSyncState, resetMigrationFlag } from '../features/sync/SyncService';
+import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
+import { applyServerChanges as _applyServerChanges } from '../features/sync/SyncService';
 import { openDatabase, setState as setAppState } from '../db/schema';
-import { dbGetAllFoodEntries } from '../db/queries';
-import {
-  rowToHabit, rowToReflection, rowToFasting, rowToCheckin,
-  rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
-  rowToPlanItemCheckin, rowToGrace, rowToDailyCustomTodo, rowToDailyTodoHistory,
-  rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
-} from './rowMappers';
+
+const log = createLogger('App');
 import { migrateAsyncStorageToSQLite } from './migrateAsyncStorage';
 
 // Configure API base for mobile
@@ -39,55 +36,79 @@ setPushApiBase(apiBase);
 
 // PocketBase URL for sync endpoints (separate from auth API)
 const DEV_PB = `http://${devHost}:8090`;
-const PROD_PB = process.env.EXPO_PUBLIC_PB_URL ?? 'https://egolessdo.freebytes.net';
+// Fallback chain: EXPO_PUBLIC_PB_URL → EXPO_PUBLIC_POCKETBASE_URL → apiBase
+const PROD_PB = process.env.EXPO_PUBLIC_PB_URL
+  ?? process.env.EXPO_PUBLIC_POCKETBASE_URL
+  ?? 'https://egolessdo.freebytes.net';
 setSyncApiBase(__DEV__ ? DEV_PB : PROD_PB);
 
 const adapter = mobileStorageAdapter;
 
 // Debounced profile settings persistence (piggyback settings onto profile entity)
 let _settingsPersistTimer: ReturnType<typeof setTimeout> | null = null;
+
+function flushProfileSettings() {
+  if (_settingsPersistTimer) {
+    clearTimeout(_settingsPersistTimer);
+    _settingsPersistTimer = null;
+  }
+  const s = useAppStore.getState();
+  adapter.persistChange('profile', 'self', {
+    ...s.userProfile,
+    waterMl: s.waterMl,
+    waterGoal: s.waterGoal,
+    weightUnit: s.weightUnit,
+    calGoal: s.calGoal,
+    customFoodPresets: s.customFoodPresets,
+    theme: s.theme,
+    language: s.language,
+    remindEnabled: s.remindEnabled,
+    remindTime: s.remindTime,
+    healthSyncEnabled: s.healthSyncEnabled,
+    customTags: s.customTags,
+    customMoods: s.customMoods,
+    allTagsOrder: s.allTagsOrder,
+    allMoodsOrder: s.allMoodsOrder,
+    updatedAt: Date.now(),
+  } as Record<string, unknown>).catch((e) => log.error(e));
+}
+
 function persistProfileSettings() {
   if (_settingsPersistTimer) clearTimeout(_settingsPersistTimer);
-  _settingsPersistTimer = setTimeout(() => {
-    _settingsPersistTimer = null;
-    const s = useAppStore.getState();
-    adapter.persistChange('profile', 'self', {
-      ...s.userProfile,
-      waterMl: s.waterMl,
-      waterGoal: s.waterGoal,
-      weightUnit: s.weightUnit,
-      calGoal: s.calGoal,
-      customFoodPresets: s.customFoodPresets,
-      theme: s.theme,
-      language: s.language,
-      remindEnabled: s.remindEnabled,
-      remindTime: s.remindTime,
-      healthSyncEnabled: s.healthSyncEnabled,
-      customTags: s.customTags,
-      customMoods: s.customMoods,
-      allTagsOrder: s.allTagsOrder,
-      allMoodsOrder: s.allMoodsOrder,
-      updatedAt: Date.now(),
-    } as Record<string, unknown>).catch(console.error);
-  }, 500);
+  _settingsPersistTimer = setTimeout(flushProfileSettings, 500);
 }
 
 // Debounced AI config persistence
 let _aiConfigPersistTimer: ReturnType<typeof setTimeout> | null = null;
+
+function flushAIConfig() {
+  if (_aiConfigPersistTimer) {
+    clearTimeout(_aiConfigPersistTimer);
+    _aiConfigPersistTimer = null;
+  }
+  const s = useAppStore.getState();
+  adapter.persistChange('aiConfig', 'self', {
+    config_id: 'self',
+    mode: s.aiMode,
+    models: s.aiModels,
+    updatedAt: Date.now(),
+    deleted: false,
+  }).catch((e) => log.error(e));
+}
+
 function persistAIConfig() {
   if (_aiConfigPersistTimer) clearTimeout(_aiConfigPersistTimer);
-  _aiConfigPersistTimer = setTimeout(() => {
-    _aiConfigPersistTimer = null;
-    const s = useAppStore.getState();
-    adapter.persistChange('aiConfig', 'self', {
-      config_id: 'self',
-      mode: s.aiMode,
-      models: s.aiModels,
-      updatedAt: Date.now(),
-      deleted: false,
-    }).catch(console.error);
-  }, 500);
+  _aiConfigPersistTimer = setTimeout(flushAIConfig, 500);
 }
+
+// Flush pending writes when app goes to background
+AppState.addEventListener('change', (state) => {
+  if (state !== 'active') {
+    flushProfileSettings();
+    flushAIConfig();
+    flushWrites(); // flush WriteBatcher buffer
+  }
+});
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
@@ -103,14 +124,29 @@ const triggerAutoSync = () => _autoSyncCallback?.();
 export const useAppStore = create<MobileStore>()(
   persist(
     (...a) => ({
-      ...createAuthSlice(adapter, () => { runSync().catch(console.error); }, () => {
+      ...createAuthSlice(adapter, () => { runSync().catch((e) => log.error(e)); }, async () => {
+        // onLogout: soft reset — clear sync metadata, preserve local data
+        await softResetSyncState();
         resetMigrationFlag();
+      }, async (token, userId) => {
+        // Mobile pullServerData: phased initial sync → SQLite → store
+        await initialSync(token, userId);
+        // Rehydrate store from SQLite after Phase 1 completes
+        const dbPatch = await rehydrateFromDb();
+        if (Object.keys(dbPatch).length) {
+          useAppStore.setState(dbPatch as PartialMobileStore);
+          if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
+          if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
+        }
+      }, async () => {
+        // onClearData: hard logout — clear all local data
+        await resetSyncState();
       })(...a),
       ...createHabitSlice(adapter, triggerAutoSync)(...a),
       ...createReflectionSlice(adapter)(...a),
       ...createFastingSlice(adapter, triggerAutoSync)(...a),
       ...createMeditationSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch(console.error); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
       ...createThoughtTrailSlice(adapter)(...a),
@@ -146,7 +182,7 @@ export const useAppStore = create<MobileStore>()(
 
         const dailyReset = new DailyResetManager({
           getLastReset: () => AsyncStorage.getItem(DAILY_RESET_KEY),
-          setLastReset: (date) => { AsyncStorage.setItem(DAILY_RESET_KEY, date).catch(console.error); },
+          setLastReset: (date) => { AsyncStorage.setItem(DAILY_RESET_KEY, date).catch((e) => log.error(e)); },
           getCheckinHistory: () => useAppStore.getState().checkinHistory ?? [],
           applyPatch: (patch) => useAppStore.setState(patch as PartialMobileStore),
           getProfile: () => (useAppStore.getState().userProfile ?? {}) as Record<string, unknown>,
@@ -161,7 +197,7 @@ export const useAppStore = create<MobileStore>()(
               healthSyncEnabled: s.healthSyncEnabled,
               customTags: s.customTags, customMoods: s.customMoods,
               allTagsOrder: s.allTagsOrder, allMoodsOrder: s.allMoodsOrder,
-            } as Record<string, unknown>).catch(console.error);
+            } as Record<string, unknown>).catch((e) => log.error(e));
           },
           onPlanDailyReset: (previousDate) => {
             useAppStore.getState().performDailyReset?.(previousDate);
@@ -187,77 +223,20 @@ export const useAppStore = create<MobileStore>()(
               await setAppState(db, 'needs_initial_sync', '1');
             }
 
-            // Step 2: Load all entities from SQLite (each query independently caught)
-            const safe = <T>(p: Promise<T>, label: string): Promise<T | null> =>
-              p.catch(e => { console.error(`[rehydrate] ${label} failed:`, e); return null; });
+            // Step 2: Load all entities from SQLite via unified rehydrateFromDb
+            const dbPatch = await rehydrateFromDb();
 
-            const [
-              habits, reflections, fastings, foods, checkins, exercises, meditations,
-              profiles, plans, planItems, planItemCheckins, graces, dailyTodos,
-              todoHistory, trails, trailNotes, refLinks, aiConfigs, reviews,
-            ] = await Promise.all([
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM habits WHERE deleted = 0"), 'habits'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM mind_reflections WHERE deleted = 0"), 'reflections'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM fasting_sessions WHERE deleted = 0"), 'fastings'),
-              safe(dbGetAllFoodEntries(db), 'foods'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM checkin_records WHERE deleted = 0"), 'checkins'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM exercise_entries WHERE deleted = 0"), 'exercises'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM meditation_history WHERE deleted = 0"), 'meditations'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM user_profiles WHERE deleted = 0"), 'profiles'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM plans WHERE deleted = 0"), 'plans'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM plan_items WHERE deleted = 0"), 'planItems'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM plan_item_checkins WHERE deleted = 0"), 'planItemCheckins'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM grace_history WHERE deleted = 0"), 'graces'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM daily_custom_todos WHERE deleted = 0"), 'dailyTodos'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM daily_todo_history WHERE deleted = 0"), 'todoHistory'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM thought_trails WHERE deleted = 0"), 'trails'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM trail_notes WHERE deleted = 0"), 'trailNotes'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM reflection_links WHERE deleted = 0"), 'refLinks'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM ai_configs WHERE config_id = 'self' AND deleted = 0"), 'aiConfigs'),
-              safe(db.getAllAsync<Record<string, unknown>>("SELECT * FROM checkin_reviews WHERE deleted = 0"), 'reviews'),
-            ]);
-
-            // Convert rows to entities and build state patch (null from failed queries is safely skipped)
-            const patch: Record<string, unknown> = {};
-
-            if (habits?.length) patch.habits = habits.map(rowToHabit);
-            if (reflections?.length) patch.reflections = reflections.map(rowToReflection);
-            if (fastings?.length) patch.fastingHistory = fastings.map(rowToFasting);
-            if (foods?.length) patch.foodLog = foods.sort((a, b) => b.timestamp - a.timestamp);
-            if (checkins?.length) patch.checkinHistory = checkins.map(rowToCheckin);
-            if (exercises?.length) patch.exerciseLog = exercises.map(rowToExercise);
-            if (meditations?.length) {
-              const medEntries = meditations.map(rowToMeditation);
-              patch.medHistory = medEntries;
-              patch.totalMedMinutes = medEntries.reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
-            }
-            if (profiles?.length) {
-              const profile = profiles.map(rowToProfile)[0];
-              if (profile) patch.userProfile = profile;
-            }
-            if (plans?.length) patch.plans = plans.map(rowToPlan);
-            if (planItems?.length) patch.planItems = planItems.map(rowToPlanItem);
-            if (planItemCheckins?.length) patch.planItemCheckins = planItemCheckins.map(rowToPlanItemCheckin);
-            if (graces?.length) patch.graceHistory = graces.map(rowToGrace);
-            if (dailyTodos?.length) patch.dailyCustomTodos = dailyTodos.map(rowToDailyCustomTodo);
-            if (todoHistory?.length) patch.dailyTodoHistory = todoHistory.map(rowToDailyTodoHistory);
-            if (trails?.length) patch.thoughtTrails = trails.map(rowToThoughtTrail);
-            if (trailNotes?.length) patch.trailNotes = trailNotes.map(rowToTrailNote);
-            if (refLinks?.length) patch.reflectionLinks = refLinks.map(rowToReflectionLink);
-            if (reviews?.length) patch.checkinReviews = reviews.map(rowToCheckinReview);
-            if (aiConfigs?.length) {
-              const ai = rowToAIConfig(aiConfigs[0]);
-              patch.aiMode = ai.mode;
-              patch.aiModels = ai.models;
+            if (Object.keys(dbPatch).length > 0) {
+              useAppStore.setState(dbPatch as PartialMobileStore);
             }
 
-            if (Object.keys(patch).length > 0) {
-              useAppStore.setState(patch as PartialMobileStore);
-            }
+            // Derived state recalculation
+            if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
+            if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
           } catch (err) {
-            console.error('[rehydrate] SQLite entity load error:', err);
+            log.error(err, { message: 'SQLite entity load error' });
           }
-        }).catch(err => console.error('[rehydrate] database open error:', err));
+        }).catch(err => log.error(err, { message: 'database open error' }));
 
         // Clean up expired recycle bin items
         useAppStore.getState().cleanupRecycleBin();

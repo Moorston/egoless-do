@@ -9,6 +9,7 @@ interface PlanItem {
   id: string;
   planId: string;
   name: string;
+  deleted?: boolean;
 }
 
 interface Props {

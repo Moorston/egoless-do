@@ -8,7 +8,7 @@ import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-n
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON, createLogger, MS_PER_DAY } from '@egoless-do/core';
 import {
   getTrailStats, getMoodIcon,
   computeRecommendations, computeHybridRecommendations, applyUserPreferences, buildIgnoredPattern, mergeAndRank,
@@ -16,6 +16,8 @@ import {
 } from '@egoless-do/core';
 import { recommendTrailsViaAI } from '@egoless-do/core';
 import type { TrailRecommendation, SmartQueryResult, TrailFilters, MindReflection } from '@egoless-do/core';
+
+const log = createLogger('Reflections');
 import RecommendCard from '../insights/RecommendCard';
 import CreateThoughtTrailModal from './CreateThoughtTrailModal';
 import { SmartQueryBubble } from '../insights/SmartQueryBubble';
@@ -90,7 +92,7 @@ export default function MindTrailScreen() {
 
   // 推荐候选源：最近 30 天内、未分配到任何思维脉络的感念
   const recommendationCandidates = useMemo(() => {
-    const thirtyDaysAgo = Date.now() - 30 * 86400000;
+    const thirtyDaysAgo = Date.now() - 30 * MS_PER_DAY;
     return reflections.filter(r =>
       r.timestamp >= thirtyDaysAgo &&
       (!r.thoughtTrailIds || r.thoughtTrailIds.length === 0)
@@ -170,7 +172,7 @@ export default function MindTrailScreen() {
               if (mountedRef.current) setRecommendations(mergedWithPrefs);
             }
           } catch (e) {
-            console.log('[MindTrail] AI recommendations failed (using local only):', e);
+            log.debug('AI recommendations failed (using local only):', e);
           } finally {
             if (aiGenerationRef.current === gen) {
               setIsAILoading(false);
@@ -178,7 +180,7 @@ export default function MindTrailScreen() {
           }
         }
       } catch (e) {
-        console.error('[MindTrail] Failed to load recommendations:', e);
+        log.error(e, { message: 'Failed to load recommendations' });
         if (mountedRef.current) setIsLoadingRecs(false);
       }
     };
@@ -212,7 +214,7 @@ export default function MindTrailScreen() {
     // 同时写入 AsyncStorage，确保重启后仍然忽略
     const next = [...new Set([...ignoredPatternsRef.current, pattern])];
     ignoredPatternsRef.current = next;
-    AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch(console.error);
+    AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
     // 触发 allIgnoredPatterns 重新计算
     setIgnoredVersion(k => k + 1);
     setRecommendations(prev => prev.filter(r => r !== rec));
@@ -309,7 +311,7 @@ export default function MindTrailScreen() {
       }
     } catch (e) {
       if (controller.signal.aborted) return;
-      console.log('[SmartQuery] error:', e);
+      log.debug('SmartQuery error:', e);
       setQueryResults(matchByKeyword(trimmed, reflections));
       setSmartResult(null);
     } finally {

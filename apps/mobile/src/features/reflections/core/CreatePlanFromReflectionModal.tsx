@@ -6,7 +6,7 @@ import { X } from 'lucide-react-native';
 import { useTheme, PrimaryButton, OutlineButton } from '../../../components/UI';
 import { FONT_TITLE, FONT_SUB, FONT_BODY, FONT_SMALL, dateStr } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
-import { PlanItemForm, validatePlanItemForm } from '../../plans/PlanItemForm';
+import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
 import type { UnifiedPlanItemForm } from '@egoless-do/core';
 import { useAppStore } from '../../../store/useAppStore';
 import DatePickerModal from '../../../components/DatePickerModal';
@@ -107,6 +107,7 @@ export function CreatePlanFromReflectionModal({
           )}
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <PlanItemForm
+              key={reflection?.id}
               initialValues={form}
               showTargetMetric
               showFrequency

@@ -1,6 +1,5 @@
 import type { Animated, ViewStyle } from 'react-native';
-import type { SportType, ExerciseSet, ExerciseLogEntry } from '@egoless-do/core';
-import type { SportExperienceType } from '@egoless-do/core';
+import type { SportType, ExerciseSet, ExerciseEntry, Theme, SportExperienceType } from '@egoless-do/core';
 
 /** GPS coordinate */
 interface GpsCoord {
@@ -47,7 +46,7 @@ export interface ExercisePageProps {
   selectedSound: string;
   cycleSound: () => void;
   selectSound: (key: string) => void;
-  bgPlayer: { loadAsync: (src: unknown) => Promise<void>; playAsync: () => Promise<void>; unloadAsync: () => Promise<void> } | null;
+  bgPlayer: { loadAsync?: (src: unknown) => Promise<void>; playAsync?: () => Promise<void>; unloadAsync?: () => Promise<void>; play?: () => void; pause?: () => void; loop?: boolean; volume?: number; seekTo?: (position: number) => void } | null;
 
   // Sets
   sets: ExerciseSet[];
@@ -78,9 +77,9 @@ export interface ExercisePageProps {
   setPage?: (page: 'countdown' | 'active' | 'report') => void;
 
   // Store
-  exerciseLog: ExerciseLogEntry[];
+  exerciseLog: ExerciseEntry[];
 
   // Theme & i18n
-  TH: Record<string, string>;
+  TH: Theme;
   T: (key: string) => string;
 }

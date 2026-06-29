@@ -2,15 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
-import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
+import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
+import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import { apiCheckEmail } from '@egoless-do/core';
+
+const log = createLogger('Auth');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const getNotifications = () => import('expo-notifications');
 
 export default function LoginScreen() {
   const TH = useTheme();
+  const T = useT();
   const nav = useRootNavigation();
   const login = useAppStore(s => s.login);
   const isLoading = useAppStore(s => s.auth.isLoading);
@@ -25,7 +28,7 @@ export default function LoginScreen() {
 
   const handleEmailBlur = async () => {
     if (email && !EMAIL_REGEX.test(email)) {
-      setEmailError('邮箱格式不正确');
+      setEmailError(T('authInvalidEmail'));
       setEmailStatus('idle');
       return;
     }
@@ -40,7 +43,7 @@ export default function LoginScreen() {
       if (!mountedRef.current) return;
       if (res.available) {
         setEmailStatus('not_registered');
-        setEmailError('该邮箱未注册，请先注册');
+        setEmailError(T('authEmailNotRegistered'));
       } else {
         setEmailStatus('registered');
       }
@@ -53,11 +56,11 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     setError('');
     if (!email.trim() || !password.trim()) {
-      setError('请填写邮箱和密码');
+      setError(T('authFillEmailPassword'));
       return;
     }
     if (email && !EMAIL_REGEX.test(email)) {
-      setEmailError('邮箱格式不正确');
+      setEmailError(T('authInvalidEmail'));
       return;
     }
     try {
@@ -78,20 +81,20 @@ export default function LoginScreen() {
             }
 
             if (finalStatus !== 'granted') {
-              console.log('[Push] Permission denied');
+              log.info('Push permission denied');
               return null;
             }
 
             const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
             if (!projectId) {
-              console.log('[Push] No project ID configured');
+              log.info('No project ID configured for push');
               return null;
             }
 
             const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
             return tokenData.data;
           } catch (err) {
-            console.error('[Push] Failed to get push token:', err);
+            log.error(err, { message: 'Failed to get push token' });
             return null;
           }
         };
@@ -101,7 +104,7 @@ export default function LoginScreen() {
 
       nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
     } catch (e: any) {
-      setError(e.message || '登录失败');
+      setError(e.message || T('authLoginFailed'));
     }
   };
 
@@ -132,7 +135,7 @@ export default function LoginScreen() {
               value={email}
               onChangeText={(text) => { setEmail(text); setEmailError(''); setEmailStatus('idle'); }}
               onBlur={handleEmailBlur}
-              placeholder="邮箱"
+              placeholder={T('authEmailPlaceholder')}
               keyboardType="email-address"
               autoCapitalize="none"
               style={{ marginBottom: emailError ? 4 : 12, ...(emailError ? { borderColor: '#ef4444' } : {}) }}
@@ -143,7 +146,7 @@ export default function LoginScreen() {
             <ThemedInput
               value={password}
               onChangeText={setPassword}
-              placeholder="密码"
+              placeholder={T('authPasswordPlaceholder')}
               secureTextEntry
               style={{ marginBottom: 4 }}
             />
@@ -156,20 +159,20 @@ export default function LoginScreen() {
           )}
 
           <PrimaryButton
-            label={isLoading ? '登录中...' : '登录'}
+            label={isLoading ? T('authLoginLoading') : T('authLoginBtn')}
             onPress={handleLogin}
             style={{ marginBottom: 16, opacity: isLoading ? 0.7 : 1 }}
           />
 
           <TouchableOpacity onPress={() => nav.navigate('Register')} activeOpacity={0.7}>
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', marginBottom: 12 }}>
-              没有账号？<Text style={{ color: TH.primary }}>去注册</Text>
+              {T('authNoAccount')}<Text style={{ color: TH.primary }}>{T('authGoRegister')}</Text>
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => nav.navigate('ForgotPassword')} activeOpacity={0.7}>
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
-              <Text style={{ color: TH.primary }}>忘记密码？</Text>
+              <Text style={{ color: TH.primary }}>{T('authForgotPassword')}</Text>
             </Text>
           </TouchableOpacity>
         </View>

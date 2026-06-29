@@ -150,7 +150,7 @@ export default function CheckinHistoryScreen() {
               }
               for (const name of parsed.habits) tags.push({ icon: '✓', text: name });
               for (const name of parsed.customs) tags.push({ icon: '✦', text: name });
-              for (const name of parsed.planItems) tags.push({ icon: '☐', text: name });
+              for (const item of parsed.planItems) tags.push({ icon: '☐', text: String(typeof item === 'string' ? item : item.name ?? item.id ?? '') });
 
               return (
                 <View key={h.date ?? idx} style={{ flexDirection: 'row', marginLeft: 4 }}>

@@ -10,6 +10,10 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
+import { createLogger } from '@egoless-do/core';
+import { useT } from '../../../components/UI';
+
+const log = createLogger('GlobalPulse');
 
 interface Props {
   children: ReactNode;
@@ -22,8 +26,9 @@ interface State {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
+/** Inner class component that catches render errors. */
+class _ErrorBoundary extends Component<Props & { t: (key: string) => string }, State> {
+  constructor(props: Props & { t: (key: string) => string }) {
     super(props);
     this.state = { hasError: false, error: null };
   }
@@ -33,7 +38,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    log.error(error, { message: 'ErrorBoundary caught an error', componentStack: errorInfo.componentStack ?? '' });
     this.props.onError?.(error, errorInfo);
   }
 
@@ -47,19 +52,21 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
+      const T = this.props.t;
+
       return (
         <View style={styles.container}>
           <View style={styles.content}>
             <Text style={styles.icon}>⚠️</Text>
-            <Text style={styles.title}>出错了</Text>
+            <Text style={styles.title}>{T('errorTitle')}</Text>
             <Text style={styles.message}>
-              {this.state.error?.message || '发生了未知错误'}
+              {this.state.error?.message || T('errorUnknown')}
             </Text>
             <TouchableOpacity
               style={styles.retryButton}
               onPress={this.handleRetry}
             >
-              <Text style={styles.retryButtonText}>重试</Text>
+              <Text style={styles.retryButtonText}>{T('errorRetry')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -69,6 +76,14 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+/** Public ErrorBoundary wrapper that provides translation context. */
+export function ErrorBoundary(props: Props) {
+  const T = useT();
+  return <_ErrorBoundary {...props} t={T} />;
+}
+
+export default ErrorBoundary;
 
 const styles = StyleSheet.create({
   container: {
@@ -110,5 +125,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-export default ErrorBoundary;

@@ -1,6 +1,9 @@
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { THEMES, FONT_HERO, FONT_BACK, FONT_ERROR, FONT_BUTTON } from '@egoless-do/core';
+import { THEMES, FONT_HERO, FONT_BACK, FONT_ERROR, FONT_BUTTON, createLogger } from '@egoless-do/core';
+import { useT } from './UI';
+
+const log = createLogger('App');
 
 interface Props {
   children: ReactNode;
@@ -12,7 +15,8 @@ interface State {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+/** Inner class component that catches render errors (class required for getDerivedStateFromError). */
+class _ErrorBoundary extends Component<Props & { t: (key: string) => string }, State> {
   state: State = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): State {
@@ -20,7 +24,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('[ErrorBoundary]', error, info.componentStack);
+    log.error(error, info.componentStack);
   }
 
   handleReset = () => {
@@ -30,21 +34,28 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       const TH = THEMES[this.props.theme ?? 'dark'];
+      const T = this.props.t;
       return (
         <View style={[styles.container, { backgroundColor: TH.bg }]}>
           <Text style={styles.emoji}> :( </Text>
-          <Text style={[styles.title, { color: TH.text }]}>出现了一些问题</Text>
+          <Text style={[styles.title, { color: TH.text }]}>{T('errorTitle')}</Text>
           <Text style={[styles.message, { color: TH.sub }]}>
-            {this.state.error?.message ?? '未知错误'}
+            {this.state.error?.message ?? T('errorUnknown')}
           </Text>
           <TouchableOpacity style={[styles.button, { backgroundColor: TH.primary }]} onPress={this.handleReset}>
-            <Text style={styles.buttonText}>重试</Text>
+            <Text style={styles.buttonText}>{T('errorRetry')}</Text>
           </TouchableOpacity>
         </View>
       );
     }
     return this.props.children;
   }
+}
+
+/** Public ErrorBoundary wrapper that provides translation context. */
+export function ErrorBoundary(props: Props) {
+  const T = useT();
+  return <_ErrorBoundary {...props} t={T} />;
 }
 
 const styles = StyleSheet.create({

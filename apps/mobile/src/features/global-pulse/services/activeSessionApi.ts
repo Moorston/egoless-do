@@ -4,8 +4,11 @@
  */
 
 import { ActiveSession, ApiResponse, CheckinType } from '../types/globalPulse';
+import { createLogger } from '@egoless-do/core';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://egolessdo.freebytes.net';
+const log = createLogger('GlobalPulse');
+
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.5.45:8090';
 const COLLECTION = 'active_sessions';
 const REQUEST_TIMEOUT = 10000;
 
@@ -31,7 +34,7 @@ function setConnectionState(state: ConnectionState) {
   _connectionState = state;
   for (const listener of _connectionListeners) {
     try { listener(state); } catch (err) {
-      if (__DEV__) console.warn('[ConnectionState] Listener error:', err);
+      if (__DEV__) log.warn('ConnectionState listener error:', err);
     }
   }
 }
@@ -109,9 +112,9 @@ function mapSession(item: any): ActiveSession {
 // ── CRUD operations ───────────────────────────────────────────────
 
 export async function createSession(
-  data: Omit<ActiveSession, 'session_id' | 'last_heartbeat'> & { session_id?: string }
+  data: Omit<ActiveSession, 'session_id' | 'last_heartbeat' | 'started_at'> & { session_id?: string; started_at?: string }
 ): Promise<ApiResponse<ActiveSession>> {
-  const sessionId = data.session_id || crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const sessionId = data.session_id || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const now = new Date().toISOString();
 
   const result = await pbRequest<unknown>(
@@ -194,14 +197,13 @@ export async function getActiveSessions(
     filters.push(`type = "${type}"`);
   }
 
-  const queryParams = new URLSearchParams();
+  const queryParts: string[] = [];
   if (filters.length > 0) {
-    queryParams.set('filter', filters.join(' && '));
+    queryParts.push(`filter=${encodeURIComponent(filters.join(' && '))}`);
   }
-  queryParams.set('perPage', '500');
-  queryParams.set('sort', '-started_at');
-
-  const query = queryParams.toString();
+  queryParts.push('perPage=500');
+  queryParts.push('sort=-started_at');
+  const query = queryParts.join('&');
   const result = await pbRequest<{ items: unknown[] }>(
     `/api/collections/${COLLECTION}/records${query ? `?${query}` : ''}`
   );
@@ -211,7 +213,7 @@ export async function getActiveSessions(
     return { success: true, data: sessions };
   }
 
-  return result as ApiResponse<ActiveSession[]>;
+  return result as unknown as ApiResponse<ActiveSession[]>;
 }
 
 // ── Realtime subscription (adaptive polling) ─────────────────

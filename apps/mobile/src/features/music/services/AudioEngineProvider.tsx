@@ -2,7 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio';
 import { useMusicStore } from '../useMusicStore';
 import type { MusicTrack } from '@egoless-do/core';
+import { createLogger } from '@egoless-do/core';
 import { audioPlayerRef } from './audioPlayerRef';
+
+const log = createLogger('Music');
 
 /**
  * 全局音频引擎 Provider，挂载在 App 顶层。
@@ -80,7 +83,7 @@ export function AudioEngineProvider({ children }: { children: React.ReactNode })
         player.pause();
       }
     } catch (e) {
-      console.warn('[AudioEngine] playback error:', e);
+      log.warn('playback error:', e);
       useMusicStore.getState().setError('playback_failed');
     }
   }, [isPlaying, currentTrack, player]);

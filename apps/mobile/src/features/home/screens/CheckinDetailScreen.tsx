@@ -176,11 +176,11 @@ export default function CheckinDetailScreen() {
               <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY }}>{T('planTodoList')}</Text>
             </View>
             {parsed.planItems.map((item, i) => (
-              <View key={item} style={{
+              <View key={typeof item === 'string' ? item : item.id} style={{
                 flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
                 paddingVertical: 13, borderBottomWidth: i === parsed.planItems.length - 1 ? 0 : 1, borderBottomColor: TH.border,
               }}>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{item}</Text>
+                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{String(typeof item === 'string' ? item : item.name ?? item.id ?? '')}</Text>
                 <Check size={16} color={COLORS.GREEN} />
               </View>
             ))}

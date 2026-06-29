@@ -4,9 +4,12 @@
 // Now entities live in SQLite only; this bridges the gap on first launch.
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { StorageAdapter, SyncEntity } from '@egoless-do/core';
+import type { StorageAdapter, SyncEntity, AIMode, ModelConfig } from '@egoless-do/core';
 import type { SQLiteDatabase } from 'expo-sqlite';
+import { createLogger } from '@egoless-do/core';
 import { getState, setState } from '../db/schema';
+
+const log = createLogger('App');
 
 const MIGRATION_KEY = 'async_storage_migrated';
 const STORE_KEY = 'egoless-do-mobile';
@@ -84,7 +87,7 @@ export async function migrateAsyncStorageToSQLite(
     return false;
   }
 
-  console.log('[Migration] Found old entity data in AsyncStorage, migrating to SQLite...');
+  log.info('Found old entity data in AsyncStorage, migrating to SQLite...');
 
   let migratedCount = 0;
 
@@ -100,7 +103,7 @@ export async function migrateAsyncStorageToSQLite(
         await adapter.persistChange(entity, id as string, item as Record<string, unknown>);
         migratedCount++;
       } catch (err) {
-        console.error(`[Migration] Failed to migrate ${entity}/${id}:`, err);
+        log.error(err, { message: `Failed to migrate ${entity}/${id}` });
       }
     }
   }
@@ -111,7 +114,7 @@ export async function migrateAsyncStorageToSQLite(
       await adapter.persistChange('profile', 'self', oldData['userProfile'] as Record<string, unknown>);
       migratedCount++;
     } catch (err) {
-      console.error('[Migration] Failed to migrate profile:', err);
+      log.error(err, { message: 'Failed to migrate profile' });
     }
   }
 
@@ -120,12 +123,14 @@ export async function migrateAsyncStorageToSQLite(
     try {
       await adapter.persistChange('aiConfig', 'self', {
         config_id: 'self',
-        mode: oldData['aiMode'] ?? 'hybrid',
-        models: oldData['aiModels'] ?? [],
+        mode: (oldData['aiMode'] as AIMode) ?? 'hybrid',
+        models: (oldData['aiModels'] as ModelConfig[]) ?? [],
+        updatedAt: Date.now(),
+        deleted: false,
       });
       migratedCount++;
     } catch (err) {
-      console.error('[Migration] Failed to migrate AI config:', err);
+      log.error(err, { message: 'Failed to migrate AI config' });
     }
   }
 
@@ -146,10 +151,10 @@ export async function migrateAsyncStorageToSQLite(
       for (const k of keysToRemove) delete cleaned[k];
       await AsyncStorage.setItem(STORE_KEY, JSON.stringify(cleaned));
     } catch (err) {
-      console.error('[Migration] Failed to clean AsyncStorage:', err);
+      log.error(err, { message: 'Failed to clean AsyncStorage' });
     }
   }
 
-  console.log(`[Migration] Migrated ${migratedCount} entities to SQLite`);
+  log.info(`Migrated ${migratedCount} entities to SQLite`);
   return true;
 }

@@ -102,7 +102,7 @@ export default function ExerciseHistoryScreen() {
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
 
   const sorted = useMemo(() =>
-    [...(store.exerciseLog ?? [])].filter(e => !e.deleted).sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
+    [...(store.exerciseLog ?? [])].filter(e => !e.deleted && e.sportKey).sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
     [store.exerciseLog]
   );
 

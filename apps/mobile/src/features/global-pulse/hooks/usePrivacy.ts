@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createLogger } from '@egoless-do/core';
 import { UserPreferences } from '../types/globalPulse';
 import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';
 import { getUserHash } from '../services/userHash';
+
+const log = createLogger('GlobalPulse');
 
 const STORAGE_KEY = 'global_pulse_preferences';
 
@@ -26,9 +29,13 @@ export function usePrivacy(): UsePrivacyReturn {
   const userHashRef = useRef<string>('');
 
   useEffect(() => {
-    getUserHash().then(hash => {
-      userHashRef.current = hash;
-    });
+    (async () => {
+      try {
+        userHashRef.current = await getUserHash();
+      } catch (err) {
+        log.warn('getUserHash error:', err);
+      }
+    })();
     loadPreferences();
   }, []);
 
@@ -40,7 +47,7 @@ export function usePrivacy(): UsePrivacyReturn {
         setPreferences({ ...DEFAULT_PREFERENCES, ...parsed });
       }
     } catch (error) {
-      console.error('Failed to load preferences:', error);
+      log.error(error, { message: 'Failed to load preferences' });
     }
   };
 
@@ -49,7 +56,7 @@ export function usePrivacy(): UsePrivacyReturn {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newPreferences));
       setPreferences(newPreferences);
     } catch (error) {
-      console.error('Failed to save preferences:', error);
+      log.error(error, { message: 'Failed to save preferences' });
     }
   };
 
@@ -70,11 +77,11 @@ export function usePrivacy(): UsePrivacyReturn {
         });
         return true;
       } else {
-        console.error('Failed to update privacy setting:', response.error);
+        log.error(response.error, { message: 'Failed to update privacy setting' });
         return false;
       }
     } catch (error) {
-      console.error('Failed to update privacy setting:', error);
+      log.error(error, { message: 'Failed to update privacy setting' });
       return false;
     } finally {
       setIsLoading(false);
@@ -104,11 +111,11 @@ export function usePrivacy(): UsePrivacyReturn {
         });
         return true;
       } else {
-        console.error('Failed to delete data:', response.error);
+        log.error(response.error, { message: 'Failed to delete data' });
         return false;
       }
     } catch (error) {
-      console.error('Failed to delete data:', error);
+      log.error(error, { message: 'Failed to delete data' });
       return false;
     } finally {
       setIsLoading(false);

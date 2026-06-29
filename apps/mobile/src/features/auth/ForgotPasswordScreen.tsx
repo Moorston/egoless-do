@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useTheme, PrimaryButton, ThemedInput, Card } from '../../components/UI';
+import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { apiCheckEmail, apiSendCode, apiResetPassword, validatePassword, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
 
 const COOLDOWN = 60;
@@ -9,6 +9,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ForgotPasswordScreen() {
   const TH = useTheme();
+  const T = useT();
   const nav = useRootNavigation();
 
   const [email, setEmail] = useState('');
@@ -47,7 +48,7 @@ export default function ForgotPasswordScreen() {
 
   const handleSendCode = async () => {
     if (!email || !EMAIL_REGEX.test(email)) {
-      setError('请输入有效的邮箱地址');
+      setError(T('authInvalidEmailAddr'));
       return;
     }
     setError('');
@@ -55,13 +56,13 @@ export default function ForgotPasswordScreen() {
     try {
       const checkRes = await apiCheckEmail(email);
       if (checkRes.available) {
-        setError('该邮箱未注册');
+        setError(T('authEmailNotRegisteredShort'));
         return;
       }
       await apiSendCode(email, 'reset');
       startCooldown();
     } catch (e: any) {
-      setError(e.message || '发送失败');
+      setError(e.message || T('authSendFailed'));
     } finally {
       setSending(false);
     }
@@ -70,7 +71,7 @@ export default function ForgotPasswordScreen() {
   const handleVerifyCode = () => {
     setError('');
     if (!code.trim()) {
-      setError('请输入验证码');
+      setError(T('authEnterVerifyCode'));
       return;
     }
     setStep(2);
@@ -84,17 +85,17 @@ export default function ForgotPasswordScreen() {
       return;
     }
     if (password !== confirm) {
-      setError('两次密码不一致');
+      setError(T('authPasswordMismatch'));
       return;
     }
 
     setLoading(true);
     try {
       await apiResetPassword(email, code, password);
-      setSuccess('密码重置成功，正在跳转登录...');
+      setSuccess(T('authResetSuccess'));
       navTimerRef.current = setTimeout(() => nav.navigate('Login'), 1500);
     } catch (e: any) {
-      setError(e.message || '密码重置失败');
+      setError(e.message || T('authResetFailed'));
     } finally {
       setLoading(false);
     }
@@ -114,7 +115,7 @@ export default function ForgotPasswordScreen() {
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', textAlign: 'center', marginBottom: 4, color: TH.text }}>心流纪</Text>
           <Text style={{ fontSize: FONT_SUB, color: TH.primary, textAlign: 'center', marginBottom: 8, letterSpacing: 1 }}>Egoless Do</Text>
           <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', marginBottom: 32 }}>
-            {step === 1 ? '验证你的邮箱' : '设置新密码'}
+            {step === 1 ? T('authVerifyEmail') : T('authSetNewPassword')}
           </Text>
 
           <Card style={{ marginBottom: 16 }}>
@@ -123,7 +124,7 @@ export default function ForgotPasswordScreen() {
                 <ThemedInput
                   value={email}
                   onChangeText={setEmail}
-                  placeholder="邮箱"
+                  placeholder={T('authEmailPlaceholder')}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   style={{ marginBottom: 12 }}
@@ -133,7 +134,7 @@ export default function ForgotPasswordScreen() {
                     <ThemedInput
                       value={code}
                       onChangeText={setCode}
-                      placeholder="邮箱验证码"
+                      placeholder={T('authVerifyCodePlaceholder')}
                       keyboardType="number-pad"
                       maxLength={6}
                       style={{ marginBottom: 0 }}
@@ -149,7 +150,7 @@ export default function ForgotPasswordScreen() {
                     }}
                   >
                     <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: '600' }}>
-                      {cooldown > 0 ? `${cooldown}s` : sending ? '发送中' : '获取验证码'}
+                      {cooldown > 0 ? `${cooldown}s` : sending ? T('authSending') : T('authSendCode')}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -159,14 +160,14 @@ export default function ForgotPasswordScreen() {
                 <ThemedInput
                   value={password}
                   onChangeText={setPassword}
-                  placeholder="新密码（8位以上，含字母+数字+符号）"
+                  placeholder={T('authNewPasswordPlaceholder')}
                   secureTextEntry
                   style={{ marginBottom: 12 }}
                 />
                 <ThemedInput
                   value={confirm}
                   onChangeText={setConfirm}
-                  placeholder="确认新密码"
+                  placeholder={T('authConfirmNewPasswordPlaceholder')}
                   secureTextEntry
                   style={{ marginBottom: 4 }}
                 />
@@ -186,14 +187,14 @@ export default function ForgotPasswordScreen() {
           )}
 
           <PrimaryButton
-            label={step === 1 ? '下一步' : loading ? '重置中...' : '重置密码'}
+            label={step === 1 ? T('authNextStep') : loading ? T('authResetting') : T('authResetPassword')}
             onPress={step === 1 ? handleVerifyCode : handleResetPassword}
             style={{ marginBottom: 16, opacity: loading ? 0.7 : 1 }}
           />
 
           <TouchableOpacity onPress={() => nav.navigate('Login')} activeOpacity={0.7}>
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
-              <Text style={{ color: TH.primary }}>返回登录</Text>
+              <Text style={{ color: TH.primary }}>{T('authBackToLogin')}</Text>
             </Text>
           </TouchableOpacity>
         </View>

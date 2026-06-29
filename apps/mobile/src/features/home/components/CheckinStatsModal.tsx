@@ -5,7 +5,7 @@ import { X } from 'lucide-react-native';
 import { useTheme, useT } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
 import { useAppStore } from '../../../store/useAppStore';
-import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote, MS_PER_WEEK } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 
 interface CheckinStatsModalProps {
@@ -61,7 +61,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
     const firstDate = new Date(fy, fm - 1, fd);
     const [ly, lm, ld] = dates[dates.length - 1].split('-').map(Number);
     const lastDate = new Date(ly, lm - 1, ld);
-    const weeks = Math.max(1, Math.ceil((lastDate.getTime() - firstDate.getTime()) / (7 * 24 * 60 * 60 * 1000)));
+    const weeks = Math.max(1, Math.ceil((lastDate.getTime() - firstDate.getTime()) / MS_PER_WEEK));
     return Math.round((totalCompleted / weeks) * 10) / 10;
   }, [checkinHistory, totalCompleted]);
 

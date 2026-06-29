@@ -3,7 +3,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import NetInfo from '@react-native-community/netinfo';
+import { useNetworkStatus } from '../../../infra/useNetworkStatus';
 import { GlobalCheckin, GlobalStats } from '../types/globalPulse';
 import { getCheckins, getGlobalStats } from '../services/globalPulseApi';
 import {
@@ -47,7 +47,7 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
   const [error, setError] = useState<string | null>(null);
   const offsetRef = useRef(0);
 
-  const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // 加载打卡数据
   const loadCheckins = useCallback(async (showLoading: boolean = true) => {
@@ -129,7 +129,6 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
         setCheckins(prev => {
           const updated = [...prev, ...newCheckins];
           offsetRef.current = updated.length;
-          cacheCheckins(updated);
           return updated;
         });
       }
@@ -145,18 +144,18 @@ export function useGlobalPulse(options: UseGlobalPulseOptions = {}): UseGlobalPu
   }, [loadCheckins, loadStats]);
 
   // 恢复连接时自动同步
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      if (state.isConnected && isOffline) {
-        // 恢复连接，自动刷新数据
-        refresh();
-      }
-    });
+  const isConnected = useNetworkStatus(s => s.isConnected);
+  const wasOfflineRef = useRef(false);
 
-    return () => {
-      unsubscribe();
-    };
-  }, [isOffline, refresh]);
+  useEffect(() => {
+    if (isConnected && wasOfflineRef.current) {
+      wasOfflineRef.current = false;
+      refresh();
+    }
+    if (!isConnected) {
+      wasOfflineRef.current = true;
+    }
+  }, [isConnected, refresh]);
 
   // 自动刷新
   useEffect(() => {

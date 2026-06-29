@@ -2,9 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RouteProp } from '@react-navigation/native';
+import type { RootStackParamList } from '../../navigation/types';
 import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle, Bell, BellOff } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
-import { useTheme } from '../../components/UI';
+import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth, MOOD_DISPLAY } from '@egoless-do/core';
 import { HABIT_LINK_COLORS } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
@@ -12,22 +15,31 @@ import TimePickerModal from '../../components/TimePickerModal';
 import { Toggle } from '../../components/UI';
 import { requestNotificationPermission, rescheduleAllHabitReminders } from '../notifications/NotificationService';
 
-const STATUS_CONFIG: Record<HabitStatus, { label: string; color: string }> = {
-  notStarted: { label: '未开始', color: COLORS.GRAY },
-  inProgress: { label: '进行中', color: COLORS.GREEN },
-  paused: { label: '已暂停', color: COLORS.YELLOW },
-  abandoned: { label: '已放弃', color: COLORS.RED },
-  completed: { label: '已完成', color: '#7C3AED' },
+const STATUS_COLOR: Record<HabitStatus, string> = {
+  notStarted: COLORS.GRAY,
+  inProgress: COLORS.GREEN,
+  paused: COLORS.YELLOW,
+  abandoned: COLORS.RED,
+  completed: '#7C3AED',
 };
 
 export default function HabitDetailScreen() {
   const TH = useTheme();
+  const T = useT();
   const P = TH.primary;
   const store = useAppStore();
-  const nav = useNavigation();
-  const route = useRoute();
+  const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'HabitDetail'>>();
 
-  const { habitId } = route.params as { habitId: string };
+  const STATUS_LABEL: Record<HabitStatus, string> = {
+    notStarted: T('habitStatusNotStarted'),
+    inProgress: T('habitStatusInProgress'),
+    paused: T('habitStatusPaused'),
+    abandoned: T('habitStatusAbandoned'),
+    completed: T('habitStatusCompleted'),
+  };
+
+  const { habitId } = route.params;
   const habit = useMemo(() =>
     (store.habits ?? []).find(h => !h.deleted && h.id === habitId),
     [store.habits, habitId]
@@ -58,13 +70,14 @@ export default function HabitDetailScreen() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
         <View style={styles.errorContainer}>
-          <Text style={[styles.errorText, { color: TH.sub }]}>习惯不存在</Text>
+          <Text style={[styles.errorText, { color: TH.sub }]}>{T('habitNotFound')}</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  const statusConfig = STATUS_CONFIG[habit.status];
+  const statusColor = STATUS_COLOR[habit.status] ?? STATUS_COLOR.notStarted;
+  const statusLabel = STATUS_LABEL[habit.status] ?? STATUS_LABEL.notStarted;
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -84,21 +97,21 @@ export default function HabitDetailScreen() {
       >
         {/* Stats */}
         <View style={[styles.statsContainer, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <View style={[styles.statusBadge, { backgroundColor: `${statusConfig.color}20`, alignSelf: 'flex-start', marginBottom: 12 }]}>
-            <Text style={[styles.statusText, { color: statusConfig.color }]}>{statusConfig.label}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: `${statusColor}20`, alignSelf: 'flex-start', marginBottom: 12 }]}>
+            <Text style={[styles.statusText, { color: statusColor }]}>{statusLabel}</Text>
           </View>
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: P }]}>{habit.streak}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>连续天数</Text>
+              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('habitStreakDays')}</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: P }]}>{habit.doneDays}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>总完成天数</Text>
+              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('habitTotalDays')}</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={[styles.statNumber, { color: P }]}>{habit.targetDays}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>目标天数</Text>
+              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('habitTargetDays')}</Text>
             </View>
           </View>
           {/* Progress Bar */}
@@ -114,30 +127,30 @@ export default function HabitDetailScreen() {
 
         {/* Habit Info */}
         <View style={[styles.infoCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <Text style={[styles.infoTitle, { color: TH.text }]}>习惯信息</Text>
+          <Text style={[styles.infoTitle, { color: TH.text }]}>{T('habitInfo')}</Text>
           <View style={styles.infoRow}>
-            <Text style={[styles.infoLabel, { color: TH.sub }]}>开始日期</Text>
+            <Text style={[styles.infoLabel, { color: TH.sub }]}>{T('habitStartDate')}</Text>
             <Text style={[styles.infoValue, { color: TH.text }]}>{habit.startDate}</Text>
           </View>
           {habit.goal && (
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: TH.sub }]}>目标</Text>
+              <Text style={[styles.infoLabel, { color: TH.sub }]}>{T('habitTarget')}</Text>
               <Text style={[styles.infoValue, { color: TH.text }]}>{habit.goal}</Text>
             </View>
           )}
           {habit.insight && (
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: TH.sub }]}>我的愿景</Text>
+              <Text style={[styles.infoLabel, { color: TH.sub }]}>{T('habitMyVision')}</Text>
               <Text style={[styles.infoValue, { color: TH.text }]}>{habit.insight}</Text>
             </View>
           )}
           {(habit.link && habit.link !== 'none') && (
             <View style={styles.infoRow}>
-              <Text style={[styles.infoLabel, { color: TH.sub }]}>关联</Text>
+              <Text style={[styles.infoLabel, { color: TH.sub }]}>{T('habitLinked')}</Text>
               <Text style={[styles.infoValue, { color: HABIT_LINK_COLORS[habit.link] }]}>
-                {habit.link === 'fasting' ? `禁食（${habit.linkConfig?.targetHours ?? 16}h）`
-                  : habit.link === 'exercise' ? `锻炼（${habit.linkConfig?.targetMinutes ?? 30}min）`
-                  : '冥想'}
+                {habit.link === 'fasting' ? `${T('habitLinkedFasting')}（${habit.linkConfig?.targetHours ?? 16}h）`
+                  : habit.link === 'exercise' ? `${T('habitLinkedExercise')}（${habit.linkConfig?.targetMinutes ?? 30}min）`
+                  : T('habitLinkedMeditation')}
               </Text>
             </View>
           )}
@@ -148,7 +161,7 @@ export default function HabitDetailScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               {habit.alarmEnabled ? <Bell size={18} color={P} /> : <BellOff size={18} color={TH.sub} />}
-              <Text style={[styles.infoTitle, { color: TH.text, marginBottom: 0 }]}>{'每日提醒'}</Text>
+              <Text style={[styles.infoTitle, { color: TH.text, marginBottom: 0 }]}>{T('habitDailyReminder')}</Text>
             </View>
             <Toggle
               on={habit.alarmEnabled}
@@ -172,17 +185,17 @@ export default function HabitDetailScreen() {
               <Text style={{ fontSize: 24, fontWeight: '700', color: P }}>
                 {String(habit.alarmHour).padStart(2, '0')}:{String(habit.alarmMinute).padStart(2, '0')}
               </Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>· 点击修改</Text>
+              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('habitTapToModify')}</Text>
             </TouchableOpacity>
           )}
         </View>
 
         {/* Calendar */}
         <View style={[styles.calendarCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <Text style={[styles.calendarTitle, { color: TH.text }]}>打卡日历</Text>
+          <Text style={[styles.calendarTitle, { color: TH.text }]}>{T('habitCheckinCalendar')}</Text>
           {/* Weekday labels */}
           <View style={styles.weekdayRow}>
-            {['日', '一', '二', '三', '四', '五', '六'].map((day, i) => (
+            {[T('habitWeekdaySun'), T('habitWeekdayMon'), T('habitWeekdayTue'), T('habitWeekdayWed'), T('habitWeekdayThu'), T('habitWeekdayFri'), T('habitWeekdaySat')].map((day, i) => (
               <View key={i} style={styles.weekdayCell}>
                 <Text style={[styles.weekdayText, { color: TH.sub }]}>{day}</Text>
               </View>
@@ -222,11 +235,11 @@ export default function HabitDetailScreen() {
           <View style={styles.legendRow}>
             <View style={styles.legendItem}>
               <View style={[styles.legendDot, { backgroundColor: P }]} />
-              <Text style={[styles.legendText, { color: TH.sub }]}>已打卡</Text>
+              <Text style={[styles.legendText, { color: TH.sub }]}>{T('habitCheckedIn')}</Text>
             </View>
             <View style={styles.legendItem}>
               <View style={[styles.legendDot, { backgroundColor: `${P}30` }]} />
-              <Text style={[styles.legendText, { color: TH.sub }]}>今天</Text>
+              <Text style={[styles.legendText, { color: TH.sub }]}>{T('habitToday')}</Text>
             </View>
           </View>
         </View>
@@ -238,7 +251,7 @@ export default function HabitDetailScreen() {
           const latestMood = latest.mood ? (MOOD_DISPLAY[latest.mood] ?? latest.mood) : null;
           return (
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: TH.text }]}>相关感念</Text>
+              <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('habitRelatedReflections')}</Text>
               {/* Latest - full display */}
               <View style={[styles.relatedItem, { backgroundColor: TH.card, borderColor: TH.border }]}>
                 <Text style={[styles.relatedContentFull, { color: TH.text }]}>
@@ -282,7 +295,7 @@ export default function HabitDetailScreen() {
                   })}
                   <TouchableOpacity onPress={() => setExpanded(!expanded)} style={styles.expandBtn}>
                     <Text style={[styles.expandText, { color: P }]}>
-                      {expanded ? '收起' : `展开更多 (${rest.length}条)`}
+                      {expanded ? T('habitCollapse') : `${T('habitExpandMore')} (${rest.length})`}
                     </Text>
                   </TouchableOpacity>
                 </>
@@ -300,8 +313,8 @@ export default function HabitDetailScreen() {
             <Link size={20} color={P} />
           </View>
           <View style={styles.relationContent}>
-            <Text style={[styles.relationTitle, { color: TH.text }]}>关系全景图</Text>
-            <Text style={[styles.relationDesc, { color: TH.sub }]}>查看感念、计划的关联关系</Text>
+            <Text style={[styles.relationTitle, { color: TH.text }]}>{T('habitRelationMap')}</Text>
+            <Text style={[styles.relationDesc, { color: TH.sub }]}>{T('habitRelationMapDesc')}</Text>
           </View>
         </TouchableOpacity>
       </ScrollView>

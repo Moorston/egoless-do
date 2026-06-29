@@ -2,9 +2,11 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ExternalLink, Link } from 'lucide-react-native';
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, FONT_TINY, REFLECTION_CATEGORIES, highlightSearchMatch } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, FONT_TINY, REFLECTION_CATEGORIES, highlightSearchMatch, createLogger } from '@egoless-do/core';
 import { useTheme, useT } from '../../../components/UI';
 import type { MindReflection } from '@egoless-do/core';
+
+const log = createLogger('Reflections');
 
 interface PlanItem {
   id: string;
@@ -18,6 +20,8 @@ interface Props {
   searchQuery?: string;
   onPress: (id: string) => void;
   onLongPress: (id: string) => void;
+  onEdit?: (id: string) => void;
+  onTogglePin?: (id: string) => void;
   onNavigateToPlan?: (planId: string) => void;
   index?: number;
 }
@@ -58,7 +62,7 @@ function ReflectionCardComponent({
   }, [r.id, onLongPress]);
 
   const handleLinkPress = useCallback(() => {
-    if (r.link) Linking.openURL(r.link).catch(console.error);
+    if (r.link) Linking.openURL(r.link).catch((e) => log.error(e));
   }, [r.link]);
 
   const handlePlanPress = useCallback(() => {

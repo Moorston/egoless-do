@@ -4,8 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../../store/useAppStore';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useT } from '../../../components/UI';
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger } from '@egoless-do/core';
 import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';
+
+const log = createLogger('Reflections');
 
 interface ReflectionDetailContentProps {
   reflectionId: string;
@@ -31,6 +33,11 @@ export default function ReflectionDetailContent({
 
   const r = useMemo(() => (store.reflections ?? []).find(x => !x.deleted && x.id === reflectionId), [store.reflections, reflectionId]);
 
+  const linkedTrails = useMemo(() => {
+    if (!r) return [];
+    return getTrailsByReflection(r.id, store.thoughtTrails ?? []);
+  }, [r, store.thoughtTrails]);
+
   if (!r) return null;
 
   const linkedPlanItem = r.linkedPlanItemId
@@ -40,9 +47,9 @@ export default function ReflectionDetailContent({
   const isToday = dateStr(new Date(r.timestamp ?? 0)) === dateStr();
 
   const handleUnlink = () => {
-    Alert.alert('解除关联', '确定解除与计划任务的关联吗？关联的计划任务将被删除。', [
-      { text: '取消', style: 'cancel' },
-      { text: '确定', style: 'destructive', onPress: () => {
+    Alert.alert(T('reflUnlinkConfirmTitle'), T('reflUnlinkConfirmMessage'), [
+      { text: T('cancel'), style: 'cancel' },
+      { text: T('confirm'), style: 'destructive', onPress: () => {
         if (r.linkedPlanItemId) store.deletePlanItem(r.linkedPlanItemId);
         store.unlinkReflectionFromPlanItem(r.id);
         onClose();
@@ -98,7 +105,7 @@ export default function ReflectionDetailContent({
 
           {/* Link */}
           {r.link && (
-            <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch(console.error)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch((e) => log.error(e))} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
               <Link size={14} color="rgba(255,255,255,.7)" />
               <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL, textDecorationLine: 'underline', flex: 1 }} numberOfLines={2}>{r.link}</Text>
             </TouchableOpacity>
@@ -124,15 +131,21 @@ export default function ReflectionDetailContent({
               <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflEditTitle')}</Text>
             </TouchableOpacity>
           )}
+          {linkedTrails.length > 0 && (
+            <TouchableOpacity onPress={() => { onClose(); nav.navigate('ThoughtTrailDetail', { trailId: linkedTrails[0].id }); }}
+              style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflLinkedTrail')}</Text>
+            </TouchableOpacity>
+          )}
           {r.linkedPlanItemId ? (
             <TouchableOpacity onPress={handleUnlink}
               style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>解绑任务</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflUnlinkTask')}</Text>
             </TouchableOpacity>
           ) : onCreatePlanItem ? (
             <TouchableOpacity onPress={() => { onClose(); onCreatePlanItem(r.id); }}
               style={{ flex: 1, backgroundColor: 'rgba(16,185,129,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>创建任务</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflCreateTask')}</Text>
             </TouchableOpacity>
           ) : null}
           <View style={{ position: 'relative' }}>
@@ -145,7 +158,7 @@ export default function ReflectionDetailContent({
                 <TouchableOpacity onPress={() => { setShowMore(false); onClose(); nav.navigate('RelationMap', { context: { type: 'reflection', id: reflectionId } }); }}
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 16 }}>
                   <Network size={16} color="#fff" />
-                  <Text style={{ color: '#fff', fontSize: FONT_BUTTON }}>关系图</Text>
+                  <Text style={{ color: '#fff', fontSize: FONT_BUTTON }}>{T('reflRelationMap')}</Text>
                 </TouchableOpacity>
                 {onShare && (
                   <TouchableOpacity onPress={() => { setShowMore(false); onClose(); onShare(r); }}

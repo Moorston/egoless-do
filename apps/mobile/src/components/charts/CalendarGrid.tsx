@@ -4,7 +4,7 @@ import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_BADGE, COLORS } from '@egoless-do/
 
 export interface CalendarGridProps {
   /** checkin history entries */
-  history: Array<{ date: string; done: boolean; grace?: boolean }>;
+  history: Array<{ date: string; done: boolean; grace?: boolean; deleted?: boolean }>;
   primaryColor: string;
   textColor: string;
   subColor: string;

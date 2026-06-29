@@ -77,7 +77,7 @@ export default function ItemManagerPanel(props: ItemManagerPanelProps) {
     if (!input.trim()) return;
     const fmt = props.formatInput ? props.formatInput(input.trim()) : input.trim();
     const err = props.validateInput ? props.validateInput(fmt) : null;
-    if (err) { alert(err); return; }
+    if (err) { Alert.alert(err); return; }
     props.addItem(fmt);
     setInput('');
   }, [input, props.formatInput, props.validateInput, props.addItem]);
@@ -86,7 +86,7 @@ export default function ItemManagerPanel(props: ItemManagerPanelProps) {
     if (editing && editing.new.trim()) {
       const fmt = props.formatInput ? props.formatInput(editing.new.trim()) : editing.new.trim();
       const err = props.validateInput ? props.validateInput(fmt) : null;
-      if (err) { alert(err); return; }
+      if (err) { Alert.alert(err); return; }
       props.updateItem(editing.old, fmt);
       setEditing(null);
     }

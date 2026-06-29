@@ -1,12 +1,14 @@
 import { useCallback } from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { useAppStore } from '../../../store/useAppStore';
 import { useT } from '../../../components/UI';
+import type { RootStackParamList } from '../../../navigation/types';
 
 export function useTrailActions(trailId: string) {
   const T = useT();
-  const nav = useNavigation();
+  const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const addReflectionToTrail = useAppStore(s => s.addReflectionToTrail);
   const removeReflectionFromTrail = useAppStore(s => s.removeReflectionFromTrail);
   const deleteTrailNote = useAppStore(s => s.deleteTrailNote);
@@ -18,7 +20,7 @@ export function useTrailActions(trailId: string) {
   const updateTrailNote = useAppStore(s => s.updateTrailNote);
 
   const handleWriteReflection = useCallback(() => {
-    nav.navigate('MainTabs' as never, { screen: 'Reflections', params: { showNew: true, trailId } } as never);
+    nav.navigate('MainTabs', { screen: 'Reflections', params: { showNew: true, trailId } } as any);
   }, [nav, trailId]);
 
   const handleSelectReflectionsConfirm = useCallback((selectedIds: string[]) => {
@@ -61,7 +63,7 @@ export function useTrailActions(trailId: string) {
     addTrailNote(trailId, form);
   }, [addTrailNote, trailId]);
 
-  const handleCreatePlan = useCallback((form: { name: string; description: string; priority: any; startDate: string; endDate: string; targetMetric?: string }) => {
+  const handleCreatePlan = useCallback((form: { name: string; description?: string; priority: any; startDate: string; endDate: string; targetMetric?: string }) => {
     createPlanItemFromTrail(trailId, form);
   }, [createPlanItemFromTrail, trailId]);
 
@@ -96,7 +98,7 @@ export function useTrailActions(trailId: string) {
   const handleNavigateToPlan = useCallback((planItemId: string) => {
     const item = (useAppStore.getState().planItems ?? []).find((i: any) => !i.deleted && i.id === planItemId);
     if (item) {
-      nav.navigate('PlanDetail' as never, { planId: item.planId } as never);
+      nav.navigate('PlanDetail', { planId: item.planId });
     }
   }, [nav]);
 
@@ -117,7 +119,7 @@ export function useTrailActions(trailId: string) {
 
   const handleNavigateToTrail = useCallback((targetTrailId: string) => {
     if (targetTrailId === trailId) return;
-    nav.push('ThoughtTrailDetail' as never, { trailId: targetTrailId } as never);
+    nav.push('ThoughtTrailDetail', { trailId: targetTrailId });
   }, [nav, trailId]);
 
   const handleUpdateNote = useCallback((noteId: string, patch: { content?: string; tags?: string[]; mood?: string }) => {

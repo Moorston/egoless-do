@@ -4,7 +4,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
+import { createLogger } from '@egoless-do/core';
 import { NetworkStatus } from '../types/globalPulse';
+
+const log = createLogger('GlobalPulse');
 
 interface UseNetworkStatusReturn {
   networkStatus: NetworkStatus;
@@ -47,7 +50,7 @@ export function useNetworkStatus(): UseNetworkStatusReturn {
 
       return isOnline;
     } catch (error) {
-      console.error('Failed to check connection:', error);
+      log.error(error, { message: 'Failed to check connection' });
       return false;
     }
   }, []);

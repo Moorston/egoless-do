@@ -22,11 +22,13 @@ import MindTrailEntryCard from '../trails/MindTrailEntryCard';
 import TrailSuggestionBanner from '../trails/TrailSuggestionBanner';
 import ReflectionForm from './ReflectionForm';
 import { useReflections } from '../hooks/useReflections';
-import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES, createLogger } from '@egoless-do/core';
 import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
 import {
   Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3,
 } from 'lucide-react-native';
+
+const log = createLogger('Reflections');
 import ReflectionDetailContent from './ReflectionDetailContent';
 import TrailPickerModal from '../trails/TrailPickerModal';
 import { getTrailsByReflection } from '@egoless-do/core';
@@ -56,7 +58,7 @@ function getManagerProps(
       updateItem: (o: string, n: string) => store.updateCustomTag(o, n),
       removeItem: (s: string) => store.removeCustomTag(s),
       reorderItem: (from: number, to: number, _ordered: string[]) => store.reorderAllTag(from, to),
-      getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => !r.deleted && (r as any).tags?.includes(s)).length,
+      getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter((r: any) => !r.deleted && (r as any).tags?.includes(s)).length,
       customItems: store.customTags ?? [],
       formatInput: (s: string) => s.startsWith('#') ? s : `#${s}`,
       hiddenItems,
@@ -79,7 +81,7 @@ function getManagerProps(
     updateItem: (o: string, n: string) => store.updateCustomMood(o, n),
     removeItem: (s: string) => store.removeCustomMood(s),
     reorderItem: (from: number, to: number, _ordered: string[]) => store.reorderAllMood(from, to),
-    getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter(r => !r.deleted && (r as any).mood === s).length,
+    getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter((r: any) => !r.deleted && (r as any).mood === s).length,
     customItems: store.customMoods ?? [],
     hiddenItems,
     onToggleHidden,
@@ -132,7 +134,7 @@ export default function ReflectionsScreen() {
       if (moodsData) {
         try { setHiddenMoods(JSON.parse(moodsData)); } catch {}
       }
-    }).catch(console.error);
+    }).catch((e) => log.error(e));
   }, []);
 
   const handleToggleHiddenTag = useCallback((tag: string) => {
@@ -186,7 +188,7 @@ export default function ReflectionsScreen() {
   // Handle trailId param — set as pending trail for new reflection
   useEffect(() => {
     if (route.params?.trailId) {
-      setPendingTrailIds(prev => prev.includes(route.params.trailId!) ? prev : [...prev, route.params.trailId!]);
+      setPendingTrailIds(prev => prev.includes(route.params!.trailId!) ? prev : [...prev, route.params!.trailId!]);
       setShowNew(true);
       nav.setParams({ trailId: undefined });
     }
@@ -499,7 +501,7 @@ export default function ReflectionsScreen() {
                         )}
 
                         {r.link && (
-                          <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch(console.error)} style={{ marginBottom:8 }}>
+                          <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch((e) => log.error(e))} style={{ marginBottom:8 }}>
                             <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
                               <Link size={12} color="rgba(255,255,255,.7)" />
                               <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL, textDecorationLine:'underline' }} numberOfLines={1}>{r.link}</Text>
@@ -717,6 +719,7 @@ export default function ReflectionsScreen() {
 
       {/* 创建计划任务弹窗 */}
       <CreatePlanFromReflectionModal
+        key={createPlanReflection?.id ?? 'none'}
         visible={showCreatePlanRefModal}
         reflection={createPlanReflection}
         onClose={() => { setShowCreatePlanRefModal(false); setCreatePlanReflection(null); }}

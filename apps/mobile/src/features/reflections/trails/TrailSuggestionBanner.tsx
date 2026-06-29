@@ -7,8 +7,10 @@ import { Zap, X } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_SMALL, FONT_TINY, MS_PER_DAY, createLogger } from '@egoless-do/core';
 import { computeCandidatePool, computeRecommendations, buildIgnoredPattern } from '@egoless-do/core';
+
+const log = createLogger('Reflections');
 
 const TRAIL_IGNORED_KEY = 'trailIgnoredPatterns';
 
@@ -24,7 +26,7 @@ export default function TrailSuggestionBanner() {
     const allTrails = (store.thoughtTrails ?? []).filter(t => !t.deleted);
     if (reflections.length < 5) return null;
 
-    const thirtyDaysAgo = Date.now() - 30 * 86400000;
+    const thirtyDaysAgo = Date.now() - 30 * MS_PER_DAY;
     const candidates = reflections.filter(r =>
       r.timestamp >= thirtyDaysAgo &&
       (!r.thoughtTrailIds || r.thoughtTrailIds.length === 0)
@@ -52,7 +54,7 @@ export default function TrailSuggestionBanner() {
       } else {
         setDismissed(false);
       }
-    }).catch(console.error);
+    }).catch((e) => log.error(e));
     return () => { mounted = false; };
   }, [topRec]);
 
@@ -64,8 +66,8 @@ export default function TrailSuggestionBanner() {
       let ignored: string[] = [];
       try { if (raw) ignored = JSON.parse(raw); } catch {}
       const next = [...new Set([...ignored, pattern])];
-      AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch(console.error);
-    }).catch(console.error);
+      AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
+    }).catch((e) => log.error(e));
     setDismissed(true);
   };
 

@@ -78,7 +78,7 @@ export async function cacheTile(tileKey: string, data: ArrayBuffer): Promise<voi
   await db.runAsync(
     `INSERT OR REPLACE INTO tile_cache (tile_key, data, created_at, accessed_at, size)
      VALUES (?, ?, ?, ?, ?)`,
-    [tileKey, data, now, now, data.byteLength]
+    [tileKey, new Uint8Array(data), now, now, data.byteLength]
   );
 
   // 清理旧缓存
@@ -149,11 +149,11 @@ export async function cacheCheckins(checkins: GlobalCheckin[]): Promise<void> {
           checkin.lat,
           checkin.lng,
           checkin.type,
-          checkin.streak,
-          checkin.total_days,
-          new Date(checkin.created_at).getTime()
-        ]
-      );
+      checkin.streak,
+      checkin.total_days,
+      checkin.created_at ? new Date(checkin.created_at).getTime() : Date.now()
+    ]
+  );
     }
   });
 
@@ -188,7 +188,7 @@ export async function getCachedCheckins(limit: number = 1000): Promise<GlobalChe
     type: row.type as CheckinType,
     streak: row.streak,
     total_days: row.total_days,
-    created_at: new Date(row.created_at).toISOString()
+    created_at: row.created_at ? new Date(row.created_at).toISOString() : new Date(0).toISOString()
   }));
 }
 
@@ -248,7 +248,7 @@ export async function getCachedStats(): Promise<GlobalStats | null> {
       active_today: result.active_today,
       top_streak: result.top_streak,
       countries: result.countries,
-      updated_at: new Date(result.updated_at).toISOString()
+      updated_at: result.updated_at ? new Date(result.updated_at).toISOString() : new Date(0).toISOString()
     };
   }
 

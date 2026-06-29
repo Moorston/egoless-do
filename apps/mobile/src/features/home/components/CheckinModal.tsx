@@ -401,7 +401,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
 
               {/* Submit button - inside tasks card (hidden in grace mode, moved to bottom) */}
               {!isGraceMode && (
-              <TouchableOpacity onPress={submit} style={{
+              <TouchableOpacity onPress={() => submit()} style={{
                 marginTop:12, paddingVertical:14, borderRadius:12, alignItems:'center',
                 backgroundColor: localDone === true
                   ? '#17EAD9'

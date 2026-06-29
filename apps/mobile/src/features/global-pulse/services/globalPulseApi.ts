@@ -3,6 +3,7 @@
  * 直接使用 PocketBase REST API
  */
 
+import { offlineAwareFetch } from '../../../infra/offlineAware';
 import {
   GlobalCheckin,
   GlobalStats,
@@ -22,7 +23,7 @@ const STATS_COLLECTION = 'global_stats';
 const REQUEST_TIMEOUT = 10000;
 
 /**
- * 通用 PocketBase 请求方法
+ * 通用 PocketBase 请求方法（使用 offlineAwareFetch）
  */
 async function pbRequest<T>(
   endpoint: string,
@@ -33,13 +34,9 @@ async function pbRequest<T>(
 
   try {
     const url = `${API_BASE_URL}${endpoint}`;
-    const response = await fetch(url, {
+    const response = await offlineAwareFetch(url, {
       ...options,
       signal: controller.signal,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
     });
 
     clearTimeout(timeoutId);
@@ -117,22 +114,21 @@ export async function getCheckins(params?: {
   // 排除已退出的用户
   filters.push('opted_out != true');
 
-  const queryParams = new URLSearchParams();
+  const queryParts: string[] = [];
   if (filters.length > 0) {
-    queryParams.set('filter', filters.join(' && '));
+    queryParts.push(`filter=${encodeURIComponent(filters.join(' && '))}`);
   }
   if (params?.limit) {
-    queryParams.set('perPage', params.limit.toString());
+    queryParts.push(`perPage=${params.limit}`);
   }
   if (params?.offset) {
     const page = Math.floor((params.offset || 0) / (params.limit || 20)) + 1;
-    queryParams.set('page', page.toString());
+    queryParts.push(`page=${page}`);
   }
-
   // 按创建时间倒序
-  queryParams.set('sort', '-created_at');
+  queryParts.push('sort=-created_at');
+  const query = queryParts.join('&');
 
-  const query = queryParams.toString();
   const result = await pbRequest<any>(
     `/api/collections/${CHECKINS_COLLECTION}/records${query ? `?${query}` : ''}`
   );
@@ -193,12 +189,9 @@ export async function getLeaderboard(params?: {
   const sortField = params?.sort === 'total_days' ? 'total_days' : 'best_streak';
   const limit = params?.limit || 100;
 
-  const queryParams = new URLSearchParams();
-  queryParams.set('sort', `-${sortField}`);
-  queryParams.set('perPage', limit.toString());
-
+  const query = `sort=-${sortField}&perPage=${limit}`;
   const result = await pbRequest<any>(
-    `/api/collections/leaderboard/records?${queryParams.toString()}`
+    `/api/collections/leaderboard/records?${query}`
   );
 
   if (result.success && result.data) {

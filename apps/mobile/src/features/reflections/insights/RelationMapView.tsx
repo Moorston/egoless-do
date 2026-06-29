@@ -101,7 +101,7 @@ export default function RelationMapView() {
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute();
 
-  const context = route.params?.context as RelationContext | undefined;
+  const context = (route.params as any)?.context as RelationContext | undefined;
 
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -496,6 +496,7 @@ export default function RelationMapView() {
     startY: 0,
     startPanX: 0,
     startPanY: 0,
+    startTime: 0,
     moved: false,
     pinchActive: false,
     pinchStartDist: 0,

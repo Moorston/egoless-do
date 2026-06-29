@@ -48,9 +48,8 @@ export function ReviewGuideSection({ reviewCache, onGenerate, onStartWrite, stal
     setAnswers(prev => ({ ...prev, [idx]: text }));
   }, []);
 
-  const answeredCount = reviewCache
-    ? reviewCache.questions.filter((_, i) => answers[i]?.trim()).length
-    : 0;
+  const questions = reviewCache?.questions ?? [];
+  const answeredCount = questions.filter((_, i) => answers[i]?.trim()).length;
 
   // 无内容时显示生成按钮
   if (!reviewCache) {
@@ -111,7 +110,7 @@ export function ReviewGuideSection({ reviewCache, onGenerate, onStartWrite, stal
       {expanded && (
         <View style={styles.content}>
           {/* Progress bar */}
-          {reviewCache.questions.length > 0 && (
+          {questions.length > 0 && (
             <View style={styles.progressRow}>
               <View style={[styles.progressBar, { backgroundColor: TH.sub + '20' }]}>
                 <View
@@ -119,13 +118,13 @@ export function ReviewGuideSection({ reviewCache, onGenerate, onStartWrite, stal
                     styles.progressFill,
                     {
                       backgroundColor: P,
-                      width: `${(answeredCount / reviewCache.questions.length) * 100}%`,
+                      width: `${(answeredCount / questions.length) * 100}%`,
                     },
                   ]}
                 />
               </View>
               <Text style={[styles.progressText, { color: TH.sub }]}>
-                已回答 {answeredCount}/{reviewCache.questions.length}
+                已回答 {answeredCount}/{questions.length}
               </Text>
             </View>
           )}
@@ -143,12 +142,12 @@ export function ReviewGuideSection({ reviewCache, onGenerate, onStartWrite, stal
             </>
           )}
 
-          {reviewCache.questions.length > 0 && (
+          {questions.length > 0 && (
             <>
               <Text style={[styles.sectionLabel, { color: TH.sub }]}>
                 {T('trailReviewQuestions')}
               </Text>
-              {reviewCache.questions.map((q, i) => {
+              {questions.map((q, i) => {
                 const isOpen = openQuestionIdx === i;
                 const hasAnswer = !!answers[i]?.trim();
                 return (

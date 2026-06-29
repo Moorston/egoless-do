@@ -83,7 +83,7 @@ export default function AISettingsScreen() {
   // 保存模型
   const handleSave = useCallback(() => {
     if (!formName.trim() || !formBaseUrl.trim() || !formModel.trim()) {
-      Alert.alert('提示', '请填写必填项');
+      Alert.alert(T('aiHint'), T('aiFillRequired'));
       return;
     }
 
@@ -120,10 +120,10 @@ export default function AISettingsScreen() {
 
   // 删除模型
   const handleDeleteModel = useCallback((modelId: string) => {
-    Alert.alert('删除模型', '确定要删除这个模型配置吗？', [
-      { text: '取消', style: 'cancel' },
+    Alert.alert(T('aiDeleteModel'), T('aiDeleteConfirm'), [
+      { text: T('aiCancel'), style: 'cancel' },
       {
-        text: '删除',
+        text: T('aiDelete'),
         style: 'destructive',
         onPress: () => {
           store.removeAIModel(modelId);
@@ -151,7 +151,7 @@ export default function AISettingsScreen() {
       } else {
         setTestResults(prev => ({
           ...prev,
-          [model.id]: { success: false, error: '请配置API Key' }
+          [model.id]: { success: false, error: T('aiConfigureApiKey') }
         }));
       }
       setTestingModel(null);
@@ -172,12 +172,12 @@ export default function AISettingsScreen() {
               {model.isDefault && (
                 <View style={[styles.defaultBadge, { backgroundColor: `${P}20` }]}>
                   <Star size={10} color={P} />
-                  <Text style={[styles.defaultText, { color: P }]}>默认</Text>
+                  <Text style={[styles.defaultText, { color: P }]}>{T('aiDefault')}</Text>
                 </View>
               )}
             </View>
             <Text style={[styles.modelDetail, { color: TH.sub }]}>
-              {model.model} · {isLocal ? '本地' : '云端'}
+              {model.model} · {isLocal ? T('aiLocal') : T('aiCloud')}
             </Text>
           </View>
 
@@ -197,7 +197,7 @@ export default function AISettingsScreen() {
                 style={[styles.actionButton, { borderColor: TH.border }]}
               >
                 <Settings size={14} color={TH.text} />
-                <Text style={[styles.actionText, { color: TH.text }]}>配置</Text>
+                <Text style={[styles.actionText, { color: TH.text }]}>{T('aiConfigure')}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -207,7 +207,7 @@ export default function AISettingsScreen() {
               >
                 <Wifi size={14} color="#10B981" />
                 <Text style={[styles.actionText, { color: '#10B981' }]}>
-                  {testingModel === model.id ? '测试中...' : '测试'}
+                  {testingModel === model.id ? T('aiTesting') : T('aiTest')}
                 </Text>
               </TouchableOpacity>
 
@@ -217,7 +217,7 @@ export default function AISettingsScreen() {
                   style={[styles.actionButton, { borderColor: P }]}
                 >
                   <Star size={14} color={P} />
-                  <Text style={[styles.actionText, { color: P }]}>设为默认</Text>
+                  <Text style={[styles.actionText, { color: P }]}>{T('aiSetDefault')}</Text>
                 </TouchableOpacity>
               )}
 
@@ -238,7 +238,7 @@ export default function AISettingsScreen() {
                   styles.testResultText,
                   { color: testResult.success ? '#10B981' : '#EF4444' }
                 ]}>
-                  {testResult.success ? `连接成功 (${testResult.latency}ms)` : `失败: ${testResult.error}`}
+                  {testResult.success ? `${T('aiConnectionSuccess')} (${testResult.latency}ms)` : `${T('aiConnectionFailed')}: ${testResult.error}`}
                 </Text>
               </View>
             )}
@@ -255,7 +255,7 @@ export default function AISettingsScreen() {
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
           <ArrowLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: TH.text }]}>AI设置</Text>
+        <Text style={[styles.headerTitle, { color: TH.text }]}>{T('aiSettings')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -266,11 +266,11 @@ export default function AISettingsScreen() {
       >
         {/* AI Mode */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: TH.text }]}>AI模式</Text>
+          <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('aiMode')}</Text>
           {[
-            { key: 'local' as AIMode, label: '仅本地', desc: '离线可用，基础功能' },
-            { key: 'cloud' as AIMode, label: '仅云端', desc: '需要网络，功能强大' },
-            { key: 'hybrid' as AIMode, label: '混合模式', desc: '推荐，自动选择最佳' },
+            { key: 'local' as AIMode, label: T('aiModeLocal'), desc: T('aiModeLocalDesc') },
+            { key: 'cloud' as AIMode, label: T('aiModeCloud'), desc: T('aiModeCloudDesc') },
+            { key: 'hybrid' as AIMode, label: T('aiModeHybrid'), desc: T('aiModeHybridDesc') },
           ].map(({ key, label, desc }) => (
             <TouchableOpacity
               key={key}
@@ -296,18 +296,18 @@ export default function AISettingsScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
-              已配置模型 ({configuredCount})
+              {T('aiConfiguredModels')} ({configuredCount})
             </Text>
             <TouchableOpacity onPress={handleOpenAdd} style={[styles.addButton, { backgroundColor: P }]}>
               <Plus size={16} color="#fff" />
-              <Text style={styles.addButtonText}>添加</Text>
+              <Text style={styles.addButtonText}>{T('aiAdd')}</Text>
             </TouchableOpacity>
           </View>
 
           {models.length === 0 ? (
             <View style={[styles.emptyCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
-              <Text style={[styles.emptyText, { color: TH.sub }]}>还没有配置任何模型</Text>
-              <Text style={[styles.emptySubtext, { color: TH.sub }]}>点击上方"添加"按钮开始配置</Text>
+              <Text style={[styles.emptyText, { color: TH.sub }]}>{T('aiNoModels')}</Text>
+              <Text style={[styles.emptySubtext, { color: TH.sub }]}>{T('aiNoModelsHint')}</Text>
             </View>
           ) : (
             models.map(renderModelCard)
@@ -316,8 +316,8 @@ export default function AISettingsScreen() {
 
         {/* Provider Templates */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: TH.text }]}>快速配置</Text>
-          <Text style={[styles.sectionDesc, { color: TH.sub }]}>选择一个提供商快速添加</Text>
+          <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('aiQuickSetup')}</Text>
+          <Text style={[styles.sectionDesc, { color: TH.sub }]}>{T('aiQuickSetupDesc')}</Text>
 
           {PROVIDER_TEMPLATES.map(template => (
             <TouchableOpacity
@@ -336,7 +336,7 @@ export default function AISettingsScreen() {
                 <Text style={[styles.templateName, { color: TH.text }]}>{template.name}</Text>
                 <Text style={[styles.templateDesc, { color: TH.sub }]}>{template.description}</Text>
                 <Text style={[styles.templateModels, { color: TH.sub }]}>
-                  推荐模型: {template.models.join(', ')}
+                  {T('aiRecommendedModels')}: {template.models.join(', ')}
                 </Text>
               </View>
               <ChevronRight size={18} color={TH.sub} />
@@ -353,7 +353,7 @@ export default function AISettingsScreen() {
               <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
                 <View style={styles.modalHeader}>
                   <Text style={[styles.modalTitle, { color: TH.text }]}>
-                    {editingModel ? '编辑模型' : '添加模型'}
+                    {editingModel ? T('aiEditModel') : T('aiAddModel')}
                   </Text>
                   <TouchableOpacity onPress={() => setShowAddModal(false)}>
                     <X size={24} color={TH.sub} />
@@ -363,7 +363,7 @@ export default function AISettingsScreen() {
                 {/* Template Quick Select */}
                 {!editingModel && (
                   <View style={styles.templateSection}>
-                    <Text style={[styles.inputLabel, { color: TH.sub }]}>快速选择</Text>
+                    <Text style={[styles.inputLabel, { color: TH.sub }]}>{T('aiQuickSelect')}</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                       {PROVIDER_TEMPLATES.map(t => (
                         <TouchableOpacity
@@ -390,20 +390,20 @@ export default function AISettingsScreen() {
                 )}
 
                 {/* Form Fields */}
-                <Text style={[styles.inputLabel, { color: TH.sub }]}>名称 *</Text>
+                <Text style={[styles.inputLabel, { color: TH.sub }]}>{`${T('aiName')} *`}</Text>
                 <TextInput
                   value={formName}
                   onChangeText={setFormName}
-                  placeholder="例如: 小米 MIMO"
+                  placeholder={T('aiNamePlaceholder')}
                   placeholderTextColor={TH.sub}
                   style={[styles.input, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
                 />
 
-                <Text style={[styles.inputLabel, { color: TH.sub }]}>API地址 *</Text>
+                <Text style={[styles.inputLabel, { color: TH.sub }]}>{`${T('aiApiAddress')} *`}</Text>
                 <TextInput
                   value={formBaseUrl}
                   onChangeText={setFormBaseUrl}
-                  placeholder="例如: https://api.mimo.ai/v1"
+                  placeholder={T('aiApiAddressPlaceholder')}
                   placeholderTextColor={TH.sub}
                   autoCapitalize="none"
                   style={[styles.input, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
@@ -411,19 +411,19 @@ export default function AISettingsScreen() {
                 {selectedTemplate && (
                   <View style={styles.baseUrlHint}>
                     <Text style={[styles.hintText, { color: TH.sub }]}>
-                      推荐地址: {selectedTemplate.baseUrl}
+                      {T('aiRecommendedAddress')}: {selectedTemplate.baseUrl}
                     </Text>
                     <TouchableOpacity onPress={() => setFormBaseUrl(selectedTemplate.baseUrl)}>
-                      <Text style={[styles.useText, { color: P }]}>使用</Text>
+                      <Text style={[styles.useText, { color: P }]}>{T('aiUse')}</Text>
                     </TouchableOpacity>
                   </View>
                 )}
 
-                <Text style={[styles.inputLabel, { color: TH.sub }]}>模型名称 *</Text>
+                <Text style={[styles.inputLabel, { color: TH.sub }]}>{`${T('aiModelName')} *`}</Text>
                 <TextInput
                   value={formModel}
                   onChangeText={setFormModel}
-                  placeholder="例如: MIMO-V2-Flash"
+                  placeholder={T('aiModelNamePlaceholder')}
                   placeholderTextColor={TH.sub}
                   autoCapitalize="none"
                   style={[styles.input, { color: TH.text, borderColor: TH.border, backgroundColor: TH.card }]}
@@ -457,7 +457,7 @@ export default function AISettingsScreen() {
                 <TextInput
                   value={formApiKey}
                   onChangeText={setFormApiKey}
-                  placeholder="本地模型可留空"
+                  placeholder={T('aiApiKeyPlaceholder')}
                   placeholderTextColor={TH.sub}
                   secureTextEntry
                   autoCapitalize="none"
@@ -466,7 +466,7 @@ export default function AISettingsScreen() {
 
                 <View style={styles.row}>
                   <View style={styles.halfField}>
-                    <Text style={[styles.inputLabel, { color: TH.sub }]}>最大Token</Text>
+                    <Text style={[styles.inputLabel, { color: TH.sub }]}>{T('aiMaxToken')}</Text>
                     <TextInput
                       value={formMaxTokens}
                       onChangeText={setFormMaxTokens}
@@ -477,7 +477,7 @@ export default function AISettingsScreen() {
                     />
                   </View>
                   <View style={styles.halfField}>
-                    <Text style={[styles.inputLabel, { color: TH.sub }]}>温度</Text>
+                    <Text style={[styles.inputLabel, { color: TH.sub }]}>{T('aiTemperature')}</Text>
                     <TextInput
                       value={formTemperature}
                       onChangeText={setFormTemperature}
@@ -495,14 +495,14 @@ export default function AISettingsScreen() {
                     onPress={() => setShowAddModal(false)}
                     style={[styles.modalButton, { borderColor: TH.border }]}
                   >
-                    <Text style={{ color: TH.sub }}>取消</Text>
+                    <Text style={{ color: TH.sub }}>{T('aiCancel')}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleSave}
                     style={[styles.modalButton, { backgroundColor: P }]}
                   >
                     <Text style={{ color: '#fff', fontWeight: '600' }}>
-                      {editingModel ? '保存' : '添加'}
+                      {editingModel ? T('aiSave') : T('aiAdd')}
                     </Text>
                   </TouchableOpacity>
                 </View>

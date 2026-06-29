@@ -28,7 +28,7 @@ export default function ReflectionDetailScreen() {
     if (r) {
       const activePlan = store.getActivePlan?.();
       if (activePlan) {
-        nav.navigate('PlanDetail', { planId: activePlan.id, addReflectionId: id });
+        nav.navigate('PlanCreate', { planId: activePlan.id, reflectionId: id });
       } else {
         nav.navigate('PlanCreate', { reflectionId: id });
       }

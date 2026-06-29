@@ -6,13 +6,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
-import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_EMPTY } from '@egoless-do/core';
+import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_EMPTY, MS_PER_DAY, MS_PER_WEEK } from '@egoless-do/core';
 import type { RecycleBinItem, RecycleBinEntityType } from '@egoless-do/core';
 import {
   Trash2, RotateCcw, Target, Sparkles, Utensils, Dumbbell, ClipboardList, Clock,
 } from 'lucide-react-native';
 
-const EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
+const EXPIRY_MS = MS_PER_WEEK;
 
 const ENTITY_ICONS: Record<RecycleBinEntityType, React.ComponentType<any>> = {
   habit: Target,
@@ -44,7 +44,7 @@ function getItemName(item: RecycleBinItem): string {
 
 function getDaysLeft(deletedAt: number): number {
   const remaining = EXPIRY_MS - (Date.now() - deletedAt);
-  return Math.max(0, Math.ceil(remaining / (24 * 60 * 60 * 1000)));
+  return Math.max(0, Math.ceil(remaining / MS_PER_DAY));
 }
 
 export default function RecycleBinScreen() {

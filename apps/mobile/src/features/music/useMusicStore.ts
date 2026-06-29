@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
-import { BUILTIN_TRACKS, USER_MUSIC_STORAGE_KEY, MUSIC_FAVORITES_KEY } from '@egoless-do/core';
+import { BUILTIN_TRACKS, USER_MUSIC_STORAGE_KEY, MUSIC_FAVORITES_KEY, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
+
+const log = createLogger('Music');
 
 // 内置音乐文件映射（require 必须在模块顶层静态声明）
 const BUILTIN_FILES: Record<string, number> = {
@@ -173,7 +175,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       set({ userTracks: updated });
       await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
     } catch (e) {
-      console.error('添加用户音乐失败:', e);
+      log.error('添加用户音乐失败:', e);
     }
   },
 
@@ -193,7 +195,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         set({ currentTrack: null, isPlaying: false });
       }
     } catch (e) {
-      console.error('删除用户音乐失败:', e);
+      log.error('删除用户音乐失败:', e);
     }
   },
 
@@ -221,7 +223,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
           await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(valid));
         }
       }
-    } catch (e) { console.error('加载用户音乐失败:', e); }
+    } catch (e) { log.error('加载用户音乐失败:', e); }
   },
 
   toggleFavorite: async (id) => {
@@ -233,7 +235,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       set({ favorites: updated });
       await AsyncStorage.setItem(MUSIC_FAVORITES_KEY, JSON.stringify(updated));
     } catch (e) {
-      console.error('切换收藏失败:', e);
+      log.error('切换收藏失败:', e);
     }
   },
 
@@ -243,7 +245,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       if (raw) {
         set({ favorites: JSON.parse(raw) });
       }
-    } catch (e) { console.error('加载收藏失败:', e); }
+    } catch (e) { log.error('加载收藏失败:', e); }
   },
 
   getTracksByCategory: (cat) => {

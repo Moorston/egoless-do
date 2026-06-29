@@ -18,6 +18,7 @@ import { ActiveMarker } from './ActiveMarker';
 import { MarkerDetail } from './MarkerDetail';
 import { OfflineBanner } from './OfflineBanner';
 import { BottomPanel } from './BottomPanel';
+import { Leaderboard } from './Leaderboard';
 
 const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
