@@ -7,7 +7,6 @@ import type { ExerciseLayoutProps } from './types';
 import ExerciseTopBar from '../shared/ExerciseTopBar';
 import RestOverlay from '../shared/RestOverlay';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
-import MusicMiniBar from '../../music/components/MusicMiniBar';
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function MeditativeActive(props: ExerciseLayoutProps) {

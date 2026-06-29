@@ -8,7 +8,6 @@ import ExerciseTopBar from '../shared/ExerciseTopBar';
 import RestOverlay from '../shared/RestOverlay';
 import EmbeddedRest from '../shared/EmbeddedRest';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
-import MusicMiniBar from '../../music/components/MusicMiniBar';
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function StrengthActive(props: ExerciseLayoutProps) {
