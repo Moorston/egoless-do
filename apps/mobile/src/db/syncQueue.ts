@@ -39,16 +39,20 @@ export async function enqueueChange(
       log.warn(`Queue full (${MAX_QUEUE_SIZE}), dropping ${entity}:${entityId}`);
       return;
     }
-    await db.withTransactionAsync(async () => {
-      await db.runAsync(
-        'DELETE FROM sync_queue WHERE entity = ? AND entity_id = ?',
-        [entity, entityId],
-      );
-      await db.runAsync(
-        'INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status) VALUES (?, ?, ?, ?, ?, ?)',
-        [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
-      );
-    });
+    // Atomic upsert without explicit transaction (avoids nested transaction errors)
+    await db.runAsync(
+      `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(entity, entity_id) DO UPDATE SET
+         operation = excluded.operation,
+         payload = excluded.payload,
+         created_at = excluded.created_at,
+         status = 'pending',
+         retry_count = 0,
+         next_retry_at = 0,
+         last_error = NULL`,
+      [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
+    );
     // Trigger debounced sync after successful enqueue
     _onEnqueued?.();
   } catch (err) {

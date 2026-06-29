@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS sync_queue (
   status      TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','syncing','failed','conflict')),
   next_retry_at INTEGER NOT NULL DEFAULT 0
 );
-CREATE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id);
 CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id);
 
 CREATE TABLE IF NOT EXISTS sync_metadata (
@@ -400,7 +400,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','syncing','failed','conflict')),
       next_retry_at INTEGER NOT NULL DEFAULT 0
     )`);
-    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)');
+    await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)');
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status)');
   } else {
     // Migrate existing sync_queue: check each column by pragma before adding
@@ -425,7 +425,12 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     } catch {} // intentional: index may already exist
     try {
       await db.execAsync('CREATE INDEX IF NOT EXISTS idx_sync_queue_drain ON sync_queue(status, next_retry_at, id)');
-    } catch {} // intentional: index may already exist
+    } catch {} // intentional: index may already exists
+    // Migrate entity index to UNIQUE for UPSERT support
+    try {
+      await db.execAsync('DROP INDEX IF EXISTS idx_sync_queue_entity');
+      await db.execAsync('CREATE UNIQUE INDEX idx_sync_queue_entity ON sync_queue(entity, entity_id)');
+    } catch {} // intentional: may already be unique
   }
 
   // Ensure sync_metadata table exists
@@ -542,6 +547,16 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('habits', 'alarm_hour', 'INTEGER NOT NULL DEFAULT 8');
   await tryAddCol('habits', 'alarm_minute', 'INTEGER NOT NULL DEFAULT 0');
   await tryAddCol('habits', 'link', "TEXT NOT NULL DEFAULT 'none'");
+  await tryAddCol('habits', 'link_config', "TEXT");
+
+  // Add thought_trail_ids to mind_reflections
+  await tryAddCol('mind_reflections', 'thought_trail_ids', 'TEXT');
+
+  // Add complete_reason to plans
+  await tryAddCol('plans', 'complete_reason', 'TEXT');
+
+  // Add local_engine_enabled to ai_configs
+  await tryAddCol('ai_configs', 'local_engine_enabled', 'INTEGER NOT NULL DEFAULT 1');
 
   // Add exercise metadata columns if missing
   await tryAddCol('exercise_entries', 'mode', "TEXT DEFAULT 'free'");
