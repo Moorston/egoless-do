@@ -295,6 +295,7 @@ export const zhHant: I18nKeys = {
   clearDataLoading:'正在清除...', clearDataSuccess:'本地數據已清除', clearDataPushFail:'數據同步失敗，請檢查網路後重試',
   settingsFreePlan:'免費版', settingsDefaultName:'心流行者',
   settingsEditProfile:'編輯資料', settingsNickname:'暱稱',
+  profileStats:'統計概覽', profileBodyData:'身體數據', profileWeight:'體重', profileWaterGoal:'飲水目標', profileAccount:'帳號',
   settingsLogin:'登錄 / 註冊', settingsLoginDesc:'登錄後可同步數據到雲端',
   settingsFooter:'Egoless Do · 心流紀 v1.0.0 · 離線優先 · 隱私優先',
   settingsSetReminder:'設置提醒時間', settingsSelectTheme:'選擇主題',

@@ -65,6 +65,7 @@ import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
 import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
 import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
 import AISettingsScreen from '../features/settings/AISettingsScreen';
+import ProfileScreen from '../features/settings/ProfileScreen';
 import MusicScreen from '../features/music/screens/MusicScreen';
 import MusicCategoryScreen from '../features/music/screens/MusicCategoryScreen';
 import { useSync }       from '../features/sync/useSync';
@@ -366,6 +367,7 @@ export default function AppNavigator() {
         <Stack.Screen name="RecycleBin"    component={RecycleBinScreen} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
         <Stack.Screen name="AISettings"    component={AISettingsScreen} />
+        <Stack.Screen name="Profile"       component={ProfileScreen} />
         <Stack.Screen name="Music"         component={MusicScreen} />
         <Stack.Screen name="MusicCategory" component={MusicCategoryScreen} />
         <Stack.Screen name="Stats"         component={StatsScreen} />

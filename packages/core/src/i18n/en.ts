@@ -295,6 +295,7 @@ export const en: I18nKeys = {
   clearDataLoading:'Clearing...', clearDataSuccess:'Local data cleared', clearDataPushFail:'Sync failed. Check your network and try again.',
   settingsFreePlan:'Free', settingsDefaultName:'Practitioner',
   settingsEditProfile:'Edit Profile', settingsNickname:'Nickname',
+  profileStats:'Statistics', profileBodyData:'Body Data', profileWeight:'Weight', profileWaterGoal:'Water Goal', profileAccount:'Account',
   settingsLogin:'Sign In / Register', settingsLoginDesc:'Sign in to sync data to cloud',
   settingsFooter:'Egoless Do v1.0.0 · Offline-first · Privacy-first',
   settingsSetReminder:'Set Reminder Time', settingsSelectTheme:'Select Theme',

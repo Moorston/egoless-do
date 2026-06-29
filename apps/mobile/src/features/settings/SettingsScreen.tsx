@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator, TextInput,
+  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
@@ -11,16 +11,16 @@ import {
 } from '../../components/UI';
 import TimePickerModal from '../../components/TimePickerModal';
 import { SyncConflictPanel } from '../../components/SyncConflictPanel';
-import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_CLOSE, createLogger } from '@egoless-do/core';
+import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
 
 const log = createLogger('Settings');
 import {
   BarChart3, CalendarDays, Utensils, Shield, HeartCrack,
-  Heart, RefreshCw, Hand, PersonStanding, Trash2, LogOut,
-  Check, X, ChevronRight, Scale, Bell, Clock, Globe, Palette,
-  Cloud, CloudUpload,   History, Info, Lock, ClipboardList,
-  Music, Brain, Dumbbell, Timer, Database, Pencil, Flame, Target,
+  Heart, RefreshCw, Hand, PersonStanding, Trash2,
+  Check, X, ChevronRight, Bell, Clock, Globe, Palette,
+  Cloud, CloudUpload, History, Info, Lock, ClipboardList,
+  Music, Brain, Dumbbell, Timer,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import {
@@ -36,24 +36,11 @@ export default function SettingsScreen() {
 
   const healthSyncEnabled = useAppStore(s => s.healthSyncEnabled);
   const setHealthSyncEnabled = useAppStore(s => s.setHealthSyncEnabled);
-  const weightUnit = useAppStore(s => s.weightUnit);
-  const setWeightUnit = useAppStore(s => s.setWeightUnit);
   const [showTheme, setShowTheme]         = useState(false);
   const [showLang, setShowLang]           = useState(false);
-  const [showWeightUnit, setShowWeightUnit] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [timeEdit, setTimeEdit]           = useState(store.remindTime);
   const [clearing, setClearing]           = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false);
-  const [editNickname, setEditNickname]   = useState(store.userProfile.nickname ?? '');
-
-  // Profile stats
-  const profileStats = useMemo(() => {
-    const totalCheckinDays = (store.checkinHistory ?? []).filter(c => c.done && !c.deleted).length;
-    const activeHabits = (store.habits ?? []).filter(h => !h.deleted && h.status !== 'archived').length;
-    const totalReflections = (store.reflections ?? []).filter(r => !r.deleted).length;
-    return { totalCheckinDays, activeHabits, totalReflections };
-  }, [store.checkinHistory, store.habits, store.reflections]);
 
   // Schedule reminder on mount if enabled
   useEffect(() => {
@@ -231,20 +218,6 @@ export default function SettingsScreen() {
           ),
         },
         {
-          label: T('settingsWeightUnit'),
-          icon: <Scale size={20} color={P} />,
-          right: (
-            <TouchableOpacity onPress={() => setShowWeightUnit(true)}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                  {weightUnit === 'kg' ? T('weightUnitKg') : T('weightUnitLb')}
-                </Text>
-                <ChevronRight size={14} color={TH.sub} />
-              </View>
-            </TouchableOpacity>
-          ),
-        },
-        {
           label: T('settingsAIModel'),
           sub: T('settingsAIModelDesc'),
           icon: <Brain size={20} color={P} />,
@@ -367,9 +340,8 @@ export default function SettingsScreen() {
 
         {/* Profile card */}
         <Card style={{ marginBottom: 8 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-            {/* Avatar with initials */}
-            <TouchableOpacity onPress={() => store.auth.isSignedIn && setShowEditProfile(true)}>
+          <TouchableOpacity onPress={() => store.auth.isSignedIn && nav.navigate('Profile')}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
               <View style={{
                 width: 56, height: 56, borderRadius: 28,
                 backgroundColor: `${P}30`,
@@ -379,61 +351,33 @@ export default function SettingsScreen() {
                   {(store.userProfile.nickname ?? store.auth.user?.name ?? '?').charAt(0).toUpperCase()}
                 </Text>
               </View>
-            </TouchableOpacity>
-            <View style={{ flex: 1 }}>
-              <TouchableOpacity onPress={() => store.auth.isSignedIn && setShowEditProfile(true)}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>
-                    {store.userProfile.nickname ?? store.auth.user?.name ?? T('settingsDefaultName')}
-                  </Text>
-                  <Pencil size={14} color={TH.sub} />
-                </View>
-              </TouchableOpacity>
-              <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 3 }}>
-                {store.auth.user?.email ?? ''}
-              </Text>
-            </View>
-            {store.auth.isSignedIn ? (
-              <View style={{
-                paddingHorizontal: 12, paddingVertical: 6,
-                borderRadius: 12, backgroundColor: `${P}20`,
-              }}>
-                <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>
+                  {store.userProfile.nickname ?? store.auth.user?.name ?? T('settingsDefaultName')}
+                </Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 3 }}>
+                  {store.streak} {T('checkinStreak')} · {store.auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
+                </Text>
               </View>
-            ) : (
-              <TouchableOpacity
-                onPress={() => nav.navigate('Login')}
-                style={{
-                  paddingHorizontal: 16, paddingVertical: 8,
-                  borderRadius: 12, backgroundColor: P,
+              {store.auth.isSignedIn ? (
+                <View style={{
+                  paddingHorizontal: 12, paddingVertical: 6,
+                  borderRadius: 12, backgroundColor: `${P}20`,
                 }}>
-                <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('settingsLogin')}</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Stats overview */}
-          {store.auth.isSignedIn && (
-            <View style={{
-              flexDirection: 'row', marginTop: 14, paddingTop: 14,
-              borderTopWidth: 1, borderTopColor: TH.border, gap: 8,
-            }}>
-              {[
-                { icon: <Flame size={16} color="#F59E0B" />, value: store.streak, label: T('checkinStreak') },
-                { icon: <Target size={16} color={P} />, value: profileStats.activeHabits, label: T('habits') },
-                { icon: <CalendarDays size={16} color="#10B981" />, value: profileStats.totalCheckinDays, label: T('globalPulse.totalDays') },
-                { icon: <Brain size={16} color="#8B5CF6" />, value: profileStats.totalReflections, label: T('reflections') },
-              ].map((s, i) => (
-                <View key={i} style={{ flex: 1, alignItems: 'center', gap: 4 }}>
-                  {s.icon}
-                  <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: TH.text }}>{s.value}</Text>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{s.label}</Text>
+                  <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
                 </View>
-              ))}
+              ) : (
+                <TouchableOpacity
+                  onPress={() => nav.navigate('Login')}
+                  style={{
+                    paddingHorizontal: 16, paddingVertical: 8,
+                    borderRadius: 12, backgroundColor: P,
+                  }}>
+                  <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('settingsLogin')}</Text>
+                </TouchableOpacity>
+              )}
             </View>
-          )}
-
-          {/* Music entry */}
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => nav.navigate('Music')}
             style={{
@@ -451,54 +395,6 @@ export default function SettingsScreen() {
             <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1 }}>{T('musicTitle')}</Text>
             <ChevronRight size={18} color={TH.sub} />
           </TouchableOpacity>
-
-          {/* Account actions (moved into profile card) */}
-          {store.auth.isSignedIn && (
-            <View style={{ marginTop: 14, paddingTop: 14, borderTopWidth: 1, borderTopColor: TH.border }}>
-              <TouchableOpacity
-                disabled={clearing}
-                onPress={() => {
-                  Alert.alert(
-                    T('settingsClearData'),
-                    T('settingsClearConfirm'),
-                    [
-                      { text: T('commonCancel'), style: 'cancel' },
-                      {
-                        text: T('settingsClearData'),
-                        style: 'destructive',
-                        onPress: async () => {
-                          setClearing(true);
-                          try {
-                            await store.clearDataAndLogout();
-                            nav.reset({ index: 0, routes: [{ name: 'Login' }] });
-                          } catch (e: any) {
-                            Alert.alert(T('clearDataPushFail'));
-                          }
-                          setClearing(false);
-                        },
-                      },
-                    ],
-                  );
-                }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}
-              >
-                {clearing
-                  ? <ActivityIndicator size="small" color={TH.sub} style={{ marginRight: 12 }} />
-                  : <Database size={16} color="#F59E0B" style={{ marginRight: 10 }} />
-                }
-                <Text style={{ color: clearing ? TH.sub : '#F59E0B', fontSize: FONT_BODY, flex: 1 }}>
-                  {clearing ? T('clearDataLoading') : T('settingsClearData')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={async () => { await store.logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}
-              >
-                <LogOut size={16} color="#EF4444" style={{ marginRight: 10 }} />
-                <Text style={{ color: '#EF4444', fontSize: FONT_BODY, flex: 1 }}>{T('settingsLogout')}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </Card>
 
         <SyncConflictPanel />
@@ -623,86 +519,6 @@ export default function SettingsScreen() {
                 )}
               </TouchableOpacity>
             ))}
-          </View>
-        </View>
-      </Modal>
-
-      {/* Weight unit picker */}
-      <Modal visible={showWeightUnit} transparent animationType="slide">
-        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,.6)' }}>
-          <View style={{
-            backgroundColor: TH.cardSolid,
-            borderTopLeftRadius: 24, borderTopRightRadius: 24,
-            padding: 24, paddingBottom: 48,
-          }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
-              <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{T('settingsWeightUnit')}</Text>
-              <TouchableOpacity onPress={() => setShowWeightUnit(false)}>
-                <X size={26} color={TH.sub} />
-              </TouchableOpacity>
-            </View>
-            {[
-              { key: 'kg', label: T('weightUnitKg') },
-              { key: 'lb', label: T('weightUnitLb') },
-            ].map(item => (
-              <TouchableOpacity
-                key={item.key}
-                onPress={() => { setWeightUnit(item.key as 'kg' | 'lb'); setShowWeightUnit(false); }}
-                style={{
-                  flexDirection: 'row', alignItems: 'center',
-                  justifyContent: 'space-between',
-                  paddingVertical: 14,
-                  borderBottomWidth: 1, borderBottomColor: TH.border,
-                }}
-              >
-                <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{item.label}</Text>
-                {weightUnit === item.key && (
-                  <Check size={20} color={P} />
-                )}
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </Modal>
-
-      {/* Edit profile modal */}
-      <Modal visible={showEditProfile} transparent animationType="slide">
-        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,.6)' }}>
-          <View style={{
-            backgroundColor: TH.cardSolid,
-            borderTopLeftRadius: 24, borderTopRightRadius: 24,
-            padding: 24, paddingBottom: 48,
-          }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
-              <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{T('settingsEditProfile')}</Text>
-              <TouchableOpacity onPress={() => setShowEditProfile(false)}>
-                <X size={26} color={TH.sub} />
-              </TouchableOpacity>
-            </View>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginBottom: 8 }}>{T('settingsNickname')}</Text>
-            <TextInput
-              value={editNickname}
-              onChangeText={setEditNickname}
-              placeholder={store.auth.user?.name ?? T('settingsDefaultName')}
-              placeholderTextColor={TH.sub}
-              style={{
-                backgroundColor: TH.bg, borderRadius: 12, padding: 14,
-                color: TH.text, fontSize: FONT_BODY, marginBottom: 20,
-                borderWidth: 1, borderColor: TH.border,
-              }}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                store.updateUserProfile({ nickname: editNickname.trim() || undefined });
-                setShowEditProfile(false);
-              }}
-              style={{
-                backgroundColor: P, borderRadius: 12, padding: 14,
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('commonSave')}</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </Modal>

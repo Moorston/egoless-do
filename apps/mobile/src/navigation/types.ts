@@ -31,6 +31,7 @@ export type RootStackParamList = {
   MusicCategory: { category: string };
   RelationMap: { context: { type: string; id: string } } | undefined;
   AISettings: undefined;
+  Profile: undefined;
   Insight: undefined;
   Review: { period: 'week' | 'month'; startDate: string; endDate: string } | undefined;
   StrategyLibrary: undefined;
