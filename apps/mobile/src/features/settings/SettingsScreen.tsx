@@ -20,7 +20,7 @@ import {
   Heart, RefreshCw, Hand, PersonStanding, Trash2,
   Check, X, ChevronRight, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload, History, Info, Lock, ClipboardList,
-  Music, Brain, Dumbbell, Timer,
+  Music, Binary, Brain, Dumbbell, Timer,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import {
@@ -157,7 +157,7 @@ export default function SettingsScreen() {
           onPress: () => nav.navigate('ExerciseHistory'),
         },
         {
-          label: T('meditationHistory'), icon: <Brain size={20} color={P} />,
+          label: T('meditationHistory'), icon: <Binary size={20} color={P} />,
           right: <ChevronRight size={18} color={TH.sub} />,
           onPress: () => nav.navigate('MedHistory'),
         },

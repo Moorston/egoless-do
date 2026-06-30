@@ -714,6 +714,25 @@ export const en: I18nKeys = {
   navTabHome:'Home', navTabExercise:'Exercise', navTabMeditation:'Meditation',
   navTabFasting:'Fasting', navTabSettings:'Settings', navTabPlan:'Plan',
   navTabReflections:'Reflections', navTabHabits:'Habits',
+  navTabPractice:'Practice',
+
+  // Practice Hub
+  practiceGroupTune:'Tune', practiceGroupMind:'Mind', practiceGroupAction:'Action', practiceGroupOther:'Other',
+  practiceWeekly:'Weekly Practice',
+  practiceTuneBreath:'Breath', practiceTuneBreathDesc:'Guided breathing',
+  practiceTuneBody:'Body', practiceTuneBodyDesc:'Body assessment',
+  practiceTuneSleep:'Sleep', practiceTuneSleepDesc:'Sleep analysis',
+  practiceTuneFood:'Food', practiceTuneFoodDesc:'Diet analysis',
+  practiceMindVow:'Vow', practiceMindVowDesc:'Vows & merit',
+  practiceMindMeditate:'Meditate', practiceMindMeditateDesc:'Sitting meditation',
+  practiceMindInsight:'Insight', practiceMindInsightDesc:'Vipassana practice',
+  practiceMindHeart:'Heart', practiceMindHeartDesc:'Fear & achievement',
+  practiceActionPrecept:'Precept', practiceActionPreceptDesc:'Discipline',
+  practiceActionMantra:'Mantra', practiceActionMantraDesc:'Chanting & counting',
+  practiceActionSutra:'Sutra', practiceActionSutraDesc:'Sutra recitation',
+  practiceActionGive:'Give', practiceActionGiveDesc:'Charity & giving',
+  practiceOtherSound:'Sound', practiceOtherSoundDesc:'Sound therapy',
+  practiceOtherRead:'Read', practiceOtherReadDesc:'Scripture reading',
 
   // Auth
   authEmailPlaceholder:'Email', authPasswordPlaceholder:'Password', authLoginBtn:'Log In',

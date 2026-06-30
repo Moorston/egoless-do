@@ -15,7 +15,7 @@ export { PrivacyIntroModal } from './components/PrivacyIntroModal';
 export { OfflineBanner } from './components/OfflineBanner';
 export { ClusterMarker } from './components/ClusterMarker';
 export { LoadingOverlay } from './components/LoadingOverlay';
-export { ErrorBoundary } from './components/ErrorBoundary';
+export { ErrorBoundary } from '../../components/ErrorBoundary';
 
 // Hook 导出
 export { useGlobalPulse } from './hooks/useGlobalPulse';

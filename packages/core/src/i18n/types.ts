@@ -580,6 +580,23 @@ export interface I18nKeys {
   navTabHome: string; navTabExercise: string; navTabMeditation: string;
   navTabFasting: string; navTabSettings: string; navTabPlan: string;
   navTabReflections: string; navTabHabits: string;
+  navTabPractice: string;
+  practiceGroupTune: string; practiceGroupMind: string; practiceGroupAction: string; practiceGroupOther: string;
+  practiceWeekly: string;
+  practiceTuneBreath: string; practiceTuneBreathDesc: string;
+  practiceTuneBody: string; practiceTuneBodyDesc: string;
+  practiceTuneSleep: string; practiceTuneSleepDesc: string;
+  practiceTuneFood: string; practiceTuneFoodDesc: string;
+  practiceMindVow: string; practiceMindVowDesc: string;
+  practiceMindMeditate: string; practiceMindMeditateDesc: string;
+  practiceMindInsight: string; practiceMindInsightDesc: string;
+  practiceMindHeart: string; practiceMindHeartDesc: string;
+  practiceActionPrecept: string; practiceActionPreceptDesc: string;
+  practiceActionMantra: string; practiceActionMantraDesc: string;
+  practiceActionSutra: string; practiceActionSutraDesc: string;
+  practiceActionGive: string; practiceActionGiveDesc: string;
+  practiceOtherSound: string; practiceOtherSoundDesc: string;
+  practiceOtherRead: string; practiceOtherReadDesc: string;
 
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;

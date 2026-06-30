@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
-  Sparkles, Target, BarChart3, Flame,
+  Sparkles, Target, BarChart3, Flame, Footprints,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -24,6 +24,7 @@ const log = createLogger('App');
 import HomeScreen       from '../features/home/screens/HomeScreen';
 import FastingScreen    from '../features/fasting/FastingScreen';
 import MeditationScreen from '../features/meditation/MeditationScreen';
+import PracticeScreen   from '../features/practice/PracticeScreen';
 import ExerciseScreen   from '../features/exercise/ExerciseScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
 
@@ -216,7 +217,7 @@ function MainTabs() {
   useEffect(() => { forceUpdate(n => n + 1); }, []);
 
   const iconMap: Record<string, React.ComponentType<any>> = {
-    Home, Plan: ClipboardList, Fasting: Timer, Meditation: Binary,
+    Home, Plan: ClipboardList, Fasting: Timer, Meditation: Binary, Practice: Footprints,
     Exercise: Dumbbell, Settings, Reflections: Sparkles,
     Habits: Target, Stats: BarChart3,
   };
@@ -251,9 +252,10 @@ function MainTabs() {
     >
       <Tab.Screen name="Home"        component={HomeScreen}        options={{ title: t('navTabHome', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Exercise"    component={ExerciseScreen}    options={{ title: t('navTabExercise', language), tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title: t('navTabMeditation', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Fasting"     component={FastingScreen}     options={{ title: t('navTabFasting', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Practice"    component={PracticeScreen}    options={{ title: t('navTabPractice', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title: t('navTabSettings', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title: t('navTabMeditation', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />

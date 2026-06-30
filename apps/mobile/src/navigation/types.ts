@@ -41,6 +41,7 @@ export type MainTabParamList = {
   Home: undefined;
   Plan: undefined;
   Fasting: undefined;
+  Practice: undefined;
   Meditation: undefined;
   Exercise: undefined;
   Settings: undefined;

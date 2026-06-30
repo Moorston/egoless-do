@@ -714,6 +714,25 @@ export const zh: I18nKeys = {
   navTabHome:'首页', navTabExercise:'锻炼', navTabMeditation:'冥想',
   navTabFasting:'禁食', navTabSettings:'设置', navTabPlan:'计划',
   navTabReflections:'感念', navTabHabits:'习惯',
+  navTabPractice:'修行',
+
+  // Practice Hub
+  practiceGroupTune:'调', practiceGroupMind:'心', practiceGroupAction:'行', practiceGroupOther:'其他',
+  practiceWeekly:'本周修行',
+  practiceTuneBreath:'调息', practiceTuneBreathDesc:'引导呼吸·气功修炼',
+  practiceTuneBody:'调身', practiceTuneBodyDesc:'身体评估·锻炼方案',
+  practiceTuneSleep:'调眠', practiceTuneSleepDesc:'睡眠分析·作息规划',
+  practiceTuneFood:'调食', practiceTuneFoodDesc:'饮食分析·五行分类',
+  practiceMindVow:'发愿', practiceMindVowDesc:'发愿记录·功德回向',
+  practiceMindMeditate:'冥想', practiceMindMeditateDesc:'打坐计时·专注训练',
+  practiceMindInsight:'止观', practiceMindInsightDesc:'内观·觉知训练',
+  practiceMindHeart:'调心', practiceMindHeartDesc:'恐惧与成就·情绪觉察',
+  practiceActionPrecept:'持戒', practiceActionPreceptDesc:'戒律遵守·自律记录',
+  practiceActionMantra:'持咒', practiceActionMantraDesc:'咒语持诵·计数',
+  practiceActionSutra:'诵经', practiceActionSutraDesc:'经文念诵·抄经',
+  practiceActionGive:'布施', practiceActionGiveDesc:'善行记录·给予',
+  practiceOtherSound:'音疗', practiceOtherSoundDesc:'颂钵·自然音·音频疗愈',
+  practiceOtherRead:'阅读', practiceOtherReadDesc:'经文阅读·读书笔记',
 
   // Auth
   authEmailPlaceholder:'邮箱', authPasswordPlaceholder:'密码', authLoginBtn:'登录',

@@ -712,6 +712,25 @@ export const zhHant: I18nKeys = {
   navTabHome:'首頁', navTabExercise:'鍛鍊', navTabMeditation:'冥想',
   navTabFasting:'禁食', navTabSettings:'設定', navTabPlan:'計劃',
   navTabReflections:'感念', navTabHabits:'習慣',
+  navTabPractice:'修行',
+
+  // Practice Hub
+  practiceGroupTune:'調', practiceGroupMind:'心', practiceGroupAction:'行', practiceGroupOther:'其他',
+  practiceWeekly:'本週修行',
+  practiceTuneBreath:'調息', practiceTuneBreathDesc:'引導呼吸·氣功修煉',
+  practiceTuneBody:'調身', practiceTuneBodyDesc:'身體評估·鍛鍊方案',
+  practiceTuneSleep:'調眠', practiceTuneSleepDesc:'睡眠分析·作息規劃',
+  practiceTuneFood:'調食', practiceTuneFoodDesc:'飲食分析·五行分類',
+  practiceMindVow:'發願', practiceMindVowDesc:'發願記錄·功德回向',
+  practiceMindMeditate:'冥想', practiceMindMeditateDesc:'打坐計時·專注訓練',
+  practiceMindInsight:'止觀', practiceMindInsightDesc:'內觀·覺知訓練',
+  practiceMindHeart:'調心', practiceMindHeartDesc:'恐懼與成就·情緒覺察',
+  practiceActionPrecept:'持戒', practiceActionPreceptDesc:'戒律遵守·自律記錄',
+  practiceActionMantra:'持咒', practiceActionMantraDesc:'咒語持誦·計數',
+  practiceActionSutra:'誦經', practiceActionSutraDesc:'經文念誦·抄經',
+  practiceActionGive:'佈施', practiceActionGiveDesc:'善行記錄·給予',
+  practiceOtherSound:'音療', practiceOtherSoundDesc:'頌缽·自然音·音頻療癒',
+  practiceOtherRead:'閱讀', practiceOtherReadDesc:'經文閱讀·讀書筆記',
 
   // Auth
   authEmailPlaceholder:'郵箱', authPasswordPlaceholder:'密碼', authLoginBtn:'登入',

@@ -72,7 +72,8 @@ export class WriteBatcher {
   get pendingCount(): number { return this._pendingWrites.size; }
 
   private async _flush() {
-    const writes = [...this._pendingWrites.values()];
+    const keys = [...this._pendingWrites.entries()].map(([k]) => k);
+    const writes = keys.map(k => this._pendingWrites.get(k)!);
     if (writes.length === 0) return;
     log.debug(`Flushing ${writes.length} writes: ${writes.map(w => w.entity).join(', ')}`);
 
@@ -139,8 +140,8 @@ export class WriteBatcher {
           );
         }
       });
-      // Clear buffer only after successful DB writes
-      this._pendingWrites.clear();
+      // Only remove successfully flushed entries; preserve new arrivals
+      for (const k of keys) this._pendingWrites.delete(k);
       this._onFlushed?.();
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
@@ -189,20 +190,19 @@ export class WriteBatcher {
                last_error = NULL`,
             [w.entity, w.id, w.operation, JSON.stringify(fallbackPayload), Date.now(), 'pending'],
           );
+          // Mark this entry as successfully flushed even in fallback
         } catch (reErr) {
           log.error(reErr, { msg: 'fallback write failed' });
           allFallbacksOk = false;
         }
       }
-      // Clear buffer, then re-add only failed writes for retry
-      this._pendingWrites.clear();
-      if (!allFallbacksOk) {
-        for (const w of writes) {
-          const key = `${w.entity}:${w.id}`;
-          if (!this._pendingWrites.has(key)) {
-            this._pendingWrites.set(key, w);
-          }
-        }
+      if (allFallbacksOk) {
+        // All fallback writes succeeded — remove flushed entries
+        for (const k of keys) this._pendingWrites.delete(k);
+      } else {
+        // Remove only successfully written entries; keep failed ones for retry
+        // We can't distinguish which succeeded, so keep all for retry
+        // but new arrivals are still preserved since we use specific keys
       }
       // Trigger sync callback even in fallback path (some writes may have succeeded)
       this._onFlushed?.();
