@@ -178,14 +178,18 @@ export async function deleteSession(recordId: string): Promise<ApiResponse<void>
 
 export async function deleteSessionsByUserHash(userHash: string): Promise<void> {
   const filter = encodeURIComponent(`user_hash = "${userHash}"`);
-  const result = await pbRequest<any>(
-    `/api/collections/${COLLECTION}/records?filter=${filter}&perPage=10`
-  );
-
-  if (result.success && result.data?.items) {
+  // Paginate until all sessions are deleted
+  let page = 1;
+  while (true) {
+    const result = await pbRequest<any>(
+      `/api/collections/${COLLECTION}/records?filter=${filter}&perPage=50&page=${page}`
+    );
+    if (!result.success || !result.data?.items?.length) break;
     for (const item of result.data.items) {
       await deleteSession(item.id);
     }
+    if (!result.data.items.length || result.data.items.length < 50) break;
+    page++;
   }
 }
 

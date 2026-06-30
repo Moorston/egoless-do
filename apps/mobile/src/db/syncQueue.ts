@@ -1,7 +1,7 @@
 // ─── Mobile sync queue (SQLite-backed) ──────────────────────────
 import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
-import { openDatabase } from './schema';
+import { openDatabase, withDbLock } from './schema';
 
 const log = createLogger('DB');
 
@@ -33,26 +33,27 @@ export async function enqueueChange(
 ): Promise<void> {
   try {
     const db = await openDatabase();
-    // Cap queue: evict oldest item if full (prevents silent data loss)
-    const count = await db.getFirstAsync<{ c: number }>('SELECT COUNT(*) as c FROM sync_queue');
-    if ((count?.c ?? 0) >= MAX_QUEUE_SIZE) {
-      await db.runAsync('DELETE FROM sync_queue WHERE id = (SELECT id FROM sync_queue ORDER BY created_at ASC LIMIT 1)');
-      log.warn(`Queue full (${MAX_QUEUE_SIZE}), evicted oldest item for ${entity}:${entityId}`);
-    }
-    // Atomic upsert without explicit transaction (avoids nested transaction errors)
-    await db.runAsync(
-      `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
-       VALUES (?, ?, ?, ?, ?, ?)
-       ON CONFLICT(entity, entity_id) DO UPDATE SET
-         operation = excluded.operation,
-         payload = excluded.payload,
-         created_at = excluded.created_at,
-         status = 'pending',
-         retry_count = 0,
-         next_retry_at = 0,
-         last_error = NULL`,
-      [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
-    );
+    // Evict + insert atomically to prevent race conditions
+    await withDbLock(async () => {
+      const count = await db.getFirstAsync<{ c: number }>('SELECT COUNT(*) as c FROM sync_queue');
+      if ((count?.c ?? 0) >= MAX_QUEUE_SIZE) {
+        await db.runAsync('DELETE FROM sync_queue WHERE id = (SELECT id FROM sync_queue ORDER BY created_at ASC LIMIT 1)');
+        log.warn(`Queue full (${MAX_QUEUE_SIZE}), evicted oldest item for ${entity}:${entityId}`);
+      }
+      await db.runAsync(
+        `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON CONFLICT(entity, entity_id) DO UPDATE SET
+           operation = excluded.operation,
+           payload = excluded.payload,
+           created_at = excluded.created_at,
+           status = 'pending',
+           retry_count = 0,
+           next_retry_at = 0,
+           last_error = NULL`,
+        [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
+      );
+    });
     // Trigger debounced sync after successful enqueue
     _onEnqueued?.();
   } catch (err) {

@@ -142,9 +142,10 @@ export class SyncEngine {
     this._sseConnected = false;
     this.stopFallbackPolling();
     this.stopNetworkRecoveryListener();
-    // Clear pending debounce timers to prevent API calls after disconnect
+    // Clear pending debounce timers and event time tracking
     for (const timer of this._realtimeDebounce.values()) clearTimeout(timer);
     this._realtimeDebounce.clear();
+    this._realtimeEventTimes.clear();
   }
 
   isRealtimeConnected(): boolean {

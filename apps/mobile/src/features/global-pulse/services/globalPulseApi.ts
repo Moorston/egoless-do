@@ -104,11 +104,12 @@ export async function getCheckins(params?: {
   const filters: string[] = [];
 
   if (params?.type) {
-    filters.push(`type = "${params.type}"`);
+    // Sanitize: strip double-quotes to prevent filter injection
+    filters.push(`type = "${String(params.type).replace(/"/g, '')}"`);
   }
 
   if (params?.since) {
-    filters.push(`created_at >= "${params.since}"`);
+    filters.push(`created_at >= "${String(params.since).replace(/"/g, '')}"`);
   }
 
   // 排除已退出的用户
@@ -139,10 +140,10 @@ export async function getCheckins(params?: {
       ...item,
       checkin_id: item.id || item.checkin_id,
       nickname: item.nickname || '',
-      lat: Number(item.lat),
-      lng: Number(item.lng),
-      streak: Number(item.streak),
-      total_days: Number(item.total_days),
+      lat: Number(item.lat) || 0,
+      lng: Number(item.lng) || 0,
+      streak: Number(item.streak) || 0,
+      total_days: Number(item.total_days) || 0,
     }));
     return {
       success: true,

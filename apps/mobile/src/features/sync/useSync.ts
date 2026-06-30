@@ -29,7 +29,6 @@ export function useSync() {
 
   // Kick out handlers
   const handleSyncAndLogout = useCallback(async () => {
-    setKickOutVisible(false);
     const auth = useAppStore.getState().auth;
     if (auth.token) {
       try {
@@ -42,9 +41,11 @@ export function useSync() {
         await runSync(); // Push pending data with fresh token
       } catch {
         log.error('Sync before logout failed, staying logged in');
+        setKickOutVisible(true); // Re-show dialog on failure
         return;
       }
     }
+    setKickOutVisible(false);
     useAppStore.getState().logout();
   }, []);
 
