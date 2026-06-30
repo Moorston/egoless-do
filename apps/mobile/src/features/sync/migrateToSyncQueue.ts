@@ -216,16 +216,29 @@ export async function migrateToSyncQueue(): Promise<number> {
     const rows = await db.getAllAsync<Record<string, unknown>>(
       `SELECT * FROM ${table}`
     );
-    for (const row of rows) {
-      const id = row[pk] as string;
-      if (!id) continue;
-      const isDeleted = (row.deleted as number) === 1;
-      const operation = isDeleted ? 'delete' : 'upsert';
-      const payload = toPayload(row);
-      if (isDeleted) payload.deleted = true;
-      await enqueueChange(entity, id, operation, payload);
-      count++;
-    }
+    if (rows.length === 0) continue;
+    // Batch all inserts for this entity into a single lock acquisition
+    const { withDbLock } = await import('../../db/schema');
+    await withDbLock(async () => {
+      for (const row of rows) {
+        const id = row[pk] as string;
+        if (!id) continue;
+        const isDeleted = (row.deleted as number) === 1;
+        const operation = isDeleted ? 'delete' : 'upsert';
+        const payload = toPayload(row);
+        if (isDeleted) payload.deleted = true;
+        await db.runAsync(
+          `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
+           VALUES (?, ?, ?, ?, ?, ?)
+           ON CONFLICT(entity, entity_id) DO UPDATE SET
+             operation = excluded.operation, payload = excluded.payload,
+             created_at = excluded.created_at, status = 'pending',
+             retry_count = 0, next_retry_at = 0, last_error = NULL`,
+          [entity, id, operation, JSON.stringify(payload), Date.now(), 'pending'],
+        );
+        count++;
+      }
+    });
   }
 
   // Mark migration complete
