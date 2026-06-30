@@ -64,6 +64,9 @@ const _serverPayloadToRowFns = Object.fromEntries(
   (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, buildServerPayloadToRow(SCHEMAS[k])])
 ) as Record<string, (r: Record<string, unknown>) => Record<string, unknown> | null>;
 
+// Shared table list for hardReset and purgeDeletedRecords
+const ALL_ENTITY_TABLES = Object.values(ENTITY_CONFIG).map(c => c.table);
+
 export interface SyncMetric {
   timestamp: number;
   durationMs: number;
@@ -342,8 +345,7 @@ export class SyncEngine {
       await setState(db, 'lastSyncAt', '0');
       await db.runAsync('DELETE FROM sync_queue');
       await db.runAsync('DELETE FROM sync_metadata');
-      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews'];
-      for (const table of new Set(tables)) {
+      for (const table of ALL_ENTITY_TABLES) {
         await db.runAsync(`DELETE FROM ${table}`);
       }
       await db.runAsync("DELETE FROM app_state WHERE key IN ('initialSyncDone', 'initialSyncPhase')");
