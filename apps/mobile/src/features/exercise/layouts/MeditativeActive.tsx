@@ -43,6 +43,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
       <View style={{ paddingHorizontal: 16 }}>
         <MeditationMusicBar
           track={musicTrack} isActive isPlaying={musicIsPlaying} primaryColor={COLORS.GREEN}
+          onPress={onMusicPressTrackName} onTogglePlay={onMusicTogglePlay}
         />
       </View>
 

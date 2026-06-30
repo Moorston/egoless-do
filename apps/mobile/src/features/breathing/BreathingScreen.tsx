@@ -9,7 +9,7 @@ import { BREATHING_PRESETS, cycleDuration, phaseLabelKey, getDescKey, getTipsKey
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Wind, Play, Pause, Square, ChevronRight, X, Check, Volume2, VolumeX } from 'lucide-react-native';
-import { BreathAudioEngine } from './BreathAudioEngine';
+import { useBreathAudio } from './useBreathAudio';
 
 const log = createLogger('Breathing');
 const GUIDE_STYLE_KEY = 'breathing_guide_style';
@@ -28,9 +28,10 @@ export default function BreathingScreen() {
   const [selectedPreset, setSelectedPreset] = useState<BreathingPreset | null>(null);
   const [cycles, setCycles] = useState(8);
 
-  // Audio options
+  // Audio
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [cueEnabled, setCueEnabled] = useState(true);
+  const { playPhaseSound, speakCount, speakPhase, resetCount } = useBreathAudio({ cueEnabled, voiceEnabled });
 
   // Breathing state (driven by rAF + shared clock)
   const [currentCycle, setCurrentCycle] = useState(0);
@@ -41,7 +42,6 @@ export default function BreathingScreen() {
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef(0);
   const pausedElapsedRef = useRef(0);
-  const audioEngineRef = useRef<BreathAudioEngine | null>(null);
   const lastPhaseIdxRef = useRef(-1);
   const lastSecRef = useRef(-1);
 
@@ -121,22 +121,19 @@ export default function BreathingScreen() {
     // Audio: phase transition
     if (phaseIdx !== lastPhaseIdxRef.current) {
       lastPhaseIdxRef.current = phaseIdx;
-      audioEngineRef.current?.resetCount();
-      audioEngineRef.current?.playPhaseSound();
-      audioEngineRef.current?.speakPhase(curPhase.type);
-      // Duck background briefly
-      audioEngineRef.current?.duckBackground();
-      setTimeout(() => audioEngineRef.current?.unduckBackground(), 800);
+      resetCount();
+      playPhaseSound();
+      speakPhase(curPhase.type);
     }
 
     // Audio: count per second
     if (curSec !== lastSecRef.current && curSec > 0) {
       lastSecRef.current = curSec;
-      audioEngineRef.current?.speakCount(curSec);
+      speakCount(curSec);
     }
 
     rafRef.current = requestAnimationFrame(breathLoop);
-  }, [selectedPreset, cycles]);
+  }, [selectedPreset, cycles, playPhaseSound, speakPhase, speakCount, resetCount]);
 
   // Pause/resume handling
   const pauseStartRef = useRef(0);
@@ -159,7 +156,6 @@ export default function BreathingScreen() {
   useEffect(() => {
     return () => {
       if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-      audioEngineRef.current?.destroy();
     };
   }, []);
 
@@ -170,11 +166,6 @@ export default function BreathingScreen() {
   }, []);
 
   const handleBeginBreathing = useCallback(() => {
-    // iOS requirement: init audio in synchronous user gesture handler
-    const engine = new BreathAudioEngine();
-    audioEngineRef.current = engine;
-    engine.init({ voiceEnabled, cueEnabled }).catch(e => log.warn('Audio init failed', e));
-
     // Reset state
     setCurrentCycle(0);
     setCurrentPhaseIdx(0);
@@ -189,7 +180,7 @@ export default function BreathingScreen() {
     // Start rAF loop (single clock source)
     startTimeRef.current = Date.now();
     rafRef.current = requestAnimationFrame(breathLoop);
-  }, [voiceEnabled, cueEnabled, breathLoop]);
+  }, [breathLoop]);
 
   const handleTogglePause = useCallback(() => {
     setIsPaused(p => !p);
@@ -197,8 +188,6 @@ export default function BreathingScreen() {
 
   const handleStop = useCallback(() => {
     if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-    audioEngineRef.current?.destroy();
-    audioEngineRef.current = null;
     setPage('select');
   }, []);
 
@@ -207,8 +196,6 @@ export default function BreathingScreen() {
   }, []);
 
   const handleFinish = useCallback(() => {
-    audioEngineRef.current?.destroy();
-    audioEngineRef.current = null;
     setPage('select');
     setSelectedPreset(null);
   }, []);

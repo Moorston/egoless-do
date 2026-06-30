@@ -5,7 +5,7 @@
 // ── After password login: set epoch in user_profiles ──────────────
 // We use afterAuthRequest (not before) to avoid $app.save() breaking PB's auth flow.
 // The epoch is written to the profile so the next refresh can read and embed it.
-onRecordAfterAuthWithPasswordRequest(function(e) {
+onRecordAuthWithPasswordRequest(function(e) {
   try {
     var userId = e.record.id;
     var collection = $app.findCollectionByNameOrId("user_profiles");

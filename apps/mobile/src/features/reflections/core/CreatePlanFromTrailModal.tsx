@@ -56,16 +56,15 @@ export function CreatePlanFromTrailModal({
   });
 
   useEffect(() => {
-    if (visible && insightCache?.summary && !autoFilled.current) {
-      setForm(f => ({ ...f, name: insightCache.summary, startDate: defaultStart, endDate: defaultEnd }));
-      autoFilled.current = true;
+    if (visible) {
+      setForm(f => ({ ...f, startDate: defaultStart, endDate: defaultEnd }));
     }
     if (!visible) {
       autoFilled.current = false;
       setFormErrors({});
       setSelectedSuggestions([]);
     }
-  }, [visible, insightCache, defaultStart, defaultEnd]);
+  }, [visible, defaultStart, defaultEnd]);
 
   const suggestions = useMemo(() => {
     return insightCache?.suggestions ?? [];

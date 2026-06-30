@@ -201,17 +201,10 @@ function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: MedHistoryEnt
   const startEdit = () => { setNoteText(entry.note ?? ''); setEditingNote(true); };
   const saveNote = () => {
     const updated = { ...entry, note: noteText, updatedAt: Date.now() };
-    useAppStore.getState().medHistory;
-    // Persist via store
-    const store = useAppStore.getState();
-    const newHist = (store.medHistory ?? []).map(e => e.date === entry.date ? updated : e);
-    useAppStore.setState({ medHistory: newHist });
-    import('../../store/storageAdapter').then(({ flushWrites }) => {
-      import('../../store/useAppStore').then(({ useAppStore: s }) => {
-        const a = (s.getState() as any)._adapter;
-        if (a) a.persistChange('meditation', entry.date, updated).catch(() => {});
-      });
-    });
+    const newHist = (useAppStore.getState().medHistory ?? []).map(e => e.date === entry.date ? updated : e);
+    const newTotal = newHist.filter(e => !e.deleted).reduce((s, e) => s + (e.durMin || 0), 0);
+    useAppStore.setState({ medHistory: newHist, totalMedMinutes: newTotal });
+    import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
     setEditingNote(false);
   };
 
@@ -310,7 +303,7 @@ export default function MedHistoryPage() {
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有冥想记录</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次静坐都是送给自己的礼物</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，给自己几分钟安静的时光</Text>
-            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Meditation' } as never)} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+            <TouchableOpacity onPress={() => (nav as any).navigate('MainTabs', { screen: 'Meditation' })} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次冥想</Text>
             </TouchableOpacity>
           </View>
