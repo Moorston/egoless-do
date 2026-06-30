@@ -14,4 +14,5 @@ export * from './trail-note';
 export * from './reflection-link';
 export * from './review';
 export * from './music';
+export * from './body';
 export * from './app';

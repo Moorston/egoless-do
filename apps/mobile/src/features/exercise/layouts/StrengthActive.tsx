@@ -58,7 +58,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
       <View style={{ paddingHorizontal: 16 }}>
         <MeditationMusicBar
           track={musicTrack} isActive isPlaying={musicIsPlaying} primaryColor={COLORS.ORANGE}
-          onPress={onMusicPressTrackName} onTogglePlay={onMusicTogglePlay}
+          loop={musicLoop} onPress={onMusicPressTrackName} onTogglePlay={onMusicTogglePlay} onToggleLoop={onMusicToggleLoop}
         />
       </View>
 

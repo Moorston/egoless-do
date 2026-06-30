@@ -79,9 +79,13 @@ export interface ExercisePageProps {
   // Store
   exerciseLog: ExerciseEntry[];
 
-  // Music (optional — used by PrepPage for track selection)
+  // Music (optional — used by PrepPage for track selection, PausedPage/CountdownPage for playback)
   musicTrack?: import('@egoless-do/core').MusicTrack | null;
   onPressMusic?: () => void;
+  musicIsPlaying?: boolean;
+  musicLoop?: boolean;
+  onMusicTogglePlay?: () => void;
+  onMusicToggleLoop?: () => void;
 
   // Theme & i18n
   TH: Theme;

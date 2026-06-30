@@ -647,6 +647,36 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     },
     fields: [],
   },
+
+  bodyGoal: {
+    sqlite: { table: 'body_goals', pk: 'id' },
+    pocketbase: { collection: 'body_goals', serverIdField: 'goal_id' },
+    fields: [
+      { entity: 'id',           col: 'id',            server: 'id',           fallback: null },
+      { entity: 'targetWeight', col: 'target_weight',  server: 'targetWeight', type: 'num', optional: true },
+      { entity: 'targetBodyFat',col: 'target_body_fat',server: 'targetBodyFat',type: 'num', optional: true },
+      { entity: 'targetDate',   col: 'target_date',    server: 'targetDate',   fallback: '', optional: true },
+      { entity: 'strategy',     col: 'strategy',       server: 'strategy',     fallback: '', optional: true },
+      { entity: 'note',         col: 'note',           server: 'note',         fallback: '', optional: true },
+      { entity: 'updatedAt',    col: 'updated_at',     server: 'updatedAt',    fallback: () => Date.now() },
+      { entity: 'deleted',      col: 'deleted',        type: 'bool' },
+    ],
+  },
+
+  bodyPlan: {
+    sqlite: { table: 'body_plans', pk: 'id' },
+    pocketbase: { collection: 'body_plans', serverIdField: 'plan_id' },
+    fields: [
+      { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
+      { entity: 'goalId',    col: 'goal_id',    server: 'goalId',    fallback: '', optional: true },
+      { entity: 'weekday',   col: 'weekday',    server: 'weekday',   type: 'num' },
+      { entity: 'part',      col: 'part',       server: 'part',      fallback: '' },
+      { entity: 'sportKey',  col: 'sport_key',  server: 'sportKey',  fallback: '', optional: true },
+      { entity: 'note',      col: 'note',       server: 'note',      fallback: '', optional: true },
+      { entity: 'updatedAt', col: 'updated_at', server: 'updatedAt', fallback: () => Date.now() },
+      { entity: 'deleted',   col: 'deleted',    type: 'bool' },
+    ],
+  },
 };
 
 // ── Derived exports (replace standalone declarations) ───────────

@@ -25,6 +25,8 @@ import MeditationScreen from '../features/meditation/MeditationScreen';
 import PracticeScreen   from '../features/practice/PracticeScreen';
 import ExerciseScreen   from '../features/exercise/ExerciseScreen';
 import BreathingScreen  from '../features/breathing/BreathingScreen';
+import SleepScreen      from '../features/sleep/SleepScreen';
+import BodyScreen       from '../features/practice/BodyScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
 
 // Stack screens — reflections (via barrel exports)
@@ -238,6 +240,8 @@ function MainTabs() {
       <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title: t('navTabSettings', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title: t('navTabMeditation', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Breathing"   component={BreathingScreen}   options={{ title: '调息', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Sleep"       component={SleepScreen}       options={{ title: '调眠', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Body"        component={BodyScreen}        options={{ title: '调身', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />

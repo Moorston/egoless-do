@@ -46,6 +46,8 @@ export type MainTabParamList = {
   Practice: undefined;
   Meditation: undefined;
   Breathing: undefined;
+  Sleep: undefined;
+  Body: undefined;
   Exercise: undefined;
   Settings: undefined;
   Reflections: { showNew?: boolean; trailId?: string } | undefined;

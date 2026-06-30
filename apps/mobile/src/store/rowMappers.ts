@@ -93,3 +93,11 @@ export function rowToAIConfig(r: Record<string, unknown>): { mode: AIMode; model
 export function rowToCheckinReview(r: Record<string, unknown>): CheckinReview {
   return rowToEntityMap.checkinReview(r) as unknown as CheckinReview;
 }
+
+export function rowToBodyGoal(r: Record<string, unknown>): Record<string, unknown> {
+  return rowToEntityMap.bodyGoal(r);
+}
+
+export function rowToBodyPlan(r: Record<string, unknown>): Record<string, unknown> {
+  return rowToEntityMap.bodyPlan(r);
+}

@@ -760,6 +760,24 @@ export const zhHant: I18nKeys = {
   breathCoherentTipsSci:'將注意力輕柔地放在心輪區域。用鼻呼吸，吸氣與呼氣各 5 秒，保持節奏平穩。',
   breathCoherentTipsSpr:'意守心間，鼻息自然。吸五秒，閉二秒，呼五秒，閉二秒。如環無端，周而復始。',
 
+  // ── 調眠 ──
+  sleepTitle:'調眠', sleepBarrier:'關屏結界', sleepBarrierActive:'結界進行中',
+  sleepBarrierComplete:'儀軌完成', sleepBarrierAway:'你已離開結界',
+  sleepRitual:'眠前儀軌', sleepStep1:'選擇修行', sleepStep2:'感恩三記', sleepStep3:'晨醒意識錨',
+  sleepChooseBreath:'呼吸', sleepChooseMeditate:'冥想',
+  sleepGratitude:'寫下三件今天值得感謝的事',
+  sleepGratitudePlaceholder:'感謝...',
+  sleepMorningThought:'此刻你的第一念是什麼？',
+  sleepMorningPlaceholder:'記錄你的清晨感悟...',
+  sleepReport:'睡眠報告', sleepDuration:'睡眠時長', sleepQuality:'睡眠品質',
+  sleepAwayTime:'離開手機', sleepCompleted:'完成',
+  sleepBodyClock:'子午陰陽鐘', sleepCurrentPeriod:'當前時辰',
+  sleepAdvice:'建議', sleepTarget:'睡眠目標',
+  sleepBedtime:'就寢時間', sleepWakeTime:'起床時間',
+  sleepWeekAvg:'本週平均', sleepDebt:'睡眠債務',
+  sleepReminder:'昨晚眠前儀軌', sleepBarrierUsage:'結界期間離開手機',
+  sleepMinutes:'分鐘',
+
   // Auth
   authEmailPlaceholder:'郵箱', authPasswordPlaceholder:'密碼', authLoginBtn:'登入',
   authLoginLoading:'登入中...', authForgotPassword:'忘記密碼？',

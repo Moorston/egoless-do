@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
-import { Play, Pause, Music } from 'lucide-react-native';
+import { Play, Pause } from 'lucide-react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_TITLE, fmt, getMinDuration } from '@egoless-do/core';
 import type { ExercisePageProps } from './types';
+import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function PausedPage(props: ExercisePageProps) {
   const {
     sportName, sportType, sec, holdAnim, scaleAnim, pulseAnim, isGpsSport, distKm, sets, currentSetReps,
-    selectedSound, cycleSound, handleContinue, handleHoldEnd,
+    musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onPressMusic,
+    handleContinue, handleHoldEnd,
     setPage, onGoBack, T,
   } = props;
 
@@ -81,12 +83,23 @@ export default function PausedPage(props: ExercisePageProps) {
       {/* Zone 1: Top bar */}
       <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('exercisePaused')}</Text>
-        <TouchableOpacity onPress={cycleSound}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,.08)' }}>
-          <Music size={16} color={selectedSound !== '无' ? COLORS.ORANGE : 'rgba(255,255,255,.4)'} />
-          <Text style={{ fontSize: FONT_SUB, color: selectedSound !== '无' ? COLORS.ORANGE : 'rgba(255,255,255,.4)' }}>{selectedSound}</Text>
-        </TouchableOpacity>
       </View>
+
+      {/* Music bar */}
+      {musicTrack && (
+        <View style={{ paddingHorizontal: 20, marginBottom: 8 }}>
+          <MeditationMusicBar
+            track={musicTrack}
+            isActive
+            isPlaying={musicIsPlaying ?? false}
+            primaryColor={COLORS.ORANGE}
+            loop={musicLoop}
+            onTogglePlay={onMusicTogglePlay}
+            onToggleLoop={onMusicToggleLoop}
+            onPress={onPressMusic}
+          />
+        </View>
+      )}
 
       {/* Zone 2: Main content */}
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}>

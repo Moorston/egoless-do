@@ -609,6 +609,20 @@ export interface I18nKeys {
   breath478DescSci: string; breath478DescSpr: string; breath478TipsSci: string; breath478TipsSpr: string;
   breathCoherentName: string; breathCoherentEn: string; breathCoherentRatio: string;
   breathCoherentDescSci: string; breathCoherentDescSpr: string; breathCoherentTipsSci: string; breathCoherentTipsSpr: string;
+  sleepTitle: string; sleepBarrier: string; sleepBarrierActive: string;
+  sleepBarrierComplete: string; sleepBarrierAway: string;
+  sleepRitual: string; sleepStep1: string; sleepStep2: string; sleepStep3: string;
+  sleepChooseBreath: string; sleepChooseMeditate: string;
+  sleepGratitude: string; sleepGratitudePlaceholder: string;
+  sleepMorningThought: string; sleepMorningPlaceholder: string;
+  sleepReport: string; sleepDuration: string; sleepQuality: string;
+  sleepAwayTime: string; sleepCompleted: string;
+  sleepBodyClock: string; sleepCurrentPeriod: string;
+  sleepAdvice: string; sleepTarget: string;
+  sleepBedtime: string; sleepWakeTime: string;
+  sleepWeekAvg: string; sleepDebt: string;
+  sleepReminder: string; sleepBarrierUsage: string;
+  sleepMinutes: string;
 
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;

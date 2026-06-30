@@ -29,6 +29,9 @@ export interface UserProfile {
   musicUserTracks?: Array<{ id: string; name: string; nameEn: string; category: string }>;
   musicVolume?: number;
   musicPlayMode?: string;
+  bodyFat?: number;
+  selfAssessment?: string;
+  bodyTags?: string[];
   updatedAt?: number;
 }
 

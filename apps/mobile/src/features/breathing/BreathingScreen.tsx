@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Animated, Easing, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Animated, Easing, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme, useT } from '../../components/UI';
+import { useAppStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle, BreathPhaseType } from '@egoless-do/core';
 import { BREATHING_PRESETS, cycleDuration, phaseLabelKey, getDescKey, getTipsKey } from '@egoless-do/core';
@@ -22,6 +23,7 @@ export default function BreathingScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
+  const store = useAppStore();
 
   const [guideStyle, setGuideStyle] = useState<GuideStyle>('scientific');
   const [page, setPage] = useState<Page>('select');
@@ -39,13 +41,16 @@ export default function BreathingScreen() {
   const [phaseSec, setPhaseSec] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [totalElapsed, setTotalElapsed] = useState(0);
+  const [reflection, setReflection] = useState('');
+  const [saving, setSaving] = useState(false);
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef(0);
   const pausedElapsedRef = useRef(0);
   const lastPhaseIdxRef = useRef(-1);
   const lastSecRef = useRef(-1);
 
-  // Long-press-to-end animation (same pattern as exercise page)
+  // Long-press tracking
+  const holdCompletedRef = useRef(false);
   const holdAnim = useRef(new Animated.Value(0)).current;
   const holdScale = useRef(new Animated.Value(1)).current;
   const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -188,38 +193,41 @@ export default function BreathingScreen() {
   }, [breathLoop]);
 
   const handleTogglePause = useCallback(() => {
+    // Don't toggle if long press just completed
+    if (holdCompletedRef.current) { holdCompletedRef.current = false; return; }
     setIsPaused(p => !p);
   }, []);
 
-  // Long press start — animate ring fill over 3s
+  // Long press start — animate ring fill over 3s (only when paused)
   const handleHoldStart = useCallback(() => {
-    if (!isPaused) return; // Only allow hold-to-end when paused
+    if (!isPaused) return;
+    holdCompletedRef.current = false;
     if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     holdAnim.setValue(0);
     holdAnim.removeAllListeners();
 
-    Animated.spring(holdScale, { toValue: 1.15, damping: 8, stiffness: 200, useNativeDriver: true }).start();
+    Animated.spring(holdScale, { toValue: 1.1, damping: 8, stiffness: 200, useNativeDriver: true }).start();
 
-    const anim = Animated.timing(holdAnim, {
-      toValue: 1, duration: 3000, easing: Easing.linear, useNativeDriver: false,
-    });
     holdAnim.addListener(({ value }) => {
       if (value >= 1) {
         holdAnim.removeAllListeners();
-        Animated.spring(holdScale, { toValue: 1, damping: 10, useNativeDriver: true }).start();
+        holdCompletedRef.current = true;
         holdTimeoutRef.current = setTimeout(() => {
           if (holdTimeoutRef.current !== null) {
             if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
             setPage('postDistress');
           }
-        }, 200);
+        }, 100);
       }
     });
-    anim.start();
+    Animated.timing(holdAnim, {
+      toValue: 1, duration: 3000, easing: Easing.linear, useNativeDriver: false,
+    }).start();
   }, [isPaused, holdAnim, holdScale]);
 
   // Long press end — cancel if released early
   const handleHoldEnd = useCallback(() => {
+    if (holdCompletedRef.current) return; // Already completed, don't cancel
     if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     holdAnim.removeAllListeners();
     Animated.spring(holdScale, { toValue: 1, damping: 10, useNativeDriver: true }).start();
@@ -228,14 +236,26 @@ export default function BreathingScreen() {
     });
   }, [holdAnim, holdScale]);
 
-  const handlePostDistressSubmit = useCallback(() => {
-    setPage('report');
-  }, []);
-
   const handleFinish = useCallback(() => {
+    setReflection('');
+    setSaving(false);
     setPage('select');
     setSelectedPreset(null);
   }, []);
+
+  const handleSave = useCallback(async () => {
+    setSaving(true);
+    try {
+      store.addMedMinutes(Math.round(totalElapsed / 60));
+      if (reflection.trim()) {
+        store.addReflection({ content: reflection.trim(), tags: ['调息'], mood: '' });
+      }
+    } catch (e) {
+      log.warn('Save breathing record failed', e);
+    }
+    setSaving(false);
+    handleFinish();
+  }, [reflection, totalElapsed, handleFinish]);
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
@@ -450,16 +470,28 @@ export default function BreathingScreen() {
           <Text style={[styles.timeText, { color: TH.sub }]}>{formatTime(totalElapsed)}</Text>
         </View>
 
-        {/* Controls — single pause button, long-press to end (same as exercise) */}
+        {/* Controls — single pause button with ring progress, long-press to end */}
         <View style={styles.activeControls}>
           <Animated.View style={{ transform: [{ scale: holdScale }] }}>
             <TouchableOpacity
-              style={[styles.pauseBtn, { backgroundColor: isPaused ? '#fff' : 'rgba(255,255,255,0.2)' }]}
+              style={[styles.pauseBtn, { backgroundColor: isPaused ? '#EF4444' : TH.primary }]}
               onPress={handleTogglePause}
               onPressIn={handleHoldStart}
               onPressOut={handleHoldEnd}
             >
-              {isPaused ? <Play size={32} color="#333" /> : <Pause size={32} color="#fff" />}
+              {/* Ring progress (3s fill) */}
+              <View style={styles.ringContainer}>
+                <View style={[styles.ringBg, { borderColor: `${TH.primary}40` }]} />
+                <Animated.View style={[styles.ringFill, {
+                  borderColor: '#FFD700',
+                  transform: [{ rotate: holdAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ['-90deg', '270deg'],
+                  })}],
+                  opacity: holdAnim.interpolate({ inputRange: [0, 0.01, 1], outputRange: [0, 1, 1] }),
+                }]} />
+              </View>
+              {isPaused ? <Play size={28} color="#fff" /> : <Pause size={28} color="#fff" />}
             </TouchableOpacity>
           </Animated.View>
           {isPaused && (
@@ -470,64 +502,21 @@ export default function BreathingScreen() {
     );
   }
 
-  // ── Post-Distress Assessment ──
-  if (page === 'postDistress') {
-    return (
-      <View style={{ flex: 1, backgroundColor: TH.bg }}>
-        <View style={styles.prepHeader}>
-          <Text style={[styles.prepTitle, { color: TH.text }]}>{T('breathReport')}</Text>
-          <TouchableOpacity onPress={handleFinish}>
-            <X size={22} color={TH.sub} />
-          </TouchableOpacity>
-        </View>
-        <View style={{ flex: 1, justifyContent: 'center', padding: 24 }}>
-          <Text style={[styles.assessmentTitle, { color: TH.text }]}>{T('breathPostDistress')}</Text>
-          <View style={styles.distressRow}>
-            <Text style={{ color: TH.sub }}>😌</Text>
-            <View style={{ flex: 1, marginHorizontal: 12 }}>
-              <Text style={[styles.distressValue, { color: TH.primary }]}>{postDistress}</Text>
-            </View>
-            <Text style={{ color: TH.sub }}>😰</Text>
-          </View>
-          <View style={styles.distressButtons}>
-            {[0,1,2,3,4,5,6,7,8,9,10].map(n => (
-              <TouchableOpacity
-                key={n}
-                style={[styles.distressBtn, postDistress === n && { backgroundColor: TH.primary }]}
-                onPress={() => setPostDistress(n)}
-              >
-                <Text style={[styles.distressBtnText, { color: postDistress === n ? '#fff' : TH.sub }]}>{n}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <TouchableOpacity
-            style={[styles.startBtn, { backgroundColor: TH.primary, marginTop: 24 }]}
-            onPress={handlePostDistressSubmit}
-          >
-            <Check size={20} color="#fff" />
-            <Text style={styles.startBtnText}>{T('commonDone')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
-  // ── Report Page ──
-  if (page === 'report' && selectedPreset) {
+  // ── Record Save Page (postDistress + report + reflection) ──
+  if ((page === 'postDistress' || page === 'report') && selectedPreset) {
     const distressChange = preDistress - postDistress;
     const distressPercent = preDistress > 0 ? Math.round((distressChange / preDistress) * 100) : 0;
 
     return (
-      <View style={{ flex: 1, backgroundColor: TH.bg }}>
+      <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
         <View style={styles.prepHeader}>
           <Text style={[styles.prepTitle, { color: TH.text }]}>{T('breathReport')}</Text>
           <TouchableOpacity onPress={handleFinish}>
             <X size={22} color={TH.sub} />
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 1, justifyContent: 'center', padding: 24 }}>
-          <Text style={[styles.reportTitle, { color: TH.text }]}>{T('breathReport')}</Text>
-
+        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+          {/* Session summary */}
           <View style={[styles.reportCard, { borderColor: `${TH.primary}20` }]}>
             <Text style={[styles.reportName, { color: TH.primary }]}>{T(selectedPreset.nameKey)}</Text>
             <View style={styles.reportRow}>
@@ -538,7 +527,31 @@ export default function BreathingScreen() {
               <Text style={[styles.reportLabel, { color: TH.sub }]}>{T('breathDuration')}</Text>
               <Text style={[styles.reportValue, { color: TH.text }]}>{formatTime(totalElapsed)}</Text>
             </View>
-            <View style={styles.reportRow}>
+          </View>
+
+          {/* Post-distress assessment */}
+          <View style={[styles.infoCard, { borderColor: `${TH.primary}20` }]}>
+            <Text style={[styles.infoTitle, { color: TH.primary }]}>{T('breathPostDistress')}</Text>
+            <View style={styles.distressRow}>
+              <Text style={{ color: TH.sub }}>😌</Text>
+              <View style={{ flex: 1, marginHorizontal: 12 }}>
+                <Text style={[styles.distressValue, { color: TH.primary }]}>{postDistress}</Text>
+              </View>
+              <Text style={{ color: TH.sub }}>😰</Text>
+            </View>
+            <View style={styles.distressButtons}>
+              {[0,1,2,3,4,5,6,7,8,9,10].map(n => (
+                <TouchableOpacity
+                  key={n}
+                  style={[styles.distressBtn, postDistress === n && { backgroundColor: TH.primary }]}
+                  onPress={() => setPostDistress(n)}
+                >
+                  <Text style={[styles.distressBtnText, { color: postDistress === n ? '#fff' : TH.sub }]}>{n}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            {/* Distress change */}
+            <View style={[styles.reportRow, { marginTop: 12 }]}>
               <Text style={[styles.reportLabel, { color: TH.sub }]}>{T('breathDistressChange')}</Text>
               <Text style={[styles.reportValue, { color: distressChange >= 0 ? '#10B981' : '#EF4444' }]}>
                 {preDistress} → {postDistress} ({distressChange >= 0 ? '-' : '+'}{Math.abs(distressPercent)}%)
@@ -546,14 +559,42 @@ export default function BreathingScreen() {
             </View>
           </View>
 
+          {/* Reflection input */}
+          <View style={[styles.infoCard, { borderColor: `${TH.primary}20` }]}>
+            <Text style={[styles.infoTitle, { color: TH.primary }]}>本次感念</Text>
+            <TextInput
+              value={reflection}
+              onChangeText={setReflection}
+              placeholder="记录你此刻的感悟..."
+              placeholderTextColor={TH.sub}
+              multiline
+              maxLength={500}
+              style={{
+                minHeight: 80, maxHeight: 160,
+                backgroundColor: TH.bg,
+                borderRadius: 10,
+                padding: 12,
+                color: TH.text,
+                fontSize: FONT_BODY,
+                borderWidth: 1,
+                borderColor: TH.border,
+                textAlignVertical: 'top',
+              }}
+            />
+            <Text style={{ color: TH.sub, fontSize: 11, marginTop: 4 }}>保存后自动添加 #调息 标签</Text>
+          </View>
+
+          {/* Save button */}
           <TouchableOpacity
-            style={[styles.startBtn, { backgroundColor: TH.primary, marginTop: 24 }]}
-            onPress={handleFinish}
+            style={[styles.startBtn, { backgroundColor: saving ? TH.sub : TH.primary, marginTop: 16 }]}
+            onPress={handleSave}
+            disabled={saving}
           >
-            <Text style={styles.startBtnText}>{T('commonDone')}</Text>
+            <Check size={20} color="#fff" />
+            <Text style={styles.startBtnText}>{saving ? '保存中...' : '保存记录'}</Text>
           </TouchableOpacity>
-        </View>
-      </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
@@ -768,6 +809,28 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  ringContainer: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 40,
+    overflow: 'hidden',
+  },
+  ringBg: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 40,
+    borderWidth: 3,
+  },
+  ringFill: {
+    position: 'absolute',
+    top: -3,
+    left: -3,
+    width: 86,
+    height: 86,
+    borderRadius: 43,
+    borderWidth: 3,
+    borderTopColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'transparent',
   },
   holdHint: {
     fontSize: FONT_SUB,

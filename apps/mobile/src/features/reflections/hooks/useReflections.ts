@@ -30,19 +30,21 @@ export function useReflections() {
   // Local search input with debounce
   const [searchInput, setSearchInput] = useState(filters.search);
   const debouncedSearch = useDebouncedValue(searchInput, 300);
+  const inputSourceRef = useRef<'user' | 'sync'>('sync');
 
-  // Sync debounced search back to filters
+  // Sync debounced search back to filters (only when user typed)
   useEffect(() => {
-    if (debouncedSearch !== filters.search) {
+    if (inputSourceRef.current === 'user' && debouncedSearch !== filters.search) {
       setFilters(prev => ({ ...prev, search: debouncedSearch }));
     }
-  }, [debouncedSearch, setFilters, filters.search]);
+  }, [debouncedSearch]);
 
-  // Sync filters.search to local input when filters change externally
+  // Sync filters.search to local input when filters change externally (not from user typing)
   useEffect(() => {
-    if (filters.search !== searchInput) {
+    if (inputSourceRef.current === 'sync' && filters.search !== searchInput) {
       setSearchInput(filters.search);
     }
+    inputSourceRef.current = 'sync';
   }, [filters.search]);
 
   // ── UI state (not persisted) ────────────────────────────────
@@ -249,14 +251,16 @@ export function useReflections() {
   }, [setFilters]);
 
   const clearAllFilters = useCallback(() => {
-    setFilters({ ...DEFAULT_REFLECTION_FILTERS });
+    inputSourceRef.current = 'user';
     setSearchInput('');
+    setFilters({ ...DEFAULT_REFLECTION_FILTERS });
   }, [setFilters]);
 
   const removeFilter = useCallback((key: string, value?: string) => {
     if (key === 'search') {
-      setFilters(prev => ({ ...prev, search: '' }));
+      inputSourceRef.current = 'user';
       setSearchInput('');
+      setFilters(prev => ({ ...prev, search: '' }));
     } else if (key === 'tag' && value) {
       setFilters(prev => ({ ...prev, tags: prev.tags.filter(t => t !== value), collectionId: undefined }));
     } else if (key === 'mood' && value) {
@@ -324,7 +328,7 @@ export function useReflections() {
   return {
     // Filter state
     filters, setFilters,
-    searchInput, setSearchInput,
+    searchInput, setSearchInput: (v: string) => { inputSourceRef.current = 'user'; setSearchInput(v); },
     showDeletedTags, setShowDeletedTags,
     expandedCards, showInsights, setShowInsights,
     insightsTab, setInsightsTab,

@@ -42,8 +42,8 @@ export default function PracticeScreen() {
       color: '#10B981',
       items: [
         { key: 'breath', icon: Wind, labelKey: 'practiceTuneBreath', descKey: 'practiceTuneBreathDesc', color: '#10B981', route: 'Breathing' },
-        { key: 'body', icon: Dumbbell, labelKey: 'practiceTuneBody', descKey: 'practiceTuneBodyDesc', color: '#34D399' },
-        { key: 'sleep', icon: Moon, labelKey: 'practiceTuneSleep', descKey: 'practiceTuneSleepDesc', color: '#6EE7B7' },
+        { key: 'body', icon: Dumbbell, labelKey: 'practiceTuneBody', descKey: 'practiceTuneBodyDesc', color: '#34D399', route: 'Body' },
+        { key: 'sleep', icon: Moon, labelKey: 'practiceTuneSleep', descKey: 'practiceTuneSleepDesc', color: '#6EE7B7', route: 'Sleep' },
         { key: 'food', icon: Salad, labelKey: 'practiceTuneFood', descKey: 'practiceTuneFoodDesc', color: '#A7F3D0' },
       ],
     },

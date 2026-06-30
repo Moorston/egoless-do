@@ -762,6 +762,24 @@ export const en: I18nKeys = {
   breathCoherentTipsSci:'Gently place your attention on the heart area. Breathe through the nose, 5 seconds in and 5 seconds out, maintaining a steady rhythm.',
   breathCoherentTipsSpr:'Awareness rests at the heart. Natural nasal breathing. In 5 seconds, hold 2, out 5, hold 2. Like an endless circle, cycling without end.',
 
+  // ── Sleep ──
+  sleepTitle:'Sleep', sleepBarrier:'Screen Barrier', sleepBarrierActive:'Barrier Active',
+  sleepBarrierComplete:'Ritual Complete', sleepBarrierAway:'You left the barrier',
+  sleepRitual:'Pre-Sleep Ritual', sleepStep1:'Choose Practice', sleepStep2:'Gratitude', sleepStep3:'Morning Anchor',
+  sleepChooseBreath:'Breathe', sleepChooseMeditate:'Meditate',
+  sleepGratitude:'Write three things you are grateful for today',
+  sleepGratitudePlaceholder:'I am grateful for...',
+  sleepMorningThought:'What is your first thought this morning?',
+  sleepMorningPlaceholder:'Record your morning insight...',
+  sleepReport:'Sleep Report', sleepDuration:'Duration', sleepQuality:'Quality',
+  sleepAwayTime:'Phone Away', sleepCompleted:'Completed',
+  sleepBodyClock:'Body Clock', sleepCurrentPeriod:'Current Period',
+  sleepAdvice:'Advice', sleepTarget:'Sleep Target',
+  sleepBedtime:'Bedtime', sleepWakeTime:'Wake Time',
+  sleepWeekAvg:'Weekly Avg', sleepDebt:'Sleep Debt',
+  sleepReminder:'Last Night Ritual', sleepBarrierUsage:'Phone usage during barrier',
+  sleepMinutes:'min',
+
   // Auth
   authEmailPlaceholder:'Email', authPasswordPlaceholder:'Password', authLoginBtn:'Log In',
   authLoginLoading:'Logging in...', authForgotPassword:'Forgot password?',

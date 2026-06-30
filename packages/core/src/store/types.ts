@@ -13,6 +13,8 @@ import type { CreateHabitForm } from '../business/habits';
 import type { AIMode, ModelConfig } from '../ai/types';
 import type { CreateReflectionParams } from '../business/reflections';
 import type { StopFastingOpts } from '../business/fasting';
+import type { BodySlice } from './createBodySlice';
+export type { BodySlice } from './createBodySlice';
 
 // ─── Granular slice interfaces ─────────────────────────────────
 
@@ -252,7 +254,7 @@ export interface ReflectionLinkSlice {
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -276,6 +278,8 @@ export interface SyncDataMap {
   reflectionLink: ReflectionLink;
   checkinReview: CheckinReview;
   aiConfig: { config_id: string; mode: AIMode; models: ModelConfig[]; updatedAt: number; deleted: boolean };
+  bodyGoal: import('../types').BodyGoal;
+  bodyPlan: import('../types').BodyPlan;
 }
 
 /** Type-safe storage adapter */

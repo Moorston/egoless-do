@@ -759,6 +759,31 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   } catch (e) {
     console.warn('[DB] checkin_reviews unique index migration:', e);
   }
+
+  // Ensure body_goals table exists
+  const bodyGoalsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_goals'"
+  );
+  if (!bodyGoalsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_goals (
+      id TEXT PRIMARY KEY, target_weight REAL, target_body_fat REAL,
+      target_date TEXT, strategy TEXT, note TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure body_plans table exists
+  const bodyPlansCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_plans'"
+  );
+  if (!bodyPlansCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_plans (
+      id TEXT PRIMARY KEY, goal_id TEXT, weekday INTEGER NOT NULL,
+      part TEXT NOT NULL, sport_key TEXT, note TEXT,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday)');
+  }
 }
 
 // ── Generic helpers ───────────────────────────────────────────────

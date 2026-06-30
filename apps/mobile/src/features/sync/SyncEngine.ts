@@ -19,6 +19,7 @@ import {
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
   rowToPlanItemCheckin, rowToGrace, rowToDailyCustomTodo, rowToDailyTodoHistory,
   rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
+  rowToBodyGoal, rowToBodyPlan,
 } from '../../store/rowMappers';
 import { dbGetAllFoodEntries } from '../../db/queries';
 import NetInfo from '@react-native-community/netinfo';
@@ -50,6 +51,7 @@ const ENTITY_STORE_KEY: Record<string, string> = {
   grace: 'graceHistory', dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
   thoughtTrail: 'thoughtTrails', trailNote: 'trailNotes',
   reflectionLink: 'reflectionLinks', checkinReview: 'checkinReviews',
+  bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans',
 };
 const ENTITY_COLL_MAP: Record<string, string> = {
   habits: 'habit', mind_reflections: 'reflection', fasting_sessions: 'fasting',
@@ -59,6 +61,7 @@ const ENTITY_COLL_MAP: Record<string, string> = {
   daily_custom_todos: 'dailyCustomTodo', daily_todo_history: 'dailyTodoHistory',
   grace_history: 'grace', thought_trails: 'thoughtTrail', trail_notes: 'trailNote',
   reflection_links: 'reflectionLink', ai_configs: 'aiConfig', checkin_reviews: 'checkinReview',
+  body_goals: 'bodyGoal', body_plans: 'bodyPlan',
 };
 // Validate all SCHEMAS entities are covered by ENTITY_STORE_KEY or handled specially
 const _specialEntities = new Set(['aiConfig']);
@@ -431,6 +434,7 @@ export class SyncEngine {
     dailyTodoHistory: rowToDailyTodoHistory, thoughtTrail: rowToThoughtTrail,
     trailNote: rowToTrailNote, reflectionLink: rowToReflectionLink,
     aiConfig: rowToAIConfig, checkinReview: rowToCheckinReview,
+    bodyGoal: rowToBodyGoal, bodyPlan: rowToBodyPlan,
   };
 
   private async applyEntityToTable(
@@ -990,6 +994,8 @@ export class SyncEngine {
       reflectionLink: { table: 'reflection_links', query: 'SELECT * FROM reflection_links WHERE deleted = 0', mapper: rowToReflectionLink, storeKey: 'reflectionLinks' },
       aiConfig: { table: 'ai_configs', query: "SELECT * FROM ai_configs WHERE config_id='self' AND deleted=0", mapper: rowToAIConfig, storeKey: '_aiConfig' },
       checkinReview: { table: 'checkin_reviews', query: 'SELECT * FROM checkin_reviews WHERE deleted = 0', mapper: rowToCheckinReview, storeKey: 'checkinReviews' },
+      bodyGoal: { table: 'body_goals', query: 'SELECT * FROM body_goals WHERE deleted = 0', mapper: rowToBodyGoal, storeKey: 'bodyGoals' },
+      bodyPlan: { table: 'body_plans', query: 'SELECT * FROM body_plans WHERE deleted = 0', mapper: rowToBodyPlan, storeKey: 'bodyPlans' },
     };
 
     const targets = entities ?? Object.keys(REHYDRATE_MAP);

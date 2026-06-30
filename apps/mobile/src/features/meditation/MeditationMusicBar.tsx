@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Music, ChevronRight, Waves, CloudRain, Droplets, Bell, Wind, Bird, Dumbbell } from 'lucide-react-native';
+import { Music, ChevronRight, Waves, CloudRain, Droplets, Bell, Wind, Bird, Dumbbell, Repeat, Repeat1 } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, TRACK_VISUAL } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import AnimatedMusicIcon from '../music/components/AnimatedMusicIcon';
 
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
-  Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell,
+  Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell, Repeat, Repeat1,
 };
 
 const CATEGORY_SUBTITLE: Record<string, string> = {
@@ -23,8 +23,10 @@ interface Props {
   isActive: boolean;
   isPlaying: boolean;
   primaryColor: string;
+  loop?: boolean;
   onPress?: () => void;
   onTogglePlay?: () => void;
+  onToggleLoop?: () => void;
 }
 
 function CoverIcon({ track, size = 44 }: { track: MusicTrack | null; size?: number }) {
@@ -51,7 +53,7 @@ function CoverIcon({ track, size = 44 }: { track: MusicTrack | null; size?: numb
   );
 }
 
-export default function MeditationMusicBar({ track, isActive, isPlaying, primaryColor, onPress, onTogglePlay }: Props) {
+export default function MeditationMusicBar({ track, isActive, isPlaying, primaryColor, loop, onPress, onTogglePlay, onToggleLoop }: Props) {
   const TH = useTheme();
   const T = useT();
 
@@ -64,6 +66,13 @@ export default function MeditationMusicBar({ track, isActive, isPlaying, primary
             {track?.name ?? ''}
           </Text>
         </TouchableOpacity>
+        {onToggleLoop && (
+          <TouchableOpacity onPress={onToggleLoop} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={{ width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', opacity: loop ? 1 : 0.4 }}
+          >
+            <Repeat1 size={16} color={loop ? primaryColor : '#fff'} />
+          </TouchableOpacity>
+        )}
         <TouchableOpacity onPress={onTogglePlay} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: primaryColor, alignItems: 'center', justifyContent: 'center' }}
         >

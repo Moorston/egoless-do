@@ -6,13 +6,13 @@ import { AppState } from 'react-native';
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, BodySlice,
 } from '@egoless-do/core';
 import {
   setApiBase, setPushApiBase, setSyncApiBase, DAILY_RESET_KEY, DailyResetManager,
   createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
-  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice,
+  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice, createBodySlice,
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
@@ -121,7 +121,7 @@ AppState.addEventListener('change', async (state) => {
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice;
+  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice;
 
 /** Partial store type for setState calls */
 export type PartialMobileStore = Partial<MobileStore>;
@@ -163,6 +163,7 @@ export const useAppStore = create<MobileStore>()(
       ...createReflectionLinkSlice(adapter)(...a),
       ...createAISlice(persistAIConfig)(...a),
       ...createReviewSlice(adapter, triggerAutoSync)(...a),
+      ...createBodySlice(adapter, triggerAutoSync)(...a),
     }),
     {
       name: 'egoless-do-mobile',

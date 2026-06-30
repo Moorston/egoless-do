@@ -24,3 +24,4 @@ export { createTrailNoteSlice } from './createTrailNoteSlice';
 export { createReflectionLinkSlice } from './createReflectionLinkSlice';
 export { createAISlice } from './createAISlice';
 export { createReviewSlice } from './createReviewSlice';
+export { createBodySlice } from './createBodySlice';

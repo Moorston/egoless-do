@@ -72,6 +72,7 @@ export default function SportPage() {
   const musicPause = useMusicStore(s => s.pause);
   const musicResume = useMusicStore(s => s.resume);
   const musicToggleLoop = useMusicStore(s => s.toggleLoop);
+  const musicStop = useMusicStore(s => s.stop);
   const [showMusicPicker, setShowMusicPicker] = useState(false);
 
   // ── 实时会话管理 ──
@@ -290,6 +291,7 @@ export default function SportPage() {
     if (savingRef.current) return;
     savingRef.current = true;
     try {
+      musicStop();
       cleanupSession();
       stopGpsTracking();
       const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
@@ -321,7 +323,12 @@ export default function SportPage() {
       return;
     }
     nav.goBack();
-  }, [timer.sec, sets, sportName, icon, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, store, nav]);
+  }, [timer.sec, sets, sportName, icon, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, store, nav, musicStop]);
+
+  // Stop music when entering report page (exercise ended)
+  useEffect(() => {
+    if (timer.page === 'report') musicStop();
+  }, [timer.page, musicStop]);
 
   // ── GPS Pause handler (stays inline for GPS sports) ──
   const handleGpsPause = useCallback(() => {
@@ -371,6 +378,7 @@ export default function SportPage() {
         visible={showMusicPicker}
         onClose={() => setShowMusicPicker(false)}
         primaryColor={TH.primary}
+        selectedTrackId={musicTrack?.id}
       />
       </>
     );
@@ -378,12 +386,18 @@ export default function SportPage() {
 
   // Countdown page
   if (page === 'countdown') {
-    return <CountdownPage countdown={timer.countdown} label={T('exerciseCountdown')} />;
+    return (
+      <>
+      <CountdownPage countdown={timer.countdown} label={T('exerciseCountdown')} musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop} onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()} onMusicToggleLoop={musicToggleLoop} onMusicPress={() => setShowMusicPicker(true)} />
+      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={TH.primary} selectedTrackId={musicTrack?.id} />
+      </>
+    );
   }
 
   // Paused page
   if (page === 'paused') {
     return (
+      <>
       <PausedPage
         icon={icon} sportName={sportName} sportType={sportType} experienceType={experienceType}
         bg={bg} isGpsSport={isGpsSport}
@@ -393,6 +407,7 @@ export default function SportPage() {
         breathGuideEnabled={breathGuideEnabled} setBreathGuideEnabled={setBreathGuideEnabled}
         isMeditative={isMeditative}
         selectedSound={audio.selectedSound} cycleSound={audio.cycleSound} selectSound={audio.selectSound} bgPlayer={audio.bgPlayer}
+        musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop} onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()} onMusicToggleLoop={musicToggleLoop} onPressMusic={() => setShowMusicPicker(true)}
         sets={sets.sets} currentSetReps={sets.currentSetReps} totalReps={sets.totalReps}
         distKm={distKm} calories={calories} coords={coords} initialPos={initialPos}
         amapReady={amapReady} MapView={MapView} Polyline={Polyline} mapRef={mapRef}
@@ -403,6 +418,8 @@ export default function SportPage() {
         exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
+      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={COLORS.ORANGE} selectedTrackId={musicTrack?.id} />
+      </>
     );
   }
 
@@ -436,6 +453,7 @@ export default function SportPage() {
   // GPS active page
   if (page === 'active' && isGpsSport) {
     return (
+      <>
       <View style={{ flex: 1 }}>
         <GpsActive
           MapView={MapView} Polyline={Polyline} amapReady={amapReady}
@@ -443,6 +461,10 @@ export default function SportPage() {
           mode={mode} targetProgress={actualTargets.targetProgress}
           distKm={distKm} sec={timer.sec} calories={calories}
           handlePause={handleGpsPause} T={T}
+          musicTrack={musicTrack} musicIsPlaying={musicIsPlaying} musicLoop={musicLoop}
+          onMusicTogglePlay={() => musicIsPlaying ? musicPause() : musicResume()}
+          onMusicToggleLoop={musicToggleLoop}
+          onMusicPress={() => setShowMusicPicker(true)}
         />
         <ActiveInsightBar
           type="exercise"
@@ -451,6 +473,8 @@ export default function SportPage() {
           goal={resolveGoal('exercise')}
         />
       </View>
+      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={COLORS.GREEN} selectedTrackId={musicTrack?.id} />
+      </>
     );
   }
 
@@ -483,7 +507,7 @@ export default function SportPage() {
     musicTrack, musicIsPlaying, musicLoop,
     onMusicTogglePlay: () => musicIsPlaying ? musicPause() : musicResume(),
     onMusicToggleLoop: musicToggleLoop,
-    onMusicPressTrackName: () => nav.navigate('Music'),
+    onMusicPressTrackName: () => setShowMusicPicker(true),
     T,
   };
 
@@ -505,6 +529,7 @@ export default function SportPage() {
         onInsightChange={handleInsightChange}
         goal={resolveGoal('exercise')}
       />
+      <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={TH.primary} selectedTrackId={musicTrack?.id} />
     </View>
   );
 }

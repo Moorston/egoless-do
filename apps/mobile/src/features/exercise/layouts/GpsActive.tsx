@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Pause } from 'lucide-react-native';
 import { COLORS, FONT_HERO, FONT_SUB, FONT_TITLE, formatPace } from '@egoless-do/core';
+import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import type { MusicTrack } from '@egoless-do/core';
 
 interface GpsActiveProps {
   MapView: any;
@@ -18,11 +20,18 @@ interface GpsActiveProps {
   calories: number;
   handlePause: () => void;
   T: (key: string) => string;
+  musicTrack?: MusicTrack | null;
+  musicIsPlaying?: boolean;
+  musicLoop?: boolean;
+  onMusicTogglePlay?: () => void;
+  onMusicToggleLoop?: () => void;
+  onMusicPress?: () => void;
 }
 
 export default function GpsActive({
   MapView, Polyline, amapReady, mapRef, initialPos, coords, color,
   mode, targetProgress, distKm, sec, calories, handlePause, T,
+  musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPress,
 }: GpsActiveProps) {
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
@@ -64,6 +73,20 @@ export default function GpsActive({
           style={{ width: 88, height: 88, borderRadius: 44, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
           <Pause size={36} color="#333" />
         </TouchableOpacity>
+        {musicTrack && (
+          <View style={{ marginTop: 16 }}>
+            <MeditationMusicBar
+              track={musicTrack}
+              isActive
+              isPlaying={musicIsPlaying ?? false}
+              primaryColor={COLORS.GREEN}
+              loop={musicLoop}
+              onTogglePlay={onMusicTogglePlay}
+              onToggleLoop={onMusicToggleLoop}
+              onPress={onMusicPress}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
