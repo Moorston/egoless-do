@@ -33,11 +33,11 @@ export async function enqueueChange(
 ): Promise<void> {
   try {
     const db = await openDatabase();
-    // Cap queue to prevent unbounded growth during prolonged offline periods
+    // Cap queue: evict oldest item if full (prevents silent data loss)
     const count = await db.getFirstAsync<{ c: number }>('SELECT COUNT(*) as c FROM sync_queue');
     if ((count?.c ?? 0) >= MAX_QUEUE_SIZE) {
-      log.warn(`Queue full (${MAX_QUEUE_SIZE}), dropping ${entity}:${entityId}`);
-      return;
+      await db.runAsync('DELETE FROM sync_queue WHERE id = (SELECT id FROM sync_queue ORDER BY created_at ASC LIMIT 1)');
+      log.warn(`Queue full (${MAX_QUEUE_SIZE}), evicted oldest item for ${entity}:${entityId}`);
     }
     // Atomic upsert without explicit transaction (avoids nested transaction errors)
     await db.runAsync(

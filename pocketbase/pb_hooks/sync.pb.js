@@ -167,7 +167,7 @@ routerAdd("POST", "/api/sync", function(e) {
             var idFieldPull = ENTITY_ID_FIELD_MAP[ent];
             var hasId = exported.id || exported[idFieldPull] || exported.date || exported.name;
             if (hasId) payloads.push(exported);
-          } catch (recErr) {}
+          } catch (recErr) { console.error("[sync] record error:", recErr.message || String(recErr)); }
         }
         if (payloads.length > 0) serverData[ent] = payloads;
       } catch (qErr) {}
@@ -227,7 +227,7 @@ routerAdd("GET", "/api/sync", function(e) {
             }
             var idF = ENTITY_ID_FIELD_MAP[ent];
             if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
-          } catch (recErr) {}
+          } catch (recErr) { console.error("[sync] record error:", recErr.message || String(recErr)); }
         }
         if (payloads.length > 0) data[ent] = payloads;
       } catch (qErr) {}
@@ -328,7 +328,7 @@ routerAdd("GET", "/api/sync/pull/{entity}", function(e) {
         }
         var idF = ENTITY_ID_FIELD_MAP[entity];
         if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
-      } catch (recErr) {}
+      } catch (recErr) { console.error("[sync] record error:", recErr.message || String(recErr)); }
     }
 
     return e.json(200, { data: payloads, total: allRecs.length, page: page, pageSize: pageSize, hasMore: pageRecs.length === pageSize, serverTime: Date.now() });

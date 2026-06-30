@@ -142,6 +142,9 @@ export class SyncEngine {
     this._sseConnected = false;
     this.stopFallbackPolling();
     this.stopNetworkRecoveryListener();
+    // Clear pending debounce timers to prevent API calls after disconnect
+    for (const timer of this._realtimeDebounce.values()) clearTimeout(timer);
+    this._realtimeDebounce.clear();
   }
 
   isRealtimeConnected(): boolean {
@@ -343,6 +346,9 @@ export class SyncEngine {
       }
       await db.runAsync("DELETE FROM app_state WHERE key IN ('initialSyncDone', 'initialSyncPhase')");
       await db.runAsync('DELETE FROM sync_progress');
+      // Clear AsyncStorage sync keys
+      await AsyncStorage.removeItem(DEVICE_SYNCED_KEY);
+      await AsyncStorage.removeItem(CLOCK_OFFSET_KEY);
     } catch (e) {
       log.warn(e, { phase: 'hardReset' });
     }
@@ -501,6 +507,9 @@ export class SyncEngine {
           await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
           await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=1 WHERE plan_id=?', [id]);
           await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+          // Clear orphaned references in reflections and thought trails
+          await db.runAsync('UPDATE mind_reflections SET linked_plan_item_id=NULL,updated_at=? WHERE linked_plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [Date.now(), id]);
+          await db.runAsync('UPDATE thought_trails SET linked_plan_item_ids=NULL,updated_at=? WHERE linked_plan_item_ids LIKE ?', [Date.now(), `%"${id}"%`]);
         }
       } catch (e) {
         log.error(e, { entity, phase: 'applyEntity-dead' });
@@ -620,7 +629,12 @@ export class SyncEngine {
               if (!id) continue;
               try {
                 const full = await db.getFirstAsync<Record<string, unknown>>(`SELECT * FROM ${config.table} WHERE ${config.pk}=?`, [id]);
-                if (full) await enqueueChange(entity as SyncEntity, id, 'upsert', full);
+                if (full) {
+                  // Convert snake_case SQLite row to camelCase entity for consistent server data
+                  const mapper = this._rowToEntityMap[entity];
+                  const entityData = mapper ? mapper(full) : full;
+                  await enqueueChange(entity as SyncEntity, id, 'upsert', entityData as Record<string, unknown>);
+                }
               } catch (e) {
                 log.error(e, { entity, id, phase: 'orphan-enqueue' });
               }
@@ -1040,6 +1054,10 @@ export class SyncEngine {
     await setState(db, 'initialSyncDone', 'true');
     await setState(db, 'initialSyncPhase', 'done');
     await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
+    // Update _lastSyncAt so next runSync doesn't re-pull everything
+    const now = Date.now();
+    this._lastSyncAt = now;
+    await this.saveLastSyncAt(now);
   }
 
   private async pullEntityWithRetry(entity: SyncEntity, phase: number, token: string, userId?: string): Promise<void> {

@@ -75,7 +75,7 @@ export function clearSyncTrigger(): void {
 let _migrationDone = false;
 export function resetMigrationFlag() { _migrationDone = false; _engine.setMigrationDone(false); }
 export function setMigrationDone() { _migrationDone = true; _engine.setMigrationDone(true); }
-export { _migrationDone };
+export function isMigrationDone() { return _migrationDone; }
 
 // Orphan recovery reset (for testing)
 let _orphanRecoveryDone = false;

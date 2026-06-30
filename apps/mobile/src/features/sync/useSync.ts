@@ -3,7 +3,7 @@
 // token comes from Zustand store, server changes update store.
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform, type AppStateStatus } from 'react-native';
-import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, _migrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger } from './SyncService';
+import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger } from './SyncService';
 import { migrateToSyncQueue } from './migrateToSyncQueue';
 import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
 import { getState, openDatabase } from '../../db/schema';
@@ -233,7 +233,7 @@ export function useSync() {
       syncingRef.current = true;
       try {
         // One-time migration: move old unsynced records to sync_queue
-        if (!_migrationDone) {
+        if (!isMigrationDone()) {
           await migrateToSyncQueue();
           setMigrationDone();
         }

@@ -26,6 +26,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
       var coll = ENTITY_COLL_MAP[entity];
       var idField = ENTITY_ID_FIELD_MAP[entity];
       if (!coll || !idField) { rejected.push({ entity: entity, entityId: entityId, error: "Unknown entity" }); continue; }
+      if (!isValidId(entityId)) { rejected.push({ entity: entity, entityId: entityId, error: "Invalid entityId" }); continue; }
       try {
         if (operation === "delete") {
           var delFilter = idField + " = '" + entityId + "' && user_id = '" + userId + "'";
@@ -143,7 +144,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
             }
             var idF = ENTITY_ID_FIELD_MAP[ent];
             if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
-          } catch (recErr) {}
+          } catch (recErr) { console.error("[sync] record error:", recErr.message || String(recErr)); }
         }
         if (payloads.length > 0) data[ent] = payloads;
       } catch (qErr) {}
