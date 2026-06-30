@@ -22,7 +22,7 @@ export function createFastingSlice(
       }
     },
 
-    stopFasting(opts?: StopFastingOpts) {
+    stopFasting(opts?: StopFastingOpts & { note?: string }) {
       const current = get().activeFasting;
       if (!current) return;
       const result = stopFastingSession(current, opts);

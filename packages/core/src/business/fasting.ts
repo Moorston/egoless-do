@@ -13,6 +13,7 @@ export interface StopFastingOpts {
   gender?: 'male' | 'female';
   age?: number;
   height?: number;
+  note?: string;
 }
 
 export function stopFastingSession(
@@ -32,6 +33,7 @@ export function stopFastingSession(
     ...activeFasting,
     endedAt: now,
     estimatedKcal: kcal,
+    note: opts?.note ?? activeFasting.note,
     updatedAt: now,
   };
 }

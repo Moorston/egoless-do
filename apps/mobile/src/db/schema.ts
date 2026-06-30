@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS fasting_sessions (
   ended_at       INTEGER,
   estimated_kcal INTEGER,
   insight        TEXT CHECK(length(insight) <= 20),
+  note           TEXT NOT NULL DEFAULT '',
   updated_at     INTEGER,
   deleted        INTEGER NOT NULL DEFAULT 0,
   synced         INTEGER NOT NULL DEFAULT 0
@@ -728,12 +729,18 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   if (hasInsightCheck?.sql?.includes('CHECK(length(insight)')) {
     await db.execAsync(`CREATE TABLE fasting_sessions_new (
       id TEXT PRIMARY KEY, target_hours REAL NOT NULL, started_at INTEGER NOT NULL,
-      ended_at INTEGER, estimated_kcal INTEGER, insight TEXT,
+      ended_at INTEGER, estimated_kcal INTEGER, insight TEXT, note TEXT NOT NULL DEFAULT '',
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
     await db.execAsync(`INSERT INTO fasting_sessions_new SELECT * FROM fasting_sessions`);
     await db.execAsync(`DROP TABLE fasting_sessions`);
     await db.execAsync(`ALTER TABLE fasting_sessions_new RENAME TO fasting_sessions`);
+  }
+
+  // Add note column to fasting_sessions if missing
+  const fastingCols = await db.getAllAsync<{ name: string }>("PRAGMA table_info(fasting_sessions)");
+  if (!fastingCols.some(c => c.name === 'note')) {
+    await db.execAsync("ALTER TABLE fasting_sessions ADD COLUMN note TEXT NOT NULL DEFAULT ''");
   }
 
   // Add missing indexes for frequently queried columns

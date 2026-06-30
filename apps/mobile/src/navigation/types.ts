@@ -6,6 +6,7 @@ export type RootStackParamList = {
   GlobalMap: { icon?: string; title?: string; type?: 'exercise' | 'fasting' | 'meditation' } | undefined;
   Sport: { key: string; icon: string; color: string; gps?: boolean };
   FastHistory: undefined;
+  FastCalendar: undefined;
   MedHistory: undefined;
   MedCalendar: undefined;
   FoodLog: undefined;

@@ -220,6 +220,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'endedAt',       col: 'ended_at',       server: 'endedAt',     fallback: null },
       { entity: 'estimatedKcal', col: 'estimated_kcal', server: 'estimatedKcal', fallback: null },
       { entity: 'insight',       col: 'insight',        server: 'insight',     fallback: null },
+      { entity: 'note',          col: 'note',           server: 'note',        fallback: '', optional: true },
       { entity: 'updatedAt',     col: 'updated_at',     server: 'updatedAt',   fallback: () => Date.now() },
       { entity: 'deleted',       col: 'deleted',        type: 'bool' },
     ],

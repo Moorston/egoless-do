@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Animated, Easing, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme, useT } from '../../components/UI';
@@ -8,7 +8,7 @@ import type { BreathingPreset, GuideStyle, BreathPhaseType } from '@egoless-do/c
 import { BREATHING_PRESETS, cycleDuration, phaseLabelKey, getDescKey, getTipsKey } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { Wind, Play, Pause, Square, ChevronRight, X, Check, Volume2, VolumeX } from 'lucide-react-native';
+import { Wind, Play, Pause, ChevronRight, X, Check, Volume2, VolumeX } from 'lucide-react-native';
 import { useBreathAudio } from './useBreathAudio';
 
 const log = createLogger('Breathing');
@@ -44,6 +44,11 @@ export default function BreathingScreen() {
   const pausedElapsedRef = useRef(0);
   const lastPhaseIdxRef = useRef(-1);
   const lastSecRef = useRef(-1);
+
+  // Long-press-to-end animation (same pattern as exercise page)
+  const holdAnim = useRef(new Animated.Value(0)).current;
+  const holdScale = useRef(new Animated.Value(1)).current;
+  const holdTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Distress assessment
   const [preDistress, setPreDistress] = useState(5);
@@ -126,10 +131,10 @@ export default function BreathingScreen() {
       speakPhase(curPhase.type);
     }
 
-    // Audio: count per second
+    // Audio: count per second (countdown to match display)
     if (curSec !== lastSecRef.current && curSec > 0) {
       lastSecRef.current = curSec;
-      speakCount(curSec);
+      speakCount(curPhase.durationSec - curSec);
     }
 
     rafRef.current = requestAnimationFrame(breathLoop);
@@ -186,10 +191,42 @@ export default function BreathingScreen() {
     setIsPaused(p => !p);
   }, []);
 
-  const handleStop = useCallback(() => {
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-    setPage('select');
-  }, []);
+  // Long press start — animate ring fill over 3s
+  const handleHoldStart = useCallback(() => {
+    if (!isPaused) return; // Only allow hold-to-end when paused
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
+    holdAnim.setValue(0);
+    holdAnim.removeAllListeners();
+
+    Animated.spring(holdScale, { toValue: 1.15, damping: 8, stiffness: 200, useNativeDriver: true }).start();
+
+    const anim = Animated.timing(holdAnim, {
+      toValue: 1, duration: 3000, easing: Easing.linear, useNativeDriver: false,
+    });
+    holdAnim.addListener(({ value }) => {
+      if (value >= 1) {
+        holdAnim.removeAllListeners();
+        Animated.spring(holdScale, { toValue: 1, damping: 10, useNativeDriver: true }).start();
+        holdTimeoutRef.current = setTimeout(() => {
+          if (holdTimeoutRef.current !== null) {
+            if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+            setPage('postDistress');
+          }
+        }, 200);
+      }
+    });
+    anim.start();
+  }, [isPaused, holdAnim, holdScale]);
+
+  // Long press end — cancel if released early
+  const handleHoldEnd = useCallback(() => {
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
+    holdAnim.removeAllListeners();
+    Animated.spring(holdScale, { toValue: 1, damping: 10, useNativeDriver: true }).start();
+    holdAnim.stopAnimation(() => {
+      Animated.timing(holdAnim, { toValue: 0, duration: 200, useNativeDriver: false }).start();
+    });
+  }, [holdAnim, holdScale]);
 
   const handlePostDistressSubmit = useCallback(() => {
     setPage('report');
@@ -413,14 +450,21 @@ export default function BreathingScreen() {
           <Text style={[styles.timeText, { color: TH.sub }]}>{formatTime(totalElapsed)}</Text>
         </View>
 
-        {/* Controls */}
+        {/* Controls — single pause button, long-press to end (same as exercise) */}
         <View style={styles.activeControls}>
-          <TouchableOpacity style={[styles.controlBtn, { borderColor: TH.border }]} onPress={handleTogglePause}>
-            {isPaused ? <Play size={24} color={TH.text} /> : <Pause size={24} color={TH.text} />}
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.controlBtn, { borderColor: '#EF4444' }]} onPress={handleStop}>
-            <Square size={24} color="#EF4444" />
-          </TouchableOpacity>
+          <Animated.View style={{ transform: [{ scale: holdScale }] }}>
+            <TouchableOpacity
+              style={[styles.pauseBtn, { backgroundColor: isPaused ? '#fff' : 'rgba(255,255,255,0.2)' }]}
+              onPress={handleTogglePause}
+              onPressIn={handleHoldStart}
+              onPressOut={handleHoldEnd}
+            >
+              {isPaused ? <Play size={32} color="#333" /> : <Pause size={32} color="#fff" />}
+            </TouchableOpacity>
+          </Animated.View>
+          {isPaused && (
+            <Text style={[styles.holdHint, { color: TH.sub }]}>长按 3 秒结束调息</Text>
+          )}
         </View>
       </SafeAreaView>
     );
@@ -714,18 +758,19 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   activeControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 24,
+    alignItems: 'center',
     paddingBottom: 40,
+    gap: 8,
   },
-  controlBtn: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    borderWidth: 2,
+  pauseBtn: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  holdHint: {
+    fontSize: FONT_SUB,
   },
 
   // Report

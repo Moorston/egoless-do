@@ -41,6 +41,8 @@ export default function FastingScreen() {
   const [showDur, setShowDur]   = useState(false);
   const [tmpDur, setTmpDur]     = useState(8);
   const [agreed, setAgreed]     = useState(false);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [noteText, setNoteText] = useState('');
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const bellPlayedRef = useRef(false);
   const bellPlayer = useAudioPlayer(BELL_FILE);
@@ -276,7 +278,7 @@ export default function FastingScreen() {
                 <Flame size={16} color={COLORS.ORANGE} />
                 <Text style={{ color:TH.sub, fontSize:22 }}>{Math.round(pct * 100)}%</Text>
               </View>
-              <PrimaryButton label={T('stopFasting')} onPress={() => stopFasting({ weight: userProfile?.weight ?? 70, gender: userProfile?.gender ?? 'male', age: userProfile?.age ?? 30 })} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
+              <PrimaryButton label={T('stopFasting')} onPress={() => { setNoteText(''); setShowNoteModal(true); }} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
             </>
           ) : (
             <View style={{ gap:10, width:'100%' }}>
@@ -364,6 +366,36 @@ export default function FastingScreen() {
                 disabled={!agreed}
               >
                 <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>{T('start')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Note Input Modal */}
+      <Modal visible={showNoteModal} transparent animationType="fade">
+        <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.75)', justifyContent:'center', padding:24 }}>
+          <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24 }}>
+            <Text style={{ fontSize:FONT_TITLE, fontWeight:'700', color:TH.text, textAlign:'center', marginBottom:4 }}>禁食完成 ✨</Text>
+            <Text style={{ fontSize:FONT_BODY, color:TH.sub, textAlign:'center', marginBottom:20 }}>{Math.floor(elapsed / 3600)}h {Math.floor((elapsed % 3600) / 60)}m</Text>
+            <Text style={{ fontSize:FONT_BODY, color:TH.text, fontWeight:'600', marginBottom:8 }}>想记录点什么吗？(可选)</Text>
+            <TextInput
+              style={{ backgroundColor:TH.card, borderRadius:12, padding:12, color:TH.text, fontSize:FONT_BODY, minHeight:80, maxHeight:120, textAlignVertical:'top', marginBottom:20 }}
+              multiline maxLength={500} value={noteText} onChangeText={setNoteText}
+              placeholder="写下此刻的感受..." placeholderTextColor={TH.sub}
+            />
+            <View style={{ flexDirection:'row', gap:10 }}>
+              <TouchableOpacity
+                onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: userProfile?.gender ?? 'male', age: userProfile?.age ?? 30 }); setShowNoteModal(false); }}
+                style={{ flex:1, padding:14, borderRadius:12, borderWidth:1, borderColor:TH.border, alignItems:'center' }}
+              >
+                <Text style={{ color:TH.sub, fontWeight:'600', fontSize:FONT_BODY }}>跳过</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: userProfile?.gender ?? 'male', age: userProfile?.age ?? 30, note: noteText.trim() || undefined }); setShowNoteModal(false); }}
+                style={{ flex:1, padding:14, borderRadius:12, backgroundColor:P, alignItems:'center' }}
+              >
+                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BODY }}>完成</Text>
               </TouchableOpacity>
             </View>
           </View>

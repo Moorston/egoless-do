@@ -46,7 +46,7 @@ import StatsScreen       from '../features/stats/StatsScreen';
 import GlobalPulseScreen from '../features/home/screens/GlobalPulseScreen';
 import SportPage         from '../features/exercise/SportPage';
 import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
-import FastHistoryPage   from '../features/fasting/FastHistoryPage';
+import FastHistoryPage, { FastCalendarScreen } from '../features/fasting/FastHistoryPage';
 import MedHistoryPage, { MedCalendarScreen } from '../features/meditation/MedHistoryPage';
 import FoodLogPage       from '../features/home/screens/FoodLogPage';
 import GracePage         from '../features/home/screens/GracePage';
@@ -334,6 +334,7 @@ export default function AppNavigator() {
         <Stack.Screen name="GlobalMap"    component={GlobalPulseScreen} />
         <Stack.Screen name="Sport"        component={SportPage} />
         <Stack.Screen name="FastHistory"  component={FastHistoryPage} />
+        <Stack.Screen name="FastCalendar" component={FastCalendarScreen} />
         <Stack.Screen name="MedHistory"   component={MedHistoryPage} />
         <Stack.Screen name="MedCalendar"  component={MedCalendarScreen} />
         <Stack.Screen name="FoodLog"      component={FoodLogPage} />

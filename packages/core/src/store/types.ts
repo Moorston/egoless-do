@@ -136,7 +136,7 @@ export interface FastingSlice {
   activeFasting: FastingSession | null;
   fastingHistory: FastingSession[];
   startFasting: (hours: number) => void;
-  stopFasting: (opts?: StopFastingOpts) => void;
+  stopFasting: (opts?: StopFastingOpts & { note?: string }) => void;
 }
 
 export interface PlanSlice {

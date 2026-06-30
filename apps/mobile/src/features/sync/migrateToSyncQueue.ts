@@ -59,6 +59,7 @@ export async function migrateToSyncQueue(): Promise<number> {
       toPayload: (r) => ({
         id: r.id, targetHours: r.target_hours, startedAt: r.started_at,
         endedAt: r.ended_at, estimatedKcal: r.estimated_kcal, insight: r.insight,
+        note: r.note ?? '',
         updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
       }),
     },

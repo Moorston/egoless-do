@@ -8,4 +8,5 @@ export interface FastingSession extends Syncable {
   endedAt?: number;
   estimatedKcal?: number;
   insight?: string;
+  note?: string;
 }
