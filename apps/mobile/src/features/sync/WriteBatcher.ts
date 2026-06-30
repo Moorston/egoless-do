@@ -73,7 +73,6 @@ export class WriteBatcher {
 
   private async _flush() {
     const writes = [...this._pendingWrites.values()];
-    this._pendingWrites.clear();
     if (writes.length === 0) return;
     log.debug(`Flushing ${writes.length} writes: ${writes.map(w => w.entity).join(', ')}`);
 
@@ -140,6 +139,8 @@ export class WriteBatcher {
           );
         }
       });
+      // Clear buffer only after successful DB writes
+      this._pendingWrites.clear();
       this._onFlushed?.();
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
@@ -193,7 +194,8 @@ export class WriteBatcher {
           allFallbacksOk = false;
         }
       }
-      // If the fallback also failed, re-add writes to _pendingWrites for retry
+      // Clear buffer, then re-add only failed writes for retry
+      this._pendingWrites.clear();
       if (!allFallbacksOk) {
         for (const w of writes) {
           const key = `${w.entity}:${w.id}`;

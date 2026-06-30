@@ -166,6 +166,8 @@ export async function migrateToSyncQueue(): Promise<number> {
       toPayload: (r) => ({
         id: r.id, name: r.name, description: r.description ?? '',
         reflectionIds: safeJson(r.reflection_ids),
+        noteIds: safeJson(r.note_ids),
+        linkedPlanItemIds: r.linked_plan_item_ids ? safeJson(r.linked_plan_item_ids) : undefined,
         createdAt: r.created_at, updatedAt: r.updated_at,
         deleted: (r.deleted as number) === 1,
       }),

@@ -98,6 +98,7 @@ export class SyncEngine {
   private _pendingSyncAfterInit = false;
   private _realtimeDebounce = new Map<string, ReturnType<typeof setTimeout>>();
   private _realtimeEventTimes = new Map<string, number[]>();
+  private _lastOrphanScanAt = 0;
 
   // ── Configuration ────────────────────────────────────────────────
   setTokenProvider(fn: () => string | null) { this._tokenProvider = fn; }
@@ -571,6 +572,11 @@ export class SyncEngine {
     }
     const token = this._tokenProvider?.();
     if (!token) {
+      // Prevent unbounded recursion on token refresh
+      if (this._syncing) {
+        log.warn('runSync: no token after refresh attempt, aborting');
+        return;
+      }
       log.warn('runSync: no token, attempting recovery...');
       // Try to refresh token if refreshToken is available
       try {
@@ -613,7 +619,8 @@ export class SyncEngine {
     await resetAllPendingForRetry().catch(e => log.error(e, { phase: 'resetFailed' }));
     pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
 
-    // Orphan recovery (run every sync to catch WriteBatcher failures)
+    // Orphan recovery — skip if last sync was <30s ago (orphan events are rare)
+    if (!this._lastOrphanScanAt || Date.now() - this._lastOrphanScanAt > 30_000) {
     {
       try {
         const db = await openDatabase();
@@ -647,9 +654,11 @@ export class SyncEngine {
         }
         if (total > 0) log.info(`Orphan recovery: ${total} items`);
         this._orphanRecoveryDone = true;
+        this._lastOrphanScanAt = Date.now();
       } catch (e) {
         log.error(e, { phase: 'orphan-recovery' });
       }
+    } // end orphan recovery time guard
     }
 
     try {

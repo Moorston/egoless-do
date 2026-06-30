@@ -152,7 +152,10 @@ export function useSync() {
         const updated = reflections.map(r => {
           const ids = trailMap.get(r.id) ?? [];
           const current = r.thoughtTrailIds ?? [];
-          if (ids.length === current.length && ids.every((id, i) => id === current[i])) return r;
+          // Sort both arrays for order-independent comparison
+          const sortedNew = [...ids].sort();
+          const sortedCurrent = [...current].sort();
+          if (sortedNew.length === sortedCurrent.length && sortedNew.every((id, i) => id === sortedCurrent[i])) return r;
           return { ...r, thoughtTrailIds: ids };
         });
         if (updated.some((r, i) => r !== reflections[i])) {

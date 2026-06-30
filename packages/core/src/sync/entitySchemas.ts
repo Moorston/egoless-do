@@ -616,14 +616,30 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       updated_at: r.updatedAt ?? null, deleted: 0,
     }),
     customRowToEntity: (r) => {
-      const reviewData = parseJson<Record<string, unknown>>(r.review_data, {});
+      const rd = parseJson<Record<string, unknown>>(r.review_data, {});
       return {
         id: r.id,
         userId: r.user_id ?? 'self',
         period: r.period ?? 'week',
         startDate: r.start_date,
         endDate: r.end_date,
-        ...reviewData,
+        completionRate: rd.completionRate,
+        doneDays: rd.doneDays,
+        totalDays: rd.totalDays,
+        streakDays: rd.streakDays,
+        longestStreak: rd.longestStreak,
+        incompleteReasons: rd.incompleteReasons,
+        incompleteItems: rd.incompleteItems,
+        habitProgress: rd.habitProgress,
+        planProgress: rd.planProgress,
+        metrics: rd.metrics,
+        comparison: rd.comparison,
+        aiSummary: rd.aiSummary,
+        highlights: rd.highlights,
+        improvements: rd.improvements,
+        generatedAt: rd.generatedAt,
+        aiModel: rd.aiModel,
+        lastAutoUpdateAt: rd.lastAutoUpdateAt,
         updatedAt: r.updated_at, deleted: boolRead(r.deleted),
       };
     },

@@ -1,5 +1,5 @@
 import EventSource from 'react-native-sse';
-import { SYNC_ENTITIES, createLogger } from '@egoless-do/core';
+import { SYNC_ENTITIES, createLogger, SCHEMAS } from '@egoless-do/core';
 
 const log = createLogger('Realtime');
 
@@ -175,7 +175,9 @@ export class RealtimeAgent {
   private async _subscribe() {
     if (!this._clientId) return;
     try {
-      const collections = SYNC_ENTITIES.map(e => COLLECTION_MAP[e] || (e + 's')).filter(Boolean);
+      const collections = SYNC_ENTITIES
+        .map(e => SCHEMAS[e as keyof typeof SCHEMAS]?.pocketbase?.collection)
+        .filter(Boolean);
       const formData = new FormData();
       formData.append('clientId', this._clientId);
       formData.append('subscriptions', JSON.stringify(collections));
