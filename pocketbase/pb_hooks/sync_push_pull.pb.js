@@ -10,6 +10,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;
     if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
+    if (!isValidId(userId)) return e.json(400, { code: "BAD_REQUEST", message: "Invalid userId" });
     var rawBody = info.body;
     var body = {};
     if (typeof rawBody === "string") { try { body = JSON.parse(rawBody); } catch(pb) { body = {}; } }
@@ -105,6 +106,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;
     if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
+    if (!isValidId(userId)) return e.json(400, { code: "BAD_REQUEST", message: "Invalid userId" });
     var rawBody = info.body;
     var body = {};
     if (typeof rawBody === "string") { try { body = JSON.parse(rawBody); } catch(pb) { body = {}; } }
@@ -120,7 +122,18 @@ routerAdd("POST", "/api/sync/pull", function(e) {
         if (!coll) continue;
         var f = "user_id = '" + userId + "'";
         if (since > 0) f += " && updated > '" + sinceDate + "'";
-        var recs = $app.findRecordsByFilter(coll, f, "-updated", 500);
+        var allRecs = [];
+        var offset = 0;
+        var BATCH = 500;
+        while (true) {
+          var batch = $app.findRecordsByFilter(coll, f, "-updated", BATCH, offset);
+          if (!batch || batch.length === 0) break;
+          for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]);
+          if (batch.length < BATCH) break;
+          offset += BATCH;
+          if (offset > 50000) break; // safety cap
+        }
+        var recs = allRecs;
         var payloads = [];
         for (var ri = 0; ri < recs.length; ri++) {
           try {

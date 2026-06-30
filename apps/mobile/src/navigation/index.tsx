@@ -1,18 +1,16 @@
 // ─── Navigation root ──────────────────────────────────────────────
-import React, { useRef, useEffect, useState, createContext, useContext } from 'react';
+import React, { useRef, useEffect, useState, useCallback, createContext, useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
-  View, Text, Image, TouchableOpacity, Animated, PanResponder, StyleSheet, useWindowDimensions,
-  type GestureResponderEvent,
+  View, Text, Image, TouchableOpacity, Animated, StyleSheet, useWindowDimensions,
 } from 'react-native';
 import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
-  Sparkles, Target, BarChart3, Flame, Footprints,
+  Sparkles, Target, Flame, Footprints,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { useAppStore } from '../store/useAppStore';
 import { THEMES, t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, createLogger } from '@egoless-do/core';
 import StarfieldBackground from '../components/StarfieldBackground';
@@ -26,6 +24,7 @@ import FastingScreen    from '../features/fasting/FastingScreen';
 import MeditationScreen from '../features/meditation/MeditationScreen';
 import PracticeScreen   from '../features/practice/PracticeScreen';
 import ExerciseScreen   from '../features/exercise/ExerciseScreen';
+import BreathingScreen  from '../features/breathing/BreathingScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
 
 // Stack screens — reflections (via barrel exports)
@@ -48,7 +47,7 @@ import GlobalPulseScreen from '../features/home/screens/GlobalPulseScreen';
 import SportPage         from '../features/exercise/SportPage';
 import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
 import FastHistoryPage   from '../features/fasting/FastHistoryPage';
-import MedHistoryPage    from '../features/meditation/MedHistoryPage';
+import MedHistoryPage, { MedCalendarScreen } from '../features/meditation/MedHistoryPage';
 import FoodLogPage       from '../features/home/screens/FoodLogPage';
 import GracePage         from '../features/home/screens/GracePage';
 import StreakBreakScreen from '../features/home/screens/StreakBreakScreen';
@@ -90,91 +89,75 @@ const TabNavContext = createContext<any>(null);
 
 function FabButton({ primaryColor }: { primaryColor: string }) {
   const tabNav = useContext(TabNavContext);
-  const tabNavRef = useRef<any>(tabNav);
-  tabNavRef.current = tabNav;
   const { width: vw, height: vh } = useWindowDimensions();
-  const dimsRef = useRef({ vw, vh });
-  dimsRef.current = { vw, vh };
-  const pos = useRef({ x: vw - FAB_SIZE - 20, y: vh - 85 - FAB_SIZE - 20 }).current;
-  const animPos = useRef(new Animated.ValueXY({ x: pos.x, y: pos.y })).current;
-  const moved = useRef(false);
+  const posRef = useRef({ x: vw - FAB_SIZE - 20, y: vh - 85 - FAB_SIZE - 20 });
+  const transX = useRef(new Animated.Value(posRef.current.x)).current;
+  const transY = useRef(new Animated.Value(posRef.current.y)).current;
+  const touchStart = useRef({ x: 0, y: 0 });
+  const offset = useRef({ x: posRef.current.x, y: posRef.current.y });
+  const isDragging = useRef(false);
   const isHidden = useRef(false);
-  const currentPosRef = useRef({ x: pos.x, y: pos.y });
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 4 || Math.abs(g.dy) > 4,
-      onPanResponderGrant() {
-        animPos.extractOffset();
-        moved.current = false;
-      },
-      onPanResponderMove: Animated.event([null, { dx: animPos.x, dy: animPos.y }], {
-        useNativeDriver: false,
-        listener: (event: GestureResponderEvent) => {
-          moved.current = true;
-          const gs = event?.nativeEvent ?? event;
-          if (gs?.dx !== undefined) {
-            currentPosRef.current = { x: pos.x + gs.dx, y: pos.y + gs.dy };
-          }
-        },
-      }),
-      onPanResponderRelease() {
-        animPos.flattenOffset();
-        // Update ref after flattenOffset - position is now baked into the base value
-        const { vw: w, vh: h } = dimsRef.current;
+  const onTouchStart = useCallback((e: any) => {
+    isDragging.current = false;
+    touchStart.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
+    offset.current = { x: posRef.current.x, y: posRef.current.y };
+  }, []);
 
-        if (!moved.current) {
-          if (isHidden.current) {
-            isHidden.current = false;
-            const targetX = w - FAB_SIZE - 20;
-            Animated.spring(animPos, {
-              toValue: { x: targetX, y: currentPosRef.current.y },
-              useNativeDriver: false,
-              bounciness: 8,
-            }).start(() => { currentPosRef.current = { x: targetX, y: currentPosRef.current.y }; });
-          } else {
-            const nav = tabNavRef.current;
-            if (nav) nav.navigate('Reflections', { showNew: true });
-          }
-          return;
-        }
+  const onTouchMove = useCallback((e: any) => {
+    const dx = e.nativeEvent.pageX - touchStart.current.x;
+    const dy = e.nativeEvent.pageY - touchStart.current.y;
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging.current = true;
+    transX.setValue(offset.current.x + dx);
+    transY.setValue(offset.current.y + dy);
+  }, [transX, transY]);
 
-        const currentX = currentPosRef.current.x;
-        const currentY = currentPosRef.current.y;
+  const onTouchEnd = useCallback((e: any) => {
+    const dx = e.nativeEvent.pageX - touchStart.current.x;
+    const dy = e.nativeEvent.pageY - touchStart.current.y;
+    const finalX = offset.current.x + dx;
+    const finalY = offset.current.y + dy;
 
-        const distToLeft = currentX;
-        const distToRight = w - currentX - FAB_SIZE;
+    if (!isDragging.current) {
+      if (isHidden.current) {
+        isHidden.current = false;
+        const targetX = vw - FAB_SIZE - 20;
+        posRef.current = { x: targetX, y: finalY };
+        Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
+        Animated.spring(transY, { toValue: finalY, useNativeDriver: false, bounciness: 8 }).start();
+      } else {
+        tabNav?.navigate('Reflections' as never, { showNew: true } as never);
+      }
+      return;
+    }
 
-        let targetX: number;
-        if (distToLeft < distToRight) {
-          targetX = -FAB_HIDE_OFFSET;
-          isHidden.current = true;
-        } else {
-          targetX = w - FAB_SIZE + FAB_HIDE_OFFSET;
-          isHidden.current = true;
-        }
-
-        const minY = 100;
-        const maxY = h - 85 - FAB_SIZE - 10;
-        const targetY = Math.max(minY, Math.min(maxY, currentY));
-
-        Animated.spring(animPos, {
-          toValue: { x: targetX, y: targetY },
-          useNativeDriver: false,
-          bounciness: 8,
-        }).start(() => { currentPosRef.current = { x: targetX, y: targetY }; });
-      },
-    }),
-  ).current;
+    const distL = finalX;
+    const distR = vw - finalX - FAB_SIZE;
+    let targetX: number;
+    if (distL < distR) {
+      targetX = -FAB_HIDE_OFFSET;
+      isHidden.current = true;
+    } else {
+      targetX = vw - FAB_SIZE + FAB_HIDE_OFFSET;
+      isHidden.current = true;
+    }
+    const minY = 100;
+    const maxY = vh - 85 - FAB_SIZE - 10;
+    const targetY = Math.max(minY, Math.min(maxY, finalY));
+    posRef.current = { x: targetX, y: targetY };
+    Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
+    Animated.spring(transY, { toValue: targetY, useNativeDriver: false, bounciness: 8 }).start();
+  }, [tabNav, vw, vh, transX, transY]);
 
   return (
     <Animated.View
-      {...panResponder.panHandlers}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
       style={[styles.fab, {
         backgroundColor: primaryColor,
         shadowColor: primaryColor,
-        transform: animPos.getTranslateTransform(),
+        transform: [{ translateX: transX }, { translateY: transY }],
       }]}
     >
       <Sparkles size={24} color="#ffffff" strokeWidth={2.5} />
@@ -212,14 +195,12 @@ function MainTabs() {
   const TH = THEMES[theme];
   const tabNavRef = useRef<any>(null);
   const [, forceUpdate] = useState(0);
-
-  // Trigger one re-render after mount so Provider gets the navigator from screenOptions
   useEffect(() => { forceUpdate(n => n + 1); }, []);
 
   const iconMap: Record<string, React.ComponentType<any>> = {
     Home, Plan: ClipboardList, Fasting: Timer, Meditation: Binary, Practice: Footprints,
     Exercise: Dumbbell, Settings, Reflections: Sparkles,
-    Habits: Target, Stats: BarChart3,
+    Habits: Target,
   };
 
   const tabIcon = (name: string, focused: boolean) => {
@@ -234,19 +215,19 @@ function MainTabs() {
       screenOptions={({ route, navigation }) => {
         tabNavRef.current = navigation;
         return {
-        headerShown: false,
-        tabBarIcon: ({ focused }) => tabIcon(route.name, focused),
-        tabBarActiveTintColor:   TH.primary,
-        tabBarInactiveTintColor: TH.sub,
-        tabBarStyle: {
-          backgroundColor: TH.navBg,
-          borderTopColor:  TH.border,
-          borderTopWidth:  1,
-          height: 85,
-          paddingBottom: 6,
-          paddingTop: 6,
-        },
-        tabBarLabelStyle: { fontSize: FONT_BODY, fontWeight: '500' },
+          headerShown: false,
+          tabBarIcon: ({ focused }) => tabIcon(route.name, focused),
+          tabBarActiveTintColor:   TH.primary,
+          tabBarInactiveTintColor: TH.sub,
+          tabBarStyle: {
+            backgroundColor: TH.navBg,
+            borderTopColor:  TH.border,
+            borderTopWidth:  1,
+            height: 85,
+            paddingBottom: 6,
+            paddingTop: 6,
+          },
+          tabBarLabelStyle: { fontSize: FONT_BODY, fontWeight: '500' },
         };
       }}
     >
@@ -256,6 +237,7 @@ function MainTabs() {
       <Tab.Screen name="Practice"    component={PracticeScreen}    options={{ title: t('navTabPractice', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title: t('navTabSettings', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title: t('navTabMeditation', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Breathing"   component={BreathingScreen}   options={{ title: '调息', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
@@ -353,6 +335,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Sport"        component={SportPage} />
         <Stack.Screen name="FastHistory"  component={FastHistoryPage} />
         <Stack.Screen name="MedHistory"   component={MedHistoryPage} />
+        <Stack.Screen name="MedCalendar"  component={MedCalendarScreen} />
         <Stack.Screen name="FoodLog"      component={FoodLogPage} />
         <Stack.Screen name="Grace"        component={GracePage} />
         <Stack.Screen name="StreakBreak" component={StreakBreakScreen} />

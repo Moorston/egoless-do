@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
+import { useRootNavigation, useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Wind, Dumbbell, Moon, Salad,
@@ -33,7 +33,7 @@ interface PracticeGroup {
 export default function PracticeScreen() {
   const TH = useTheme();
   const T = useT();
-  const nav = useRootNavigation();
+  const nav = useTabNavigation();
   const store = useAppStore();
 
   const groups: PracticeGroup[] = useMemo(() => [
@@ -41,7 +41,7 @@ export default function PracticeScreen() {
       groupKey: 'practiceGroupTune',
       color: '#10B981',
       items: [
-        { key: 'breath', icon: Wind, labelKey: 'practiceTuneBreath', descKey: 'practiceTuneBreathDesc', color: '#10B981' },
+        { key: 'breath', icon: Wind, labelKey: 'practiceTuneBreath', descKey: 'practiceTuneBreathDesc', color: '#10B981', route: 'Breathing' },
         { key: 'body', icon: Dumbbell, labelKey: 'practiceTuneBody', descKey: 'practiceTuneBodyDesc', color: '#34D399' },
         { key: 'sleep', icon: Moon, labelKey: 'practiceTuneSleep', descKey: 'practiceTuneSleepDesc', color: '#6EE7B7' },
         { key: 'food', icon: Salad, labelKey: 'practiceTuneFood', descKey: 'practiceTuneFoodDesc', color: '#A7F3D0' },

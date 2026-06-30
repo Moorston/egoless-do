@@ -69,13 +69,13 @@ export function createAuthSlice(
 
     async clearDataAndLogout() {
       const { auth } = get();
+      // Send logout API first to invalidate token server-side before clearing
+      if (auth.token && auth.refreshToken) {
+        try { await apiLogout(auth.token, auth.refreshToken); } catch (e: unknown) { log.error(e); }
+      }
       set({ auth: defaultAuthState });
-      // Clear data first so UI updates immediately, then fire-and-forget logout API
       await onClearData?.();
       onLogout?.();
-      if (auth.token && auth.refreshToken) {
-        apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => log.error(e));
-      }
     },
 
     async refreshAuth() {
@@ -86,7 +86,7 @@ export function createAuthSlice(
       if (_refreshInFlight) return _refreshInFlight;
       _refreshInFlight = (async () => {
         try {
-          const res = await apiRefreshToken(auth.refreshToken!);
+          const res = await apiRefreshToken(auth.refreshToken!, auth.token ?? undefined);
           // Only apply if user is still logged in (not logged out during refresh)
           if (get().auth.refreshToken) {
             set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
@@ -140,7 +140,7 @@ export function createAuthSlice(
           if (data.meditation) {
             const mergedMed = mergeById(data.meditation, s.medHistory ?? [], 'date');
             patch.medHistory = activeOnly(mergedMed);
-            patch.totalMedMinutes = (mergedMed as Array<{ dur?: string; deleted?: boolean }>).filter(m => !m.deleted).reduce((sum, m) => sum + (parseInt(m.dur ?? '') || 0), 0);
+            patch.totalMedMinutes = (mergedMed as Array<{ durMin?: number; deleted?: boolean }>).filter(m => !m.deleted).reduce((sum, m) => sum + (m.durMin || 0), 0);
           }
           if (data.plan)            patch.plans = mergeById(data.plan, s.plans ?? [], 'id').filter(i => !i.deleted);
           if (data.planItem)        patch.planItems = mergeById(data.planItem, s.planItems ?? [], 'id').filter(i => !i.deleted);

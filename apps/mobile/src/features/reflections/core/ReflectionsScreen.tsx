@@ -117,6 +117,14 @@ export default function ReflectionsScreen() {
   } = useReflections();
 
   const [showNew, setShowNew]       = useState(false);
+  const handledShowNew = useRef(false);
+  useEffect(() => {
+    const p = route.params as { showNew?: boolean } | undefined;
+    if (p?.showNew && !handledShowNew.current) {
+      handledShowNew.current = true;
+      setShowNew(true);
+    }
+  }, [route.params]);
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [managerMode, setManagerMode] = useState<'tag'|'mood'|null>(null);
   const [hiddenTags, setHiddenTags] = useState<string[]>([]);

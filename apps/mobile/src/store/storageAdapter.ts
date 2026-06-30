@@ -21,6 +21,9 @@ export function flushWrites(): Promise<boolean> {
 }
 
 export const mobileStorageAdapter: StorageAdapter = {
+  // Writes are batched (100ms debounce) for performance. The promise resolves
+  // immediately — use flushWrites() if you need to guarantee DB persistence
+  // before proceeding (e.g., during migration).
   async persistChange(entity: SyncEntity, id: string, data: Record<string, unknown>): Promise<void> {
     _batcher.write(entity, id, data);
   },

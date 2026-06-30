@@ -60,6 +60,18 @@ const ENTITY_COLL_MAP: Record<string, string> = {
   grace_history: 'grace', thought_trails: 'thoughtTrail', trail_notes: 'trailNote',
   reflection_links: 'reflectionLink', ai_configs: 'aiConfig', checkin_reviews: 'checkinReview',
 };
+// Validate all SCHEMAS entities are covered by ENTITY_STORE_KEY or handled specially
+const _specialEntities = new Set(['aiConfig']);
+if (__DEV__) {
+  for (const key of Object.keys(SCHEMAS) as SyncEntity[]) {
+    if (!ENTITY_STORE_KEY[key] && !_specialEntities.has(key)) {
+      console.warn(`[SyncEngine] Entity "${key}" missing from ENTITY_STORE_KEY`);
+    }
+    if (!ENTITY_COLL_MAP[SCHEMAS[key].sqlite.table]) {
+      console.warn(`[SyncEngine] Entity "${key}" table "${SCHEMAS[key].sqlite.table}" missing from ENTITY_COLL_MAP`);
+    }
+  }
+}
 const _serverPayloadToRowFns = Object.fromEntries(
   (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, buildServerPayloadToRow(SCHEMAS[k])])
 ) as Record<string, (r: Record<string, unknown>) => Record<string, unknown> | null>;
@@ -342,15 +354,18 @@ export class SyncEngine {
     this.disconnectRealtime();
     try {
       const db = await openDatabase();
-      await setState(db, 'lastSyncAt', '0');
-      await db.runAsync('DELETE FROM sync_queue');
-      await db.runAsync('DELETE FROM sync_metadata');
-      for (const table of ALL_ENTITY_TABLES) {
-        await db.runAsync(`DELETE FROM ${table}`);
-      }
-      await db.runAsync("DELETE FROM app_state WHERE key IN ('initialSyncDone', 'initialSyncPhase')");
-      await db.runAsync('DELETE FROM sync_progress');
-      // Clear AsyncStorage sync keys
+      const { withDbLock } = await import('../../db/schema');
+      await withDbLock(async () => {
+        await setState(db, 'lastSyncAt', '0');
+        await db.runAsync('DELETE FROM sync_queue');
+        await db.runAsync('DELETE FROM sync_metadata');
+        for (const table of ALL_ENTITY_TABLES) {
+          await db.runAsync(`DELETE FROM ${table}`);
+        }
+        await db.runAsync("DELETE FROM app_state WHERE key IN ('initialSyncDone', 'initialSyncPhase')");
+        await db.runAsync('DELETE FROM sync_progress');
+      });
+      // Clear AsyncStorage sync keys outside the lock
       await AsyncStorage.removeItem(DEVICE_SYNCED_KEY);
       await AsyncStorage.removeItem(CLOCK_OFFSET_KEY);
     } catch (e) {
@@ -390,8 +405,8 @@ export class SyncEngine {
       try {
         const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal);
         if (entity === 'meditation') {
-          const allMed = await db.getAllAsync<{ dur: string }>('SELECT dur FROM meditation_history WHERE deleted = 0');
-          patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
+          const allMed = await db.getAllAsync<{ dur_min: number }>('SELECT dur_min FROM meditation_history WHERE deleted = 0');
+          patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (e.dur_min || 0), 0);
         }
         if (entity === 'aiConfig' && storeMapped.length > 0) {
           const latest = storeMapped[storeMapped.length - 1] as Record<string, unknown>;
@@ -507,10 +522,11 @@ export class SyncEngine {
         await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
         this._hasSyncedDeletes = true;
         if (entity === 'plan') {
-          await db.runAsync('UPDATE plan_items SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-          await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=1 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
-          await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=1 WHERE plan_id=?', [id]);
-          await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=1 WHERE plan_id=?', [id]);
+          // Mark child entities synced=0 so any pending local changes are pushed
+          await db.runAsync('UPDATE plan_items SET deleted=1,synced=0 WHERE plan_id=?', [id]);
+          await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=0 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
+          await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=0 WHERE plan_id=?', [id]);
+          await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=0 WHERE plan_id=?', [id]);
           // Clear orphaned references in reflections and thought trails
           await db.runAsync('UPDATE mind_reflections SET linked_plan_item_id=NULL,updated_at=? WHERE linked_plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [Date.now(), id]);
           await db.runAsync('UPDATE thought_trails SET linked_plan_item_ids=NULL,updated_at=? WHERE linked_plan_item_ids LIKE ?', [Date.now(), `%"${id}"%`]);
@@ -574,13 +590,9 @@ export class SyncEngine {
     }
     const token = this._tokenProvider?.();
     if (!token) {
-      // Prevent unbounded recursion on token refresh
-      if (this._syncing) {
-        log.warn('runSync: no token after refresh attempt, aborting');
-        return;
-      }
       log.warn('runSync: no token, attempting recovery...');
       // Try to refresh token if refreshToken is available
+      // Recursion protection: refreshAuth() uses _refreshInFlight singleton
       try {
         const { useAppStore } = await import('../../store/useAppStore');
         const auth = useAppStore.getState().auth;

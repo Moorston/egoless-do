@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPb } from '../../_pb';
 import { TOKEN_EXPIRES_IN } from '../../constants';
-import { getClientIp, loginRateLimit } from '../../_rateLimit';
+import { getClientIp, createRateLimiter } from '../../_rateLimit';
+
+const loginRateLimit = createRateLimiter(5, 60_000);    // 5 req/min per IP
+const emailRateLimit = createRateLimiter(10, 300_000);   // 10 req/min per email
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -16,6 +19,11 @@ export async function POST(req: NextRequest) {
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: '邮箱格式不正确' }, { status: 400 });
+    }
+
+    // Per-account rate limiting to prevent brute-force on specific accounts
+    if (!emailRateLimit(email.toLowerCase())) {
+      return NextResponse.json({ error: '该账户登录尝试过于频繁，请稍后再试' }, { status: 429 });
     }
 
     const pb = getPb();

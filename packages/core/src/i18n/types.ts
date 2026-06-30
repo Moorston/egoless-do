@@ -522,7 +522,7 @@ export interface I18nKeys {
   authRegisterFailed: string; authWechatFailed: string;
   authEnterAll: string; authPwdMismatch: string;
   authInvalidEmail: string; authEmailTaken: string;
-  commonCancel: string; commonConfirm: string; commonClose: string;
+  commonCancel: string; commonConfirm: string; commonClose: string; commonDone: string;
   commonDelete: string; commonSave: string; commonEdit: string; commonAdd: string;
   commonBack: string; commonSyncing: string; commonConnected: string;
   commonOffline: string;
@@ -597,6 +597,18 @@ export interface I18nKeys {
   practiceActionGive: string; practiceActionGiveDesc: string;
   practiceOtherSound: string; practiceOtherSoundDesc: string;
   practiceOtherRead: string; practiceOtherReadDesc: string;
+  breathScientific: string; breathSpiritual: string;
+  breathGuide: string; breathStart: string; breathPause: string; breathResume: string; breathStop: string;
+  breathCycles: string; breathPhase: string; breathInhale: string; breathHold: string; breathExhale: string;
+  breathPreDistress: string; breathPostDistress: string;
+  breathReport: string; breathDistressChange: string; breathDuration: string;
+  breathGuideSci: string; breathGuideSpr: string;
+  breathBoxName: string; breathBoxEn: string; breathBoxRatio: string;
+  breathBoxDescSci: string; breathBoxDescSpr: string; breathBoxTipsSci: string; breathBoxTipsSpr: string;
+  breath478Name: string; breath478En: string; breath478Ratio: string;
+  breath478DescSci: string; breath478DescSpr: string; breath478TipsSci: string; breath478TipsSpr: string;
+  breathCoherentName: string; breathCoherentEn: string; breathCoherentRatio: string;
+  breathCoherentDescSci: string; breathCoherentDescSpr: string; breathCoherentTipsSci: string; breathCoherentTipsSpr: string;
 
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;

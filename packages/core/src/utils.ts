@@ -72,7 +72,14 @@ export const formatAgoT = (ts: number, T: (key: string) => string) => {
 };
 
 let _uidCounter = 0;
-export const uid = () => Date.now().toString(36) + (_uidCounter++).toString(36) + Math.random().toString(36).slice(2, 10);
+function _randHex(): string {
+  try {
+    const buf = new Uint8Array(8);
+    crypto.getRandomValues(buf);
+    return Array.from(buf, b => b.toString(16).padStart(2, '0')).join('');
+  } catch { return Math.random().toString(36).slice(2, 10); }
+}
+export const uid = () => Date.now().toString(36) + (_uidCounter++).toString(36) + _randHex();
 
 /** Compute habit streak from checked dates (validates most recent is today/yesterday) */
 export const computeStreak = (checkedDates: string[]): number => {

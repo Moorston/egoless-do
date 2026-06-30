@@ -30,5 +30,5 @@ export function mergeById<T extends Record<string, any>>(
       }
     }
   }
-  return Array.from(map.values());
+  return Array.from(map.values()).filter(item => !item.deleted);
 }

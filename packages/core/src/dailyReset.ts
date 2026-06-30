@@ -34,11 +34,11 @@ export function getTodayFoodLog<T extends { timestamp: number; deleted?: boolean
 }
 
 /** Get today's total meditation minutes from medHistory */
-export function getTodayMedMinutes(medHistory: Array<{ date: string; dur: string; deleted?: boolean }>): number {
+export function getTodayMedMinutes(medHistory: Array<{ date: string; durMin?: number; deleted?: boolean }>): number {
   const today = dateStr();
   return medHistory
     .filter(e => e.date === today && !e.deleted)
-    .reduce((sum, e) => sum + (parseInt(e.dur) || 0), 0);
+    .reduce((sum, e) => sum + (e.durMin || 0), 0);
 }
 
 // ─── DailyResetManager ───────────────────────────────────────────

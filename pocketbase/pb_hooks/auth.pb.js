@@ -1,9 +1,38 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 // ── Single-device login: embed login_epoch in JWT ─────────────────
-// NOTE: $app.save() inside onRecordAuthWithPasswordRequest breaks PB's auth flow.
-// The epoch is NOT set during password login — it's set on first token refresh.
-// This is acceptable because kicked-out detection only matters for subsequent logins.
+
+// ── After password login: set epoch in user_profiles ──────────────
+// We use afterAuthRequest (not before) to avoid $app.save() breaking PB's auth flow.
+// The epoch is written to the profile so the next refresh can read and embed it.
+onRecordAfterAuthWithPasswordRequest(function(e) {
+  try {
+    var userId = e.record.id;
+    var collection = $app.findCollectionByNameOrId("user_profiles");
+    if (!collection) return;
+    var records = $app.findRecordsByFilter("user_profiles", "profile_id = 'self' && user_id = '" + userId + "'", "", 1);
+    if (records.length > 0) {
+      var profile = records[0];
+      var d = profile.get("data");
+      if (typeof d === 'string') { try { d = JSON.parse(d); } catch(pe) { d = null; } }
+      var obj = {};
+      if (d && typeof d === 'object' && !Array.isArray(d)) {
+        for (var k in d) { obj[k] = d[k]; }
+      }
+      obj.login_epoch = (obj.login_epoch || 0) + 1;
+      profile.set("data", JSON.stringify(obj));
+      $app.save(profile);
+    } else {
+      var record = new Record(collection);
+      record.set("profile_id", "self");
+      record.set("user_id", userId);
+      record.set("data", JSON.stringify({ login_epoch: 1 }));
+      $app.save(record);
+    }
+  } catch (err) {
+    console.error("[auth] afterLogin epoch error: " + (err.message || String(err)));
+  }
+}, "users");
 
 // ── Token refresh hook ────────────────────────────────────────────
 // Bumps login_epoch and embeds it in the new token.

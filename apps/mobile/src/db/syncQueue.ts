@@ -62,14 +62,23 @@ export async function enqueueChange(
   }
 }
 
-/** Drain up to `limit` pending items from the queue, ordered by creation time. Skips items with active backoff. */
+/** Drain up to `limit` pending items from the queue, ordered by creation time. Atomically marks them as 'syncing'. */
 export async function drainQueue(limit = 50): Promise<SyncQueueItem[]> {
   const db = await openDatabase();
   const now = Date.now();
-  return db.getAllAsync<SyncQueueItem>(
+  const items = await db.getAllAsync<SyncQueueItem>(
     "SELECT * FROM sync_queue WHERE status = 'pending' AND (next_retry_at = 0 OR next_retry_at <= ?) ORDER BY id LIMIT ?",
     [now, limit],
   );
+  if (items.length > 0) {
+    const ids = items.map(i => i.id);
+    const placeholders = ids.map(() => '?').join(',');
+    await db.runAsync(
+      `UPDATE sync_queue SET status = 'syncing' WHERE id IN (${placeholders}) AND status = 'pending'`,
+      ids,
+    );
+  }
+  return items;
 }
 
 /** Get all items with a specific status. */
@@ -104,11 +113,11 @@ export async function markQueueItemFailed(id: number, error: string): Promise<vo
   );
 }
 
-/** Mark a queue item for retry with backoff delay. */
+/** Mark a queue item for retry with backoff delay. Resets status to pending. */
 export async function markQueueItemRetry(id: number, attempt: number, nextRetryAt: number): Promise<void> {
   const db = await openDatabase();
   await db.runAsync(
-    'UPDATE sync_queue SET retry_count = ?, next_retry_at = ? WHERE id = ?',
+    "UPDATE sync_queue SET status = 'pending', retry_count = ?, next_retry_at = ? WHERE id = ?",
     [attempt, nextRetryAt, id],
   );
 }

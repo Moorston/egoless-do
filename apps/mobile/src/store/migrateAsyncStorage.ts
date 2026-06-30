@@ -134,6 +134,10 @@ export async function migrateAsyncStorageToSQLite(
     }
   }
 
+  // Flush all batched writes to SQLite before marking migration complete
+  const { flushWrites } = await import('./storageAdapter');
+  await flushWrites();
+
   // Mark migration complete
   await setState(db, MIGRATION_KEY, '1');
 

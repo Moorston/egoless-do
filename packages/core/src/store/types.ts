@@ -85,7 +85,7 @@ export interface TagMoodSlice {
 export interface MeditationSlice {
   totalMedMinutes: number;
   medHistory: MedHistoryEntry[];
-  addMedMinutes: (min: number) => void;
+  addMedMinutes: (min: number, trackId?: string, note?: string) => void;
   calculateTotalMedMin: () => void;
 }
 

@@ -94,7 +94,8 @@ export async function migrateToSyncQueue(): Promise<number> {
     {
       entity: 'meditation', table: 'meditation_history', pk: 'date',
       toPayload: (r) => ({
-        date: r.date, dur: r.dur, mood: r.mood ?? '',
+        date: r.date, durMin: r.dur_min ?? (typeof r.dur === 'string' ? parseInt(r.dur) || 0 : 0),
+        trackId: r.track_id ?? '', note: r.note ?? '',
         updatedAt: r.updated_at, deleted: (r.deleted as number) === 1,
       }),
     },

@@ -47,6 +47,9 @@ export default function MeditationScreen() {
   const [showShare, setShowShare]   = useState(false);
   const [showMusicPicker, setShowMusicPicker] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<MusicTrack | null>(null);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [pendingDurMin, setPendingDurMin] = useState(0);
+  const [noteText, setNoteText] = useState('');
   const timerRef        = useRef<ReturnType<typeof setInterval> | null>(null);
   const completedRef    = useRef(false);
   const shareCardRef    = useRef<ViewShot>(null);
@@ -182,7 +185,9 @@ export default function MeditationScreen() {
       cleanupSession();
       if (!completedRef.current) {
         completedRef.current = true;
-        addMedMinutes(durMin);
+        setPendingDurMin(durMin);
+        setNoteText('');
+        setShowNoteModal(true);
       }
       if (musicStartedRef.current) {
         musicStop();
@@ -191,14 +196,18 @@ export default function MeditationScreen() {
       }
       playBell();
     }
-  }, [sec, active, targetSec, durMin, addMedMinutes, playBell, musicStop, cleanupSession]);
+  }, [sec, active, targetSec, durMin, playBell, musicStop, cleanupSession]);
 
   const handleStop = () => {
     const wasCompleted = completedRef.current;
     if (active && !wasCompleted) {
       completedRef.current = true;
       const elapsedMin = Math.round((sec) / 60);
-      if (elapsedMin > 0) addMedMinutes(elapsedMin);
+      if (elapsedMin > 0) {
+        setPendingDurMin(elapsedMin);
+        setNoteText('');
+        setShowNoteModal(true);
+      }
     }
     setActive(false);
     cleanupSession();

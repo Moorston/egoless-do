@@ -326,8 +326,9 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     pocketbase: { collection: 'meditation_history', serverIdField: 'date' },
     fields: [
       { entity: 'date',      col: 'date',       server: 'date',     fallback: null },
-      { entity: 'dur',       col: 'dur',        server: 'dur',      fallback: '0' },
-      { entity: 'mood',      col: 'mood',       server: 'mood',     fallback: '' },
+      { entity: 'durMin',    col: 'dur_min',    server: 'durMin',   type: 'num', fallback: 0 },
+      { entity: 'trackId',   col: 'track_id',   server: 'trackId',  fallback: '', optional: true },
+      { entity: 'note',      col: 'note',       server: 'note',     fallback: '', optional: true },
       { entity: 'updatedAt', col: 'updated_at', server: 'updatedAt', fallback: () => Date.now() },
       { entity: 'deleted',   col: 'deleted',    type: 'bool' },
     ],
@@ -535,7 +536,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
     customServerPayloadToRow: (r) => ({
-      link_id: r.linkId ?? r.id, from_id: r.fromId ?? '', to_id: r.toId ?? '',
+      link_id: r.linkId ?? r.link_id ?? r.id, from_id: r.fromId ?? '', to_id: r.toId ?? '',
       link_type: r.type ?? '', note: r.note ?? null,
       created_at: r.createdAt ?? Date.now(),
       updated_at: r.updatedAt ?? null, deleted: 0,
@@ -567,8 +568,8 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       updated_at: r.updatedAt ?? null, deleted: 0,
     }),
     customRowToEntity: (r) => ({
-      config_id: r.config_id,
-      mode: r.mode ?? 'hybrid',
+      config_id: r.config_id || 'self',
+      mode: r.mode || 'hybrid',
       models: parseJson(r.models, []),
       localEngineEnabled: boolRead(r.local_engine_enabled ?? 1),
       updated_at: r.updated_at, deleted: boolRead(r.deleted),

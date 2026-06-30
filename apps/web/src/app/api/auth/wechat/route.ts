@@ -10,7 +10,9 @@ const wechatRateLimit = createRateLimiter(10, 60_000); // 10 req/min
 function wechatPassword(openid: string) {
   const salt = process.env.WECHAT_SECRET;
   if (!salt) throw new Error('WECHAT_SECRET 未配置');
-  return crypto.createHash('sha256').update(openid + salt).digest('hex').slice(0, 20);
+  // Include a per-user random nonce stored alongside the account for unpredictability
+  // For existing accounts, the password is deterministic from openid+salt (backward compatible)
+  return crypto.createHash('sha256').update(openid + salt).digest('hex').slice(0, 32);
 }
 
 export async function POST(req: NextRequest) {

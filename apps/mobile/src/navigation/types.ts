@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Sport: { key: string; icon: string; color: string; gps?: boolean };
   FastHistory: undefined;
   MedHistory: undefined;
+  MedCalendar: undefined;
   FoodLog: undefined;
   Grace: undefined;
   StreakBreak: undefined;
@@ -43,6 +44,7 @@ export type MainTabParamList = {
   Fasting: undefined;
   Practice: undefined;
   Meditation: undefined;
+  Breathing: undefined;
   Exercise: undefined;
   Settings: undefined;
   Reflections: { showNew?: boolean; trailId?: string } | undefined;

@@ -73,7 +73,9 @@ export class WriteBatcher {
 
   private async _flush() {
     const keys = [...this._pendingWrites.entries()].map(([k]) => k);
-    const writes = keys.map(k => this._pendingWrites.get(k)!);
+    // Snapshot value references to detect merges during async flush
+    const snapRefs = new Map(keys.map(k => [k, this._pendingWrites.get(k)!]));
+    const writes = keys.map(k => snapRefs.get(k)!);
     if (writes.length === 0) return;
     log.debug(`Flushing ${writes.length} writes: ${writes.map(w => w.entity).join(', ')}`);
 
@@ -140,8 +142,10 @@ export class WriteBatcher {
           );
         }
       });
-      // Only remove successfully flushed entries; preserve new arrivals
-      for (const k of keys) this._pendingWrites.delete(k);
+      // Only remove entries that weren't merged with new data during flush
+      for (const k of keys) {
+        if (this._pendingWrites.get(k) === snapRefs.get(k)) this._pendingWrites.delete(k);
+      }
       this._onFlushed?.();
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
@@ -197,8 +201,10 @@ export class WriteBatcher {
         }
       }
       if (allFallbacksOk) {
-        // All fallback writes succeeded — remove flushed entries
-        for (const k of keys) this._pendingWrites.delete(k);
+        // All fallback writes succeeded — remove entries not merged with new data
+        for (const k of keys) {
+          if (this._pendingWrites.get(k) === snapRefs.get(k)) this._pendingWrites.delete(k);
+        }
       } else {
         // Remove only successfully written entries; keep failed ones for retry
         // We can't distinguish which succeeded, so keep all for retry

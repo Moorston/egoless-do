@@ -14,8 +14,9 @@ export interface CheckinEntry extends Syncable {
 
 export interface MedHistoryEntry extends Syncable {
   date: string;
-  dur: string;
-  mood: string;
+  durMin: number;
+  trackId?: string;
+  note?: string;
 }
 
 export interface GraceHistoryEntry extends Syncable {

@@ -398,7 +398,7 @@ function calculateMetrics(
     return date >= startDate && date <= endDate && !m.deleted;
   });
   const totalMeditationMin = medInRange.length > 0 ? medInRange.reduce((a, b) => {
-    const min = parseInt(b.dur) || 0;
+    const min = b.durMin || 0;
     return a + min;
   }, 0) : undefined;
   

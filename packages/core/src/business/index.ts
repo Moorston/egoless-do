@@ -28,3 +28,4 @@ export * from './dateChangeDetection';
 export * from './thought-trail';
 export * from './trail-creation';
 export * from './review';
+export * from './breathing';

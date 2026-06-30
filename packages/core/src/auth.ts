@@ -94,10 +94,10 @@ export async function apiWechatLogin(code: string): Promise<AuthResponse> {
 }
 
 // ── Refresh token ─────────────────────────────────────────────────
-export async function apiRefreshToken(refreshToken: string): Promise<RefreshResponse> {
+export async function apiRefreshToken(refreshToken: string, token?: string): Promise<RefreshResponse> {
   const res = await fetchWithTimeout(`${apiBase}/api/auth/refresh`, {
     method: 'POST',
-    headers: buildHeaders(),
+    headers: buildHeaders(token),
     body: JSON.stringify({ refreshToken }),
   });
   return handleJsonResponse<RefreshResponse>(res);

@@ -616,7 +616,7 @@ export const zh: I18nKeys = {
   authInvalidEmail:'请输入有效的邮箱地址', authEmailTaken:'该邮箱已注册',
 
   // Common
-  commonCancel:'取消', commonConfirm:'确定', commonClose:'关闭',
+  commonCancel:'取消', commonConfirm:'确定', commonClose:'关闭', commonDone:'完成',
   commonDelete:'删除', commonSave:'保存', commonEdit:'编辑', commonAdd:'添加',
   commonBack:'← 返回', commonSyncing:'同步中...', commonConnected:'已连接',
   commonOffline:'离线模式',
@@ -719,20 +719,52 @@ export const zh: I18nKeys = {
   // Practice Hub
   practiceGroupTune:'调', practiceGroupMind:'心', practiceGroupAction:'行', practiceGroupOther:'其他',
   practiceWeekly:'本周修行',
-  practiceTuneBreath:'调息', practiceTuneBreathDesc:'引导呼吸·气功修炼',
-  practiceTuneBody:'调身', practiceTuneBodyDesc:'身体评估·锻炼方案',
-  practiceTuneSleep:'调眠', practiceTuneSleepDesc:'睡眠分析·作息规划',
-  practiceTuneFood:'调食', practiceTuneFoodDesc:'饮食分析·五行分类',
-  practiceMindVow:'发愿', practiceMindVowDesc:'发愿记录·功德回向',
-  practiceMindMeditate:'冥想', practiceMindMeditateDesc:'打坐计时·专注训练',
-  practiceMindInsight:'止观', practiceMindInsightDesc:'内观·觉知训练',
-  practiceMindHeart:'调心', practiceMindHeartDesc:'恐惧与成就·情绪觉察',
-  practiceActionPrecept:'持戒', practiceActionPreceptDesc:'戒律遵守·自律记录',
-  practiceActionMantra:'持咒', practiceActionMantraDesc:'咒语持诵·计数',
-  practiceActionSutra:'诵经', practiceActionSutraDesc:'经文念诵·抄经',
-  practiceActionGive:'布施', practiceActionGiveDesc:'善行记录·给予',
-  practiceOtherSound:'音疗', practiceOtherSoundDesc:'颂钵·自然音·音频疗愈',
-  practiceOtherRead:'阅读', practiceOtherReadDesc:'经文阅读·读书笔记',
+  practiceTuneBreath:'调息', practiceTuneBreathDesc:'科学呼吸',
+  practiceTuneBody:'调身', practiceTuneBodyDesc:'强身健体',
+  practiceTuneSleep:'调眠', practiceTuneSleepDesc:'安眠养气',
+  practiceTuneFood:'调食', practiceTuneFoodDesc:'调理饮食',
+  practiceMindVow:'发愿', practiceMindVowDesc:'立愿践行',
+  practiceMindMeditate:'冥想', practiceMindMeditateDesc:'止心静坐',
+  practiceMindInsight:'止观', practiceMindInsightDesc:'观照觉知',
+  practiceMindHeart:'调心', practiceMindHeartDesc:'调伏内心',
+  practiceActionPrecept:'持戒', practiceActionPreceptDesc:'持戒自律',
+  practiceActionMantra:'持咒', practiceActionMantraDesc:'持诵真言',
+  practiceActionSutra:'诵经', practiceActionSutraDesc:'闻经悟道',
+  practiceActionGive:'布施', practiceActionGiveDesc:'利他布施',
+  practiceOtherSound:'音疗', practiceOtherSoundDesc:'声音疗愈',
+  practiceOtherRead:'阅读', practiceOtherReadDesc:'闻思修学',
+
+  // ── 调息 ──
+  breathScientific:'科学', breathSpiritual:'修行',
+  breathGuide:'准备指引', breathStart:'开始调息', breathPause:'暂停', breathResume:'继续', breathStop:'结束',
+  breathCycles:'圈', breathPhase:'阶段', breathInhale:'吸气', breathHold:'闭气', breathExhale:'呼气',
+  breathPreDistress:'此刻你的内心烦乱程度？', breathPostDistress:'此刻你的内心烦乱程度？',
+  breathReport:'调息报告', breathDistressChange:'焦虑变化', breathDuration:'调息时长',
+
+  // 通用指引
+  breathGuideSci:'端坐，脊柱自然伸直，双脚平放地面。双手自然置于膝上或桌面。用鼻腔缓慢吸气，呼气时可经鼻或微张口。',
+  breathGuideSpr:'正身端坐，脊柱如塔，松肩坠肘。鼻吸鼻呼，心随息走。',
+
+  // 盒式呼吸
+  breathBoxName:'4-4-4-4 盒式调息', breathBoxEn:'Box Breathing', breathBoxRatio:'4:4:4:4',
+  breathBoxDescSci:'美国海豹突击队抗压训练核心呼吸法。通过等比例控制吸、闭、呼、闭四段呼吸，快速平衡自主神经系统，降低皮质醇水平，提升高压环境下的专注力与决策力。',
+  breathBoxDescSpr:'源自美国海豹突击队的抗压秘法，经斯坦福神经科学验证。四段等长呼吸，如画四方，迅速收摄散乱心神，于纷扰中建立定力。',
+  breathBoxTipsSci:'四段节奏均匀，如画正方形。鼻子吸气，嘴巴或鼻子呼气。',
+  breathBoxTipsSpr:'鼻吸鼻呼，四段等长，从容不迫。心随息走，不急不缓，如钟摆之均匀。',
+
+  // 4-7-8
+  breath478Name:'4-7-8 梵心安神', breath478En:'Deep Relax', breath478Ratio:'4:7:8:0',
+  breath478DescSci:'由亚利桑那大学整合医学中心 Andrew Weil 博士基于瑜伽调息法开发。通过延长呼气时间，深度激活副交感神经系统，降低心率与血压，对缓解焦虑与入睡困难有显著效果。',
+  breath478DescSpr:'美国整合医学之父 Weil 博士取古瑜伽调息法之精髓而创。呼气绵长八秒，副交感神经深度激活，焦灼烦乱自然消退，身心归于安宁。',
+  breath478TipsSci:'舌尖轻抵上颚上门牙后方的牙龈脊，全程保持不动。先完全呼气，发出"呼"声。',
+  breath478TipsSpr:'舌抵上颚齿龈之交。先尽呼浊气，鼻吸四秒，闭息七秒，口呼八秒，绵绵不绝，如抽丝。',
+
+  // 大周天吐纳
+  breathCoherentName:'5-2-5-2 大周天吐纳', breathCoherentEn:'Coherent Balance', breathCoherentRatio:'5:2:5:2',
+  breathCoherentDescSci:'由 Stephen Elliott 提出、HeartMath Institute 研究验证的共振频率呼吸法。每分钟约 5-6 次呼吸的频率与心血管系统共振频率吻合，能显著提升心率变异性（HRV），促进身心深度协调。',
+  breathCoherentDescSpr:'合于心脏自然律动的共振呼吸，得 HeartMath 研究所科学印证。呼吸与心率共鸣，如潮起潮落，身心合一。',
+  breathCoherentTipsSci:'将注意力轻柔地放在心轮区域。用鼻呼吸，吸气与呼气各 5 秒，保持节奏平稳。',
+  breathCoherentTipsSpr:'意守心间，鼻息自然。吸五秒，闭二秒，呼五秒，闭二秒。如环无端，周而复始。',
 
   // Auth
   authEmailPlaceholder:'邮箱', authPasswordPlaceholder:'密码', authLoginBtn:'登录',

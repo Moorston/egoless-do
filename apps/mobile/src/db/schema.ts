@@ -178,8 +178,9 @@ CREATE TABLE IF NOT EXISTS sync_progress (
 
 CREATE TABLE IF NOT EXISTS meditation_history (
   date       TEXT PRIMARY KEY,
-  dur        TEXT NOT NULL,
-  mood       TEXT DEFAULT '',
+  dur_min    INTEGER NOT NULL DEFAULT 0,
+  track_id   TEXT NOT NULL DEFAULT '',
+  note       TEXT NOT NULL DEFAULT '',
   updated_at INTEGER,
   deleted    INTEGER NOT NULL DEFAULT 0,
   synced     INTEGER NOT NULL DEFAULT 0
@@ -465,14 +466,31 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     )`);
   }
 
-  // Ensure meditation_history table exists
+  // Ensure meditation_history table exists with new schema
   const medTableCheck = await db.getFirstAsync<{ name: string }>(
     "SELECT name FROM sqlite_master WHERE type='table' AND name='meditation_history'"
   );
   if (!medTableCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS meditation_history (
-      date TEXT PRIMARY KEY, dur TEXT NOT NULL, mood TEXT DEFAULT '', synced INTEGER NOT NULL DEFAULT 0
+      date TEXT PRIMARY KEY, dur_min INTEGER NOT NULL DEFAULT 0, track_id TEXT NOT NULL DEFAULT '',
+      note TEXT NOT NULL DEFAULT '', updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
     )`);
+  } else {
+    // Migrate old columns: add dur_min, track_id, note if missing
+    const medCols = await db.getAllAsync<{ name: string }>("PRAGMA table_info(meditation_history)");
+    const medColNames = new Set(medCols.map(c => c.name));
+    if (!medColNames.has('dur_min')) {
+      await db.execAsync('ALTER TABLE meditation_history ADD COLUMN dur_min INTEGER NOT NULL DEFAULT 0');
+      // Migrate dur string to dur_min number
+      await db.runAsync("UPDATE meditation_history SET dur_min = CAST(REPLACE(dur, 'min', '') AS INTEGER) WHERE dur IS NOT NULL");
+    }
+    if (!medColNames.has('track_id')) {
+      await db.execAsync("ALTER TABLE meditation_history ADD COLUMN track_id TEXT NOT NULL DEFAULT ''");
+    }
+    if (!medColNames.has('note')) {
+      await db.execAsync("ALTER TABLE meditation_history ADD COLUMN note TEXT NOT NULL DEFAULT ''");
+    }
   }
 
   // Ensure user_profiles table exists
@@ -724,6 +742,16 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_items_plan_id ON plan_items(plan_id)');
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_item_checkins_lookup ON plan_item_checkins(plan_item_id, date)');
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_daily_custom_todos_lookup ON daily_custom_todos(plan_id, date)');
+
+  // Migrate checkin_reviews: add UNIQUE index on review_id for UPSERT support
+  try {
+    await db.runAsync(`DELETE FROM checkin_reviews WHERE rowid NOT IN (
+      SELECT MIN(rowid) FROM checkin_reviews GROUP BY review_id
+    )`);
+    await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_checkin_reviews_review_id ON checkin_reviews(review_id)');
+  } catch (e) {
+    console.warn('[DB] checkin_reviews unique index migration:', e);
+  }
 }
 
 // ── Generic helpers ───────────────────────────────────────────────

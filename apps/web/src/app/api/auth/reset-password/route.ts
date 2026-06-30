@@ -34,7 +34,9 @@ export async function POST(req: NextRequest) {
     ).get(email) as { code: string; expires_at: number } | undefined;
 
     if (!record) return NextResponse.json({ error: '请先获取验证码' }, { status: 400 });
-    if (record.code.length !== code.length || !crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
+    const codeBuf = Buffer.from(code.padEnd(64, '\0'));
+    const recordBuf = Buffer.from(record.code.padEnd(64, '\0'));
+    if (!crypto.timingSafeEqual(codeBuf, recordBuf) || code.length !== record.code.length) {
       return NextResponse.json({ error: '验证码错误' }, { status: 400 });
     }
     if (Date.now() > record.expires_at) return NextResponse.json({ error: '验证码已过期' }, { status: 400 });

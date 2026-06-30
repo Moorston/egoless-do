@@ -14,11 +14,10 @@ export function createMeditationSlice(
     totalMedMinutes: 0,
     medHistory: [],
 
-    addMedMinutes(min: number) {
+    addMedMinutes(min: number, trackId?: string, note?: string) {
       const { medHistory } = get();
-      const result = addMedMinutesToList(medHistory ?? [], get().totalMedMinutes, min);
-      // Reconcile totalMedMinutes from history to avoid drift from sync-deleted entries
-      const reconciledTotal = activeOnly(result.history).reduce((s, m) => s + (parseInt(m.dur) || 0), 0);
+      const result = addMedMinutesToList(medHistory ?? [], get().totalMedMinutes, min, trackId, note);
+      const reconciledTotal = activeOnly(result.history).reduce((s, m) => s + (m.durMin || 0), 0);
       set({ totalMedMinutes: reconciledTotal, medHistory: result.history });
       const today = new Date();
       const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -29,10 +28,7 @@ export function createMeditationSlice(
 
     calculateTotalMedMin() {
       const medHistory = get().medHistory;
-      const total = (medHistory ?? []).filter(m => !m.deleted).reduce((s, m) => {
-        const n = parseInt(m.dur) || 0;
-        return s + n;
-      }, 0);
+      const total = (medHistory ?? []).filter(m => !m.deleted).reduce((s, m) => s + (m.durMin || 0), 0);
       set({ totalMedMinutes: total });
     },
   });
