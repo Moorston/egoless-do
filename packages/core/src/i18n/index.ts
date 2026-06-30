@@ -17,5 +17,7 @@ export const translations: Record<string, I18nKeys> = {
 export const getT = (lang: string): I18nKeys => translations[lang] ?? zh;
 export const t = (key: I18nKey | (string & {}), lang: string = 'zh'): string => {
   const dict = translations[lang] ?? translations['zh'];
-  return (dict as unknown as Record<string, string>)?.[key] ?? key;
+  return (dict as unknown as Record<string, string>)?.[key]
+    ?? (translations['en'] as unknown as Record<string, string>)?.[key]
+    ?? key;
 };

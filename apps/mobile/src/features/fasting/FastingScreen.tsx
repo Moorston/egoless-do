@@ -119,6 +119,8 @@ export default function FastingScreen() {
   const sessionIdRef = useRef<string | null>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [insight, setInsight] = useState('');
+  const insightRef = useRef(insight);
+  insightRef.current = insight;
   const { resolveGoal } = useGoalResolver();
 
   // 禁食开始/结束时创建/删除会话
@@ -141,6 +143,11 @@ export default function FastingScreen() {
         console.warn('Failed to create fasting session:', e);
       });
     } else if (!isActive && sessionIdRef.current) {
+      // Flush final insight before deleting session
+      const finalInsight = insightRef.current;
+      if (finalInsight) {
+        updateSession(sessionIdRef.current, { insight: finalInsight }).catch(() => {});
+      }
       deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
     }

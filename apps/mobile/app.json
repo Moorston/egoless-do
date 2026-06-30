@@ -28,7 +28,8 @@
         "NSMotionUsageDescription": "用于计步和运动检测",
         "UIBackgroundModes": [
           "fetch",
-          "remote-notification"
+          "remote-notification",
+          "location"
         ]
       }
     },

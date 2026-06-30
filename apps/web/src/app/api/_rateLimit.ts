@@ -20,19 +20,19 @@ interface RateLimitEntry {
  * @param windowMs - Time window in milliseconds
  */
 const MAX_RATE_LIMIT_ENTRIES = 10_000;
-let _lastCleanup = 0;
 
 export function createRateLimiter(maxAttempts: number, windowMs: number) {
   const attempts = new Map<string, RateLimitEntry>();
+  let lastCleanup = 0;
 
   return function checkRateLimit(ip: string): boolean {
     const now = Date.now();
-    // Cleanup expired entries periodically
-    if (attempts.size > MAX_RATE_LIMIT_ENTRIES || (attempts.size > 0 && now > _lastCleanup + windowMs)) {
+    // Cleanup expired entries periodically (per-limiter)
+    if (attempts.size > MAX_RATE_LIMIT_ENTRIES || (attempts.size > 0 && now > lastCleanup + windowMs)) {
       for (const [key, entry] of attempts) {
         if (now > entry.resetAt) attempts.delete(key);
       }
-      _lastCleanup = now;
+      lastCleanup = now;
     }
     const entry = attempts.get(ip);
     if (!entry || now > entry.resetAt) {

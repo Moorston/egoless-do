@@ -23,8 +23,16 @@ export function jwtExp(token: string): number | null {
   return typeof payload?.exp === 'number' ? payload.exp : null;
 }
 
+let _lastBlacklistCleanup = 0;
+
 export function isBlacklisted(token: string): boolean {
   const row = db.prepare('SELECT 1 FROM token_blacklist WHERE token = ? LIMIT 1').get(token);
+  // Periodic cleanup of expired tokens (once per hour)
+  const now = Date.now();
+  if (now - _lastBlacklistCleanup > 3600_000) {
+    _lastBlacklistCleanup = now;
+    db.prepare('DELETE FROM token_blacklist WHERE expires_at < ?').run(now);
+  }
   return !!row;
 }
 

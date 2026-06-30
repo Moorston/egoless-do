@@ -16,6 +16,12 @@ export async function POST(request: NextRequest) {
     const projectId = dsnUrl.pathname.replace('/', '');
     const sentryHost = dsnUrl.host;
 
+    // SSRF protection: only allow legitimate Sentry hosts
+    const allowedPattern = /^[a-z0-9]+\.ingest\.(us\.)?sentry\.io$/;
+    if (!allowedPattern.test(sentryHost) && sentryHost !== 'sentry.io') {
+      return NextResponse.json({ error: 'invalid dsn host' }, { status: 400 });
+    }
+
     const upstreamUrl = `https://${sentryHost}/api/${projectId}/envelope/`;
     const upstreamResponse = await fetch(upstreamUrl, {
       method: 'POST',

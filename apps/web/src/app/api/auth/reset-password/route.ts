@@ -5,18 +5,11 @@ import { getAdminPb, escapeFilter } from '../../_pb';
 import db from '../../_db';
 import { sanitizeError } from '../../_errors';
 import { getClientIp, createRateLimiter } from '../../_rateLimit';
+import { validatePassword } from '../../_validation';
 
 const log = createLogger('Auth');
 
 const resetRateLimit = createRateLimiter(5, 60_000); // 5 req/min
-
-function validatePassword(pwd: string): string | null {
-  if (pwd.length < 8) return '密码需至少8位';
-  if (!/[a-zA-Z]/.test(pwd)) return '密码需包含字母';
-  if (!/[0-9]/.test(pwd)) return '密码需包含数字';
-  if (/^[a-zA-Z0-9]+$/.test(pwd)) return '密码需包含特殊符号';
-  return null;
-}
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);

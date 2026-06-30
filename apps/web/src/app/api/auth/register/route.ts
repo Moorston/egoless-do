@@ -5,16 +5,9 @@ import db from '../../_db';
 import { TOKEN_EXPIRES_IN } from '../../constants';
 import { sanitizeError } from '../../_errors';
 import { getClientIp, createRateLimiter } from '../../_rateLimit';
+import { validatePassword } from '../../_validation';
 
 const registerRateLimit = createRateLimiter(5, 60_000); // 5 req/min
-
-function validatePassword(pwd: string): string | null {
-  if (pwd.length < 8) return '密码需至少8位';
-  if (!/[a-zA-Z]/.test(pwd)) return '密码需包含字母';
-  if (!/[0-9]/.test(pwd)) return '密码需包含数字';
-  if (/^[a-zA-Z0-9]+$/.test(pwd)) return '密码需包含特殊符号';
-  return null;
-}
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -45,14 +38,14 @@ export async function POST(req: NextRequest) {
     ).get(email) as { code: string; expires_at: number } | undefined;
 
     if (!record) return NextResponse.json({ error: '请先获取验证码' }, { status: 400 });
+    if (Date.now() > record.expires_at) return NextResponse.json({ error: '验证码已过期' }, { status: 400 });
     // Constant-time comparison to prevent timing attacks
     if (record.code.length !== code.length || !crypto.timingSafeEqual(Buffer.from(record.code), Buffer.from(code))) {
       return NextResponse.json({ error: '验证码错误' }, { status: 400 });
     }
-    if (Date.now() > record.expires_at) return NextResponse.json({ error: '验证码已过期' }, { status: 400 });
 
-    // Delete used verification code to prevent reuse
-    db.prepare('DELETE FROM verification_codes WHERE email = ?').run(email);
+    // Delete used verification code + prune expired codes
+    db.prepare('DELETE FROM verification_codes WHERE email = ? OR expires_at < ?').run(email, Date.now());
 
     const pb = getPb();
     const user = await pb.collection('users').create({
