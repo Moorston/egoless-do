@@ -381,6 +381,21 @@ CREATE TABLE IF NOT EXISTS sleep_records (
 );
 CREATE INDEX IF NOT EXISTS idx_sleep_date ON sleep_records(date);
 
+CREATE TABLE IF NOT EXISTS give_entries (
+  id            TEXT PRIMARY KEY,
+  ts            INTEGER NOT NULL,
+  give_type     TEXT NOT NULL DEFAULT 'material',
+  content       TEXT NOT NULL DEFAULT '',
+  motivation    TEXT,
+  anonymous     INTEGER NOT NULL DEFAULT 0,
+  amount        REAL,
+  reflection_id TEXT,
+  updated_at    INTEGER,
+  deleted       INTEGER NOT NULL DEFAULT 0,
+  synced        INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_give_ts ON give_entries(ts);
+
 CREATE TABLE IF NOT EXISTS eating_motivations (
   id             TEXT PRIMARY KEY,
   food_id        TEXT NOT NULL,
@@ -449,6 +464,19 @@ CREATE TABLE IF NOT EXISTS fear_achievements (
   deleted        INTEGER NOT NULL DEFAULT 0,
   synced         INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS sutra_reading_sessions (
+  id             TEXT PRIMARY KEY,
+  mantra_id      TEXT NOT NULL,
+  date           TEXT NOT NULL,
+  pages_read     INTEGER NOT NULL DEFAULT 0,
+  duration_sec   INTEGER NOT NULL DEFAULT 0,
+  completed      INTEGER NOT NULL DEFAULT 0,
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_sutra_reading_date ON sutra_reading_sessions(date);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -956,9 +984,34 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
-}
 
-// ── Generic helpers ───────────────────────────────────────────────
+  // Ensure mantra_defs table exists
+  const mantraDefsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='mantra_defs'"
+  );
+  if (!mantraDefsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS mantra_defs (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, subtitle TEXT,
+      category TEXT NOT NULL DEFAULT 'custom', sort_order INTEGER NOT NULL DEFAULT 0,
+      target_count INTEGER, updated_at INTEGER NOT NULL,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure mantra_sessions table exists
+  const mantraSessionsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='mantra_sessions'"
+  );
+  if (!mantraSessionsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS mantra_sessions (
+      id TEXT PRIMARY KEY, mantra_id TEXT NOT NULL, date TEXT NOT NULL,
+      count INTEGER NOT NULL, rounds INTEGER NOT NULL, duration_sec INTEGER NOT NULL,
+      started_at INTEGER NOT NULL, completed_at INTEGER NOT NULL,
+      target_rounds INTEGER, dedication TEXT, updated_at INTEGER NOT NULL,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+} ───────────────────────────────────────────────
 export async function getState(db: SQLite.SQLiteDatabase, key: string): Promise<string | null> {
   const row = await db.getFirstAsync<{ value: string }>(
     'SELECT value FROM app_state WHERE key = ?', [key]

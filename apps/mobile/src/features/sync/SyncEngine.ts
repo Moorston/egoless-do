@@ -19,10 +19,11 @@ import {
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
   rowToPlanItemCheckin, rowToGrace, rowToDailyCustomTodo, rowToDailyTodoHistory,
   rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
-  rowToBodyGoal, rowToBodyPlan, rowToWeightRecord, rowToBodyCheckin, rowToSleep,
+  rowToBodyGoal, rowToBodyPlan, rowToWeightRecord, rowToBodyCheckin, rowToSleep, rowToGive,
   rowToMotivationEntry, rowToCustomWuxing,
-  rowToVision, rowToVisionPractice, rowToDedication,
+  rowToVision, rowToVisionPractice, rowToDedication, rowToMantraDef, rowToMantraSession,
   rowToFearEntry, rowToCourageEntry, rowToFearAchievement,
+  rowToSutraReading,
 } from '../../store/rowMappers';
 import { dbGetAllFoodEntries } from '../../db/queries';
 import NetInfo from '@react-native-community/netinfo';
@@ -57,8 +58,11 @@ const ENTITY_STORE_KEY: Record<string, string> = {
   bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans',
   weightRecord: 'weightRecords', bodyCheckin: 'bodyCheckins',
   sleep: 'sleepHistory',
+  give: 'giveHistory',
   motivationEntry: 'motivationLog', customWuxing: 'customWuxingMaps',
   vision: 'visions', visionPractice: 'visionPractices', dedication: 'dedications',
+  mantraDef: 'mantraDefs', mantraSession: 'mantraSessions',
+  sutraReading: 'readingSessions',
   fearEntry: 'fearEntries', courageEntry: 'courageEntries', fearAchievement: 'achievements',
 };
 const ENTITY_COLL_MAP: Record<string, string> = {
@@ -72,8 +76,11 @@ const ENTITY_COLL_MAP: Record<string, string> = {
   body_goals: 'bodyGoal', body_plans: 'bodyPlan',
   body_weight_records: 'weightRecord', body_checkins: 'bodyCheckin',
   sleep_records: 'sleep',
+  give_entries: 'give',
   eating_motivations: 'motivationEntry', custom_wuxing_maps: 'customWuxing',
   visions: 'vision', vision_practices: 'visionPractice', dedications: 'dedication',
+  mantra_defs: 'mantraDef', mantra_sessions: 'mantraSession',
+  sutra_reading_sessions: 'sutraReading',
   fear_entries: 'fearEntry', courage_entries: 'courageEntry', fear_achievements: 'fearAchievement',
 };
 // Validate all SCHEMAS entities are covered by ENTITY_STORE_KEY or handled specially
@@ -450,8 +457,11 @@ export class SyncEngine {
     bodyGoal: rowToBodyGoal, bodyPlan: rowToBodyPlan,
     weightRecord: rowToWeightRecord, bodyCheckin: rowToBodyCheckin,
     sleep: rowToSleep,
+    give: rowToGive,
     motivationEntry: rowToMotivationEntry, customWuxing: rowToCustomWuxing,
     vision: rowToVision, visionPractice: rowToVisionPractice, dedication: rowToDedication,
+    mantraDef: rowToMantraDef, mantraSession: rowToMantraSession,
+    sutraReading: rowToSutraReading,
     fearEntry: rowToFearEntry, courageEntry: rowToCourageEntry, fearAchievement: rowToFearAchievement,
   };
 
@@ -941,7 +951,7 @@ export class SyncEngine {
   private async purgeDeletedRecords(): Promise<void> {
     try {
       const db = await openDatabase();
-      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews','body_goals','body_plans','body_weight_records','body_checkins','visions','vision_practices','dedications'];
+      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews','body_goals','body_plans','body_weight_records','body_checkins','visions','vision_practices','dedications','mantra_defs','mantra_sessions'];
       for (const table of tables) {
         await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
       }
@@ -1017,14 +1027,18 @@ export class SyncEngine {
       weightRecord: { table: 'body_weight_records', query: 'SELECT * FROM body_weight_records WHERE deleted = 0', mapper: rowToWeightRecord, storeKey: 'weightRecords' },
       bodyCheckin: { table: 'body_checkins', query: 'SELECT * FROM body_checkins WHERE deleted = 0', mapper: rowToBodyCheckin, storeKey: 'bodyCheckins' },
       sleep: { table: 'sleep_records', query: 'SELECT * FROM sleep_records WHERE deleted = 0', mapper: rowToSleep, storeKey: 'sleepHistory' },
+      give: { table: 'give_entries', query: 'SELECT * FROM give_entries WHERE deleted = 0', mapper: rowToGive, storeKey: 'giveHistory' },
       motivationEntry: { table: 'eating_motivations', query: 'SELECT * FROM eating_motivations WHERE deleted = 0', mapper: rowToMotivationEntry, storeKey: 'motivationLog' },
       customWuxing: { table: 'custom_wuxing_maps', query: 'SELECT * FROM custom_wuxing_maps WHERE deleted = 0', mapper: rowToCustomWuxing, storeKey: 'customWuxingMaps' },
       vision: { table: 'visions', query: 'SELECT * FROM visions WHERE deleted = 0', mapper: rowToVision, storeKey: 'visions' },
       visionPractice: { table: 'vision_practices', query: 'SELECT * FROM vision_practices WHERE deleted = 0', mapper: rowToVisionPractice, storeKey: 'visionPractices' },
+      mantraDef: { table: 'mantra_defs', query: 'SELECT * FROM mantra_defs WHERE deleted = 0', mapper: rowToMantraDef, storeKey: 'mantraDefs' },
+      mantraSession: { table: 'mantra_sessions', query: 'SELECT * FROM mantra_sessions WHERE deleted = 0', mapper: rowToMantraSession, storeKey: 'mantraSessions' },
       dedication: { table: 'dedications', query: 'SELECT * FROM dedications WHERE deleted = 0', mapper: rowToDedication, storeKey: 'dedications' },
       fearEntry: { table: 'fear_entries', query: 'SELECT * FROM fear_entries WHERE deleted = 0', mapper: rowToFearEntry, storeKey: 'fearEntries' },
       courageEntry: { table: 'courage_entries', query: 'SELECT * FROM courage_entries WHERE deleted = 0', mapper: rowToCourageEntry, storeKey: 'courageEntries' },
       fearAchievement: { table: 'fear_achievements', query: 'SELECT * FROM fear_achievements WHERE deleted = 0', mapper: rowToFearAchievement, storeKey: 'achievements' },
+      sutraReading: { table: 'sutra_reading_sessions', query: 'SELECT * FROM sutra_reading_sessions WHERE deleted = 0', mapper: rowToSutraReading, storeKey: 'readingSessions' },
     };
 
     const targets = entities ?? Object.keys(REHYDRATE_MAP);
@@ -1102,7 +1116,7 @@ export class SyncEngine {
   async resumeInitialSync(token: string, userId?: string): Promise<void> {
     const db = await openDatabase();
     if ((await getState(db, 'initialSyncDone')) === 'true') return;
-    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication'];
+    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession'];
 
     for (const entity of allEntities) {
       const p = await getSyncProgress(entity);

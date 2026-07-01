@@ -7,9 +7,11 @@ export const SYNC_ENTITIES = [
   'habit', 'reflection', 'fasting', 'food', 'checkin', 'meditation', 'profile', 'exercise',
   'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'grace',
   'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview',
-  'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep',
+  'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give',
   'motivationEntry', 'customWuxing',
   'vision', 'visionPractice', 'dedication',
+  'mantraDef', 'mantraSession',
+  'sutraReading',
   'fearEntry', 'courageEntry', 'fearAchievement',
 ] as const;
 

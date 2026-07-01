@@ -26,8 +26,11 @@ import PracticeScreen   from '../features/practice/PracticeScreen';
 import ExerciseScreen   from '../features/exercise/ExerciseScreen';
 import BreathingScreen  from '../features/breathing/BreathingScreen';
 import SleepScreen      from '../features/sleep/SleepScreen';
+import PreceptScreen    from '../features/practice/PreceptScreen';
 import BodyScreen       from '../features/practice/BodyScreen';
 import VowScreen        from '../features/vow/VowScreen';
+import MantraScreen     from '../features/mantra/MantraScreen';
+import SutraScreen      from '../features/sutra/SutraScreen';
 import DietScreen       from '../features/diet/DietScreen';
 import MindScreen       from '../features/mind/MindScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
@@ -54,6 +57,7 @@ import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
 import FastHistoryPage, { FastCalendarScreen } from '../features/fasting/FastHistoryPage';
 import MedHistoryPage, { MedCalendarScreen } from '../features/meditation/MedHistoryPage';
 import SleepHistoryPage from '../features/sleep/SleepHistoryPage';
+import PreceptHistoryPage from '../features/practice/PreceptHistoryPage';
 import FoodLogPage       from '../features/home/screens/FoodLogPage';
 import GracePage         from '../features/home/screens/GracePage';
 import StreakBreakScreen from '../features/home/screens/StreakBreakScreen';
@@ -245,8 +249,11 @@ function MainTabs() {
       <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title: t('navTabMeditation', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Breathing"   component={BreathingScreen}   options={{ title: '调息', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Sleep"       component={SleepScreen}       options={{ title: '调眠', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Precept"    component={PreceptScreen}     options={{ title: '持戒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Body"        component={BodyScreen}        options={{ title: '调身', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Vow"         component={VowScreen}         options={{ title: '发愿', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Mantra"      component={MantraScreen}      options={{ title: '持咒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Sutra"       component={SutraScreen}       options={{ title: '诵经', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Diet"        component={DietScreen}        options={{ title: '调食', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Mind"        component={MindScreen}        options={{ title: '调心', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
@@ -349,6 +356,7 @@ export default function AppNavigator() {
         <Stack.Screen name="MedHistory"   component={MedHistoryPage} />
         <Stack.Screen name="MedCalendar"  component={MedCalendarScreen} />
         <Stack.Screen name="SleepHistory" component={SleepHistoryPage} />
+        <Stack.Screen name="PreceptHistory" component={PreceptHistoryPage} />
         <Stack.Screen name="FoodLog"      component={FoodLogPage} />
         <Stack.Screen name="Grace"        component={GracePage} />
         <Stack.Screen name="StreakBreak" component={StreakBreakScreen} />

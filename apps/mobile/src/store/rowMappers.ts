@@ -8,6 +8,7 @@ import type {
   ThoughtTrail, TrailNote, ReflectionLink, CheckinReview,
   AIMode, ModelConfig, SleepEntry, EatingMotivationEntry, CustomWuxingMap,
   Vision, VisionPractice, Dedication, FearEntry, CourageEntry, FearAchievement,
+  MantraDef, MantraSession, SutraReadingSession,
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
@@ -115,6 +116,10 @@ export function rowToSleep(r: Record<string, unknown>): SleepEntry {
   return rowToEntityMap.sleep(r) as unknown as SleepEntry;
 }
 
+export function rowToGive(r: Record<string, unknown>): Record<string, unknown> {
+  return rowToEntityMap.give(r);
+}
+
 export function rowToMotivationEntry(r: Record<string, unknown>): EatingMotivationEntry {
   return rowToEntityMap.motivationEntry(r) as unknown as EatingMotivationEntry;
 }
@@ -143,6 +148,18 @@ export function rowToCourageEntry(r: Record<string, unknown>): CourageEntry {
   return rowToEntityMap.courageEntry(r) as unknown as CourageEntry;
 }
 
+export function rowToMantraDef(r: Record<string, unknown>): MantraDef {
+  return rowToEntityMap.mantraDef(r) as unknown as MantraDef;
+}
+
+export function rowToMantraSession(r: Record<string, unknown>): MantraSession {
+  return rowToEntityMap.mantraSession(r) as unknown as MantraSession;
+}
+
 export function rowToFearAchievement(r: Record<string, unknown>): FearAchievement {
   return rowToEntityMap.fearAchievement(r) as unknown as FearAchievement;
+}
+
+export function rowToSutraReading(r: Record<string, unknown>): SutraReadingSession {
+  return rowToEntityMap.sutraReading(r) as unknown as SutraReadingSession;
 }

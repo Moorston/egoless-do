@@ -258,7 +258,7 @@ export interface I18nKeys {
   clearDataLoading: string; clearDataSuccess: string; clearDataPushFail: string;
   settingsFreePlan: string; settingsDefaultName: string;
   settingsEditProfile: string; settingsNickname: string;
-  profileStats: string; profileBodyData: string; profileWeight: string; profileWaterGoal: string; profileAccount: string;
+  profileStats: string; profileBodyData: string; profileWeight: string; profileHeight: string; profileGender: string;   profileGenderMale: string; profileGenderFemale: string; profileGenderPrivate: string; profileWaterGoal: string; profileAccount: string;
   profileJourney: string; profileMotto: string; profileMottoPlaceholder: string; profileJoinedDays: string; profileLongestStreak: string; profileTotalExercise: string; profileTotalFasting: string;
   profilePermDenied: string; profilePermDeniedMsg: string;
   shareCardShare: string; shareCardSave: string; shareCardLoading: string;
@@ -593,6 +593,19 @@ export interface I18nKeys {
   practiceMindInsight: string; practiceMindInsightDesc: string;
   practiceMindMind: string; practiceMindMindDesc: string;
   practiceActionPrecept: string; practiceActionPreceptDesc: string;
+  preceptTitle: string; preceptQuote: string; preceptStreak: string; preceptTotalDays: string; preceptMonthRate: string;
+  preceptAvoid: string; preceptPractice: string; preceptDone: string; preceptNotDone: string; preceptViolated: string;
+  preceptTriggerTitle: string; preceptReflectionTitle: string; preceptReflectionPlaceholder: string;
+  preceptSave: string; preceptSkip: string; preceptAddNew: string; preceptAddCustom: string;
+  preceptTemplateName: string; preceptTemplateGuide: string; preceptTargetDays: string;
+  preceptType: string; preceptTypeAvoid: string; preceptTypePractice: string;
+  preceptHistory: string; preceptViolations: string; preceptInsights: string; preceptRecentInsight: string;
+  preceptAllDone: string; preceptQuoteText: string; preceptDays: string;
+  giveTitle: string; giveQuote: string; giveMaterial: string; giveDharma: string; giveFearless: string;
+  giveTotal: string; giveMonth: string; giveWeek: string; giveRecord: string; giveRecent: string;
+  giveHistory: string; giveContent: string; giveContentPlaceholder: string; giveMotivation: string;
+  giveMotivationPlaceholder: string; giveAmount: string; giveAnonymous: string; giveAnonymousHint: string;
+  giveSave: string; giveCancel: string; giveDistribution: string; giveType: string;
   practiceActionMantra: string; practiceActionMantraDesc: string;
   practiceActionSutra: string; practiceActionSutraDesc: string;
   practiceActionGive: string; practiceActionGiveDesc: string;
@@ -694,6 +707,26 @@ export interface I18nKeys {
   mindInsightFearTime: string; mindInsightIndexDrop: string;
   mindNoFears: string; mindNoCourage: string; mindFearCount: string;
   mindHeatmapHint: string; mindFearDetail: string; mindSortByIndex: string;
+
+  // Sutra (诵经)
+  sutraTitle: string; sutraTabLibrary: string; sutraTabCounter: string; sutraTabStats: string;
+  sutraAddCustom: string; sutraStartChant: string; sutraStartReading: string;
+  sutraReadMode: string; sutraChantMode: string;
+  sutraRound: string; sutraTargetRounds: string; sutraCount: string;
+  sutraDedication: string; sutraDedicationSelect: string; sutraDedicationCustom: string;
+  sutraDedicationAll: string; sutraDedicationFamily: string;
+  sutraComplete: string; sutraSaveComplete: string;
+  sutraTotalChants: string; sutraTotalDuration: string; sutraStreak: string;
+  sutraCategoryDharani: string; sutraCategorySutra: string; sutraCategoryCustom: string;
+  sutraNoRecords: string; sutraHistory: string;
+  sutraFontSizeSmaller: string; sutraFontSizeLarger: string;
+  sutraSimplified: string; sutraTraditional: string;
+  sutraPagesRead: string; sutraReadingMode: string;
+  sutraChantComplete: string; sutraPause: string; sutraResume: string;
+  sutraStop: string; sutraBeepSound: string;
+  sutraSearchPlaceholder: string; sutraCustomMantra: string;
+  sutraCustomMantraName: string; sutraCustomMantraSubtitle: string;
+  sutraCustomMantraTarget: string;
 
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;
@@ -820,6 +853,23 @@ export interface I18nKeys {
   vowDedNoWrite: string; vowDedPrevWeek: string; vowDedSummary: string;
   vowDedAutoHint: string;
   vowAchievedList: string; vowExpandMore: string; vowCollapse: string;
+
+  // Mantra
+  mantraTitle: string; mantraSelect: string; mantraStart: string;
+  mantraCount: string; mantraRounds: string; mantraPause: string; mantraResume: string;
+  mantraStop: string; mantraBack: string; mantraTotal: string; mantraStreak: string;
+  mantraTarget: string; mantraCustom: string; mantraCustomName: string;
+  mantraCustomSubtitle: string; mantraMyMantras: string;
+  mantraPresetLibrary: string; mantraAdd: string; mantraDelete: string;
+  mantraNoMantra: string; mantraAddHint: string;
+  mantraSessionComplete: string; mantraSessionCount: string;
+  mantraSessionRounds: string; mantraSessionDuration: string;
+  mantraCumulative: string; mantraDays: string; mantraMilestone: string;
+  mantraDedication: string; mantraDedicationHint: string;
+  mantraDedicationPlaceholder: string;
+  mantraFinish: string; mantraTargetRounds: string;
+  mantraRoundComplete: string; mantraTapAnywhere: string;
+  mantraBeats: string; mantraPerRound: string;
 }
 
 export type I18nKey = keyof I18nKeys;

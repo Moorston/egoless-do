@@ -10,6 +10,7 @@ export type RootStackParamList = {
   MedHistory: undefined;
   MedCalendar: undefined;
   SleepHistory: undefined;
+  PreceptHistory: undefined;
   FoodLog: undefined;
   Grace: undefined;
   StreakBreak: undefined;
@@ -49,7 +50,10 @@ export type MainTabParamList = {
   Breathing: undefined;
   Sleep: undefined;
   Body: undefined;
+  Precept: undefined;
   Vow: undefined;
+  Sutra: undefined;
+  Mantra: undefined;
   Exercise: undefined;
   Settings: undefined;
   Reflections: { showNew?: boolean; trailId?: string } | undefined;

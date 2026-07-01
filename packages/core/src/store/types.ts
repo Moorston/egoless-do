@@ -8,9 +8,11 @@ import type {
   TrailNote, TrailInsightCache, TrailReviewCache,
   PlanItemSource, UnifiedPlanItemForm,
   SleepEntry, SleepGoal,
+  GiveEntry,
   EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats,
   MotivationStats, EmotionSensitiveDay,
   FearEntry, CourageEntry, FearAchievement, FearStats, CourageStats, BodyHeatmap, FearInsight, DominantFearType, FearTimeSlot, AchievementType,
+  SutraReadingSession,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -27,6 +29,8 @@ import type { VisionSlice } from './createVisionSlice';
 export type { VisionSlice } from './createVisionSlice';
 import type { DedicationSlice } from './createDedicationSlice';
 export type { DedicationSlice } from './createDedicationSlice';
+import type { MantraSlice } from './createMantraSlice';
+export type { MantraSlice } from './createMantraSlice';
 import type { MindSlice } from './createMindSlice';
 export type { MindSlice } from './createMindSlice';
 
@@ -112,6 +116,12 @@ export interface SleepSlice {
   completeBarrier: (opts: { barrierMin: number; awayMin: number; practice?: string[] }) => void;
   saveSleepDiary: (entry: Partial<SleepEntry>) => void;
   setSleepGoal: (goal: SleepGoal) => void;
+}
+
+export interface GiveSlice {
+  giveHistory: GiveEntry[];
+  addGive: (entry: Omit<GiveEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
+  deleteGive: (id: string) => void;
 }
 
 // ─── Legacy UiSlice (compatibility alias) ──────────────────────
@@ -319,9 +329,9 @@ export interface MindSlice {
 
 // ─── FullStore composition ─────────────────────────────────────
 
-export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice
+export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice & GiveSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MindSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MantraSlice & MindSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -350,14 +360,18 @@ export interface SyncDataMap {
   weightRecord: import('../types').WeightRecord;
   bodyCheckin: import('../types').BodyCheckin;
   sleep: SleepEntry;
+  give: GiveEntry;
   motivationEntry: EatingMotivationEntry;
   customWuxing: CustomWuxingMap;
   vision: import('../types').Vision;
   visionPractice: import('../types').VisionPractice;
   dedication: import('../types').Dedication;
+  mantraDef: import('../types').MantraDef;
+  mantraSession: import('../types').MantraSession;
   fearEntry: FearEntry;
   courageEntry: CourageEntry;
   fearAchievement: FearAchievement;
+  sutraReading: SutraReadingSession;
 }
 
 /** Type-safe storage adapter */

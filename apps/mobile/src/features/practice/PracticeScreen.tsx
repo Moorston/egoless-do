@@ -3,7 +3,8 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import { isPreceptHabit } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation, useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -61,9 +62,9 @@ export default function PracticeScreen() {
       groupKey: 'practiceGroupAction',
       color: '#F59E0B',
       items: [
-        { key: 'precept', icon: Shield, labelKey: 'practiceActionPrecept', descKey: 'practiceActionPreceptDesc', color: '#F59E0B' },
-        { key: 'mantra', icon: BellRing, labelKey: 'practiceActionMantra', descKey: 'practiceActionMantraDesc', color: '#FBBF24' },
-        { key: 'sutra', icon: ScrollText, labelKey: 'practiceActionSutra', descKey: 'practiceActionSutraDesc', color: '#FCD34D' },
+        { key: 'precept', icon: Shield, labelKey: 'practiceActionPrecept', descKey: 'practiceActionPreceptDesc', color: '#F59E0B', route: 'Precept' },
+        { key: 'mantra', icon: BellRing, labelKey: 'practiceActionMantra', descKey: 'practiceActionMantraDesc', color: '#FBBF24', route: 'Mantra' },
+        { key: 'sutra', icon: ScrollText, labelKey: 'practiceActionSutra', descKey: 'practiceActionSutraDesc', color: '#FCD34D', route: 'Sutra' },
         { key: 'give', icon: HandHeart, labelKey: 'practiceActionGive', descKey: 'practiceActionGiveDesc', color: '#FDE68A' },
       ],
     },
@@ -84,8 +85,18 @@ export default function PracticeScreen() {
     const exerciseMin = Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60);
     const fastingCount = (store.fastingHistory ?? []).filter(f => !f.deleted && f.endedAt && f.startedAt >= weekStart).length;
     const checkinDays = (store.checkinHistory ?? []).filter(c => !c.deleted && c.done && new Date(c.date + 'T00:00:00').getTime() >= weekStart).length;
-    return { exerciseMin, fastingCount, checkinDays };
-  }, [store.exerciseLog, store.fastingHistory, store.checkinHistory]);
+    // Precept days this week
+    const preceptHabits = (store.habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
+    const preceptWeekDays = new Set<string>();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now - i * 24 * 3600 * 3600 * 1000);
+      const ds = dateStr(d);
+      if (preceptHabits.length > 0 && preceptHabits.some(h => (h.checkedDates ?? []).includes(ds))) {
+        preceptWeekDays.add(ds);
+      }
+    }
+    return { exerciseMin, fastingCount, checkinDays, preceptDays: preceptWeekDays.size };
+  }, [store.exerciseLog, store.fastingHistory, store.checkinHistory, store.habits]);
 
   const handlePress = (item: PracticeItem) => {
     if (item.route) {
@@ -120,6 +131,7 @@ export default function PracticeScreen() {
               { Icon: Binary, color: '#8B5CF6', value: store.totalMedMinutes, unit: T('medMinutes') },
               { Icon: Dumbbell, color: '#10B981', value: weeklyStats.exerciseMin, unit: T('medMinutes') },
               { Icon: Timer, color: '#F59E0B', value: weeklyStats.fastingCount, unit: T('fastTimes') },
+              { Icon: Shield, color: '#F59E0B', value: weeklyStats.preceptDays, unit: T('preceptDays') || '天' },
               { Icon: Flame, color: '#EF4444', value: weeklyStats.checkinDays, unit: T('calendarDays') },
             ].map((s, i) => (
               <View key={i} style={styles.summaryItem}>
