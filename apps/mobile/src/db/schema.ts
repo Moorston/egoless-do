@@ -403,6 +403,52 @@ CREATE TABLE IF NOT EXISTS custom_wuxing_maps (
   deleted        INTEGER NOT NULL DEFAULT 0,
   synced         INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS fear_entries (
+  id                    TEXT PRIMARY KEY,
+  date                  TEXT NOT NULL,
+  timestamp             INTEGER NOT NULL,
+  content               TEXT NOT NULL,
+  trigger_context       TEXT NOT NULL DEFAULT '',
+  category              TEXT NOT NULL DEFAULT 'unknown',
+  classification        TEXT NOT NULL DEFAULT 'mixed',
+  classification_answers TEXT NOT NULL DEFAULT '{}',
+  worst_outcome         TEXT,
+  probability           INTEGER,
+  coping_ability        INTEGER,
+  fear_index            INTEGER,
+  body_locations        TEXT NOT NULL DEFAULT '[]',
+  occurrence_count      INTEGER NOT NULL DEFAULT 1,
+  updated_at            INTEGER,
+  deleted               INTEGER NOT NULL DEFAULT 0,
+  synced                INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_fear_date ON fear_entries(date);
+
+CREATE TABLE IF NOT EXISTS courage_entries (
+  id             TEXT PRIMARY KEY,
+  date           TEXT NOT NULL,
+  timestamp      INTEGER NOT NULL,
+  fear_id        TEXT,
+  action         TEXT NOT NULL,
+  fear_before    INTEGER NOT NULL,
+  feeling        TEXT,
+  feeling_tags   TEXT NOT NULL DEFAULT '[]',
+  streak         INTEGER NOT NULL DEFAULT 0,
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_courage_date ON courage_entries(date);
+
+CREATE TABLE IF NOT EXISTS fear_achievements (
+  id             TEXT PRIMARY KEY,
+  type           TEXT NOT NULL,
+  unlocked_at    INTEGER NOT NULL,
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -868,6 +914,45 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
       pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
       tags TEXT, note TEXT, updated_at INTEGER NOT NULL,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure visions table exists
+  const visionsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='visions'"
+  );
+  if (!visionsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS visions (
+      id TEXT PRIMARY KEY, type TEXT NOT NULL, text TEXT NOT NULL,
+      time_frame TEXT, deadline TEXT, status TEXT NOT NULL DEFAULT 'active',
+      achieved_at INTEGER, sort_order INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure vision_practices table exists
+  const visionPracticesCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='vision_practices'"
+  );
+  if (!visionPracticesCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS vision_practices (
+      id TEXT PRIMARY KEY, vision_id TEXT NOT NULL, ref_type TEXT NOT NULL,
+      ref_id TEXT NOT NULL, updated_at INTEGER NOT NULL,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure dedications table exists
+  const dedicationsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='dedications'"
+  );
+  if (!dedicationsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS dedications (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, period_label TEXT NOT NULL,
+      type TEXT NOT NULL, practice_days INTEGER NOT NULL, total_days INTEGER NOT NULL,
+      habit_stats TEXT, plan_progress TEXT, vision_progress TEXT,
+      insight TEXT, adjustment TEXT, updated_at INTEGER NOT NULL,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }

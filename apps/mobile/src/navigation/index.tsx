@@ -27,7 +27,9 @@ import ExerciseScreen   from '../features/exercise/ExerciseScreen';
 import BreathingScreen  from '../features/breathing/BreathingScreen';
 import SleepScreen      from '../features/sleep/SleepScreen';
 import BodyScreen       from '../features/practice/BodyScreen';
+import VowScreen        from '../features/vow/VowScreen';
 import DietScreen       from '../features/diet/DietScreen';
+import MindScreen       from '../features/mind/MindScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
 
 // Stack screens — reflections (via barrel exports)
@@ -244,7 +246,9 @@ function MainTabs() {
       <Tab.Screen name="Breathing"   component={BreathingScreen}   options={{ title: '调息', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Sleep"       component={SleepScreen}       options={{ title: '调眠', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Body"        component={BodyScreen}        options={{ title: '调身', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Vow"         component={VowScreen}         options={{ title: '发愿', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Diet"        component={DietScreen}        options={{ title: '调食', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Mind"        component={MindScreen}        options={{ title: '调心', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />

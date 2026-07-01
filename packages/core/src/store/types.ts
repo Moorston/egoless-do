@@ -10,6 +10,7 @@ import type {
   SleepEntry, SleepGoal,
   EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats,
   MotivationStats, EmotionSensitiveDay,
+  FearEntry, CourageEntry, FearAchievement, FearStats, CourageStats, BodyHeatmap, FearInsight, DominantFearType, FearTimeSlot, AchievementType,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -22,6 +23,12 @@ import type { WeightSlice } from './createWeightSlice';
 export type { WeightSlice } from './createWeightSlice';
 import type { BodyCheckinSlice } from './createBodyCheckinSlice';
 export type { BodyCheckinSlice } from './createBodyCheckinSlice';
+import type { VisionSlice } from './createVisionSlice';
+export type { VisionSlice } from './createVisionSlice';
+import type { DedicationSlice } from './createDedicationSlice';
+export type { DedicationSlice } from './createDedicationSlice';
+import type { MindSlice } from './createMindSlice';
+export type { MindSlice } from './createMindSlice';
 
 // ─── Granular slice interfaces ─────────────────────────────────
 
@@ -284,11 +291,37 @@ export interface DietSlice {
   getEmotionSensitiveDays: (dateFrom: string, dateTo: string) => EmotionSensitiveDay[];
 }
 
+// ─── Mind slice ──────────────────────────────────────────────
+
+export interface MindSlice {
+  fearEntries: FearEntry[];
+  courageEntries: CourageEntry[];
+  achievements: FearAchievement[];
+
+  addFearEntry: (entry: Omit<FearEntry, 'id' | 'updatedAt' | 'deleted' | 'occurrenceCount'>) => void;
+  updateFearEntry: (id: string, patch: Partial<FearEntry>) => void;
+  deleteFearEntry: (id: string) => void;
+  addCourageEntry: (entry: Omit<CourageEntry, 'id' | 'updatedAt' | 'deleted' | 'streak'>) => void;
+  deleteCourageEntry: (id: string) => void;
+  unlockAchievement: (type: AchievementType) => void;
+  checkAchievements: () => void;
+
+  getFearStats: () => FearStats;
+  getFearIndexTrend: (fearId: string) => number[];
+  getCourageStreak: () => number;
+  getAchievements: () => FearAchievement[];
+  getBodyHeatmap: () => BodyHeatmap;
+  getDominantFearType: () => DominantFearType | null;
+  getFearTimeDistribution: () => FearTimeSlot[];
+  getCourageTrend: () => { date: string; avgFearBefore: number }[];
+  getCrossModuleInsights: () => FearInsight[];
+}
+
 // ─── FullStore composition ─────────────────────────────────────
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MindSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -319,6 +352,12 @@ export interface SyncDataMap {
   sleep: SleepEntry;
   motivationEntry: EatingMotivationEntry;
   customWuxing: CustomWuxingMap;
+  vision: import('../types').Vision;
+  visionPractice: import('../types').VisionPractice;
+  dedication: import('../types').Dedication;
+  fearEntry: FearEntry;
+  courageEntry: CourageEntry;
+  fearAchievement: FearAchievement;
 }
 
 /** Type-safe storage adapter */

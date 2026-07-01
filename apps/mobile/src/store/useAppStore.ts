@@ -7,7 +7,7 @@ import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice, SleepSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, BodySlice,
-  WeightSlice, BodyCheckinSlice, DietSlice,
+  WeightSlice, BodyCheckinSlice, DietSlice, VisionSlice, DedicationSlice, MindSlice,
 } from '@egoless-do/core';
 import {
   setApiBase, setPushApiBase, setSyncApiBase, DAILY_RESET_KEY, DailyResetManager,
@@ -15,6 +15,7 @@ import {
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice, createBodySlice,
   createWeightSlice, createBodyCheckinSlice, createDietSlice,
+  createVisionSlice, createDedicationSlice, createMindSlice,
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
@@ -123,7 +124,7 @@ AppState.addEventListener('change', async (state) => {
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
   & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice
-  & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice;
+  & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MindSlice;
 
 /** Partial store type for setState calls */
 export type PartialMobileStore = Partial<MobileStore>;
@@ -170,6 +171,9 @@ export const useAppStore = create<MobileStore>()(
       ...createWeightSlice(adapter, triggerAutoSync)(...a),
       ...createBodyCheckinSlice(adapter, triggerAutoSync)(...a),
       ...createDietSlice(adapter, triggerAutoSync)(...a),
+      ...createVisionSlice(adapter, triggerAutoSync)(...a),
+      ...createDedicationSlice(adapter, triggerAutoSync)(...a),
+      ...createMindSlice(adapter, triggerAutoSync)(...a),
     }),
     {
       name: 'egoless-do-mobile',

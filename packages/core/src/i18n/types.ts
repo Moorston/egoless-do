@@ -591,7 +591,7 @@ export interface I18nKeys {
   practiceMindVow: string; practiceMindVowDesc: string;
   practiceMindMeditate: string; practiceMindMeditateDesc: string;
   practiceMindInsight: string; practiceMindInsightDesc: string;
-  practiceMindHeart: string; practiceMindHeartDesc: string;
+  practiceMindMind: string; practiceMindMindDesc: string;
   practiceActionPrecept: string; practiceActionPreceptDesc: string;
   practiceActionMantra: string; practiceActionMantraDesc: string;
   practiceActionSutra: string; practiceActionSutraDesc: string;
@@ -661,6 +661,39 @@ export interface I18nKeys {
   dietCategoryGrain: string; dietCategoryBean: string; dietCategoryVegetable: string;
   dietCategoryFruit: string; dietCategoryMeat: string; dietCategorySeafood: string;
   dietCategorySeasoning: string; dietCategoryOther: string;
+
+  // Mind (调心)
+  mindTitle: string; mindTabFear: string; mindTabCourage: string; mindTabInsight: string;
+  mindAddFear: string; mindFearContent: string; mindFearTrigger: string;
+  mindFearCategory: string; mindFearClassification: string;
+  mindClassifyQ1: string; mindClassifyQ1Yes: string; mindClassifyQ1No: string; mindClassifyQ1Unsure: string;
+  mindClassifyQ2: string; mindClassifyQ2Yes: string; mindClassifyQ2No: string;
+  mindClassifyQ3: string;
+  mindClassificationRational: string; mindClassificationIrrational: string; mindClassificationMixed: string;
+  mindStoicForge: string; mindForgeStep1: string; mindForgeStep2: string; mindForgeStep3: string;
+  mindForgeProbability: string; mindForgeCoping: string; mindFearIndex: string;
+  mindFearIndexLow: string; mindFearIndexMedium: string; mindFearIndexHigh: string; mindFearIndexVeryHigh: string;
+  mindBodyMapping: string; mindBodyMarkShape: string; mindBodyMarkTemp: string; mindBodyMarkIntensity: string;
+  mindBodyTight: string; mindBodyHeavy: string; mindBodyTremble: string; mindBodyHollow: string;
+  mindBodyBurning: string; mindBodyAche: string; mindBodyBlock: string;
+  mindBodyCold: string; mindBodyHot: string; mindBodyNeutral: string;
+  mindBodyHead: string; mindBodyThroat: string; mindBodyChest: string; mindBodyStomach: string;
+  mindBodyPelvis: string; mindBodyBack: string; mindBodyShoulders: string;
+  mindBodyHands: string; mindBodyLegs: string; mindBodyFeet: string;
+  mindCategorySocial: string; mindCategoryLoss: string; mindCategoryHealth: string;
+  mindCategoryAttachment: string; mindCategoryFailure: string; mindCategoryUnknown: string;
+  mindCourageLog: string; mindCourageAction: string; mindCourageFearBefore: string;
+  mindCourageFeeling: string; mindCourageStreak: string; mindCourageRecord: string;
+  mindFeelingRelief: string; mindFeelingPride: string; mindFeelingCalm: string;
+  mindFeelingStillScared: string; mindFeelingSurprise: string; mindFeelingExhausted: string;
+  mindAchievementBrave: string; mindAchievementBraveDesc: string;
+  mindAchievementFearless: string; mindAchievementFearlessDesc: string;
+  mindAchievementAlchemist: string; mindAchievementAlchemistDesc: string;
+  mindAchievementTamer: string; mindAchievementTamerDesc: string;
+  mindInsightDominant: string; mindInsightCourageTrend: string; mindInsightCrossModule: string;
+  mindInsightFearTime: string; mindInsightIndexDrop: string;
+  mindNoFears: string; mindNoCourage: string; mindFearCount: string;
+  mindHeatmapHint: string; mindFearDetail: string; mindSortByIndex: string;
 
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;
@@ -761,6 +794,32 @@ export interface I18nKeys {
   bodyFlowAwarenessHint: string; bodyFlowAwarenessSaved: string;
   bodyFlowDone: string; bodyFlowSkipped: string; bodyFlowRecorded: string;
   bodyFlowFinish: string; bodyFlowPracticeDone: string;
+
+  // Vow
+  vowTitle: string; vowLifetime: string; vowLong: string; vowShort: string;
+  vowPractice: string; vowDedication: string; vowProgress: string;
+  vowAchieved: string; vowArchived: string; vowActive: string;
+  vowEdit: string; vowSave: string; vowCreate: string; vowCancel: string;
+  vowAchieve: string; vowArchive: string; vowDelete: string;
+  vowText: string; vowTextPlaceholder: string;
+  vowDeadline: string; vowTimeFrame: string;
+  vowTf3Months: string; vowTf6Months: string; vowTf1Year: string; vowTf3Years: string; vowTf5Years: string;
+  vowLinkHabit: string; vowLinkPlan: string; vowNoLink: string;
+  vowNoVision: string; vowNoLifetime: string;
+  vowLifetimeHint: string;
+  vowCreateLong: string; vowCreateShort: string;
+  vowNeedArchive: string;
+  vowProgressDays: string; vowProgressMonth: string; vowProgressStreak: string;
+  vowProgressToday: string; vowProgressWeekly: string; vowProgressHabitDone: string; vowProgressPlanDone: string;
+  vowDedWrite: string; vowDedHistory: string; vowDedSettings: string;
+  vowDedFrequency: string; vowDedDay: string; vowDedRemind: string;
+  vowDedWeekly: string; vowDedBiweekly: string; vowDedMonthly: string; vowDedCustom: string;
+  vowDedInsight: string; vowDedInsightPlaceholder: string;
+  vowDedAdjustment: string; vowDedAdjustmentPlaceholder: string;
+  vowDedSave: string; vowDedPeriod: string; vowDedDays: string;
+  vowDedNoWrite: string; vowDedPrevWeek: string; vowDedSummary: string;
+  vowDedAutoHint: string;
+  vowAchievedList: string; vowExpandMore: string; vowCollapse: string;
 }
 
 export type I18nKey = keyof I18nKeys;

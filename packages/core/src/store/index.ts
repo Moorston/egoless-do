@@ -3,7 +3,7 @@ export type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, UiSlice, PlanSlice, RecycleBinSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice, MeditationSlice, SleepSlice,
   ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, FullStore,
-  BodySlice, WeightSlice, BodyCheckinSlice, DietSlice,
+  BodySlice, WeightSlice, BodyCheckinSlice, DietSlice, VisionSlice, DedicationSlice, MindSlice,
 } from './types';
 export type { SliceCreator } from './sliceHelper';
 export { createAuthSlice } from './createAuthSlice';
@@ -30,3 +30,6 @@ export { createBodySlice } from './createBodySlice';
 export { createWeightSlice } from './createWeightSlice';
 export { createBodyCheckinSlice } from './createBodyCheckinSlice';
 export { createDietSlice } from './createDietSlice';
+export { createVisionSlice } from './createVisionSlice';
+export { createDedicationSlice } from './createDedicationSlice';
+export { createMindSlice } from './createMindSlice';

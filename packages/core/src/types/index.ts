@@ -18,3 +18,5 @@ export * from './body';
 export * from './app';
 export * from './sleep';
 export * from './diet';
+export * from './vow';
+export * from './mind';

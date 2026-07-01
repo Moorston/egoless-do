@@ -7,6 +7,7 @@ import type {
   PlanItemCheckin, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
   ThoughtTrail, TrailNote, ReflectionLink, CheckinReview,
   AIMode, ModelConfig, SleepEntry, EatingMotivationEntry, CustomWuxingMap,
+  Vision, VisionPractice, Dedication, FearEntry, CourageEntry, FearAchievement,
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
@@ -120,4 +121,28 @@ export function rowToMotivationEntry(r: Record<string, unknown>): EatingMotivati
 
 export function rowToCustomWuxing(r: Record<string, unknown>): CustomWuxingMap {
   return rowToEntityMap.customWuxing(r) as unknown as CustomWuxingMap;
+}
+
+export function rowToVision(r: Record<string, unknown>): Vision {
+  return rowToEntityMap.vision(r) as unknown as Vision;
+}
+
+export function rowToVisionPractice(r: Record<string, unknown>): VisionPractice {
+  return rowToEntityMap.visionPractice(r) as unknown as VisionPractice;
+}
+
+export function rowToDedication(r: Record<string, unknown>): Dedication {
+  return rowToEntityMap.dedication(r) as unknown as Dedication;
+}
+
+export function rowToFearEntry(r: Record<string, unknown>): FearEntry {
+  return rowToEntityMap.fearEntry(r) as unknown as FearEntry;
+}
+
+export function rowToCourageEntry(r: Record<string, unknown>): CourageEntry {
+  return rowToEntityMap.courageEntry(r) as unknown as CourageEntry;
+}
+
+export function rowToFearAchievement(r: Record<string, unknown>): FearAchievement {
+  return rowToEntityMap.fearAchievement(r) as unknown as FearAchievement;
 }

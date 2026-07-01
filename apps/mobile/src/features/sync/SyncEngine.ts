@@ -21,6 +21,8 @@ import {
   rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
   rowToBodyGoal, rowToBodyPlan, rowToWeightRecord, rowToBodyCheckin, rowToSleep,
   rowToMotivationEntry, rowToCustomWuxing,
+  rowToVision, rowToVisionPractice, rowToDedication,
+  rowToFearEntry, rowToCourageEntry, rowToFearAchievement,
 } from '../../store/rowMappers';
 import { dbGetAllFoodEntries } from '../../db/queries';
 import NetInfo from '@react-native-community/netinfo';
@@ -56,6 +58,8 @@ const ENTITY_STORE_KEY: Record<string, string> = {
   weightRecord: 'weightRecords', bodyCheckin: 'bodyCheckins',
   sleep: 'sleepHistory',
   motivationEntry: 'motivationLog', customWuxing: 'customWuxingMaps',
+  vision: 'visions', visionPractice: 'visionPractices', dedication: 'dedications',
+  fearEntry: 'fearEntries', courageEntry: 'courageEntries', fearAchievement: 'achievements',
 };
 const ENTITY_COLL_MAP: Record<string, string> = {
   habits: 'habit', mind_reflections: 'reflection', fasting_sessions: 'fasting',
@@ -69,6 +73,8 @@ const ENTITY_COLL_MAP: Record<string, string> = {
   body_weight_records: 'weightRecord', body_checkins: 'bodyCheckin',
   sleep_records: 'sleep',
   eating_motivations: 'motivationEntry', custom_wuxing_maps: 'customWuxing',
+  visions: 'vision', vision_practices: 'visionPractice', dedications: 'dedication',
+  fear_entries: 'fearEntry', courage_entries: 'courageEntry', fear_achievements: 'fearAchievement',
 };
 // Validate all SCHEMAS entities are covered by ENTITY_STORE_KEY or handled specially
 const _specialEntities = new Set(['aiConfig']);
@@ -445,6 +451,8 @@ export class SyncEngine {
     weightRecord: rowToWeightRecord, bodyCheckin: rowToBodyCheckin,
     sleep: rowToSleep,
     motivationEntry: rowToMotivationEntry, customWuxing: rowToCustomWuxing,
+    vision: rowToVision, visionPractice: rowToVisionPractice, dedication: rowToDedication,
+    fearEntry: rowToFearEntry, courageEntry: rowToCourageEntry, fearAchievement: rowToFearAchievement,
   };
 
   private async applyEntityToTable(
@@ -933,7 +941,7 @@ export class SyncEngine {
   private async purgeDeletedRecords(): Promise<void> {
     try {
       const db = await openDatabase();
-      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews','body_goals','body_plans','body_weight_records','body_checkins'];
+      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews','body_goals','body_plans','body_weight_records','body_checkins','visions','vision_practices','dedications'];
       for (const table of tables) {
         await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
       }
@@ -1011,6 +1019,12 @@ export class SyncEngine {
       sleep: { table: 'sleep_records', query: 'SELECT * FROM sleep_records WHERE deleted = 0', mapper: rowToSleep, storeKey: 'sleepHistory' },
       motivationEntry: { table: 'eating_motivations', query: 'SELECT * FROM eating_motivations WHERE deleted = 0', mapper: rowToMotivationEntry, storeKey: 'motivationLog' },
       customWuxing: { table: 'custom_wuxing_maps', query: 'SELECT * FROM custom_wuxing_maps WHERE deleted = 0', mapper: rowToCustomWuxing, storeKey: 'customWuxingMaps' },
+      vision: { table: 'visions', query: 'SELECT * FROM visions WHERE deleted = 0', mapper: rowToVision, storeKey: 'visions' },
+      visionPractice: { table: 'vision_practices', query: 'SELECT * FROM vision_practices WHERE deleted = 0', mapper: rowToVisionPractice, storeKey: 'visionPractices' },
+      dedication: { table: 'dedications', query: 'SELECT * FROM dedications WHERE deleted = 0', mapper: rowToDedication, storeKey: 'dedications' },
+      fearEntry: { table: 'fear_entries', query: 'SELECT * FROM fear_entries WHERE deleted = 0', mapper: rowToFearEntry, storeKey: 'fearEntries' },
+      courageEntry: { table: 'courage_entries', query: 'SELECT * FROM courage_entries WHERE deleted = 0', mapper: rowToCourageEntry, storeKey: 'courageEntries' },
+      fearAchievement: { table: 'fear_achievements', query: 'SELECT * FROM fear_achievements WHERE deleted = 0', mapper: rowToFearAchievement, storeKey: 'achievements' },
     };
 
     const targets = entities ?? Object.keys(REHYDRATE_MAP);
@@ -1088,7 +1102,7 @@ export class SyncEngine {
   async resumeInitialSync(token: string, userId?: string): Promise<void> {
     const db = await openDatabase();
     if ((await getState(db, 'initialSyncDone')) === 'true') return;
-    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin'];
+    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication'];
 
     for (const entity of allEntities) {
       const p = await getSyncProgress(entity);

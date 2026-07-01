@@ -9,7 +9,7 @@ import { useRootNavigation, useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Wind, Dumbbell, Moon, Salad,
-  Flag, Binary, Orbit, Heart,
+  Flag, Binary, Orbit, Brain,
   Shield, BellRing, ScrollText, HandHeart,
   Music, BookOpen, Timer, Flame,
 } from 'lucide-react-native';
@@ -51,10 +51,10 @@ export default function PracticeScreen() {
       groupKey: 'practiceGroupMind',
       color: '#8B5CF6',
       items: [
-        { key: 'vow', icon: Flag, labelKey: 'practiceMindVow', descKey: 'practiceMindVowDesc', color: '#8B5CF6' },
+        { key: 'vow', icon: Flag, labelKey: 'practiceMindVow', descKey: 'practiceMindVowDesc', color: '#8B5CF6', route: 'Vow' },
         { key: 'meditate', icon: Binary, labelKey: 'practiceMindMeditate', descKey: 'practiceMindMeditateDesc', color: '#A78BFA', route: 'Meditation' },
         { key: 'insight', icon: Orbit, labelKey: 'practiceMindInsight', descKey: 'practiceMindInsightDesc', color: '#C4B5FD' },
-        { key: 'heart', icon: Heart, labelKey: 'practiceMindHeart', descKey: 'practiceMindHeartDesc', color: '#DDD6FE' },
+        { key: 'mind', icon: Brain, labelKey: 'practiceMindMind', descKey: 'practiceMindMindDesc', color: '#DDD6FE', route: 'Mind' },
       ],
     },
     {
