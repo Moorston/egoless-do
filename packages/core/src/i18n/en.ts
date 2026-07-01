@@ -295,7 +295,7 @@ export const en: I18nKeys = {
   clearDataLoading:'Clearing...', clearDataSuccess:'Local data cleared', clearDataPushFail:'Sync failed. Check your network and try again.',
   settingsFreePlan:'Free', settingsDefaultName:'Practitioner',
   settingsEditProfile:'Edit Profile', settingsNickname:'Nickname',
-  profileStats:'Statistics', profileBodyData:'Body Data', profileWeight:'Weight', profileWaterGoal:'Water Goal', profileAccount:'Account',
+  profileStats:'Statistics', profileBodyData:'Body Data', profileWeight:'Weight', profileHeight:'Height (cm)', profileGender:'Gender', profileGenderMale:'Male', profileGenderFemale:'Female', profileWaterGoal:'Water Goal', profileAccount:'Account',
   profileJourney:'Journey', profileMotto:'Motto', profileMottoPlaceholder:'Write your motto...', profileJoinedDays:'Joined', profileLongestStreak:'Longest Streak', profileTotalExercise:'Total Exercise', profileTotalFasting:'Total Fasting',
   profilePermDenied:'Permission Denied', profilePermDeniedMsg:'Photo library access is needed to change your avatar',
   shareCardShare:'Share', shareCardSave:'Save', shareCardLoading:'Loading...',
@@ -719,7 +719,7 @@ export const en: I18nKeys = {
   // Practice Hub
   practiceGroupTune:'Tune', practiceGroupMind:'Mind', practiceGroupAction:'Action', practiceGroupOther:'Other',
   practiceWeekly:'Weekly Practice',
-  practiceTuneBreath:'Breath', practiceTuneBreathDesc:'Scientific breathing',
+  practiceTuneBreath:'Breath', practiceTuneBreathDesc:'Calming breathwork',
   practiceTuneBody:'Body', practiceTuneBodyDesc:'Build strength',
   practiceTuneSleep:'Sleep', practiceTuneSleepDesc:'Rest & restore',
   practiceTuneFood:'Food', practiceTuneFoodDesc:'Balanced diet',
