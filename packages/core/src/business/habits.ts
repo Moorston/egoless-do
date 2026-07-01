@@ -1,6 +1,6 @@
 // ─── Habit business logic (pure functions) ─────────────────────
 import type { Habit, HabitStatus, HabitLink } from '../types';
-import type { FastingSession, MedHistoryEntry, ExerciseEntry } from '../types';
+import type { FastingSession, MedHistoryEntry, ExerciseEntry, SleepEntry } from '../types';
 import { createHabitFromForm } from '../defaults';
 import { computeStreak, dateStr } from '../utils';
 
@@ -13,6 +13,7 @@ export const HABIT_LINK_OPTIONS: { value: HabitLink; labelKey: string }[] = [
   { value: 'fasting', labelKey: 'habitLinkFasting' },
   { value: 'meditation', labelKey: 'habitLinkMeditation' },
   { value: 'exercise', labelKey: 'habitLinkExercise' },
+  { value: 'sleep', labelKey: 'habitLinkSleep' },
 ];
 
 export function addHabitToList(habits: Habit[], form: CreateHabitForm): Habit[] {
@@ -78,6 +79,7 @@ export interface HabitModuleState {
   activeFasting: FastingSession | null;
   medHistory: MedHistoryEntry[];
   exerciseLog: ExerciseEntry[];
+  sleepHistory: SleepEntry[];
 }
 
 /**
@@ -114,6 +116,8 @@ export function syncHabitsFromModules(
     }
   }
 
+  const sleepBarrierDone = (state.sleepHistory ?? []).some(s => s.date === today && !s.deleted && s.barrierDone);
+
   let changed = false;
   const result = habits.map(h => {
     if (h.deleted) return h;
@@ -131,6 +135,9 @@ export function syncHabitsFromModules(
         break;
       case 'exercise':
         linkedDone = maxExerciseMinutes >= (h.linkConfig?.targetMinutes ?? 30);
+        break;
+      case 'sleep':
+        linkedDone = sleepBarrierDone;
         break;
       default:
         break;

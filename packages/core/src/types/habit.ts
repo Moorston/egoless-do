@@ -2,7 +2,7 @@
 import type { Syncable, HabitStatus } from './shared';
 
 /** Modules that a habit can be linked to for auto-checkin */
-export type HabitLink = 'none' | 'fasting' | 'meditation' | 'exercise';
+export type HabitLink = 'none' | 'fasting' | 'meditation' | 'exercise' | 'sleep';
 
 export interface Habit extends Syncable {
   id: string;
@@ -30,5 +30,7 @@ export interface Habit extends Syncable {
     targetHours?: number;
     /** Exercise target minutes (default 30) */
     targetMinutes?: number;
+    /** Sleep minimum quality (1-5) */
+    minQuality?: number;
   };
 }

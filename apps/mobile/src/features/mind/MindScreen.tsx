@@ -3,11 +3,12 @@ import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } fro
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
-import { useTheme, useT, ScreenHeader } from '../../components/UI';
+import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr } from '@egoless-do/core';
 import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType } from '@egoless-do/core';
 import { FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS } from '@egoless-do/core';
 import { useTabNavigation } from '../../navigation/hooks';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { Shield, Zap, Lightbulb, Plus, ChevronRight, X, Check } from 'lucide-react-native';
 
 type MindTab = 'fear' | 'courage' | 'insight';
@@ -367,7 +368,7 @@ export default function MindScreen() {
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScreenHeader title={T('mindTitle')} onBack={() => nav.goBack()} />
+      <SimpleHeader routeName="Mind" />
 
       {/* Tab 切换 */}
       <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 8, gap: 6 }}>

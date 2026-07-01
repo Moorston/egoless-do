@@ -30,4 +30,5 @@ export * from './trail-creation';
 export * from './review';
 export * from './breathing';
 export * from './sleep';
+export * from './precepts';
 export * from './body';

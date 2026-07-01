@@ -50,21 +50,28 @@ export default function ProfileScreen() {
   const [editMotto, setEditMotto] = useState(userProfile.motto ?? '');
   const [editingMotto, setEditingMotto] = useState(false);
   const [editWeight, setEditWeight] = useState(userProfile.weight != null ? String(userProfile.weight) : '');
+  const [editHeight, setEditHeight] = useState(userProfile.height != null ? String(userProfile.height) : '');
+  const [editGender, setEditGender] = useState<'male' | 'female' | 'private'>(userProfile.gender ?? 'private');
   const [editWaterGoal, setEditWaterGoal] = useState(String(waterGoal));
   const [clearing, setClearing] = useState(false);
   const weightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const heightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const weightRef = useRef(editWeight);
+  const heightRef = useRef(editHeight);
   const waterRef = useRef(editWaterGoal);
 
   // Flush pending saves on unmount
   useEffect(() => () => {
     if (weightTimer.current) { clearTimeout(weightTimer.current); }
+    if (heightTimer.current) { clearTimeout(heightTimer.current); }
     if (waterTimer.current) { clearTimeout(waterTimer.current); }
     // Final save with latest values
     const w = weightRef.current;
     const wn = w ? parseFloat(w) : undefined;
-    useAppStore.getState().updateUserProfile({ weight: wn });
+    const h = heightRef.current;
+    const hn = h ? parseFloat(h) : undefined;
+    useAppStore.getState().updateUserProfile({ weight: wn, height: hn });
     const wg = parseInt(waterRef.current, 10);
     if (!isNaN(wg) && wg > 0) useAppStore.getState().setWaterGoal(wg);
   }, []);
@@ -160,6 +167,22 @@ export default function ProfileScreen() {
     const num = parseInt(editWaterGoal, 10);
     if (!isNaN(num) && num > 0) useAppStore.getState().setWaterGoal(num);
   };
+
+  const debouncedSaveHeight = useCallback((val: string) => {
+    setEditHeight(val);
+    heightRef.current = val;
+    if (heightTimer.current) clearTimeout(heightTimer.current);
+    heightTimer.current = setTimeout(() => {
+      heightTimer.current = null;
+      const num = val ? parseFloat(val) : undefined;
+      useAppStore.getState().updateUserProfile({ height: num });
+    }, 800);
+  }, []);
+
+  const handleGenderChange = useCallback((gender: 'male' | 'female' | 'private') => {
+    setEditGender(gender);
+    useAppStore.getState().updateUserProfile({ gender });
+  }, []);
 
   const debouncedSaveWaterGoal = useCallback((val: string) => {
     setEditWaterGoal(val);
@@ -276,6 +299,50 @@ export default function ProfileScreen() {
               }}
             >
               <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{weightUnit}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Height */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
+            <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: 16, color: P }}>📏</Text></View>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileHeight')}</Text>
+            <TextInput
+              value={editHeight}
+              onChangeText={debouncedSaveHeight}
+              placeholder="—"
+              placeholderTextColor={TH.sub}
+              keyboardType="numeric"
+              style={{
+                flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
+                color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                textAlign: 'center',
+              }}
+            />
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB, width: 30, textAlign: 'left' }}>cm</Text>
+          </View>
+
+          {/* Gender */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
+            <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: 16, color: P }}>⚤</Text></View>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileGender')}</Text>
+            <TouchableOpacity
+              onPress={() => Alert.alert(T('profileGender'), '', [
+                { text: T('profileGenderPrivate'), onPress: () => handleGenderChange('private') },
+                { text: T('profileGenderMale'), onPress: () => handleGenderChange('male') },
+                { text: T('profileGenderFemale'), onPress: () => handleGenderChange('female') },
+                { text: T('commonCancel'), style: 'cancel' },
+              ])}
+              style={{
+                flex: 1, paddingVertical: 10, borderRadius: 10,
+                backgroundColor: TH.bg, borderWidth: 1, borderColor: TH.border,
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                paddingHorizontal: 12,
+              }}
+            >
+              <Text style={{ color: editGender ? TH.text : TH.sub, fontSize: FONT_BODY }}>
+                {editGender ? T(`profileGender${editGender.charAt(0).toUpperCase() + editGender.slice(1)}`) : '—'}
+              </Text>
+              <ChevronRight size={16} color={TH.sub} />
             </TouchableOpacity>
           </View>
 

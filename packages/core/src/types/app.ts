@@ -18,7 +18,7 @@ export interface UserProfile {
   avatar?: string; // base64 data URI
   motto?: string;
   weight?: number;
-  gender?: 'male' | 'female';
+  gender?: 'male' | 'female' | 'private';
   age?: number;
   height?: number;
   waterMl?: number;

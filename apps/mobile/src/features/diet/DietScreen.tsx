@@ -1,12 +1,11 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
-import { useTheme, useT, ScreenHeader } from '../../components/UI';
+import { useTheme, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS } from '@egoless-do/core';
 import type { WuxingElement, FlavorType } from '@egoless-do/core';
-import { useTabNavigation } from '../../navigation/hooks';
 import { Utensils, Compass, TrendingUp, Timer } from 'lucide-react-native';
 
 type DietTab = 'today' | 'wuxing' | 'trend' | 'fasting';
@@ -34,7 +33,6 @@ const FLAVOR_TO_ELEMENT: Record<FlavorType, WuxingElement> = {
 export default function DietScreen() {
   const TH = useTheme();
   const T = useT();
-  const nav = useTabNavigation();
   const [activeTab, setActiveTab] = useState<DietTab>('today');
 
   const { foodLog, lookupWuxing, getDailyFlavorStats, getDailyWuxingStats,
@@ -351,8 +349,8 @@ export default function DietScreen() {
   }, [activeFasting, fastingHistory, foodLog, lookupWuxing, TH, T]);
 
   return (
-    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScreenHeader title={T('dietTitle')} onBack={() => nav.goBack()} />
+    <View style={{ flex: 1, backgroundColor: TH.bg }}>
+      <SimpleHeader routeName="Diet" />
 
       {/* Tab 切换 */}
       <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 8, gap: 6 }}>
@@ -382,6 +380,6 @@ export default function DietScreen() {
         {activeTab === 'trend' && renderTrendTab()}
         {activeTab === 'fasting' && renderFastingTab()}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

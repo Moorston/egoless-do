@@ -73,3 +73,41 @@ export function createBodyPlan(partial: {
     deleted: false,
   };
 }
+
+export function createWeightRecord(partial: {
+  date: string;
+  weight: number;
+  bodyFat?: number;
+}) {
+  return {
+    id: uid(),
+    date: partial.date,
+    weight: partial.weight,
+    bodyFat: partial.bodyFat,
+    updatedAt: Date.now(),
+    deleted: false,
+  };
+}
+
+export function createBodyCheckin(partial: {
+  date: string;
+  energy: number;
+  pain: number;
+  comfort: number;
+  sleep: number;
+  tags: string[];
+  note?: string;
+}) {
+  return {
+    id: uid(),
+    date: partial.date,
+    energy: partial.energy,
+    pain: partial.pain,
+    comfort: partial.comfort,
+    sleep: partial.sleep,
+    tags: partial.tags,
+    note: partial.note ?? '',
+    updatedAt: Date.now(),
+    deleted: false,
+  };
+}

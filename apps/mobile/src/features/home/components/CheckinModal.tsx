@@ -82,7 +82,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
   });
 
   // Pre-fill from existing checkin
-  const [weight, setWeight] = useState(() => existing?.weight != null ? String(existing.weight) : '65');
+  const [weight, setWeight] = useState(() => existing?.weight != null ? String(existing.weight) : String(store.userProfile?.weight ?? '65'));
   const [waterMl, setWaterMl] = useState(() => parsed.waterMl || (store.waterMl ?? 0));
   const [showFoodAdd, setShowFoodAdd] = useState(false);
   const [foodName, setFoodName] = useState('');

@@ -17,7 +17,7 @@ const GUIDE_STYLE_KEY = 'breathing_guide_style';
 const VOICE_KEY = 'breathing_voice_enabled';
 const CUE_KEY = 'breathing_cue_enabled';
 
-type Page = 'select' | 'prepare' | 'active' | 'postDistress' | 'report';
+type Page = 'select' | 'prepare' | 'countdown' | 'active' | 'postDistress' | 'report';
 
 export default function BreathingScreen() {
   const TH = useTheme();
@@ -28,21 +28,28 @@ export default function BreathingScreen() {
   const [guideStyle, setGuideStyle] = useState<GuideStyle>('scientific');
   const [page, setPage] = useState<Page>('select');
   const [selectedPreset, setSelectedPreset] = useState<BreathingPreset | null>(null);
+  const selectedPresetRef = useRef<BreathingPreset | null>(null);
   const [cycles, setCycles] = useState(8);
+  const cyclesRef = useRef(8);
 
-  // Audio
+  // Audio — store in refs for stable breathLoop
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [cueEnabled, setCueEnabled] = useState(true);
   const { playPhaseSound, speakCount, speakPhase, resetCount } = useBreathAudio({ cueEnabled, voiceEnabled });
+  const audioRef = useRef({ playPhaseSound, speakCount, speakPhase, resetCount });
+  audioRef.current = { playPhaseSound, speakCount, speakPhase, resetCount };
 
   // Breathing state (driven by rAF + shared clock)
   const [currentCycle, setCurrentCycle] = useState(0);
   const [currentPhaseIdx, setCurrentPhaseIdx] = useState(0);
   const [phaseSec, setPhaseSec] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const isPausedRef = useRef(false);
   const [totalElapsed, setTotalElapsed] = useState(0);
   const [reflection, setReflection] = useState('');
   const [saving, setSaving] = useState(false);
+  const [countdownNum, setCountdownNum] = useState(3);
+  const countdownAnim = useRef(new Animated.Value(1)).current;
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef(0);
   const pausedElapsedRef = useRef(0);
@@ -80,18 +87,18 @@ export default function BreathingScreen() {
   const currentPhase = selectedPreset?.phases[currentPhaseIdx];
   const phaseProgress = currentPhase ? phaseSec / currentPhase.durationSec : 0;
 
-  // Main rAF loop — single clock source for audio-visual sync
-  const breathLoop = useCallback(() => {
-    if (!selectedPreset) return;
+  // Main rAF loop — stored in ref, zero deps, never recreated
+  const breathLoopRef = useRef<(() => void) | null>(null);
+  breathLoopRef.current = () => {
+    const preset = selectedPresetRef.current;
+    if (!preset || isPausedRef.current) return;
     const now = Date.now();
     const elapsed = (now - startTimeRef.current - pausedElapsedRef.current) / 1000;
-    const preset = selectedPreset;
+    const audio = audioRef.current;
 
-    // Compute current cycle and phase from elapsed time
     const cycleDur = cycleDuration(preset);
-    const totalDur = cycleDur * cycles;
+    const totalDur = cycleDur * cyclesRef.current;
     if (elapsed >= totalDur) {
-      // All cycles done
       if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
       setTotalElapsed(Math.floor(totalDur));
       setPage('postDistress');
@@ -101,7 +108,6 @@ export default function BreathingScreen() {
     const curCycle = Math.floor(elapsed / cycleDur);
     const cycleElapsed = elapsed % cycleDur;
 
-    // Find current phase
     let accum = 0;
     let phaseIdx = 0;
     let phaseElapsed = 0;
@@ -122,33 +128,32 @@ export default function BreathingScreen() {
     const curPhase = preset.phases[phaseIdx];
     const curSec = Math.floor(phaseElapsed);
 
-    // Update React state (batched)
     setCurrentCycle(curCycle);
     setCurrentPhaseIdx(phaseIdx);
     setPhaseSec(curSec);
     setTotalElapsed(Math.floor(elapsed));
 
-    // Audio: phase transition
     if (phaseIdx !== lastPhaseIdxRef.current) {
       lastPhaseIdxRef.current = phaseIdx;
-      resetCount();
-      playPhaseSound();
-      speakPhase(curPhase.type);
+      lastSecRef.current = curSec; // skip count for this second to avoid voice conflict
+      audio.resetCount();
+      audio.playPhaseSound();
+      audio.speakPhase(curPhase.type);
     }
 
-    // Audio: count per second (countdown to match display)
     if (curSec !== lastSecRef.current && curSec > 0) {
       lastSecRef.current = curSec;
-      speakCount(curPhase.durationSec - curSec);
+      audio.speakCount(curPhase.durationSec - curSec);
     }
 
-    rafRef.current = requestAnimationFrame(breathLoop);
-  }, [selectedPreset, cycles, playPhaseSound, speakPhase, speakCount, resetCount]);
+    rafRef.current = requestAnimationFrame(() => breathLoopRef.current?.());
+  };
 
-  // Pause/resume handling
+  // Pause/resume handling — only depends on isPaused and page
   const pauseStartRef = useRef(0);
   useEffect(() => {
     if (page !== 'active') return;
+    isPausedRef.current = isPaused;
     if (isPaused) {
       pauseStartRef.current = Date.now();
       if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
@@ -157,10 +162,10 @@ export default function BreathingScreen() {
         pausedElapsedRef.current += Date.now() - pauseStartRef.current;
         pauseStartRef.current = 0;
       }
-      rafRef.current = requestAnimationFrame(breathLoop);
+      rafRef.current = requestAnimationFrame(() => breathLoopRef.current?.());
     }
     return () => { if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; } };
-  }, [isPaused, page, breathLoop]);
+  }, [isPaused, page]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -169,28 +174,60 @@ export default function BreathingScreen() {
     };
   }, []);
 
+  // Countdown effect: 3 → 2 → 1 → active
+  useEffect(() => {
+    if (page !== 'countdown') return;
+    // Animate number pop-in
+    countdownAnim.setValue(0);
+    Animated.spring(countdownAnim, { toValue: 1, useNativeDriver: true, friction: 4 }).start();
+
+    const timer = setTimeout(() => {
+      if (countdownNum > 1) {
+        setCountdownNum(n => n - 1);
+      } else {
+        // Countdown done, start breathing
+        startTimeRef.current = Date.now();
+        rafRef.current = requestAnimationFrame(() => breathLoopRef.current?.());
+        setPage('active');
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [page, countdownNum, countdownAnim]);
+
   const handleStart = useCallback((preset: BreathingPreset) => {
     setSelectedPreset(preset);
+    selectedPresetRef.current = preset;
     setCycles(preset.defaultCycles);
+    cyclesRef.current = preset.defaultCycles;
     setPage('prepare');
   }, []);
 
   const handleBeginBreathing = useCallback(() => {
-    // Reset state
+    // Cancel any lingering rAF from previous session
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    // Reset hold animation
+    holdAnim.setValue(0);
+    holdScale.setValue(1);
+    holdCompletedRef.current = false;
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
+    // Sync refs with current state
+    selectedPresetRef.current = selectedPreset;
+    cyclesRef.current = cycles;
+    // Reset ALL state
     setCurrentCycle(0);
     setCurrentPhaseIdx(0);
     setPhaseSec(0);
     setTotalElapsed(0);
     setIsPaused(false);
+    isPausedRef.current = false;
     lastPhaseIdxRef.current = -1;
     lastSecRef.current = -1;
     pausedElapsedRef.current = 0;
-    setPage('active');
-
-    // Start rAF loop (single clock source)
-    startTimeRef.current = Date.now();
-    rafRef.current = requestAnimationFrame(breathLoop);
-  }, [breathLoop]);
+    pauseStartRef.current = 0;
+    setCountdownNum(3);
+    setPage('countdown');
+  }, [selectedPreset, cycles, holdAnim, holdScale]);
 
   const handleTogglePause = useCallback(() => {
     // Don't toggle if long press just completed
@@ -200,7 +237,7 @@ export default function BreathingScreen() {
 
   // Long press start — animate ring fill over 3s (only when paused)
   const handleHoldStart = useCallback(() => {
-    if (!isPaused) return;
+    if (!isPausedRef.current) return;
     holdCompletedRef.current = false;
     if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     holdAnim.setValue(0);
@@ -223,7 +260,7 @@ export default function BreathingScreen() {
     Animated.timing(holdAnim, {
       toValue: 1, duration: 3000, easing: Easing.linear, useNativeDriver: false,
     }).start();
-  }, [isPaused, holdAnim, holdScale]);
+  }, [holdAnim, holdScale]);
 
   // Long press end — cancel if released early
   const handleHoldEnd = useCallback(() => {
@@ -237,11 +274,19 @@ export default function BreathingScreen() {
   }, [holdAnim, holdScale]);
 
   const handleFinish = useCallback(() => {
+    // Clean up rAF and hold animation
+    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
+    holdAnim.setValue(0);
+    holdScale.setValue(1);
+    holdCompletedRef.current = false;
+    isPausedRef.current = false;
     setReflection('');
     setSaving(false);
     setPage('select');
     setSelectedPreset(null);
-  }, []);
+    selectedPresetRef.current = null;
+  }, [holdAnim, holdScale]);
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -433,6 +478,28 @@ export default function BreathingScreen() {
     );
   }
 
+  // ── Countdown Page (3 → 2 → 1) ──
+  if (page === 'countdown') {
+    return (
+      <SafeAreaView style={[styles.activeContainer, { backgroundColor: '#0a0a1a' }]}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Animated.Text style={{
+            fontSize: 120,
+            fontWeight: '900',
+            color: '#fff',
+            opacity: countdownAnim,
+            transform: [{ scale: countdownAnim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }],
+          }}>
+            {countdownNum}
+          </Animated.Text>
+          <Text style={{ fontSize: 18, fontWeight: '600', color: 'rgba(255,255,255,0.6)', marginTop: 16 }}>
+            {countdownNum === 3 ? '准备好了吗' : countdownNum === 2 ? '调整呼吸' : '开始'}
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   // ── Active Breathing Page ──
   if (page === 'active' && selectedPreset && currentPhase) {
     const phaseColor = currentPhase.type === 'inhale' ? '#10B981'
@@ -479,11 +546,10 @@ export default function BreathingScreen() {
               onPressIn={handleHoldStart}
               onPressOut={handleHoldEnd}
             >
-              {/* Ring progress (3s fill) */}
+              {/* Ring progress (3s fill) — white ring inset 3px */}
               <View style={styles.ringContainer}>
-                <View style={[styles.ringBg, { borderColor: `${TH.primary}40` }]} />
+                <View style={styles.ringBg} />
                 <Animated.View style={[styles.ringFill, {
-                  borderColor: '#FFD700',
                   transform: [{ rotate: holdAnim.interpolate({
                     inputRange: [0, 1],
                     outputRange: ['-90deg', '270deg'],
@@ -798,6 +864,9 @@ const styles = StyleSheet.create({
     fontSize: FONT_SUB,
     marginTop: 4,
   },
+  activeContainer: {
+    flex: 1,
+  },
   activeControls: {
     alignItems: 'center',
     paddingBottom: 40,
@@ -813,21 +882,26 @@ const styles = StyleSheet.create({
   ringContainer: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 40,
-    overflow: 'hidden',
   },
   ringBg: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 40,
+    position: 'absolute',
+    top: 3,
+    left: 3,
+    width: 74,
+    height: 74,
+    borderRadius: 37,
     borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
   ringFill: {
     position: 'absolute',
-    top: -3,
-    left: -3,
-    width: 86,
-    height: 86,
-    borderRadius: 43,
+    top: 3,
+    left: 3,
+    width: 74,
+    height: 74,
+    borderRadius: 37,
     borderWidth: 3,
+    borderColor: '#fff',
     borderTopColor: 'transparent',
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',

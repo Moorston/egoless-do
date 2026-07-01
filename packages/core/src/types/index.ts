@@ -17,6 +17,8 @@ export * from './music';
 export * from './body';
 export * from './app';
 export * from './sleep';
+export * from './give';
 export * from './diet';
 export * from './vow';
+export * from './mantra';
 export * from './mind';

@@ -65,7 +65,7 @@ export default function PracticeScreen() {
         { key: 'precept', icon: Shield, labelKey: 'practiceActionPrecept', descKey: 'practiceActionPreceptDesc', color: '#F59E0B', route: 'Precept' },
         { key: 'mantra', icon: BellRing, labelKey: 'practiceActionMantra', descKey: 'practiceActionMantraDesc', color: '#FBBF24', route: 'Mantra' },
         { key: 'sutra', icon: ScrollText, labelKey: 'practiceActionSutra', descKey: 'practiceActionSutraDesc', color: '#FCD34D', route: 'Sutra' },
-        { key: 'give', icon: HandHeart, labelKey: 'practiceActionGive', descKey: 'practiceActionGiveDesc', color: '#FDE68A' },
+        { key: 'give', icon: HandHeart, labelKey: 'practiceActionGive', descKey: 'practiceActionGiveDesc', color: '#FDE68A', route: 'Give' },
       ],
     },
     {
@@ -95,8 +95,9 @@ export default function PracticeScreen() {
         preceptWeekDays.add(ds);
       }
     }
-    return { exerciseMin, fastingCount, checkinDays, preceptDays: preceptWeekDays.size };
-  }, [store.exerciseLog, store.fastingHistory, store.checkinHistory, store.habits]);
+    const giveCount = (store.giveHistory ?? []).filter(g => !g.deleted && g.timestamp >= weekStart).length;
+    return { exerciseMin, fastingCount, checkinDays, preceptDays: preceptWeekDays.size, giveCount };
+  }, [store.exerciseLog, store.fastingHistory, store.checkinHistory, store.habits, store.giveHistory]);
 
   const handlePress = (item: PracticeItem) => {
     if (item.route) {
@@ -132,6 +133,7 @@ export default function PracticeScreen() {
               { Icon: Dumbbell, color: '#10B981', value: weeklyStats.exerciseMin, unit: T('medMinutes') },
               { Icon: Timer, color: '#F59E0B', value: weeklyStats.fastingCount, unit: T('fastTimes') },
               { Icon: Shield, color: '#F59E0B', value: weeklyStats.preceptDays, unit: T('preceptDays') || '天' },
+              { Icon: HandHeart, color: '#FDE68A', value: weeklyStats.giveCount, unit: T('giveTotal') || '次' },
               { Icon: Flame, color: '#EF4444', value: weeklyStats.checkinDays, unit: T('calendarDays') },
             ].map((s, i) => (
               <View key={i} style={styles.summaryItem}>

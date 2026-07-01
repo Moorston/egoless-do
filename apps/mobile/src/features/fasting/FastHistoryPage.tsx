@@ -2,6 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
@@ -127,7 +128,7 @@ function Heatmap({ entries, TH, onPress }: { entries: FastingSession[]; TH: any;
 export function FastCalendarScreen() {
   const TH = useTheme();
   const nav = useRootNavigation();
-  const entries = useAppStore(s => (s.fastingHistory ?? []).filter(f => !f.deleted));
+  const entries = useAppStore(useShallow(s => (s.fastingHistory ?? []).filter(f => !f.deleted)));
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
   const dateSet = useMemo(() => { const s = new Set<string>(); entries.forEach(f => { const d = new Date(f.startedAt ?? 0); s.add(dateStr(d)); }); return s; }, [entries]);

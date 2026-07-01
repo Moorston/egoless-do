@@ -93,6 +93,7 @@ export function createHabitSlice(
         activeFasting: s.activeFasting,
         medHistory: s.medHistory ?? [],
         exerciseLog: s.exerciseLog ?? [],
+        sleepHistory: s.sleepHistory ?? [],
       };
       const next = syncHabitsFromModules(prev, state, today);
       if (next === prev) return;

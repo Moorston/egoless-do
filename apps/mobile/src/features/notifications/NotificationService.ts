@@ -17,12 +17,16 @@ async function ensureHandler() {
 }
 
 export async function requestNotificationPermission(): Promise<boolean> {
-  const Notifications = await getNotifications();
-  ensureHandler();
-  const { status: existing } = await Notifications.getPermissionsAsync();
-  if (existing === 'granted') return true;
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === 'granted';
+  try {
+    const Notifications = await getNotifications();
+    ensureHandler();
+    const { status: existing } = await Notifications.getPermissionsAsync();
+    if (existing === 'granted') return true;
+    const { status } = await Notifications.requestPermissionsAsync();
+    return status === 'granted';
+  } catch {
+    return false;
+  }
 }
 
 export async function scheduleDailyReminder(hour: number, minute: number): Promise<void> {
