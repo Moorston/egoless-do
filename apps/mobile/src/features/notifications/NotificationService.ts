@@ -19,12 +19,13 @@ async function ensureHandler() {
 export async function requestNotificationPermission(): Promise<boolean> {
   try {
     const Notifications = await getNotifications();
-    ensureHandler();
+    await ensureHandler();
     const { status: existing } = await Notifications.getPermissionsAsync();
     if (existing === 'granted') return true;
     const { status } = await Notifications.requestPermissionsAsync();
     return status === 'granted';
-  } catch {
+  } catch (e) {
+    console.warn('Notification permission request failed:', e);
     return false;
   }
 }

@@ -538,15 +538,8 @@ export default function BodyFlow({ TH, T, onExit, nav, todayPlan, store }: FlowP
             <BodyCheckinInline
               TH={TH} T={T} plan={todayPlan}
               onSave={(data) => {
-                const checkin: BodyCheckin = {
-                  ...data,
-                  id: `checkin_${Date.now()}`,
-                  updatedAt: Date.now(),
-                  deleted: false,
-                  synced: false,
-                };
-                store.upsertBodyCheckin?.(checkin) ?? store.addBodyCheckin?.(checkin);
-                setAwarenessData(checkin);
+                store.upsertBodyCheckin(data);
+                setAwarenessData({ ...data, id: '', updatedAt: Date.now(), deleted: false, synced: false });
                 setStep('summary');
               }}
               onSkip={() => setStep('summary')}

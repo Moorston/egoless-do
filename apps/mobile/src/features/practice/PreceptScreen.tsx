@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, computeStreak, dateStr } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { Shield, Check, X, Plus, BarChart3, Heart, AlertTriangle } from 'lucide-react-native';
+import { Shield, Check, X, Plus, BarChart3, AlertTriangle } from 'lucide-react-native';
 import {
   PRECEPT_AVOID_PRESETS, PRACTICE_PRESETS, VIOLATION_TRIGGERS,
   PRECEPT_PREFIX_AVOID, PRECEPT_PREFIX_PRACTICE,
@@ -44,7 +44,7 @@ export default function PreceptScreen() {
   const stats = useMemo(() => {
     const allChecked = preceptHabits.filter(h => (h.checkedDates ?? []).includes(today));
     const allDates = new Set<string>();
-    preceptHabits.forEach(h => (h.checkedDates ?? []).forEach(d => allChecked.length > 0 && allDates.add(d)));
+    preceptHabits.forEach(h => (h.checkedDates ?? []).forEach(d => allDates.add(d)));
     // Total days with any checkin
     const totalDays = allDates.size;
     // Streak: consecutive days where ALL precepts were checked

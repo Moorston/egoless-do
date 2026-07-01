@@ -45,7 +45,7 @@ export default function GiveHistoryPage() {
     const dateSet = new Set<string>();
     giveHistory.forEach(g => dateSet.add(dateStr(new Date(g.timestamp))));
     const sortedDates = [...dateSet].sort();
-    let longest = 0, current = 1;
+    let longest = 0, current = sortedDates.length > 0 ? 1 : 0;
     for (let i = 1; i < sortedDates.length; i++) {
       const prev = new Date(sortedDates[i - 1]);
       const cur = new Date(sortedDates[i]);

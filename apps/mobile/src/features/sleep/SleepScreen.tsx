@@ -108,6 +108,7 @@ export default function SleepScreen() {
   const handleChoosePractice = useCallback((type: string) => {
     if (type === 'breathing') nav.navigate('Breathing' as never);
     else if (type === 'meditation') nav.navigate('Meditation' as never);
+    else if (type === 'mantra') nav.navigate('Mantra' as never);
     // Track practice when user navigates away
     if (!completedPractice.includes(type)) {
       setCompletedPractice(prev => [...prev, type]);

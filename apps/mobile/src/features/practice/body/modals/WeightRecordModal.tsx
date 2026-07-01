@@ -56,7 +56,7 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
           />
 
           {/* Body fat input */}
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('bodyBodyFat')} (%){currentBodyFat ? ` - ${T('bodyCurrentWeight')}: ${currentBodyFat}%` : ''}</Text>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('bodyBodyFat')} (%){currentBodyFat ? ` - ${T('bodyCurrentBodyFat')}: ${currentBodyFat}%` : ''}</Text>
           <TextInput
             style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, color: TH.text, fontSize: FONT_BODY, marginBottom: 8 }}
             keyboardType="decimal-pad"

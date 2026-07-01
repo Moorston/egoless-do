@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function GoalCard({ TH, T, goal, profile, onEdit }: Props) {
-  const progress = calcGoalProgress(profile.weight, goal?.targetWeight, profile.weight);
+  const progress = goal?.initialWeight ? calcGoalProgress(profile.weight, goal.targetWeight, goal.initialWeight) : 0;
   const strategyLabel = goal?.strategy ? (BODY_STRATEGIES.find(s => s.key === goal.strategy)?.nameKey ?? goal.strategy) : null;
   const recommended = recommendStrategy(profile.bodyTags ?? []);
 
