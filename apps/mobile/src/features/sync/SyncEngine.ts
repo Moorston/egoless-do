@@ -19,7 +19,8 @@ import {
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
   rowToPlanItemCheckin, rowToGrace, rowToDailyCustomTodo, rowToDailyTodoHistory,
   rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
-  rowToBodyGoal, rowToBodyPlan,
+  rowToBodyGoal, rowToBodyPlan, rowToWeightRecord, rowToBodyCheckin, rowToSleep,
+  rowToMotivationEntry, rowToCustomWuxing,
 } from '../../store/rowMappers';
 import { dbGetAllFoodEntries } from '../../db/queries';
 import NetInfo from '@react-native-community/netinfo';
@@ -52,6 +53,9 @@ const ENTITY_STORE_KEY: Record<string, string> = {
   thoughtTrail: 'thoughtTrails', trailNote: 'trailNotes',
   reflectionLink: 'reflectionLinks', checkinReview: 'checkinReviews',
   bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans',
+  weightRecord: 'weightRecords', bodyCheckin: 'bodyCheckins',
+  sleep: 'sleepHistory',
+  motivationEntry: 'motivationLog', customWuxing: 'customWuxingMaps',
 };
 const ENTITY_COLL_MAP: Record<string, string> = {
   habits: 'habit', mind_reflections: 'reflection', fasting_sessions: 'fasting',
@@ -62,6 +66,9 @@ const ENTITY_COLL_MAP: Record<string, string> = {
   grace_history: 'grace', thought_trails: 'thoughtTrail', trail_notes: 'trailNote',
   reflection_links: 'reflectionLink', ai_configs: 'aiConfig', checkin_reviews: 'checkinReview',
   body_goals: 'bodyGoal', body_plans: 'bodyPlan',
+  body_weight_records: 'weightRecord', body_checkins: 'bodyCheckin',
+  sleep_records: 'sleep',
+  eating_motivations: 'motivationEntry', custom_wuxing_maps: 'customWuxing',
 };
 // Validate all SCHEMAS entities are covered by ENTITY_STORE_KEY or handled specially
 const _specialEntities = new Set(['aiConfig']);
@@ -435,6 +442,9 @@ export class SyncEngine {
     trailNote: rowToTrailNote, reflectionLink: rowToReflectionLink,
     aiConfig: rowToAIConfig, checkinReview: rowToCheckinReview,
     bodyGoal: rowToBodyGoal, bodyPlan: rowToBodyPlan,
+    weightRecord: rowToWeightRecord, bodyCheckin: rowToBodyCheckin,
+    sleep: rowToSleep,
+    motivationEntry: rowToMotivationEntry, customWuxing: rowToCustomWuxing,
   };
 
   private async applyEntityToTable(
@@ -923,7 +933,7 @@ export class SyncEngine {
   private async purgeDeletedRecords(): Promise<void> {
     try {
       const db = await openDatabase();
-      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews'];
+      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews','body_goals','body_plans','body_weight_records','body_checkins'];
       for (const table of tables) {
         await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
       }
@@ -996,6 +1006,11 @@ export class SyncEngine {
       checkinReview: { table: 'checkin_reviews', query: 'SELECT * FROM checkin_reviews WHERE deleted = 0', mapper: rowToCheckinReview, storeKey: 'checkinReviews' },
       bodyGoal: { table: 'body_goals', query: 'SELECT * FROM body_goals WHERE deleted = 0', mapper: rowToBodyGoal, storeKey: 'bodyGoals' },
       bodyPlan: { table: 'body_plans', query: 'SELECT * FROM body_plans WHERE deleted = 0', mapper: rowToBodyPlan, storeKey: 'bodyPlans' },
+      weightRecord: { table: 'body_weight_records', query: 'SELECT * FROM body_weight_records WHERE deleted = 0', mapper: rowToWeightRecord, storeKey: 'weightRecords' },
+      bodyCheckin: { table: 'body_checkins', query: 'SELECT * FROM body_checkins WHERE deleted = 0', mapper: rowToBodyCheckin, storeKey: 'bodyCheckins' },
+      sleep: { table: 'sleep_records', query: 'SELECT * FROM sleep_records WHERE deleted = 0', mapper: rowToSleep, storeKey: 'sleepHistory' },
+      motivationEntry: { table: 'eating_motivations', query: 'SELECT * FROM eating_motivations WHERE deleted = 0', mapper: rowToMotivationEntry, storeKey: 'motivationLog' },
+      customWuxing: { table: 'custom_wuxing_maps', query: 'SELECT * FROM custom_wuxing_maps WHERE deleted = 0', mapper: rowToCustomWuxing, storeKey: 'customWuxingMaps' },
     };
 
     const targets = entities ?? Object.keys(REHYDRATE_MAP);
@@ -1073,7 +1088,7 @@ export class SyncEngine {
   async resumeInitialSync(token: string, userId?: string): Promise<void> {
     const db = await openDatabase();
     if ((await getState(db, 'initialSyncDone')) === 'true') return;
-    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview'];
+    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin'];
 
     for (const entity of allEntities) {
       const p = await getSyncProgress(entity);

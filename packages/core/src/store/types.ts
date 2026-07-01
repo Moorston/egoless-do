@@ -7,6 +7,9 @@ import type {
   ReflectionFilters, ThoughtTrail, ReflectionLink, LinkType, CheckinReview,
   TrailNote, TrailInsightCache, TrailReviewCache,
   PlanItemSource, UnifiedPlanItemForm,
+  SleepEntry, SleepGoal,
+  EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats,
+  MotivationStats, EmotionSensitiveDay,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -15,6 +18,10 @@ import type { CreateReflectionParams } from '../business/reflections';
 import type { StopFastingOpts } from '../business/fasting';
 import type { BodySlice } from './createBodySlice';
 export type { BodySlice } from './createBodySlice';
+import type { WeightSlice } from './createWeightSlice';
+export type { WeightSlice } from './createWeightSlice';
+import type { BodyCheckinSlice } from './createBodyCheckinSlice';
+export type { BodyCheckinSlice } from './createBodyCheckinSlice';
 
 // ─── Granular slice interfaces ─────────────────────────────────
 
@@ -89,6 +96,15 @@ export interface MeditationSlice {
   medHistory: MedHistoryEntry[];
   addMedMinutes: (min: number, trackId?: string, note?: string) => void;
   calculateTotalMedMin: () => void;
+}
+
+export interface SleepSlice {
+  sleepHistory: SleepEntry[];
+  sleepGoal: SleepGoal;
+  getTodaySleep: () => SleepEntry | undefined;
+  completeBarrier: (opts: { barrierMin: number; awayMin: number; practice?: string[] }) => void;
+  saveSleepDiary: (entry: Partial<SleepEntry>) => void;
+  setSleepGoal: (goal: SleepGoal) => void;
 }
 
 // ─── Legacy UiSlice (compatibility alias) ──────────────────────
@@ -250,11 +266,29 @@ export interface ReflectionLinkSlice {
   deleteLinksByReflection: (reflectionId: string) => void;
 }
 
+// ─── Diet slice ─────────────────────────────────────────────
+
+export interface DietSlice {
+  motivationLog: EatingMotivationEntry[];
+  customWuxingMaps: CustomWuxingMap[];
+
+  setFoodMotivation: (entry: Omit<EatingMotivationEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
+  removeFoodMotivation: (foodId: string) => void;
+  addCustomWuxingMap: (map: Omit<CustomWuxingMap, 'id' | 'updatedAt' | 'deleted'>) => void;
+  removeCustomWuxingMap: (id: string) => void;
+  lookupWuxing: (foodName: string) => FoodWuxingItem | null;
+  getDailyFlavorStats: (date: string) => FlavorStats;
+  getDailyWuxingStats: (date: string) => WuxingStats;
+  getWuxingStatsRange: (dateFrom: string, dateTo: string) => WuxingStats;
+  getMotivationStats: (dateFrom: string, dateTo: string) => MotivationStats;
+  getEmotionSensitiveDays: (dateFrom: string, dateTo: string) => EmotionSensitiveDay[];
+}
+
 // ─── FullStore composition ─────────────────────────────────────
 
-export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
+export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -280,6 +314,11 @@ export interface SyncDataMap {
   aiConfig: { config_id: string; mode: AIMode; models: ModelConfig[]; updatedAt: number; deleted: boolean };
   bodyGoal: import('../types').BodyGoal;
   bodyPlan: import('../types').BodyPlan;
+  weightRecord: import('../types').WeightRecord;
+  bodyCheckin: import('../types').BodyCheckin;
+  sleep: SleepEntry;
+  motivationEntry: EatingMotivationEntry;
+  customWuxing: CustomWuxingMap;
 }
 
 /** Type-safe storage adapter */

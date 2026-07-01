@@ -422,6 +422,7 @@ export const SPORT_BG_COLORS: Record<string, string> = {
 };
 
 export * from './constants/music';
+export * from './constants/wuxingMap';
 
 export const GLOBAL_USERS: GlobalUser[] = [
   { id: 1, name: '林夕',   lat: 39.9, lng: 116.4, days: 365, sport: '跑步',   since: '2025-05', duration: '1年' },

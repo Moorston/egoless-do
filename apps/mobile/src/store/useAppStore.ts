@@ -4,15 +4,17 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
 import type {
-  AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice,
+  AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice, SleepSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, BodySlice,
+  WeightSlice, BodyCheckinSlice, DietSlice,
 } from '@egoless-do/core';
 import {
   setApiBase, setPushApiBase, setSyncApiBase, DAILY_RESET_KEY, DailyResetManager,
-  createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice,
+  createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice, createSleepSlice,
   createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice, createBodySlice,
+  createWeightSlice, createBodyCheckinSlice, createDietSlice,
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
@@ -20,7 +22,6 @@ import { mobileStorageAdapter, flushWrites } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
 import { useMusicStore, setMusicSyncCallback } from '../features/music/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
-import { applyServerChanges as _applyServerChanges } from '../features/sync/SyncService';
 import { openDatabase, setState as setAppState } from '../db/schema';
 
 const log = createLogger('App');
@@ -121,7 +122,8 @@ AppState.addEventListener('change', async (state) => {
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice;
+  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice
+  & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice;
 
 /** Partial store type for setState calls */
 export type PartialMobileStore = Partial<MobileStore>;
@@ -155,6 +157,7 @@ export const useAppStore = create<MobileStore>()(
       ...createReflectionSlice(adapter)(...a),
       ...createFastingSlice(adapter, triggerAutoSync)(...a),
       ...createMeditationSlice(adapter, triggerAutoSync)(...a),
+      ...createSleepSlice(adapter, triggerAutoSync)(...a),
       ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
@@ -164,6 +167,9 @@ export const useAppStore = create<MobileStore>()(
       ...createAISlice(persistAIConfig)(...a),
       ...createReviewSlice(adapter, triggerAutoSync)(...a),
       ...createBodySlice(adapter, triggerAutoSync)(...a),
+      ...createWeightSlice(adapter, triggerAutoSync)(...a),
+      ...createBodyCheckinSlice(adapter, triggerAutoSync)(...a),
+      ...createDietSlice(adapter, triggerAutoSync)(...a),
     }),
     {
       name: 'egoless-do-mobile',
@@ -181,6 +187,7 @@ export const useAppStore = create<MobileStore>()(
         ignoredRecPatterns: s.ignoredRecPatterns,
         recycleBin: s.recycleBin, // Not in SQLite — persist in AsyncStorage for recovery
         userProfile: s.userProfile, // Persist profile (nickname/avatar/weight/water) across restarts
+        sleepGoal: s.sleepGoal, // Persist sleep goal settings across restarts
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;

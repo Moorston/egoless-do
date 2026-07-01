@@ -68,6 +68,7 @@ export interface I18nKeys {
   habitInsight: string; habitTargetDays: string; habitAutoTag: string;
   habitAutoTagDesc: string; habitAlarm: string; habitAlarmOff: string; habitAlarmTime: string; habitPauseReason: string;
   habitLink: string; habitLinkNone: string; habitLinkFasting: string; habitLinkMeditation: string; habitLinkExercise: string;
+  habitLinkSleep: string;
   habitAbandonReason: string; habitReasonPlaceholder: string;
   habitCalendar: string; habitChecked: string; habitToday: string;
   habitCheckinBtn: string; habitConfirmDelete: string;
@@ -623,6 +624,43 @@ export interface I18nKeys {
   sleepWeekAvg: string; sleepDebt: string;
   sleepReminder: string; sleepBarrierUsage: string;
   sleepMinutes: string;
+  sleepGoal: string; sleepGoalBedtime: string; sleepGoalWake: string; sleepGoalHours: string;
+  sleepGoalReminder: string; sleepGoalEnabled: string;
+  sleepDiary: string; sleepDiaryTitle: string; sleepDiaryBedtime: string; sleepDiaryWake: string; sleepDiaryDuration: string;
+  sleepWorkState: string; sleepWorkEnergetic: string; sleepWorkNormal: string; sleepWorkTired: string; sleepWorkExhausted: string;
+  sleepBodyState: string; sleepMindState: string;
+  sleepCustomTag: string; sleepAddTag: string;
+  sleepQuickGratitude: string; sleepRecentRecords: string; sleepViewHistory: string;
+  sleepBarrierSelect: string; sleepBarrierMin15: string; sleepBarrierMin20: string; sleepBarrierMin30: string;
+  sleepPracticeProgress: string; sleepPracticeDone: string;
+  sleepBreathGlow: string;
+
+  // Diet (调食)
+  dietTitle: string; dietTabToday: string; dietTabWuxing: string;
+  dietTabTrend: string; dietTabFasting: string;
+  dietFlavorDist: string; dietFoodList: string;
+  dietSuggestion: string; dietSuggestionExcess: string; dietSuggestionDeficient: string;
+  dietSuggestionBalanced: string; dietSuggestionAdd: string;
+  dietWuxingRadar: string; dietTimeRange7: string; dietTimeRange30: string; dietTimeRange90: string;
+  dietInterpretation: string; dietDominant: string; dietDeficient: string;
+  dietVsLastWeek: string; dietWuxingLookup: string; dietSearchFood: string;
+  dietCommonFoods: string; dietAllFoods: string;
+  dietMotivationTitle: string; dietMotivationPhysical: string; dietMotivationEmotional: string;
+  dietMotivationHabitual: string; dietMotivationSocial: string;
+  dietEmotionSensitive: string; dietEmotionSensitiveHint: string;
+  dietEmotionTimeline: string; dietHeatmapTitle: string;
+  dietFastingSync: string; dietFastingSuggestion: string;
+  dietFastingSuggestionText: string; dietFastingHistory: string;
+  dietFastingInterrupted: string; dietMarkMotivation: string;
+  dietNoFoodToday: string; dietNatureHot: string; dietNatureWarm: string;
+  dietNatureNeutral: string; dietNatureCool: string; dietNatureCold: string;
+  dietElementWood: string; dietElementFire: string; dietElementEarth: string;
+  dietElementMetal: string; dietElementWater: string;
+  dietFlavorSour: string; dietFlavorBitter: string; dietFlavorSweet: string;
+  dietFlavorPungent: string; dietFlavorSalty: string;
+  dietCategoryGrain: string; dietCategoryBean: string; dietCategoryVegetable: string;
+  dietCategoryFruit: string; dietCategoryMeat: string; dietCategorySeafood: string;
+  dietCategorySeasoning: string; dietCategoryOther: string;
 
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;
@@ -680,6 +718,49 @@ export interface I18nKeys {
   timePickerCancel: string; timePickerConfirm: string;
   reflUnlinkConfirmTitle: string; reflUnlinkConfirmMessage: string;
   reflRelationMap: string;
+
+  // Body
+  bodyTitle: string; bodyProfile: string; bodyGoal: string; bodyPlan: string; bodyExec: string;
+  bodyHeight: string; bodyWeight: string; bodyBmi: string; bodyBodyFat: string; bodyAge: string; bodyGender: string;
+  bodyBmr: string; bodyMale: string; bodyFemale: string; bodyNotSet: string;
+  bodyBmiThin: string; bodyBmiNormal: string; bodyBmiOverweight: string; bodyBmiObese: string;
+  bodySelfAssessment: string; bodySelfAssessmentPlaceholder: string;
+  bodySelfAssessmentHint: string; bodySelfAssessmentInputPlaceholder: string;
+  bodyTagsLabel: string; bodyCategory: string;
+  bodyGoalNotSet: string; bodyGoalEdit: string; bodyGoalSet: string; bodyGoalTitle: string;
+  bodyTargetWeight: string; bodyTargetBodyFat: string; bodyTargetDate: string;
+  bodyStrategyLabel: string; bodyProgress: string;
+  bodyPlanNotSet: string; bodyPlanEdit: string; bodyPlanTitle: string; bodyPlanSave: string;
+  bodyPlanNote: string; bodyPlanRestDay: string;
+  bodyExecNotSet: string; bodyCompletedDays: string; bodyKcal: string;
+  bodyDayComplete: string; bodyDayIncomplete: string; bodyDayPending: string; bodyDayRest: string;
+  bodyWeekMon: string; bodyWeekTue: string; bodyWeekWed: string; bodyWeekThu: string;
+  bodyWeekFri: string; bodyWeekSat: string; bodyWeekSun: string;
+  bodyCancel: string; bodySave: string;
+  bodyPartChestTriceps: string; bodyPartBackBiceps: string; bodyPartLegsCore: string;
+  bodyPartCardio: string; bodyPartShouldersArms: string; bodyPartFullBody: string; bodyPartRest: string;
+  bodyPartHiit: string;
+  bodyPartBaduanjin: string; bodyPartWuqinxi: string; bodyPartTaiji: string;
+  bodyPartZhanzhuang: string; bodyPartJingluo: string; bodyPartYoga: string; bodyPartWalking: string;
+  bodyCatTraditional: string; bodyCatModern: string;
+  bodyStrategyLoseFat: string; bodyStrategyGainMuscle: string; bodyStrategyTone: string;
+  bodyStrategyGainWeight: string; bodyStrategyMaintain: string; bodyStrategyPosture: string; bodyStrategyRecovery: string;
+  bodyRecommendHint: string; bodyRecommendLabel: string;
+  bodyCurrentWeight: string; bodyCurrentBodyFat: string;
+  bodyStartFlow: string; bodyFlowAwareness: string;
+  bodyAwareness: string; bodyAwarenessNoData: string;
+  bodyEnergy: string; bodyPain: string; bodyComfort: string; bodySleepQuality: string;
+  bodyCheckinTitle: string; bodyCheckinHint: string;
+  bodyWeightTrend: string; bodyWeightNoData: string;
+  bodyRecordWeight: string;
+  bodyFlowPrepare: string; bodyFlowPractice: string; bodyFlowBreathing: string;
+  bodyFlowSummary: string; bodyFlowSkip: string; bodyFlowStartBreathing: string;
+  bodyFlowChooseExercise: string; bodyFlowExitConfirm: string;
+  bodyFlowTotalTime: string; bodyFlowBreathingTime: string;
+  bodyFlowBreathingHint: string; bodyFlowBreathingDone: string; bodyFlowBreathingDesc: string;
+  bodyFlowAwarenessHint: string; bodyFlowAwarenessSaved: string;
+  bodyFlowDone: string; bodyFlowSkipped: string; bodyFlowRecorded: string;
+  bodyFlowFinish: string; bodyFlowPracticeDone: string;
 }
 
 export type I18nKey = keyof I18nKeys;

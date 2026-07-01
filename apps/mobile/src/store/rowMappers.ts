@@ -6,7 +6,7 @@ import type {
   ExerciseEntry, MedHistoryEntry, UserProfile, Plan, PlanItem,
   PlanItemCheckin, GraceHistoryEntry, DailyCustomTodo, DailyTodoHistory,
   ThoughtTrail, TrailNote, ReflectionLink, CheckinReview,
-  AIMode, ModelConfig,
+  AIMode, ModelConfig, SleepEntry, EatingMotivationEntry, CustomWuxingMap,
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
@@ -100,4 +100,24 @@ export function rowToBodyGoal(r: Record<string, unknown>): Record<string, unknow
 
 export function rowToBodyPlan(r: Record<string, unknown>): Record<string, unknown> {
   return rowToEntityMap.bodyPlan(r);
+}
+
+export function rowToWeightRecord(r: Record<string, unknown>): Record<string, unknown> {
+  return rowToEntityMap.weightRecord(r);
+}
+
+export function rowToBodyCheckin(r: Record<string, unknown>): Record<string, unknown> {
+  return rowToEntityMap.bodyCheckin(r);
+}
+
+export function rowToSleep(r: Record<string, unknown>): SleepEntry {
+  return rowToEntityMap.sleep(r) as unknown as SleepEntry;
+}
+
+export function rowToMotivationEntry(r: Record<string, unknown>): EatingMotivationEntry {
+  return rowToEntityMap.motivationEntry(r) as unknown as EatingMotivationEntry;
+}
+
+export function rowToCustomWuxing(r: Record<string, unknown>): CustomWuxingMap {
+  return rowToEntityMap.customWuxing(r) as unknown as CustomWuxingMap;
 }

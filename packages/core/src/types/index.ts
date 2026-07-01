@@ -16,3 +16,5 @@ export * from './review';
 export * from './music';
 export * from './body';
 export * from './app';
+export * from './sleep';
+export * from './diet';

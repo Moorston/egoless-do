@@ -27,6 +27,7 @@ import ExerciseScreen   from '../features/exercise/ExerciseScreen';
 import BreathingScreen  from '../features/breathing/BreathingScreen';
 import SleepScreen      from '../features/sleep/SleepScreen';
 import BodyScreen       from '../features/practice/BodyScreen';
+import DietScreen       from '../features/diet/DietScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
 
 // Stack screens — reflections (via barrel exports)
@@ -50,6 +51,7 @@ import SportPage         from '../features/exercise/SportPage';
 import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
 import FastHistoryPage, { FastCalendarScreen } from '../features/fasting/FastHistoryPage';
 import MedHistoryPage, { MedCalendarScreen } from '../features/meditation/MedHistoryPage';
+import SleepHistoryPage from '../features/sleep/SleepHistoryPage';
 import FoodLogPage       from '../features/home/screens/FoodLogPage';
 import GracePage         from '../features/home/screens/GracePage';
 import StreakBreakScreen from '../features/home/screens/StreakBreakScreen';
@@ -242,6 +244,7 @@ function MainTabs() {
       <Tab.Screen name="Breathing"   component={BreathingScreen}   options={{ title: '调息', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Sleep"       component={SleepScreen}       options={{ title: '调眠', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Body"        component={BodyScreen}        options={{ title: '调身', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Diet"        component={DietScreen}        options={{ title: '调食', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
@@ -341,6 +344,7 @@ export default function AppNavigator() {
         <Stack.Screen name="FastCalendar" component={FastCalendarScreen} />
         <Stack.Screen name="MedHistory"   component={MedHistoryPage} />
         <Stack.Screen name="MedCalendar"  component={MedCalendarScreen} />
+        <Stack.Screen name="SleepHistory" component={SleepHistoryPage} />
         <Stack.Screen name="FoodLog"      component={FoodLogPage} />
         <Stack.Screen name="Grace"        component={GracePage} />
         <Stack.Screen name="StreakBreak" component={StreakBreakScreen} />

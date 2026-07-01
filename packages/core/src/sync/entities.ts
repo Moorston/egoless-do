@@ -7,7 +7,8 @@ export const SYNC_ENTITIES = [
   'habit', 'reflection', 'fasting', 'food', 'checkin', 'meditation', 'profile', 'exercise',
   'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'grace',
   'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview',
-  'bodyGoal', 'bodyPlan',
+  'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep',
+  'motivationEntry', 'customWuxing',
 ] as const;
 
 export type SyncEntity = typeof SYNC_ENTITIES[number];

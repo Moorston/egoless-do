@@ -345,6 +345,64 @@ CREATE TABLE IF NOT EXISTS checkin_reviews (
   synced      INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_checkin_reviews_period ON checkin_reviews(period, start_date);
+
+CREATE TABLE IF NOT EXISTS body_weight_records (
+  id TEXT PRIMARY KEY, date TEXT NOT NULL, weight REAL NOT NULL,
+  body_fat REAL, updated_at INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0,
+  synced INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS body_checkins (
+  id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
+  pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
+  tags TEXT, note TEXT, updated_at INTEGER NOT NULL,
+  deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS sleep_records (
+  id            TEXT PRIMARY KEY,
+  date          TEXT NOT NULL,
+  bedtime_at    INTEGER,
+  wake_at       INTEGER,
+  duration_min  INTEGER,
+  quality       INTEGER,
+  barrier_done  INTEGER NOT NULL DEFAULT 0,
+  barrier_min   INTEGER,
+  away_min      INTEGER,
+  practice      TEXT NOT NULL DEFAULT '[]',
+  work_state    TEXT,
+  body_state    TEXT NOT NULL DEFAULT '[]',
+  mind_state    TEXT NOT NULL DEFAULT '[]',
+  gratitude     TEXT NOT NULL DEFAULT '[]',
+  note          TEXT,
+  updated_at    INTEGER,
+  deleted       INTEGER NOT NULL DEFAULT 0,
+  synced        INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_sleep_date ON sleep_records(date);
+
+CREATE TABLE IF NOT EXISTS eating_motivations (
+  id             TEXT PRIMARY KEY,
+  food_id        TEXT NOT NULL,
+  date           TEXT NOT NULL,
+  motivation     TEXT NOT NULL,
+  hunger_level   INTEGER,
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_motivation_date ON eating_motivations(date);
+CREATE INDEX IF NOT EXISTS idx_motivation_food ON eating_motivations(food_id);
+
+CREATE TABLE IF NOT EXISTS custom_wuxing_maps (
+  id             TEXT PRIMARY KEY,
+  food_name      TEXT NOT NULL,
+  flavor         TEXT NOT NULL,
+  element        TEXT NOT NULL,
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -491,6 +549,10 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     }
     if (!medColNames.has('note')) {
       await db.execAsync("ALTER TABLE meditation_history ADD COLUMN note TEXT NOT NULL DEFAULT ''");
+    }
+    // Drop old dur column (replaced by dur_min) to avoid NOT NULL constraint on INSERT
+    if (medColNames.has('dur')) {
+      await db.execAsync('ALTER TABLE meditation_history DROP COLUMN dur');
     }
   }
 
@@ -783,6 +845,31 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday)');
+  }
+
+  // Ensure body_weight_records table exists
+  const bodyWeightCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_weight_records'"
+  );
+  if (!bodyWeightCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_weight_records (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, weight REAL NOT NULL,
+      body_fat REAL, updated_at INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0,
+      synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure body_checkins table exists
+  const bodyCheckinsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_checkins'"
+  );
+  if (!bodyCheckinsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_checkins (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
+      pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
+      tags TEXT, note TEXT, updated_at INTEGER NOT NULL,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
   }
 }
 

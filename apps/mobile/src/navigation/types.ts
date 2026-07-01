@@ -9,6 +9,7 @@ export type RootStackParamList = {
   FastCalendar: undefined;
   MedHistory: undefined;
   MedCalendar: undefined;
+  SleepHistory: undefined;
   FoodLog: undefined;
   Grace: undefined;
   StreakBreak: undefined;
@@ -52,4 +53,5 @@ export type MainTabParamList = {
   Settings: undefined;
   Reflections: { showNew?: boolean; trailId?: string } | undefined;
   Habits: undefined;
+  Diet: undefined;
 };
