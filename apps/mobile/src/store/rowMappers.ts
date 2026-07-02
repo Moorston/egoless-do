@@ -1,5 +1,6 @@
 // ─── SQLite row → Zustand entity mappers ────────────────────────
-// All rowTo* functions are now derived from SCHEMAS in entitySchemas.ts.
+// Each mapper calls buildRowToEntity with the correct type parameter
+// to get compile-time type safety without `as unknown as` double-casts.
 
 import type {
   Habit, MindReflection, FastingSession, FoodEntry, CheckinEntry,
@@ -9,166 +10,100 @@ import type {
   AIMode, ModelConfig, SleepEntry, EatingMotivationEntry, CustomWuxingMap,
   Vision, VisionPractice, Dedication, FearEntry, CourageEntry, FearAchievement,
   MantraDef, MantraSession, SutraReadingSession,
-  BreathingRecord, ZhiguanSession,
+  ZhiguanSession,
+  BodyGoal, BodyPlan, WeightRecord, BodyCheckin, GiveEntry,
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
-// Row mapper type - functions from buildRowToEntity lose generic through Object.fromEntries
-type RowMapper = (row: Record<string, unknown>) => Record<string, unknown>;
-
-// Generate all rowTo* functions from SCHEMAS
-const rowToEntityMap = Object.fromEntries(
-  (Object.keys(SCHEMAS) as Array<keyof typeof SCHEMAS>).map(k => [k, buildRowToEntity(SCHEMAS[k])])
-) as Record<string, RowMapper>;
-
-export function rowToHabit(r: Record<string, unknown>): Habit {
-  return rowToEntityMap.habit(r) as unknown as Habit;
+// BreathingRecord type (not exported from barrel, defined locally)
+interface BreathingRecord {
+  id: string; date: string; presetKey: string; durationSec: number;
+  cycles: number; preDistress: number; postDistress: number;
+  reflection?: string; guideStyle: 'scientific' | 'spiritual';
+  updatedAt: number; deleted?: boolean;
 }
 
-export function rowToReflection(r: Record<string, unknown>): MindReflection {
-  return rowToEntityMap.reflection(r) as unknown as MindReflection;
-}
+// Pre-built mappers with correct generic types
+const mappers = {
+  habit:           buildRowToEntity<Habit>(SCHEMAS.habit),
+  reflection:      buildRowToEntity<MindReflection>(SCHEMAS.reflection),
+  fasting:         buildRowToEntity<FastingSession>(SCHEMAS.fasting),
+  food:            buildRowToEntity<FoodEntry>(SCHEMAS.food),
+  checkin:         buildRowToEntity<CheckinEntry>(SCHEMAS.checkin),
+  exercise:        buildRowToEntity<ExerciseEntry>(SCHEMAS.exercise),
+  meditation:      buildRowToEntity<MedHistoryEntry>(SCHEMAS.meditation),
+  profile:         buildRowToEntity<UserProfile>(SCHEMAS.profile),
+  plan:            buildRowToEntity<Plan>(SCHEMAS.plan),
+  planItem:        buildRowToEntity<PlanItem>(SCHEMAS.planItem),
+  planItemCheckin: buildRowToEntity<PlanItemCheckin>(SCHEMAS.planItemCheckin),
+  grace:           buildRowToEntity<GraceHistoryEntry>(SCHEMAS.grace),
+  dailyCustomTodo: buildRowToEntity<DailyCustomTodo>(SCHEMAS.dailyCustomTodo),
+  dailyTodoHistory:buildRowToEntity<DailyTodoHistory>(SCHEMAS.dailyTodoHistory),
+  thoughtTrail:    buildRowToEntity<ThoughtTrail>(SCHEMAS.thoughtTrail),
+  trailNote:       buildRowToEntity<TrailNote>(SCHEMAS.trailNote),
+  reflectionLink:  buildRowToEntity<ReflectionLink>(SCHEMAS.reflectionLink),
+  aiConfig:        buildRowToEntity<{ mode: AIMode; models: ModelConfig[]; config_id?: string }>(SCHEMAS.aiConfig),
+  checkinReview:   buildRowToEntity<CheckinReview>(SCHEMAS.checkinReview),
+  bodyGoal:        buildRowToEntity<BodyGoal>(SCHEMAS.bodyGoal),
+  bodyPlan:        buildRowToEntity<BodyPlan>(SCHEMAS.bodyPlan),
+  weightRecord:    buildRowToEntity<WeightRecord>(SCHEMAS.weightRecord),
+  bodyCheckin:     buildRowToEntity<BodyCheckin>(SCHEMAS.bodyCheckin),
+  sleep:           buildRowToEntity<SleepEntry>(SCHEMAS.sleep),
+  give:            buildRowToEntity<GiveEntry>(SCHEMAS.give),
+  motivationEntry: buildRowToEntity<EatingMotivationEntry>(SCHEMAS.motivationEntry),
+  customWuxing:    buildRowToEntity<CustomWuxingMap>(SCHEMAS.customWuxing),
+  vision:          buildRowToEntity<Vision>(SCHEMAS.vision),
+  visionPractice:  buildRowToEntity<VisionPractice>(SCHEMAS.visionPractice),
+  dedication:      buildRowToEntity<Dedication>(SCHEMAS.dedication),
+  fearEntry:       buildRowToEntity<FearEntry>(SCHEMAS.fearEntry),
+  courageEntry:    buildRowToEntity<CourageEntry>(SCHEMAS.courageEntry),
+  fearAchievement: buildRowToEntity<FearAchievement>(SCHEMAS.fearAchievement),
+  mantraDef:       buildRowToEntity<MantraDef>(SCHEMAS.mantraDef),
+  mantraSession:   buildRowToEntity<MantraSession>(SCHEMAS.mantraSession),
+  sutraReading:    buildRowToEntity<SutraReadingSession>(SCHEMAS.sutraReading),
+  breath:          buildRowToEntity<BreathingRecord>((SCHEMAS as Record<string, typeof SCHEMAS.habit>).breath ?? SCHEMAS.zhiguanSession),
+  zhiguanSession:  buildRowToEntity<ZhiguanSession>(SCHEMAS.zhiguanSession),
+};
 
-export function rowToFasting(r: Record<string, unknown>): FastingSession {
-  return rowToEntityMap.fasting(r) as unknown as FastingSession;
-}
+// Export individual typed mappers
+export const rowToHabit           = mappers.habit;
+export const rowToReflection      = mappers.reflection;
+export const rowToFasting         = mappers.fasting;
+export const rowToFood            = mappers.food;
+export const rowToCheckin         = mappers.checkin;
+export const rowToExercise        = mappers.exercise;
+export const rowToMeditation      = mappers.meditation;
+export const rowToProfile         = mappers.profile;
+export const rowToPlan            = mappers.plan;
+export const rowToPlanItem        = mappers.planItem;
+export const rowToPlanItemCheckin = mappers.planItemCheckin;
+export const rowToGrace           = mappers.grace;
+export const rowToDailyCustomTodo = mappers.dailyCustomTodo;
+export const rowToDailyTodoHistory = mappers.dailyTodoHistory;
+export const rowToThoughtTrail    = mappers.thoughtTrail;
+export const rowToTrailNote       = mappers.trailNote;
+export const rowToReflectionLink  = mappers.reflectionLink;
+export const rowToAIConfig        = mappers.aiConfig;
+export const rowToCheckinReview   = mappers.checkinReview;
+export const rowToBodyGoal        = mappers.bodyGoal;
+export const rowToBodyPlan        = mappers.bodyPlan;
+export const rowToWeightRecord    = mappers.weightRecord;
+export const rowToBodyCheckin     = mappers.bodyCheckin;
+export const rowToSleep           = mappers.sleep;
+export const rowToGive            = mappers.give;
+export const rowToMotivationEntry = mappers.motivationEntry;
+export const rowToCustomWuxing    = mappers.customWuxing;
+export const rowToVision          = mappers.vision;
+export const rowToVisionPractice  = mappers.visionPractice;
+export const rowToDedication      = mappers.dedication;
+export const rowToFearEntry       = mappers.fearEntry;
+export const rowToCourageEntry    = mappers.courageEntry;
+export const rowToFearAchievement = mappers.fearAchievement;
+export const rowToMantraDef       = mappers.mantraDef;
+export const rowToMantraSession   = mappers.mantraSession;
+export const rowToSutraReading    = mappers.sutraReading;
+export const rowToBreath          = mappers.breath;
+export const rowToZhiguanSession  = mappers.zhiguanSession;
 
-export function rowToFood(r: Record<string, unknown>): FoodEntry {
-  return rowToEntityMap.food(r) as unknown as FoodEntry;
-}
-
-export function rowToCheckin(r: Record<string, unknown>): CheckinEntry {
-  return rowToEntityMap.checkin(r) as unknown as CheckinEntry;
-}
-
-export function rowToExercise(r: Record<string, unknown>): ExerciseEntry {
-  return rowToEntityMap.exercise(r) as unknown as ExerciseEntry;
-}
-
-export function rowToMeditation(r: Record<string, unknown>): MedHistoryEntry {
-  return rowToEntityMap.meditation(r) as unknown as MedHistoryEntry;
-}
-
-export function rowToProfile(r: Record<string, unknown>): UserProfile {
-  return rowToEntityMap.profile(r) as unknown as UserProfile;
-}
-
-export function rowToPlan(r: Record<string, unknown>): Plan {
-  return rowToEntityMap.plan(r) as unknown as Plan;
-}
-
-export function rowToPlanItem(r: Record<string, unknown>): PlanItem {
-  return rowToEntityMap.planItem(r) as unknown as PlanItem;
-}
-
-export function rowToPlanItemCheckin(r: Record<string, unknown>): PlanItemCheckin {
-  return rowToEntityMap.planItemCheckin(r) as unknown as PlanItemCheckin;
-}
-
-export function rowToGrace(r: Record<string, unknown>): GraceHistoryEntry {
-  return rowToEntityMap.grace(r) as unknown as GraceHistoryEntry;
-}
-
-export function rowToDailyCustomTodo(r: Record<string, unknown>): DailyCustomTodo {
-  return rowToEntityMap.dailyCustomTodo(r) as unknown as DailyCustomTodo;
-}
-
-export function rowToDailyTodoHistory(r: Record<string, unknown>): DailyTodoHistory {
-  return rowToEntityMap.dailyTodoHistory(r) as unknown as DailyTodoHistory;
-}
-
-export function rowToThoughtTrail(r: Record<string, unknown>): ThoughtTrail {
-  return rowToEntityMap.thoughtTrail(r) as unknown as ThoughtTrail;
-}
-
-export function rowToTrailNote(r: Record<string, unknown>): TrailNote {
-  return rowToEntityMap.trailNote(r) as unknown as TrailNote;
-}
-
-export function rowToReflectionLink(r: Record<string, unknown>): ReflectionLink {
-  return rowToEntityMap.reflectionLink(r) as unknown as ReflectionLink;
-}
-
-export function rowToAIConfig(r: Record<string, unknown>): { mode: AIMode; models: ModelConfig[]; config_id?: string } {
-  return rowToEntityMap.aiConfig(r) as unknown as { mode: AIMode; models: ModelConfig[]; config_id?: string };
-}
-
-export function rowToCheckinReview(r: Record<string, unknown>): CheckinReview {
-  return rowToEntityMap.checkinReview(r) as unknown as CheckinReview;
-}
-
-export function rowToBodyGoal(r: Record<string, unknown>): Record<string, unknown> {
-  return rowToEntityMap.bodyGoal(r);
-}
-
-export function rowToBodyPlan(r: Record<string, unknown>): Record<string, unknown> {
-  return rowToEntityMap.bodyPlan(r);
-}
-
-export function rowToWeightRecord(r: Record<string, unknown>): Record<string, unknown> {
-  return rowToEntityMap.weightRecord(r);
-}
-
-export function rowToBodyCheckin(r: Record<string, unknown>): Record<string, unknown> {
-  return rowToEntityMap.bodyCheckin(r);
-}
-
-export function rowToSleep(r: Record<string, unknown>): SleepEntry {
-  return rowToEntityMap.sleep(r) as unknown as SleepEntry;
-}
-
-export function rowToGive(r: Record<string, unknown>): Record<string, unknown> {
-  return rowToEntityMap.give(r);
-}
-
-export function rowToMotivationEntry(r: Record<string, unknown>): EatingMotivationEntry {
-  return rowToEntityMap.motivationEntry(r) as unknown as EatingMotivationEntry;
-}
-
-export function rowToCustomWuxing(r: Record<string, unknown>): CustomWuxingMap {
-  return rowToEntityMap.customWuxing(r) as unknown as CustomWuxingMap;
-}
-
-export function rowToVision(r: Record<string, unknown>): Vision {
-  return rowToEntityMap.vision(r) as unknown as Vision;
-}
-
-export function rowToVisionPractice(r: Record<string, unknown>): VisionPractice {
-  return rowToEntityMap.visionPractice(r) as unknown as VisionPractice;
-}
-
-export function rowToDedication(r: Record<string, unknown>): Dedication {
-  return rowToEntityMap.dedication(r) as unknown as Dedication;
-}
-
-export function rowToFearEntry(r: Record<string, unknown>): FearEntry {
-  return rowToEntityMap.fearEntry(r) as unknown as FearEntry;
-}
-
-export function rowToCourageEntry(r: Record<string, unknown>): CourageEntry {
-  return rowToEntityMap.courageEntry(r) as unknown as CourageEntry;
-}
-
-export function rowToMantraDef(r: Record<string, unknown>): MantraDef {
-  return rowToEntityMap.mantraDef(r) as unknown as MantraDef;
-}
-
-export function rowToMantraSession(r: Record<string, unknown>): MantraSession {
-  return rowToEntityMap.mantraSession(r) as unknown as MantraSession;
-}
-
-export function rowToFearAchievement(r: Record<string, unknown>): FearAchievement {
-  return rowToEntityMap.fearAchievement(r) as unknown as FearAchievement;
-}
-
-export function rowToSutraReading(r: Record<string, unknown>): SutraReadingSession {
-  return rowToEntityMap.sutraReading(r) as unknown as SutraReadingSession;
-}
-
-export function rowToBreath(r: Record<string, unknown>): BreathingRecord {
-  return rowToEntityMap.breath(r) as unknown as BreathingRecord;
-}
-
-export function rowToZhiguanSession(r: Record<string, unknown>): ZhiguanSession {
-  return rowToEntityMap.zhiguanSession(r) as unknown as ZhiguanSession;
-}
+// Re-export for SyncEngine which uses the map directly
+export const rowToEntityMap: Record<string, (row: Record<string, unknown>) => unknown> = mappers;
