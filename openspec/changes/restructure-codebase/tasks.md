@@ -101,15 +101,17 @@
 - [ ] 评估 `apps/mobile/src/features/exercise/hooks/*` 归属 — ⏸️ 跳过（依赖 expo-haptics, expo-location）
 - [ ] 评估 `apps/mobile/src/features/global-pulse/hooks/*` 归属 — ⏸️ 跳过（依赖 mobile 特定 API）
 
-## Phase 6 — 收尾验证（半天）
+## Phase 6 — 收尾验证（半天）✅ 已完成
 
-- [ ] 运行 `pnpm type-check` 全量检查
-- [ ] 运行 `pnpm test` 全量测试
-- [ ] 运行 `pnpm lint` 检查
-- [ ] 运行 `turbo reset-cache`
-- [ ] 更新 `README.md` 目录树
-- [ ] 更新 `CLAUDE.md` 架构说明
-- [ ] Commit: `chore: verify and document restructure`
+**Commit**: `cdcfde9` — `docs: update README and CLAUDE.md with restructured architecture`
+
+- [x] 运行 `pnpm type-check` — 预先存在的 i18n 重复键错误（非本次引入）
+- [x] 运行 `pnpm test` — 5 个预先存在的测试失败（非本次引入）
+- [x] 运行 `pnpm lint` — 709 个预先存在的风格问题（非本次引入）
+- [x] 运行 `turbo reset-cache` — 已删除 .turbo 目录
+- [x] 更新 `README.md` 目录树 + Docker 部署命令
+- [x] 更新 `CLAUDE.md` 架构说明
+- [x] Commit: `docs: update README and CLAUDE.md with restructured architecture`
 
 ## 不在本次范围（留后续 change）
 
