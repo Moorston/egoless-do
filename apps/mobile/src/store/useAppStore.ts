@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
+import { saveSecureTokens, loadSecureTokens, clearSecureTokens } from './secureAuth';
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice, SleepSlice, GiveSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
@@ -185,8 +186,9 @@ export const useAppStore = create<MobileStore>()(
       name: 'egoless-do-mobile',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: s => ({
-        // Only persist settings, auth, and UI preferences — entities rehydrate from SQLite
-        auth: s.auth, theme: s.theme, language: s.language, streak: s.streak,
+        // Only persist settings, auth (minus tokens — stored in SecureStore), and UI preferences
+        auth: { ...s.auth, token: null, refreshToken: null },
+        theme: s.theme, language: s.language, streak: s.streak,
         waterMl: s.waterMl, waterGoal: s.waterGoal, calGoal: s.calGoal,
         remindEnabled: s.remindEnabled, remindTime: s.remindTime,
         weightUnit: s.weightUnit, customTags: s.customTags, customMoods: s.customMoods,
@@ -201,6 +203,31 @@ export const useAppStore = create<MobileStore>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+
+        // Restore auth tokens from SecureStore (migrated from AsyncStorage)
+        loadSecureTokens().then(secureTokens => {
+          if (secureTokens) {
+            const currentAuth = useAppStore.getState().auth;
+            if (currentAuth.isSignedIn && !currentAuth.token) {
+              useAppStore.setState({
+                auth: { ...currentAuth, token: secureTokens.token, refreshToken: secureTokens.refreshToken },
+              });
+            }
+          }
+        }).catch(() => {});
+
+        // Persist auth tokens to SecureStore whenever they change
+        useAppStore.subscribe((state, prevState) => {
+          const newToken = state.auth.token;
+          const newRefresh = state.auth.refreshToken;
+          const oldToken = prevState.auth.token;
+          const oldRefresh = prevState.auth.refreshToken;
+          if (newToken && newRefresh && (newToken !== oldToken || newRefresh !== oldRefresh)) {
+            saveSecureTokens(newToken, newRefresh);
+          } else if (!newToken && oldToken) {
+            clearSecureTokens();
+          }
+        });
 
         // Set the auto sync callback after store is created
         _autoSyncCallback = () => {
