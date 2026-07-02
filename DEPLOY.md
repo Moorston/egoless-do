@@ -27,10 +27,10 @@ vim .env
 
 ```bash
 # 添加执行权限
-chmod +x deploy.sh
+chmod +x infra/scripts/deploy.sh
 
 # 运行部署
-./deploy.sh
+./infra/scripts/deploy.sh
 ```
 
 ### 3. 初始化 PocketBase
@@ -53,35 +53,35 @@ chmod +x deploy.sh
 
 ```bash
 # 查看日志
-docker-compose logs -f
+docker compose -f infra/docker/docker-compose.yml logs -f
 
 # 重启服务
-docker-compose restart
+docker compose -f infra/docker/docker-compose.yml restart
 
 # 停止服务
-docker-compose down
+docker compose -f infra/docker/docker-compose.yml down
 
 # 更新部署
 git pull
-docker-compose build --no-cache
-docker-compose up -d
+docker compose -f infra/docker/docker-compose.yml build --no-cache
+docker compose -f infra/docker/docker-compose.yml up -d
 ```
 
 ## 配置域名
 
 ### 1. 修改 Nginx 配置
 
-编辑 `nginx/nginx.conf`，将 `your-domain.com` 替换为你的域名。
+编辑 `infra/nginx/nginx.conf`，将 `your-domain.com` 替换为你的域名。
 
 ### 2. 配置 SSL（推荐）
 
 ```bash
 # 创建 SSL 目录
-mkdir -p nginx/ssl
+mkdir -p infra/nginx/ssl
 
 # 放置证书文件
-cp your-cert.pem nginx/ssl/cert.pem
-cp your-key.pem nginx/ssl/key.pem
+cp your-cert.pem infra/nginx/ssl/cert.pem
+cp your-key.pem infra/nginx/ssl/key.pem
 ```
 
 取消 `nginx.conf` 中 SSL 相关注释。
@@ -89,7 +89,7 @@ cp your-key.pem nginx/ssl/key.pem
 ### 3. 重启 Nginx
 
 ```bash
-docker-compose restart nginx
+docker compose -f infra/docker/docker-compose.yml restart nginx
 ```
 
 ## Mobile App 配置
@@ -112,10 +112,10 @@ EXPO_PUBLIC_API_URL=https://your-domain.com npx eas-cli build --platform ios --p
 
 ```bash
 # 检查日志
-docker-compose logs pocketbase
+docker compose -f infra/docker/docker-compose.yml logs pocketbase
 
 # 检查数据目录权限
-ls -la pb_data
+ls -la backend/pb_data
 ```
 
 ### Web 应用无法连接 PocketBase

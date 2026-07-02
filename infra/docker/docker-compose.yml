@@ -7,9 +7,9 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ./backend/pb_data:/pb/pb_data
-      - ./backend/pb_migrations:/pb/pb_migrations
-      - ./backend/pb_hooks:/pb/pb_hooks
+      - ../backend/pb_data:/pb/pb_data
+      - ../backend/pb_migrations:/pb/pb_migrations
+      - ../backend/pb_hooks:/pb/pb_hooks
     environment:
       - PB_ENCRYPTION_KEY=${PB_ENCRYPTION_KEY}
     healthcheck:
@@ -24,8 +24,8 @@ services:
   # ─── Next.js Web 应用 ──────────────────────────────────────────
   web:
     build:
-      context: .
-      dockerfile: Dockerfile.web
+      context: ..
+      dockerfile: infra/docker/Dockerfile.web
     container_name: egoless-do-web
     restart: unless-stopped
     ports:
@@ -59,8 +59,8 @@ services:
         echo "0 3 * * * /scripts/backup-pb.sh" | crontab -
         crond -f -l 2
     volumes:
-      - ./scripts/backup-pb.sh:/scripts/backup-pb.sh:ro
-      - ./backups:/opt/backups/pb
+      - ../infra/scripts/backup-pb.sh:/scripts/backup-pb.sh:ro
+      - ../backups:/opt/backups/pb
     environment:
       - PB_URL=http://pocketbase:8090
       - PB_ADMIN_EMAIL=${PB_ADMIN_EMAIL}
