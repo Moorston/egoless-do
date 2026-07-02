@@ -6,7 +6,7 @@ node_modules
 .env*
 !.env.production
 pb_data
-nginx/ssl
+infra/nginx/ssl
 .expo
 apps/mobile
 apps/web/data

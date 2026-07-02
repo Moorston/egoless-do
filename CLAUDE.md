@@ -1,10 +1,5 @@
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan:
-- **Plan**: [specs/001-global-pulse-improvement/plan.md](specs/001-global-pulse-improvement/plan.md)
-- **API Contracts**: [specs/001-global-pulse-improvement/contracts/api.md](specs/001-global-pulse-improvement/contracts/api.md)
-- **Data Model**: [specs/001-global-pulse-improvement/data-model.md](specs/001-global-pulse-improvement/data-model.md)
-- **Research**: [specs/001-global-pulse-improvement/research.md](specs/001-global-pulse-improvement/research.md)
+<!-- specs/ 目录已删除，specs 现在通过 openspec/ 管理 -->
 <!-- SPECKIT END -->
 
 ## 项目架构（2026-07 重构后）
@@ -21,7 +16,7 @@ egoless-do/ (Turborepo + pnpm workspaces)
 │   │       ├── db/                # SQLite schema + syncQueue
 │   │       ├── store/             # Zustand store (mobile 专属)
 │   │       ├── net/               # 网络层工具 (offlineAware)
-│   │       ├── shared/            # mobile 共享 UI 组件 (Button/Card/Modal/ThemeProvider)
+│   │       ├── i18n/              # 国际化初始化 (i18next)
 │   │       └── navigation/        # 导航配置
 │   └── web/                       # Next.js 15 PWA (deprecated)
 ├── packages/
@@ -74,7 +69,6 @@ egoless-do/ (Turborepo + pnpm workspaces)
 
 ### 已知技术债务
 
-- `packages/core/src/i18n/*.ts` — 存在重复键（TS1117 错误），待修复
 - `apps/web/` — deprecated，待归档
 - `apps/mobile/src/features/reflections/` — 7 个子目录，复杂度高，待解体
-- 5 个测试失败（预先存在），待修复
+- 6 个测试失败（预先存在），待修复

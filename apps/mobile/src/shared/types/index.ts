@@ -1,2 +1,0 @@
-// Shared types exports
-export {};

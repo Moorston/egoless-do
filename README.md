@@ -44,7 +44,7 @@ egoless-do/ (Turborepo + pnpm workspaces)
 │   │       ├── db/                # SQLite schema + syncQueue + 迁移
 │   │       ├── store/             # Zustand store (含 useNetworkStatus)
 │   │       ├── net/               # 网络层工具 (offlineAware)
-│   │       ├── shared/            # mobile 共享组件 (Button/Card/Modal/Drawer/ThemeProvider)
+│   │       ├── i18n/              # 国际化初始化 (i18next)
 │   │       ├── hooks/             # 跨 feature hooks
 │   │       └── navigation/        # 导航配置
 │   └── web/                       # Next.js 15 PWA

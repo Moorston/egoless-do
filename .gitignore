@@ -63,7 +63,7 @@ npm-debug.log*
 pnpm-debug.log*
 
 # Documentation
-specs/
+openspec/
 
 # Temporary files
 *.tgz

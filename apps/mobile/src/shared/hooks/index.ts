@@ -1,2 +1,0 @@
-// Shared hooks exports
-export {};
