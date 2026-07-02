@@ -1,5 +1,5 @@
 // ─── Navigation root ──────────────────────────────────────────────
-import React, { useRef, useEffect, useState, useCallback, createContext, useContext } from 'react';
+import React, { useRef, useEffect, useState, useCallback, createContext, useContext, Suspense } from 'react';
 import { NavigationContainer, type NavigationContainerRef } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -18,29 +18,32 @@ import SimpleHeaderComponent from './SimpleHeader';
 
 const log = createLogger('App');
 
-// Tab screens
+// ─── Visible tab screens (must be eagerly loaded) ────────────────
 import HomeScreen       from '../features/home/screens/HomeScreen';
 import FastingScreen    from '../features/fasting/FastingScreen';
-import MeditationScreen from '../features/meditation/MeditationScreen';
-import PracticeScreen   from '../features/practice/PracticeScreen';
 import ExerciseScreen   from '../features/exercise/ExerciseScreen';
-import BreathingScreen  from '../features/breathing/BreathingScreen';
-import SleepScreen      from '../features/sleep/SleepScreen';
-import PreceptScreen    from '../features/practice/PreceptScreen';
-import GiveScreen       from '../features/practice/GiveScreen';
-import BodyScreen       from '../features/practice/BodyScreen';
-import VowScreen        from '../features/vow/VowScreen';
-import MantraScreen     from '../features/mantra/MantraScreen';
-import SutraScreen      from '../features/sutra/SutraScreen';
-import SutraHistoryScreen from '../features/sutra/SutraHistoryScreen';
-import MantraHistoryScreen from '../features/mantra/MantraHistoryScreen';
-import ZhiguanScreen from '../features/zhiguan/ZhiguanScreen';
-import ZhiguanHistoryScreen from '../features/zhiguan/ZhiguanHistoryScreen';
-import DietScreen       from '../features/diet/DietScreen';
-import MindScreen       from '../features/mind/MindScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
+import PlanScreen       from '../features/plan/PlanScreen';
 
-// Stack screens — reflections (via barrel exports)
+// ─── Lazy-loaded screens (loaded on first navigation) ────────────
+const MeditationScreen  = React.lazy(() => import('../features/meditation/MeditationScreen'));
+const PracticeScreen    = React.lazy(() => import('../features/practice/PracticeScreen'));
+const BreathingScreen   = React.lazy(() => import('../features/breathing/BreathingScreen'));
+const SleepScreen       = React.lazy(() => import('../features/sleep/SleepScreen'));
+const PreceptScreen     = React.lazy(() => import('../features/practice/PreceptScreen'));
+const GiveScreen        = React.lazy(() => import('../features/practice/GiveScreen'));
+const BodyScreen        = React.lazy(() => import('../features/practice/BodyScreen'));
+const VowScreen         = React.lazy(() => import('../features/vow/VowScreen'));
+const MantraScreen      = React.lazy(() => import('../features/mantra/MantraScreen'));
+const SutraScreen       = React.lazy(() => import('../features/sutra/SutraScreen'));
+const SutraHistoryScreen  = React.lazy(() => import('../features/sutra/SutraHistoryScreen'));
+const MantraHistoryScreen = React.lazy(() => import('../features/mantra/MantraHistoryScreen'));
+const ZhiguanScreen       = React.lazy(() => import('../features/zhiguan/ZhiguanScreen'));
+const ZhiguanHistoryScreen = React.lazy(() => import('../features/zhiguan/ZhiguanHistoryScreen'));
+const DietScreen        = React.lazy(() => import('../features/diet/DietScreen'));
+const MindScreen        = React.lazy(() => import('../features/mind/MindScreen'));
+
+// Stack screens — reflections (named exports, statically imported)
 import {
   ReflectionsScreen,
   ReflectionStatsScreen,
@@ -53,38 +56,37 @@ import {
   StrategyLibrary,
   RelationMapView,
 } from '../features/reflections';
-import HabitDetailScreen from '../features/habits/HabitDetailScreen';
-import HabitsScreen      from '../features/habits/HabitsScreen';
-import StatsScreen       from '../features/stats/StatsScreen';
-import GlobalPulseScreen from '../features/home/screens/GlobalPulseScreen';
-import SportPage         from '../features/exercise/SportPage';
-import ExerciseHistoryScreen from '../features/exercise/ExerciseHistoryScreen';
-import FastHistoryPage, { FastCalendarScreen } from '../features/fasting/FastHistoryPage';
-import MedHistoryPage, { MedCalendarScreen } from '../features/meditation/MedHistoryPage';
-import SleepHistoryPage from '../features/sleep/SleepHistoryPage';
-import PreceptHistoryPage from '../features/practice/PreceptHistoryPage';
-import BreathHistoryPage from '../features/breathing/BreathHistoryPage';
-import GiveHistoryPage from '../features/practice/GiveHistoryPage';
-import FoodLogPage       from '../features/home/screens/FoodLogPage';
-import GracePage         from '../features/home/screens/GracePage';
-import StreakBreakScreen from '../features/home/screens/StreakBreakScreen';
-import CheckinHistoryScreen from '../features/home/screens/CheckinHistoryScreen';
-import CheckinDetailScreen from '../features/home/screens/CheckinDetailScreen';
-import ReviewHistoryScreen from '../features/home/screens/ReviewHistoryScreen';
-import ReviewDetailScreen from '../features/home/screens/ReviewDetailScreen';
-import PlanScreen from '../features/plan/PlanScreen';
-import PlanCreateScreen from '../features/plan/PlanCreateScreen';
-import PlanDetailScreen from '../features/plan/PlanDetailScreen';
-import PlanHistoryScreen from '../features/plan/PlanHistoryScreen';
-import LoginScreen       from '../features/auth/LoginScreen';
-import RegisterScreen    from '../features/auth/RegisterScreen';
-import ForgotPasswordScreen from '../features/auth/ForgotPasswordScreen';
-import RecycleBinScreen  from '../features/settings/RecycleBinScreen';
-import PrivacyPolicyScreen from '../features/settings/PrivacyPolicyScreen';
-import AISettingsScreen from '../features/settings/AISettingsScreen';
-import ProfileScreen from '../features/settings/ProfileScreen';
-import MusicScreen from '../features/music/screens/MusicScreen';
-import MusicCategoryScreen from '../features/music/screens/MusicCategoryScreen';
+const HabitDetailScreen     = React.lazy(() => import('../features/habits/HabitDetailScreen'));
+const HabitsScreen          = React.lazy(() => import('../features/habits/HabitsScreen'));
+const StatsScreen           = React.lazy(() => import('../features/stats/StatsScreen'));
+const GlobalPulseScreen     = React.lazy(() => import('../features/home/screens/GlobalPulseScreen'));
+const SportPage             = React.lazy(() => import('../features/exercise/SportPage'));
+const ExerciseHistoryScreen = React.lazy(() => import('../features/exercise/ExerciseHistoryScreen'));
+const FastHistoryModule     = React.lazy(() => import('../features/fasting/FastHistoryPage'));
+const MedHistoryModule      = React.lazy(() => import('../features/meditation/MedHistoryPage'));
+const SleepHistoryPage      = React.lazy(() => import('../features/sleep/SleepHistoryPage'));
+const PreceptHistoryPage    = React.lazy(() => import('../features/practice/PreceptHistoryPage'));
+const BreathHistoryPage     = React.lazy(() => import('../features/breathing/BreathHistoryPage'));
+const GiveHistoryPage       = React.lazy(() => import('../features/practice/GiveHistoryPage'));
+const FoodLogPage           = React.lazy(() => import('../features/home/screens/FoodLogPage'));
+const GracePage             = React.lazy(() => import('../features/home/screens/GracePage'));
+const StreakBreakScreen     = React.lazy(() => import('../features/home/screens/StreakBreakScreen'));
+const CheckinHistoryScreen  = React.lazy(() => import('../features/home/screens/CheckinHistoryScreen'));
+const CheckinDetailScreen   = React.lazy(() => import('../features/home/screens/CheckinDetailScreen'));
+const ReviewHistoryScreen   = React.lazy(() => import('../features/home/screens/ReviewHistoryScreen'));
+const ReviewDetailScreen    = React.lazy(() => import('../features/home/screens/ReviewDetailScreen'));
+const PlanCreateScreen      = React.lazy(() => import('../features/plan/PlanCreateScreen'));
+const PlanDetailScreen      = React.lazy(() => import('../features/plan/PlanDetailScreen'));
+const PlanHistoryScreen     = React.lazy(() => import('../features/plan/PlanHistoryScreen'));
+const LoginScreen           = React.lazy(() => import('../features/auth/LoginScreen'));
+const RegisterScreen        = React.lazy(() => import('../features/auth/RegisterScreen'));
+const ForgotPasswordScreen  = React.lazy(() => import('../features/auth/ForgotPasswordScreen'));
+const RecycleBinScreen      = React.lazy(() => import('../features/settings/RecycleBinScreen'));
+const PrivacyPolicyScreen   = React.lazy(() => import('../features/settings/PrivacyPolicyScreen'));
+const AISettingsScreen      = React.lazy(() => import('../features/settings/AISettingsScreen'));
+const ProfileScreen         = React.lazy(() => import('../features/settings/ProfileScreen'));
+const MusicScreen           = React.lazy(() => import('../features/music/screens/MusicScreen'));
+const MusicCategoryScreen   = React.lazy(() => import('../features/music/screens/MusicCategoryScreen'));
 import { useSync }       from '../features/sync/useSync';
 import { isDeviceSyncedBefore } from '../features/sync/SyncService';
 import { KickOutModal }  from '../components/KickOutModal';
@@ -98,6 +100,31 @@ export { useRootNavigation, useTabNavigation } from './hooks';
 
 const Tab   = createBottomTabNavigator<MainTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
+
+// ─── Suspense wrapper for lazy-loaded screens ─────────────────────
+function LazyScreen({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<View style={{ flex: 1 }} />}>{children}</Suspense>;
+}
+/** Wrap a lazy component for use in React Navigation. */
+function withLazy<P extends object>(Component: React.LazyExoticComponent<React.ComponentType<P>>) {
+  return (props: P) => <LazyScreen><Component {...props as any} /></LazyScreen>;
+}
+
+// Wrapper for default-exported modules with named exports (FastHistoryPage, MedHistoryPage)
+function FastHistoryWrapper(props: any) {
+  return (
+    <Suspense fallback={<View style={{ flex: 1 }} />}>
+      <FastHistoryModule {...props} />
+    </Suspense>
+  );
+}
+function MedHistoryWrapper(props: any) {
+  return (
+    <Suspense fallback={<View style={{ flex: 1 }} />}>
+      <MedHistoryModule {...props} />
+    </Suspense>
+  );
+}
 
 // ─── Floating Action Button ───────────────────────────────────────
 const FAB_SIZE = 52;
@@ -359,10 +386,10 @@ export default function AppNavigator() {
         <Stack.Screen name="MainTabs"     component={MainTabs} />
         <Stack.Screen name="GlobalMap"    component={GlobalPulseScreen} />
         <Stack.Screen name="Sport"        component={SportPage} />
-        <Stack.Screen name="FastHistory"  component={FastHistoryPage} />
-        <Stack.Screen name="FastCalendar" component={FastCalendarScreen} />
-        <Stack.Screen name="MedHistory"   component={MedHistoryPage} />
-        <Stack.Screen name="MedCalendar"  component={MedCalendarScreen} />
+        <Stack.Screen name="FastHistory"  component={FastHistoryWrapper} />
+        <Stack.Screen name="FastCalendar" component={withLazy(React.lazy(async () => ({ default: (await import('../features/fasting/FastHistoryPage')).FastCalendarScreen })))} />
+        <Stack.Screen name="MedHistory"   component={MedHistoryWrapper} />
+        <Stack.Screen name="MedCalendar"  component={withLazy(React.lazy(async () => ({ default: (await import('../features/meditation/MedHistoryPage')).MedCalendarScreen })))} />
         <Stack.Screen name="SleepHistory" component={SleepHistoryPage} />
         <Stack.Screen name="PreceptHistory" component={PreceptHistoryPage} />
         <Stack.Screen name="BreathHistory" component={BreathHistoryPage} />

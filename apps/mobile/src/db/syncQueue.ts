@@ -140,7 +140,7 @@ export async function resetAllPendingForRetry(batchSize = 50): Promise<number> {
   const db = await openDatabase();
   const result = await db.runAsync(
     `UPDATE sync_queue SET status = 'pending', next_retry_at = 0
-     WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict')
+     WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict', 'syncing')
                   AND retry_count < 10
                   ORDER BY created_at LIMIT ?)`,
     [batchSize],

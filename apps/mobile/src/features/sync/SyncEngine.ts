@@ -264,7 +264,7 @@ export class SyncEngine {
         if (patch && Object.keys(patch).length) this._onChanges?.(patch);
       }
       if (result?.serverTime) {
-        this._lastSyncAt = result.serverTime;
+        this._lastSyncAt = Math.max(this._lastSyncAt, result.serverTime);
         await this.saveLastSyncAt(this._lastSyncAt);
       }
     } catch (err) {
@@ -430,27 +430,29 @@ export class SyncEngine {
     const patch: Record<string, unknown> = {};
     if (!data || typeof data !== 'object') return patch;
     const entries = Object.entries(data);
-    for (const [entity, records] of entries) {
-      if (!Array.isArray(records) || records.length === 0) continue;
-      if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
-      try {
-        const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal);
-        if (entity === 'meditation') {
-          const allMed = await db.getAllAsync<{ dur_min: number }>('SELECT dur_min FROM meditation_history WHERE deleted = 0');
-          patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (e.dur_min || 0), 0);
+    return withDbLock(async () => {
+      for (const [entity, records] of entries) {
+        if (!Array.isArray(records) || records.length === 0) continue;
+        if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+        try {
+          const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal);
+          if (entity === 'meditation') {
+            const allMed = await db.getAllAsync<{ dur_min: number }>('SELECT dur_min FROM meditation_history WHERE deleted = 0');
+            patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (e.dur_min || 0), 0);
+          }
+          if (entity === 'aiConfig' && storeMapped.length > 0) {
+            const latest = storeMapped[storeMapped.length - 1] as Record<string, unknown>;
+            if (latest.mode) patch.aiMode = latest.mode;
+            if (latest.models) patch.aiModels = latest.models;
+          }
+          const storeKey = ENTITY_STORE_KEY[entity];
+          if (storeKey && storeMapped.length > 0) patch[storeKey] = storeMapped;
+        } catch (e) {
+          log.error(e, { entity, phase: 'applyEntity' });
         }
-        if (entity === 'aiConfig' && storeMapped.length > 0) {
-          const latest = storeMapped[storeMapped.length - 1] as Record<string, unknown>;
-          if (latest.mode) patch.aiMode = latest.mode;
-          if (latest.models) patch.aiModels = latest.models;
-        }
-        const storeKey = ENTITY_STORE_KEY[entity];
-        if (storeKey && storeMapped.length > 0) patch[storeKey] = storeMapped;
-      } catch (e) {
-        log.error(e, { entity, phase: 'applyEntity' });
       }
-    }
-    return patch;
+      return patch;
+    });
   }
 
   private _rowToEntityMap: Record<string, (row: Record<string, unknown>) => unknown> = {
@@ -823,7 +825,7 @@ export class SyncEngine {
         }
 
         if (this._syncGeneration === myGeneration) {
-          this._lastSyncAt = pushResult.serverTime;
+          this._lastSyncAt = Math.max(this._lastSyncAt, pushResult.serverTime);
           await this.saveLastSyncAt(this._lastSyncAt);
           this.updateClockOffset(pushResult.serverTime);
         }
@@ -895,7 +897,7 @@ export class SyncEngine {
 
           if (this._syncGeneration === myGeneration) {
             const st = pushResult?.serverTime ?? pullResult?.serverTime ?? this._lastSyncAt;
-            this._lastSyncAt = st;
+            this._lastSyncAt = Math.max(this._lastSyncAt, st);
             await this.saveLastSyncAt(this._lastSyncAt);
             if (st) this.updateClockOffset(st);
           }
@@ -1131,6 +1133,7 @@ export class SyncEngine {
     while (page <= MAX_PAGES) {
       try {
         const result = await apiSyncPullEntity(token, entity, page, 200, userId);
+        console.log(`[SyncEngine] pullEntityWithRetry ${entity}: page=${page}, data.length=${result.data.length}, hasMore=${result.hasMore}, total=${result.total}`);
         if (result.data.length === 0) {
           await updateSyncProgress(entity, { status: 'done' });
           return;

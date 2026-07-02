@@ -9,6 +9,12 @@ onRecordCreateRequest(function(e) {
   var authId = e.auth ? e.auth.id : "";
   var anon = $security.md5(authId).slice(0, 8);
   record.set("anon_id", anon);
+
+  // Enforce content length limit (max 10,000 chars)
+  var content = record.get("content") || "";
+  if (content.length > 10000) {
+    throw new BadRequestError("Content exceeds maximum length of 10,000 characters");
+  }
 }, "published_minds");
 
 // Update global_stats and leaderboard when a global_checkin is created

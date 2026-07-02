@@ -193,12 +193,12 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                 <Text style={{ fontSize: 28 }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as any).icon : '🏋️'}</Text>
                 <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
-                  {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as any).i18nKey) : todayPlan!.part}
+                  {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as any).i18nKey) : todayPlan?.part ?? ''}
                 </Text>
               </View>
               <PrimaryButton
                 label={T('bodyFlowStartBreathing')}
-                onPress={() => navigateToSport(selectedSportKey || todayPlan!.sportKey || todayPlan!.part)}
+                onPress={() => navigateToSport(selectedSportKey || todayPlan?.sportKey || todayPlan?.part || '')}
                 color="#f59e0b"
                 icon={<Activity size={18} color="#fff" />}
               />

@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import {
   Card, useTheme, PrimaryButton, OutlineButton, Toggle,
   ScreenHeader, TagPill, ThemedInput, ProgressBar, RowItem, useT,
@@ -44,7 +45,18 @@ const emptyForm = { name:'', startDate:tomorrow(), targetDays:21, goal:'', insig
 export default function HabitsScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
-  const store = useAppStore();
+  const {
+    habits, checkHabitAutoStatus, autoSyncHabits,
+    addHabit, updateHabit, checkinHabit, deleteHabit,
+  } = useAppStore(useShallow(s => ({
+    habits: s.habits,
+    checkHabitAutoStatus: s.checkHabitAutoStatus,
+    autoSyncHabits: s.autoSyncHabits,
+    addHabit: s.addHabit,
+    updateHabit: s.updateHabit,
+    checkinHabit: s.checkinHabit,
+    deleteHabit: s.deleteHabit,
+  })));
   const T     = useT();
   const nav   = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -62,12 +74,12 @@ export default function HabitsScreen() {
   const [showAlarmPicker, setShowAlarmPicker] = useState(false);
 
   useEffect(() => {
-    store.checkHabitAutoStatus();
-    store.autoSyncHabits?.();
+    checkHabitAutoStatus();
+    autoSyncHabits?.();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const allHabits = useMemo(() => (store.habits ?? []).filter(h => !h.deleted), [store.habits]);
+  const allHabits = useMemo(() => (habits ?? []).filter(h => !h.deleted), [habits]);
   const filtered = useMemo(() =>
     (filter==='all' ? allHabits : allHabits.filter(h => h.status===filter))
       .slice().sort((a, b) => (STATUS_ORDER[a.status] - STATUS_ORDER[b.status]) || ((b.startDate ?? '').localeCompare(a.startDate ?? ''))),
@@ -88,9 +100,9 @@ export default function HabitsScreen() {
   const saveHabit = async () => {
     if (!form.name.trim()) return;
     if (editingId) {
-      store.updateHabit(editingId, { ...form, targetDays:+form.targetDays });
+      updateHabit(editingId, { ...form, targetDays:+form.targetDays });
     } else {
-      store.addHabit({ ...form, targetDays:+form.targetDays });
+      addHabit({ ...form, targetDays:+form.targetDays });
     }
     setShowAdd(false);
     // Reschedule notifications — re-read from store to get the just-saved habit
@@ -104,19 +116,19 @@ export default function HabitsScreen() {
   };
   const changeStatus = (id: string, ns: HabitStatus) => {
     if (ns==='paused'||ns==='abandoned') { setStatusModal({id,ns}); setReason(''); return; }
-    store.updateHabit(id, { status:ns });
+    updateHabit(id, { status:ns });
   };
   const confirmStatus = () => {
     if (!statusModal) return;
     const patch: Partial<Habit> = { status:statusModal.ns };
     if (statusModal.ns==='paused')    patch.pauseReason   = reason;
     if (statusModal.ns==='abandoned') patch.abandonReason = reason;
-    store.updateHabit(statusModal.id, patch);
+    updateHabit(statusModal.id, patch);
     setStatusModal(null);
   };
 
   // Calendar data
-  const calHabit = useMemo(() => (store.habits ?? []).find(h => h.id===showCal && !h.deleted), [store.habits, showCal]);
+  const calHabit = useMemo(() => (habits ?? []).find(h => h.id===showCal && !h.deleted), [habits, showCal]);
   const calDays = useMemo(() => daysInMonth(calYear, calMonth), [calYear, calMonth]);
   const firstDay = useMemo(() => new Date(calYear, calMonth, 1).getDay(), [calYear, calMonth]);
 
@@ -243,7 +255,7 @@ export default function HabitsScreen() {
                     );
                   }
                   return (
-                    <TouchableOpacity onPress={() => store.checkinHabit(h.id, today)} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:6, paddingVertical:10, borderRadius:10, backgroundColor:P }}>
+                    <TouchableOpacity onPress={() => checkinHabit(h.id, today)} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:6, paddingVertical:10, borderRadius:10, backgroundColor:P }}>
                       <CheckCircle size={18} color="#fff" />
                       <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitCheckinBtn')}</Text>
                     </TouchableOpacity>
@@ -495,7 +507,7 @@ export default function HabitsScreen() {
             <Text style={{ color:TH.sub, fontSize:FONT_BODY, textAlign:'center', marginBottom:20 }}>{T('habitConfirmDeleteDesc')}</Text>
             <View style={{ flexDirection:'row', gap:10, width:'100%' }}>
               <OutlineButton label={T('habitCancel')} onPress={() => setConfirmDelete(null)} style={{ flex:1 }} />
-              <PrimaryButton label={T('habitConfirm')} onPress={() => { if(confirmDelete) store.deleteHabit(confirmDelete); setConfirmDelete(null); }} color={COLORS.RED} style={{ flex:1 }} />
+              <PrimaryButton label={T('habitConfirm')} onPress={() => { if(confirmDelete) deleteHabit(confirmDelete); setConfirmDelete(null); }} color={COLORS.RED} style={{ flex:1 }} />
             </View>
           </View>
         </View>

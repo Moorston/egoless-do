@@ -5,6 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
@@ -31,7 +32,23 @@ export default function SettingsScreen() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const store = useAppStore();
+  const {
+    theme, setTheme, language, setLanguage,
+    auth, userProfile, streak,
+    remindEnabled, remindTime, setRemindEnabled, setRemindTime,
+  } = useAppStore(useShallow(s => ({
+    theme: s.theme,
+    setTheme: s.setTheme,
+    language: s.language,
+    setLanguage: s.setLanguage,
+    auth: s.auth,
+    userProfile: s.userProfile,
+    streak: s.streak,
+    remindEnabled: s.remindEnabled,
+    remindTime: s.remindTime,
+    setRemindEnabled: s.setRemindEnabled,
+    setRemindTime: s.setRemindTime,
+  })));
   const nav   = useRootNavigation();
 
   const healthSyncEnabled = useAppStore(s => s.healthSyncEnabled);
@@ -39,13 +56,13 @@ export default function SettingsScreen() {
   const [showTheme, setShowTheme]         = useState(false);
   const [showLang, setShowLang]           = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [timeEdit, setTimeEdit]           = useState(store.remindTime);
+  const [timeEdit, setTimeEdit]           = useState(remindTime);
   const [clearing, setClearing]           = useState(false);
 
   // Schedule reminder on mount if enabled
   useEffect(() => {
-    if (store.remindEnabled) {
-      const [h, m] = store.remindTime.split(':').map(Number);
+    if (remindEnabled) {
+      const [h, m] = remindTime.split(':').map(Number);
       scheduleDailyReminder(h, m).catch((e) => log.error(e));
     }
   }, []);
@@ -104,27 +121,27 @@ export default function SettingsScreen() {
       rows: [
         {
           label: T('settingsRemindOn'), icon: <Bell size={20} color={P} />,
-          right: <Toggle on={store.remindEnabled} onChange={async () => {
+          right: <Toggle on={remindEnabled} onChange={async () => {
             try {
-              const next = !store.remindEnabled;
+              const next = !remindEnabled;
               if (next) {
                 const granted = await requestNotificationPermission();
                 if (!granted) { Alert.alert(T('notifPermDenied'), T('notifPermDeniedMsg')); return; }
-                const [h, m] = store.remindTime.split(':').map(Number);
+                const [h, m] = remindTime.split(':').map(Number);
                 await scheduleDailyReminder(h, m);
               } else {
                 await cancelAllReminders();
               }
-              store.setRemindEnabled(next);
+              setRemindEnabled(next);
             } catch (e) { log.error(e, { message: 'Reminder toggle error' }); }
           }} />,
         },
         {
           label: T('settingsRemindTime'), icon: <Clock size={20} color={P} />,
           right: (
-            <TouchableOpacity onPress={() => { setTimeEdit(store.remindTime); setShowTimePicker(true); }}>
+            <TouchableOpacity onPress={() => { setTimeEdit(remindTime); setShowTimePicker(true); }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{store.remindTime} {T('commonEdit')}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{remindTime} {T('commonEdit')}</Text>
                 <ChevronRight size={14} color={TH.sub} />
               </View>
             </TouchableOpacity>
@@ -197,7 +214,7 @@ export default function SettingsScreen() {
           right: (
             <TouchableOpacity onPress={() => setShowTheme(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[store.theme].name}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[theme].name}</Text>
                 <ChevronRight size={14} color={TH.sub} />
               </View>
             </TouchableOpacity>
@@ -209,8 +226,8 @@ export default function SettingsScreen() {
             <TouchableOpacity onPress={() => setShowLang(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
-                  {LANG_LIST.find(l => l.code === store.language)?.flag ?? '🇨🇳'}{' '}
-                  {LANG_LIST.find(l => l.code === store.language)?.name ?? T('settingsLanguage')}
+                  {LANG_LIST.find(l => l.code === language)?.flag ?? '🇨🇳'}{' '}
+                  {LANG_LIST.find(l => l.code === language)?.name ?? T('settingsLanguage')}
                 </Text>
                 <ChevronRight size={14} color={TH.sub} />
               </View>
@@ -340,7 +357,7 @@ export default function SettingsScreen() {
 
         {/* Profile card */}
         <Card style={{ marginBottom: 8 }}>
-          <TouchableOpacity onPress={() => store.auth.isSignedIn && nav.navigate('Profile')}>
+          <TouchableOpacity onPress={() => auth.isSignedIn && nav.navigate('Profile')}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
               <View style={{
                 width: 56, height: 56, borderRadius: 28,
@@ -348,23 +365,23 @@ export default function SettingsScreen() {
                 alignItems: 'center', justifyContent: 'center',
                 overflow: 'hidden',
               }}>
-                {store.userProfile.avatar ? (
-                  <Image source={{ uri: store.userProfile.avatar }} style={{ width: 56, height: 56, borderRadius: 28 }} />
+                {userProfile.avatar ? (
+                  <Image source={{ uri: userProfile.avatar }} style={{ width: 56, height: 56, borderRadius: 28 }} />
                 ) : (
                   <Text style={{ fontSize: 22, fontWeight: '700', color: P }}>
-                    {(store.userProfile.nickname ?? store.auth.user?.name ?? '?').charAt(0).toUpperCase()}
+                    {(userProfile.nickname ?? auth.user?.name ?? '?').charAt(0).toUpperCase()}
                   </Text>
                 )}
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>
-                  {store.userProfile.nickname ?? store.auth.user?.name ?? T('settingsDefaultName')}
+                  {userProfile.nickname ?? auth.user?.name ?? T('settingsDefaultName')}
                 </Text>
                 <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 3 }}>
-                  {store.streak} {T('checkinStreak')} · {store.auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
+                  {streak} {T('checkinStreak')} · {auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
                 </Text>
               </View>
-              {store.auth.isSignedIn ? (
+              {auth.isSignedIn ? (
                 <View style={{
                   paddingHorizontal: 12, paddingVertical: 6,
                   borderRadius: 12, backgroundColor: `${P}20`,
@@ -437,9 +454,9 @@ export default function SettingsScreen() {
         value={timeEdit}
         onConfirm={async (time) => {
           try {
-            store.setRemindTime(time);
+            setRemindTime(time);
             setShowTimePicker(false);
-            if (store.remindEnabled) {
+            if (remindEnabled) {
               const [h, m] = time.split(':').map(Number);
               await scheduleDailyReminder(h, m);
             }
@@ -468,11 +485,11 @@ export default function SettingsScreen() {
                 return (
                   <TouchableOpacity
                     key={key}
-                    onPress={() => { store.setTheme(key); setShowTheme(false); }}
+                    onPress={() => { setTheme(key); setShowTheme(false); }}
                     style={{
                       width: '30%', borderRadius: 14, overflow: 'hidden',
                       borderWidth: 2,
-                      borderColor: store.theme === key ? th.primary : 'transparent',
+                      borderColor: theme === key ? th.primary : 'transparent',
                     }}
                   >
                     <View style={{ height: 60, backgroundColor: th.bg, justifyContent: 'flex-end', padding: 8 }}>
@@ -507,7 +524,7 @@ export default function SettingsScreen() {
             {LANG_LIST.map(l => (
               <TouchableOpacity
                 key={l.code}
-                onPress={() => { store.setLanguage(l.code); setShowLang(false); }}
+                onPress={() => { setLanguage(l.code); setShowLang(false); }}
                 style={{
                   flexDirection: 'row', alignItems: 'center',
                   justifyContent: 'space-between',
@@ -519,7 +536,7 @@ export default function SettingsScreen() {
                   <Text style={{ fontSize: FONT_CLOSE }}>{l.flag}</Text>
                   <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{l.name}</Text>
                 </View>
-                {l.code === store.language && (
+                {l.code === language && (
                   <Check size={20} color={P} />
                 )}
               </TouchableOpacity>

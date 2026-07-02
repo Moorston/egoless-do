@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme, useT } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle, BreathPhaseType } from '@egoless-do/core';
 import { BREATHING_PRESETS, cycleDuration, phaseLabelKey, getDescKey, getTipsKey } from '@egoless-do/core';
@@ -23,7 +24,11 @@ export default function BreathingScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const { addBreathRecord, addMedMinutes, addReflection } = useAppStore(useShallow(s => ({
+    addBreathRecord: s.addBreathRecord,
+    addMedMinutes: s.addMedMinutes,
+    addReflection: s.addReflection,
+  })));
 
   const [guideStyle, setGuideStyle] = useState<GuideStyle>('scientific');
   const [page, setPage] = useState<Page>('select');
@@ -311,7 +316,7 @@ export default function BreathingScreen() {
     setSaving(true);
     try {
       // Save to dedicated breathing history
-      store.addBreathRecord({
+      addBreathRecord({
         date: new Date().toISOString().slice(0, 10),
         presetKey: selectedPreset?.key ?? 'unknown',
         durationSec: totalElapsed,
@@ -322,9 +327,9 @@ export default function BreathingScreen() {
         guideStyle: guideStyle,
       });
       // Also add to generic meditation minutes (for total stats)
-      store.addMedMinutes(Math.round(totalElapsed / 60));
+      addMedMinutes(Math.round(totalElapsed / 60));
       if (reflection.trim()) {
-        store.addReflection({ content: reflection.trim(), tags: ['调息'], mood: '' });
+        addReflection({ content: reflection.trim(), tags: ['调息'], mood: '' });
       }
     } catch (e) {
       log.warn('Save breathing record failed', e);
@@ -332,7 +337,7 @@ export default function BreathingScreen() {
     }
     setSaving(false);
     handleFinish();
-  }, [reflection, totalElapsed, cycles, preDistress, postDistress, guideStyle, selectedPreset, handleFinish, store]);
+  }, [reflection, totalElapsed, cycles, preDistress, postDistress, guideStyle, selectedPreset, handleFinish, addBreathRecord, addMedMinutes, addReflection]);
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);

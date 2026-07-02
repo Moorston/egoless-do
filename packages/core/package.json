@@ -12,7 +12,17 @@
     "./sync": "./dist/sync/index.js",
     "./i18n": "./dist/i18n/index.js",
     "./typography": "./dist/typography.js",
-    "./push": "./dist/push.js"
+    "./push": "./dist/push.js",
+    "./ai": "./dist/ai/index.js",
+    "./auth": "./dist/auth.js",
+    "./constants": "./dist/constants.js",
+    "./data": "./dist/data/index.js",
+    "./defaults": "./dist/defaults.js",
+    "./fetch": "./dist/fetch.js",
+    "./icons": "./dist/icons.js",
+    "./logger": "./dist/logger.js",
+    "./pocketbase": "./dist/pocketbase.js",
+    "./dailyReset": "./dist/dailyReset.js"
   },
   "scripts": {
     "build": "tsc",
