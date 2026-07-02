@@ -9,7 +9,7 @@ import { createLogger } from '@egoless-do/core';
 import { CheckinType } from '@egoless-do/core';
 import { fuzzCoordinate } from '@egoless-do/core';
 import { submitCheckin } from '../services/globalPulseApi';
-import { getUserHash } from '../services/userHash';
+import { getUserHash, getFuzzSecret } from '../services/userHash';
 import { usePrivacy } from './usePrivacy';
 import { useNetworkStatus } from './useNetworkStatus';
 import { useAppStore } from '../../../store/useAppStore';
@@ -42,10 +42,11 @@ export function useCheckinSync(): UseCheckinSyncReturn {
       });
 
       const userHash = await getUserHash();
+      const fuzzSecret = await getFuzzSecret();
       const [fuzzedLat, fuzzedLng] = fuzzCoordinate(
         location.coords.latitude,
         location.coords.longitude,
-        userHash
+        fuzzSecret
       );
 
       const response = await submitCheckin({

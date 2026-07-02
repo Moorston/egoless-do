@@ -1,6 +1,7 @@
 /**
  * 坐标模糊算法
  * 在 ±500 米范围内随机偏移，保护用户隐私
+ * 使用 secret key 使模糊不可逆（即使知道 userHash 和算法）
  */
 
 // 地球半径（米）
@@ -50,16 +51,16 @@ function metersToLngOffset(meters: number, lat: number): number {
  * 模糊坐标
  * @param lat 原始纬度
  * @param lng 原始经度
- * @param userHash 用户哈希（用于确定性随机）
+ * @param secretKey 私密密钥（不公开发布，存储在 SecureStore 中）
  * @returns [模糊纬度, 模糊经度]
  */
 export function fuzzCoordinate(
   lat: number,
   lng: number,
-  userHash: string
+  secretKey: string
 ): [number, number] {
-  // 使用用户哈希作为随机种子
-  const seed = hashString(userHash + lat.toFixed(6) + lng.toFixed(6));
+  // 使用 secretKey + 坐标作为种子（secretKey 不公开，防止逆向）
+  const seed = hashString(secretKey + ':' + lat.toFixed(6) + ':' + lng.toFixed(6));
   const rng = seededRandom(seed);
 
   // 生成随机角度和距离
