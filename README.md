@@ -39,28 +39,47 @@ egoless-do/ (Turborepo + pnpm workspaces)
 ├── apps/
 │   ├── mobile/                    # React Native + Expo (iOS/Android)
 │   │   └── src/
-│   │       ├── features/          # 16 个功能模块
+│   │       ├── features/          # 25 个功能模块
 │   │       ├── components/        # 通用组件 (UI/ErrorBoundary/SyncBanner)
 │   │       ├── db/                # SQLite schema + syncQueue + 迁移
-│   │       ├── store/             # Zustand store + data/sync/UI stores
-│   │       ├── features/sync/     # SyncEngine + RealtimeAgent + WriteBatcher
-│   │       ├── shared/            # 共享组件 (Button/Card/Modal/Drawer)
-│   │       └── infra/             # 离线感知 + auth token + 网络状态
+│   │       ├── store/             # Zustand store (含 useNetworkStatus)
+│   │       ├── net/               # 网络层工具 (offlineAware)
+│   │       ├── shared/            # mobile 共享组件 (Button/Card/Modal/Drawer/ThemeProvider)
+│   │       ├── hooks/             # 跨 feature hooks
+│   │       └── navigation/        # 导航配置
 │   └── web/                       # Next.js 15 PWA
 │       └── src/app/api/           # 服务端 API 路由
 ├── packages/
-│   ├── core/                      # 共享业务逻辑
+│   ├── core/                      # 共享业务逻辑（平台无关）
 │   │   ├── ai/                    # AI 服务 + RAG + 风险预警 + 思维推荐
-│   │   ├── business/              # 纯业务函数 (习惯/打卡/禁食/计划/...)
-│   │   ├── store/                 # 20 个 Zustand slice
+│   │   ├── business/              # 纯业务函数 (习惯/打卡/禁食/计划/dateUtils/...)
+│   │   ├── store/                 # 37 个 Zustand slice
 │   │   ├── sync/                  # 同步协议 (entities/conflict/merge)
 │   │   ├── i18n/                  # 国际化 (zh/en/zh-Hant)
-│   │   └── logger.ts              # 统一日志系统
+│   │   ├── types/                 # 共享类型定义
+│   │   ├── constants/             # 常量 (THEMES/COLORS/...)
+│   │   ├── data/                  # 数据网关接口 (DataGateway)
+│   │   └── utils/                 # 工具函数
 │   └── config/                    # ESLint + TypeScript 配置
-├── pocketbase/
-│   ├── pb_hooks/                  # 服务端 JS hooks (sync.pb.js, auth.pb.js)
-│   └── pb_migrations/             # 数据库迁移脚本
-└── backend/                       # Docker 部署配置
+├── backend/                       # PocketBase 后端（唯一位置）
+│   ├── pb_hooks/                  # 服务端 JS hooks
+│   ├── pb_migrations/             # 数据库迁移脚本
+│   ├── pb_data/                   # 运行时数据（gitignore）
+│   ├── pb_schema.json             # schema 定义
+│   ├── docker-compose.yml         # 开发配置（Cloudflare Tunnel）
+│   └── setup.ps1                  # 安装脚本
+├── infra/                         # 部署和运维文件
+│   ├── docker/                    # 生产配置
+│   │   ├── docker-compose.yml
+│   │   └── Dockerfile.web
+│   ├── nginx/                     # 反向代理配置
+│   │   └── nginx.conf
+│   └── scripts/                   # 运维脚本
+│       ├── deploy.sh
+│       ├── backup-pb.sh
+│       └── restore-pb.sh
+└── openspec/                      # 架构决策记录
+    └── changes/restructure-codebase/
 ```
 
 ## 数据同步架构
@@ -163,9 +182,8 @@ pnpm pb
 **Linux / Docker 部署:**
 
 ```bash
-cd backend
-cp .env.example .env  # 填写 CLIENT_URL 等配置
-docker compose up -d
+cp .env.example .env  # 填写配置
+docker compose -f infra/docker/docker-compose.yml up -d
 ```
 
 ## 测试覆盖
