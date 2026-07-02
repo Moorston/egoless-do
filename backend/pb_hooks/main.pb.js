@@ -2,6 +2,22 @@
 // Runs inside PocketBase's embedded goja runtime.
 // Docs: https://pocketbase.io/docs/js-overview/
 
+// ─── Shared utilities ───────────────────────────────────────────
+function escapeFilterValue(v) {
+  if (typeof v !== 'string') return String(v);
+  // Escape backslashes and single quotes to prevent filter injection
+  return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function buildUserHashFilter(userHash, additionalFilter) {
+  var escaped = escapeFilterValue(userHash);
+  var filter = 'user_hash = "' + escaped + '"';
+  if (additionalFilter) {
+    filter += " && " + additionalFilter;
+  }
+  return filter;
+}
+
 /** Strip PII from published_minds: replace author info with anon_id */
 onRecordBeforeCreateRequest((e) => {
   const record = e.record;
@@ -18,29 +34,34 @@ onRecordAfterCreateRequest((e) => {
   const streak = record.get("streak") || 0;
   const totalDays = record.get("total_days") || 0;
 
-  // Update global_stats (single-row table)
+  // Update global_stats (single-row table) using incremental update
   try {
     const stats = $app.findRecordsByFilter("global_stats", "", "", 1, 0);
     if (stats.length > 0) {
       const s = stats[0];
-      // Count distinct users today
       const today = new Date().toISOString().slice(0, 10);
-      const todayCheckins = $app.findRecordsByFilter(
-        "global_checkins",
-        `created_at >= "${today}T00:00:00Z"`,
-        "", 10000, 0
-      );
-      const uniqueToday = new Set(todayCheckins.map(r => r.get("user_hash"))).size;
-
-      // Count total distinct users
-      const allCheckins = $app.findRecordsByFilter("global_checkins", "", "", 10000, 0);
-      const totalUsers = new Set(allCheckins.map(r => r.get("user_hash"))).size;
-
+      
+      // Check if this user already checked in today (before this record)
+      const todayFilter = `created_at >= "${today}T00:00:00Z" && user_hash = "${escapeFilterValue(userHash)}"`;
+      const userTodayCheckins = $app.findRecordsByFilter("global_checkins", todayFilter, "", 2, 0);
+      const isNewToday = userTodayCheckins.length <= 1; // Only this new record means it's new
+      
+      // Incremental update: only increment if this is a new user today
+      if (isNewToday) {
+        s.set("active_today", (s.get("active_today") || 0) + 1);
+      }
+      
+      // For total_users, check if this is the first checkin ever for this user
+      const userAllFilter = `user_hash = "${escapeFilterValue(userHash)}"`;
+      const userAllCheckins = $app.findRecordsByFilter("global_checkins", userAllFilter, "", 2, 0);
+      const isNewUser = userAllCheckins.length <= 1;
+      
+      if (isNewUser) {
+        s.set("total_users", (s.get("total_users") || 0) + 1);
+      }
+      
       // Top streak
       const topStreak = Math.max(s.get("top_streak") || 0, streak);
-
-      s.set("total_users", totalUsers);
-      s.set("active_today", uniqueToday);
       s.set("top_streak", topStreak);
       s.set("updated_at", new Date().toISOString());
       $app.save(s);
@@ -51,9 +72,8 @@ onRecordAfterCreateRequest((e) => {
 
   // Update leaderboard (upsert by user_hash)
   try {
-    const existing = $app.findRecordsByFilter(
-      "leaderboard", `user_hash = "${userHash}"`, "", 1, 0
-    );
+    const filter = buildUserHashFilter(userHash);
+    const existing = $app.findRecordsByFilter("leaderboard", filter, "", 1, 0);
     if (existing.length > 0) {
       const lb = existing[0];
       if (streak > (lb.get("best_streak") || 0)) {
@@ -87,16 +107,21 @@ routerAdd("POST", "/api/global-pulse/opt-out", (c) => {
   const userHash = body?.user_hash;
   if (!userHash) return c.json(400, { error: "user_hash required" });
 
+  // Validate userHash format (alphanumeric + hyphens, max 128 chars)
+  if (!/^[a-zA-Z0-9_\-]{1,128}$/.test(userHash)) {
+    return c.json(400, { error: "Invalid user_hash format" });
+  }
+
   try {
-    const records = $app.findRecordsByFilter(
-      "global_checkins", `user_hash = "${userHash}" && opted_out != true`, "", 10000, 0
-    );
+    const filter = buildUserHashFilter(userHash, "opted_out != true");
+    const records = $app.findRecordsByFilter("global_checkins", filter, "", 10000, 0);
     records.forEach(r => {
       r.set("opted_out", true);
       $app.save(r);
     });
     return c.json(200, { message: "opted_out", count: records.length });
   } catch (e) {
+    console.error("[global-pulse] opt-out error:", e);
     return c.json(500, { error: "opt-out failed" });
   }
 });
@@ -107,16 +132,21 @@ routerAdd("POST", "/api/global-pulse/opt-in", (c) => {
   const userHash = body?.user_hash;
   if (!userHash) return c.json(400, { error: "user_hash required" });
 
+  // Validate userHash format
+  if (!/^[a-zA-Z0-9_\-]{1,128}$/.test(userHash)) {
+    return c.json(400, { error: "Invalid user_hash format" });
+  }
+
   try {
-    const records = $app.findRecordsByFilter(
-      "global_checkins", `user_hash = "${userHash}" && opted_out = true`, "", 10000, 0
-    );
+    const filter = buildUserHashFilter(userHash, "opted_out = true");
+    const records = $app.findRecordsByFilter("global_checkins", filter, "", 10000, 0);
     records.forEach(r => {
       r.set("opted_out", false);
       $app.save(r);
     });
     return c.json(200, { message: "opted_in", count: records.length });
   } catch (e) {
+    console.error("[global-pulse] opt-in error:", e);
     return c.json(500, { error: "opt-in failed" });
   }
 });
@@ -127,18 +157,21 @@ routerAdd("POST", "/api/global-pulse/delete-data", (c) => {
   const userHash = body?.user_hash;
   if (!userHash) return c.json(400, { error: "user_hash required" });
 
+  // Validate userHash format
+  if (!/^[a-zA-Z0-9_\-]{1,128}$/.test(userHash)) {
+    return c.json(400, { error: "Invalid user_hash format" });
+  }
+
   try {
-    const records = $app.findRecordsByFilter(
-      "global_checkins", `user_hash = "${userHash}"`, "", 10000, 0
-    );
+    const filter = buildUserHashFilter(userHash);
+    const records = $app.findRecordsByFilter("global_checkins", filter, "", 10000, 0);
     records.forEach(r => $app.delete(r));
     // Also delete leaderboard entry
-    const lbRecords = $app.findRecordsByFilter(
-      "leaderboard", `user_hash = "${userHash}"`, "", 1, 0
-    );
+    const lbRecords = $app.findRecordsByFilter("leaderboard", filter, "", 1, 0);
     lbRecords.forEach(r => $app.delete(r));
     return c.json(200, { message: "deleted", count: records.length });
   } catch (e) {
+    console.error("[global-pulse] delete error:", e);
     return c.json(500, { error: "delete failed" });
   }
 });
