@@ -2,6 +2,7 @@
 import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 import { openDatabase, withDbLock } from './schema';
+import { buildDeleteInStatement, buildSelectInStatement } from './sqlHelper';
 
 const log = createLogger('DB');
 
@@ -44,11 +45,11 @@ export async function enqueueChange(
         `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
          VALUES (?, ?, ?, ?, ?, ?)
          ON CONFLICT(entity, entity_id) DO UPDATE SET
-           operation = excluded.operation,
+           operation = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.operation ELSE excluded.operation END,
            payload = excluded.payload,
-           created_at = excluded.created_at,
-           status = 'pending',
-           retry_count = 0,
+           created_at = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.created_at ELSE excluded.created_at END,
+           status = CASE WHEN sync_queue.status = 'syncing' THEN 'syncing' ELSE 'pending' END,
+           retry_count = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.retry_count ELSE 0 END,
            next_retry_at = 0,
            last_error = NULL`,
         [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
@@ -66,19 +67,21 @@ export async function enqueueChange(
 export async function drainQueue(limit = 50): Promise<SyncQueueItem[]> {
   const db = await openDatabase();
   const now = Date.now();
-  const items = await db.getAllAsync<SyncQueueItem>(
-    "SELECT * FROM sync_queue WHERE status = 'pending' AND (next_retry_at = 0 OR next_retry_at <= ?) ORDER BY id LIMIT ?",
-    [now, limit],
-  );
-  if (items.length > 0) {
-    const ids = items.map(i => i.id);
-    const placeholders = ids.map(() => '?').join(',');
-    await db.runAsync(
-      `UPDATE sync_queue SET status = 'syncing' WHERE id IN (${placeholders}) AND status = 'pending'`,
-      ids,
+  return withDbLock(async () => {
+    const items = await db.getAllAsync<SyncQueueItem>(
+      "SELECT * FROM sync_queue WHERE status = 'pending' AND (next_retry_at = 0 OR next_retry_at <= ?) ORDER BY id LIMIT ?",
+      [now, limit],
     );
-  }
-  return items;
+    if (items.length > 0) {
+      const ids = items.map(i => i.id);
+      const placeholders = ids.map(() => '?').join(',');
+      await db.runAsync(
+        `UPDATE sync_queue SET status = 'syncing' WHERE id IN (${placeholders}) AND status = 'pending'`,
+        ids,
+      );
+    }
+    return items;
+  });
 }
 
 /** Get all items with a specific status. */
@@ -97,11 +100,8 @@ export async function getQueueItemsByStatus(
 export async function removeQueueItems(ids: number[]): Promise<void> {
   if (!ids.length) return;
   const db = await openDatabase();
-  const placeholders = ids.map(() => '?').join(',');
-  await db.runAsync(
-    `DELETE FROM sync_queue WHERE id IN (${placeholders})`,
-    ids,
-  );
+  const { sql, values } = buildDeleteInStatement('sync_queue', 'id', ids);
+  await db.runAsync(sql, values);
 }
 
 /** Mark a queue item as failed with error message. */
@@ -135,10 +135,12 @@ export async function markQueueItemConflict(id: number, error: string): Promise<
 export async function resetQueueItemsForRetry(ids: number[]): Promise<void> {
   if (!ids.length) return;
   const db = await openDatabase();
-  const placeholders = ids.map(() => '?').join(',');
+  const { sql, values } = buildSelectInStatement('sync_queue', 'id', ids);
+  // Use the IN clause to build the UPDATE
+  const inClause = sql.replace('SELECT * FROM sync_queue WHERE id IN ', 'id IN');
   await db.runAsync(
-    `UPDATE sync_queue SET status = 'pending', last_error = NULL WHERE id IN (${placeholders}) AND retry_count < 5`,
-    ids,
+    `UPDATE sync_queue SET status = 'pending', last_error = NULL WHERE ${inClause} AND retry_count < 5`,
+    values,
   );
 }
 
@@ -146,8 +148,9 @@ export async function resetQueueItemsForRetry(ids: number[]): Promise<void> {
 export async function resetAllPendingForRetry(batchSize = 50): Promise<number> {
   const db = await openDatabase();
   const result = await db.runAsync(
-    `UPDATE sync_queue SET status = 'pending', next_retry_at = 0, retry_count = 0
+    `UPDATE sync_queue SET status = 'pending', next_retry_at = 0
      WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict')
+                  AND retry_count < 10
                   ORDER BY created_at LIMIT ?)`,
     [batchSize],
   );

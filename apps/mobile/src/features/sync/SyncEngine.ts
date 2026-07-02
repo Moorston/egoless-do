@@ -24,6 +24,7 @@ import {
   rowToVision, rowToVisionPractice, rowToDedication, rowToMantraDef, rowToMantraSession,
   rowToFearEntry, rowToCourageEntry, rowToFearAchievement,
   rowToSutraReading,
+  rowToBreath, rowToZhiguanSession,
 } from '../../store/rowMappers';
 import { dbGetAllFoodEntries } from '../../db/queries';
 import NetInfo from '@react-native-community/netinfo';
@@ -64,6 +65,7 @@ const ENTITY_STORE_KEY: Record<string, string> = {
   mantraDef: 'mantraDefs', mantraSession: 'mantraSessions',
   sutraReading: 'readingSessions',
   fearEntry: 'fearEntries', courageEntry: 'courageEntries', fearAchievement: 'achievements',
+  breath: 'breathHistory', zhiguanSession: 'sessions',
 };
 const ENTITY_COLL_MAP: Record<string, string> = {
   habits: 'habit', mind_reflections: 'reflection', fasting_sessions: 'fasting',
@@ -82,6 +84,7 @@ const ENTITY_COLL_MAP: Record<string, string> = {
   mantra_defs: 'mantraDef', mantra_sessions: 'mantraSession',
   sutra_reading_sessions: 'sutraReading',
   fear_entries: 'fearEntry', courage_entries: 'courageEntry', fear_achievements: 'fearAchievement',
+  breath_records: 'breath', zhiguan_sessions: 'zhiguanSession',
 };
 // Validate all SCHEMAS entities are covered by ENTITY_STORE_KEY or handled specially
 const _specialEntities = new Set(['aiConfig']);
@@ -226,11 +229,16 @@ export class SyncEngine {
       return;
     }
 
+    // Debounced path: always use null payload to force incremental pull.
+    // This prevents data loss when intermediate events are dropped by debounce.
+    // PocketBase SSE sends notifications without per-record payloads, so the
+    // pull path (apiSyncPullPost with since=lastSyncAt) catches ALL changes
+    // for this entity type regardless of how many events were debounced.
     const existing = this._realtimeDebounce.get(entity);
     if (existing) clearTimeout(existing);
     this._realtimeDebounce.set(entity, setTimeout(() => {
       this._realtimeDebounce.delete(entity);
-      this.processRealtimeEntity(entity, payload);
+      this.processRealtimeEntity(entity, null);
     }, delay));
   }
 
@@ -463,6 +471,7 @@ export class SyncEngine {
     mantraDef: rowToMantraDef, mantraSession: rowToMantraSession,
     sutraReading: rowToSutraReading,
     fearEntry: rowToFearEntry, courageEntry: rowToCourageEntry, fearAchievement: rowToFearAchievement,
+    breath: rowToBreath, zhiguanSession: rowToZhiguanSession,
   };
 
   private async applyEntityToTable(
@@ -951,8 +960,7 @@ export class SyncEngine {
   private async purgeDeletedRecords(): Promise<void> {
     try {
       const db = await openDatabase();
-      const tables = ['habits','mind_reflections','fasting_sessions','food_entries','checkin_records','exercise_entries','meditation_history','user_profiles','plans','plan_items','plan_item_checkins','grace_history','daily_custom_todos','daily_todo_history','thought_trails','trail_notes','reflection_links','ai_configs','checkin_reviews','body_goals','body_plans','body_weight_records','body_checkins','visions','vision_practices','dedications','mantra_defs','mantra_sessions'];
-      for (const table of tables) {
+      for (const table of ALL_ENTITY_TABLES) {
         await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
       }
     } catch (e) {
@@ -1039,6 +1047,8 @@ export class SyncEngine {
       courageEntry: { table: 'courage_entries', query: 'SELECT * FROM courage_entries WHERE deleted = 0', mapper: rowToCourageEntry, storeKey: 'courageEntries' },
       fearAchievement: { table: 'fear_achievements', query: 'SELECT * FROM fear_achievements WHERE deleted = 0', mapper: rowToFearAchievement, storeKey: 'achievements' },
       sutraReading: { table: 'sutra_reading_sessions', query: 'SELECT * FROM sutra_reading_sessions WHERE deleted = 0', mapper: rowToSutraReading, storeKey: 'readingSessions' },
+      breath: { table: 'breath_records', query: 'SELECT * FROM breath_records WHERE deleted = 0', mapper: rowToBreath, storeKey: 'breathHistory' },
+      zhiguanSession: { table: 'zhiguan_sessions', query: 'SELECT * FROM zhiguan_sessions WHERE deleted = 0', mapper: rowToZhiguanSession, storeKey: 'sessions' },
     };
 
     const targets = entities ?? Object.keys(REHYDRATE_MAP);
@@ -1046,22 +1056,26 @@ export class SyncEngine {
       try {
         if (entity === 'food') {
           const rows = await dbGetAllFoodEntries(db) as unknown as Record<string, unknown>[];
-          if (rows.length) patch.foodLog = rows.sort((a, b) => ((b as Record<string, unknown>).timestamp as number) - ((a as Record<string, unknown>).timestamp as number));
+          patch.foodLog = rows.length
+            ? rows.sort((a, b) => ((b as Record<string, unknown>).timestamp as number) - ((a as Record<string, unknown>).timestamp as number))
+            : [];
           continue;
         }
         const config = REHYDRATE_MAP[entity];
         if (!config) continue;
         const rows = await db.getAllAsync<Record<string, unknown>>(config.query);
-        if (rows.length) {
-          const mapped = rows.map(config.mapper);
-          if (config.storeKey === '_aiConfig') {
+        if (config.storeKey === '_aiConfig') {
+          if (rows.length) {
+            const mapped = rows.map(config.mapper);
             const ai = mapped[0] as { mode: string; models: unknown[] };
             if (ai) { patch.aiMode = ai.mode; patch.aiModels = ai.models; }
-          } else if (config.storeKey === 'userProfile') {
-            patch.userProfile = mapped[0];
-          } else {
-            patch[config.storeKey] = mapped;
           }
+        } else if (config.storeKey === 'userProfile') {
+          if (rows.length) {
+            patch.userProfile = rows.map(config.mapper)[0];
+          }
+        } else {
+          patch[config.storeKey] = rows.length ? rows.map(config.mapper) : [];
         }
       } catch (e) {
         log.error(e, { phase: 'rehydrateFromDb', entity });
@@ -1116,7 +1130,7 @@ export class SyncEngine {
   async resumeInitialSync(token: string, userId?: string): Promise<void> {
     const db = await openDatabase();
     if ((await getState(db, 'initialSyncDone')) === 'true') return;
-    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession'];
+    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession', 'sutraReading', 'fearEntry', 'courageEntry', 'fearAchievement', 'zhiguanSession', 'breath'];
 
     for (const entity of allEntities) {
       const p = await getSyncProgress(entity);
@@ -1127,10 +1141,10 @@ export class SyncEngine {
     await setState(db, 'initialSyncDone', 'true');
     await setState(db, 'initialSyncPhase', 'done');
     await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
-    // Update _lastSyncAt so next runSync doesn't re-pull everything
-    const now = Date.now();
-    this._lastSyncAt = now;
-    await this.saveLastSyncAt(now);
+    // Update _lastSyncAt using server-adjusted time to avoid clock skew issues
+    const serverNow = Date.now() + this._clockOffset;
+    this._lastSyncAt = serverNow;
+    await this.saveLastSyncAt(serverNow);
   }
 
   private async pullEntityWithRetry(entity: SyncEntity, phase: number, token: string, userId?: string): Promise<void> {

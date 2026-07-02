@@ -137,7 +137,7 @@ export function buildRowToEntity<T = Record<string, unknown>>(schema: EntitySche
           entity[f.entity] = parseJson(raw, f.fallback ?? []);
           break;
         case 'num':
-          entity[f.entity] = raw ?? f.fallback ?? 0;
+          entity[f.entity] = raw ?? (f.fallback !== undefined ? f.fallback : 0);
           break;
         default:
           entity[f.entity] = raw ?? f.fallback ?? undefined;
@@ -153,7 +153,7 @@ export function schemaToEntityMeta(schema: EntitySchema): EntityMeta {
   return {
     collection: schema.pocketbase.collection,
     localPk: schema.sqlite.pk,
-    remotePk: schema.sqlite.pk,
+    remotePk: schema.pocketbase.serverIdField,
     softDelete: true,
   };
 }
@@ -200,6 +200,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'mood',            col: 'mood',            server: 'mood',          fallback: null },
       { entity: 'cardTheme',       col: 'card_theme',      server: 'cardTheme',     fallback: null },
       { entity: 'link',            col: 'link',            server: 'link',          fallback: null },
+      { entity: 'linkedHabitId',   col: 'linked_habit_id', server: 'linkedHabitId', fallback: null, optional: true },
       { entity: 'linkedPlanItemId', col: 'linked_plan_id', server: 'linkedPlanItemId', fallback: null },
       { entity: 'isPinned',        col: 'is_pinned',       server: 'isPinned',      type: 'bool' },
       { entity: 'isPublished',     col: 'is_published',    server: 'isPublished',   type: 'bool' },
@@ -304,6 +305,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       segment_paces: r.segmentPaces ? JSON.stringify(r.segmentPaces) : null,
       elevation_gain: r.elevationGain ?? null, paused_duration: r.pausedDuration ?? null,
       reps: r.reps ?? null, sets: r.sets ? JSON.stringify(r.sets) : null, met: r.met ?? null,
+      health_synced: r.healthSynced ? 1 : 0,
       ts: r.timestamp ?? r.ts ?? 0,
       updated_at: r.updatedAt ?? null, deleted: 0,
     }),
@@ -347,11 +349,19 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
         deleted: bool(d.deleted),
       };
     },
-    customServerPayloadToRow: (r) => ({
-      profile_id: r.profileId ?? r.profile_id ?? 'self',
-      data: typeof r.data === 'string' ? r.data : JSON.stringify(r.data ?? r),
-      updated_at: r.updatedAt ?? null, deleted: 0,
-    }),
+    customServerPayloadToRow: (r) => {
+      // Filter out PocketBase system fields when constructing the data blob
+      const PB_FIELDS = new Set(['id', 'created', 'updated', 'user_id', 'profile_id', 'profileId', 'deleted', 'updatedAt']);
+      const profileData: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(r)) {
+        if (!PB_FIELDS.has(k)) profileData[k] = v;
+      }
+      return {
+        profile_id: r.profileId ?? r.profile_id ?? 'self',
+        data: typeof r.data === 'string' ? r.data : JSON.stringify(Object.keys(profileData).length ? profileData : {}),
+        updated_at: r.updatedAt ?? null, deleted: 0,
+      };
+    },
     customRowToEntity: (r) => {
       const data = parseJson<Record<string, unknown>>(r.data, {});
       return { ...data, updatedAt: (r.updated_at as number) ?? (data.updatedAt as number) };
@@ -412,8 +422,8 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       };
       if (r.reflectionId !== undefined) row.reflection_id = r.reflectionId;
       if (r.trailId !== undefined) row.trail_id = r.trailId;
-      row.frequency = r.frequency ? JSON.stringify(r.frequency) : null;
-      row.tags = r.tags ? JSON.stringify(r.tags) : null;
+      row.frequency = r.frequency ? (typeof r.frequency === 'string' ? r.frequency : JSON.stringify(r.frequency)) : null;
+      row.tags = r.tags ? (typeof r.tags === 'string' ? r.tags : JSON.stringify(r.tags)) : null;
       return row;
     },
     customRowToEntity: (r) => ({
@@ -708,6 +718,26 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     ],
   },
 
+
+  breath: {
+    sqlite: { table: 'breath_records', pk: 'id' },
+    pocketbase: { collection: 'breath_records', serverIdField: 'breath_id' },
+    fields: [
+      { entity: 'id',           col: 'id',             server: 'id',           fallback: null },
+      { entity: 'date',         col: 'date',           server: 'date',         fallback: '' },
+      { entity: 'presetKey',    col: 'preset_key',     server: 'presetKey',    fallback: '' },
+      { entity: 'durationSec',  col: 'duration_sec',   server: 'durationSec',  type: 'num' },
+      { entity: 'cycles',       col: 'cycles',         server: 'cycles',       type: 'num' },
+      { entity: 'preDistress',  col: 'pre_distress',   server: 'preDistress',  type: 'num' },
+      { entity: 'postDistress', col: 'post_distress',  server: 'postDistress', type: 'num' },
+      { entity: 'reflection',   col: 'reflection',     server: 'reflection',   fallback: '' },
+      { entity: 'guideStyle',   col: 'guide_style',    server: 'guideStyle',   fallback: 'scientific' },
+      { entity: 'updatedAt',    col: 'updated_at',     server: 'updatedAt',    fallback: () => Date.now() },
+      { entity: 'deleted',      col: 'deleted',        type: 'bool' },
+    ],
+  },
+
+
   sleep: {
     sqlite: { table: 'sleep_records', pk: 'id' },
     pocketbase: { collection: 'sleep_records', serverIdField: 'sleep_id' },
@@ -918,10 +948,10 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     customRowToEntity: (r) => ({
       id: r.id, date: r.date, timestamp: r.timestamp, content: r.content,
       trigger: r.trigger, category: r.category, classification: r.classification,
-      classificationAnswers: typeof r.classification_answers === 'string' ? JSON.parse(r.classification_answers || '{}') : r.classification_answers ?? {},
+      classificationAnswers: parseJson(r.classification_answers, {}),
       worstOutcome: r.worst_outcome, probability: r.probability, copingAbility: r.coping_ability,
       fearIndex: r.fear_index,
-      bodyLocations: typeof r.body_locations === 'string' ? JSON.parse(r.body_locations || '[]') : r.body_locations ?? [],
+      bodyLocations: parseJson(r.body_locations, []),
       occurrenceCount: r.occurrence_count ?? 1,
       updated_at: r.updated_at, deleted: r.deleted === 1 || r.deleted === true,
     }),
@@ -950,7 +980,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     customRowToEntity: (r) => ({
       id: r.id, date: r.date, timestamp: r.timestamp, fearId: r.fear_id || undefined,
       action: r.action, fearBefore: r.fear_before, feeling: r.feeling || undefined,
-      feelingTags: typeof r.feeling_tags === 'string' ? JSON.parse(r.feeling_tags || '[]') : r.feeling_tags ?? [],
+      feelingTags: parseJson(r.feeling_tags, []),
       streak: r.streak ?? 0,
       updated_at: r.updated_at, deleted: r.deleted === 1 || r.deleted === true,
     }),
@@ -978,8 +1008,10 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'subtitle',    col: 'subtitle',    server: 'subtitle',    fallback: '', optional: true },
       { entity: 'category',    col: 'category',    server: 'category',    fallback: 'custom' },
       { entity: 'sortOrder',   col: 'sort_order',  server: 'sortOrder',   type: 'num' },
-      { entity: 'targetCount', col: 'target_count', server: 'targetCount', type: 'num', optional: true },
-      { entity: 'updatedAt',   col: 'updated_at',  server: 'updatedAt',   fallback: () => Date.now() },
+      { entity: 'targetCount',    col: 'target_count',     server: 'targetCount',     type: 'num', optional: true },
+      { entity: 'audioUrl',       col: 'audio_url',        server: 'audioUrl',        fallback: '', optional: true },
+      { entity: 'audioAttribution', col: 'audio_attribution', server: 'audioAttribution', fallback: '', optional: true },
+      { entity: 'updatedAt',      col: 'updated_at',       server: 'updatedAt',       fallback: () => Date.now() },
       { entity: 'deleted',     col: 'deleted',      type: 'bool' },
     ],
   },
@@ -1017,6 +1049,30 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'deleted',     col: 'deleted',       type: 'bool' },
     ],
   },
+
+  zhiguanSession: {
+    sqlite: { table: 'zhiguan_sessions', pk: 'id' },
+    pocketbase: { collection: 'zhiguan_sessions', serverIdField: 'zhiguan_id' },
+    fields: [
+      { entity: 'id',              col: 'id',                server: 'id',              fallback: null },
+      { entity: 'userId',          col: 'user_id',           server: 'userId',          fallback: '' },
+      { entity: 'status',          col: 'status',            server: 'status',          fallback: 'completed' },
+      { entity: 'startTs',         col: 'start_ts',          server: 'startTs',         type: 'num' },
+      { entity: 'endTs',           col: 'end_ts',            server: 'endTs',           type: 'num' },
+      { entity: 'sankalpa',        col: 'sankalpa',          server: 'sankalpa',        fallback: '' },
+      { entity: 'preliminaryLevel', col: 'preliminary_level', server: 'preliminaryLevel', fallback: 'recommended' },
+      { entity: 'chosenMethod',    col: 'chosen_method',     server: 'chosenMethod',    fallback: 'anapanasati' },
+      { entity: 'samathaRatioAvg', col: 'samatha_ratio_avg', server: 'samathaRatioAvg', type: 'num' },
+      { entity: 'vipassanaRatioAvg', col: 'vipassana_ratio_avg', server: 'vipassanaRatioAvg', type: 'num' },
+      { entity: 'totalBreaths',    col: 'total_breaths',     server: 'totalBreaths',    type: 'num' },
+      { entity: 'closingNotes',    col: 'closing_notes',      server: 'closingNotes',    fallback: '' },
+      { entity: 'selfReportedStage', col: 'self_reported_stage', server: 'selfReportedStage', fallback: '' },
+      { entity: 'selfReportedStageText', col: 'self_reported_stage_text', server: 'selfReportedStageText', fallback: '' },
+      { entity: 'dedicationId',    col: 'dedication_id',      server: 'dedicationId',    fallback: '' },
+      { entity: 'updatedAt',       col: 'updated_at',         server: 'updatedAt',       fallback: () => Date.now() },
+      { entity: 'deleted',         col: 'deleted',             type: 'bool' },
+    ],
+  },
 };
 
 // ── Derived exports (replace standalone declarations) ───────────
@@ -1035,3 +1091,7 @@ export const SCHEMA_COLLECTION: Record<SyncEntity, string> = Object.fromEntries(
 export const SCHEMA_ID_FIELD: Record<SyncEntity, string> = Object.fromEntries(
   (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, SCHEMAS[k].pocketbase.serverIdField])
 ) as Record<SyncEntity, string>;
+
+/** All SQLite table names for sync entities — derived from SCHEMAS.
+ *  Used by SyncEngine for purgeDeletedRecords and hardReset. */
+export const ALL_ENTITY_TABLES: string[] = (Object.keys(SCHEMAS) as SyncEntity[]).map(k => SCHEMAS[k].sqlite.table);
