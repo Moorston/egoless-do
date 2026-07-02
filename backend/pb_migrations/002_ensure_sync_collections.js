@@ -15,7 +15,7 @@ const COLLECTIONS = [
 // Push tokens collection for push notifications
 const PUSH_TOKENS_COLLECTION = {
   name: 'push_tokens',
-  schema: [
+  fields: [
     { name: 'user_id',  type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
     { name: 'platform', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
     { name: 'token',    type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
@@ -56,7 +56,7 @@ migrate((txApp) => {
       name,
       type: 'base',
       system: false,
-      schema: [
+      fields: [
         { name: 'user_id',  type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
         { name: idField,    type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
         { name: 'data',     type: 'json', required: false, options: { maxSize: 5000000 } },
@@ -85,7 +85,7 @@ migrate((txApp) => {
     name: PUSH_TOKENS_COLLECTION.name,
     type: 'base',
     system: false,
-    schema: PUSH_TOKENS_COLLECTION.schema,
+    fields: PUSH_TOKENS_COLLECTION.fields,
     indexes: PUSH_TOKENS_COLLECTION.indexes,
     listRule: PUSH_TOKENS_COLLECTION.listRule,
     viewRule: PUSH_TOKENS_COLLECTION.viewRule,

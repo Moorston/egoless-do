@@ -104,3 +104,17 @@ export function buildSelectInStatement<T>(
   const sql = `SELECT ${selectColumns} FROM ${table} WHERE ${column} IN (${placeholders})`;
   return { sql, values: ids };
 }
+
+/** Sync queue UPSERT SQL — safe for concurrent access.
+ *  When a 'syncing' item is overwritten, preserves the in-flight operation/status
+ *  but updates the payload so the next sync round picks up the latest data. */
+export const SYNC_QUEUE_UPSERT_SQL = `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
+  VALUES (?, ?, ?, ?, ?, ?)
+  ON CONFLICT(entity, entity_id) DO UPDATE SET
+    operation = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.operation ELSE excluded.operation END,
+    payload = excluded.payload,
+    created_at = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.created_at ELSE excluded.created_at END,
+    status = CASE WHEN sync_queue.status = 'syncing' THEN 'syncing' ELSE 'pending' END,
+    retry_count = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.retry_count ELSE 0 END,
+    next_retry_at = 0,
+    last_error = NULL`;

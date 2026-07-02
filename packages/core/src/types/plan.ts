@@ -29,6 +29,7 @@ export interface Plan extends Syncable {
   progress: number;
   completeReason?: string; // 完成时填写的原因（有未完成任务时）
   lastDelayedNotifyAt?: number; // 上次发送延期邮箱提醒的时间戳
+  visionId?: string; // 关联愿景 ID
 }
 
 export interface PlanItem extends Syncable {

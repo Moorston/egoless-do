@@ -5,6 +5,8 @@ import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull } from '
 import { mergeById } from '../sync/merge';
 import { calculateCheckinStreak, activeOnly } from '../utils';
 import { createLogger } from '../logger';
+import { resetAIService } from '../ai/ai-service';
+import { clearAICaches } from '../ai/trail-recommender';
 const log = createLogger('Store');
 
 export function createAuthSlice(
@@ -64,6 +66,9 @@ export function createAuthSlice(
         apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => log.error(e));
       }
       set({ auth: defaultAuthState });
+      // Clear AI caches and reset service to prevent stale data leakage
+      clearAICaches();
+      resetAIService();
       onLogout?.();
     },
 
@@ -74,6 +79,9 @@ export function createAuthSlice(
         try { await apiLogout(auth.token, auth.refreshToken); } catch (e: unknown) { log.error(e); }
       }
       set({ auth: defaultAuthState });
+      // Clear AI caches and reset service to prevent stale data leakage
+      clearAICaches();
+      resetAIService();
       await onClearData?.();
       onLogout?.();
     },

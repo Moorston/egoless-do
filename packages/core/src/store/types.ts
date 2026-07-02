@@ -13,6 +13,7 @@ import type {
   MotivationStats, EmotionSensitiveDay,
   FearEntry, CourageEntry, FearAchievement, FearStats, CourageStats, BodyHeatmap, FearInsight, DominantFearType, FearTimeSlot, AchievementType,
   SutraReadingSession,
+  ZhiguanSession, ZhiguanDraft, ZhiguanStats,
 } from '../types';
 import type { SyncEntity } from '../sync/entities';
 import type { CreateHabitForm } from '../business/habits';
@@ -31,8 +32,10 @@ import type { DedicationSlice } from './createDedicationSlice';
 export type { DedicationSlice } from './createDedicationSlice';
 import type { MantraSlice } from './createMantraSlice';
 export type { MantraSlice } from './createMantraSlice';
-import type { MindSlice } from './createMindSlice';
-export type { MindSlice } from './createMindSlice';
+import type { MindSlice } from './mindSliceTypes';
+export type { MindSlice } from './mindSliceTypes';
+import type { ZhiguanSlice } from './zhiguanSliceTypes';
+export type { ZhiguanSlice } from './zhiguanSliceTypes';
 
 // ─── Granular slice interfaces ─────────────────────────────────
 
@@ -109,6 +112,12 @@ export interface MeditationSlice {
   calculateTotalMedMin: () => void;
 }
 
+export interface BreathSlice {
+  breathHistory: import('../types/breath').BreathingRecord[];
+  addBreathRecord: (data: Omit<import('../types/breath').BreathingRecord, 'id' | 'updatedAt' | 'deleted'>) => void;
+  removeBreathRecord: (id: string) => void;
+}
+
 export interface SleepSlice {
   sleepHistory: SleepEntry[];
   sleepGoal: SleepGoal;
@@ -180,7 +189,7 @@ export interface PlanSlice {
   planItemCheckins: PlanItemCheckin[];
   dailyCustomTodos: DailyCustomTodo[];
   dailyTodoHistory: DailyTodoHistory[];
-  addPlan: (form: { name: string; goal: string; slogan?: string; startDate: string; endDate: string }) => string;
+  addPlan: (form: { name: string; goal: string; slogan?: string; startDate: string; endDate: string; visionId?: string }) => string;
   updatePlan: (id: string, patch: Partial<Plan>) => void;
   deletePlan: (id: string) => void;
   startPlan: (id: string) => void;
@@ -301,37 +310,11 @@ export interface DietSlice {
   getEmotionSensitiveDays: (dateFrom: string, dateTo: string) => EmotionSensitiveDay[];
 }
 
-// ─── Mind slice ──────────────────────────────────────────────
-
-export interface MindSlice {
-  fearEntries: FearEntry[];
-  courageEntries: CourageEntry[];
-  achievements: FearAchievement[];
-
-  addFearEntry: (entry: Omit<FearEntry, 'id' | 'updatedAt' | 'deleted' | 'occurrenceCount'>) => void;
-  updateFearEntry: (id: string, patch: Partial<FearEntry>) => void;
-  deleteFearEntry: (id: string) => void;
-  addCourageEntry: (entry: Omit<CourageEntry, 'id' | 'updatedAt' | 'deleted' | 'streak'>) => void;
-  deleteCourageEntry: (id: string) => void;
-  unlockAchievement: (type: AchievementType) => void;
-  checkAchievements: () => void;
-
-  getFearStats: () => FearStats;
-  getFearIndexTrend: (fearId: string) => number[];
-  getCourageStreak: () => number;
-  getAchievements: () => FearAchievement[];
-  getBodyHeatmap: () => BodyHeatmap;
-  getDominantFearType: () => DominantFearType | null;
-  getFearTimeDistribution: () => FearTimeSlot[];
-  getCourageTrend: () => { date: string; avgFearBefore: number }[];
-  getCrossModuleInsights: () => FearInsight[];
-}
-
 // ─── FullStore composition ─────────────────────────────────────
 
 export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice & GiveSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MantraSlice & MindSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MantraSlice & MindSlice & ZhiguanSlice & BreathSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 
@@ -359,6 +342,7 @@ export interface SyncDataMap {
   bodyPlan: import('../types').BodyPlan;
   weightRecord: import('../types').WeightRecord;
   bodyCheckin: import('../types').BodyCheckin;
+  breath: import('../types/breath').BreathingRecord;
   sleep: SleepEntry;
   give: GiveEntry;
   motivationEntry: EatingMotivationEntry;
@@ -372,6 +356,7 @@ export interface SyncDataMap {
   courageEntry: CourageEntry;
   fearAchievement: FearAchievement;
   sutraReading: SutraReadingSession;
+  zhiguanSession: ZhiguanSession;
 }
 
 /** Type-safe storage adapter */

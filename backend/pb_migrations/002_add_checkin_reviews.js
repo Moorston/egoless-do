@@ -22,7 +22,7 @@ migrate((db) => {
     deleteRule: "@request.auth.id = user_id"
   });
   
-  db.saveCollection(collection);
+  db.save(collection);
 }, (db) => {
   // down
   const collection = db.findCollectionByNameOrId("checkin_reviews");

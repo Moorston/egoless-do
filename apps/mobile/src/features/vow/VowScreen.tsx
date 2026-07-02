@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert,
+  View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
@@ -8,9 +8,10 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useAppStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, COLORS } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, COLORS } from '@egoless-do/core';
 import type { Vision, VisionType, VisionStatus, VisionTimeFrame } from '@egoless-do/core';
 import { Flag, Target, Plus, Check, Archive, Trash2, X, Star } from 'lucide-react-native';
+import VisionCard from './components/VisionCard';
 
 const TYPE_CONFIG: Record<VisionType, { icon: any; label: string; color: string }> = {
   lifetime: { icon: Star, label: '终极愿景', color: '#F59E0B' },
@@ -18,102 +19,20 @@ const TYPE_CONFIG: Record<VisionType, { icon: any; label: string; color: string 
   short: { icon: Target, label: '短期愿景', color: '#10B981' },
 };
 
-function VisionCard({
-  vision,
-  TH,
-  onAchieve,
-  onArchive,
-  onDelete,
-  onEdit,
-}: {
-  vision: Vision;
-  TH: any;
-  onAchieve: (id: string) => void;
-  onArchive: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit: (v: Vision) => void;
-}) {
-  const typeCfg = TYPE_CONFIG[vision.type];
-  const timeFrameLabel = vision.timeFrame
-    ? VISION_TIME_FRAMES.find(f => f.key === vision.timeFrame)?.labelKey ?? vision.timeFrame
-    : null;
-
-  return (
-    <View style={{
-      backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12,
-      borderLeftWidth: 4, borderLeftColor: typeCfg.color,
-    }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <View style={{ flex: 1, marginRight: 12 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            {React.createElement(typeCfg.icon, { size: 16, color: typeCfg.color })}
-            <Text style={{ fontSize: FONT_BADGE, color: typeCfg.color, fontWeight: '600' }}>{typeCfg.label}</Text>
-            {timeFrameLabel && (
-              <Text style={{ fontSize: 11, color: TH.sub, backgroundColor: `${TH.border}60`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                {timeFrameLabel}
-              </Text>
-            )}
-          </View>
-          <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 22 }}>{vision.text}</Text>
-        </View>
-        <TouchableOpacity onPress={() => onEdit(vision)} style={{ padding: 4 }}>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.primary }}>编辑</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
-        {vision.status === 'active' && (
-          <TouchableOpacity
-            onPress={() => onAchieve(vision.id)}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 10, backgroundColor: '#10B98120', borderRadius: 8 }}
-          >
-            <Check size={14} color="#10B981" />
-            <Text style={{ fontSize: FONT_BADGE, color: '#10B981', fontWeight: '600' }}>达成</Text>
-          </TouchableOpacity>
-        )}
-        {vision.status === 'active' && (
-          <TouchableOpacity
-            onPress={() => onArchive(vision.id)}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 10, backgroundColor: `${TH.border}60`, borderRadius: 8 }}
-          >
-            <Archive size={14} color={TH.sub} />
-            <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>归档</Text>
-          </TouchableOpacity>
-        )}
-        <TouchableOpacity
-          onPress={() => onDelete(vision.id)}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 10, backgroundColor: '#EF444420', borderRadius: 8 }}
-        >
-          <Trash2 size={14} color="#EF4444" />
-          <Text style={{ fontSize: FONT_BADGE, color: '#EF4444' }}>删除</Text>
-        </TouchableOpacity>
-      </View>
-      {vision.status !== 'active' && (
-        <View style={{ marginTop: 8 }}>
-          <Text style={{
-            fontSize: FONT_BADGE, color: vision.status === 'achieved' ? '#10B981' : TH.sub,
-            backgroundColor: vision.status === 'achieved' ? '#10B98115' : `${TH.border}40`,
-            alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6,
-          }}>
-            {vision.status === 'achieved' ? '✦ 已达成' : '已归档'}
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-}
-
 function AddVisionModal({
   visible,
   onClose,
   onSave,
   existing,
   TH,
+  T,
 }: {
   visible: boolean;
   onClose: () => void;
-  onSave: (data: { type: VisionType; text: string; timeFrame?: VisionTimeFrame }) => void;
+  onSave: (data: { type: VisionType; text: string; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string }) => void;
   existing: Vision | null;
   TH: any;
+  T: (key: string) => string;
 }) {
   const [type, setType] = useState<VisionType>('short');
   const [text, setText] = useState('');
@@ -146,12 +65,11 @@ function AddVisionModal({
         <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
-              {existing ? '编辑愿景' : '新增愿景'}
+              {existing ? T('vowEditTitle') : T('vowNewTitle')}
             </Text>
             <TouchableOpacity onPress={onClose}><X size={20} color={TH.sub} /></TouchableOpacity>
           </View>
-
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>类型</Text>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowType')}</Text>
           <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
             {(Object.keys(TYPE_CONFIG) as VisionType[]).map(t => {
               const cfg = TYPE_CONFIG[t];
@@ -174,10 +92,9 @@ function AddVisionModal({
               );
             })}
           </View>
-
           {type !== 'lifetime' && (
             <>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>时间范围</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
                 {VISION_TIME_FRAMES.map(tf => {
                   const active = timeFrame === tf.key;
@@ -200,31 +117,25 @@ function AddVisionModal({
               </View>
             </>
           )}
-
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>愿景内容</Text>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowContent')}</Text>
           <TextInput
             style={{
               backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text,
               fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: TH.border,
             }}
-            multiline
-            maxLength={500}
-            value={text}
-            onChangeText={setText}
-            placeholder="写下你的愿景..."
-            placeholderTextColor={TH.sub}
+            multiline maxLength={500} value={text} onChangeText={setText}
+            placeholder={T('vowContentPlaceholder')} placeholderTextColor={TH.sub}
           />
-
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 20 }}>
             <TouchableOpacity onPress={onClose} style={{ flex: 1, padding: 12, borderRadius: 10, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-              <Text style={{ color: TH.sub }}>取消</Text>
+              <Text style={{ color: TH.sub }}>{T('cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
               disabled={!canSave}
               style={{ flex: 1, padding: 12, borderRadius: 10, backgroundColor: canSave ? TH.primary : TH.border, alignItems: 'center' }}
             >
-              <Text style={{ color: '#fff', fontWeight: '600' }}>{existing ? '保存' : '创建'}</Text>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>{existing ? T('save') : T('vowCreate')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -243,8 +154,11 @@ export default function VowScreen() {
   const [editingVision, setEditingVision] = useState<Vision | null>(null);
   const [filterStatus, setFilterStatus] = useState<VisionStatus | 'all'>('active');
 
+  const plans = store.plans ?? [];
+  const planItems = store.planItems ?? [];
+
   const visions = useMemo(() =>
-    (store.visions ?? []).filter(v => filterStatus === 'all' || v.status === filterStatus),
+    (store.visions ?? []).filter(v => !v.deleted && (filterStatus === 'all' || v.status === filterStatus)),
     [store.visions, filterStatus],
   );
 
@@ -257,7 +171,7 @@ export default function VowScreen() {
   }, [visions]);
 
   const activeCount = useMemo(() =>
-    (store.visions ?? []).filter(v => v.status === 'active').length,
+    (store.visions ?? []).filter(v => !v.deleted && v.status === 'active').length,
     [store.visions],
   );
 
@@ -271,10 +185,17 @@ export default function VowScreen() {
     setShowModal(true);
   };
 
-  const handleSave = (data: { type: VisionType; text: string; timeFrame?: VisionTimeFrame }) => {
+  const handleSave = (data: { type: VisionType; text: string; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string }) => {
     if (editingVision) {
       store.updateVision(editingVision.id, data);
     } else {
+      const existing = (store.visions ?? []).filter(v => !v.deleted);
+      const typeLabels: Record<string, string> = { lifetime: '终极愿景', long: '长期愿景', short: '短期愿景' };
+      const conflict = existing.find(v => v.type === data.type && v.status === 'active');
+      if (conflict) {
+        Alert.alert('提示', `已有进行中的${typeLabels[data.type] ?? data.type}，请先将其标记达成或归档后再创建新的`);
+        return;
+      }
       store.addVision(data);
     }
   };
@@ -303,12 +224,14 @@ export default function VowScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Vow" />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        <TouchableOpacity onPress={handleAdd}
-          style={{ alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 12 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
+        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>我的愿景</Text>
+        <TouchableOpacity onPress={handleAdd} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <Plus size={18} color={TH.primary} />
           <Text style={{ color: TH.primary, fontSize: FONT_SUB, fontWeight: '600' }}>{T('commonAdd')}</Text>
         </TouchableOpacity>
+      </View>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
 
         {/* Summary */}
         <View style={{
@@ -363,17 +286,35 @@ export default function VowScreen() {
                 <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{TYPE_CONFIG[type].label}</Text>
                 <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length}</Text>
               </View>
-              {items.map(v => (
-                <VisionCard
-                  key={v.id}
-                  vision={v}
-                  TH={TH}
-                  onAchieve={handleAchieve}
-                  onArchive={handleArchive}
-                  onDelete={handleDelete}
-                  onEdit={handleEdit}
-                />
-              ))}
+              {items.map(v => {
+                const linked = plans.filter((p: any) => !p.deleted && p.visionId === v.id);
+                let pct = 0;
+                if (linked.length > 0) {
+                  let totalDone = 0;
+                  let totalItems = 0;
+                  for (const plan of linked) {
+                    const pi = planItems.filter((i: any) => i.planId === plan.id && !i.deleted);
+                    totalDone += pi.filter((i: any) => i.status === 'completed').length;
+                    totalItems += pi.length;
+                  }
+                  pct = totalItems > 0 ? Math.min(100, Math.round((totalDone / totalItems) * 100)) : 0;
+                }
+                return (
+                  <VisionCard
+                    key={v.id}
+                    vision={v}
+                    TH={TH}
+                    T={T}
+                    pct={pct}
+                    onAchieve={handleAchieve}
+                    onArchive={handleArchive}
+                    onDelete={handleDelete}
+                    onEdit={handleEdit}
+                    linkedPlans={linked}
+                    planItems={planItems}
+                  />
+                );
+              })}
             </View>
           ))
         )}
@@ -385,6 +326,7 @@ export default function VowScreen() {
         onSave={handleSave}
         existing={editingVision}
         TH={TH}
+        T={T}
       />
     </SafeAreaView>
   );

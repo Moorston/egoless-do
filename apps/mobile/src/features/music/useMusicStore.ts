@@ -14,6 +14,7 @@ const BUILTIN_FILES: Record<string, number> = {
   'bowl':           require('../../../assets/sounds/bowl.mp3'),
   'wind-chimes':    require('../../../assets/sounds/wind-chimes.mp3'),
   'birds':          require('../../../assets/sounds/birds.mp3'),
+  'temple-bell':    require('../../../assets/sounds/temple_bell.mp3'),
 };
 
 // 填充内置音乐的 file 字段

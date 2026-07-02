@@ -1,125 +1,24 @@
 /// <reference path="../pb_data/types.d.ts" />
 
-// ── PocketBase 0.38.2 JSVM: routerAdd callbacks run in isolated scopes.
-//    All helper functions must be defined INSIDE each callback.
-//    Top-level vars are NOT accessible from callbacks.
-
-// Entity mappings (shared across all endpoints)
-var ENTITY_COLL_MAP = {
-  habit: "habits", reflection: "reflections", fasting: "fasting_sessions",
-  food: "food_entries", checkin: "checkin_records", meditation: "meditation_history",
-  profile: "user_profiles", exercise: "exercise_entries", plan: "plans",
-  planItem: "plan_items", planItemCheckin: "plan_item_checkins",
-  dailyCustomTodo: "daily_custom_todos", dailyTodoHistory: "daily_todo_history",
-  grace: "grace_history", thoughtTrail: "thought_trails", trailNote: "trail_notes",
-  reflectionLink: "reflection_links", aiConfig: "ai_configs", checkinReview: "checkin_reviews",
-  motivationEntry: "eating_motivations", customWuxing: "custom_wuxing_maps",
-  fearEntry: "fear_entries", courageEntry: "courage_entries",
-  fearAchievement: "fear_achievements", sutraReading: "sutra_reading_sessions"
-};
-
-var ENTITY_ID_FIELD_MAP = {
-  habit: "habit_id", reflection: "reflection_id", fasting: "session_id",
-  food: "food_id", checkin: "date", meditation: "date", profile: "profile_id",
-  exercise: "exercise_id", plan: "plan_id", planItem: "plan_item_id",
-  planItemCheckin: "checkin_id", dailyCustomTodo: "todo_id", dailyTodoHistory: "history_id",
-  grace: "date", thoughtTrail: "trail_id", trailNote: "note_id",
-  reflectionLink: "link_id", aiConfig: "config_id", checkinReview: "review_id",
-  motivationEntry: "motivation_id", customWuxing: "wuxing_id",
-  fearEntry: "fear_id", courageEntry: "courage_id",
-  fearAchievement: "achievement_id", sutraReading: "reading_id"
-};
-
-var ENTITY_LIST = [
-  "habit", "reflection", "fasting", "food", "checkin", "exercise", "meditation",
-  "profile", "plan", "planItem", "planItemCheckin", "grace", "dailyCustomTodo",
-  "dailyTodoHistory", "thoughtTrail", "trailNote", "reflectionLink", "aiConfig", "checkinReview",
-  "motivationEntry", "customWuxing", "fearEntry", "courageEntry", "fearAchievement", "sutraReading"
-];
+// PB v0.38.2: callbacks run in isolated scopes — ALL helpers must be defined INSIDE each callback.
 
 // ═══════════════════════════════════════════════════════════════
-// Shared helper factory (call inside each callback)
-// ═══════════════════════════════════════════════════════════════
-function createHelpers() {
-  var uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  var idRe = /^[a-zA-Z0-9_\-]{1,128}$/;
-  
-  return {
-    isValidId: function(v) { return uuidRe.test(v) || idRe.test(v); },
-    // Safely escape filter values to prevent injection
-    escapeFilterValue: function(v) {
-      if (typeof v !== 'string') return String(v);
-      return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-    },
-    // Build safe filter string
-    buildFilter: function(field, value, userId) {
-      var escaped = this.escapeFilterValue(value);
-      var escapedUserId = this.escapeFilterValue(userId);
-      return field + " = '" + escaped + "' && user_id = '" + escapedUserId + "'";
-    },
-    // Build safe user filter
-    buildUserFilter: function(userId, sinceDate) {
-      var escapedUserId = this.escapeFilterValue(userId);
-      var f = "user_id = '" + escapedUserId + "'";
-      if (sinceDate) {
-        f += " && updated > '" + sinceDate + "'";
-      }
-      return f;
-    },
-    // Parse record data safely
-    parseRecordData: function(rec) {
-      var raw = rec.get("data");
-      var obj = {};
-      if (typeof raw === 'string') {
-        try { obj = JSON.parse(raw); } catch(pe) { obj = {}; }
-      } else if (raw && typeof raw === 'object') {
-        for (var k in raw) obj[k] = raw[k];
-      }
-      return obj;
-    },
-    // Export record for sync response
-    exportRecord: function(rec, entityIdField) {
-      var exported = rec.publicExport();
-      var dd = exported.data;
-      if (typeof dd === 'string') { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } }
-      if (dd && typeof dd === 'object') {
-        for (var dk in dd) {
-          if (dk === 'id' || dk === 'created' || dk === 'updated' || dk === 'user_id') continue;
-          exported[dk] = dd[dk];
-        }
-        if (dd.id !== undefined) exported.id = dd.id;
-        if (dd.updatedAt !== undefined) exported.updatedAt = dd.updatedAt;
-        exported.deleted = !!dd.deleted;
-      } else {
-        exported.deleted = false;
-      }
-      if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime();
-      delete exported.data;
-      // Remove function properties
-      var efKeys = Object.keys(exported);
-      for (var efi = 0; efi < efKeys.length; efi++) {
-        if (typeof exported[efKeys[efi]] === 'function') delete exported[efKeys[efi]];
-      }
-      return exported;
-    },
-    // Sanitize error for production
-    sanitizeError: function(err, fallback) {
-      console.error("[sync] " + fallback + ":", err.message || String(err));
-      return fallback || "Internal error";
-    }
-  };
-}
-
-// ═══════════════════════════════════════════════════════════════
-// POST /api/sync — Combined push + pull (main sync endpoint)
+// POST /api/sync — Combined push + pull
 // ═══════════════════════════════════════════════════════════════
 routerAdd("POST", "/api/sync", function(e) {
   try {
-    var helpers = createHelpers();
+    var ENTITY_COLL_MAP = {habit:"habits",reflection:"reflections",fasting:"fasting_sessions",food:"food_entries",checkin:"checkin_records",meditation:"meditation_history",profile:"user_profiles",exercise:"exercise_entries",plan:"plans",planItem:"plan_items",planItemCheckin:"plan_item_checkins",dailyCustomTodo:"daily_custom_todos",dailyTodoHistory:"daily_todo_history",grace:"grace_history",thoughtTrail:"thought_trails",trailNote:"trail_notes",reflectionLink:"reflection_links",aiConfig:"ai_configs",checkinReview:"checkin_reviews",motivationEntry:"eating_motivations",customWuxing:"custom_wuxing_maps",fearEntry:"fear_entries",courageEntry:"courage_entries",fearAchievement:"fear_achievements",sutraReading:"sutra_reading_sessions",sleep:"sleep_records",give:"give_entries",bodyGoal:"body_goals",bodyPlan:"body_plans",weightRecord:"weight_records",bodyCheckin:"body_checkins",vision:"visions",visionPractice:"vision_practices",dedication:"dedications",mantraDef:"mantra_defs",mantraSession:"mantra_sessions",zhiguanSession:"zhiguan_sessions",breath:"breath_records"};
+    var ENTITY_ID_FIELD_MAP = {habit:"habit_id",reflection:"reflection_id",fasting:"session_id",food:"food_id",checkin:"date",meditation:"date",profile:"profile_id",exercise:"exercise_id",plan:"plan_id",planItem:"plan_item_id",planItemCheckin:"checkin_id",dailyCustomTodo:"todo_id",dailyTodoHistory:"history_id",grace:"date",thoughtTrail:"trail_id",trailNote:"note_id",reflectionLink:"link_id",aiConfig:"config_id",checkinReview:"review_id",motivationEntry:"motivation_id",customWuxing:"wuxing_id",fearEntry:"fear_id",courageEntry:"courage_id",fearAchievement:"achievement_id",sutraReading:"reading_id",sleep:"sleep_id",give:"give_id",bodyGoal:"goal_id",bodyPlan:"plan_id",weightRecord:"weight_id",bodyCheckin:"checkin_id",vision:"vision_id",visionPractice:"practice_id",dedication:"dedication_id",mantraDef:"mantra_id",mantraSession:"session_id",zhiguanSession:"zhiguan_id",breath:"breath_id"};
+    var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
+    function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+    function buildUserFilter(userId, sinceDate) { var f = "user_id = '" + escapeFilterValue(userId) + "'"; if (sinceDate) f += " && updated > '" + sinceDate + "'"; return f; }
+    function buildFilter(field, value, userId) { return field + " = '" + escapeFilterValue(value) + "' && user_id = '" + escapeFilterValue(userId) + "'"; }
+    function parseRecordData(rec) { var raw = rec.get("data"); var obj = {}; if (typeof raw === 'string') { try { obj = JSON.parse(raw); } catch(pe) { obj = {}; } } else if (raw && typeof raw === 'object') { for (var k in raw) obj[k] = raw[k]; } return obj; }
+    function exportRecord(rec) { var exported = rec.publicExport(); var dd = exported.data; if (typeof dd === 'string') { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } } if (dd && typeof dd === 'object') { for (var dk in dd) { if (dk === 'id' || dk === 'created' || dk === 'updated' || dk === 'user_id') continue; exported[dk] = dd[dk]; } if (dd.id !== undefined) exported.id = dd.id; if (dd.updatedAt !== undefined) exported.updatedAt = dd.updatedAt; exported.deleted = !!dd.deleted; } else { exported.deleted = false; } if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime(); delete exported.data; var efKeys = Object.keys(exported); for (var efi = 0; efi < efKeys.length; efi++) { if (typeof exported[efKeys[efi]] === 'function') delete exported[efKeys[efi]]; } return exported; }
+
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;
     if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
-    if (!helpers.isValidId(userId)) return e.json(400, { code: "INVALID_INPUT", message: "Invalid userId" });
 
     var rawBody = info.body;
     var body = {};
@@ -127,123 +26,76 @@ routerAdd("POST", "/api/sync", function(e) {
     else if (rawBody && typeof rawBody === 'object') { body = rawBody; }
     var lastSyncAt = body.lastSyncAt || 0;
     var changes = body.changes || [];
+    var skipPull = !!body.skipPull;
+    var pullEntities = Array.isArray(body.entities) && body.entities.length > 0 ? body.entities : null;
 
     var applied = [];
     var rejected = [];
 
-    // ── Push: process each change ──
     for (var ci = 0; ci < changes.length; ci++) {
       var c = changes[ci];
-      var entity = c.entity;
-      var entityId = c.entityId;
-      var operation = c.operation;
-      var payload = c.payload;
-      var coll = ENTITY_COLL_MAP[entity];
-      var idField = ENTITY_ID_FIELD_MAP[entity];
+      var entity = c.entity, entityId = c.entityId, operation = c.operation, payload = c.payload;
+      var coll = ENTITY_COLL_MAP[entity], idField = ENTITY_ID_FIELD_MAP[entity];
       if (!coll || !idField) { rejected.push({ entity: entity, entityId: entityId, error: "Unknown entity" }); continue; }
-      if (!helpers.isValidId(entityId)) { rejected.push({ entity: entity, entityId: entityId, error: "Invalid entityId" }); continue; }
-
       try {
         if (operation === "delete") {
-          var delFilter = helpers.buildFilter(idField, entityId, userId);
-          var delRecs = $app.findRecordsByFilter(coll, delFilter, "", 10);
+          var delRecs = $app.findRecordsByFilter(coll, buildFilter(idField, entityId, userId), "", 10);
           for (var dj = 0; dj < delRecs.length; dj++) {
-            var curObj = helpers.parseRecordData(delRecs[dj]);
-            curObj.deleted = true;
-            curObj.updatedAt = Date.now();
+            var curObj = parseRecordData(delRecs[dj]);
+            curObj.deleted = true; curObj.updatedAt = Date.now();
             delRecs[dj].set("data", JSON.stringify(curObj));
             $app.save(delRecs[dj]);
           }
           applied.push({ entity: entity, entityId: entityId, operation: "delete" });
         } else {
-          var upFilter = helpers.buildFilter(idField, entityId, userId);
-          var upRecs = $app.findRecordsByFilter(coll, upFilter, "", 1);
+          var upRecs = $app.findRecordsByFilter(coll, buildFilter(idField, entityId, userId), "", 1);
           var rec = upRecs.length > 0 ? upRecs[0] : null;
-
-          // Conflict detection
           if (rec && payload && payload.updatedAt) {
-            var existD = helpers.parseRecordData(rec);
-            var srvUpd = existD.updatedAt || 0;
-            var srvDel = !!existD.deleted;
-            var cliDel = !!payload.deleted;
-            var srvWins;
-            if (srvDel || cliDel) {
-              if (srvUpd > payload.updatedAt) srvWins = true;
-              else if (srvUpd < payload.updatedAt) srvWins = false;
-              else srvWins = srvDel && !cliDel;
-            } else {
-              srvWins = srvUpd > payload.updatedAt;
-            }
-            if (srvWins) {
-              var sd = {};
-              for (var sdk in existD) sd[sdk] = existD[sdk];
-              sd.updatedAt = srvUpd;
-              sd.deleted = srvDel;
-              rejected.push({ entity: entity, entityId: entityId, error: "conflict", serverData: sd });
-              continue;
-            }
+            var existD = parseRecordData(rec);
+            if ((existD.updatedAt || 0) > payload.updatedAt) { rejected.push({ entity: entity, entityId: entityId, error: "conflict" }); continue; }
           }
-
-          if (!rec) {
-            var colObj = $app.findCollectionByNameOrId(coll);
-            rec = new Record(colObj);
-            rec.set(idField, entityId);
-            rec.set("user_id", userId);
-          }
-
-          // Merge payload
-          var existObj = helpers.parseRecordData(rec);
-          // Safety: if existing data is corrupted (double-encoded string → numeric keys), reset
-          if (Object.keys(existObj).length > 500) {
-            console.warn("[sync] Corrupted data blob for " + entity + "/" + entityId + ", resetting");
-            existObj = {};
-          }
-
+          if (!rec) { var colObj = $app.findCollectionByNameOrId(coll); rec = new Record(colObj); rec.set(idField, entityId); rec.set("user_id", userId); }
+          var existObj = parseRecordData(rec);
+          if (Object.keys(existObj).length > 500) { existObj = {}; }
           var merged = {};
           for (var pk in existObj) merged[pk] = existObj[pk];
-          for (var ik in payload) {
-            if (ik === 'updatedAt' || ik === '_clientTs') continue;
-            merged[ik] = payload[ik];
-          }
-          if (payload._clientTs === undefined) merged._clientTs = payload.updatedAt;
+          for (var ik in payload) { if (ik === 'updatedAt' || ik === '_clientTs') continue; merged[ik] = payload[ik]; }
           merged.updatedAt = Date.now();
-
           rec.set("data", JSON.stringify(merged));
           rec.set("updated_at", new Date().toISOString());
           rec.set("deleted", false);
           $app.save(rec);
           applied.push({ entity: entity, entityId: entityId, operation: "upsert" });
         }
-      } catch (recErr) {
-        rejected.push({ entity: entity, entityId: entityId, error: "Operation failed" });
-      }
+      } catch (recErr) { rejected.push({ entity: entity, entityId: entityId, error: "Operation failed" }); }
     }
 
-    // ── Pull: return all records updated since lastSyncAt ──
     var serverData = {};
-    var sinceDate = lastSyncAt > 0 ? new Date(lastSyncAt).toISOString() : '1970-01-01T00:00:00.000Z';
-    for (var ei = 0; ei < ENTITY_LIST.length; ei++) {
-      try {
-        var ent = ENTITY_LIST[ei];
-        var entColl = ENTITY_COLL_MAP[ent];
-        if (!entColl) continue;
-        var f = helpers.buildUserFilter(userId, lastSyncAt > 0 ? sinceDate : null);
-        var recs = $app.findRecordsByFilter(entColl, f, "-updated", 500);
-        var payloads = [];
-        for (var ri = 0; ri < recs.length; ri++) {
-          try {
-            var exported = helpers.exportRecord(recs[ri], ENTITY_ID_FIELD_MAP[ent]);
-            var idFieldPull = ENTITY_ID_FIELD_MAP[ent];
-            var hasId = exported.id || exported[idFieldPull] || exported.date || exported.name;
-            if (hasId) payloads.push(exported);
-          } catch (recErr) { console.error("[sync] record export error:", recErr.message || String(recErr)); }
-        }
-        if (payloads.length > 0) serverData[ent] = payloads;
-      } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.message || String(qErr)); }
+    if (!skipPull) {
+      var sinceDate = lastSyncAt > 0 ? new Date(lastSyncAt).toISOString() : '1970-01-01T00:00:00.000Z';
+      var entitiesToPull = pullEntities || ENTITY_LIST;
+      for (var ei = 0; ei < entitiesToPull.length; ei++) {
+        try {
+          var ent = entitiesToPull[ei];
+          var entColl = ENTITY_COLL_MAP[ent];
+          if (!entColl) continue;
+          var recs = $app.findRecordsByFilter(entColl, buildUserFilter(userId, lastSyncAt > 0 ? sinceDate : null), "-updated", 500);
+          var payloads = [];
+          for (var ri = 0; ri < recs.length; ri++) {
+            try {
+              var exported = exportRecord(recs[ri]);
+              var hasId = exported.id || exported[ENTITY_ID_FIELD_MAP[ent]] || exported.date || exported.name;
+              if (hasId) payloads.push(exported);
+            } catch (recErr) {}
+          }
+          if (payloads.length > 0) serverData[ent] = payloads;
+        } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.message || String(qErr)); }
+      }
     }
 
     return e.json(200, { changes: applied, rejected: rejected, data: serverData, serverTime: Date.now() });
   } catch (err) {
+    console.error("[sync-combined] Error:", err.message || String(err));
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });
@@ -253,11 +105,16 @@ routerAdd("POST", "/api/sync", function(e) {
 // ═══════════════════════════════════════════════════════════════
 routerAdd("GET", "/api/sync", function(e) {
   try {
-    var helpers = createHelpers();
+    var ENTITY_COLL_MAP = {habit:"habits",reflection:"reflections",fasting:"fasting_sessions",food:"food_entries",checkin:"checkin_records",meditation:"meditation_history",profile:"user_profiles",exercise:"exercise_entries",plan:"plans",planItem:"plan_items",planItemCheckin:"plan_item_checkins",dailyCustomTodo:"daily_custom_todos",dailyTodoHistory:"daily_todo_history",grace:"grace_history",thoughtTrail:"thought_trails",trailNote:"trail_notes",reflectionLink:"reflection_links",aiConfig:"ai_configs",checkinReview:"checkin_reviews",motivationEntry:"eating_motivations",customWuxing:"custom_wuxing_maps",fearEntry:"fear_entries",courageEntry:"courage_entries",fearAchievement:"fear_achievements",sutraReading:"sutra_reading_sessions",sleep:"sleep_records",give:"give_entries",bodyGoal:"body_goals",bodyPlan:"body_plans",weightRecord:"weight_records",bodyCheckin:"body_checkins",vision:"visions",visionPractice:"vision_practices",dedication:"dedications",mantraDef:"mantra_defs",mantraSession:"mantra_sessions",zhiguanSession:"zhiguan_sessions",breath:"breath_records"};
+    var ENTITY_ID_FIELD_MAP = {habit:"habit_id",reflection:"reflection_id",fasting:"session_id",food:"food_id",checkin:"date",meditation:"date",profile:"profile_id",exercise:"exercise_id",plan:"plan_id",planItem:"plan_item_id",planItemCheckin:"checkin_id",dailyCustomTodo:"todo_id",dailyTodoHistory:"history_id",grace:"date",thoughtTrail:"trail_id",trailNote:"note_id",reflectionLink:"link_id",aiConfig:"config_id",checkinReview:"review_id",motivationEntry:"motivation_id",customWuxing:"wuxing_id",fearEntry:"fear_id",courageEntry:"courage_id",fearAchievement:"achievement_id",sutraReading:"reading_id",sleep:"sleep_id",give:"give_id",bodyGoal:"goal_id",bodyPlan:"plan_id",weightRecord:"weight_id",bodyCheckin:"checkin_id",vision:"vision_id",visionPractice:"practice_id",dedication:"dedication_id",mantraDef:"mantra_id",mantraSession:"session_id",zhiguanSession:"zhiguan_id",breath:"breath_id"};
+    var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
+    function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+    function buildUserFilter(userId, sinceDate) { var f = "user_id = '" + escapeFilterValue(userId) + "'"; if (sinceDate) f += " && updated > '" + sinceDate + "'"; return f; }
+    function exportRecord(rec) { var exported = rec.publicExport(); var dd = exported.data; if (typeof dd === 'string') { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } } if (dd && typeof dd === 'object') { for (var dk in dd) { if (dk === 'id' || dk === 'created' || dk === 'updated' || dk === 'user_id') continue; exported[dk] = dd[dk]; } if (dd.id !== undefined) exported.id = dd.id; if (dd.updatedAt !== undefined) exported.updatedAt = dd.updatedAt; exported.deleted = !!dd.deleted; } else { exported.deleted = false; } if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime(); delete exported.data; var efKeys = Object.keys(exported); for (var efi = 0; efi < efKeys.length; efi++) { if (typeof exported[efKeys[efi]] === 'function') delete exported[efKeys[efi]]; } return exported; }
+
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;
     if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
-    if (!helpers.isValidId(userId)) return e.json(400, { code: "INVALID_INPUT", message: "Invalid userId" });
 
     var since = parseInt((info.query || {}).since || "0", 10);
     var sinceDate = since > 0 ? new Date(since).toISOString() : '1970-01-01T00:00:00.000Z';
@@ -268,22 +125,22 @@ routerAdd("GET", "/api/sync", function(e) {
         var ent = ENTITY_LIST[ei];
         var coll = ENTITY_COLL_MAP[ent];
         if (!coll) continue;
-        var f = helpers.buildUserFilter(userId, since > 0 ? sinceDate : null);
-        var recs = $app.findRecordsByFilter(coll, f, "-updated", 500);
+        var recs = $app.findRecordsByFilter(coll, buildUserFilter(userId, since > 0 ? sinceDate : null), "-updated", 500);
         var payloads = [];
         for (var ri = 0; ri < recs.length; ri++) {
           try {
-            var exported = helpers.exportRecord(recs[ri], ENTITY_ID_FIELD_MAP[ent]);
+            var exported = exportRecord(recs[ri]);
             var idF = ENTITY_ID_FIELD_MAP[ent];
             if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
-          } catch (recErr) { console.error("[sync] record export error:", recErr.message || String(recErr)); }
+          } catch (recErr) {}
         }
         if (payloads.length > 0) data[ent] = payloads;
-      } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.message || String(qErr)); }
+      } catch (qErr) {}
     }
 
     return e.json(200, { data: data, serverTime: Date.now() });
   } catch (err) {
+    console.error("[sync-get] Error:", err.message || String(err));
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });
@@ -293,11 +150,14 @@ routerAdd("GET", "/api/sync", function(e) {
 // ═══════════════════════════════════════════════════════════════
 routerAdd("GET", "/api/sync/check", function(e) {
   try {
-    var helpers = createHelpers();
+    var ENTITY_COLL_MAP = {habit:"habits",reflection:"reflections",fasting:"fasting_sessions",food:"food_entries",checkin:"checkin_records",meditation:"meditation_history",profile:"user_profiles",exercise:"exercise_entries",plan:"plans",planItem:"plan_items",planItemCheckin:"plan_item_checkins",dailyCustomTodo:"daily_custom_todos",dailyTodoHistory:"daily_todo_history",grace:"grace_history",thoughtTrail:"thought_trails",trailNote:"trail_notes",reflectionLink:"reflection_links",aiConfig:"ai_configs",checkinReview:"checkin_reviews",motivationEntry:"eating_motivations",customWuxing:"custom_wuxing_maps",fearEntry:"fear_entries",courageEntry:"courage_entries",fearAchievement:"fear_achievements",sutraReading:"sutra_reading_sessions",sleep:"sleep_records",give:"give_entries",bodyGoal:"body_goals",bodyPlan:"body_plans",weightRecord:"weight_records",bodyCheckin:"body_checkins",vision:"visions",visionPractice:"vision_practices",dedication:"dedications",mantraDef:"mantra_defs",mantraSession:"mantra_sessions",zhiguanSession:"zhiguan_sessions",breath:"breath_records"};
+    var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
+    function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+    function buildUserFilter(userId, sinceDate) { var f = "user_id = '" + escapeFilterValue(userId) + "'"; if (sinceDate) f += " && updated > '" + sinceDate + "'"; return f; }
+
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;
     if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
-    if (!helpers.isValidId(userId)) return e.json(400, { code: "INVALID_INPUT", message: "Invalid userId" });
 
     var since = parseInt((info.query || {}).since || "0", 10);
     var sinceDate = since > 0 ? new Date(since).toISOString() : '1970-01-01T00:00:00.000Z';
@@ -309,57 +169,12 @@ routerAdd("GET", "/api/sync/check", function(e) {
         var ent = ENTITY_LIST[ei];
         var coll = ENTITY_COLL_MAP[ent];
         if (!coll) continue;
-        var f = helpers.buildUserFilter(userId, since > 0 ? sinceDate : null);
-        var recs = $app.findRecordsByFilter(coll, f, "-updated", 1);
+        var recs = $app.findRecordsByFilter(coll, buildUserFilter(userId, since > 0 ? sinceDate : null), "-updated", 1);
         if (recs.length > 0) { changed[ent] = recs.length; totalChanges++; }
-      } catch (qErr) { console.error("[sync/check] error for " + ent + ":", qErr.message || String(qErr)); }
+      } catch (qErr) {}
     }
 
     return e.json(200, { hasChanges: totalChanges > 0, changed: changed, count: totalChanges, serverTime: Date.now() });
-  } catch (err) {
-    return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
-  }
-});
-
-// ═══════════════════════════════════════════════════════════════
-// GET /api/sync/pull/{entity} — Paginated per-entity pull
-// ═══════════════════════════════════════════════════════════════
-routerAdd("GET", "/api/sync/pull/{entity}", function(e) {
-  try {
-    var helpers = createHelpers();
-    var info = e.requestInfo();
-    var userId = info.auth ? info.auth.id : null;
-    if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
-    if (!helpers.isValidId(userId)) return e.json(400, { code: "INVALID_INPUT", message: "Invalid userId" });
-
-    var entity = e.request.pathValue("entity");
-    var coll = ENTITY_COLL_MAP[entity];
-    if (!coll) return e.json(400, { code: "INVALID_INPUT", message: "Unknown entity" });
-
-    var query = info.query || {};
-    var page = parseInt(query.page || "1", 10);
-    var pageSize = parseInt(query.pageSize || "200", 10);
-    if (page < 1) page = 1;
-    if (pageSize < 1) pageSize = 1;
-    if (pageSize > 500) pageSize = 500;
-
-    var since = parseInt(query.since || "0", 10);
-    var f = helpers.buildUserFilter(userId, since > 0 ? new Date(since).toISOString() : null);
-
-    var allRecs = $app.findRecordsByFilter(coll, f, "-updated", page * pageSize);
-    var start = (page - 1) * pageSize;
-    var pageRecs = allRecs.slice(start, start + pageSize);
-
-    var payloads = [];
-    for (var ri = 0; ri < pageRecs.length; ri++) {
-      try {
-        var exported = helpers.exportRecord(pageRecs[ri], ENTITY_ID_FIELD_MAP[entity]);
-        var idF = ENTITY_ID_FIELD_MAP[entity];
-        if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
-      } catch (recErr) { console.error("[sync/pull] record export error:", recErr.message || String(recErr)); }
-    }
-
-    return e.json(200, { data: payloads, total: allRecs.length, page: page, pageSize: pageSize, hasMore: pageRecs.length === pageSize, serverTime: Date.now() });
   } catch (err) {
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }

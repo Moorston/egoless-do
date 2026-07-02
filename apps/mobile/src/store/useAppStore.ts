@@ -4,10 +4,10 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
 import type {
-  AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice, SleepSlice,
+  AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice, SleepSlice, GiveSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, BodySlice,
-  WeightSlice, BodyCheckinSlice, DietSlice, VisionSlice, DedicationSlice, MindSlice, MantraSlice,
+  WeightSlice, BodyCheckinSlice, DietSlice, VisionSlice, DedicationSlice, MindSlice, MantraSlice, ZhiguanSlice, BreathSlice,
 } from '@egoless-do/core';
 import {
   setApiBase, setPushApiBase, setSyncApiBase, DAILY_RESET_KEY, DailyResetManager,
@@ -16,6 +16,8 @@ import {
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice, createBodySlice,
   createWeightSlice, createBodyCheckinSlice, createDietSlice,
   createVisionSlice, createDedicationSlice, createMindSlice, createMantraSlice,
+  createZhiguanSlice,
+  createBreathSlice,
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
@@ -121,10 +123,10 @@ AppState.addEventListener('change', async (state) => {
   }
 });
 
-export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice
+export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice & GiveSlice
   & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
   & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice
-  & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MindSlice & MantraSlice;
+  & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MindSlice & MantraSlice & ZhiguanSlice & BreathSlice;
 
 /** Partial store type for setState calls */
 export type PartialMobileStore = Partial<MobileStore>;
@@ -176,6 +178,8 @@ export const useAppStore = create<MobileStore>()(
       ...createDedicationSlice(adapter, triggerAutoSync)(...a),
       ...createMindSlice(adapter, triggerAutoSync)(...a),
       ...createMantraSlice(adapter, triggerAutoSync)(...a),
+      ...createZhiguanSlice(adapter, () => useAppStore.getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a),
+      ...createBreathSlice(adapter, triggerAutoSync)(...a),
     }),
     {
       name: 'egoless-do-mobile',

@@ -26,7 +26,7 @@ migrate((txApp) => {
       name,
       type: 'base',
       system: false,
-      schema: [
+      fields: [
         { name: 'user_id',  type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
         { name: idField,    type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
         { name: 'data',     type: 'json', required: false, options: { maxSize: 5000000 } },

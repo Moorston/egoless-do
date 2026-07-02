@@ -92,10 +92,19 @@ export function useSync() {
         graceHistory: 'grace', thoughtTrails: 'thoughtTrail',
         trailNotes: 'trailNote', reflectionLinks: 'reflectionLink',
         checkinReviews: 'checkinReview',
+        bodyGoals: 'bodyGoal', bodyPlans: 'bodyPlan',
+        weightRecords: 'weightRecord', bodyCheckins: 'bodyCheckin',
+        sleepHistory: 'sleep', giveHistory: 'give',
+        motivationLog: 'motivationEntry', customWuxingMaps: 'customWuxing',
+        visions: 'vision', visionPractices: 'visionPractice', dedications: 'dedication',
+        mantraDefs: 'mantraDef', mantraSessions: 'mantraSession',
+        readingSessions: 'sutraReading',
+        fearEntries: 'fearEntry', courageEntries: 'courageEntry', achievements: 'fearAchievement',
+        breathHistory: 'breath', sessions: 'zhiguanSession',
       };
 
-      // Patch from applyServerChanges already contains store-mapped entities.
-      // Use them directly instead of re-reading from SQLite.
+      // Patch from applyServerChanges contains DELTA records (only changed items).
+      // Merge them into existing store arrays by id, rather than replacing.
       const storePatch: Partial<MobileStore> = {};
       const isStoreKey = (k: string) => !!STORE_KEY_TO_ENTITY[k];
       for (const [key, value] of Object.entries(patch)) {
@@ -106,7 +115,18 @@ export function useSync() {
         } else if (key === 'aiModels') {
           (storePatch as any).aiModels = value;
         } else if (isStoreKey(key) && Array.isArray(value)) {
-          (storePatch as any)[key] = value;
+          // Merge delta into existing array by id/date to prevent truncation
+          const existing = (useAppStore.getState() as any)[key];
+          if (Array.isArray(existing) && existing.length > 0) {
+            const map = new Map(existing.map((item: any) => [item.id ?? item.date, item]));
+            for (const item of value) {
+              const k = item?.id ?? item?.date;
+              if (k) map.set(k, item);
+            }
+            (storePatch as any)[key] = [...map.values()];
+          } else {
+            (storePatch as any)[key] = value;
+          }
         }
       }
 

@@ -30,8 +30,7 @@ export function useBreathAudio(opts: BreathAudioOptions) {
 
   useEffect(() => {
     setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
+      playsInSilentMode: true,
     }).catch(e => log.warn('setAudioMode failed', e));
   }, []);
 
@@ -53,6 +52,7 @@ export function useBreathAudio(opts: BreathAudioOptions) {
     if (!voiceEnabledRef.current) return;
     if (num === lastCountRef.current) return;
     lastCountRef.current = num;
+    Speech.stop();
     Speech.speak(String(num), { language: 'zh-CN', rate: 0.9 });
   }, []);
 
@@ -60,6 +60,7 @@ export function useBreathAudio(opts: BreathAudioOptions) {
     if (!voiceEnabledRef.current) return;
     const label = PHASE_LABELS[phaseType];
     if (label) {
+      Speech.stop();
       Speech.speak(label, { language: 'zh-CN', rate: 0.7 });
     }
   }, []);

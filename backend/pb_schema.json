@@ -1,41 +1,6 @@
 {
   "_collections": [
     {
-      "id": "checkins",
-      "name": "checkins",
-      "type": "base",
-      "fields": [
-        { "name": "user_id",     "type": "text",   "required": true },
-        { "name": "habit_type",  "type": "text",   "required": true },
-        { "name": "lat_blur",    "type": "number", "required": false },
-        { "name": "lng_blur",    "type": "number", "required": false },
-        { "name": "insight",     "type": "text",   "required": false, "max": 20 },
-        { "name": "checked_at",  "type": "date",   "required": true }
-      ],
-      "listRule":   "@request.auth.id != ''",
-      "viewRule":   "@request.auth.id != ''",
-      "createRule": "@request.auth.id != ''",
-      "updateRule": null,
-      "deleteRule": null
-    },
-    {
-      "id": "map_pins",
-      "name": "map_pins",
-      "type": "base",
-      "fields": [
-        { "name": "habit_type", "type": "text",   "required": true },
-        { "name": "lat",        "type": "number", "required": true },
-        { "name": "lng",        "type": "number", "required": true },
-        { "name": "insight",    "type": "text",   "required": false, "max": 20 },
-        { "name": "pinned_at",  "type": "date",   "required": true }
-      ],
-      "listRule":   "",
-      "viewRule":   "",
-      "createRule": "@request.auth.id != ''",
-      "updateRule": null,
-      "deleteRule": null
-    },
-    {
       "id": "published_minds",
       "name": "published_minds",
       "type": "base",
@@ -293,13 +258,13 @@
       "deleteRule": "@request.auth.id = user_id"
     },
     {
-      "id": "intents",
-      "name": "intents",
+      "id": "trail_notes",
+      "name": "trail_notes",
       "type": "base",
       "fields": [
         { "name": "user_id", "type": "text", "required": true },
-        { "name": "intent_id", "type": "text", "required": true },
-        { "name": "data", "type": "json", "required": false, "maxSize": 5000000 }
+        { "name": "note_id", "type": "text", "required": true },
+        { "name": "data",    "type": "json", "required": false, "maxSize": 5000000 }
       ],
       "listRule":   "@request.auth.id = user_id",
       "viewRule":   "@request.auth.id = user_id",
@@ -315,6 +280,321 @@
         { "name": "user_id", "type": "text", "required": true },
         { "name": "link_id", "type": "text", "required": true },
         { "name": "data", "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "ai_configs",
+      "name": "ai_configs",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",   "type": "text", "required": true },
+        { "name": "config_id", "type": "text", "required": true },
+        { "name": "data",      "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "checkin_reviews",
+      "name": "checkin_reviews",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",  "type": "text", "required": true },
+        { "name": "review_id", "type": "text", "required": true },
+        { "name": "data",     "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "body_goals",
+      "name": "body_goals",
+      "type": "base",
+      "fields": [
+        { "name": "user_id", "type": "text", "required": true },
+        { "name": "goal_id", "type": "text", "required": true },
+        { "name": "data",    "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "body_plans",
+      "name": "body_plans",
+      "type": "base",
+      "fields": [
+        { "name": "user_id", "type": "text", "required": true },
+        { "name": "plan_id", "type": "text", "required": true },
+        { "name": "data",    "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "weight_records",
+      "name": "weight_records",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",   "type": "text", "required": true },
+        { "name": "weight_id", "type": "text", "required": true },
+        { "name": "data",      "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "body_checkins",
+      "name": "body_checkins",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",    "type": "text", "required": true },
+        { "name": "checkin_id", "type": "text", "required": true },
+        { "name": "data",       "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "sleep_records",
+      "name": "sleep_records",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",  "type": "text", "required": true },
+        { "name": "sleep_id", "type": "text", "required": true },
+        { "name": "data",     "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "give_entries",
+      "name": "give_entries",
+      "type": "base",
+      "fields": [
+        { "name": "user_id", "type": "text", "required": true },
+        { "name": "give_id", "type": "text", "required": true },
+        { "name": "data",    "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "eating_motivations",
+      "name": "eating_motivations",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",       "type": "text", "required": true },
+        { "name": "motivation_id", "type": "text", "required": true },
+        { "name": "data",          "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "custom_wuxing_maps",
+      "name": "custom_wuxing_maps",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",  "type": "text", "required": true },
+        { "name": "wuxing_id", "type": "text", "required": true },
+        { "name": "data",     "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "visions",
+      "name": "visions",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",   "type": "text", "required": true },
+        { "name": "vision_id", "type": "text", "required": true },
+        { "name": "data",      "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "vision_practices",
+      "name": "vision_practices",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",     "type": "text", "required": true },
+        { "name": "practice_id", "type": "text", "required": true },
+        { "name": "data",        "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "dedications",
+      "name": "dedications",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",      "type": "text", "required": true },
+        { "name": "dedication_id", "type": "text", "required": true },
+        { "name": "data",         "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "mantra_defs",
+      "name": "mantra_defs",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",  "type": "text", "required": true },
+        { "name": "mantra_id", "type": "text", "required": true },
+        { "name": "data",     "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "mantra_sessions",
+      "name": "mantra_sessions",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",    "type": "text", "required": true },
+        { "name": "session_id", "type": "text", "required": true },
+        { "name": "data",       "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "sutra_reading_sessions",
+      "name": "sutra_reading_sessions",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",    "type": "text", "required": true },
+        { "name": "reading_id", "type": "text", "required": true },
+        { "name": "data",       "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "fear_entries",
+      "name": "fear_entries",
+      "type": "base",
+      "fields": [
+        { "name": "user_id", "type": "text", "required": true },
+        { "name": "fear_id", "type": "text", "required": true },
+        { "name": "data",    "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "courage_entries",
+      "name": "courage_entries",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",    "type": "text", "required": true },
+        { "name": "courage_id", "type": "text", "required": true },
+        { "name": "data",       "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "fear_achievements",
+      "name": "fear_achievements",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",       "type": "text", "required": true },
+        { "name": "achievement_id", "type": "text", "required": true },
+        { "name": "data",          "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "zhiguan_sessions",
+      "name": "zhiguan_sessions",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",    "type": "text", "required": true },
+        { "name": "zhiguan_id", "type": "text", "required": true },
+        { "name": "data",       "type": "json", "required": false, "maxSize": 5000000 }
+      ],
+      "listRule":   "@request.auth.id = user_id",
+      "viewRule":   "@request.auth.id = user_id",
+      "createRule": "@request.auth.id = user_id",
+      "updateRule": "@request.auth.id = user_id",
+      "deleteRule": "@request.auth.id = user_id"
+    },
+    {
+      "id": "breath_records",
+      "name": "breath_records",
+      "type": "base",
+      "fields": [
+        { "name": "user_id",  "type": "text", "required": true },
+        { "name": "breath_id", "type": "text", "required": true },
+        { "name": "data",     "type": "json", "required": false, "maxSize": 5000000 }
       ],
       "listRule":   "@request.auth.id = user_id",
       "viewRule":   "@request.auth.id = user_id",

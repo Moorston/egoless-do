@@ -1,14 +1,12 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Play } from 'lucide-react-native';
+import { View } from 'react-native';
 import { useAppStore } from '../../../store/useAppStore';
-import { useT, useTheme, PrimaryButton } from '../../../components/UI';
+import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { ALL_SPORTS, FONT_TITLE, type BodyGoal, type BodyPlan } from '@egoless-do/core';
+import { ALL_SPORTS, type AgeBracket, type BodyGoal, type BodyPlan } from '@egoless-do/core';
 import BodyProfileCard from './BodyProfileCard';
 import GoalCard from './GoalCard';
-import PlanCard from './PlanCard';
-import WeeklyExecCard from './WeeklyExecCard';
+import BodyWeekPlanCard from './BodyWeekPlanCard';
 import BodyAwarenessCard from './BodyAwarenessCard';
 import WeightTrendChart from './WeightTrendChart';
 import AssessmentModal from './modals/AssessmentModal';
@@ -16,6 +14,7 @@ import GoalEditModal from './modals/GoalEditModal';
 import PlanEditModal from './modals/PlanEditModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';
 import WeightRecordModal from './modals/WeightRecordModal';
+import { useTodayPlan } from './hooks/useTodayPlan';
 
 interface DashboardProps {
   onFlowStart?: () => void;
@@ -27,6 +26,8 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
   const T = useT();
   const store = useAppStore();
   const profile = store.userProfile ?? {};
+  const { todayPlan } = useTodayPlan();
+
   const [showAssessment, setShowAssessment] = useState(false);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
   const [showPlanEdit, setShowPlanEdit] = useState(false);
@@ -35,10 +36,6 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
 
   const activeGoal = useMemo(() => (store.bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [store.bodyGoals]);
   const activePlans = useMemo(() => (store.bodyPlans ?? []).filter((p: BodyPlan) => !p.deleted), [store.bodyPlans]);
-
-  // Today's plan for checkin context
-  const todayWeekday = new Date().getDay() || 7; // 1=Mon..7=Sun
-  const todayPlan = useMemo(() => activePlans.find(p => p.weekday === todayWeekday), [activePlans, todayWeekday]);
 
   const handleSaveAssessment = useCallback((text: string, tags: string[]) => {
     store.updateUserProfile({ selfAssessment: text, bodyTags: tags });
@@ -78,35 +75,36 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
     store.addWeight(data);
   }, [store]);
 
-  return (
-    <>
-      <BodyProfileCard TH={TH} T={T} profile={profile} onEditAssessment={() => setShowAssessment(true)} onRecordWeight={() => setShowWeightRecord(true)} />
+  const handlePickAgeBracket = useCallback((bracket: AgeBracket) => {
+    store.updateUserProfile({ ageBracket: bracket });
+  }, [store]);
 
-      {/* Start Flow Button */}
-      {onFlowStart && (
-        <TouchableOpacity
-          onPress={onFlowStart}
-          activeOpacity={0.85}
-          style={{
-            backgroundColor: '#f59e0b', borderRadius: 16, padding: 16, marginBottom: 16,
-            flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
-          }}
-        >
-          <Play size={20} color="#fff" />
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('bodyStartFlow')}</Text>
-        </TouchableOpacity>
-      )}
+  return (
+    <View>
+      <BodyProfileCard
+        TH={TH} T={T}
+        profile={profile}
+        onEditAssessment={() => setShowAssessment(true)}
+        onRecordWeight={() => setShowWeightRecord(true)}
+        onPickAgeBracket={handlePickAgeBracket}
+      />
 
       <BodyAwarenessCard TH={TH} T={T} checkins={store.bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />
       <GoalCard TH={TH} T={T} goal={activeGoal} profile={profile} onEdit={() => setShowGoalEdit(true)} />
+      <BodyWeekPlanCard
+        TH={TH} T={T}
+        plans={activePlans}
+        exerciseLog={store.exerciseLog ?? []}
+        onEdit={() => setShowPlanEdit(true)}
+        onPressSport={handlePressSport}
+      />
       <WeightTrendChart TH={TH} T={T} weightRecords={store.weightRecords ?? []} />
-      <PlanCard TH={TH} T={T} plans={activePlans} onEdit={() => setShowPlanEdit(true)} onPressSport={handlePressSport} />
-      <WeeklyExecCard TH={TH} T={T} plans={activePlans} exerciseLog={store.exerciseLog ?? []} />
+
       <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
       <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
       <PlanEditModal visible={showPlanEdit} TH={TH} T={T} plans={activePlans} onClose={() => setShowPlanEdit(false)} onSave={handleSavePlans} />
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
       <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight} currentBodyFat={profile.bodyFat} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
-    </>
+    </View>
   );
 }

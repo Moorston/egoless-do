@@ -113,6 +113,22 @@ export default function PreceptScreen() {
     setShowAddModal(false);
   }, [customName, customGoal, customDays, customType, store]);
 
+  // ── Batch check/uncheck all ──
+  const someUnchecked = preceptHabits.some(h => !(h.checkedDates ?? []).includes(today));
+  const someChecked = preceptHabits.some(h => (h.checkedDates ?? []).includes(today));
+
+  const handleCheckAll = useCallback(() => {
+    preceptHabits.forEach(h => {
+      if (!(h.checkedDates ?? []).includes(today)) store.checkinHabit(h.id, today);
+    });
+  }, [preceptHabits, today, store]);
+
+  const handleUncheckAll = useCallback(() => {
+    preceptHabits.forEach(h => {
+      if ((h.checkedDates ?? []).includes(today)) store.checkinHabit(h.id, today);
+    });
+  }, [preceptHabits, today, store]);
+
   const renderPreceptCard = (habit: typeof preceptHabits[0]) => {
     const displayName = getPreceptDisplayName(habit.name);
     const type = getPreceptType(habit.name);
@@ -165,10 +181,11 @@ export default function PreceptScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Precept" />
+      <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('preceptSubtitle')}</Text>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
 
         {/* Stats Card */}
-        <View style={[styles.statsCard, { borderColor: `${TH.primary}30` }]}>
+        <View style={[styles.statsCard, { borderColor: '#F59E0B30' }]}>
           <View style={styles.statsHeader}>
             <Shield size={20} color="#F59E0B" />
             <Text style={[styles.statsTitle, { color: TH.text }]}>{T('preceptTitle') || '持戒清净'}</Text>
@@ -189,9 +206,33 @@ export default function PreceptScreen() {
             </View>
             <View style={styles.statItem}>
               <Text style={[styles.statValue, { color: TH.text }]}>{stats.todayDone}/{stats.total}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>今日</Text>
+              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptToday')}</Text>
             </View>
           </View>
+
+          {/* Batch action buttons */}
+          {preceptHabits.length > 0 && (someUnchecked || someChecked) && (
+            <View style={{ flexDirection: 'row', gap: 10, marginTop: 14, paddingTop: 12, borderTopWidth: 1, borderTopColor: `${TH.border}30` }}>
+              {someUnchecked && (
+                <TouchableOpacity
+                  onPress={handleCheckAll}
+                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#10B98115', borderWidth: 1, borderColor: '#10B98130' }}
+                >
+                  <Check size={16} color="#10B981" />
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10B981' }}>{T('preceptBatchDone')}</Text>
+                </TouchableOpacity>
+              )}
+              {someChecked && (
+                <TouchableOpacity
+                  onPress={handleUncheckAll}
+                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#EF444415', borderWidth: 1, borderColor: '#EF444430' }}
+                >
+                  <X size={16} color="#EF4444" />
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>{T('preceptBatchUndo')}</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
         </View>
 
         {/* Avoid section */}
@@ -214,7 +255,7 @@ export default function PreceptScreen() {
         {preceptHabits.length === 0 && (
           <View style={[styles.emptyCard, { borderColor: `${TH.border}40` }]}>
             <Shield size={40} color={TH.sub} />
-            <Text style={[styles.emptyText, { color: TH.sub }]}>还没有戒条，从下方添加开始</Text>
+            <Text style={[styles.emptyText, { color: TH.sub }]}>{T('preceptEmptyHint')}</Text>
           </View>
         )}
 
@@ -253,7 +294,7 @@ export default function PreceptScreen() {
       </ScrollView>
 
       {/* Violation Modal */}
-      <Modal visible={showViolateModal} animationType="slide" presentationStyle="pageSheet">
+      <Modal visible={showViolateModal} animationType="fade">
         <View style={[styles.modalContainer, { backgroundColor: TH.bg }]}>
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, { color: TH.text }]}>🚫 {violateHabitName} — {T('preceptViolated') || '未做到'}</Text>
@@ -319,7 +360,7 @@ export default function PreceptScreen() {
           </View>
           <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
             {/* Preset templates */}
-            <Text style={[styles.modalLabel, { color: '#EF4444' }]}>止持模板</Text>
+            <Text style={[styles.modalLabel, { color: '#EF4444' }]}>{'🚫 ' + T('preceptTypeAvoid')}</Text>
             <View style={styles.triggerRow}>
               {PRECEPT_AVOID_PRESETS.map(p => {
                 const prefix = PRECEPT_PREFIX_AVOID;
@@ -341,7 +382,7 @@ export default function PreceptScreen() {
               })}
             </View>
 
-            <Text style={[styles.modalLabel, { color: '#10B981', marginTop: 12 }]}>作持模板</Text>
+            <Text style={[styles.modalLabel, { color: '#10B981', marginTop: 12 }]}>{'✨ ' + T('preceptTypePractice')}</Text>
             <View style={styles.triggerRow}>
               {PRACTICE_PRESETS.map(p => {
                 const prefix = PRECEPT_PREFIX_PRACTICE;
@@ -376,7 +417,7 @@ export default function PreceptScreen() {
                   onPress={() => setCustomType(t)}
                 >
                   <Text style={{ color: customType === t ? '#fff' : TH.primary, fontSize: FONT_BODY, fontWeight: '600' }}>
-                    {t === 'avoid' ? '🚫 止持' : '✨ 作持'}
+                    {t === 'avoid' ? T('preceptTypeAvoid') : T('preceptTypePractice')}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -408,7 +449,7 @@ export default function PreceptScreen() {
               onPress={handleAddCustom}
             >
               <Check size={18} color="#fff" />
-              <Text style={styles.saveBtnText}>添加</Text>
+              <Text style={styles.saveBtnText}>{T('preceptAddCustom')}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>

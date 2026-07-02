@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput, Alert,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
@@ -9,12 +9,12 @@ import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
-import type { ItemForm, CheckinFrequency } from '@egoless-do/core';
+import type { ItemForm, CheckinFrequency, Vision } from '@egoless-do/core';
 import { LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 import { Card, useTheme, useT, PrimaryButton, OutlineButton, ThemedInput } from '../../components/UI';
 import DatePickerModal from '../../components/DatePickerModal';
 import DateRangePickerModal from '../../components/DateRangePickerModal';
-import { ChevronLeft, ChevronDown, ChevronRight, Calendar } from 'lucide-react-native';
+import { ChevronLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react-native';
 
 function FrequencyNumberInput({ value, prefix, suffix, min, max, editable, inputStyle, onCommit }: {
   value: number; prefix: string; suffix: string; min: number; max: number; editable: boolean; inputStyle: object; onCommit: (n: number) => void;
@@ -57,6 +57,8 @@ export default function PlanCreateScreen() {
   const [slogan, setSlogan] = useState(existingPlan?.slogan ?? '');
   const [startDate, setStartDate] = useState(existingPlan?.startDate ?? '');
   const [endDate, setEndDate] = useState(existingPlan?.endDate ?? '');
+  const [visionId, setVisionId] = useState<string | undefined>(existingPlan?.visionId);
+  const [showVisionPicker, setShowVisionPicker] = useState(false);
   const [items, setItems] = useState<ItemForm[]>(() => {
     const baseItems = existingItems.map(i => ({
       id: i.id, name: i.name, description: i.description,
@@ -91,6 +93,16 @@ export default function PlanCreateScreen() {
   const isEdit = !!existingPlan;
   const isActive = existingPlan ? isPlanActive(existingPlan.status) : false;
 
+  // Vision
+  const selectedVision = useMemo(() =>
+    visionId ? (store.visions ?? []).find((v: Vision) => v.id === visionId && !v.deleted) : null,
+    [store.visions, visionId]
+  );
+  const activeVisions = useMemo(() =>
+    (store.visions ?? []).filter((v: Vision) => !v.deleted && v.status === 'active'),
+    [store.visions]
+  );
+
   // Auto-adjust item dates when plan dates change
   useEffect(() => {
     if (!startDate && !endDate) return;
@@ -122,7 +134,7 @@ export default function PlanCreateScreen() {
       }
     }
     if (isEdit && planId) {
-      store.updatePlan(planId, { name, goal, slogan, startDate, endDate });
+      store.updatePlan(planId, { name, goal, slogan, startDate, endDate, visionId });
       const existingIds = new Set(existingItems.map(i => i.id));
       const currentIds = new Set(items.map(i => i.id));
       // Delete removed existing items
@@ -149,7 +161,7 @@ export default function PlanCreateScreen() {
         }
       });
     } else {
-      const newPlanId = store.addPlan({ name, goal, slogan, startDate, endDate });
+      const newPlanId = store.addPlan({ name, goal, slogan, startDate, endDate, visionId });
       if (newPlanId) {
         items.forEach((item, idx) => {
           store.addPlanItem({
@@ -221,6 +233,33 @@ export default function PlanCreateScreen() {
             style={[inputStyle, { marginBottom: errors.name ? 4 : 12, borderColor: errors.name ? COLORS.RED : TH.border, ...(isActive ? { opacity: 0.5 } : {}) }]}
           />
           {errors.name ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginBottom: 8 }}>{errors.name}</Text> : null}
+
+          {/* Vision Selector */}
+          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planLinkVision')}</Text>
+          {selectedVision ? (
+            <View style={{ backgroundColor: TH.card, borderRadius: 10, padding: 12, marginBottom: 12, borderWidth: 1, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6', fontWeight: '600' }}>
+                  {selectedVision.type === 'lifetime' ? '⭐' : selectedVision.type === 'long' ? '🟣' : '🟢'} {T(`vow${selectedVision.type === 'lifetime' ? 'Lifetime' : selectedVision.type === 'long' ? 'Long' : 'Short'}`)}
+                </Text>
+                <Text style={{ fontSize: FONT_BODY, color: TH.text, marginTop: 2 }} numberOfLines={1}>{selectedVision.text}</Text>
+              </View>
+              <TouchableOpacity onPress={() => setShowVisionPicker(true)} style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6, backgroundColor: `${TH.primary}15` }}>
+                <Text style={{ fontSize: FONT_BADGE, color: TH.primary, fontWeight: '600' }}>{T('planChangeVision')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setVisionId(undefined)} style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6, backgroundColor: '#EF444415' }}>
+                <Text style={{ fontSize: FONT_BADGE, color: '#EF4444', fontWeight: '600' }}>{T('planUnlinkVision')}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={() => setShowVisionPicker(true)}
+              style={[inputStyle, { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }]}
+            >
+              <Text style={{ fontSize: FONT_BADGE, color: TH.primary, fontWeight: '600' }}>🔗</Text>
+              <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('planSelectVision')}</Text>
+            </TouchableOpacity>
+          )}
 
           <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planGoal')} *</Text>
           <TextInput
@@ -650,6 +689,53 @@ export default function PlanCreateScreen() {
             setDatePicker(null);
           }}
         />
+      )}
+
+      {/* Vision Picker Modal */}
+      {showVisionPicker && (
+        <Modal visible transparent animationType="fade" onRequestClose={() => setShowVisionPicker(false)}>
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
+            <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, maxHeight: '80%' }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('planSelectVision')}</Text>
+                <TouchableOpacity onPress={() => setShowVisionPicker(false)}><X size={20} color={TH.sub} /></TouchableOpacity>
+              </View>
+              <ScrollView>
+                {activeVisions.length === 0 ? (
+                  <View style={{ alignItems: 'center', padding: 24 }}>
+                    <Text style={{ fontSize: 40, marginBottom: 8 }}>🎯</Text>
+                    <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('vowNoVision')}</Text>
+                  </View>
+                ) : activeVisions.map((v: Vision) => {
+                  const typeColor = v.type === 'lifetime' ? '#F59E0B' : v.type === 'long' ? '#8B5CF6' : '#10B981';
+                  const typeLabel = v.type === 'lifetime' ? '终极愿景' : v.type === 'long' ? '长期愿景' : '短期愿景';
+                  return (
+                    <TouchableOpacity
+                      key={v.id}
+                      onPress={() => {
+                        setVisionId(v.id);
+                        if (!goal || goal.trim() === '') setGoal(v.text);
+                        setShowVisionPicker(false);
+                      }}
+                      style={{
+                        padding: 14, borderRadius: 12, marginBottom: 8,
+                        backgroundColor: visionId === v.id ? `${typeColor}15` : TH.card,
+                        borderWidth: 1, borderColor: visionId === v.id ? typeColor : TH.border,
+                      }}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                        <Text style={{ fontSize: FONT_BADGE, color: typeColor, fontWeight: '600' }}>
+                          {v.type === 'lifetime' ? '⭐' : v.type === 'long' ? '🟣' : '🟢'} {typeLabel}
+                        </Text>
+                      </View>
+                      <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 20 }}>{v.text}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       )}
     </SafeAreaView>
   );

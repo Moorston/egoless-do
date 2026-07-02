@@ -7,6 +7,7 @@ import type {
 } from '../types';
 import { uid, dateStr, activeOnly, parseDateParts, addDays } from '../utils';
 import { COLORS } from '../constants';
+import { computeMaxFastingHours, computeMaxExerciseMinutes } from './module-state';
 
 // ── Constants ─────────────────────────────────────────────────
 
@@ -230,7 +231,9 @@ export function shouldShowToday(
       const ws = weekStart(today);
       const we = addDays(ws, 6);
       const doneThisWeek = checkins.filter(c => c.done && !c.deleted && c.date >= ws && c.date <= we).length;
-      return doneThisWeek < freq.target;
+      // Keep visible today if already checked in (prevents task from disappearing after completion)
+      const hasTodayCheckin = checkins.some(c => c.date === today && !c.deleted);
+      return hasTodayCheckin || doneThisWeek < freq.target;
     }
 
     case 'weekly_fixed':
@@ -242,7 +245,9 @@ export function shouldShowToday(
       const ms = monthStart(today);
       const me = addDays(addDays(ms, daysInMonth(ms) - 1), 0);
       const doneThisMonth = checkins.filter(c => c.done && !c.deleted && c.date >= ms && c.date <= me).length;
-      return doneThisMonth < freq.target;
+      // Keep visible today if already checked in (prevents task from disappearing after completion)
+      const hasTodayCheckin = checkins.some(c => c.date === today && !c.deleted);
+      return hasTodayCheckin || doneThisMonth < freq.target;
     }
 
     case 'monthly_fixed':
@@ -280,6 +285,7 @@ export function isPlanDelayed(plan: Plan, today?: string): boolean {
 export function addPlan(plans: Plan[], form: {
   name: string; goal: string; slogan?: string;
   startDate: string; endDate: string;
+  visionId?: string;
 }, today?: string): { plans: Plan[]; planId: string } | null {
   const id = uid();
   const now = today ?? dateStr();
@@ -299,6 +305,7 @@ export function addPlan(plans: Plan[], form: {
     endDate: form.endDate,
     status,
     progress: 0,
+    visionId: form.visionId,
     updatedAt: Date.now(),
     deleted: false,
   };
@@ -760,27 +767,9 @@ export function syncPlanItemsFromModules(
   for (const h of state.habits) {
     if (!h.deleted) habitById.set(h.id, (h.checkedDates ?? []).includes(today));
   }
-  // Pre-compute max fasting hours and exercise minutes for today (single pass)
-  let maxFastingHours = 0;
-  for (const f of state.fastingHistory) {
-    if (!f.endedAt) continue;
-    if (dateStr(new Date(f.endedAt)) === today) {
-      maxFastingHours = Math.max(maxFastingHours, (f.endedAt - f.startedAt) / 3600000);
-    }
-  }
-  if (state.activeFasting != null) {
-    const activeStart = dateStr(new Date(state.activeFasting.startedAt));
-    if (activeStart === today || activeStart < today) {
-      maxFastingHours = Math.max(maxFastingHours, (Date.now() - state.activeFasting.startedAt) / 3600000);
-    }
-  }
-  let maxExerciseMinutes = 0;
-  for (const e of state.exerciseLog) {
-    if (e.deleted) continue;
-    if (dateStr(new Date(e.timestamp)) === today) {
-      maxExerciseMinutes = Math.max(maxExerciseMinutes, e.durationSec / 60);
-    }
-  }
+  // Pre-compute max fasting hours and exercise minutes using shared helpers
+  const maxFastingHours = computeMaxFastingHours(state.fastingHistory, state.activeFasting, today);
+  const maxExerciseMinutes = computeMaxExerciseMinutes(state.exerciseLog, today);
   const fastingDoneByTarget = (targetHours: number) => maxFastingHours >= targetHours;
   const exerciseDoneByMin = (minMinutes: number) => maxExerciseMinutes >= minMinutes;
 

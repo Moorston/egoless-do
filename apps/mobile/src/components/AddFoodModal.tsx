@@ -6,9 +6,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
 import { useTheme, useT, ThemedInput } from './UI';
-import { COLORS, FOOD_PRESETS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK } from '@egoless-do/core';
+import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr } from '@egoless-do/core';
+import type { WuxingElement, FlavorType, FoodWuxingItem } from '@egoless-do/core';
 import {
-  Star, ChevronLeft, X,
+  Star, ChevronLeft, X, Search,
   Wheat, Beef, Leaf, Apple, CupSoda, Cookie, Utensils,
 } from 'lucide-react-native';
 
@@ -34,13 +35,32 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   const [search, setSearch]     = useState('');
   const [tab, setTab]           = useState(0);
   const [showManual, setShowManual] = useState(false);
-  const [editing, setEditing]   = useState<{ name: string; cal: number; note: string } | null>(null);
+  const [editing, setEditing]   = useState<{ name: string; cal: number; note: string; wuxing?: FoodWuxingItem | null } | null>(null);
   const [fn, setFn]   = useState('');
   const [fc, setFc]   = useState('');
   const [fnote, setFnote] = useState('');
   const [portion, setPortion] = useState(1);
   const [toast, setToast] = useState('');
+  const [motivation, setMotivation] = useState<string>('');
   const toastAnim = useRef(new Animated.Value(0)).current;
+
+  // Wuxing search results (searches WUXING_MAP by name/alias)
+  const wuxingResults = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return [];
+    return WUXING_MAP.filter(item =>
+      item.name.toLowerCase().includes(q) ||
+      item.nameEn.toLowerCase().includes(q) ||
+      (item.aliases ?? []).some(a => a.toLowerCase().includes(q))
+    ).slice(0, 20);
+  }, [search]);
+
+  const ELEMENT_COLORS: Record<WuxingElement, string> = {
+    wood: '#10B981', fire: '#EF4444', earth: '#F59E0B', metal: '#9CA3AF', water: '#3B82F6',
+  };
+  const FLAVOR_LABELS: Record<FlavorType, string> = {
+    sour: '酸', bitter: '苦', sweet: '甘', pungent: '辛', salty: '咸',
+  };
 
   const allTabs = useMemo(() => [
     { key: 'my', label: T('foodMyPresets'), iconComp: Star as React.ComponentType<any>, items: [] as { name: string; nameEn: string; cal: number; unit: string; unitEn: string }[] },
@@ -68,6 +88,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   const resetAll = useCallback(() => {
     setSearch(''); setTab(0); setShowManual(false);
     setEditing(null); setFn(''); setFc(''); setFnote(''); setPortion(1);
+    setMotivation('');
   }, []);
 
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -84,9 +105,10 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   }, [toastAnim]);
 
   // Tap preset → open edit area
-  const handleSelectPreset = useCallback((name: string, cal: number) => {
-    setEditing({ name, cal, note: '' });
+  const handleSelectPreset = useCallback((name: string, cal: number, wuxing?: FoodWuxingItem | null) => {
+    setEditing({ name, cal, note: '', wuxing });
     setPortion(1);
+    setMotivation('');
     setShowManual(false);
   }, []);
 
@@ -101,12 +123,43 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   const handleConfirmEdit = useCallback(() => {
     if (!editing) return;
     const totalCal = Math.round(editing.cal * portion);
-    useAppStore.getState().addFood({ name: editing.name, calories: totalCal, note: editing.note, timestamp: Date.now() });
+    const store = useAppStore.getState();
+    store.addFood({ name: editing.name, calories: totalCal, note: editing.note, timestamp: Date.now() });
+    // Save motivation if selected
+    if (motivation) {
+      const todayFoods = (store.foodLog ?? []).filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === dateStr());
+      const lastFood = todayFoods[0]; // most recent
+      if (lastFood) {
+        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as any }); // TODO: type properly when EatingMotivation import available
+      }
+    }
     showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);
     setEditing(null);
     setPortion(1);
+    setMotivation('');
     onFoodAdded?.();
-  }, [editing, portion, T, showToast, onFoodAdded]);
+  }, [editing, portion, motivation, T, showToast, onFoodAdded]);
+
+  // Confirm and continue (save + reset for next entry)
+  const handleConfirmAndContinue = useCallback(() => {
+    if (!editing) return;
+    const totalCal = Math.round(editing.cal * portion);
+    const store = useAppStore.getState();
+    store.addFood({ name: editing.name, calories: totalCal, note: editing.note, timestamp: Date.now() });
+    if (motivation) {
+      const todayFoods = store.foodLog.filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === dateStr());
+      const lastFood = todayFoods[0];
+      if (lastFood) {
+        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as any });
+      }
+    }
+    showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);
+    // Reset for next entry but keep modal open
+    setEditing(null);
+    setPortion(1);
+    setMotivation('');
+    onFoodAdded?.();
+  }, [editing, portion, motivation, T, showToast, onFoodAdded]);
 
   // Confirm manual input
   const handleConfirmManual = useCallback(() => {
@@ -184,9 +237,39 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
             </View>
           )}
 
-          {/* Food list */}
+          {/* Food list - wuxing search results when searching, preset list otherwise */}
           {!editing && !showManual && (
             <ScrollView style={{ flex: 1, paddingHorizontal: 20 }} contentContainerStyle={{ paddingBottom: 12 }} keyboardShouldPersistTaps="handled">
+              {/* Wuxing search results */}
+              {search.trim() && wuxingResults.length > 0 && (
+                <View style={{ marginBottom: 12 }}>
+                  <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+                    {T('dietWuxingLookup') || '五行食材'} ({wuxingResults.length})
+                  </Text>
+                  {wuxingResults.map(item => (
+                    <TouchableOpacity key={item.foodKey}
+                      onPress={() => handleSelectPreset(item.name, 0, item)}
+                      style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{item.name}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                          <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[item.primaryElement]}20` }}>
+                            <Text style={{ fontSize: 10, color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
+                              {FLAVOR_LABELS[item.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[item.primaryElement]?.label}
+                            </Text>
+                          </View>
+                          <Text style={{ fontSize: 10, color: TH.sub }}>
+                            {item.nature === 'hot' ? '热' : item.nature === 'warm' ? '温' : item.nature === 'cool' ? '凉' : item.nature === 'cold' ? '寒' : '平'}
+                          </Text>
+                          <Text style={{ fontSize: 10, color: TH.sub }}>{item.effect}</Text>
+                        </View>
+                      </View>
+                      <Search size={16} color={TH.sub} />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+              {/* Preset food items */}
               {filteredItems.map((f, i) => (
                 <TouchableOpacity key={`${f.name}-${i}`}
                   onPress={() => handleSelectPreset(f.name, f.cal)}
@@ -202,7 +285,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
                   <Text style={{ color: P, fontSize: FONT_BODY, fontWeight: '600' }}>{f.cal} kcal</Text>
                 </TouchableOpacity>
               ))}
-              {filteredItems.length === 0 && (
+              {filteredItems.length === 0 && !search.trim() && (
                 <Text style={{ color: TH.sub, textAlign: 'center', paddingVertical: 32, fontSize: FONT_EMPTY }}>
                   {tab === allTabs.length - 1 ? T('foodEmpty') : T('foodNoHistory')}
                 </Text>
@@ -216,32 +299,77 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
               {/* Food name + calories */}
               <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12 }}>
                 <Text style={{ fontSize: FONT_BACK, fontWeight: '700', color: TH.text, marginBottom: 4 }}>{editing.name}</Text>
-                <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('foodPerUnit')}: {editing.cal} kcal</Text>
+                {editing.cal > 0 && (
+                  <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('foodPerUnit')}: {editing.cal} kcal</Text>
+                )}
+                {/* Wuxing info */}
+                {editing.wuxing && (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                    <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, backgroundColor: `${ELEMENT_COLORS[editing.wuxing.primaryElement]}20` }}>
+                      <Text style={{ fontSize: FONT_SUB, color: ELEMENT_COLORS[editing.wuxing.primaryElement], fontWeight: '600' }}>
+                        {FLAVOR_LABELS[editing.wuxing.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[editing.wuxing.primaryElement]?.label}
+                      </Text>
+                    </View>
+                    <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                      {editing.wuxing.nature === 'hot' ? '热性' : editing.wuxing.nature === 'warm' ? '温性' : editing.wuxing.nature === 'cool' ? '凉性' : editing.wuxing.nature === 'cold' ? '寒性' : '平性'}
+                    </Text>
+                    {editing.wuxing.organs?.length > 0 && (
+                      <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>归{editing.wuxing.organs.join('/')}经</Text>
+                    )}
+                  </View>
+                )}
+                {editing.wuxing?.effect && (
+                  <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{editing.wuxing.effect}</Text>
+                )}
               </View>
 
-              {/* Portion adjustment */}
-              <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 8 }}>{T('foodPortion')}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                {[0.5, 1, 1.5, 2].map(p => (
-                  <TouchableOpacity key={p} onPress={() => setPortion(p)}
+              {/* Portion adjustment (only for preset foods with calories) */}
+              {editing.cal > 0 && (
+                <>
+                  <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 8 }}>{T('foodPortion')}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                    {[0.5, 1, 1.5, 2].map(p => (
+                      <TouchableOpacity key={p} onPress={() => setPortion(p)}
+                        style={{
+                          flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: 'center',
+                          backgroundColor: portion === p ? P : TH.card,
+                          borderWidth: portion === p ? 0 : 1, borderColor: TH.border,
+                        }}>
+                        <Text style={{ color: portion === p ? '#fff' : TH.text, fontWeight: portion === p ? '700' : '400', fontSize: FONT_BODY }}>
+                          {p}份
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  {/* Total calories */}
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
+                    <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('foodTotalCal')}</Text>
+                    <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: COLORS.ORANGE }}>
+                      {Math.round(editing.cal * portion)} <Text style={{ fontSize: FONT_SUB, fontWeight: '400', color: TH.sub }}>kcal</Text>
+                    </Text>
+                  </View>
+                </>
+              )}
+
+              {/* Motivation (optional) */}
+              <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 8 }}>
+                {T('dietMarkMotivation') || '进食动机（可选）'}
+              </Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+                {EATING_MOTIVATIONS.map(m => (
+                  <TouchableOpacity key={m.key}
+                    onPress={() => setMotivation(motivation === m.key ? '' : m.key)}
                     style={{
-                      flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: 'center',
-                      backgroundColor: portion === p ? P : TH.card,
-                      borderWidth: portion === p ? 0 : 1, borderColor: TH.border,
+                      paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
+                      backgroundColor: motivation === m.key ? P : TH.card,
+                      borderWidth: 1, borderColor: motivation === m.key ? P : TH.border,
                     }}>
-                    <Text style={{ color: portion === p ? '#fff' : TH.text, fontWeight: portion === p ? '700' : '400', fontSize: FONT_BODY }}>
-                      {p}份
+                    <Text style={{ color: motivation === m.key ? '#fff' : TH.text, fontSize: FONT_SUB, fontWeight: '600' }}>
+                      {T(`dietMotivation${m.key.charAt(0).toUpperCase() + m.key.slice(1)}`) || m.key}
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </View>
-
-              {/* Total calories */}
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('foodTotalCal')}</Text>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: COLORS.ORANGE }}>
-                  {Math.round(editing.cal * portion)} <Text style={{ fontSize: FONT_SUB, fontWeight: '400', color: TH.sub }}>kcal</Text>
-                </Text>
               </View>
 
               {/* Note */}
@@ -263,13 +391,13 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
               </TouchableOpacity>
 
               <View style={{ flexDirection: 'row', gap: 10 }}>
+                <TouchableOpacity onPress={handleConfirmAndContinue}
+                  style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: P, alignItems: 'center' }}>
+                  <Text style={{ color: P, fontSize: FONT_BUTTON }}>保存并继续</Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={handleSavePreset}
                   style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: P, alignItems: 'center' }}>
                   <Text style={{ color: P, fontSize: FONT_BUTTON }}>{T('foodSavePreset')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setEditing(null); setPortion(1); }}
-                  style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                  <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>{T('commonCancel')}</Text>
                 </TouchableOpacity>
               </View>
             </ScrollView>

@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Flag, Target, Star, ChevronRight } from 'lucide-react-native';
-import type { Vision } from '@egoless-do/core';
+import { Flag, Target, Star, ChevronRight, ChevronDown } from 'lucide-react-native';
+import type { Vision, Plan, PlanItem, PlanItemStatus } from '@egoless-do/core';
 import { VISION_TIME_FRAMES, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import { ProgressBar } from '../../../components/UI';
 
@@ -14,11 +14,33 @@ interface Props {
   onEdit: (v: Vision) => void;
   onAchieve: (id: string) => void;
   onArchive: (id: string) => void;
+  onDelete?: (id: string) => void;
+  linkedPlans?: Plan[];
+  planItems?: PlanItem[];
 }
 
 const TYPE_ICON: Record<string, any> = { lifetime: Star, long: Flag, short: Target };
 
-export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onArchive }: Props) {
+const STATUS_ICON: Record<PlanItemStatus, { icon: string; color: string }> = {
+  completed: { icon: '✅', color: '#10B981' },
+  in_progress: { icon: '🔄', color: '#3B82F6' },
+  paused: { icon: '⏸', color: '#F59E0B' },
+  delayed: { icon: '⏰', color: '#EF4444' },
+  not_started: { icon: '□', color: '#9CA3AF' },
+  cancelled: { icon: '✕', color: '#9CA3AF' },
+};
+
+const STATUS_LABEL: Record<PlanItemStatus, string> = {
+  completed: '已完成',
+  in_progress: '进行中',
+  paused: '已暂停',
+  delayed: '已延期',
+  not_started: '未开始',
+  cancelled: '已取消',
+};
+
+export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onArchive, linkedPlans = [], planItems = [] }: Props) {
+  const [expanded, setExpanded] = useState(false);
   const Icon = TYPE_ICON[vision.type] ?? Flag;
   const typeColor = vision.type === 'lifetime' ? '#F59E0B' : vision.type === 'long' ? '#8B5CF6' : '#10B981';
 
@@ -28,9 +50,7 @@ export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onAr
     return tf ? T(tf.labelKey) : vision.timeFrame;
   }, [vision.timeFrame, T]);
 
-  const deadlineText = vision.deadline
-    ? vision.deadline
-    : null;
+  const deadlineText = vision.deadline ?? null;
 
   return (
     <View style={{
@@ -81,7 +101,7 @@ export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onAr
       </View>
 
       {/* Actions */}
-      <View style={{ flexDirection: 'row', gap: 8 }}>
+      <View style={{ flexDirection: 'row', gap: 8, marginBottom: linkedPlans.length > 0 ? 8 : 0 }}>
         {vision.status === 'active' && (
           <>
             <TouchableOpacity
@@ -107,22 +127,78 @@ export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onAr
           </>
         )}
         {vision.status === 'achieved' && (
-          <View style={{
-            paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6,
-            backgroundColor: '#10B98115',
-          }}>
+          <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: '#10B98115' }}>
             <Text style={{ fontSize: FONT_BADGE, color: '#10B981', fontWeight: '600' }}>{T('vowAchieved')}</Text>
           </View>
         )}
         {vision.status === 'archived' && (
-          <View style={{
-            paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6,
-            backgroundColor: `${TH.border}40`,
-          }}>
+          <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: `${TH.border}40` }}>
             <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('vowArchived')}</Text>
           </View>
         )}
       </View>
+
+      {/* Linked Plans - Collapsible */}
+      {linkedPlans.length > 0 && (
+        <View style={{ marginTop: 4 }}>
+          <TouchableOpacity
+            onPress={() => setExpanded(prev => !prev)}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6 }}
+          >
+            {expanded
+              ? <ChevronDown size={14} color={TH.sub} />
+              : <ChevronRight size={14} color={TH.sub} />}
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, fontWeight: '600' }}>
+              {T('vowLinkedPlans')} ({linkedPlans.length})
+            </Text>
+          </TouchableOpacity>
+
+          {expanded && linkedPlans.map(plan => {
+            const items = planItems.filter(i => i.planId === plan.id && !i.deleted);
+            const done = items.filter(i => i.status === 'completed').length;
+            const planPct = items.length > 0 ? Math.round((done / items.length) * 100) : 0;
+
+            return (
+              <View key={plan.id} style={{
+                backgroundColor: TH.bg, borderRadius: 12, padding: 12, marginTop: 6,
+                borderWidth: 1, borderColor: TH.border,
+              }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', flex: 1 }} numberOfLines={1}>
+                    📋 {plan.name}
+                  </Text>
+                  <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6', fontWeight: '600' }}>
+                    {planPct}%
+                  </Text>
+                </View>
+
+                {items.length > 0 && (
+                  <View style={{ gap: 6 }}>
+                    {items.sort((a, b) => a.order - b.order).map(item => {
+                      const st = STATUS_ICON[item.status] ?? STATUS_ICON.not_started;
+                      const itemPct = item.progress ?? 0;
+                      return (
+                        <View key={item.id} style={{ gap: 2 }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                            <Text style={{ fontSize: 12 }}>{st.icon}</Text>
+                            <Text style={{ fontSize: FONT_SUB, color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
+                            <Text style={{ fontSize: 10, color: st.color, fontWeight: '500' }}>{STATUS_LABEL[item.status] ?? ''}</Text>
+                          </View>
+                          {item.status !== 'not_started' && item.status !== 'cancelled' && (
+                            <View style={{ marginLeft: 22, height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2, overflow: 'hidden' }}>
+                              <View style={{ height: 4, width: `${itemPct}%`, backgroundColor: st.color, borderRadius: 2 }} />
+                            </View>
+                          )}
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 }

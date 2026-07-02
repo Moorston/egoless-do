@@ -26,9 +26,19 @@ mkdir -p "$BACKUP_DIR"
 echo "[Backup] Starting backup at $(date)"
 
 # ── Step 1: Authenticate ────────────────────────────────
+# Use jq if available for safe JSON construction, otherwise use heredoc
+if command -v jq &>/dev/null; then
+  AUTH_JSON=$(jq -n --arg id "$PB_ADMIN_EMAIL" --arg pw "$PB_ADMIN_PASSWORD" \
+    '{identity: $id, password: $pw}')
+else
+  AUTH_JSON=$(cat <<EOF
+{"identity":"${PB_ADMIN_EMAIL}","password":"${PB_ADMIN_PASSWORD}"}
+EOF
+)
+fi
 TOKEN=$(curl -s -X POST "${PB_URL}/api/collections/_superusers/auth-with-password" \
   -H "Content-Type: application/json" \
-  -d "{\"identity\":\"${PB_ADMIN_EMAIL}\",\"password\":\"${PB_ADMIN_PASSWORD}\"}" \
+  -d "$AUTH_JSON" \
   | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
 
 if [[ -z "$TOKEN" ]]; then

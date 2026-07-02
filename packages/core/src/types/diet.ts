@@ -6,8 +6,8 @@ import type { Syncable } from './shared';
 export type WuxingElement = 'wood' | 'fire' | 'earth' | 'metal' | 'water';
 export type FlavorType    = 'sour' | 'bitter' | 'sweet' | 'pungent' | 'salty';
 export type FoodNature    = 'hot' | 'warm' | 'neutral' | 'cool' | 'cold';
-export type OrganType     = 'liver' | 'heart' | 'spleen' | 'lung' | 'kidney';
-export type FoodCategory  = 'grain' | 'bean' | 'vegetable' | 'fruit' |
+export type OrganType     = 'liver' | 'heart' | 'spleen' | 'lung' | 'kidney' | 'stomach';
+export type FoodCategoryKey = 'grain' | 'bean' | 'vegetable' | 'fruit' |
                             'meat' | 'seafood' | 'seasoning' | 'other';
 
 // ── 进食动机 ──
@@ -28,7 +28,7 @@ export interface FoodWuxingItem {
   foodKey: string;
   name: string;
   nameEn: string;
-  category: FoodCategory;
+  category: FoodCategoryKey;
   isCommon: boolean;
   primaryFlavor: FlavorType;
   primaryElement: WuxingElement;

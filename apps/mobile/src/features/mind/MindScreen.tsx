@@ -370,6 +370,8 @@ export default function MindScreen() {
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Mind" />
 
+      <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('mindSubtitle')}</Text>
+
       {/* Tab 切换 */}
       <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 8, gap: 6 }}>
         {TABS.map(tab => {

@@ -4,7 +4,7 @@ migrate((txApp) => {
   const collection = txApp.findCollectionByNameOrId("global_checkins");
 
   // 添加 nickname 字段
-  collection.schema.addField(new SchemaField({
+  collection.fields.add(new Field({
     "system": false,
     "id": "nickname_field",
     "name": "nickname",
@@ -20,7 +20,7 @@ migrate((txApp) => {
   }));
 
   // 添加 city 字段
-  collection.schema.addField(new SchemaField({
+  collection.fields.add(new Field({
     "system": false,
     "id": "city_field",
     "name": "city",
@@ -35,16 +35,16 @@ migrate((txApp) => {
     }
   }));
 
-  // ⚠️  TEST-ONLY: public create rule. Production uses "@request.auth.id != ''"
-  collection.createRule = "";
+  // Production create rule: require authentication
+  collection.createRule = "@request.auth.id != \"\"";
 
   return txApp.save(collection);
 }, (db) => {
   
   const collection = txApp.findCollectionByNameOrId("global_checkins");
 
-  collection.schema.removeField("nickname_field");
-  collection.schema.removeField("city_field");
+  collection.fields.removeByName("nickname_field");
+  collection.fields.removeByName("city_field");
   collection.createRule = "@request.auth.id != \"\"";
 
   return txApp.save(collection);

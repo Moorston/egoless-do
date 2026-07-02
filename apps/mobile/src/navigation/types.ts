@@ -11,6 +11,7 @@ export type RootStackParamList = {
   MedCalendar: undefined;
   SleepHistory: undefined;
   PreceptHistory: undefined;
+  BreathHistory: undefined;
   GiveHistory: undefined;
   FoodLog: undefined;
   Grace: undefined;
@@ -40,6 +41,10 @@ export type RootStackParamList = {
   Insight: undefined;
   Review: { period: 'week' | 'month'; startDate: string; endDate: string } | undefined;
   StrategyLibrary: undefined;
+  MantraHistory: { mantraId?: string };
+  SutraHistory: { sutraId?: string };
+  Zhiguan: undefined;
+  ZhiguanHistory: undefined;
 };
 
 export type MainTabParamList = {

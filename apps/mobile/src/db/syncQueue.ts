@@ -2,7 +2,7 @@
 import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 import { openDatabase, withDbLock } from './schema';
-import { buildDeleteInStatement, buildSelectInStatement } from './sqlHelper';
+import { buildDeleteInStatement, buildSelectInStatement, SYNC_QUEUE_UPSERT_SQL } from './sqlHelper';
 
 const log = createLogger('DB');
 
@@ -42,16 +42,7 @@ export async function enqueueChange(
         log.warn(`Queue full (${MAX_QUEUE_SIZE}), evicted oldest item for ${entity}:${entityId}`);
       }
       await db.runAsync(
-        `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
-         VALUES (?, ?, ?, ?, ?, ?)
-         ON CONFLICT(entity, entity_id) DO UPDATE SET
-           operation = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.operation ELSE excluded.operation END,
-           payload = excluded.payload,
-           created_at = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.created_at ELSE excluded.created_at END,
-           status = CASE WHEN sync_queue.status = 'syncing' THEN 'syncing' ELSE 'pending' END,
-           retry_count = CASE WHEN sync_queue.status = 'syncing' THEN sync_queue.retry_count ELSE 0 END,
-           next_retry_at = 0,
-           last_error = NULL`,
+        SYNC_QUEUE_UPSERT_SQL,
         [entity, entityId, operation, JSON.stringify(payload), Date.now(), 'pending'],
       );
     });

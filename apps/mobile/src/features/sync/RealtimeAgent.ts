@@ -3,15 +3,14 @@ import { SYNC_ENTITIES, createLogger, SCHEMAS } from '@egoless-do/core';
 
 const log = createLogger('Realtime');
 
-const COLLECTION_MAP: Record<string, string> = {
-  habits: 'habit', mind_reflections: 'reflection', fasting_sessions: 'fasting',
-  food_entries: 'food', checkin_records: 'checkin', meditation_history: 'meditation',
-  user_profiles: 'profile', exercise_entries: 'exercise', plans: 'plan',
-  plan_items: 'planItem', plan_item_checkins: 'planItemCheckin',
-  daily_custom_todos: 'dailyCustomTodo', daily_todo_history: 'dailyTodoHistory',
-  grace_history: 'grace', thought_trails: 'thoughtTrail', trail_notes: 'trailNote',
-  reflection_links: 'reflectionLink', ai_configs: 'aiConfig', checkin_reviews: 'checkinReview',
-};
+// Dynamically generate reverse map: PB collection name → sync entity key
+// This stays in sync with entitySchemas.ts automatically
+const COLLECTION_MAP: Record<string, string> = Object.fromEntries(
+  (Object.keys(SCHEMAS) as Array<keyof typeof SCHEMAS>).map(k => [
+    SCHEMAS[k].pocketbase.collection,
+    k,
+  ]),
+);
 
 export interface RealtimeChangeEvent {
   type: 'record_created' | 'record_updated' | 'record_deleted';
@@ -67,11 +66,16 @@ export class RealtimeAgent {
         method: 'POST',
         headers: { Authorization: `Bearer ${this._token}` },
       }).catch(() => {
-        // Ping failed — connection is likely dead
-        if (!this._destroyed) {
-          this._onStatus?.(false);
-          this._scheduleReconnect();
+        // Ping failed — but only reconnect if SSE is actually dead
+        if (this._destroyed) return;
+        if (this._es && (this._es as any).readyState === 1) { // 1 = EventSource.OPEN
+          // SSE is still healthy; ping failure is transient (mobile network blip)
+          log.debug('Ping failed but SSE still open, ignoring');
+          return;
         }
+        log.warn('Ping failed and SSE is not open, triggering reconnect');
+        this._onStatus?.(false);
+        this._scheduleReconnect();
       });
     }, 30_000);
   }

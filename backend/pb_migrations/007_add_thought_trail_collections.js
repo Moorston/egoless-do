@@ -15,7 +15,7 @@ migrate((txApp) => {
     name: 'thought_trails',
     type: 'base',
     system: false,
-    schema: [
+    fields: [
       { name: 'user_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'trail_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'data', type: 'json', required: false, options: { maxSize: 5000000 } },
@@ -43,7 +43,7 @@ migrate((txApp) => {
     name: 'intents',
     type: 'base',
     system: false,
-    schema: [
+    fields: [
       { name: 'user_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'intent_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'data', type: 'json', required: false, options: { maxSize: 5000000 } },
@@ -71,7 +71,7 @@ migrate((txApp) => {
     name: 'reflection_links',
     type: 'base',
     system: false,
-    schema: [
+    fields: [
       { name: 'user_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'link_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'data', type: 'json', required: false, options: { maxSize: 5000000 } },

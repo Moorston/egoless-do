@@ -1,4 +1,4 @@
-import type { Vision, VisionType, VisionPractice, RefType } from '../types';
+import type { Vision, VisionType, VisionPractice, RefType, VisionTimeFrame } from '../types';
 import type { StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
@@ -11,7 +11,7 @@ function genId() {
 export interface VisionSlice {
   visions: Vision[];
   visionPractices: VisionPractice[];
-  addVision: (data: { type: VisionType; text: string; timeFrame?: string; deadline?: string }) => Vision | null;
+  addVision: (data: { type: VisionType; text: string; timeFrame?: string; startDate?: string; deadline?: string }) => Vision | null;
   updateVision: (id: string, updates: Partial<Vision>) => void;
   removeVision: (id: string) => void;
   achieveVision: (id: string) => void;
@@ -48,7 +48,8 @@ export function createVisionSlice(
         id: genId(),
         type: data.type,
         text: data.text,
-        timeFrame: data.timeFrame as any,
+        timeFrame: data.timeFrame as VisionTimeFrame | undefined,
+        startDate: data.startDate,
         deadline: data.deadline,
         status: 'active',
         sortOrder: existing.length,

@@ -3,6 +3,7 @@ import type { MindReflection } from '../types/reflection';
 import { getMoodIcon } from '../business/thought-trail';
 import { buildReflectionSummary } from '../business/trail-creation';
 import { getAIService } from './ai-service';
+import { extractJSON, repairJSON } from './json-utils';
 import { isAIRecommendAvailable } from './trail-recommender';
 import { dateStr, activeOnly } from '../utils';
 import { createLogger } from '../logger';
@@ -198,7 +199,7 @@ export async function generateInsightProfile(
     const timeoutId = setTimeout(() => controller.abort(), 20000);
     let result: any;
     try {
-      result = await (service as any).generateCloud(prompt, {
+      result = await service.generateCloud(prompt, {
         systemPrompt: INSIGHT_PROFILE_SYSTEM,
         maxTokens: 4000,
         signal: controller.signal,
@@ -255,47 +256,4 @@ function parseInsightResponse(
   } catch {
     return null;
   }
-}
-
-function extractJSON(raw: string): string {
-  const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeBlockMatch) return codeBlockMatch[1].trim();
-  const objectMatch = raw.match(/\{[\s\S]*\}/);
-  if (objectMatch) return objectMatch[0];
-  return raw.trim();
-}
-
-function repairJSON(str: string): string {
-  let s = str.trim();
-  // 截断到最后一个结构性的 } (忽略字符串内的 })
-  let lastStructuralClose = -1;
-  let depth = 0, inStr = false, esc = false;
-  for (let i = 0; i < s.length; i++) {
-    const ch = s[i];
-    if (esc) { esc = false; continue; }
-    if (ch === '\\') { esc = true; continue; }
-    if (ch === '"') { inStr = !inStr; continue; }
-    if (inStr) continue;
-    if (ch === '{') depth++;
-    else if (ch === '}') { depth--; if (depth === 0) lastStructuralClose = i; }
-  }
-  if (lastStructuralClose >= 0) {
-    s = s.slice(0, lastStructuralClose + 1);
-  }
-  // 补全缺失的 ] 和 } (只计 structural brackets, 忽略字符串内的)
-  let openBrackets = 0, closeBrackets = 0, openBraces = 0, closeBraces = 0;
-  let inString = false, escaped = false;
-  for (const ch of s) {
-    if (escaped) { escaped = false; continue; }
-    if (ch === '\\') { escaped = true; continue; }
-    if (ch === '"') { inString = !inString; continue; }
-    if (inString) continue;
-    if (ch === '[') openBrackets++;
-    else if (ch === ']') closeBrackets++;
-    else if (ch === '{') openBraces++;
-    else if (ch === '}') closeBraces++;
-  }
-  for (let i = closeBrackets; i < openBrackets; i++) s += ']';
-  for (let i = closeBraces; i < openBraces; i++) s += '}';
-  return s;
 }

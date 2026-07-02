@@ -30,7 +30,7 @@ migrate((db) => {
     if (!data.sportKey || (typeof data.sportKey === "string" && data.sportKey.trim() === "")) {
       data.sportKey = "unknown";
       record.set("data", data);
-      db.saveRecord(record);
+      db.saveNoValidate(record);
       fixedCount++;
       console.log(`[Migration] Fixed sport_key for exercise ${record.id}`);
     }

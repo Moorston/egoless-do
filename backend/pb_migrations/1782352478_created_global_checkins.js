@@ -7,7 +7,7 @@ migrate((txApp) => {
     "name": "global_checkins",
     "type": "base",
     "system": false,
-    "schema": [
+    "fields": [
       {
         "system": false,
         "id": "d8fospx0",
@@ -133,12 +133,6 @@ migrate((txApp) => {
         "options": {}
       }
     ],
-    "indexes": [
-      "CREATE INDEX `idx_global_checkins_user_hash` ON `global_checkins` (`user_hash`)",
-      "CREATE INDEX `idx_global_checkins_created_at` ON `global_checkins` (`created_at`)",
-      "CREATE INDEX `idx_global_checkins_type` ON `global_checkins` (`type`)",
-      "CREATE INDEX `idx_global_checkins_lat_lng` ON `global_checkins` (\n  `lat`,\n  `lng`\n)"
-    ],
     "listRule": "",
     "viewRule": "",
     "createRule": "@request.auth.id != \"\"",
@@ -147,7 +141,17 @@ migrate((txApp) => {
     "options": {}
   });
 
-  return txApp.save(collection);
+  txApp.save(collection);
+
+  // Add indexes after table exists
+  var c = txApp.findCollectionByNameOrId("fa7i032y4xbn58z");
+  c.indexes = [
+    "CREATE INDEX idx_global_checkins_user_hash ON global_checkins (user_hash)",
+    "CREATE INDEX idx_global_checkins_created_at ON global_checkins (created_at)",
+    "CREATE INDEX idx_global_checkins_type ON global_checkins (type)",
+    "CREATE INDEX idx_global_checkins_lat_lng ON global_checkins (lat, lng)"
+  ];
+  txApp.save(c);
 }, (db) => {
   
   const collection = txApp.findCollectionByNameOrId("fa7i032y4xbn58z");

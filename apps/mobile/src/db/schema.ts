@@ -64,7 +64,7 @@ CREATE INDEX IF NOT EXISTS idx_mind_tags ON mind_reflections(tags);
 
 CREATE TABLE IF NOT EXISTS fasting_sessions (
   id             TEXT PRIMARY KEY,
-  target_hours   INTEGER NOT NULL,
+  target_hours   REAL NOT NULL,
   started_at     INTEGER NOT NULL,
   ended_at       INTEGER,
   estimated_kcal INTEGER,
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS grace_history (
 
 CREATE TABLE IF NOT EXISTS daily_custom_todos (
   id          TEXT PRIMARY KEY,
-  plan_id     TEXT    NOT NULL,
+  plan_id     TEXT,
   date        TEXT    NOT NULL,
   name        TEXT    NOT NULL,
   done        INTEGER NOT NULL DEFAULT 0,
@@ -477,6 +477,22 @@ CREATE TABLE IF NOT EXISTS sutra_reading_sessions (
   synced         INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_sutra_reading_date ON sutra_reading_sessions(date);
+
+CREATE TABLE IF NOT EXISTS breath_records (
+  id             TEXT PRIMARY KEY,
+  date           TEXT NOT NULL,
+  preset_key     TEXT NOT NULL DEFAULT '',
+  duration_sec   INTEGER NOT NULL DEFAULT 0,
+  cycles         INTEGER NOT NULL DEFAULT 0,
+  pre_distress   INTEGER NOT NULL DEFAULT 5,
+  post_distress  INTEGER NOT NULL DEFAULT 5,
+  reflection     TEXT NOT NULL DEFAULT '',
+  guide_style    TEXT NOT NULL DEFAULT 'scientific',
+  updated_at     INTEGER,
+  deleted        INTEGER NOT NULL DEFAULT 0,
+  synced         INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_breath_records_date ON breath_records(date);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
@@ -814,12 +830,25 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   );
   if (!dailyCustomTodoTableCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos (
-      id TEXT PRIMARY KEY, plan_id TEXT NOT NULL, date TEXT NOT NULL,
+      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
       name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
       todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
+
+  // Relax plan_id constraint (server data may have null plan_id for standalone todos)
+  try {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos_new (
+      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+      name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
+      todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync(`INSERT OR IGNORE INTO daily_custom_todos_new SELECT * FROM daily_custom_todos`);
+    await db.execAsync(`DROP TABLE daily_custom_todos`);
+    await db.execAsync(`ALTER TABLE daily_custom_todos_new RENAME TO daily_custom_todos`);
+  } catch (e) { /* Table may already have correct schema */ }
 
   // Ensure daily_todo_history table exists
   const dailyTodoHistoryTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -878,6 +907,10 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   if (!fastingCols.some(c => c.name === 'note')) {
     await db.execAsync("ALTER TABLE fasting_sessions ADD COLUMN note TEXT NOT NULL DEFAULT ''");
   }
+
+  // Add audio columns to mantra_defs
+  await tryAddCol('mantra_defs', 'audio_url', 'TEXT');
+  await tryAddCol('mantra_defs', 'audio_attribution', 'TEXT');
 
   // Add missing indexes for frequently queried columns
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_food_entry_date ON food_entries(entry_date)');
@@ -1011,7 +1044,71 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
-} ───────────────────────────────────────────────
+
+  // Ensure zhiguan_sessions table exists
+  const zhiguanSessionsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='zhiguan_sessions'"
+  );
+  if (!zhiguanSessionsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS zhiguan_sessions (
+      id TEXT PRIMARY KEY, user_id TEXT, status TEXT NOT NULL DEFAULT 'active',
+      start_ts INTEGER NOT NULL, end_ts INTEGER, sankalpa TEXT,
+      preliminary_level TEXT, chosen_method TEXT,
+      samatha_ratio_avg REAL, vipassana_ratio_avg REAL,
+      total_breaths INTEGER, closing_notes TEXT,
+      self_reported_stage TEXT, self_reported_stage_text TEXT,
+      dedication_id TEXT, updated_at INTEGER NOT NULL,
+      deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
+  // Ensure breath_records table exists
+  const breathRecordsCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='breath_records'"
+  );
+  if (!breathRecordsCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS breath_records (
+      id TEXT PRIMARY KEY, date TEXT NOT NULL, preset_key TEXT NOT NULL DEFAULT '',
+      duration_sec INTEGER NOT NULL DEFAULT 0, cycles INTEGER NOT NULL DEFAULT 0,
+      pre_distress INTEGER NOT NULL DEFAULT 5, post_distress INTEGER NOT NULL DEFAULT 5,
+      reflection TEXT NOT NULL DEFAULT '', guide_style TEXT NOT NULL DEFAULT 'scientific',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+    await db.execAsync('CREATE INDEX IF NOT EXISTS idx_breath_records_date ON breath_records(date)');
+  }
+  // Ensure synced column exists (for devices that had breath_records before synced was added)
+  await tryAddCol('breath_records', 'synced', 'INTEGER NOT NULL DEFAULT 0');
+
+  // Cleanup: remove auto-added preset mantras from old versions (before auto-init was removed)
+  // Only delete presets that have NO associated sessions (user never actually used them)
+  const PRESET_NAMES = [
+    '六字大明咒','大悲咒','准提神咒','往生净土神咒','楞严咒','药师灌顶真言',
+    '地藏菩萨灭定业真言','文殊心咒','如意宝轮王陀罗尼','消灾吉祥神咒','功德宝山神咒',
+    '圣无量寿决定光明王陀罗尼','观音灵感真言','七佛灭罪真言','大吉祥天女咒','大随求心咒',
+    '绿度母心咒','白度母心咒','莲师心咒','金刚萨埵心咒','百字明咒','阿弥陀佛心咒',
+    '释迦牟尼佛心咒','不动佛心咒','南无阿弥陀佛','南无本师释迦牟尼佛','南无药师琉璃光如来',
+    '南无大日如来','南无不动如来','南无观世音菩萨','南无大势至菩萨','南无地藏王菩萨',
+    '南无文殊师利菩萨','南无普贤菩萨','南无弥勒菩萨','南无虚空藏菩萨',
+  ];
+  try {
+    const existingPresets = await db.getAllAsync<{ id: string; name: string }>(
+      `SELECT id, name FROM mantra_defs WHERE name IN (${PRESET_NAMES.map(() => '?').join(',')}) AND deleted = 0`,
+      [...PRESET_NAMES]
+    );
+    for (const preset of existingPresets) {
+      const session = await db.getFirstAsync<{ cnt: number }>(
+        'SELECT COUNT(*) as cnt FROM mantra_sessions WHERE mantra_id = ? AND deleted = 0',
+        [preset.id]
+      );
+      if (!session || session.cnt === 0) {
+        await db.runAsync('DELETE FROM mantra_defs WHERE id = ?', [preset.id]);
+      }
+    }
+  } catch (e) {
+    console.warn('[DB] Preset cleanup migration failed:', e);
+  }
+}
+// ── Generic helpers ───────────────────────────────────────────────
 export async function getState(db: SQLite.SQLiteDatabase, key: string): Promise<string | null> {
   const row = await db.getFirstAsync<{ value: string }>(
     'SELECT value FROM app_state WHERE key = ?', [key]

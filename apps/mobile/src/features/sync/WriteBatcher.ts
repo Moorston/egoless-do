@@ -2,6 +2,7 @@ import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 import { openDatabase, withDbLock } from '../../db/schema';
 import { ENTITY_TABLE_MAP } from '../../store/entityTableMap';
+import { SYNC_QUEUE_UPSERT_SQL } from '../../db/sqlHelper';
 
 const log = createLogger('Sync');
 
@@ -128,16 +129,7 @@ export class WriteBatcher {
             : w.data;
 
           await db.runAsync(
-            `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
-             VALUES (?, ?, ?, ?, ?, ?)
-             ON CONFLICT(entity, entity_id) DO UPDATE SET
-               operation = excluded.operation,
-               payload = excluded.payload,
-               created_at = excluded.created_at,
-               status = 'pending',
-               retry_count = 0,
-               next_retry_at = 0,
-               last_error = NULL`,
+            SYNC_QUEUE_UPSERT_SQL,
             [w.entity, w.id, w.operation, JSON.stringify(payload), Date.now(), 'pending'],
           );
         }
@@ -182,16 +174,7 @@ export class WriteBatcher {
             ? { ...w.data, _changedFields: w.changedFields }
             : w.data;
           await db2.runAsync(
-            `INSERT INTO sync_queue (entity, entity_id, operation, payload, created_at, status)
-             VALUES (?, ?, ?, ?, ?, ?)
-             ON CONFLICT(entity, entity_id) DO UPDATE SET
-               operation = excluded.operation,
-               payload = excluded.payload,
-               created_at = excluded.created_at,
-               status = 'pending',
-               retry_count = 0,
-               next_retry_at = 0,
-               last_error = NULL`,
+            SYNC_QUEUE_UPSERT_SQL,
             [w.entity, w.id, w.operation, JSON.stringify(fallbackPayload), Date.now(), 'pending'],
           );
           // Mark this entry as successfully flushed even in fallback
@@ -209,6 +192,13 @@ export class WriteBatcher {
         // Remove only successfully written entries; keep failed ones for retry
         // We can't distinguish which succeeded, so keep all for retry
         // but new arrivals are still preserved since we use specific keys
+        // Schedule a retry with backoff so stuck entries are eventually flushed
+        if (!this._flushTimer) {
+          this._flushTimer = setTimeout(() => {
+            this._flushTimer = null;
+            if (this._pendingWrites.size > 0) this._flush();
+          }, 5000);
+        }
       }
       // Trigger sync callback even in fallback path (some writes may have succeeded)
       this._onFlushed?.();

@@ -3,21 +3,30 @@
 // Creates all collections required by the sync endpoint and global pulse system.
 // Uses "fields" (not "schema") per PocketBase v0.38.2 Collection constructor.
 
-migrate((txApp) => {
+migrate(function(txApp) {
   function ensureCollection(name, config) {
     try {
       txApp.findCollectionByNameOrId(name);
       return;
-    } catch {}
-    const safeConfig = Object.assign({}, config, {
+    } catch (e) {}
+    // Extract indexes before creating (indexes require table to exist first)
+    var indexes = config.indexes || [];
+    var safeConfig = Object.assign({}, config, {
+      indexes: [],
       listRule: null,
       viewRule: null,
       createRule: null,
       updateRule: null,
       deleteRule: null,
     });
-    const collection = new Collection(safeConfig);
+    var collection = new Collection(safeConfig);
     txApp.save(collection);
+    // Add indexes after table exists
+    if (indexes.length > 0) {
+      var c = txApp.findCollectionByNameOrId(name);
+      c.indexes = indexes;
+      txApp.save(c);
+    }
   }
 
   function setRules(name, rules) {

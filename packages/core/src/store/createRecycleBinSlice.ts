@@ -1,4 +1,4 @@
-import type { RecycleBinItem, RecycleBinEntityType } from '../types';
+import type { RecycleBinItem, RecycleBinEntityType, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory } from '../types';
 import type { RecycleBinSlice, StorageAdapter, FullStore } from './types';
 import type { SyncEntity } from '../sync/entities';
 import type { SliceCreator } from './sliceHelper';
@@ -45,22 +45,18 @@ export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<Re
         const now = Date.now();
 
         // Pre-compute child items for plan restoration BEFORE set()
-        let childItems: Array<{ id: string; planId: string; deleted?: boolean }> = [];
-        let childCheckins: Array<{ id: string; planItemId: string; deleted?: boolean }> = [];
-        let childTodos: Array<{ id: string; planId: string; deleted?: boolean }> = [];
-        let childTodoHistory: Array<{ id: string; planId: string; deleted?: boolean }> = [];
+        let childItems: PlanItem[] = [];
+        let childCheckins: PlanItemCheckin[] = [];
+        let childTodos: DailyCustomTodo[] = [];
+        let childTodoHistory: DailyTodoHistory[] = [];
         if (item.entityType === 'plan') {
           const state = get();
-          const planItems = (state.planItems ?? []) as Array<{ id: string; planId: string; deleted?: boolean }>;
-          const planItemCheckins = (state.planItemCheckins ?? []) as Array<{ id: string; planItemId: string; deleted?: boolean }>;
-          childItems = planItems.filter(pi => pi.planId === item.id && pi.deleted);
-          childCheckins = planItemCheckins.filter(
+          childItems = (state.planItems ?? []).filter(pi => pi.planId === item.id && pi.deleted);
+          childCheckins = (state.planItemCheckins ?? []).filter(
             pic => childItems.some(ci => ci.id === pic.planItemId) && pic.deleted
           );
-          childTodos = ((state.dailyCustomTodos ?? []) as Array<{ id: string; planId: string; deleted?: boolean }>)
-            .filter(t => t.planId === item.id && t.deleted);
-          childTodoHistory = ((state.dailyTodoHistory ?? []) as Array<{ id: string; planId: string; deleted?: boolean }>)
-            .filter(t => t.planId === item.id && t.deleted);
+          childTodos = (state.dailyCustomTodos ?? []).filter(t => t.planId === item.id && t.deleted);
+          childTodoHistory = (state.dailyTodoHistory ?? []).filter(t => t.planId === item.id && t.deleted);
         }
 
         // Single atomic set: recycle bin + target + plan children
@@ -93,16 +89,16 @@ export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<Re
         // For plans, also persist child entities
         if (item.entityType === 'plan' && adapter) {
           for (const ci of childItems) {
-            adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
+            adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now }).catch(e => log.error(e));
           }
           for (const cic of childCheckins) {
-            adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
+            adapter.persistChange('planItemCheckin', cic.id, { ...cic, deleted: false, updatedAt: now }).catch(e => log.error(e));
           }
           for (const todo of childTodos) {
-            adapter.persistChange('dailyCustomTodo', todo.id, { ...todo, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
+            adapter.persistChange('dailyCustomTodo', todo.id, { ...todo, deleted: false, updatedAt: now }).catch(e => log.error(e));
           }
           for (const hist of childTodoHistory) {
-            adapter.persistChange('dailyTodoHistory', hist.id, { ...hist, deleted: false, updatedAt: now } as any).catch(e => log.error(e));
+            adapter.persistChange('dailyTodoHistory', hist.id, { ...hist, deleted: false, updatedAt: now }).catch(e => log.error(e));
           }
         }
       }

@@ -3,6 +3,7 @@ import type { Habit, HabitStatus, HabitLink } from '../types';
 import type { FastingSession, MedHistoryEntry, ExerciseEntry, SleepEntry } from '../types';
 import { createHabitFromForm } from '../defaults';
 import { computeStreak, dateStr } from '../utils';
+import { computeMaxFastingHours, computeMaxExerciseMinutes } from './module-state';
 
 export type CreateHabitForm = Parameters<typeof createHabitFromForm>[0];
 export { createHabitFromForm };
@@ -91,31 +92,10 @@ export function syncHabitsFromModules(
   state: HabitModuleState,
   today: string,
 ): Habit[] {
-  // Pre-compute module state
-  let maxFastingHours = 0;
-  for (const f of state.fastingHistory) {
-    if (!f.endedAt) continue;
-    if (dateStr(new Date(f.endedAt)) === today) {
-      maxFastingHours = Math.max(maxFastingHours, (f.endedAt - f.startedAt) / 3600000);
-    }
-  }
-  if (state.activeFasting != null) {
-    const activeStart = dateStr(new Date(state.activeFasting.startedAt));
-    if (activeStart === today || activeStart < today) {
-      maxFastingHours = Math.max(maxFastingHours, (Date.now() - state.activeFasting.startedAt) / 3600000);
-    }
-  }
-
+  // Pre-compute module state using shared helpers
+  const maxFastingHours = computeMaxFastingHours(state.fastingHistory, state.activeFasting, today);
   const meditationDone = state.medHistory.some(m => m.date === today && !m.deleted);
-
-  let maxExerciseMinutes = 0;
-  for (const e of state.exerciseLog) {
-    if (e.deleted) continue;
-    if (dateStr(new Date(e.timestamp)) === today) {
-      maxExerciseMinutes = Math.max(maxExerciseMinutes, e.durationSec / 60);
-    }
-  }
-
+  const maxExerciseMinutes = computeMaxExerciseMinutes(state.exerciseLog, today);
   const sleepBarrierDone = (state.sleepHistory ?? []).some(s => s.date === today && !s.deleted && s.barrierDone);
 
   let changed = false;

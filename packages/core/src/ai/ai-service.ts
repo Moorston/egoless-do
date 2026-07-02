@@ -165,8 +165,8 @@ export class AIService {
     return null;
   }
   
-  // 云端生成
-  private async generateCloud(prompt: string, options?: GenerateOptions & { preferredModelId?: string; signal?: AbortSignal }): Promise<AIResult<string>> {
+  // 云端生成（公开 API，供 trail-recommender、insight-profile 等模块调用）
+  async generateCloud(prompt: string, options?: GenerateOptions & { preferredModelId?: string; signal?: AbortSignal }): Promise<AIResult<string>> {
     log.debug('Getting cloud provider...');
     log.debug('preferredModelId:', options?.preferredModelId);
     log.debug('Available providers:', Array.from(this.providers.keys()));

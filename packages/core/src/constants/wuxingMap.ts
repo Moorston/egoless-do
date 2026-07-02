@@ -2,11 +2,11 @@
 // 基于《黄帝内经》《本草纲目》《食物本草》五味归经理论
 // 213 种常见食材，含 isCommon 标记区分常用(约80种)
 
-import type { FoodWuxingItem, FoodCategory, EatingMotivation } from '../types';
+import type { FoodWuxingItem, FoodCategoryKey, EatingMotivation } from '../types';
 
 // ── 食材分类元数据 ──
 
-export const WUXING_CATEGORIES: { key: FoodCategory; label: string; labelEn: string }[] = [
+export const WUXING_CATEGORIES: { key: FoodCategoryKey; label: string; labelEn: string }[] = [
   { key: 'grain',     label: '谷物主食', labelEn: 'Grains' },
   { key: 'bean',      label: '豆类制品', labelEn: 'Beans' },
   { key: 'vegetable', label: '蔬菜',    labelEn: 'Vegetables' },

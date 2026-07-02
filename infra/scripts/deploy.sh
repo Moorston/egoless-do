@@ -2,7 +2,7 @@
 
 # ─── egoless-do 部署脚本 ────────────────────────────────────────
 # 用法: ./infra/scripts/deploy.sh
-set -e
+set -euo pipefail
 
 echo "🚀 开始部署 egoless-do..."
 
@@ -14,8 +14,10 @@ if [ ! -f .env.production ]; then
     exit 1
 fi
 
-# 加载环境变量
-source .env.production
+# 安全加载环境变量（set -a 自动导出，避免 source 执行恶意代码）
+set -a
+. ./.env.production
+set +a
 
 COMPOSE_FILE="infra/docker/docker-compose.yml"
 
@@ -35,9 +37,14 @@ docker compose -f "$COMPOSE_FILE" build --no-cache web
 echo "▶️  启动服务..."
 docker compose -f "$COMPOSE_FILE" --env-file .env.production up -d
 
-# 等待服务启动
+# 等待服务启动（轮询健康检查，最多 60 秒）
 echo "⏳ 等待服务启动..."
-sleep 10
+for i in $(seq 1 12); do
+  if curl -sf http://localhost:8090/api/health > /dev/null 2>&1; then
+    break
+  fi
+  sleep 5
+done
 
 # 检查服务状态
 echo "📊 服务状态："

@@ -7,21 +7,28 @@ migrate((txApp) => {
     try {
       txApp.findCollectionByNameOrId(name);
       return;
-    } catch {}
-    const safeConfig = Object.assign({}, config, {
+    } catch (e) {}
+    var indexes = config.indexes || [];
+    var safeConfig = Object.assign({}, config, {
+      indexes: [],
       listRule: null,
       viewRule: null,
       createRule: null,
       updateRule: null,
       deleteRule: null,
     });
-    const collection = new Collection(safeConfig);
+    var collection = new Collection(safeConfig);
     txApp.save(collection);
+    if (indexes.length > 0) {
+      var c = txApp.findCollectionByNameOrId(name);
+      c.indexes = indexes;
+      txApp.save(c);
+    }
   }
 
   function setRules(name, rules) {
     try {
-      const c = txApp.findCollectionByNameOrId(name);
+      var c = txApp.findCollectionByNameOrId(name);
       c.listRule = rules.listRule;
       c.viewRule = rules.viewRule;
       c.createRule = rules.createRule;
@@ -92,7 +99,7 @@ migrate((txApp) => {
   });
 
   // ── Set auth rules ──────────────────────────────────────────────
-  const AUTH_RULES = {
+  var AUTH_RULES = {
     listRule: '@request.auth.id != ""',
     viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.id != ""',
@@ -104,10 +111,10 @@ migrate((txApp) => {
   setRules("weight_records", AUTH_RULES);
   setRules("body_checkins", AUTH_RULES);
 }, (txApp) => {
-  for (const name of ["body_goals", "body_plans", "weight_records", "body_checkins"]) {
+  for (var name of ["body_goals", "body_plans", "weight_records", "body_checkins"]) {
     try {
-      const c = txApp.findCollectionByNameOrId(name);
-      if (c) txApp.delete(c);
+      var c = txApp.findCollectionByNameOrId(name);
+      if (c) txApp.deleteCollection(c);
     } catch {}
   }
 });

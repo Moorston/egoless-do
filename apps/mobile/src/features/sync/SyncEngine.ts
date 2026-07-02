@@ -11,7 +11,7 @@ import { flushWrites } from '../../store/storageAdapter';
 import {
   apiSyncPush, apiSyncPull, apiSyncPullPost, apiSyncCheck, apiSyncPullEntity,
   createLogger, SCHEMAS, buildServerPayloadToRow, ApiError, KickedOutError, resolveConflict,
-  MS_PER_DAY,
+  MS_PER_DAY, ALL_ENTITY_TABLES,
 } from '@egoless-do/core';
 import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
 import {
@@ -103,8 +103,7 @@ const _serverPayloadToRowFns = Object.fromEntries(
   (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, buildServerPayloadToRow(SCHEMAS[k])])
 ) as Record<string, (r: Record<string, unknown>) => Record<string, unknown> | null>;
 
-// Shared table list for hardReset and purgeDeletedRecords
-const ALL_ENTITY_TABLES = Object.values(ENTITY_CONFIG).map(c => c.table);
+// ALL_ENTITY_TABLES is now imported from @egoless-do/core (derived from SCHEMAS)
 
 export interface SyncMetric {
   timestamp: number;

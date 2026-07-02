@@ -1092,6 +1092,5 @@ export const SCHEMA_ID_FIELD: Record<SyncEntity, string> = Object.fromEntries(
   (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, SCHEMAS[k].pocketbase.serverIdField])
 ) as Record<SyncEntity, string>;
 
-/** All SQLite table names for sync entities — derived from SCHEMAS.
- *  Used by SyncEngine for purgeDeletedRecords and hardReset. */
+/** All SQLite entity table names — derived from SCHEMAS. Used by SyncEngine for purge/reset. */
 export const ALL_ENTITY_TABLES: string[] = (Object.keys(SCHEMAS) as SyncEntity[]).map(k => SCHEMAS[k].sqlite.table);

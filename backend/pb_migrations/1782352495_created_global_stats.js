@@ -7,7 +7,7 @@ migrate((txApp) => {
     "name": "global_stats",
     "type": "base",
     "system": false,
-    "schema": [
+    "fields": [
       {
         "system": false,
         "id": "brznju11",

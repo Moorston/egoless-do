@@ -1,580 +1,708 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Vibration, Platform } from 'react-native';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useShallow } from 'zustand/react/shallow';
+import { useKeepAwake } from 'expo-keep-awake';
+import * as Haptics from 'expo-haptics';
+import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
-import { useTheme, useT, ScreenHeader } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, COLORS, dateStr, PRESET_MANTRAS, DEDICATION_TEMPLATES, SUTRA_CATEGORIES } from '@egoless-do/core';
-import type { MantraDef, MantraCategory, MantraSession } from '@egoless-do/core';
-import { useTabNavigation } from '../../navigation/hooks';
-import { BookOpen, Timer, BarChart3, Plus, X, ChevronRight, RotateCcw, Play, Pause, Volume2, VolumeX } from 'lucide-react-native';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES } from '@egoless-do/core';
+import SimpleHeader from '../../navigation/SimpleHeader';
+import type { MantraDef, MantraCategory } from '@egoless-do/core';
+import { MalaRing } from '../shared/components/MalaRing';
+import { useSutraAudio } from './useSutraAudio';
+import { useAudioCache } from '../shared/hooks/useAudioCache';
+import { BarChart3, Plus, ChevronDown, ChevronRight, X } from 'lucide-react-native';
 
-type SutraTab = 'library' | 'counter' | 'stats';
+type SutraPage = 'select' | 'start' | 'active' | 'report';
 
-const TABS: { key: SutraTab; labelKey: string; icon: typeof BookOpen }[] = [
-  { key: 'library', labelKey: 'sutraTabLibrary', icon: BookOpen },
-  { key: 'counter', labelKey: 'sutraTabCounter', icon: Timer },
-  { key: 'stats',   labelKey: 'sutraTabStats',   icon: BarChart3 },
-];
-
-const BEADS_PER_ROUND = 108;
+const BEAD_COUNT = 108;
+const SUTRA_CATEGORY_ORDER: MantraCategory[] = ['sutra', 'dharani', 'buddha_name', 'custom'];
+const KEY_SUTRA_PRESETS_V1 = 'sutraPresetsV1';
 
 export default function SutraScreen() {
+  return <SutraScreenInner />;
+}
+
+function SutraScreenInner() {
+  const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const nav = useTabNavigation();
-  const [activeTab, setActiveTab] = useState<SutraTab>('library');
+  const store = useAppStore();
+  useKeepAwake();
+  const { playSutra, stopSutra, isPlaying } = useSutraAudio();
+  const { getCachedPath, downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
 
-  const { mantraDefs, mantraSessions, readingSessions, addMantraDef, addMantraSession, addReadingSession,
-    getMantraTotalCount, getMantraStreak } = useAppStore(
-    useShallow(s => ({
-      mantraDefs: s.mantraDefs, mantraSessions: s.mantraSessions, readingSessions: s.readingSessions,
-      addMantraDef: s.addMantraDef, addMantraSession: s.addMantraSession, addReadingSession: s.addReadingSession,
-      getMantraTotalCount: s.getMantraTotalCount, getMantraStreak: s.getMantraStreak,
-    }))
-  );
-
-  // ── 念诵状态 ──
-  const [selectedMantra, setSelectedMantra] = useState<MantraDef | null>(null);
-  const [count, setCount] = useState(0);
-  const [rounds, setRounds] = useState(0);
+  const [page, setPage] = useState<SutraPage>('select');
+  const [selectedSutra, setSelectedSutra] = useState<MantraDef | null>(null);
   const [targetRounds, setTargetRounds] = useState(7);
-  const [isCounting, setIsCounting] = useState(false);
+  const [audioCached, setAudioCached] = useState(false);
+  const [count, setCount] = useState(0);
+  const countRef = useRef(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [showDedication, setShowDedication] = useState(false);
-  const [dedicationText, setDedicationText] = useState(DEDICATION_TEMPLATES[0]);
+  const [startTime, setStartTime] = useState(0);
+  const startTimeRef = useRef(0);
+  const [elapsed, setElapsed] = useState(0);
+  const elapsedRef = useRef(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pausedElapsedRef = useRef(0);
+  const pauseStartRef = useRef(0);
+  const startSessionSeq = useRef(0);
   const [showAddCustom, setShowAddCustom] = useState(false);
   const [customName, setCustomName] = useState('');
   const [customSubtitle, setCustomSubtitle] = useState('');
-  const [customTarget, setCustomTarget] = useState(108);
-  const startTimeRef = useRef(0);
-  const [elapsed, setElapsed] = useState(0);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [customCategory, setCustomCategory] = useState<MantraCategory>('sutra');
+  const [customText, setCustomText] = useState('');
+  const [showDedication, setShowDedication] = useState(false);
+  const [dedicationText, setDedicationText] = useState(DEDICATION_TEMPLATES[0]);
+  const [pendingSessionData, setPendingSessionData] = useState<{ count: number; rounds: number; durationSec: number } | null>(null);
+  const [foldedCategories, setFoldedCategories] = useState<Record<MantraCategory, boolean>>({
+    sutra: false, dharani: true, buddha_name: true, custom: true,
+  });
+  const [presetSearch, setPresetSearch] = useState('');
 
-  // ── 阅读器状态 ──
-  const [showReader, setShowReader] = useState(false);
-  const [readerMantra, setReaderMantra] = useState<MantraDef | null>(null);
-  const [fontSize, setFontSize] = useState(18);
+  const {
+    mantraDefs,
+    getMantraTotalCount, getMantraStreak, getMantraTodayCount,
+    addMantraSession, removeMantraDef,
+  } = store as any;
 
-  // 计时器
+  const mySutras = useMemo(() =>
+    (mantraDefs ?? [])
+      .filter((d: MantraDef) => !d.deleted && d.preset !== true && d.category === 'sutra')
+      .sort((a: MantraDef, b: MantraDef) => a.sortOrder - b.sortOrder),
+    [mantraDefs]
+  );
+
+  const presetSutras = useMemo(() =>
+    (mantraDefs ?? []).filter((d: MantraDef) => d.preset === true && !d.deleted && d.category === 'sutra'),
+    [mantraDefs]
+  );
+
+  const [presetsReady, setPresetsReady] = useState(false);
   useEffect(() => {
-    if (isCounting && !isPaused) {
-      if (startTimeRef.current === 0) startTimeRef.current = Date.now() - elapsed * 1000;
+    if (presetsReady) return;
+    if (typeof store.initializePresetsIncremental !== 'function') return;
+    // 迁移 + 补全预设（幂等，安全可重入）
+    store.initializePresetsIncremental();
+    setPresetsReady(true);
+  }, [presetsReady, store]);
+
+  // helpers
+  const pad2 = (n: number) => String(n).padStart(2, '0');
+  const formatTime = (ms: number) => {
+    const s = Math.floor(ms / 1000);
+    return pad2(Math.floor(s / 60)) + ':' + pad2(s % 60);
+  };
+
+  useEffect(() => {
+    if (page === 'active' && !isPaused && startTime > 0) {
       timerRef.current = setInterval(() => {
-        setElapsed(Math.floor((Date.now() - startTimeRef.current) / 1000));
+        const e = Date.now() - startTime - pausedElapsedRef.current;
+        elapsedRef.current = e;
+        setElapsed(e);
       }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
     }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [isCounting, isPaused]);
+    return () => { if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; } };
+  }, [page, isPaused, startTime]);
 
-  // 念诵计数
-  const handleCount = useCallback(() => {
-    if (!isCounting) {
-      setIsCounting(true);
-      setIsPaused(false);
-      startTimeRef.current = Date.now();
-    }
-    if (isPaused) return;
-    const newCount = count + 1;
-    setCount(newCount);
-    Vibration.vibrate(10);
-    if (newCount >= BEADS_PER_ROUND) {
-      setCount(0);
-      const newRounds = rounds + 1;
-      setRounds(newRounds);
-      if (newRounds >= targetRounds) {
-        setIsCounting(false);
-        setShowDedication(true);
-      }
-    }
-  }, [count, rounds, targetRounds, isCounting, isPaused]);
+  const startSession = useCallback(async (sutra: MantraDef) => {
+    const seq = ++startSessionSeq.current;
+    setSelectedSutra(sutra);
+    setCount(0); countRef.current = 0;
+    setStartTime(0); startTimeRef.current = 0;
+    setElapsed(0); elapsedRef.current = 0;
+    pausedElapsedRef.current = 0; setIsPaused(false);
+    const cached = await isCached(sutra.id);
+    if (seq !== startSessionSeq.current) return; // stale, discard
+    setAudioCached(cached);
+    setPage('start');
+  }, [isCached]);
 
-  // 保存念诵
-  const handleSaveChant = useCallback(() => {
-    if (!selectedMantra) return;
-    const now = Date.now();
-    addMantraSession({
-      mantraId: selectedMantra.id,
-      date: dateStr(),
-      count: rounds * BEADS_PER_ROUND + count,
-      rounds,
-      durationSec: elapsed,
-      startedAt: startTimeRef.current,
-      completedAt: now,
-      targetRounds,
-      dedication: dedicationText || undefined,
+  const toggleCategoryFold = useCallback((cat: MantraCategory) => {
+    setFoldedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
+  }, []);
+
+  const isPresetInMy = useCallback((name: string) => mySutras.some((m: MantraDef) => m.name === name), [mySutras]);
+
+  const addPresetToMy = useCallback((preset: any) => {
+    if (typeof store.addPresetSutra === 'function') store.addPresetSutra(preset);
+  }, [store]);
+
+  const removeFromMy = useCallback((id: string) => { removeMantraDef(id); }, [removeMantraDef]);
+
+  const addCustomSutra = useCallback(() => {
+    if (!customName.trim()) return;
+    store.addMantraDef({
+      name: customName.trim(),
+      subtitle: customSubtitle.trim() || undefined,
+      category: customCategory,
+      preset: false,
+      fullText: customText.trim() || undefined,
     });
-    setCount(0); setRounds(0); setIsCounting(false); setElapsed(0);
-    startTimeRef.current = 0; setShowDedication(false);
-    setSelectedMantra(null);
-  }, [selectedMantra, rounds, count, elapsed, targetRounds, dedicationText, addMantraSession]);
+    setShowAddCustom(false);
+    setCustomName(''); setCustomSubtitle(''); setCustomText('');
+  }, [customName, customSubtitle, customCategory, customText, store]);
 
-  // 活跃 mantra 列表
-  const activeDefs = useMemo(() => (mantraDefs ?? []).filter(d => !d.deleted), [mantraDefs]);
-  const presetDefs = useMemo(() => {
-    const presetNames = PRESET_MANTRAS.map(p => p.name);
-    return activeDefs.filter(d => presetNames.includes(d.name));
-  }, [activeDefs]);
-  const customDefs = useMemo(() => activeDefs.filter(d => d.category === 'custom'), [activeDefs]);
+  const beginChanting = useCallback(() => {
+    const now = Date.now();
+    setStartTime(now); startTimeRef.current = now;
+    setElapsed(0); elapsedRef.current = 0;
+    pausedElapsedRef.current = 0; setIsPaused(false);
+    setPage('active');
+  }, []);
 
-  // 初始化预设
-  useEffect(() => {
-    const existingNames = new Set(activeDefs.map(d => d.name));
-    PRESET_MANTRAS.forEach(p => {
-      if (!existingNames.has(p.name)) {
-        addMantraDef({ name: p.name, subtitle: p.subtitle, category: 'dharani', fullText: p.fullText, pageCount: p.fullText ? Math.ceil(p.fullText.length / 200) : undefined });
+  const handleTap = useCallback(() => {
+    if (isPaused) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setCount(prev => {
+      const next = prev + 1;
+      countRef.current = next;
+      if (next % BEAD_COUNT === 0 && next > 0) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
+      return next;
+    });
+  }, [isPaused]);
+
+  const handleUndo = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setCount(prev => {
+      const v = Math.max(0, prev - 1);
+      countRef.current = v;
+      return v;
     });
   }, []);
 
-  // 统计
-  const totalCount = useMemo(() => mantraSessions.filter(s => !s.deleted).reduce((sum, s) => sum + s.count, 0), [mantraSessions]);
-  const totalDuration = useMemo(() => mantraSessions.filter(s => !s.deleted).reduce((sum, s) => sum + s.durationSec, 0), [mantraSessions]);
-  const uniqueDates = useMemo(() => new Set(mantraSessions.filter(s => !s.deleted).map(s => s.date)), [mantraSessions]);
-  const streak = useMemo(() => {
-    const dates = [...uniqueDates].sort().reverse();
-    if (dates.length === 0) return 0;
-    const today = dateStr();
-    const yesterday = dateStr(new Date(Date.now() - 86400000));
-    if (dates[0] !== today && dates[0] !== yesterday) return 0;
-    let s = 1;
-    for (let i = 1; i < dates.length; i++) {
-      const prev = new Date(dates[i - 1]);
-      const curr = new Date(dates[i]);
-      if ((prev.getTime() - curr.getTime()) / 86400000 === 1) s++;
-      else break;
+  const togglePause = useCallback(() => {
+    if (isPaused) {
+      pausedElapsedRef.current += Date.now() - pauseStartRef.current;
+    } else {
+      pauseStartRef.current = Date.now();
+      stopSutra();
     }
-    return s;
-  }, [uniqueDates]);
+    setIsPaused(!isPaused);
+  }, [isPaused, stopSutra]);
 
-  const formatTime = (sec: number) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}:${String(s).padStart(2, '0')}`;
-  };
+  const endSession = useCallback(() => {
+    const completedAt = Date.now();
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    stopSutra().catch(() => {});
+    const c = countRef.current;
+    const durationSec = Math.floor((completedAt - startTimeRef.current - pausedElapsedRef.current) / 1000);
+    const rounds = Math.floor(c / BEAD_COUNT);
+    setPendingSessionData({ count: c, rounds, durationSec });
+    setShowDedication(true);
+    setPage('report');
+  }, [stopSutra]);
 
-  // ── 经文库 Tab ──
-  const renderLibrary = useCallback(() => (
-    <View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('sutraCategoryDharani')}</Text>
-        <TouchableOpacity onPress={() => setShowAddCustom(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <Plus size={16} color={TH.primary} />
-          <Text style={{ fontSize: FONT_SUB, color: TH.primary }}>{T('sutraAddCustom')}</Text>
-        </TouchableOpacity>
-      </View>
-      {activeDefs.filter(d => d.category === 'dharani').map(d => {
-        const total = getMantraTotalCount(d.id);
-        const st = getMantraStreak(d.id);
-        return (
-          <TouchableOpacity key={d.id} onPress={() => { setSelectedMantra(d); setActiveTab('counter'); }}
-            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: TH.border }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>🔔 {d.name}</Text>
-                {d.subtitle && <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{d.subtitle}</Text>}
-                <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>累计 {total.toLocaleString()} 遍</Text>
-                  {st > 0 && <Text style={{ fontSize: 10, color: '#F59E0B' }}>连续 {st} 天</Text>}
-                </View>
-              </View>
-              <ChevronRight size={16} color={TH.sub} />
-            </View>
-          </TouchableOpacity>
-        );
-      })}
+  // Reset all session state
+  const resetSession = useCallback(() => {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    stopSutra().catch(() => {});
+    setCount(0); countRef.current = 0;
+    setStartTime(0); startTimeRef.current = 0;
+    setElapsed(0); elapsedRef.current = 0;
+    pausedElapsedRef.current = 0;
+    setIsPaused(false);
+    setShowDedication(false);
+    setPendingSessionData(null);
+    setDedicationText(DEDICATION_TEMPLATES[0]);
+    setPage('select');
+  }, [stopSutra]);
 
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12, marginTop: 16 }}>{T('sutraCategorySutra')}</Text>
-      {activeDefs.filter(d => d.category === 'sutra').map(d => {
-        const total = getMantraTotalCount(d.id);
-        const st = getMantraStreak(d.id);
-        return (
-          <TouchableOpacity key={d.id} onPress={() => {
-            if (d.fullText) { setReaderMantra(d); setShowReader(true); }
-            else { setSelectedMantra(d); setActiveTab('counter'); }
-          }}
-            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: TH.border }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>📖 {d.name}</Text>
-                {d.subtitle && <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{d.subtitle}</Text>}
-                <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>累计 {total.toLocaleString()} 遍</Text>
-                  {d.pageCount && <Text style={{ fontSize: 10, color: TH.sub }}>{d.pageCount} 页</Text>}
-                  {st > 0 && <Text style={{ fontSize: 10, color: '#F59E0B' }}>连续 {st} 天</Text>}
-                </View>
-              </View>
-              <ChevronRight size={16} color={TH.sub} />
-            </View>
-          </TouchableOpacity>
-        );
-      })}
-
-      {customDefs.length > 0 && (
-        <>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12, marginTop: 16 }}>{T('sutraCategoryCustom')}</Text>
-          {customDefs.map(d => (
-            <TouchableOpacity key={d.id} onPress={() => { setSelectedMantra(d); setActiveTab('counter'); }}
-              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: TH.border }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>✏️ {d.name}</Text>
-              {d.subtitle && <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{d.subtitle}</Text>}
-              <Text style={{ fontSize: 10, color: TH.sub, marginTop: 4 }}>累计 {getMantraTotalCount(d.id).toLocaleString()} 遍</Text>
-            </TouchableOpacity>
-          ))}
-        </>
-      )}
-    </View>
-  ), [activeDefs, customDefs, getMantraTotalCount, getMantraStreak, TH, T]);
-
-  // ── 念诵计数器 Tab ──
-  const renderCounter = useCallback(() => {
-    if (!selectedMantra) {
-      return (
-        <View style={{ alignItems: 'center', paddingVertical: 60 }}>
-          <Timer size={48} color={TH.sub} />
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginTop: 16 }}>请从经文库选择经文开始念诵</Text>
-          <TouchableOpacity onPress={() => setActiveTab('library')}
-            style={{ marginTop: 16, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12, backgroundColor: TH.primary }}>
-            <Text style={{ color: '#fff', fontWeight: '700' }}>{T('sutraTabLibrary')}</Text>
-          </TouchableOpacity>
-        </View>
-      );
+  // Exit active page with short-session protection
+  const handleExitActive = useCallback(() => {
+    if (elapsedRef.current < 30000) {
+      Alert.alert(T('chantingTimeTooShort'), '', [
+        { text: T('confirm'), onPress: () => resetSession() },
+      ]);
+    } else {
+      Alert.alert(T('chantingExitConfirmTitle'), T('chantingExitConfirmMsg'), [
+        { text: T('chantingContinue'), style: 'cancel' },
+        { text: T('chantingEndAndRecord'), onPress: endSession },
+      ]);
     }
+  }, [endSession, resetSession, T]);
 
-    const currentBeadIndex = count;
-    const progress = currentBeadIndex / BEADS_PER_ROUND;
-    const beads = Array.from({ length: BEADS_PER_ROUND }, (_, i) => i);
-
-    return (
-      <View style={{ alignItems: 'center' }}>
-        {/* 经文名 */}
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 4 }}>{selectedMantra.name}</Text>
-        {selectedMantra.subtitle && <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16 }}>{selectedMantra.subtitle}</Text>}
-
-        {/* 佛珠环 */}
-        <TouchableOpacity onPress={handleCount} activeOpacity={0.8}
-          style={{ width: 280, height: 280, position: 'relative', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-          {beads.map((i) => {
-            const angle = (i / BEADS_PER_ROUND) * 360 - 90;
-            const radius = 120;
-            const x = 140 + radius * Math.cos(angle * Math.PI / 180);
-            const y = 140 + radius * Math.sin(angle * Math.PI / 180);
-            const isPassed = i < currentBeadIndex;
-            const isCurrent = i === currentBeadIndex;
-            const beadSize = isCurrent ? 12 : 8;
-            return (
-              <View key={i} style={{
-                position: 'absolute', left: x - beadSize / 2, top: y - beadSize / 2,
-                width: beadSize, height: beadSize, borderRadius: beadSize / 2,
-                backgroundColor: isPassed ? '#D4A574' : isCurrent ? '#F59E0B' : `${TH.primary}25`,
-                ...(isCurrent ? { shadowColor: '#F59E0B', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.8, shadowRadius: 6 } : {}),
-              }} />
-            );
-          })}
-          {/* 中心计数 */}
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 36, fontWeight: '900', color: TH.primary }}>{rounds}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraRound')}</Text>
-          </View>
-        </TouchableOpacity>
-
-        {/* 统计信息 */}
-        <View style={{ flexDirection: 'row', gap: 24, marginBottom: 16 }}>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.text }}>{rounds * BEADS_PER_ROUND + count}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraCount')}</Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.text }}>{formatTime(elapsed)}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>时长</Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.text }}>{rounds}/{targetRounds}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraRound')}</Text>
-          </View>
-        </View>
-
-        {/* 控制按钮 */}
-        <View style={{ flexDirection: 'row', gap: 12, marginBottom: 16 }}>
-          {!isCounting ? (
-            <TouchableOpacity onPress={handleCount}
-              style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14, borderRadius: 12, backgroundColor: TH.primary }}>
-              <Play size={20} color="#fff" />
-              <Text style={{ color: '#fff', fontWeight: '700' }}>{T('sutraStartChant')}</Text>
-            </TouchableOpacity>
-          ) : (
-            <>
-              <TouchableOpacity onPress={() => setIsPaused(!isPaused)}
-                style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14, borderRadius: 12, backgroundColor: isPaused ? TH.primary : TH.card, borderWidth: isPaused ? 0 : 1, borderColor: TH.border }}>
-                {isPaused ? <Play size={18} color="#fff" /> : <Pause size={18} color={TH.text} />}
-                <Text style={{ color: isPaused ? '#fff' : TH.text, fontWeight: '700' }}>{isPaused ? T('sutraResume') : T('sutraPause')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => { setIsCounting(false); setIsPaused(false); setCount(0); setRounds(0); setElapsed(0); startTimeRef.current = 0; }}
-                style={{ paddingHorizontal: 20, paddingVertical: 14, borderRadius: 12, backgroundColor: '#EF444420', borderWidth: 1, borderColor: '#EF444450' }}>
-                <Text style={{ color: '#EF4444', fontWeight: '700' }}>{T('sutraStop')}</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-
-        {/* 目标轮次设置 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraTargetRounds')}:</Text>
-          {[1, 3, 7, 10].map(n => (
-            <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
-              style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, backgroundColor: targetRounds === n ? TH.primary : TH.card, borderWidth: targetRounds === n ? 0 : 1, borderColor: TH.border }}>
-              <Text style={{ color: targetRounds === n ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_SUB }}>{n}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* 提示 */}
-        <Text style={{ fontSize: 10, color: TH.sub, marginTop: 16, textAlign: 'center' }}>点击佛珠环念诵计数 · 每108遍为一轮</Text>
-      </View>
-    );
-  }, [selectedMantra, count, rounds, targetRounds, isCounting, isPaused, elapsed, handleCount, TH, T]);
-
-  // ── 统计 Tab ──
-  const renderStats = useCallback(() => {
-    const recentSessions = mantraSessions.filter(s => !s.deleted).sort((a, b) => b.completedAt - a.completedAt).slice(0, 20);
-    // 日历热力图数据
-    const now = new Date();
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-    const monthDates = Array.from({ length: daysInMonth }, (_, i) => {
-      const d = new Date(now.getFullYear(), now.getMonth(), i + 1);
-      return dateStr(d);
+  const saveSession = useCallback(() => {
+    if (!selectedSutra || !pendingSessionData) { setShowDedication(false); setPage('select'); return; }
+    addMantraSession({
+      mantraId: selectedSutra.id,
+      date: new Date().toISOString().slice(0, 10),
+      count: pendingSessionData.count,
+      rounds: pendingSessionData.rounds,
+      durationSec: pendingSessionData.durationSec,
+      startedAt: startTime,
+      completedAt: startTime + pendingSessionData.durationSec * 1000,
+      targetRounds,
+      dedication: dedicationText || undefined,
     });
+    setShowDedication(false);
+    setPendingSessionData(null);
+    setPage('select');
+  }, [selectedSutra, pendingSessionData, startTime, targetRounds, dedicationText, addMantraSession]);
 
+  const categoryLabel = useCallback((cat: MantraCategory) => {
+    const found = SUTRA_CATEGORIES.find(c => c.key === cat);
+    return found ? T(found.labelKey) : cat;
+  }, [T]);
+
+  const categoryColor = useCallback((cat: MantraCategory) => {
+    const map: Record<MantraCategory, string> = { sutra: '#6366F1', dharani: '#D97706', buddha_name: '#10B981', custom: '#8B5CF6' };
+    return map[cat] || '#9CA3AF';
+  }, []);
+
+  const filteredPresets = useMemo(() =>
+    presetSutras.filter((p: MantraDef) => {
+      if (!presetSearch) return true;
+      const q = presetSearch.toLowerCase();
+      return p.name.toLowerCase().includes(q) || (p.subtitle || '').toLowerCase().includes(q);
+    }),
+    [presetSutras, presetSearch]
+  );
+
+  const presetByCategory = useMemo(() => {
+    const map: Record<MantraCategory, MantraDef[]> = { sutra: [], dharani: [], buddha_name: [], custom: [] };
+    for (const p of filteredPresets) {
+      const cat: MantraCategory = p.category;
+      if (!map[cat]) map[cat] = [];
+      map[cat].push(p);
+    }
+    return map;
+  }, [filteredPresets]);
+
+  if (page === 'select') {
     return (
-      <View>
-        {/* 总览 */}
-        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
-          {[
-            { label: T('sutraTotalChants'), value: totalCount.toLocaleString(), color: '#8B5CF6' },
-            { label: T('sutraTotalDuration'), value: formatTime(totalDuration), color: '#10B981' },
-            { label: T('sutraStreak'), value: `${streak}天`, color: '#F59E0B' },
-          ].map((s, i) => (
-            <View key={i} style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: TH.border }}>
-              <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: s.color }}>{s.value}</Text>
-              <Text style={{ fontSize: 10, color: TH.sub, marginTop: 2 }}>{s.label}</Text>
-            </View>
-          ))}
+      <View style={{ flex: 1, backgroundColor: TH.bg }}>
+        <SimpleHeader routeName="Sutra" />
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
+          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraSubtitle')}</Text>
+          <TouchableOpacity onPress={() => nav.navigate('SutraHistory', {})}>
+            <BarChart3 size={18} color={TH.sub} />
+          </TouchableOpacity>
         </View>
 
-        {/* 本月热力图 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>本月念诵热力图</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {Array.from({ length: firstDay }, (_, i) => <View key={`empty-${i}`} style={{ width: 32, height: 32 }} />)}
-            {monthDates.map(d => {
-              const hasSession = uniqueDates.has(d);
-              const dayNum = new Date(d).getDate();
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
+
+            <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('sutraTargetRounds')}</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {[1, 3, 7, 21, 108].map(n => (
+                  <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
+                    style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, backgroundColor: targetRounds === n ? '#D4A574' : TH.border }}>
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View style={{ marginBottom: 24 }}>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('sutraMySutras')}</Text>
+              {mySutras.length === 0 ? (
+                <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>
+                  <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
+                  <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('sutraNoSutras')}</Text>
+                  <Text style={{ fontSize: FONT_SMALL, color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('sutraAddHint')}</Text>
+                </View>
+              ) : mySutras.map((m: MantraDef) => {
+                const total = getMantraTotalCount(m.id);
+                const today = getMantraTodayCount(m.id);
+                const streak = getMantraStreak(m.id);
+                const progress = m.targetCount ? Math.min(100, Math.round(total / m.targetCount * 100)) : null;
+                return (
+                  <TouchableOpacity key={m.id} onPress={() => startSession(m)}
+                    style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 8, borderWidth: 1, borderColor: TH.border }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{m.name}</Text>
+                        {m.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{m.subtitle}</Text>}
+                        {today > 0 && <Text style={{ fontSize: FONT_SMALL, color: '#10B981', marginTop: 4 }}>{T('sutraTodayCount')} {today}</Text>}
+                      </View>
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' }}>{total.toLocaleString()}</Text>
+                        <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('sutraTotalRounds')}</Text>
+                      </View>
+                    </View>
+                    {progress !== null && (
+                      <View style={{ marginTop: 8 }}>
+                        <View style={{ height: 4, backgroundColor: TH.border + '60', borderRadius: 2, overflow: 'hidden' }}>
+                          <View style={{ height: 4, width: `${progress}%`, backgroundColor: '#D4A574', borderRadius: 2 }} />
+                        </View>
+                        <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>
+                          {total.toLocaleString()} / {m.targetCount != null ? m.targetCount.toLocaleString() : '0'} ({progress}%)
+                        </Text>
+                      </View>
+                    )}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+                      <Text style={{ fontSize: FONT_SMALL, color: '#F59E0B' }}>🔥 {streak}天</Text>
+                      <TouchableOpacity onPress={() => removeFromMy(m.id)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                        <Text style={{ fontSize: FONT_SMALL, color: '#EF4444' }}>{T('sutraRemove')}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('sutraPresetLibrary')}</Text>
+            <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB, marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
+              placeholder={T('sutraSearchPlaceholder')} placeholderTextColor={TH.sub} value={presetSearch} onChangeText={setPresetSearch} />
+
+            {SUTRA_CATEGORY_ORDER.map(cat => {
+              const list = presetByCategory[cat] ?? [];
+              if (list.length === 0) return null;
+              const folded = foldedCategories[cat];
+              const color = categoryColor(cat);
               return (
-                <View key={d} style={{ width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>
-                  <View style={{
-                    width: 24, height: 24, borderRadius: 4,
-                    backgroundColor: hasSession ? '#8B5CF6' : `${TH.primary}15`,
-                    alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Text style={{ fontSize: 9, color: hasSession ? '#fff' : TH.sub }}>{dayNum}</Text>
-                  </View>
+                <View key={cat} style={{ marginBottom: 16 }}>
+                  <TouchableOpacity onPress={() => toggleCategoryFold(cat)} style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
+                    {folded ? <ChevronRight size={16} color={color} /> : <ChevronDown size={16} color={color} />}
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color, marginLeft: 4 }}>{categoryLabel(cat)} ({list.length})</Text>
+                  </TouchableOpacity>
+                  {!folded && (
+                    <View style={{ gap: 6 }}>
+                      {list.map(p => {
+                        const added = isPresetInMy(p.name);
+                        return (
+                          <TouchableOpacity key={p.id} onPress={() => !added && addPresetToMy(p)}
+                            style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: TH.card, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: TH.border }}>
+                            <View style={{ flex: 1 }}>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{p.name}</Text>
+                                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: color + '20' }}>
+                                  <Text style={{ fontSize: 10, fontWeight: '600', color }}>{categoryLabel(p.category)}</Text>
+                                </View>
+                                {p.pageCount ? <Text style={{ fontSize: 10, color: TH.sub }}>{p.pageCount}页</Text> : null}
+                              </View>
+                              {p.subtitle ? <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{p.subtitle}</Text> : null}
+                            </View>
+                            {added
+                              ? <Text style={{ fontSize: 11, color: '#10B981', fontWeight: '700' }}>{T('sutraAlreadyAdded')}</Text>
+                              : <Plus size={18} color={TH.primary} />}
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  )}
                 </View>
               );
             })}
-          </View>
-          <View style={{ flexDirection: 'row', gap: 12, marginTop: 8, justifyContent: 'center' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <View style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: '#8B5CF6' }} />
-              <Text style={{ fontSize: 10, color: TH.sub }}>已念诵</Text>
-            </View>
-            <Text style={{ fontSize: 10, color: TH.sub }}>本月 {uniqueDates.size} 天</Text>
-          </View>
-        </View>
 
-        {/* 各经文分布 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>经文念诵分布</Text>
-          {activeDefs.map(d => {
-            const total = getMantraTotalCount(d.id);
-            if (total === 0) return null;
-            const pct = totalCount > 0 ? Math.round(total / totalCount * 100) : 0;
-            return (
-              <View key={d.id} style={{ marginBottom: 8 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{d.name}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{pct}%</Text>
-                </View>
-                <View style={{ height: 8, backgroundColor: `${TH.primary}15`, borderRadius: 4, overflow: 'hidden' }}>
-                  <View style={{ width: `${pct}%`, height: '100%', backgroundColor: '#8B5CF6', borderRadius: 4 }} />
-                </View>
+            <TouchableOpacity onPress={() => setShowAddCustom(true)}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 14, paddingHorizontal: 14, borderRadius: 14, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
+              <Plus size={18} color={TH.primary} />
+              <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>{T('sutraImportCustom')}</Text>
+            </TouchableOpacity>
+
+          </ScrollView>
+        </KeyboardAvoidingView>
+
+        <Modal visible={showAddCustom} transparent animationType="fade">
+          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
+            <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('sutraImportTitle')}</Text>
+                <TouchableOpacity onPress={() => setShowAddCustom(false)}><X size={22} color={TH.sub} /></TouchableOpacity>
               </View>
-            );
-          })}
-        </View>
-
-        {/* 历史记录 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>{T('sutraHistory')}</Text>
-          {recentSessions.length === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>{T('sutraNoRecords')}</Text>
-          ) : (
-            recentSessions.map(s => {
-              const mantra = activeDefs.find(d => d.id === s.mantraId);
-              return (
-                <View key={s.id} style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600' }}>{mantra?.name ?? '未知'}</Text>
-                    <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{s.date}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
-                    <Text style={{ fontSize: 10, color: TH.sub }}>{s.count}遍 · {s.rounds}轮</Text>
-                    <Text style={{ fontSize: 10, color: TH.sub }}>{formatTime(s.durationSec)}</Text>
-                    {s.dedication && <Text style={{ fontSize: 10, color: '#8B5CF6' }}>回向</Text>}
-                  </View>
-                </View>
-              );
-            })
-          )}
-        </View>
+              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportName')}</Text>
+              <TextInput value={customName} onChangeText={setCustomName} placeholder="例如：药师经" placeholderTextColor={TH.sub}
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
+              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportSubtitle')}</Text>
+              <TextInput value={customSubtitle} onChangeText={setCustomSubtitle} placeholder="" placeholderTextColor={TH.sub}
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
+              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportCategory')}</Text>
+              <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+                {SUTRA_CATEGORY_ORDER.map(cat => (
+                  <TouchableOpacity key={cat} onPress={() => setCustomCategory(cat)}
+                    style={{ flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center', backgroundColor: customCategory === cat ? categoryColor(cat) : TH.card, borderWidth: customCategory === cat ? 0 : 1, borderColor: TH.border }}>
+                    <Text style={{ color: customCategory === cat ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_SUB }}>{categoryLabel(cat)}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportText')}</Text>
+              <TextInput value={customText} onChangeText={setCustomText} placeholder={T('sutraImportPlaceholder')} placeholderTextColor={TH.sub} multiline
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: TH.border, marginBottom: 16 }} />
+              <TouchableOpacity onPress={addCustomSutra} disabled={!customName.trim()}
+                style={{ backgroundColor: '#D4A574', borderRadius: 12, padding: 14, alignItems: 'center', opacity: customName.trim() ? 1 : 0.5 }}>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('sutraImportBtn')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
-  }, [totalCount, totalDuration, streak, uniqueDates, mantraSessions, activeDefs, getMantraTotalCount, TH, T]);
+  }
 
-  return (
-    <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScreenHeader title={T('sutraTitle')} onBack={() => nav.goBack()} />
 
-      {/* Tab 切换 */}
-      <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 8, gap: 6 }}>
-        {TABS.map(tab => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.key;
-          return (
-            <TouchableOpacity key={tab.key} onPress={() => setActiveTab(tab.key)}
-              style={{
-                flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4,
-                paddingVertical: 10, borderRadius: 12,
-                backgroundColor: isActive ? '#D4A574' : TH.card,
-                borderWidth: isActive ? 0 : 1, borderColor: TH.border,
-              }}>
-              <Icon size={14} color={isActive ? '#fff' : TH.sub} />
-              <Text style={{ fontSize: FONT_SUB, fontWeight: isActive ? '700' : '400', color: isActive ? '#fff' : TH.sub }}>
-                {T(tab.labelKey)}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+  if (page === 'start' && selectedSutra) {
+    const handleDownloadAudio = async () => {
+      if (!selectedSutra?.audioUrl) return;
+      try {
+        await downloadAudio(selectedSutra.id, selectedSutra.audioUrl);
+        setAudioCached(true);
+      } catch {
+        Alert.alert(T('chantingDownloadFailed'));
+      }
+    };
 
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {activeTab === 'library' && renderLibrary()}
-        {activeTab === 'counter' && renderCounter()}
-        {activeTab === 'stats' && renderStats()}
-      </ScrollView>
+    const handlePreviewAudio = async () => {
+      if (isPlaying) {
+        await stopSutra();
+      } else {
+        await playSutra(selectedSutra.id, { loop: false });
+      }
+    };
 
-      {/* ── 回向面板 ── */}
-      <Modal visible={showDedication} transparent animationType="slide">
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.85)', justifyContent: 'flex-end' }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>🙏 {T('sutraComplete')}</Text>
-              <TouchableOpacity onPress={() => setShowDedication(false)}><X size={22} color={TH.sub} /></TouchableOpacity>
-            </View>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>
-              {selectedMantra?.name} × {rounds * BEADS_PER_ROUND + count} 遍 · {formatTime(elapsed)}
-            </Text>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('sutraDedication')}</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
-              {DEDICATION_TEMPLATES.map((tmpl, i) => (
-                <TouchableOpacity key={i} onPress={() => setDedicationText(tmpl)}
-                  style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, backgroundColor: dedicationText === tmpl ? '#D4A574' : TH.card, borderWidth: dedicationText === tmpl ? 0 : 1, borderColor: TH.border }}>
-                  <Text style={{ fontSize: 10, color: dedicationText === tmpl ? '#fff' : TH.sub }}>
-                    {i === 0 ? T('sutraDedicationAll') : i === 1 ? T('sutraDedicationFamily') : i === 2 ? '自利利他' : '法界有情'}
+    return (
+      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+        {/* Back button */}
+        <TouchableOpacity onPress={() => { stopSutra(); setPage('select'); }}
+          style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
+          <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+          <Text style={{ fontSize: FONT_BODY, color: TH.text, marginLeft: 8 }}>{T('chantingBack')}</Text>
+        </TouchableOpacity>
+
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, marginBottom: 8, textAlign: 'center' }}>{selectedSutra.name}</Text>
+          {selectedSutra.subtitle && (
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16, textAlign: 'center' }}>{selectedSutra.subtitle}</Text>
+          )}
+          {selectedSutra.pronunciation && (
+            <Text style={{ fontSize: FONT_BODY, color: '#D4A574', marginBottom: 16, textAlign: 'center' }}>{selectedSutra.pronunciation}</Text>
+          )}
+          {selectedSutra.meaning && (
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16, textAlign: 'center', fontStyle: 'italic' }}>{selectedSutra.meaning}</Text>
+          )}
+          {selectedSutra.pageCount != null && (
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 24, textAlign: 'center' }}>{selectedSutra.pageCount} {T('sutraPages')} · 每遍 108 颗</Text>
+          )}
+
+          {/* Audio section */}
+          {selectedSutra.audioUrl ? (
+            <View style={{ alignItems: 'center', marginBottom: 24 }}>
+              {downloading === selectedSutra.id ? (
+                <View style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: '#D4A57415', borderWidth: 1, borderColor: '#D4A57430', minWidth: 200, alignItems: 'center' }}>
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#D4A574' }}>{T('chantingDownloadProgress')} {Math.round(dlProgress * 100)}%</Text>
+                  <View style={{ height: 4, width: '100%', backgroundColor: `${TH.border}60`, borderRadius: 2, marginTop: 8 }}>
+                    <View style={{ height: 4, width: `${dlProgress * 100}%`, backgroundColor: '#D4A574', borderRadius: 2 }} />
+                  </View>
+                </View>
+              ) : (
+                <TouchableOpacity onPress={audioCached ? handlePreviewAudio : handleDownloadAudio}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: '#D4A57415', borderWidth: 1, borderColor: '#D4A57430' }}>
+                  <Text style={{ fontSize: 20 }}>{isPlaying ? '🔊' : audioCached ? '▶️' : '⬇️'}</Text>
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#D4A574' }}>
+                    {isPlaying ? T('chantingListening') : audioCached ? T('chantingListening') : T('chantingDownloadAudio')}
                   </Text>
                 </TouchableOpacity>
-              ))}
+              )}
+              {selectedSutra.audioAttribution ? (
+                <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 8, textAlign: 'center' }}>
+                  {T('chantingAudioSource')}: {selectedSutra.audioAttribution}
+                </Text>
+              ) : null}
             </View>
-            <TextInput value={dedicationText} onChangeText={setDedicationText} multiline
-              placeholderTextColor={TH.sub}
-              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: TH.border, marginBottom: 16 }} />
-            <TouchableOpacity onPress={handleSaveChant}
-              style={{ backgroundColor: '#D4A574', borderRadius: 12, padding: 14, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('sutraSaveComplete')}</Text>
+          ) : (
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24 }}>{T('chantingNoAudio')}</Text>
+          )}
+
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('sutraTargetRounds')}</Text>
+          <View style={{ flexDirection: 'row', gap: 8, marginBottom: 32, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {[1, 3, 7, 21, 108].map(n => (
+              <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
+                style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, backgroundColor: targetRounds === n ? '#D4A574' : TH.border }}>
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24, textAlign: 'center' }}>
+            {T('sutraTargetDesc')}: {targetRounds} 遍 · 每遍 108 颗
+          </Text>
+
+          <TouchableOpacity onPress={beginChanting}
+            style={{ paddingVertical: 16, paddingHorizontal: 48, borderRadius: 16, backgroundColor: '#D4A574' }}>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff' }}>{T('sutraStartChantNew')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+
+  if (page === 'active') {
+    const currentRound = Math.floor(count / BEAD_COUNT);
+
+    const handleToggleAudio = async () => {
+      if (!selectedSutra) return;
+      if (isPlaying) {
+        stopSutra();
+      } else {
+        const ok = await playSutra(selectedSutra.id, { loop: true });
+        if (!ok) Alert.alert(T('chantingPleaseDownloadFirst'));
+      }
+    };
+
+    return (
+      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+        {/* Exit button */}
+        <TouchableOpacity onPress={handleExitActive}
+          style={{ position: 'absolute', top: 16, right: 16, zIndex: 10, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, backgroundColor: `${TH.card}CC` }}>
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>✕ {T('chantingExit')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          activeOpacity={1}
+          onPress={handleTap}
+        >
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{selectedSutra?.name}</Text>
+          {selectedSutra?.pronunciation && (
+            <Text style={{ fontSize: 12, color: '#D4A574', marginBottom: 4 }}>{selectedSutra.pronunciation}</Text>
+          )}
+
+          <MalaRing
+            count={count}
+            beadCount={BEAD_COUNT}
+            size={280}
+            beadColor="#D4A574"
+            trackColor={TH.border + '40'}
+            textColor="#D4A574"
+            centerSubLabel={String(BEAD_COUNT)}
+            centerLabel={T('sutraRound') + ' ' + currentRound}
+          />
+
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 16 }}>
+            {formatTime(elapsed)} · {T('sutraTargetDesc')}: {targetRounds} 遍
+          </Text>
+
+          <Text style={{ fontSize: FONT_SMALL, color: TH.sub + '80', marginTop: 8 }}>
+            {T('sutraTapAnywhere')}
+          </Text>
+        </TouchableOpacity>
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 20, paddingBottom: 20 }}>
+          <TouchableOpacity onPress={handleUndo}
+            style={{ paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, backgroundColor: TH.card }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('sutraUndo')}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleToggleAudio}
+            style={{ paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, backgroundColor: isPlaying ? '#D4A574' : TH.card }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: isPlaying ? '#fff' : TH.text }}>
+              {isPlaying ? '🔊' : '🔇'}
+            </Text>
+          </TouchableOpacity>
+
+          {isPaused ? (
+            <TouchableOpacity onPress={togglePause}
+              style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: '#10B981' }}>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('sutraResume')}</Text>
             </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={togglePause}
+              style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: TH.card }}>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('sutraPause')}</Text>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity onPress={endSession}
+            style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 12, backgroundColor: '#EF4444' }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('sutraStop')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+
+  // report page — use pendingSessionData for session-specific numbers (not stale state)
+  const psd = pendingSessionData;
+  const reportCount = psd?.count ?? 0;
+  const reportRounds = psd?.rounds ?? 0;
+  const reportDurationSec = psd?.durationSec ?? 0;
+  const totalAfter = selectedSutra ? getMantraTotalCount(selectedSutra.id) : 0;
+  const streak = selectedSutra ? getMantraStreak(selectedSutra.id) : 0;
+
+  return (
+    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
+        <TouchableOpacity onPress={resetSession} style={{ marginRight: 12 }}>
+          <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+        </TouchableOpacity>
+        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraChantComplete')}</Text>
+      </View>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
+
+        <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
+          <View style={{ backgroundColor: '#D4A574', padding: 24, alignItems: 'center' }}>
+            <Text style={{ fontSize: 48 }}>☸</Text>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff', marginTop: 8 }}>{selectedSutra?.name}</Text>
+            <Text style={{ fontSize: 36, fontWeight: '800', color: '#fff', marginTop: 8 }}>
+              {reportCount.toLocaleString()} 颗 · {reportRounds} 遍
+            </Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>
+              {reportDurationSec > 60 ? Math.floor(reportDurationSec / 60) + 'm' : reportDurationSec + 's'}
+            </Text>
           </View>
         </View>
-      </Modal>
 
-      {/* ── 添加自定义弹窗 ── */}
-      <Modal visible={showAddCustom} transparent animationType="fade">
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.85)', justifyContent: 'center', padding: 24 }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('sutraCustomMantra')}</Text>
-              <TouchableOpacity onPress={() => setShowAddCustom(false)}><X size={22} color={TH.sub} /></TouchableOpacity>
+        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' }}>{totalAfter.toLocaleString()}</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraTotalRounds')}</Text>
             </View>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraCustomMantraName')}</Text>
-            <TextInput value={customName} onChangeText={setCustomName} placeholder="例如：药师咒" placeholderTextColor={TH.sub}
-              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraCustomMantraSubtitle')}</Text>
-            <TextInput value={customSubtitle} onChangeText={setCustomSubtitle} placeholder="副标题（可选）" placeholderTextColor={TH.sub}
-              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraCustomMantraTarget')}: {customTarget}</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
-              {[108, 216, 540, 1080].map(n => (
-                <TouchableOpacity key={n} onPress={() => setCustomTarget(n)}
-                  style={{ flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center', backgroundColor: customTarget === n ? '#D4A574' : TH.card, borderWidth: customTarget === n ? 0 : 1, borderColor: TH.border }}>
-                  <Text style={{ color: customTarget === n ? '#fff' : TH.text, fontWeight: '600' }}>{n}</Text>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#F59E0B' }}>🔥 {streak}</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraStreak')}</Text>
+            </View>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#10B981' }}>
+                {reportDurationSec > 60 ? Math.floor(reportDurationSec / 60) + 'm' : reportDurationSec + 's'}
+              </Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraSessionDuration')}</Text>
+            </View>
+          </View>
+        </View>
+
+        <TouchableOpacity onPress={() => setShowDedication(true)}
+          style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <Text style={{ fontSize: 24 }}>🙏</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('sutraDedication')}</Text>
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('sutraDedicationSelect')}</Text>
+          </View>
+        </TouchableOpacity>
+
+        <PrimaryButton label={T('sutraSaveComplete')} onPress={saveSession} color="#D4A574" />
+      </ScrollView>
+
+      <Modal visible={showDedication} transparent animationType="slide">
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
+          <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '80%' }}>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 16 }}>{T('sutraDedication')}</Text>
+            <ScrollView style={{ maxHeight: 200, marginBottom: 12 }}>
+              {DEDICATION_TEMPLATES.map((tmpl, i) => (
+                <TouchableOpacity key={i} onPress={() => setDedicationText(tmpl)}
+                  style={{ padding: 12, borderRadius: 8, backgroundColor: dedicationText === tmpl ? '#D4A57415' : TH.card, marginBottom: 6, borderWidth: 1, borderColor: dedicationText === tmpl ? '#D4A574' : TH.border }}>
+                  <Text style={{ fontSize: FONT_SMALL, color: dedicationText === tmpl ? '#D4A574' : TH.text }}>{tmpl}</Text>
                 </TouchableOpacity>
               ))}
+            </ScrollView>
+            <TextInput
+              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', marginBottom: 12 }}
+              multiline maxLength={500} value={dedicationText} onChangeText={setDedicationText}
+              placeholder="自定义回向文" placeholderTextColor={TH.sub}
+            />
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <OutlineButton label={T('cancel')} onPress={() => setShowDedication(false)} style={{ flex: 1 }} />
+              <PrimaryButton label={T('sutraDone')} onPress={saveSession} color="#D4A574" style={{ flex: 1 }} />
             </View>
-            <TouchableOpacity onPress={() => {
-              if (!customName.trim()) return;
-              addMantraDef({ name: customName.trim(), subtitle: customSubtitle.trim() || undefined, category: 'custom', targetCount: customTarget });
-              setShowAddCustom(false); setCustomName(''); setCustomSubtitle('');
-            }} disabled={!customName.trim()}
-              style={{ backgroundColor: '#D4A574', borderRadius: 12, padding: 14, alignItems: 'center', opacity: customName.trim() ? 1 : 0.5 }}>
-              <Text style={{ color: '#fff', fontWeight: '700' }}>{T('sutraAddCustom')}</Text>
-            </TouchableOpacity>
           </View>
         </View>
-      </Modal>
-
-      {/* ── 经文阅读弹窗 ── */}
-      <Modal visible={showReader} transparent animationType="slide">
-        <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 }}>
-            <TouchableOpacity onPress={() => setShowReader(false)}>
-              <X size={24} color={TH.text} />
-            </TouchableOpacity>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{readerMantra?.name}</Text>
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <TouchableOpacity onPress={() => setFontSize(Math.max(14, fontSize - 2))}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: TH.primary }}>A-</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setFontSize(Math.min(28, fontSize + 2))}>
-                <Text style={{ fontSize: 20, fontWeight: '700', color: TH.primary }}>A+</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 100 }}>
-            <Text style={{ fontSize: fontSize + 4, fontWeight: '700', color: TH.text, textAlign: 'center', marginBottom: 24 }}>
-              {readerMantra?.subtitle}
-            </Text>
-            <Text style={{ fontSize, lineHeight: fontSize * 1.8, color: TH.text, fontFamily: Platform.select({ ios: 'STSong', android: 'serif' }) as string }}>
-              {readerMantra?.fullText}
-            </Text>
-          </ScrollView>
-          <View style={{ padding: 16, borderTopWidth: 1, borderTopColor: TH.border, backgroundColor: TH.cardSolid }}>
-            <TouchableOpacity onPress={() => { setShowReader(false); setSelectedMantra(readerMantra); setActiveTab('counter'); }}
-              style={{ backgroundColor: '#D4A574', borderRadius: 12, padding: 14, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontWeight: '700' }}>{T('sutraStartChant')}</Text>
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
       </Modal>
     </SafeAreaView>
   );

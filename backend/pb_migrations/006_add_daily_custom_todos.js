@@ -13,7 +13,7 @@ migrate((txApp) => {
     name: 'daily_custom_todos',
     type: 'base',
     system: false,
-    schema: [
+    fields: [
       { name: 'user_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'todo_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'data',    type: 'json', required: false, options: { maxSize: 5000000 } },
@@ -42,7 +42,7 @@ migrate((txApp) => {
     name: 'daily_todo_history',
     type: 'base',
     system: false,
-    schema: [
+    fields: [
       { name: 'user_id',    type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'history_id', type: 'text', required: true, options: { min: null, max: null, pattern: '' } },
       { name: 'data',       type: 'json', required: false, options: { maxSize: 5000000 } },

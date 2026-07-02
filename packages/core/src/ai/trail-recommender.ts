@@ -1,6 +1,7 @@
 import { activeOnly } from '../utils';
 // ─── AI Trail Recommender: RAG + 分批并发 ──────────────────────────
 import { getAIService } from './ai-service';
+import { extractJSON } from './json-utils';
 import { buildReflectionSummary } from '../business/trail-creation';
 import type { MindReflection } from '../types/reflection';
 import type { ReflectionIndex } from './rag/indexer';
@@ -54,6 +55,14 @@ const recommendCache = new AICache<{ recommendations: AIRecommendation[]; target
 const matchCache = new AICache<AIMatchResult[]>(5 * 60 * 1000, 50);
 const queryCache = new AICache<SmartQueryResult>(5 * 60 * 1000, 50);
 const semanticCache = new AICache<AIMatchResult[]>(5 * 60 * 1000, 50);
+
+/** Clear all AI caches — call on user logout to prevent stale data leakage */
+export function clearAICaches() {
+  recommendCache.clear();
+  matchCache.clear();
+  queryCache.clear();
+  semanticCache.clear();
+}
 
 // ─── System Prompts ──────────────────────────────────────────────────
 
@@ -148,7 +157,7 @@ async function batchedAIGenerate(
   if (!needBatch) {
     log.debug('[BatchAI] single call, prompt length:', fullPrompt.length);
     const result = await withAbortTimeout(
-      (signal) => (service as any).generateCloud(fullPrompt, {
+      (signal) => service.generateCloud(fullPrompt, {
         systemPrompt, maxTokens, temperature, signal,
       }),
       timeoutMs,
@@ -169,7 +178,7 @@ async function batchedAIGenerate(
     const prompt = buildPrompt(batch, idx);
     log.debug(`[BatchAI] batch ${idx}, prompt:`, prompt.length, 'chars');
     return withAbortTimeout(
-      (signal) => (service as any).generateCloud(prompt, {
+      (signal) => service.generateCloud(prompt, {
         systemPrompt, maxTokens, temperature, signal,
       }),
       timeoutMs,
@@ -442,7 +451,7 @@ export async function parseSmartQuery(
 
   try {
     const result: any = await withAbortTimeout(
-      (signal) => (service as any).generateCloud(prompt, {
+      (signal) => service.generateCloud(prompt, {
         systemPrompt: AI_SMART_QUERY_SYSTEM,
         maxTokens: 500,
         temperature: 0.3,
@@ -525,49 +534,6 @@ function parseAIMatchResults(raw: string, maxIndex: number): AIMatchResult[] {
   } catch {
     return [];
   }
-}
-
-function extractJSON(raw: string): string {
-  const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeBlockMatch) return codeBlockMatch[1].trim();
-
-  // 找最后一个完整的 JSON 数组（思考文本在前，结果在后）
-  const lastArray = findLastBalancedJSON(raw, '[', ']');
-  if (lastArray) return lastArray;
-
-  const lastObject = findLastBalancedJSON(raw, '{', '}');
-  if (lastObject) return lastObject;
-
-  return raw.trim();
-}
-
-function findLastBalancedJSON(text: string, open: string, close: string): string | null {
-  // 从后往前找，找到最后一个完整的 balanced JSON (rightmost)
-  for (let i = text.length - 1; i >= 0; i--) {
-    if (text[i] === close) {
-      let depth = 0;
-      let inString = false;
-      let escape = false;
-      for (let j = i; j >= 0; j--) {
-        const ch = text[j];
-        if (escape) { escape = false; continue; }
-        if (ch === '\\') { escape = true; continue; }
-        if (ch === '"') { inString = !inString; continue; }
-        if (inString) continue;
-        if (ch === close) depth++;
-        if (ch === open) depth--;
-        if (depth === 0) {
-          const candidate = text.slice(j, i + 1);
-          try {
-            JSON.parse(candidate);
-            return candidate; // First valid match scanning right-to-left is the last JSON
-          } catch {}
-          break;
-        }
-      }
-    }
-  }
-  return null;
 }
 
 function parseSmartQueryResult(raw: string, input: string): SmartQueryResult {

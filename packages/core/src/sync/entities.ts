@@ -13,6 +13,7 @@ export const SYNC_ENTITIES = [
   'mantraDef', 'mantraSession',
   'sutraReading',
   'fearEntry', 'courageEntry', 'fearAchievement',
+  'zhiguanSession', 'breath',
 ] as const;
 
 export type SyncEntity = typeof SYNC_ENTITIES[number];

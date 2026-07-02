@@ -132,37 +132,38 @@ export function useVowProgress(): VowProgressData {
       isToday: d === todayStr,
     }));
 
-    // Vision progress
+    // Vision progress - plans use Plan.visionId, habits use VisionPractice
     const visions = (store.visions ?? []).filter((v: Vision) => !v.deleted && v.status === 'active');
     const visionPractices = (store.visionPractices ?? []).filter((vp: VisionPractice) => !vp.deleted);
+    const planItemsAll = (store.planItems ?? []).filter((i: any) => !i.deleted);
 
     const visionProgress = visions.map(vision => {
-      const linked = visionPractices.filter(vp => vp.visionId === vision.id);
-      if (linked.length === 0) return { vision, pct: 0 };
-
       let totalCompleted = 0;
       let totalExpected = 0;
 
-      for (const vp of linked) {
-        if (vp.refType === 'habit') {
-          const habit = habits.find((h: any) => h.id === vp.refId);
-          if (habit) {
-            const dates: string[] = habit.checkedDates ?? [];
-            const completed = dates.length;
-            totalCompleted += completed;
-            totalExpected += Math.max(completed, 30);
-          }
-        } else if (vp.refType === 'plan') {
-          const plan = plans.find((p: any) => p.id === vp.refId);
-          if (plan) {
-            const progress = plan.progress ?? 0;
-            totalCompleted += progress;
-            totalExpected += 100;
-          }
+      // Plans linked via Plan.visionId
+      const linkedPlans = plans.filter((p: any) => p.visionId === vision.id && !p.deleted);
+      for (const plan of linkedPlans) {
+        const items = planItemsAll.filter((i: any) => i.planId === plan.id);
+        const done = items.filter((i: any) => i.status === 'completed').length;
+        totalCompleted += done;
+        totalExpected += items.length || 1;
+      }
+
+      // Habits linked via VisionPractice
+      const linkedHabits = visionPractices.filter(vp => vp.visionId === vision.id && vp.refType === 'habit');
+      for (const vp of linkedHabits) {
+        const habit = habits.find((h: any) => h.id === vp.refId);
+        if (habit) {
+          const dates: string[] = habit.checkedDates ?? [];
+          const completed = dates.length;
+          totalCompleted += completed;
+          totalExpected += Math.max(completed, 30);
         }
       }
 
-      const pct = totalExpected > 0 ? Math.round((totalCompleted / totalExpected) * 100) : 0;
+      if (totalExpected === 0) return { vision, pct: 0 };
+      const pct = Math.round((totalCompleted / totalExpected) * 100);
       return { vision, pct: Math.min(pct, 100) };
     });
 
@@ -221,5 +222,5 @@ export function useVowProgress(): VowProgressData {
         visionProgressData,
       },
     };
-  }, [store.habits, store.plans, store.visions, store.visionPractices]);
+  }, [store.habits, store.plans, store.planItems, store.visions, store.visionPractices]);
 }

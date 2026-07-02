@@ -9,6 +9,7 @@ export const BUILTIN_TRACKS: MusicTrack[] = [
   { id: 'bowl',           name: '钵声',   nameEn: 'Singing Bowl',   category: 'meditate',  file: 0 },
   { id: 'wind-chimes',    name: '风铃',   nameEn: 'Wind Chimes',    category: 'meditate',  file: 0 },
   { id: 'birds',          name: '鸟叫',   nameEn: 'Birds',          category: 'meditate',  file: 0 },
+  { id: 'temple-bell',    name: '钟声',   nameEn: 'Temple Bell',    category: 'meditate',  file: 0 },
 ];
 
 export const MUSIC_CATEGORIES: { key: MusicCategory; nameKey: string }[] = [
@@ -49,4 +50,5 @@ export const TRACK_VISUAL: Record<string, { icon: string; gradient: readonly [st
   'bowl':           { icon: 'Bell',       gradient: ['#f59e0b', '#d97706'] },
   'wind-chimes':    { icon: 'Wind',       gradient: ['#a78bfa', '#7c3aed'] },
   'birds':          { icon: 'Bird',       gradient: ['#10b981', '#059669'] },
+  'temple-bell':    { icon: 'Bell',       gradient: ['#f59e0b', '#d97706'] },
 };

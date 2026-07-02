@@ -3,7 +3,7 @@ export type {
   AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, UiSlice, PlanSlice, RecycleBinSlice,
   FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice, MeditationSlice, SleepSlice, GiveSlice,
   ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, FullStore,
-  BodySlice, WeightSlice, BodyCheckinSlice, DietSlice, VisionSlice, DedicationSlice, MindSlice, MantraSlice,
+  BodySlice, WeightSlice, BodyCheckinSlice, DietSlice, VisionSlice, DedicationSlice, MindSlice, MantraSlice, ZhiguanSlice, BreathSlice,
 } from './types';
 export type { SliceCreator } from './sliceHelper';
 export { createAuthSlice } from './createAuthSlice';
@@ -35,3 +35,5 @@ export { createVisionSlice } from './createVisionSlice';
 export { createDedicationSlice } from './createDedicationSlice';
 export { createMindSlice } from './createMindSlice';
 export { createMantraSlice } from './createMantraSlice';
+export { createZhiguanSlice } from './createZhiguanSlice';
+export { createBreathSlice } from './createBreathSlice';

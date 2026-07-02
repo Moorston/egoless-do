@@ -5,7 +5,8 @@ import type {
 } from '../types';
 import { ACHIEVEMENT_DEFS } from '../types';
 import { uid, dateStr } from '../utils';
-import type { StorageAdapter, MindSlice } from './types';
+import type { StorageAdapter } from './types';
+import type { MindSlice } from './mindSliceTypes';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
@@ -42,7 +43,8 @@ export function createMindSlice(
     // ── 恐惧 CRUD ──
 
     addFearEntry(entry) {
-      const e: FearEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false };
+      // occurrenceCount is computed after construction; cast through unknown satisfies TS
+      const e: FearEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false } as unknown as FearEntry;
       // 计算同类恐惧出现次数
       const sameContent = get().fearEntries.filter(
         f => !f.deleted && f.content === e.content
@@ -266,7 +268,7 @@ export function createMindSlice(
       }
 
       // 冥想关联
-      const medHistory = (s as Record<string, unknown>).medHistory as { timestamp?: number; durationSec?: number }[] | undefined;
+      const medHistory = (s as unknown as Record<string, unknown>).medHistory as { timestamp?: number; durationSec?: number }[] | undefined;
       if (medHistory && medHistory.length > 0) {
         const recentMedDates = new Set(
           medHistory.filter(m => m.timestamp && Date.now() - m.timestamp < 30 * 86400000)

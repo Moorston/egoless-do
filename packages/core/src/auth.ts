@@ -132,22 +132,24 @@ export async function apiResetPassword(email: string, code: string, password: st
 
 // ── Sync: push local changes (pure push, no pull data) ──────────
 export async function apiSyncPush(token: string, _lastSyncAt: number, changes: any[], userId?: string): Promise<SyncPushResult> {
-  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/push`, {
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync`, {
     method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
-    body: JSON.stringify({ changes }),
+    body: JSON.stringify({ changes, skipPull: true }),
   }, SYNC_REQUEST_TIMEOUT);
-  return handleJsonResponse<SyncPushResult>(res);
+  const result = await handleJsonResponse<{ changes: any[]; rejected: any[]; serverTime: number }>(res);
+  return { applied: result.changes, rejected: result.rejected, serverTime: result.serverTime };
 }
 
 // ── Sync: pull user data via POST (entity-filtered) ──────────
 export async function apiSyncPullPost(token: string, body: SyncPullPostBody, userId?: string): Promise<{ data: Record<string, any[]>; serverTime: number }> {
-  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/pull`, {
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync`, {
     method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ changes: [], lastSyncAt: body.since || 0, entities: body.entities }),
   }, SYNC_REQUEST_TIMEOUT);
-  return handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
+  const result = await handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
+  return { data: result.data || {}, serverTime: result.serverTime };
 }
 
 // ── Sync: pull user data via GET (full or incremental, backward compat) ──

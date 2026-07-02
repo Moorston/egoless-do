@@ -10,9 +10,10 @@ import { useRootNavigation, useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Wind, Dumbbell, Moon, Salad,
-  Flag, Binary, Orbit, Brain,
+  Flag, Binary, Brain,
   Shield, BellRing, ScrollText, HandHeart,
   Music, BookOpen, Timer, Flame,
+  Waves,
 } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 
@@ -53,9 +54,9 @@ export default function PracticeScreen() {
       color: '#8B5CF6',
       items: [
         { key: 'vow', icon: Flag, labelKey: 'practiceMindVow', descKey: 'practiceMindVowDesc', color: '#8B5CF6', route: 'Vow' },
-        { key: 'meditate', icon: Binary, labelKey: 'practiceMindMeditate', descKey: 'practiceMindMeditateDesc', color: '#A78BFA', route: 'Meditation' },
-        { key: 'insight', icon: Orbit, labelKey: 'practiceMindInsight', descKey: 'practiceMindInsightDesc', color: '#C4B5FD' },
         { key: 'mind', icon: Brain, labelKey: 'practiceMindMind', descKey: 'practiceMindMindDesc', color: '#DDD6FE', route: 'Mind' },
+        { key: 'meditate', icon: Binary, labelKey: 'practiceMindMeditate', descKey: 'practiceMindMeditateDesc', color: '#A78BFA', route: 'Meditation' },
+        { key: 'zhiguan', icon: Waves, labelKey: 'practiceMindZhiguan', descKey: 'practiceMindZhiguanDesc', color: '#7C3AED', route: 'Zhiguan' },
       ],
     },
     {
@@ -77,6 +78,12 @@ export default function PracticeScreen() {
       ],
     },
   ], []);
+
+  const lifetimeVision = useMemo(() =>
+    (store.visions ?? []).find(v => v.type === 'lifetime' && v.status === 'active' && !v.deleted),
+    [store.visions],
+  );
+  const visionText = lifetimeVision?.text ?? '做一个禅悦的修行人';
 
   const weeklyStats = useMemo(() => {
     const now = Date.now();
@@ -119,7 +126,7 @@ export default function PracticeScreen() {
             end={{ x: 1, y: 1 }}
             style={styles.mottoGradient}
           >
-            <Text style={styles.mottoText}>终极愿景：做一个修行人</Text>
+            <Text style={styles.mottoText}>终极愿景：{visionText}</Text>
             <Text style={styles.visionText}>「知者行之始，行者知之成」</Text>
           </LinearGradient>
         </View>

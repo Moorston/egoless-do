@@ -183,7 +183,14 @@ export class DailyResetManager {
    *  @param pending  Optional promise (e.g. loadFromIndexedDB) to wait for before first check. */
   start(pending?: Promise<unknown>): void {
     const initialCheck = pending
-      ? pending.then(() => this.check()).catch(() => this.check())
+      ? pending.then(
+          () => this.check(),
+          (err) => {
+            // Don't run daily reset if initial data load failed —
+            // would operate on empty/default state and potentially corrupt data.
+            console.error('[DailyReset] Initial load failed, skipping first check:', err);
+          },
+        )
       : this.check();
 
     // Platform-specific visibility listener

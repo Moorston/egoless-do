@@ -1,68 +1,23 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useKeepAwake } from 'expo-keep-awake';
 import * as Haptics from 'expo-haptics';
+import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useTheme, useT, ScreenHeader, PrimaryButton, OutlineButton } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_SMALL, PRESET_MANTRAS, DEDICATION_TEMPLATES } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_SMALL, PRESET_SUTRAS, DEDICATION_TEMPLATES } from '@egoless-do/core';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import type { MantraDef, MantraSession } from '@egoless-do/core';
-import Svg, { Circle } from 'react-native-svg';
+import { useMantraAudio } from './useMantraAudio';
+import { useAudioCache } from '../shared/hooks/useAudioCache';
+import { MalaRing } from '../shared/components/MalaRing';
 
-type MantraPage = 'select' | 'active' | 'report';
+type MantraPage = 'select' | 'start' | 'active' | 'report';
 
 const BEAD_COUNT = 108;
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const RING_SIZE = Math.min(SCREEN_WIDTH - 64, 300);
-const RING_CENTER = RING_SIZE / 2;
-const RING_RADIUS = RING_CENTER - 20;
-const BEAD_RADIUS = 5;
 
-// ── Mala Ring Component ──
-function MalaRing({ count, TH, T }: { count: number; TH: any; T: any }) {
-  const currentRound = Math.floor(count / BEAD_COUNT);
-  const currentBead = count % BEAD_COUNT;
-  const circumference = 2 * Math.PI * RING_RADIUS;
-
-  return (
-    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <Svg width={RING_SIZE} height={RING_SIZE}>
-        {/* Background ring */}
-        <Circle cx={RING_CENTER} cy={RING_CENTER} r={RING_RADIUS} fill="none" stroke={`${TH.border}60`} strokeWidth={10} />
-        {/* Progress ring */}
-        <Circle
-          cx={RING_CENTER} cy={RING_CENTER} r={RING_RADIUS} fill="none"
-          stroke="#FBBF24" strokeWidth={10}
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference - (circumference * currentBead / BEAD_COUNT)}
-          strokeLinecap="round"
-          transform={`rotate(-90, ${RING_CENTER}, ${RING_CENTER})`}
-        />
-        {/* Guru bead marker at top */}
-        <Circle cx={RING_CENTER} cy={RING_CENTER - RING_RADIUS} r={BEAD_RADIUS + 3} fill="#D97706" />
-        {/* Individual beads */}
-        {Array.from({ length: BEAD_COUNT }, (_, i) => {
-          const angle = (i / BEAD_COUNT) * 2 * Math.PI - Math.PI / 2;
-          const x = RING_CENTER + RING_RADIUS * Math.cos(angle);
-          const y = RING_CENTER + RING_RADIUS * Math.sin(angle);
-          const isLit = i < currentBead;
-          return (
-            <Circle key={i} cx={x} cy={y} r={BEAD_RADIUS} fill={isLit ? '#FBBF24' : `${TH.border}40`} />
-          );
-        })}
-      </Svg>
-      {/* Center text */}
-      <View style={{ position: 'absolute', alignItems: 'center' }}>
-        <Text style={{ fontSize: 48, fontWeight: '800', color: '#FBBF24' }}>{currentBead}</Text>
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{BEAD_COUNT}</Text>
-        <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 4 }}>
-          {T('mantraRounds')}: {currentRound}
-        </Text>
-      </View>
-    </View>
-  );
-}
+// Shared MalaRing is imported from ../shared/components/MalaRing
 
 // ── Main Screen ──
 export default function MantraScreen() {
@@ -71,33 +26,45 @@ export default function MantraScreen() {
   const T = useT();
   const store = useAppStore();
   useKeepAwake();
+  const { playMantra, stopMantra, isPlaying } = useMantraAudio();
+  const { getCachedPath, downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
 
   const [page, setPage] = useState<MantraPage>('select');
   const [selectedMantra, setSelectedMantra] = useState<MantraDef | null>(null);
   const [targetRounds, setTargetRounds] = useState(3);
+  const [audioCached, setAudioCached] = useState(false);
 
   // Session state
   const [count, setCount] = useState(0);
+  const countRef = useRef(0);
   const [isPaused, setIsPaused] = useState(false);
   const [startTime, setStartTime] = useState(0);
   const [elapsed, setElapsed] = useState(0);
+  const elapsedRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pausedElapsedRef = useRef(0);
+  const pauseStartRef = useRef(0);
+  const [audioLoop, setAudioLoop] = useState(false);
   const [showDedication, setShowDedication] = useState(false);
   const [dedicationText, setDedicationText] = useState('');
+  const [presetSearch, setPresetSearch] = useState('');
+  const startSessionSeq = useRef(0);
 
   const myMantras = useMemo(() =>
-    (store.mantraDefs ?? []).filter((d: MantraDef) => !d.deleted).sort((a: MantraDef, b: MantraDef) => a.sortOrder - b.sortOrder),
+    (store.mantraDefs ?? []).filter((d: MantraDef) => !d.deleted && d.category !== 'sutra').sort((a: MantraDef, b: MantraDef) => a.sortOrder - b.sortOrder),
     [store.mantraDefs]
   );
 
-  // Timer
+  // Timer (fixed pause logic)
   useEffect(() => {
     if (page === 'active' && !isPaused && startTime > 0) {
       timerRef.current = setInterval(() => {
-        setElapsed(Date.now() - startTime);
+        const e = Date.now() - startTime - pausedElapsedRef.current;
+        elapsedRef.current = e;
+        setElapsed(e);
       }, 1000);
     }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+    return () => { if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; } };
   }, [page, isPaused, startTime]);
 
   const formatTime = (ms: number) => {
@@ -105,15 +72,32 @@ export default function MantraScreen() {
     return `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`;
   };
 
-  // Start session
-  const startSession = useCallback((mantra: MantraDef) => {
+  // Start session -> go to start page first
+  const startSession = useCallback(async (mantra: MantraDef) => {
+    const seq = ++startSessionSeq.current;
     setSelectedMantra(mantra);
-    setCount(0);
-    setStartTime(Date.now());
-    setElapsed(0);
+    setCount(0); countRef.current = 0;
+    setStartTime(0);
+    setElapsed(0); elapsedRef.current = 0;
+    pausedElapsedRef.current = 0;
     setIsPaused(false);
+    const cached = await isCached(mantra.id);
+    if (seq !== startSessionSeq.current) return; // stale, discard
+    setAudioCached(cached);
+    setPage('start');
+  }, [isCached]);
+
+  // Actually begin chanting (from start page)
+  const beginChanting = useCallback(() => {
+    setStartTime(Date.now());
+    setElapsed(0); elapsedRef.current = 0;
+    pausedElapsedRef.current = 0;
+    setIsPaused(false);
+    if (selectedMantra && audioLoop) {
+      playMantra(selectedMantra.id, selectedMantra.name, { loop: true }).catch(() => {});
+    }
     setPage('active');
-  }, []);
+  }, [selectedMantra, playMantra, audioLoop]);
 
   // Count +1
   const handleTap = useCallback(() => {
@@ -121,6 +105,7 @@ export default function MantraScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setCount(prev => {
       const next = prev + 1;
+      countRef.current = next;
       if (next % BEAD_COUNT === 0 && next > 0) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
@@ -131,44 +116,127 @@ export default function MantraScreen() {
   // Undo
   const handleUndo = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setCount(prev => Math.max(0, prev - 1));
+    setCount(prev => {
+      const v = Math.max(0, prev - 1);
+      countRef.current = v;
+      return v;
+    });
   }, []);
 
   // End session
   const endSession = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
     const completedAt = Date.now();
-    const durationSec = Math.floor((completedAt - startTime) / 1000);
-    const rounds = Math.floor(count / BEAD_COUNT);
-    if (selectedMantra && count > 0) {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    stopMantra().catch(() => {});
+    setAudioLoop(false);
+    const c = countRef.current;
+    const durationSec = Math.floor((completedAt - startTime - pausedElapsedRef.current) / 1000);
+    const rounds = Math.floor(c / BEAD_COUNT);
+    if (selectedMantra && c > 0) {
       store.addMantraSession({
         mantraId: selectedMantra.id,
         date: new Date().toISOString().slice(0, 10),
-        count, rounds, durationSec,
+        count: c, rounds, durationSec,
         startedAt: startTime, completedAt,
         targetRounds,
       });
     }
     setPage('report');
-  }, [count, startTime, selectedMantra, targetRounds, store]);
+  }, [startTime, selectedMantra, targetRounds, store, stopMantra]);
+
+  // Reset all session state
+  const resetSession = useCallback(() => {
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+    stopMantra().catch(() => {});
+    setCount(0); countRef.current = 0;
+    setStartTime(0);
+    setElapsed(0); elapsedRef.current = 0;
+    pausedElapsedRef.current = 0;
+    setIsPaused(false);
+    setAudioLoop(false);
+    setShowDedication(false);
+    setDedicationText('');
+    setPage('select');
+  }, [stopMantra]);
+
+  // Exit active page with short-session protection
+  const handleExitActive = useCallback(() => {
+    if (elapsedRef.current < 30000) {
+      Alert.alert(T('chantingTimeTooShort'), '', [
+        { text: T('confirm'), onPress: () => resetSession() },
+      ]);
+    } else {
+      Alert.alert(T('chantingExitConfirmTitle'), T('chantingExitConfirmMsg'), [
+        { text: T('chantingContinue'), style: 'cancel' },
+        { text: T('chantingEndAndRecord'), onPress: endSession },
+      ]);
+    }
+  }, [endSession, resetSession, T]);
+
+  // Toggle pause
+  const togglePause = useCallback(() => {
+    if (isPaused) {
+      // Resume: add paused duration
+      pausedElapsedRef.current += Date.now() - pauseStartRef.current;
+    } else {
+      // Pause: record pause start, stop audio
+      pauseStartRef.current = Date.now();
+      stopMantra();
+      setAudioLoop(false);
+    }
+    setIsPaused(!isPaused);
+  }, [isPaused, stopMantra]);
+
+  // Toggle audio loop
+  const toggleAudio = useCallback(() => {
+    if (!selectedMantra) return;
+    if (isPlaying) {
+      stopMantra().catch(() => {});
+      setAudioLoop(false);
+    } else {
+      setAudioLoop(true);
+      playMantra(selectedMantra.id, selectedMantra.name, { loop: true }).catch(() => {});
+    }
+  }, [selectedMantra, isPlaying, playMantra, stopMantra]);
 
   // Add preset
-  const addPreset = useCallback((preset: { name: string; subtitle: string; category: string }) => {
-    store.addMantraDef({ name: preset.name, subtitle: preset.subtitle, category: 'buddhist' as any });
+  const addPreset = useCallback((preset: { name: string; subtitle?: string; category: 'dharani' | 'sutra' | 'buddha_name' | 'custom'; pronunciation?: string; meaning?: string }) => {
+    store.addMantraDef({ name: preset.name, subtitle: preset.subtitle, category: preset.category, pronunciation: preset.pronunciation, meaning: preset.meaning });
   }, [store]);
 
   // ── SELECT PAGE ──
   if (page === 'select') {
     return (
-      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
-          <ScreenHeader title={T('mantraTitle')} onBack={() => nav.goBack()} />
+      <View style={{ flex: 1, backgroundColor: TH.bg }}>
+        <SimpleHeader routeName="Mantra" />
+        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('mantraSubtitle')}</Text>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
+
+          {/* Target rounds */}
+          <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('mantraTargetRounds')}</Text>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {[1, 2, 3, 5, 7, 10].map(n => (
+                <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
+                  style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+                    backgroundColor: targetRounds === n ? '#FBBF24' : TH.border, }}>
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
 
           {/* My Mantras */}
           <View style={{ marginBottom: 24 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
-              {T('mantraMyMantras')}
-            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>
+                {T('mantraMyMantras')}
+              </Text>
+              <TouchableOpacity onPress={() => nav.navigate('MantraHistory', {})}>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('mantraHistory')}</Text>
+              </TouchableOpacity>
+            </View>
             {myMantras.length === 0 ? (
               <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>
                 <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
@@ -178,6 +246,7 @@ export default function MantraScreen() {
             ) : (
               myMantras.map((m: MantraDef) => {
                 const total = store.getMantraTotalCount(m.id);
+                const today = store.getMantraTodayCount(m.id);
                 const streak = store.getMantraStreak(m.id);
                 const progress = m.targetCount ? Math.min(100, Math.round(total / m.targetCount * 100)) : null;
                 return (
@@ -187,6 +256,9 @@ export default function MantraScreen() {
                       <View style={{ flex: 1 }}>
                         <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{m.name}</Text>
                         {m.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{m.subtitle}</Text>}
+                        {today > 0 && (
+                          <Text style={{ fontSize: FONT_SMALL, color: '#10B981', marginTop: 4 }}>{T('mantraTodayCount')} {today}</Text>
+                        )}
                       </View>
                       <View style={{ alignItems: 'flex-end' }}>
                         <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#FBBF24' }}>{total.toLocaleString()}</Text>
@@ -203,8 +275,11 @@ export default function MantraScreen() {
                         </Text>
                       </View>
                     )}
-                    <View style={{ flexDirection: 'row', gap: 12, marginTop: 8 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
                       <Text style={{ fontSize: FONT_SMALL, color: '#F59E0B' }}>🔥 {streak} {T('mantraDays')}</Text>
+                      <TouchableOpacity onPress={() => store.removeMantraDef(m.id)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                        <Text style={{ fontSize: FONT_SMALL, color: '#EF4444' }}>移除</Text>
+                      </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
                 );
@@ -216,29 +291,137 @@ export default function MantraScreen() {
           <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
             {T('mantraPresetLibrary')}
           </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-            {PRESET_MANTRAS.filter(p => !myMantras.some(m => m.name === p.name)).map((p, i) => (
+          <TextInput
+            style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB, marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
+            placeholder={T('mantraSearchPlaceholder')}
+            placeholderTextColor={TH.sub}
+            value={presetSearch}
+            onChangeText={setPresetSearch}
+          />
+          <View style={{ marginBottom: 16, gap: 6 }}>
+            {PRESET_SUTRAS.filter(p => p.category !== 'sutra' && !myMantras.some(m => m.name === p.name) && (presetSearch === '' || p.name.includes(presetSearch) || (p.subtitle ?? '').includes(presetSearch))).map((p, i) => (
               <TouchableOpacity key={i} onPress={() => addPreset(p)}
-                style={{ paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12, borderWidth: 1, borderColor: TH.border, backgroundColor: TH.card }}>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.text }}>{p.name}</Text>
+                style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: TH.card, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: TH.border }}>
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{p.name}</Text>
+                    <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: p.category === 'sutra' ? '#6366F120' : p.category === 'buddha_name' ? '#10B98120' : '#FBBF2420' }}>
+                      <Text style={{ fontSize: 10, fontWeight: '600', color: p.category === 'sutra' ? '#6366F1' : p.category === 'buddha_name' ? '#10B981' : '#D97706' }}>
+                        {p.category === 'sutra' ? T('sutraCategorySutra') : p.category === 'buddha_name' ? T('sutraCategoryBuddhaName') : T('sutraCategoryDharani')}
+                      </Text>
+                    </View>
+                  </View>
+                  {p.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>{p.subtitle}</Text>}
+                </View>
+                <Text style={{ fontSize: 20, color: TH.sub }}>+</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          {/* Target rounds */}
-          <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('mantraTargetRounds')}</Text>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              {[1, 2, 3, 5, 7, 10].map(n => (
-                <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
-                  style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
-                    backgroundColor: targetRounds === n ? '#FBBF24' : TH.border, }}>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
         </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    );
+  }
+
+  // ── START PAGE ──
+  if (page === 'start' && selectedMantra) {
+    const handleDownloadAudio = async () => {
+      if (!selectedMantra?.audioUrl) return;
+      try {
+        await downloadAudio(selectedMantra.id, selectedMantra.audioUrl);
+        setAudioCached(true);
+      } catch {
+        Alert.alert(T('chantingDownloadFailed'));
+      }
+    };
+
+    const handlePreviewAudio = async () => {
+      if (isPlaying) {
+        await stopMantra();
+      } else {
+        await playMantra(selectedMantra.id, selectedMantra.name, { loop: audioLoop });
+      }
+    };
+
+    return (
+      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+        {/* Back button */}
+        <TouchableOpacity onPress={() => { stopMantra(); setPage('select'); }}
+          style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
+          <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+          <Text style={{ fontSize: FONT_BODY, color: TH.text, marginLeft: 8 }}>{T('chantingBack')}</Text>
+        </TouchableOpacity>
+
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, marginBottom: 8, textAlign: 'center' }}>
+            {selectedMantra.name}
+          </Text>
+          {selectedMantra.subtitle && (
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16, textAlign: 'center' }}>
+              {selectedMantra.subtitle}
+            </Text>
+          )}
+          {selectedMantra.pronunciation && (
+            <Text style={{ fontSize: FONT_BODY, color: '#F59E0B', marginBottom: 16, textAlign: 'center' }}>
+              {selectedMantra.pronunciation}
+            </Text>
+          )}
+          {selectedMantra.meaning && (
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24, textAlign: 'center', fontStyle: 'italic' }}>
+              {selectedMantra.meaning}
+            </Text>
+          )}
+
+          {/* Audio section */}
+          {selectedMantra.audioUrl ? (
+            <View style={{ alignItems: 'center', marginBottom: 24 }}>
+              {downloading === selectedMantra.id ? (
+                <View style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30`, minWidth: 200, alignItems: 'center' }}>
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>{T('chantingDownloadProgress')} {Math.round(dlProgress * 100)}%</Text>
+                  <View style={{ height: 4, width: '100%', backgroundColor: `${TH.border}60`, borderRadius: 2, marginTop: 8 }}>
+                    <View style={{ height: 4, width: `${dlProgress * 100}%`, backgroundColor: TH.primary, borderRadius: 2 }} />
+                  </View>
+                </View>
+              ) : (
+                <TouchableOpacity onPress={audioCached ? handlePreviewAudio : handleDownloadAudio}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30` }}>
+                  <Text style={{ fontSize: 20 }}>{isPlaying ? '🔊' : audioCached ? '▶️' : '⬇️'}</Text>
+                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>
+                    {isPlaying ? T('chantingListening') : audioCached ? T('chantingListening') : T('chantingDownloadAudio')}
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {audioCached && (
+                <TouchableOpacity onPress={() => { setAudioLoop(prev => !prev); }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 }}>
+                  <View style={{ width: 20, height: 20, borderRadius: 4, borderWidth: 2, borderColor: TH.primary, backgroundColor: audioLoop ? TH.primary : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
+                    {audioLoop && <Text style={{ fontSize: 12, color: '#fff' }}>✓</Text>}
+                  </View>
+                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{T('chantingLoopAudio')}</Text>
+                </TouchableOpacity>
+              )}
+
+              {selectedMantra.audioAttribution ? (
+                <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 8, textAlign: 'center' }}>
+                  {T('chantingAudioSource')}: {selectedMantra.audioAttribution}
+                </Text>
+              ) : null}
+            </View>
+          ) : (
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24 }}>{T('chantingNoAudio')}</Text>
+          )}
+
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24, textAlign: 'center' }}>
+            {T('mantraTargetDesc')}: {targetRounds} 遍 · 每遍 108 颗
+          </Text>
+
+          <TouchableOpacity onPress={beginChanting}
+            style={{ paddingVertical: 16, paddingHorizontal: 48, borderRadius: 16, backgroundColor: '#FBBF24' }}>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff' }}>{T('mantraBegin')}</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   }
@@ -247,6 +430,12 @@ export default function MantraScreen() {
   if (page === 'active') {
     return (
       <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+        {/* Exit button */}
+        <TouchableOpacity onPress={handleExitActive}
+          style={{ position: 'absolute', top: 16, right: 16, zIndex: 10, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, backgroundColor: `${TH.card}CC` }}>
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>✕ {T('chantingExit')}</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           activeOpacity={1}
@@ -255,8 +444,22 @@ export default function MantraScreen() {
           <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>
             {selectedMantra?.name}
           </Text>
+          {selectedMantra?.pronunciation && (
+            <Text style={{ fontSize: 12, color: '#F59E0B', marginBottom: 4 }}>
+              {selectedMantra.pronunciation}
+            </Text>
+          )}
 
-          <MalaRing count={count} TH={TH} T={T} />
+          <MalaRing
+            count={count}
+            beadCount={BEAD_COUNT}
+            size={280}
+            beadColor="#FBBF24"
+            trackColor={`${TH.border}40`}
+            textColor="#FBBF24"
+            centerSubLabel={'108'}
+            centerLabel={`${T('mantraRounds')}: ${Math.floor(count / BEAD_COUNT)}`}
+          />
 
           <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 16 }}>
             {formatTime(elapsed)} · {T('mantraTarget')}: {targetRounds} {T('mantraRounds')}
@@ -270,18 +473,25 @@ export default function MantraScreen() {
         {/* Controls */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 32, paddingBottom: 20 }}>
           <TouchableOpacity onPress={handleUndo}
-            style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 12, backgroundColor: TH.card }}>
+            style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: TH.card }}>
             <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>← {T('mantraBack')}</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={toggleAudio}
+            style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: isPlaying ? '#F59E0B' : TH.card }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: isPlaying ? '#fff' : TH.text }}>
+              {isPlaying ? '🔊' : '🔇'}
+            </Text>
+          </TouchableOpacity>
+
           {isPaused ? (
-            <TouchableOpacity onPress={() => setIsPaused(false)}
-              style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 12, backgroundColor: '#10B981' }}>
+            <TouchableOpacity onPress={togglePause}
+              style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: '#10B981' }}>
               <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('mantraResume')}</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => setIsPaused(true)}
-              style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 12, backgroundColor: TH.card }}>
+            <TouchableOpacity onPress={togglePause}
+              style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: TH.card }}>
               <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('mantraPause')}</Text>
             </TouchableOpacity>
           )}
@@ -303,8 +513,13 @@ export default function MantraScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
+        <TouchableOpacity onPress={resetSession} style={{ marginRight: 12 }}>
+          <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+        </TouchableOpacity>
+        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('mantraSessionComplete')}</Text>
+      </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
-        <ScreenHeader title={T('mantraSessionComplete')} onBack={() => setPage('select')} />
 
         {/* Summary Card */}
         <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
@@ -350,7 +565,7 @@ export default function MantraScreen() {
           </View>
         </TouchableOpacity>
 
-        <PrimaryButton label={T('mantraFinish')} onPress={() => setPage('select')} color="#FBBF24" />
+        <PrimaryButton label={T('mantraFinish')} onPress={resetSession} color="#FBBF24" />
       </ScrollView>
 
       {/* Dedication Modal */}

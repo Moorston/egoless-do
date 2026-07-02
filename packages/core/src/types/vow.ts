@@ -2,7 +2,7 @@ import type { Syncable } from './shared';
 
 export type VisionType = 'lifetime' | 'long' | 'short';
 export type VisionStatus = 'active' | 'achieved' | 'archived';
-export type LongTimeFrame = '1year' | '3years' | '5years';
+export type LongTimeFrame = '2years' | '3years' | '5years' | '10years';
 export type ShortTimeFrame = '3months' | '6months' | '1year';
 export type VisionTimeFrame = LongTimeFrame | ShortTimeFrame;
 export type RefType = 'habit' | 'plan';
@@ -13,6 +13,7 @@ export interface Vision extends Syncable {
   type: VisionType;
   text: string;
   timeFrame?: VisionTimeFrame;
+  startDate?: string;
   deadline?: string;
   status: VisionStatus;
   achievedAt?: number;
@@ -80,6 +81,11 @@ export const VISION_TIME_FRAMES: { key: VisionTimeFrame; labelKey: string }[] = 
   { key: '3months', labelKey: 'vowTf3Months' },
   { key: '6months', labelKey: 'vowTf6Months' },
   { key: '1year', labelKey: 'vowTf1Year' },
+  { key: '2years', labelKey: 'vowTf2Years' },
   { key: '3years', labelKey: 'vowTf3Years' },
   { key: '5years', labelKey: 'vowTf5Years' },
+  { key: '10years', labelKey: 'vowTf10Years' },
 ];
+
+export const SHORT_TIME_FRAMES: VisionTimeFrame[] = ['3months', '6months', '1year'];
+export const LONG_TIME_FRAMES: VisionTimeFrame[] = ['2years', '3years', '5years', '10years'];

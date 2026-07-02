@@ -23,6 +23,7 @@ import { uid, dateStr, activeOnly } from '../utils';
 import type { StorageAdapter, PlanSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
+import { notifyDelayedPlan } from '../services/notification';
 const log = createLogger('Store');
 
 export function createPlanSlice(
@@ -597,20 +598,12 @@ export function createPlanSlice(
         if (plan.lastDelayedNotifyAt) continue;
 
         try {
-          // Call API to send email notification
-          const apiBase = process.env.EXPO_PUBLIC_API_BASE || 'https://egolessdo.freebytes.net';
-          await fetch(`${apiBase}/api/plan/notify-delayed`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              planId: plan.id,
-              planName: plan.name,
-              endDate: plan.endDate,
-              userId,
-            }),
+          await notifyDelayedPlan({
+            planId: plan.id,
+            planName: plan.name,
+            endDate: plan.endDate,
+            userId,
+            token,
           });
 
           // Update plan with notification timestamp — re-read to avoid stale overwrite

@@ -66,10 +66,6 @@ migrate((txApp) => {
       }
     ],
     "id": "pbc_1896997850",
-    "indexes": [
-      "CREATE INDEX idx_push_tokens_user ON push_tokens (user_id)",
-      "CREATE UNIQUE INDEX idx_push_tokens_token ON push_tokens (token)"
-    ],
     "listRule": "@request.auth.id = user_id",
     "name": "push_tokens",
     "system": false,
@@ -78,7 +74,15 @@ migrate((txApp) => {
     "viewRule": "@request.auth.id = user_id"
   });
 
-  return txApp.save(collection);
+  txApp.save(collection);
+
+  // Add indexes after table exists
+  var c = txApp.findCollectionByNameOrId("pbc_1896997850");
+  c.indexes = [
+    "CREATE INDEX idx_push_tokens_user ON push_tokens (user_id)",
+    "CREATE UNIQUE INDEX idx_push_tokens_token ON push_tokens (token)"
+  ];
+  txApp.save(c);
 }, (app) => {
   const collection = txApp.findCollectionByNameOrId("pbc_1896997850");
 

@@ -9,6 +9,7 @@ import type {
   AIMode, ModelConfig, SleepEntry, EatingMotivationEntry, CustomWuxingMap,
   Vision, VisionPractice, Dedication, FearEntry, CourageEntry, FearAchievement,
   MantraDef, MantraSession, SutraReadingSession,
+  BreathingRecord, ZhiguanSession,
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
@@ -162,4 +163,12 @@ export function rowToFearAchievement(r: Record<string, unknown>): FearAchievemen
 
 export function rowToSutraReading(r: Record<string, unknown>): SutraReadingSession {
   return rowToEntityMap.sutraReading(r) as unknown as SutraReadingSession;
+}
+
+export function rowToBreath(r: Record<string, unknown>): BreathingRecord {
+  return rowToEntityMap.breath(r) as unknown as BreathingRecord;
+}
+
+export function rowToZhiguanSession(r: Record<string, unknown>): ZhiguanSession {
+  return rowToEntityMap.zhiguanSession(r) as unknown as ZhiguanSession;
 }

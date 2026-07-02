@@ -23,7 +23,7 @@ export function createUiSlice(
 
     resetData() {
       const { auth, theme, language } = get();
-      set(createResetDataPatch(auth, theme, language) as any);
+      set(createResetDataPatch(auth, theme, language) as Partial<UiSlice>);
     },
   });
 }

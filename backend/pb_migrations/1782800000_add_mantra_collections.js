@@ -4,16 +4,23 @@
 
 migrate((txApp) => {
   function ensureCollection(name, config) {
-    try { txApp.findCollectionByNameOrId(name); return; } catch {}
-    const safeConfig = Object.assign({}, config, {
+    try { txApp.findCollectionByNameOrId(name); return; } catch (e) {}
+    var indexes = config.indexes || [];
+    var safeConfig = Object.assign({}, config, {
+      indexes: [],
       listRule: null, viewRule: null, createRule: null, updateRule: null, deleteRule: null,
     });
-    const collection = new Collection(safeConfig);
+    var collection = new Collection(safeConfig);
     txApp.save(collection);
+    if (indexes.length > 0) {
+      var c = txApp.findCollectionByNameOrId(name);
+      c.indexes = indexes;
+      txApp.save(c);
+    }
   }
   function setRules(name, rules) {
     try {
-      const c = txApp.findCollectionByNameOrId(name);
+      var c = txApp.findCollectionByNameOrId(name);
       c.listRule = rules.listRule; c.viewRule = rules.viewRule;
       c.createRule = rules.createRule; c.updateRule = rules.updateRule;
       c.deleteRule = rules.deleteRule;
@@ -52,7 +59,7 @@ migrate((txApp) => {
     options: {},
   });
 
-  const AUTH_RULES = {
+  var AUTH_RULES = {
     listRule: '@request.auth.id != ""', viewRule: '@request.auth.id != ""',
     createRule: '@request.auth.id != ""', updateRule: '@request.auth.id != ""',
     deleteRule: '@request.auth.id != ""',
@@ -60,7 +67,7 @@ migrate((txApp) => {
   setRules("mantra_defs", AUTH_RULES);
   setRules("mantra_sessions", AUTH_RULES);
 }, (txApp) => {
-  for (const name of ["mantra_defs", "mantra_sessions"]) {
-    try { const c = txApp.findCollectionByNameOrId(name); if (c) txApp.delete(c); } catch {}
+  for (var name of ["mantra_defs", "mantra_sessions"]) {
+    try { var c = txApp.findCollectionByNameOrId(name); if (c) txApp.deleteCollection(c); } catch {}
   }
 });

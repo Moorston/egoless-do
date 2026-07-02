@@ -12,7 +12,7 @@ migrate((txApp) => {
     name: "global_checkins",
     type: "base",
     system: false,
-    schema: [
+    fields: [
       {
         name: "checkin_id",
         type: "text",
@@ -115,7 +115,7 @@ migrate((txApp) => {
     name: "global_stats",
     type: "base",
     system: false,
-    schema: [
+    fields: [
       {
         name: "total_users",
         type: "number",

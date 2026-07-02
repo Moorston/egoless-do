@@ -27,7 +27,7 @@ export const LINK_COLORS: Record<PlanItemLink, string> = {
 };
 
 export const HABIT_LINK_COLORS: Record<import('./types').HabitLink, string> = {
-  none: COLORS.GRAY, fasting: '#F59E0B', meditation: '#8B5CF6', exercise: '#10B981',
+  none: COLORS.GRAY, fasting: '#F59E0B', meditation: '#8B5CF6', exercise: '#10B981', sleep: '#6366F1',
 };
 
 /** Level 1: 主题主渐变 — 从 theme.primary 派生，色相不变，只变明度 */
@@ -423,6 +423,8 @@ export const SPORT_BG_COLORS: Record<string, string> = {
 
 export * from './constants/music';
 export * from './constants/wuxingMap';
+export * from './constants/sutraTexts';
+export { PRESET_SUTRAS } from './types/mantra';
 
 export const GLOBAL_USERS: GlobalUser[] = [
   { id: 1, name: '林夕',   lat: 39.9, lng: 116.4, days: 365, sport: '跑步',   since: '2025-05', duration: '1年' },

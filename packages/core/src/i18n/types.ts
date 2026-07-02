@@ -590,10 +590,11 @@ export interface I18nKeys {
   practiceTuneFood: string; practiceTuneFoodDesc: string;
   practiceMindVow: string; practiceMindVowDesc: string;
   practiceMindMeditate: string; practiceMindMeditateDesc: string;
+  practiceMindZhiguan: string; practiceMindZhiguanDesc: string;
   practiceMindInsight: string; practiceMindInsightDesc: string;
   practiceMindMind: string; practiceMindMindDesc: string;
   practiceActionPrecept: string; practiceActionPreceptDesc: string;
-  preceptTitle: string; preceptQuote: string; preceptStreak: string; preceptTotalDays: string; preceptMonthRate: string;
+  preceptTitle: string; preceptSubtitle: string; preceptQuote: string; preceptStreak: string; preceptTotalDays: string; preceptMonthRate: string;
   preceptAvoid: string; preceptPractice: string; preceptDone: string; preceptNotDone: string; preceptViolated: string;
   preceptTriggerTitle: string; preceptReflectionTitle: string; preceptReflectionPlaceholder: string;
   preceptSave: string; preceptSkip: string; preceptAddNew: string; preceptAddCustom: string;
@@ -601,6 +602,7 @@ export interface I18nKeys {
   preceptType: string; preceptTypeAvoid: string; preceptTypePractice: string;
   preceptHistory: string; preceptViolations: string; preceptInsights: string; preceptRecentInsight: string;
   preceptAllDone: string; preceptQuoteText: string; preceptDays: string;
+  preceptToday: string; preceptEmptyHint: string; preceptBatchDone: string; preceptBatchUndo: string;
   giveTitle: string; giveQuote: string; giveMaterial: string; giveDharma: string; giveFearless: string;
   giveTotal: string; giveMonth: string; giveWeek: string; giveRecord: string; giveRecent: string;
   giveHistory: string; giveContent: string; giveContentPlaceholder: string; giveMotivation: string;
@@ -612,6 +614,10 @@ export interface I18nKeys {
   practiceOtherSound: string; practiceOtherSoundDesc: string;
   practiceOtherRead: string; practiceOtherReadDesc: string;
   breathScientific: string; breathSpiritual: string;
+  breathingTitle: string; breathingSubtitle: string;
+  breathingHistory: string; breathTotalSessions: string; breathTotalMinutes: string; breathStreak: string; breathDistressImprove: string; breathMostUsed: string; breathRecentSessions: string; breathNoRecords: string; breathDeleteRecord: string; breathDeleteConfirm: string;
+  breathGuideTitle: string; breathPhaseDiagram: string; breathVoiceGuide: string; breathCueSound: string; breathReady: string; breathAdjust: string; breathBegin: string; breathLongPressHint: string; breathThisReflection: string; breathReflectionPlaceholder: string; breathSaveTagHint: string; breathSaving: string; breathSaveRecord: string;
+  breathSaveFailed: string; breathRetry: string;
   breathGuide: string; breathStart: string; breathPause: string; breathResume: string; breathStop: string;
   breathCycles: string; breathPhase: string; breathInhale: string; breathHold: string; breathExhale: string;
   breathPreDistress: string; breathPostDistress: string;
@@ -660,6 +666,10 @@ export interface I18nKeys {
   dietCommonFoods: string; dietAllFoods: string;
   dietMotivationTitle: string; dietMotivationPhysical: string; dietMotivationEmotional: string;
   dietMotivationHabitual: string; dietMotivationSocial: string;
+  dietMotivationHunger: string; dietMotivationStress: string;
+  dietMotivationBoredom: string; dietMotivationHabit: string;
+  dietMotivationReward: string; dietMotivationCraving: string;
+  dietMotivationComfort: string;
   dietEmotionSensitive: string; dietEmotionSensitiveHint: string;
   dietEmotionTimeline: string; dietHeatmapTitle: string;
   dietFastingSync: string; dietFastingSuggestion: string;
@@ -676,7 +686,7 @@ export interface I18nKeys {
   dietCategorySeasoning: string; dietCategoryOther: string;
 
   // Mind (调心)
-  mindTitle: string; mindTabFear: string; mindTabCourage: string; mindTabInsight: string;
+  mindTitle: string; mindSubtitle: string; mindTabFear: string; mindTabCourage: string; mindTabInsight: string;
   mindAddFear: string; mindFearContent: string; mindFearTrigger: string;
   mindFearCategory: string; mindFearClassification: string;
   mindClassifyQ1: string; mindClassifyQ1Yes: string; mindClassifyQ1No: string; mindClassifyQ1Unsure: string;
@@ -709,7 +719,7 @@ export interface I18nKeys {
   mindHeatmapHint: string; mindFearDetail: string; mindSortByIndex: string;
 
   // Sutra (诵经)
-  sutraTitle: string; sutraTabLibrary: string; sutraTabCounter: string; sutraTabStats: string;
+  sutraTitle: string; sutraSubtitle: string; sutraTabLibrary: string; sutraTabCounter: string; sutraTabStats: string;
   sutraAddCustom: string; sutraStartChant: string; sutraStartReading: string;
   sutraReadMode: string; sutraChantMode: string;
   sutraRound: string; sutraTargetRounds: string; sutraCount: string;
@@ -717,7 +727,7 @@ export interface I18nKeys {
   sutraDedicationAll: string; sutraDedicationFamily: string;
   sutraComplete: string; sutraSaveComplete: string;
   sutraTotalChants: string; sutraTotalDuration: string; sutraStreak: string;
-  sutraCategoryDharani: string; sutraCategorySutra: string; sutraCategoryCustom: string;
+  sutraCategoryDharani: string; sutraCategorySutra: string; sutraCategoryBuddhaName: string; sutraCategoryCustom: string;
   sutraNoRecords: string; sutraHistory: string;
   sutraFontSizeSmaller: string; sutraFontSizeLarger: string;
   sutraSimplified: string; sutraTraditional: string;
@@ -727,6 +737,51 @@ export interface I18nKeys {
   sutraSearchPlaceholder: string; sutraCustomMantra: string;
   sutraCustomMantraName: string; sutraCustomMantraSubtitle: string;
   sutraCustomMantraTarget: string;
+  // ── 重构新增 key ──
+  sutraMySutras: string;
+  sutraPresetLibrary: string;
+  sutraNoSutras: string;
+  sutraAddHint: string;
+  sutraStartChantNew: string;
+  sutraListen: string;
+  sutraLoopAudio: string;
+  sutraBegin: string;
+  sutraTotalRounds: string;
+  sutraTotalDurationShort: string;
+  sutraPresetCategorySutra: string;
+  sutraPresetCategoryDharani: string;
+  sutraPresetCategoryBuddhaName: string;
+  sutraPresetCategoryCustom: string;
+  sutraImportCustom: string;
+  sutraImportTitle: string;
+  sutraImportName: string;
+  sutraImportSubtitle: string;
+  sutraImportCategory: string;
+  sutraImportText: string;
+  sutraImportPlaceholder: string;
+  sutraImportBtn: string;
+  sutraRemove: string;
+  sutraAlreadyAdded: string;
+  SutraAdded: string;
+  sutraBack: string;
+  sutraUndo: string;
+  sutraDone: string;
+  sutraTarget: string;
+  sutraSessionDuration: string;
+  sutraTodayCount: string;
+  sutraTapAnywhere: string;
+  sutraPages: string;
+  sutraDedicationHint: string;
+
+  // Chanting shared (mantra + sutra)
+  chantingBack: string; chantingExit: string;
+  chantingExitConfirmTitle: string; chantingExitConfirmMsg: string;
+  chantingContinue: string; chantingEndAndRecord: string;
+  chantingTimeTooShort: string;
+  chantingDownloadAudio: string; chantingListening: string;
+  chantingLoopAudio: string; chantingAudioSource: string;
+  chantingDownloadProgress: string; chantingDownloadFailed: string;
+  chantingPleaseDownloadFirst: string; chantingNoAudio: string;
 
   // Auth
   authEmailPlaceholder: string; authPasswordPlaceholder: string; authLoginBtn: string;
@@ -786,9 +841,13 @@ export interface I18nKeys {
   reflRelationMap: string;
 
   // Body
-  bodyTitle: string; bodyProfile: string; bodyGoal: string; bodyPlan: string; bodyExec: string;
-  bodyHeight: string; bodyWeight: string; bodyBmi: string; bodyBodyFat: string; bodyAge: string; bodyGender: string;
+  bodyTitle: string; bodySubtitle: string; bodyProfile: string; bodyGoal: string; bodyPlan: string; bodyExec: string;
+  bodyHeight: string; bodyWeight: string; bodyBmi: string;
+  bodyBodyFat: string; bodyAgeGroup: string; bodyGender: string;
   bodyBmr: string; bodyMale: string; bodyFemale: string; bodyNotSet: string;
+  bodyAge1829: string; bodyAge3039: string; bodyAge4049: string;
+  bodyAge5059: string; bodyAge6069: string; bodyAge70p: string;
+  bodyBodyFatEstimate: string; bodyBodyFatEstimated: string;
   bodyBmiThin: string; bodyBmiNormal: string; bodyBmiOverweight: string; bodyBmiObese: string;
   bodySelfAssessment: string; bodySelfAssessmentPlaceholder: string;
   bodySelfAssessmentHint: string; bodySelfAssessmentInputPlaceholder: string;
@@ -827,6 +886,10 @@ export interface I18nKeys {
   bodyFlowAwarenessHint: string; bodyFlowAwarenessSaved: string;
   bodyFlowDone: string; bodyFlowSkipped: string; bodyFlowRecorded: string;
   bodyFlowFinish: string; bodyFlowPracticeDone: string;
+  bodyTodayPlan: string; bodyTodayPlanEmpty: string; bodyTodayPlanRest: string;
+  bodyStartPractice: string; bodyStartToday: string; bodyToday: string;
+  bodyWeekProgress: string; bodyDayCompleted: string; bodyDayRestShort: string;
+  bodySetPlan: string; bodyTodayDone: string;
 
   // Vow
   vowTitle: string; vowLifetime: string; vowLong: string; vowShort: string;
@@ -835,8 +898,8 @@ export interface I18nKeys {
   vowEdit: string; vowSave: string; vowCreate: string; vowCancel: string;
   vowAchieve: string; vowArchive: string; vowDelete: string;
   vowText: string; vowTextPlaceholder: string;
-  vowDeadline: string; vowTimeFrame: string;
-  vowTf3Months: string; vowTf6Months: string; vowTf1Year: string; vowTf3Years: string; vowTf5Years: string;
+  vowDeadline: string; vowTimeFrame: string; vowStartDate: string; vowEndDate: string;
+  vowTf3Months: string; vowTf6Months: string; vowTf1Year: string; vowTf2Years: string; vowTf3Years: string; vowTf5Years: string; vowTf10Years: string;
   vowLinkHabit: string; vowLinkPlan: string; vowNoLink: string;
   vowNoVision: string; vowNoLifetime: string;
   vowLifetimeHint: string;
@@ -844,7 +907,18 @@ export interface I18nKeys {
   vowNeedArchive: string;
   vowProgressDays: string; vowProgressMonth: string; vowProgressStreak: string;
   vowProgressToday: string; vowProgressWeekly: string; vowProgressHabitDone: string; vowProgressPlanDone: string;
+  vowLinkedPlans: string;
+  vowLinkedPlanExpand: string;
+  vowLinkedPlanCollapse: string;
+  vowNoLinkedPlans: string;
+  planLinkVision: string;
+  planSelectVision: string;
+  planChangeVision: string;
+  planUnlinkVision: string;
+  planLinkedVision: string;
   vowDedWrite: string; vowDedHistory: string; vowDedSettings: string;
+  vowEditTitle: string; vowNewTitle: string; vowType: string;
+  vowTimeRange: string; vowContent: string; vowContentPlaceholder: string;
   vowDedFrequency: string; vowDedDay: string; vowDedRemind: string;
   vowDedWeekly: string; vowDedBiweekly: string; vowDedMonthly: string; vowDedCustom: string;
   vowDedInsight: string; vowDedInsightPlaceholder: string;
@@ -855,13 +929,15 @@ export interface I18nKeys {
   vowAchievedList: string; vowExpandMore: string; vowCollapse: string;
 
   // Mantra
-  mantraTitle: string; mantraSelect: string; mantraStart: string;
+  mantraTitle: string; mantraSubtitle: string; mantraSelect: string; mantraStart: string;
   mantraCount: string; mantraRounds: string; mantraPause: string; mantraResume: string;
   mantraStop: string; mantraBack: string; mantraTotal: string; mantraStreak: string;
   mantraTarget: string; mantraCustom: string; mantraCustomName: string;
   mantraCustomSubtitle: string; mantraMyMantras: string;
   mantraPresetLibrary: string; mantraAdd: string; mantraDelete: string;
   mantraNoMantra: string; mantraAddHint: string;
+  mantraHistory: string; mantraTodayCount: string; mantraRemove: string;
+  mantraSearchPlaceholder: string; mantraTargetDesc: string;
   mantraSessionComplete: string; mantraSessionCount: string;
   mantraSessionRounds: string; mantraSessionDuration: string;
   mantraCumulative: string; mantraDays: string; mantraMilestone: string;
@@ -869,7 +945,103 @@ export interface I18nKeys {
   mantraDedicationPlaceholder: string;
   mantraFinish: string; mantraTargetRounds: string;
   mantraRoundComplete: string; mantraTapAnywhere: string;
-  mantraBeats: string; mantraPerRound: string;
+  mantraBeats: string; mantraPerRound: string; mantraCancel: string;
+  mantraPronunciationTitle: string; mantraMeaningTitle: string;
+  mantraListen: string; mantraListening: string;
+  mantraLoopAudio: string; mantraBegin: string;
+
+  // ── 止观双修 (Zhiguan) ──
+  zhiguanTitle: string; zhiguanSubtitle: string;
+  zhiguanPreparation: string; zhiguanPractice: string; zhiguanClosing: string;
+  zhiguanStartSitting: string; zhiguanStartPrompt: string;
+  zhiguanStart: string; zhiguanHoldToStop: string; zhiguanReleaseToCancel: string;
+  zhiguanTargetMinutes: string;
+
+  // 发愿 sankalpa
+  zhiguanSankalpa: string; zhiguanSankalpaLabel: string; zhiguanSankalpaPlaceholder: string; zhiguanSankalpaHint: string;
+  zhiguanSankalpaBodhicittaTitle: string; zhiguanSankalpaRenunciationTitle: string;
+  zhiguanSankalpaCompassionTitle: string; zhiguanSankalpaRepentanceTitle: string;
+  zhiguanSankalpaGratitudeTitle: string; zhiguanSankalpaGeneralTitle: string;
+  zhiguanSankalpaCounter: string;
+
+  // 呼吸节奏
+  zhiguanBreathRhythm: string;
+  zhiguanBreathStandard: string; zhiguanBreathCalming: string; zhiguanBreathClosing: string;
+  zhiguanTargetDuration: string; zhiguanFreeDuration: string;
+
+  // 背景音
+  zhiguanBackgroundSound: string;
+  zhiguanSoundNone: string; zhiguanSoundBell: string; zhiguanSoundRain: string; zhiguanSoundBowl: string;
+
+  // 五盖 hindrances
+  zhiguanHindranceTitle: string; zhiguanHindranceHint: string;
+  zhiguanHindranceSkip: string; zhiguanHindranceConfirm: string;
+  zhiguanHindranceGreed: string; zhiguanHindranceAversion: string;
+  zhiguanHindranceSloth: string; zhiguanHindranceRestlessness: string; zhiguanHindranceDoubt: string;
+  zhiguanHindranceNone: string; zhiguanHindranceSevere: string;
+
+  // 法门 methods
+  zhiguanMethodLabel: string; zhiguanMethodHint: string;
+  zhiguanMethodAnapanasati: string; zhiguanMethodAnapanasatiDesc: string; zhiguanMethodAnapanasatiOpen: string;
+  zhiguanMethodSelfInquiry: string; zhiguanMethodSelfInquiryDesc: string; zhiguanMethodSelfInquiryOpen: string;
+  zhiguanMethodKasina: string; zhiguanMethodKasinaDesc: string; zhiguanMethodKasinaOpen: string;
+  zhiguanMethodMetta: string; zhiguanMethodMettaDesc: string; zhiguanMethodMettaOpen: string;
+
+  // 定慧意图
+  zhiguanIntentLabel: string; zhiguanIntentHint: string;
+  zhiguanIntentSamatha: string; zhiguanIntentVipassana: string;
+
+  // Practice
+  zhiguanPracticeTimer: string; zhiguanPracticePause: string; zhiguanPracticeResume: string;
+  zhiguanPracticeStop: string; zhiguanPracticeStopConfirm: string;
+  zhiguanPracticeBreathCount: string; zhiguanPracticeRound: string;
+  zhiguanPracticeClosingComing: string;
+  zhiguanPracticeHint5min: string; zhiguanPracticeHint30min: string; zhiguanPracticeHint60min: string;
+
+  // 出定 Closing
+  zhiguanClosingTitle: string; zhiguanClosingHint: string;
+  zhiguanClosingGuide: string;
+  zhiguanClosingInhale: string; zhiguanClosingHold: string; zhiguanClosingExhale: string;
+  zhiguanClosingContinueSitting: string;
+  zhiguanTactileTitle: string; zhiguanTactileHint: string;
+  zhiguanTactileMovement: string; zhiguanTactileItching: string;
+  zhiguanTactileCold: string; zhiguanTactileWarmth: string;
+  zhiguanTactileLightness: string; zhiguanTactileHeaviness: string;
+  zhiguanTactileRoughness: string; zhiguanTactileSmoothness: string;
+  zhiguanSelfReportedTitle: string; zhiguanSelfReportedHint: string;
+  zhiguanStageNotSpecified: string; zhiguanStageScattered: string;
+  zhiguanStageDesireRealm: string; zhiguanStagePreparation: string;
+  zhiguanStageFirstJhana: string; zhiguanStageSecondJhana: string;
+  zhiguanStageThirdJhana: string; zhiguanStageFourthJhana: string; zhiguanStageOther: string;
+  zhiguanStageTeacherVerify: string;
+  zhiguanClosingNotesLabel: string; zhiguanClosingNotesPlaceholder: string;
+  zhiguanDedicationBtn: string; zhiguanToMantra: string;
+  zhiguanBackHome: string; zhiguanFinishBtn: string; zhiguanDiscardBtn: string;
+  zhiguanSessionComplete: string; zhiguanMinutes: string;
+  zhiguanSessionNote: string; zhiguanSessionNotePlaceholder: string;
+  zhiguanDedication: string; zhiguanFinish: string; zhiguanAbandon: string;
+
+  // 回向规则（经文式引用）
+  zhiguanRuleSloth: string; zhiguanRuleRestlessness: string; zhiguanRuleGreed: string;
+  zhiguanRuleAversion: string; zhiguanRuleDoubt: string; zhiguanRuleDefault: string;
+
+  // Vipassana 念处
+  zhiguanVipassanaLabel: string;
+  zhiguanVipassanaKayaTitle: string; zhiguanVipassanaVedanaTitle: string;
+  zhiguanVipassanaCittaTitle: string; zhiguanVipassanaDharmaTitle: string;
+  zhiguanVipassanaKayaLine1: string; zhiguanVipassanaKayaLine2: string; zhiguanVipassanaKayaLine3: string; zhiguanVipassanaKayaLine4: string; zhiguanVipassanaKayaLine5: string;
+  zhiguanVipassanaVedanaLine1: string; zhiguanVipassanaVedanaLine2: string; zhiguanVipassanaVedanaLine3: string; zhiguanVipassanaVedanaLine4: string; zhiguanVipassanaVedanaLine5: string;
+  zhiguanVipassanaCittaLine1: string; zhiguanVipassanaCittaLine2: string; zhiguanVipassanaCittaLine3: string; zhiguanVipassanaCittaLine4: string; zhiguanVipassanaCittaLine5: string;
+  zhiguanVipassanaDharmaLine1: string; zhiguanVipassanaDharmaLine2: string; zhiguanVipassanaDharmaLine3: string; zhiguanVipassanaDharmaLine4: string; zhiguanVipassanaDharmaLine5: string;
+
+  // 履历
+  zhiguanHistoryTitle: string;
+  zhiguanStatSessions: string; zhiguanStatTotalMin: string; zhiguanStatLongestMin: string;
+  zhiguanStatStreak: string; zhiguanStatLongestStreak: string;
+  zhiguanStatMethodDist: string;
+  zhiguanEmptyHistoryTitle: string; zhiguanEmptyHistoryDesc: string;
+  zhiguanDeleteRecord: string; zhiguanDeleteConfirm: string;
+  zhiguanExportJson: string;
 }
 
 export type I18nKey = keyof I18nKeys;

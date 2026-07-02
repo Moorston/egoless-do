@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Animated, Easing, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Animated, Easing, StyleSheet, AppState, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme, useT } from '../../components/UI';
@@ -9,7 +9,7 @@ import type { BreathingPreset, GuideStyle, BreathPhaseType } from '@egoless-do/c
 import { BREATHING_PRESETS, cycleDuration, phaseLabelKey, getDescKey, getTipsKey } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { Wind, Play, Pause, ChevronRight, X, Check, Volume2, VolumeX } from 'lucide-react-native';
+import { Play, Pause, ChevronRight, X, Check, Volume2, VolumeX } from 'lucide-react-native';
 import { useBreathAudio } from './useBreathAudio';
 
 const log = createLogger('Breathing');
@@ -75,7 +75,7 @@ export default function BreathingScreen() {
         if (k === VOICE_KEY && v !== null) setVoiceEnabled(v === '1');
         if (k === CUE_KEY && v !== null) setCueEnabled(v === '1');
       });
-    });
+    }).catch(() => {});
   }, []);
 
   const saveGuideStyle = useCallback((style: GuideStyle) => {
@@ -167,10 +167,29 @@ export default function BreathingScreen() {
     return () => { if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; } };
   }, [isPaused, page]);
 
+  // C1: Pause rAF on background, resume on foreground
+  const bgTimestampRef = useRef(0);
+  useEffect(() => {
+    if (page !== 'active') return;
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state.match(/inactive|background/)) {
+        bgTimestampRef.current = Date.now();
+        if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+      } else if (state === 'active' && bgTimestampRef.current > 0 && !isPausedRef.current) {
+        const bgDuration = Date.now() - bgTimestampRef.current;
+        pausedElapsedRef.current += bgDuration;
+        bgTimestampRef.current = 0;
+        rafRef.current = requestAnimationFrame(() => breathLoopRef.current?.());
+      }
+    });
+    return () => sub.remove();
+  }, [page]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+      if (holdTimeoutRef.current) { clearTimeout(holdTimeoutRef.current); holdTimeoutRef.current = null; }
     };
   }, []);
 
@@ -291,16 +310,29 @@ export default function BreathingScreen() {
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
+      // Save to dedicated breathing history
+      store.addBreathRecord({
+        date: new Date().toISOString().slice(0, 10),
+        presetKey: selectedPreset?.key ?? 'unknown',
+        durationSec: totalElapsed,
+        cycles,
+        preDistress,
+        postDistress,
+        reflection: reflection.trim() || undefined,
+        guideStyle: guideStyle,
+      });
+      // Also add to generic meditation minutes (for total stats)
       store.addMedMinutes(Math.round(totalElapsed / 60));
       if (reflection.trim()) {
         store.addReflection({ content: reflection.trim(), tags: ['调息'], mood: '' });
       }
     } catch (e) {
       log.warn('Save breathing record failed', e);
+      Alert.alert(T('breathSaveFailed') || '保存失败', T('breathRetry') || '请重试');
     }
     setSaving(false);
     handleFinish();
-  }, [reflection, totalElapsed, handleFinish]);
+  }, [reflection, totalElapsed, cycles, preDistress, postDistress, guideStyle, selectedPreset, handleFinish, store]);
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
@@ -313,6 +345,13 @@ export default function BreathingScreen() {
     return (
       <View style={{ flex: 1, backgroundColor: TH.bg }}>
         <SimpleHeader routeName="Breathing" />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
+          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{T('breathingSubtitle')}</Text>
+          <TouchableOpacity onPress={() => nav.navigate('BreathHistory' as never)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 }}>
+            <Text style={{ fontSize: FONT_SUB, color: TH.primary }}>{T('breathingHistory')}</Text>
+            <ChevronRight size={14} color={TH.primary} />
+          </TouchableOpacity>
+        </View>
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
           {BREATHING_PRESETS.map(preset => (
             <TouchableOpacity
@@ -379,7 +418,7 @@ export default function BreathingScreen() {
 
           {/* Description */}
           <View style={[styles.infoCard, { borderColor: `${TH.primary}20` }]}>
-            <Text style={[styles.infoTitle, { color: TH.primary }]}>规仪说明</Text>
+            <Text style={[styles.infoTitle, { color: TH.primary }]}>{T('breathGuideTitle')}</Text>
             <Text style={[styles.infoBody, { color: TH.text }]}>{T(getDescKey(selectedPreset, guideStyle))}</Text>
           </View>
 
@@ -396,7 +435,7 @@ export default function BreathingScreen() {
 
           {/* Phase diagram */}
           <View style={[styles.infoCard, { borderColor: `${TH.primary}20` }]}>
-            <Text style={[styles.infoTitle, { color: TH.primary }]}>段比示意</Text>
+            <Text style={[styles.infoTitle, { color: TH.primary }]}>{T('breathPhaseDiagram')}</Text>
             <View style={styles.phaseRow}>
               {selectedPreset.phases.map((p, i) => (
                 <View key={i} style={styles.phaseItem}>
@@ -404,7 +443,7 @@ export default function BreathingScreen() {
                     width: p.durationSec * 18,
                     backgroundColor: p.type === 'inhale' ? '#10B981' : p.type === 'exhale' ? '#EF4444' : '#F59E0B',
                   }]}>
-                    <Text style={styles.phaseBarText}>{p.durationSec}{T('breathCycles') ? 's' : ''}</Text>
+                    <Text style={styles.phaseBarText}>{p.durationSec}s</Text>
                   </View>
                   <Text style={[styles.phaseLabel, { color: TH.sub }]}>{T(phaseLabelKey(p.type))}</Text>
                 </View>
@@ -439,7 +478,7 @@ export default function BreathingScreen() {
           <View style={[styles.infoCard, { borderColor: `${TH.primary}20` }]}>
             <View style={styles.audioToggleRow}>
               <Volume2 size={18} color={voiceEnabled ? TH.primary : TH.sub} />
-              <Text style={[styles.audioToggleLabel, { color: TH.text }]}>语音引导</Text>
+              <Text style={[styles.audioToggleLabel, { color: TH.text }]}>{T('breathVoiceGuide')}</Text>
               <TouchableOpacity
                 style={[styles.toggleBtn, { backgroundColor: voiceEnabled ? TH.primary : `${TH.sub}30` }]}
                 onPress={() => {
@@ -453,7 +492,7 @@ export default function BreathingScreen() {
             </View>
             <View style={[styles.audioToggleRow, { marginTop: 10 }]}>
               {cueEnabled ? <Volume2 size={18} color={TH.primary} /> : <VolumeX size={18} color={TH.sub} />}
-              <Text style={[styles.audioToggleLabel, { color: TH.text }]}>换气提示音</Text>
+              <Text style={[styles.audioToggleLabel, { color: TH.text }]}>{T('breathCueSound')}</Text>
               <TouchableOpacity
                 style={[styles.toggleBtn, { backgroundColor: cueEnabled ? TH.primary : `${TH.sub}30` }]}
                 onPress={() => {
@@ -493,7 +532,7 @@ export default function BreathingScreen() {
             {countdownNum}
           </Animated.Text>
           <Text style={{ fontSize: 18, fontWeight: '600', color: 'rgba(255,255,255,0.6)', marginTop: 16 }}>
-            {countdownNum === 3 ? '准备好了吗' : countdownNum === 2 ? '调整呼吸' : '开始'}
+            {countdownNum === 3 ? T('breathReady') : countdownNum === 2 ? T('breathAdjust') : T('breathBegin')}
           </Text>
         </View>
       </SafeAreaView>
@@ -561,7 +600,7 @@ export default function BreathingScreen() {
             </TouchableOpacity>
           </Animated.View>
           {isPaused && (
-            <Text style={[styles.holdHint, { color: TH.sub }]}>长按 3 秒结束调息</Text>
+            <Text style={[styles.holdHint, { color: TH.sub }]}>{T('breathLongPressHint')}</Text>
           )}
         </View>
       </SafeAreaView>
@@ -627,11 +666,11 @@ export default function BreathingScreen() {
 
           {/* Reflection input */}
           <View style={[styles.infoCard, { borderColor: `${TH.primary}20` }]}>
-            <Text style={[styles.infoTitle, { color: TH.primary }]}>本次感念</Text>
+            <Text style={[styles.infoTitle, { color: TH.primary }]}>{T('breathThisReflection')}</Text>
             <TextInput
               value={reflection}
               onChangeText={setReflection}
-              placeholder="记录你此刻的感悟..."
+              placeholder={T('breathReflectionPlaceholder')}
               placeholderTextColor={TH.sub}
               multiline
               maxLength={500}
@@ -647,7 +686,7 @@ export default function BreathingScreen() {
                 textAlignVertical: 'top',
               }}
             />
-            <Text style={{ color: TH.sub, fontSize: 11, marginTop: 4 }}>保存后自动添加 #调息 标签</Text>
+            <Text style={{ color: TH.sub, fontSize: 11, marginTop: 4 }}>{T('breathSaveTagHint')}</Text>
           </View>
 
           {/* Save button */}
@@ -657,7 +696,7 @@ export default function BreathingScreen() {
             disabled={saving}
           >
             <Check size={20} color="#fff" />
-            <Text style={styles.startBtnText}>{saving ? '保存中...' : '保存记录'}</Text>
+            <Text style={styles.startBtnText}>{saving ? T('breathSaving') : T('breathSaveRecord')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
@@ -791,9 +830,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   distressBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 32,
+    height: 44,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },

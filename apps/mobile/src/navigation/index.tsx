@@ -1,6 +1,6 @@
 // ─── Navigation root ──────────────────────────────────────────────
 import React, { useRef, useEffect, useState, useCallback, createContext, useContext } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, type NavigationContainerRef } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -32,6 +32,10 @@ import BodyScreen       from '../features/practice/BodyScreen';
 import VowScreen        from '../features/vow/VowScreen';
 import MantraScreen     from '../features/mantra/MantraScreen';
 import SutraScreen      from '../features/sutra/SutraScreen';
+import SutraHistoryScreen from '../features/sutra/SutraHistoryScreen';
+import MantraHistoryScreen from '../features/mantra/MantraHistoryScreen';
+import ZhiguanScreen from '../features/zhiguan/ZhiguanScreen';
+import ZhiguanHistoryScreen from '../features/zhiguan/ZhiguanHistoryScreen';
 import DietScreen       from '../features/diet/DietScreen';
 import MindScreen       from '../features/mind/MindScreen';
 import SettingsScreen   from '../features/settings/SettingsScreen';
@@ -59,6 +63,7 @@ import FastHistoryPage, { FastCalendarScreen } from '../features/fasting/FastHis
 import MedHistoryPage, { MedCalendarScreen } from '../features/meditation/MedHistoryPage';
 import SleepHistoryPage from '../features/sleep/SleepHistoryPage';
 import PreceptHistoryPage from '../features/practice/PreceptHistoryPage';
+import BreathHistoryPage from '../features/breathing/BreathHistoryPage';
 import GiveHistoryPage from '../features/practice/GiveHistoryPage';
 import FoodLogPage       from '../features/home/screens/FoodLogPage';
 import GracePage         from '../features/home/screens/GracePage';
@@ -97,7 +102,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 // ─── Floating Action Button ───────────────────────────────────────
 const FAB_SIZE = 52;
 const FAB_HIDE_OFFSET = 30; // How much of the FAB is visible when hidden
-const TabNavContext = createContext<any>(null);
+const TabNavContext = createContext<NavigationContainerRef<MainTabParamList> | null>(null);
 
 function FabButton({ primaryColor }: { primaryColor: string }) {
   const tabNav = useContext(TabNavContext);
@@ -205,7 +210,7 @@ function MainTabs() {
   const theme = useAppStore(s => s.theme);
   const language = useAppStore(s => s.language);
   const TH = THEMES[theme];
-  const tabNavRef = useRef<any>(null);
+  const tabNavRef = useRef<NavigationContainerRef<MainTabParamList>>(null);
   const [, forceUpdate] = useState(0);
   useEffect(() => { forceUpdate(n => n + 1); }, []);
 
@@ -360,6 +365,7 @@ export default function AppNavigator() {
         <Stack.Screen name="MedCalendar"  component={MedCalendarScreen} />
         <Stack.Screen name="SleepHistory" component={SleepHistoryPage} />
         <Stack.Screen name="PreceptHistory" component={PreceptHistoryPage} />
+        <Stack.Screen name="BreathHistory" component={BreathHistoryPage} />
         <Stack.Screen name="GiveHistory" component={GiveHistoryPage} />
         <Stack.Screen name="FoodLog"      component={FoodLogPage} />
         <Stack.Screen name="Grace"        component={GracePage} />
@@ -389,6 +395,10 @@ export default function AppNavigator() {
         <Stack.Screen name="StrategyLibrary" component={StrategyLibrary} />
         <Stack.Screen name="HabitDetail"   component={HabitDetailScreen} />
         <Stack.Screen name="RelationMap"   component={RelationMapView} />
+        <Stack.Screen name="MantraHistory" component={MantraHistoryScreen} />
+        <Stack.Screen name="SutraHistory" component={SutraHistoryScreen} />
+        <Stack.Screen name="Zhiguan" component={ZhiguanScreen} />
+        <Stack.Screen name="ZhiguanHistory" component={ZhiguanHistoryScreen} />
       </Stack.Navigator>
     </NavigationContainer>
     <KickOutModal
