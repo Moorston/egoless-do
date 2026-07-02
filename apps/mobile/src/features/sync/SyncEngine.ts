@@ -30,6 +30,7 @@ import { dbGetAllFoodEntries } from '../../db/queries';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RealtimeAgent, type RealtimeChangeEvent } from './RealtimeAgent';
+import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig, type RowMapper } from './orphanRecovery';
 
 const DOMException = (globalThis as Record<string, unknown>).DOMException as typeof Error | undefined
   ?? class DOMException extends Error {
@@ -675,45 +676,20 @@ export class SyncEngine {
     pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
 
     // Orphan recovery — skip if last sync was <30s ago (orphan events are rare)
-    if (!this._lastOrphanScanAt || Date.now() - this._lastOrphanScanAt > 30_000) {
-    {
+    if (shouldRunOrphanRecovery(this._lastOrphanScanAt)) {
       try {
-        const db = await openDatabase();
-        let total = 0;
-        for (let round = 0; round < 5; round++) {
-          let roundTotal = 0;
-          for (const [entity, config] of Object.entries(ENTITY_CONFIG)) {
-            const orphans = await db.getAllAsync<Record<string, unknown>>(
-              `SELECT ${config.pk} FROM ${config.table} WHERE (synced=0 OR synced=2) AND ${config.pk} NOT IN (SELECT entity_id FROM sync_queue WHERE entity=?) LIMIT 200`,
-              [entity],
-            );
-            for (const row of orphans) {
-              const id = row[config.pk] as string;
-              if (!id) continue;
-              try {
-                const full = await db.getFirstAsync<Record<string, unknown>>(`SELECT * FROM ${config.table} WHERE ${config.pk}=?`, [id]);
-                if (full) {
-                  // Convert snake_case SQLite row to camelCase entity for consistent server data
-                  const mapper = this._rowToEntityMap[entity];
-                  const entityData = mapper ? mapper(full) : full;
-                  await enqueueChange(entity as SyncEntity, id, 'upsert', entityData as Record<string, unknown>);
-                }
-              } catch (e) {
-                log.error(e, { entity, id, phase: 'orphan-enqueue' });
-              }
-            }
-            roundTotal += orphans.length;
-          }
-          total += roundTotal;
-          if (roundTotal === 0) break;
+        const result = await recoverOrphans(
+          ENTITY_CONFIG as Record<string, EntityConfig>,
+          this._rowToEntityMap as Record<string, RowMapper>,
+        );
+        if (result.total > 0) {
+          log.info(`Orphan recovery: ${result.total} items`, { byEntity: result.byEntity });
         }
-        if (total > 0) log.info(`Orphan recovery: ${total} items`);
         this._orphanRecoveryDone = true;
         this._lastOrphanScanAt = Date.now();
       } catch (e) {
         log.error(e, { phase: 'orphan-recovery' });
       }
-    } // end orphan recovery time guard
     }
 
     try {
