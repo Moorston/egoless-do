@@ -42,22 +42,24 @@
 **注意**: 原计划中 `useNetworkStatus.ts → hooks/` 改为 `→ store/`，因为它是 zustand store，不是 React hook。
 **注意**: 发现 `global-pulse/hooks/useNetworkStatus.ts`（React hook）与 `infra/useNetworkStatus.ts`（zustand store）同名但功能不同，移动时避免了命名冲突。
 
-## Phase 1.5 — 移动部署文件到 infra/（待做）
+## Phase 1.5 — 移动部署文件到 infra/（待做）✅ 已完成
 
 **前置条件**: 需要更新 `.github/workflows/`、`README.md` 中的路径引用。
 
-- [ ] 创建 `infra/` 目录结构
+**Commit**: `ec63e38` — `chore: move deploy files to infra/`
+
+- [x] 创建 `infra/` 目录结构
   - `infra/docker/`
   - `infra/nginx/`
   - `infra/scripts/`
-- [ ] 移动 `nginx/` → `infra/nginx/`
-- [ ] 移动 `Dockerfile.web` → `infra/docker/Dockerfile.web`
-- [ ] 移动 root `docker-compose.yml` → `infra/docker/docker-compose.yml`
-- [ ] 移动 `scripts/` → `infra/scripts/`
-- [ ] 更新 `infra/scripts/*.sh` 中的相对路径引用
-- [ ] 更新 `README.md` 中的路径引用
-- [ ] 更新 `.github/workflows/` 中的路径引用（如有）
-- [ ] Commit: `chore: move deploy files to infra/`
+- [x] 移动 `nginx/` → `infra/nginx/`
+- [x] 移动 `Dockerfile.web` → `infra/docker/Dockerfile.web`
+- [x] 移动 root `docker-compose.yml` → `infra/docker/docker-compose.yml`
+- [x] 移动 `scripts/` → `infra/scripts/`
+- [x] 更新 `infra/scripts/*.sh` 中的相对路径引用
+- [x] 更新 `README.md` 中的路径引用
+- [x] 更新 `.github/workflows/` 中的路径引用（如有）
+- [x] Commit: `chore: move deploy files to infra/`
 
 ## Phase 2 — 共享 UI 归 core（1-2 天）⏸️ 跳过
 
