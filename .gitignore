@@ -25,9 +25,10 @@ apps/mobile/ios/build/
 .envrc
 
 # PocketBase
-pocketbase/pb_data/
-pocketbase/pocketbase.exe
+pocketbase/
 backend/pb_data/
+backend/pb_data_backup/
+backend/pocketbase.exe
 
 # SQLite / runtime data
 apps/web/data/
@@ -54,15 +55,18 @@ Thumbs.db
 # AI assistant context
 .claude/
 .opencode/
+.specify/
 
 # Logs
 *.log
 npm-debug.log*
 pnpm-debug.log*
 
-#openspec
-openspec/
-
-#speckit
-.specify/
+# Documentation
 specs/
+
+# Temporary files
+*.tgz
+icon-compare.html
+question.md
+test_response.json
