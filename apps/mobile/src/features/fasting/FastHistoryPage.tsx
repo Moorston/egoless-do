@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useShallow } from 'zustand/react/shallow';
@@ -246,6 +246,18 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession |
 }
 
 // ── Main Page ──
+// ── Flattened data item ──
+interface FlatItem {
+  type: 'header' | 'statCard' | 'heatmap' | 'monthHeader' | 'entry';
+  key: string;
+  monthKey?: string;
+  items?: FastingSession[];
+  f?: FastingSession;
+  monthKcal?: number;
+  idx?: number;
+  isLast?: boolean;
+}
+
 export default function FastHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -269,23 +281,91 @@ export default function FastHistoryPage() {
     return Array.from(map.entries());
   }, [activeEntries]);
 
+  const flatData = useMemo((): FlatItem[] => {
+    if (activeEntries.length === 0) return [];
+    const items: FlatItem[] = [
+      { type: 'statCard', key: 'statCard' },
+      { type: 'heatmap', key: 'heatmap' },
+    ];
+    for (const [monthKey, monthItems] of grouped) {
+      const monthKcal = monthItems.reduce((s, f) => s + (f.estimatedKcal ?? 0), 0);
+      items.push({ type: 'monthHeader', key: `mh-${monthKey}`, monthKey, items: monthItems, monthKcal });
+      monthItems.forEach((f, idx) => {
+        items.push({ type: 'entry', key: `e-${f.id ?? idx}`, f, idx, isLast: idx === monthItems.length - 1 });
+      });
+    }
+    return items;
+  }, [activeEntries, grouped]);
+
   const handleDelete = useCallback((id: string) => {
     const newHist = (useAppStore.getState().fastingHistory ?? []).map(f => f.id === id ? { ...f, deleted: true, updatedAt: Date.now() } : f);
     useAppStore.setState({ fastingHistory: newHist });
     import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
   }, []);
 
-  return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <ScreenHeader title={T('fastingHistory')} onBack={() => nav.goBack()} />
-          <TouchableOpacity onPress={() => nav.navigate('FastCalendar' as never)} style={{ padding: 8 }}>
-            <Calendar size={22} color="#8446FF" />
-          </TouchableOpacity>
+  const renderItem = useCallback(({ item }: { item: FlatItem }) => {
+    if (item.type === 'statCard') return <StatsCard entries={activeEntries} TH={TH} />;
+    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('FastCalendar' as never)} />;
+    if (item.type === 'monthHeader') {
+      return (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#8446FF' }} />
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
+          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length}次 · {item.monthKcal}kcal</Text>
         </View>
+      );
+    }
+    // entry
+    const f = item.f!;
+    const { h, m } = getDur(f);
+    const actualHours = h + m / 60;
+    const completionRate = f.targetHours > 0 ? Math.min(Math.round((actualHours / f.targetHours) * 100), 100) : 0;
+    const notePreview = f.note ? (f.note.length > 30 ? f.note.slice(0, 30) + '...' : f.note) : '';
+    return (
+      <TouchableOpacity onPress={() => setSelectedEntry(f)} activeOpacity={0.7}>
+        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
+          <View style={{ alignItems: 'center', width: 24 }}>
+            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#8446FF', zIndex: 1 }} />
+            {!item.isLast && <View style={{ width: 2, flex: 1, backgroundColor: '#8446FF30' }} />}
+          </View>
+          <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: '#8446FF' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(f.startedAt ?? 0)}</Text>
+              <View style={{ backgroundColor: '#8446FF15', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                <Text style={{ color: '#8446FF', fontWeight: '700', fontSize: FONT_SUB }}>{h}h {m}m</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>目标 {f.targetHours}h</Text>
+              <View style={{ flex: 1, height: 4, backgroundColor: `${TH.border}80`, borderRadius: 2, overflow: 'hidden' }}>
+                <View style={{ height: 4, width: `${completionRate}%`, backgroundColor: completionRate >= 100 ? '#10b981' : '#8446FF', borderRadius: 2 }} />
+              </View>
+              <Text style={{ fontSize: FONT_BADGE, color: completionRate >= 100 ? '#10b981' : '#8446FF', fontWeight: '600' }}>{completionRate}%</Text>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>🔥 ~{f.estimatedKcal ?? 0} kcal</Text>
+            </View>
+            {notePreview ? <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text> : null}
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }, [activeEntries, TH, nav]);
 
-        {activeEntries.length === 0 ? (
+  const ListHeader = useMemo(() => (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <ScreenHeader title={T('fastingHistory')} onBack={() => nav.goBack()} />
+      <TouchableOpacity onPress={() => nav.navigate('FastCalendar' as never)} style={{ padding: 8 }}>
+        <Calendar size={22} color="#8446FF" />
+      </TouchableOpacity>
+    </View>
+  ), [T, nav]);
+
+  if (activeEntries.length === 0) {
+    return (
+      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+        <View style={{ paddingHorizontal: 16 }}>
+          {ListHeader}
           <View style={{ alignItems: 'center', marginTop: 80 }}>
             <Text style={{ fontSize: 64, marginBottom: 16 }}>🕐</Text>
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
@@ -295,62 +375,22 @@ export default function FastHistoryPage() {
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次禁食</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <>
-            <StatsCard entries={activeEntries} TH={TH} />
-            <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('FastCalendar' as never)} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
-            {grouped.map(([monthKey, items]) => {
-              const monthKcal = items.reduce((s, f) => s + (f.estimatedKcal ?? 0), 0);
-              return (
-                <View key={monthKey} style={{ marginBottom: 20 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
-                    <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#8446FF' }} />
-                    <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(monthKey)}</Text>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length}次 · {monthKcal}kcal</Text>
-                  </View>
-                  {items.map((f, idx) => {
-                    const { h, m } = getDur(f);
-                    const actualHours = h + m / 60;
-                    const completionRate = f.targetHours > 0 ? Math.min(Math.round((actualHours / f.targetHours) * 100), 100) : 0;
-                    const isLast = idx === items.length - 1;
-                    const notePreview = f.note ? (f.note.length > 30 ? f.note.slice(0, 30) + '...' : f.note) : '';
-                    return (
-                      <TouchableOpacity key={f.id ?? idx} onPress={() => setSelectedEntry(f)} activeOpacity={0.7}>
-                        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
-                          <View style={{ alignItems: 'center', width: 24 }}>
-                            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#8446FF', zIndex: 1 }} />
-                            {!isLast && <View style={{ width: 2, flex: 1, backgroundColor: '#8446FF30' }} />}
-                          </View>
-                          <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: '#8446FF' }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(f.startedAt ?? 0)}</Text>
-                              <View style={{ backgroundColor: '#8446FF15', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                                <Text style={{ color: '#8446FF', fontWeight: '700', fontSize: FONT_SUB }}>{h}h {m}m</Text>
-                              </View>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>目标 {f.targetHours}h</Text>
-                              <View style={{ flex: 1, height: 4, backgroundColor: `${TH.border}80`, borderRadius: 2, overflow: 'hidden' }}>
-                                <View style={{ height: 4, width: `${completionRate}%`, backgroundColor: completionRate >= 100 ? '#10b981' : '#8446FF', borderRadius: 2 }} />
-                              </View>
-                              <Text style={{ fontSize: FONT_BADGE, color: completionRate >= 100 ? '#10b981' : '#8446FF', fontWeight: '600' }}>{completionRate}%</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', gap: 12 }}>
-                              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>🔥 ~{f.estimatedKcal ?? 0} kcal</Text>
-                            </View>
-                            {notePreview ? <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text> : null}
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              );
-            })}
-          </>
-        )}
-      </ScrollView>
+  return (
+    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <FlatList<FlatItem>
+        data={flatData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+        ListHeaderComponent={ListHeader}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        removeClippedSubviews={true}
+        showsVerticalScrollIndicator={false}
+      />
       <DetailModal entry={selectedEntry} TH={TH} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />
     </SafeAreaView>
   );

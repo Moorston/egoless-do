@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -328,6 +328,18 @@ function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: SleepEntry | 
 }
 
 // ── Main Page ──
+// ── Flattened data item ──
+interface FlatItem {
+  type: 'statCard' | 'heatmap' | 'monthHeader' | 'entry';
+  key: string;
+  monthKey?: string;
+  items?: SleepEntry[];
+  s?: SleepEntry;
+  monthDurAvg?: number;
+  idx?: number;
+  isLast?: boolean;
+}
+
 export default function SleepHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -351,6 +363,23 @@ export default function SleepHistoryPage() {
     return Array.from(map.entries());
   }, [activeEntries]);
 
+  const flatData = useMemo((): FlatItem[] => {
+    if (activeEntries.length === 0) return [];
+    const items: FlatItem[] = [
+      { type: 'statCard', key: 'statCard' },
+      { type: 'heatmap', key: 'heatmap' },
+    ];
+    for (const [monthKey, monthItems] of grouped) {
+      const monthDurArr = monthItems.filter(e => (e.durationMin ?? 0) > 0);
+      const monthDurAvg = monthDurArr.length ? Math.round(monthDurArr.reduce((s, e) => s + (e.durationMin || 0), 0) / monthDurArr.length) : 0;
+      items.push({ type: 'monthHeader', key: `mh-${monthKey}`, monthKey, items: monthItems, monthDurAvg });
+      monthItems.forEach((s, idx) => {
+        items.push({ type: 'entry', key: `e-${s.id ?? idx}`, s, idx, isLast: idx === monthItems.length - 1 });
+      });
+    }
+    return items;
+  }, [activeEntries, grouped]);
+
   const handleDelete = useCallback((id: string) => {
     const s = useAppStore.getState();
     const newHist = (s.sleepHistory ?? []).map(e => e.id === id ? { ...e, deleted: true, updatedAt: Date.now() } : e);
@@ -358,12 +387,80 @@ export default function SleepHistoryPage() {
     import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
   }, []);
 
-  return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
-        <ScreenHeader title="睡眠历史" onBack={() => nav.goBack()} />
+  const renderItem = useCallback(({ item }: { item: FlatItem }) => {
+    if (item.type === 'statCard') return <StatsCard entries={activeEntries} TH={TH} />;
+    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => {}} />;
+    if (item.type === 'monthHeader') {
+      return (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary }} />
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
+          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length}天 · {formatSleepDuration(item.monthDurAvg!)}</Text>
+        </View>
+      );
+    }
+    // entry
+    const s = item.s!;
+    const parts = s.date.split('-');
+    const dayStr = parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : s.date;
+    const notePreview = s.note ? (s.note.length > 30 ? s.note.slice(0, 30) + '...' : s.note) : '';
+    const practiceLabels: Record<string, string> = { breath: '调息', meditation: '冥想', reading: '阅读', journal: '日记', gratitude: '感恩' };
+    const practiceList = (s.practice ?? []).map(p => practiceLabels[p] ?? p);
+    return (
+      <TouchableOpacity onPress={() => setSelectedEntry(s)} activeOpacity={0.7}>
+        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
+          <View style={{ alignItems: 'center', width: 24 }}>
+            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary, zIndex: 1 }} />
+            {!item.isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${TH.primary}30` }} />}
+          </View>
+          <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: TH.primary }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{dayStr}</Text>
+                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(s.date)}</Text>
+              </View>
+              {s.durationMin ? (
+                <View style={{ backgroundColor: `${TH.primary}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                  <Text style={{ color: TH.primary, fontWeight: '700', fontSize: FONT_SUB }}>{formatSleepDuration(s.durationMin)}</Text>
+                </View>
+              ) : null}
+            </View>
+            {s.quality != null && (
+              <Text style={{ fontSize: FONT_BADGE, color: '#fbbf24', marginTop: 2 }}>{renderStars(s.quality)}</Text>
+            )}
+            {s.gratitude && s.gratitude.filter(g => g.trim()).length > 0 && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                <Heart size={12} color={TH.primary} />
+                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{s.gratitude.filter(g => g.trim()).length}条感恩</Text>
+              </View>
+            )}
+            {practiceList.length > 0 && (
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
+                {practiceList.map(p => (
+                  <View key={p} style={{ backgroundColor: `${TH.primary}10`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                    <Text style={{ fontSize: 11, color: TH.primary }}>{p}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            {notePreview ? (
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text>
+            ) : null}
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }, [activeEntries, TH]);
 
-        {activeEntries.length === 0 ? (
+  const ListHeader = useMemo(() => (
+    <ScreenHeader title="睡眠历史" onBack={() => nav.goBack()} />
+  ), [nav]);
+
+  if (activeEntries.length === 0) {
+    return (
+      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+        <View style={{ paddingHorizontal: 16 }}>
+          {ListHeader}
           <View style={{ alignItems: 'center', marginTop: 80 }}>
             <Text style={{ fontSize: 64, marginBottom: 16 }}>🌙</Text>
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有睡眠记录</Text>
@@ -373,85 +470,22 @@ export default function SleepHistoryPage() {
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始记录睡眠</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <>
-            <StatsCard entries={activeEntries} TH={TH} />
-            <Heatmap entries={activeEntries} TH={TH} onPress={() => {}} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
-            {grouped.map(([monthKey, items]) => {
-              const monthDurArr = items.filter(e => (e.durationMin ?? 0) > 0);
-              const monthAvgDur = monthDurArr.length ? Math.round(monthDurArr.reduce((s, e) => s + (e.durationMin || 0), 0) / monthDurArr.length) : 0;
-              return (
-                <View key={monthKey} style={{ marginBottom: 20 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
-                    <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary }} />
-                    <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(monthKey)}</Text>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length}天 · {formatSleepDuration(monthAvgDur)}</Text>
-                  </View>
-                  {items.map((s, idx) => {
-                    const isLast = idx === items.length - 1;
-                    const parts = s.date.split('-');
-                    const dayStr = parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : s.date;
-                    const notePreview = s.note ? (s.note.length > 30 ? s.note.slice(0, 30) + '...' : s.note) : '';
-                    const practiceList = (s.practice ?? []).map(p => {
-                      const labels: Record<string, string> = { breath: '调息', meditation: '冥想', reading: '阅读', journal: '日记', gratitude: '感恩' };
-                      return labels[p] ?? p;
-                    });
-                    return (
-                      <TouchableOpacity key={s.id ?? idx} onPress={() => setSelectedEntry(s)} activeOpacity={0.7}>
-                        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
-                          <View style={{ alignItems: 'center', width: 24 }}>
-                            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary, zIndex: 1 }} />
-                            {!isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${TH.primary}30` }} />}
-                          </View>
-                          <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: TH.primary }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{dayStr}</Text>
-                                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(s.date)}</Text>
-                              </View>
-                              {s.durationMin ? (
-                                <View style={{ backgroundColor: `${TH.primary}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                                  <Text style={{ color: TH.primary, fontWeight: '700', fontSize: FONT_SUB }}>{formatSleepDuration(s.durationMin)}</Text>
-                                </View>
-                              ) : null}
-                            </View>
-                            {/* Quality stars */}
-                            {s.quality != null && (
-                              <Text style={{ fontSize: FONT_BADGE, color: '#fbbf24', marginTop: 2 }}>{renderStars(s.quality)}</Text>
-                            )}
-                            {/* Gratitude count */}
-                            {s.gratitude && s.gratitude.filter(g => g.trim()).length > 0 && (
-                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                                <Heart size={12} color={TH.primary} />
-                                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{s.gratitude.filter(g => g.trim()).length}条感恩</Text>
-                              </View>
-                            )}
-                            {/* Practice tags */}
-                            {practiceList.length > 0 && (
-                              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
-                                {practiceList.map(p => (
-                                  <View key={p} style={{ backgroundColor: `${TH.primary}10`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
-                                    <Text style={{ fontSize: 11, color: TH.primary }}>{p}</Text>
-                                  </View>
-                                ))}
-                              </View>
-                            )}
-                            {/* Note preview */}
-                            {notePreview ? (
-                              <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text>
-                            ) : null}
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              );
-            })}
-          </>
-        )}
-      </ScrollView>
+  return (
+    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <FlatList<FlatItem>
+        data={flatData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+        ListHeaderComponent={ListHeader}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        removeClippedSubviews={true}
+        showsVerticalScrollIndicator={false}
+      />
       <DetailModal entry={selectedEntry} TH={TH} T={T} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />
     </SafeAreaView>
   );

@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -258,6 +258,18 @@ function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: MedHistoryEnt
 }
 
 // ── Main Page ──
+// ── Flattened data item ──
+interface FlatItem {
+  type: 'header' | 'statCard' | 'heatmap' | 'monthHeader' | 'entry';
+  key: string;
+  monthKey?: string;
+  items?: MedHistoryEntry[];
+  m?: MedHistoryEntry;
+  monthMin?: number;
+  idx?: number;
+  isLast?: boolean;
+}
+
 export default function MedHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -281,6 +293,22 @@ export default function MedHistoryPage() {
     return Array.from(map.entries());
   }, [activeEntries]);
 
+  const flatData = useMemo((): FlatItem[] => {
+    if (activeEntries.length === 0) return [];
+    const items: FlatItem[] = [
+      { type: 'statCard', key: 'statCard' },
+      { type: 'heatmap', key: 'heatmap' },
+    ];
+    for (const [monthKey, monthItems] of grouped) {
+      const monthMin = monthItems.reduce((s, e) => s + (e.durMin || 0), 0);
+      items.push({ type: 'monthHeader', key: `mh-${monthKey}`, monthKey, items: monthItems, monthMin });
+      monthItems.forEach((m, idx) => {
+        items.push({ type: 'entry', key: `e-${m.date ?? idx}`, m, idx, isLast: idx === monthItems.length - 1 });
+      });
+    }
+    return items;
+  }, [activeEntries, grouped]);
+
   const handleDelete = useCallback((date: string) => {
     const s = useAppStore.getState();
     const newHist = (s.medHistory ?? []).map(e => e.date === date ? { ...e, deleted: true, updatedAt: Date.now() } : e);
@@ -288,17 +316,70 @@ export default function MedHistoryPage() {
     import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
   }, []);
 
-  return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <ScreenHeader title={T('meditationHistory')} onBack={() => nav.goBack()} />
-          <TouchableOpacity onPress={() => nav.navigate('MedCalendar' as never)} style={{ padding: 8 }}>
-            <Calendar size={22} color={TH.primary} />
-          </TouchableOpacity>
+  const renderItem = useCallback(({ item }: { item: FlatItem }) => {
+    if (item.type === 'statCard') return <StatsCard entries={activeEntries} TH={TH} />;
+    if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('MedCalendar' as never)} />;
+    if (item.type === 'monthHeader') {
+      return (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary }} />
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
+          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length}次 · {item.monthMin}min</Text>
         </View>
+      );
+    }
+    // entry
+    const m = item.m!;
+    const parts = m.date.split('-');
+    const dayStr = parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : m.date;
+    const trackName = getTrackName(m.trackId);
+    const notePreview = m.note ? (m.note.length > 30 ? m.note.slice(0, 30) + '...' : m.note) : '';
+    return (
+      <TouchableOpacity onPress={() => setSelectedEntry(m)} activeOpacity={0.7}>
+        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
+          <View style={{ alignItems: 'center', width: 24 }}>
+            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary, zIndex: 1 }} />
+            {!item.isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${TH.primary}30` }} />}
+          </View>
+          <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: TH.primary }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: trackName || notePreview ? 4 : 0 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{dayStr}</Text>
+                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(m.date)}</Text>
+              </View>
+              <View style={{ backgroundColor: `${TH.primary}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                <Text style={{ color: TH.primary, fontWeight: '700', fontSize: FONT_SUB }}>{m.durMin}min</Text>
+              </View>
+            </View>
+            {trackName ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                <Music size={12} color={TH.sub} />
+                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{trackName}</Text>
+              </View>
+            ) : null}
+            {notePreview ? (
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text>
+            ) : null}
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }, [activeEntries, TH, nav]);
 
-        {activeEntries.length === 0 ? (
+  const ListHeader = useMemo(() => (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <ScreenHeader title={T('meditationHistory')} onBack={() => nav.goBack()} />
+      <TouchableOpacity onPress={() => nav.navigate('MedCalendar' as never)} style={{ padding: 8 }}>
+        <Calendar size={22} color={TH.primary} />
+      </TouchableOpacity>
+    </View>
+  ), [T, nav, TH]);
+
+  if (activeEntries.length === 0) {
+    return (
+      <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+        <View style={{ paddingHorizontal: 16 }}>
+          {ListHeader}
           <View style={{ alignItems: 'center', marginTop: 80 }}>
             <Text style={{ fontSize: 64, marginBottom: 16 }}>🧘</Text>
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有冥想记录</Text>
@@ -308,63 +389,22 @@ export default function MedHistoryPage() {
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次冥想</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <>
-            <StatsCard entries={activeEntries} TH={TH} />
-            <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('MedCalendar' as never)} />
+        </View>
+      </SafeAreaView>
+    );
+  }
 
-            {grouped.map(([monthKey, items]) => {
-              const monthMin = items.reduce((s, e) => s + (e.durMin || 0), 0);
-              return (
-                <View key={monthKey} style={{ marginBottom: 20 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
-                    <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary }} />
-                    <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(monthKey)}</Text>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length}次 · {monthMin}min</Text>
-                  </View>
-                  {items.map((m, idx) => {
-                    const isLast = idx === items.length - 1;
-                    const parts = m.date.split('-');
-                    const dayStr = parts.length >= 3 ? `${parseInt(parts[1])}-${parseInt(parts[2])}` : m.date;
-                    const trackName = getTrackName(m.trackId);
-                    const notePreview = m.note ? (m.note.length > 30 ? m.note.slice(0, 30) + '...' : m.note) : '';
-                    return (
-                      <TouchableOpacity key={m.date ?? idx} onPress={() => setSelectedEntry(m)} activeOpacity={0.7}>
-                        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
-                          <View style={{ alignItems: 'center', width: 24 }}>
-                            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary, zIndex: 1 }} />
-                            {!isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${TH.primary}30` }} />}
-                          </View>
-                          <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: TH.primary }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: trackName || notePreview ? 4 : 0 }}>
-                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{dayStr}</Text>
-                                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(m.date)}</Text>
-                              </View>
-                              <View style={{ backgroundColor: `${TH.primary}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                                <Text style={{ color: TH.primary, fontWeight: '700', fontSize: FONT_SUB }}>{m.durMin}min</Text>
-                              </View>
-                            </View>
-                            {trackName ? (
-                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                                <Music size={12} color={TH.sub} />
-                                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{trackName}</Text>
-                              </View>
-                            ) : null}
-                            {notePreview ? (
-                              <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text>
-                            ) : null}
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              );
-            })}
-          </>
-        )}
-      </ScrollView>
+  return (
+    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <FlatList<FlatItem>
+        data={flatData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+        ListHeaderComponent={ListHeader}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        removeClippedSubviews={true}
+        showsVerticalScrollIndicator={false}
+      />
       <DetailModal entry={selectedEntry} TH={TH} T={T} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />
     </SafeAreaView>
   );

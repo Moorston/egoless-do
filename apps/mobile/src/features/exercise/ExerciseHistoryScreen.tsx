@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
@@ -92,6 +92,17 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
   );
 }
 
+// ── Flattened data item ──
+interface FlatItem {
+  type: 'header' | 'statCards' | 'sportFilter' | 'monthlyBar' | 'emptyText' | 'monthHeader' | 'entry';
+  key: string;
+  monthKey?: string;
+  items?: ExerciseEntry[];
+  e?: ExerciseEntry;
+  idx?: number;
+  isLast?: boolean;
+}
+
 export default function ExerciseHistoryScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -168,12 +179,66 @@ export default function ExerciseHistoryScreen() {
     return m > 0 ? `${h}h ${m}m` : `${h}h`;
   };
 
-  return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
-        <ScreenHeader title={T('exerciseHistory')} onBack={() => nav.goBack()} />
+  const flatData = useMemo((): FlatItem[] => {
+    const items: FlatItem[] = [
+      { type: 'statCards', key: 'statCards' },
+      { type: 'sportFilter', key: 'sportFilter' },
+    ];
+    if (monthlyStats.length > 1) {
+      items.push({ type: 'monthlyBar', key: 'monthlyBar' });
+    }
+    if (filtered.length === 0) {
+      items.push({ type: 'emptyText', key: 'emptyText' });
+    }
+    for (const [monthKey, monthItems] of grouped) {
+      items.push({ type: 'monthHeader', key: `mh-${monthKey}`, monthKey, items: monthItems });
+      monthItems.forEach((e, idx) => {
+        items.push({ type: 'entry', key: `e-${e.id}`, e, idx, isLast: idx === monthItems.length - 1 });
+      });
+    }
+    return items;
+  }, [monthlyStats, filtered, grouped]);
 
-        {/* Overall stats */}
+  const renderSportFilter = useCallback(() => {
+    if (sportKeys.length <= 1) return null;
+    return (
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 14 }} contentContainerStyle={{ gap: 8 }}>
+        <TouchableOpacity
+          onPress={() => setSelectedSport(null)}
+          style={{
+            paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
+            backgroundColor: !selectedSport ? P : TH.card,
+            borderWidth: 1, borderColor: !selectedSport ? P : TH.border,
+          }}
+        >
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: !selectedSport ? '#fff' : TH.sub }}>{T('allStatus')}</Text>
+        </TouchableOpacity>
+        {sportKeys.map(([key, { icon, count }]) => {
+          const active = selectedSport === key;
+          return (
+            <TouchableOpacity
+              key={key}
+              onPress={() => setSelectedSport(active ? null : key)}
+              style={{
+                paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
+                backgroundColor: active ? P : TH.card,
+                borderWidth: 1, borderColor: active ? P : TH.border,
+                flexDirection: 'row', alignItems: 'center', gap: 4,
+              }}
+            >
+              <Text style={{ fontSize: FONT_SUB }}>{icon}</Text>
+              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: active ? '#fff' : TH.text }}>{key}</Text>
+              <Text style={{ fontSize: FONT_BADGE, color: active ? '#fff' : TH.sub }}>({count})</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    );
+  }, [sportKeys, selectedSport, P, TH, T]);
+
+  const renderItem = useCallback(({ item }: { item: FlatItem }) => {
+    if (item.type === 'statCards') {
+      return (
         <View style={{ flexDirection: 'row', gap: 10, marginBottom: 14 }}>
           <Card style={{ flex: 1, alignItems: 'center', padding: 14 }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{totalMin}</Text>
@@ -184,125 +249,104 @@ export default function ExerciseHistoryScreen() {
             <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('exerciseTotalCount')}</Text>
           </Card>
         </View>
-
-        {/* Sport category filter */}
-        {sportKeys.length > 1 && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 14 }} contentContainerStyle={{ gap: 8 }}>
-            <TouchableOpacity
-              onPress={() => setSelectedSport(null)}
-              style={{
-                paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
-                backgroundColor: !selectedSport ? P : TH.card,
-                borderWidth: 1, borderColor: !selectedSport ? P : TH.border,
-              }}
-            >
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: !selectedSport ? '#fff' : TH.sub }}>{T('allStatus')}</Text>
-            </TouchableOpacity>
-            {sportKeys.map(([key, { icon, count }]) => {
-              const active = selectedSport === key;
-              return (
-                <TouchableOpacity
-                  key={key}
-                  onPress={() => setSelectedSport(active ? null : key)}
-                  style={{
-                    paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
-                    backgroundColor: active ? P : TH.card,
-                    borderWidth: 1, borderColor: active ? P : TH.border,
-                    flexDirection: 'row', alignItems: 'center', gap: 4,
-                  }}
-                >
-                  <Text style={{ fontSize: FONT_SUB }}>{icon}</Text>
-                  <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: active ? '#fff' : TH.text }}>{key}</Text>
-                  <Text style={{ fontSize: FONT_BADGE, color: active ? '#fff' : TH.sub }}>({count})</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-        )}
-
-        {/* Monthly time stats */}
-        {monthlyStats.length > 1 && (
-          <Card style={{ marginBottom: 14 }}>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('exerciseTotalTime')}</Text>
-            {monthlyStats.map(([monthKey, stats]) => {
-              const maxMin = Math.max(...monthlyStats.map(([, s]) => s.min));
-              const pct = maxMin > 0 ? (stats.min / maxMin * 100) : 0;
-              return (
-                <View key={monthKey} style={{ marginBottom: 8 }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatMonth(monthKey)}</Text>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.text, fontWeight: '600' }}>{formatDuration(stats.min)} · {stats.count}{T('exerciseWorkouts')}</Text>
-                  </View>
-                  <View style={{ height: 6, backgroundColor: `${P}20`, borderRadius: 3, overflow: 'hidden' }}>
-                    <View style={{ height: 6, width: `${pct}%`, backgroundColor: P, borderRadius: 3 }} />
-                  </View>
+      );
+    }
+    if (item.type === 'sportFilter') return renderSportFilter();
+    if (item.type === 'monthlyBar') {
+      const maxMin = Math.max(...monthlyStats.map(([, s]) => s.min));
+      return (
+        <Card style={{ marginBottom: 14 }}>
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('exerciseTotalTime')}</Text>
+          {monthlyStats.map(([monthKey, stats]) => {
+            const pct = maxMin > 0 ? (stats.min / maxMin * 100) : 0;
+            return (
+              <View key={monthKey} style={{ marginBottom: 8 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
+                  <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatMonth(monthKey)}</Text>
+                  <Text style={{ fontSize: FONT_BADGE, color: TH.text, fontWeight: '600' }}>{formatDuration(stats.min)} · {stats.count}{T('exerciseWorkouts')}</Text>
                 </View>
-              );
-            })}
-          </Card>
-        )}
-
-        {filtered.length === 0 && (
-          <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY }}>{T('exerciseNoHistory')}</Text>
-        )}
-
-        {/* Timeline grouped by month */}
-        {grouped.map(([monthKey, items]) => (
-          <View key={monthKey} style={{ marginBottom: 20 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
-              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: P }} />
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(monthKey)}</Text>
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length} {T('exerciseWorkouts')}</Text>
+                <View style={{ height: 6, backgroundColor: `${P}20`, borderRadius: 3, overflow: 'hidden' }}>
+                  <View style={{ height: 6, width: `${pct}%`, backgroundColor: P, borderRadius: 3 }} />
+                </View>
+              </View>
+            );
+          })}
+        </Card>
+      );
+    }
+    if (item.type === 'emptyText') {
+      return <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY }}>{T('exerciseNoHistory')}</Text>;
+    }
+    if (item.type === 'monthHeader') {
+      return (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: P }} />
+          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
+          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length} {T('exerciseWorkouts')}</Text>
+        </View>
+      );
+    }
+    // entry
+    const e = item.e!;
+    const isExpanded = expandedId === e.id;
+    const durMin = Math.floor(e.durationSec / 60);
+    const durSec = e.durationSec % 60;
+    return (
+      <View style={{ flexDirection: 'row', marginLeft: 4 }}>
+        <View style={{ alignItems: 'center', width: 24 }}>
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: P, zIndex: 1 }} />
+          {!item.isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${P}30` }} />}
+        </View>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setExpandedId(isExpanded ? null : e.id)}
+          style={{
+            flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14,
+            marginBottom: 10, marginLeft: 8,
+            borderLeftWidth: 3, borderLeftColor: P,
+          }}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={{ fontSize: FONT_STAT_SECTION }}>{e.sportIcon}</Text>
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(e.timestamp ?? 0)}</Text>
             </View>
-
-            {items.map((e, idx) => {
-              const isLast = idx === items.length - 1;
-              const isExpanded = expandedId === e.id;
-              const durMin = Math.floor(e.durationSec / 60);
-              const durSec = e.durationSec % 60;
-              return (
-                <View key={e.id} style={{ flexDirection: 'row', marginLeft: 4 }}>
-                  <View style={{ alignItems: 'center', width: 24 }}>
-                    <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: P, zIndex: 1 }} />
-                    {!isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${P}30` }} />}
-                  </View>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => setExpandedId(isExpanded ? null : e.id)}
-                    style={{
-                      flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14,
-                      marginBottom: 10, marginLeft: 8,
-                      borderLeftWidth: 3, borderLeftColor: P,
-                    }}
-                  >
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        <Text style={{ fontSize: FONT_STAT_SECTION }}>{e.sportIcon}</Text>
-                        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(e.timestamp ?? 0)}</Text>
-                      </View>
-                      <View style={{ backgroundColor: `${P}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                        <Text style={{ color: P, fontWeight: '700', fontSize: FONT_SUB }}>{durMin}:{String(durSec).padStart(2, '0')}</Text>
-                      </View>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
-                      {e.reps != null ? (
-                        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.reps} {T('exerciseReps')}</Text>
-                      ) : e.distanceKm ? (
-                        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.distanceKm.toFixed(2)} km</Text>
-                      ) : null}
-                      {e.calories ? (
-                        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.calories} kcal</Text>
-                      ) : null}
-                    </View>
-                    {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView} Polyline={Polyline} />}
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
+            <View style={{ backgroundColor: `${P}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+              <Text style={{ color: P, fontWeight: '700', fontSize: FONT_SUB }}>{durMin}:{String(durSec).padStart(2, '0')}</Text>
+            </View>
           </View>
-        ))}
-      </ScrollView>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
+            {e.reps != null ? (
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.reps} {T('exerciseReps')}</Text>
+            ) : e.distanceKm ? (
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.distanceKm.toFixed(2)} km</Text>
+            ) : null}
+            {e.calories ? (
+              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.calories} kcal</Text>
+            ) : null}
+          </View>
+          {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView} Polyline={Polyline} />}
+        </TouchableOpacity>
+      </View>
+    );
+  }, [P, TH, T, totalMin, filtered.length, monthlyStats, expandedId, MapView, Polyline, renderSportFilter]);
+
+  const ListHeader = useMemo(() => (
+    <ScreenHeader title={T('exerciseHistory')} onBack={() => nav.goBack()} />
+  ), [T, nav]);
+
+  return (
+    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
+      <FlatList<FlatItem>
+        data={flatData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+        ListHeaderComponent={ListHeader}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        removeClippedSubviews={true}
+        showsVerticalScrollIndicator={false}
+      />
     </SafeAreaView>
   );
 }
