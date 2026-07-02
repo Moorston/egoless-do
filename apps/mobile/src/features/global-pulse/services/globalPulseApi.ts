@@ -3,7 +3,7 @@
  * 直接使用 PocketBase REST API
  */
 
-import { offlineAwareFetch } from '../../../infra/offlineAware';
+import { offlineAwareFetch } from '../../../net/offlineAware';
 import {
   GlobalCheckin,
   GlobalStats,

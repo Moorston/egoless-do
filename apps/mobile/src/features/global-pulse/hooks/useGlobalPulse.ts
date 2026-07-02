@@ -3,7 +3,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useNetworkStatus } from '../../../infra/useNetworkStatus';
+import { useNetworkStatus } from '../../../store/useNetworkStatus';
 import { GlobalCheckin, GlobalStats } from '../types/globalPulse';
 import { getCheckins, getGlobalStats } from '../services/globalPulseApi';
 import {
