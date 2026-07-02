@@ -8,6 +8,12 @@ export * from './food';
 export * from './exercise';
 export * from './meditation';
 export * from './customLists';
+export * from './zhiguanHintEngine';
+export * from './zhiguanHistory';
+export * from './zhiguanMethods';
+export * from './zhiguanCountingRound';
+export * from './zhiguanTimer';
+export * from './dateUtils';
 export {
   addPlan, updatePlan, deletePlan, startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
   checkAutoStatus, performDailyReset, PLAN_STATUS_COLORS, statusToI18nKey,

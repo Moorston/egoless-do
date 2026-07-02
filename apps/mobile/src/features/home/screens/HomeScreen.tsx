@@ -22,7 +22,7 @@ import {
   ChevronLeft, ChevronRight, Calendar,
 } from 'lucide-react-native';
 import CheckinStatsModal from '../components/CheckinStatsModal';
-import { formatDateBar } from '../utils/homeDateUtils';
+import { formatDateBar } from '@egoless-do/core';
 import HomeBubble from '../components/HomeBubble';
 import HomeFoodSection from '../components/HomeFoodSection';
 import HomePlanSection from '../components/HomePlanSection';
