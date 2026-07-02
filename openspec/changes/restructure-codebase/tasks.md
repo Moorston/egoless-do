@@ -59,56 +59,47 @@
 - [ ] 更新 `.github/workflows/` 中的路径引用（如有）
 - [ ] Commit: `chore: move deploy files to infra/`
 
-## Phase 2 — 共享 UI 归 core（1-2 天）
+## Phase 2 — 共享 UI 归 core（1-2 天）⏸️ 跳过
 
-- [ ] 创建 `packages/core/src/ui/` 目录
-- [ ] 创建 `packages/core/src/ui/theme/` 目录
-- [ ] 迁移 `apps/mobile/src/shared/components/base/*` → `packages/core/src/ui/`
-  - Button.tsx
-  - Card.tsx
-  - Drawer.tsx
-  - Input.tsx
-  - List.tsx
-  - Modal.tsx
-- [ ] 迁移 `apps/mobile/src/shared/components/ThemeProvider.tsx` → `packages/core/src/ui/theme/`
-- [ ] 更新 `packages/core/src/index.ts` 添加 UI 导出
-- [ ] 更新 `packages/core/package.json` 添加 `./ui` export
-- [ ] 更新所有 mobile 中的 import 路径
-- [ ] 删除 `apps/mobile/src/shared/components/README.md`
-- [ ] 评估 `apps/mobile/src/shared/` 其余文件归属
-  - `hooks/useAudioCache.ts` → `packages/core/src/utils/`
-  - `types/*` → `packages/core/src/types/`
-  - `utils/*` → `packages/core/src/utils/`
-- [ ] 执行迁移并更新引用
-- [ ] Commit: `chore: move shared UI to packages/core/src/ui/`
+**原因**: base 组件（Button, Card, Drawer, Input, List, Modal）使用 React Native 特定 API（`View`, `Text`, `StyleSheet`, `TouchableOpacity`, `TextInput` 等），是 mobile 特定组件，不适合迁移到平台无关的 core 包。
 
-## Phase 3 — 图表合并（半天）
+**另外**: `Card` 和 `Input` 依赖 `ThemeProvider` 的 `Theme` 类型，该类型与 `packages/core/src/types/shared.ts` 中的 `Theme` 接口完全不同（core.Theme 包含 `name/bg/card/text` 等 UI 主题配置，shared.Theme 包含 `colors/spacing/borderRadius` 设计 token），合并会导致类型冲突。
 
-- [ ] 对比 `apps/mobile/src/components/charts/` 与 `apps/web/src/components/charts/`
-- [ ] 合并重复图表到 `packages/core/src/ui/charts/`
-- [ ] 更新 mobile 和 web 的 import 路径
-- [ ] 删除 `apps/mobile/src/components/charts/`
-- [ ] 删除 `apps/web/src/components/charts/`
-- [ ] Commit: `chore: merge charts into packages/core/src/ui/charts/`
+**决策**: 保留 `apps/mobile/src/shared/components/` 作为 mobile 的共享组件库。
 
-## Phase 4 — 业务服务归 domain（1 天）
+- [ ] ~~创建 `packages/core/src/ui/` 目录~~
+- [ ] ~~迁移 base 组件到 core~~
+- [ ] ~~迁移 ThemeProvider 到 core~~
 
-- [ ] 创建 `packages/core/src/domain/` 目录
-- [ ] 迁移 `apps/mobile/src/features/notifications/NotificationService.ts` → `packages/core/src/domain/notifications/`
-- [ ] 迁移 `apps/mobile/src/features/health/HealthService.ts` → `packages/core/src/domain/health/`
-- [ ] 迁移 `apps/mobile/src/features/global-pulse/services/*` → `packages/core/src/domain/globalPulse/`
-- [ ] 迁移 `apps/mobile/src/features/music/services/*` → `packages/core/src/domain/music/`
-- [ ] 更新所有引用
-- [ ] Commit: `chore: move business services to packages/core/src/domain/`
+## Phase 3 — 图表合并（半天）⏸️ 跳过
 
-## Phase 5 — 业务逻辑归 business（1-2 天）
+**原因**: mobile 图表使用 React Native `View` 实现，web 图表使用 SVG/DOM 实现，两者实现不同，无法简单合并到 core。
 
-- [ ] 迁移 `apps/mobile/src/features/home/utils/homeDateUtils.ts` → `packages/core/src/business/dateUtils.ts`
-- [ ] 评估 `apps/mobile/src/features/exercise/shared/*` 归属
-- [ ] 评估 `apps/mobile/src/features/exercise/hooks/*` 归属
-- [ ] 评估 `apps/mobile/src/features/global-pulse/hooks/*` 归属
-- [ ] 执行迁移并更新引用
-- [ ] Commit: `chore: move business logic to packages/core/src/business/`
+- [ ] ~~合并图表到 core~~
+
+## Phase 4 — 业务服务归 domain（1 天）⏸️ 跳过
+
+**原因**: 所有业务服务都依赖 mobile 特定库：
+- `NotificationService` 使用 `expo-notifications`
+- `HealthService` 使用 `react-native-health`
+- `global-pulse/services/` 使用 `expo-sqlite` 和 `offlineAwareFetch`
+- `music/services/` 使用 `expo-av`
+
+这些服务无法迁移到平台无关的 core 包。
+
+- [ ] ~~创建 `packages/core/src/domain/` 目录~~
+- [ ] ~~迁移业务服务到 core~~
+
+## Phase 5 — 业务逻辑归 business（1-2 天）⏸️ 部分完成
+
+**Commit**: `b7d24d5` — `chore: migrate homeDateUtils to core/business, skip Phase 2/3/4`
+
+- [x] 迁移 `apps/mobile/src/features/home/utils/homeDateUtils.ts` → `packages/core/src/business/dateUtils.ts`
+- [x] 更新 `HomeScreen.tsx` 的 import 路径
+- [x] 删除 `features/home/utils/` 目录
+- [ ] 评估 `apps/mobile/src/features/exercise/shared/*` 归属 — ⏸️ 跳过（UI 组件，mobile 特定）
+- [ ] 评估 `apps/mobile/src/features/exercise/hooks/*` 归属 — ⏸️ 跳过（依赖 expo-haptics, expo-location）
+- [ ] 评估 `apps/mobile/src/features/global-pulse/hooks/*` 归属 — ⏸️ 跳过（依赖 mobile 特定 API）
 
 ## Phase 6 — 收尾验证（半天）
 
