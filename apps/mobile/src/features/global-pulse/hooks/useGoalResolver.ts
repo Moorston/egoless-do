@@ -5,7 +5,7 @@
 
 import { useCallback } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
-import { CheckinType } from '../types/globalPulse';
+import { CheckinType } from '@egoless-do/core';
 
 export function useGoalResolver() {
   const planItems = useAppStore(s => s.planItems);

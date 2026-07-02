@@ -1,14 +1,20 @@
 // ─── ZhiguanSettingsSheet 止观设置弹窗 ──────────────────────────
-// 底部弹出 Sheet：呼吸节奏 / 目标时长 / 背景音 / 发愿
+// 底部弹出 Sheet：呼吸节奏 / 目标时长 / 背景音 / 修行法 / 发愿
 import React, { useState } from 'react';
 import { View, Text, Pressable, TextInput, ScrollView, StyleSheet, Modal } from 'react-native';
 import { useT } from '../../components/UI';
+import { ZHIGUAN_METHOD_DEFS, FIVE_HINDRANCE_KEYS, FIVE_HINDRANCE_LABEL_KEYS, SANKALPA_TEMPLATES } from '@egoless-do/core';
+import type { ZhiguanMethod, FiveHindranceRadar } from '@egoless-do/core';
 
 interface ZhiguanSettings {
   breathPattern: 'standard' | 'calming' | 'closing';
   targetMinutes: number | null;
   backgroundSound: 'none' | 'bell' | 'rain' | 'bowl';
   sankalpa: string;
+  chosenMethod: ZhiguanMethod;
+  fiveHindrances: FiveHindranceRadar;
+  samathaRatio: number;
+  vipassanaRatio: number;
 }
 
 interface Props {
@@ -101,7 +107,71 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
               ))}
             </View>
 
+            {/* Method Picker */}
+            <Text style={styles.sectionTitle}>{T('zhiguanMethodTitle')}</Text>
+            <View style={styles.optionGroup}>
+              {ZHIGUAN_METHOD_DEFS.map(def => (
+                <Pressable
+                  key={def.key}
+                  style={[styles.option, localSettings.chosenMethod === def.key && styles.optionActive]}
+                  onPress={() => setLocalSettings(s => ({ ...s, chosenMethod: def.key }))}
+                >
+                  <Text style={[styles.optionText, localSettings.chosenMethod === def.key && styles.optionTextActive]}>
+                    {def.icon} {T(def.labelKey)}
+                  </Text>
+                  <Text style={styles.optionValue}>{T(def.descKey)}</Text>
+                </Pressable>
+              ))}
+            </View>
+
+            {/* Five Hindrance Sliders */}
+            <Text style={styles.sectionTitle}>{T('zhiguanFiveHindrancesTitle')}</Text>
+            <Text style={{ fontSize: 12, color: '#8B7355', marginBottom: 8 }}>{T('zhiguanFiveHindrancesHint')}</Text>
+            {FIVE_HINDRANCE_KEYS.map((key, idx) => (
+              <View key={key} style={{ marginBottom: 12 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text style={{ fontSize: 14, color: '#4A3F35' }}>{T(FIVE_HINDRANCE_LABEL_KEYS[key])}</Text>
+                  <Text style={{ fontSize: 14, color: '#C9A96E', fontWeight: '600' }}>{localSettings.fiveHindrances[key]}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Text style={{ fontSize: 11, color: '#8B7355' }}>{T('zhiguanHindranceNone')}</Text>
+                  <View style={{ flex: 1 }}>
+                    <View style={{ flexDirection: 'row', gap: 2 }}>
+                      {Array.from({ length: 11 }, (_, i) => (
+                        <Pressable
+                          key={i}
+                          style={{
+                            flex: 1, height: 24, borderRadius: 4,
+                            backgroundColor: i <= localSettings.fiveHindrances[key] ? '#C9A96E' : '#E5DDD0',
+                          }}
+                          onPress={() => setLocalSettings(s => ({
+                            ...s,
+                            fiveHindrances: { ...s.fiveHindrances, [key]: i },
+                          }))}
+                        />
+                      ))}
+                    </View>
+                  </View>
+                  <Text style={{ fontSize: 11, color: '#8B7355' }}>{T('zhiguanHindranceSevere')}</Text>
+                </View>
+              </View>
+            ))}
+
+            {/* Sankalpa Templates + Text */}
             <Text style={styles.sectionTitle}>{T('zhiguanSankalpa')}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }} contentContainerStyle={{ gap: 6 }}>
+              {SANKALPA_TEMPLATES.map(tmpl => (
+                <Pressable
+                  key={tmpl.id}
+                  style={[styles.chip, localSettings.sankalpa === tmpl.text && styles.chipActive]}
+                  onPress={() => setLocalSettings(s => ({ ...s, sankalpa: tmpl.text }))}
+                >
+                  <Text style={[styles.chipText, localSettings.sankalpa === tmpl.text && styles.chipTextActive]}>
+                    {T(tmpl.titleKey)}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
             <TextInput
               style={styles.textInput}
               value={localSettings.sankalpa}
@@ -109,7 +179,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
               placeholder={T('zhiguanSankalpaPlaceholder')}
               placeholderTextColor="#8B7355"
               multiline
-              maxLength={200}
+              maxLength={800}
             />
           </ScrollView>
 
@@ -140,6 +210,10 @@ const styles = StyleSheet.create({
   optionTextActive: { color: '#1A1A1F', fontWeight: '600' },
   optionValue: { fontSize: 13, color: '#8B7355' },
   textInput: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14, fontSize: 15, color: '#4A3F35', minHeight: 80, textAlignVertical: 'top' },
+  chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: '#F5EFE6', borderWidth: 1, borderColor: '#E5DDD0' },
+  chipActive: { backgroundColor: '#C9A96E', borderColor: '#C9A96E' },
+  chipText: { fontSize: 13, color: '#4A3F35' },
+  chipTextActive: { color: '#1A1A1F', fontWeight: '600' },
   footer: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, padding: 20, borderTopWidth: 1, borderTopColor: '#E5DDD0' },
   cancelButton: { paddingVertical: 12, paddingHorizontal: 20 },
   cancelButtonText: { fontSize: 15, color: '#8B7355' },

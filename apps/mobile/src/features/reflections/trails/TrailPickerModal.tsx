@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { X, Check, Plus, Link } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, getTrailsByReflection, getTrailStats } from '@egoless-do/core';
@@ -20,17 +21,22 @@ export default function TrailPickerModal({ visible, reflectionId, onClose, onTog
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { thoughtTrails: rawThoughtTrails, reflections: rawReflections, removeReflectionFromTrail, addReflectionToTrail } = useAppStore(useShallow(s => ({
+    thoughtTrails: s.thoughtTrails,
+    reflections: s.reflections,
+    removeReflectionFromTrail: s.removeReflectionFromTrail,
+    addReflectionToTrail: s.addReflectionToTrail,
+  })));
   const [showCreate, setShowCreate] = useState(false);
 
   const trails = useMemo(() =>
-    (store.thoughtTrails ?? []).filter(t => !t.deleted),
-    [store.thoughtTrails]
+    (rawThoughtTrails ?? []).filter(t => !t.deleted),
+    [rawThoughtTrails]
   );
 
   const reflections = useMemo(() =>
-    (store.reflections ?? []).filter(r => !r.deleted),
-    [store.reflections]
+    (rawReflections ?? []).filter(r => !r.deleted),
+    [rawReflections]
   );
 
   const linkedTrailIds = useMemo(() => {
@@ -45,21 +51,21 @@ export default function TrailPickerModal({ visible, reflectionId, onClose, onTog
       onToggle(trailId, !isLinked);
     } else {
       if (isLinked) {
-        store.removeReflectionFromTrail(trailId, reflectionId);
+        removeReflectionFromTrail(trailId, reflectionId);
       } else {
-        store.addReflectionToTrail(trailId, reflectionId);
+        addReflectionToTrail(trailId, reflectionId);
       }
     }
-  }, [store, reflectionId, linkedTrailIds, onToggle]);
+  }, [removeReflectionFromTrail, addReflectionToTrail, reflectionId, linkedTrailIds, onToggle]);
 
   const handleCreateSuccess = useCallback((trailId: string) => {
     if (onToggle) {
       onToggle(trailId, true);
     } else {
-      store.addReflectionToTrail(trailId, reflectionId);
+      addReflectionToTrail(trailId, reflectionId);
     }
     setShowCreate(false);
-  }, [store, reflectionId, onToggle]);
+  }, [addReflectionToTrail, reflectionId, onToggle]);
 
   return (
     <Modal visible={visible} transparent animationType="fade">

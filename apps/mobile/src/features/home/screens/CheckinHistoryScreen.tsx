@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote } from '@egoless-do/core';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -15,18 +16,21 @@ export default function CheckinHistoryScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { checkinHistory, clearAllReviews } = useAppStore(useShallow(s => ({
+    checkinHistory: s.checkinHistory,
+    clearAllReviews: s.clearAllReviews,
+  })));
   const nav = useRootNavigation();
-  
+
   const [activeTab, setActiveTab] = useState<'history' | 'weekReview' | 'monthReview'>('weekReview');
 
   const sorted = useMemo(() =>
-    (store.checkinHistory ?? []).filter(c => !c.deleted).sort((a, b) => {
+    (checkinHistory ?? []).filter(c => !c.deleted).sort((a, b) => {
       const ta = a.timestamp ?? new Date(a.date).getTime();
       const tb = b.timestamp ?? new Date(b.date).getTime();
       return tb - ta;
     }),
-    [store.checkinHistory]
+    [checkinHistory]
   );
 
   const grouped = useMemo(() => {
@@ -66,7 +70,7 @@ export default function CheckinHistoryScreen() {
           text: '确定清除', 
           style: 'destructive',
           onPress: () => {
-            store.clearAllReviews();
+            clearAllReviews();
             Alert.alert('完成', '复盘数据已清除');
           }
         },

@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, computeItemCheckinStats, createLogger } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
@@ -20,7 +21,13 @@ interface ReviewViewProps {
 export default function ReviewView({ period }: ReviewViewProps) {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { generateReview, checkinReviews, plans, planItems, planItemCheckins } = useAppStore(useShallow(s => ({
+    generateReview: s.generateReview,
+    checkinReviews: s.checkinReviews,
+    plans: s.plans,
+    planItems: s.planItems,
+    planItemCheckins: s.planItemCheckins,
+  })));
   const nav = useRootNavigation();
   
   const [review, setReview] = useState<CheckinReview | null>(null);
@@ -35,7 +42,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    store.generateReview(period).then(result => {
+    generateReview(period).then(result => {
       if (!cancelled) setReview(result);
     }).catch(error => {
       if (!cancelled) log.error(error, { message: 'Failed to generate review' });
@@ -49,7 +56,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
     if (!mountedRef.current) return;
     setLoading(true);
     try {
-      const result = await store.generateReview(period);
+      const result = await generateReview(period);
       if (mountedRef.current) setReview(result);
     } catch (error) {
       log.error(error, { message: 'Failed to generate review' });
@@ -62,7 +69,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
     if (!mountedRef.current) return;
     setRefreshing(true);
     try {
-      const result = await store.generateReview(period);
+      const result = await generateReview(period);
       if (mountedRef.current) setReview(result);
     } catch (error) {
       log.error(error, { message: 'Failed to refresh review' });
@@ -243,11 +250,11 @@ export default function ReviewView({ period }: ReviewViewProps) {
   };
   
   const renderPlanProgress = () => {
-    const allPlans = (store.plans ?? []).filter(p => !p.deleted);
+    const allPlans = (plans ?? []).filter(p => !p.deleted);
     if (!review || allPlans.length === 0) return null;
 
-    const allPlanItems = (store.planItems ?? []).filter(i => !i.deleted);
-    const checkins = (store.planItemCheckins ?? []).filter(c => !c.deleted);
+    const allPlanItems = (planItems ?? []).filter(i => !i.deleted);
+    const checkins = (planItemCheckins ?? []).filter(c => !c.deleted);
     const today = new Date().toISOString().slice(0, 10);
 
     return (
@@ -482,7 +489,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
   };
   
   const renderHistoryEntry = () => {
-    const historyReviews = store.checkinReviews
+    const historyReviews = checkinReviews
       ?.filter(r => r.period === period && r.deleted !== true)
       .sort((a, b) => b.generatedAt - a.generatedAt)
       .slice(0, 3) ?? [];

@@ -7,10 +7,11 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
-import { ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType } from '../types/globalPulse';
+import { ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType } from '@egoless-do/core';
 import { ActiveUsersList } from './ActiveUsersList';
 import { Leaderboard } from './Leaderboard';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 
 type TabKey = 'realtime' | 'leaderboard' | 'me';
 
@@ -41,7 +42,7 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
 }) => {
   const theme = useTheme();
   const t = useT();
-  const store = useAppStore();
+  const { streak, checkinHistory, totalMedMinutes } = useAppStore(useShallow(s => ({ streak: s.streak, checkinHistory: s.checkinHistory, totalMedMinutes: s.totalMedMinutes })));
   const [activeTab, setActiveTab] = useState<TabKey>('realtime');
 
   const tabs: { key: TabKey; label: string }[] = [
@@ -138,17 +139,17 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
               <Text style={[styles.myCardTitle, { color: theme.text }]}>{t('globalPulse.myJourney')}</Text>
               <View style={styles.myStatsRow}>
                 <View style={styles.myStatItem}>
-                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{store.streak ?? 0}</Text>
+                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{streak ?? 0}</Text>
                   <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('checkinStreak')}</Text>
                 </View>
                 <View style={styles.myStatItem}>
                   <Text style={[styles.myStatValue, { color: theme.primary }]}>
-                    {(store.checkinHistory ?? []).filter(c => c.done && !c.deleted).length}
+                    {(checkinHistory ?? []).filter(c => c.done && !c.deleted).length}
                   </Text>
                   <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.totalDays')}</Text>
                 </View>
                 <View style={styles.myStatItem}>
-                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{store.totalMedMinutes ?? 0}</Text>
+                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{totalMedMinutes ?? 0}</Text>
                   <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('accMed')}</Text>
                 </View>
               </View>

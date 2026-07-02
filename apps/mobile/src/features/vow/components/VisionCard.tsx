@@ -1,9 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Flag, Target, Star, ChevronRight, ChevronDown } from 'lucide-react-native';
 import type { Vision, Plan, PlanItem, PlanItemStatus } from '@egoless-do/core';
-import { VISION_TIME_FRAMES, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import { VISION_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import { ProgressBar } from '../../../components/UI';
 
 interface Props {
@@ -11,6 +10,10 @@ interface Props {
   TH: any;
   T: (key: string) => string;
   pct: number;
+  planDone?: number;
+  planTotal?: number;
+  taskDone?: number;
+  taskTotal?: number;
   onEdit: (v: Vision) => void;
   onAchieve: (id: string) => void;
   onArchive: (id: string) => void;
@@ -30,16 +33,16 @@ const STATUS_ICON: Record<PlanItemStatus, { icon: string; color: string }> = {
   cancelled: { icon: '✕', color: '#9CA3AF' },
 };
 
-const STATUS_LABEL: Record<PlanItemStatus, string> = {
-  completed: '已完成',
-  in_progress: '进行中',
-  paused: '已暂停',
-  delayed: '已延期',
-  not_started: '未开始',
-  cancelled: '已取消',
+const STATUS_I18N: Record<PlanItemStatus, string> = {
+  completed: 'planStatusCompleted',
+  in_progress: 'planStatusInProgress',
+  paused: 'planStatusPaused',
+  delayed: 'planStatusDelayed',
+  not_started: 'planStatusNotStarted',
+  cancelled: 'planStatusCancelled',
 };
 
-export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onArchive, linkedPlans = [], planItems = [] }: Props) {
+export default function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, linkedPlans = [], planItems = [] }: Props) {
   const [expanded, setExpanded] = useState(false);
   const Icon = TYPE_ICON[vision.type] ?? Flag;
   const typeColor = vision.type === 'lifetime' ? '#F59E0B' : vision.type === 'long' ? '#8B5CF6' : '#10B981';
@@ -99,6 +102,26 @@ export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onAr
         </View>
         <ProgressBar pct={pct} color="#8B5CF6" />
       </View>
+
+      {/* Plan & Task progress indicators */}
+      {(planTotal > 0 || taskTotal > 0) && (
+        <View style={{ flexDirection: 'row', gap: 16, marginBottom: 12 }}>
+          {planTotal > 0 && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Text style={{ fontSize: 13 }}>📋</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowPlanProgress')}</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{planDone}/{planTotal}</Text>
+            </View>
+          )}
+          {taskTotal > 0 && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Text style={{ fontSize: 13 }}>✅</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowTaskProgress')}</Text>
+              <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{taskDone}/{taskTotal}</Text>
+            </View>
+          )}
+        </View>
+      )}
 
       {/* Actions */}
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: linkedPlans.length > 0 ? 8 : 0 }}>
@@ -182,7 +205,7 @@ export default function VisionCard({ vision, TH, T, pct, onEdit, onAchieve, onAr
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                             <Text style={{ fontSize: 12 }}>{st.icon}</Text>
                             <Text style={{ fontSize: FONT_SUB, color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
-                            <Text style={{ fontSize: 10, color: st.color, fontWeight: '500' }}>{STATUS_LABEL[item.status] ?? ''}</Text>
+                            <Text style={{ fontSize: 10, color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status]) ?? ''}</Text>
                           </View>
                           {item.status !== 'not_started' && item.status !== 'cancelled' && (
                             <View style={{ marginLeft: 22, height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2, overflow: 'hidden' }}>

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Card, useTheme, useT, ScreenHeader } from '../../../components/UI';
 import { COLORS, getTodayFoodLog, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK, FONT_EMPTY } from '@egoless-do/core';
 import AddFoodModal from '../../../components/AddFoodModal';
@@ -13,23 +14,27 @@ export default function FoodLogPage() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const store = useAppStore();
+  const { foodLog, calGoal, deleteFood } = useAppStore(useShallow(s => ({
+    foodLog: s.foodLog,
+    calGoal: s.calGoal,
+    deleteFood: s.deleteFood,
+  })));
   const [showAdd, setShowAdd]     = useState(false);
   const [showHistory, setShowHistory] = useState(true);
 
-  const foodLog = useMemo(() => (store.foodLog ?? []).filter(f => !f.deleted), [store.foodLog]);
-  const totalCal = useMemo(() => getTodayFoodLog(foodLog).reduce((a, f) => a + (f.calories ?? 0), 0), [foodLog]);
+  const filteredFoodLog = useMemo(() => (foodLog ?? []).filter(f => !f.deleted), [foodLog]);
+  const totalCal = useMemo(() => getTodayFoodLog(filteredFoodLog).reduce((a, f) => a + (f.calories ?? 0), 0), [filteredFoodLog]);
 
   const historyGroups = useMemo(() => {
     const today = dateStr();
-    const past = foodLog.filter(f => dateStr(new Date(f.timestamp)) !== today);
+    const past = filteredFoodLog.filter(f => dateStr(new Date(f.timestamp)) !== today);
     const groups: Record<string, typeof past> = {};
     for (const f of past) {
       const d = dateStr(new Date(f.timestamp));
       (groups[d] ??= []).push(f);
     }
     return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]));
-  }, [foodLog]);
+  }, [filteredFoodLog]);
 
   const totalHistoryCal = useMemo(() => historyGroups.reduce((sum, [, entries]) => sum + entries.reduce((a, f) => a + (f.calories ?? 0), 0), 0), [historyGroups]);
   const totalRecords = useMemo(() => historyGroups.reduce((sum, [, entries]) => sum + entries.length, 0), [historyGroups]);
@@ -38,7 +43,7 @@ export default function FoodLogPage() {
   const confirmDelete = (id: string) => {
     Alert.alert('', T('foodDeleteConfirm'), [
       { text: T('commonCancel'), style: 'cancel' },
-      { text: T('commonConfirm'), style: 'destructive', onPress: () => store.deleteFood(id) },
+      { text: T('commonConfirm'), style: 'destructive', onPress: () => deleteFood(id) },
     ]);
   };
 
@@ -51,16 +56,16 @@ export default function FoodLogPage() {
           <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('foodTodayKcal')}</Text>
           <View style={{ flexDirection:'row', alignItems:'baseline', gap:8 }}>
             <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:P }}>{totalCal}</Text>
-            <Text style={{ fontSize:FONT_BACK, color:TH.sub }}>/ {store.calGoal}</Text>
+            <Text style={{ fontSize:FONT_BACK, color:TH.sub }}>/ {calGoal}</Text>
           </View>
-          <Text style={{ color: totalCal > store.calGoal ? COLORS.RED : COLORS.GREEN, fontSize:FONT_BODY, marginTop:6 }}>{T('foodRemaining')}: {Math.max(0, store.calGoal - totalCal)} kcal</Text>
+          <Text style={{ color: totalCal > calGoal ? COLORS.RED : COLORS.GREEN, fontSize:FONT_BODY, marginTop:6 }}>{T('foodRemaining')}: {Math.max(0, calGoal - totalCal)} kcal</Text>
         </Card>
 
         <Card>
-          {getTodayFoodLog(foodLog).length === 0 ? (
+          {getTodayFoodLog(filteredFoodLog).length === 0 ? (
             <Text style={{ color:TH.sub, fontSize:FONT_EMPTY, textAlign:'center', padding:24 }}>{T('foodEmpty')}</Text>
           ) : (
-            getTodayFoodLog(foodLog).map((f, i, arr) => (
+            getTodayFoodLog(filteredFoodLog).map((f, i, arr) => (
               <View key={f.id} style={{
                 flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12,
                 borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border,

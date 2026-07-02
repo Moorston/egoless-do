@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
@@ -18,12 +19,14 @@ type DetailRoute = RouteProp<RootStackParamList, 'ReviewDetail'>;
 export default function ReviewDetailScreen() {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { checkinReviews } = useAppStore(useShallow(s => ({
+    checkinReviews: s.checkinReviews,
+  })));
   const nav = useRootNavigation();
   const route = useRoute<DetailRoute>();
   const reviewId = route.params?.reviewId ?? '';
-  
-  const review = (store.checkinReviews ?? []).find((r: CheckinReview) => !r.deleted && r.id === reviewId);
+
+  const review = (checkinReviews ?? []).find((r: CheckinReview) => !r.deleted && r.id === reviewId);
 
   if (!review) {
     return (

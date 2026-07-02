@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
 import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
@@ -39,8 +40,28 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const store = useAppStore();
-  const weightUnit = useAppStore(s => s.weightUnit);
+  const store = useAppStore(useShallow(s => ({
+    checkinHistory: s.checkinHistory,
+    foodLog: s.foodLog,
+    plans: s.plans,
+    planItemCheckins: s.planItemCheckins,
+    planItems: s.planItems,
+    dailyCustomTodos: s.dailyCustomTodos,
+    habits: s.habits,
+    userProfile: s.userProfile,
+    waterMl: s.waterMl,
+    weightUnit: s.weightUnit,
+    checkinHabit: s.checkinHabit,
+    checkinPlanItem: s.checkinPlanItem,
+    uncheckinPlanItem: s.uncheckinPlanItem,
+    resetWater: s.resetWater,
+    addWater: s.addWater,
+    submitCheckin: s.submitCheckin,
+    addGraceRecord: s.addGraceRecord,
+    toggleDailyCustomTodo: s.toggleDailyCustomTodo,
+    addFood: s.addFood,
+    addReflection: s.addReflection,
+  })));
   const today = dateStr();
   const targetDate = graceDate ?? today;
   const isGraceMode = !!graceDate;
@@ -440,7 +461,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                     keyboardType="numeric"
                     style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, backgroundColor:TH.cardSolid }}
                   />
-                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
+                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{store.weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
                 </View>
               </View>
 

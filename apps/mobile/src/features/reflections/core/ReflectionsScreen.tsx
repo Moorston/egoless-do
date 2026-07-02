@@ -7,6 +7,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../../navigation/hooks';
 import {
@@ -93,7 +94,30 @@ function getManagerProps(
 export default function ReflectionsScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
-  const store = useAppStore();
+  const { reflections, addReflection, addReflectionToTrail, updateReflection, deleteReflection, getActivePlan, createPlanItem, planItems, thoughtTrails, deletePlanItem, unlinkReflectionFromPlanItem, habits, customTags, addCustomTag, updateCustomTag, removeCustomTag, reorderAllTag, customMoods, addCustomMood, updateCustomMood, removeCustomMood, reorderAllMood } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+    addReflection: s.addReflection,
+    addReflectionToTrail: s.addReflectionToTrail,
+    updateReflection: s.updateReflection,
+    deleteReflection: s.deleteReflection,
+    getActivePlan: s.getActivePlan,
+    createPlanItem: s.createPlanItem,
+    planItems: s.planItems,
+    thoughtTrails: s.thoughtTrails,
+    deletePlanItem: s.deletePlanItem,
+    unlinkReflectionFromPlanItem: s.unlinkReflectionFromPlanItem,
+    habits: s.habits,
+    customTags: s.customTags,
+    addCustomTag: s.addCustomTag,
+    updateCustomTag: s.updateCustomTag,
+    removeCustomTag: s.removeCustomTag,
+    reorderAllTag: s.reorderAllTag,
+    customMoods: s.customMoods,
+    addCustomMood: s.addCustomMood,
+    updateCustomMood: s.updateCustomMood,
+    removeCustomMood: s.removeCustomMood,
+    reorderAllMood: s.reorderAllMood,
+  })));
   const T     = useT();
   const route = useRoute<RouteProp<MainTabParamList, 'Reflections'>>();
   const nav   = useTabNavigation();
@@ -243,14 +267,14 @@ export default function ReflectionsScreen() {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
       const ds = dateStr(d);
-      const count = (store.reflections ?? []).filter(r =>
+      const count = (reflections ?? []).filter(r =>
         !r.deleted && dateStr(new Date(r.timestamp ?? 0)) === ds
       ).length;
       const dayLabel = d.toLocaleDateString('zh-CN', { weekday: 'narrow' });
       data.push({ date: ds, count, dayLabel });
     }
     return data;
-  }, [store.reflections]);
+  }, [reflections]);
 
   const saveReflection = () => {
     if (!content.trim()) return;
@@ -258,10 +282,10 @@ export default function ReflectionsScreen() {
     const found = REFLECTION_CATEGORIES.find(c => c.key === category);
     const categoryTag = found ? `#${found.label}` : '';
     const finalTags = categoryTag && !tags.includes(categoryTag) ? [categoryTag, ...tags] : tags;
-    const newR = store.addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
+    const newR = addReflection({ content, tags: finalTags, mood, colorIdx, link: link.trim() || undefined });
     // Link pending trails to the newly created reflection
     if (newR && pendingTrailIds.length > 0) {
-      pendingTrailIds.forEach(tid => store.addReflectionToTrail(tid, newR.id));
+      pendingTrailIds.forEach(tid => addReflectionToTrail(tid, newR.id));
       setPendingTrailIds([]);
     }
     setContent(''); setTags([]); setMood(''); setLink(''); setColorIdx(0); setCategory('');
@@ -292,7 +316,7 @@ export default function ReflectionsScreen() {
     let finalTags = editTags.filter(t => !oldCategoryTags.includes(t));
     if (categoryTag) finalTags = [categoryTag, ...finalTags];
 
-    store.updateReflection(editId, {
+    updateReflection(editId, {
       content: editContent,
       tags: finalTags,
       mood: editMood,
@@ -320,14 +344,14 @@ export default function ReflectionsScreen() {
   };
 
   const handleEdit = useCallback((id: string) => {
-    const r = (store.reflections ?? []).find(x => !x.deleted && x.id === id);
+    const r = (reflections ?? []).find(x => !x.deleted && x.id === id);
     if (r) openEdit(r);
-  }, [store]);
+  }, [reflections]);
 
   const handleCreatePlanItem = useCallback((id: string) => {
-    const r = (store.reflections ?? []).find(x => !x.deleted && x.id === id);
+    const r = (reflections ?? []).find(x => !x.deleted && x.id === id);
     if (r) {
-      const activePlan = store.getActivePlan();
+      const activePlan = getActivePlan();
       if (!activePlan) {
         Alert.alert('提示', '暂无活跃计划，请先创建一个计划。');
         return;
@@ -335,14 +359,14 @@ export default function ReflectionsScreen() {
       setCreatePlanReflection(r);
       setShowCreatePlanRefModal(true);
     }
-  }, [store]);
+  }, [reflections, getActivePlan]);
 
   const handleCreatePlanRef = useCallback((reflectionId: string, form: any) => {
-    store.createPlanItem({ type: 'reflection', id: reflectionId }, form);
+    createPlanItem({ type: 'reflection', id: reflectionId }, form);
     setShowCreatePlanRefModal(false);
     setCreatePlanReflection(null);
     Alert.alert('成功', '计划任务已创建');
-  }, [store]);
+  }, [createPlanItem]);
 
   const handleCardPress = useCallback((id: string) => {
     setDetailId(id);
@@ -467,7 +491,7 @@ export default function ReflectionsScreen() {
               </TouchableOpacity>
               {items.map((r, idx) => {
                 const linkedPlanItem = r.linkedPlanItemId
-                  ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
+                  ? (planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
                   : null;
                 const displayContent = r.content.length > 100 ? r.content.slice(0, 100) + '...' : r.content;
 
@@ -538,7 +562,7 @@ export default function ReflectionsScreen() {
                           </View>
                         )}
                         {(() => {
-                          const linkedTrails = getTrailsByReflection(r.id, store.thoughtTrails ?? []).filter(t => !t.deleted);
+                          const linkedTrails = getTrailsByReflection(r.id, thoughtTrails ?? []).filter(t => !t.deleted);
                           if (linkedTrails.length === 0) return null;
                           return (
                             <View style={{ flexDirection:'row', flexWrap:'wrap', gap:4, marginTop:6 }}>
@@ -604,7 +628,7 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
-              linkedTrailNames={pendingTrailIds.map(id => (store.thoughtTrails ?? []).find(t => !t.deleted && t.id === id)?.name ?? '').filter(Boolean)}
+              linkedTrailNames={pendingTrailIds.map(id => (thoughtTrails ?? []).find(t => !t.deleted && t.id === id)?.name ?? '').filter(Boolean)}
               onOpenTrailPicker={() => setTrailPickerId('__new__')}
             />
           </View>
@@ -612,7 +636,7 @@ export default function ReflectionsScreen() {
           {managerMode && (
             <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
               <ItemManagerPanel {...getManagerProps(
-                store,
+                useAppStore.getState(),
                 managerMode,
                 () => setManagerMode(null),
                 managerMode === 'tag' ? hiddenTags : hiddenMoods,
@@ -642,7 +666,7 @@ export default function ReflectionsScreen() {
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingBottom:40, paddingTop:20 }}>
             <View style={{ width:40, height:4, borderRadius:2, backgroundColor:TH.border, alignSelf:'center', marginBottom:20 }} />
             <TouchableOpacity onPress={() => {
-              const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
+              const r = (reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
               if (r) openEdit(r);
               setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:P, alignItems:'center' }}>
@@ -650,7 +674,7 @@ export default function ReflectionsScreen() {
             </TouchableOpacity>
             {/* 创建/解除计划任务 */}
             {(() => {
-              const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
+              const r = (reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
               const isLinked = r?.linkedPlanItemId;
               return isLinked ? (
                 <TouchableOpacity onPress={() => {
@@ -660,10 +684,10 @@ export default function ReflectionsScreen() {
                       { text: '确定', style: 'destructive', onPress: () => {
                         // 先删除关联的计划任务
                         if (r.linkedPlanItemId) {
-                          store.deletePlanItem(r.linkedPlanItemId);
+                          deletePlanItem(r.linkedPlanItemId);
                         }
                         // 再解除关联
-                        store.unlinkReflectionFromPlanItem(r.id);
+                        unlinkReflectionFromPlanItem(r.id);
                       }},
                     ]);
                   }
@@ -673,13 +697,13 @@ export default function ReflectionsScreen() {
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => {
-                  const activePlan = store.getActivePlan();
+                  const activePlan = getActivePlan();
                   if (!activePlan) {
                     Alert.alert('提示', '暂无活跃计划，请先创建一个计划。');
                     setActionMenuId(null);
                     return;
                   }
-                  const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
+                  const r = (reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
                   if (r) { setCreatePlanReflection(r); setShowCreatePlanRefModal(true); }
                   setActionMenuId(null);
                 }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(16,185,129,.15)', alignItems:'center' }}>
@@ -694,14 +718,14 @@ export default function ReflectionsScreen() {
               <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON, fontWeight:'600' }}>🔗 关联思维脉络</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
-              const r = (store.reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
+              const r = (reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
               if (r) onShare(r);
               else setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(59,130,246,.15)', alignItems:'center' }}>
               <Text style={{ color:'#3B82F6', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflShare')}</Text>
             </TouchableOpacity>
             {(() => {
-              const r = (store.reflections ?? []).find(x => x.id === actionMenuId && !x.deleted);
+              const r = (reflections ?? []).find(x => x.id === actionMenuId && !x.deleted);
               const isToday = r && dateStr(new Date(r.timestamp ?? 0)) === dateStr();
               return isToday ? (
                 <TouchableOpacity onPress={() => {
@@ -753,7 +777,7 @@ export default function ReflectionsScreen() {
             <Text style={{ fontWeight:'700', fontSize:FONT_BODY, color:TH.text, marginBottom:12 }}>{T('reflDeleteConfirm')}</Text>
             <View style={{ flexDirection:'row', gap:10, width:'100%' }}>
               <OutlineButton label={T('cancel')} onPress={() => setConfirmDel(null)} style={{ flex:1 }} />
-              <PrimaryButton label={T('confirm')} onPress={() => { if(confirmDel) store.deleteReflection(confirmDel); setConfirmDel(null); }} color={COLORS.RED} style={{ flex:1 }} />
+              <PrimaryButton label={T('confirm')} onPress={() => { if(confirmDel) deleteReflection(confirmDel); setConfirmDel(null); }} color={COLORS.RED} style={{ flex:1 }} />
             </View>
           </View>
         </View>
@@ -783,7 +807,7 @@ export default function ReflectionsScreen() {
               dynamicTagCounts={dynamicTagCounts}
               onOpenTagManager={() => setManagerMode('tag')}
               onOpenMoodManager={() => setManagerMode('mood')}
-              linkedTrailNames={getTrailsByReflection(editId ?? '', store.thoughtTrails ?? []).filter(t => !t.deleted).map(t => t.name)}
+              linkedTrailNames={getTrailsByReflection(editId ?? '', thoughtTrails ?? []).filter(t => !t.deleted).map(t => t.name)}
               onOpenTrailPicker={() => setTrailPickerId(editId)}
             />
           </View>
@@ -791,7 +815,7 @@ export default function ReflectionsScreen() {
           {managerMode && (
             <View style={{ position:'absolute', top:0, left:0, right:0, bottom:0, backgroundColor:TH.cardSolid, paddingTop:insets.top + 12, paddingBottom:insets.bottom, paddingHorizontal:24 }}>
               <ItemManagerPanel {...getManagerProps(
-                store,
+                useAppStore.getState(),
                 managerMode,
                 () => setManagerMode(null),
                 managerMode === 'tag' ? hiddenTags : hiddenMoods,

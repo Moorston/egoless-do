@@ -6,6 +6,7 @@ import * as Haptics from 'expo-haptics';
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_SMALL, PRESET_SUTRAS, DEDICATION_TEMPLATES } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import type { MantraDef, MantraSession } from '@egoless-do/core';
@@ -24,7 +25,7 @@ export default function MantraScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { mantraDefs, getMantraTotalCount, getMantraTodayCount, getMantraStreak, addMantraSession, removeMantraDef, addMantraDef } = useAppStore(useShallow(s => ({ mantraDefs: s.mantraDefs, getMantraTotalCount: s.getMantraTotalCount, getMantraTodayCount: s.getMantraTodayCount, getMantraStreak: s.getMantraStreak, addMantraSession: s.addMantraSession, removeMantraDef: s.removeMantraDef, addMantraDef: s.addMantraDef })));
   useKeepAwake();
   const { playMantra, stopMantra, isPlaying } = useMantraAudio();
   const { getCachedPath, downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
@@ -51,8 +52,8 @@ export default function MantraScreen() {
   const startSessionSeq = useRef(0);
 
   const myMantras = useMemo(() =>
-    (store.mantraDefs ?? []).filter((d: MantraDef) => !d.deleted && d.category !== 'sutra').sort((a: MantraDef, b: MantraDef) => a.sortOrder - b.sortOrder),
-    [store.mantraDefs]
+    (mantraDefs ?? []).filter((d: MantraDef) => !d.deleted && d.category !== 'sutra').sort((a: MantraDef, b: MantraDef) => a.sortOrder - b.sortOrder),
+    [mantraDefs]
   );
 
   // Timer (fixed pause logic)
@@ -133,7 +134,7 @@ export default function MantraScreen() {
     const durationSec = Math.floor((completedAt - startTime - pausedElapsedRef.current) / 1000);
     const rounds = Math.floor(c / BEAD_COUNT);
     if (selectedMantra && c > 0) {
-      store.addMantraSession({
+      addMantraSession({
         mantraId: selectedMantra.id,
         date: new Date().toISOString().slice(0, 10),
         count: c, rounds, durationSec,
@@ -142,7 +143,7 @@ export default function MantraScreen() {
       });
     }
     setPage('report');
-  }, [startTime, selectedMantra, targetRounds, store, stopMantra]);
+  }, [startTime, selectedMantra, targetRounds, addMantraSession, stopMantra]);
 
   // Reset all session state
   const resetSession = useCallback(() => {
@@ -201,8 +202,8 @@ export default function MantraScreen() {
 
   // Add preset
   const addPreset = useCallback((preset: { name: string; subtitle?: string; category: 'dharani' | 'sutra' | 'buddha_name' | 'custom'; pronunciation?: string; meaning?: string }) => {
-    store.addMantraDef({ name: preset.name, subtitle: preset.subtitle, category: preset.category, pronunciation: preset.pronunciation, meaning: preset.meaning });
-  }, [store]);
+    addMantraDef({ name: preset.name, subtitle: preset.subtitle, category: preset.category, pronunciation: preset.pronunciation, meaning: preset.meaning });
+  }, [addMantraDef]);
 
   // ── SELECT PAGE ──
   if (page === 'select') {
@@ -245,9 +246,9 @@ export default function MantraScreen() {
               </View>
             ) : (
               myMantras.map((m: MantraDef) => {
-                const total = store.getMantraTotalCount(m.id);
-                const today = store.getMantraTodayCount(m.id);
-                const streak = store.getMantraStreak(m.id);
+                const total = getMantraTotalCount(m.id);
+                const today = getMantraTodayCount(m.id);
+                const streak = getMantraStreak(m.id);
                 const progress = m.targetCount ? Math.min(100, Math.round(total / m.targetCount * 100)) : null;
                 return (
                   <TouchableOpacity key={m.id} onPress={() => startSession(m)}
@@ -277,7 +278,7 @@ export default function MantraScreen() {
                     )}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
                       <Text style={{ fontSize: FONT_SMALL, color: '#F59E0B' }}>🔥 {streak} {T('mantraDays')}</Text>
-                      <TouchableOpacity onPress={() => store.removeMantraDef(m.id)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+                      <TouchableOpacity onPress={() => removeMantraDef(m.id)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
                         <Text style={{ fontSize: FONT_SMALL, color: '#EF4444' }}>移除</Text>
                       </TouchableOpacity>
                     </View>
@@ -508,8 +509,8 @@ export default function MantraScreen() {
   // ── REPORT PAGE ──
   const rounds = Math.floor(count / BEAD_COUNT);
   const durationSec = Math.floor(elapsed / 1000);
-  const totalAfter = selectedMantra ? store.getMantraTotalCount(selectedMantra.id) : 0;
-  const streak = selectedMantra ? store.getMantraStreak(selectedMantra.id) : 0;
+  const totalAfter = selectedMantra ? getMantraTotalCount(selectedMantra.id) : 0;
+  const streak = selectedMantra ? getMantraStreak(selectedMantra.id) : 0;
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>

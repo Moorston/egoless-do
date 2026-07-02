@@ -4,6 +4,7 @@ import { X, Link, Unlink } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES } from '@egoless-do/core';
 import type { Vision, VisionType, VisionTimeFrame, RefType } from '@egoless-do/core';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { TagPill } from '../../../components/UI';
 
 interface Props {
@@ -17,15 +18,15 @@ interface Props {
 }
 
 export default function VisionEditModal({ visible, TH, T, vision, type, onClose, onSave }: Props) {
-  const store = useAppStore();
+  const { habits, plans, visionPractices } = useAppStore(useShallow(s => ({ habits: s.habits, plans: s.plans, visionPractices: s.visionPractices })));
   const [text, setText] = useState('');
   const [timeFrame, setTimeFrame] = useState<VisionTimeFrame | ''>('');
   const [deadline, setDeadline] = useState('');
   const [linkedHabits, setLinkedHabits] = useState<string[]>([]);
   const [linkedPlans, setLinkedPlans] = useState<string[]>([]);
 
-  const habits = (store.habits ?? []).filter((h: any) => !h.deleted);
-  const plans = (store.plans ?? []).filter((p: any) => !p.deleted);
+  const filteredHabits = (habits ?? []).filter((h: any) => !h.deleted);
+  const filteredPlans = (plans ?? []).filter((p: any) => !p.deleted);
 
   useEffect(() => {
     if (visible) {
@@ -41,7 +42,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
       // Load existing linked practices
       if (vision) {
-        const existing = (store.visionPractices ?? []).filter(
+        const existing = (visionPractices ?? []).filter(
           (vp: any) => vp.visionId === vision.id && !vp.deleted
         );
         setLinkedHabits(existing.filter((vp: any) => vp.refType === 'habit').map((vp: any) => vp.refId));
@@ -51,7 +52,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
         setLinkedPlans([]);
       }
     }
-  }, [visible, vision, store.visionPractices]);
+  }, [visible, vision, visionPractices]);
 
   const toggleHabit = useCallback((id: string) => {
     setLinkedHabits(prev => prev.includes(id) ? prev.filter(h => h !== id) : [...prev, id]);
@@ -171,11 +172,11 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
             {/* Link habits */}
             <View style={{ marginBottom: 16 }}>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowLinkHabit')}</Text>
-              {habits.length === 0 ? (
+              {filteredHabits.length === 0 ? (
                 <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('vowNoLink')}</Text>
               ) : (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                  {habits.map((h: any) => {
+                  {filteredHabits.map((h: any) => {
                     const active = linkedHabits.includes(h.id);
                     return (
                       <TouchableOpacity
@@ -202,11 +203,11 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
             {/* Link plans */}
             <View style={{ marginBottom: 20 }}>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowLinkPlan')}</Text>
-              {plans.length === 0 ? (
+              {filteredPlans.length === 0 ? (
                 <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('vowNoLink')}</Text>
               ) : (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                  {plans.map((p: any) => {
+                  {filteredPlans.map((p: any) => {
                     const active = linkedPlans.includes(p.id);
                     return (
                       <TouchableOpacity

@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { getCityInfo, CityInfo } from '../services/reverseGeocoding';
+import { getCityInfo, CityInfo } from '@egoless-do/core';
 
 // 全局缓存，避免重复请求
 const cityCache = new Map<string, CityInfo | null>();

@@ -8,7 +8,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'rea
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
-import { LeaderboardEntry } from '../types/globalPulse';
+import { LeaderboardEntry } from '@egoless-do/core';
 
 interface LeaderboardItemProps {
   entry: LeaderboardEntry;

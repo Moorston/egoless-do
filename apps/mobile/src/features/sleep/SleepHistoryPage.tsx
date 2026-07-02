@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, FONT_STAT_CARD, dateStr, yesterday } from '@egoless-do/core';
 import { formatSleepDuration } from '@egoless-do/core';
@@ -331,12 +332,12 @@ export default function SleepHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { sleepHistory } = useAppStore(useShallow(s => ({ sleepHistory: s.sleepHistory })));
   const [selectedEntry, setSelectedEntry] = useState<SleepEntry | null>(null);
 
   const activeEntries = useMemo(() =>
-    [...(store.sleepHistory ?? [])].filter(s => !s.deleted).sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
-    [store.sleepHistory]
+    [...(sleepHistory ?? [])].filter(s => !s.deleted).sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
+    [sleepHistory]
   );
 
   const grouped = useMemo(() => {

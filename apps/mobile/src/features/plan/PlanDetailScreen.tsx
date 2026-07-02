@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import { COLORS, isPlanDelayed, statusToI18nKey, PLAN_STATUS_COLORS, FONT_TITLE, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
@@ -13,14 +14,14 @@ import PlanDetailContent from './PlanDetailContent';
 export default function PlanDetailScreen() {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { plans } = useAppStore(useShallow(s => ({ plans: s.plans })));
   const nav = useRootNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'PlanDetail'>>();
   const planId = route.params?.planId as string;
   const addReflectionId = route.params?.addReflectionId as string | undefined;
   const today = dateStr();
 
-  const plan = useMemo(() => (store.plans ?? []).find(p => !p.deleted && p.id === planId), [store.plans, planId]);
+  const plan = useMemo(() => (plans ?? []).find(p => !p.deleted && p.id === planId), [plans, planId]);
   const delayed = plan ? isPlanDelayed(plan, today) : false;
 
   return (

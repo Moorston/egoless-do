@@ -7,6 +7,7 @@ import type { RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
 import { ArrowLeft, Link, Calendar, TrendingUp, CheckCircle, Bell, BellOff } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, dateStr, daysInMonth, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
 import type { Habit, HabitStatus } from '@egoless-do/core';
@@ -26,7 +27,7 @@ export default function HabitDetailScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { habits, reflections, updateHabit } = useAppStore(useShallow(s => ({ habits: s.habits, reflections: s.reflections, updateHabit: s.updateHabit })));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'HabitDetail'>>();
 
@@ -40,8 +41,8 @@ export default function HabitDetailScreen() {
 
   const { habitId } = route.params;
   const habit = useMemo(() =>
-    (store.habits ?? []).find(h => !h.deleted && h.id === habitId),
-    [store.habits, habitId]
+    (habits ?? []).find(h => !h.deleted && h.id === habitId),
+    [habits, habitId]
   );
 
   // Alarm editing
@@ -52,10 +53,10 @@ export default function HabitDetailScreen() {
   const relatedReflections = useMemo(() => {
     if (!habit) return [];
     const habitTag = `#${habit.name}`;
-    return (store.reflections ?? []).filter(r =>
+    return (reflections ?? []).filter(r =>
       !r.deleted && r.tags.some(t => t === habitTag)
     ).sort((a, b) => b.timestamp - a.timestamp);
-  }, [habit, store.reflections]);
+  }, [habit, reflections]);
 
 
   // Calendar data
@@ -165,7 +166,7 @@ export default function HabitDetailScreen() {
             <Toggle
               on={habit.alarmEnabled}
               onChange={async () => {
-                store.updateHabit(habitId, { alarmEnabled: !habit.alarmEnabled });
+                updateHabit(habitId, { alarmEnabled: !habit.alarmEnabled });
                 const granted = await requestNotificationPermission();
                 if (granted) {
                   const s = useAppStore.getState();
@@ -323,7 +324,7 @@ export default function HabitDetailScreen() {
         value={`${String(habit.alarmHour).padStart(2, '0')}:${String(habit.alarmMinute).padStart(2, '0')}`}
         onConfirm={async (time) => {
           const [h, m] = time.split(':').map(Number);
-          store.updateHabit(habitId, { alarmHour: h, alarmMinute: m });
+          updateHabit(habitId, { alarmHour: h, alarmMinute: m });
           setShowAlarmPicker(false);
           const granted = await requestNotificationPermission();
           if (granted) {

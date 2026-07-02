@@ -2,8 +2,7 @@
  * 全球脉动地图功能入口
  */
 
-// 类型导出
-export * from './types/globalPulse';
+// 类型已在 @egoless-do/core 中导出，无需重复导出
 
 // 组件导出
 export { GlobalPulseMap } from './components/GlobalPulseMap';
@@ -25,6 +24,6 @@ export { useCheckinSync } from './hooks/useCheckinSync';
 
 // 服务导出
 export { submitCheckin, getCheckins, getGlobalStats, getLeaderboard, optOut, optIn, deleteGlobalData, generateAnonymousId, getCheckinTypeIcon, getCheckinTypeColor } from './services/globalPulseApi';
-export { fuzzCoordinate, isValidCoordinate, calculateDistance } from './services/coordinateFuzzing';
-export { aggregateMarkers, shouldCluster, getClusterStyle } from './services/markerAggregation';
+export { fuzzCoordinate, isValidCoordinate, calculateDistance } from '@egoless-do/core';
+export { aggregateMarkers, shouldCluster, getClusterStyle } from '@egoless-do/core';
 export { initDatabase, cacheTile, getCachedTile, cacheCheckins, getCachedCheckins, cacheStats, getCachedStats, clearAllCache, getCacheSize } from './services/offlineCache';

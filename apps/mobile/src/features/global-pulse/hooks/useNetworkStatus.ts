@@ -5,7 +5,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import { createLogger } from '@egoless-do/core';
-import { NetworkStatus } from '../types/globalPulse';
+import { NetworkStatus } from '@egoless-do/core';
 
 const log = createLogger('GlobalPulse');
 

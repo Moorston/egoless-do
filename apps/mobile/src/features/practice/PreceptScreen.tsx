@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -17,7 +18,13 @@ export default function PreceptScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const { habits, reflections, checkinHabit, addReflection, addHabit } = useAppStore(useShallow(s => ({
+    habits: s.habits,
+    reflections: s.reflections,
+    checkinHabit: s.checkinHabit,
+    addReflection: s.addReflection,
+    addHabit: s.addHabit,
+  })));
 
   const [showViolateModal, setShowViolateModal] = useState(false);
   const [violateHabitId, setViolateHabitId] = useState('');
@@ -34,8 +41,8 @@ export default function PreceptScreen() {
 
   // Filter precept habits
   const preceptHabits = useMemo(() => {
-    return (store.habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
-  }, [store.habits]);
+    return (habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
+  }, [habits]);
 
   const avoidHabits = useMemo(() => preceptHabits.filter(h => getPreceptType(h.name) === 'avoid'), [preceptHabits]);
   const practiceHabits = useMemo(() => preceptHabits.filter(h => getPreceptType(h.name) === 'practice'), [preceptHabits]);
@@ -73,15 +80,15 @@ export default function PreceptScreen() {
 
   // Recent violation insights (reflections with #持戒 tag)
   const recentInsights = useMemo(() => {
-    return (store.reflections ?? [])
+    return (reflections ?? [])
       .filter(r => !r.deleted && (r.tags ?? []).includes('持戒'))
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 3);
-  }, [store.reflections]);
+  }, [reflections]);
 
   const handleCheckDone = useCallback((habitId: string) => {
-    store.checkinHabit(habitId, today);
-  }, [store, today]);
+    checkinHabit(habitId, today);
+  }, [checkinHabit, today]);
 
   const handleViolate = useCallback((habitId: string, habitName: string) => {
     setViolateHabitId(habitId);
@@ -96,22 +103,22 @@ export default function PreceptScreen() {
     const tags = ['持戒'];
     if (violateTrigger) tags.push(violateTrigger);
     const content = violateHabitName + (violateReflection ? `：${violateReflection}` : '');
-    store.addReflection({ content, tags, mood: '' });
+    addReflection({ content, tags, mood: '' });
     setShowViolateModal(false);
-  }, [violateHabitName, violateTrigger, violateReflection, store]);
+  }, [violateHabitName, violateTrigger, violateReflection, addReflection]);
 
   const handleAddPrecept = useCallback((preset: PreceptPreset) => {
     const prefix = preset.type === 'avoid' ? PRECEPT_PREFIX_AVOID : PRECEPT_PREFIX_PRACTICE;
-    store.addHabit({ name: `${prefix}${preset.name}`, goal: preset.goal, targetDays: 21, createTag: true, link: 'none' });
-  }, [store]);
+    addHabit({ name: `${prefix}${preset.name}`, goal: preset.goal, targetDays: 21, createTag: true, link: 'none' });
+  }, [addHabit]);
 
   const handleAddCustom = useCallback(() => {
     if (!customName.trim()) return;
     const prefix = customType === 'avoid' ? PRECEPT_PREFIX_AVOID : PRECEPT_PREFIX_PRACTICE;
-    store.addHabit({ name: `${prefix}${customName.trim()}`, goal: customGoal.trim(), targetDays: parseInt(customDays) || 21, createTag: true, link: 'none' });
+    addHabit({ name: `${prefix}${customName.trim()}`, goal: customGoal.trim(), targetDays: parseInt(customDays) || 21, createTag: true, link: 'none' });
     setCustomName(''); setCustomGoal(''); setCustomDays('21');
     setShowAddModal(false);
-  }, [customName, customGoal, customDays, customType, store]);
+  }, [customName, customGoal, customDays, customType, addHabit]);
 
   // ── Batch check/uncheck all ──
   const someUnchecked = preceptHabits.some(h => !(h.checkedDates ?? []).includes(today));
@@ -119,15 +126,15 @@ export default function PreceptScreen() {
 
   const handleCheckAll = useCallback(() => {
     preceptHabits.forEach(h => {
-      if (!(h.checkedDates ?? []).includes(today)) store.checkinHabit(h.id, today);
+      if (!(h.checkedDates ?? []).includes(today)) checkinHabit(h.id, today);
     });
-  }, [preceptHabits, today, store]);
+  }, [preceptHabits, today, checkinHabit]);
 
   const handleUncheckAll = useCallback(() => {
     preceptHabits.forEach(h => {
-      if ((h.checkedDates ?? []).includes(today)) store.checkinHabit(h.id, today);
+      if ((h.checkedDates ?? []).includes(today)) checkinHabit(h.id, today);
     });
-  }, [preceptHabits, today, store]);
+  }, [preceptHabits, today, checkinHabit]);
 
   const renderPreceptCard = (habit: typeof preceptHabits[0]) => {
     const displayName = getPreceptDisplayName(habit.name);

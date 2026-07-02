@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNetworkStatus } from '../../../store/useNetworkStatus';
-import { GlobalCheckin, GlobalStats } from '../types/globalPulse';
+import { GlobalCheckin, GlobalStats } from '@egoless-do/core';
 import { getCheckins, getGlobalStats } from '../services/globalPulseApi';
 import {
   getCachedCheckins,

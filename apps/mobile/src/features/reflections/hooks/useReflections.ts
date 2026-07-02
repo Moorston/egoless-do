@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Share } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr } from '@egoless-do/core';
 import {
@@ -21,11 +22,24 @@ function useDebouncedValue<T>(value: T, delay: number): T {
 }
 
 export function useReflections() {
-  const store = useAppStore();
+  const {
+    reflectionFilters, setReflectionFilters, habits, reflections,
+    customTags, allTagsOrder, customMoods, allMoodsOrder, planItems,
+  } = useAppStore(useShallow(s => ({
+    reflectionFilters: s.reflectionFilters,
+    setReflectionFilters: s.setReflectionFilters,
+    habits: s.habits,
+    reflections: s.reflections,
+    customTags: s.customTags,
+    allTagsOrder: s.allTagsOrder,
+    customMoods: s.customMoods,
+    allMoodsOrder: s.allMoodsOrder,
+    planItems: s.planItems,
+  })));
 
   // ── Filter state (from store, persisted) ────────────────────
-  const filters = store.reflectionFilters ?? { ...DEFAULT_REFLECTION_FILTERS };
-  const setFilters = store.setReflectionFilters;
+  const filters = reflectionFilters ?? { ...DEFAULT_REFLECTION_FILTERS };
+  const setFilters = setReflectionFilters;
 
   // Local search input with debounce
   const [searchInput, setSearchInput] = useState(filters.search);
@@ -56,29 +70,29 @@ export function useReflections() {
 
   // ── Tag options ──────────────────────────────────────────────
   const habitTags = useMemo(() =>
-    (store.habits ?? []).filter(h => !h.deleted && h.createTag).map(h => `#${h.name}`),
-    [store.habits],
+    (habits ?? []).filter(h => !h.deleted && h.createTag).map(h => `#${h.name}`),
+    [habits],
   );
 
   const allTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags ?? []))];
+    const reflTags = [...new Set((reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags ?? []))];
     const allAvailable = [...new Set([...reflTags, ...habitTags])];
-    const order = store.allTagsOrder ?? [];
+    const order = allTagsOrder ?? [];
     if (order.length > 0) {
       const ordered = order.filter(t => allAvailable.includes(t));
       const remaining = allAvailable.filter(t => !order.includes(t));
       return [...ordered, ...remaining];
     }
-    const customSet = new Set(store.customTags ?? []);
-    const customInUse = (store.customTags ?? []).filter(t => allAvailable.includes(t));
+    const customSet = new Set(customTags ?? []);
+    const customInUse = (customTags ?? []).filter(t => allAvailable.includes(t));
     const others = allAvailable.filter(t => !customSet.has(t));
     return [...customInUse, ...others];
-  }, [store.reflections, store.customTags, store.allTagsOrder, habitTags]);
+  }, [reflections, customTags, allTagsOrder, habitTags]);
 
   const allUsedTags = useMemo(() => {
-    const reflTags = [...new Set((store.reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags ?? []))];
+    const reflTags = [...new Set((reflections ?? []).filter(r => !r.deleted).flatMap(r => r.tags ?? []))];
     return [...new Set([...reflTags, ...habitTags])];
-  }, [store.reflections, habitTags]);
+  }, [reflections, habitTags]);
 
   const deletedTagsWithData = useMemo(() => {
     const availableSet = new Set(allTags);
@@ -88,33 +102,33 @@ export function useReflections() {
   const visibleTags = showDeletedTags ? allUsedTags : allTags;
 
   const allTagOptions = useMemo(() => {
-    const required = [...TAGS_PRESET, ...(store.customTags ?? [])];
-    const order = store.allTagsOrder ?? [];
+    const required = [...TAGS_PRESET, ...(customTags ?? [])];
+    const order = allTagsOrder ?? [];
     const effective = order.length > 0 ? ensureOrderContains(order, required) : required;
     return [...effective, ...habitTags];
-  }, [store.allTagsOrder, store.customTags, habitTags]);
+  }, [allTagsOrder, customTags, habitTags]);
 
   const allMoodOptions = useMemo(() => {
-    const required = [...MOODS, ...(store.customMoods ?? [])];
-    const order = store.allMoodsOrder ?? [];
+    const required = [...MOODS, ...(customMoods ?? [])];
+    const order = allMoodsOrder ?? [];
     return order.length > 0 ? ensureOrderContains(order, required) : required;
-  }, [store.allMoodsOrder, store.customMoods]);
+  }, [allMoodsOrder, customMoods]);
 
   // ── Smart collections ───────────────────────────────────────
   const smartCollections = useMemo<SmartCollection[]>(
-    () => computeSmartCollections(store.reflections ?? []),
-    [store.reflections],
+    () => computeSmartCollections(reflections ?? []),
+    [reflections],
   );
 
   // ── Filtered reflections (using core function) ──────────────
   const filtered = useMemo(() => {
-    let result = filterReflections(store.reflections ?? [], filters, store.planItems);
+    let result = filterReflections(reflections ?? [], filters, planItems);
     if (filters.collectionId) {
       const col = smartCollections.find(c => c.id === filters.collectionId);
       if (col) result = result.filter(col.filter);
     }
     return result;
-  }, [store.reflections, filters, smartCollections, store.planItems]);
+  }, [reflections, filters, smartCollections, planItems]);
 
   const byDay = useMemo(
     () => groupReflectionsByDate(filtered),
@@ -123,30 +137,30 @@ export function useReflections() {
 
   // ── Dynamic counts (based on other active filters) ──────────
   const dynamicTagCounts = useMemo(
-    () => computeDynamicTagCounts(store.reflections ?? [], filters),
-    [store.reflections, filters.moods, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
+    () => computeDynamicTagCounts(reflections ?? [], filters),
+    [reflections, filters.moods, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
   );
 
   const dynamicMoodCounts = useMemo(
-    () => computeDynamicMoodCounts(store.reflections ?? [], filters),
-    [store.reflections, filters.tags, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
+    () => computeDynamicMoodCounts(reflections ?? [], filters),
+    [reflections, filters.tags, filters.search, filters.dateRange, filters.hasLink, filters.hasLinkedTask],
   );
 
   // ── Stats ────────────────────────────────────────────────────
-  const totalCount = (store.reflections ?? []).filter(r => !r.deleted).length;
+  const totalCount = (reflections ?? []).filter(r => !r.deleted).length;
 
   const topTag = useMemo(() => {
     const counts: Record<string, number> = {};
-    (store.reflections ?? []).filter(r => !r.deleted).forEach(r =>
+    (reflections ?? []).filter(r => !r.deleted).forEach(r =>
       (r.tags ?? []).forEach(t => { counts[t] = (counts[t] || 0) + 1; }),
     );
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     return sorted[0]?.[0] ?? '-';
-  }, [store.reflections]);
+  }, [reflections]);
 
   const streakDays = useMemo(() => {
     const dates = [...new Set(
-      (store.reflections ?? []).filter(r => !r.deleted).map(r =>
+      (reflections ?? []).filter(r => !r.deleted).map(r =>
         dateStr(new Date(r.timestamp ?? 0)),
       ),
     )].sort().reverse();
@@ -158,7 +172,7 @@ export function useReflections() {
       else break;
     }
     return streak;
-  }, [store.reflections]);
+  }, [reflections]);
 
   const sparklineData = useMemo(() => {
     const today = new Date();
@@ -167,49 +181,49 @@ export function useReflections() {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
       const ds = dateStr(d);
-      const count = (store.reflections ?? []).filter(r =>
+      const count = (reflections ?? []).filter(r =>
         !r.deleted && dateStr(new Date(r.timestamp ?? 0)) === ds,
       ).length;
       data.push(count);
     }
     return data;
-  }, [store.reflections]);
+  }, [reflections]);
 
   const moodStats = useMemo(() => {
     const counts: Record<string, number> = {};
-    (store.reflections ?? []).filter(r => !r.deleted).forEach(r => {
+    (reflections ?? []).filter(r => !r.deleted).forEach(r => {
       if (r.mood) counts[r.mood] = (counts[r.mood] || 0) + 1;
     });
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 4);
-  }, [store.reflections]);
+  }, [reflections]);
 
   const allMoods = useMemo(() => {
-    return [...new Set((store.reflections ?? []).filter(r => !r.deleted).map(r => r.mood).filter(Boolean))] as string[];
-  }, [store.reflections]);
+    return [...new Set((reflections ?? []).filter(r => !r.deleted).map(r => r.mood).filter(Boolean))] as string[];
+  }, [reflections]);
 
   // ── Analytics ────────────────────────────────────────────────
   const moodTrend = useMemo<MoodTrendPoint[]>(
-    () => computeMoodTrend(store.reflections ?? [], moodTrendDays),
-    [store.reflections, moodTrendDays],
+    () => computeMoodTrend(reflections ?? [], moodTrendDays),
+    [reflections, moodTrendDays],
   );
 
   const heatmapData = useMemo<HeatmapDay[]>(
-    () => computeWritingHeatmap(store.reflections ?? [], 20),
-    [store.reflections],
+    () => computeWritingHeatmap(reflections ?? [], 20),
+    [reflections],
   );
 
   const tagGraph = useMemo<TagGraph>(
-    () => computeTagCooccurrence(store.reflections ?? []),
-    [store.reflections],
+    () => computeTagCooccurrence(reflections ?? []),
+    [reflections],
   );
 
   const tagFrequency = useMemo(() => {
     const counts: Record<string, number> = {};
-    (store.reflections ?? []).filter(r => !r.deleted).forEach(r =>
+    (reflections ?? []).filter(r => !r.deleted).forEach(r =>
       (r.tags ?? []).forEach(t => { counts[t] = (counts[t] || 0) + 1; }),
     );
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
-  }, [store.reflections]);
+  }, [reflections]);
 
   // ── Filter actions (use functional updater to avoid stale closures) ──
   const toggleTag = useCallback((tag: string) => {

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { X, Link2, Check } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
@@ -24,7 +25,10 @@ export default function LinkReflectionModal({ visible, onClose, reflection }: Pr
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { reflections: rawReflections, createReflectionLink } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+    createReflectionLink: s.createReflectionLink,
+  })));
 
   const [selectedType, setSelectedType] = useState<LinkType>('related');
   const [selectedReflectionId, setSelectedReflectionId] = useState<string | null>(null);
@@ -32,16 +36,16 @@ export default function LinkReflectionModal({ visible, onClose, reflection }: Pr
 
   const reflections = useMemo(() => {
     if (!reflection) return [];
-    return (store.reflections ?? [])
+    return (rawReflections ?? [])
       .filter(r => !r.deleted && r.id !== reflection.id)
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 20);
-  }, [store.reflections, reflection]);
+  }, [rawReflections, reflection]);
 
   const handleLink = useCallback(() => {
     if (!reflection || !selectedReflectionId) return;
 
-    store.createReflectionLink(
+    createReflectionLink(
       reflection.id,
       selectedReflectionId,
       selectedType,
@@ -51,7 +55,7 @@ export default function LinkReflectionModal({ visible, onClose, reflection }: Pr
     setSelectedReflectionId(null);
     setNote('');
     onClose();
-  }, [store, reflection, selectedReflectionId, selectedType, note, onClose]);
+  }, [createReflectionLink, reflection, selectedReflectionId, selectedType, note, onClose]);
 
   const handleClose = useCallback(() => {
     setSelectedReflectionId(null);

@@ -5,6 +5,7 @@ import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, dateStr } from '@egoless-do/core';
 import { getCurrentPeriod, getNextSleepPeriod, formatSleepDuration, BODY_CLOCK } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Moon, Sun, Wind, Brain, ChevronRight, X, Check, Clock, Heart, Star, BellRing, BookOpen, BarChart3 } from 'lucide-react-native';
@@ -17,7 +18,7 @@ export default function SleepScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const { getTodaySleep, completeBarrier, sleepGoal, sleepHistory, saveSleepDiary, addReflection, autoSyncHabits } = useAppStore(useShallow(s => ({ getTodaySleep: s.getTodaySleep, completeBarrier: s.completeBarrier, sleepGoal: s.sleepGoal, sleepHistory: s.sleepHistory, saveSleepDiary: s.saveSleepDiary, addReflection: s.addReflection, autoSyncHabits: s.autoSyncHabits })));
   const { showBedtimeModal, dismissBedtimeModal, startRitualFromModal } = useSleepNotifications();
 
   const [page, setPage] = useState<Page>('home');
@@ -40,7 +41,7 @@ export default function SleepScreen() {
 
   const currentPeriod = getCurrentPeriod();
   const nextSleep = getNextSleepPeriod();
-  const todaySleep = store.getTodaySleep();
+  const todaySleep = getTodaySleep();
 
   // Breathing glow animation loop
   useEffect(() => {
@@ -89,7 +90,7 @@ export default function SleepScreen() {
   useEffect(() => {
     if (page === 'barrier' && barrierElapsed >= barrierDuration * 60) {
       if (barrierTimerRef.current) { clearInterval(barrierTimerRef.current); barrierTimerRef.current = null; }
-      store.completeBarrier({ barrierMin: barrierDuration, awayMin: Math.round(awayMs / 60000), practice: completedPractice });
+      completeBarrier({ barrierMin: barrierDuration, awayMin: Math.round(awayMs / 60000), practice: completedPractice });
       setQuality(0);
       setGratitude(['']);
       setNoteText('');
@@ -117,7 +118,7 @@ export default function SleepScreen() {
 
   const handleSkipToGratitude = useCallback(() => {
     if (barrierTimerRef.current) { clearInterval(barrierTimerRef.current); barrierTimerRef.current = null; }
-    store.completeBarrier({ barrierMin: barrierElapsed, awayMin: Math.round(awayMs / 60000), practice: completedPractice });
+    completeBarrier({ barrierMin: barrierElapsed, awayMin: Math.round(awayMs / 60000), practice: completedPractice });
     setQuality(0);
     setGratitude(['']);
     setNoteText('');
@@ -134,17 +135,17 @@ export default function SleepScreen() {
   const handleSaveGratitude = useCallback(() => {
     const validGratitude = gratitude.filter(g => g.trim());
     // Save sleep diary
-    store.saveSleepDiary({
+    saveSleepDiary({
       quality: quality as 1 | 2 | 3 | 4 | 5 || undefined,
       gratitude: validGratitude,
       note: noteText.trim() || undefined,
     });
     // Save gratitude as reflections with tags
     validGratitude.forEach(text => {
-      store.addReflection({ content: text, tags: ['感恩', '睡前'], mood: '' });
+      addReflection({ content: text, tags: ['感恩', '睡前'], mood: '' });
     });
     // Trigger habit auto-sync
-    store.autoSyncHabits?.();
+    autoSyncHabits?.();
     setPage('report');
   }, [gratitude, quality, noteText]);
 
@@ -159,7 +160,7 @@ export default function SleepScreen() {
 
   // Compute streak
   const sleepStreak = useMemo(() => {
-    const history = (store.sleepHistory ?? []).filter(s => !s.deleted).sort((a, b) => b.date.localeCompare(a.date));
+    const history = (sleepHistory ?? []).filter(s => !s.deleted).sort((a, b) => b.date.localeCompare(a.date));
     if (history.length === 0) return 0;
     let streak = 0;
     let checkDate = new Date();
@@ -177,15 +178,15 @@ export default function SleepScreen() {
       }
     }
     return streak;
-  }, [store.sleepHistory]);
+  }, [sleepHistory]);
 
   // Recent records (last 3)
   const recentRecords = useMemo(() => {
-    return (store.sleepHistory ?? [])
+    return (sleepHistory ?? [])
       .filter(s => !s.deleted)
       .sort((a, b) => b.date.localeCompare(a.date))
       .slice(0, 3);
-  }, [store.sleepHistory]);
+  }, [sleepHistory]);
 
   // ── Home Page ──
   if (page === 'home') {
@@ -229,17 +230,17 @@ export default function SleepScreen() {
               <View style={styles.goalItem}>
                 <Moon size={16} color="#8B5CF6" />
                 <Text style={[styles.goalLabel, { color: TH.sub }]}>{T('sleepGoalBedtime') || '目标入睡'}</Text>
-                <Text style={[styles.goalValue, { color: TH.text }]}>{store.sleepGoal.targetBedtime}</Text>
+                <Text style={[styles.goalValue, { color: TH.text }]}>{sleepGoal.targetBedtime}</Text>
               </View>
               <View style={styles.goalItem}>
                 <Sun size={16} color="#F59E0B" />
                 <Text style={[styles.goalLabel, { color: TH.sub }]}>{T('sleepGoalWake') || '目标起床'}</Text>
-                <Text style={[styles.goalValue, { color: TH.text }]}>{store.sleepGoal.targetWake}</Text>
+                <Text style={[styles.goalValue, { color: TH.text }]}>{sleepGoal.targetWake}</Text>
               </View>
               <View style={styles.goalItem}>
                 <Clock size={16} color="#10B981" />
                 <Text style={[styles.goalLabel, { color: TH.sub }]}>{T('sleepGoalHours') || '目标时长'}</Text>
-                <Text style={[styles.goalValue, { color: TH.text }]}>{store.sleepGoal.targetHours}h</Text>
+                <Text style={[styles.goalValue, { color: TH.text }]}>{sleepGoal.targetHours}h</Text>
               </View>
             </View>
           </View>
@@ -550,7 +551,7 @@ export default function SleepScreen() {
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#0a0a1a' }}>
         <View style={styles.barrierCenter}>
           <Moon size={60} color="#8B5CF6" />
-          <Text style={[styles.barrierTime, { marginTop: 24 }]}>现在是 {store.sleepGoal.targetBedtime}</Text>
+          <Text style={[styles.barrierTime, { marginTop: 24 }]}>现在是 {sleepGoal.targetBedtime}</Text>
           <Text style={[styles.barrierLabel, { fontSize: 18, marginTop: 8 }]}>该入睡了 🌙</Text>
           <Text style={[styles.barrierAwayText, { color: 'rgba(255,255,255,0.4)', marginTop: 8 }]}>
             1 分钟无操作将自动记录入睡

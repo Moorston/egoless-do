@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT, ScreenHeader, Card } from '../../../components/UI';
 import {
   COLORS,
@@ -16,12 +17,16 @@ export default function StreakBreakScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { checkinHistory, graceHistory, userProfile } = useAppStore(useShallow(s => ({
+    checkinHistory: s.checkinHistory,
+    graceHistory: s.graceHistory,
+    userProfile: s.userProfile,
+  })));
   const nav = useRootNavigation();
 
-  const history = (store.checkinHistory ?? []).filter(c => !c.deleted);
-  const graceHistory = store.graceHistory ?? [];
-  const quota = store.userProfile?.graceMonthlyQuota ?? 2;
+  const history = (checkinHistory ?? []).filter(c => !c.deleted);
+  const graceHistoryArr = graceHistory ?? [];
+  const quota = userProfile?.graceMonthlyQuota ?? 2;
 
   const breaks = useMemo(() => detectStreakBreaks(history), [history]);
   const doneDates = useMemo(() => history.filter(c => c.done).map(c => c.date), [history]);
@@ -34,8 +39,8 @@ export default function StreakBreakScreen() {
     [breaks, longestStreak, doneDates, currentStreak, insight],
   );
   const hypotheticals = useMemo(
-    () => breaks.map(b => computeHypotheticalStreak(b, history, graceHistory, quota)),
-    [breaks, history, graceHistory, quota],
+    () => breaks.map(b => computeHypotheticalStreak(b, history, graceHistoryArr, quota)),
+    [breaks, history, graceHistoryArr, quota],
   );
 
   const handleCheckin = useCallback(() => {

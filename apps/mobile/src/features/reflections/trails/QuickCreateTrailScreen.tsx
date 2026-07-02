@@ -11,6 +11,7 @@ import {
   ArrowLeft, X, Send, Check, ChevronDown,
   RefreshCw, Plus, Sparkles, Loader2,
 } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import {
@@ -37,20 +38,25 @@ export default function QuickCreateTrailScreen() {
   const T = useT();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'QuickCreateTrail'>>();
-  const store = useAppStore();
+  const { reflections: rawReflections, aiMode, aiModels, createThoughtTrail } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+    aiMode: s.aiMode,
+    aiModels: s.aiModels,
+    createThoughtTrail: s.createThoughtTrail,
+  })));
 
   const initialText = route.params?.initialText ?? '';
   const initialSelectedIds = route.params?.selectedIds ?? [];
 
   const reflections = useMemo(() =>
-    (store.reflections ?? []).filter(r => !r.deleted),
-    [store.reflections]
+    (rawReflections ?? []).filter(r => !r.deleted),
+    [rawReflections]
   );
 
   const aiConfig = useMemo(() => ({
-    mode: store.aiMode,
-    models: store.aiModels,
-  }), [store.aiMode, store.aiModels]);
+    mode: aiMode,
+    models: aiModels,
+  }), [aiMode, aiModels]);
 
   const {
     searchQuery, setSearchQuery,
@@ -131,12 +137,12 @@ export default function QuickCreateTrailScreen() {
       T
     );
 
-    const trailId = store.createThoughtTrail(name, '', ids, 'manual');
+    const trailId = createThoughtTrail(name, '', ids, 'manual');
 
     setSelectedIds(new Set());
     setTrailName('');
     nav.navigate('ThoughtTrailDetail', { trailId });
-  }, [selectedIds, trailName, reflectionsMap, store, nav, T, setSelectedIds, setTrailName]);
+  }, [selectedIds, trailName, reflectionsMap, createThoughtTrail, nav, T, setSelectedIds, setTrailName]);
 
   const handleGoRecord = useCallback(() => {
     (nav as any).navigate('Reflections', { showNew: true });

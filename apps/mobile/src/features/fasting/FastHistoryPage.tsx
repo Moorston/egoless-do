@@ -250,12 +250,12 @@ export default function FastHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { fastingHistory } = useAppStore(useShallow(s => ({ fastingHistory: s.fastingHistory })));
   const [selectedEntry, setSelectedEntry] = useState<FastingSession | null>(null);
 
   const activeEntries = useMemo(() =>
-    [...(store.fastingHistory ?? [])].filter(f => !f.deleted).sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0)),
-    [store.fastingHistory]
+    [...(fastingHistory ?? [])].filter(f => !f.deleted).sort((a, b) => (b.startedAt ?? 0) - (a.startedAt ?? 0)),
+    [fastingHistory]
   );
 
   const grouped = useMemo(() => {

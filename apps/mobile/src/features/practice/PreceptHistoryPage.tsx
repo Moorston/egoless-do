@@ -2,6 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak } from '@egoless-do/core';
@@ -13,7 +14,10 @@ export default function PreceptHistoryPage() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const { habits, reflections } = useAppStore(useShallow(s => ({
+    habits: s.habits,
+    reflections: s.reflections,
+  })));
   const [monthOffset, setMonthOffset] = useState(0);
 
   const now = useMemo(() => {
@@ -26,14 +30,14 @@ export default function PreceptHistoryPage() {
   const month = now.getMonth();
 
   const preceptHabits = useMemo(() => {
-    return (store.habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
-  }, [store.habits]);
+    return (habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
+  }, [habits]);
 
   const violationReflections = useMemo(() => {
-    return (store.reflections ?? [])
+    return (reflections ?? [])
       .filter(r => !r.deleted && (r.tags ?? []).includes('持戒'))
       .sort((a, b) => b.timestamp - a.timestamp);
-  }, [store.reflections]);
+  }, [reflections]);
 
   // Stats
   const stats = useMemo(() => {

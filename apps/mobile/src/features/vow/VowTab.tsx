@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Flag, Target, Star, Plus, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import type { Vision, VisionType, VisionStatus } from '@egoless-do/core';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import VisionCard from './components/VisionCard';
 import VisionEditModal from './modals/VisionEditModal';
@@ -14,13 +15,27 @@ interface Props {
 }
 
 export default function VowTab({ TH, T, visionProgress }: Props) {
-  const store = useAppStore();
+  const { visions: visionsRaw, plans: plansRaw, planItems: planItemsRaw,
+    updateVision, removeVisionPracticesByVision, addVisionPractice, addVision,
+    achieveVision, archiveVision } = useAppStore(useShallow(s => ({
+    visions: s.visions,
+    plans: s.plans,
+    planItems: s.planItems,
+    updateVision: s.updateVision,
+    removeVisionPracticesByVision: s.removeVisionPracticesByVision,
+    addVisionPractice: s.addVisionPractice,
+    addVision: s.addVision,
+    achieveVision: s.achieveVision,
+    archiveVision: s.archiveVision,
+  })));
   const [showModal, setShowModal] = useState(false);
   const [editType, setEditType] = useState<VisionType>('long');
   const [editingVision, setEditingVision] = useState<Vision | null>(null);
   const [showAchieved, setShowAchieved] = useState(false);
 
-  const visions = useMemo(() => (store.visions ?? []).filter((v: Vision) => !v.deleted), [store.visions]);
+  const visions = useMemo(() => (visionsRaw ?? []).filter((v: Vision) => !v.deleted), [visionsRaw]);
+  const plans = useMemo(() => (plansRaw ?? []).filter((p: any) => !p.deleted), [plansRaw]);
+  const planItems = useMemo(() => (planItemsRaw ?? []).filter((i: any) => !i.deleted), [planItemsRaw]);
 
   const activeLifetime = useMemo(() => visions.find(v => v.type === 'lifetime' && v.status === 'active'), [visions]);
   const activeLong = useMemo(() => visions.find(v => v.type === 'long' && v.status === 'active'), [visions]);
@@ -34,6 +49,19 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
     const vp = visionProgress.find(p => p.vision.id === v.id);
     return vp?.pct ?? 0;
   }, [visionProgress]);
+
+  const getVisionStats = useCallback((v: Vision) => {
+    const linked = plans.filter((p: any) => p.visionId === v.id);
+    const planDone = linked.filter((p: any) => p.status === 'completed').length;
+    let taskDone = 0;
+    let taskTotal = 0;
+    for (const plan of linked) {
+      const items = planItems.filter((i: any) => i.planId === plan.id);
+      taskDone += items.filter((i: any) => i.status === 'completed').length;
+      taskTotal += items.length;
+    }
+    return { planDone, planTotal: linked.length, taskDone, taskTotal };
+  }, [plans, planItems]);
 
   const handleCreate = (type: VisionType) => {
     const existing = visions.find(v => v.type === type && v.status === 'active');
@@ -57,18 +85,18 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
 
   const handleSave = (data: { text: string; timeFrame?: string; deadline?: string; linkedPractices: { refType: any; refId: string }[] }) => {
     if (editingVision) {
-      store.updateVision(editingVision.id, {
+      updateVision(editingVision.id, {
         text: data.text,
         timeFrame: data.timeFrame as any,
         deadline: data.deadline,
       });
       // Update linked practices
-      store.removeVisionPracticesByVision(editingVision.id);
+      removeVisionPracticesByVision(editingVision.id);
       for (const lp of data.linkedPractices) {
-        store.addVisionPractice({ visionId: editingVision.id, refType: lp.refType, refId: lp.refId });
+        addVisionPractice({ visionId: editingVision.id, refType: lp.refType, refId: lp.refId });
       }
     } else {
-      const result = store.addVision({
+      const result = addVision({
         type: editType,
         text: data.text,
         timeFrame: data.timeFrame,
@@ -76,7 +104,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
       });
       if (result) {
         for (const lp of data.linkedPractices) {
-          store.addVisionPractice({ visionId: result.id, refType: lp.refType, refId: lp.refId });
+          addVisionPractice({ visionId: result.id, refType: lp.refType, refId: lp.refId });
         }
       }
     }
@@ -85,14 +113,14 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
   const handleAchieve = (id: string) => {
     Alert.alert(T('vowAchieve'), '', [
       { text: T('vowCancel'), style: 'cancel' },
-      { text: T('vowAchieve'), onPress: () => store.achieveVision(id) },
+      { text: T('vowAchieve'), onPress: () => achieveVision(id) },
     ]);
   };
 
   const handleArchive = (id: string) => {
     Alert.alert(T('vowArchive'), '', [
       { text: T('vowCancel'), style: 'cancel' },
-      { text: T('vowArchive'), onPress: () => store.archiveVision(id) },
+      { text: T('vowArchive'), onPress: () => archiveVision(id) },
     ]);
   };
 
@@ -111,6 +139,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
             TH={TH}
             T={T}
             pct={getProgress(active)}
+            {...getVisionStats(active)}
             onEdit={handleEdit}
             onAchieve={handleAchieve}
             onArchive={handleArchive}
@@ -168,6 +197,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
               TH={TH}
               T={T}
               pct={getProgress(v)}
+              {...getVisionStats(v)}
               onEdit={handleEdit}
               onAchieve={handleAchieve}
               onArchive={handleArchive}

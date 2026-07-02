@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
-import { GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType } from '../types/globalPulse';
+import { GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType } from '@egoless-do/core';
 import { LeaderboardItem } from './LeaderboardItem';
 import { PodiumItem } from './PodiumItem';
 

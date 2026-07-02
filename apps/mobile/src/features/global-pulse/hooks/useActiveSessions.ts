@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { ActiveSession, CheckinType } from '../types/globalPulse';
+import { ActiveSession, CheckinType } from '@egoless-do/core';
 import {
   getActiveSessions,
   subscribeSessions,

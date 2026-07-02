@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme, useT } from '../../components/UI';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { FONT_TITLE, ALL_SPORTS } from '@egoless-do/core';
@@ -19,7 +20,9 @@ export default function BodyScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { upsertBodyCheckin } = useAppStore(useShallow(s => ({
+    upsertBodyCheckin: s.upsertBodyCheckin,
+  })));
   const [page, setPage] = useState<BodyPage>('dashboard');
   const { todayPlan, weekday: todayWeekday } = useTodayPlan();
 
@@ -52,7 +55,7 @@ export default function BodyScreen() {
           <BodyFlow
             TH={TH}
             T={T}
-            store={store}
+            store={{ upsertBodyCheckin }}
             todayPlan={todayPlan}
             returnTick={returnTick}
             onGoToSport={handleGoToSport}

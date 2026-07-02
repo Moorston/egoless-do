@@ -5,6 +5,7 @@ import { X, Trash2 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_SMALL, dateStr, BREATHING_PRESETS } from '@egoless-do/core';
 import type { BreathingRecord } from '@egoless-do/core';
 
@@ -12,13 +13,13 @@ export default function BreathHistoryPage() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const { breathHistory, removeBreathRecord } = useAppStore(useShallow(s => ({ breathHistory: s.breathHistory, removeBreathRecord: s.removeBreathRecord })));
 
   const records: BreathingRecord[] = useMemo(() => {
-    return ((store.breathHistory ?? []) as BreathingRecord[])
+    return ((breathHistory ?? []) as BreathingRecord[])
       .filter((r: BreathingRecord) => !r.deleted)
       .sort((a: BreathingRecord, b: BreathingRecord) => b.updatedAt - a.updatedAt);
-  }, [store.breathHistory]);
+  }, [breathHistory]);
 
   // Stats
   const stats = useMemo(() => {
@@ -77,9 +78,9 @@ export default function BreathHistoryPage() {
   const handleDelete = useCallback((record: BreathingRecord) => {
     Alert.alert(T('breathDeleteRecord'), T('breathDeleteConfirm'), [
       { text: T('cancel'), style: 'cancel' },
-      { text: T('delete'), style: 'destructive', onPress: () => store.removeBreathRecord(record.id) },
+      { text: T('delete'), style: 'destructive', onPress: () => removeBreathRecord(record.id) },
     ]);
-  }, [store, T]);
+  }, [removeBreathRecord, T]);
 
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);

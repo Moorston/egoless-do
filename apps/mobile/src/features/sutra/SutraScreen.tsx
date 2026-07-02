@@ -5,6 +5,7 @@ import { useKeepAwake } from 'expo-keep-awake';
 import * as Haptics from 'expo-haptics';
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -28,7 +29,17 @@ function SutraScreenInner() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { mantraDefs, getMantraTotalCount, getMantraStreak, getMantraTodayCount, addMantraSession, removeMantraDef, initializePresetsIncremental, addPresetSutra, addMantraDef } = useAppStore(useShallow(s => ({
+    mantraDefs: s.mantraDefs,
+    getMantraTotalCount: s.getMantraTotalCount,
+    getMantraStreak: s.getMantraStreak,
+    getMantraTodayCount: s.getMantraTodayCount,
+    addMantraSession: s.addMantraSession,
+    removeMantraDef: s.removeMantraDef,
+    initializePresetsIncremental: s.initializePresetsIncremental,
+    addPresetSutra: s.addPresetSutra,
+    addMantraDef: s.addMantraDef,
+  })));
   useKeepAwake();
   const { playSutra, stopSutra, isPlaying } = useSutraAudio();
   const { getCachedPath, downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
@@ -61,11 +72,6 @@ function SutraScreenInner() {
   });
   const [presetSearch, setPresetSearch] = useState('');
 
-  const {
-    mantraDefs,
-    getMantraTotalCount, getMantraStreak, getMantraTodayCount,
-    addMantraSession, removeMantraDef,
-  } = store as any;
 
   const mySutras = useMemo(() =>
     (mantraDefs ?? [])
@@ -82,11 +88,11 @@ function SutraScreenInner() {
   const [presetsReady, setPresetsReady] = useState(false);
   useEffect(() => {
     if (presetsReady) return;
-    if (typeof store.initializePresetsIncremental !== 'function') return;
+    if (typeof initializePresetsIncremental !== 'function') return;
     // 迁移 + 补全预设（幂等，安全可重入）
-    store.initializePresetsIncremental();
+    initializePresetsIncremental();
     setPresetsReady(true);
-  }, [presetsReady, store]);
+  }, [presetsReady]);
 
   // helpers
   const pad2 = (n: number) => String(n).padStart(2, '0');
@@ -126,14 +132,14 @@ function SutraScreenInner() {
   const isPresetInMy = useCallback((name: string) => mySutras.some((m: MantraDef) => m.name === name), [mySutras]);
 
   const addPresetToMy = useCallback((preset: any) => {
-    if (typeof store.addPresetSutra === 'function') store.addPresetSutra(preset);
-  }, [store]);
+    if (typeof addPresetSutra === 'function') addPresetSutra(preset);
+  }, [addPresetSutra]);
 
   const removeFromMy = useCallback((id: string) => { removeMantraDef(id); }, [removeMantraDef]);
 
   const addCustomSutra = useCallback(() => {
     if (!customName.trim()) return;
-    store.addMantraDef({
+    addMantraDef({
       name: customName.trim(),
       subtitle: customSubtitle.trim() || undefined,
       category: customCategory,
@@ -142,7 +148,7 @@ function SutraScreenInner() {
     });
     setShowAddCustom(false);
     setCustomName(''); setCustomSubtitle(''); setCustomText('');
-  }, [customName, customSubtitle, customCategory, customText, store]);
+  }, [customName, customSubtitle, customCategory, customText, addMantraDef]);
 
   const beginChanting = useCallback(() => {
     const now = Date.now();

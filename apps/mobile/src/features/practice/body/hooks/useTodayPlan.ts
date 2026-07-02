@@ -3,6 +3,7 @@
 // Used by BodyScreen, BodyDashboard, BodyFlow and related modals
 // to avoid duplicating today-plan lookup logic.
 import { useMemo } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../../store/useAppStore';
 import type { BodyPlan } from '@egoless-do/core';
 
@@ -16,16 +17,18 @@ export interface TodayPlanData {
 }
 
 export function useTodayPlan(): TodayPlanData {
-  const store = useAppStore();
+  const { bodyPlans } = useAppStore(useShallow(s => ({
+    bodyPlans: s.bodyPlans,
+  })));
 
   return useMemo(() => {
     const today = new Date();
     const weekday = today.getDay() === 0 ? 7 : today.getDay();
-    const plans = (store.bodyPlans ?? []).filter((p: BodyPlan) => !p.deleted);
+    const plans = (bodyPlans ?? []).filter((p: BodyPlan) => !p.deleted);
     const todayPlan = plans.find((p: BodyPlan) => p.weekday === weekday);
     const y = today.getFullYear();
     const m = String(today.getMonth() + 1).padStart(2, '0');
     const d = String(today.getDate()).padStart(2, '0');
     return { todayPlan, weekday, dateStr: `${y}-${m}-${d}` };
-  }, [store.bodyPlans]);
+  }, [bodyPlans]);
 }

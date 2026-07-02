@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createLogger } from '@egoless-do/core';
-import { UserPreferences } from '../types/globalPulse';
+import { UserPreferences } from '@egoless-do/core';
 import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';
 import { getUserHash } from '../services/userHash';
 

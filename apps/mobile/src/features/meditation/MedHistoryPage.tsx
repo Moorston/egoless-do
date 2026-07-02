@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday } from '@egoless-do/core';
 import { Calendar, ChevronLeft, ChevronRight, Music, FileText, Trash2, X } from 'lucide-react-native';
@@ -261,12 +262,12 @@ export default function MedHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { medHistory } = useAppStore(useShallow(s => ({ medHistory: s.medHistory })));
   const [selectedEntry, setSelectedEntry] = useState<MedHistoryEntry | null>(null);
 
   const activeEntries = useMemo(() =>
-    [...(store.medHistory ?? [])].filter(m => !m.deleted).sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
-    [store.medHistory]
+    [...(medHistory ?? [])].filter(m => !m.deleted).sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
+    [medHistory]
   );
 
   const grouped = useMemo(() => {

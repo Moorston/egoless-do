@@ -11,7 +11,7 @@ import {
   CheckinRequest,
   ApiResponse,
   LeaderboardSort
-} from '../types/globalPulse';
+} from '@egoless-do/core';
 
 // PocketBase API 基础 URL
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://egolessdo.freebytes.net';

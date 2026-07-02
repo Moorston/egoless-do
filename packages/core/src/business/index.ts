@@ -38,3 +38,6 @@ export * from './breathing';
 export * from './sleep';
 export * from './precepts';
 export * from './body';
+export * from './coordinateFuzzing';
+export * from './markerAggregation';
+export * from './reverseGeocoding';

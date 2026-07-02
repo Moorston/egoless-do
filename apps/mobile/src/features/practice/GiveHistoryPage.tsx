@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
@@ -17,7 +18,9 @@ export default function GiveHistoryPage() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const { giveHistory: giveHistoryRaw } = useAppStore(useShallow(s => ({
+    giveHistory: s.giveHistory,
+  })));
   const [monthOffset, setMonthOffset] = useState(0);
 
   const now = useMemo(() => {
@@ -30,8 +33,8 @@ export default function GiveHistoryPage() {
   const month = now.getMonth();
 
   const giveHistory = useMemo(() => {
-    return (store.giveHistory ?? []).filter(g => !g.deleted).sort((a, b) => b.timestamp - a.timestamp);
-  }, [store.giveHistory]);
+    return (giveHistoryRaw ?? []).filter(g => !g.deleted).sort((a, b) => b.timestamp - a.timestamp);
+  }, [giveHistoryRaw]);
 
   // Stats
   const stats = useMemo(() => {

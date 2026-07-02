@@ -430,12 +430,15 @@ export class SyncEngine {
     const patch: Record<string, unknown> = {};
     if (!data || typeof data !== 'object') return patch;
     const entries = Object.entries(data);
+    console.log(`[applyServerChanges] Processing ${entries.length} entities: ${entries.map(([k, v]) => `${k}(${v.length})`).join(', ')}`);
     return withDbLock(async () => {
       for (const [entity, records] of entries) {
         if (!Array.isArray(records) || records.length === 0) continue;
         if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
         try {
+          console.log(`[applyServerChanges] Processing ${entity}: ${records.length} records`);
           const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal);
+          console.log(`[applyServerChanges] ${entity}: applied ${storeMapped.length} records to store`);
           if (entity === 'meditation') {
             const allMed = await db.getAllAsync<{ dur_min: number }>('SELECT dur_min FROM meditation_history WHERE deleted = 0');
             patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (e.dur_min || 0), 0);
@@ -451,6 +454,7 @@ export class SyncEngine {
           log.error(e, { entity, phase: 'applyEntity' });
         }
       }
+      console.log(`[applyServerChanges] Final patch keys: ${Object.keys(patch).join(', ')}`);
       return patch;
     });
   }
@@ -507,7 +511,10 @@ export class SyncEngine {
         if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
         if (!r) continue;
         const id = this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
-        if (!id) continue;
+        if (!id) {
+          console.log(`[applyEntityToTable] ${entity}: Skipping record with no id`, r);
+          continue;
+        }
         if (deletedIds?.has(id)) {
           await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
           localMeta.set(id, { updated_at: localMeta.get(id)?.updated_at ?? 0, deleted: 1 });
@@ -515,7 +522,10 @@ export class SyncEngine {
         }
         const local = localMeta.get(id);
         const serverTs = Number(r.updatedAt ?? 0);
-        if (local && resolveConflict({ clientUpdated: local.updated_at, serverUpdated: serverTs, clientDeleted: local.deleted === 1 }).winner === 'client') continue;
+        if (local && resolveConflict({ clientUpdated: local.updated_at, serverUpdated: serverTs, clientDeleted: local.deleted === 1 }).winner === 'client') {
+          console.log(`[applyEntityToTable] ${entity}: Skipping ${id} due to conflict resolution (client wins)`);
+          continue;
+        }
 
         let processedRecord = r;
         // Preserve local reflection colors if server has none
@@ -527,10 +537,16 @@ export class SyncEngine {
         }
 
         const row = this.serverPayloadToRow(entity, processedRecord);
-        if (!row) continue;
+        if (!row) {
+          console.log(`[applyEntityToTable] ${entity}: serverPayloadToRow returned null for ${id}`, processedRecord);
+          continue;
+        }
         const columns = Object.keys(row);
         const values = Object.values(row) as (string | number | null)[];
-        if (!columns.length) continue;
+        if (!columns.length) {
+          console.log(`[applyEntityToTable] ${entity}: No columns for ${id}`, row);
+          continue;
+        }
 
         const setClause = columns.map(c => `${c}=?`).join(',');
         const result = await db.runAsync(`UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`, [...values, id]);
@@ -538,11 +554,17 @@ export class SyncEngine {
           const placeholders = columns.map(() => '?').join(',');
           try {
             await db.runAsync(`INSERT INTO ${table} (${columns.join(',')},synced) VALUES (${placeholders},1)`, values);
+            console.log(`[applyEntityToTable] ${entity}: Inserted ${id}`);
           } catch (insertErr: unknown) {
             if (insertErr instanceof Error && insertErr.message?.includes('UNIQUE constraint')) {
               await db.runAsync(`UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`, [...values, id]);
-            } else throw insertErr;
+            } else {
+              console.log(`[applyEntityToTable] ${entity}: Insert error for ${id}`, insertErr);
+              throw insertErr;
+            }
           }
+        } else {
+          console.log(`[applyEntityToTable] ${entity}: Updated ${id}`);
         }
         localMeta.set(id, { updated_at: serverTs, deleted: 0 });
         applied.push(processedRecord);
@@ -1029,36 +1051,56 @@ export class SyncEngine {
     };
 
     const targets = entities ?? Object.keys(REHYDRATE_MAP);
-    for (const entity of targets) {
+    console.log(`[rehydrateFromDb] Rehydrating ${targets.length} entities: ${targets.join(', ')}`);
+
+    // Parallel rehydration — all entity queries are independent
+    const results = await Promise.all(targets.map(async (entity) => {
       try {
         if (entity === 'food') {
           const rows = await dbGetAllFoodEntries(db) as unknown as Record<string, unknown>[];
-          patch.foodLog = rows.length
+          const sorted = rows.length
             ? rows.sort((a, b) => ((b as Record<string, unknown>).timestamp as number) - ((a as Record<string, unknown>).timestamp as number))
             : [];
-          continue;
+          console.log(`[rehydrateFromDb] ${entity}: ${rows.length} rows`);
+          return { entity, data: sorted, storeKey: 'foodLog' };
         }
         const config = REHYDRATE_MAP[entity];
-        if (!config) continue;
+        if (!config) return null;
         const rows = await db.getAllAsync<Record<string, unknown>>(config.query);
-        if (config.storeKey === '_aiConfig') {
-          if (rows.length) {
-            const mapped = rows.map(config.mapper);
-            const ai = mapped[0] as { mode: string; models: unknown[] };
-            if (ai) { patch.aiMode = ai.mode; patch.aiModels = ai.models; }
-          }
-        } else if (config.storeKey === 'userProfile') {
-          if (rows.length) {
-            patch.userProfile = rows.map(config.mapper)[0];
-          }
-        } else {
-          patch[config.storeKey] = rows.length ? rows.map(config.mapper) : [];
-        }
+        console.log(`[rehydrateFromDb] ${entity}: ${rows.length} rows from ${config.table}`);
+        return { entity, rows, config };
       } catch (e) {
         log.error(e, { phase: 'rehydrateFromDb', entity });
+        return null;
+      }
+    }));
+
+    // Merge results into patch
+    for (const result of results) {
+      if (!result) continue;
+      if ('data' in result && result.data) {
+        // food entity (pre-sorted)
+        patch[result.storeKey] = result.data;
+        continue;
+      }
+      const { rows, config } = result as { entity: string; rows: Record<string, unknown>[]; config: NonNullable<typeof REHYDRATE_MAP[string]> };
+      if (!rows || !config) continue;
+      if (config.storeKey === '_aiConfig') {
+        if (rows.length) {
+          const mapped = rows.map(config.mapper);
+          const ai = mapped[0] as { mode: string; models: unknown[] };
+          if (ai) { patch.aiMode = ai.mode; patch.aiModels = ai.models; }
+        }
+      } else if (config.storeKey === 'userProfile') {
+        if (rows.length) {
+          patch.userProfile = rows.map(config.mapper)[0];
+        }
+      } else {
+        patch[config.storeKey] = rows.length ? rows.map(config.mapper) : [];
       }
     }
 
+    console.log(`[rehydrateFromDb] Final patch keys: ${Object.keys(patch).join(', ')}`);
     if (patch.plans) {
       try {
         const { computePlanProgress } = await import('@egoless-do/core');
@@ -1093,6 +1135,12 @@ export class SyncEngine {
       await this.pullEntitiesParallel(PHASE_1, 1, 1, token, userId);
       await setState(db, 'initialSyncPhase', '2');
       await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
+
+      // Also pull remaining entities so rehydrateFromDb has all data
+      const allEntities: SyncEntity[] = ['reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession', 'sutraReading', 'fearEntry', 'courageEntry', 'fearAchievement', 'zhiguanSession', 'breath'];
+      await this.pullEntitiesParallel(allEntities, 1, 2, token, userId);
+      await setState(db, 'initialSyncDone', 'true');
+      await setState(db, 'initialSyncPhase', 'done');
 
       return 'done';
     } catch (err: unknown) {

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Brain } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
@@ -13,11 +14,13 @@ export default function MindTrailEntryCard({ onPress }: Props) {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { thoughtTrails: rawThoughtTrails } = useAppStore(useShallow(s => ({
+    thoughtTrails: s.thoughtTrails,
+  })));
 
-  const thoughtTrails = useMemo(() => 
-    (store.thoughtTrails ?? []).filter(t => !t.deleted),
-    [store.thoughtTrails]
+  const thoughtTrails = useMemo(() =>
+    (rawThoughtTrails ?? []).filter(t => !t.deleted),
+    [rawThoughtTrails]
   );
 
   const trailCount = thoughtTrails.length;

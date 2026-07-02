@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
@@ -14,11 +15,13 @@ type DetailRoute = RouteProp<RootStackParamList, 'CheckinDetail'>;
 export default function CheckinDetailScreen() {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { checkinHistory } = useAppStore(useShallow(s => ({
+    checkinHistory: s.checkinHistory,
+  })));
   const nav = useRootNavigation();
   const route = useRoute<DetailRoute>();
   const date = route.params?.date ?? '';
-  const record = (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === date);
+  const record = (checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === date);
 
   if (!record) {
     return (
@@ -33,7 +36,7 @@ export default function CheckinDetailScreen() {
     );
   }
 
-  const streak = record.done ? calculateCheckinStreak((store.checkinHistory ?? []).filter(c => !c.deleted), date) : 0;
+  const streak = record.done ? calculateCheckinStreak((checkinHistory ?? []).filter(c => !c.deleted), date) : 0;
   const parsed = parseCheckinNote(record.note ?? '');
 
   const detailRows: { label: string; value: string; color?: string }[] = [

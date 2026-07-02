@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -18,7 +19,10 @@ export default function GiveScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const { giveHistory: giveHistoryRaw, addGive } = useAppStore(useShallow(s => ({
+    giveHistory: s.giveHistory,
+    addGive: s.addGive,
+  })));
 
   const [showModal, setShowModal] = useState(false);
   const [giveType, setGiveType] = useState<GiveType>('material');
@@ -28,8 +32,8 @@ export default function GiveScreen() {
   const [anonymous, setAnonymous] = useState(false);
 
   const giveHistory = useMemo(() => {
-    return (store.giveHistory ?? []).filter(g => !g.deleted).sort((a, b) => b.timestamp - a.timestamp);
-  }, [store.giveHistory]);
+    return (giveHistoryRaw ?? []).filter(g => !g.deleted).sort((a, b) => b.timestamp - a.timestamp);
+  }, [giveHistoryRaw]);
 
   const stats = useMemo(() => {
     const now = Date.now();
@@ -47,7 +51,7 @@ export default function GiveScreen() {
 
   const handleSave = useCallback(() => {
     if (!content.trim()) return;
-    store.addGive({
+    addGive({
       timestamp: Date.now(),
       type: giveType,
       content: content.trim(),
@@ -57,7 +61,7 @@ export default function GiveScreen() {
     });
     setContent(''); setMotivation(''); setAmount(''); setAnonymous(false);
     setShowModal(false);
-  }, [content, motivation, amount, anonymous, giveType, store]);
+  }, [content, motivation, amount, anonymous, giveType, addGive]);
 
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>

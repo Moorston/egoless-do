@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { isPreceptHabit } from '@egoless-do/core';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation, useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -36,7 +37,15 @@ export default function PracticeScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useTabNavigation();
-  const store = useAppStore();
+  const { visions, exerciseLog, fastingHistory, checkinHistory, habits, giveHistory, totalMedMinutes } = useAppStore(useShallow(s => ({
+    visions: s.visions,
+    exerciseLog: s.exerciseLog,
+    fastingHistory: s.fastingHistory,
+    checkinHistory: s.checkinHistory,
+    habits: s.habits,
+    giveHistory: s.giveHistory,
+    totalMedMinutes: s.totalMedMinutes,
+  })));
 
   const groups: PracticeGroup[] = useMemo(() => [
     {
@@ -80,20 +89,20 @@ export default function PracticeScreen() {
   ], []);
 
   const lifetimeVision = useMemo(() =>
-    (store.visions ?? []).find(v => v.type === 'lifetime' && v.status === 'active' && !v.deleted),
-    [store.visions],
+    (visions ?? []).find(v => v.type === 'lifetime' && v.status === 'active' && !v.deleted),
+    [visions],
   );
   const visionText = lifetimeVision?.text ?? '做一个禅悦的修行人';
 
   const weeklyStats = useMemo(() => {
     const now = Date.now();
     const weekStart = now - 7 * 24 * 3600 * 1000;
-    const exerciseLog = (store.exerciseLog ?? []).filter(e => !e.deleted && e.timestamp >= weekStart);
-    const exerciseMin = Math.round(exerciseLog.reduce((s, e) => s + e.durationSec, 0) / 60);
-    const fastingCount = (store.fastingHistory ?? []).filter(f => !f.deleted && f.endedAt && f.startedAt >= weekStart).length;
-    const checkinDays = (store.checkinHistory ?? []).filter(c => !c.deleted && c.done && new Date(c.date + 'T00:00:00').getTime() >= weekStart).length;
+    const exerciseLogWeek = (exerciseLog ?? []).filter(e => !e.deleted && e.timestamp >= weekStart);
+    const exerciseMin = Math.round(exerciseLogWeek.reduce((s, e) => s + e.durationSec, 0) / 60);
+    const fastingCount = (fastingHistory ?? []).filter(f => !f.deleted && f.endedAt && f.startedAt >= weekStart).length;
+    const checkinDays = (checkinHistory ?? []).filter(c => !c.deleted && c.done && new Date(c.date + 'T00:00:00').getTime() >= weekStart).length;
     // Precept days this week
-    const preceptHabits = (store.habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
+    const preceptHabits = (habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
     const preceptWeekDays = new Set<string>();
     for (let i = 0; i < 7; i++) {
       const d = new Date(now - i * 24 * 3600 * 3600 * 1000);
@@ -102,9 +111,9 @@ export default function PracticeScreen() {
         preceptWeekDays.add(ds);
       }
     }
-    const giveCount = (store.giveHistory ?? []).filter(g => !g.deleted && g.timestamp >= weekStart).length;
+    const giveCount = (giveHistory ?? []).filter(g => !g.deleted && g.timestamp >= weekStart).length;
     return { exerciseMin, fastingCount, checkinDays, preceptDays: preceptWeekDays.size, giveCount };
-  }, [store.exerciseLog, store.fastingHistory, store.checkinHistory, store.habits, store.giveHistory]);
+  }, [exerciseLog, fastingHistory, checkinHistory, habits, giveHistory]);
 
   const handlePress = (item: PracticeItem) => {
     if (item.route) {
@@ -136,7 +145,7 @@ export default function PracticeScreen() {
           <Text style={[styles.summaryTitle, { color: TH.text }]}>{T('practiceWeekly')}</Text>
           <View style={styles.summaryRow}>
             {[
-              { Icon: Binary, color: '#8B5CF6', value: store.totalMedMinutes, unit: T('medMinutes') },
+              { Icon: Binary, color: '#8B5CF6', value: totalMedMinutes, unit: T('medMinutes') },
               { Icon: Dumbbell, color: '#10B981', value: weeklyStats.exerciseMin, unit: T('medMinutes') },
               { Icon: Timer, color: '#F59E0B', value: weeklyStats.fastingCount, unit: T('fastTimes') },
               { Icon: Shield, color: '#F59E0B', value: weeklyStats.preceptDays, unit: T('preceptDays') || '天' },

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Plus, Lightbulb, TrendingUp, AlertTriangle, X } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
@@ -21,16 +22,18 @@ export default function StrategyLibrary() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { reflections: rawReflections } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+  })));
   const nav = useNavigation();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDescription, setNewDescription] = useState('');
 
-  const reflections = useMemo(() => 
-    (store.reflections ?? []).filter(r => !r.deleted),
-    [store.reflections]
+  const reflections = useMemo(() =>
+    (rawReflections ?? []).filter(r => !r.deleted),
+    [rawReflections]
   );
 
   const strategies = useMemo((): Strategy[] => {

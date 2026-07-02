@@ -1,19 +1,23 @@
 // ─── ZhiguanScreen 止观页主控 ──────────────────────────────────
-// 三层渐进式架构：Layer 0 一键禅修 / Layer 1 设置 / SessionComplete 结束
+// 三层渐进式架构：idle → practicing → complete
+// 使用 store 的 draft → startSession → completeSession 生命周期
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
 import { useT } from '../../components/UI';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useZhiguanTimer, usePracticeElapseHints } from './hooks/useZhiguanTimer';
-import { BREATH_PATTERNS } from '@egoless-do/core';
-import type { BreathPattern, ZhiguanSession } from '@egoless-do/core';
+import { BREATH_PATTERNS, DEFAULT_RADAR, EMPTY_EIGHT_TACTILE, notifyBreath, initialRoundState } from '@egoless-do/core';
+import type { BreathPattern, ZhiguanMethod, FiveHindranceRadar, EightTactile, SamStage, CountingRoundState } from '@egoless-do/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { useMusicStore } from '../music/useMusicStore';
 
 import BreathRing from './components/BreathRing';
+import CountingRound from './components/CountingRound';
+import VipassanaPanel from './components/VipassanaPanel';
 import SessionComplete from './SessionComplete';
 import ZhiguanSettingsSheet from './ZhiguanSettingsSheet';
 
@@ -26,6 +30,10 @@ interface ZhiguanSettings {
   targetMinutes: number | null;
   backgroundSound: 'none' | 'bell' | 'rain' | 'bowl';
   sankalpa: string;
+  chosenMethod: ZhiguanMethod;
+  fiveHindrances: FiveHindranceRadar;
+  samathaRatio: number;
+  vipassanaRatio: number;
 }
 
 const DEFAULT_SETTINGS: ZhiguanSettings = {
@@ -33,30 +41,63 @@ const DEFAULT_SETTINGS: ZhiguanSettings = {
   targetMinutes: null,
   backgroundSound: 'none',
   sankalpa: '',
+  chosenMethod: 'anapanasati',
+  fiveHindrances: { ...DEFAULT_RADAR },
+  samathaRatio: 100,
+  vipassanaRatio: 0,
 };
 
 export default function ZhiguanScreen() {
   const T = useT();
   const insets = useSafeAreaInsets();
   const nav = useRootNavigation();
-  const store = useAppStore();
+  const {
+    recordBreathCount, initDraft, updateDraft, resetDraft, startSession, completeSession,
+  } = useAppStore(useShallow(s => ({
+    recordBreathCount: s.recordBreathCount,
+    initDraft: s.initDraft,
+    updateDraft: s.updateDraft,
+    resetDraft: s.resetDraft,
+    startSession: s.startSession,
+    completeSession: s.completeSession,
+  })));
   const musicStore = useMusicStore();
 
   const [mode, setMode] = useState<ViewMode>('idle');
   const [settings, setSettings] = useState<ZhiguanSettings>(DEFAULT_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
-  const [sessionData, setSessionData] = useState<{ startTime: number; endTime: number; durationSec: number } | null>(null);
+  const [sessionTiming, setSessionTiming] = useState<{ startTime: number; durationSec: number } | null>(null);
 
   const timer = useZhiguanTimer();
   const bgAnim = useRef(new Animated.Value(0)).current;
-  const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const pressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isLongPressing, setIsLongPressing] = useState(false);
+  const [roundState, setRoundState] = useState<CountingRoundState>(initialRoundState);
+  const [showVipassanaPanel, setShowVipassanaPanel] = useState(false);
 
-  // Load settings
+  // Breath tap handler
+  const handleBreathTap = useCallback(() => {
+    setRoundState(prev => notifyBreath(prev));
+    recordBreathCount(roundState.totalBreaths + 1);
+  }, [roundState.totalBreaths, store]);
+
+  // Initialize draft + load settings
   useEffect(() => {
+    initDraft();
     AsyncStorage.getItem(SETTINGS_KEY).then(v => {
-      if (v) setSettings(JSON.parse(v));
+      if (v) {
+        const loaded = { ...DEFAULT_SETTINGS, ...JSON.parse(v) };
+        setSettings(loaded);
+        updateDraft({
+          sankalpa: loaded.sankalpa,
+          chosenMethod: loaded.chosenMethod,
+          fiveHindrances: loaded.fiveHindrances,
+          samathaRatio: loaded.samathaRatio,
+          vipassanaRatio: loaded.vipassanaRatio,
+        });
+      }
     });
+    return () => { store.resetDraft(); };
   }, []);
 
   // Background color transition
@@ -80,6 +121,16 @@ export default function ZhiguanScreen() {
   });
 
   const handleStart = useCallback(() => {
+    // Sync draft with latest settings before starting
+    store.updateDraft({
+      sankalpa: settings.sankalpa,
+      chosenMethod: settings.chosenMethod,
+      fiveHindrances: settings.fiveHindrances,
+      samathaRatio: settings.samathaRatio,
+      vipassanaRatio: settings.vipassanaRatio,
+    });
+    startSession();
+
     timer.start();
     setMode('practicing');
 
@@ -98,25 +149,19 @@ export default function ZhiguanScreen() {
         }
       }
     }
-  }, [timer, settings.backgroundSound, musicStore]);
+  }, [timer, settings, musicStore, store]);
 
   const handleLongPressStart = useCallback(() => {
     setIsLongPressing(true);
     pressTimerRef.current = setTimeout(() => {
-      // Long press triggered
-      const now = Date.now();
-      const startTime = now - timer.elapsedSecs * 1000;
-      setSessionData({
-        startTime,
-        endTime: now,
+      setSessionTiming({
+        startTime: Date.now() - timer.elapsedSecs * 1000,
         durationSec: timer.elapsedSecs,
       });
       timer.stop();
       setMode('complete');
       setIsLongPressing(false);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
-      // Stop background sound
       musicStore.stop();
     }, 2000);
   }, [timer, musicStore]);
@@ -129,39 +174,43 @@ export default function ZhiguanScreen() {
     setIsLongPressing(false);
   }, []);
 
-  const handleSaveSession = useCallback((note?: string) => {
-    if (sessionData) {
-      const session: ZhiguanSession = {
-        id: `zg_${Date.now()}`,
-        userId: 'local',
-        status: 'completed',
-        startTs: sessionData.startTime,
-        endTs: sessionData.endTime,
-        fiveHindrances: { greed: 3, aversion: 3, sloth: 3, restlessness: 3, doubt: 3 },
-        chosenMethod: 'anapanasati',
-        eightTactile: {
-          movement: false, itching: false, cold: false, warmth: false,
-          lightness: false, heaviness: false, roughness: false, smoothness: false,
-        },
-        closingNotes: note,
-        updatedAt: Date.now(),
-        deleted: false,
-      };
-      store.upsertSession(session);
-    }
+  const handleSaveSession = useCallback((closingData: {
+    closingNotes?: string;
+    eightTactile?: EightTactile;
+    selfReportedStage?: SamStage;
+    selfReportedStageText?: string;
+    dedicationId?: string;
+  }) => {
+    completeSession({
+      closingNotes: closingData.closingNotes,
+      eightTactile: closingData.eightTactile ?? { ...EMPTY_EIGHT_TACTILE },
+      selfReportedStage: closingData.selfReportedStage,
+      selfReportedStageText: closingData.selfReportedStageText,
+      dedicationId: closingData.dedicationId,
+      samathaRatioAvg: settings.samathaRatio,
+      vipassanaRatioAvg: settings.vipassanaRatio,
+    });
     nav.goBack();
-  }, [sessionData, store, nav]);
+  }, [store, nav, settings]);
 
   const handleAbandon = useCallback(() => {
+    resetDraft();
     musicStore.stop();
     nav.goBack();
-  }, [nav, musicStore]);
+  }, [nav, musicStore, store]);
 
   const handleSaveSettings = useCallback((newSettings: ZhiguanSettings) => {
     setSettings(newSettings);
     AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
+    store.updateDraft({
+      sankalpa: newSettings.sankalpa,
+      chosenMethod: newSettings.chosenMethod,
+      fiveHindrances: newSettings.fiveHindrances,
+      samathaRatio: newSettings.samathaRatio,
+      vipassanaRatio: newSettings.vipassanaRatio,
+    });
     setShowSettings(false);
-  }, []);
+  }, [store]);
 
   const getPattern = (): BreathPattern => {
     switch (settings.breathPattern) {
@@ -194,7 +243,7 @@ export default function ZhiguanScreen() {
           <View style={styles.centerContent}>
             <BreathRing pattern={getPattern()} size={200} />
             {settings.targetMinutes && (
-              <Text style={styles.targetHint}>{T('zhiguanTargetMinutes', { minutes: settings.targetMinutes })}</Text>
+              <Text style={styles.targetHint}>{T('zhiguanTargetMinutes')}</Text>
             )}
           </View>
 
@@ -219,9 +268,18 @@ export default function ZhiguanScreen() {
         <View style={styles.practiceContainer}>
           <Text style={styles.timer}>{formatTime(timer.elapsedSecs)}</Text>
 
-          <View style={styles.ringContainer}>
+          <Pressable onPress={handleBreathTap} style={styles.ringContainer}>
             <BreathRing pattern={getPattern()} size={240} />
-          </View>
+          </Pressable>
+
+          <CountingRound state={roundState} T={T} />
+
+          <Pressable
+            style={styles.vipassanaToggle}
+            onPress={() => setShowVipassanaPanel(true)}
+          >
+            <Text style={styles.vipassanaToggleText}>📖 {T('zhiguanVipassanaTitle')}</Text>
+          </Pressable>
 
           <Pressable
             style={[styles.stopButton, isLongPressing && styles.stopButtonActive]}
@@ -232,13 +290,19 @@ export default function ZhiguanScreen() {
               {isLongPressing ? T('zhiguanReleaseToCancel') : T('zhiguanHoldToStop')}
             </Text>
           </Pressable>
+
+          <VipassanaPanel
+            visible={showVipassanaPanel}
+            onClose={() => setShowVipassanaPanel(false)}
+            T={T}
+          />
         </View>
       )}
 
-      {mode === 'complete' && sessionData && (
+      {mode === 'complete' && sessionTiming && (
         <SessionComplete
-          durationSec={sessionData.durationSec}
-          startTime={sessionData.startTime}
+          durationSec={sessionTiming.durationSec}
+          startTime={sessionTiming.startTime}
           sankalpa={settings.sankalpa}
           onSave={handleSaveSession}
           onAbandon={handleAbandon}
@@ -277,7 +341,9 @@ const styles = StyleSheet.create({
   iconButtonText: { fontSize: 24 },
   practiceContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   timer: { fontSize: 48, fontWeight: '300', color: '#C9A96E', marginBottom: 40 },
-  ringContainer: { marginBottom: 60 },
+  ringContainer: { marginBottom: 20 },
+  vipassanaToggle: { paddingVertical: 8, paddingHorizontal: 16, marginBottom: 20 },
+  vipassanaToggleText: { fontSize: 13, color: '#8B7355' },
   stopButton: {
     paddingVertical: 14,
     paddingHorizontal: 32,

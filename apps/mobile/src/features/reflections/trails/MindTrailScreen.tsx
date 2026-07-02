@@ -6,6 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON, createLogger, MS_PER_DAY } from '@egoless-do/core';
@@ -27,7 +28,16 @@ const TRAIL_IGNORED_KEY = 'trailIgnoredPatterns';
 export default function MindTrailScreen() {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { ignoredRecPatterns, aiMode, aiModels, thoughtTrails: rawThoughtTrails, reflections: rawReflections, createThoughtTrail, deleteThoughtTrail, addIgnoredRecPattern } = useAppStore(useShallow(s => ({
+    ignoredRecPatterns: s.ignoredRecPatterns,
+    aiMode: s.aiMode,
+    aiModels: s.aiModels,
+    thoughtTrails: s.thoughtTrails,
+    reflections: s.reflections,
+    createThoughtTrail: s.createThoughtTrail,
+    deleteThoughtTrail: s.deleteThoughtTrail,
+    addIgnoredRecPattern: s.addIgnoredRecPattern,
+  })));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -62,17 +72,17 @@ export default function MindTrailScreen() {
 
   // All ignored patterns: merge store (session) + AsyncStorage (persistent)
   const allIgnoredPatterns = useMemo(() => {
-    const storePatterns = store.ignoredRecPatterns ?? [];
+    const storePatterns = ignoredRecPatterns ?? [];
     return [...new Set([...storePatterns, ...ignoredPatternsRef.current])];
-  }, [store.ignoredRecPatterns, ignoredVersion]);
+  }, [ignoredRecPatterns, ignoredVersion]);
 
   const aiAvailable = useMemo(() => {
-    return isAIRecommendAvailable({ mode: store.aiMode, models: store.aiModels });
-  }, [store.aiMode, store.aiModels]);
+    return isAIRecommendAvailable({ mode: aiMode, models: aiModels });
+  }, [aiMode, aiModels]);
 
   const thoughtTrails = useMemo(() =>
-    (store.thoughtTrails ?? []).filter(t => !t.deleted),
-    [store.thoughtTrails]
+    (rawThoughtTrails ?? []).filter(t => !t.deleted),
+    [rawThoughtTrails]
   );
 
   const manualTrails = useMemo(() =>
@@ -86,8 +96,8 @@ export default function MindTrailScreen() {
   );
 
   const reflections = useMemo(() =>
-    (store.reflections ?? []).filter(r => !r.deleted),
-    [store.reflections]
+    (rawReflections ?? []).filter(r => !r.deleted),
+    [rawReflections]
   );
 
   // 推荐候选源：最近 30 天内、未分配到任何思维脉络的感念
@@ -195,13 +205,13 @@ export default function MindTrailScreen() {
   }, [nav]);
 
   const handleOneClickCreate = useCallback((rec: TrailRecommendation) => {
-    const trailId = store.createThoughtTrail(rec.name, rec.reason || rec.narrative, rec.reflectionIds, 'ai');
+    const trailId = createThoughtTrail(rec.name, rec.reason || rec.narrative, rec.reflectionIds, 'ai');
     setRecommendations(prev => prev.filter(r => r !== rec));
     Alert.alert('创建成功', `「${rec.name}」已创建`, [
       { text: '查看详情', onPress: () => nav.navigate('ThoughtTrailDetail', { trailId }) },
       { text: '继续浏览', style: 'cancel' },
     ]);
-  }, [store, nav]);
+  }, [createThoughtTrail, nav]);
 
   const handleCustomCreate = useCallback((rec: TrailRecommendation) => {
     setRecommendations(prev => prev.filter(r => r !== rec));
@@ -210,7 +220,7 @@ export default function MindTrailScreen() {
 
   const handleNotInterested = useCallback((rec: TrailRecommendation) => {
     const pattern = buildIgnoredPattern(rec);
-    store.addIgnoredRecPattern(pattern);
+    addIgnoredRecPattern(pattern);
     // 同时写入 AsyncStorage，确保重启后仍然忽略
     const next = [...new Set([...ignoredPatternsRef.current, pattern])];
     ignoredPatternsRef.current = next;
@@ -218,7 +228,7 @@ export default function MindTrailScreen() {
     // 触发 allIgnoredPatterns 重新计算
     setIgnoredVersion(k => k + 1);
     setRecommendations(prev => prev.filter(r => r !== rec));
-  }, [store]);
+  }, [addIgnoredRecPattern]);
 
   const handleRefresh = useCallback(() => {
     setRefreshKey(k => k + 1);
@@ -233,11 +243,11 @@ export default function MindTrailScreen() {
         {
           text: '删除',
           style: 'destructive',
-          onPress: () => store.deleteThoughtTrail(trailId),
+          onPress: () => deleteThoughtTrail(trailId),
         },
       ]
     );
-  }, [store]);
+  }, [deleteThoughtTrail]);
 
   // Smart query handlers
   const handleSmartQuery = useCallback(async (text?: string) => {

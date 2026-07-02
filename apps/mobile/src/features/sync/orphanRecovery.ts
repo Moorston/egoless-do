@@ -43,27 +43,21 @@ export async function recoverOrphans(
 
     for (const [entity, config] of Object.entries(entityConfig)) {
       try {
+        // Single query: fetch full rows directly (eliminates N+1 pattern)
         const orphans = await db.getAllAsync<Record<string, unknown>>(
-          `SELECT ${config.pk} FROM ${config.table} WHERE (synced=0 OR synced=2) AND ${config.pk} NOT IN (SELECT entity_id FROM sync_queue WHERE entity=?) LIMIT ?`,
+          `SELECT * FROM ${config.table} WHERE (synced=0 OR synced=2) AND ${config.pk} NOT IN (SELECT entity_id FROM sync_queue WHERE entity=?) LIMIT ?`,
           [entity, batchSize],
         );
 
-        for (const row of orphans) {
-          const id = row[config.pk] as string;
+        for (const full of orphans) {
+          const id = full[config.pk] as string;
           if (!id) continue;
 
           try {
-            const full = await db.getFirstAsync<Record<string, unknown>>(
-              `SELECT * FROM ${config.table} WHERE ${config.pk}=?`,
-              [id],
-            );
-
-            if (full) {
-              // Convert snake_case SQLite row to camelCase entity for consistent server data
-              const mapper = rowMappers[entity];
-              const entityData = mapper ? mapper(full) : full;
-              await enqueueChange(entity as SyncEntity, id, 'upsert', entityData as Record<string, unknown>);
-            }
+            // Convert snake_case SQLite row to camelCase entity for consistent server data
+            const mapper = rowMappers[entity];
+            const entityData = mapper ? mapper(full) : full;
+            await enqueueChange(entity as SyncEntity, id, 'upsert', entityData as Record<string, unknown>);
           } catch (e) {
             log.error(e, { entity, id, phase: 'orphan-enqueue' });
           }

@@ -3,7 +3,7 @@
  * 使用 OpenStreetMap Nominatim API 获取城市名
  */
 
-import { createLogger } from '@egoless-do/core';
+import { createLogger } from '../logger';
 
 const log = createLogger('GlobalPulse');
 

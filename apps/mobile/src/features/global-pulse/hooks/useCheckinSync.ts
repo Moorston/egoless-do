@@ -6,8 +6,8 @@
 import { useCallback } from 'react';
 import * as Location from 'expo-location';
 import { createLogger } from '@egoless-do/core';
-import { CheckinType } from '../types/globalPulse';
-import { fuzzCoordinate } from '../services/coordinateFuzzing';
+import { CheckinType } from '@egoless-do/core';
+import { fuzzCoordinate } from '@egoless-do/core';
 import { submitCheckin } from '../services/globalPulseApi';
 import { getUserHash } from '../services/userHash';
 import { usePrivacy } from './usePrivacy';

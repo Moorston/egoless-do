@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { dateStr } from '@egoless-do/core';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import type { Vision, VisionPractice, Dedication, HabitStat, PlanProgress, VisionProgress } from '@egoless-do/core';
 
@@ -30,7 +31,13 @@ export interface VowProgressData {
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export function useVowProgress(): VowProgressData {
-  const store = useAppStore();
+  const { habits, plans, planItems, visions, visionPractices } = useAppStore(useShallow(s => ({
+    habits: s.habits,
+    plans: s.plans,
+    planItems: s.planItems,
+    visions: s.visions,
+    visionPractices: s.visionPractices,
+  })));
 
   return useMemo(() => {
     const today = new Date();
@@ -54,14 +61,14 @@ export function useVowProgress(): VowProgressData {
     }
 
     // Get active habits & plans
-    const habits = (store.habits ?? []).filter((h: any) => !h.deleted);
-    const plans = (store.plans ?? []).filter((p: any) => !p.deleted);
+    const activeHabits = (habits ?? []).filter((h: any) => !h.deleted);
+    const activePlans = (plans ?? []).filter((p: any) => !p.deleted);
 
     // Build daily checkin sets from habits
     const dateToHabits = new Map<string, { id: string; name: string }[]>();
     const dateToPlans = new Map<string, { id: string; name: string }[]>();
 
-    for (const h of habits) {
+    for (const h of activeHabits) {
       const dates: string[] = h.checkedDates ?? [];
       for (const date of dates) {
         if (!dateToHabits.has(date)) dateToHabits.set(date, []);
@@ -70,7 +77,7 @@ export function useVowProgress(): VowProgressData {
     }
 
     // Plan progress comes from plan.progress field
-    for (const p of plans) {
+    for (const p of activePlans) {
       // Plans don't have daily checkins in the same way; track by progress changes
       // We'll count any plan with progress > 0 as active
     }
@@ -133,16 +140,16 @@ export function useVowProgress(): VowProgressData {
     }));
 
     // Vision progress - plans use Plan.visionId, habits use VisionPractice
-    const visions = (store.visions ?? []).filter((v: Vision) => !v.deleted && v.status === 'active');
-    const visionPractices = (store.visionPractices ?? []).filter((vp: VisionPractice) => !vp.deleted);
-    const planItemsAll = (store.planItems ?? []).filter((i: any) => !i.deleted);
+    const activeVisions = (visions ?? []).filter((v: Vision) => !v.deleted && v.status === 'active');
+    const activeVisionPractices = (visionPractices ?? []).filter((vp: VisionPractice) => !vp.deleted);
+    const planItemsAll = (planItems ?? []).filter((i: any) => !i.deleted);
 
-    const visionProgress = visions.map(vision => {
+    const visionProgress = activeVisions.map(vision => {
       let totalCompleted = 0;
       let totalExpected = 0;
 
       // Plans linked via Plan.visionId
-      const linkedPlans = plans.filter((p: any) => p.visionId === vision.id && !p.deleted);
+      const linkedPlans = activePlans.filter((p: any) => p.visionId === vision.id && !p.deleted);
       for (const plan of linkedPlans) {
         const items = planItemsAll.filter((i: any) => i.planId === plan.id);
         const done = items.filter((i: any) => i.status === 'completed').length;
@@ -151,9 +158,9 @@ export function useVowProgress(): VowProgressData {
       }
 
       // Habits linked via VisionPractice
-      const linkedHabits = visionPractices.filter(vp => vp.visionId === vision.id && vp.refType === 'habit');
+      const linkedHabits = activeVisionPractices.filter(vp => vp.visionId === vision.id && vp.refType === 'habit');
       for (const vp of linkedHabits) {
-        const habit = habits.find((h: any) => h.id === vp.refId);
+        const habit = activeHabits.find((h: any) => h.id === vp.refId);
         if (habit) {
           const dates: string[] = habit.checkedDates ?? [];
           const completed = dates.length;
@@ -179,7 +186,7 @@ export function useVowProgress(): VowProgressData {
       if ((h && h.length > 0) || (pl && pl.length > 0)) practiceDays++;
     }
 
-    const habitStats: HabitStat[] = habits.map((h: any) => {
+    const habitStats: HabitStat[] = activeHabits.map((h: any) => {
       const history = h.checkinHistory ?? {};
       const weekStartStr = weekDates[0];
       const completed = Object.entries(history).filter(([d, done]) => done && d >= weekStartStr && d <= todayStr).length;
@@ -191,7 +198,7 @@ export function useVowProgress(): VowProgressData {
       };
     });
 
-    const planProgressResult: PlanProgress[] = plans.map((p: any) => {
+    const planProgressResult: PlanProgress[] = activePlans.map((p: any) => {
       const items = p.items ?? [];
       const done = items.filter((it: any) => it.done).length;
       return {
@@ -222,5 +229,5 @@ export function useVowProgress(): VowProgressData {
         visionProgressData,
       },
     };
-  }, [store.habits, store.plans, store.planItems, store.visions, store.visionPractices]);
+  }, [habits, plans, planItems, visions, visionPractices]);
 }

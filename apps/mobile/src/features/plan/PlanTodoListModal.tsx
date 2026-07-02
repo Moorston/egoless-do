@@ -3,6 +3,7 @@ import {
   View, Text, TouchableOpacity, Modal, ScrollView,
 } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { COLORS, getTodayItems, getActivePlan, getTodoItemStatus, computeDailyTodoStats, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import { X, CheckCircle2, Check } from 'lucide-react-native';
@@ -11,15 +12,15 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { plans, planItemCheckins, planItems, checkinPlanItem, uncheckinPlanItem } = useAppStore(useShallow(s => ({ plans: s.plans, planItemCheckins: s.planItemCheckins, planItems: s.planItems, checkinPlanItem: s.checkinPlanItem, uncheckinPlanItem: s.uncheckinPlanItem })));
   const today = dateStr();
 
-  const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
-  const checkins = store.planItemCheckins ?? [];
+  const activePlan = useMemo(() => getActivePlan(plans ?? []), [plans]);
+  const checkins = planItemCheckins ?? [];
   const todayItems = useMemo(() => {
     if (!activePlan) return [];
-    return getTodayItems(store.planItems ?? [], activePlan, today, checkins);
-  }, [store.planItems, activePlan, today, checkins]);
+    return getTodayItems(planItems ?? [], activePlan, today, checkins);
+  }, [planItems, activePlan, today, checkins]);
 
   const stats = useMemo(
     () => computeDailyTodoStats(todayItems, [], checkins, today),
@@ -63,7 +64,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
                       key={item.id}
                       onPress={() => {
                         if (!isManual) return;
-                        done ? store.uncheckinPlanItem(item.id) : store.checkinPlanItem(item.id);
+                        done ? uncheckinPlanItem(item.id) : checkinPlanItem(item.id);
                       }}
                       activeOpacity={isManual ? 0.7 : 1}
                       style={{

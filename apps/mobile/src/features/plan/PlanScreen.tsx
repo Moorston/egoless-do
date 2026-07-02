@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import { COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
@@ -15,15 +16,15 @@ export default function PlanScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { checkAutoStatus, autoSyncPlanItems, plans } = useAppStore(useShallow(s => ({ checkAutoStatus: s.checkAutoStatus, autoSyncPlanItems: s.autoSyncPlanItems, plans: s.plans })));
   const nav = useRootNavigation();
 
   useEffect(() => {
-    store.checkAutoStatus();
-    store.autoSyncPlanItems();
+    checkAutoStatus();
+    autoSyncPlanItems();
   }, []);
 
-  const activePlan = useMemo(() => getActivePlan(store.plans ?? []), [store.plans]);
+  const activePlan = useMemo(() => getActivePlan(plans ?? []), [plans]);
   const handleNoop = useCallback(() => {}, []);
 
   // Empty state

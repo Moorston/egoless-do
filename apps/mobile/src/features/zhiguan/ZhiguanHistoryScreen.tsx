@@ -1,11 +1,17 @@
 // ─── ZhiguanHistoryScreen 止观履历页 ────────────────────────────
-// 履历卡（连续/最长/总时/次数）+ 月度热力图 + 历史列表
+// 履历卡 + 月度热力图 + 历史列表 + 详情卡片 + JSON 导出
 import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Share, Modal } from 'react-native';
 import { useT } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
 import type { ZhiguanSession } from '@egoless-do/core';
-import { computeZhiguanStats } from '@egoless-do/core';
+import {
+  computeZhiguanStats,
+  FIVE_HINDRANCE_KEYS, FIVE_HINDRANCE_LABEL_KEYS,
+  EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS,
+  SAM_STAGE_LABEL_KEYS,
+  ZHIGUAN_METHOD_DEFS,
+} from '@egoless-do/core';
 
 const COLORS = ['rgba(139, 115, 85, 0.15)', 'rgba(139, 115, 85, 0.35)', 'rgba(201, 169, 110, 0.55)', 'rgba(201, 169, 110, 0.75)', 'rgba(201, 169, 110, 1)'];
 
@@ -27,10 +33,24 @@ export default function ZhiguanHistoryScreen() {
     ]);
   }, [T, deleteSession]);
 
+  const handleExport = useCallback(() => {
+    const data = sessions.filter(s => !s.deleted);
+    const json = JSON.stringify(data, null, 2);
+    Share.share({ message: json, title: 'zhiguan-export.json' }).catch(() => {});
+  }, [sessions]);
+
+  const getMethodLabel = (method?: string) => {
+    const def = ZHIGUAN_METHOD_DEFS.find(d => d.key === method);
+    return def ? T(def.labelKey) : (method ?? 'anapanasati');
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{T('zhiguanHistoryTitle')}</Text>
+        <Pressable onPress={handleExport} style={styles.exportBtn}>
+          <Text style={styles.exportText}>{T('zhiguanExportJson')}</Text>
+        </Pressable>
       </View>
 
       {/* 履历卡 */}
@@ -78,7 +98,7 @@ export default function ZhiguanHistoryScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={styles.dateLabel}>{new Date(s.startTs).toLocaleDateString()}</Text>
                 <Text style={styles.subLabel}>
-                  {s.chosenMethod} · {s.status}
+                  {getMethodLabel(s.chosenMethod)} · {s.status} · {Math.round(((s.endTs ?? s.startTs) - s.startTs) / 60000)}min
                 </Text>
               </View>
               <Pressable onPress={() => handleDelete(s.id)} style={styles.delBtn}>
@@ -88,7 +108,85 @@ export default function ZhiguanHistoryScreen() {
           ))}
         </View>
       )}
+
+      {/* Detail Modal */}
+      <Modal visible={!!selRecord} transparent animationType="slide" onRequestClose={() => setSelRecord(null)}>
+        <Pressable style={styles.detailOverlay} onPress={() => setSelRecord(null)}>
+          <Pressable style={styles.detailCard} onPress={e => e.stopPropagation()}>
+            <View style={styles.handle} />
+            {selRecord && (
+              <ScrollView>
+                <Text style={styles.detailTitle}>{T('zhiguanDetailTitle')}</Text>
+
+                <DetailRow label={T('zhiguanDetailMethod')} value={getMethodLabel(selRecord.chosenMethod)} />
+                <DetailRow label={T('zhiguanDetailDuration')} value={`${Math.round(((selRecord.endTs ?? selRecord.startTs) - selRecord.startTs) / 60000)} min`} />
+                <DetailRow label={T('zhiguanDetailStatus')} value={selRecord.status} />
+                <DetailRow label={T('zhiguanDetailDate')} value={new Date(selRecord.startTs).toLocaleString()} />
+
+                {selRecord.sankalpa && (
+                  <View style={styles.detailSection}>
+                    <Text style={styles.detailSectionLabel}>{T('zhiguanSankalpa')}</Text>
+                    <Text style={styles.detailSectionText}>{selRecord.sankalpa}</Text>
+                  </View>
+                )}
+
+                {selRecord.fiveHindrances && (
+                  <View style={styles.detailSection}>
+                    <Text style={styles.detailSectionLabel}>{T('zhiguanFiveHindrancesTitle')}</Text>
+                    {FIVE_HINDRANCE_KEYS.map((key, idx) => (
+                      <Text key={key} style={styles.detailSectionText}>
+                        {T(FIVE_HINDRANCE_LABEL_KEYS[key])}: {selRecord.fiveHindrances[key]}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+
+                {selRecord.eightTactile && (
+                  <View style={styles.detailSection}>
+                    <Text style={styles.detailSectionLabel}>{T('zhiguanEightTactileTitle')}</Text>
+                    <Text style={styles.detailSectionText}>
+                      {EIGHT_TACTILE_KEYS.filter(k => selRecord.eightTactile[k]).map(k => T(EIGHT_TACTILE_LABEL_KEYS[k])).join(', ') || '-'}
+                    </Text>
+                  </View>
+                )}
+
+                {selRecord.selfReportedStage && selRecord.selfReportedStage !== 'not_specified' && (
+                  <View style={styles.detailSection}>
+                    <Text style={styles.detailSectionLabel}>{T('zhiguanSelfReportedStage')}</Text>
+                    <Text style={styles.detailSectionText}>{T(SAM_STAGE_LABEL_KEYS[selRecord.selfReportedStage])}</Text>
+                  </View>
+                )}
+
+                {selRecord.closingNotes && (
+                  <View style={styles.detailSection}>
+                    <Text style={styles.detailSectionLabel}>{T('zhiguanClosingNotes')}</Text>
+                    <Text style={styles.detailSectionText}>{selRecord.closingNotes}</Text>
+                  </View>
+                )}
+
+                <View style={styles.detailActions}>
+                  <Pressable style={styles.detailDeleteBtn} onPress={() => { handleDelete(selRecord.id); setSelRecord(null); }}>
+                    <Text style={styles.detailDeleteText}>{T('zhiguanDeleteRecord')}</Text>
+                  </Pressable>
+                  <Pressable style={styles.detailCloseBtn} onPress={() => setSelRecord(null)}>
+                    <Text style={styles.detailCloseText}>{T('close')}</Text>
+                  </Pressable>
+                </View>
+              </ScrollView>
+            )}
+          </Pressable>
+        </Pressable>
+      </Modal>
     </ScrollView>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#E5DDD0' }}>
+      <Text style={{ fontSize: 14, color: '#8B7355' }}>{label}</Text>
+      <Text style={{ fontSize: 14, color: '#4A3F35', fontWeight: '500' }}>{value}</Text>
+    </View>
   );
 }
 
@@ -145,4 +243,18 @@ const styles = StyleSheet.create({
   emptyIcon: { fontSize: 48 },
   emptyTitle: { fontSize: 18, fontWeight: '600', color: '#4A3F35' },
   emptyDesc: { fontSize: 13, color: '#8B7355', textAlign: 'center', paddingHorizontal: 32 },
+  exportBtn: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, backgroundColor: 'rgba(139, 115, 85, 0.15)' },
+  exportText: { fontSize: 13, color: '#C9A96E', fontWeight: '600' },
+  detailOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  detailCard: { backgroundColor: '#FAF7F2', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '80%', padding: 20 },
+  handle: { width: 40, height: 4, backgroundColor: '#D1C7B7', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
+  detailTitle: { fontSize: 20, fontWeight: '700', color: '#4A3F35', marginBottom: 16 },
+  detailSection: { marginTop: 12 },
+  detailSectionLabel: { fontSize: 13, fontWeight: '600', color: '#8B7355', marginBottom: 4 },
+  detailSectionText: { fontSize: 14, color: '#4A3F35', lineHeight: 20 },
+  detailActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 24, gap: 12 },
+  detailDeleteBtn: { paddingVertical: 12, paddingHorizontal: 20, borderRadius: 8, backgroundColor: '#FEE2E2' },
+  detailDeleteText: { fontSize: 14, color: '#EF4444', fontWeight: '600' },
+  detailCloseBtn: { paddingVertical: 12, paddingHorizontal: 20 },
+  detailCloseText: { fontSize: 14, color: '#8B7355' },
 });

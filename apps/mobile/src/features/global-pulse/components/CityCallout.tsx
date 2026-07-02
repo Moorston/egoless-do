@@ -7,7 +7,7 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';
-import { GlobalCheckin } from '../types/globalPulse';
+import { GlobalCheckin } from '@egoless-do/core';
 
 interface CityCalloutProps {
   checkin: GlobalCheckin;

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
 
@@ -23,23 +24,23 @@ export default function SutraHistoryScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { mantraSessions, mantraDefs } = useAppStore(useShallow(s => ({ mantraSessions: s.mantraSessions, mantraDefs: s.mantraDefs })));
 
   const allSessions = useMemo(() =>
-    (store.mantraSessions ?? []).filter(s => !s.deleted).sort((a, b) => b.startedAt - a.startedAt),
-    [store.mantraSessions]
+    (mantraSessions ?? []).filter(s => !s.deleted).sort((a, b) => b.startedAt - a.startedAt),
+    [mantraSessions]
   );
 
   const mySutras = useMemo(() =>
-    (store.mantraDefs ?? []).filter(d => !d.deleted && d.preset !== true),
-    [store.mantraDefs]
+    (mantraDefs ?? []).filter(d => !d.deleted && d.preset !== true),
+    [mantraDefs]
   );
 
   const sutraMap = useMemo(() => {
     const m: Record<string, MantraDef> = {};
-    for (const d of (store.mantraDefs ?? []).filter(d => !d.deleted)) m[d.id] = d;
+    for (const d of (mantraDefs ?? []).filter(d => !d.deleted)) m[d.id] = d;
     return m;
-  }, [store.mantraDefs]);
+  }, [mantraDefs]);
 
   const stats = useMemo(() => {
     const totalCount = allSessions.reduce((sum, s) => sum + s.count, 0);
@@ -95,13 +96,13 @@ export default function SutraHistoryScreen() {
     const total = stats.totalCount;
     return mySutras
       .map(sutra => {
-        const sutraTotal = (store.mantraSessions ?? []).filter(s => !s.deleted && s.mantraId === sutra.id).reduce((a, b) => a + b.count, 0);
+        const sutraTotal = (mantraSessions ?? []).filter(s => !s.deleted && s.mantraId === sutra.id).reduce((a, b) => a + b.count, 0);
         const pct = total > 0 ? Math.round((sutraTotal / total) * 100) : 0;
         return { sutra, total: sutraTotal, pct };
       })
       .filter(d => d.total > 0)
       .sort((a, b) => b.total - a.total);
-  }, [mySutras, store.mantraSessions, stats.totalCount]);
+  }, [mySutras, mantraSessions, stats.totalCount]);
 
   const formatTime = (sec: number) => {
     if (sec < 60) return sec + '秒';

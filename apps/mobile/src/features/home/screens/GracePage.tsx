@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Card, useTheme, useT, ScreenHeader } from '../../../components/UI';
 import { COLORS, yesterday, dateStr, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_TINY,
   getMonthGraceCount, getRemainingGrace, isGraceAvailable } from '@egoless-do/core';
@@ -14,27 +15,32 @@ export default function GracePage() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const store = useAppStore();
+  const { checkinHistory, userProfile, graceHistory, updateUserProfile } = useAppStore(useShallow(s => ({
+    checkinHistory: s.checkinHistory,
+    userProfile: s.userProfile,
+    graceHistory: s.graceHistory,
+    updateUserProfile: s.updateUserProfile,
+  })));
 
   const [showCheckin, setShowCheckin] = useState(false);
 
   const yStr = yesterday();
   const currentMonth = dateStr().slice(0, 7); // "2026-06"
 
-  const yesterdayRecord = store.checkinHistory?.find(h => !h.deleted && h.date === yStr);
+  const yesterdayRecord = checkinHistory?.find(h => !h.deleted && h.date === yStr);
   const yesterdayDone = yesterdayRecord?.done === true;
   const missed = !yesterdayDone;
 
   // Quota
-  const quota = store.userProfile?.graceMonthlyQuota ?? 2;
-  const monthUsed = useMemo(() => getMonthGraceCount(store.graceHistory ?? [], currentMonth), [store.graceHistory, currentMonth]);
-  const remaining = useMemo(() => getRemainingGrace(store.graceHistory ?? [], quota, currentMonth), [store.graceHistory, quota, currentMonth]);
-  const available = useMemo(() => isGraceAvailable(store.graceHistory ?? [], quota, currentMonth, yStr), [store.graceHistory, quota, currentMonth, yStr]);
+  const quota = userProfile?.graceMonthlyQuota ?? 2;
+  const monthUsed = useMemo(() => getMonthGraceCount(graceHistory ?? [], currentMonth), [graceHistory, currentMonth]);
+  const remaining = useMemo(() => getRemainingGrace(graceHistory ?? [], quota, currentMonth), [graceHistory, quota, currentMonth]);
+  const available = useMemo(() => isGraceAvailable(graceHistory ?? [], quota, currentMonth, yStr), [graceHistory, quota, currentMonth, yStr]);
 
   // Grace history (sorted by date desc)
-  const graceHistory = useMemo(() =>
-    (store.graceHistory ?? []).filter(g => !g.deleted).sort((a, b) => b.date.localeCompare(a.date)),
-    [store.graceHistory],
+  const graceHistorySorted = useMemo(() =>
+    (graceHistory ?? []).filter(g => !g.deleted).sort((a, b) => b.date.localeCompare(a.date)),
+    [graceHistory],
   );
 
   const handleRestore = useCallback(() => {
@@ -47,8 +53,8 @@ export default function GracePage() {
   }, []);
 
   const updateQuota = useCallback((q: number) => {
-    store.updateUserProfile({ graceMonthlyQuota: q });
-  }, [store]);
+    updateUserProfile({ graceMonthlyQuota: q });
+  }, [updateUserProfile]);
 
   // Quota selector options
   const quotaOptions = [0, 1, 2, 3, 4, 5];
@@ -207,21 +213,21 @@ export default function GracePage() {
               {T('graceHistory')}
             </Text>
           </View>
-          {graceHistory.length === 0 ? (
+          {graceHistorySorted.length === 0 ? (
             <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>
               {T('graceHistoryEmpty')}
             </Text>
           ) : (
             <View>
-              {graceHistory.map((entry, idx) => {
+              {graceHistorySorted.map((entry, idx) => {
                 const restoredDate = new Date(entry.restoredAt);
                 const timeStr = restoredDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 return (
                   <View key={entry.date} style={{
                     flexDirection: 'row', alignItems: 'flex-start', gap: 12,
-                    paddingBottom: idx < graceHistory.length - 1 ? 12 : 0,
-                    marginBottom: idx < graceHistory.length - 1 ? 12 : 0,
-                    borderBottomWidth: idx < graceHistory.length - 1 ? 1 : 0,
+                    paddingBottom: idx < graceHistorySorted.length - 1 ? 12 : 0,
+                    marginBottom: idx < graceHistorySorted.length - 1 ? 12 : 0,
+                    borderBottomWidth: idx < graceHistorySorted.length - 1 ? 1 : 0,
                     borderBottomColor: TH.border,
                   }}>
                     <View style={{

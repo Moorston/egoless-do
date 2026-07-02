@@ -5,6 +5,7 @@ import { X } from 'lucide-react-native';
 import { useTheme, useT } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote, MS_PER_WEEK } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 
@@ -17,12 +18,14 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { checkinHistory, streak } = useAppStore(useShallow(s => ({
+    checkinHistory: s.checkinHistory,
+    streak: s.streak,
+  })));
   const insets = useSafeAreaInsets();
 
-  const checkinHistory = store.checkinHistory ?? [];
-  const totalCompleted = useMemo(() => checkinHistory.filter((c: CheckinEntry) => c.done && !c.deleted).length, [checkinHistory]);
-  const streak = store.streak;
+  const historyArr = checkinHistory ?? [];
+  const totalCompleted = useMemo(() => historyArr.filter((c: CheckinEntry) => c.done && !c.deleted).length, [historyArr]);
 
   const today = new Date();
   const currentYear = today.getFullYear();
@@ -30,13 +33,13 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
 
   // 本月打卡天数
   const monthDone = useMemo(() => {
-    return checkinHistory.filter((c: CheckinEntry) => {
+    return historyArr.filter((c: CheckinEntry) => {
       if (!c.done || c.deleted) return false;
       const [cy, cm, cd] = c.date.split('-').map(Number);
       const d = new Date(cy, cm - 1, cd);
       return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
     }).length;
-  }, [checkinHistory, currentYear, currentMonth]);
+  }, [historyArr, currentYear, currentMonth]);
 
   // 本月已过天数
   const monthPassed = today.getDate();
@@ -49,13 +52,13 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
 
   // 最长连续记录
   const longestStreak = useMemo(() => {
-    return computeLongestStreak(checkinHistory.filter((c: CheckinEntry) => c.done && !c.deleted).map(c => c.date));
-  }, [checkinHistory]);
+    return computeLongestStreak(historyArr.filter((c: CheckinEntry) => c.done && !c.deleted).map(c => c.date));
+  }, [historyArr]);
 
   // 平均每周打卡
   const avgPerWeek = useMemo(() => {
-    if (checkinHistory.length === 0) return 0;
-    const dates = checkinHistory.filter((c: CheckinEntry) => c.done && !c.deleted).map(c => c.date).sort();
+    if (historyArr.length === 0) return 0;
+    const dates = historyArr.filter((c: CheckinEntry) => c.done && !c.deleted).map(c => c.date).sort();
     if (dates.length === 0) return 0;
     const [fy, fm, fd] = dates[0].split('-').map(Number);
     const firstDate = new Date(fy, fm - 1, fd);
@@ -63,7 +66,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
     const lastDate = new Date(ly, lm - 1, ld);
     const weeks = Math.max(1, Math.ceil((lastDate.getTime() - firstDate.getTime()) / MS_PER_WEEK));
     return Math.round((totalCompleted / weeks) * 10) / 10;
-  }, [checkinHistory, totalCompleted]);
+  }, [historyArr, totalCompleted]);
 
   const stats = [
     { label: T('monthCompletionRate'), value: `${monthRate}%`, sub: `${monthDone}/${monthPassed} ${T('days')}` },
@@ -77,7 +80,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   // 本月未完成原因分布
   const reasonDistribution = useMemo(() => {
     const counts: Record<string, number> = {};
-    checkinHistory
+    historyArr
       .filter((c: CheckinEntry) => {
         if (c.done || c.deleted) return false;
         const [cy, cm, cd] = c.date.split('-').map(Number);
@@ -94,7 +97,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
       .map(r => ({ ...r, count: counts[r.code] ?? 0 }))
       .filter(r => r.count > 0)
       .sort((a, b) => b.count - a.count);
-  }, [checkinHistory, currentYear, currentMonth]);
+  }, [historyArr, currentYear, currentMonth]);
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -112,7 +115,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             {/* Calendar */}
             <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
               <CalendarGrid
-                history={checkinHistory.filter((c: CheckinEntry) => !c.deleted).map((c: CheckinEntry) => ({ date: c.date, done: c.done, grace: c.grace }))}
+                history={historyArr.filter((c: CheckinEntry) => !c.deleted).map((c: CheckinEntry) => ({ date: c.date, done: c.done, grace: c.grace }))}
                 primaryColor={P}
                 textColor={TH.text}
                 subColor={TH.sub}

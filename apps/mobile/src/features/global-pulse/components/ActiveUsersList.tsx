@@ -6,7 +6,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
-import { ActiveSession, CheckinType } from '../types/globalPulse';
+import { ActiveSession, CheckinType } from '@egoless-do/core';
 import { getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 import { ActiveUserItem } from './ActiveUserItem';
 import { useAppStore } from '../../../store/useAppStore';

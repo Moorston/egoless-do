@@ -148,18 +148,28 @@ export default function VowScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { plans: plansRaw, planItems: planItemsRaw, visions: visionsRaw,
+    updateVision, addVision, achieveVision, archiveVision, removeVision } = useAppStore(useShallow(s => ({
+    plans: s.plans,
+    planItems: s.planItems,
+    visions: s.visions,
+    updateVision: s.updateVision,
+    addVision: s.addVision,
+    achieveVision: s.achieveVision,
+    archiveVision: s.archiveVision,
+    removeVision: s.removeVision,
+  })));
 
   const [showModal, setShowModal] = useState(false);
   const [editingVision, setEditingVision] = useState<Vision | null>(null);
   const [filterStatus, setFilterStatus] = useState<VisionStatus | 'all'>('active');
 
-  const plans = store.plans ?? [];
-  const planItems = store.planItems ?? [];
+  const plans = plansRaw ?? [];
+  const planItems = planItemsRaw ?? [];
 
   const visions = useMemo(() =>
-    (store.visions ?? []).filter(v => !v.deleted && (filterStatus === 'all' || v.status === filterStatus)),
-    [store.visions, filterStatus],
+    (visionsRaw ?? []).filter(v => !v.deleted && (filterStatus === 'all' || v.status === filterStatus)),
+    [visionsRaw, filterStatus],
   );
 
   const grouped = useMemo(() => {
@@ -171,8 +181,8 @@ export default function VowScreen() {
   }, [visions]);
 
   const activeCount = useMemo(() =>
-    (store.visions ?? []).filter(v => !v.deleted && v.status === 'active').length,
-    [store.visions],
+    (visionsRaw ?? []).filter(v => !v.deleted && v.status === 'active').length,
+    [visionsRaw],
   );
 
   const handleAdd = () => {
@@ -187,37 +197,37 @@ export default function VowScreen() {
 
   const handleSave = (data: { type: VisionType; text: string; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string }) => {
     if (editingVision) {
-      store.updateVision(editingVision.id, data);
+      updateVision(editingVision.id, data);
     } else {
-      const existing = (store.visions ?? []).filter(v => !v.deleted);
+      const existing = (visionsRaw ?? []).filter(v => !v.deleted);
       const typeLabels: Record<string, string> = { lifetime: '终极愿景', long: '长期愿景', short: '短期愿景' };
       const conflict = existing.find(v => v.type === data.type && v.status === 'active');
       if (conflict) {
         Alert.alert('提示', `已有进行中的${typeLabels[data.type] ?? data.type}，请先将其标记达成或归档后再创建新的`);
         return;
       }
-      store.addVision(data);
+      addVision(data);
     }
   };
 
   const handleAchieve = (id: string) => {
     Alert.alert('达成愿景', '确认达成这个愿景吗？', [
       { text: '取消', style: 'cancel' },
-      { text: '确认达成', onPress: () => store.achieveVision(id) },
+      { text: '确认达成', onPress: () => achieveVision(id) },
     ]);
   };
 
   const handleArchive = (id: string) => {
     Alert.alert('归档愿景', '确认归档这个愿景吗？', [
       { text: '取消', style: 'cancel' },
-      { text: '确认归档', onPress: () => store.archiveVision(id) },
+      { text: '确认归档', onPress: () => archiveVision(id) },
     ]);
   };
 
   const handleDelete = (id: string) => {
     Alert.alert('删除愿景', '确定要删除这个愿景吗？', [
       { text: '取消', style: 'cancel' },
-      { text: '删除', style: 'destructive', onPress: () => store.removeVision(id) },
+      { text: '删除', style: 'destructive', onPress: () => removeVision(id) },
     ]);
   };
 
@@ -289,9 +299,9 @@ export default function VowScreen() {
               {items.map(v => {
                 const linked = plans.filter((p: any) => !p.deleted && p.visionId === v.id);
                 let pct = 0;
+                let totalDone = 0;
+                let totalItems = 0;
                 if (linked.length > 0) {
-                  let totalDone = 0;
-                  let totalItems = 0;
                   for (const plan of linked) {
                     const pi = planItems.filter((i: any) => i.planId === plan.id && !i.deleted);
                     totalDone += pi.filter((i: any) => i.status === 'completed').length;
@@ -299,6 +309,7 @@ export default function VowScreen() {
                   }
                   pct = totalItems > 0 ? Math.min(100, Math.round((totalDone / totalItems) * 100)) : 0;
                 }
+                const planDone = linked.filter((p: any) => p.status === 'completed').length;
                 return (
                   <VisionCard
                     key={v.id}
@@ -306,6 +317,10 @@ export default function VowScreen() {
                     TH={TH}
                     T={T}
                     pct={pct}
+                    planDone={planDone}
+                    planTotal={linked.length}
+                    taskDone={totalDone}
+                    taskTotal={totalItems}
                     onAchieve={handleAchieve}
                     onArchive={handleArchive}
                     onDelete={handleDelete}

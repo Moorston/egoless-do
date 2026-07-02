@@ -3,7 +3,7 @@
  * 管理实时在线会话的 CRUD 和实时订阅
  */
 
-import { ActiveSession, ApiResponse, CheckinType } from '../types/globalPulse';
+import { ActiveSession, ApiResponse, CheckinType } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 
 const log = createLogger('GlobalPulse');

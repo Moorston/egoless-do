@@ -5,7 +5,7 @@
 
 import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { ActiveSession } from '../types/globalPulse';
+import { ActiveSession } from '@egoless-do/core';
 import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';
 
 interface ActiveMarkerProps {

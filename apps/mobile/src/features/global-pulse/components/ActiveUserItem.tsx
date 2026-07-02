@@ -8,7 +8,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
-import { ActiveSession } from '../types/globalPulse';
+import { ActiveSession } from '@egoless-do/core';
 
 interface ActiveUserItemProps {
   session: ActiveSession;

@@ -4,6 +4,7 @@ import { Settings, PenLine, History } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme } from '@egoless-do/core';
 import type { DedicationSettings } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import DedicationCard from './components/DedicationCard';
 import DedicationSettingsModal from './modals/DedicationSettingsModal';
 
@@ -14,22 +15,22 @@ interface Props {
 }
 
 export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
-  const store = useAppStore();
+  const { dedicationSettings, dedications, updateDedicationSettings } = useAppStore(useShallow(s => ({ dedicationSettings: s.dedicationSettings, dedications: s.dedications, updateDedicationSettings: s.updateDedicationSettings })));
   const [showSettings, setShowSettings] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const settings = store.dedicationSettings;
-  const dedications = useMemo(() =>
-    (store.dedications ?? [])
+  const settings = dedicationSettings;
+  const filteredDedications = useMemo(() =>
+    (dedications ?? [])
       .filter((d: any) => !d.deleted)
       .sort((a: any, b: any) => b.date.localeCompare(a.date)),
-    [store.dedications]
+    [dedications]
   );
 
   // Check if overdue (no dedication for current period)
   const isOverdue = useMemo(() => {
-    if (dedications.length === 0) return true;
-    const latest = dedications[0];
+    if (filteredDedications.length === 0) return true;
+    const latest = filteredDedications[0];
     const latestDate = new Date(latest.date + 'T00:00:00');
     const now = new Date();
     const daysSince = Math.floor((now.getTime() - latestDate.getTime()) / (24 * 60 * 60 * 1000));
@@ -38,7 +39,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
     if (settings.frequency === 'monthly' && daysSince >= 30) return true;
     if (settings.frequency === 'custom' && daysSince >= (settings.customDays ?? 14)) return true;
     return false;
-  }, [dedications, settings]);
+  }, [filteredDedications, settings]);
 
   const frequencyLabel = useMemo(() => {
     const map: Record<string, string> = {
@@ -51,7 +52,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
   }, [settings.frequency, T]);
 
   const handleSaveSettings = (newSettings: Partial<DedicationSettings>) => {
-    store.updateDedicationSettings(newSettings);
+    updateDedicationSettings(newSettings);
   };
 
   return (
@@ -132,10 +133,10 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
         <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>
           {T('vowDedHistory')}
         </Text>
-        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{dedications.length}</Text>
+        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{filteredDedications.length}</Text>
       </View>
 
-      {dedications.length === 0 ? (
+      {filteredDedications.length === 0 ? (
         <View style={{
           backgroundColor: TH.card, borderRadius: 16, padding: 24,
           alignItems: 'center', borderWidth: 1, borderColor: TH.border,
@@ -146,7 +147,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
           </Text>
         </View>
       ) : (
-        dedications.map(d => (
+        filteredDedications.map(d => (
           <DedicationCard
             key={d.id}
             TH={TH}

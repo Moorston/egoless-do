@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { X } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_SMALL, FONT_BODY, FONT_TITLE, FONT_TINY } from '@egoless-do/core';
 import { getMoodIcon } from '@egoless-do/core';
@@ -28,7 +29,10 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { addReflection, addReflectionToTrail } = useAppStore(useShallow(s => ({
+    addReflection: s.addReflection,
+    addReflectionToTrail: s.addReflectionToTrail,
+  })));
 
   const [content, setContent] = useState('');
   const [tagInput, setTagInput] = useState('');
@@ -51,7 +55,7 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
     if (!content.trim()) return;
 
     // 创建感念
-    const newR = store.addReflection({
+    const newR = addReflection({
       content: content.trim(),
       tags,
       mood: selectedMood ?? '',
@@ -59,7 +63,7 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
 
     // 关联到思维脉络
     if (newR && trailId) {
-      store.addReflectionToTrail(trailId, newR.id);
+      addReflectionToTrail(trailId, newR.id);
     }
 
     // 重置表单
@@ -68,7 +72,7 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
     setSelectedMood(undefined);
     setTagInput('');
     onClose();
-  }, [content, tags, selectedMood, trailId, store, onClose]);
+  }, [content, tags, selectedMood, trailId, addReflection, addReflectionToTrail, onClose]);
 
   const handleClose = useCallback(() => {
     if (content.trim()) {

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import { PLAN_STATUS_COLORS, statusToI18nKey, getHistoryPlans, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import type { PlanStatus } from '@egoless-do/core';
@@ -11,10 +12,10 @@ import { ChevronLeft, ClipboardList, ChevronRight } from 'lucide-react-native';
 export default function PlanHistoryScreen() {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { plans } = useAppStore(useShallow(s => ({ plans: s.plans })));
   const nav = useRootNavigation();
 
-  const historyPlans = useMemo(() => getHistoryPlans(store.plans ?? []), [store.plans]);
+  const historyPlans = useMemo(() => getHistoryPlans(plans ?? []), [plans]);
 
   const statusLabel = (s: PlanStatus) => T(statusToI18nKey(s));
 

@@ -5,6 +5,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
 import type { RootStackParamList } from '../../navigation/types';
 
@@ -14,7 +15,7 @@ export default function MantraHistoryScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { mantraDefs, mantraSessions } = useAppStore(useShallow(s => ({ mantraDefs: s.mantraDefs, mantraSessions: s.mantraSessions })));
   const [monthOffset, setMonthOffset] = useState(0);
 
   // 当前显示的月份
@@ -31,24 +32,24 @@ export default function MantraHistoryScreen() {
   // 咒语名称映射
   const mantraNames = useMemo(() => {
     const map: Record<string, string> = {};
-    for (const d of (store.mantraDefs ?? []).filter(d => !d.deleted)) {
+    for (const d of (mantraDefs ?? []).filter(d => !d.deleted)) {
       map[d.id] = d.name;
     }
     return map;
-  }, [store.mantraDefs]);
+  }, [mantraDefs]);
 
   // 当前咒语（单咒语模式）
   const singleMantra = useMemo(() =>
-    mantraId ? (store.mantraDefs ?? []).find(d => d.id === mantraId) : undefined,
-    [store.mantraDefs, mantraId]
+    mantraId ? (mantraDefs ?? []).find(d => d.id === mantraId) : undefined,
+    [mantraDefs, mantraId]
   );
 
   // 过滤后的 sessions
   const sessions = useMemo(() =>
-    (store.mantraSessions ?? [])
+    (mantraSessions ?? [])
       .filter(s => !s.deleted && (mantraId ? s.mantraId === mantraId : true))
       .sort((a, b) => b.startedAt - a.startedAt),
-    [store.mantraSessions, mantraId]
+    [mantraSessions, mantraId]
   );
 
   // ── StatsCard ──

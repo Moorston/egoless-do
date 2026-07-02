@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -36,7 +37,21 @@ type ChartKey = typeof CHART_TABS[number];
 export default function StatsScreen() {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { exerciseLog: rawExerciseLog, fastingHistory: rawFastingHistory, userProfile, totalMedMinutes: rawTotalMedMinutes, medHistory: rawMedHistory, reflections: rawReflections, plans: rawPlans, planItems: rawPlanItems, habits: rawHabits, graceHistory, checkinHistory: rawCheckinHistory, foodLog: rawFoodLog, streak } = useAppStore(useShallow(s => ({
+    exerciseLog: s.exerciseLog,
+    fastingHistory: s.fastingHistory,
+    userProfile: s.userProfile,
+    totalMedMinutes: s.totalMedMinutes,
+    medHistory: s.medHistory,
+    reflections: s.reflections,
+    plans: s.plans,
+    planItems: s.planItems,
+    habits: s.habits,
+    graceHistory: s.graceHistory,
+    checkinHistory: s.checkinHistory,
+    foodLog: s.foodLog,
+    streak: s.streak,
+  })));
   const P = TH.primary;
   const nav = useRootNavigation();
 
@@ -44,7 +59,7 @@ export default function StatsScreen() {
   const [activeChart, setActiveChart] = useState<ChartKey>('exercise');
 
   // ── Common data ──
-  const exerciseLog = useMemo(() => (store.exerciseLog ?? []).filter(e => !e.deleted), [store.exerciseLog]);
+  const exerciseLog = useMemo(() => (rawExerciseLog ?? []).filter(e => !e.deleted), [rawExerciseLog]);
   const now = Date.now();
   const todayD = new Date(now);
   const today = `${todayD.getFullYear()}-${String(todayD.getMonth() + 1).padStart(2, '0')}-${String(todayD.getDate()).padStart(2, '0')}`;
@@ -52,7 +67,7 @@ export default function StatsScreen() {
   const monthStart = now - 30 * 24 * 3600 * 1000;
 
   // ── Fasting stats ──
-  const fastingHistory = useMemo(() => (store.fastingHistory ?? []).filter(f => !f.deleted), [store.fastingHistory]);
+  const fastingHistory = useMemo(() => (rawFastingHistory ?? []).filter(f => !f.deleted), [rawFastingHistory]);
   const totalFastCount = fastingHistory.length;
   const totalFastHours = useMemo(() => {
     const totalSec = fastingHistory.reduce((sum, f) => {
@@ -95,12 +110,12 @@ export default function StatsScreen() {
       const e = f.endedAt ?? 0;
       return sum + (e > 0 ? (e - s) / 3600000 : 0);
     }, 0);
-    return Math.round(estimateFastingKcal(totalHours, store.userProfile.weight ?? 70, store.userProfile.gender ?? 'male', store.userProfile.age ?? 30));
-  }, [fastingHistory, store.userProfile]);
+    return Math.round(estimateFastingKcal(totalHours, userProfile.weight ?? 70, userProfile.gender ?? 'male', userProfile.age ?? 30));
+  }, [fastingHistory, userProfile]);
 
   // ── Meditation stats ──
-  const totalMedMin = store.totalMedMinutes;
-  const medHistory = store.medHistory ?? [];
+  const totalMedMin = rawTotalMedMinutes;
+  const medHistory = rawMedHistory ?? [];
   const todayMedMin = useMemo(() => getTodayMedMinutes(activeOnly(medHistory)), [medHistory]);
   const medSessionCount = useMemo(() => activeOnly(medHistory).length, [medHistory]);
 
@@ -117,28 +132,28 @@ export default function StatsScreen() {
   const { weekKm, monthKm, bestPace, totalExerciseMin, totalExerciseCount } = exerciseStats;
 
   // ── Reflections stats ──
-  const reflections = store.reflections ?? [];
+  const reflections = rawReflections ?? [];
   const reflCount = useMemo(() => activeOnly(reflections).length, [reflections]);
 
   // ── Plan stats ──
-  const plans = store.plans ?? [];
+  const plans = rawPlans ?? [];
   const planStats = useMemo(() => {
-    const planItems = (store.planItems ?? []).filter(i => !i.deleted);
+    const planItems = (rawPlanItems ?? []).filter(i => !i.deleted);
     const activePlans = plans.filter(p => !p.deleted && p.status === 'in_progress');
     const totalPlanTasks = planItems.length;
     const completedPlanTasks = planItems.filter(i => i.status === 'completed').length;
     return { planItems, activePlans, totalPlanTasks, completedPlanTasks };
-  }, [store.planItems, plans]);
+  }, [rawPlanItems, plans]);
   const { planItems, activePlans, totalPlanTasks, completedPlanTasks } = planStats;
 
   // ── Other stats ──
-  const activeHabits = useMemo(() => (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress').length, [store.habits]);
-  const graceCount = (store.graceHistory ?? []).filter(g => !g.deleted).length;
+  const activeHabits = useMemo(() => (rawHabits ?? []).filter(h => !h.deleted && h.status === 'inProgress').length, [rawHabits]);
+  const graceCount = (graceHistory ?? []).filter(g => !g.deleted).length;
 
   // ── Chart data ──
-  const weightData = useMemo(() => aggregateWeightData(store.checkinHistory ?? [], 30), [store.checkinHistory]);
-  const caloriesData = useMemo(() => aggregateDailyCalories(store.foodLog ?? [], 7), [store.foodLog]);
-  const waterData = useMemo(() => aggregateDailyWater(store.checkinHistory ?? [], 7), [store.checkinHistory]);
+  const weightData = useMemo(() => aggregateWeightData(rawCheckinHistory ?? [], 30), [rawCheckinHistory]);
+  const caloriesData = useMemo(() => aggregateDailyCalories(rawFoodLog ?? [], 7), [rawFoodLog]);
+  const waterData = useMemo(() => aggregateDailyWater(rawCheckinHistory ?? [], 7), [rawCheckinHistory]);
   const exerciseTrendData = useMemo(() => aggregateWeeklyKm(exerciseLog, 8), [exerciseLog]);
 
   // ── Render helpers ──
@@ -201,7 +216,7 @@ export default function StatsScreen() {
   );
 
   const renderHabitList = () => {
-    const habits = (store.habits ?? []).filter(h => !h.deleted && h.status === 'inProgress');
+    const habits = (rawHabits ?? []).filter(h => !h.deleted && h.status === 'inProgress');
     if (!habits.length) return null;
     return (
       <Card style={{ marginBottom: 12 }}>
@@ -294,7 +309,7 @@ export default function StatsScreen() {
         <CalendarDays size={15} color={TH.text} />
         <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('statsCheckinHeatmap')}</Text>
       </View>
-      <CalendarGrid history={(store.checkinHistory ?? []).filter(c => !c.deleted)}
+      <CalendarGrid history={(rawCheckinHistory ?? []).filter(c => !c.deleted)}
         primaryColor={P} textColor={TH.text} subColor={TH.sub} borderColor={TH.border}
         onDayPress={(date) => nav.navigate('CheckinDetail', { date })} />
     </Card>
@@ -307,11 +322,11 @@ export default function StatsScreen() {
         return (
           <>
             {renderStatGrid([
-              { value: `${store.streak}`, unit: T('days'), label: T('streak'), icon: Flame },
-              { value: `${(store.checkinHistory ?? []).filter(c => !c.deleted).length}`, unit: T('days'), label: T('statsTotalCheckinDays'), icon: CalendarDays },
+              { value: `${streak}`, unit: T('days'), label: T('streak'), icon: Flame },
+              { value: `${(rawCheckinHistory ?? []).filter(c => !c.deleted).length}`, unit: T('days'), label: T('statsTotalCheckinDays'), icon: CalendarDays },
               { value: `${activeOnly(plans).length}`, unit: '', label: T('statsPlanTotal'), icon: ClipboardList },
               { value: `${completedPlanTasks}`, unit: '', label: T('statsCompletedTasks'), icon: Target },
-              { value: `${(store.habits ?? []).filter(h => !h.deleted).length}`, unit: '', label: T('statsHabitCount'), icon: Star },
+              { value: `${(rawHabits ?? []).filter(h => !h.deleted).length}`, unit: '', label: T('statsHabitCount'), icon: Star },
               { value: `${reflCount}`, unit: '', label: T('statsReflections'), icon: Sparkles },
               { value: `${totalExerciseMin}`, unit: T('exerciseMin'), label: T('statsExerciseDuration'), icon: Dumbbell },
               { value: `${totalMedMin}`, unit: T('medMinutes'), label: T('statsMeditation'), icon: Target },
@@ -377,8 +392,8 @@ export default function StatsScreen() {
       case 'reflections':
         return renderStatGrid([
           { value: `${reflCount}`, unit: '', label: T('statsReflections') },
-          { value: `${(store.reflections ?? []).filter(r => !r.deleted && r.mood).length}`, unit: '', label: T('mood') },
-          { value: `${Object.keys((store.reflections ?? []).filter(r => !r.deleted).reduce((acc, r) => { (r.tags ?? []).forEach(t => (acc as any)[t] = 1); return acc; }, {} as Record<string, number>)).length}`, unit: '', label: T('addTags') },
+          { value: `${(rawReflections ?? []).filter(r => !r.deleted && r.mood).length}`, unit: '', label: T('mood') },
+          { value: `${Object.keys((rawReflections ?? []).filter(r => !r.deleted).reduce((acc, r) => { (r.tags ?? []).forEach(t => (acc as any)[t] = 1); return acc; }, {} as Record<string, number>)).length}`, unit: '', label: T('addTags') },
         ], 3);
       case 'plan':
         return (

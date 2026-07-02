@@ -5,13 +5,14 @@ import type { RootStackParamList } from '../../../navigation/types';
 import ReflectionDetailContent from './ReflectionDetailContent';
 import ShareCard from './ShareCard';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useT } from '../../../components/UI';
 
 export default function ReflectionDetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'ReflectionDetail'>>();
   const nav = useNavigation<any>();
   const { reflectionId } = route.params;
-  const store = useAppStore();
+  const { reflections, getActivePlan, deleteReflection } = useAppStore(useShallow(s => ({ reflections: s.reflections, getActivePlan: s.getActivePlan, deleteReflection: s.deleteReflection })));
   const T = useT();
   const [shareReflection, setShareReflection] = useState<any>(null);
 
@@ -39,26 +40,26 @@ export default function ReflectionDetailScreen() {
   }, [T]);
 
   const handleCreatePlanItem = useCallback((id: string) => {
-    const r = (store.reflections ?? []).find(x => !x.deleted && x.id === id);
+    const r = (reflections ?? []).find(x => !x.deleted && x.id === id);
     if (r) {
-      const activePlan = store.getActivePlan?.();
+      const activePlan = getActivePlan?.();
       if (activePlan) {
         nav.navigate('PlanCreate', { planId: activePlan.id, reflectionId: id });
       } else {
         nav.navigate('PlanCreate', { reflectionId: id });
       }
     }
-  }, [store, nav]);
+  }, [reflections, getActivePlan, nav]);
 
   const handleDelete = useCallback((id: string) => {
     Alert.alert(T('confirmDelete'), T('confirmDeleteReflection'), [
       { text: T('cancel'), style: 'cancel' },
       { text: T('delete'), style: 'destructive', onPress: () => {
-        store.deleteReflection(id);
+        deleteReflection(id);
         nav.goBack();
       }},
     ]);
-  }, [store, nav, T]);
+  }, [deleteReflection, nav, T]);
 
   return (
     <>

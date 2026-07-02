@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
-import { GlobalCheckin, ActiveSession } from '../types/globalPulse';
+import { GlobalCheckin, ActiveSession } from '@egoless-do/core';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 
 interface MarkerDetailProps {

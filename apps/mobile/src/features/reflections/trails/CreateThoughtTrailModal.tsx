@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { X, Check, Search } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, generateTrailName, getMoodIcon } from '@egoless-do/core';
@@ -17,7 +18,11 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { reflections: rawReflections, thoughtTrails: rawThoughtTrails, createThoughtTrail } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+    thoughtTrails: s.thoughtTrails,
+    createThoughtTrail: s.createThoughtTrail,
+  })));
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -26,13 +31,13 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   const [search, setSearch] = useState('');
 
   const reflections = useMemo(() =>
-    (store.reflections ?? []).filter(r => !r.deleted).sort((a, b) => b.timestamp - a.timestamp),
-    [store.reflections]
+    (rawReflections ?? []).filter(r => !r.deleted).sort((a, b) => b.timestamp - a.timestamp),
+    [rawReflections]
   );
 
   const thoughtTrails = useMemo(() =>
-    (store.thoughtTrails ?? []).filter(t => !t.deleted),
-    [store.thoughtTrails]
+    (rawThoughtTrails ?? []).filter(t => !t.deleted),
+    [rawThoughtTrails]
   );
 
   // Build a map: reflectionId → number of trails it belongs to
@@ -87,7 +92,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   const handleCreate = useCallback(() => {
     if (!name.trim()) return;
 
-    const trailId = store.createThoughtTrail(
+    const trailId = createThoughtTrail(
       name.trim(),
       description.trim() || undefined,
       Array.from(selectedIds)
@@ -101,7 +106,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
 
     onSuccess?.(trailId);
     onClose();
-  }, [store, name, description, selectedIds, onSuccess, onClose]);
+  }, [createThoughtTrail, name, description, selectedIds, onSuccess, onClose]);
 
   const handleClose = useCallback(() => {
     setName('');

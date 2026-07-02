@@ -5,7 +5,7 @@
 
 import React, { useMemo, memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { CheckinType } from '../types/globalPulse';
+import { CheckinType } from '@egoless-do/core';
 import { getCheckinTypeColor } from '../services/globalPulseApi';
 
 interface PulseMarkerProps {

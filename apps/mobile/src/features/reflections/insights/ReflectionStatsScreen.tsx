@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Share } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Share2, TrendingUp, Grid3x3, Heart, Tag, ListChecks } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
@@ -14,14 +15,17 @@ export default function ReflectionStatsScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { reflections: rawReflections, planItems: rawPlanItems } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+    planItems: s.planItems,
+  })));
   const nav = useNavigation();
 
   const [activeTab, setActiveTab] = useState<TabKey>('tags');
 
   // Stats calculations
   const stats = useMemo(() => {
-    const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
+    const reflections = (rawReflections ?? []).filter((r) => !r.deleted);
     const totalCount = reflections.length;
 
     // Streak days
@@ -61,11 +65,11 @@ export default function ReflectionStatsScreen() {
     ).length;
 
     return { totalCount, streakDays, thisWeek, thisMonth };
-  }, [store.reflections]);
+  }, [rawReflections]);
 
   // Trend data (last 30 days)
   const trendData = useMemo(() => {
-    const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
+    const reflections = (rawReflections ?? []).filter((r) => !r.deleted);
     const today = new Date();
     const data: { date: string; count: number }[] = [];
 
@@ -81,22 +85,22 @@ export default function ReflectionStatsScreen() {
     }
 
     return data;
-  }, [store.reflections]);
+  }, [rawReflections]);
 
   // Prepare history data for CalendarGrid
   const calendarHistory = useMemo(() => {
-    const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
+    const reflections = (rawReflections ?? []).filter((r) => !r.deleted);
     const dateMap = new Map<string, number>();
     reflections.forEach((r) => {
       const ds = dateStr(new Date(r.timestamp ?? 0));
       dateMap.set(ds, (dateMap.get(ds) ?? 0) + 1);
     });
     return Array.from(dateMap.entries()).map(([date, count]) => ({ date, done: count > 0 }));
-  }, [store.reflections]);
+  }, [rawReflections]);
 
   // Mood stats
   const moodStats = useMemo(() => {
-    const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
+    const reflections = (rawReflections ?? []).filter((r) => !r.deleted);
     const counts: Record<string, number> = {};
     reflections.forEach((r) => {
       if (r.mood) counts[r.mood] = (counts[r.mood] || 0) + 1;
@@ -104,11 +108,11 @@ export default function ReflectionStatsScreen() {
     return Object.entries(counts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5);
-  }, [store.reflections]);
+  }, [rawReflections]);
 
   // Tag frequency
   const tagFrequency = useMemo(() => {
-    const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
+    const reflections = (rawReflections ?? []).filter((r) => !r.deleted);
     const counts: Record<string, number> = {};
     reflections.forEach((r) =>
       (r.tags ?? []).forEach((t) => {
@@ -118,12 +122,12 @@ export default function ReflectionStatsScreen() {
     return Object.entries(counts)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 15);
-  }, [store.reflections]);
+  }, [rawReflections]);
 
   // Linked task stats
   const linkedTaskStats = useMemo(() => {
-    const reflections = (store.reflections ?? []).filter((r) => !r.deleted);
-    const planItems = (store.planItems ?? []).filter((i) => !i.deleted);
+    const reflections = (rawReflections ?? []).filter((r) => !r.deleted);
+    const planItems = (rawPlanItems ?? []).filter((i) => !i.deleted);
     const linked = reflections.filter((r) => r.linkedPlanItemId);
     const totalCount = reflections.length;
     const linkedCount = linked.length;
@@ -144,7 +148,7 @@ export default function ReflectionStatsScreen() {
       .sort((a, b) => b.count - a.count);
 
     return { linkedCount, rate, groups };
-  }, [store.reflections, store.planItems]);
+  }, [rawReflections, rawPlanItems]);
 
   const tabs: { key: TabKey; label: string; Icon: any }[] = [
     { key: 'tags', label: '标签', Icon: Tag },

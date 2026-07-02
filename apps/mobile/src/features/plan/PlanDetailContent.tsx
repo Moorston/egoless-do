@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, Modal } from 'react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemCheckinStats, MS_PER_DAY, getFrequencySummary } from '@egoless-do/core';
@@ -21,12 +22,26 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { performDailyReset, plans, planItems, planItemCheckins, reflections, thoughtTrails, canArchivePlan, unlinkAllReflectionsFromPlan, deletePlan, completePlan, resumePlan, pausePlan, cancelPlan } = useAppStore(useShallow(s => ({
+    performDailyReset: s.performDailyReset,
+    plans: s.plans,
+    planItems: s.planItems,
+    planItemCheckins: s.planItemCheckins,
+    reflections: s.reflections,
+    thoughtTrails: s.thoughtTrails,
+    canArchivePlan: s.canArchivePlan,
+    unlinkAllReflectionsFromPlan: s.unlinkAllReflectionsFromPlan,
+    deletePlan: s.deletePlan,
+    completePlan: s.completePlan,
+    resumePlan: s.resumePlan,
+    pausePlan: s.pausePlan,
+    cancelPlan: s.cancelPlan,
+  })));
   const nav = useRootNavigation();
 
   // 日期状态，支持跨天自动刷新
   const detector = useRef(createDateChangeDetector((prev) => {
-    store.performDailyReset(prev);
+    performDailyReset(prev);
   })).current;
   const [today, setToday] = useState(() => detector.getCurrent());
 
@@ -43,9 +58,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     return () => { subscription.remove(); clearInterval(interval); };
   }, []);
 
-  const plan = useMemo(() => (store.plans ?? []).find(p => !p.deleted && p.id === planId), [store.plans, planId]);
-  const items = useMemo(() => getPlanItems(store.planItems ?? [], planId), [store.planItems, planId]);
-  const checkins = useMemo(() => (store.planItemCheckins ?? EMPTY_CHECKINS).filter(c => !c.deleted), [store.planItemCheckins]);
+  const plan = useMemo(() => (plans ?? []).find(p => !p.deleted && p.id === planId), [plans, planId]);
+  const items = useMemo(() => getPlanItems(planItems ?? [], planId), [planItems, planId]);
+  const checkins = useMemo(() => (planItemCheckins ?? EMPTY_CHECKINS).filter(c => !c.deleted), [planItemCheckins]);
 
   // Pre-compute progress for all items using live checkin data
   const itemProgressMap = useMemo(() => {
@@ -120,11 +135,11 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
   const relatedReflections = useMemo(() => {
     if (!plan) return { items: [], total: 0 };
-    const all = (store.reflections ?? []).filter(r =>
+    const all = (reflections ?? []).filter(r =>
       !r.deleted && r.linkedPlanItemId && planItemIds.has(r.linkedPlanItemId)
     );
     return { items: all.slice(0, 3), total: all.length };
-  }, [store.reflections, plan, planItemIds]);
+  }, [reflections, plan, planItemIds]);
 
   // Find related trails: direct trailId first, then reflection-based fallback
   const relatedTrails = useMemo(() => {
@@ -136,12 +151,12 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     }
     // Indirect: via reflection chain
     const reflectionIdToPlanItemId = new Map<string, string>();
-    for (const r of (store.reflections ?? [])) {
+    for (const r of (reflections ?? [])) {
       if (!r.deleted && r.linkedPlanItemId) {
         reflectionIdToPlanItemId.set(r.id, r.linkedPlanItemId);
       }
     }
-    for (const t of (store.thoughtTrails ?? [])) {
+    for (const t of (thoughtTrails ?? [])) {
       if (t.deleted || trailIds.has(t.id)) continue;
       if (t.reflectionIds.some(rid => {
         const linkedItemId = reflectionIdToPlanItemId.get(rid);
@@ -150,8 +165,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
         trailIds.add(t.id);
       }
     }
-    return (store.thoughtTrails ?? []).filter(t => !t.deleted && trailIds.has(t.id)).slice(0, 2);
-  }, [items, store.reflections, store.thoughtTrails, plan, planItemIds]);
+    return (thoughtTrails ?? []).filter(t => !t.deleted && trailIds.has(t.id)).slice(0, 2);
+  }, [items, reflections, thoughtTrails, plan, planItemIds]);
 
   if (!plan) {
     return (
@@ -190,7 +205,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   }, [items, today, itemProgressMap]);
 
   const checkCanArchive = (onConfirm: () => void) => {
-    const result = store.canArchivePlan(plan.id);
+    const result = canArchivePlan(plan.id);
     if (!result.allowed) {
       Alert.alert(
         T('planCannotOperate'),
@@ -198,7 +213,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
         [
           { text: T('commonCancel'), style: 'cancel' },
           { text: T('planUnlinkAndContinue'), style: 'destructive', onPress: () => {
-            store.unlinkAllReflectionsFromPlan(plan.id);
+            unlinkAllReflectionsFromPlan(plan.id);
             onConfirm();
           }},
         ]
@@ -212,7 +227,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     checkCanArchive(() => {
       Alert.alert(T('planDelete'), T('planDeleteConfirm'), [
         { text: T('commonCancel'), style: 'cancel' },
-        { text: T('commonConfirm'), style: 'destructive', onPress: () => { store.deletePlan(plan.id); onClose(); } },
+        { text: T('commonConfirm'), style: 'destructive', onPress: () => { deletePlan(plan.id); onClose(); } },
       ]);
     });
   };
@@ -226,7 +241,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
 
     if (incomplete.length === 0) {
       // All items complete, complete directly
-      store.completePlan(plan.id);
+      completePlan(plan.id);
       return;
     }
 
@@ -242,22 +257,22 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       return;
     }
     setShowCompleteModal(false);
-    store.completePlan(plan.id, completeReason.trim());
+    completePlan(plan.id, completeReason.trim());
   };
 
   const handleResume = () => {
-    store.resumePlan(plan.id);
+    resumePlan(plan.id);
   };
 
   const handlePause = () => {
-    store.pausePlan(plan.id);
+    pausePlan(plan.id);
   };
 
   const handleCancel = () => {
     checkCanArchive(() => {
       Alert.alert(T('planCancelPlan'), T('planConfirmCancel'), [
         { text: T('commonCancel'), style: 'cancel' },
-        { text: T('commonConfirm'), style: 'destructive', onPress: () => store.cancelPlan(plan.id) },
+        { text: T('commonConfirm'), style: 'destructive', onPress: () => cancelPlan(plan.id) },
       ]);
     });
   };

@@ -18,6 +18,7 @@ export * from './body';
 export * from './app';
 export * from './breath';
 export * from './sleep';
+export * from './globalPulse';
 export * from './give';
 export * from './diet';
 export * from './vow';

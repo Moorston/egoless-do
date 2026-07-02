@@ -9,10 +9,10 @@ import {
 import { formatDisplayName } from '../services/globalPulseApi';
 import MapView, { UrlTile, Marker } from 'react-native-maps';
 import { useTheme, useT } from '../../../components/UI';
-import { GlobalCheckin, LeaderboardEntry, ActiveSession } from '../types/globalPulse';
+import { GlobalCheckin, LeaderboardEntry, ActiveSession } from '@egoless-do/core';
 import { useGlobalPulse } from '../hooks/useGlobalPulse';
 import { useActiveSessions } from '../hooks/useActiveSessions';
-import { aggregateMarkers } from '../services/markerAggregation';
+import { aggregateMarkers } from '@egoless-do/core';
 import { PulseMarker } from './PulseMarker';
 import { ActiveMarker } from './ActiveMarker';
 import { MarkerDetail } from './MarkerDetail';

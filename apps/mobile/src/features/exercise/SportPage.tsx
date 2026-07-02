@@ -9,6 +9,7 @@ import type { SportType } from '@egoless-do/core';
 
 const log = createLogger('Exercise');
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Pause } from 'lucide-react-native';
 import type { RootStackParamList } from '../../navigation/hooks';
 
@@ -49,12 +50,12 @@ export default function SportPage() {
   const route = useRoute<Route>();
   const TH    = useTheme();
   const T     = useT();
-  const store = useAppStore();
+  const { auth, userProfile, addExercise, exerciseLog } = useAppStore(useShallow(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog })));
   const { MapView, Polyline, ready: amapReady } = useAmapComponents();
   const { key: sportName, icon, color, gps: gpsParam } = route.params;
 
   const isGpsSport = gpsParam ?? false;
-  const weight = store.userProfile?.weight ?? 70;
+  const weight = userProfile?.weight ?? 70;
   const sportType = getSportType(sportName, isGpsSport);
   const experienceType = getSportExperienceType(sportName, sportType);
   const isMeditative = experienceType === 'meditative';
@@ -87,12 +88,12 @@ export default function SportPage() {
   // 创建/删除会话
   useEffect(() => {
     if (timer.page === 'active' && timer.active && !sessionIdRef.current) {
-      const userHash = store.auth.user?.id || '';
+      const userHash = auth.user?.id || '';
       if (!userHash) return;
       const goal = resolveGoal('exercise');
       createSession({
         user_hash: userHash,
-        nickname: store.userProfile?.nickname || '',
+        nickname: userProfile?.nickname || '',
         type: 'exercise',
         goal: goal || undefined,
         sport_key: sportName,
@@ -310,7 +311,7 @@ export default function SportPage() {
           sets: sets.sets.length > 0 ? sets.sets : undefined,
           met: MET_MAP[sportName],
         };
-        store.addExercise(entry);
+        addExercise(entry);
         if (useAppStore.getState().healthSyncEnabled) {
           import('../health/HealthService').then(({ writeWorkout }) => {
             return writeWorkout({ ...entry, id: '', updatedAt: 0, deleted: false });
@@ -323,7 +324,7 @@ export default function SportPage() {
       return;
     }
     nav.goBack();
-  }, [timer.sec, sets, sportName, icon, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, store, nav, musicStop]);
+  }, [timer.sec, sets, sportName, icon, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop]);
 
   // Stop music when entering report page (exercise ended)
   useEffect(() => {
@@ -370,7 +371,7 @@ export default function SportPage() {
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
         handleSave={handleSave} onGoBack={() => nav.goBack()}
-        exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
+        exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
         musicTrack={musicTrack} onPressMusic={() => setShowMusicPicker(true)}
         TH={TH} T={T}
       />
@@ -415,7 +416,7 @@ export default function SportPage() {
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
         handleSave={handleSave} onGoBack={() => nav.goBack()} setPage={timer.setPage}
-        exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
+        exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
       <MusicPickerModal visible={showMusicPicker} onClose={() => setShowMusicPicker(false)} primaryColor={COLORS.ORANGE} selectedTrackId={musicTrack?.id} />
@@ -442,7 +443,7 @@ export default function SportPage() {
         handleGo={handleGo} handlePause={handlePause} handleContinue={handleContinue}
         handleHoldStart={timer.handleHoldStart} handleHoldEnd={timer.handleHoldEnd}
         handleSave={handleSave} onGoBack={() => nav.goBack()}
-        exerciseLog={(store.exerciseLog ?? []).filter(e => !e.deleted)}
+        exerciseLog={(exerciseLog ?? []).filter(e => !e.deleted)}
         TH={TH} T={T}
       />
     );

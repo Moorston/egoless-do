@@ -4,7 +4,7 @@
  */
 
 import * as SQLite from 'expo-sqlite';
-import { GlobalCheckin, GlobalStats, CheckinType } from '../types/globalPulse';
+import { GlobalCheckin, GlobalStats, CheckinType } from '@egoless-do/core';
 
 // 数据库名称
 const DB_NAME = 'global_pulse.db';

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '../../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
@@ -11,16 +12,18 @@ import { ChevronLeft, TrendingUp, TrendingDown } from 'lucide-react-native';
 export default function ReviewHistoryScreen() {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { checkinReviews } = useAppStore(useShallow(s => ({
+    checkinReviews: s.checkinReviews,
+  })));
   const nav = useRootNavigation();
-  
+
   const [activeTab, setActiveTab] = useState<'week' | 'month'>('week');
-  
+
   const reviews = useMemo(() => {
-    return (store.checkinReviews ?? [])
+    return (checkinReviews ?? [])
       .filter(r => r.period === activeTab && !r.deleted)
       .sort((a, b) => b.generatedAt - a.generatedAt);
-  }, [store.checkinReviews, activeTab]);
+  }, [checkinReviews, activeTab]);
   
   const grouped = useMemo(() => {
     const map = new Map<string, CheckinReview[]>();

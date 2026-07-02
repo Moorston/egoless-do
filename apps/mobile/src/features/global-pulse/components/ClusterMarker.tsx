@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getClusterStyle } from '../services/markerAggregation';
+import { getClusterStyle } from '@egoless-do/core';
 
 interface ClusterMarkerProps {
   count: number;

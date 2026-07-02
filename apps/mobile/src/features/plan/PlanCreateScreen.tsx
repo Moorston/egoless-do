@@ -6,6 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
@@ -41,16 +42,27 @@ export default function PlanCreateScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { reflections, plans, planItems, visions, habits, addPlan, updatePlan, addPlanItem, updatePlanItem, deletePlanItem } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+    plans: s.plans,
+    planItems: s.planItems,
+    visions: s.visions,
+    habits: s.habits,
+    addPlan: s.addPlan,
+    updatePlan: s.updatePlan,
+    addPlanItem: s.addPlanItem,
+    updatePlanItem: s.updatePlanItem,
+    deletePlanItem: s.deletePlanItem,
+  })));
   const nav = useRootNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'PlanCreate'>>();
   const planId = route.params?.planId as string | undefined;
   const reflectionId = route.params?.reflectionId as string | undefined;
 
-  const reflection = useMemo(() => reflectionId ? (store.reflections ?? []).find(r => !r.deleted && r.id === reflectionId) : null, [store.reflections, reflectionId]);
+  const reflection = useMemo(() => reflectionId ? (reflections ?? []).find(r => !r.deleted && r.id === reflectionId) : null, [reflections, reflectionId]);
 
-  const existingPlan = useMemo(() => planId ? (store.plans ?? []).find(p => !p.deleted && p.id === planId) : null, [store.plans, planId]);
-  const existingItems = useMemo(() => planId ? (store.planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [], [store.planItems, planId]);
+  const existingPlan = useMemo(() => planId ? (plans ?? []).find(p => !p.deleted && p.id === planId) : null, [plans, planId]);
+  const existingItems = useMemo(() => planId ? (planItems ?? []).filter(i => i.planId === planId && !i.deleted) : [], [planItems, planId]);
 
   const [name, setName] = useState(existingPlan?.name ?? '');
   const [goal, setGoal] = useState(existingPlan?.goal ?? '');
@@ -95,12 +107,12 @@ export default function PlanCreateScreen() {
 
   // Vision
   const selectedVision = useMemo(() =>
-    visionId ? (store.visions ?? []).find((v: Vision) => v.id === visionId && !v.deleted) : null,
-    [store.visions, visionId]
+    visionId ? (visions ?? []).find((v: Vision) => v.id === visionId && !v.deleted) : null,
+    [visions, visionId]
   );
   const activeVisions = useMemo(() =>
-    (store.visions ?? []).filter((v: Vision) => !v.deleted && v.status === 'active'),
-    [store.visions]
+    (visions ?? []).filter((v: Vision) => !v.deleted && v.status === 'active'),
+    [visions]
   );
 
   // Auto-adjust item dates when plan dates change
@@ -127,23 +139,23 @@ export default function PlanCreateScreen() {
     if (!validate()) return;
     // Check if there's already an active plan
     if (!isEdit) {
-      const activePlan = (store.plans ?? []).find(p => !p.deleted && isPlanActive(p.status));
+      const activePlan = (plans ?? []).find(p => !p.deleted && isPlanActive(p.status));
       if (activePlan) {
         Alert.alert(T('planActiveExists'));
         return;
       }
     }
     if (isEdit && planId) {
-      store.updatePlan(planId, { name, goal, slogan, startDate, endDate, visionId });
+      updatePlan(planId, { name, goal, slogan, startDate, endDate, visionId });
       const existingIds = new Set(existingItems.map(i => i.id));
       const currentIds = new Set(items.map(i => i.id));
       // Delete removed existing items
       existingIds.forEach(id => {
-        if (!currentIds.has(id)) store.deletePlanItem(id);
+        if (!currentIds.has(id)) deletePlanItem(id);
       });
       items.forEach((item, idx) => {
         if (existingIds.has(item.id)) {
-          store.updatePlanItem(item.id, {
+          updatePlanItem(item.id, {
             name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
@@ -151,7 +163,7 @@ export default function PlanCreateScreen() {
             order: idx,
           });
         } else {
-          store.addPlanItem({
+          addPlanItem({
             planId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
@@ -161,10 +173,10 @@ export default function PlanCreateScreen() {
         }
       });
     } else {
-      const newPlanId = store.addPlan({ name, goal, slogan, startDate, endDate, visionId });
+      const newPlanId = addPlan({ name, goal, slogan, startDate, endDate, visionId });
       if (newPlanId) {
         items.forEach((item, idx) => {
-          store.addPlanItem({
+          addPlanItem({
             planId: newPlanId, name: item.name, description: item.description,
             startDate: item.startDate, endDate: item.endDate,
             contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
@@ -234,6 +246,14 @@ export default function PlanCreateScreen() {
           />
           {errors.name ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginBottom: 8 }}>{errors.name}</Text> : null}
 
+          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planGoal')} *</Text>
+          <TextInput
+            value={goal} onChangeText={setGoal} placeholder={T('planGoal')}
+            placeholderTextColor={TH.sub} multiline
+            style={[inputStyle, { minHeight: 60, textAlignVertical: 'top', marginBottom: errors.goal ? 4 : 12, borderColor: errors.goal ? COLORS.RED : TH.border }]}
+          />
+          {errors.goal ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginBottom: 8 }}>{errors.goal}</Text> : null}
+
           {/* Vision Selector */}
           <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planLinkVision')}</Text>
           {selectedVision ? (
@@ -260,14 +280,6 @@ export default function PlanCreateScreen() {
               <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('planSelectVision')}</Text>
             </TouchableOpacity>
           )}
-
-          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planGoal')} *</Text>
-          <TextInput
-            value={goal} onChangeText={setGoal} placeholder={T('planGoal')}
-            placeholderTextColor={TH.sub} multiline
-            style={[inputStyle, { minHeight: 60, textAlignVertical: 'top', marginBottom: errors.goal ? 4 : 12, borderColor: errors.goal ? COLORS.RED : TH.border }]}
-          />
-          {errors.goal ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginBottom: 8 }}>{errors.goal}</Text> : null}
 
           <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planSlogan')}</Text>
           <TextInput
@@ -601,7 +613,7 @@ export default function PlanCreateScreen() {
                     <>
                       <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planLinkHabit')}</Text>
                       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
-                        {(store.habits ?? []).filter(h => !h.deleted).map(h => {
+                        {(habits ?? []).filter(h => !h.deleted).map(h => {
                           const active = item.linkConfig?.habitId === h.id;
                           return (
                             <TouchableOpacity
@@ -714,7 +726,7 @@ export default function PlanCreateScreen() {
                       key={v.id}
                       onPress={() => {
                         setVisionId(v.id);
-                        if (!goal || goal.trim() === '') setGoal(v.text);
+                        if (!slogan || slogan.trim() === '') setSlogan(v.text);
                         setShowVisionPicker(false);
                       }}
                       style={{

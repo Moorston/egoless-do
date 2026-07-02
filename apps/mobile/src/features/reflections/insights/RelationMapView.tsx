@@ -7,6 +7,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, ZoomIn, ZoomOut, Brain } from 'lucide-react-native';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme } from '../../../components/UI';
 import { FONT_BODY, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
@@ -97,7 +98,14 @@ interface RelationContext {
 export default function RelationMapView() {
   const TH = useTheme();
   const P = TH.primary;
-  const store = useAppStore();
+  const { plans, planItems: storePlanItems, reflections: storeReflections, thoughtTrails: storeThoughtTrails, habits: storeHabits, reflectionLinks: storeReflectionLinks } = useAppStore(useShallow(s => ({
+    plans: s.plans,
+    planItems: s.planItems,
+    reflections: s.reflections,
+    thoughtTrails: s.thoughtTrails,
+    habits: s.habits,
+    reflectionLinks: s.reflectionLinks,
+  })));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute();
 
@@ -162,30 +170,30 @@ export default function RelationMapView() {
     if (context) {
       switch (context.type) {
         case 'plan': {
-          const plan = (store.plans ?? []).find(p => !p.deleted && p.id === context.id);
+          const plan = (plans ?? []).find(p => !p.deleted && p.id === context.id);
           if (!plan) break;
           const planNode = addNode(plan.id, 'plan', plan.name, plan, VB_W / 2, VB_H / 2);
           contextNode = planNode;
-          const planItems = (store.planItems ?? []).filter(pi => pi.planId === plan.id && !pi.deleted);
+          const planItems = (storePlanItems ?? []).filter(pi => pi.planId === plan.id && !pi.deleted);
           planItems.forEach(item => {
             addNode(item.id, 'planItem', item.name, item);
             addEdge(plan.id, item.id, 'contains', '包含');
             if (item.reflectionId) {
-              const reflection = (store.reflections ?? []).find(r => r.id === item.reflectionId);
+              const reflection = (storeReflections ?? []).find(r => r.id === item.reflectionId);
               if (reflection && !reflection.deleted) {
                 addNode(reflection.id, 'reflection', reflection.content, reflection);
                 addEdge(reflection.id, item.id, 'related', '相关');
               }
             }
             if (item.trailId) {
-              const trail = (store.thoughtTrails ?? []).find(t => t.id === item.trailId);
+              const trail = (storeThoughtTrails ?? []).find(t => t.id === item.trailId);
               if (trail && !trail.deleted) {
                 addNode(trail.id, 'trail', trail.name, trail);
                 addEdge(trail.id, item.id, 'related', '相关');
               }
             }
             if (item.linkConfig?.habitId) {
-              const habit = (store.habits ?? []).find(h => h.id === item.linkConfig!.habitId);
+              const habit = (storeHabits ?? []).find(h => h.id === item.linkConfig!.habitId);
               if (habit && !habit.deleted) {
                 addNode(habit.id, 'habit', habit.name, habit);
                 addEdge(habit.id, item.id, 'linked', '关联');
@@ -195,24 +203,24 @@ export default function RelationMapView() {
           break;
         }
         case 'habit': {
-          const habit = (store.habits ?? []).find(h => !h.deleted && h.id === context.id);
+          const habit = (storeHabits ?? []).find(h => !h.deleted && h.id === context.id);
           if (!habit) break;
           const habitNode = addNode(habit.id, 'habit', habit.name, habit, VB_W / 2, VB_H / 2);
           contextNode = habitNode;
-          const tagReflections = (store.reflections ?? []).filter(r =>
+          const tagReflections = (storeReflections ?? []).filter(r =>
             !r.deleted && r.tags.some(t => t === `#${habit.name}` || t === habit.name)
           );
           tagReflections.forEach(reflection => {
             addNode(reflection.id, 'reflection', reflection.content, reflection);
             addEdge(reflection.id, habit.id, 'related', '相关');
           });
-          const linkedPlanItems = (store.planItems ?? []).filter(i =>
+          const linkedPlanItems = (storePlanItems ?? []).filter(i =>
             !i.deleted && i.linkConfig?.habitId === habit.id
           );
           linkedPlanItems.forEach(item => {
             addNode(item.id, 'planItem', item.name, item);
             addEdge(habit.id, item.id, 'linked', '关联');
-            const plan = (store.plans ?? []).find(p => p.id === item.planId);
+            const plan = (plans ?? []).find(p => p.id === item.planId);
             if (plan && !plan.deleted) {
               addNode(plan.id, 'plan', plan.name, plan);
               addEdge(plan.id, item.id, 'contains', '包含');
@@ -221,22 +229,22 @@ export default function RelationMapView() {
           break;
         }
         case 'reflection': {
-          const reflection = (store.reflections ?? []).find(r => !r.deleted && r.id === context.id);
+          const reflection = (storeReflections ?? []).find(r => !r.deleted && r.id === context.id);
           if (!reflection) break;
           const reflectionNode = addNode(reflection.id, 'reflection', reflection.content, reflection, VB_W / 2, VB_H / 2);
           contextNode = reflectionNode;
-          const relatedLinks = (store.reflectionLinks ?? []).filter(l =>
+          const relatedLinks = (storeReflectionLinks ?? []).filter(l =>
             !l.deleted && (l.fromId === reflection.id || l.toId === reflection.id)
           );
           relatedLinks.forEach(link => {
             const otherId = link.fromId === reflection.id ? link.toId : link.fromId;
-            const other = (store.reflections ?? []).find(r => r.id === otherId);
+            const other = (storeReflections ?? []).find(r => r.id === otherId);
             if (other && !other.deleted) {
               addNode(other.id, 'reflection', other.content, other);
               addEdge(link.fromId, link.toId, link.type, link.type);
             }
           });
-          const sameTagReflections = (store.reflections ?? []).filter(r =>
+          const sameTagReflections = (storeReflections ?? []).filter(r =>
             !r.deleted && r.id !== reflection.id && r.tags.some(t => reflection.tags.includes(t))
           ).slice(0, 3);
           sameTagReflections.forEach(r => {
@@ -246,18 +254,18 @@ export default function RelationMapView() {
             }
           });
           if (reflection.linkedPlanItemId) {
-            const planItem = (store.planItems ?? []).find(i => i.id === reflection.linkedPlanItemId);
+            const planItem = (storePlanItems ?? []).find(i => i.id === reflection.linkedPlanItemId);
             if (planItem && !planItem.deleted) {
               addNode(planItem.id, 'planItem', planItem.name, planItem);
               addEdge(reflection.id, planItem.id, 'related', '相关');
-              const plan = (store.plans ?? []).find(p => p.id === planItem.planId);
+              const plan = (plans ?? []).find(p => p.id === planItem.planId);
               if (plan && !plan.deleted) {
                 addNode(plan.id, 'plan', plan.name, plan);
                 addEdge(plan.id, planItem.id, 'contains', '包含');
               }
             }
           }
-          const containingTrails = (store.thoughtTrails ?? []).filter(
+          const containingTrails = (storeThoughtTrails ?? []).filter(
             t => !t.deleted && t.reflectionIds.includes(reflection.id)
           );
           containingTrails.forEach(trail => {
@@ -267,23 +275,23 @@ export default function RelationMapView() {
           break;
         }
         case 'trail': {
-          const trail = (store.thoughtTrails ?? []).find(t => !t.deleted && t.id === context.id);
+          const trail = (storeThoughtTrails ?? []).find(t => !t.deleted && t.id === context.id);
           if (!trail) break;
           const trailNode = addNode(trail.id, 'trail', trail.name, trail, VB_W / 2, VB_H / 2);
           contextNode = trailNode;
           (trail.reflectionIds ?? []).forEach(reflectionId => {
-            const reflection = (store.reflections ?? []).find(r => r.id === reflectionId);
+            const reflection = (storeReflections ?? []).find(r => r.id === reflectionId);
             if (reflection && !reflection.deleted) {
               addNode(reflection.id, 'reflection', reflection.content, reflection);
               addEdge(trail.id, reflection.id, 'contains', '包含');
             }
           });
           (trail.linkedPlanItemIds ?? []).forEach(itemId => {
-            const planItem = (store.planItems ?? []).find(i => i.id === itemId);
+            const planItem = (storePlanItems ?? []).find(i => i.id === itemId);
             if (planItem && !planItem.deleted) {
               addNode(planItem.id, 'planItem', planItem.name, planItem);
               addEdge(trail.id, planItem.id, 'related', '相关');
-              const plan = (store.plans ?? []).find(p => p.id === planItem.planId);
+              const plan = (plans ?? []).find(p => p.id === planItem.planId);
               if (plan && !plan.deleted) {
                 addNode(plan.id, 'plan', plan.name, plan);
                 addEdge(planItem.id, plan.id, 'linked', '关联');
@@ -291,12 +299,12 @@ export default function RelationMapView() {
             }
           });
           const relatedTrailIds = new Set<string>();
-          (store.thoughtTrails ?? []).forEach(t => {
+          (storeThoughtTrails ?? []).forEach(t => {
             if (t.id === trail.id || t.deleted) return;
             if (t.reflectionIds.some(rid => trail.reflectionIds.includes(rid))) relatedTrailIds.add(t.id);
           });
           relatedTrailIds.forEach(tid => {
-            const t = (store.thoughtTrails ?? []).find(tt => tt.id === tid);
+            const t = (storeThoughtTrails ?? []).find(tt => tt.id === tid);
             if (t && !t.deleted) {
               addNode(t.id, 'trail', t.name, t);
               addEdge(trail.id, t.id, 'related', '关联');
@@ -305,29 +313,29 @@ export default function RelationMapView() {
           break;
         }
         case 'planItem': {
-          const planItem = (store.planItems ?? []).find(i => i.id === context.id);
+          const planItem = (storePlanItems ?? []).find(i => i.id === context.id);
           if (!planItem || planItem.deleted) break;
           const planItemNode = addNode(planItem.id, 'planItem', planItem.name, planItem, VB_W / 2, VB_H / 2);
           contextNode = planItemNode;
-          const plan = (store.plans ?? []).find(p => p.id === planItem.planId);
+          const plan = (plans ?? []).find(p => p.id === planItem.planId);
           if (plan && !plan.deleted) {
             addNode(plan.id, 'plan', plan.name, plan);
             addEdge(planItem.id, plan.id, 'linked', '关联');
           }
           if (planItem.reflectionId) {
-            const reflection = (store.reflections ?? []).find(r => r.id === planItem.reflectionId);
+            const reflection = (storeReflections ?? []).find(r => r.id === planItem.reflectionId);
             if (reflection && !reflection.deleted) {
               addNode(reflection.id, 'reflection', reflection.content, reflection);
               addEdge(reflection.id, planItem.id, 'related', '相关');
             }
           }
           if (planItem.trailId) {
-            const trail = (store.thoughtTrails ?? []).find(t => t.id === planItem.trailId);
+            const trail = (storeThoughtTrails ?? []).find(t => t.id === planItem.trailId);
             if (trail && !trail.deleted) {
               addNode(trail.id, 'trail', trail.name, trail);
               addEdge(trail.id, planItem.id, 'related', '相关');
               (trail.reflectionIds ?? []).slice(0, 3).forEach(reflectionId => {
-                const reflection = (store.reflections ?? []).find(r => r.id === reflectionId);
+                const reflection = (storeReflections ?? []).find(r => r.id === reflectionId);
                 if (reflection && !reflection.deleted) {
                   addNode(reflection.id, 'reflection', reflection.content, reflection);
                   addEdge(trail.id, reflection.id, 'contains', '包含');
@@ -336,7 +344,7 @@ export default function RelationMapView() {
             }
           }
           if (planItem.linkConfig?.habitId) {
-            const habit = (store.habits ?? []).find(h => h.id === planItem.linkConfig!.habitId);
+            const habit = (storeHabits ?? []).find(h => h.id === planItem.linkConfig!.habitId);
             if (habit && !habit.deleted) {
               addNode(habit.id, 'habit', habit.name, habit);
               addEdge(habit.id, planItem.id, 'linked', '关联');
@@ -365,7 +373,7 @@ export default function RelationMapView() {
 
     const insights = generateInsights(nodes, edges, context?.type);
     return { nodes, edges, insights, contextNode };
-  }, [store, context]);
+  }, [plans, storePlanItems, storeReflections, storeThoughtTrails, storeHabits, storeReflectionLinks, context]);
 
   // Sync to refs
   useEffect(() => {
@@ -395,14 +403,14 @@ export default function RelationMapView() {
         nav.navigate('ThoughtTrailDetail', { trailId: node.id });
         break;
       case 'planItem': {
-        const pi = (store.planItems ?? []).find(i => !i.deleted && i.id === node.id);
+        const pi = (storePlanItems ?? []).find(i => !i.deleted && i.id === node.id);
         if (pi) nav.navigate('PlanDetail', { planId: pi.planId });
         break;
       }
       case 'reflection':
         break;
     }
-  }, [nav, store.planItems]);
+  }, [nav, storePlanItems]);
 
   const selectedNodeData = useMemo(() => {
     if (!selectedNode) return null;

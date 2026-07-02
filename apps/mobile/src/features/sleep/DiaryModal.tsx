@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { X, Star, Moon, Sun } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import {
   SleepEntry, SleepQuality, WorkState,
@@ -46,7 +47,11 @@ export default function DiaryModal({ visible, onClose }: Props) {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const store = useAppStore();
+  const { getTodaySleep, saveSleepDiary, autoSyncHabits } = useAppStore(useShallow(s => ({
+    getTodaySleep: s.getTodaySleep,
+    saveSleepDiary: s.saveSleepDiary,
+    autoSyncHabits: s.autoSyncHabits,
+  })));
 
   // ── Form state ──
   const [bedtimeStr, setBedtimeStr] = useState('');
@@ -62,7 +67,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
   // Pre-fill from today's existing data when modal opens
   useEffect(() => {
     if (!visible) return;
-    const today = store.getTodaySleep();
+    const today = getTodaySleep();
     if (today) {
       setBedtimeStr(today.bedtimeAt ? formatHHMM(today.bedtimeAt) : '');
       setWakeStr(today.wakeAt ? formatHHMM(today.wakeAt) : '');
@@ -125,10 +130,10 @@ export default function DiaryModal({ visible, onClose }: Props) {
     if (mindState.length)  entry.mindState = mindState;
     if (note.trim())       entry.note      = note.trim();
 
-    store.saveSleepDiary(entry);
-    store.autoSyncHabits?.();
+    saveSleepDiary(entry);
+    autoSyncHabits?.();
     onClose();
-  }, [bedtimeAt, wakeAt, quality, workState, bodyState, mindState, note, store, onClose]);
+  }, [bedtimeAt, wakeAt, quality, workState, bodyState, mindState, note, saveSleepDiary, autoSyncHabits, onClose]);
 
   // ── Render section label ──
   const SectionLabel = ({ icon, text }: { icon: React.ReactNode; text: string }) => (

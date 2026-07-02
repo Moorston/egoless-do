@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, getSportType, formatPace } from '@egoless-do/core';
 import type { ExerciseEntry } from '@egoless-do/core';
@@ -96,14 +97,14 @@ export default function ExerciseHistoryScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const store = useAppStore();
+  const { exerciseLog } = useAppStore(useShallow(s => ({ exerciseLog: s.exerciseLog })));
   const { MapView, Polyline } = useAmapComponents();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedSport, setSelectedSport] = useState<string | null>(null);
 
   const sorted = useMemo(() =>
-    [...(store.exerciseLog ?? [])].filter(e => !e.deleted && e.sportKey).sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
-    [store.exerciseLog]
+    [...(exerciseLog ?? [])].filter(e => !e.deleted && e.sportKey).sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
+    [exerciseLog]
   );
 
   // Unique sport keys for filter

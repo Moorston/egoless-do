@@ -1,20 +1,35 @@
 // ─── SessionComplete 禅修结束卡片 ────────────────────────────────
-// 显示时长/轮数/日期 + 可选笔记 + 回向 + 完成/放弃按钮
+// 显示时长/日期 + 笔记 + 八触记录 + 禅定阶段 + 回向 + 完成/放弃
 import React, { useState } from 'react';
 import { View, Text, Pressable, TextInput, ScrollView, StyleSheet } from 'react-native';
 import { useT } from '../../components/UI';
+import {
+  EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS, EMPTY_EIGHT_TACTILE,
+  SAM_STAGE_LABEL_KEYS,
+} from '@egoless-do/core';
+import type { EightTactile, EightTactileKey, SamStage } from '@egoless-do/core';
+
+interface ClosingData {
+  closingNotes?: string;
+  eightTactile?: EightTactile;
+  selfReportedStage?: SamStage;
+  selfReportedStageText?: string;
+  dedicationId?: string;
+}
 
 interface Props {
   durationSec: number;
   startTime: number;
   sankalpa?: string;
-  onSave: (note?: string) => void;
+  onSave: (data: ClosingData) => void;
   onAbandon: () => void;
 }
 
 export default function SessionComplete({ durationSec, startTime, sankalpa, onSave, onAbandon }: Props) {
   const T = useT();
   const [note, setNote] = useState('');
+  const [eightTactile, setEightTactile] = useState<EightTactile>({ ...EMPTY_EIGHT_TACTILE });
+  const [selfReportedStage, setSelfReportedStage] = useState<SamStage>('not_specified');
 
   const minutes = Math.floor(durationSec / 60);
   const seconds = durationSec % 60;
@@ -23,9 +38,22 @@ export default function SessionComplete({ durationSec, startTime, sankalpa, onSa
     hour: '2-digit', minute: '2-digit',
   });
 
-  const handleSave = () => {
-    onSave(note || undefined);
+  const toggleTactile = (key: EightTactileKey) => {
+    setEightTactile(prev => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const handleSave = () => {
+    onSave({
+      closingNotes: note || undefined,
+      eightTactile,
+      selfReportedStage,
+    });
+  };
+
+  const SAM_STAGES: SamStage[] = [
+    'not_specified', 'scattered', 'desire_realm', 'preparation',
+    'first_jhana', 'second_jhana', 'third_jhana', 'fourth_jhana', 'other',
+  ];
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -43,16 +71,55 @@ export default function SessionComplete({ durationSec, startTime, sankalpa, onSa
 
       <Text style={styles.dateText}>{dateStr}</Text>
 
+      {/* Eight Tactile */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{T('zhiguanSessionNote')}</Text>
+        <Text style={styles.sectionTitle}>{T('zhiguanEightTactileTitle')}</Text>
+        <Text style={styles.sectionHint}>{T('zhiguanEightTactileHint')}</Text>
+        <View style={styles.chipGroup}>
+          {EIGHT_TACTILE_KEYS.map((key, idx) => (
+            <Pressable
+              key={key}
+              style={[styles.chip, eightTactile[key] && styles.chipActive]}
+              onPress={() => toggleTactile(key)}
+            >
+              <Text style={[styles.chipText, eightTactile[key] && styles.chipTextActive]}>
+                {T(EIGHT_TACTILE_LABEL_KEYS[key])}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+
+      {/* Self-reported Stage */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{T('zhiguanSelfReportedStage')}</Text>
+        <Text style={styles.sectionHint}>{T('zhiguanSelfReportedStageHint')}</Text>
+        <View style={styles.chipGroup}>
+          {SAM_STAGES.map(stage => (
+            <Pressable
+              key={stage}
+              style={[styles.chip, selfReportedStage === stage && styles.chipActive]}
+              onPress={() => setSelfReportedStage(stage)}
+            >
+              <Text style={[styles.chipText, selfReportedStage === stage && styles.chipTextActive]}>
+                {T(SAM_STAGE_LABEL_KEYS[stage])}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+
+      {/* Closing Notes */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{T('zhiguanClosingNotes')}</Text>
         <TextInput
           style={styles.textInput}
           value={note}
           onChangeText={setNote}
-          placeholder={T('zhiguanSessionNotePlaceholder')}
+          placeholder={T('zhiguanClosingNotesPlaceholder')}
           placeholderTextColor="#8B7355"
           multiline
-          maxLength={500}
+          maxLength={800}
         />
       </View>
 
@@ -88,7 +155,13 @@ const styles = StyleSheet.create({
   durationSeconds: { fontSize: 14, color: '#8B7355', marginTop: 2 },
   dateText: { fontSize: 13, color: '#8B7355', textAlign: 'center', marginBottom: 24 },
   section: { marginBottom: 20 },
-  sectionTitle: { fontSize: 15, fontWeight: '600', color: '#4A3F35', marginBottom: 10 },
+  sectionTitle: { fontSize: 15, fontWeight: '600', color: '#4A3F35', marginBottom: 6 },
+  sectionHint: { fontSize: 12, color: '#8B7355', marginBottom: 10 },
+  chipGroup: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: '#F5EFE6', borderWidth: 1, borderColor: '#E5DDD0' },
+  chipActive: { backgroundColor: '#C9A96E', borderColor: '#C9A96E' },
+  chipText: { fontSize: 13, color: '#4A3F35' },
+  chipTextActive: { color: '#1A1A1F', fontWeight: '600' },
   textInput: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14, fontSize: 15, color: '#4A3F35', minHeight: 80, textAlignVertical: 'top' },
   dedicationCard: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14 },
   dedicationText: { fontSize: 14, color: '#4A3F35', lineHeight: 22 },

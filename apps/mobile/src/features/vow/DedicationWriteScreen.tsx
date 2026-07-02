@@ -7,6 +7,7 @@ import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr } 
 import type { DedicationType } from '@egoless-do/core';
 import { useTheme, useT, ProgressBar } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
+import { useShallow } from 'zustand/react/shallow';
 import { useVowProgress } from './useVowProgress';
 
 interface Props {
@@ -16,13 +17,13 @@ interface Props {
 export default function DedicationWriteScreen({ onBack }: Props) {
   const TH = useTheme();
   const T = useT();
-  const store = useAppStore();
+  const { dedicationSettings, addDedication } = useAppStore(useShallow(s => ({ dedicationSettings: s.dedicationSettings, addDedication: s.addDedication })));
   const progress = useVowProgress();
 
   const [insight, setInsight] = useState('');
   const [adjustment, setAdjustment] = useState('');
 
-  const settings = store.dedicationSettings;
+  const settings = dedicationSettings;
   const { dedicationStats } = progress;
   const { practiceDays, totalDays, habitStats, planProgress, visionProgressData } = dedicationStats;
 
@@ -41,7 +42,7 @@ export default function DedicationWriteScreen({ onBack }: Props) {
   const practicePct = totalDays > 0 ? Math.round((practiceDays / totalDays) * 100) : 0;
 
   const handleSave = () => {
-    store.addDedication({
+    addDedication({
       date: dateStr(),
       periodLabel,
       type: settings.frequency,

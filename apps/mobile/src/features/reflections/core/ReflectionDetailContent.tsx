@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, Alert, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useT } from '../../../components/UI';
@@ -28,23 +29,29 @@ export default function ReflectionDetailContent({
   onCreatePlanItem,
   onDelete,
 }: ReflectionDetailContentProps) {
-  const store = useAppStore();
+  const { reflections, thoughtTrails, planItems, deletePlanItem, unlinkReflectionFromPlanItem } = useAppStore(useShallow(s => ({
+    reflections: s.reflections,
+    thoughtTrails: s.thoughtTrails,
+    planItems: s.planItems,
+    deletePlanItem: s.deletePlanItem,
+    unlinkReflectionFromPlanItem: s.unlinkReflectionFromPlanItem,
+  })));
   const nav = useRootNavigation();
   const T = useT();
   const [showMore, setShowMore] = useState(false);
   const [showTrailPicker, setShowTrailPicker] = useState(false);
 
-  const r = useMemo(() => (store.reflections ?? []).find(x => !x.deleted && x.id === reflectionId), [store.reflections, reflectionId]);
+  const r = useMemo(() => (reflections ?? []).find(x => !x.deleted && x.id === reflectionId), [reflections, reflectionId]);
 
   const linkedTrails = useMemo(() => {
     if (!r) return [];
-    return getTrailsByReflection(r.id, store.thoughtTrails ?? []);
-  }, [r, store.thoughtTrails]);
+    return getTrailsByReflection(r.id, thoughtTrails ?? []);
+  }, [r, thoughtTrails]);
 
   if (!r) return null;
 
   const linkedPlanItem = r.linkedPlanItemId
-    ? (store.planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
+    ? (planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
     : null;
   const colors: [string, string] = [r.colors?.[0] || MIND_COLORS_EXTENDED[0][0], r.colors?.[1] || MIND_COLORS_EXTENDED[0][1]];
   const isToday = dateStr(new Date(r.timestamp ?? 0)) === dateStr();
@@ -53,8 +60,8 @@ export default function ReflectionDetailContent({
     Alert.alert(T('reflUnlinkConfirmTitle'), T('reflUnlinkConfirmMessage'), [
       { text: T('cancel'), style: 'cancel' },
       { text: T('confirm'), style: 'destructive', onPress: () => {
-        if (r.linkedPlanItemId) store.deletePlanItem(r.linkedPlanItemId);
-        store.unlinkReflectionFromPlanItem(r.id);
+        if (r.linkedPlanItemId) deletePlanItem(r.linkedPlanItemId);
+        unlinkReflectionFromPlanItem(r.id);
         onClose();
       }},
     ]);
