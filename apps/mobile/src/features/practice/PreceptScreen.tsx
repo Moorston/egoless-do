@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { useShallow } from 'zustand/react/shallow';
@@ -136,7 +136,7 @@ export default function PreceptScreen() {
     });
   }, [preceptHabits, today, checkinHabit]);
 
-  const renderPreceptCard = (habit: typeof preceptHabits[0]) => {
+  const renderPreceptItem = useCallback(({ item: habit }: { item: typeof preceptHabits[0] }) => {
     const displayName = getPreceptDisplayName(habit.name);
     const type = getPreceptType(habit.name);
     const isChecked = (habit.checkedDates ?? []).includes(today);
@@ -145,7 +145,7 @@ export default function PreceptScreen() {
     const color = isAvoid ? '#EF4444' : '#10B981';
 
     return (
-      <View key={habit.id} style={[styles.preceptCard, { borderColor: `${color}30` }]}>
+      <View style={[styles.preceptCard, { borderColor: `${color}30`, marginHorizontal: 16 }]}>
         <View style={styles.preceptHeader}>
           <Text style={styles.preceptIcon}>{icon}</Text>
           <View style={{ flex: 1 }}>
@@ -183,122 +183,178 @@ export default function PreceptScreen() {
         </View>
       </View>
     );
-  };
+  }, [T, TH.text, TH.sub, today, handleCheckDone, handleViolate]);
+
+  // ── FlatList header: stats + avoid section title ──
+  const ListHeader = useCallback(() => (
+    <>
+      {/* Stats Card */}
+      <View style={[styles.statsCard, { borderColor: '#F59E0B30' }]}>
+        <View style={styles.statsHeader}>
+          <Shield size={20} color="#F59E0B" />
+          <Text style={[styles.statsTitle, { color: TH.text }]}>{T('preceptTitle') || '持戒清净'}</Text>
+        </View>
+        <Text style={[styles.quoteText, { color: TH.sub }]}>{T('preceptQuote') || '持戒清净，禅定现前'}</Text>
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: '#F59E0B' }]}>{stats.streak}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>🔥 {T('preceptStreak') || '连续'}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: TH.text }]}>{stats.totalDays}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptTotalDays') || '累计'}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: '#10B981' }]}>{stats.monthRate}%</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptMonthRate') || '本月'}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: TH.text }]}>{stats.todayDone}/{stats.total}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptToday')}</Text>
+          </View>
+        </View>
+
+        {/* Batch action buttons */}
+        {preceptHabits.length > 0 && (someUnchecked || someChecked) && (
+          <View style={{ flexDirection: 'row', gap: 10, marginTop: 14, paddingTop: 12, borderTopWidth: 1, borderTopColor: `${TH.border}30` }}>
+            {someUnchecked && (
+              <TouchableOpacity
+                onPress={handleCheckAll}
+                style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#10B98115', borderWidth: 1, borderColor: '#10B98130' }}
+              >
+                <Check size={16} color="#10B981" />
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10B981' }}>{T('preceptBatchDone')}</Text>
+              </TouchableOpacity>
+            )}
+            {someChecked && (
+              <TouchableOpacity
+                onPress={handleUncheckAll}
+                style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#EF444415', borderWidth: 1, borderColor: '#EF444430' }}
+              >
+                <X size={16} color="#EF4444" />
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>{T('preceptBatchUndo')}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      </View>
+
+      {/* Empty state (shown in header when no precepts exist) */}
+      {preceptHabits.length === 0 && (
+        <View style={[styles.emptyCard, { borderColor: `${TH.border}40` }]}>
+          <Shield size={40} color={TH.sub} />
+          <Text style={[styles.emptyText, { color: TH.sub }]}>{T('preceptEmptyHint')}</Text>
+        </View>
+      )}
+
+      {/* Avoid section title */}
+      {avoidHabits.length > 0 && (
+        <Text style={[styles.sectionTitle, { color: '#EF4444', paddingHorizontal: 16, marginTop: 16 }]}>{T('preceptAvoid') || '止持（守护不做的）'}</Text>
+      )}
+    </>
+  ), [TH, T, stats, preceptHabits.length, someUnchecked, someChecked, avoidHabits.length, handleCheckAll, handleUncheckAll]);
+
+  // ── FlatList footer: practice section, action buttons, insights ──
+  const ListFooter = useCallback(() => (
+    <>
+      {/* Practice section */}
+      {practiceHabits.length > 0 && (
+        <View style={[styles.section, { paddingHorizontal: 16 }]}>
+          <Text style={[styles.sectionTitle, { color: '#10B981' }]}>{T('preceptPractice') || '作持（守护要做的）'}</Text>
+          {practiceHabits.map(h => {
+            const displayName = getPreceptDisplayName(h.name);
+            const isChecked = (h.checkedDates ?? []).includes(today);
+            return (
+              <View key={h.id} style={[styles.preceptCard, { borderColor: '#10B98130' }]}>
+                <View style={styles.preceptHeader}>
+                  <Text style={styles.preceptIcon}>✨</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[styles.preceptName, { color: TH.text }]}>{displayName}</Text>
+                    {h.goal ? <Text style={[styles.preceptGoal, { color: TH.sub }]}>{h.goal}</Text> : null}
+                  </View>
+                  <View style={styles.streakBadge}>
+                    <Text style={[styles.streakText, { color: '#F59E0B' }]}>🔥 {h.streak}</Text>
+                  </View>
+                </View>
+                <View style={styles.preceptActions}>
+                  {isChecked ? (
+                    <View style={[styles.doneTag, { backgroundColor: '#10B98120' }]}>
+                      <Check size={14} color="#10B981" />
+                      <Text style={{ color: '#10B981', fontSize: FONT_BODY, fontWeight: '600' }}> 今日已持戒</Text>
+                    </View>
+                  ) : (
+                    <View style={{ flexDirection: 'row', gap: 10 }}>
+                      <TouchableOpacity
+                        style={[styles.actionBtn, { backgroundColor: '#10B981' }]}
+                        onPress={() => handleCheckDone(h.id)}
+                      >
+                        <Check size={16} color="#fff" />
+                        <Text style={styles.actionBtnText}>{T('preceptDone') || '做到了'}</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.actionBtn, { backgroundColor: '#EF4444' }]}
+                        onPress={() => handleViolate(h.id, h.name)}
+                      >
+                        <AlertTriangle size={16} color="#fff" />
+                        <Text style={styles.actionBtnText}>{T('preceptNotDone') || '未做到'}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
+      {/* Action buttons */}
+      <View style={[styles.actionRow, { paddingHorizontal: 16 }]}>
+        <TouchableOpacity
+          style={[styles.bottomBtn, { backgroundColor: `${TH.primary}15`, borderColor: `${TH.primary}30` }]}
+          onPress={() => setShowAddModal(true)}
+        >
+          <Plus size={18} color={TH.primary} />
+          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptAddNew') || '+ 添加新戒条'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.bottomBtn, { backgroundColor: `${TH.primary}15`, borderColor: `${TH.primary}30` }]}
+          onPress={() => nav.navigate('PreceptHistory' as never)}
+        >
+          <BarChart3 size={18} color={TH.primary} />
+          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptHistory') || '持戒历史'}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Recent Insights */}
+      {recentInsights.length > 0 && (
+        <View style={[styles.section, { paddingHorizontal: 16 }]}>
+          <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('preceptRecentInsight') || '最近觉察'}</Text>
+          {recentInsights.map(r => (
+            <View key={r.id} style={[styles.insightRow, { borderLeftColor: '#F59E0B' }]}>
+              <Text style={[styles.insightDate, { color: TH.sub }]}>
+                {new Date(r.timestamp).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+              </Text>
+              <Text style={[styles.insightContent, { color: TH.text }]} numberOfLines={2}>{r.content}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </>
+  ), [TH, T, practiceHabits, recentInsights, today, handleCheckDone, handleViolate, nav]);
 
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Precept" />
       <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('preceptSubtitle')}</Text>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-
-        {/* Stats Card */}
-        <View style={[styles.statsCard, { borderColor: '#F59E0B30' }]}>
-          <View style={styles.statsHeader}>
-            <Shield size={20} color="#F59E0B" />
-            <Text style={[styles.statsTitle, { color: TH.text }]}>{T('preceptTitle') || '持戒清净'}</Text>
-          </View>
-          <Text style={[styles.quoteText, { color: TH.sub }]}>{T('preceptQuote') || '持戒清净，禅定现前'}</Text>
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: '#F59E0B' }]}>{stats.streak}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>🔥 {T('preceptStreak') || '连续'}</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: TH.text }]}>{stats.totalDays}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptTotalDays') || '累计'}</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: '#10B981' }]}>{stats.monthRate}%</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptMonthRate') || '本月'}</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: TH.text }]}>{stats.todayDone}/{stats.total}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptToday')}</Text>
-            </View>
-          </View>
-
-          {/* Batch action buttons */}
-          {preceptHabits.length > 0 && (someUnchecked || someChecked) && (
-            <View style={{ flexDirection: 'row', gap: 10, marginTop: 14, paddingTop: 12, borderTopWidth: 1, borderTopColor: `${TH.border}30` }}>
-              {someUnchecked && (
-                <TouchableOpacity
-                  onPress={handleCheckAll}
-                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#10B98115', borderWidth: 1, borderColor: '#10B98130' }}
-                >
-                  <Check size={16} color="#10B981" />
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10B981' }}>{T('preceptBatchDone')}</Text>
-                </TouchableOpacity>
-              )}
-              {someChecked && (
-                <TouchableOpacity
-                  onPress={handleUncheckAll}
-                  style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#EF444415', borderWidth: 1, borderColor: '#EF444430' }}
-                >
-                  <X size={16} color="#EF4444" />
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>{T('preceptBatchUndo')}</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
-        </View>
-
-        {/* Avoid section */}
-        {avoidHabits.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: '#EF4444' }]}>{T('preceptAvoid') || '止持（守护不做的）'}</Text>
-            {avoidHabits.map(renderPreceptCard)}
-          </View>
-        )}
-
-        {/* Practice section */}
-        {practiceHabits.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: '#10B981' }]}>{T('preceptPractice') || '作持（守护要做的）'}</Text>
-            {practiceHabits.map(renderPreceptCard)}
-          </View>
-        )}
-
-        {/* Empty state */}
-        {preceptHabits.length === 0 && (
-          <View style={[styles.emptyCard, { borderColor: `${TH.border}40` }]}>
-            <Shield size={40} color={TH.sub} />
-            <Text style={[styles.emptyText, { color: TH.sub }]}>{T('preceptEmptyHint')}</Text>
-          </View>
-        )}
-
-        {/* Action buttons */}
-        <View style={styles.actionRow}>
-          <TouchableOpacity
-            style={[styles.bottomBtn, { backgroundColor: `${TH.primary}15`, borderColor: `${TH.primary}30` }]}
-            onPress={() => setShowAddModal(true)}
-          >
-            <Plus size={18} color={TH.primary} />
-            <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptAddNew') || '+ 添加新戒条'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.bottomBtn, { backgroundColor: `${TH.primary}15`, borderColor: `${TH.primary}30` }]}
-            onPress={() => nav.navigate('PreceptHistory' as never)}
-          >
-            <BarChart3 size={18} color={TH.primary} />
-            <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptHistory') || '持戒历史'}</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Recent Insights */}
-        {recentInsights.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('preceptRecentInsight') || '最近觉察'}</Text>
-            {recentInsights.map(r => (
-              <View key={r.id} style={[styles.insightRow, { borderLeftColor: '#F59E0B' }]}>
-                <Text style={[styles.insightDate, { color: TH.sub }]}>
-                  {new Date(r.timestamp).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
-                </Text>
-                <Text style={[styles.insightContent, { color: TH.text }]} numberOfLines={2}>{r.content}</Text>
-              </View>
-            ))}
-          </View>
-        )}
-      </ScrollView>
+      <FlatList
+        data={avoidHabits}
+        renderItem={renderPreceptItem}
+        keyExtractor={(item) => item.id}
+        removeClippedSubviews
+        ListHeaderComponent={ListHeader}
+        ListFooterComponent={ListFooter}
+        contentContainerStyle={{ paddingBottom: 40 }}
+      />
 
       {/* Violation Modal */}
       <Modal visible={showViolateModal} animationType="fade">
