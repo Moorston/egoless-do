@@ -3,7 +3,8 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
+import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
+import { useTheme } from '../components/UI';
 import {
   Home, ClipboardList, Target, Sparkles, Flame,
 } from 'lucide-react-native';
@@ -20,7 +21,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
   const theme = useAppStore(s => s.theme);
   const streak = useAppStore(s => s.streak);
   const language = useAppStore(s => s.language);
-  const TH = THEMES[theme];
+  const TH = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const today = new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });

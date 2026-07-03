@@ -2,7 +2,8 @@ import React, { useMemo, useRef } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, t, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
+import { t, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
+import { useTheme } from './UI';
 import {
   Home, ClipboardList, Timer, Binary, Sparkles, Dumbbell,
   Target, BarChart3, Settings, Flame,
@@ -37,7 +38,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
   const scrollRef = useRef<ScrollView>(null);
   const tabLayoutsRef = useRef<Record<string, { x: number; width: number }>>({});
 
-  const TH = THEMES[theme];
+  const TH = useTheme();
   const P = TH.primary;
   const T = (k: string) => t(k, language);
 

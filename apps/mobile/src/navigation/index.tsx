@@ -12,7 +12,8 @@ import {
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore } from '../store/useAppStore';
-import { THEMES, t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, createLogger } from '@egoless-do/core';
+import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, createLogger } from '@egoless-do/core';
+import { useTheme } from '../components/UI';
 import StarfieldBackground from '../components/StarfieldBackground';
 import SimpleHeaderComponent from './SimpleHeader';
 
@@ -235,9 +236,7 @@ const TAB_ROUTES: Record<string, string> = {
 };
 
 function MainTabs() {
-  const theme = useAppStore(s => s.theme);
-  const language = useAppStore(s => s.language);
-  const TH = THEMES[theme];
+  const TH = useTheme();
   const tabNavRef = useRef<NavigationContainerRef<MainTabParamList>>(null);
   const [, forceUpdate] = useState(0);
   useEffect(() => { forceUpdate(n => n + 1); }, []);
@@ -303,9 +302,8 @@ function MainTabs() {
 }
 
 export default function AppNavigator() {
-  const theme = useAppStore(s => s.theme);
+  const TH = useTheme();
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
-  const TH = THEMES[theme];
   const navRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
   const { kickOutVisible, hasPendingData, handleSyncAndLogout, handleLogoutDirectly } = useSync();
   const [syncOverlayVisible, setSyncOverlayVisible] = useState(false);
