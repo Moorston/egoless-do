@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, FlatList } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
@@ -90,9 +90,39 @@ export default function DietScreen() {
     const total = flavorStats.total || 1;
     const totalCal = todayFoods.reduce((s, f) => s + f.calories, 0);
     const calPct = calGoal > 0 ? Math.min(100, Math.round(totalCal / calGoal * 100)) : 0;
+    const renderFoodItem = ({ item: f }: { item: (typeof todayFoods)[number] }) => {
+      const wuxing = lookupWuxing(f.name);
+      const motivation = motivationLog.find(m => m.foodId === f.id && !m.deleted);
+      const motivationDef = motivation ? EATING_MOTIVATIONS.find(m => m.key === motivation.motivation) : null;
+      return (
+        <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{f.name}</Text>
+              {wuxing && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                  <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[wuxing.primaryElement]}20` }}>
+                    <Text style={{ fontSize: 10, color: ELEMENT_COLORS[wuxing.primaryElement], fontWeight: '600' }}>
+                      {FLAVOR_LABELS[wuxing.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[wuxing.primaryElement]?.label}
+                    </Text>
+                  </View>
+                  <Text style={{ fontSize: 10, color: TH.sub }}>{wuxing.nature === 'hot' ? '热' : wuxing.nature === 'warm' ? '温' : wuxing.nature === 'cool' ? '凉' : wuxing.nature === 'cold' ? '寒' : '平'}</Text>
+                </View>
+              )}
+            </View>
+            <Text style={{ color: TH.primary, fontSize: FONT_SUB, fontWeight: '600' }}>{f.calories} kcal</Text>
+          </View>
+          {motivationDef && (
+            <Text style={{ fontSize: 11, color: TH.sub, marginTop: 4, marginLeft: 2 }}>
+              {motivationDef.emoji} {T(`dietMotivation${motivationDef.key.charAt(0).toUpperCase() + motivationDef.key.slice(1)}`) || motivationDef.label}
+            </Text>
+          )}
+        </View>
+      );
+    };
+
     return (
       <View>
-        {/* 顶部概览卡：卡路里 + 五行平衡 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
             <View>
@@ -108,13 +138,11 @@ export default function DietScreen() {
               </Text>
             </View>
           </View>
-          {/* 卡路里进度条 */}
           <View style={{ height: 6, backgroundColor: `${TH.border}40`, borderRadius: 3, overflow: 'hidden' }}>
             <View style={{ height: 6, width: `${Math.min(calPct, 100)}%`, backgroundColor: totalCal > calGoal ? COLORS.RED : COLORS.GREEN, borderRadius: 3 }} />
           </View>
         </View>
 
-        {/* 添加食物按钮 */}
         <TouchableOpacity
           onPress={() => setShowAddFood(true)}
           style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: TH.primary, borderRadius: 14, padding: 14, marginBottom: 12 }}>
@@ -138,7 +166,6 @@ export default function DietScreen() {
           })}
         </View>
 
-        {/* 五行分布 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>五行分布</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
@@ -156,47 +183,21 @@ export default function DietScreen() {
           </View>
         </View>
 
-        {/* 今日食物列表 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietFoodList')} ({todayFoods.length})</Text>
           {todayFoods.length === 0 ? (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 20 }}>{T('dietNoFoodToday')}</Text>
           ) : (
-            todayFoods.map(f => {
-              const wuxing = lookupWuxing(f.name);
-              const motivation = motivationLog.find(m => m.foodId === f.id && !m.deleted);
-              const motivationDef = motivation ? EATING_MOTIVATIONS.find(m => m.key === motivation.motivation) : null;
-              return (
-                <View key={f.id} style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{f.name}</Text>
-                      {wuxing && (
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                          <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[wuxing.primaryElement]}20` }}>
-                            <Text style={{ fontSize: 10, color: ELEMENT_COLORS[wuxing.primaryElement], fontWeight: '600' }}>
-                              {FLAVOR_LABELS[wuxing.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[wuxing.primaryElement]?.label}
-                            </Text>
-                          </View>
-                          <Text style={{ fontSize: 10, color: TH.sub }}>{wuxing.nature === 'hot' ? '热' : wuxing.nature === 'warm' ? '温' : wuxing.nature === 'cool' ? '凉' : wuxing.nature === 'cold' ? '寒' : '平'}</Text>
-                        </View>
-                      )}
-                    </View>
-                    <Text style={{ color: TH.primary, fontSize: FONT_SUB, fontWeight: '600' }}>{f.calories} kcal</Text>
-                  </View>
-                  {/* 进食动机 */}
-                  {motivationDef && (
-                    <Text style={{ fontSize: 11, color: TH.sub, marginTop: 4, marginLeft: 2 }}>
-                      {motivationDef.emoji} {T(`dietMotivation${motivationDef.key.charAt(0).toUpperCase() + motivationDef.key.slice(1)}`) || motivationDef.label}
-                    </Text>
-                  )}
-                </View>
-              );
-            })
+            <FlatList
+              data={todayFoods}
+              renderItem={renderFoodItem}
+              keyExtractor={(f) => f.id}
+              removeClippedSubviews={true}
+              scrollEnabled={false}
+            />
           )}
         </View>
 
-        {/* 饮食建议 */}
         {!wuxingStats.isBalanced && (
           <View style={{ backgroundColor: `${COLORS.YELLOW}15`, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: `${COLORS.YELLOW}30` }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: COLORS.YELLOW, marginBottom: 6 }}>{T('dietSuggestion')}</Text>
@@ -208,7 +209,7 @@ export default function DietScreen() {
         )}
       </View>
     );
-  }, [flavorStats, wuxingStats, todayFoods, lookupWuxing, TH, T]);
+  }, [flavorStats, wuxingStats, todayFoods, lookupWuxing, motivationLog, TH, T]);
 
   // ── 五行图谱 Tab ──
   const renderWuxingTab = useCallback(() => {
@@ -324,11 +325,11 @@ export default function DietScreen() {
         {/* 时间范围选择器 */}
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
           {[
-            { key: '7d', label: T('dietTimeRange7') || '7天' },
-            { key: '30d', label: T('dietTimeRange30') || '30天' },
-            { key: '90d', label: T('dietTimeRange90') || '90天' },
+            { key: '7d' as const, label: T('dietTimeRange7') || '7天' },
+            { key: '30d' as const, label: T('dietTimeRange30') || '30天' },
+            { key: '90d' as const, label: T('dietTimeRange90') || '90天' },
           ].map(r => (
-            <TouchableOpacity key={r.key} onPress={() => setTimeRange(r.key as any)}
+            <TouchableOpacity key={r.key} onPress={() => setTimeRange(r.key)}
               style={{ flex: 1, paddingVertical: 8, borderRadius: 12, alignItems: 'center',
                 backgroundColor: timeRange === r.key ? TH.primary : TH.card,
                 borderWidth: timeRange === r.key ? 0 : 1, borderColor: TH.border }}>
@@ -342,7 +343,7 @@ export default function DietScreen() {
         {/* 五行偏性月历 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>{T('dietHeatmapTitle') || '五行偏性月历'}</Text>
-          <WuxingCalendar dayElementMap={dayElementMap as any} dayIntensityMap={dayIntensityMap} />
+          <WuxingCalendar dayElementMap={dayElementMap as Record<string, import('@egoless-do/core').WuxingElement | null>} dayIntensityMap={dayIntensityMap} />
         </View>
         {/* 进食动机统计 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>

@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, FlatList,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -132,6 +132,108 @@ export default function HabitsScreen() {
   const calDays = useMemo(() => daysInMonth(calYear, calMonth), [calYear, calMonth]);
   const firstDay = useMemo(() => new Date(calYear, calMonth, 1).getDay(), [calYear, calMonth]);
 
+  const renderHabitItem = useCallback(({ item: h }: { item: Habit }) => {
+    const sc = STATUS_COLORS[h.status];
+    return (
+      <View>
+        <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
+          <View style={{ width:8, height:8, borderRadius:4, backgroundColor:sc }} />
+          <Text style={{ color:TH.sub, fontSize:FONT_SUB, fontWeight:'600' }}>{h.startDate}</Text>
+          <View style={{ flex:1, height:1, backgroundColor:TH.border }} />
+        </View>
+        <TouchableOpacity onPress={() => nav.navigate('HabitDetail', { habitId: h.id })} onLongPress={() => setActionMenuHabit(h)} activeOpacity={0.9}>
+        <Card style={{ padding:14, marginLeft:16, marginBottom:16 }}>
+          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
+            <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE, flex:1, marginRight:8 }}>{h.name}</Text>
+            <View style={{ backgroundColor:`${sc}22`, borderRadius:8, paddingHorizontal:10, paddingVertical:4 }}>
+              <Text style={{ color:sc, fontSize:FONT_BADGE, fontWeight:'600' }}>{T(STATUS_LABELS[h.status])}</Text>
+            </View>
+          </View>
+
+          {h.goal ? (
+            <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:6 }}>
+              <Target size={15} color={P} />
+              <Text style={{ color:TH.text, fontSize:FONT_BODY, fontWeight:'700' }}>{h.goal}</Text>
+            </View>
+          ) : null}
+
+          <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
+          <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:8 }}>
+            {h.alarmEnabled ? <Bell size={14} color={P} /> : <BellOff size={14} color={TH.sub} />}
+            <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{T('habitAlarm')}: {h.alarmEnabled ? `${String(h.alarmHour).padStart(2,'0')}:${String(h.alarmMinute).padStart(2,'0')}` : T('habitAlarmOff')}</Text>
+          </View>
+
+          {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>愿景："{h.insight}"</Text> : null}
+          {(h.link && h.link !== 'none') ? (
+            <Text style={{ color:HABIT_LINK_COLORS[h.link], fontSize:FONT_SUB, marginBottom:8 }}>
+              关联：{h.link === 'fasting' ? `禁食（${h.linkConfig?.targetHours ?? 16}h）` : h.link === 'exercise' ? `锻炼（${h.linkConfig?.targetMinutes ?? 30}min）` : '冥想'}
+            </Text>
+          ) : null}
+          {h.createTag && (
+            <View style={{ marginBottom:8, alignSelf:'flex-start', backgroundColor:`${P}30`, borderRadius:10, paddingHorizontal:10, paddingVertical:3 }}>
+              <Text style={{ color:P, fontSize:FONT_SUB }}>#{h.name}</Text>
+            </View>
+          )}
+          {h.pauseReason ? <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:4 }}><Pause size={14} color={COLORS.YELLOW} /><Text style={{ color:COLORS.YELLOW, fontSize:FONT_SUB }}>{h.pauseReason}</Text></View> : null}
+          {h.abandonReason ? <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:4 }}><X size={14} color={COLORS.RED} /><Text style={{ color:COLORS.RED, fontSize:FONT_SUB }}>{h.abandonReason}</Text></View> : null}
+
+          <View style={{ marginBottom:10 }}>
+            <View style={{ flexDirection:'row', justifyContent:'space-between', marginBottom:4 }}>
+              <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{h.doneDays}/{h.targetDays} {T('habitDays')}</Text>
+              <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{Math.round(h.doneDays/Math.max(h.targetDays,1)*100)}%</Text>
+            </View>
+            <ProgressBar pct={h.doneDays/Math.max(h.targetDays,1)*100} color={P} />
+          </View>
+
+          <TouchableOpacity onPress={() => { setShowCal(h.id); setCalYear(new Date().getFullYear()); setCalMonth(new Date().getMonth()); }}>
+            <View style={{ flexDirection:'row', gap:20, marginBottom:12 }}>
+              {[
+                { v:h.doneDays, l:T('habitCumDays'), c:P },
+                { v:h.streak, l:T('habitStreakDays'), c:COLORS.ORANGE },
+                { v:h.interrupted, l:T('habitInterrupted'), c:COLORS.RED },
+                { v:Math.max(0,h.targetDays-h.doneDays), l:T('habitRemainDays'), c:COLORS.GREEN },
+              ].map(({ v,l,c }) => (
+                <View key={l} style={{ alignItems:'center' }}>
+                  <Text style={{ fontSize:FONT_STAT_CARD, fontWeight:'800', color:c }}>{v}</Text>
+                  <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginTop:2 }}>{l}</Text>
+                </View>
+              ))}
+            </View>
+          </TouchableOpacity>
+
+          {h.status==='notStarted' && (
+            <TouchableOpacity onPress={() => changeStatus(h.id,'inProgress')} style={{ paddingVertical:10, borderRadius:10, borderWidth:1, borderColor:COLORS.GREEN, alignItems:'center' }}>
+              <Text style={{ color:COLORS.GREEN, fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitStartBtn')}</Text>
+            </TouchableOpacity>
+          )}
+
+          {h.status==='inProgress' && (() => {
+            const today = dateStr();
+            const isCheckedToday = (h.checkedDates ?? []).includes(today);
+            if (isCheckedToday) {
+              return (
+                <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:6, paddingVertical:10, borderRadius:10, backgroundColor:`${P}20` }}>
+                  <CheckCircle size={18} color={P} />
+                  <Text style={{ color:P, fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitChecked')}</Text>
+                </View>
+              );
+            }
+            return (
+              <TouchableOpacity onPress={() => checkinHabit(h.id, today)} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:6, paddingVertical:10, borderRadius:10, backgroundColor:P }}>
+                <CheckCircle size={18} color="#fff" />
+                <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitCheckinBtn')}</Text>
+              </TouchableOpacity>
+            );
+          })()}
+        </Card>
+        </TouchableOpacity>
+      </View>
+    );
+  }, [P, TH, T, nav, setActionMenuHabit, setShowCal, changeStatus, checkinHabit]);
+
+  const habitKeyExtractor = useCallback((h: Habit) => h.id, []);
+
+
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>
       <SimpleHeader routeName="Habits" />
@@ -145,7 +247,6 @@ export default function HabitsScreen() {
           }
         />
 
-        {/* Filter */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap:8, paddingBottom:14 }}>
           {ALL_FILTERS.map(([v,l]) => {
             const isActive = filter===v;
@@ -161,115 +262,15 @@ export default function HabitsScreen() {
           })}
         </ScrollView>
 
-        {/* Timeline */}
-        {filtered.map(h => {
-          const sc = STATUS_COLORS[h.status];
-          return (
-            <View key={h.id}>
-              {/* Timeline header */}
-              <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
-                <View style={{ width:8, height:8, borderRadius:4, backgroundColor:sc }} />
-                <Text style={{ color:TH.sub, fontSize:FONT_SUB, fontWeight:'600' }}>{h.startDate}</Text>
-                <View style={{ flex:1, height:1, backgroundColor:TH.border }} />
-              </View>
-              {/* Card */}
-              <TouchableOpacity onPress={() => nav.navigate('HabitDetail', { habitId: h.id })} onLongPress={() => setActionMenuHabit(h)} activeOpacity={0.9}>
-              <Card style={{ padding:14, marginLeft:16, marginBottom:16 }}>
-                <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'flex-start', marginBottom:10 }}>
-                  <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE, flex:1, marginRight:8 }}>{h.name}</Text>
-                  <View style={{ backgroundColor:`${sc}22`, borderRadius:8, paddingHorizontal:10, paddingVertical:4 }}>
-                    <Text style={{ color:sc, fontSize:FONT_BADGE, fontWeight:'600' }}>{T(STATUS_LABELS[h.status])}</Text>
-                  </View>
-                </View>
-
-                {h.goal ? (
-                  <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:6 }}>
-                    <Target size={15} color={P} />
-                    <Text style={{ color:TH.text, fontSize:FONT_BODY, fontWeight:'700' }}>{h.goal}</Text>
-                  </View>
-                ) : null}
-
-                <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}</Text>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:8 }}>
-                  {h.alarmEnabled ? <Bell size={14} color={P} /> : <BellOff size={14} color={TH.sub} />}
-                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{T('habitAlarm')}: {h.alarmEnabled ? `${String(h.alarmHour).padStart(2,'0')}:${String(h.alarmMinute).padStart(2,'0')}` : T('habitAlarmOff')}</Text>
-                </View>
-
-                {h.insight ? <Text style={{ color:TH.sub, fontSize:FONT_SUB, marginBottom:8, fontStyle:'italic' }}>愿景："{h.insight}"</Text> : null}
-                {(h.link && h.link !== 'none') ? (
-                  <Text style={{ color:HABIT_LINK_COLORS[h.link], fontSize:FONT_SUB, marginBottom:8 }}>
-                    关联：{h.link === 'fasting' ? `禁食（${h.linkConfig?.targetHours ?? 16}h）` : h.link === 'exercise' ? `锻炼（${h.linkConfig?.targetMinutes ?? 30}min）` : '冥想'}
-                  </Text>
-                ) : null}
-                {h.createTag && (
-                  <View style={{ marginBottom:8, alignSelf:'flex-start', backgroundColor:`${P}30`, borderRadius:10, paddingHorizontal:10, paddingVertical:3 }}>
-                    <Text style={{ color:P, fontSize:FONT_SUB }}>#{h.name}</Text>
-                  </View>
-                )}
-                {h.pauseReason ? <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:4 }}><Pause size={14} color={COLORS.YELLOW} /><Text style={{ color:COLORS.YELLOW, fontSize:FONT_SUB }}>{h.pauseReason}</Text></View> : null}
-                {h.abandonReason ? <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:4 }}><X size={14} color={COLORS.RED} /><Text style={{ color:COLORS.RED, fontSize:FONT_SUB }}>{h.abandonReason}</Text></View> : null}
-
-                {/* Progress */}
-                <View style={{ marginBottom:10 }}>
-                  <View style={{ flexDirection:'row', justifyContent:'space-between', marginBottom:4 }}>
-                    <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{h.doneDays}/{h.targetDays} {T('habitDays')}</Text>
-                    <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{Math.round(h.doneDays/Math.max(h.targetDays,1)*100)}%</Text>
-                  </View>
-                  <ProgressBar pct={h.doneDays/Math.max(h.targetDays,1)*100} color={P} />
-                </View>
-
-                {/* Stats */}
-                <TouchableOpacity onPress={() => { setShowCal(h.id); setCalYear(new Date().getFullYear()); setCalMonth(new Date().getMonth()); }}>
-                  <View style={{ flexDirection:'row', gap:20, marginBottom:12 }}>
-                    {[
-                      { v:h.doneDays, l:T('habitCumDays'), c:P },
-                      { v:h.streak, l:T('habitStreakDays'), c:COLORS.ORANGE },
-                      { v:h.interrupted, l:T('habitInterrupted'), c:COLORS.RED },
-                      { v:Math.max(0,h.targetDays-h.doneDays), l:T('habitRemainDays'), c:COLORS.GREEN },
-                    ].map(({ v,l,c }) => (
-                      <View key={l} style={{ alignItems:'center' }}>
-                        <Text style={{ fontSize:FONT_STAT_CARD, fontWeight:'800', color:c }}>{v}</Text>
-                        <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginTop:2 }}>{l}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </TouchableOpacity>
-
-                {/* Start button only */}
-                {h.status==='notStarted' && (
-                  <TouchableOpacity onPress={() => changeStatus(h.id,'inProgress')} style={{ paddingVertical:10, borderRadius:10, borderWidth:1, borderColor:COLORS.GREEN, alignItems:'center' }}>
-                    <Text style={{ color:COLORS.GREEN, fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitStartBtn')}</Text>
-                  </TouchableOpacity>
-                )}
-
-                {/* Daily checkin button for inProgress */}
-                {h.status==='inProgress' && (() => {
-                  const today = dateStr();
-                  const isCheckedToday = (h.checkedDates ?? []).includes(today);
-                  if (isCheckedToday) {
-                    return (
-                      <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:6, paddingVertical:10, borderRadius:10, backgroundColor:`${P}20` }}>
-                        <CheckCircle size={18} color={P} />
-                        <Text style={{ color:P, fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitChecked')}</Text>
-                      </View>
-                    );
-                  }
-                  return (
-                    <TouchableOpacity onPress={() => checkinHabit(h.id, today)} style={{ flexDirection:'row', alignItems:'center', justifyContent:'center', gap:6, paddingVertical:10, borderRadius:10, backgroundColor:P }}>
-                      <CheckCircle size={18} color="#fff" />
-                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('habitCheckinBtn')}</Text>
-                    </TouchableOpacity>
-                  );
-                })()}
-              </Card>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
-
-        {filtered.length===0 && (
-          <Text style={{ color:TH.sub, textAlign:'center', marginTop:60, fontSize:FONT_EMPTY }}>{T('habitEmpty')}</Text>
-        )}
+        <FlatList
+          data={filtered}
+          renderItem={renderHabitItem}
+          keyExtractor={habitKeyExtractor}
+          removeClippedSubviews={true}
+          ListEmptyComponent={
+            <Text style={{ color:TH.sub, textAlign:'center', marginTop:60, fontSize:FONT_EMPTY }}>{T('habitEmpty')}</Text>
+          }
+        />
       </ScrollView>
 
       {/* Add/Edit modal */}
@@ -288,7 +289,7 @@ export default function HabitsScreen() {
               ].map(({ label,key,ph }) => (
                 <View key={key} style={{ marginBottom:14 }}>
                   <Text style={{ color:TH.sub, fontSize:FONT_LABEL, marginBottom:6 }}>{label}</Text>
-                  <ThemedInput value={(form as any)[key]} onChangeText={v => setForm(f => ({...f,[key]:v}))} placeholder={ph} />
+                  <ThemedInput value={(form as Record<string, string>)[key]} onChangeText={v => setForm(f => ({...f,[key]:v}))} placeholder={ph} />
                 </View>
               ))}
               <View style={{ marginBottom:14 }}>
