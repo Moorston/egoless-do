@@ -170,6 +170,8 @@ routerAdd("POST", "/api/sync/pull", function(e) {
 // POST /api/push — Register push notification token
 routerAdd("POST", "/api/push", function(e) {
   try {
+    function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+
     var VALID_PLATFORMS = { web: true, android: true, ios: true };
 
     var info = e.requestInfo();
@@ -192,7 +194,7 @@ routerAdd("POST", "/api/push", function(e) {
     }
 
     // Find existing token for this user + platform
-    var filter = "user_id = '" + userId.replace(/'/g, "\\'") + "' && platform = '" + platform.replace(/'/g, "\\'") + "'";
+    var filter = "user_id = '" + escapeFilterValue(userId) + "' && platform = '" + escapeFilterValue(platform) + "'";
     var existing = $app.findRecordsByFilter("push_tokens", filter, "", 1);
 
     if (existing.length > 0) {

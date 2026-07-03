@@ -63,6 +63,12 @@ Database schema migrations live where the DB lives:
 
 Core does **not** manage migrations.
 
+> **Gotcha: `ensureCollection()` skips existing collections**
+>
+> PocketBase migration helper pattern `ensureCollection()` (used in `1782500000_create_all_sync_collections.js`) checks if a collection exists and **returns immediately** if found. Subsequent additions to `syncFields()` (e.g., adding `created`, `deleted`, `updated_at`) are **never applied** to collections created by earlier migrations.
+>
+> Always add schema changes as **separate fix migrations** (`013`, `014`, `015`) rather than relying on `ensureCollection()` to retroactively add fields. A fix migration iterates over all affected collections, checks field existence by name, and adds missing fields individually.
+
 ---
 
 ## Common Mistakes
@@ -71,6 +77,7 @@ Core does **not** manage migrations.
 - ❌ Adding `expo-*` imports to core — breaks web builds
 - ❌ Executing side effects in `resolveConflict` — must stay pure
 - ❌ Slices bypassing `adapter.persistChange` — breaks sync and persistence
+- ❌ Assuming PocketBase system fields (`created`, `updated`) exist on all collections — sync collections created by early migrations (pre-`1782500000`) may lack `autodate` fields. Always verify field presence before using `-created` sorts in pb_hooks.
 
 ---
 
