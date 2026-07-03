@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useMemo, useState, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -131,24 +131,159 @@ export default function MantraHistoryScreen() {
     return Object.entries(groups).sort(([a], [b]) => b.localeCompare(a));
   }, [sessions]);
 
-  const formatTime = (sec: number) => {
+  const formatTime = useCallback((sec: number) => {
     if (sec < 60) return `${sec}秒`;
     if (sec < 3600) return `${Math.floor(sec / 60)}分${sec % 60 > 0 ? `${sec % 60}秒` : ''}`;
     return `${Math.floor(sec / 3600)}小时${Math.floor((sec % 3600) / 60)}分`;
-  };
+  }, []);
 
-  const formatShortTime = (sec: number) => {
+  const formatShortTime = useCallback((sec: number) => {
     if (sec < 60) return `${sec}s`;
     if (sec < 3600) return `${Math.floor(sec / 60)}m${sec % 60 > 0 ? `${sec % 60}s` : ''}`;
     return `${Math.floor(sec / 3600)}h${Math.floor((sec % 3600) / 60)}m`;
-  };
+  }, []);
 
-  const formatDate = (ts: number) => {
+  const formatDate = useCallback((ts: number) => {
     const d = new Date(ts);
     return `${d.getMonth() + 1}/${d.getDate()}`;
-  };
+  }, []);
 
   const weekdayLabels = ['一', '二', '三', '四', '五', '六', '日'];
+
+  const renderItem = useCallback(({ item: group }: { item: [string, typeof sessions] }) => {
+    const [monthKey, groupSessions] = group;
+    return (
+      <View style={{ marginBottom: 16 }}>
+        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>
+          {parseInt(monthKey.split('-')[0])}年{parseInt(monthKey.split('-')[1])}月
+          <Text style={{ fontSize: FONT_SMALL, fontWeight: '400', color: TH.sub }}> · {groupSessions.length}次</Text>
+        </Text>
+        {groupSessions.map(s => (
+          <View key={s.id} style={{
+            backgroundColor: TH.card, borderRadius: 14, padding: 14, marginBottom: 8,
+            borderWidth: 1, borderColor: TH.border,
+          }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                {!mantraId && mantraNames[s.mantraId] && (
+                  <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: '#FBBF2420' }}>
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#D97706' }}>{mantraNames[s.mantraId]}</Text>
+                  </View>
+                )}
+                <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{formatDate(s.startedAt)}</Text>
+              </View>
+              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{formatShortTime(s.durationSec)}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 20 }}>
+              <View>
+                <Text style={{ fontSize: 18, fontWeight: '800', color: '#FBBF24' }}>{s.count.toLocaleString()}</Text>
+                <Text style={{ fontSize: 10, color: TH.sub }}>次数</Text>
+              </View>
+              <View>
+                <Text style={{ fontSize: 18, fontWeight: '800', color: '#10B981' }}>{s.rounds}</Text>
+                <Text style={{ fontSize: 10, color: TH.sub }}>遍</Text>
+              </View>
+              <View>
+                <Text style={{ fontSize: 18, fontWeight: '800', color: '#F59E0B' }}>{s.targetRounds}</Text>
+                <Text style={{ fontSize: 10, color: TH.sub }}>目标</Text>
+              </View>
+            </View>
+          </View>
+        ))}
+      </View>
+    );
+  }, [mantraId, mantraNames, TH.card, TH.border, TH.text, TH.sub, formatDate, formatShortTime]);
+
+  const keyExtractor = useCallback((item: [string, typeof sessions]) => item[0], []);
+
+  const ListHeaderComponent = useMemo(() => (
+    <>
+      {/* ── StatsCard ── */}
+      <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#FBBF24' }}>
+              {stats.totalCount.toLocaleString()}
+            </Text>
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计次数</Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#10B981' }}>
+              {formatTime(stats.totalSec)}
+            </Text>
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计时长</Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#F59E0B' }}>
+              🔥 {stats.streak}
+            </Text>
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>连续</Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <Text style={{ fontSize: 22, fontWeight: '800', color: '#6366F1' }}>
+              {formatShortTime(stats.avgSec)}
+            </Text>
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>平均</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* ── 热力图 ── */}
+      <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}20`, padding: 16, marginBottom: 16 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)} style={{ padding: 4 }}>
+            <Text style={{ fontSize: 18, color: TH.sub }}>‹</Text>
+          </TouchableOpacity>
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            {monthYear}年{monthIdx + 1}月
+          </Text>
+          <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))} style={{ padding: 4 }}>
+            <Text style={{ fontSize: 18, color: TH.sub }}>›</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* 星期标签 */}
+        <View style={{ flexDirection: 'row', marginBottom: 4 }}>
+          {weekdayLabels.map(d => (
+            <View key={d} style={{ width: '14.28%', alignItems: 'center' }}>
+              <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* 日历格 */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          {heatmapData.map((day, i) => (
+            <View key={i} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 2, minHeight: 32 }}>
+              {day.date ? (
+                <View style={{
+                  width: 30, height: 30, borderRadius: 15,
+                  backgroundColor: day.count > 0
+                    ? `rgba(251, 191, 36, ${day.isFuture ? 0.1 : day.intensity})`
+                    : day.isToday ? `${TH.primary}20` : 'transparent',
+                  borderWidth: day.isToday ? 2 : 0,
+                  borderColor: day.isToday ? TH.primary : 'transparent',
+                  alignItems: 'center', justifyContent: 'center',
+                  opacity: day.isFuture ? 0.3 : 1,
+                }}>
+                  <Text style={{ fontSize: 12, color: day.isFuture ? `${TH.sub}60` : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
+                    {parseInt(day.date.split('-')[2])}
+                  </Text>
+                </View>
+              ) : <View style={{ width: 30, height: 30 }} />}
+            </View>
+          ))}
+        </View>
+      </View>
+    </>
+  ), [stats.totalCount, stats.totalSec, stats.avgSec, stats.streak, formatTime, formatShortTime, FONT_BODY, FONT_SMALL, TH.primary, TH.text, TH.sub, monthYear, monthIdx, heatmapData, weekdayLabels]);
+
+  const ListEmptyComponent = useMemo(() => (
+    <View style={{ alignItems: 'center', padding: 40 }}>
+      <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
+      <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>暂无持咒记录</Text>
+    </View>
+  ), [FONT_BODY, TH.sub]);
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -171,135 +306,15 @@ export default function MantraHistoryScreen() {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
-
-        {/* ── StatsCard ── */}
-        <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: '#FBBF24' }}>
-                {stats.totalCount.toLocaleString()}
-              </Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计次数</Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: '#10B981' }}>
-                {formatTime(stats.totalSec)}
-              </Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计时长</Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: '#F59E0B' }}>
-                🔥 {stats.streak}
-              </Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>连续</Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: '#6366F1' }}>
-                {formatShortTime(stats.avgSec)}
-              </Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>平均</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* ── 热力图 ── */}
-        <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}20`, padding: 16, marginBottom: 16 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)} style={{ padding: 4 }}>
-              <Text style={{ fontSize: 18, color: TH.sub }}>‹</Text>
-            </TouchableOpacity>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
-              {monthYear}年{monthIdx + 1}月
-            </Text>
-            <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))} style={{ padding: 4 }}>
-              <Text style={{ fontSize: 18, color: TH.sub }}>›</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* 星期标签 */}
-          <View style={{ flexDirection: 'row', marginBottom: 4 }}>
-            {weekdayLabels.map(d => (
-              <View key={d} style={{ width: '14.28%', alignItems: 'center' }}>
-                <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
-              </View>
-            ))}
-          </View>
-
-          {/* 日历格 */}
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {heatmapData.map((day, i) => (
-              <View key={i} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 2, minHeight: 32 }}>
-                {day.date ? (
-                  <View style={{
-                    width: 30, height: 30, borderRadius: 15,
-                    backgroundColor: day.count > 0
-                      ? `rgba(251, 191, 36, ${day.isFuture ? 0.1 : day.intensity})`
-                      : day.isToday ? `${TH.primary}20` : 'transparent',
-                    borderWidth: day.isToday ? 2 : 0,
-                    borderColor: day.isToday ? TH.primary : 'transparent',
-                    alignItems: 'center', justifyContent: 'center',
-                    opacity: day.isFuture ? 0.3 : 1,
-                  }}>
-                    <Text style={{ fontSize: 12, color: day.isFuture ? `${TH.sub}60` : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
-                      {parseInt(day.date.split('-')[2])}
-                    </Text>
-                  </View>
-                ) : <View style={{ width: 30, height: 30 }} />}
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* ── 时间线 ── */}
-        {sessions.length === 0 ? (
-          <View style={{ alignItems: 'center', padding: 40 }}>
-            <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>暂无持咒记录</Text>
-          </View>
-        ) : (
-          groupedSessions.map(([monthKey, groupSessions]) => (
-            <View key={monthKey} style={{ marginBottom: 16 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>
-                {parseInt(monthKey.split('-')[0])}年{parseInt(monthKey.split('-')[1])}月
-                <Text style={{ fontSize: FONT_SMALL, fontWeight: '400', color: TH.sub }}> · {groupSessions.length}次</Text>
-              </Text>
-              {groupSessions.map(s => (
-                <View key={s.id} style={{
-                  backgroundColor: TH.card, borderRadius: 14, padding: 14, marginBottom: 8,
-                  borderWidth: 1, borderColor: TH.border,
-                }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                      {!mantraId && mantraNames[s.mantraId] && (
-                        <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: '#FBBF2420' }}>
-                          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#D97706' }}>{mantraNames[s.mantraId]}</Text>
-                        </View>
-                      )}
-                      <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{formatDate(s.startedAt)}</Text>
-                    </View>
-                    <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{formatShortTime(s.durationSec)}</Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', gap: 20 }}>
-                    <View>
-                      <Text style={{ fontSize: 18, fontWeight: '800', color: '#FBBF24' }}>{s.count.toLocaleString()}</Text>
-                      <Text style={{ fontSize: 10, color: TH.sub }}>次数</Text>
-                    </View>
-                    <View>
-                      <Text style={{ fontSize: 18, fontWeight: '800', color: '#10B981' }}>{s.rounds}</Text>
-                      <Text style={{ fontSize: 10, color: TH.sub }}>遍</Text>
-                    </View>
-                    <View>
-                      <Text style={{ fontSize: 18, fontWeight: '800', color: '#F59E0B' }}>{s.targetRounds}</Text>
-                      <Text style={{ fontSize: 10, color: TH.sub }}>目标</Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View>
-          ))
-        )}
-      </ScrollView>
+      <FlatList
+        data={sessions.length === 0 ? [] : groupedSessions}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        removeClippedSubviews={true}
+        ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={ListEmptyComponent}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+      />
     </SafeAreaView>
   );
 }
