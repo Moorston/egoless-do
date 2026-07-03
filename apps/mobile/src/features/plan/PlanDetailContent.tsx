@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, Modal } from 'react-native';
+import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, Modal } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -202,6 +202,69 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     });
   }, [items, today, itemProgressMap]);
 
+  const renderItemRow = useCallback(({ item, index }: { item: PlanItem; index: number }) => {
+    const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, expectedDays: 0, progress: 0 };
+    const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
+    const effectiveStatus = getItemEffectiveStatus(item);
+    return (
+      <View style={{
+        padding: 12, marginBottom: index < sortedItems.length - 1 ? 8 : 0, borderRadius: 10,
+        backgroundColor: `${TH.card}80`, borderWidth: 1, borderColor: TH.border,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+          {p ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: p.color }} /> : null}
+          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
+          <LinkBadge link={item.link} T={T} P={P} />
+          <StatusLabel status={effectiveStatus} T={T} />
+        </View>
+        <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginBottom: 4 }}>
+          {item.startDate} ~ {item.endDate}
+        </Text>
+        {item.targetMetric ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }} numberOfLines={1}>🎯 {item.targetMetric}</Text> : null}
+        {item.description ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }} numberOfLines={2}>{item.description}</Text> : null}
+        {item.tags && item.tags.length > 0 && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+            {item.tags.map((tag, ti) => (
+              <View key={ti} style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}>
+                <Text style={{ fontSize: FONT_BADGE, color: P }}>{tag}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
+            <View style={{ height: 4, width: `${prog.progress}%`, backgroundColor: P, borderRadius: 2 }} />
+          </View>
+          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.doneCount}/{prog.expectedDays}</Text>
+          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.progress}%</Text>
+        </View>
+        {/* Frequency summary */}
+        <Text style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
+          {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today, item.id)}
+        </Text>
+        {/* Heatmap toggle */}
+        <TouchableOpacity
+          onPress={() => toggleHeatmap(item.id)}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8 }}
+        >
+          <BarChart2 size={14} color={P} />
+          <Text style={{ fontSize: FONT_BADGE, color: P }}>
+            {expandedHeatmaps.has(item.id) ? T('planHideHeatmap') : T('planShowHeatmap')}
+          </Text>
+          {expandedHeatmaps.has(item.id)
+            ? <ChevronDown size={14} color={TH.sub} />
+            : <ChevronRight size={14} color={TH.sub} />}
+        </TouchableOpacity>
+        {/* Item Heatmap */}
+        {expandedHeatmaps.has(item.id) && (
+          <View style={{ marginTop: 8 }}>
+            <ItemHeatmap item={item} checkins={checkins} TH={TH} T={T} />
+          </View>
+        )}
+      </View>
+    );
+  }, [sortedItems, itemProgressMap, expandedHeatmaps, TH, P, T, checkins, today, getItemEffectiveStatus]);
+
   const checkCanArchive = (onConfirm: () => void) => {
     const result = canArchivePlan(plan.id);
     if (!result.allowed) {
@@ -372,68 +435,14 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
             {items.length === 0 ? (
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</Text>
             ) : (
-              sortedItems.map((item, idx) => {
-                const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, expectedDays: 0, progress: 0 };
-                const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
-                const effectiveStatus = getItemEffectiveStatus(item);
-                return (
-                  <View key={item.id} style={{
-                    padding: 12, marginBottom: idx < sortedItems.length - 1 ? 8 : 0, borderRadius: 10,
-                    backgroundColor: `${TH.card}80`, borderWidth: 1, borderColor: TH.border,
-                  }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      {p ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: p.color }} /> : null}
-                      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
-                      <LinkBadge link={item.link} T={T} P={P} />
-                      <StatusLabel status={effectiveStatus} T={T} />
-                    </View>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginBottom: 4 }}>
-                      {item.startDate} ~ {item.endDate}
-                    </Text>
-                    {item.targetMetric ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }} numberOfLines={1}>🎯 {item.targetMetric}</Text> : null}
-                    {item.description ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }} numberOfLines={2}>{item.description}</Text> : null}
-                    {item.tags && item.tags.length > 0 && (
-                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
-                        {item.tags.map((tag, ti) => (
-                          <View key={ti} style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}>
-                            <Text style={{ fontSize: FONT_BADGE, color: P }}>{tag}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    )}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                      <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-                        <View style={{ height: 4, width: `${prog.progress}%`, backgroundColor: P, borderRadius: 2 }} />
-                      </View>
-                      <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.doneCount}/{prog.expectedDays}</Text>
-                      <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.progress}%</Text>
-                    </View>
-                    {/* Frequency summary */}
-                    <Text style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
-                      {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today, item.id)}
-                    </Text>
-                    {/* Heatmap toggle */}
-                    <TouchableOpacity
-                      onPress={() => toggleHeatmap(item.id)}
-                      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8 }}
-                    >
-                      <BarChart2 size={14} color={P} />
-                      <Text style={{ fontSize: FONT_BADGE, color: P }}>
-                        {expandedHeatmaps.has(item.id) ? T('planHideHeatmap') : T('planShowHeatmap')}
-                      </Text>
-                      {expandedHeatmaps.has(item.id)
-                        ? <ChevronDown size={14} color={TH.sub} />
-                        : <ChevronRight size={14} color={TH.sub} />}
-                    </TouchableOpacity>
-                    {/* Item Heatmap */}
-                    {expandedHeatmaps.has(item.id) && (
-                      <View style={{ marginTop: 8 }}>
-                        <ItemHeatmap item={item} checkins={checkins} TH={TH} T={T} />
-                      </View>
-                    )}
-                  </View>
-                );
-              })
+              <FlatList
+                data={sortedItems}
+                renderItem={renderItemRow}
+                keyExtractor={(item) => item.id}
+                scrollEnabled={false}
+                removeClippedSubviews={false}
+                style={{ height: sortedItems.length * 170 }}
+              />
             )}
           </Card>
 
