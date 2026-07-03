@@ -1,0 +1,98 @@
+# Quality Guidelines
+
+> Code quality standards for the mobile app frontend.
+
+---
+
+## Overview
+
+Quality rules follow from `CLAUDE.md` and these additional mobile-specific conventions. Sub-agent `trellis-check` will validate these guidelines for every task.
+
+---
+
+## Forbidden Patterns
+
+### Architecture
+- ❌ Business logic in screens — move to slice actions or `@egoless-do/core`
+- ❌ Cross-feature imports that bypass `components/` — shared UI must be reusable
+- ❌ Direct SQLite writes outside `apps/mobile/src/db/` and slices
+- ❌ Storing auth tokens in AsyncStorage — always `expo-secure-store`
+
+### React / RN
+- ❌ `any` type — use `unknown` and narrow, or move type to `@egoless-do/core`
+- ❌ `as` cast for coercion — use runtime validation (Zod) for external data
+- ❌ Side effects in render body — wrap in `useEffect` / event handlers
+- ❌ Mutating state directly (`state.arr.push(x)`) — always return new reference
+
+### i18n / Theming
+- ❌ Hardcoded user-facing strings — always `t('key')`
+- ❌ Hardcoded colors/font sizes — use `THEMES[...]` and `FONT_*` from `@egoless-do/core`
+- ❌ `StyleSheet.create` outside `components/` unless the style is genuinely screen-local
+
+### Data / Sync
+- ❌ Storing entity data in React state only — always route through `adapter.persistChange`
+- ❌ Skipping `useShallow` when selecting from `useAppStore`
+- ❌ Passing stale closures into callbacks — use `useRef` for current value
+
+---
+
+## Required Patterns
+
+### Store Reads
+```tsx
+// Always use useShallow with explicit picks
+const { theme, language } = useAppStore(useShallow(s => ({
+  theme: s.theme,
+  language: s.language,
+})));
+```
+
+### Slice Actions
+```tsx
+// Always persist via adapter
+await adapter.persistChange('entity', id, data);
+// trigger sync via callback (do NOT import sync service directly)
+triggerAutoSync();
+```
+
+### Error Logging
+```tsx
+import { createLogger } from '@egoless-do/core';
+const log = createLogger('FeatureName');  // component or feature name
+log.warn('recoverable issue', data);
+log.error(err, { message: 'failure context' });
+```
+
+---
+
+## Testing
+
+Unit testing infrastructure is sparse in this project (see CLAUDE.md — 6 pre-existing test failures). When adding tests:
+- Prefer testing pure functions from `@egoless-do/core`
+- Test slice actions' state transitions, not React components
+- Mock `StorageAdapter` for entity mutation tests
+
+---
+
+## Pre-commit Checklist
+
+Before reporting a task complete:
+- [ ] `npx tsc --noEmit` passes (no new type errors)
+- [ ] `npx eslint apps/mobile/` passes (no new lint errors)
+- [ ] No `console.log` left in production code — use `log.debug` / `log.warn`
+- [ ] All user-facing strings use `t()` — grep for hardcoded Chinese/English in JSX
+- [ ] New slices/actions route through `adapter.persistChange`
+- [ ] No new `any` types added — use `unknown` + narrowing
+- [ ] Store selection uses `useShallow`
+
+---
+
+## Code Review Checklist
+
+Reviewers should check:
+1. New code uses `@egoless-do/core` types/utilities — no re-implementation
+2. Entity mutations always call `adapter.persistChange`
+3. UI components consume `useTheme()` / `useT()` — no hardcoded strings
+4. `useAppStore` selectors use `useShallow` — no full-store subscription
+5. Error logging uses `createLogger` context (feature name)
+6. Side effects are in `useEffect` or handlers — not render body
