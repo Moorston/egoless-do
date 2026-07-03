@@ -3,7 +3,7 @@
   "name": "sync-pull-audit",
   "title": "深度审查数据同步拉取架构和数据模型一致性",
   "description": "",
-  "status": "planning",
+  "status": "in_progress",
   "dev_type": null,
   "scope": null,
   "package": "mobile",

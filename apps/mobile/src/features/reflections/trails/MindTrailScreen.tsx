@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -364,105 +364,150 @@ export default function MindTrailScreen() {
     }
   }, [inputText, nav, handleSmartQuery]);
 
-  const renderThoughtTrailTab = () => {
-    return (
-      <View style={styles.tabContent}>
-        {/* Manual Trails */}
-        <View style={styles.section}>
+  // ── FlatList data building ──
+  type TrailFlatItem =
+    | { type: 'manual-header' }
+    | { type: 'manual-empty' }
+    | { type: 'manual-trail'; trail: ThoughtTrail; stats: ReturnType<typeof getTrailStats> }
+    | { type: 'ai-header' }
+    | { type: 'ai-trail'; trail: ThoughtTrail; stats: ReturnType<typeof getTrailStats> }
+    | { type: 'rec-header' }
+    | { type: 'rec-item'; rec: TrailRecommendation; realIdx: number }
+    | { type: 'rec-refresh' }
+    | { type: 'rec-empty' };
+
+  const trailFlatData: TrailFlatItem[] = useMemo(() => {
+    const items: TrailFlatItem[] = [];
+
+    // Manual Trails section
+    items.push({ type: 'manual-header' });
+    if (manualTrails.length === 0) {
+      items.push({ type: 'manual-empty' });
+    } else {
+      for (const trail of manualTrails) {
+        items.push({ type: 'manual-trail', trail, stats: getTrailStats(trail, reflections) });
+      }
+    }
+
+    // AI Trails section
+    if (aiTrails.length > 0) {
+      items.push({ type: 'ai-header' });
+      for (const trail of aiTrails) {
+        items.push({ type: 'ai-trail', trail, stats: getTrailStats(trail, reflections) });
+      }
+    }
+
+    // Recommendations section
+    items.push({ type: 'rec-header' });
+    if (visibleRecs.length > 0) {
+      visibleRecs.forEach((rec, i) => {
+        items.push({ type: 'rec-item', rec, realIdx: recommendations.indexOf(rec) });
+      });
+      items.push({ type: 'rec-refresh' });
+    } else if (!isLoadingRecs) {
+      items.push({ type: 'rec-empty' });
+    }
+
+    return items;
+  }, [manualTrails, aiTrails, visibleRecs, reflections, isLoadingRecs, recommendations]);
+
+  const trailKeyExtractor = useCallback((item: TrailFlatItem, index: number) => {
+    if (item.type === 'manual-trail') return `manual-${item.trail.id}`;
+    if (item.type === 'ai-trail') return `ai-${item.trail.id}`;
+    if (item.type === 'rec-item') return `rec-${item.realIdx}`;
+    return `${item.type}-${index}`;
+  }, []);
+
+  const renderTrailItem = useCallback(({ item }: ListRenderItemInfo<TrailFlatItem>) => {
+    switch (item.type) {
+      case 'manual-header':
+        return (
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
               {T('thoughtTrail')} ({manualTrails.length})
             </Text>
           </View>
-
-          {manualTrails.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyText, { color: TH.sub }]}>暂无手动创建的脉络</Text>
-            </View>
-          ) : (
-            manualTrails.map(trail => {
-              const stats = getTrailStats(trail, reflections);
-              return (
-                <TouchableOpacity
-                  key={trail.id}
-                  onPress={() => nav.navigate('ThoughtTrailDetail', { trailId: trail.id })}
-                  style={[styles.trailCard, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
-                >
-                  <View style={styles.trailCardHeader}>
-                    <Text style={[styles.trailName, { color: TH.text, flex: 1 }]}>{trail.name}</Text>
-                    <TouchableOpacity
-                      onPress={() => handleDeleteTrail(trail.id, trail.name)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <Trash2 size={16} color={TH.sub} />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={[styles.trailInfo, { color: TH.sub }]}>
-                    {stats.count} {T('thoughtTrailReflections')}
-                    {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
-                  </Text>
-                  {stats.moodChanges.length > 0 && (
-                    <Text style={[styles.moodChanges, { color: TH.sub }]}>
-                      心情变化: {stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              );
-            })
-          )}
-        </View>
-
-        {/* AI Created Trails */}
-        {aiTrails.length > 0 && (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={[styles.sectionTitle, { color: TH.text }]}>
-                AI 创建的脉络 ({aiTrails.length})
-              </Text>
-            </View>
-
-            {aiTrails.map(trail => {
-              const stats = getTrailStats(trail, reflections);
-              return (
-                <TouchableOpacity
-                  key={trail.id}
-                  onPress={() => nav.navigate('ThoughtTrailDetail', { trailId: trail.id })}
-                  style={[styles.trailCard, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
-                >
-                  <View style={styles.trailCardHeader}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
-                      <View style={{
-                        backgroundColor: '#8B5CF620', borderRadius: 4,
-                        paddingHorizontal: 6, paddingVertical: 2,
-                      }}>
-                        <Text style={{ fontSize: FONT_TINY, color: '#8B5CF6' }}>AI</Text>
-                      </View>
-                      <Text style={[styles.trailName, { color: TH.text, marginBottom: 0 }]}>{trail.name}</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleDeleteTrail(trail.id, trail.name)}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                    >
-                      <Trash2 size={16} color={TH.sub} />
-                    </TouchableOpacity>
-                  </View>
-                  <Text style={[styles.trailInfo, { color: TH.sub }]}>
-                    {stats.count} {T('thoughtTrailReflections')}
-                    {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
-                  </Text>
-                  {stats.moodChanges.length > 0 && (
-                    <Text style={[styles.moodChanges, { color: TH.sub }]}>
-                      心情变化: {stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
+        );
+      case 'manual-empty':
+        return (
+          <View style={styles.emptyContainer}>
+            <Text style={[styles.emptyText, { color: TH.sub }]}>暂无手动创建的脉络</Text>
           </View>
-        )}
-
-        {/* Recommended Thought Chains */}
-        <View style={styles.section}>
+        );
+      case 'manual-trail': {
+        const stats = item.stats;
+        return (
+          <TouchableOpacity
+            onPress={() => nav.navigate('ThoughtTrailDetail', { trailId: item.trail.id })}
+            style={[styles.trailCard, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
+          >
+            <View style={styles.trailCardHeader}>
+              <Text style={[styles.trailName, { color: TH.text, flex: 1 }]}>{item.trail.name}</Text>
+              <TouchableOpacity
+                onPress={() => handleDeleteTrail(item.trail.id, item.trail.name)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Trash2 size={16} color={TH.sub} />
+              </TouchableOpacity>
+            </View>
+            <Text style={[styles.trailInfo, { color: TH.sub }]}>
+              {stats.count} {T('thoughtTrailReflections')}
+              {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
+            </Text>
+            {stats.moodChanges.length > 0 && (
+              <Text style={[styles.moodChanges, { color: TH.sub }]}>
+                心情变化: {stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')}
+              </Text>
+            )}
+          </TouchableOpacity>
+        );
+      }
+      case 'ai-header':
+        return (
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: TH.text }]}>
+              AI 创建的脉络 ({aiTrails.length})
+            </Text>
+          </View>
+        );
+      case 'ai-trail': {
+        const stats = item.stats;
+        return (
+          <TouchableOpacity
+            onPress={() => nav.navigate('ThoughtTrailDetail', { trailId: item.trail.id })}
+            style={[styles.trailCard, { backgroundColor: TH.cardSolid, borderColor: TH.border }]}
+          >
+            <View style={styles.trailCardHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                <View style={{
+                  backgroundColor: '#8B5CF620', borderRadius: 4,
+                  paddingHorizontal: 6, paddingVertical: 2,
+                }}>
+                  <Text style={{ fontSize: FONT_TINY, color: '#8B5CF6' }}>AI</Text>
+                </View>
+                <Text style={[styles.trailName, { color: TH.text, marginBottom: 0 }]}>{item.trail.name}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => handleDeleteTrail(item.trail.id, item.trail.name)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Trash2 size={16} color={TH.sub} />
+              </TouchableOpacity>
+            </View>
+            <Text style={[styles.trailInfo, { color: TH.sub }]}>
+              {stats.count} {T('thoughtTrailReflections')}
+              {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
+            </Text>
+            {stats.moodChanges.length > 0 && (
+              <Text style={[styles.moodChanges, { color: TH.sub }]}>
+                心情变化: {stats.moodChanges.map(m => getMoodIcon(m)).join(' → ')}
+              </Text>
+            )}
+          </TouchableOpacity>
+        );
+      }
+      case 'rec-header':
+        return (
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: TH.text }]}>
               推荐思维脉络
@@ -474,46 +519,45 @@ export default function MindTrailScreen() {
               <Text style={{ fontSize: FONT_TINY, color: TH.primary }}>AI 推荐加载中...</Text>
             )}
           </View>
-
-          {visibleRecs.length > 0 ? (
-            <>
-              {visibleRecs.map((rec) => {
-                const realIdx = recommendations.indexOf(rec);
-                return (
-                  <RecommendCard
-                    key={realIdx}
-                    rec={rec}
-                    onOneClickCreate={handleOneClickCreate}
-                    onCustomCreate={handleCustomCreate}
-                    onNotInterested={handleNotInterested}
-                  />
-                );
-              })}
-
-              {/* Refresh button */}
-              <TouchableOpacity
-                onPress={handleRefresh}
-                style={{
-                  flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-                  gap: 6, paddingVertical: 12,
-                }}
-              >
-                <RefreshCw size={14} color={TH.primary} />
-                <Text style={{ fontSize: FONT_SMALL, color: TH.primary }}>换一批</Text>
-              </TouchableOpacity>
-            </>
-          ) : !isLoadingRecs ? (
-            <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyText, { color: TH.sub }]}>暂无推荐</Text>
-              <Text style={[styles.emptyText, { color: TH.sub, marginTop: 4 }]}>
-                多记录感念后会自动生成推荐
-              </Text>
-            </View>
-          ) : null}
-        </View>
-      </View>
-    );
-  };
+        );
+      case 'rec-item':
+        return (
+          <RecommendCard
+            rec={item.rec}
+            onOneClickCreate={handleOneClickCreate}
+            onCustomCreate={handleCustomCreate}
+            onNotInterested={handleNotInterested}
+          />
+        );
+      case 'rec-refresh':
+        return (
+          <TouchableOpacity
+            onPress={handleRefresh}
+            style={{
+              flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
+              gap: 6, paddingVertical: 12,
+            }}
+          >
+            <RefreshCw size={14} color={TH.primary} />
+            <Text style={{ fontSize: FONT_SMALL, color: TH.primary }}>换一批</Text>
+          </TouchableOpacity>
+        );
+      case 'rec-empty':
+        return (
+          <View style={styles.emptyContainer}>
+            <Text style={[styles.emptyText, { color: TH.sub }]}>暂无推荐</Text>
+            <Text style={[styles.emptyText, { color: TH.sub, marginTop: 4 }]}>
+              多记录感念后会自动生成推荐
+            </Text>
+          </View>
+        );
+    }
+    return null;
+  }, [
+    TH, T, nav, manualTrails, aiTrails, isLoadingRecs, isAILoading,
+    handleDeleteTrail, handleOneClickCreate, handleCustomCreate,
+    handleNotInterested, handleRefresh,
+  ]);
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -527,13 +571,15 @@ export default function MindTrailScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView
+      <FlatList
+        data={trailFlatData}
+        renderItem={renderTrailItem}
+        keyExtractor={trailKeyExtractor}
+        removeClippedSubviews={true}
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
-      >
-        {renderThoughtTrailTab()}
-      </ScrollView>
+      />
 
       {/* Smart Query Panel (above input) */}
       {showQueryPanel && (
@@ -675,6 +721,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 12,
     marginBottom: 12,
   },
   sectionTitle: {

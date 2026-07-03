@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvo
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, MS_PER_DAY, getFrequencySummary } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress, getFrequencySummary } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -76,12 +76,8 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   // Plan-level progress: time-based (elapsed / total days)
   const planProgress = useMemo(() => {
     if (!plan) return 0;
-    const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1;
-    if (totalDays <= 0) return 0;
-    const clampedToday = today > plan.endDate ? plan.endDate : today;
-    const elapsed = Math.max(0, Math.round((new Date(clampedToday).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1);
-    return Math.min(Math.round((elapsed / totalDays) * 100), 100);
-  }, [plan?.startDate, plan?.endDate, today]);
+    return computePlanProgress(plan);
+  }, [plan]);
 
   const [tab, setTab] = useState<'detail' | 'todo'>('detail');
 

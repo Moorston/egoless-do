@@ -221,13 +221,12 @@ export function shouldShowToday(
       // Show during any active interval period where target not yet met.
       // Carries over across periods so missed items remain visible until completed.
       const every = Math.max(1, freq.every);
-      const targetPerPeriod = freq.times ?? 1;
       const elapsed = daysBetween(startDate, today);
       if (elapsed < 0) return false;
       const periodStart = Math.floor(elapsed / every) * every;
       const periodEnd = periodStart + every - 1;
-      const periodStartStr = dateStr(addDays(new Date(startDate), periodStart));
-      const periodEndStr = dateStr(addDays(new Date(startDate), periodEnd));
+      const periodStartStr = addDays(startDate, periodStart);
+      const periodEndStr = addDays(startDate, periodEnd);
       const clampedEnd = periodEndStr > today ? today : periodEndStr;
       let doneInPeriod = 0;
       for (const c of checkins) {
@@ -235,7 +234,7 @@ export function shouldShowToday(
           doneInPeriod++;
         }
       }
-      return doneInPeriod < targetPerPeriod;
+      return doneInPeriod < 1; // target = 1 per interval period
     }
 
     case 'weekly': {
@@ -243,9 +242,7 @@ export function shouldShowToday(
       const ws = weekStart(today);
       const we = addDays(ws, 6);
       const doneThisWeek = checkins.filter(c => c.done && !c.deleted && c.date >= ws && c.date <= we).length;
-      // Keep visible today if already checked in (prevents task from disappearing after completion)
-      const hasTodayCheckin = checkins.some(c => c.date === today && !c.deleted);
-      return hasTodayCheckin || doneThisWeek < freq.target;
+      return doneThisWeek < freq.target;
     }
 
     case 'weekly_fixed':

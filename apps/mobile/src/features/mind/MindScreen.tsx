@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
@@ -195,11 +195,11 @@ export default function MindScreen() {
         {/* 恐惧清单 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('mindSortByIndex')}</Text>
-          {activeFears.length === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 20 }}>{T('mindNoFears')}</Text>
-          ) : (
-            activeFears.map(f => (
-              <TouchableOpacity key={f.id} onPress={() => { setForgeFear(f); setForgeOutcome(f.worstOutcome ?? ''); setForgeProbability(f.probability ?? 5); setForgeCoping(f.copingAbility ?? 5); setShowForge(true); }}
+          <FlatList
+            data={activeFears}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item: f }) => (
+              <TouchableOpacity onPress={() => { setForgeFear(f); setForgeOutcome(f.worstOutcome ?? ''); setForgeProbability(f.probability ?? 5); setForgeCoping(f.copingAbility ?? 5); setShowForge(true); }}
                 style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ color: TH.text, fontSize: FONT_BODY, fontWeight: '600', flex: 1 }} numberOfLines={1}>{f.content}</Text>
@@ -217,8 +217,11 @@ export default function MindScreen() {
                   <Text style={{ fontSize: 10, color: TH.sub }}>{f.occurrenceCount}次</Text>
                 </View>
               </TouchableOpacity>
-            ))
-          )}
+            )}
+            scrollEnabled={false}
+            removeClippedSubviews={true}
+            ListEmptyComponent={<Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 20 }}>{T('mindNoFears')}</Text>}
+          />
         </View>
       </View>
     );
@@ -269,11 +272,11 @@ export default function MindScreen() {
         {/* 历史行动 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>历史行动</Text>
-          {recentCourage.length === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>{T('mindNoCourage')}</Text>
-          ) : (
-            recentCourage.map(c => (
-              <View key={c.id} style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+          <FlatList
+            data={recentCourage}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item: c }) => (
+              <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
                 <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{c.action}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
                   <Text style={{ fontSize: 10, color: TH.sub }}>{c.date}</Text>
@@ -283,8 +286,11 @@ export default function MindScreen() {
                   ))}
                 </View>
               </View>
-            ))
-          )}
+            )}
+            scrollEnabled={false}
+            removeClippedSubviews={true}
+            ListEmptyComponent={<Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>{T('mindNoCourage')}</Text>}
+          />
         </View>
 
         {/* 成就墙 */}
@@ -345,11 +351,11 @@ export default function MindScreen() {
         {/* 跨模块洞察 */}
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('mindInsightCrossModule')}</Text>
-          {insights.length === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>记录更多数据后将生成洞察</Text>
-          ) : (
-            insights.map((insight, i) => (
-              <View key={i} style={{ paddingVertical: 10, borderBottomWidth: i < insights.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
+          <FlatList
+            data={insights}
+            keyExtractor={(_, i) => String(i)}
+            renderItem={({ item: insight, index: i }) => (
+              <View style={{ paddingVertical: 10, borderBottomWidth: i < insights.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                   <Text style={{ fontSize: 14 }}>💡</Text>
                   <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T(insight.titleKey)}</Text>
@@ -359,8 +365,11 @@ export default function MindScreen() {
                 </View>
                 <Text style={{ fontSize: FONT_SUB, color: TH.sub, lineHeight: 18, marginLeft: 20 }}>{insight.description}</Text>
               </View>
-            ))
-          )}
+            )}
+            scrollEnabled={false}
+            removeClippedSubviews={true}
+            ListEmptyComponent={<Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>记录更多数据后将生成洞察</Text>}
+          />
         </View>
       </View>
     );

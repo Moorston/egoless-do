@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { useShallow } from 'zustand/react/shallow';
@@ -63,90 +63,110 @@ export default function GiveScreen() {
     setShowModal(false);
   }, [content, motivation, amount, anonymous, giveType, addGive]);
 
+  const renderGiveItem = useCallback(({ item }: { item: typeof giveHistory[number] }) => {
+    const config = GIVE_TYPES.find(t => t.type === item.type);
+    const d = new Date(item.timestamp);
+    return (
+      <View style={[styles.recentRow, { borderLeftColor: config?.color || '#F59E0B' }]}>
+        <View style={styles.recentHeader}>
+          <Text style={[styles.recentDate, { color: TH.sub }]}>
+            {d.getMonth() + 1}/{d.getDate()}
+          </Text>
+          <Text style={styles.recentIcon}>{config?.icon || '💰'}</Text>
+          {item.anonymous && <Text style={styles.anonTag}>🤐</Text>}
+        </View>
+        <Text style={[styles.recentContent, { color: TH.text }]} numberOfLines={2}>{item.content}</Text>
+        {item.motivation && (
+          <Text style={[styles.recentMotivation, { color: TH.sub }]} numberOfLines={1}>
+            心念：{item.motivation}
+          </Text>
+        )}
+      </View>
+    );
+  }, [TH, T]);
+
+  const listHeader = useMemo(() => (
+    <>
+      {/* Stats Card */}
+      <View style={[styles.statsCard, { borderColor: `${TH.primary}30` }]}>
+        <View style={styles.statsHeader}>
+          <HandHeart size={20} color="#F59E0B" />
+          <Text style={[styles.statsTitle, { color: TH.text }]}>{T('giveTitle') || '布施波罗蜜'}</Text>
+        </View>
+        <Text style={[styles.quoteText, { color: TH.sub }]}>{T('giveQuote') || '应无所住而行布施 — 金刚经'}</Text>
+        <View style={styles.statsRow}>
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: '#F59E0B' }]}>{stats.total}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveTotal') || '累计'}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: TH.text }]}>{stats.month}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveMonth') || '本月'}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: '#10B981' }]}>{stats.week}</Text>
+            <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveWeek') || '本周'}</Text>
+          </View>
+        </View>
+        {/* Type breakdown */}
+        <View style={styles.typeRow}>
+          {GIVE_TYPES.map(gt => (
+            <View key={gt.type} style={styles.typeItem}>
+              <Text style={styles.typeIcon}>{gt.icon}</Text>
+              <Text style={[styles.typeCount, { color: gt.color }]}>{stats.byType[gt.type] || 0}</Text>
+              <Text style={[styles.typeLabel, { color: TH.sub }]}>{T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}`) || gt.type}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      {/* Record button */}
+      <TouchableOpacity
+        style={[styles.recordBtn, { backgroundColor: '#F59E0B' }]}
+        onPress={() => setShowModal(true)}
+      >
+        <Plus size={20} color="#fff" />
+        <Text style={styles.recordBtnText}>{T('giveRecord') || '记录一次布施'}</Text>
+      </TouchableOpacity>
+
+      {recentRecords.length > 0 && (
+        <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('giveRecent') || '最近善行'}</Text>
+      )}
+    </>
+  ), [TH, T, stats, recentRecords.length]);
+
+  const listFooter = useMemo(() => (
+    recentRecords.length > 0 ? (
+      <TouchableOpacity
+        style={[styles.historyBtn, { borderColor: `${TH.primary}30` }]}
+        onPress={() => nav.navigate('GiveHistory' as never)}
+      >
+        <BarChart3 size={18} color={TH.primary} />
+        <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory') || '布施历史'}</Text>
+      </TouchableOpacity>
+    ) : (
+      <TouchableOpacity
+        style={[styles.historyBtn, { borderColor: `${TH.primary}30` }]}
+        onPress={() => nav.navigate('GiveHistory' as never)}
+      >
+        <BarChart3 size={18} color={TH.primary} />
+        <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory') || '布施历史'}</Text>
+      </TouchableOpacity>
+    )
+  ), [TH, T, nav, recentRecords.length]);
+
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Give" />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-
-        {/* Stats Card */}
-        <View style={[styles.statsCard, { borderColor: `${TH.primary}30` }]}>
-          <View style={styles.statsHeader}>
-            <HandHeart size={20} color="#F59E0B" />
-            <Text style={[styles.statsTitle, { color: TH.text }]}>{T('giveTitle') || '布施波罗蜜'}</Text>
-          </View>
-          <Text style={[styles.quoteText, { color: TH.sub }]}>{T('giveQuote') || '应无所住而行布施 — 金刚经'}</Text>
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: '#F59E0B' }]}>{stats.total}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveTotal') || '累计'}</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: TH.text }]}>{stats.month}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveMonth') || '本月'}</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, { color: '#10B981' }]}>{stats.week}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{T('giveWeek') || '本周'}</Text>
-            </View>
-          </View>
-          {/* Type breakdown */}
-          <View style={styles.typeRow}>
-            {GIVE_TYPES.map(gt => (
-              <View key={gt.type} style={styles.typeItem}>
-                <Text style={styles.typeIcon}>{gt.icon}</Text>
-                <Text style={[styles.typeCount, { color: gt.color }]}>{stats.byType[gt.type] || 0}</Text>
-                <Text style={[styles.typeLabel, { color: TH.sub }]}>{T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}`) || gt.type}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Record button */}
-        <TouchableOpacity
-          style={[styles.recordBtn, { backgroundColor: '#F59E0B' }]}
-          onPress={() => setShowModal(true)}
-        >
-          <Plus size={20} color="#fff" />
-          <Text style={styles.recordBtnText}>{T('giveRecord') || '记录一次布施'}</Text>
-        </TouchableOpacity>
-
-        {/* Recent */}
-        {recentRecords.length > 0 && (
-          <View style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('giveRecent') || '最近善行'}</Text>
-            {recentRecords.map(g => {
-              const config = GIVE_TYPES.find(t => t.type === g.type);
-              const d = new Date(g.timestamp);
-              return (
-                <View key={g.id} style={[styles.recentRow, { borderLeftColor: config?.color || '#F59E0B' }]}>
-                  <View style={styles.recentHeader}>
-                    <Text style={[styles.recentDate, { color: TH.sub }]}>
-                      {d.getMonth() + 1}/{d.getDate()}
-                    </Text>
-                    <Text style={styles.recentIcon}>{config?.icon || '💰'}</Text>
-                    {g.anonymous && <Text style={styles.anonTag}>🤐</Text>}
-                  </View>
-                  <Text style={[styles.recentContent, { color: TH.text }]} numberOfLines={2}>{g.content}</Text>
-                  {g.motivation && (
-                    <Text style={[styles.recentMotivation, { color: TH.sub }]} numberOfLines={1}>
-                      心念：{g.motivation}
-                    </Text>
-                  )}
-                </View>
-              );
-            })}
-          </View>
-        )}
-
-        {/* History button */}
-        <TouchableOpacity
-          style={[styles.historyBtn, { borderColor: `${TH.primary}30` }]}
-          onPress={() => nav.navigate('GiveHistory' as never)}
-        >
-          <BarChart3 size={18} color={TH.primary} />
-          <Text style={[styles.historyBtnText, { color: TH.primary }]}>{T('giveHistory') || '布施历史'}</Text>
-        </TouchableOpacity>
-      </ScrollView>
+      <FlatList
+        data={recentRecords}
+        keyExtractor={item => item.id}
+        renderItem={renderGiveItem}
+        removeClippedSubviews={true}
+        contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+        ListHeaderComponent={listHeader}
+        ListFooterComponent={listFooter}
+      />
 
       {/* Record Modal */}
       <Modal visible={showModal} animationType="slide" presentationStyle="pageSheet">

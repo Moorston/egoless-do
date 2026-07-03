@@ -148,20 +148,24 @@ describe('shouldShowToday', () => {
     expect(shouldShowToday({ mode: 'daily' }, '2026-01-01', '2026-01-05', [])).toBe(true);
   });
 
-  it('should show on interval period start days', () => {
+  it('should show on interval period start days with carry-over', () => {
     const freq: CheckinFrequency = { mode: 'interval', every: 3 };
-    // Day 0 (start), day 3, day 6 are period starts
+    // Day 0 and day 3 are period starts — show
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', [])).toBe(true);
-    expect(shouldShowToday(freq, '2026-01-01', '2026-01-02', [])).toBe(false);
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-04', [])).toBe(true);
+    // Day 2 (within period 0) — show because carry-over (target not met yet)
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-02', [])).toBe(true);
   });
 
-  it('should still show on interval day even if already checked in', () => {
+  it('should NOT show on interval day if already checked in that period', () => {
     const freq: CheckinFrequency = { mode: 'interval', every: 3 };
     const checkins: PlanItemCheckin[] = [
       { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
     ];
-    expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', checkins)).toBe(true);
+    // Period 0 target met (1 checkin done) → should NOT show
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', checkins)).toBe(false);
+    // Period 1 (day 3-5) has no checkins → should show
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-04', checkins)).toBe(true);
   });
 
   it('should show if weekly target not met', () => {

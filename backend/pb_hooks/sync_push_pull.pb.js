@@ -166,3 +166,56 @@ routerAdd("POST", "/api/sync/pull", function(e) {
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });
+
+// POST /api/push — Register push notification token
+routerAdd("POST", "/api/push", function(e) {
+  try {
+    var VALID_PLATFORMS = { web: true, android: true, ios: true };
+
+    var info = e.requestInfo();
+    var userId = info.auth ? info.auth.id : null;
+    if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
+
+    var rawBody = info.body;
+    var body = {};
+    if (typeof rawBody === "string") { try { body = JSON.parse(rawBody); } catch(pb) { body = {}; } }
+    else if (rawBody && typeof rawBody === "object") { body = rawBody; }
+
+    var platform = body.platform || "";
+    var token = body.token || "";
+
+    if (!VALID_PLATFORMS[platform]) {
+      return e.json(400, { code: "INVALID_PLATFORM", message: "Platform must be one of: web, android, ios" });
+    }
+    if (typeof token !== "string" || token.trim().length === 0) {
+      return e.json(400, { code: "INVALID_TOKEN", message: "Token is required" });
+    }
+
+    // Find existing token for this user + platform
+    var filter = "user_id = '" + userId.replace(/'/g, "\\'") + "' && platform = '" + platform.replace(/'/g, "\\'") + "'";
+    var existing = $app.findRecordsByFilter("push_tokens", filter, "", 1);
+
+    if (existing.length > 0) {
+      var rec = existing[0];
+      var existingToken = rec.get("token");
+      if (existingToken !== token) {
+        rec.set("token", token);
+        $app.save(rec);
+        console.log("[push] Updated token for user " + userId + " platform " + platform);
+      }
+    } else {
+      var colObj = $app.findCollectionByNameOrId("push_tokens");
+      var rec = new Record(colObj);
+      rec.set("user_id", userId);
+      rec.set("platform", platform);
+      rec.set("token", token);
+      $app.save(rec);
+      console.log("[push] Registered token for user " + userId + " platform " + platform);
+    }
+
+    return e.json(200, { ok: true });
+  } catch (err) {
+    console.error("[push] Error:", err.message || String(err));
+    return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
+  }
+});

@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, TextInput, Alert,
+  View, Text, FlatList, TouchableOpacity, TextInput, Alert,
   KeyboardAvoidingView, Platform, Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -724,7 +724,7 @@ export default function PlanCreateScreen() {
                   </View>
                 ) : activeVisions.map((v: Vision) => {
                   const typeColor = v.type === 'lifetime' ? '#F59E0B' : v.type === 'long' ? '#8B5CF6' : '#10B981';
-                  const typeLabel = v.type === 'lifetime' ? '终极愿景' : v.type === 'long' ? '长期愿景' : '短期愿景';
+                  const typeLabel = v.type === 'lifetime' ? T('vowLifetime') : v.type === 'long' ? T('vowLong') : T('vowShort');
                   return (
                     <TouchableOpacity
                       key={v.id}

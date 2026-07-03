@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity,
+  View, Text, ScrollView, FlatList, TouchableOpacity,
   StatusBar, Modal, TextInput,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
@@ -563,31 +563,37 @@ export default function HomeScreen() {
                 {activeHabits.length > 0 && (
                   <>
                     <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('checkinHabitCheck')}</Text>
-                    {activeHabits.map(h => {
-                      const habitDone = h.checkedDates?.includes(viewDate) ?? false;
-                      return (
-                        <View key={h.id} style={{
-                          flexDirection: 'row', alignItems: 'center',
-                          justifyContent: 'space-between', paddingVertical: 12,
-                          borderBottomWidth: 1, borderBottomColor: TH.border,
-                        }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                            <Star size={16} color={P} />
-                            <View>
-                              <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
-                              <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
+                    <FlatList
+                      data={activeHabits}
+                      keyExtractor={(item) => item.id}
+                      renderItem={({ item: h }) => {
+                        const habitDone = h.checkedDates?.includes(viewDate) ?? false;
+                        return (
+                          <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            justifyContent: 'space-between', paddingVertical: 12,
+                            borderBottomWidth: 1, borderBottomColor: TH.border,
+                          }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                              <Star size={16} color={P} />
+                              <View>
+                                <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
+                                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
+                              </View>
                             </View>
+                            {isReadOnly ? (
+                              habitDone
+                                ? <Check size={18} color={COLORS.GREEN} />
+                                : <X size={18} color={TH.sub} />
+                            ) : (
+                              <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} />
+                            )}
                           </View>
-                          {isReadOnly ? (
-                            habitDone
-                              ? <Check size={18} color={COLORS.GREEN} />
-                              : <X size={18} color={TH.sub} />
-                          ) : (
-                            <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} />
-                          )}
-                        </View>
-                      );
-                    })}
+                        );
+                      }}
+                      scrollEnabled={false}
+                      removeClippedSubviews={true}
+                    />
                   </>
                 )}
 

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
 import { useTheme, useT } from '../../../components/UI';
@@ -138,15 +138,21 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             {reasonDistribution.length > 0 && (
               <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: TH.border }}>
                 <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('incompleteReasonStats')}</Text>
-                {reasonDistribution.map((r) => {
-                  const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
-                  return (
-                    <View key={r.code} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8 }}>
-                      <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{r.icon} {T(labelKey)}</Text>
-                      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: P }}>{r.count} {T('days')}</Text>
-                    </View>
-                  );
-                })}
+                <FlatList
+                  data={reasonDistribution}
+                  keyExtractor={(item) => item.code}
+                  renderItem={({ item: r }) => {
+                    const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
+                    return (
+                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8 }}>
+                        <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{r.icon} {T(labelKey)}</Text>
+                        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: P }}>{r.count} {T('days')}</Text>
+                      </View>
+                    );
+                  }}
+                  scrollEnabled={false}
+                  removeClippedSubviews={true}
+                />
               </View>
             )}
           </ScrollView>

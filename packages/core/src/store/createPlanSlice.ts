@@ -20,12 +20,47 @@ import {
 import {
   linkReflectionToPlanItem,
 } from '../business/reflections';
-import { uid, dateStr, activeOnly } from '../utils';
+import { uid, dateStr, activeOnly, parseDateParts } from '../utils';
 import type { StorageAdapter, PlanSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
 import { notifyDelayedPlan } from '../services/notification';
 const log = createLogger('Store');
+
+// Shared toggle logic for checkin/uncheckin deduplication
+function toggleCheckin(
+  set: any, get: any, adapter: StorageAdapter,
+  action: 'checkin' | 'uncheckin', planItemId: string, date?: string,
+) {
+  const today = date ?? dateStr();
+  set((s: PlanSlice & Record<string, any>) => {
+    const newCheckins = action === 'checkin'
+      ? checkinItem(s.planItemCheckins ?? [], planItemId, today)
+      : uncheckinItem(s.planItemCheckins ?? [], planItemId, today);
+    const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, today);
+    const item = newItems.find((i: PlanItem) => i.id === planItemId && !i.deleted);
+    const newHistory = item
+      ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], item.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
+      : s.dailyTodoHistory;
+    const patch: Record<string, unknown> = { planItemCheckins: newCheckins, planItems: newItems, dailyTodoHistory: newHistory };
+    if (item) {
+      const plan = (s.plans ?? []).find((p: Plan) => p.id === item.planId && !p.deleted);
+      if (plan) {
+        patch.plans = (s.plans ?? []).map((p: Plan) => p.id === plan.id ? { ...p, progress: computePlanProgress(plan) } : p);
+      }
+    }
+    return patch;
+  });
+  // Persist
+  const state = get();
+  const checkin = state.planItemCheckins.find((c: PlanItemCheckin) => c.planItemId === planItemId && c.date === today && !c.deleted);
+  if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(e => log.error(e));
+  const item = state.planItems.find((i: PlanItem) => i.id === planItemId && !i.deleted);
+  if (item) {
+    const entry = (state.dailyTodoHistory ?? []).find((h: DailyTodoHistory) => h.planId === item.planId && h.date === today && !h.deleted);
+    if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(e => log.error(e));
+  }
+}
 
 export function createPlanSlice(
   adapter: StorageAdapter,
@@ -256,61 +291,11 @@ export function createPlanSlice(
     },
 
     checkinPlanItem(planItemId, date) {
-      const today = date ?? dateStr();
-      set(s => {
-        const newCheckins = checkinItem(s.planItemCheckins ?? [], planItemId, today);
-        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, today);
-        const item = newItems.find(i => i.id === planItemId && !i.deleted);
-        const newHistory = item
-          ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], item.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
-          : s.dailyTodoHistory;
-        const patch: Record<string, unknown> = { planItemCheckins: newCheckins, planItems: newItems, dailyTodoHistory: newHistory };
-        if (item) {
-          const plan = (s.plans ?? []).find(p => p.id === item.planId && !p.deleted);
-          if (plan) {
-            patch.plans = (s.plans ?? []).map(p => p.id === plan.id ? { ...p, progress: computePlanProgress(plan) } : p);
-          }
-        }
-        return patch;
-      });
-      // Persist
-      const state = get();
-      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today && !c.deleted);
-      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(e => log.error(e));
-      const item = state.planItems.find(i => i.id === planItemId && !i.deleted);
-      if (item) {
-        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today && !h.deleted);
-        if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(e => log.error(e));
-      }
+      toggleCheckin(set, get, adapter, 'checkin', planItemId, date);
     },
 
     uncheckinPlanItem(planItemId, date) {
-      const today = date ?? dateStr();
-      set(s => {
-        const newCheckins = uncheckinItem(s.planItemCheckins ?? [], planItemId, today);
-        const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, today);
-        const item = newItems.find(i => i.id === planItemId && !i.deleted);
-        const newHistory = item
-          ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], item.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
-          : s.dailyTodoHistory;
-        const patch: Record<string, unknown> = { planItemCheckins: newCheckins, planItems: newItems, dailyTodoHistory: newHistory };
-        if (item) {
-          const plan = (s.plans ?? []).find(p => p.id === item.planId && !p.deleted);
-          if (plan) {
-            patch.plans = (s.plans ?? []).map(p => p.id === plan.id ? { ...p, progress: computePlanProgress(plan) } : p);
-          }
-        }
-        return patch;
-      });
-      // Persist
-      const state = get();
-      const checkin = state.planItemCheckins.find(c => c.planItemId === planItemId && c.date === today && !c.deleted);
-      if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(e => log.error(e));
-      const item = state.planItems.find(i => i.id === planItemId && !i.deleted);
-      if (item) {
-        const entry = (state.dailyTodoHistory ?? []).find(h => h.planId === item.planId && h.date === today && !h.deleted);
-        if (entry) adapter.persistChange('dailyTodoHistory', entry.id, entry).catch(e => log.error(e));
-      }
+      toggleCheckin(set, get, adapter, 'uncheckin', planItemId, date);
     },
 
     autoSyncPlanItems() {
@@ -421,7 +406,9 @@ export function createPlanSlice(
     performDailyReset(previousDate) {
       // Use actual current date (not just previousDate + 1) to handle multi-day gaps.
       const today = dateStr();
-      const dayCount = daysBetween(previousDate, today);
+      const [py, pm, pd] = parseDateParts(previousDate);
+      const [ty, tm, td] = parseDateParts(today);
+      const dayCount = Math.round((new Date(ty, tm, td).getTime() - new Date(py, pm, pd).getTime()) / 86400000);
       if (dayCount <= 0) return; // No reset needed
 
       const s = get();

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, KeyboardAvoidingView, Platform, Alert, FlatList, ListRenderItemInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useKeepAwake } from 'expo-keep-awake';
 import * as Haptics from 'expo-haptics';
@@ -205,6 +205,116 @@ export default function MantraScreen() {
     addMantraDef({ name: preset.name, subtitle: preset.subtitle, category: preset.category, pronunciation: preset.pronunciation, meaning: preset.meaning });
   }, [addMantraDef]);
 
+  // FlatList helpers for select page
+  const renderMantraItem = useCallback(({ item: m }: ListRenderItemInfo<MantraDef>) => {
+    const total = getMantraTotalCount(m.id);
+    const today = getMantraTodayCount(m.id);
+    const streak = getMantraStreak(m.id);
+    const progress = m.targetCount ? Math.min(100, Math.round(total / m.targetCount * 100)) : null;
+    return (
+      <TouchableOpacity onPress={() => startSession(m)}
+        style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 8 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{m.name}</Text>
+            {m.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{m.subtitle}</Text>}
+            {today > 0 && (
+              <Text style={{ fontSize: FONT_SMALL, color: '#10B981', marginTop: 4 }}>{T('mantraTodayCount')} {today}</Text>
+            )}
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#FBBF24' }}>{total.toLocaleString()}</Text>
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('mantraCumulative')}</Text>
+          </View>
+        </View>
+        {progress !== null && (
+          <View style={{ marginTop: 8 }}>
+            <View style={{ height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2 }}>
+              <View style={{ height: 4, width: `${progress}%`, backgroundColor: '#FBBF24', borderRadius: 2 }} />
+            </View>
+            <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>
+              {total.toLocaleString()} / {m.targetCount?.toLocaleString()} ({progress}%)
+            </Text>
+          </View>
+        )}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
+          <Text style={{ fontSize: FONT_SMALL, color: '#F59E0B' }}>🔥 {streak} {T('mantraDays')}</Text>
+          <TouchableOpacity onPress={() => removeMantraDef(m.id)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <Text style={{ fontSize: FONT_SMALL, color: '#EF4444' }}>移除</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    );
+  }, [TH, T, startSession, getMantraTotalCount, getMantraTodayCount, getMantraStreak, removeMantraDef]);
+
+  const mantraListHeader = useMemo(() => (
+    <View>
+      <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
+        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('mantraTargetRounds')}</Text>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          {[1, 2, 3, 5, 7, 10].map(n => (
+            <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
+              style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
+                backgroundColor: targetRounds === n ? '#FBBF24' : TH.border, }}>
+              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>
+          {T('mantraMyMantras')}
+        </Text>
+        <TouchableOpacity onPress={() => nav.navigate('MantraHistory', {})}>
+          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('mantraHistory')}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  ), [TH, T, targetRounds, nav]);
+
+  const mantraEmptyState = useMemo(() => (
+    <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>
+      <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
+      <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('mantraNoMantra')}</Text>
+      <Text style={{ fontSize: FONT_SMALL, color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('mantraAddHint')}</Text>
+    </View>
+  ), [TH, T]);
+
+  const mantraListFooter = useMemo(() => (
+    <View style={{ marginTop: 16 }}>
+      <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
+        {T('mantraPresetLibrary')}
+      </Text>
+      <TextInput
+        style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB, marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
+        placeholder={T('mantraSearchPlaceholder')}
+        placeholderTextColor={TH.sub}
+        value={presetSearch}
+        onChangeText={setPresetSearch}
+      />
+      <View style={{ marginBottom: 16, gap: 6 }}>
+        {PRESET_SUTRAS.filter(p => p.category !== 'sutra' && !myMantras.some(m => m.name === p.name) && (presetSearch === '' || p.name.includes(presetSearch) || (p.subtitle ?? '').includes(presetSearch))).map((p, i) => (
+          <TouchableOpacity key={i} onPress={() => addPreset(p)}
+            style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: TH.card, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: TH.border }}>
+            <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{p.name}</Text>
+                <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: p.category === 'sutra' ? '#6366F120' : p.category === 'buddha_name' ? '#10B98120' : '#FBBF2420' }}>
+                  <Text style={{ fontSize: 10, fontWeight: '600', color: p.category === 'sutra' ? '#6366F1' : p.category === 'buddha_name' ? '#10B981' : '#D97706' }}>
+                    {p.category === 'sutra' ? T('sutraCategorySutra') : p.category === 'buddha_name' ? T('sutraCategoryBuddhaName') : T('sutraCategoryDharani')}
+                  </Text>
+                </View>
+              </View>
+              {p.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>{p.subtitle}</Text>}
+            </View>
+            <Text style={{ fontSize: 20, color: TH.sub }}>+</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  ), [TH, T, presetSearch, myMantras, addPreset]);
+
   // ── SELECT PAGE ──
   if (page === 'select') {
     return (
@@ -212,114 +322,17 @@ export default function MantraScreen() {
         <SimpleHeader routeName="Mantra" />
         <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('mantraSubtitle')}</Text>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }} keyboardShouldPersistTaps="handled">
-
-          {/* Target rounds */}
-          <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('mantraTargetRounds')}</Text>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              {[1, 2, 3, 5, 7, 10].map(n => (
-                <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
-                  style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
-                    backgroundColor: targetRounds === n ? '#FBBF24' : TH.border, }}>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* My Mantras */}
-          <View style={{ marginBottom: 24 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>
-                {T('mantraMyMantras')}
-              </Text>
-              <TouchableOpacity onPress={() => nav.navigate('MantraHistory', {})}>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('mantraHistory')}</Text>
-              </TouchableOpacity>
-            </View>
-            {myMantras.length === 0 ? (
-              <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>
-                <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
-                <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('mantraNoMantra')}</Text>
-                <Text style={{ fontSize: FONT_SMALL, color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('mantraAddHint')}</Text>
-              </View>
-            ) : (
-              myMantras.map((m: MantraDef) => {
-                const total = getMantraTotalCount(m.id);
-                const today = getMantraTodayCount(m.id);
-                const streak = getMantraStreak(m.id);
-                const progress = m.targetCount ? Math.min(100, Math.round(total / m.targetCount * 100)) : null;
-                return (
-                  <TouchableOpacity key={m.id} onPress={() => startSession(m)}
-                    style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 8 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{m.name}</Text>
-                        {m.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{m.subtitle}</Text>}
-                        {today > 0 && (
-                          <Text style={{ fontSize: FONT_SMALL, color: '#10B981', marginTop: 4 }}>{T('mantraTodayCount')} {today}</Text>
-                        )}
-                      </View>
-                      <View style={{ alignItems: 'flex-end' }}>
-                        <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#FBBF24' }}>{total.toLocaleString()}</Text>
-                        <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('mantraCumulative')}</Text>
-                      </View>
-                    </View>
-                    {progress !== null && (
-                      <View style={{ marginTop: 8 }}>
-                        <View style={{ height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2 }}>
-                          <View style={{ height: 4, width: `${progress}%`, backgroundColor: '#FBBF24', borderRadius: 2 }} />
-                        </View>
-                        <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>
-                          {total.toLocaleString()} / {m.targetCount?.toLocaleString()} ({progress}%)
-                        </Text>
-                      </View>
-                    )}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-                      <Text style={{ fontSize: FONT_SMALL, color: '#F59E0B' }}>🔥 {streak} {T('mantraDays')}</Text>
-                      <TouchableOpacity onPress={() => removeMantraDef(m.id)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                        <Text style={{ fontSize: FONT_SMALL, color: '#EF4444' }}>移除</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })
-            )}
-          </View>
-
-          {/* Preset Library */}
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
-            {T('mantraPresetLibrary')}
-          </Text>
-          <TextInput
-            style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB, marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
-            placeholder={T('mantraSearchPlaceholder')}
-            placeholderTextColor={TH.sub}
-            value={presetSearch}
-            onChangeText={setPresetSearch}
+          <FlatList
+            data={myMantras}
+            renderItem={renderMantraItem}
+            keyExtractor={(item: MantraDef) => item.id}
+            removeClippedSubviews={true}
+            ListHeaderComponent={mantraListHeader}
+            ListEmptyComponent={mantraEmptyState}
+            ListFooterComponent={mantraListFooter}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+            keyboardShouldPersistTaps="handled"
           />
-          <View style={{ marginBottom: 16, gap: 6 }}>
-            {PRESET_SUTRAS.filter(p => p.category !== 'sutra' && !myMantras.some(m => m.name === p.name) && (presetSearch === '' || p.name.includes(presetSearch) || (p.subtitle ?? '').includes(presetSearch))).map((p, i) => (
-              <TouchableOpacity key={i} onPress={() => addPreset(p)}
-                style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: TH.card, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: TH.border }}>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{p.name}</Text>
-                    <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: p.category === 'sutra' ? '#6366F120' : p.category === 'buddha_name' ? '#10B98120' : '#FBBF2420' }}>
-                      <Text style={{ fontSize: 10, fontWeight: '600', color: p.category === 'sutra' ? '#6366F1' : p.category === 'buddha_name' ? '#10B981' : '#D97706' }}>
-                        {p.category === 'sutra' ? T('sutraCategorySutra') : p.category === 'buddha_name' ? T('sutraCategoryBuddhaName') : T('sutraCategoryDharani')}
-                      </Text>
-                    </View>
-                  </View>
-                  {p.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>{p.subtitle}</Text>}
-                </View>
-                <Text style={{ fontSize: 20, color: TH.sub }}>+</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-        </ScrollView>
         </KeyboardAvoidingView>
       </View>
     );
