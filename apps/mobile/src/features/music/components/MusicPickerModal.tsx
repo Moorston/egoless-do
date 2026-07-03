@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useMemo, useCallback } from 'react';
+import { View, Text, Modal, TouchableOpacity, FlatList, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { X, Music } from 'lucide-react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
@@ -16,6 +16,12 @@ interface Props {
   primaryColor: string;
   selectedTrackId?: string | null;
 }
+
+interface NoMusicItem { type: 'noMusic'; key: string }
+interface SectionHeaderItem { type: 'section'; key: string; label: string }
+interface TrackListItemData { type: 'track'; key: string; track: MusicTrack }
+
+type FlatItem = NoMusicItem | SectionHeaderItem | TrackListItemData;
 
 export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSelectNoMusic, primaryColor, selectedTrackId }: Props) {
   const TH = useTheme();
@@ -46,7 +52,19 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
     return groups;
   }, [library, userTracks, T]);
 
-  const handlePlay = (track: typeof library[0]) => {
+  // Flatten grouped tracks into a single list for FlatList (includes no-music option and section headers)
+  const flatItems = useMemo<FlatItem[]>(() => {
+    const items: FlatItem[] = [{ type: 'noMusic', key: 'no-music' }];
+    for (const group of grouped) {
+      items.push({ type: 'section', key: `header:${group.key}`, label: group.label });
+      for (const track of group.tracks) {
+        items.push({ type: 'track', key: track.id, track });
+      }
+    }
+    return items;
+  }, [grouped]);
+
+  const handlePlay = useCallback((track: MusicTrack) => {
     if (currentTrack?.id === track.id) {
       if (isPlaying) pause();
       else {
@@ -60,7 +78,47 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
         onSelectTrack?.(track);
       }
     }
-  };
+  }, [currentTrack, isPlaying, pause, resume, play, onSelectTrack]);
+
+  const renderItem = useCallback(({ item }: { item: FlatItem }) => {
+    switch (item.type) {
+      case 'noMusic':
+        return (
+          <TouchableOpacity
+            onPress={() => { onSelectNoMusic?.(); onClose(); }}
+            activeOpacity={0.7}
+            style={[styles.noMusicItem, { backgroundColor: !selectedTrackId ? `${primaryColor}10` : 'transparent' }]}
+          >
+            <View style={[styles.noMusicIcon, { backgroundColor: !selectedTrackId ? `${primaryColor}18` : `${primaryColor}08` }]}>
+              <Music size={18} color={!selectedTrackId ? primaryColor : TH.sub} />
+            </View>
+            <Text style={[styles.noMusicText, { color: !selectedTrackId ? primaryColor : TH.text }]}>{T('medNoMusic')}</Text>
+            {!selectedTrackId && <View style={[styles.checkDot, { backgroundColor: primaryColor }]} />}
+          </TouchableOpacity>
+        );
+      case 'section':
+        return (
+          <View style={styles.group}>
+            <Text style={[styles.groupLabel, { color: TH.sub }]}>{item.label}</Text>
+          </View>
+        );
+      case 'track':
+        return (
+          <TrackListItem
+            track={item.track}
+            isCurrent={selectedTrackId === item.track.id}
+            isPlaying={currentTrack?.id === item.track.id && isPlaying}
+            isFavorite={favorites.includes(item.track.id)}
+            onPlay={() => handlePlay(item.track)}
+            onToggleFavorite={() => toggleFavorite(item.track.id)}
+            primaryColor={primaryColor}
+            showFavorite={true}
+          />
+        );
+    }
+  }, [selectedTrackId, primaryColor, TH, T, onSelectNoMusic, onClose, currentTrack, isPlaying, favorites, handlePlay, toggleFavorite]);
+
+  const keyExtractor = useCallback((item: FlatItem) => item.key, []);
 
   return (
     <Modal visible={visible} transparent animationType="slide">
@@ -74,39 +132,15 @@ export default function MusicPickerModal({ visible, onClose, onSelectTrack, onSe
             </TouchableOpacity>
           </View>
 
-          <ScrollView style={styles.list} contentContainerStyle={{ paddingBottom: 20 }}>
-            {/* No music option */}
-            <TouchableOpacity
-              onPress={() => { onSelectNoMusic?.(); onClose(); }}
-              activeOpacity={0.7}
-              style={[styles.noMusicItem, { backgroundColor: !selectedTrackId ? `${primaryColor}10` : 'transparent' }]}
-            >
-              <View style={[styles.noMusicIcon, { backgroundColor: !selectedTrackId ? `${primaryColor}18` : `${primaryColor}08` }]}>
-                <Music size={18} color={!selectedTrackId ? primaryColor : TH.sub} />
-              </View>
-              <Text style={[styles.noMusicText, { color: !selectedTrackId ? primaryColor : TH.text }]}>{T('medNoMusic')}</Text>
-              {!selectedTrackId && <View style={[styles.checkDot, { backgroundColor: primaryColor }]} />}
-            </TouchableOpacity>
-
-            {grouped.map(group => (
-              <View key={group.key} style={styles.group}>
-                <Text style={[styles.groupLabel, { color: TH.sub }]}>{group.label}</Text>
-                {group.tracks.map(track => (
-                  <TrackListItem
-                    key={track.id}
-                    track={track}
-                    isCurrent={selectedTrackId === track.id}
-                    isPlaying={currentTrack?.id === track.id && isPlaying}
-                    isFavorite={favorites.includes(track.id)}
-                    onPlay={() => handlePlay(track)}
-                    onToggleFavorite={() => toggleFavorite(track.id)}
-                    primaryColor={primaryColor}
-                    showFavorite={true}
-                  />
-                ))}
-              </View>
-            ))}
-          </ScrollView>
+          <FlatList
+            style={styles.list}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            data={flatItems}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            removeClippedSubviews={true}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       </KeyboardAvoidingView>
     </Modal>
