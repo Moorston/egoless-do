@@ -54,9 +54,9 @@ async function pbRequest<T>(
     }
 
     return { success: true, data };
-  } catch (error: any) {
+  } catch (error: unknown) {
     clearTimeout(timeoutId);
-    if (error?.name === 'AbortError') {
+    if (error instanceof Error && error.name === 'AbortError') {
       return {
         success: false,
         error: {
@@ -136,7 +136,7 @@ export async function getCheckins(params?: {
 
   if (result.success && result.data) {
     // 转换 PocketBase 响应格式，确保数值字段为数字类型
-    const checkins = (result.data.items || []).map((item: any) => ({
+    const checkins = (result.data.items || []).map((item: Record<string, unknown>) => ({
       ...item,
       checkin_id: item.id || item.checkin_id,
       nickname: item.nickname || '',
@@ -196,7 +196,7 @@ export async function getLeaderboard(params?: {
   );
 
   if (result.success && result.data) {
-    const leaderboard: LeaderboardEntry[] = (result.data.items || []).map((item: any, index: number) => ({
+    const leaderboard: LeaderboardEntry[] = (result.data.items || []).map((item: Record<string, unknown>, index: number) => ({
       rank: index + 1,
       user_hash: item.user_hash,
       lat: 0,

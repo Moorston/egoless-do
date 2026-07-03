@@ -77,9 +77,9 @@ async function pbRequest<T>(
     }
 
     return { success: true, data };
-  } catch (error: any) {
+  } catch (error: unknown) {
     clearTimeout(timeoutId);
-    if (error?.name === 'AbortError') {
+    if (error instanceof Error && error.name === 'AbortError') {
       return {
         success: false,
         error: { code: 'TIMEOUT', message: '请求超时' }
@@ -92,7 +92,7 @@ async function pbRequest<T>(
   }
 }
 
-function mapSession(item: any): ActiveSession {
+function mapSession(item: Record<string, unknown>): ActiveSession {
   return {
     session_id: item.session_id || item.id,
     user_hash: item.user_hash,
