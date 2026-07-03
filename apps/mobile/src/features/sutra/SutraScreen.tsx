@@ -131,7 +131,7 @@ function SutraScreenInner() {
 
   const isPresetInMy = useCallback((name: string) => mySutras.some((m: MantraDef) => m.name === name), [mySutras]);
 
-  const addPresetToMy = useCallback((preset: any) => {
+  const addPresetToMy = useCallback((preset: MantraDef) => {
     if (typeof addPresetSutra === 'function') addPresetSutra(preset);
   }, [addPresetSutra]);
 

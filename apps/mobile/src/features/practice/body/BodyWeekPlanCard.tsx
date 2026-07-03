@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Calendar, Check, Circle } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, dateStr, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, dateStr, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme, type ExerciseEntry } from '@egoless-do/core';
 
 function resolveDayBgColor(day: { isToday: boolean; matched: boolean; hasPlan: boolean; isPast: boolean }, border: string): string {
   if (day.isToday) return '#f59e0b';
@@ -14,10 +14,10 @@ function resolveDayBgColor(day: { isToday: boolean; matched: boolean; hasPlan: b
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   plans: BodyPlan[];
-  exerciseLog: any[];
+  exerciseLog: ExerciseEntry[];
   onEdit: () => void;
   onPressSport: (sportKey: string) => void;
 }
@@ -85,7 +85,7 @@ export default function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, on
     if (hasPlan && !isRest) totalPlanned++;
 
     // hasPlan implies dayPlan exists and resolved is non-null
-    const matched = !isRest && hasPlan && dayPlan !== undefined && (exerciseByDate.get(dayStr)?.some((e: any) =>
+    const matched = !isRest && hasPlan && dayPlan !== undefined && (exerciseByDate.get(dayStr)?.some((e: ExerciseEntry) =>
       !dayPlan.sportKey || e.sportKey === dayPlan.sportKey
     ) ?? false);
 
@@ -93,7 +93,7 @@ export default function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, on
     if (matched) {
       completedDays++;
       const dayExercises = exerciseByDate.get(dayStr) ?? [];
-      kcal = Math.round(dayExercises.reduce((s: number, e: any) => s + (e.calories ?? 0), 0));
+      kcal = Math.round(dayExercises.reduce((s: number, e: ExerciseEntry) => s + (e.calories ?? 0), 0));
       totalKcal += kcal;
     }
 

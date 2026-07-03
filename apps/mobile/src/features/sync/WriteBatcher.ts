@@ -112,8 +112,9 @@ export class WriteBatcher {
                   `INSERT INTO ${config.table} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
                   values,
                 );
-              } catch (insertErr: any) {
-                if (insertErr?.message?.includes('UNIQUE constraint')) {
+              } catch (insertErr: unknown) {
+                const msg = insertErr instanceof Error ? insertErr.message : String(insertErr);
+                if (msg.includes('UNIQUE constraint')) {
                   await db.runAsync(
                     `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
                     [...values, w.id],

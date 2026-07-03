@@ -14,7 +14,7 @@ import {
 
 const EXPIRY_MS = MS_PER_WEEK;
 
-const ENTITY_ICONS: Record<RecycleBinEntityType, React.ComponentType<any>> = {
+const ENTITY_ICONS: Record<RecycleBinEntityType, React.ComponentType<{ size?: number; color?: string }>> = {
   habit: Target,
   reflection: Sparkles,
   food: Utensils,
@@ -31,13 +31,13 @@ const ENTITY_COLORS: Record<RecycleBinEntityType, string> = {
 };
 
 function getItemName(item: RecycleBinItem): string {
-  const d = item.data as any;
+  const d = item.data as Record<string, unknown>;
   switch (item.entityType) {
-    case 'habit': return d.name ?? '习惯';
-    case 'reflection': return (d.content ?? '').slice(0, 30) || '感念';
-    case 'food': return d.name ?? '饮食';
-    case 'exercise': return d.sportKey ?? '运动';
-    case 'plan': return d.name ?? '计划';
+    case 'habit': return (d.name as string) ?? '习惯';
+    case 'reflection': return ((d.content as string) ?? '').slice(0, 30) || '感念';
+    case 'food': return (d.name as string) ?? '饮食';
+    case 'exercise': return (d.sportKey as string) ?? '运动';
+    case 'plan': return (d.name as string) ?? '计划';
     default: return '未知';
   }
 }

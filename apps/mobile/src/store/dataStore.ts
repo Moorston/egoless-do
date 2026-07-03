@@ -41,7 +41,7 @@ export const useDataStore = create<DataStore>()((set, get) => ({
   // Generic CRUD
   getEntity: (collection, id) => {
     const state = get();
-    return (state.entities[collection]?.[id] as any) ?? null;
+    return (state.entities[collection]?.[id] as Record<string, unknown>) ?? null;
   },
 
   setEntity: (collection, id, data) =>

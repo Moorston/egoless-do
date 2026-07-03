@@ -153,6 +153,7 @@ export function computeExpectedDays(
 
     case 'weekly_fixed': {
       // Count how many of the specified weekdays fall within [startDate, clampedEnd]
+      if (!freq.days || freq.days.length === 0) return 0; // Guard: empty days = no expected
       const daySet = new Set(freq.days);
       let count = 0;
       let cursor = startDate;
@@ -217,13 +218,24 @@ export function shouldShowToday(
       return true;
 
     case 'interval': {
-      // Show on the first day of each interval period
+      // Show during any active interval period where target not yet met.
+      // Carries over across periods so missed items remain visible until completed.
       const every = Math.max(1, freq.every);
+      const targetPerPeriod = freq.times ?? 1;
       const elapsed = daysBetween(startDate, today);
       if (elapsed < 0) return false;
-      // Today must be the start of a period
-      if (elapsed % every !== 0) return false;
-      return true;
+      const periodStart = Math.floor(elapsed / every) * every;
+      const periodEnd = periodStart + every - 1;
+      const periodStartStr = dateStr(addDays(new Date(startDate), periodStart));
+      const periodEndStr = dateStr(addDays(new Date(startDate), periodEnd));
+      const clampedEnd = periodEndStr > today ? today : periodEndStr;
+      let doneInPeriod = 0;
+      for (const c of checkins) {
+        if (c.done && !c.deleted && c.date >= periodStartStr && c.date <= clampedEnd) {
+          doneInPeriod++;
+        }
+      }
+      return doneInPeriod < targetPerPeriod;
     }
 
     case 'weekly': {
@@ -549,7 +561,7 @@ export function performDailyReset(
 export function addPlanItem(planItems: PlanItem[], form: {
   planId: string; name: string; description?: string;
   startDate: string; endDate: string; contentUrl?: string;
-  link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number; frequency?: PlanItem['frequency']; tags?: string[];
+  link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; order?: number; frequency?: PlanItem['frequency']; tags?: string[]; reflectionId?: string;
 }, plans?: Plan[], today?: string): PlanItem[] {
   // Check if the plan is active (not completed or cancelled)
   if (plans) {
@@ -566,6 +578,7 @@ export function addPlanItem(planItems: PlanItem[], form: {
     startDate: form.startDate,
     endDate: form.endDate,
     contentUrl: form.contentUrl ?? '',
+    reflectionId: form.reflectionId,
     totalCheckinDays: 0,
     status,
     progress: 0,
@@ -859,12 +872,8 @@ export function computeItemProgress(item: PlanItem, checkins: PlanItemCheckin[],
   return Math.min(Math.round((doneDates.size / expectedDays) * 100), 100);
 }
 
-/** Compute detailed checkin stats for a plan item over its full duration. */
-export function computeItemCheckinStats(
-  item: PlanItem,
-  checkins: PlanItemCheckin[],
-  today: string,
-): { doneCount: number; expectedDays: number; progress: number } {
+/** Count the number of done (non-deleted) days for an item up to today. */
+export function countItemDoneDays(item: PlanItem, checkins: PlanItemCheckin[], today: string): { doneCount: number; expectedDays: number } {
   const clampedToday = today > item.endDate ? item.endDate : today;
   const doneDates = new Set<string>();
   for (const c of checkins) {
@@ -872,9 +881,8 @@ export function computeItemCheckinStats(
       doneDates.add(c.date);
     }
   }
-  const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
-  const progress = expectedDays > 0 ? Math.min(Math.round((doneDates.size / expectedDays) * 100), 100) : 0;
-  return { doneCount: doneDates.size, expectedDays, progress };
+  const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, clampedToday);
+  return { doneCount: doneDates.size, expectedDays };
 }
 
 export function computePlanProgress(plan: Plan): number {

@@ -8,7 +8,7 @@ interface CacheEntry<T> {
 /**
  * 内存缓存类，支持 TTL 和 LRU 淘汰
  */
-export class AICache<T = any> {
+export class AICache<T = unknown> {
   private store = new Map<string, CacheEntry<T>>();
   private readonly ttl: number;
   private readonly maxSize: number;

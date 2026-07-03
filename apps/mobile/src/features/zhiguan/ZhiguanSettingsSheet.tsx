@@ -24,18 +24,18 @@ interface Props {
 }
 
 const BREATH_OPTIONS = [
-  { key: 'standard', labelKey: 'zhiguanBreathStandard', value: '4-2-6' },
-  { key: 'calming', labelKey: 'zhiguanBreathCalming', value: '4-4-4' },
-  { key: 'closing', labelKey: 'zhiguanBreathClosing', value: '4-7-8' },
+  { key: 'standard' as const, labelKey: 'zhiguanBreathStandard', value: '4-2-6' },
+  { key: 'calming' as const, labelKey: 'zhiguanBreathCalming', value: '4-4-4' },
+  { key: 'closing' as const, labelKey: 'zhiguanBreathClosing', value: '4-7-8' },
 ];
 
 const TARGET_OPTIONS = [10, 15, 20, 30];
 
 const SOUND_OPTIONS = [
-  { key: 'none', labelKey: 'zhiguanSoundNone' },
-  { key: 'bell', labelKey: 'zhiguanSoundBell' },
-  { key: 'rain', labelKey: 'zhiguanSoundRain' },
-  { key: 'bowl', labelKey: 'zhiguanSoundBowl' },
+  { key: 'none' as const, labelKey: 'zhiguanSoundNone' },
+  { key: 'bell' as const, labelKey: 'zhiguanSoundBell' },
+  { key: 'rain' as const, labelKey: 'zhiguanSoundRain' },
+  { key: 'bowl' as const, labelKey: 'zhiguanSoundBowl' },
 ];
 
 export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Props) {
@@ -59,7 +59,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
                 <Pressable
                   key={opt.key}
                   style={[styles.option, localSettings.breathPattern === opt.key && styles.optionActive]}
-                  onPress={() => setLocalSettings(s => ({ ...s, breathPattern: opt.key as any }))}
+                  onPress={() => setLocalSettings(s => ({ ...s, breathPattern: opt.key as string }))}
                 >
                   <Text style={[styles.optionText, localSettings.breathPattern === opt.key && styles.optionTextActive]}>
                     {T(opt.labelKey)}
@@ -98,7 +98,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
                 <Pressable
                   key={opt.key}
                   style={[styles.option, localSettings.backgroundSound === opt.key && styles.optionActive]}
-                  onPress={() => setLocalSettings(s => ({ ...s, backgroundSound: opt.key as any }))}
+                  onPress={() => setLocalSettings(s => ({ ...s, backgroundSound: opt.key as string }))}
                 >
                   <Text style={[styles.optionText, localSettings.backgroundSound === opt.key && styles.optionTextActive]}>
                     {T(opt.labelKey)}

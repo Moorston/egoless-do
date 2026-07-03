@@ -150,7 +150,7 @@ export default function ReflectionStatsScreen() {
     return { linkedCount, rate, groups };
   }, [rawReflections, rawPlanItems]);
 
-  const tabs: { key: TabKey; label: string; Icon: any }[] = [
+  const tabs: { key: TabKey; label: string; Icon: React.ComponentType<{ size?: number; color?: string }> }[] = [
     { key: 'tags', label: '标签', Icon: Tag },
     { key: 'mood', label: '心情', Icon: Heart },
     { key: 'linkedTask', label: '关联任务', Icon: ListChecks },

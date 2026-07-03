@@ -93,6 +93,7 @@ import { KickOutModal }  from '../components/KickOutModal';
 import { SyncProgressOverlay } from '../components/SyncProgressOverlay';
 import { SyncBanner } from '../components/SyncBanner';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import type { StackScreenProps } from '@react-navigation/stack';
 import type { RootStackParamList, MainTabParamList } from './types';
 
 export type { RootStackParamList, MainTabParamList } from './types';
@@ -107,18 +108,18 @@ function LazyScreen({ children }: { children: React.ReactNode }) {
 }
 /** Wrap a lazy component for use in React Navigation. */
 function withLazy<P extends object>(Component: React.LazyExoticComponent<React.ComponentType<P>>) {
-  return (props: P) => <LazyScreen><Component {...props as any} /></LazyScreen>;
+  return (props: P) => <LazyScreen><Component {...props as P} /></LazyScreen>;
 }
 
 // Wrapper for default-exported modules with named exports (FastHistoryPage, MedHistoryPage)
-function FastHistoryWrapper(props: any) {
+function FastHistoryWrapper(props: StackScreenProps<RootStackParamList, 'FastHistory'>) {
   return (
     <Suspense fallback={<View style={{ flex: 1 }} />}>
       <FastHistoryModule {...props} />
     </Suspense>
   );
 }
-function MedHistoryWrapper(props: any) {
+function MedHistoryWrapper(props: StackScreenProps<RootStackParamList, 'MedHistory'>) {
   return (
     <Suspense fallback={<View style={{ flex: 1 }} />}>
       <MedHistoryModule {...props} />
@@ -142,13 +143,13 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
   const isDragging = useRef(false);
   const isHidden = useRef(false);
 
-  const onTouchStart = useCallback((e: any) => {
+  const onTouchStart = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
     isDragging.current = false;
     touchStart.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
     offset.current = { x: posRef.current.x, y: posRef.current.y };
   }, []);
 
-  const onTouchMove = useCallback((e: any) => {
+  const onTouchMove = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
     const dx = e.nativeEvent.pageX - touchStart.current.x;
     const dy = e.nativeEvent.pageY - touchStart.current.y;
     if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging.current = true;
@@ -156,7 +157,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
     transY.setValue(offset.current.y + dy);
   }, [transX, transY]);
 
-  const onTouchEnd = useCallback((e: any) => {
+  const onTouchEnd = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
     const dx = e.nativeEvent.pageX - touchStart.current.x;
     const dy = e.nativeEvent.pageY - touchStart.current.y;
     const finalX = offset.current.x + dx;
@@ -241,7 +242,7 @@ function MainTabs() {
   const [, forceUpdate] = useState(0);
   useEffect(() => { forceUpdate(n => n + 1); }, []);
 
-  const iconMap: Record<string, React.ComponentType<any>> = {
+  const iconMap: Record<string, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
     Home, Plan: ClipboardList, Fasting: Timer, Meditation: Binary, Practice: Footprints,
     Exercise: Dumbbell, Settings, Reflections: Sparkles,
     Habits: Target,
@@ -305,7 +306,7 @@ export default function AppNavigator() {
   const theme = useAppStore(s => s.theme);
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
   const TH = THEMES[theme];
-  const navRef = useRef<any>(null);
+  const navRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
   const { kickOutVisible, hasPendingData, handleSyncAndLogout, handleLogoutDirectly } = useSync();
   const [syncOverlayVisible, setSyncOverlayVisible] = useState(false);
   const [syncPhase, setSyncPhase] = useState(1);
@@ -341,7 +342,7 @@ export default function AppNavigator() {
 
   // Handle habit alarm notification tap
   useEffect(() => {
-    let sub: any;
+    let sub: { remove?: () => void } | undefined;
     let mounted = true;
     import('expo-notifications').then(Notifications => {
       if (!mounted) return;

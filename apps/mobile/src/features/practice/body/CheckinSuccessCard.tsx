@@ -4,12 +4,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle2 } from 'lucide-react-native';
 import {
   FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_SMALL, FONT_STAT_SECTION,
-  type BodyCheckin,
+  type BodyCheckin, type Theme,
 } from '@egoless-do/core';
 import { PrimaryButton, Card } from '../../../components/UI';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   awarenessData: BodyCheckin | null;
   practiceCompleted: boolean;

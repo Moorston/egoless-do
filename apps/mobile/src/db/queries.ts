@@ -1,6 +1,7 @@
 // ─── All SQL query helpers ────────────────────────────────────────
 import type { SQLiteDatabase } from 'expo-sqlite';
 import type { Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession, ThoughtTrail } from '@egoless-do/core';
+import { rowToCheckin } from '../store/rowMappers';
 
 // ── Habits ────────────────────────────────────────────────────────
 export async function dbGetAllHabits(db: SQLiteDatabase): Promise<Habit[]> {
@@ -61,20 +62,9 @@ export async function dbGetAllFoodEntries(db: SQLiteDatabase): Promise<FoodEntry
 // ── Checkins ──────────────────────────────────────────────────────
 export async function dbGetCheckins(db: SQLiteDatabase): Promise<CheckinEntry[]> {
   const rows = await db.getAllAsync<Record<string, unknown>>(
-    'SELECT date,done,note,streak,weight,timestamp,grace,total_days,updated_at,deleted FROM checkin_records WHERE deleted = 0 ORDER BY date DESC'
+    'SELECT * FROM checkin_records WHERE deleted = 0 ORDER BY date DESC'
   );
-  return rows.map(r => ({
-    date: r.date as string,
-    done: (r.done as number) === 1,
-    note: (r.note as string) ?? '',
-    streak: (r.streak as number) ?? 0,
-    weight: r.weight as number | undefined,
-    timestamp: (r.timestamp as number) ?? 0,
-    grace: (r.grace as number) === 1,
-    totalDays: r.total_days as number | undefined,
-    updatedAt: (r.updated_at as number) ?? 0,
-    deleted: false,
-  }));
+  return rows.map(rowToCheckin);
 }
 
 // ── Safe JSON parse ──────────────────────────────────────────────

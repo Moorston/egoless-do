@@ -192,7 +192,7 @@ export default function SutraHistoryScreen() {
                   <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{pct}%</Text>
                 </View>
                 <View style={{ height: 8, backgroundColor: TH.primary + '15', borderRadius: 4, overflow: 'hidden' }}>
-                  <View style={{ width: (pct + '%') as any, height: '100%', backgroundColor: '#D4A574', borderRadius: 4 }} />
+                  <View style={{ width: `${pct}%`, height: '100%', backgroundColor: '#D4A574', borderRadius: 4 }} />
                 </View>
                 <Text style={{ fontSize: 10, color: TH.sub, marginTop: 2 }}>{total.toLocaleString()} 颗 ({pct}%)</Text>
               </View>

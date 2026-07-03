@@ -22,6 +22,7 @@ export interface DailyTodoStoreSlice {
 export interface ReactLike {
   useMemo: <T>(factory: () => T, deps: readonly unknown[]) => T;
   useState: <T>(initial: T | (() => T)) => [T, (v: T | ((prev: T) => T)) => void];
+  // any: mirrors React's useCallback generic signature; narrowing to unknown[] would lose the concrete callback type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useCallback: <T extends (...args: any[]) => any>(callback: T, deps: readonly unknown[]) => T;
 }

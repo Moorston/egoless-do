@@ -157,7 +157,7 @@ export default function GiveHistoryPage() {
             return (
               <View key={type} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                 <Text style={{ fontSize: 16, marginRight: 8 }}>{config.icon}</Text>
-                <Text style={{ width: 60, fontSize: FONT_BODY, color: TH.text }}>{T(config.labelKey as any) || type}</Text>
+                <Text style={{ width: 60, fontSize: FONT_BODY, color: TH.text }}>{T(config.labelKey) || type}</Text>
                 <View style={{ flex: 1, height: 8, backgroundColor: `${config.color}20`, borderRadius: 4, overflow: 'hidden' }}>
                   <View style={{ width: `${percent}%`, height: '100%', backgroundColor: config.color, borderRadius: 4 }} />
                 </View>

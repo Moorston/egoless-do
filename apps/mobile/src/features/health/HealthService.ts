@@ -34,8 +34,9 @@ const SPORT_TO_HC_EXERCISE: Record<string, string> = {
   '游泳': 'Swimming',
 };
 
-let healthKit: any = null;
-let healthConnect: any = null;
+// any: dynamically required modules with no TS declarations
+let healthKit: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
+let healthConnect: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 function getHealthKit() {
   if (!healthKit) {
@@ -152,7 +153,7 @@ export async function readTodaySteps(): Promise<number> {
           endTime: now.toISOString(),
         },
       });
-      return result.reduce((sum: number, r: any) => sum + (r.count ?? 0), 0);
+      return result.reduce((sum: number, r: { count?: number }) => sum + (r.count ?? 0), 0);
     }
 
     return 0;

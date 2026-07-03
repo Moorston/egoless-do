@@ -125,7 +125,7 @@ export default function ItemManagerPanel(props: ItemManagerPanelProps) {
     return items;
   }, [sortedSections]);
 
-  const renderRightActions = useCallback((progress: any, dragX: any, item: string) => {
+  const renderRightActions = useCallback((progress: unknown, dragX: unknown, item: string) => {
     const usedCount = props.getReflectionsContainingItem(item);
     if (usedCount > 0) {
       return null;

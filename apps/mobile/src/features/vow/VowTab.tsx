@@ -2,14 +2,14 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Flag, Target, Star, Plus, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
-import type { Vision, VisionType, VisionStatus } from '@egoless-do/core';
+import type { Vision, VisionType, VisionStatus, Theme, Plan, PlanItem, RefType, VisionTimeFrame } from '@egoless-do/core';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import VisionCard from './components/VisionCard';
 import VisionEditModal from './modals/VisionEditModal';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   visionProgress: { vision: Vision; pct: number }[];
 }
@@ -34,8 +34,8 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
   const [showAchieved, setShowAchieved] = useState(false);
 
   const visions = useMemo(() => (visionsRaw ?? []).filter((v: Vision) => !v.deleted), [visionsRaw]);
-  const plans = useMemo(() => (plansRaw ?? []).filter((p: any) => !p.deleted), [plansRaw]);
-  const planItems = useMemo(() => (planItemsRaw ?? []).filter((i: any) => !i.deleted), [planItemsRaw]);
+  const plans = useMemo(() => (plansRaw ?? []).filter((p: Plan) => !p.deleted), [plansRaw]);
+  const planItems = useMemo(() => (planItemsRaw ?? []).filter((i: PlanItem) => !i.deleted), [planItemsRaw]);
 
   const activeLifetime = useMemo(() => visions.find(v => v.type === 'lifetime' && v.status === 'active'), [visions]);
   const activeLong = useMemo(() => visions.find(v => v.type === 'long' && v.status === 'active'), [visions]);
@@ -51,13 +51,13 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
   }, [visionProgress]);
 
   const getVisionStats = useCallback((v: Vision) => {
-    const linked = plans.filter((p: any) => p.visionId === v.id);
-    const planDone = linked.filter((p: any) => p.status === 'completed').length;
+    const linked = plans.filter((p: Plan) => p.visionId === v.id);
+    const planDone = linked.filter((p: Plan) => p.status === 'completed').length;
     let taskDone = 0;
     let taskTotal = 0;
     for (const plan of linked) {
-      const items = planItems.filter((i: any) => i.planId === plan.id);
-      taskDone += items.filter((i: any) => i.status === 'completed').length;
+      const items = planItems.filter((i: PlanItem) => i.planId === plan.id);
+      taskDone += items.filter((i: PlanItem) => i.status === 'completed').length;
       taskTotal += items.length;
     }
     return { planDone, planTotal: linked.length, taskDone, taskTotal };
@@ -83,11 +83,11 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
     setShowModal(true);
   };
 
-  const handleSave = (data: { text: string; timeFrame?: string; deadline?: string; linkedPractices: { refType: any; refId: string }[] }) => {
+  const handleSave = (data: { text: string; timeFrame?: string; deadline?: string; linkedPractices: { refType: RefType; refId: string }[] }) => {
     if (editingVision) {
       updateVision(editingVision.id, {
         text: data.text,
-        timeFrame: data.timeFrame as any,
+        timeFrame: data.timeFrame as VisionTimeFrame | undefined,
         deadline: data.deadline,
       });
       // Update linked practices
@@ -124,7 +124,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
     ]);
   };
 
-  const renderVisionSection = (type: VisionType, active: Vision | undefined, color: string, Icon: any) => {
+  const renderVisionSection = (type: VisionType, active: Vision | undefined, color: string, Icon: React.ComponentType<{ size?: number; color?: string }>) => {
     const label = T(`vow${type === 'lifetime' ? 'Lifetime' : type === 'long' ? 'Long' : 'Short'}`);
     return (
       <View style={{ marginBottom: 16 }}>

@@ -9,7 +9,7 @@ export type AIFeatureType =
 
 export type AIMode = 'local' | 'cloud' | 'hybrid';
 
-export interface AIResult<T = any> {
+export interface AIResult<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;

@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
-import type { Dedication } from '@egoless-do/core';
+import type { Dedication, Theme } from '@egoless-do/core';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   dedication: Dedication;
   expanded: boolean;

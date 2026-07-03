@@ -130,7 +130,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
       const todayFoods = (store.foodLog ?? []).filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === dateStr());
       const lastFood = todayFoods[0]; // most recent
       if (lastFood) {
-        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as any }); // TODO: type properly when EatingMotivation import available
+        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as string });
       }
     }
     showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);
@@ -150,7 +150,7 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
       const todayFoods = store.foodLog.filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === dateStr());
       const lastFood = todayFoods[0];
       if (lastFood) {
-        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as any });
+        store.setFoodMotivation({ foodId: lastFood.id, date: dateStr(), motivation: motivation as string });
       }
     }
     showToast(`${T('foodAdded')}: ${editing.name} ${totalCal}kcal`);

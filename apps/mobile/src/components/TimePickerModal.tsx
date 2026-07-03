@@ -44,7 +44,7 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
     items: number[],
     selected: number,
     onSelect: (val: number) => void,
-    ref: React.RefObject<ScrollView>,
+    ref: React.RefObject<ScrollView | null>,
     format: (val: number) => string = (v) => String(v).padStart(2, '0')
   ) => (
     <ScrollView
@@ -100,7 +100,7 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
             {/* Hour column */}
             <View style={{ flex: 1, alignItems: 'center' }}>
               <Text style={{ fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12, color: TH.sub }}>{T('timePickerHour')}</Text>
-              {renderColumn(HOURS, hour, setHour, hourRef as any)}
+              {renderColumn(HOURS, hour, setHour, hourRef)}
             </View>
             
             {/* Separator */}
@@ -112,7 +112,7 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
             {/* Minute column */}
             <View style={{ flex: 1, alignItems: 'center' }}>
               <Text style={{ fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12, color: TH.sub }}>{T('timePickerMinute')}</Text>
-              {renderColumn(MINUTES, minute, setMinute, minuteRef as any)}
+              {renderColumn(MINUTES, minute, setMinute, minuteRef)}
             </View>
           </View>
 

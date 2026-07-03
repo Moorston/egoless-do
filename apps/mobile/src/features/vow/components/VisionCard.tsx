@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Flag, Target, Star, ChevronRight, ChevronDown } from 'lucide-react-native';
-import type { Vision, Plan, PlanItem, PlanItemStatus } from '@egoless-do/core';
+import type { Vision, Plan, PlanItem, PlanItemStatus, Theme } from '@egoless-do/core';
 import { VISION_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import { ProgressBar } from '../../../components/UI';
 
 interface Props {
   vision: Vision;
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   pct: number;
   planDone?: number;

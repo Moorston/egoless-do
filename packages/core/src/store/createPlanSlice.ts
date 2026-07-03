@@ -1,4 +1,5 @@
 import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm, RecycleBinItem } from '../types';
+import type { MindReflection } from '../types/reflection';
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
   startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
@@ -374,7 +375,7 @@ export function createPlanSlice(
       // Atomic: toggle todo and save history snapshot in one set()
       set(s => {
         const toggledTodos = toggleDailyCustomTodoBiz(s.dailyCustomTodos ?? [], id, today);
-        const updated = toggledTodos.find((t: any) => t.id === id && !t.deleted);
+        const updated = toggledTodos.find((t) => t.id === id && !t.deleted);
         const updatedHistory = updated
           ? saveDailyTodoHistoryBiz(
               s.dailyTodoHistory ?? [], updated.planId, today,
@@ -418,21 +419,31 @@ export function createPlanSlice(
     },
 
     performDailyReset(previousDate) {
-      // Derive today from previousDate to handle backfill correctly
-      const [py, pm, pd] = previousDate.split('-').map(Number);
-      const d = new Date(py, pm - 1, pd);
-      d.setDate(d.getDate() + 1);
-      const today = dateStr(d);
+      // Use actual current date (not just previousDate + 1) to handle multi-day gaps.
+      const today = dateStr();
+      const dayCount = daysBetween(previousDate, today);
+      if (dayCount <= 0) return; // No reset needed
+
       const s = get();
-      const result = performDailyResetBiz(
-        s.plans ?? [],
-        s.planItems ?? [],
-        s.planItemCheckins ?? [],
-        s.dailyCustomTodos ?? [],
-        s.dailyTodoHistory ?? [],
-        previousDate,
-        today,
-      );
+      let prevDate = previousDate;
+      let result!: ReturnType<typeof performDailyResetBiz>;
+
+      // Reset each missed day sequentially so history is saved for every skipped day.
+      for (let i = 0; i < dayCount; i++) {
+        const baseDate = new Date(previousDate);
+        baseDate.setDate(baseDate.getDate() + i + 1);
+        const dayStr = dateStr(baseDate);
+        result = performDailyResetBiz(
+          result?.plans ?? s.plans ?? [],
+          result?.planItems ?? s.planItems ?? [],
+          s.planItemCheckins ?? [],
+          result?.dailyCustomTodos ?? s.dailyCustomTodos ?? [],
+          result?.dailyTodoHistory ?? s.dailyTodoHistory ?? [],
+          prevDate,
+          dayStr,
+        );
+        prevDate = dayStr;
+      }
 
       if (result.hasChanges) {
         set({
@@ -570,7 +581,7 @@ export function createPlanSlice(
 
       // Persist changes — pre-build maps for O(1) lookup
       const origItemMap = new Map<string, PlanItem>(planItems.map((i: PlanItem) => [i.id, i]));
-      const origReflectionMap = new Map<string, any>(reflections.map((r: any) => [r.id, r]));
+      const origReflectionMap = new Map<string, MindReflection>(reflections.map((r) => [r.id, r]));
       for (const item of updatedPlanItems) {
         const orig = origItemMap.get(item.id);
         if (orig && orig.updatedAt !== item.updatedAt) {

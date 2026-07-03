@@ -142,7 +142,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
                   const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
                   return (
                     <View key={r.code} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8 }}>
-                      <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{r.icon} {T(labelKey as any)}</Text>
+                      <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{r.icon} {T(labelKey)}</Text>
                       <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: P }}>{r.count} {T('days')}</Text>
                     </View>
                   );

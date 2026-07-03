@@ -523,7 +523,8 @@ export interface I18nKeys {
   authRegisterFailed: string; authWechatFailed: string;
   authEnterAll: string; authPwdMismatch: string;
   authInvalidEmail: string; authEmailTaken: string;
-  commonCancel: string; commonConfirm: string; commonClose: string; commonDone: string;
+  commonCancel: string; commonConfirm: string; commonClose: string; commonDone: string; commonOk: string;
+  planSaveFailedTitle: string; planSaveFailedMsg: string;
   commonDelete: string; commonSave: string; commonEdit: string; commonAdd: string;
   commonBack: string; commonSyncing: string; commonConnected: string;
   commonOffline: string;
@@ -546,7 +547,7 @@ export interface I18nKeys {
   musicImportSuccess: string; musicImportFailed: string; musicCategory: string;
   weekdaySun: string; weekdayMon: string; weekdayTue: string;
   weekdayWed: string; weekdayThu: string; weekdayFri: string;
-  weekdaySat: string;
+  weekdaySat: string; clearReviewData: string; clearReviewDataConfirm: string; clearReviewDataDone: string;
   planNotFound: string; heatmapLess: string; heatmapMore: string; month: string;
   planTodoToday: string; planTodoHistory: string; planTodoDone: string; planTodoTotal: string; planAutoChecked: string;
   planDailyCustomTodos: string; planAddCustomTodoPlaceholder: string; planNoCustomTodos: string; planRecurring: string;
@@ -911,6 +912,8 @@ export interface I18nKeys {
   vowLinkedPlanExpand: string;
   vowLinkedPlanCollapse: string;
   vowNoLinkedPlans: string;
+  vowPlanProgress: string;
+  vowTaskProgress: string;
   planLinkVision: string;
   planSelectVision: string;
   planChangeVision: string;
@@ -979,9 +982,10 @@ export interface I18nKeys {
   zhiguanHindranceGreed: string; zhiguanHindranceAversion: string;
   zhiguanHindranceSloth: string; zhiguanHindranceRestlessness: string; zhiguanHindranceDoubt: string;
   zhiguanHindranceNone: string; zhiguanHindranceSevere: string;
+  zhiguanFiveHindrancesTitle: string; zhiguanFiveHindrancesHint: string;
 
   // 法门 methods
-  zhiguanMethodLabel: string; zhiguanMethodHint: string;
+  zhiguanMethodTitle: string; zhiguanMethodLabel: string; zhiguanMethodHint: string;
   zhiguanMethodAnapanasati: string; zhiguanMethodAnapanasatiDesc: string; zhiguanMethodAnapanasatiOpen: string;
   zhiguanMethodSelfInquiry: string; zhiguanMethodSelfInquiryDesc: string; zhiguanMethodSelfInquiryOpen: string;
   zhiguanMethodKasina: string; zhiguanMethodKasinaDesc: string; zhiguanMethodKasinaOpen: string;
@@ -1008,7 +1012,7 @@ export interface I18nKeys {
   zhiguanTactileCold: string; zhiguanTactileWarmth: string;
   zhiguanTactileLightness: string; zhiguanTactileHeaviness: string;
   zhiguanTactileRoughness: string; zhiguanTactileSmoothness: string;
-  zhiguanSelfReportedTitle: string; zhiguanSelfReportedHint: string;
+  zhiguanSelfReportedTitle: string; zhiguanSelfReportedHint: string; zhiguanSelfReportedOtherPlaceholder: string;
   zhiguanStageNotSpecified: string; zhiguanStageScattered: string;
   zhiguanStageDesireRealm: string; zhiguanStagePreparation: string;
   zhiguanStageFirstJhana: string; zhiguanStageSecondJhana: string;
@@ -1026,7 +1030,7 @@ export interface I18nKeys {
   zhiguanRuleAversion: string; zhiguanRuleDoubt: string; zhiguanRuleDefault: string;
 
   // Vipassana 念处
-  zhiguanVipassanaLabel: string;
+  zhiguanVipassanaTitle: string; zhiguanVipassanaLabel: string;
   zhiguanVipassanaKayaTitle: string; zhiguanVipassanaVedanaTitle: string;
   zhiguanVipassanaCittaTitle: string; zhiguanVipassanaDharmaTitle: string;
   zhiguanVipassanaKayaLine1: string; zhiguanVipassanaKayaLine2: string; zhiguanVipassanaKayaLine3: string; zhiguanVipassanaKayaLine4: string; zhiguanVipassanaKayaLine5: string;
@@ -1042,6 +1046,9 @@ export interface I18nKeys {
   zhiguanEmptyHistoryTitle: string; zhiguanEmptyHistoryDesc: string;
   zhiguanDeleteRecord: string; zhiguanDeleteConfirm: string;
   zhiguanExportJson: string;
+  zhiguanRoundLabel: string; zhiguanBreathCount: string;
+  zhiguanDetailTitle: string; zhiguanDetailMethod: string;
+  zhiguanDetailDuration: string; zhiguanDetailStatus: string; zhiguanDetailDate: string;
 }
 
 export type I18nKey = keyof I18nKeys;

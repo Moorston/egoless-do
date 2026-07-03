@@ -96,6 +96,9 @@ routerAdd("POST", "/api/sync/pull", function(e) {
     var entities = body.entities || ENTITY_LIST;
     var since = parseInt(body.since || "0", 10);
     var sinceDate = since > 0 ? new Date(since).toISOString() : "1970-01-01T00:00:00.000Z";
+    // Pagination support for phased initial sync
+    var page = parseInt(body.page || "0", 10);
+    var pageSize = parseInt(body.pageSize || "0", 10);
     var data = {};
     for (var ei = 0; ei < entities.length; ei++) {
       try {
@@ -103,17 +106,31 @@ routerAdd("POST", "/api/sync/pull", function(e) {
         var coll = ENTITY_COLL_MAP[ent];
         if (!coll) continue;
         var f = "user_id = '" + escapeFilterValue(userId) + "'";
-        if (since > 0) f += " && updated > '" + sinceDate + "'";
+        // Note: PocketBase system field 'updated' may not be available in all versions
+        // For initial sync, we pull all records without timestamp filter
         var allRecs = [];
-        var offset = 0;
-        var BATCH = 500;
-        while (true) {
-          var batch = $app.findRecordsByFilter(coll, f, "-updated", BATCH, offset);
-          if (!batch || batch.length === 0) break;
-          for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]);
-          if (batch.length < BATCH) break;
-          offset += BATCH;
-          if (offset > 50000) break;
+        var totalCount = 0;
+        if (page > 0 && pageSize > 0) {
+          // Paginated mode for phased initial sync
+          // First get total count
+          var countRecs = $app.findRecordsByFilter(coll, f, "", 0);
+          totalCount = countRecs ? countRecs.length : 0;
+          var offset = (page - 1) * pageSize;
+          var batch = $app.findRecordsByFilter(coll, f, "-created", pageSize, offset);
+          if (batch) { for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]); }
+        } else {
+          // Full pull mode (backward compat)
+          var offset = 0;
+          var BATCH = 500;
+          while (true) {
+            var batch = $app.findRecordsByFilter(coll, f, "-created", BATCH, offset);
+            if (!batch || batch.length === 0) break;
+            for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]);
+            if (batch.length < BATCH) break;
+            offset += BATCH;
+            if (offset > 50000) break;
+          }
+          totalCount = allRecs.length;
         }
         var payloads = [];
         for (var ri = 0; ri < allRecs.length; ri++) {
@@ -136,6 +153,11 @@ routerAdd("POST", "/api/sync/pull", function(e) {
           } catch (recErr) {}
         }
         if (payloads.length > 0) data[ent] = payloads;
+        // Include total count for paginated requests
+        if (page > 0 && pageSize > 0) {
+          if (!data._meta) data._meta = {};
+          data._meta[ent] = { total: totalCount };
+        }
       } catch (qErr) {}
     }
     return e.json(200, { data: data, serverTime: Date.now() });

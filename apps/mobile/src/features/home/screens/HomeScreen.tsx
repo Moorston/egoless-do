@@ -29,6 +29,13 @@ import HomePlanSection from '../components/HomePlanSection';
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
 
+/** Parse weight string, return undefined if invalid or out of range (1-500 kg) */
+function parseWeight(raw: string | undefined): number | undefined {
+  if (!raw) return undefined;
+  const n = parseFloat(raw);
+  return Number.isFinite(n) && n > 0 && n <= 500 ? n : undefined;
+}
+
 export default function HomeScreen() {
   const TH    = useTheme();
   const T     = useT();
@@ -223,7 +230,7 @@ export default function HomeScreen() {
   // ── Real-time save ──
   const saveField = useCallback((doneOverride?: boolean) => {
     const done = doneOverride ?? localDoneRef.current ?? false;
-    const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+    const weightNum = weightRef.current ? parseWeight(weightRef.current) : undefined;
     useAppStore.getState().submitCheckin(done, buildNote(), undefined, weightNum);
   }, [buildNote]);
 
@@ -240,7 +247,7 @@ export default function HomeScreen() {
     // 无论打卡状态如何，都更新饮水数据
     setTimeout(() => {
       const s = useAppStore.getState();
-      const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+      const weightNum = weightRef.current ? parseWeight(weightRef.current) : undefined;
       s.submitCheckin(localDoneRef.current ?? false, buildNote(), undefined, weightNum);
     }, 0);
   }, [addWater, buildNote, isToday]);
@@ -248,7 +255,7 @@ export default function HomeScreen() {
   const handleFoodChanged = useCallback(() => {
     setTimeout(() => {
       const s = useAppStore.getState();
-      const weightNum = weightRef.current ? parseFloat(weightRef.current) : undefined;
+      const weightNum = weightRef.current ? parseWeight(weightRef.current) : undefined;
       s.submitCheckin(localDoneRef.current ?? true, buildNote(), undefined, weightNum);
     }, 0);
   }, [buildNote]);
@@ -287,12 +294,12 @@ export default function HomeScreen() {
       return;
     }
     setLocalDone(true);
-    submitCheckin(true, buildNote(), undefined, weight ? parseFloat(weight) : undefined);
+    submitCheckin(true, buildNote(), undefined, parseWeight(weight));
   }, [submitCheckin, buildNote, weight, todayPlanItems, planCheckins, viewDate]);
 
   const handleEdit = useCallback(() => {
     setLocalDone(false);
-    submitCheckin(false, buildNote(), undefined, weight ? parseFloat(weight) : undefined);
+    submitCheckin(false, buildNote(), undefined, parseWeight(weight));
   }, [submitCheckin, buildNote, weight]);
 
   const confirmDoneWithReason = useCallback(() => {
@@ -303,7 +310,7 @@ export default function HomeScreen() {
     const noteData = JSON.parse(noteStr);
     noteData.incompleteReason = selectedReason;
     noteData.incompleteNote = reasonNote.trim();
-    submitCheckin(true, JSON.stringify(noteData), undefined, weight ? parseFloat(weight) : undefined);
+    submitCheckin(true, JSON.stringify(noteData), undefined, parseWeight(weight));
   }, [buildNote, selectedReason, reasonNote, submitCheckin, weight]);
 
   const togglePlanItem = useCallback((itemId: string) => {
@@ -513,7 +520,7 @@ export default function HomeScreen() {
               {/* ── Delayed plan reminder ── */}
               {showDelayed && (
                 <TouchableOpacity
-                  onPress={() => (nav as any).navigate('Plan')}
+                  onPress={() => (nav as any).navigate('Plan')} // any: nested navigator type mismatch between RootStack and MainTab
                   activeOpacity={0.8}
                   style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
                 >
@@ -817,7 +824,7 @@ export default function HomeScreen() {
                         backgroundColor: selected ? `${P}15` : 'transparent',
                       }}>
                       <Text style={{ fontSize: FONT_BODY, color: selected ? P : TH.text }}>
-                        {r.icon} {T(labelKey as any)}
+                        {r.icon} {T(labelKey)}
                       </Text>
                     </TouchableOpacity>
                   );

@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Play } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme } from '@egoless-do/core';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   todayPlan?: BodyPlan;
   todayWeekday: number;

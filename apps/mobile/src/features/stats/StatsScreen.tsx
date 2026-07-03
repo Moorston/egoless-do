@@ -393,7 +393,7 @@ export default function StatsScreen() {
         return renderStatGrid([
           { value: `${reflCount}`, unit: '', label: T('statsReflections') },
           { value: `${(rawReflections ?? []).filter(r => !r.deleted && r.mood).length}`, unit: '', label: T('mood') },
-          { value: `${Object.keys((rawReflections ?? []).filter(r => !r.deleted).reduce((acc, r) => { (r.tags ?? []).forEach(t => (acc as any)[t] = 1); return acc; }, {} as Record<string, number>)).length}`, unit: '', label: T('addTags') },
+          { value: `${Object.keys((rawReflections ?? []).filter(r => !r.deleted).reduce((acc, r) => { (r.tags ?? []).forEach(t => acc[t] = 1); return acc; }, {} as Record<string, number>)).length}`, unit: '', label: T('addTags') },
         ], 3);
       case 'plan':
         return (

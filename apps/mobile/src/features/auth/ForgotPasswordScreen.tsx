@@ -61,8 +61,8 @@ export default function ForgotPasswordScreen() {
       }
       await apiSendCode(email, 'reset');
       startCooldown();
-    } catch (e: any) {
-      setError(e.message || T('authSendFailed'));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : T('authSendFailed'));
     } finally {
       setSending(false);
     }
@@ -94,8 +94,8 @@ export default function ForgotPasswordScreen() {
       await apiResetPassword(email, code, password);
       setSuccess(T('authResetSuccess'));
       navTimerRef.current = setTimeout(() => nav.navigate('Login'), 1500);
-    } catch (e: any) {
-      setError(e.message || T('authResetFailed'));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : T('authResetFailed'));
     } finally {
       setLoading(false);
     }

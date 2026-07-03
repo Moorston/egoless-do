@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
 import {
   FONT_TITLE, FONT_BODY, FONT_SUB, ALL_SPORTS, EXERCISE_CATEGORIES,
-  type BodyPlan, type BodyCheckin,
+  type BodyPlan, type BodyCheckin, type Theme,
 } from '@egoless-do/core';
 import { PrimaryButton, OutlineButton, Card } from '../../../components/UI';
 import BodyCheckinInline from './BodyCheckinInline';
@@ -13,11 +13,11 @@ import CheckinSuccessCard from './CheckinSuccessCard';
 type FlowStep = 'practice' | 'breathing' | 'checkin' | 'success';
 
 interface FlowProps {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   onExit: () => void;
   todayPlan?: BodyPlan;
-  store: any;
+  store: Record<string, unknown>;
   returnTick?: number;
   onGoToSport?: (sportKey: string) => void;
   onGoToBreathing?: () => void;
@@ -35,7 +35,7 @@ const STEP_ICONS: Record<string, string> = {
   checkin: '🧠',
 };
 
-function StepIndicator({ current, TH }: { current: FlowStep; TH: any }) {
+function StepIndicator({ current, TH }: { current: FlowStep; TH: Theme }) {
   const currentIdx = current === 'success' ? STEPS.length : STEPS.findIndex(s => s.key === current);
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 20 }}>
@@ -61,7 +61,7 @@ function StepIndicator({ current, TH }: { current: FlowStep; TH: any }) {
   );
 }
 
-function ExercisePicker({ TH, T, onSelect }: { TH: any; T: (key: string) => string; onSelect: (key: string) => void }) {
+function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => string; onSelect: (key: string) => void }) {
   const groups = useMemo(() => {
     const map = new Map<string, { key: string; label: string; icon: string }[]>();
     for (const cat of EXERCISE_CATEGORIES) {
@@ -191,9 +191,9 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
           ) : hasTodayPlan ? (
             <>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                <Text style={{ fontSize: 28 }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as any).icon : '🏋️'}</Text>
+                <Text style={{ fontSize: 28 }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as { icon: string }).icon : '🏋️'}</Text>
                 <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
-                  {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as any).i18nKey) : todayPlan?.part ?? ''}
+                  {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as { i18nKey: string }).i18nKey) : todayPlan?.part ?? ''}
                 </Text>
               </View>
               <PrimaryButton

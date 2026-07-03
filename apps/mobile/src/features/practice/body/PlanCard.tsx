@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Dumbbell, ChevronRight } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme } from '@egoless-do/core';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const REST_VALUES = ['休息', 'Rest', 'rest']; // backward-compatible rest check
@@ -11,7 +11,7 @@ const KEY_TO_I18N = new Map(EXERCISE_CATEGORIES.map(c => [c.key, c.i18nKey]));
 const KEY_TO_ICON = new Map(EXERCISE_CATEGORIES.map(c => [c.key, c.icon]));
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   plans: BodyPlan[];
   onEdit: () => void;

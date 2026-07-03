@@ -1,5 +1,6 @@
 import { activeOnly } from '../utils';
 // ─── AI Trail Recommender: RAG + 分批并发 ──────────────────────────
+import type { AIResult, ModelConfig, AIMode } from './types';
 import { getAIService } from './ai-service';
 import { extractJSON } from './json-utils';
 import { buildReflectionSummary } from '../business/trail-creation';
@@ -163,8 +164,7 @@ async function batchedAIGenerate(
       timeoutMs,
       externalSignal,
     );
-    const r = result as any;
-    return r?.success && r?.data ? [{ batchIdx: 0, data: r.data }] : [];
+    return result.success && result.data ? [{ batchIdx: 0, data: result.data }] : [];
   }
 
   // 分批并发
@@ -191,11 +191,11 @@ async function batchedAIGenerate(
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
     if (r.status === 'fulfilled') {
-      const val = r.value as any;
-      if (val?.success && val?.data) {
+      const val = r.value;
+      if (val.success && val.data) {
         outputs.push({ batchIdx: i, data: val.data });
       } else {
-        log.warn(`[BatchAI] batch ${i} failed:`, val?.error);
+        log.warn(`[BatchAI] batch ${i} failed:`, val.error);
       }
     } else {
       log.warn(`[BatchAI] batch ${i} error:`, r.reason);
@@ -450,7 +450,7 @@ export async function parseSmartQuery(
   const prompt = buildQueryParsePrompt(input, targetReflections, history);
 
   try {
-    const result: any = await withAbortTimeout(
+    const result: AIResult<string> = await withAbortTimeout(
       (signal) => service.generateCloud(prompt, {
         systemPrompt: AI_SMART_QUERY_SYSTEM,
         maxTokens: 500,
@@ -476,10 +476,10 @@ export async function parseSmartQuery(
 
 // ─── Availability check ──────────────────────────────────────────────
 
-export function isAIRecommendAvailable(config?: { mode?: string; models?: any[] }): boolean {
+export function isAIRecommendAvailable(config?: { mode?: string; models?: ModelConfig[] }): boolean {
   try {
     const service = config
-      ? getAIService({ mode: config.mode as any, models: config.models })
+      ? getAIService({ mode: config.mode as AIMode, models: config.models })
       : getAIService();
     const cfg = service.getConfig();
     return cfg.mode !== 'local' && service.getDefaultModel() !== null;
@@ -493,14 +493,14 @@ export function isAIRecommendAvailable(config?: { mode?: string; models?: any[] 
 function parseAIRecommendations(raw: string, maxIndex: number): AIRecommendation[] {
   try {
     const jsonStr = extractJSON(raw);
-    const arr = JSON.parse(jsonStr);
+    const arr: unknown = JSON.parse(jsonStr);
     if (!Array.isArray(arr)) return [];
 
-    return arr
-      .filter((item: any) =>
+    return (arr as Array<Record<string, unknown>>)
+      .filter((item) =>
         item.name && item.description && Array.isArray(item.reflectionIndices)
       )
-      .map((item: any) => ({
+      .map((item) => ({
         name: String(item.name),
         description: String(item.description),
         reflectionIndices: (item.reflectionIndices as number[])
@@ -517,15 +517,15 @@ function parseAIRecommendations(raw: string, maxIndex: number): AIRecommendation
 function parseAIMatchResults(raw: string, maxIndex: number): AIMatchResult[] {
   try {
     const jsonStr = extractJSON(raw);
-    const arr = JSON.parse(jsonStr);
+    const arr: unknown = JSON.parse(jsonStr);
     if (!Array.isArray(arr)) return [];
 
-    return arr
-      .filter((item: any) =>
+    return (arr as Array<Record<string, unknown>>)
+      .filter((item) =>
         typeof item.reflectionIndex === 'number' && item.reason
       )
-      .map((item: any) => ({
-        reflectionIndex: item.reflectionIndex,
+      .map((item) => ({
+        reflectionIndex: item.reflectionIndex as number,
         reason: String(item.reason),
         relevance: typeof item.relevance === 'number' ? item.relevance : 0.5,
       }))
@@ -539,28 +539,29 @@ function parseAIMatchResults(raw: string, maxIndex: number): AIMatchResult[] {
 function parseSmartQueryResult(raw: string, input: string): SmartQueryResult {
   try {
     const jsonStr = extractJSON(raw);
-    const obj = JSON.parse(jsonStr);
+    const obj: Record<string, unknown> = JSON.parse(jsonStr);
 
     const validTimeRanges = ['week', 'month', '3months', 'all'];
     const validIntents = ['filter', 'analyze', 'explore'];
 
     const filters: SmartQueryFilters = {};
     if (obj.filters) {
-      if (obj.filters.timeRange && validTimeRanges.includes(obj.filters.timeRange)) {
-        filters.timeRange = obj.filters.timeRange;
+      const filtersObj = obj.filters as Record<string, unknown>;
+      if (filtersObj.timeRange && validTimeRanges.includes(filtersObj.timeRange as string)) {
+        filters.timeRange = filtersObj.timeRange as SmartQueryFilters['timeRange'];
       }
-      if (Array.isArray(obj.filters.tags)) {
-        filters.tags = obj.filters.tags.filter((t: any) => typeof t === 'string');
+      if (Array.isArray(filtersObj.tags)) {
+        filters.tags = filtersObj.tags.filter((t: unknown) => typeof t === 'string');
       }
-      if (Array.isArray(obj.filters.moods)) {
-        filters.moods = obj.filters.moods.filter((m: any) => typeof m === 'string');
+      if (Array.isArray(filtersObj.moods)) {
+        filters.moods = filtersObj.moods.filter((m: unknown) => typeof m === 'string');
       }
-      if (Array.isArray(obj.filters.keywords)) {
-        filters.keywords = obj.filters.keywords.filter((k: any) => typeof k === 'string');
+      if (Array.isArray(filtersObj.keywords)) {
+        filters.keywords = filtersObj.keywords.filter((k: unknown) => typeof k === 'string');
       }
     }
 
-    const intent = validIntents.includes(obj.intent) ? obj.intent : 'filter';
+    const intent = validIntents.includes(obj.intent as string) ? obj.intent as SmartQueryResult['intent'] : 'filter';
     const question = typeof obj.question === 'string' ? obj.question : null;
     const topic = typeof obj.topic === 'string' ? obj.topic : input;
 

@@ -348,14 +348,14 @@ CREATE INDEX IF NOT EXISTS idx_checkin_reviews_period ON checkin_reviews(period,
 
 CREATE TABLE IF NOT EXISTS body_weight_records (
   id TEXT PRIMARY KEY, date TEXT NOT NULL, weight REAL NOT NULL,
-  body_fat REAL, updated_at INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0,
+  body_fat REAL, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
   synced INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS body_checkins (
   id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
   pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
-  tags TEXT, note TEXT, updated_at INTEGER NOT NULL,
+  tags TEXT, note TEXT, updated_at INTEGER,
   deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
 );
 
@@ -503,9 +503,9 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   const tryAddCol = async (table: string, column: string, type: string) => {
     try {
       await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Only ignore "duplicate column" errors; re-throw others
-      const msg = String(err?.message ?? err ?? '');
+      const msg = String(err instanceof Error ? err.message : err ?? '');
       if (!msg.includes('duplicate column') && !msg.includes('already exists')) {
         throw err;
       }
@@ -961,7 +961,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   if (!bodyWeightCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS body_weight_records (
       id TEXT PRIMARY KEY, date TEXT NOT NULL, weight REAL NOT NULL,
-      body_fat REAL, updated_at INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0,
+      body_fat REAL, updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0,
       synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
@@ -974,7 +974,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync(`CREATE TABLE IF NOT EXISTS body_checkins (
       id TEXT PRIMARY KEY, date TEXT NOT NULL UNIQUE, energy INTEGER NOT NULL,
       pain INTEGER NOT NULL, comfort INTEGER NOT NULL, sleep INTEGER NOT NULL,
-      tags TEXT, note TEXT, updated_at INTEGER NOT NULL,
+      tags TEXT, note TEXT, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
@@ -988,7 +988,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       id TEXT PRIMARY KEY, type TEXT NOT NULL, text TEXT NOT NULL,
       time_frame TEXT, deadline TEXT, status TEXT NOT NULL DEFAULT 'active',
       achieved_at INTEGER, sort_order INTEGER NOT NULL DEFAULT 0,
-      updated_at INTEGER NOT NULL, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
 
@@ -999,7 +999,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   if (!visionPracticesCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS vision_practices (
       id TEXT PRIMARY KEY, vision_id TEXT NOT NULL, ref_type TEXT NOT NULL,
-      ref_id TEXT NOT NULL, updated_at INTEGER NOT NULL,
+      ref_id TEXT NOT NULL, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
@@ -1013,7 +1013,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       id TEXT PRIMARY KEY, date TEXT NOT NULL, period_label TEXT NOT NULL,
       type TEXT NOT NULL, practice_days INTEGER NOT NULL, total_days INTEGER NOT NULL,
       habit_stats TEXT, plan_progress TEXT, vision_progress TEXT,
-      insight TEXT, adjustment TEXT, updated_at INTEGER NOT NULL,
+      insight TEXT, adjustment TEXT, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
@@ -1026,7 +1026,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync(`CREATE TABLE IF NOT EXISTS mantra_defs (
       id TEXT PRIMARY KEY, name TEXT NOT NULL, subtitle TEXT,
       category TEXT NOT NULL DEFAULT 'custom', sort_order INTEGER NOT NULL DEFAULT 0,
-      target_count INTEGER, updated_at INTEGER NOT NULL,
+      target_count INTEGER, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
@@ -1040,7 +1040,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       id TEXT PRIMARY KEY, mantra_id TEXT NOT NULL, date TEXT NOT NULL,
       count INTEGER NOT NULL, rounds INTEGER NOT NULL, duration_sec INTEGER NOT NULL,
       started_at INTEGER NOT NULL, completed_at INTEGER NOT NULL,
-      target_rounds INTEGER, dedication TEXT, updated_at INTEGER NOT NULL,
+      target_rounds INTEGER, dedication TEXT, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
@@ -1057,7 +1057,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       samatha_ratio_avg REAL, vipassana_ratio_avg REAL,
       total_breaths INTEGER, closing_notes TEXT,
       self_reported_stage TEXT, self_reported_stage_text TEXT,
-      dedication_id TEXT, updated_at INTEGER NOT NULL,
+      dedication_id TEXT, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }

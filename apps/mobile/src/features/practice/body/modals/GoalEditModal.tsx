@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { X } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, recommendStrategy, BODY_STRATEGIES, type BodyStrategy, type BodyGoal } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, recommendStrategy, BODY_STRATEGIES, type BodyStrategy, type BodyGoal, type Theme } from '@egoless-do/core';
 import { PrimaryButton, OutlineButton } from '../../../../components/UI';
 
 interface Props {
   visible: boolean;
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   goal?: BodyGoal;
-  profile: any;
+  profile: Record<string, unknown>;
   onClose: () => void;
-  onSave: (data: any) => void;
+  onSave: (data: Record<string, unknown>) => void;
 }
 
 export default function GoalEditModal({ visible, TH, T, goal, profile, onClose, onSave }: Props) {
@@ -19,7 +19,7 @@ export default function GoalEditModal({ visible, TH, T, goal, profile, onClose, 
   const [targetBodyFat, setTargetBodyFat] = useState(goal?.targetBodyFat?.toString() ?? '');
   const [targetDate, setTargetDate] = useState(goal?.targetDate ?? '');
   const [strategy, setStrategy] = useState<BodyStrategy | undefined>(goal?.strategy);
-  const recommended = recommendStrategy(profile.bodyTags ?? []);
+  const recommended = recommendStrategy((profile.bodyTags as string[] ?? []) as string[]);
 
   return (
     <Modal visible={visible} transparent animationType="slide">

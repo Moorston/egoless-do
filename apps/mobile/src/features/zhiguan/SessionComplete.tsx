@@ -30,10 +30,11 @@ export default function SessionComplete({ durationSec, startTime, sankalpa, onSa
   const [note, setNote] = useState('');
   const [eightTactile, setEightTactile] = useState<EightTactile>({ ...EMPTY_EIGHT_TACTILE });
   const [selfReportedStage, setSelfReportedStage] = useState<SamStage>('not_specified');
+  const [selfReportedStageText, setSelfReportedStageText] = useState('');
 
   const minutes = Math.floor(durationSec / 60);
   const seconds = durationSec % 60;
-  const dateStr = new Date(startTime).toLocaleDateString('zh-CN', {
+  const dateStr = new Date(startTime).toLocaleDateString(undefined, {
     year: 'numeric', month: '2-digit', day: '2-digit',
     hour: '2-digit', minute: '2-digit',
   });
@@ -47,6 +48,7 @@ export default function SessionComplete({ durationSec, startTime, sankalpa, onSa
       closingNotes: note || undefined,
       eightTactile,
       selfReportedStage,
+      selfReportedStageText: selfReportedStage === 'other' ? (selfReportedStageText || undefined) : undefined,
     });
   };
 
@@ -92,8 +94,8 @@ export default function SessionComplete({ durationSec, startTime, sankalpa, onSa
 
       {/* Self-reported Stage */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{T('zhiguanSelfReportedStage')}</Text>
-        <Text style={styles.sectionHint}>{T('zhiguanSelfReportedStageHint')}</Text>
+        <Text style={styles.sectionTitle}>{T('zhiguanSelfReportedTitle')}</Text>
+        <Text style={styles.sectionHint}>{T('zhiguanSelfReportedHint')}</Text>
         <View style={styles.chipGroup}>
           {SAM_STAGES.map(stage => (
             <Pressable
@@ -107,9 +109,17 @@ export default function SessionComplete({ durationSec, startTime, sankalpa, onSa
             </Pressable>
           ))}
         </View>
+        {selfReportedStage === 'other' && (
+          <TextInput
+            style={[styles.textInput, { marginTop: 8, minHeight: 40 }]}
+            value={selfReportedStageText}
+            onChangeText={setSelfReportedStageText}
+            placeholder={T('zhiguanSelfReportedOtherPlaceholder')}
+            placeholderTextColor="#8B7355"
+            maxLength={200}
+          />
+        )}
       </View>
-
-      {/* Closing Notes */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{T('zhiguanClosingNotes')}</Text>
         <TextInput

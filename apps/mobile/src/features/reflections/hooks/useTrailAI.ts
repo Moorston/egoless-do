@@ -1,24 +1,24 @@
 import { useCallback, useRef, useMemo, useEffect } from 'react';
 import { useAppStore } from '../../../store/useAppStore';
 import { getAIService } from '@egoless-do/core';
-import type { TrailInsightCache, TrailReviewCache, ThoughtTrail } from '@egoless-do/core';
+import type { TrailInsightCache, TrailReviewCache, ThoughtTrail, MindReflection, TrailNote } from '@egoless-do/core';
 
 const CACHE_FRESH_MS = 5 * 60 * 1000;
 
 function isCacheStale(
   cache: { generatedAt: number } | undefined,
   trail: ThoughtTrail | undefined,
-  reflections: unknown[] | undefined,
-  trailNotes: unknown[] | undefined,
+  reflections: MindReflection[] | undefined,
+  trailNotes: TrailNote[] | undefined,
 ): boolean {
   if (!trail) return false;
   if (!cache) return true;
   const reflectionTimestamps = trail.reflectionIds
-    .map(id => (reflections as any[] ?? []).find(r => r.id === id))
+    .map(id => (reflections ?? []).find(r => r.id === id))
     .filter((r): r is NonNullable<typeof r> => r != null && !r.deleted)
     .map(r => r.timestamp);
   const noteTimestamps = (trail.noteIds ?? [])
-    .map(id => (trailNotes as any[] ?? []).find(n => n.id === id))
+    .map(id => (trailNotes ?? []).find(n => n.id === id))
     .filter((n): n is NonNullable<typeof n> => n != null && !n.deleted)
     .map(n => n.createdAt);
   const allTimestamps = [...reflectionTimestamps, ...noteTimestamps];

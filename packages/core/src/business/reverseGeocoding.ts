@@ -36,10 +36,12 @@ function getCacheKey(lat: number, lng: number): string {
 /**
  * 从 Nominatim 响应中提取城市名
  */
-function extractCityName(data: any): CityInfo | null {
-  if (!data || !data.address) return null;
+function extractCityName(data: unknown): CityInfo | null {
+  if (!data || typeof data !== 'object') return null;
+  const obj = data as Record<string, unknown>;
+  const address = obj.address as Record<string, string> | undefined;
+  if (!address) return null;
 
-  const address = data.address;
   // 优先级：city > town > village > county > state
   const city = address.city || address.town || address.village || address.county || address.state || '';
   const country = address.country || '';
@@ -97,9 +99,9 @@ async function processQueue() {
         }
 
         request.resolve(cityInfo);
-      } catch (error: any) {
-        if (error?.name !== 'AbortError') {
-          log.warn('Reverse geocoding failed:', error?.message);
+      } catch (error: unknown) {
+        if (!(error instanceof Error) || error.name !== 'AbortError') {
+          log.warn('Reverse geocoding failed:', error instanceof Error ? error.message : error);
         }
         request.resolve(null);
       }

@@ -6,7 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, dateStr, COLORS } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, dateStr, COLORS, type Theme } from '@egoless-do/core';
 import { Calendar, Flame, X, Trash2 } from 'lucide-react-native';
 import type { FastingSession } from '@egoless-do/core';
 
@@ -49,7 +49,7 @@ function calcStreak(entries: FastingSession[]): number {
 }
 
 // ── Stats Card ──
-function StatsCard({ entries, TH }: { entries: FastingSession[]; TH: any }) {
+function StatsCard({ entries, TH }: { entries: FastingSession[]; TH: Theme }) {
   const totalHours = useMemo(() => Math.round(entries.reduce((s, f) => s + (getDur(f).totalMin / 60), 0)), [entries]);
   const streak = useMemo(() => calcStreak(entries), [entries]);
   const totalKcal = useMemo(() => entries.reduce((s, f) => s + (f.estimatedKcal ?? 0), 0), [entries]);
@@ -80,7 +80,7 @@ function StatsCard({ entries, TH }: { entries: FastingSession[]; TH: any }) {
 }
 
 // ── Heatmap ──
-function Heatmap({ entries, TH, onPress }: { entries: FastingSession[]; TH: any; onPress: () => void }) {
+function Heatmap({ entries, TH, onPress }: { entries: FastingSession[]; TH: Theme; onPress: () => void }) {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -182,7 +182,7 @@ export function FastCalendarScreen() {
 }
 
 // ── Detail Modal ──
-function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession | null; TH: any; onClose: () => void; onDelete: (id: string) => void }) {
+function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession | null; TH: Theme; onClose: () => void; onDelete: (id: string) => void }) {
   const [editingNote, setEditingNote] = useState(false);
   const [noteText, setNoteText] = useState('');
   if (!entry) return null;
@@ -372,6 +372,7 @@ export default function FastHistoryPage() {
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>
             <TouchableOpacity onPress={() => (nav as any).navigate('MainTabs', { screen: 'Fasting' })} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+              {/* any: nested navigator type mismatch between RootStack and MainTab */}
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次禁食</Text>
             </TouchableOpacity>
           </View>

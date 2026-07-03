@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore } from '../../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
-import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS } from '@egoless-do/core';
+import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import {
   Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
@@ -16,24 +16,11 @@ import {
 } from 'lucide-react-native';
 import CheckinReflection from './CheckinReflection';
 
-function parseExistingNote(raw: string): { userNote: string; practices: string[]; customs: string[]; fasted: boolean; waterMl: number; habits: string[] } {
-  if (!raw) return { userNote: '', practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
-  try {
-    const data = JSON.parse(raw);
-    if (typeof data === 'object' && data !== null) {
-      return {
-        userNote: data.note ?? '',
-        practices: data.practices ?? [],
-        customs: data.customs ?? [],
-        fasted: !!data.fasted,
-        waterMl: typeof data.water === 'number' ? data.water : 0,
-        habits: data.habits ?? [],
-      };
-    }
-  } catch {
-    // legacy format
-  }
-  return { userNote: raw, practices: [], customs: [], fasted: false, waterMl: 0, habits: [] };
+/** Parse weight string, return undefined if invalid or out of range (1-500 kg) */
+function parseWeight(raw: string | undefined): number | undefined {
+  if (!raw) return undefined;
+  const n = parseFloat(raw);
+  return Number.isFinite(n) && n > 0 && n <= 500 ? n : undefined;
 }
 
 export default function CheckinModal({ onClose, graceDate }: { onClose: () => void; graceDate?: string }) {
@@ -71,7 +58,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     (store.checkinHistory ?? []).find((c: CheckinEntry) => !c.deleted && c.date === targetDate),
     [store.checkinHistory, targetDate],
   );
-  const parsed = useMemo(() => parseExistingNote(existing?.note ?? ''), [existing]);
+  const parsed = useMemo(() => parseCheckinNote(existing?.note ?? ''), [existing]);
 
   const totalCal = useMemo(
     () => getTodayFoodLog((store.foodLog ?? []).filter(f => !f.deleted)).reduce((a, f) => a + f.calories, 0),
@@ -176,7 +163,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     if (!isGraceMode && totalCal > 0) noteData.food = totalCal;
     if (reasonOverride) noteData.incompleteReason = reasonOverride;
     if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
-    const weightNum = weight ? parseFloat(weight) : undefined;
+    const weightNum = parseWeight(weight);
     store.submitCheckin(done, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
     // In grace mode, also record grace history and close directly
     if (isGraceMode) {
@@ -596,7 +583,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                         backgroundColor: selected ? `${P}15` : 'transparent',
                       }}>
                       <Text style={{ fontSize: FONT_BODY, color: selected ? P : TH.text }}>
-                        {r.icon} {T(labelKey as any)}
+                        {r.icon} {T(labelKey)}
                       </Text>
                     </TouchableOpacity>
                   );

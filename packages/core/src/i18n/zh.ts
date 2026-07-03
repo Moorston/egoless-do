@@ -616,7 +616,8 @@ export const zh: I18nKeys = {
   authInvalidEmail:'请输入有效的邮箱地址', authEmailTaken:'该邮箱已注册',
 
   // Common
-  commonCancel:'取消', commonConfirm:'确定', commonClose:'关闭', commonDone:'完成',
+  commonCancel:'取消', commonConfirm:'确定', commonClose:'关闭', commonDone:'完成', commonOk:'好的',
+  planSaveFailedTitle:'保存失败', planSaveFailedMsg:'当前已有活跃计划，请先完成或作废后再创建',
   commonDelete:'删除', commonSave:'保存', commonEdit:'编辑', commonAdd:'添加',
   commonBack:'← 返回', commonSyncing:'同步中...', commonConnected:'已连接',
   commonOffline:'离线模式',
@@ -649,6 +650,7 @@ export const zh: I18nKeys = {
   // Calendar weekdays
   weekdaySun:'日', weekdayMon:'一', weekdayTue:'二', weekdayWed:'三',
   weekdayThu:'四', weekdayFri:'五', weekdaySat:'六',
+  clearReviewData:'清除复盘数据', clearReviewDataConfirm:'确定要清除所有复盘数据吗？此操作不可恢复。', clearReviewDataDone:'复盘数据已清除',
 
   // Plan detail
   planNotFound:'计划不存在', heatmapLess:'少', heatmapMore:'多', month:'月',
@@ -1060,6 +1062,7 @@ export const zh: I18nKeys = {
   vowProgressDays:'精进天数', vowProgressMonth:'本月累计', vowProgressStreak:'最长连续',
   vowProgressToday:'今日精进', vowProgressWeekly:'本周', vowProgressHabitDone:'习惯完成', vowProgressPlanDone:'计划进度',
   vowLinkedPlans:'关联计划', vowLinkedPlanExpand:'展开关联计划', vowLinkedPlanCollapse:'折叠关联计划', vowNoLinkedPlans:'暂无关联计划',
+  vowPlanProgress:'计划', vowTaskProgress:'任务',
   planLinkVision:'关联愿景', planSelectVision:'选择愿景关联', planChangeVision:'更换', planUnlinkVision:'解除关联', planLinkedVision:'已关联愿景',
   vowDedWrite:'写回向', vowDedHistory:'回向历史', vowDedSettings:'回向设置',
   vowEditTitle:'编辑愿景', vowNewTitle:'新增愿景', vowType:'类型',
@@ -1121,9 +1124,10 @@ export const zh: I18nKeys = {
   zhiguanHindranceGreed:'贪欲', zhiguanHindranceAversion:'嗔恚', zhiguanHindranceSloth:'昏沉',
   zhiguanHindranceRestlessness:'掉悔', zhiguanHindranceDoubt:'疑',
   zhiguanHindranceNone:'无', zhiguanHindranceSevere:'强',
+  zhiguanFiveHindrancesTitle:'五盖自检', zhiguanFiveHindrancesHint:'如实觉察，非评判',
 
   // 法门
-  zhiguanMethodLabel:'选择止观法门', zhiguanMethodHint:'数息为要，余者随宜',
+  zhiguanMethodTitle:'修行法门', zhiguanMethodLabel:'选择止观法门', zhiguanMethodHint:'数息为要，余者随宜',
   zhiguanMethodAnapanasati:'数息观', zhiguanMethodAnapanasatiDesc:'系心鼻端，数出息入息', zhiguanMethodAnapanasatiOpen:'一呼一吸，分明记数',
   zhiguanMethodSelfInquiry:'观念头', zhiguanMethodSelfInquiryDesc:'守于心门，观念头生灭', zhiguanMethodSelfInquiryOpen:'即生即灭，不隨不追',
   zhiguanMethodKasina:'体真止', zhiguanMethodKasinaDesc:'体诸法本空，念虑自止', zhiguanMethodKasinaOpen:'一念不生，万法皆空',
@@ -1147,7 +1151,7 @@ export const zh: I18nKeys = {
   zhiguanTactileTitle:'八触（未必现前）', zhiguanTactileHint:'智者大师言：触则现，不触亦无碍',
   zhiguanTactileMovement:'动', zhiguanTactileItching:'痒', zhiguanTactileCold:'冷', zhiguanTactileWarmth:'暖',
   zhiguanTactileLightness:'轻', zhiguanTactileHeaviness:'重', zhiguanTactileRoughness:'涩', zhiguanTactileSmoothness:'滑',
-  zhiguanSelfReportedTitle:'定阶自述', zhiguanSelfReportedHint:'须教师印证，此处仅供自记',
+  zhiguanSelfReportedTitle:'定阶自述', zhiguanSelfReportedHint:'须教师印证，此处仅供自记', zhiguanSelfReportedOtherPlaceholder:'请描述你的修行体验...',
   zhiguanStageNotSpecified:'我不确定', zhiguanStageScattered:'散心', zhiguanStageDesireRealm:'欲界定',
   zhiguanStagePreparation:'未到地定', zhiguanStageFirstJhana:'初禅', zhiguanStageSecondJhana:'二禅',
   zhiguanStageThirdJhana:'三禅', zhiguanStageFourthJhana:'四禅', zhiguanStageOther:'其他',
@@ -1165,7 +1169,7 @@ export const zh: I18nKeys = {
   zhiguanRuleDoubt:'疑盖重者，宜修体真止了诸法空', zhiguanRuleDefault:'轻安调顺，直修数息',
 
   // Vipassana 念处
-  zhiguanVipassanaLabel:'观：身受心法',
+  zhiguanVipassanaTitle:'四念处指引', zhiguanVipassanaLabel:'观：身受心法',
   zhiguanVipassanaKayaTitle:'身念处', zhiguanVipassanaVedanaTitle:'受念处',
   zhiguanVipassanaCittaTitle:'心念处', zhiguanVipassanaDharmaTitle:'法念处',
   zhiguanVipassanaKayaLine1:'观察自己身体的姿势',
@@ -1197,4 +1201,7 @@ export const zh: I18nKeys = {
   zhiguanEmptyHistoryTitle:'尚未有坐禅记录', zhiguanEmptyHistoryDesc:'开始第一次坐禅，即是出发',
   zhiguanDeleteRecord:'删除', zhiguanDeleteConfirm:'确定删除？该操作不可恢复。',
   zhiguanExportJson:'导出 JSON',
+  zhiguanRoundLabel:'轮', zhiguanBreathCount:'呼吸数',
+  zhiguanDetailTitle:'修行详情', zhiguanDetailMethod:'法门',
+  zhiguanDetailDuration:'时长', zhiguanDetailStatus:'状态', zhiguanDetailDate:'日期',
 };

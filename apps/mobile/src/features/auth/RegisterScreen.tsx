@@ -64,10 +64,10 @@ export default function RegisterScreen() {
       if (!mountedRef.current) return;
       setEmailStatus(res.available ? 'ok' : 'taken');
       if (!res.available) setEmailError(res.error || T('authAlreadyRegistered'));
-    } catch (e: any) {
+    } catch (e: unknown) {
       if (!mountedRef.current) return;
       setEmailStatus('idle');
-      setEmailError(e.message || T('authCheckFailed'));
+      setEmailError(e instanceof Error ? e.message : T('authCheckFailed'));
     }
   };
 
@@ -81,8 +81,8 @@ export default function RegisterScreen() {
     try {
       await apiSendCode(email.trim());
       startCooldown();
-    } catch (e: any) {
-      setError(e.message || T('authSendFailed'));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : T('authSendFailed'));
     } finally {
       setSending(false);
     }
@@ -106,8 +106,8 @@ export default function RegisterScreen() {
     try {
       await register(email.trim(), password, name.trim(), code.trim());
       nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
-    } catch (e: any) {
-      setError(e.message || T('authRegisterFailed'));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : T('authRegisterFailed'));
     }
   };
 

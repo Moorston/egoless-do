@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 import {
   FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, dateStr,
-  BODY_TAGS_PRESET, type BodyCheckin, type BodyPlan,
+  BODY_TAGS_PRESET, type BodyCheckin, type BodyPlan, type Theme,
 } from '@egoless-do/core';
 import { PrimaryButton, OutlineButton, TagPill } from '../../../components/UI';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   plan?: BodyPlan;
   onSave: (data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => void;

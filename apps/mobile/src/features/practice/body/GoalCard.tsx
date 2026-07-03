@@ -1,20 +1,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Target } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_SMALL, calcGoalProgress, recommendStrategy, BODY_STRATEGIES, type BodyGoal } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_SMALL, calcGoalProgress, recommendStrategy, BODY_STRATEGIES, type BodyGoal, type Theme } from '@egoless-do/core';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   goal: BodyGoal | undefined;
-  profile: any;
+  profile: Record<string, unknown>;
   onEdit: () => void;
 }
 
 export default function GoalCard({ TH, T, goal, profile, onEdit }: Props) {
-  const progress = goal?.initialWeight ? calcGoalProgress(profile.weight, goal.targetWeight, goal.initialWeight) : 0;
+  const progress = goal?.initialWeight ? calcGoalProgress(profile.weight as number, goal.targetWeight, goal.initialWeight) : 0;
   const strategyLabel = goal?.strategy ? (BODY_STRATEGIES.find(s => s.key === goal.strategy)?.nameKey ?? goal.strategy) : null;
-  const recommended = recommendStrategy(profile.bodyTags ?? []);
+  const recommended = recommendStrategy((profile.bodyTags as string[] ?? []) as string[]);
 
   return (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
@@ -39,9 +39,9 @@ export default function GoalCard({ TH, T, goal, profile, onEdit }: Props) {
         </View>
       ) : (
         <View>
-          {(profile.bodyTags ?? []).length > 0 && (
+          {((profile.bodyTags as string[]) ?? []).length > 0 && (
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
-              {(profile.bodyTags ?? []).slice(0, 4).map((tag: string) => (
+              {((profile.bodyTags as string[]) ?? []).slice(0, 4).map((tag: string) => (
                 <Text key={tag} style={{ fontSize: FONT_SMALL, color: '#8b5cf6' }}>#{tag}</Text>
               ))}
             </View>
@@ -50,13 +50,13 @@ export default function GoalCard({ TH, T, goal, profile, onEdit }: Props) {
             {goal.targetWeight ? (
               <View style={{ alignItems: 'center', flex: 1 }}>
                 <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.text }}>{goal.targetWeight}kg</Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyTargetWeight')} ({T('bodyCurrentWeight')}{profile.weight ?? '-'}kg)</Text>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyTargetWeight')} ({T('bodyCurrentWeight')}{(profile.weight as number) ?? '-'}kg)</Text>
               </View>
             ) : null}
             {goal.targetBodyFat ? (
               <View style={{ alignItems: 'center', flex: 1 }}>
                 <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.text }}>{goal.targetBodyFat}%</Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyTargetBodyFat')} ({T('bodyCurrentBodyFat')}{profile.bodyFat ?? '-'}%)</Text>
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyTargetBodyFat')} ({T('bodyCurrentBodyFat')}{(profile.bodyFat as number) ?? '-'}%)</Text>
               </View>
             ) : null}
           </View>

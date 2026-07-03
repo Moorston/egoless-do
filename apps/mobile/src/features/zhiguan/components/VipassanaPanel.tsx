@@ -56,7 +56,7 @@ export default function VipassanaPanel({ visible, onClose, T }: Props) {
           </ScrollView>
 
           <Pressable style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>{T('close')}</Text>
+            <Text style={styles.closeButtonText}>{T('commonClose')}</Text>
           </Pressable>
         </Pressable>
       </Pressable>

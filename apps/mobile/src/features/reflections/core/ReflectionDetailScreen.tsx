@@ -1,7 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { Alert, Share } from 'react-native';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
+import type { MindReflection } from '@egoless-do/core';
 import ReflectionDetailContent from './ReflectionDetailContent';
 import ShareCard from './ShareCard';
 import { useAppStore } from '../../../store/useAppStore';
@@ -10,17 +12,18 @@ import { useT } from '../../../components/UI';
 
 export default function ReflectionDetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'ReflectionDetail'>>();
-  const nav = useNavigation<any>();
+  const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { reflectionId } = route.params;
   const { reflections, getActivePlan, deleteReflection } = useAppStore(useShallow(s => ({ reflections: s.reflections, getActivePlan: s.getActivePlan, deleteReflection: s.deleteReflection })));
   const T = useT();
-  const [shareReflection, setShareReflection] = useState<any>(null);
+  const [shareReflection, setShareReflection] = useState<MindReflection | null>(null);
 
-  const handleEdit = useCallback((r: any) => {
-    nav.navigate('Reflections', { editId: r.id });
+  const handleEdit = useCallback((r: MindReflection) => {
+    // NOTE: Reflections is a MainTab screen, nested navigator type mismatch
+    nav.navigate('Reflections' as never, { editId: r.id } as never);
   }, [nav]);
 
-  const handleShare = useCallback(async (r: any) => {
+  const handleShare = useCallback(async (r: MindReflection) => {
     Alert.alert(T('reflShare'), '', [
       {
         text: T('shareTextShare'), onPress: async () => {

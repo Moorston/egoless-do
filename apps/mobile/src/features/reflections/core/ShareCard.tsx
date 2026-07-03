@@ -22,7 +22,7 @@ interface ShareCardProps {
 export default function ShareCard({ visible, onClose, reflection }: ShareCardProps) {
   const TH = useTheme();
   const T = useT();
-  const viewShotRef = useRef<any>(null);
+  const viewShotRef = useRef<{ capture: () => Promise<string> } | null>(null);
   const [capturing, setCapturing] = useState(false);
 
   if (!reflection) return null;
@@ -60,7 +60,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
       const uri = await viewShotRef.current?.capture?.();
       if (!uri) return;
       const result = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-      if ((result as any).granted || (result as any).status === 'granted') {
+      if (result.granted) {
         const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
         const fileUri = await FileSystem.StorageAccessFramework.createFileAsync(
           FileSystem.cacheDirectory ?? '',

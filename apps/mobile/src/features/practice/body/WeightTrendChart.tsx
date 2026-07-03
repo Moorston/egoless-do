@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { TrendingDown, TrendingUp, Minus } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, type WeightRecord } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, type WeightRecord, type Theme } from '@egoless-do/core';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   weightRecords: WeightRecord[];
 }

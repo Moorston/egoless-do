@@ -24,7 +24,7 @@ export default function InsightPanelSkeleton() {
   });
 
   const shimmer = (width: number | string, height: number, borderRadius = 6) => (
-    <View style={{ width: width as any, height, borderRadius, backgroundColor: `${TH.sub}15`, overflow: 'hidden' }}>
+    <View style={{ width, height, borderRadius, backgroundColor: `${TH.sub}15`, overflow: 'hidden' }}>
       <Animated.View
         style={{
           ...StyleSheet.absoluteFillObject,

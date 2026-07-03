@@ -6,7 +6,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, FONT_STAT_CARD, dateStr, yesterday } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, FONT_STAT_CARD, dateStr, yesterday, type Theme } from '@egoless-do/core';
 import { formatSleepDuration } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight, Moon, Trash2, X, Heart } from 'lucide-react-native';
 import type { SleepEntry } from '@egoless-do/core';
@@ -60,7 +60,7 @@ function renderStars(quality?: number): string {
 }
 
 // ── Stats Card ──
-function StatsCard({ entries, TH }: { entries: SleepEntry[]; TH: any }) {
+function StatsCard({ entries, TH }: { entries: SleepEntry[]; TH: Theme }) {
   const totalDays = useMemo(() => new Set(entries.map(e => e.date)).size, [entries]);
   const avgDuration = useMemo(() => {
     const withDur = entries.filter(e => (e.durationMin ?? 0) > 0);
@@ -113,7 +113,7 @@ function StatsCard({ entries, TH }: { entries: SleepEntry[]; TH: any }) {
 }
 
 // ── Heatmap ──
-function Heatmap({ entries, TH, onPress }: { entries: SleepEntry[]; TH: any; onPress: () => void }) {
+function Heatmap({ entries, TH, onPress }: { entries: SleepEntry[]; TH: Theme; onPress: () => void }) {
   const now = new Date();
   const [viewYear, setViewYear] = useState(now.getFullYear());
   const [viewMonth, setViewMonth] = useState(now.getMonth());
@@ -179,7 +179,7 @@ function Heatmap({ entries, TH, onPress }: { entries: SleepEntry[]; TH: any; onP
 }
 
 // ── Detail Modal ──
-function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: SleepEntry | null; TH: any; T: any; onClose: () => void; onDelete: (id: string) => void }) {
+function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: SleepEntry | null; TH: Theme; T: (key: string) => string; onClose: () => void; onDelete: (id: string) => void }) {
   const [editingNote, setEditingNote] = useState(false);
   const [noteText, setNoteText] = useState('');
 
@@ -467,6 +467,7 @@ export default function SleepHistoryPage() {
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每晚的安睡都是送给身体的礼物</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，记录你的睡眠</Text>
             <TouchableOpacity onPress={() => (nav as any).navigate('MainTabs', { screen: 'Sleep' })} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+              {/* any: nested navigator type mismatch between RootStack and MainTab */}
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始记录睡眠</Text>
             </TouchableOpacity>
           </View>

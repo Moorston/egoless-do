@@ -95,7 +95,7 @@ export default function GiveScreen() {
               <View key={gt.type} style={styles.typeItem}>
                 <Text style={styles.typeIcon}>{gt.icon}</Text>
                 <Text style={[styles.typeCount, { color: gt.color }]}>{stats.byType[gt.type] || 0}</Text>
-                <Text style={[styles.typeLabel, { color: TH.sub }]}>{T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}` as any) || gt.type}</Text>
+                <Text style={[styles.typeLabel, { color: TH.sub }]}>{T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}`) || gt.type}</Text>
               </View>
             ))}
           </View>
@@ -172,7 +172,7 @@ export default function GiveScreen() {
                 >
                   <Text style={styles.typeChipIcon}>{gt.icon}</Text>
                   <Text style={{ color: giveType === gt.type ? '#fff' : gt.color, fontSize: FONT_BODY, fontWeight: '600' }}>
-                    {T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}` as any) || gt.type}
+                    {T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}`) || gt.type}
                   </Text>
                 </TouchableOpacity>
               ))}

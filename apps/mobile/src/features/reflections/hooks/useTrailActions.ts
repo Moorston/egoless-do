@@ -5,6 +5,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import { useAppStore } from '../../../store/useAppStore';
 import { useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
+import type { PlanItem } from '@egoless-do/core';
 
 export function useTrailActions(trailId: string) {
   const T = useT();
@@ -20,7 +21,7 @@ export function useTrailActions(trailId: string) {
   const updateTrailNote = useAppStore(s => s.updateTrailNote);
 
   const handleWriteReflection = useCallback(() => {
-    nav.navigate('MainTabs', { screen: 'Reflections', params: { showNew: true, trailId } } as any);
+    nav.navigate('MainTabs' as never, { screen: 'Reflections', params: { showNew: true, trailId } } as never);
   }, [nav, trailId]);
 
   const handleSelectReflectionsConfirm = useCallback((selectedIds: string[]) => {
@@ -63,7 +64,7 @@ export function useTrailActions(trailId: string) {
     addTrailNote(trailId, form);
   }, [addTrailNote, trailId]);
 
-  const handleCreatePlan = useCallback((form: { name: string; description?: string; priority: any; startDate: string; endDate: string; targetMetric?: string }) => {
+  const handleCreatePlan = useCallback((form: { name: string; description?: string; priority: string; startDate: string; endDate: string; targetMetric?: string }) => {
     createPlanItemFromTrail(trailId, form);
   }, [createPlanItemFromTrail, trailId]);
 
@@ -96,7 +97,7 @@ export function useTrailActions(trailId: string) {
   }, [deleteThoughtTrail, trailId, nav, T]);
 
   const handleNavigateToPlan = useCallback((planItemId: string) => {
-    const item = (useAppStore.getState().planItems ?? []).find((i: any) => !i.deleted && i.id === planItemId);
+    const item = (useAppStore.getState().planItems ?? []).find((i: PlanItem) => !i.deleted && i.id === planItemId);
     if (item) {
       nav.navigate('PlanDetail', { planId: item.planId });
     }

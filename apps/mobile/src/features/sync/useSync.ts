@@ -9,6 +9,7 @@ import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
 import { getState, openDatabase } from '../../db/schema';
 import { useAppStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
+import type { AIMode, ModelConfig } from '@egoless-do/core';
 import { mobileStorageAdapter, setStorageAdapterTrigger } from '../../store/storageAdapter';
 import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
 import { useMusicStore } from '../music/useMusicStore';
@@ -111,21 +112,21 @@ export function useSync() {
         if (key === 'totalMedMinutes') {
           storePatch.totalMedMinutes = value as number;
         } else if (key === 'aiMode') {
-          (storePatch as any).aiMode = value;
+          storePatch.aiMode = value as AIMode;
         } else if (key === 'aiModels') {
-          (storePatch as any).aiModels = value;
+          storePatch.aiModels = value as ModelConfig[];
         } else if (isStoreKey(key) && Array.isArray(value)) {
           // Merge delta into existing array by id/date to prevent truncation
-          const existing = (useAppStore.getState() as any)[key];
+          const existing = (useAppStore.getState() as Record<string, unknown[]>)[key];
           if (Array.isArray(existing) && existing.length > 0) {
-            const map = new Map(existing.map((item: any) => [item.id ?? item.date, item]));
+            const map = new Map(existing.map((item: Record<string, unknown>) => [item.id ?? item.date, item]));
             for (const item of value) {
-              const k = item?.id ?? item?.date;
+              const k = (item as Record<string, unknown>)?.id ?? (item as Record<string, unknown>)?.date;
               if (k) map.set(k, item);
             }
-            (storePatch as any)[key] = [...map.values()];
+            (storePatch as Record<string, unknown[]>)[key] = [...map.values()];
           } else {
-            (storePatch as any)[key] = value;
+            (storePatch as Record<string, unknown[]>)[key] = value;
           }
         }
       }
@@ -147,7 +148,7 @@ export function useSync() {
           if (up.musicFavorites && Array.isArray(up.musicFavorites)) musicPatch.favorites = up.musicFavorites;
           if (up.musicVolume !== undefined && typeof up.musicVolume === 'number') musicPatch.volume = up.musicVolume;
           if (up.musicPlayMode && typeof up.musicPlayMode === 'string') musicPatch.playMode = up.musicPlayMode;
-          if (Object.keys(musicPatch).length) useMusicStore.setState(musicPatch as any);
+          if (Object.keys(musicPatch).length) useMusicStore.setState(musicPatch as Partial<ReturnType<typeof useMusicStore.getState>>);
         }
       }
 

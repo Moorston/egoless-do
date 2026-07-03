@@ -75,11 +75,14 @@ export default function ZhiguanScreen() {
   const [roundState, setRoundState] = useState<CountingRoundState>(initialRoundState);
   const [showVipassanaPanel, setShowVipassanaPanel] = useState(false);
 
-  // Breath tap handler
+  // Breath tap handler -- use functional update to avoid stale closure
   const handleBreathTap = useCallback(() => {
-    setRoundState(prev => notifyBreath(prev));
-    recordBreathCount(roundState.totalBreaths + 1);
-  }, [roundState.totalBreaths, store]);
+    setRoundState(prev => {
+      const next = notifyBreath(prev);
+      recordBreathCount(next.totalBreaths);
+      return next;
+    });
+  }, [recordBreathCount]);
 
   // Initialize draft + load settings
   useEffect(() => {
@@ -97,7 +100,7 @@ export default function ZhiguanScreen() {
         });
       }
     });
-    return () => { store.resetDraft(); };
+    return () => { resetDraft(); };
   }, []);
 
   // Background color transition
@@ -109,20 +112,26 @@ export default function ZhiguanScreen() {
     }).start();
   }, [mode]);
 
-  // Target time hint
+  // Practice time hints (5min, 30min awareness)
   usePracticeElapseHints(timer.elapsedSecs, {
     on5min: () => {},
     on30min: () => {},
-    on60min: () => {
-      if (settings.targetMinutes && timer.elapsedSecs >= settings.targetMinutes * 60) {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }
-    },
+    on60min: () => {},
   });
+
+  // Target time reached haptic
+  const targetFiredRef = useRef(false);
+  useEffect(() => {
+    if (mode !== 'practicing') { targetFiredRef.current = false; return; }
+    if (settings.targetMinutes && timer.elapsedSecs >= settings.targetMinutes * 60 && !targetFiredRef.current) {
+      targetFiredRef.current = true;
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  }, [timer.elapsedSecs, settings.targetMinutes, mode]);
 
   const handleStart = useCallback(() => {
     // Sync draft with latest settings before starting
-    store.updateDraft({
+    updateDraft({
       sankalpa: settings.sankalpa,
       chosenMethod: settings.chosenMethod,
       fiveHindrances: settings.fiveHindrances,
@@ -149,7 +158,7 @@ export default function ZhiguanScreen() {
         }
       }
     }
-  }, [timer, settings, musicStore, store]);
+  }, [timer, settings, musicStore]);
 
   const handleLongPressStart = useCallback(() => {
     setIsLongPressing(true);
@@ -191,18 +200,18 @@ export default function ZhiguanScreen() {
       vipassanaRatioAvg: settings.vipassanaRatio,
     });
     nav.goBack();
-  }, [store, nav, settings]);
+  }, [completeSession, nav, settings]);
 
   const handleAbandon = useCallback(() => {
     resetDraft();
     musicStore.stop();
     nav.goBack();
-  }, [nav, musicStore, store]);
+  }, [nav, musicStore, resetDraft]);
 
   const handleSaveSettings = useCallback((newSettings: ZhiguanSettings) => {
     setSettings(newSettings);
     AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(newSettings));
-    store.updateDraft({
+    updateDraft({
       sankalpa: newSettings.sankalpa,
       chosenMethod: newSettings.chosenMethod,
       fiveHindrances: newSettings.fiveHindrances,
@@ -210,7 +219,7 @@ export default function ZhiguanScreen() {
       vipassanaRatio: newSettings.vipassanaRatio,
     });
     setShowSettings(false);
-  }, [store]);
+  }, [updateDraft]);
 
   const getPattern = (): BreathPattern => {
     switch (settings.breathPattern) {
@@ -243,7 +252,7 @@ export default function ZhiguanScreen() {
           <View style={styles.centerContent}>
             <BreathRing pattern={getPattern()} size={200} />
             {settings.targetMinutes && (
-              <Text style={styles.targetHint}>{T('zhiguanTargetMinutes')}</Text>
+              <Text style={styles.targetHint}>{T('zhiguanTargetMinutes').replace('{minutes}', String(settings.targetMinutes))}</Text>
             )}
           </View>
 

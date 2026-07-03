@@ -57,7 +57,8 @@
     "plugins": [
       "expo-sqlite",
       "expo-localization",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {

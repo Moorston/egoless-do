@@ -1,6 +1,6 @@
 // ─── Auth API client (shared across all platforms) ─────────────────
 import type { AuthUser } from './types';
-import type { SyncPushResult, SyncCheckResult, SyncPullPostBody } from './sync/types';
+import type { SyncPushResult, SyncCheckResult, SyncPullPostBody, SyncPullResult, SyncChange, SyncPushResponseItem } from './sync/types';
 import { buildHeaders, fetchWithTimeout, handleJsonResponse, SYNC_REQUEST_TIMEOUT } from './fetch';
 
 export interface AuthResponse {
@@ -131,35 +131,35 @@ export async function apiResetPassword(email: string, code: string, password: st
 }
 
 // ── Sync: push local changes (pure push, no pull data) ──────────
-export async function apiSyncPush(token: string, _lastSyncAt: number, changes: any[], userId?: string): Promise<SyncPushResult> {
+export async function apiSyncPush(token: string, _lastSyncAt: number, changes: SyncChange[], userId?: string): Promise<SyncPushResult> {
   const res = await fetchWithTimeout(`${getSyncBase()}/api/sync`, {
     method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
     body: JSON.stringify({ changes, skipPull: true }),
   }, SYNC_REQUEST_TIMEOUT);
-  const result = await handleJsonResponse<{ changes: any[]; rejected: any[]; serverTime: number }>(res);
+  const result = await handleJsonResponse<{ changes: SyncPushResponseItem[]; rejected: SyncPushResponseItem[]; serverTime: number }>(res);
   return { applied: result.changes, rejected: result.rejected, serverTime: result.serverTime };
 }
 
 // ── Sync: pull user data via POST (entity-filtered) ──────────
-export async function apiSyncPullPost(token: string, body: SyncPullPostBody, userId?: string): Promise<{ data: Record<string, any[]>; serverTime: number }> {
+export async function apiSyncPullPost(token: string, body: SyncPullPostBody, userId?: string): Promise<SyncPullResult> {
   const res = await fetchWithTimeout(`${getSyncBase()}/api/sync`, {
     method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
     body: JSON.stringify({ changes: [], lastSyncAt: body.since || 0, entities: body.entities }),
   }, SYNC_REQUEST_TIMEOUT);
-  const result = await handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
+  const result = await handleJsonResponse<SyncPullResult>(res);
   return { data: result.data || {}, serverTime: result.serverTime };
 }
 
 // ── Sync: pull user data via GET (full or incremental, backward compat) ──
-export async function apiSyncPull(token: string, userId?: string, since?: number): Promise<{ data: Record<string, any[]>; serverTime: number }> {
+export async function apiSyncPull(token: string, userId?: string, since?: number): Promise<SyncPullResult> {
   const sinceParam = since ? `?since=${since}` : '';
   const res = await fetchWithTimeout(`${getSyncBase()}/api/sync${sinceParam}`, {
     method: 'GET',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
   }, SYNC_REQUEST_TIMEOUT);
-  return handleJsonResponse<{ data: Record<string, any[]>; serverTime: number }>(res);
+  return handleJsonResponse<SyncPullResult>(res);
 }
 
 // ── Sync: lightweight check (returns per-entity change map) ────
@@ -182,9 +182,27 @@ export interface SyncPullEntityResult {
 }
 
 export async function apiSyncPullEntity(token: string, entity: string, page: number, pageSize: number, userId?: string): Promise<SyncPullEntityResult> {
-  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/pull/${entity}?page=${page}&pageSize=${pageSize}`, {
-    method: 'GET',
+  // Use the POST /api/sync/pull endpoint with entity filter
+  const res = await fetchWithTimeout(`${getSyncBase()}/api/sync/pull`, {
+    method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
+    body: JSON.stringify({ entities: [entity], page, pageSize }),
   }, SYNC_REQUEST_TIMEOUT);
-  return handleJsonResponse<SyncPullEntityResult>(res);
+  const result = await handleJsonResponse<{ data: Record<string, unknown[]> & { _meta?: Record<string, { total: number }> }; serverTime: number }>(res);
+  const entityData = result.data?.[entity] || [];
+  // Get total count from _meta if available, otherwise estimate
+  const meta = result.data?._meta?.[entity];
+  const total = meta?.total ?? entityData.length;
+  // Calculate if there are more pages
+  const offset = (page - 1) * pageSize;
+  const hasMore = (offset + entityData.length) < total;
+  console.log(`[apiSyncPullEntity] ${entity}: page=${page}, pageSize=${pageSize}, returned=${entityData.length}, total=${total}, hasMore=${hasMore}`);
+  return {
+    data: entityData,
+    total,
+    page,
+    pageSize,
+    hasMore,
+    serverTime: result.serverTime,
+  };
 }

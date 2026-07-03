@@ -3,6 +3,7 @@ import { Share } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr } from '@egoless-do/core';
+import type { MindReflection } from '@egoless-do/core';
 import {
   filterReflections, groupReflectionsByDate, computeDynamicTagCounts, computeDynamicMoodCounts,
   computeMoodTrend, computeWritingHeatmap, computeTagCooccurrence,
@@ -322,7 +323,7 @@ export function useReflections() {
     });
   }, []);
 
-  const handleShare = useCallback(async (r: any, mode?: 'text' | 'image') => {
+  const handleShare = useCallback(async (r: MindReflection, mode?: 'text' | 'image') => {
     try {
       if (mode === 'image') {
         // Return the reflection for ShareCard to handle

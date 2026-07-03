@@ -251,12 +251,12 @@ export function ReviewAIPanel({
                 </View>
               ) : reviewCache ? (
                 <>
-                  {((reviewCache as any).perspectives ?? (reviewCache as any).questions ?? []).length > 0 && (
+                  {((reviewCache as { perspectives?: string[]; questions?: string[] }).perspectives ?? (reviewCache as { perspectives?: string[]; questions?: string[] }).questions ?? []).length > 0 && (
                     <>
                       <Text style={[styles.sectionLabel, { color: TH.sub }]}>
                         复盘思路
                       </Text>
-                      {((reviewCache as any).perspectives ?? (reviewCache as any).questions ?? []).map((p: string, i: number) => (
+                      {((reviewCache as { perspectives?: string[]; questions?: string[] }).perspectives ?? (reviewCache as { perspectives?: string[]; questions?: string[] }).questions ?? []).map((p: string, i: number) => (
                         <View key={i} style={[styles.perspectiveItem, { borderColor: TH.border }]}>
                           <Text style={[styles.perspectiveText, { color: TH.text }]}>
                             {p}

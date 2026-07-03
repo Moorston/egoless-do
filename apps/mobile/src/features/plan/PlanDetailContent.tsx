@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvo
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, computeItemCheckinStats, MS_PER_DAY, getFrequencySummary } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, MS_PER_DAY, getFrequencySummary } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -66,7 +66,9 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const itemProgressMap = useMemo(() => {
     const map = new Map<string, { doneCount: number; expectedDays: number; progress: number }>();
     for (const item of items) {
-      map.set(item.id, computeItemCheckinStats(item, checkins, today));
+      const { doneCount, expectedDays } = countItemDoneDays(item, checkins, today);
+      const progress = computeItemProgress(item, checkins, today);
+      map.set(item.id, { doneCount, expectedDays, progress });
     }
     return map;
   }, [items, checkins, today]);

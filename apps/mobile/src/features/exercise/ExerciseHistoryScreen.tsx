@@ -6,14 +6,15 @@ import { useAppStore } from '../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, getSportType, formatPace } from '@egoless-do/core';
-import type { ExerciseEntry } from '@egoless-do/core';
+import type { ExerciseEntry, Theme } from '@egoless-do/core';
 import { useAmapComponents } from './hooks/useAmapComponents';
 
 function MapViewFallback() {
   return <View style={{ flex: 1, backgroundColor: '#1a1a2e' }} />;
 }
 
-function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: any; P: string; T: (k: string) => string; MapView: any; Polyline: any }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-native-amap3d types unavailable
+function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: Theme; P: string; T: (k: string) => string; MapView: any; Polyline: any }) {
   const trackCoords = (e.trackPoints ?? []).map(p => ({ latitude: p.lat, longitude: p.lng }));
   const center = trackCoords.length > 0 ? trackCoords[0] : { latitude: 39.9042, longitude: 116.4074 };
   const bestPace = (e.segmentPaces ?? []).length > 0 ? Math.min(...(e.segmentPaces ?? [])) : 0;

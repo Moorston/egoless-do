@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Animated, Dimensions, StyleSheet, StatusBar } from 'react-native';
+import { View, Animated, Dimensions, StyleSheet, StatusBar, type TextStyle } from 'react-native';
 import { FONT_HERO, FONT_CLOSE, FONT_TITLE } from '@egoless-do/core';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -250,7 +250,7 @@ interface SplashScreenProps {
   onFinish: () => void;
 }
 
-function GlowText({ text, style, delay: baseDelay = 0 }: { text: string; style: any; delay?: number }) {
+function GlowText({ text, style, delay: baseDelay = 0 }: { text: string; style: TextStyle; delay?: number }) {
   const chars = text.split('');
   const opacities = useRef(chars.map(() => new Animated.Value(0))).current;
   const glows = useRef(chars.map(() => new Animated.Value(0))).current;
@@ -297,7 +297,7 @@ function GlowText({ text, style, delay: baseDelay = 0 }: { text: string; style: 
   );
 }
 
-function BreathingText({ text, style, delay: baseDelay = 0 }: { text: string; style: any; delay?: number }) {
+function BreathingText({ text, style, delay: baseDelay = 0 }: { text: string; style: TextStyle; delay?: number }) {
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.95)).current;
   const breathe = useRef(new Animated.Value(1)).current;

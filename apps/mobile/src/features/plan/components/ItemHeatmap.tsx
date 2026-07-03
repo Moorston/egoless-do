@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, LayoutChangeEvent } from 'react-native';
 import { COLORS, dateStr, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
-import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
+import type { PlanItem, PlanItemCheckin, Theme } from '@egoless-do/core';
 
 interface ItemHeatmapProps {
   item: PlanItem;
   checkins: PlanItemCheckin[];
-  TH: any;
+  TH: Theme;
   T: (k: string) => string;
 }
 
@@ -18,7 +18,7 @@ export const ItemHeatmap = React.memo(function ItemHeatmap({ item, checkins, TH,
   const doneDates = useMemo(() => {
     const set = new Set<string>();
     for (const c of checkins) {
-      if (c.planItemId === item.id && c.done) {
+      if (c.planItemId === item.id && c.done && !c.deleted) {
         set.add(c.date);
       }
     }

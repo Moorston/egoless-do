@@ -86,6 +86,7 @@ export default function PlanCreateScreen() {
         ...newItem,
         name: defaultName,
         description: reflection.content ?? '',
+        link: 'reflection',
       });
     }
     return baseItems;
@@ -184,9 +185,12 @@ export default function PlanCreateScreen() {
             order: idx,
           });
         });
+        nav.goBack(); // Only navigate back on success
+      } else {
+        // addPlan failed (likely another active plan exists, or validation error)
+        Alert.alert(T('planSaveFailedTitle'), T('planSaveFailedMsg'), [{ text: T('ok') }]);
       }
     }
-    nav.goBack();
   };
 
   const addItem = () => {

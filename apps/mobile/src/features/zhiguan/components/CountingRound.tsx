@@ -23,8 +23,8 @@ export default function CountingRound({ state, T }: Props) {
       <View style={styles.ring}>
         {Array.from({ length: BEAD_COUNT }, (_, i) => {
           const angle = (i / BEAD_COUNT) * 2 * Math.PI - Math.PI / 2;
-          const x = (RING_SIZE / 2 - BEAD_SIZE / 2) + (RING_SIZE / 2 - BEAD_SIZE) * Math.cos(angle);
-          const y = (RING_SIZE / 2 - BEAD_SIZE / 2) + (RING_SIZE / 2 - BEAD_SIZE) * Math.sin(angle);
+          const x = (RING_SIZE / 2 - BEAD_SIZE / 2) + (RING_SIZE / 2 - BEAD_SIZE / 2) * Math.cos(angle);
+          const y = (RING_SIZE / 2 - BEAD_SIZE / 2) + (RING_SIZE / 2 - BEAD_SIZE / 2) * Math.sin(angle);
           const isActive = i < activeBead;
 
           return (

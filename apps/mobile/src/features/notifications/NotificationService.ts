@@ -10,7 +10,7 @@ async function ensureHandler() {
         shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge:  false,
-      } as any),
+      } as const),
     });
     handlerSet = true;
   } catch {}

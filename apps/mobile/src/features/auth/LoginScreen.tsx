@@ -103,8 +103,8 @@ export default function LoginScreen() {
       }
 
       nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
-    } catch (e: any) {
-      setError(e.message || T('authLoginFailed'));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : T('authLoginFailed'));
     }
   };
 

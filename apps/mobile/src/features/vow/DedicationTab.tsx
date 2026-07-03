@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Settings, PenLine, History } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme } from '@egoless-do/core';
-import type { DedicationSettings } from '@egoless-do/core';
+import type { DedicationSettings, Dedication } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
 import DedicationCard from './components/DedicationCard';
@@ -22,8 +22,8 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
   const settings = dedicationSettings;
   const filteredDedications = useMemo(() =>
     (dedications ?? [])
-      .filter((d: any) => !d.deleted)
-      .sort((a: any, b: any) => b.date.localeCompare(a.date)),
+      .filter((d: Dedication) => !d.deleted)
+      .sort((a: Dedication, b: Dedication) => b.date.localeCompare(a.date)),
     [dedications]
   );
 

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { X } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, dateStr } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, dateStr, type Theme } from '@egoless-do/core';
 import { PrimaryButton, OutlineButton } from '../../../../components/UI';
 
 interface Props {
   visible: boolean;
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   currentWeight?: number;
   currentBodyFat?: number;

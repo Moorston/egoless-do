@@ -61,19 +61,20 @@ export class ApiError extends Error {
   }
 }
 
-function classifyError(res: Response, data: any): Error {
-  const code = data.code ?? '';
-  const msg = data.message ?? data.error ?? '请求失败';
+function classifyError(res: Response, data: unknown): Error {
+  const obj = data as Record<string, unknown> | undefined;
+  const code = obj?.code ?? '';
+  const msg = obj?.message ?? obj?.error ?? '请求失败';
   if (res.status === 401 && code === 'KICKED_OUT') return new KickedOutError();
-  if (res.status === 401) return new AuthError(401, code, msg);
-  if (res.status >= 400 && res.status < 500) return new ValidationError(res.status, code, msg);
-  if (res.status >= 500) return new ServerError(res.status, msg);
-  return new ApiError(res.status, code, msg);
+  if (res.status === 401) return new AuthError(401, code as string, msg as string);
+  if (res.status >= 400 && res.status < 500) return new ValidationError(res.status, code as string, msg as string);
+  if (res.status >= 500) return new ServerError(res.status, msg as string);
+  return new ApiError(res.status, code as string, msg as string);
 }
 
 export async function handleJsonResponse<T = unknown>(res: Response): Promise<T> {
   const text = await res.text();
-  let data: any;
+  let data: unknown;
   try {
     data = JSON.parse(text);
   } catch {

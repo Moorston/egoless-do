@@ -16,7 +16,7 @@ interface Props {
     dateRange?: { from: number; to: number };
     datePreset?: string;
   };
-  onApplyFilters: (filters: any) => void;
+  onApplyFilters: (filters: Props['filters']) => void;
   allTagOptions: string[];
   allMoodOptions: string[];
   dynamicTagCounts: Record<string, number>;

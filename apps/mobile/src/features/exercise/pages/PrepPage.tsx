@@ -4,6 +4,7 @@ import { X } from 'lucide-react-native';
 import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_HERO, FONT_STAT_SECTION, fmt, TARGET_PRESETS, getSoftTarget } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
 import type { ExercisePageProps } from './types';
+import type { ExerciseEntry } from '@egoless-do/core';
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 export default function PrepPage(props: ExercisePageProps) {
@@ -171,7 +172,7 @@ export default function PrepPage(props: ExercisePageProps) {
 
         {/* Last workout data */}
         {(() => {
-          const lastEntry = exerciseLog?.filter((e: any) => !e.deleted && e.sportKey === sportName).slice(-1)[0];
+          const lastEntry = exerciseLog?.filter((e: ExerciseEntry) => !e.deleted && e.sportKey === sportName).slice(-1)[0];
           if (!lastEntry) return null;
           return (
             <View style={{ marginTop: 12, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' }}>

@@ -24,6 +24,7 @@ import TrailSuggestionBanner from '../trails/TrailSuggestionBanner';
 import ReflectionForm from './ReflectionForm';
 import { useReflections } from '../hooks/useReflections';
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES, createLogger } from '@egoless-do/core';
+import type { Habit, MindReflection } from '@egoless-do/core';
 import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
 import {
   Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3,
@@ -36,7 +37,7 @@ import { getTrailsByReflection } from '@egoless-do/core';
 
 // ── Manager helpers ───────────────────────────────────────────────
 function getManagerProps(
-  store: any,
+  store: ReturnType<typeof useAppStore.getState>,
   mode: 'tag' | 'mood',
   onBack: () => void,
   hiddenItems?: string[],
@@ -44,7 +45,7 @@ function getManagerProps(
 ) {
   if (mode === 'tag') {
     // Get all tags (preset + custom + habit)
-    const habitTags = (store.habits ?? []).filter((h: any) => !h.deleted && h.createTag).map((h: any) => `#${h.name}`);
+    const habitTags = (store.habits ?? []).filter((h: Habit) => !h.deleted && h.createTag).map((h: Habit) => `#${h.name}`);
     const allTags = [...new Set([...TAGS_PRESET, ...(store.customTags ?? []), ...habitTags])];
     
     const sections = [
@@ -59,7 +60,7 @@ function getManagerProps(
       updateItem: (o: string, n: string) => store.updateCustomTag(o, n),
       removeItem: (s: string) => store.removeCustomTag(s),
       reorderItem: (from: number, to: number, _ordered: string[]) => store.reorderAllTag(from, to),
-      getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter((r: any) => !r.deleted && (r as any).tags?.includes(s)).length,
+      getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter((r: MindReflection) => !r.deleted && r.tags?.includes(s)).length,
       customItems: store.customTags ?? [],
       formatInput: (s: string) => s.startsWith('#') ? s : `#${s}`,
       hiddenItems,
@@ -82,7 +83,7 @@ function getManagerProps(
     updateItem: (o: string, n: string) => store.updateCustomMood(o, n),
     removeItem: (s: string) => store.removeCustomMood(s),
     reorderItem: (from: number, to: number, _ordered: string[]) => store.reorderAllMood(from, to),
-    getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter((r: any) => !r.deleted && (r as any).mood === s).length,
+    getReflectionsContainingItem: (s: string) => (store.reflections ?? []).filter((r: MindReflection) => !r.deleted && r.mood === s).length,
     customItems: store.customMoods ?? [],
     hiddenItems,
     onToggleHidden,
@@ -232,7 +233,7 @@ export default function ReflectionsScreen() {
   const [colorIdx, setColorIdx]   = useState(0);
   const [category, setCategory]   = useState('');
   const [confirmDel, setConfirmDel] = useState<string|null>(null);
-  const [shareReflection, setShareReflection] = useState<any>(null);
+  const [shareReflection, setShareReflection] = useState<MindReflection | null>(null);
 
   // Long press action menu state
   const [actionMenuId, setActionMenuId] = useState<string|null>(null);
@@ -257,7 +258,7 @@ export default function ReflectionsScreen() {
 
   // Create plan item state
   const [showCreatePlanRefModal, setShowCreatePlanRefModal] = useState(false);
-  const [createPlanReflection, setCreatePlanReflection] = useState<any>(null);
+  const [createPlanReflection, setCreatePlanReflection] = useState<MindReflection | null>(null);
 
   // Calendar heatmap data (last 35 days = 5 weeks)
   const calendarData = useMemo(() => {
@@ -292,7 +293,7 @@ export default function ReflectionsScreen() {
     setShowNew(false);
   };
 
-  const openEdit = (r: any) => {
+  const openEdit = (r: MindReflection) => {
     setEditId(r.id);
     setEditContent(r.content || '');
     setEditTags(r.tags || []);
@@ -333,7 +334,7 @@ export default function ReflectionsScreen() {
     setTrailPickerId(null);
   };
 
-  const onShare = async (r: any) => {
+  const onShare = async (r: MindReflection) => {
     setActionMenuId(null);
     // Show share choice: text or image
     Alert.alert(T('reflShare'), '', [
@@ -361,7 +362,7 @@ export default function ReflectionsScreen() {
     }
   }, [reflections, getActivePlan]);
 
-  const handleCreatePlanRef = useCallback((reflectionId: string, form: any) => {
+  const handleCreatePlanRef = useCallback((reflectionId: string, form: { name: string; description?: string; priority?: string; startDate?: string; endDate?: string; targetMetric?: string }) => {
     createPlanItem({ type: 'reflection', id: reflectionId }, form);
     setShowCreatePlanRefModal(false);
     setCreatePlanReflection(null);

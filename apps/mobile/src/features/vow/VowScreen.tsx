@@ -9,11 +9,11 @@ import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useAppStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, COLORS } from '@egoless-do/core';
-import type { Vision, VisionType, VisionStatus, VisionTimeFrame } from '@egoless-do/core';
+import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
 import { Flag, Target, Plus, Check, Archive, Trash2, X, Star } from 'lucide-react-native';
 import VisionCard from './components/VisionCard';
 
-const TYPE_CONFIG: Record<VisionType, { icon: any; label: string; color: string }> = {
+const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: number; color?: string }>; label: string; color: string }> = {
   lifetime: { icon: Star, label: '终极愿景', color: '#F59E0B' },
   long: { icon: Flag, label: '长期愿景', color: '#8B5CF6' },
   short: { icon: Target, label: '短期愿景', color: '#10B981' },
@@ -31,7 +31,7 @@ function AddVisionModal({
   onClose: () => void;
   onSave: (data: { type: VisionType; text: string; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string }) => void;
   existing: Vision | null;
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
 }) {
   const [type, setType] = useState<VisionType>('short');
@@ -297,19 +297,19 @@ export default function VowScreen() {
                 <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length}</Text>
               </View>
               {items.map(v => {
-                const linked = plans.filter((p: any) => !p.deleted && p.visionId === v.id);
+                const linked = plans.filter((p: Plan) => !p.deleted && p.visionId === v.id);
                 let pct = 0;
                 let totalDone = 0;
                 let totalItems = 0;
                 if (linked.length > 0) {
                   for (const plan of linked) {
-                    const pi = planItems.filter((i: any) => i.planId === plan.id && !i.deleted);
-                    totalDone += pi.filter((i: any) => i.status === 'completed').length;
+                    const pi = planItems.filter((i: PlanItem) => i.planId === plan.id && !i.deleted);
+                    totalDone += pi.filter((i: PlanItem) => i.status === 'completed').length;
                     totalItems += pi.length;
                   }
                   pct = totalItems > 0 ? Math.min(100, Math.round((totalDone / totalItems) * 100)) : 0;
                 }
-                const planDone = linked.filter((p: any) => p.status === 'completed').length;
+                const planDone = linked.filter((p: Plan) => p.status === 'completed').length;
                 return (
                   <VisionCard
                     key={v.id}

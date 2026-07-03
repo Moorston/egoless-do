@@ -59,9 +59,12 @@ export function computeLongestStreakFromHistory(history: CheckinEntry[]): number
 /** Get streak and totalDays for a specific date from history (handles legacy records without totalDays) */
 export function getStatsForDate(history: CheckinEntry[], date: string): { streak: number; totalDays: number } {
   const record = history.find(c => c.date === date && !c.deleted);
-  const doneRecords = history.filter(c => c.done && !c.deleted);
-  const totalDays = record?.totalDays ?? doneRecords.filter(c => c.date <= date).length;
-  const streak = record?.streak ?? calculateCheckinStreak(doneRecords.filter(c => c.date <= date).map(c => ({ date: c.date, done: true })), date);
+  if (record?.totalDays != null && record?.streak != null) {
+    return { streak: record.streak, totalDays: record.totalDays };
+  }
+  const doneUpToDate = history.filter(c => c.done && !c.deleted && c.date <= date);
+  const totalDays = record?.totalDays ?? doneUpToDate.length;
+  const streak = record?.streak ?? calculateCheckinStreak(doneUpToDate, date);
   return { streak, totalDays };
 }
 
@@ -74,17 +77,17 @@ export function submitCheckinEntry(
   grace?: boolean,
 ): { record: CheckinEntry; history: CheckinEntry[]; streak: number } {
   const today = dateOverride ?? dateStr();
+  const withoutToday = history.filter(c => c.date !== today);
   const tempRecord: CheckinEntry = {
     date: today, done, note, streak: 0, weight,
     grace: grace ?? false,
     timestamp: Date.now(), updatedAt: Date.now(), deleted: false,
   };
-  const newHistory = [tempRecord, ...history.filter(c => c.date !== today)];
+  const newHistory = [tempRecord, ...withoutToday];
   const newStreak = calculateCheckinStreak(newHistory);
   const totalDays = newHistory.filter(c => c.done && !c.deleted).length;
   const record: CheckinEntry = { ...tempRecord, streak: newStreak, totalDays };
-  const finalHistory = [record, ...history.filter(c => c.date !== today)];
-  return { record, history: finalHistory, streak: newStreak };
+  return { record, history: [record, ...withoutToday], streak: newStreak };
 }
 
 /** Parsed checkin note structure */
@@ -123,6 +126,10 @@ export function parseCheckinNote(raw: string): ParsedCheckinNote {
     }
   } catch {
     // Not JSON — fall back to legacy emoji+delimiter format
+    // Log warning for potentially corrupted data (partial JSON, truncated by sync, etc.)
+    if (raw.startsWith('{')) {
+      console.warn('[parseCheckinNote] Failed to parse note that looks like JSON:', raw.slice(0, 80));
+    }
   }
   
   // Legacy format: emoji prefixes + ' · ' delimiter

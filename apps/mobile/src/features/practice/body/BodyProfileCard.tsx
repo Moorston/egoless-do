@@ -5,12 +5,12 @@ import { Edit3, Check, ChevronDown } from 'lucide-react-native';
 import {
   FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE,
   calcBMI, calcBMR,
-  type UserProfile, type AgeBracket,
+  type UserProfile, type AgeBracket, type Theme,
   AGE_BRACKETS, bracketMidpoint, ageToBracket, estimateBodyFat,
 } from '@egoless-do/core';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   profile: UserProfile;
   onEditAssessment: () => void;

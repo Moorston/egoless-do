@@ -29,7 +29,7 @@ interface RelationNode {
   vy: number;
   color: string;
   size: number;
-  data: any;
+  data: Record<string, unknown>;
 }
 
 interface RelationEdge {
@@ -109,7 +109,7 @@ export default function RelationMapView() {
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute();
 
-  const context = (route.params as any)?.context as RelationContext | undefined;
+  const context = (route.params as { context?: RelationContext } | undefined)?.context;
 
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
@@ -143,7 +143,7 @@ export default function RelationMapView() {
     const nodeMap = new Map<string, RelationNode>();
     let contextNode: RelationNode | null = null;
 
-    const addNode = (id: string, type: NodeType, label: string, data: any, x?: number, y?: number) => {
+    const addNode = (id: string, type: NodeType, label: string, data: Record<string, unknown>, x?: number, y?: number) => {
       if (nodeMap.has(id)) return nodeMap.get(id)!;
       const node: RelationNode = {
         id,
@@ -511,7 +511,7 @@ export default function RelationMapView() {
     pinchStartZoom: 1,
   });
 
-  const handleTouchStart = useCallback((e: any) => {
+  const handleTouchStart = useCallback((e: { nativeEvent: { touches: Array<{ pageX: number; pageY: number }> } }) => {
     const touches = e.nativeEvent.touches;
     const ts = touchState.current;
 
@@ -538,7 +538,7 @@ export default function RelationMapView() {
     simulationRunningRef.current = true;
   }, []);
 
-  const handleTouchMove = useCallback((e: any) => {
+  const handleTouchMove = useCallback((e: { nativeEvent: { touches: Array<{ pageX: number; pageY: number }> } }) => {
     const touches = e.nativeEvent.touches;
     const ts = touchState.current;
 

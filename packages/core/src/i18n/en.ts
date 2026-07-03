@@ -616,7 +616,8 @@ export const en: I18nKeys = {
   authInvalidEmail:'Invalid email address', authEmailTaken:'Email already registered',
 
   // Common
-  commonCancel:'Cancel', commonConfirm:'Confirm', commonClose:'Close', commonDone:'Done',
+  commonCancel:'Cancel', commonConfirm:'Confirm', commonClose:'Close', commonDone:'Done', commonOk:'OK',
+  planSaveFailedTitle:'Save Failed', planSaveFailedMsg:'An active plan already exists. Complete or cancel it first.',
   commonDelete:'Delete', commonSave:'Save', commonEdit:'Edit', commonAdd:'Add',
   commonBack:'← Back', commonSyncing:'Syncing...', commonConnected:'Connected',
   commonOffline:'Offline',
@@ -649,6 +650,7 @@ export const en: I18nKeys = {
   // Calendar weekdays
   weekdaySun:'Sun', weekdayMon:'Mon', weekdayTue:'Tue', weekdayWed:'Wed',
   weekdayThu:'Thu', weekdayFri:'Fri', weekdaySat:'Sat',
+  clearReviewData:'Clear Review Data', clearReviewDataConfirm:'Are you sure you want to clear all review data? This action cannot be undone.', clearReviewDataDone:'Review data has been cleared',
 
   // Plan detail
   planNotFound:'Plan not found', heatmapLess:'Less', heatmapMore:'More', month:'/',
@@ -1062,6 +1064,7 @@ export const en: I18nKeys = {
   vowProgressDays:'Practice Days', vowProgressMonth:'This Month', vowProgressStreak:'Best Streak',
   vowProgressToday:'Today', vowProgressWeekly:'This Week', vowProgressHabitDone:'Habits', vowProgressPlanDone:'Plans',
   vowLinkedPlans:'Linked Plans', vowLinkedPlanExpand:'Show Linked Plans', vowLinkedPlanCollapse:'Hide Linked Plans', vowNoLinkedPlans:'No linked plans',
+  vowPlanProgress:'Plans', vowTaskProgress:'Tasks',
   planLinkVision:'Link Vision', planSelectVision:'Select a Vision', planChangeVision:'Change', planUnlinkVision:'Unlink', planLinkedVision:'Linked Vision',
   vowDedWrite:'Write Dedication', vowDedHistory:'History', vowDedSettings:'Settings',
   vowEditTitle:'Edit Vision', vowNewTitle:'New Vision', vowType:'Type',
@@ -1125,9 +1128,10 @@ export const en: I18nKeys = {
   zhiguanHindranceGreed:'Greed', zhiguanHindranceAversion:'Aversion', zhiguanHindranceSloth:'Sloth',
   zhiguanHindranceRestlessness:'Restlessness', zhiguanHindranceDoubt:'Doubt',
   zhiguanHindranceNone:'None', zhiguanHindranceSevere:'Severe',
+  zhiguanFiveHindrancesTitle:'Five Hindrances', zhiguanFiveHindrancesHint:'Observe without judgment',
 
   // Methods
-  zhiguanMethodLabel:'Choose Method', zhiguanMethodHint:'Anapanasati is the root',
+  zhiguanMethodTitle:'Method', zhiguanMethodLabel:'Choose Method', zhiguanMethodHint:'Anapanasati is the root',
   zhiguanMethodAnapanasati:'Anapanasati', zhiguanMethodAnapanasatiDesc:'Mind on nostril, count breaths', zhiguanMethodAnapanasatiOpen:'One breath, one count',
   zhiguanMethodSelfInquiry:'Self-Inquiry', zhiguanMethodSelfInquiryDesc:'Guard the mind-gate, watch thoughts', zhiguanMethodSelfInquiryOpen:'Arising, ceasing; neither follow nor chase',
   zhiguanMethodKasina:'Cessation (Ti-Zhen-Zhi)', zhiguanMethodKasinaDesc:'Realize emptiness, thoughts subside', zhiguanMethodKasinaOpen:'One thought unborn, all dharmas empty',
@@ -1151,7 +1155,7 @@ export const en: I18nKeys = {
   zhiguanTactileCold:'Cold', zhiguanTactileWarmth:'Warmth',
   zhiguanTactileLightness:'Lightness', zhiguanTactileHeaviness:'Heaviness',
   zhiguanTactileRoughness:'Roughness', zhiguanTactileSmoothness:'Smoothness',
-  zhiguanSelfReportedTitle:'Self-Reported Stage', zhiguanSelfReportedHint:'Requires teacher verification, for self-record only',
+  zhiguanSelfReportedTitle:'Self-Reported Stage', zhiguanSelfReportedHint:'Requires teacher verification, for self-record only', zhiguanSelfReportedOtherPlaceholder:'Describe your practice experience...',
   zhiguanStageNotSpecified:'Unsure', zhiguanStageScattered:'Scattered mind', zhiguanStageDesireRealm:'Desire realm',
   zhiguanStagePreparation:'Preparatory', zhiguanStageFirstJhana:'1st Jhana', zhiguanStageSecondJhana:'2nd Jhana',
   zhiguanStageThirdJhana:'3rd Jhana', zhiguanStageFourthJhana:'4th Jhana', zhiguanStageOther:'Other',
@@ -1168,7 +1172,7 @@ export const en: I18nKeys = {
   zhiguanRuleAversion:'If aversion severe: practice metta',
   zhiguanRuleDoubt:'If doubt severe: realize emptiness via cessation',
   zhiguanRuleDefault:'Mind light & balanced: practice anapanasati',
-  zhiguanVipassanaLabel:'Vipassana: Body · Feeling · Mind · Dharmas',
+  zhiguanVipassanaTitle:'Four Foundations', zhiguanVipassanaLabel:'Vipassana: Body · Feeling · Mind · Dharmas',
   zhiguanVipassanaKayaTitle:'Body', zhiguanVipassanaVedanaTitle:'Feeling',
   zhiguanVipassanaCittaTitle:'Mind', zhiguanVipassanaDharmaTitle:'Dharmas',
   zhiguanVipassanaKayaLine1:'Observe posture',
@@ -1198,4 +1202,7 @@ export const en: I18nKeys = {
   zhiguanEmptyHistoryTitle:'No sitting records yet', zhiguanEmptyHistoryDesc:'Begin your first sitting is the path',
   zhiguanDeleteRecord:'Delete', zhiguanDeleteConfirm:'Confirm delete? This action is irreversible.',
   zhiguanExportJson:'Export JSON',
+  zhiguanRoundLabel:'Round', zhiguanBreathCount:'Breaths',
+  zhiguanDetailTitle:'Session Detail', zhiguanDetailMethod:'Method',
+  zhiguanDetailDuration:'Duration', zhiguanDetailStatus:'Status', zhiguanDetailDate:'Date',
 };

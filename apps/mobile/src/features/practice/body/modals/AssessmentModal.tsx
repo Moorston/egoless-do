@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { X } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, BODY_TAGS_PRESET } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, BODY_TAGS_PRESET, type Theme } from '@egoless-do/core';
 import { PrimaryButton, OutlineButton } from '../../../../components/UI';
 
 interface Props {
   visible: boolean;
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
-  profile: any;
+  profile: Record<string, unknown>;
   onClose: () => void;
   onSave: (text: string, tags: string[]) => void;
 }

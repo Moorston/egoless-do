@@ -253,7 +253,7 @@ function calculateIncompleteItems(
       // 统计未完成的planItems
       const activePlanItems = planItems.filter(p => !p.deleted && p.status !== 'completed');
       for (const item of activePlanItems) {
-        const completedIds = parsed.planItems.map((p: any) => typeof p === 'string' ? p : p.id);
+        const completedIds = parsed.planItems.map((p) => typeof p === 'string' ? p : p.id);
         if (!completedIds.includes(item.id)) {
           const key = `planItem:${item.id}`;
           if (!itemCounts[key]) {

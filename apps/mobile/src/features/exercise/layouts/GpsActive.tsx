@@ -6,6 +6,7 @@ import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 import type { MusicTrack } from '@egoless-do/core';
 
 interface GpsActiveProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-native-amap3d types unavailable
   MapView: any;
   Polyline: any;
   amapReady: boolean;

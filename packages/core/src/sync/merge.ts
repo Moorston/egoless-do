@@ -5,6 +5,8 @@ import { resolveConflict } from './conflict';
  *  Preserves local soft-deletions: if a local record has deleted=true,
  *  server data cannot resurrect it.
  *  Uses unified resolveConflict() for all timestamp comparisons. */
+// any: generic requires index-signature access via string key (item[idKey]); typed interfaces lack index signatures
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function mergeById<T extends Record<string, any>>(
   server: T[], local: T[], idKey: string
 ): T[] {

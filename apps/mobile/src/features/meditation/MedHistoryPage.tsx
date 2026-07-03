@@ -6,7 +6,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme } from '@egoless-do/core';
 import { Calendar, ChevronLeft, ChevronRight, Music, FileText, Trash2, X } from 'lucide-react-native';
 import type { MedHistoryEntry } from '@egoless-do/core';
 
@@ -53,7 +53,7 @@ function getWeekStart(): string {
 }
 
 // ── Stats Card ──
-function StatsCard({ entries, TH }: { entries: MedHistoryEntry[]; TH: any }) {
+function StatsCard({ entries, TH }: { entries: MedHistoryEntry[]; TH: Theme }) {
   const totalMin = useMemo(() => entries.reduce((s, e) => s + (e.durMin || 0), 0), [entries]);
   const totalDays = useMemo(() => new Set(entries.map(e => e.date)).size, [entries]);
   const streak = useMemo(() => calcStreak(entries), [entries]);
@@ -86,7 +86,7 @@ function StatsCard({ entries, TH }: { entries: MedHistoryEntry[]; TH: any }) {
 }
 
 // ── Heatmap ──
-function Heatmap({ entries, TH, onPress }: { entries: MedHistoryEntry[]; TH: any; onPress: () => void }) {
+function Heatmap({ entries, TH, onPress }: { entries: MedHistoryEntry[]; TH: Theme; onPress: () => void }) {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -186,7 +186,7 @@ export function MedCalendarScreen() {
 }
 
 // ── Detail Modal ──
-function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: MedHistoryEntry | null; TH: any; T: any; onClose: () => void; onDelete: (date: string) => void }) {
+function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: MedHistoryEntry | null; TH: Theme; T: (key: string) => string; onClose: () => void; onDelete: (date: string) => void }) {
   const [editingNote, setEditingNote] = useState(false);
   const [noteText, setNoteText] = useState('');
   const adapter = useAppStore(s => s);
@@ -386,6 +386,7 @@ export default function MedHistoryPage() {
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次静坐都是送给自己的礼物</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，给自己几分钟安静的时光</Text>
             <TouchableOpacity onPress={() => (nav as any).navigate('MainTabs', { screen: 'Meditation' })} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+              {/* any: nested navigator type mismatch between RootStack and MainTab */}
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次冥想</Text>
             </TouchableOpacity>
           </View>

@@ -6,6 +6,7 @@ import { useAppStore } from '../../../store/useAppStore';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useT } from '../../../components/UI';
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger } from '@egoless-do/core';
+import type { MindReflection } from '@egoless-do/core';
 import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';
 
 import { TrailPickerModal } from '../trails';
@@ -15,8 +16,8 @@ const log = createLogger('Reflections');
 interface ReflectionDetailContentProps {
   reflectionId: string;
   onClose: () => void;
-  onEdit?: (reflection: any) => void;
-  onShare?: (reflection: any) => void;
+  onEdit?: (reflection: MindReflection) => void;
+  onShare?: (reflection: MindReflection) => void;
   onCreatePlanItem?: (reflectionId: string) => void;
   onDelete?: (reflectionId: string) => void;
 }

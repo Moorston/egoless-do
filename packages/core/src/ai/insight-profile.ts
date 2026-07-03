@@ -2,6 +2,7 @@
 import type { MindReflection } from '../types/reflection';
 import { getMoodIcon } from '../business/thought-trail';
 import { buildReflectionSummary } from '../business/trail-creation';
+import type { AIResult } from './types';
 import { getAIService } from './ai-service';
 import { extractJSON, repairJSON } from './json-utils';
 import { isAIRecommendAvailable } from './trail-recommender';
@@ -197,7 +198,7 @@ export async function generateInsightProfile(
     const service = getAIService();
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 20000);
-    let result: any;
+    let result: AIResult<string>;
     try {
       result = await service.generateCloud(prompt, {
         systemPrompt: INSIGHT_PROFILE_SYSTEM,
@@ -222,7 +223,7 @@ function parseInsightResponse(
 ): { insightSummary: string; hotTopics: HotTopic[] } | null {
   try {
     const jsonStr = extractJSON(raw);
-    let parsed: any;
+    let parsed: unknown;
     try {
       parsed = JSON.parse(jsonStr);
     } catch {
@@ -231,24 +232,31 @@ function parseInsightResponse(
       parsed = JSON.parse(repaired);
     }
 
-    const summary = typeof parsed.summary === 'string' ? parsed.summary : '';
+    const obj = parsed as Record<string, unknown> | undefined;
+    const summary = typeof obj?.summary === 'string' ? obj.summary : '';
 
-    const topicsRaw = parsed.topics || parsed.hotTopics || parsed.themes || parsed.keywords;
+    const topicsRaw = obj?.topics || obj?.hotTopics || obj?.themes || obj?.keywords;
     if (!Array.isArray(topicsRaw)) {
       return { insightSummary: summary, hotTopics: [] };
     }
 
     const hotTopics: HotTopic[] = topicsRaw
-      .filter((t: any) => t && (t.word || t.keyword || t.theme) && (typeof t.count === 'number' || typeof t.frequency === 'number'))
-      .map((t: any) => ({
-        word: String(t.word || t.keyword || t.theme || ''),
-        count: Number(t.count || t.frequency || 0),
-        category: String(t.category || t.type || t.tag || ''),
-        sampleReflectionIds: (Array.isArray(t.reflectionIndices) ? t.reflectionIndices : [])
+      .filter((t) => {
+        const item = t as Record<string, unknown>;
+        return item && (item.word || item.keyword || item.theme) && (typeof item.count === 'number' || typeof item.frequency === 'number');
+      })
+      .map((t) => {
+        const item = t as Record<string, unknown>;
+        return {
+        word: String(item.word || item.keyword || item.theme || ''),
+        count: Number(item.count || item.frequency || 0),
+        category: String(item.category || item.type || item.tag || ''),
+        sampleReflectionIds: (Array.isArray(item.reflectionIndices) ? item.reflectionIndices as number[] : [])
           .filter((i: number) => i >= 0 && i < reflections.length)
           .map((i: number) => reflections[i].id),
-        aiReason: t.reason ? String(t.reason) : undefined,
-      }))
+        aiReason: item.reason ? String(item.reason) : undefined,
+      };
+      })
       .filter(t => t.word)
       .slice(0, 5);
 

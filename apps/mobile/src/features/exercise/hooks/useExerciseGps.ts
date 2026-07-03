@@ -1,10 +1,10 @@
-let _LocationMod: any = null;
+let _LocationMod: unknown = null;
 
 async function getLocation() {
   if (_LocationMod === null) {
     try { _LocationMod = await import('expo-location'); } catch { _LocationMod = false; }
   }
-  return _LocationMod;
+  return _LocationMod as typeof import('expo-location') | false;
 }
 
 export async function reqLocPerm() {
@@ -19,6 +19,7 @@ export async function getCurPos() {
   try { return await m.getCurrentPositionAsync({}); } catch { return null; }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- expo-location callback type unavailable at compile time
 export async function watchPos(cb: (loc: any) => void) {
   const m = await getLocation();
   if (!m) return { remove: () => {} };

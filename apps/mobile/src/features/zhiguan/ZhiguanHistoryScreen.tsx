@@ -58,25 +58,25 @@ export default function ZhiguanHistoryScreen() {
         <View style={styles.statRow}>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{stats.totalSessions}</Text>
-            <Text style={styles.statLabel}>{T('days')}</Text>
+            <Text style={styles.statLabel}>{T('zhiguanStatSessions').replace('{n}', '')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{stats.totalMinutes}</Text>
-            <Text style={styles.statLabel}>{T('zhiguanStatTotalMin').split(' ')[1] ?? 'min'}</Text>
+            <Text style={styles.statLabel}>{T('zhiguanStatTotalMin').replace('{n}', '')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{stats.longestMinutes}</Text>
-            <Text style={styles.statLabel}>{T('zhiguanStatLongestMin').split(' ')[1] ?? 'min'}</Text>
+            <Text style={styles.statLabel}>{T('zhiguanStatLongestMin').replace('{n}', '')}</Text>
           </View>
         </View>
         <View style={styles.statRow}>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{stats.currentStreakDays}</Text>
-            <Text style={styles.statLabel}>{T('zhiguanStatStreak').split(' ')[1] ?? 'd'}</Text>
+            <Text style={styles.statLabel}>{T('zhiguanStatStreak').replace('{n}', '')}</Text>
           </View>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{stats.longestStreakDays}</Text>
-            <Text style={styles.statLabel}>{T('zhiguanStatLongestStreak').split(' ')[1] ?? 'd'}</Text>
+            <Text style={styles.statLabel}>{T('zhiguanStatLongestStreak').replace('{n}', '')}</Text>
           </View>
         </View>
       </View>
@@ -169,7 +169,7 @@ export default function ZhiguanHistoryScreen() {
                     <Text style={styles.detailDeleteText}>{T('zhiguanDeleteRecord')}</Text>
                   </Pressable>
                   <Pressable style={styles.detailCloseBtn} onPress={() => setSelRecord(null)}>
-                    <Text style={styles.detailCloseText}>{T('close')}</Text>
+                    <Text style={styles.detailCloseText}>{T('commonClose')}</Text>
                   </Pressable>
                 </View>
               </ScrollView>
@@ -190,7 +190,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function HeatmapBlock({ sessions, year, month, T }: { sessions: ZhiguanSession[]; year: number; month: number; T: Function }) {
+function HeatmapBlock({ sessions, year, month, T }: { sessions: ZhiguanSession[]; year: number; month: number; T: (key: string) => string }) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const cells: Array<{ date: string; minutes: number }> = [];
   for (let d = 1; d <= daysInMonth; d += 1) {

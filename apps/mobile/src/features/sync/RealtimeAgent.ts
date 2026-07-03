@@ -68,7 +68,7 @@ export class RealtimeAgent {
       }).catch(() => {
         // Ping failed — but only reconnect if SSE is actually dead
         if (this._destroyed) return;
-        if (this._es && (this._es as any).readyState === 1) { // 1 = EventSource.OPEN
+        if (this._es && (this._es as unknown as { readyState: number }).readyState === 1) { // 1 = EventSource.OPEN
           // SSE is still healthy; ping failure is transient (mobile network blip)
           log.debug('Ping failed but SSE still open, ignoring');
           return;
@@ -116,11 +116,14 @@ export class RealtimeAgent {
 
     const pbEvents = ['PB_CONNECTED', 'record_created', 'record_updated', 'record_deleted', 'sync_batch'];
     for (const evt of pbEvents) {
-      (es as any).addEventListener(evt, (event: any) => this._handleEvent(event.type, event.data));
+      (es as unknown as EventTarget).addEventListener(evt, (event: Event) => {
+        const msgEvent = event as MessageEvent;
+        this._handleEvent(msgEvent.type, msgEvent.data);
+      });
     }
 
     es.addEventListener('error', (error) => {
-      log.warn('SSE error:', (error as any)?.message || 'unknown');
+      log.warn('SSE error:', (error instanceof Error ? error.message : null) || 'unknown');
       this._onStatus?.(false);
       this._scheduleReconnect();
     });

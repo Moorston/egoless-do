@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, type ViewStyle } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { formatDisplayName, getCheckinTypeColor } from '../services/globalPulseApi';
@@ -14,7 +14,7 @@ interface PodiumItemProps {
   entry: LeaderboardEntry;
   medal: string;
   isSelected: boolean;
-  podiumStyle: any;
+  podiumStyle: ViewStyle;
   onPress?: (entry: LeaderboardEntry) => void;
 }
 

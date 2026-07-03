@@ -134,7 +134,8 @@ export function createAuthSlice(
       try {
         const result = await apiSyncPull(token, userId);
         if (!result.data) return;
-        const data = result.data;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- sync data is heterogeneous; mergeById requires Record<string, any> index access
+        const data = result.data as Record<string, any[]>;
         // Use functional set() to merge with the latest state, avoiding stale-overwrite
         set(s => {
           const patch: Record<string, unknown> = {};

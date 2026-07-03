@@ -79,7 +79,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
     return checkins.find(c => c.user_hash === myHash) ?? null;
   }, [checkins, myHash]);
 
-  const handleRegionChange = useCallback((region: any) => {
+  const handleRegionChange = useCallback((region: { latitude: number; longitude: number; latitudeDelta: number; longitudeDelta: number }) => {
     const zoom = Math.round(Math.log2(360 / region.latitudeDelta));
     setCurrentZoom(Math.max(1, Math.min(20, zoom)));
   }, []);

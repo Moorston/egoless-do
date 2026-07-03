@@ -94,7 +94,7 @@ export function useZhiguanTimer(): TimerApi {
         setState(prev => ({ ...prev, isPaused: false }));
       }
     };
-    const sub = AppState.addEventListener('change' as any, handler as any);
+    const sub = AppState.addEventListener('change', handler);
     return () => { sub.remove(); };
   }, [state.isRunning, state.isPaused]);
 

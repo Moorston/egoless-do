@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity, Switch } from 'react-native';
 import { X } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
-import type { DedicationType, DedicationSettings } from '@egoless-do/core';
+import type { DedicationType, DedicationSettings, Theme } from '@egoless-do/core';
 
 interface Props {
   visible: boolean;
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   settings: DedicationSettings;
   onClose: () => void;

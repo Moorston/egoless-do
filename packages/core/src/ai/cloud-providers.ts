@@ -54,15 +54,17 @@ export class OpenAICompatibleProvider implements CloudProvider {
       throw new Error(`API错误: ${response.status} - ${error}`);
     }
 
-    let data: any;
+    let data: unknown;
     try {
       data = await response.json();
     } catch {
       throw new Error(`API返回非JSON响应 (status: ${response.status})`);
     }
-    const msg = data.choices?.[0]?.message;
-    const content = msg?.content || msg?.reasoning_content;
-    log.debug('[CloudProvider] Response choices:', data.choices?.length, 'content:', content?.slice(0, 50), 'finish_reason:', data.choices?.[0]?.finish_reason);
+    const obj = data as Record<string, unknown> | undefined;
+    const choices = obj?.choices as Array<Record<string, unknown>> | undefined;
+    const msg = choices?.[0]?.message as Record<string, unknown> | undefined;
+    const content = (msg?.content || msg?.reasoning_content) as string | undefined;
+    log.debug('[CloudProvider] Response choices:', choices?.length, 'content:', content?.slice(0, 50), 'finish_reason:', choices?.[0]?.finish_reason);
     if (!content) {
       throw new Error(`API返回空内容，响应: ${JSON.stringify(data).slice(0, 200)}`);
     }

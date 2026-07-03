@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, TrendingUp, Flame } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, type Theme } from '@egoless-do/core';
 import { ProgressBar } from '../../../components/UI';
 
 interface Props {
-  TH: any;
+  TH: Theme;
   T: (key: string) => string;
   thisWeekPracticeDays: number;
   thisMonthPracticeDays: number;
