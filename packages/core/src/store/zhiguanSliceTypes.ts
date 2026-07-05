@@ -1,8 +1,10 @@
 // ─── Zhiguan slice interface ──────────────────────────────────
 // Extracted from store/types.ts to avoid bloating it
 import type { ZhiguanSession, ZhiguanDraft, ZhiguanStats } from '../types';
+import type { BreathingRecord } from '../types/breath';
 
 export interface ZhiguanSlice {
+  // Zhiguan sessions
   sessions: ZhiguanSession[];
   currentDraft?: ZhiguanDraft;
   currentSession?: ZhiguanSession;
@@ -40,4 +42,9 @@ export interface ZhiguanSlice {
   computeStats: () => ZhiguanStats;
 
   setError: (err: string | undefined) => void;
+
+  // Breathing (from BreathSlice)
+  breathHistory: BreathingRecord[];
+  addBreathRecord: (data: Omit<BreathingRecord, 'id' | 'updatedAt' | 'deleted'>) => void;
+  removeBreathRecord: (id: string) => void;
 }

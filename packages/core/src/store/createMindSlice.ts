@@ -271,7 +271,7 @@ export function createMindSlice(
       const medHistory = (s as unknown as Record<string, unknown>).medHistory as { timestamp?: number; durationSec?: number }[] | undefined;
       if (medHistory && medHistory.length > 0) {
         const recentMedDates = new Set(
-          medHistory.filter(m => m.timestamp && Date.now() - m.timestamp < 30 * 86400000)
+          medHistory.filter((m: any) => !m.deleted && m.timestamp && Date.now() - m.timestamp < 30 * 86400000)
             .map(m => dateStr(new Date(m.timestamp!)))
         );
         const fearsOnMedDays = fears.filter(f => recentMedDates.has(f.date));

@@ -1,25 +1,28 @@
 import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // Gesture handling via native touch events (no gesture handler library)
 import Svg, { G, Circle, Line, Rect, Text as SvgText } from 'react-native-svg';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
-import { ArrowLeft, ZoomIn, ZoomOut, Brain } from 'lucide-react-native';
+import { ArrowLeft, ZoomIn, ZoomOut } from 'lucide-react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import NodeDetailPanel from './NodeDetailPanel';
+import InsightsPanel from './InsightsPanel';
+import StatsBar from './StatsBar';
 
 // SVG viewBox dimensions (logical coordinate space)
 const VB_W = 800;
 const VB_H = 1200;
 
 // Node types
-type NodeType = 'reflection' | 'plan' | 'habit' | 'trail' | 'planItem';
+export type NodeType = 'reflection' | 'plan' | 'habit' | 'trail' | 'planItem';
 
-interface RelationNode {
+export interface RelationNode {
   id: string;
   type: NodeType;
   label: string;
@@ -266,7 +269,7 @@ export default function RelationMapView() {
             }
           }
           const containingTrails = (storeThoughtTrails ?? []).filter(
-            t => !t.deleted && t.reflectionIds.includes(reflection.id)
+            t => !t.deleted && (t.reflectionIds ?? []).includes(reflection.id)
           );
           containingTrails.forEach(trail => {
             addNode(trail.id, 'trail', trail.name, trail);
@@ -301,7 +304,7 @@ export default function RelationMapView() {
           const relatedTrailIds = new Set<string>();
           (storeThoughtTrails ?? []).forEach(t => {
             if (t.id === trail.id || t.deleted) return;
-            if (t.reflectionIds.some(rid => trail.reflectionIds.includes(rid))) relatedTrailIds.add(t.id);
+            if ((t.reflectionIds ?? []).some(rid => (trail.reflectionIds ?? []).includes(rid))) relatedTrailIds.add(t.id);
           });
           relatedTrailIds.forEach(tid => {
             const t = (storeThoughtTrails ?? []).find(tt => tt.id === tid);
@@ -689,49 +692,13 @@ export default function RelationMapView() {
       </View>
 
       {/* Selected Node Detail */}
-      {selectedNodeData && (
-        <View style={[styles.detailPanel, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <View style={styles.detailHeader}>
-            <View style={[styles.detailDot, { backgroundColor: selectedNodeData.color }]} />
-            <Text style={[styles.detailType, { color: TH.sub }]}>{NODE_LABELS[selectedNodeData.type]}</Text>
-          </View>
-          <Text style={[styles.detailLabel, { color: TH.text }]} numberOfLines={2}>{selectedNodeData.label}</Text>
-          <TouchableOpacity onPress={() => handleNavigateToDetail(selectedNodeData)} style={[styles.detailButton, { backgroundColor: P }]}>
-            <Text style={styles.detailButtonText}>查看详情</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <NodeDetailPanel node={selectedNodeData} onNavigate={handleNavigateToDetail} />
 
       {/* Stats Summary */}
-      <View style={[styles.statsBar, { backgroundColor: TH.card, borderColor: TH.border }]}>
-        {(['reflection', 'plan', 'habit', 'trail', 'planItem'] as NodeType[]).map(type => {
-          const count = nodes.filter(n => n.type === type).length;
-          if (count === 0) return null;
-          return (
-            <View key={type} style={styles.statItem}>
-              <Text style={[styles.statNumber, { color: NODE_COLORS[type] }]}>{count}</Text>
-              <Text style={[styles.statLabel, { color: TH.sub }]}>{NODE_LABELS[type]}</Text>
-            </View>
-          );
-        })}
-      </View>
+      <StatsBar nodes={nodes} />
 
       {/* Insights */}
-      {insights.length > 0 && (
-        <View style={[styles.insightsPanel, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <View style={styles.insightsHeader}>
-            <Brain size={16} color={P} />
-            <Text style={[styles.insightsTitle, { color: TH.text }]}>关联洞察</Text>
-          </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {insights.map((insight, idx) => (
-              <View key={idx} style={[styles.insightCard, { borderColor: TH.border }]}>
-                <Text style={[styles.insightText, { color: TH.text }]}>{insight}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-      )}
+      <InsightsPanel insights={insights} />
     </SafeAreaView>
   );
 }
@@ -829,43 +796,4 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
-  detailPanel: {
-    position: 'absolute',
-    bottom: 200,
-    left: 16,
-    right: 16,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  },
-  detailHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 8,
-  },
-  detailDot: { width: 10, height: 10, borderRadius: 5 },
-  detailType: { fontSize: FONT_SMALL },
-  detailLabel: { fontSize: FONT_BODY, fontWeight: '600', marginBottom: 12 },
-  detailButton: { paddingVertical: 8, borderRadius: 8, alignItems: 'center' },
-  detailButtonText: { color: '#fff', fontSize: FONT_SMALL, fontWeight: '600' },
-  statsBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 12,
-    borderTopWidth: 1,
-  },
-  statItem: { alignItems: 'center' },
-  statNumber: { fontSize: FONT_BODY, fontWeight: '700' },
-  statLabel: { fontSize: FONT_TINY, marginTop: 2 },
-  insightsPanel: { padding: 12, borderTopWidth: 1 },
-  insightsHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
-  insightsTitle: { fontSize: FONT_SMALL, fontWeight: '600' },
-  insightCard: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, borderWidth: 1, marginRight: 8 },
-  insightText: { fontSize: FONT_SMALL },
 });

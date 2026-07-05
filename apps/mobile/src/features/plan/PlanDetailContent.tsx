@@ -1,9 +1,9 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress, getFrequencySummary } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress, getFrequencySummary, MS_PER_DAY } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -95,9 +95,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const [showRelated, setShowRelated] = useState(false);
 
   // 完成计划确认弹窗状态
-  const [showCompleteModal, setShowCompleteModal] = useState(false);
-  const [completeReason, setCompleteReason] = useState('');
-  const [incompleteCount, setIncompleteCount] = useState(0);
+
 
   // 热力图折叠状态，默认折叠
   const [showHeatmap, setShowHeatmap] = useState(false);
@@ -156,7 +154,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     }
     for (const t of (thoughtTrails ?? [])) {
       if (t.deleted || trailIds.has(t.id)) continue;
-      if (t.reflectionIds.some(rid => {
+      if ((t.reflectionIds ?? []).some(rid => {
         const linkedItemId = reflectionIdToPlanItemId.get(rid);
         return linkedItemId != null && planItemIds.has(linkedItemId);
       })) {
@@ -166,24 +164,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     return (thoughtTrails ?? []).filter(t => !t.deleted && trailIds.has(t.id)).slice(0, 2);
   }, [items, reflections, thoughtTrails, plan, planItemIds]);
 
-  if (!plan) {
-    return (
-      <Card style={{ alignItems: 'center', padding: 32 }}>
-        <Text style={{ color: TH.sub }}>{T('planNotFound')}</Text>
-      </Card>
-    );
-  }
-
-  const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1;
-  const elapsed = Math.max(0, Math.round((new Date(today > plan.endDate ? plan.endDate : today).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1);
-  const planDelayed = isPlanDelayed(plan, today);
-  const deletable = canDeletePlan(plan.status);
-  const editable = canEditPlan(plan.status);
-  const completable = plan.status === 'in_progress' || plan.status === 'paused';
-  const resumable = plan.status === 'paused';
-  const pausable = plan.status === 'in_progress';
-  const cancellable = plan.status === 'paused';
-
+  // getItemEffectiveStatus must be defined before sortedItems/renderItemRow hooks
   const getItemEffectiveStatus = (item: PlanItem): PlanItemStatus => {
     if (item.status === 'completed') return 'completed';
     if ((itemProgressMap.get(item.id)?.progress ?? 0) >= 100) return 'completed';
@@ -265,6 +246,26 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     );
   }, [sortedItems, itemProgressMap, expandedHeatmaps, TH, P, T, checkins, today, getItemEffectiveStatus]);
 
+  // ── Early return (AFTER all hooks are declared) ──
+  if (!plan) {
+    return (
+      <Card style={{ alignItems: 'center', padding: 32 }}>
+        <Text style={{ color: TH.sub }}>{T('planNotFound')}</Text>
+      </Card>
+    );
+  }
+
+  // Derived values that require `plan` to be non-null
+  const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1;
+  const elapsed = Math.max(0, Math.round((new Date(today > plan.endDate ? plan.endDate : today).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1);
+  const planDelayed = isPlanDelayed(plan, today);
+  const deletable = canDeletePlan(plan.status);
+  const editable = canEditPlan(plan.status);
+  const completable = plan.status === 'in_progress' || plan.status === 'paused';
+  const resumable = plan.status === 'paused';
+  const pausable = plan.status === 'in_progress';
+  const cancellable = plan.status === 'paused';
+
   const checkCanArchive = (onConfirm: () => void) => {
     const result = canArchivePlan(plan.id);
     if (!result.allowed) {
@@ -294,31 +295,24 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   };
 
   const handleComplete = () => {
-    // Check if there are incomplete items
     const incomplete = items.filter(item => {
       const prog = itemProgressMap.get(item.id);
       return !prog || prog.progress < 100;
     });
 
     if (incomplete.length === 0) {
-      // All items complete, complete directly
       completePlan(plan.id);
       return;
     }
 
-    // Show reason dialog for incomplete tasks
-    setIncompleteCount(incomplete.length);
-    setCompleteReason('');
-    setShowCompleteModal(true);
-  };
-
-  const handleConfirmComplete = () => {
-    if (!completeReason.trim()) {
-      Alert.alert(T('planCompleteReasonRequired'), T('planCompleteReasonRequiredDetail'));
-      return;
-    }
-    setShowCompleteModal(false);
-    completePlan(plan.id, completeReason.trim());
+    Alert.alert(
+      T('planCompleteWithIncomplete'),
+      T('planCompleteWithIncompleteDetail').replace('{count}', String(incomplete.length)),
+      [
+        { text: T('commonCancel'), style: 'cancel' },
+        { text: T('planCompleteConfirmBtn'), onPress: () => completePlan(plan.id) },
+      ],
+    );
   };
 
   const handleResume = () => {
@@ -441,7 +435,6 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                 keyExtractor={(item) => item.id}
                 scrollEnabled={false}
                 removeClippedSubviews={false}
-                style={{ height: sortedItems.length * 170 }}
               />
             )}
           </Card>
@@ -510,7 +503,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
                     >
                       <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{trail.name}</Text>
                       <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
-                        {trail.reflectionIds.length} {T('planTrailReflectionCount')}
+                        {(trail.reflectionIds ?? []).length} {T('planTrailReflectionCount')}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -864,51 +857,6 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
       )}
     </ScrollView>
     </KeyboardAvoidingView>
-
-    {/* Complete Plan with Reason Modal */}
-    <Modal
-      visible={showCompleteModal}
-      transparent
-      animationType="fade"
-      onRequestClose={() => setShowCompleteModal(false)}
-    >
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, width: '100%', maxWidth: 400 }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>
-            {T('planCompleteWithIncomplete')}
-          </Text>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16 }}>
-            {T('planCompleteWithIncompleteDetail').replace('{count}', String(incompleteCount))}
-          </Text>
-          <TextInput
-            style={{
-              borderWidth: 1, borderColor: TH.border, borderRadius: 12, padding: 12,
-              fontSize: FONT_BODY, color: TH.text, backgroundColor: TH.bg,
-              minHeight: 80, textAlignVertical: 'top',
-            }}
-            placeholder={T('planCompleteReasonPlaceholder')}
-            placeholderTextColor={TH.sub}
-            value={completeReason}
-            onChangeText={setCompleteReason}
-            multiline
-          />
-          <View style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
-            <TouchableOpacity
-              onPress={() => setShowCompleteModal(false)}
-              style={{ flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}
-            >
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('commonCancel')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleConfirmComplete}
-              style={{ flex: 1, paddingVertical: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}
-            >
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('planCompleteConfirmBtn')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
     </>
   );
 }

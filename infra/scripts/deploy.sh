@@ -29,10 +29,6 @@ docker compose -f "$COMPOSE_FILE" down
 echo "📥 拉取最新镜像..."
 docker compose -f "$COMPOSE_FILE" pull
 
-# 构建 Web 应用
-echo "🔨 构建 Web 应用..."
-docker compose -f "$COMPOSE_FILE" build --no-cache web
-
 # 启动服务
 echo "▶️  启动服务..."
 docker compose -f "$COMPOSE_FILE" --env-file .env.production up -d
@@ -59,17 +55,10 @@ else
     echo "  ❌ PocketBase: 异常"
 fi
 
-if curl -s http://localhost:3000 > /dev/null; then
-    echo "  ✅ Web 应用: 正常"
-else
-    echo "  ❌ Web 应用: 异常"
-fi
-
 echo ""
 echo "🎉 部署完成！"
 echo ""
 echo "访问地址："
-echo "  - Web 应用: http://localhost:3000"
 echo "  - PocketBase: http://localhost:8090"
 echo "  - PocketBase 管理: http://localhost:8090/_/"
 echo ""

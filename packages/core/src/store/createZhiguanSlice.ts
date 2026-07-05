@@ -5,6 +5,7 @@ import type {
   ZhiguanStats,
   ZhiguanMethod,
 } from '../types';
+import type { BreathingRecord } from '../types/breath';
 import type { ZhiguanSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
@@ -29,10 +30,39 @@ export function createZhiguanSlice(
   onSync?: () => void,
 ): SliceCreator<ZhiguanSlice> {
   return (set, get) => ({
-    // ── State ──
+    // ── Breathing state (from BreathSlice) ──
+    breathHistory: [] as BreathingRecord[],
+
+    addBreathRecord(data: Omit<BreathingRecord, 'id' | 'updatedAt' | 'deleted'>) {
+      const entry: BreathingRecord = {
+        id: `breath_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        ...data,
+        updatedAt: Date.now(),
+        deleted: false,
+      };
+      set(s => ({ breathHistory: [...(s.breathHistory ?? []), entry] }));
+      adapter.persistChange('breath', entry.id, entry).catch((e: unknown) => log.error(e));
+      onSync?.();
+    },
+
+    removeBreathRecord(id: string) {
+      const record = (get().breathHistory ?? []).find((r: BreathingRecord) => r.id === id && !r.deleted);
+      if (record) {
+        (get() as any).addToRecycleBin({ id: record.id, entityType: 'breath', data: record });
+      }
+      set(s => ({
+        breathHistory: (s.breathHistory ?? []).map((r: BreathingRecord) =>
+          r.id === id ? { ...r, deleted: true, updatedAt: Date.now() } : r,
+        ),
+      }));
+      adapter.markDeleted('breath', id).catch((e: unknown) => log.error(e));
+      onSync?.();
+    },
+
+    // ── Zhiguan state ──
     sessions: [],
     currentDraft: undefined,
-    currentSession: undefined, // Practice 阶段的活跃 session（内存态，持久化在 completeSession 时入库）
+    currentSession: undefined,
     stats: undefined,
     isLoading: false,
     error: undefined,

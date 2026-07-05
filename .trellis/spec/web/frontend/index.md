@@ -12,7 +12,7 @@ This directory contains guidelines for frontend development. Fill in each file w
 
 ## Guidelines Summary
 
-> **DEPRECATED** — `apps/web/` is marked deprecated in `CLAUDE.md` and scheduled for archival. Web frontend spec is intentionally not filled. Refer to `mobile/frontend/` + `core/frontend/` for active patterns.
+> **ARCHIVED** — `apps/web/` has been archived to `_archive/web-legacy/`. Refer to `mobile/frontend/` + `core/frontend/` for active patterns.
 
 | Guide | Description | Status |
 |-------|-------------|--------|

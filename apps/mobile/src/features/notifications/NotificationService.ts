@@ -1,3 +1,7 @@
+import { createLogger } from '@egoless-do/core';
+
+const log = createLogger('NotificationService');
+
 const getNotifications = () => import('expo-notifications');
 
 let handlerSet = false;
@@ -25,7 +29,7 @@ export async function requestNotificationPermission(): Promise<boolean> {
     const { status } = await Notifications.requestPermissionsAsync();
     return status === 'granted';
   } catch (e) {
-    console.warn('Notification permission request failed:', e);
+    log.warn('Notification permission request failed:', e);
     return false;
   }
 }

@@ -62,7 +62,7 @@ export default function ExerciseScreen() {
       }
     }
     return result;
-  }, [exerciseLog]);
+  }, [exerciseLog, P]);
 
   // My sports (first group)
   const mySports = SPORT_GROUPS[0]?.items ?? [];

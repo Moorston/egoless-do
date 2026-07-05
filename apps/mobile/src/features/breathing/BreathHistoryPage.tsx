@@ -6,7 +6,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_SMALL, dateStr, BREATHING_PRESETS } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_SMALL, dateStr, addDays, fmtMS, BREATHING_PRESETS } from '@egoless-do/core';
 import type { BreathingRecord } from '@egoless-do/core';
 
 export default function BreathHistoryPage() {
@@ -36,10 +36,8 @@ export default function BreathHistoryPage() {
     const today = dateStr();
     let checkDate = today;
     if (!dates.has(today)) {
-      // Check from yesterday
-      const d = new Date();
-      d.setDate(d.getDate() - 1);
-      checkDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      // Check from yesterday — use addDays for consistent local-timezone handling
+      checkDate = addDays(today, -1);
     }
     if (dates.has(checkDate)) {
       streak = 1;
@@ -82,12 +80,6 @@ export default function BreathHistoryPage() {
     ]);
   }, [removeBreathRecord, T]);
 
-  const formatTime = useCallback((sec: number) => {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }, []);
-
   const renderItem = useCallback(({ item: record }: { item: BreathingRecord }) => {
     const preset = BREATHING_PRESETS.find(p => p.key === record.presetKey);
     const presetName = preset ? T(preset.nameKey) : record.presetKey;
@@ -105,7 +97,7 @@ export default function BreathHistoryPage() {
             </View>
             <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{record.cycles} {T('breathCycles')}</Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{formatTime(record.durationSec)}</Text>
+              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{fmtMS(record.durationSec)}</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => handleDelete(record)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
@@ -134,7 +126,7 @@ export default function BreathHistoryPage() {
         )}
       </View>
     );
-  }, [T, TH.border, TH.sub, TH.text, formatTime, handleDelete]);
+  }, [T, TH.border, TH.sub, TH.text, handleDelete]);
 
   const keyExtractor = useCallback((item: BreathingRecord, index: number) => item.id ?? String(index), []);
 

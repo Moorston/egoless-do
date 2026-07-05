@@ -53,7 +53,7 @@ export default function SutraHistoryScreen() {
     const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
     if (dateSet.has(dateKey(today)) || dateSet.has(dateKey(yesterday))) {
       streak = 1;
-      let check = new Date(dateSet.has(dateKey(today)) ? today : yesterday);
+      const check = new Date(dateSet.has(dateKey(today)) ? today : yesterday);
       for (let i = 1; i < 365; i++) {
         check.setDate(check.getDate() - 1);
         if (dateSet.has(dateKey(check))) streak++;

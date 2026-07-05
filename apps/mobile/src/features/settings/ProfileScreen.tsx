@@ -71,7 +71,7 @@ export default function ProfileScreen() {
     const wn = w ? parseFloat(w) : undefined;
     const h = heightRef.current;
     const hn = h ? parseFloat(h) : undefined;
-    useAppStore.getState().updateUserProfile({ weight: wn, height: hn });
+    useAppStore.getState().updateUserProfile({ weight: wn && !isNaN(wn) ? wn : undefined, height: hn && !isNaN(hn) ? hn : undefined });
     const wg = parseInt(waterRef.current, 10);
     if (!isNaN(wg) && wg > 0) useAppStore.getState().setWaterGoal(wg);
   }, []);

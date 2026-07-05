@@ -1,9 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Flag, Target, Star, ChevronRight, ChevronDown } from 'lucide-react-native';
-import type { Vision, Plan, PlanItem, PlanItemStatus, Theme } from '@egoless-do/core';
-import { VISION_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
+import type { Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme } from '@egoless-do/core';
+import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { ProgressBar } from '../../../components/UI';
+
+const TF_MONTHS: Record<VisionTimeFrame, number> = {
+  '3months': 3, '6months': 6, '1year': 12,
+  '2years': 24, '3years': 36, '5years': 60, '10years': 120,
+};
+
+function computeEndDate(start: string, tf: VisionTimeFrame): string {
+  const d = new Date(start);
+  d.setMonth(d.getMonth() + TF_MONTHS[tf]);
+  return dateStr(d);
+}
 
 interface Props {
   vision: Vision;
@@ -18,6 +29,7 @@ interface Props {
   onAchieve: (id: string) => void;
   onArchive: (id: string) => void;
   onDelete?: (id: string) => void;
+  onTimeFrameChange?: (visionId: string, tf: VisionTimeFrame) => void;
   linkedPlans?: Plan[];
   planItems?: PlanItem[];
 }
@@ -42,8 +54,9 @@ const STATUS_I18N: Record<PlanItemStatus, string> = {
   cancelled: 'planStatusCancelled',
 };
 
-export default function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, linkedPlans = [], planItems = [] }: Props) {
+export default function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onTimeFrameChange, linkedPlans = [], planItems = [] }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [showTfPicker, setShowTfPicker] = useState(false);
   const Icon = TYPE_ICON[vision.type] ?? Flag;
   const typeColor = vision.type === 'lifetime' ? '#F59E0B' : vision.type === 'long' ? '#8B5CF6' : '#10B981';
 
@@ -53,7 +66,21 @@ export default function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal
     return tf ? T(tf.labelKey) : vision.timeFrame;
   }, [vision.timeFrame, T]);
 
+  const availableTimeFrames = useMemo(() => {
+    if (vision.type === 'short') return SHORT_TIME_FRAMES;
+    if (vision.type === 'long') return LONG_TIME_FRAMES;
+    return [];
+  }, [vision.type]);
+
   const deadlineText = vision.deadline ?? null;
+
+  const dateRange = useMemo(() => {
+    if (vision.type === 'lifetime') return null;
+    const start = vision.startDate;
+    if (!start) return null;
+    const end = deadlineText ?? (vision.timeFrame ? computeEndDate(start, vision.timeFrame) : null);
+    return end ? `${start} ~ ${end}` : start;
+  }, [vision.startDate, vision.timeFrame, vision.type, deadlineText]);
 
   return (
     <View style={{
@@ -72,21 +99,66 @@ export default function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal
             <Text style={{ fontSize: FONT_BADGE, color: typeColor, fontWeight: '600' }}>
               {T(vision.type === 'lifetime' ? 'vowLifetime' : vision.type === 'long' ? 'vowLong' : 'vowShort')}
             </Text>
-            {timeFrameLabel && (
-              <Text style={{
-                fontSize: 11, color: TH.sub,
-                backgroundColor: `${TH.border}60`,
-                paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
-              }}>
-                {timeFrameLabel}
-              </Text>
+            {vision.type !== 'lifetime' && (
+              onTimeFrameChange && vision.status === 'active' ? (
+                <TouchableOpacity
+                  onPress={() => setShowTfPicker(prev => !prev)}
+                  style={{
+                    flexDirection: 'row', alignItems: 'center', gap: 4,
+                    backgroundColor: `${TH.border}60`,
+                    paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
+                  }}
+                >
+                  <Text style={{ fontSize: 11, color: TH.sub }}>
+                    {timeFrameLabel ?? T('vowTimeRange')}
+                  </Text>
+                  <ChevronDown size={10} color={TH.sub} />
+                </TouchableOpacity>
+              ) : timeFrameLabel ? (
+                <Text style={{
+                  fontSize: 11, color: TH.sub,
+                  backgroundColor: `${TH.border}60`,
+                  paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
+                }}>
+                  {timeFrameLabel}
+                </Text>
+              ) : null
             )}
           </View>
           <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 22 }}>{vision.text}</Text>
-          {deadlineText && (
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
-              {T('vowDeadline')}: {deadlineText}
-            </Text>
+          {dateRange && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
+              <Calendar size={12} color={TH.sub} />
+              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{dateRange}</Text>
+            </View>
+          )}
+          {/* TimeFrame picker dropdown */}
+          {showTfPicker && onTimeFrameChange && (
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+              {availableTimeFrames.map(tfKey => {
+                const tf = VISION_TIME_FRAMES.find(f => f.key === tfKey);
+                if (!tf) return null;
+                const active = vision.timeFrame === tfKey;
+                return (
+                  <TouchableOpacity
+                    key={tfKey}
+                    onPress={() => {
+                      onTimeFrameChange(vision.id, tfKey);
+                      setShowTfPicker(false);
+                    }}
+                    style={{
+                      paddingVertical: 4, paddingHorizontal: 10, borderRadius: 6,
+                      backgroundColor: active ? '#8B5CF620' : TH.card,
+                      borderWidth: 1, borderColor: active ? '#8B5CF6' : TH.border,
+                    }}
+                  >
+                    <Text style={{ fontSize: FONT_BADGE, color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
+                      {T(tf.labelKey)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           )}
         </View>
         <TouchableOpacity onPress={() => onEdit(vision)} style={{ padding: 6 }}>

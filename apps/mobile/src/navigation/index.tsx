@@ -16,6 +16,7 @@ import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, createLogger } f
 import { useTheme } from '../components/UI';
 import StarfieldBackground from '../components/StarfieldBackground';
 import SimpleHeaderComponent from './SimpleHeader';
+import { LazyScreen, withLazy, LoadingFallback } from './LazyScreen';
 
 const log = createLogger('App');
 
@@ -104,25 +105,19 @@ const Tab   = createBottomTabNavigator<MainTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
 
 // ─── Suspense wrapper for lazy-loaded screens ─────────────────────
-function LazyScreen({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<View style={{ flex: 1 }} />}>{children}</Suspense>;
-}
 /** Wrap a lazy component for use in React Navigation. */
-function withLazy<P extends object>(Component: React.LazyExoticComponent<React.ComponentType<P>>) {
-  return (props: P) => <LazyScreen><Component {...props as P} /></LazyScreen>;
-}
 
 // Wrapper for default-exported modules with named exports (FastHistoryPage, MedHistoryPage)
 function FastHistoryWrapper(props: StackScreenProps<RootStackParamList, 'FastHistory'>) {
   return (
-    <Suspense fallback={<View style={{ flex: 1 }} />}>
+    <Suspense fallback={<LoadingFallback />}>
       <FastHistoryModule {...props} />
     </Suspense>
   );
 }
 function MedHistoryWrapper(props: StackScreenProps<RootStackParamList, 'MedHistory'>) {
   return (
-    <Suspense fallback={<View style={{ flex: 1 }} />}>
+    <Suspense fallback={<LoadingFallback />}>
       <MedHistoryModule {...props} />
     </Suspense>
   );
@@ -237,9 +232,9 @@ const TAB_ROUTES: Record<string, string> = {
 
 function MainTabs() {
   const TH = useTheme();
+  const language = useAppStore(s => s.language);
   const tabNavRef = useRef<NavigationContainerRef<MainTabParamList>>(null);
-  const [, forceUpdate] = useState(0);
-  useEffect(() => { forceUpdate(n => n + 1); }, []);
+  const [tabNav, setTabNav] = useState<NavigationContainerRef<MainTabParamList> | null>(null);
 
   const iconMap: Record<string, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
     Home, Plan: ClipboardList, Fasting: Timer, Meditation: Binary, Practice: Footprints,
@@ -253,11 +248,12 @@ function MainTabs() {
   };
 
   return (
-    <TabNavContext.Provider value={tabNavRef.current}>
+    <TabNavContext.Provider value={tabNav}>
     <View style={{ flex: 1 }}>
     <Tab.Navigator
-      screenOptions={({ route, navigation }) => {
-        tabNavRef.current = navigation;
+      ref={tabNavRef as any}
+      onReady={() => setTabNav(tabNavRef.current as any)}
+      screenOptions={({ route }) => {
         return {
           headerShown: false,
           tabBarIcon: ({ focused }) => tabIcon(route.name, focused),
@@ -278,22 +274,22 @@ function MainTabs() {
       <Tab.Screen name="Home"        component={HomeScreen}        options={{ title: t('navTabHome', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Exercise"    component={ExerciseScreen}    options={{ title: t('navTabExercise', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Fasting"     component={FastingScreen}     options={{ title: t('navTabFasting', language), tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Practice"    component={PracticeScreen}    options={{ title: t('navTabPractice', language), tabBarItemStyle: { flex: 1 } }} />
+      <Tab.Screen name="Practice"    component={withLazy(PracticeScreen)}    options={{ title: t('navTabPractice', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title: t('navTabSettings', language), tabBarItemStyle: { flex: 1 } }} />
-      <Tab.Screen name="Meditation"  component={MeditationScreen}  options={{ title: t('navTabMeditation', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Breathing"   component={BreathingScreen}   options={{ title: '调息', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Sleep"       component={SleepScreen}       options={{ title: '调眠', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Precept"    component={PreceptScreen}     options={{ title: '持戒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Give"       component={GiveScreen}        options={{ title: '布施', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Body"        component={BodyScreen}        options={{ title: '调身', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Vow"         component={VowScreen}         options={{ title: '发愿', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Mantra"      component={MantraScreen}      options={{ title: '持咒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Sutra"       component={SutraScreen}       options={{ title: '诵经', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Diet"        component={DietScreen}        options={{ title: '调食', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Mind"        component={MindScreen}        options={{ title: '调心', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Meditation"  component={withLazy(MeditationScreen)}  options={{ title: t('navTabMeditation', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Breathing"   component={withLazy(BreathingScreen)}   options={{ title: t('breathingTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Sleep"       component={withLazy(SleepScreen)}       options={{ title: '调眠', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Precept"    component={withLazy(PreceptScreen)}     options={{ title: '持戒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Give"       component={withLazy(GiveScreen)}        options={{ title: '布施', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Body"        component={withLazy(BodyScreen)}        options={{ title: '调身', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Vow"         component={withLazy(VowScreen)}         options={{ title: '发愿', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Mantra"      component={withLazy(MantraScreen)}      options={{ title: '持咒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Sutra"       component={withLazy(SutraScreen)}       options={{ title: '诵经', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Diet"        component={withLazy(DietScreen)}        options={{ title: '调食', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Mind"        component={withLazy(MindScreen)}        options={{ title: '调心', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={ReflectionsScreen} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Habits"      component={HabitsScreen}      options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Habits"      component={withLazy(HabitsScreen)} options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
     </Tab.Navigator>
     <FabButton primaryColor={TH.primary} />
     </View>
@@ -303,6 +299,7 @@ function MainTabs() {
 
 export default function AppNavigator() {
   const TH = useTheme();
+  const theme = useAppStore(s => s.theme);
   const isSignedIn = useAppStore(s => s.auth.isSignedIn);
   const navRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
   const { kickOutVisible, hasPendingData, handleSyncAndLogout, handleLogoutDirectly } = useSync();

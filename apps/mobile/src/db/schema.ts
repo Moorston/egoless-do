@@ -1,5 +1,8 @@
 // ─── SQLite schema & queries (expo-sqlite v15 API) ───────────────
 import * as SQLite from 'expo-sqlite';
+import { createLogger } from '@egoless-do/core';
+
+const log = createLogger('DB');
 
 export const DB_NAME = 'egoless_do.db';
 
@@ -204,6 +207,7 @@ CREATE TABLE IF NOT EXISTS plans (
   end_date                TEXT    NOT NULL,
   status                  TEXT    NOT NULL DEFAULT 'not_started',
   progress                INTEGER NOT NULL DEFAULT 0,
+  vision_id               TEXT,
   last_delayed_notify_at  INTEGER,
   updated_at              INTEGER,
   deleted                 INTEGER NOT NULL DEFAULT 0,
@@ -585,7 +589,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       await db.execAsync('DROP INDEX IF EXISTS idx_sync_queue_entity');
       await db.execAsync('CREATE UNIQUE INDEX idx_sync_queue_entity ON sync_queue(entity, entity_id)');
     } catch (e) {
-      console.warn('[DB] sync_queue unique index migration:', e);
+      log.warn('[DB] sync_queue unique index migration:', e);
     }
   }
 
@@ -731,6 +735,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
 
   // Add complete_reason to plans
   await tryAddCol('plans', 'complete_reason', 'TEXT');
+  await tryAddCol('plans', 'vision_id', 'TEXT');
 
   // Add local_engine_enabled to ai_configs
   await tryAddCol('ai_configs', 'local_engine_enabled', 'INTEGER NOT NULL DEFAULT 1');
@@ -911,6 +916,12 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   // Add audio columns to mantra_defs
   await tryAddCol('mantra_defs', 'audio_url', 'TEXT');
   await tryAddCol('mantra_defs', 'audio_attribution', 'TEXT');
+  // Add missing mantra fields for full sync support
+  await tryAddCol('mantra_defs', 'preset', 'INTEGER');
+  await tryAddCol('mantra_defs', 'pronunciation', 'TEXT');
+  await tryAddCol('mantra_defs', 'meaning', 'TEXT');
+  await tryAddCol('mantra_defs', 'full_text', 'TEXT');
+  await tryAddCol('mantra_defs', 'page_count', 'INTEGER');
 
   // Add missing indexes for frequently queried columns
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_food_entry_date ON food_entries(entry_date)');
@@ -926,7 +937,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     )`);
     await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_checkin_reviews_review_id ON checkin_reviews(review_id)');
   } catch (e) {
-    console.warn('[DB] checkin_reviews unique index migration:', e);
+    log.warn('[DB] checkin_reviews unique index migration:', e);
   }
 
   // Ensure body_goals table exists
@@ -986,11 +997,14 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   if (!visionsCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS visions (
       id TEXT PRIMARY KEY, type TEXT NOT NULL, text TEXT NOT NULL,
-      time_frame TEXT, deadline TEXT, status TEXT NOT NULL DEFAULT 'active',
+      time_frame TEXT, start_date TEXT, deadline TEXT, status TEXT NOT NULL DEFAULT 'active',
       achieved_at INTEGER, sort_order INTEGER NOT NULL DEFAULT 0,
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
+
+  // Add start_date column to visions if missing
+  await tryAddCol('visions', 'start_date', 'TEXT');
 
   // Ensure vision_practices table exists
   const visionPracticesCheck = await db.getFirstAsync<{ name: string }>(
@@ -1057,10 +1071,17 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       samatha_ratio_avg REAL, vipassana_ratio_avg REAL,
       total_breaths INTEGER, closing_notes TEXT,
       self_reported_stage TEXT, self_reported_stage_text TEXT,
-      dedication_id TEXT, updated_at INTEGER,
+      dedication_id TEXT, five_hindrances TEXT, eight_tactile TEXT, meta TEXT,
+      updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
   }
+
+  // Add missing zhiguan_sessions columns
+  await tryAddCol('zhiguan_sessions', 'end_ts', 'INTEGER');
+  await tryAddCol('zhiguan_sessions', 'five_hindrances', 'TEXT');
+  await tryAddCol('zhiguan_sessions', 'eight_tactile', 'TEXT');
+  await tryAddCol('zhiguan_sessions', 'meta', 'TEXT');
 
   // Ensure breath_records table exists
   const breathRecordsCheck = await db.getFirstAsync<{ name: string }>(
@@ -1105,7 +1126,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
       }
     }
   } catch (e) {
-    console.warn('[DB] Preset cleanup migration failed:', e);
+    log.warn('[DB] Preset cleanup migration failed:', e);
   }
 }
 // ── Generic helpers ───────────────────────────────────────────────

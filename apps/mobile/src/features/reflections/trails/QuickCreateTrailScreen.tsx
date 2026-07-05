@@ -25,6 +25,7 @@ import { SmartQueryBubble } from '../insights/SmartQueryBubble';
 import { FilterTags } from '../core/FilterTags';
 import { AIAnalysisStream, createAnalysisMessages } from '../insights/AIAnalysisStream';
 import { useQuickTrailSearch, type TimeRange } from '../hooks/useQuickTrailSearch';
+import ReflectionCheckItem from './ReflectionCheckItem';
 
 const TIME_RANGE_OPTIONS: { key: TimeRange; labelKey: string }[] = [
   { key: 'week', labelKey: 'freqThisWeek' },
@@ -145,7 +146,7 @@ export default function QuickCreateTrailScreen() {
   }, [selectedIds, trailName, reflectionsMap, createThoughtTrail, nav, T, setSelectedIds, setTrailName]);
 
   const handleGoRecord = useCallback(() => {
-    (nav as any).navigate('Reflections', { showNew: true });
+    nav.navigate('Reflections' as never, { showNew: true } as never);
   }, [nav]);
 
   // ── Render helpers ────────────────────────────────────────────
@@ -179,7 +180,7 @@ export default function QuickCreateTrailScreen() {
             {T('quickTrailKeepRecording')}
           </Text>
           <TouchableOpacity
-            onPress={() => (nav as any).navigate('Reflections', { showNew: true })}
+            onPress={() => nav.navigate('Reflections' as never, { showNew: true } as never)}
             style={{ backgroundColor: TH.primary, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 24, marginTop: 20 }}
           >
             <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('quickTrailGoRecord')}</Text>
@@ -801,66 +802,4 @@ export default function QuickCreateTrailScreen() {
   );
 }
 
-// ── Reflection check item ────────────────────────────────────────
-
-function ReflectionCheckItem({
-  ref, isSelected, onToggle,
-}: {
-  ref: MindReflection; isSelected: boolean; onToggle: () => void;
-}) {
-  const TH = useTheme();
-  const T = useT();
-
-  return (
-    <TouchableOpacity
-      onPress={onToggle}
-      style={{
-        flexDirection: 'row', alignItems: 'flex-start',
-        backgroundColor: TH.card, borderRadius: 12,
-        borderWidth: 1, borderColor: isSelected ? TH.primary : TH.border,
-        padding: 12, marginBottom: 8, gap: 10,
-      }}
-    >
-      {/* Checkbox */}
-      <View style={{
-        width: 22, height: 22, borderRadius: 6, borderWidth: 2,
-        borderColor: isSelected ? TH.primary : TH.border,
-        backgroundColor: isSelected ? TH.primary : 'transparent',
-        alignItems: 'center', justifyContent: 'center',
-        marginTop: 2,
-      }}>
-        {isSelected && <Check size={14} color="#fff" />}
-      </View>
-
-      {/* Content */}
-      <View style={{ flex: 1 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
-            {formatDateShort(ref.timestamp)}
-          </Text>
-          <Text style={{ fontSize: FONT_SMALL }}>{getMoodIcon(ref.mood)}</Text>
-          {ref.tags.slice(0, 2).map(tag => (
-            <Text key={tag} style={{
-              fontSize: FONT_TINY, color: TH.primary,
-              backgroundColor: `${TH.primary}15`,
-              paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8,
-            }}>
-              {tag}
-            </Text>
-          ))}
-        </View>
-        <Text style={{
-          fontSize: FONT_BODY, color: TH.text, marginTop: 4,
-          lineHeight: 20,
-        }} numberOfLines={2}>
-          {ref.content}
-        </Text>
-        {ref.thoughtTrailIds && ref.thoughtTrailIds.length > 0 && (
-          <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginTop: 4 }}>
-            📎 {T('quickTrailAssignedNotice').replace('{n}', String(ref.thoughtTrailIds.length))}
-          </Text>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
-}
+// ── ReflectionCheckItem moved to ./ReflectionCheckItem.tsx ──────

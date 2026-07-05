@@ -1,5 +1,6 @@
 // ─── 止观履历业务层 ──────────────────────────────────────────────
 import type { ZhiguanSession, ZhiguanStats, ZhiguanMethod } from '../types';
+import { dateStr } from '../utils';
 
 /** 按日期排序（新 → 旧） */
 export function sortSessionsByDateDesc(sessions: ZhiguanSession[]): ZhiguanSession[] {
@@ -39,8 +40,8 @@ export function computeZhiguanStats(sessions: ZhiguanSession[]): ZhiguanStats {
     totalMs += dur;
     if (dur > longestMs) longestMs = dur;
 
-    const dateStr = new Date(start).toISOString().slice(0, 10);
-    dateSet.add(dateStr);
+    const ds = dateStr(new Date(start));
+    dateSet.add(ds);
 
     const m = s.chosenMethod;
     methodDist[m] = (methodDist[m] ?? 0) + 1;
@@ -70,13 +71,14 @@ export function computeStreakDays(dateSet: Set<string>): { current: number; long
   if (dateSet.size === 0) return { current: 0, longest: 0 };
 
   const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10);
-  const yesterday = new Date(today.getTime() - 86400000).toISOString().slice(0, 10);
+  const todayStr = dateStr(today);
+  const yesterday = new Date(today.getTime() - 86400000);
+  const yesterdayStr = dateStr(yesterday);
 
   let current = 0;
-  if (dateSet.has(todayStr) || dateSet.has(yesterday)) {
-    const cursor = dateSet.has(todayStr) ? new Date(todayStr) : new Date(yesterday);
-    while (dateSet.has(cursor.toISOString().slice(0, 10))) {
+  if (dateSet.has(todayStr) || dateSet.has(yesterdayStr)) {
+    const cursor = dateSet.has(todayStr) ? new Date(today) : new Date(yesterday);
+    while (dateSet.has(dateStr(cursor))) {
       current += 1;
       cursor.setTime(cursor.getTime() - 86400000);
     }
@@ -102,9 +104,9 @@ export function computeStreakDays(dateSet: Set<string>): { current: number; long
 }
 
 /** 获得指定日期的坐禅时长（毫秒） */
-export function getDailyTotalMs(sessions: ZhiguanSession[], dateStr: string): number {
+export function getDailyTotalMs(sessions: ZhiguanSession[], targetDate: string): number {
   return sessions
-    .filter(s => !s.deleted && new Date(s.startTs).toISOString().slice(0, 10) === dateStr)
+    .filter(s => !s.deleted && dateStr(new Date(s.startTs)) === targetDate)
     .reduce((sum, s) => sum + Math.max(0, (s.endTs ?? Date.now()) - s.startTs), 0);
 }
 

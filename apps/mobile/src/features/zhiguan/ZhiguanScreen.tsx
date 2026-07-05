@@ -65,6 +65,8 @@ export default function ZhiguanScreen() {
 
   const [mode, setMode] = useState<ViewMode>('idle');
   const [settings, setSettings] = useState<ZhiguanSettings>(DEFAULT_SETTINGS);
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
   const [showSettings, setShowSettings] = useState(false);
   const [sessionTiming, setSessionTiming] = useState<{ startTime: number; durationSec: number } | null>(null);
 
@@ -158,7 +160,7 @@ export default function ZhiguanScreen() {
         }
       }
     }
-  }, [timer, settings, musicStore]);
+  }, [timer, settings, musicStore, updateDraft, startSession]);
 
   const handleLongPressStart = useCallback(() => {
     setIsLongPressing(true);
@@ -196,11 +198,11 @@ export default function ZhiguanScreen() {
       selfReportedStage: closingData.selfReportedStage,
       selfReportedStageText: closingData.selfReportedStageText,
       dedicationId: closingData.dedicationId,
-      samathaRatioAvg: settings.samathaRatio,
-      vipassanaRatioAvg: settings.vipassanaRatio,
+      samathaRatioAvg: settingsRef.current.samathaRatio,
+      vipassanaRatioAvg: settingsRef.current.vipassanaRatio,
     });
     nav.goBack();
-  }, [completeSession, nav, settings]);
+  }, [completeSession, nav]);
 
   const handleAbandon = useCallback(() => {
     resetDraft();

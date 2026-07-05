@@ -1,11 +1,95 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { X, Link, Unlink } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES } from '@egoless-do/core';
-import type { Vision, VisionType, VisionTimeFrame, RefType, Theme, Habit, Plan, VisionPractice } from '@egoless-do/core';
+import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar } from 'lucide-react-native';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRAMES, dateStr } from '@egoless-do/core';
+import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan, VisionPractice } from '@egoless-do/core';
 import { useAppStore } from '../../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
-import { TagPill } from '../../../components/UI';
+
+const TF_MONTHS: Record<VisionTimeFrame, number> = {
+  '3months': 3, '6months': 6, '1year': 12,
+  '2years': 24, '3years': 36, '5years': 60, '10years': 120,
+};
+
+// ── Mini month calendar picker ──────────────────────────────────
+function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: string) => void; TH: Theme; T: (k: string) => string }) {
+  const initDate = value ? new Date(value) : new Date();
+  const [year, setYear] = useState(initDate.getFullYear());
+  const [month, setMonth] = useState(initDate.getMonth()); // 0-based
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+  const today = dateStr();
+
+  const weeks = useMemo(() => {
+    const rows: (number | null)[][] = [];
+    let row: (number | null)[] = new Array(firstDay === 0 ? 6 : firstDay - 1).fill(null); // Mon-based
+    for (let d = 1; d <= daysInMonth; d++) {
+      row.push(d);
+      if (row.length === 7) { rows.push(row); row = []; }
+    }
+    if (row.length > 0) { while (row.length < 7) row.push(null); rows.push(row); }
+    return rows;
+  }, [year, month, daysInMonth, firstDay]);
+
+  const monthLabel = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+  const selectDay = (d: number) => {
+    onChange(`${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+  };
+
+  return (
+    <View style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
+      {/* Month nav */}
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <TouchableOpacity onPress={() => { if (month === 0) { setYear(y => y - 1); setMonth(11); } else setMonth(m => m - 1); }}>
+          <ChevronLeft size={18} color={TH.text} />
+        </TouchableOpacity>
+        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{monthLabel}</Text>
+        <TouchableOpacity onPress={() => { if (month === 11) { setYear(y => y + 1); setMonth(0); } else setMonth(m => m + 1); }}>
+          <ChevronRight size={18} color={TH.text} />
+        </TouchableOpacity>
+      </View>
+      {/* Weekday header */}
+      <View style={{ flexDirection: 'row', marginBottom: 4 }}>
+        {['一', '二', '三', '四', '五', '六', '日'].map(w => (
+          <View key={w} style={{ flex: 1, alignItems: 'center' }}>
+            <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>{w}</Text>
+          </View>
+        ))}
+      </View>
+      {/* Day grid */}
+      {weeks.map((wk, ri) => (
+        <View key={ri} style={{ flexDirection: 'row' }}>
+          {wk.map((d, ci) => {
+            if (d === null) return <View key={ci} style={{ flex: 1, height: 32 }} />;
+            const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const selected = ds === value;
+            const isToday = ds === today;
+            return (
+              <TouchableOpacity
+                key={ci}
+                onPress={() => selectDay(d)}
+                style={{
+                  flex: 1, height: 32, alignItems: 'center', justifyContent: 'center',
+                  borderRadius: 6,
+                  backgroundColor: selected ? '#8B5CF6' : 'transparent',
+                }}
+              >
+                <Text style={{
+                  fontSize: FONT_SUB, fontWeight: selected ? '700' : isToday ? '600' : '400',
+                  color: selected ? '#fff' : isToday ? '#8B5CF6' : TH.text,
+                }}>
+                  {d}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      ))}
+    </View>
+  );
+}
 
 interface Props {
   visible: boolean;
@@ -14,16 +98,19 @@ interface Props {
   vision?: Vision | null;
   type: VisionType;
   onClose: () => void;
-  onSave: (data: { text: string; timeFrame?: VisionTimeFrame; deadline?: string; linkedPractices: { refType: RefType; refId: string }[] }) => void;
+  onSave: (data: { text: string; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string; linkedHabitIds: string[]; linkedPlanIds: string[] }) => void;
 }
 
 export default function VisionEditModal({ visible, TH, T, vision, type, onClose, onSave }: Props) {
   const { habits, plans, visionPractices } = useAppStore(useShallow(s => ({ habits: s.habits, plans: s.plans, visionPractices: s.visionPractices })));
   const [text, setText] = useState('');
   const [timeFrame, setTimeFrame] = useState<VisionTimeFrame | ''>('');
+  const [startDate, setStartDate] = useState('');
   const [deadline, setDeadline] = useState('');
   const [linkedHabits, setLinkedHabits] = useState<string[]>([]);
   const [linkedPlans, setLinkedPlans] = useState<string[]>([]);
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
   const filteredHabits = (habits ?? []).filter((h: Habit) => !h.deleted);
   const filteredPlans = (plans ?? []).filter((p: Plan) => !p.deleted);
@@ -33,26 +120,43 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
       if (vision) {
         setText(vision.text);
         setTimeFrame(vision.timeFrame ?? '');
+        setStartDate(vision.startDate ?? '');
         setDeadline(vision.deadline ?? '');
       } else {
         setText('');
         setTimeFrame('');
+        setStartDate(dateStr());
         setDeadline('');
       }
 
-      // Load existing linked practices
+      // Load existing linked practices (habits via VisionPractice, plans via Plan.visionId)
       if (vision) {
         const existing = (visionPractices ?? []).filter(
-          (vp: VisionPractice) => vp.visionId === vision.id && !vp.deleted
+          (vp: VisionPractice) => vp.visionId === vision.id && !vp.deleted && vp.refType === 'habit'
         );
-        setLinkedHabits(existing.filter((vp: VisionPractice) => vp.refType === 'habit').map((vp: VisionPractice) => vp.refId));
-        setLinkedPlans(existing.filter((vp: VisionPractice) => vp.refType === 'plan').map((vp: VisionPractice) => vp.refId));
+        setLinkedHabits(existing.map((vp: VisionPractice) => vp.refId));
+        setLinkedPlans((plans ?? []).filter((p: Plan) => !p.deleted && p.visionId === vision.id).map((p: Plan) => p.id));
       } else {
         setLinkedHabits([]);
         setLinkedPlans([]);
       }
     }
   }, [visible, vision, visionPractices]);
+
+  // When user selects a timeFrame pill, auto-compute deadline from startDate
+  const handleTimeFrameSelect = useCallback((tf: VisionTimeFrame) => {
+    if (timeFrame === tf) {
+      setTimeFrame('');
+      return;
+    }
+    setTimeFrame(tf);
+    // Auto-set deadline from startDate + timeFrame months
+    if (startDate) {
+      const d = new Date(startDate);
+      d.setMonth(d.getMonth() + TF_MONTHS[tf]);
+      setDeadline(dateStr(d));
+    }
+  }, [timeFrame, startDate]);
 
   const toggleHabit = useCallback((id: string) => {
     setLinkedHabits(prev => prev.includes(id) ? prev.filter(h => h !== id) : [...prev, id]);
@@ -64,14 +168,13 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
   const handleSave = () => {
     if (!text.trim()) return;
-    const practices: { refType: RefType; refId: string }[] = [];
-    for (const hId of linkedHabits) practices.push({ refType: 'habit', refId: hId });
-    for (const pId of linkedPlans) practices.push({ refType: 'plan', refId: pId });
     onSave({
       text: text.trim(),
       timeFrame: (timeFrame || undefined) as VisionTimeFrame | undefined,
+      startDate: startDate || undefined,
       deadline: deadline || undefined,
-      linkedPractices: practices,
+      linkedHabitIds: linkedHabits,
+      linkedPlanIds: linkedPlans,
     });
     onClose();
   };
@@ -80,7 +183,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
   // Time frames relevant to type
   const availableTimeFrames = VISION_TIME_FRAMES.filter(tf => {
-    if (type === 'long') return ['1year', '3years', '5years'].includes(tf.key);
+    if (type === 'long') return ['2years', '3years', '5years', '10years'].includes(tf.key);
     if (type === 'short') return ['3months', '6months', '1year'].includes(tf.key);
     return false;
   });
@@ -124,48 +227,80 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
               }}
             />
 
-            {/* TimeFrame (for long/short only) */}
-            {type !== 'lifetime' && availableTimeFrames.length > 0 && (
-              <View style={{ marginBottom: 16 }}>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowTimeFrame')}</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
-                  {availableTimeFrames.map(tf => {
-                    const active = timeFrame === tf.key;
-                    return (
-                      <TouchableOpacity
-                        key={tf.key}
-                        onPress={() => setTimeFrame(active ? '' : tf.key)}
-                        style={{
-                          paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8,
-                          backgroundColor: active ? '#8B5CF620' : TH.card,
-                          borderWidth: 1, borderColor: active ? '#8B5CF6' : TH.border,
-                        }}
-                      >
-                        <Text style={{ fontSize: FONT_BADGE, color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
-                          {T(tf.labelKey)}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              </View>
-            )}
-
-            {/* Deadline (for long/short only) */}
+            {/* Date range (for long/short only) */}
             {type !== 'lifetime' && (
               <View style={{ marginBottom: 16 }}>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('vowDeadline')}</Text>
-                <TextInput
-                  value={deadline}
-                  onChangeText={setDeadline}
-                  placeholder="YYYY-MM-DD"
-                  placeholderTextColor={TH.sub}
+                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
+
+                {/* Quick time frame pills */}
+                {availableTimeFrames.length > 0 && (
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+                    {availableTimeFrames.map(tf => {
+                      const active = timeFrame === tf.key;
+                      return (
+                        <TouchableOpacity
+                          key={tf.key}
+                          onPress={() => handleTimeFrameSelect(tf.key)}
+                          style={{
+                            paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8,
+                            backgroundColor: active ? '#8B5CF620' : TH.card,
+                            borderWidth: 1, borderColor: active ? '#8B5CF6' : TH.border,
+                          }}
+                        >
+                          <Text style={{ fontSize: FONT_BADGE, color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
+                            {T(tf.labelKey)}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                )}
+
+                {/* Start date */}
+                <TouchableOpacity
+                  onPress={() => { setShowStartPicker(v => !v); setShowEndPicker(false); }}
                   style={{
+                    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
                     backgroundColor: TH.card, borderRadius: 10, padding: 12,
-                    color: TH.text, fontSize: FONT_BODY,
-                    borderWidth: 1, borderColor: TH.border,
+                    borderWidth: 1, borderColor: showStartPicker ? '#8B5CF6' : TH.border,
+                    marginBottom: 8,
                   }}
-                />
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Calendar size={14} color={TH.sub} />
+                    <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowStartDate')}</Text>
+                  </View>
+                  <Text style={{ fontSize: FONT_BODY, color: startDate ? TH.text : TH.sub, fontWeight: startDate ? '500' : '400' }}>
+                    {startDate || 'YYYY-MM-DD'}
+                  </Text>
+                </TouchableOpacity>
+                {showStartPicker && (
+                  <MonthPicker value={startDate} onChange={(d) => { setStartDate(d); setShowStartPicker(false); }} TH={TH} T={T} />
+                )}
+
+                {/* End date / Deadline */}
+                <TouchableOpacity
+                  onPress={() => { setShowEndPicker(v => !v); setShowStartPicker(false); }}
+                  style={{
+                    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                    backgroundColor: TH.card, borderRadius: 10, padding: 12,
+                    borderWidth: 1, borderColor: showEndPicker ? '#8B5CF6' : TH.border,
+                    marginTop: showStartPicker ? 8 : 0,
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <Calendar size={14} color={TH.sub} />
+                    <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowEndDate')}</Text>
+                  </View>
+                  <Text style={{ fontSize: FONT_BODY, color: deadline ? TH.text : TH.sub, fontWeight: deadline ? '500' : '400' }}>
+                    {deadline || 'YYYY-MM-DD'}
+                  </Text>
+                </TouchableOpacity>
+                {showEndPicker && (
+                  <View style={{ marginTop: 8 }}>
+                    <MonthPicker value={deadline} onChange={(d) => { setDeadline(d); setShowEndPicker(false); }} TH={TH} T={T} />
+                  </View>
+                )}
               </View>
             )}
 

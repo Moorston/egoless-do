@@ -77,6 +77,7 @@ export interface I18nKeys {
   habitStatusNotStarted: string; habitStatusInProgress: string;
   habitStatusPaused: string; habitStatusAbandoned: string;
   habitStatusCompleted: string;
+  habitSortDefault: string; habitSortNewest: string; habitSortOldest: string; habitSortCompletion: string; habitSortStreak: string;
   recycleBin: string; recycleBinTitle: string; recycleBinDesc: string;
   recycleBinEmpty: string; recycleBinRestore: string;
   recycleBinDelete: string; recycleBinEmptyAll: string;
@@ -621,6 +622,7 @@ export interface I18nKeys {
   breathSaveFailed: string; breathRetry: string;
   breathGuide: string; breathStart: string; breathPause: string; breathResume: string; breathStop: string;
   breathCycles: string; breathPhase: string; breathInhale: string; breathHold: string; breathExhale: string;
+  breathPhaseRatio: string; breathReflectionTag: string;
   breathPreDistress: string; breathPostDistress: string;
   breathReport: string; breathDistressChange: string; breathDuration: string;
   breathGuideSci: string; breathGuideSpr: string;
@@ -809,6 +811,9 @@ export interface I18nKeys {
   habitWeekdayFri: string; habitWeekdaySat: string; habitCheckedIn: string;
   habitRelatedReflections: string; habitCollapse: string;
   habitExpandMore: string; habitRelationMap: string; habitRelationMapDesc: string;
+  habitViewDetail: string; habitLinkedSleep: string;
+  habitEmptyTitle: string; habitEmptyDesc: string;
+  habitStats: string; habitWeeklyCompletion: string; habitWeeklyStreak: string;
 
   // Review Screen
   reviewMoodGreat: string; reviewMoodOkay: string; reviewMoodTough: string;

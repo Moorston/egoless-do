@@ -91,7 +91,9 @@ export function useZhiguanTimer(): TimerApi {
         const bgDur = Date.now() - pauseTsRef.current;
         pausedElapsedRef.current += bgDur;
         pauseTsRef.current = 0;
+        isPausedRef.current = false;
         setState(prev => ({ ...prev, isPaused: false }));
+        rafRef.current = requestAnimationFrame(tick);
       }
     };
     const sub = AppState.addEventListener('change', handler);
@@ -113,9 +115,11 @@ export function usePracticeElapseHints(
   handlers: { on5min?: () => void; on30min?: () => void; on60min?: () => void; },
 ) {
   const fired = useRef<Record<string, boolean>>({});
+  const handlersRef = useRef(handlers);
+  handlersRef.current = handlers;
   useEffect(() => {
-    if (elapsedSecs === 300 && !fired.current['5min']) { fired.current['5min'] = true; handlers.on5min?.(); }
-    else if (elapsedSecs === 1800 && !fired.current['30min']) { fired.current['30min'] = true; handlers.on30min?.(); }
-    else if (elapsedSecs === 3600 && !fired.current['60min']) { fired.current['60min'] = true; handlers.on60min?.(); }
+    if (elapsedSecs === 300 && !fired.current['5min']) { fired.current['5min'] = true; handlersRef.current.on5min?.(); }
+    else if (elapsedSecs === 1800 && !fired.current['30min']) { fired.current['30min'] = true; handlersRef.current.on30min?.(); }
+    else if (elapsedSecs === 3600 && !fired.current['60min']) { fired.current['60min'] = true; handlersRef.current.on60min?.(); }
   }, [elapsedSecs]);
 }

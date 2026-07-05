@@ -256,7 +256,7 @@ export default function HomeScreen() {
     setTimeout(() => {
       const s = useAppStore.getState();
       const weightNum = weightRef.current ? parseWeight(weightRef.current) : undefined;
-      s.submitCheckin(localDoneRef.current ?? true, buildNote(), undefined, weightNum);
+      s.submitCheckin(localDoneRef.current ?? false, buildNote(), undefined, weightNum);
     }, 0);
   }, [buildNote]);
 
@@ -321,12 +321,14 @@ export default function HomeScreen() {
     } else {
       checkinPlanItem(itemId);
     }
-  }, [isReadOnly, planCheckins, viewDate, uncheckinPlanItem, checkinPlanItem]);
+    setTimeout(() => saveField(), 0);
+  }, [isReadOnly, planCheckins, viewDate, uncheckinPlanItem, checkinPlanItem, saveField]);
 
   const toggleCustomTodo = useCallback((id: string) => {
     if (isReadOnly) return;
     toggleDailyCustomTodo(id);
-  }, [isReadOnly, toggleDailyCustomTodo]);
+    setTimeout(() => saveField(), 0);
+  }, [isReadOnly, toggleDailyCustomTodo, saveField]);
 
   // ── Auto-sync plan items and health data on mount ──
   useEffect(() => {
@@ -366,7 +368,7 @@ export default function HomeScreen() {
   // ── Grace reminder ──
   const yStr = yesterday();
   const yesterdayRecord = useMemo(() => (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr), [checkinHistory, yStr]);
-  const dayBeforeYesterdayStr = useMemo(() => { const d = new Date(); d.setDate(d.getDate() - 2); return dateStr(d); }, []);
+  const dayBeforeYesterdayStr = useMemo(() => { const d = new Date(); d.setDate(d.getDate() - 2); return dateStr(d); }, [checkinHistory]);
   const dayBeforeYesterdayRecord = useMemo(() => (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === dayBeforeYesterdayStr), [checkinHistory, dayBeforeYesterdayStr]);
   const showGrace = isToday && yesterdayRecord?.done !== true && dayBeforeYesterdayRecord?.done === true;
   const currentMonth = dateStr().slice(0, 7);
@@ -520,7 +522,7 @@ export default function HomeScreen() {
               {/* ── Delayed plan reminder ── */}
               {showDelayed && (
                 <TouchableOpacity
-                  onPress={() => (nav as any).navigate('Plan')} // any: nested navigator type mismatch between RootStack and MainTab
+                  onPress={() => nav.navigate('MainTabs' as never, { screen: 'Plan' } as never)}
                   activeOpacity={0.8}
                   style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
                 >

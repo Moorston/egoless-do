@@ -93,7 +93,7 @@ export default function StreakBreakScreen() {
         </View>
       </Card>
     );
-  }, [T, TH, hypotheticals]);
+  }, [T, TH, hypotheticals, P]);
 
   const breakKeyExtractor = useCallback((item: (typeof breaks)[number], index: number) => item.breakDate ?? String(index), []);
 

@@ -131,7 +131,7 @@ export function calculateReviewData(
   const doneDates = new Set(checkinsInRange.filter(c => c.done).map(c => c.date));
   const doneDays = doneDates.size;
   
-  // 总天数 = 有打卡记录的天数（非周期总天数）
+  // 总天数 = 有打卡记录的天数
   const totalDays = checkinsInRange.length;
   
   // 计算完成率
@@ -298,17 +298,13 @@ function calculateHabitProgress(
       
       const progress = targetDays > 0 ? Math.min(Math.round((doneDays / targetDays) * 100), 100) : 0;
       
-      // 计算连续天数
+      // 计算连续天数（从周期末尾向前）
       let streak = 0;
-      const todayStr = formatDate(new Date());
-      const todayIndex = datesInRange.indexOf(todayStr);
-      if (todayIndex >= 0) {
-        for (let i = todayIndex; i >= 0; i--) {
-          if ((habit.checkedDates ?? []).includes(datesInRange[i])) {
-            streak++;
-          } else {
-            break;
-          }
+      for (let i = datesInRange.length - 1; i >= 0; i--) {
+        if ((habit.checkedDates ?? []).includes(datesInRange[i])) {
+          streak++;
+        } else {
+          break;
         }
       }
       

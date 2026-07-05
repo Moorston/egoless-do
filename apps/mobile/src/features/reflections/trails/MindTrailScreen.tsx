@@ -16,12 +16,12 @@ import {
   isAIRecommendAvailable, parseSmartQuery, matchReflectionsToTopic, matchByKeyword, computeCandidatePool,
 } from '@egoless-do/core';
 import { recommendTrailsViaAI } from '@egoless-do/core';
-import type { TrailRecommendation, SmartQueryResult, TrailFilters, MindReflection } from '@egoless-do/core';
+import type { TrailRecommendation, SmartQueryResult, TrailFilters, MindReflection, ThoughtTrail } from '@egoless-do/core';
 
 const log = createLogger('Reflections');
 import RecommendCard from '../insights/RecommendCard';
 import CreateThoughtTrailModal from './CreateThoughtTrailModal';
-import { SmartQueryBubble } from '../insights/SmartQueryBubble';
+import SmartQueryPanel from './SmartQueryPanel';
 
 const TRAIL_IGNORED_KEY = 'trailIgnoredPatterns';
 
@@ -49,6 +49,7 @@ export default function MindTrailScreen() {
   const aiGenerationRef = useRef(0);
   const smartAnswerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (smartAnswerTimerRef.current) clearTimeout(smartAnswerTimerRef.current); }, []);
+  useEffect(() => () => { if (smartAbortRef.current) smartAbortRef.current.abort(); }, []);
 
   // Smart query state (integrated into bottom input)
   const [smartResult, setSmartResult] = useState<SmartQueryResult | null>(null);
@@ -581,71 +582,21 @@ export default function MindTrailScreen() {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Smart Query Panel (above input) */}
-      {showQueryPanel && (
-        <View style={[styles.queryPanel, { backgroundColor: TH.card, borderTopColor: TH.border }]}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.primary, fontWeight: '600' }}>
-              🔍 智能查询
-            </Text>
-            <TouchableOpacity onPress={handleCloseQueryPanel}>
-              <X size={18} color={TH.sub} />
-            </TouchableOpacity>
-          </View>
-
-          {/* Smart query bubble */}
-          {smartResult?.question && chatHistory.length < 3 && (
-            <SmartQueryBubble
-              question={smartResult.question}
-              onAnswer={handleSmartAnswer}
-              onSkip={() => {
-                setSmartResult(prev => prev ? { ...prev, question: null } : null);
-                handleSmartQuery();
-              }}
-            />
-          )}
-
-          {/* Loading indicator */}
-          {isSmartParsing && (
-            <View style={{ paddingVertical: 12, alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>🧠 智能解析中...</Text>
-            </View>
-          )}
-
-          {/* Query results */}
-          {!isSmartParsing && queryResults.length > 0 && (
-            <View style={{ marginTop: 8 }}>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 8 }}>
-                找到 {queryResults.length} 条相关感念
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  handleCloseQueryPanel();
-                  nav.navigate('QuickCreateTrail', {
-                    selectedIds: queryResults.map(r => r.id),
-                  });
-                }}
-                style={{
-                  backgroundColor: TH.primary,
-                  borderRadius: 10, paddingVertical: 10,
-                  alignItems: 'center',
-                }}
-              >
-                <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>
-                  快速创建脉络 →
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {/* No results */}
-          {!isSmartParsing && queryResults.length === 0 && !smartResult?.question && (
-            <View style={{ paddingVertical: 12, alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>未找到匹配的感念</Text>
-            </View>
-          )}
-        </View>
-      )}
+      {/* Smart Query Panel */}
+      <SmartQueryPanel
+        show={showQueryPanel}
+        onClose={handleCloseQueryPanel}
+        smartResult={smartResult}
+        onSmartAnswer={handleSmartAnswer}
+        onSmartQuery={handleSmartQuery}
+        isSmartParsing={isSmartParsing}
+        queryResults={queryResults}
+        onQuickCreate={(selectedIds) => {
+          handleCloseQueryPanel();
+          nav.navigate('QuickCreateTrail', { selectedIds });
+        }}
+        chatHistory={chatHistory}
+      />
 
       {/* Bottom Bar */}
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

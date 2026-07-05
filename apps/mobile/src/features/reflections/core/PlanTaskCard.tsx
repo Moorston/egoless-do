@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_BODY, FONT_TINY, computeExpectedDays } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, FONT_TINY, computeExpectedDays, dateStr } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
 import { Trash2, Network } from 'lucide-react-native';
 
@@ -24,7 +24,8 @@ export function PlanTaskCard({ planItem, checkins, onPress, onDelete }: PlanTask
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const doneCount = planItem.totalCheckinDays;
-  const totalExpectedDays = computeExpectedDays(planItem.frequency, planItem.startDate, planItem.endDate, planItem.endDate);
+  const today = dateStr();
+  const totalExpectedDays = computeExpectedDays(planItem.frequency, planItem.startDate, planItem.endDate, today);
   const progress = totalExpectedDays > 0 ? Math.min(doneCount / totalExpectedDays, 1) : 0;
   const isCompleted = planItem.status === 'completed';
 

@@ -78,12 +78,13 @@ export default function SportPage() {
 
   // ── 实时会话管理 ──
   const sessionIdRef = useRef<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [insight, setInsight] = useState('');
   const { resolveGoal } = useGoalResolver();
 
   // 心跳
-  useSessionHeartbeat(sessionIdRef.current, sessionIdRef.current ? 'exercise' : null);
+  useSessionHeartbeat(sessionId, sessionId ? 'exercise' : null);
 
   // 创建/删除会话
   useEffect(() => {
@@ -101,10 +102,11 @@ export default function SportPage() {
       }).then(result => {
         if (result.success && result.data) {
           sessionIdRef.current = result.data.session_id;
+          setSessionId(result.data.session_id);
         }
       });
     }
-  }, [timer.page, timer.active]);
+  }, [timer.page, timer.active, auth.user?.id, userProfile?.nickname, resolveGoal, sportName, icon]);
 
   // 更新感悟
   const handleInsightChange = useCallback((text: string) => {
@@ -120,6 +122,7 @@ export default function SportPage() {
 
   // 删除会话（通用清理）
   const cleanupSession = useCallback(() => {
+    if (debounceTimerRef.current) { clearTimeout(debounceTimerRef.current); debounceTimerRef.current = null; }
     if (sessionIdRef.current) {
       deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
@@ -146,6 +149,8 @@ export default function SportPage() {
   const breathAnim = useRef(new Animated.Value(0)).current;
   const breathTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const breathCycleRef = useRef(0);
+  const audioRef = useRef(audio);
+  audioRef.current = audio;
 
   // ── GPS state ──
   const [coords, setCoords] = useState<{ latitude: number; longitude: number; ts: number }[]>([]);
@@ -181,13 +186,13 @@ export default function SportPage() {
         setBreathPhase('inhale');
         breathAnim.setValue(0);
         Animated.timing(breathAnim, { toValue: 1, duration: PHASE_DURATION, useNativeDriver: false }).start();
-        audio.playBell();
+        audioRef.current.playBell();
       } else if (cycle === 1) {
         setBreathPhase('hold');
       } else {
         setBreathPhase('exhale');
         Animated.timing(breathAnim, { toValue: 0, duration: PHASE_DURATION, useNativeDriver: false }).start();
-        audio.playBell();
+        audioRef.current.playBell();
       }
       breathTimerRef.current = setTimeout(() => {
         breathCycleRef.current = (breathCycleRef.current + 1) % 3;
@@ -239,7 +244,7 @@ export default function SportPage() {
       })();
     }
     return () => { mounted = false; };
-  }, []);
+  }, [isGpsSport]);
 
   // Segment pace tracking
   useEffect(() => {
@@ -260,7 +265,7 @@ export default function SportPage() {
       actualTargets.checkMilestone();
       actualTargets.checkSoftTargetBell();
     }
-  }, [timer.sec, timer.page, timer.active, sets.currentSetReps, sets.sets.length]);
+  }, [timer.sec, timer.page, timer.active, sets.currentSetReps, sets.sets.length, actualTargets]);
 
   // Triggers bounce on rep change
   useEffect(() => {
@@ -323,8 +328,8 @@ export default function SportPage() {
       savingRef.current = false;
       return;
     }
-    nav.goBack();
-  }, [timer.sec, sets, sportName, icon, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop]);
+    try { nav.goBack(); } catch { savingRef.current = false; }
+  }, [timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, cleanupSession, stopGpsTracking]);
 
   // Stop music when entering report page (exercise ended)
   useEffect(() => {

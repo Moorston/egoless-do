@@ -1,7 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import * as Speech from 'expo-speech';
-import { Audio } from 'expo-av';
 import { useAudioCache } from '../shared/hooks/useAudioCache';
+
+// Lazy-loaded native modules — deferred until first mantra playback
+let _Speech: typeof import('expo-speech') | null = null;
+let _Audio: typeof import('expo-av').Audio | null = null;
+
+function getSpeech() { return _Speech ??= require('expo-speech'); }
+function getAudio() { return _Audio ??= require('expo-av').Audio; }
 
 /**
  * Hook for mantra audio playback.
@@ -9,7 +14,7 @@ import { useAudioCache } from '../shared/hooks/useAudioCache';
  */
 export function useMantraAudio() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const soundRef = useRef<any>(null);
   const loopRef = useRef(false);
   const ttsNameRef = useRef('');
   const { getCachedPath } = useAudioCache();
@@ -25,7 +30,7 @@ export function useMantraAudio() {
         await sound.unloadAsync();
       } catch {}
     }
-    Speech.stop();
+    if (_Speech) _Speech.stop();
     setIsPlaying(false);
   }, []);
 
@@ -42,6 +47,7 @@ export function useMantraAudio() {
     if (cachedPath) {
       // MP3 playback via expo-av
       try {
+        const Audio = getAudio();
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
         const { sound } = await Audio.Sound.createAsync(
           { uri: cachedPath },
@@ -50,7 +56,7 @@ export function useMantraAudio() {
         soundRef.current = sound;
         setIsPlaying(true);
 
-        sound.setOnPlaybackStatusUpdate((status) => {
+        sound.setOnPlaybackStatusUpdate((status: import('expo-av').AVPlaybackStatus) => {
           if (!status.isLoaded) {
             if ('error' in status && status.error) setIsPlaying(false);
             return;
@@ -66,6 +72,7 @@ export function useMantraAudio() {
     }
 
     // TTS fallback
+    const Speech = getSpeech();
     ttsNameRef.current = mantraName;
     setIsPlaying(true);
     Speech.speak(mantraName, {
@@ -94,7 +101,7 @@ export function useMantraAudio() {
         soundRef.current.setOnPlaybackStatusUpdate(null);
         soundRef.current.unloadAsync().catch(() => {});
       }
-      Speech.stop();
+      if (_Speech) _Speech.stop();
     };
   }, []);
 

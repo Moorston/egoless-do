@@ -44,7 +44,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   const trailCountMap = useMemo(() => {
     const map = new Map<string, number>();
     for (const trail of thoughtTrails) {
-      for (const rid of trail.reflectionIds) {
+      for (const rid of trail.reflectionIds ?? []) {
         map.set(rid, (map.get(rid) ?? 0) + 1);
       }
     }

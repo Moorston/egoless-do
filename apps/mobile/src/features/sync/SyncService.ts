@@ -44,7 +44,7 @@ export function isRealtimeConnected(): boolean { return _engine.isRealtimeConnec
 
 // Reset
 export function softResetSyncState() { return _engine.softReset(); }
-export function resetSyncState() { return _engine.hardReset(); }
+export function resetSyncState() { return _engine.hardReset('CONFIRM_HARD_RESET'); }
 
 // Rehydrate
 export function rehydrateFromDb(entities?: string[]): Promise<Record<string, unknown>> { return _engine.rehydrateFromDb(entities); }
@@ -61,10 +61,16 @@ export function triggerSyncDebounced(): void {
     return;
   }
   if (_syncTriggerTimer) clearTimeout(_syncTriggerTimer);
-  _syncTriggerTimer = setTimeout(() => {
+  _syncTriggerTimer = setTimeout(async () => {
     _syncTriggerTimer = null;
     log.debug('Debounced sync trigger firing');
     _syncTriggerCallback?.();
+    // After runSync completes, check for remaining pending items
+    const { getQueueCount: checkQueueCount } = await import('../../db/syncQueue');
+    const remaining = await checkQueueCount();
+    if (remaining > 0) {
+      triggerSyncDebounced();
+    }
   }, SYNC_TRIGGER_DEBOUNCE_MS);
 }
 export function clearSyncTrigger(): void {

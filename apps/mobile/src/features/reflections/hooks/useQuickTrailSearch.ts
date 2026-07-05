@@ -264,7 +264,7 @@ export function useQuickTrailSearch(
           : T('searchPhaseLocalEmpty')
       });
 
-      let allResults = directResults;
+      const allResults = directResults;
 
       // Phase 2: Intent understanding (if <= 3 results)
       if (directResults.length <= 3 && aiAvailable) {

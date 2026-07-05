@@ -44,7 +44,7 @@ export default function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, on
   const weekStartStr = dateStr(weekStart);
 
   // Build exercise lookup by date
-  const exerciseByDate = new Map<string, any[]>();
+  const exerciseByDate = new Map<string, ExerciseEntry[]>();
   for (const e of exerciseLog ?? []) {
     if (e.deleted) continue;
     const d = dateStr(new Date(e.ts ?? 0));

@@ -1,5 +1,5 @@
 import { activeOnly } from '../utils';
-import type { MindReflection, ReflectionFilters } from '../types';
+import type { MindReflection, ReflectionFilters, ThoughtTrail, PlanItem, ReflectionLink, LinkType } from '../types';
 import { DEFAULT_REFLECTION_FILTERS } from '../types';
 import {
   addReflectionToList, togglePinInList, deleteReflectionFromList, updateReflectionInList,
@@ -7,15 +7,22 @@ import {
   type CreateReflectionParams,
 } from '../business/reflections';
 import { createReflection } from '../defaults';
-import type { StorageAdapter, ReflectionSlice, RecycleBinSlice } from './types';
+import { addCustomItem, removeCustomItem, updateCustomItem, reorderItem } from '../business';
+import { TAGS_PRESET, MOODS } from '../constants';
+import { uid } from '../utils';
+import type { StorageAdapter, ReflectionSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 
+export { type ReflectionSlice } from './types';
+
 export function createReflectionSlice(
   adapter: StorageAdapter,
+  onPersist?: () => void,
 ): SliceCreator<ReflectionSlice> {
   return (set, get) => ({
+    // ── Reflection ─────────────────────────────────────────────────────
     reflections: [],
     reflectionFilters: { ...DEFAULT_REFLECTION_FILTERS },
 
@@ -27,8 +34,12 @@ export function createReflectionSlice(
     },
 
     togglePin(id: string) {
-      set(s => ({ reflections: togglePinInList(s.reflections ?? [], id) }));
-      const updated = get().reflections.find(r => r.id === id && !r.deleted);
+      let updated: MindReflection | undefined;
+      set(s => {
+        const newList = togglePinInList(s.reflections ?? [], id);
+        updated = newList.find(r => r.id === id && !r.deleted);
+        return { reflections: newList };
+      });
       if (updated) adapter.persistChange('reflection', id, updated).catch(e => log.error(e));
     },
 
@@ -40,44 +51,55 @@ export function createReflectionSlice(
       // Remove all reflection links involving this reflection
       state.deleteLinksByReflection(id);
 
-      // Capture affected plan items before set
       const affectedPlanItemIds = (state.planItems ?? [])
         .filter(i => !i.deleted && i.reflectionId === id)
         .map(i => i.id);
 
-      // Atomic: recycle bin + soft-delete + trail cleanup + plan item cleanup in one set()
-      // Avoids async race between removeReflectionFromTrail.persistChange and markDeleted
-      set(s => ({
-        reflections: deleteReflectionFromList(s.reflections ?? [], id),
-        thoughtTrails: (s.thoughtTrails ?? []).map(t =>
-          t.reflectionIds.includes(id) && !t.deleted
-            ? { ...t, reflectionIds: t.reflectionIds.filter((rid: string) => rid !== id), updatedAt: Date.now() }
-            : t
-        ),
-        planItems: (s.planItems ?? []).map(i =>
-          affectedPlanItemIds.includes(i.id)
-            ? { ...i, reflectionId: undefined, updatedAt: Date.now() }
-            : i
-        ),
-        recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'reflection' as const, data: reflection, deletedAt: Date.now() }],
-      }));
+      const updatedTrails: ThoughtTrail[] = [];
+      const updatedPlanItems: PlanItem[] = [];
+
+      set(s => {
+        const newTrails = (s.thoughtTrails ?? []).map(t => {
+          if ((t.reflectionIds ?? []).includes(id) && !t.deleted) {
+            const updated = { ...t, reflectionIds: (t.reflectionIds ?? []).filter((rid: string) => rid !== id), updatedAt: Date.now() };
+            updatedTrails.push(updated);
+            return updated;
+          }
+          return t;
+        });
+        const planItemIdSet = new Set(affectedPlanItemIds);
+        const newPlanItems = (s.planItems ?? []).map(i => {
+          if (planItemIdSet.has(i.id)) {
+            const updated = { ...i, reflectionId: undefined, updatedAt: Date.now() };
+            updatedPlanItems.push(updated);
+            return updated;
+          }
+          return i;
+        });
+        return {
+          reflections: deleteReflectionFromList(s.reflections ?? [], id),
+          thoughtTrails: newTrails,
+          planItems: newPlanItems,
+          recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'reflection' as const, data: reflection, deletedAt: Date.now() }],
+        };
+      });
+
       adapter.markDeleted('reflection', id).catch(e => log.error(e));
-
-      // Persist affected thought trails
-      (get().thoughtTrails ?? [])
-        .filter(t => !t.deleted && t.reflectionIds !== undefined)
-        .forEach(t => adapter.persistChange('thoughtTrail', t.id, t).catch(e => log.error(e)));
-
-      // Persist affected plan items
-      const planItemIdSet = new Set(affectedPlanItemIds);
-      (get().planItems ?? [])
-        .filter(i => planItemIdSet.has(i.id))
-        .forEach(i => adapter.persistChange('planItem', i.id, i).catch(e => log.error(e)));
+      for (const t of updatedTrails) {
+        adapter.persistChange('thoughtTrail', t.id, t).catch(e => log.error(e));
+      }
+      for (const item of updatedPlanItems) {
+        adapter.persistChange('planItem', item.id, item).catch(e => log.error(e));
+      }
     },
 
     updateReflection(id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>) {
-      set(s => ({ reflections: updateReflectionInList(s.reflections ?? [], id, updates) }));
-      const updated = get().reflections.find(r => r.id === id && !r.deleted);
+      let updated: MindReflection | undefined;
+      set(s => {
+        const newList = updateReflectionInList(s.reflections ?? [], id, updates);
+        updated = newList.find(r => r.id === id && !r.deleted);
+        return { reflections: newList };
+      });
       if (updated) adapter.persistChange('reflection', id, updated).catch(e => log.error(e));
     },
 
@@ -85,22 +107,24 @@ export function createReflectionSlice(
       const reflection = get().reflections.find(r => r.id === reflectionId && !r.deleted);
       const planItemId = reflection?.linkedPlanItemId;
 
-      // Atomic: clear both reflection and planItem sides in one set()
-      set(s => ({
-        reflections: unlinkReflectionFromPlanItemBiz(s.reflections ?? [], reflectionId),
-        ...(planItemId ? {
-          planItems: (s.planItems ?? []).map(i =>
-            i.id === planItemId ? { ...i, reflectionId: undefined, updatedAt: Date.now() } : i
-          ),
-        } : {}),
-      }));
-      const updated = get().reflections.find(r => r.id === reflectionId && !r.deleted);
-      if (updated) adapter.persistChange('reflection', reflectionId, updated).catch(e => log.error(e));
+      let updated: MindReflection | undefined;
+      let updatedItem: PlanItem | undefined;
 
-      // Persist planItem side
-      if (planItemId) {
-        const updatedItem = get().planItems.find(i => i.id === planItemId && !i.deleted);
-        if (updatedItem) adapter.persistChange('planItem', updatedItem.id, updatedItem).catch(e => log.error(e));
+      set(s => {
+        const newReflections = unlinkReflectionFromPlanItemBiz(s.reflections ?? [], reflectionId);
+        updated = newReflections.find(r => r.id === reflectionId && !r.deleted);
+        if (planItemId) {
+          const newPlanItems = (s.planItems ?? []).map(i =>
+            i.id === planItemId ? { ...i, reflectionId: undefined, updatedAt: Date.now() } : i
+          );
+          updatedItem = newPlanItems.find(i => i.id === planItemId && !i.deleted);
+          return { reflections: newReflections, planItems: newPlanItems };
+        }
+        return { reflections: newReflections };
+      });
+      if (updated) adapter.persistChange('reflection', reflectionId, updated).catch(e => log.error(e));
+      if (updatedItem) {
+        adapter.persistChange('planItem', updatedItem.id, updatedItem).catch(e => log.error(e));
       }
     },
 
@@ -109,6 +133,162 @@ export function createReflectionSlice(
         set(s => ({ reflectionFilters: filters(s.reflectionFilters) }));
       } else {
         set({ reflectionFilters: filters });
+      }
+    },
+
+    // ── Tags & Moods ───────────────────────────────────────────────────
+    customTags: [],
+    customMoods: [],
+    allTagsOrder: [],
+    allMoodsOrder: [],
+
+    addCustomTag(tag: string) {
+      if (!tag.trim()) return;
+      set(s => ({
+        customTags: addCustomItem(s.customTags ?? [], tag),
+        allTagsOrder: (s.allTagsOrder ?? []).includes(tag) ? s.allTagsOrder : [...(s.allTagsOrder ?? []), tag],
+      }));
+      onPersist?.();
+    },
+    removeCustomTag(tag: string) {
+      set(s => ({
+        customTags: removeCustomItem(s.customTags ?? [], tag),
+        allTagsOrder: (s.allTagsOrder ?? []).filter(t => t !== tag),
+      }));
+      onPersist?.();
+    },
+    updateCustomTag(oldTag: string, newTag: string) {
+      set(s => {
+        const updated = updateCustomItem(s.customTags ?? [], oldTag, newTag);
+        return {
+          customTags: updated,
+          allTagsOrder: updated !== (s.customTags ?? [])
+            ? (s.allTagsOrder ?? []).map(t => t === oldTag ? newTag : t)
+            : s.allTagsOrder,
+        };
+      });
+      onPersist?.();
+    },
+    addCustomMood(mood: string) {
+      if (!mood.trim()) return;
+      set(s => ({
+        customMoods: addCustomItem(s.customMoods ?? [], mood),
+        allMoodsOrder: (s.allMoodsOrder ?? []).includes(mood) ? s.allMoodsOrder : [...(s.allMoodsOrder ?? []), mood],
+      }));
+      onPersist?.();
+    },
+    removeCustomMood(mood: string) {
+      set(s => ({
+        customMoods: removeCustomItem(s.customMoods ?? [], mood),
+        allMoodsOrder: (s.allMoodsOrder ?? []).filter(m => m !== mood),
+      }));
+      onPersist?.();
+    },
+    updateCustomMood(oldMood: string, newMood: string) {
+      set(s => {
+        const updated = updateCustomItem(s.customMoods ?? [], oldMood, newMood);
+        return {
+          customMoods: updated,
+          allMoodsOrder: updated !== (s.customMoods ?? [])
+            ? (s.allMoodsOrder ?? []).map(m => m === oldMood ? newMood : m)
+            : s.allMoodsOrder,
+        };
+      });
+      onPersist?.();
+    },
+    reorderCustomTag(fromIndex: number, toIndex: number) { set(s => ({ customTags: reorderItem(s.customTags ?? [], fromIndex, toIndex) })); onPersist?.(); },
+    reorderCustomMood(fromIndex: number, toIndex: number) { set(s => ({ customMoods: reorderItem(s.customMoods ?? [], fromIndex, toIndex) })); onPersist?.(); },
+    reorderAllTag(fromIndex: number, toIndex: number) {
+      set(s => {
+        const currentOrder = s.allTagsOrder ?? [];
+        const order = currentOrder.length > 0
+          ? currentOrder
+          : [...TAGS_PRESET, ...(s.customTags ?? [])];
+        return { allTagsOrder: reorderItem(order, fromIndex, toIndex) };
+      });
+      onPersist?.();
+    },
+    reorderAllMood(fromIndex: number, toIndex: number) {
+      set(s => {
+        const currentOrder = s.allMoodsOrder ?? [];
+        const order = currentOrder.length > 0
+          ? currentOrder
+          : [...MOODS, ...(s.customMoods ?? [])];
+        return { allMoodsOrder: reorderItem(order, fromIndex, toIndex) };
+      });
+      onPersist?.();
+    },
+
+    // ── Reflection Links ───────────────────────────────────────────────
+    reflectionLinks: [],
+
+    createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => {
+      const id = uid();
+      const now = Date.now();
+      const link: ReflectionLink = {
+        id, fromId, toId, type, note,
+        createdAt: now, updatedAt: now, deleted: false,
+      };
+      set(s => ({ reflectionLinks: [...(s.reflectionLinks ?? []), link] }));
+      adapter.persistChange('reflectionLink', id, link).catch(e => log.error(e));
+      return id;
+    },
+
+    updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => {
+      const existing = get().reflectionLinks?.find(l => l.id === id && !l.deleted);
+      if (!existing) return;
+      let link: ReflectionLink | undefined;
+      set(s => {
+        const newList = (s.reflectionLinks ?? []).map(l =>
+          l.id === id && !l.deleted ? { ...l, ...patch, updatedAt: Date.now() } : l
+        );
+        link = newList.find(l => l.id === id && !l.deleted);
+        return { reflectionLinks: newList };
+      });
+      if (link) adapter.persistChange('reflectionLink', id, link).catch(e => log.error(e));
+    },
+
+    deleteReflectionLink: (id: string) => {
+      set(s => ({
+        reflectionLinks: (s.reflectionLinks ?? []).map(l =>
+          l.id === id ? { ...l, deleted: true, updatedAt: Date.now() } : l
+        ),
+      }));
+      adapter.markDeleted('reflectionLink', id).catch(e => log.error(e));
+    },
+
+    getLinksByReflection: (reflectionId: string) => {
+      return (get().reflectionLinks ?? []).filter(l =>
+        !l.deleted && (l.fromId === reflectionId || l.toId === reflectionId)
+      );
+    },
+
+    getLinksFromReflection: (reflectionId: string) => {
+      return (get().reflectionLinks ?? []).filter(l =>
+        !l.deleted && l.fromId === reflectionId
+      );
+    },
+
+    getLinksToReflection: (reflectionId: string) => {
+      return (get().reflectionLinks ?? []).filter(l =>
+        !l.deleted && l.toId === reflectionId
+      );
+    },
+
+    deleteLinksByReflection: (reflectionId: string) => {
+      const linksToDelete = (get().reflectionLinks ?? []).filter(l =>
+        !l.deleted && (l.fromId === reflectionId || l.toId === reflectionId)
+      );
+
+      set(s => ({
+        reflectionLinks: (s.reflectionLinks ?? []).map(l =>
+          (l.fromId === reflectionId || l.toId === reflectionId) && !l.deleted
+            ? { ...l, deleted: true, updatedAt: Date.now() } : l
+        ),
+      }));
+
+      if (linksToDelete.length > 0) {
+        adapter.batchDelete(linksToDelete.map(l => ({ entity: 'reflectionLink' as const, id: l.id }))).catch(e => log.error(e));
       }
     },
   });

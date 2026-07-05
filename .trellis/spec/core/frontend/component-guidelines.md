@@ -9,7 +9,7 @@
 `packages/core` contains **no React components**. All component code lives in:
 - `apps/mobile/src/components/` (shared mobile UI)
 - `apps/mobile/src/features/*/components/` (feature-specific mobile UI)
-- `apps/web/src/components/` (deprecated)
+- `_archive/web-legacy/src/components/` (archived)
 
 Core exports only **pure primitives** that components consume:
 - i18n `t()` function + `I18nKey` type

@@ -94,6 +94,7 @@ export const zhHant: I18nKeys = {
   habitStatusAll:'全部', habitStatusNotStarted:'未開始',
   habitStatusInProgress:'進行中', habitStatusPaused:'暫停',
   habitStatusAbandoned:'廢棄', habitStatusCompleted:'已完成',
+  habitSortDefault:'默認排序', habitSortNewest:'最新創建', habitSortOldest:'最早創建', habitSortCompletion:'完成率', habitSortStreak:'連續天數',
 
   // Recycle Bin
   recycleBin:'回收箱', recycleBinTitle:'回收箱', recycleBinDesc:'可恢復7天內刪除的資料', recycleBinEmpty:'回收箱為空',
@@ -345,7 +346,7 @@ export const zhHant: I18nKeys = {
   planDeleteConfirm:'確定刪除此計劃嗎？刪除後將進入回收箱。',
   planCompleteConfirm:'確定完成此計劃嗎？',
   planCompleteWithIncomplete:'完成計劃確認',
-  planCompleteWithIncompleteDetail:'當前有 {count} 個任務未完成，請填寫完成原因：',
+  planCompleteWithIncompleteDetail:'當前有 {count} 個任務未完成，確定要完成此計劃嗎？',
   planCompleteReasonPlaceholder:'請填寫完成原因...',
   planCompleteReasonRequired:'需要填寫原因',
   planCompleteReasonRequiredDetail:'有未完成任務時，必須填寫完成原因才能繼續。',
@@ -759,6 +760,7 @@ export const zhHant: I18nKeys = {
   breathSaveFailed:'保存失敗', breathRetry:'請重試',
   breathGuide:'準備指引', breathStart:'開始調息', breathPause:'暫停', breathResume:'繼續', breathStop:'結束',
   breathCycles:'圈', breathPhase:'階段', breathInhale:'吸氣', breathHold:'閉氣', breathExhale:'呼氣',
+  breathPhaseRatio:'段比', breathReflectionTag:'調息',
   breathPreDistress:'此刻你的內心煩亂程度？', breathPostDistress:'此刻你的內心煩亂程度？',
   breathReport:'調息報告', breathDistressChange:'焦慮變化', breathDuration:'調息時長',
 
@@ -952,6 +954,11 @@ export const zhHant: I18nKeys = {
   habitRelatedReflections:'相關感念', habitCollapse:'收起',
   habitExpandMore:'展開更多', habitRelationMap:'關係全景圖',
   habitRelationMapDesc:'查看感念、計劃的關聯關係',
+  habitViewDetail:'查看詳情',
+  habitLinkedSleep:'睡眠',
+  habitEmptyTitle:'開始你的第一個習慣',
+  habitEmptyDesc:'每天堅持一點點，21天養成一個好習慣。點擊下方按鈕創建你的第一個習慣吧！',
+  habitStats:'習慣統計', habitWeeklyCompletion:'每週完成率', habitWeeklyStreak:'每週最長連續天數',
 
   // Review Screen
   reviewMoodGreat:'很好', reviewMoodOkay:'還行', reviewMoodTough:'有點難',

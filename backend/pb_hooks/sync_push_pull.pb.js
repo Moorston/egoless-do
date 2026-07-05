@@ -39,6 +39,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
             else if (curData && typeof curData === "object") { for (var ck in curData) curObj[ck] = curData[ck]; }
             curObj.deleted = true; curObj.updatedAt = Date.now();
             delRecs[dj].set("data", JSON.stringify(curObj));
+            delRecs[dj].set("deleted", true);
             $app.save(delRecs[dj]);
           }
           applied.push({ entity: entity, entityId: entityId, operation: "delete" });
@@ -59,17 +60,26 @@ routerAdd("POST", "/api/sync/push", function(e) {
           if (typeof rawE === "string") { try { existObj = JSON.parse(rawE); } catch(pe) {} }
           else if (rawE && typeof rawE === "object") { for (var mk in rawE) existObj[mk] = rawE[mk]; }
           if (Object.keys(existObj).length > 500) { existObj = {}; }
-          var merged = {};
-          for (var pk in existObj) merged[pk] = existObj[pk];
-          for (var ik in payload) { if (ik === "updatedAt" || ik === "_clientTs") continue; merged[ik] = payload[ik]; }
-          merged.updatedAt = Date.now();
-          rec.set("data", JSON.stringify(merged));
+          var changedFields = payload._changedFields;
+          delete payload._changedFields;
+          if (Array.isArray(changedFields) && changedFields.length > 0) {
+            for (var fi = 0; fi < changedFields.length; fi++) {
+              var cf = changedFields[fi];
+              if (cf !== 'id' && cf !== 'user_id' && payload[cf] !== undefined) {
+                existObj[cf] = payload[cf];
+              }
+            }
+          } else {
+            for (var pk in payload) { if (pk === 'id' || pk === 'user_id') continue; existObj[pk] = payload[pk]; }
+          }
+          existObj.updatedAt = payload.updatedAt || Date.now();
+          rec.set("data", JSON.stringify(existObj));
           rec.set("updated_at", new Date().toISOString());
-          rec.set("deleted", false);
+          rec.set("deleted", existObj.deleted === true ? true : false);
           $app.save(rec);
           applied.push({ entity: entity, entityId: entityId, operation: "upsert" });
         }
-      } catch (recErr) { rejected.push({ entity: entity, entityId: entityId, error: recErr.message || String(recErr) }); }
+      } catch (recErr) { console.error("[sync-push] record error for " + entity + "/" + entityId + ":", recErr.message || String(recErr)); rejected.push({ entity: entity, entityId: entityId, error: "Server error processing record" }); }
     }
     return e.json(200, { applied: applied, rejected: rejected, serverTime: Date.now() });
   } catch (err) {
@@ -85,6 +95,15 @@ routerAdd("POST", "/api/sync/pull", function(e) {
     var ENTITY_ID_FIELD_MAP = {habit:"habit_id",reflection:"reflection_id",fasting:"session_id",food:"food_id",checkin:"date",meditation:"date",profile:"profile_id",exercise:"exercise_id",plan:"plan_id",planItem:"plan_item_id",planItemCheckin:"checkin_id",dailyCustomTodo:"todo_id",dailyTodoHistory:"history_id",grace:"date",thoughtTrail:"trail_id",trailNote:"note_id",reflectionLink:"link_id",aiConfig:"config_id",checkinReview:"review_id",motivationEntry:"motivation_id",customWuxing:"wuxing_id",fearEntry:"fear_id",courageEntry:"courage_id",fearAchievement:"achievement_id",sutraReading:"reading_id",sleep:"sleep_id",give:"give_id",bodyGoal:"goal_id",bodyPlan:"plan_id",weightRecord:"weight_id",bodyCheckin:"checkin_id",vision:"vision_id",visionPractice:"practice_id",dedication:"dedication_id",mantraDef:"mantra_id",mantraSession:"session_id",zhiguanSession:"zhiguan_id",breath:"breath_id"};
     var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+    function safeFindRecords(app, coll, filter, limit, offset) {
+      try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
+        try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
+          try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
+            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+          }
+        }
+      }
+    }
 
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;
@@ -106,24 +125,34 @@ routerAdd("POST", "/api/sync/pull", function(e) {
         var coll = ENTITY_COLL_MAP[ent];
         if (!coll) continue;
         var f = "user_id = '" + escapeFilterValue(userId) + "'";
-        // Note: PocketBase system field 'updated' may not be available in all versions
-        // For initial sync, we pull all records without timestamp filter
+        // Note: Not all collections have 'updated_at' as a top-level field.
+        // Client-side filtering handles incremental sync via updatedAt.
         var allRecs = [];
         var totalCount = 0;
         if (page > 0 && pageSize > 0) {
           // Paginated mode for phased initial sync
-          // First get total count
-          var countRecs = $app.findRecordsByFilter(coll, f, "", 0);
-          totalCount = countRecs ? countRecs.length : 0;
+          // Use raw SQL COUNT to avoid loading all records into memory
+          try {
+            // PocketBase stores per-user data; the filter is always user_id based
+            // Build a COUNT query against the underlying table
+            var countResult = $app.db().newQuery(
+              "SELECT COUNT(*) as total FROM " + coll + " WHERE user_id = {:userId}"
+            ).bind({ userId: userId }).one();
+            totalCount = countResult ? (countResult.total || 0) : 0;
+          } catch (countErr) {
+            // Fallback: load all records for count (same as before) — capped to prevent OOM
+            var countRecs = $app.findRecordsByFilter(coll, f, "", 10000);
+            totalCount = countRecs ? countRecs.length : 0;
+          }
           var offset = (page - 1) * pageSize;
-          var batch = $app.findRecordsByFilter(coll, f, "-created", pageSize, offset);
+          var batch = safeFindRecords($app, coll, f, pageSize, offset);
           if (batch) { for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]); }
         } else {
           // Full pull mode (backward compat)
           var offset = 0;
           var BATCH = 500;
           while (true) {
-            var batch = $app.findRecordsByFilter(coll, f, "-created", BATCH, offset);
+            var batch = safeFindRecords($app, coll, f, BATCH, offset);
             if (!batch || batch.length === 0) break;
             for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]);
             if (batch.length < BATCH) break;
@@ -203,7 +232,7 @@ routerAdd("POST", "/api/push", function(e) {
       if (existingToken !== token) {
         rec.set("token", token);
         $app.save(rec);
-        console.log("[push] Updated token for user " + userId + " platform " + platform);
+        console.debug("[push] Updated token for user " + userId + " platform " + platform);
       }
     } else {
       var colObj = $app.findCollectionByNameOrId("push_tokens");
@@ -212,7 +241,7 @@ routerAdd("POST", "/api/push", function(e) {
       rec.set("platform", platform);
       rec.set("token", token);
       $app.save(rec);
-      console.log("[push] Registered token for user " + userId + " platform " + platform);
+      console.debug("[push] Registered token for user " + userId + " platform " + platform);
     }
 
     return e.json(200, { ok: true });

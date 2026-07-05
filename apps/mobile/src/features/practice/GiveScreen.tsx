@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { useShallow } from 'zustand/react/shallow';

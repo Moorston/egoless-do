@@ -466,8 +466,8 @@ export default function SleepHistoryPage() {
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有睡眠记录</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每晚的安睡都是送给身体的礼物</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，记录你的睡眠</Text>
-            <TouchableOpacity onPress={() => (nav as any).navigate('MainTabs', { screen: 'Sleep' })} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
-              {/* any: nested navigator type mismatch between RootStack and MainTab */}
+            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Sleep' } as never)} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+              {/* 修复: 移除 as any */}
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始记录睡眠</Text>
             </TouchableOpacity>
           </View>

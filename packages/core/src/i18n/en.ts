@@ -94,6 +94,7 @@ export const en: I18nKeys = {
   habitStatusAll:'All', habitStatusNotStarted:'Not Started',
   habitStatusInProgress:'In Progress', habitStatusPaused:'Paused',
   habitStatusAbandoned:'Abandoned', habitStatusCompleted:'Completed',
+  habitSortDefault:'Default', habitSortNewest:'Newest', habitSortOldest:'Oldest', habitSortCompletion:'Completion', habitSortStreak:'Streak',
 
   // Recycle Bin
   recycleBin:'Recycle Bin', recycleBinTitle:'Recycle Bin', recycleBinDesc:'Restore data deleted within 7 days', recycleBinEmpty:'Recycle bin is empty',
@@ -345,7 +346,7 @@ export const en: I18nKeys = {
   planDeleteConfirm:'Are you sure you want to delete this plan? It will be moved to the recycle bin.',
   planCompleteConfirm:'Are you sure you want to complete this plan?',
   planCompleteWithIncomplete:'Complete Plan Confirmation',
-  planCompleteWithIncompleteDetail:'There are {count} incomplete tasks. Please provide a reason for completion:',
+  planCompleteWithIncompleteDetail:'There are {count} incomplete tasks. Are you sure you want to complete this plan?',
   planCompleteReasonPlaceholder:'Please enter completion reason...',
   planCompleteReasonRequired:'Reason Required',
   planCompleteReasonRequiredDetail:'A reason is required when there are incomplete tasks.',
@@ -759,6 +760,7 @@ export const en: I18nKeys = {
   breathSaveFailed:'Save failed', breathRetry:'Please retry',
   breathGuide:'Preparation', breathStart:'Start', breathPause:'Pause', breathResume:'Resume', breathStop:'Stop',
   breathCycles:'cycles', breathPhase:'Phase', breathInhale:'Inhale', breathHold:'Hold', breathExhale:'Exhale',
+  breathPhaseRatio:'Phase Ratio', breathReflectionTag:'Breathing',
   breathPreDistress:'How distressed do you feel right now?', breathPostDistress:'How distressed do you feel right now?',
   breathReport:'Session Report', breathDistressChange:'Distress Change', breathDuration:'Duration',
 
@@ -954,6 +956,11 @@ export const en: I18nKeys = {
   habitRelatedReflections:'Related Reflections',
   habitCollapse:'Collapse', habitExpandMore:'Show more',
   habitRelationMap:'Relation Map', habitRelationMapDesc:'View relations between reflections and plans',
+  habitViewDetail:'View Details',
+  habitLinkedSleep:'Sleep',
+  habitEmptyTitle:'Start Your First Habit',
+  habitEmptyDesc:'A little progress each day adds up to big results. Tap the button below to create your first habit!',
+  habitStats:'Habit Stats', habitWeeklyCompletion:'Weekly Completion Rate', habitWeeklyStreak:'Weekly Max Streak',
 
   // Review Screen
   reviewMoodGreat:'Great', reviewMoodOkay:'Okay', reviewMoodTough:'Tough',

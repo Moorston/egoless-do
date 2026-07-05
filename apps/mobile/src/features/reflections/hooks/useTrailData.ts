@@ -32,7 +32,7 @@ export function useTrailData(trailId: string) {
 
   const links = useMemo(() => {
     if (!trail) return [];
-    const ids = new Set(trail.reflectionIds);
+    const ids = new Set(trail.reflectionIds ?? []);
     return (reflectionLinks ?? [])
       .filter(l => !l.deleted && ids.has(l.fromId) && ids.has(l.toId))
       .map(l => ({ fromId: l.fromId, toId: l.toId, type: l.type }));

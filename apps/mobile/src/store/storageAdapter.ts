@@ -1,4 +1,4 @@
-import type { StorageAdapter, SyncEntity } from '@egoless-do/core';
+import type { StorageAdapter, SyncEntity, SyncDataMap } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 import { WriteBatcher } from '../features/sync/WriteBatcher';
 
@@ -24,8 +24,8 @@ export const mobileStorageAdapter: StorageAdapter = {
   // Writes are batched (100ms debounce) for performance. The promise resolves
   // immediately — use flushWrites() if you need to guarantee DB persistence
   // before proceeding (e.g., during migration).
-  async persistChange(entity: SyncEntity, id: string, data: Record<string, unknown>): Promise<void> {
-    _batcher.write(entity, id, data);
+  async persistChange<K extends SyncEntity>(entity: K, id: string, data: SyncDataMap[K]): Promise<void> {
+    _batcher.write(entity, id, data as Record<string, unknown>);
   },
 
   async markDeleted(entity: SyncEntity, id: string) {

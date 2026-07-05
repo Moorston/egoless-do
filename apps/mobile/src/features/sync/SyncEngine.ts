@@ -1,36 +1,26 @@
 import { openDatabase, getState, setState, withDbLock } from '../../db/schema';
 import {
   drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems,
-  enqueueChange,
   markQueueItemFailed, markQueueItemConflict, markQueueItemRetry, resetAllPendingForRetry,
   getLastSyncTimestamp, setLastSyncTimestamp,
-  getSyncProgress, updateSyncProgress, resetSyncProgress,
   type SyncQueueItem,
 } from '../../db/syncQueue';
 import { flushWrites } from '../../store/storageAdapter';
 import {
-  apiSyncPush, apiSyncPull, apiSyncPullPost, apiSyncCheck, apiSyncPullEntity,
-  createLogger, SCHEMAS, buildServerPayloadToRow, ApiError, KickedOutError, resolveConflict,
-  MS_PER_DAY, ALL_ENTITY_TABLES,
+  apiSyncPush, apiSyncPull, apiSyncPullPost, apiSyncCheck,
+  createLogger, ApiError, KickedOutError,
+  ALL_ENTITY_TABLES,
 } from '@egoless-do/core';
 import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
-import {
-  rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
-  rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
-  rowToPlanItemCheckin, rowToGrace, rowToDailyCustomTodo, rowToDailyTodoHistory,
-  rowToThoughtTrail, rowToTrailNote, rowToReflectionLink, rowToAIConfig, rowToCheckinReview,
-  rowToBodyGoal, rowToBodyPlan, rowToWeightRecord, rowToBodyCheckin, rowToSleep, rowToGive,
-  rowToMotivationEntry, rowToCustomWuxing,
-  rowToVision, rowToVisionPractice, rowToDedication, rowToMantraDef, rowToMantraSession,
-  rowToFearEntry, rowToCourageEntry, rowToFearAchievement,
-  rowToSutraReading,
-  rowToBreath, rowToZhiguanSession,
-} from '../../store/rowMappers';
-import { dbGetAllFoodEntries } from '../../db/queries';
-import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RealtimeAgent, type RealtimeChangeEvent } from './RealtimeAgent';
-import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig, type RowMapper } from './orphanRecovery';
+import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig, type GetRowMapperFn } from './orphanRecovery';
+import { SyncApplyService, ENTITY_CONFIG } from './SyncApplyService';
+import { SyncRealtimeController } from './SyncRealtimeController';
+import { SyncRehydrationManager } from './SyncRehydrationManager';
+import { SyncTimestampManager } from './SyncTimestampManager';
+import { SyncResetService } from './SyncResetService';
+import { SyncPushService } from './SyncPushService';
+import { SyncPullService } from './SyncPullService';
 
 const DOMException = (globalThis as Record<string, unknown>).DOMException as typeof Error | undefined
   ?? class DOMException extends Error {
@@ -41,67 +31,8 @@ const DOMException = (globalThis as Record<string, unknown>).DOMException as typ
   };
 
 const log = createLogger('SyncEngine');
-const DEVICE_SYNCED_KEY = 'device_initial_synced';
-const CLOCK_OFFSET_KEY = 'sync_clock_offset';
 const PUSH_PULL_SEPARATE_THRESHOLD = 20;
 const SYNC_TIMEOUT_MS = 120_000;
-const MAX_RETRY_ATTEMPTS = 5;
-const ENTITY_CONFIG: Record<string, { table: string; pk: string }> = Object.fromEntries(
-  (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, { table: SCHEMAS[k].sqlite.table, pk: SCHEMAS[k].sqlite.pk }])
-);
-const ENTITY_STORE_KEY: Record<string, string> = {
-  habit: 'habits', reflection: 'reflections', fasting: 'fastingHistory',
-  food: 'foodLog', checkin: 'checkinHistory', exercise: 'exerciseLog',
-  meditation: 'medHistory', profile: 'userProfile',
-  plan: 'plans', planItem: 'planItems', planItemCheckin: 'planItemCheckins',
-  grace: 'graceHistory', dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
-  thoughtTrail: 'thoughtTrails', trailNote: 'trailNotes',
-  reflectionLink: 'reflectionLinks', checkinReview: 'checkinReviews',
-  bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans',
-  weightRecord: 'weightRecords', bodyCheckin: 'bodyCheckins',
-  sleep: 'sleepHistory',
-  give: 'giveHistory',
-  motivationEntry: 'motivationLog', customWuxing: 'customWuxingMaps',
-  vision: 'visions', visionPractice: 'visionPractices', dedication: 'dedications',
-  mantraDef: 'mantraDefs', mantraSession: 'mantraSessions',
-  sutraReading: 'readingSessions',
-  fearEntry: 'fearEntries', courageEntry: 'courageEntries', fearAchievement: 'achievements',
-  breath: 'breathHistory', zhiguanSession: 'sessions',
-};
-const ENTITY_COLL_MAP: Record<string, string> = {
-  habits: 'habit', mind_reflections: 'reflection', fasting_sessions: 'fasting',
-  food_entries: 'food', checkin_records: 'checkin', meditation_history: 'meditation',
-  user_profiles: 'profile', exercise_entries: 'exercise', plans: 'plan',
-  plan_items: 'planItem', plan_item_checkins: 'planItemCheckin',
-  daily_custom_todos: 'dailyCustomTodo', daily_todo_history: 'dailyTodoHistory',
-  grace_history: 'grace', thought_trails: 'thoughtTrail', trail_notes: 'trailNote',
-  reflection_links: 'reflectionLink', ai_configs: 'aiConfig', checkin_reviews: 'checkinReview',
-  body_goals: 'bodyGoal', body_plans: 'bodyPlan',
-  body_weight_records: 'weightRecord', body_checkins: 'bodyCheckin',
-  sleep_records: 'sleep',
-  give_entries: 'give',
-  eating_motivations: 'motivationEntry', custom_wuxing_maps: 'customWuxing',
-  visions: 'vision', vision_practices: 'visionPractice', dedications: 'dedication',
-  mantra_defs: 'mantraDef', mantra_sessions: 'mantraSession',
-  sutra_reading_sessions: 'sutraReading',
-  fear_entries: 'fearEntry', courage_entries: 'courageEntry', fear_achievements: 'fearAchievement',
-  breath_records: 'breath', zhiguan_sessions: 'zhiguanSession',
-};
-// Validate all SCHEMAS entities are covered by ENTITY_STORE_KEY or handled specially
-const _specialEntities = new Set(['aiConfig']);
-if (__DEV__) {
-  for (const key of Object.keys(SCHEMAS) as SyncEntity[]) {
-    if (!ENTITY_STORE_KEY[key] && !_specialEntities.has(key)) {
-      console.warn(`[SyncEngine] Entity "${key}" missing from ENTITY_STORE_KEY`);
-    }
-    if (!ENTITY_COLL_MAP[SCHEMAS[key].sqlite.table]) {
-      console.warn(`[SyncEngine] Entity "${key}" table "${SCHEMAS[key].sqlite.table}" missing from ENTITY_COLL_MAP`);
-    }
-  }
-}
-const _serverPayloadToRowFns = Object.fromEntries(
-  (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [k, buildServerPayloadToRow(SCHEMAS[k])])
-) as Record<string, (r: Record<string, unknown>) => Record<string, unknown> | null>;
 
 // ALL_ENTITY_TABLES is now imported from @egoless-do/core (derived from SCHEMAS)
 
@@ -115,12 +46,18 @@ export interface SyncMetric {
 }
 
 export class SyncEngine {
+  private _applyService = new SyncApplyService();
+  private _realtimeController = new SyncRealtimeController();
+  private _rehydrationManager = new SyncRehydrationManager();
+  private _timestampManager = new SyncTimestampManager();
+  private _resetService = new SyncResetService();
+  private _pushService = new SyncPushService();
+  private _pullService = new SyncPullService();
   private _syncing = false;
   private _syncingSince = 0;
   private _syncGeneration = 0;
   private _abortController: AbortController | null = null;
   private _orphanRecoveryDone = false;
-  private _clockOffset = 0;
   private _migrationDone = false;
   private _syncMetrics: SyncMetric[] = [];
   private static MAX_METRICS = 20;
@@ -129,16 +66,9 @@ export class SyncEngine {
   private _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
   private _deletedIdsProvider: (() => Set<string>) | null = null;
   private _onKickedOut: (() => void) | null = null;
-  private _lastSyncAt = 0;
-  private _lastSyncAtLoaded = false;
   private _hasSyncedDeletes = false;
-  private _netInfoUnsubscribe: (() => void) | null = null;
-  private _realtimeFallbackTimer: ReturnType<typeof setInterval> | null = null;
-  private _realtimeAgent = new RealtimeAgent();
   private _initialSyncing = false;
   private _pendingSyncAfterInit = false;
-  private _realtimeDebounce = new Map<string, ReturnType<typeof setTimeout>>();
-  private _realtimeEventTimes = new Map<string, number[]>();
   private _lastOrphanScanAt = 0;
 
   // ── Configuration ────────────────────────────────────────────────
@@ -148,260 +78,57 @@ export class SyncEngine {
   setDeletedIdsProvider(fn: () => Set<string>) { this._deletedIdsProvider = fn; }
   setKickedOutHandler(fn: () => void) { this._onKickedOut = fn; }
   setMigrationDone(v: boolean) { this._migrationDone = v; }
-  setLastSyncAt(ts: number) { this._lastSyncAt = ts; }
+  setLastSyncAt(ts: number) { this._timestampManager.setLastSyncAt(ts); }
   getMigrationDone(): boolean { return this._migrationDone; }
-  getClockOffset(): number { return this._clockOffset; }
+  getClockOffset(): number { return this._timestampManager.getClockOffset(); }
 
   async isDeviceSyncedBefore(): Promise<boolean> {
-    return (await AsyncStorage.getItem(DEVICE_SYNCED_KEY)) === '1';
+    return this._rehydrationManager.isDeviceSyncedBefore();
   }
 
   // ── Realtime (SSE) ───────────────────────────────────────────────
-  private _sseConnected = false;
-
   connectRealtime(pbUrl?: string): void {
     const token = this._tokenProvider?.();
     if (!token) return;
 
     this.disconnectRealtime();
-    this.startNetworkRecoveryListener();
-
-    if (pbUrl) {
-      this._realtimeAgent.setChangeHandler((event) => this.handleRealtimeEvent(event));
-      this._realtimeAgent.setStatusHandler((connected) => {
-        this._sseConnected = connected;
-        if (!connected && !this._realtimeFallbackTimer) this.startFallbackPolling();
-        else if (connected) this.stopFallbackPolling();
-      });
-      this._realtimeAgent.connect(pbUrl, token);
-    }
-    // Only start fallback polling if SSE isn't going to be connected
-    if (!pbUrl) this.startFallbackPolling();
+    this._realtimeController.connectRealtime(
+      pbUrl,
+      () => this._tokenProvider?.(),
+      (patch) => this._onChanges?.(patch),
+      () => this.handleKickedOut(),
+      this._timestampManager.getLastSyncAt(),
+      () => this._deletedIdsProvider?.() ?? new Set(),
+    );
   }
 
   disconnectRealtime(): void {
-    this._realtimeAgent.disconnect();
-    this._sseConnected = false;
-    this.stopFallbackPolling();
-    this.stopNetworkRecoveryListener();
-    // Clear pending debounce timers and event time tracking
-    for (const timer of this._realtimeDebounce.values()) clearTimeout(timer);
-    this._realtimeDebounce.clear();
-    this._realtimeEventTimes.clear();
+    this._realtimeController.disconnectRealtime();
   }
 
   isRealtimeConnected(): boolean {
-    return this._sseConnected;
+    return this._realtimeController.isRealtimeConnected();
   }
 
-  private stopFallbackPolling() {
-    if (this._realtimeFallbackTimer) {
-      clearInterval(this._realtimeFallbackTimer);
-      this._realtimeFallbackTimer = null;
-    }
-  }
+  // ── Clock offset & timestamp (delegated to SyncTimestampManager) ──
+  private get lastSyncAt() { return this._timestampManager.getLastSyncAt(); }
+  private set lastSyncAt(ts: number) { this._timestampManager.setLastSyncAt(ts); }
+  private get clockOffset() { return this._timestampManager.getClockOffset(); }
 
-  private startFallbackPolling() {
-    if (this._realtimeFallbackTimer) return;
-    this._realtimeFallbackTimer = setInterval(() => {
-      const currentToken = this._tokenProvider?.();
-      if (currentToken) this.pollForChanges(currentToken);
-    }, 120_000);
-  }
-
-  private getAdaptiveDebounce(entity: string): number {
-    const times = this._realtimeEventTimes.get(entity) || [];
-    const now = Date.now();
-    const recent = times.filter(t => now - t < 2000);
-    this._realtimeEventTimes.set(entity, [...recent, now]);
-    if (recent.length >= 5) return 1500;
-    if (recent.length >= 2) return 300;
-    return 0;
-  }
-
-  private async handleRealtimeEvent(event: RealtimeChangeEvent): Promise<void> {
-    const { entity, payload } = event;
-    if (!entity) return;
-
-    const delay = this.getAdaptiveDebounce(entity);
-    if (delay === 0) {
-      this.processRealtimeEntity(entity, payload);
-      return;
-    }
-
-    // Debounced path: always use null payload to force incremental pull.
-    // This prevents data loss when intermediate events are dropped by debounce.
-    // PocketBase SSE sends notifications without per-record payloads, so the
-    // pull path (apiSyncPullPost with since=lastSyncAt) catches ALL changes
-    // for this entity type regardless of how many events were debounced.
-    const existing = this._realtimeDebounce.get(entity);
-    if (existing) clearTimeout(existing);
-    this._realtimeDebounce.set(entity, setTimeout(() => {
-      this._realtimeDebounce.delete(entity);
-      this.processRealtimeEntity(entity, null);
-    }, delay));
-  }
-
-  private async processRealtimeEntity(entity: string, payload: unknown): Promise<void> {
-    const token = this._tokenProvider?.();
-    if (!token) return;
-
-    try {
-      if (payload) {
-        const deletedIds = this._deletedIdsProvider?.();
-        const patch = await this.applyServerChanges({ [entity]: [payload] }, deletedIds);
-        if (patch && Object.keys(patch).length) this._onChanges?.(patch);
-        return;
-      }
-
-      const result = await apiSyncPullPost(token, {
-        entities: [entity],
-        since: this._lastSyncAt > 0 ? this._lastSyncAt : undefined,
-      });
-      if (result?.data?.[entity]) {
-        const deletedIds = this._deletedIdsProvider?.();
-        const patch = await this.applyServerChanges({ [entity]: result.data[entity] }, deletedIds);
-        if (patch && Object.keys(patch).length) this._onChanges?.(patch);
-      }
-      if (result?.serverTime) {
-        this._lastSyncAt = Math.max(this._lastSyncAt, result.serverTime);
-        await this.saveLastSyncAt(this._lastSyncAt);
-      }
-    } catch (err) {
-      if (err instanceof KickedOutError) { this.handleKickedOut(); return; }
-      log.warn(err, { phase: 'realtime-pull' });
-      // Don't trigger full sync — SSE will retry on next event
-    }
-  }
-
-  private async pollForChanges(token: string): Promise<void> {
-    try {
-      const queueCount = await getQueueCount();
-      if (queueCount > 0) { this.runSync(); return; }
-
-      try {
-        const checkResult = await apiSyncCheck(token, this._lastSyncAt, this._userIdProvider?.() ?? undefined);
-        if (!checkResult.hasChanges) return;
-        const changedEntities = Object.keys(checkResult.changed);
-        if (changedEntities.length > 0) {
-          const result = await apiSyncPullPost(token, {
-            entities: changedEntities,
-            since: this._lastSyncAt > 0 ? this._lastSyncAt : undefined,
-          });
-          if (result?.data) {
-            const deletedIds = this._deletedIdsProvider?.();
-            const patch = await this.applyServerChanges(result.data, deletedIds);
-            if (patch && Object.keys(patch).length) this._onChanges?.(patch);
-            this._lastSyncAt = result.serverTime;
-            await this.saveLastSyncAt(this._lastSyncAt);
-          }
-          return;
-        }
-      } catch (checkErr) {
-        if (checkErr instanceof KickedOutError) { this.handleKickedOut(); return; }
-        log.warn(checkErr, { phase: 'poll-check' });
-      }
-      this.runSync();
-    } catch (err) {
-      log.error(err, { phase: 'poll' });
-    }
-  }
-
-  private startNetworkRecoveryListener(): void {
-    if (this._netInfoUnsubscribe) return;
-    this._netInfoUnsubscribe = NetInfo.addEventListener(state => {
-      if (state.isConnected && state.isInternetReachable) {
-        resetAllPendingForRetry().then(count => {
-          if (count > 0) {
-            log.info(`Network recovered, resetting ${count} items`);
-            this.runSync();
-          }
-        }).catch(() => {});
-      }
-    });
-  }
-
-  private stopNetworkRecoveryListener(): void {
-    this._netInfoUnsubscribe?.();
-    this._netInfoUnsubscribe = null;
-  }
-
-  // ── Clock offset ─────────────────────────────────────────────────
-  private async loadClockOffset(): Promise<void> {
-    try {
-      const v = await AsyncStorage.getItem(CLOCK_OFFSET_KEY);
-      if (v) this._clockOffset = parseInt(v, 10) || 0;
-    } catch {} // intentional: clock offset is optional, defaults to 0
-  }
-
-  private async saveClockOffset(offset: number): Promise<void> {
-    this._clockOffset = offset;
-    try { await AsyncStorage.setItem(CLOCK_OFFSET_KEY, String(offset)); } catch {} // intentional: best-effort persistence
-  }
-
-  private updateClockOffset(serverTime: number): void {
-    if (!serverTime || serverTime <= 0) return;
-    const offset = serverTime - Date.now();
-    if (Math.abs(offset) < MS_PER_DAY) {
-      this.saveClockOffset(offset);
-    }
-  }
-
-  // ── Last sync timestamp ──────────────────────────────────────────
-  private async loadLastSyncAt(): Promise<void> {
-    if (this._lastSyncAtLoaded) return;
-    try {
-      const db = await openDatabase();
-      const val = await getState(db, 'lastSyncAt');
-      if (val) this._lastSyncAt = Number(val) || 0;
-    } catch {} // intentional: lastSyncAt defaults to 0
-    this._lastSyncAtLoaded = true;
-  }
-
-  private async saveLastSyncAt(ts: number): Promise<void> {
-    try {
-      const db = await openDatabase();
-      await setState(db, 'lastSyncAt', String(ts));
-    } catch {} // intentional: best-effort persistence
-  }
-
-  // ── Soft/Hard reset ──────────────────────────────────────────────
+  // ── Soft/Hard reset (delegated to SyncResetService) ─────────────────
   async softReset(): Promise<void> {
-    this._lastSyncAt = 0;
-    this._lastSyncAtLoaded = false;
-    this.disconnectRealtime();
-    try {
-      const db = await openDatabase();
-      await setState(db, 'lastSyncAt', '0');
-      await db.runAsync('DELETE FROM sync_metadata');
-    } catch (e) {
-      log.warn(e, { phase: 'softReset' });
-    }
+    return this._resetService.softReset(
+      () => this.disconnectRealtime(),
+      () => this._timestampManager.resetLastSyncAt(),
+    );
   }
 
-  async hardReset(): Promise<void> {
-    this._lastSyncAt = 0;
-    this._lastSyncAtLoaded = false;
-    this.disconnectRealtime();
-    try {
-      const db = await openDatabase();
-      const { withDbLock } = await import('../../db/schema');
-      await withDbLock(async () => {
-        await setState(db, 'lastSyncAt', '0');
-        await db.runAsync('DELETE FROM sync_queue');
-        await db.runAsync('DELETE FROM sync_metadata');
-        for (const table of ALL_ENTITY_TABLES) {
-          await db.runAsync(`DELETE FROM ${table}`);
-        }
-        await db.runAsync("DELETE FROM app_state WHERE key IN ('initialSyncDone', 'initialSyncPhase')");
-        await db.runAsync('DELETE FROM sync_progress');
-      });
-      // Clear AsyncStorage sync keys outside the lock
-      await AsyncStorage.removeItem(DEVICE_SYNCED_KEY);
-      await AsyncStorage.removeItem(CLOCK_OFFSET_KEY);
-    } catch (e) {
-      log.warn(e, { phase: 'hardReset' });
-    }
+  async hardReset(confirmToken?: string): Promise<void> {
+    return this._resetService.hardReset(
+      confirmToken,
+      () => this.disconnectRealtime(),
+      () => this._timestampManager.resetLastSyncAt(),
+    );
   }
 
   // ── Kicked out ───────────────────────────────────────────────────
@@ -415,236 +142,30 @@ export class SyncEngine {
     this._onKickedOut?.();
   }
 
-  // ── Server payload helpers ───────────────────────────────────────
-  private serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<string, unknown> | null {
-    return _serverPayloadToRowFns[entity]?.(r) ?? null;
-  }
-
-  private resolveEntityId(r: Record<string, unknown>, pk: string, fallback?: string): string | undefined {
-    return (r[pk] ?? r.id ?? r.date) as string | undefined ?? fallback;
-  }
-
-  // ── Apply server changes ─────────────────────────────────────────
+  // ── Apply server changes (delegated to SyncApplyService) ─────────────
   async applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<Record<string, unknown>> {
-    const db = await openDatabase();
-    const patch: Record<string, unknown> = {};
-    if (!data || typeof data !== 'object') return patch;
-    const entries = Object.entries(data);
-    console.log(`[applyServerChanges] Processing ${entries.length} entities: ${entries.map(([k, v]) => `${k}(${v.length})`).join(', ')}`);
-    return withDbLock(async () => {
-      for (const [entity, records] of entries) {
-        if (!Array.isArray(records) || records.length === 0) continue;
-        if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
-        try {
-          console.log(`[applyServerChanges] Processing ${entity}: ${records.length} records`);
-          const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal);
-          console.log(`[applyServerChanges] ${entity}: applied ${storeMapped.length} records to store`);
-          if (entity === 'meditation') {
-            const allMed = await db.getAllAsync<{ dur_min: number }>('SELECT dur_min FROM meditation_history WHERE deleted = 0');
-            patch.totalMedMinutes = allMed.reduce((sum, e) => sum + (e.dur_min || 0), 0);
-          }
-          if (entity === 'aiConfig' && storeMapped.length > 0) {
-            const latest = storeMapped[storeMapped.length - 1] as Record<string, unknown>;
-            if (latest.mode) patch.aiMode = latest.mode;
-            if (latest.models) patch.aiModels = latest.models;
-          }
-          const storeKey = ENTITY_STORE_KEY[entity];
-          if (storeKey && storeMapped.length > 0) patch[storeKey] = storeMapped;
-        } catch (e) {
-          log.error(e, { entity, phase: 'applyEntity' });
-        }
-      }
-      console.log(`[applyServerChanges] Final patch keys: ${Object.keys(patch).join(', ')}`);
-      return patch;
-    });
+    return this._applyService.applyServerChanges(data, deletedIds, signal);
   }
 
-  private _rowToEntityMap: Record<string, (row: Record<string, unknown>) => unknown> = {
-    habit: rowToHabit, reflection: rowToReflection, fasting: rowToFasting,
-    food: rowToFood, checkin: rowToCheckin, exercise: rowToExercise,
-    meditation: rowToMeditation, profile: rowToProfile, plan: rowToPlan,
-    planItem: rowToPlanItem, planItemCheckin: rowToPlanItemCheckin,
-    grace: rowToGrace, dailyCustomTodo: rowToDailyCustomTodo,
-    dailyTodoHistory: rowToDailyTodoHistory, thoughtTrail: rowToThoughtTrail,
-    trailNote: rowToTrailNote, reflectionLink: rowToReflectionLink,
-    aiConfig: rowToAIConfig, checkinReview: rowToCheckinReview,
-    bodyGoal: rowToBodyGoal, bodyPlan: rowToBodyPlan,
-    weightRecord: rowToWeightRecord, bodyCheckin: rowToBodyCheckin,
-    sleep: rowToSleep,
-    give: rowToGive,
-    motivationEntry: rowToMotivationEntry, customWuxing: rowToCustomWuxing,
-    vision: rowToVision, visionPractice: rowToVisionPractice, dedication: rowToDedication,
-    mantraDef: rowToMantraDef, mantraSession: rowToMantraSession,
-    sutraReading: rowToSutraReading,
-    fearEntry: rowToFearEntry, courageEntry: rowToCourageEntry, fearAchievement: rowToFearAchievement,
-    breath: rowToBreath, zhiguanSession: rowToZhiguanSession,
-  };
-
-  private async applyEntityToTable(
-    db: Awaited<ReturnType<typeof openDatabase>>,
-    entity: string, records: Record<string, unknown>[], deletedIds?: Set<string>, signal?: AbortSignal,
-  ): Promise<{ applied: unknown[]; storeMapped: unknown[] }> {
-    const config = ENTITY_CONFIG[entity];
-    if (!config) return { applied: [], storeMapped: [] };
-    const { table, pk } = config;
-    const alive = records.filter(r => r && !r.deleted);
-    const dead = records.filter(r => r && r.deleted);
-    const applied: unknown[] = [];
-    const storeMapped: unknown[] = [];
-    const mapper = this._rowToEntityMap[entity];
-
-    const allIds = [...alive, ...dead].map(r => this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined)).filter(Boolean) as string[];
-    const localMeta = new Map<string, { updated_at: number; deleted: number }>();
-    if (allIds.length > 0) {
-      const placeholders = allIds.map(() => '?').join(',');
-      const localMetaRows = await db.getAllAsync<{ pk_val: string; updated_at: number | null; deleted: number | null }>(
-        `SELECT ${pk} as pk_val, updated_at, deleted FROM ${table} WHERE ${pk} IN (${placeholders})`,
-        allIds
-      );
-      for (const row of localMetaRows) {
-        localMeta.set(row.pk_val, { updated_at: row.updated_at ?? 0, deleted: row.deleted ?? 0 });
-      }
-    }
-
-    for (const r of alive) {
-      try {
-        if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
-        if (!r) continue;
-        const id = this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
-        if (!id) {
-          console.log(`[applyEntityToTable] ${entity}: Skipping record with no id`, r);
-          continue;
-        }
-        if (deletedIds?.has(id)) {
-          await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
-          localMeta.set(id, { updated_at: localMeta.get(id)?.updated_at ?? 0, deleted: 1 });
-          continue;
-        }
-        const local = localMeta.get(id);
-        const serverTs = Number(r.updatedAt ?? 0);
-        if (local && resolveConflict({ clientUpdated: local.updated_at, serverUpdated: serverTs, clientDeleted: local.deleted === 1 }).winner === 'client') {
-          console.log(`[applyEntityToTable] ${entity}: Skipping ${id} due to conflict resolution (client wins)`);
-          continue;
-        }
-
-        let processedRecord = r;
-        // Preserve local reflection colors if server has none
-        if (entity === 'reflection' && !r.colors) {
-          try {
-            const localColors = await db.getFirstAsync<{ colors: string | null }>('SELECT colors FROM mind_reflections WHERE id=?', [id]);
-            if (localColors?.colors) processedRecord = { ...r, colors: JSON.parse(localColors.colors) };
-          } catch {} // intentional: color parse failure, use server colors
-        }
-
-        const row = this.serverPayloadToRow(entity, processedRecord);
-        if (!row) {
-          console.log(`[applyEntityToTable] ${entity}: serverPayloadToRow returned null for ${id}`, processedRecord);
-          continue;
-        }
-        const columns = Object.keys(row);
-        const values = Object.values(row) as (string | number | null)[];
-        if (!columns.length) {
-          console.log(`[applyEntityToTable] ${entity}: No columns for ${id}`, row);
-          continue;
-        }
-
-        const setClause = columns.map(c => `${c}=?`).join(',');
-        const result = await db.runAsync(`UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`, [...values, id]);
-        if (result.changes === 0) {
-          const placeholders = columns.map(() => '?').join(',');
-          try {
-            await db.runAsync(`INSERT INTO ${table} (${columns.join(',')},synced) VALUES (${placeholders},1)`, values);
-            console.log(`[applyEntityToTable] ${entity}: Inserted ${id}`);
-          } catch (insertErr: unknown) {
-            if (insertErr instanceof Error && insertErr.message?.includes('UNIQUE constraint')) {
-              await db.runAsync(`UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`, [...values, id]);
-            } else {
-              console.log(`[applyEntityToTable] ${entity}: Insert error for ${id}`, insertErr);
-              throw insertErr;
-            }
-          }
-        } else {
-          console.log(`[applyEntityToTable] ${entity}: Updated ${id}`);
-        }
-        localMeta.set(id, { updated_at: serverTs, deleted: 0 });
-        applied.push(processedRecord);
-        if (mapper) {
-          storeMapped.push(mapper(Object.fromEntries(columns.map((c, i) => [c, values[i]]))));
-        }
-      } catch (e) {
-        log.error(e, { entity, phase: 'applyEntity-alive' });
-      }
-    }
-
-    for (const r of dead) {
-      try {
-        if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
-        const id = this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
-        if (!id) continue;
-        const local = localMeta.get(id);
-        const serverTs = Number(r.updatedAt ?? 0);
-        if (local && resolveConflict({ clientUpdated: local.updated_at, serverUpdated: serverTs, clientDeleted: local.deleted === 1, serverDeleted: true }).winner === 'client') continue;
-        await db.runAsync(`UPDATE ${table} SET deleted=1,synced=1 WHERE ${pk}=?`, [id]);
-        this._hasSyncedDeletes = true;
-        if (entity === 'plan') {
-          // Mark child entities synced=0 so any pending local changes are pushed
-          await db.runAsync('UPDATE plan_items SET deleted=1,synced=0 WHERE plan_id=?', [id]);
-          await db.runAsync('UPDATE plan_item_checkins SET deleted=1,synced=0 WHERE plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [id]);
-          await db.runAsync('UPDATE daily_custom_todos SET deleted=1,synced=0 WHERE plan_id=?', [id]);
-          await db.runAsync('UPDATE daily_todo_history SET deleted=1,synced=0 WHERE plan_id=?', [id]);
-          // Clear orphaned references in reflections and thought trails
-          await db.runAsync('UPDATE mind_reflections SET linked_plan_item_id=NULL,updated_at=? WHERE linked_plan_item_id IN (SELECT id FROM plan_items WHERE plan_id=?)', [Date.now(), id]);
-          await db.runAsync('UPDATE thought_trails SET linked_plan_item_ids=NULL,updated_at=? WHERE linked_plan_item_ids LIKE ?', [Date.now(), `%"${id}"%`]);
-        }
-      } catch (e) {
-        log.error(e, { entity, phase: 'applyEntity-dead' });
-      }
-    }
-    return { applied, storeMapped };
+  // ── Server payload helpers (delegated to SyncApplyService) ───────────
+  private serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<string, unknown> | null {
+    return this._applyService.serverPayloadToRow(entity, r);
   }
 
-  // ── Mark synced helpers ──────────────────────────────────────────
+  // ── Mark synced helpers (delegated to SyncApplyService) ──────────────
   private async markSyncedAndRemove(upserted: Record<string, string[]>, deleted: Record<string, string[]>, queueIds: number[]): Promise<void> {
-    const db = await openDatabase();
-    try {
-      await withDbLock(async () => {
-        for (const entity in upserted) {
-          const ids = upserted[entity];
-          if (!ids?.length) continue;
-          const config = ENTITY_CONFIG[entity];
-          if (!config) continue;
-          const ph = ids.map(() => '?').join(',');
-          await db.runAsync(`UPDATE ${config.table} SET synced=1 WHERE ${config.pk} IN (${ph})`, ids);
-        }
-        for (const entity in deleted) {
-          const ids = deleted[entity];
-          if (!ids?.length) continue;
-          const config = ENTITY_CONFIG[entity];
-          if (!config) continue;
-          const ph = ids.map(() => '?').join(',');
-          await db.runAsync(`UPDATE ${config.table} SET synced=1 WHERE ${config.pk} IN (${ph}) AND deleted=1`, ids);
-        }
-        if (queueIds.length) {
-          const ph = queueIds.map(() => '?').join(',');
-          await db.runAsync(`DELETE FROM sync_queue WHERE id IN (${ph})`, queueIds);
-        }
-      });
-      if (Object.keys(deleted).length > 0) this._hasSyncedDeletes = true;
-    } catch (err) {
-      log.error(err, { phase: 'markSyncedAndRemove' });
-      throw err;
-    }
+    return this._applyService.markSyncedAndRemove(upserted, deleted, queueIds, () => { this._hasSyncedDeletes = true; });
   }
 
   // ── Main sync ────────────────────────────────────────────────────
   async runSync(): Promise<void> {
+    // ── Concurrency guard ──────────────────────────────────────────────
     if (this._syncing) {
       if (Date.now() - this._syncingSince > SYNC_TIMEOUT_MS) {
         log.warn('Previous sync timed out, aborting');
         this._abortController?.abort();
         this._abortController = null;
         this._syncing = false;
-        // Bump generation so old sync's finally block won't interfere
         this._syncGeneration++;
       } else return;
     }
@@ -653,46 +174,48 @@ export class SyncEngine {
       this._pendingSyncAfterInit = true;
       return;
     }
-    const token = this._tokenProvider?.();
+
+    // ── Token check ────────────────────────────────────────────────────
+    this._syncing = true;
+    this._syncingSince = Date.now();
+
+    let token = this._tokenProvider?.();
     if (!token) {
       log.warn('runSync: no token, attempting recovery...');
-      // Try to refresh token if refreshToken is available
-      // Recursion protection: refreshAuth() uses _refreshInFlight singleton
       try {
         const { useAppStore } = await import('../../store/useAppStore');
         const auth = useAppStore.getState().auth;
         if (auth.refreshToken) {
           log.debug('Attempting token refresh...');
           await useAppStore.getState().refreshAuth();
-          const newToken = useAppStore.getState().auth.token;
-          if (newToken) {
-            log.info('Token refreshed, retrying sync');
-            return this.runSync();
-          }
+          token = useAppStore.getState().auth.token ?? undefined;
+          if (token) log.info('Token refreshed, proceeding with sync');
         }
-        // No refreshToken or refresh failed — force re-login
-        log.warn('No recovery possible, logging out');
-        useAppStore.getState().logout();
+        if (!token) {
+          log.warn('No recovery possible, logging out');
+          useAppStore.getState().logout();
+          this._syncing = false;
+          return;
+        }
       } catch (e) {
         log.error(e, { msg: 'Token recovery failed' });
+        this._syncing = false;
+        return;
       }
-      return;
     }
+
     log.info('runSync starting, token present');
     const userId = this._userIdProvider?.() ?? undefined;
     const freshToken = () => this._tokenProvider?.() ?? '';
 
-    this._syncing = true;
-    this._syncingSince = Date.now();
-
-    // Flush WriteBatcher before draining — ensures buffered writes are in sync_queue
+    // ── Pre-sync preparation ───────────────────────────────────────────
     await flushWrites();
-    await this.loadLastSyncAt();
-    await this.loadClockOffset();
+    await this._timestampManager.loadLastSyncAt();
+    await this._timestampManager.loadClockOffset();
     this._abortController = new AbortController();
     const { signal } = this._abortController;
     const myGeneration = ++this._syncGeneration;
-    log.info('Starting sync');
+    const lastSyncAt = this._timestampManager.getLastSyncAt();
 
     // Reset failed/conflict items back to pending so they get another chance
     await resetAllPendingForRetry().catch(e => log.error(e, { phase: 'resetFailed' }));
@@ -703,7 +226,7 @@ export class SyncEngine {
       try {
         const result = await recoverOrphans(
           ENTITY_CONFIG as Record<string, EntityConfig>,
-          this._rowToEntityMap as Record<string, RowMapper>,
+          (entity: string) => this._applyService.getRowMapper(entity),
         );
         if (result.total > 0) {
           log.info(`Orphan recovery: ${result.total} items`, { byEntity: result.byEntity });
@@ -715,220 +238,40 @@ export class SyncEngine {
       }
     }
 
-    try {
-      let pushedAnything = false;
-      let pushedItemCount = 0;
-      let pushApplySucceeded = false;
-      let lastPushResult: SyncPushResult | null = null;
-      let pushResult: SyncPushResult | null = null;
-
-      for (let batch = 0; batch < 10; batch++) {
-        const items = await drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
-        log.debug(`drainQueue batch ${batch + 1}: ${items.length} items`);
-        if (!items.length) break;
-        pushedAnything = true;
-        pushedItemCount += items.length;
-
-        const changes: Array<{ entity: string; entityId: string; payload: Record<string, unknown>; operation: string; changedFields?: string[] }> = [];
-        for (const item of items) {
-          try {
-            const parsed = JSON.parse(item.payload);
-            const changedFields = parsed._changedFields;
-            if (changedFields) delete parsed._changedFields;
-            changes.push({ entity: item.entity, entityId: item.entity_id, payload: parsed, operation: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });
-          } catch {
-            await markQueueItemFailed(item.id, 'Corrupt payload');
-          }
-        }
-        if (!changes.length) continue;
-
-        try {
-          pushResult = await apiSyncPush(freshToken(), this._lastSyncAt, changes, userId);
-          log.info(`Push OK: ${changes.length} changes, serverTime=${pushResult.serverTime}, rejected=${pushResult.rejected?.length ?? 0}`);
-        } catch (pushErr: unknown) {
-          if (this.isKickedOutError(pushErr)) { this.handleKickedOut(); return; }
-          log.error(pushErr, { phase: 'push' });
-          for (const item of items) {
-            const na = item.retry_count + 1;
-            if (na >= MAX_RETRY_ATTEMPTS) await markQueueItemFailed(item.id, (pushErr instanceof Error ? pushErr.message : null) || 'Push failed');
-            else await markQueueItemRetry(item.id, na, Date.now() + Math.min(Math.pow(2, na) * 1000, 60000));
-          }
-          break;
-        }
-        lastPushResult = pushResult;
-
-        const rejectedSet = new Set<string>();
-        if (Array.isArray(pushResult.rejected)) {
-          for (const r of pushResult.rejected) {
-            if (r) rejectedSet.add(`${r.entity}:${r.entityId}`);
-          }
-        }
-        const acceptedItems = items.filter(i => !rejectedSet.has(`${i.entity}:${i.entity_id}`));
-        const rejectedItems = items.filter(i => rejectedSet.has(`${i.entity}:${i.entity_id}`));
-
-        // Auto-resolve conflicts
-        const autoResolvedIds: number[] = [];
-        for (const item of rejectedItems) {
-          const rejection = pushResult.rejected?.find(
-            (r) => r?.entity === item.entity && r?.entityId === item.entity_id,
-          );
-          if (rejection?.serverData) {
-            try {
-              const config = ENTITY_CONFIG[item.entity];
-              let resolved = false;
-              if (config) {
-                const row = this.serverPayloadToRow(item.entity, rejection.serverData);
-                if (row) {
-                  const cols = Object.keys(row);
-                  const vals = Object.values(row) as (string | number | null)[];
-                  if (cols.length) {
-                    const db = await openDatabase();
-                    const setClause = cols.map(c => `${c}=?`).join(',');
-                    const r2 = await db.runAsync(`UPDATE ${config.table} SET ${setClause},deleted=0,synced=1 WHERE ${config.pk}=?`, [...vals, item.entity_id]);
-                    if (r2.changes === 0) {
-                      await db.runAsync(`INSERT INTO ${config.table} (${cols.join(',')},synced) VALUES (${cols.map(() => '?').join(',')},1)`, vals);
-                    }
-                    resolved = true;
-                  }
-                }
-              }
-              if (resolved) {
-                autoResolvedIds.push(item.id);
-              } else {
-                await markQueueItemConflict(item.id, 'Invalid serverData');
-                try {
-                  const { useSyncStore } = await import('../../store/syncStore');
-                  useSyncStore.getState().addConflict({
-                    id: item.id.toString(),
-                    entity: item.entity,
-                    entityId: item.entity_id,
-                    localData: item.payload,
-                    remoteData: rejection.serverData,
-                    timestamp: Date.now(),
-                  });
-                } catch {} // intentional: conflict UI is optional
-              }
-            } catch (resolveErr) {
-              log.error(resolveErr, { entity: item.entity, id: item.entity_id, phase: 'auto-resolve' });
-              await markQueueItemConflict(item.id, 'Auto-resolve failed');
-            }
-          } else {
-            await markQueueItemConflict(item.id, 'Server rejected');
-          }
-        }
-        if (autoResolvedIds.length) await removeQueueItems(autoResolvedIds);
-
-        // Mark synced
-        try {
-          const upserted: Record<string, string[]> = {};
-          const deletedMap: Record<string, string[]> = {};
-          for (const item of acceptedItems) {
-            (item.operation === 'delete' ? deletedMap : upserted)[item.entity] ??= [];
-            (item.operation === 'delete' ? deletedMap : upserted)[item.entity].push(item.entity_id);
-          }
-          await this.markSyncedAndRemove(upserted, deletedMap, acceptedItems.map(i => i.id));
-        } catch (markErr) {
-          log.error(markErr, { phase: 'markSyncedAndRemove' });
-        }
-
-        // Post-push pull for small batches
-        if (lastPushResult?.serverTime && pushedItemCount <= PUSH_PULL_SEPARATE_THRESHOLD) {
-          try {
-            const affectedEntities = [...new Set(items.map(i => i.entity))];
-            const pullResult = await apiSyncPullPost(freshToken(), { entities: affectedEntities, since: this._lastSyncAt > 0 ? this._lastSyncAt : undefined });
-            if (pullResult?.data) {
-              const patch = await this.applyServerChanges(pullResult.data, this._deletedIdsProvider?.(), signal);
-              if (patch && Object.keys(patch).length) this._onChanges?.(patch);
-              pushApplySucceeded = true;
-            }
-          } catch (pushPullErr) {
-            log.warn(pushPullErr, { phase: 'post-push pull' });
-          }
-        }
-
-        if (this._syncGeneration === myGeneration) {
-          this._lastSyncAt = Math.max(this._lastSyncAt, pushResult.serverTime);
-          await this.saveLastSyncAt(this._lastSyncAt);
-          this.updateClockOffset(pushResult.serverTime);
-        }
+    // ── Execute phases ─────────────────────────────────────────────────
+    const pushResult_ServerTime = 0;
+    const updateTimestamps = (serverTime: number) => {
+      if (this._syncGeneration === myGeneration && serverTime > 0) {
+        this._timestampManager.setLastSyncAt(Math.max(this._timestampManager.getLastSyncAt(), serverTime));
+        this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
+        this._timestampManager.updateClockOffset(serverTime);
       }
+    };
 
-      // ── Pull phase (skip if push applied all without rejections) ──
+    try {
+      // Push phase
+      const ctx = await this._pushService.executePush(
+        token, userId, freshToken, lastSyncAt, signal,
+        this._applyService, this._onChanges,
+        (err) => this.isKickedOutError(err), () => this.handleKickedOut(),
+        updateTimestamps,
+        () => this._deletedIdsProvider?.() ?? new Set(),
+      );
       if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
 
-      // If push applied everything cleanly + no rejections, skip full pull
-      const pushAllClean = pushedAnything && lastPushResult?.rejected?.length === 0;
-      if (!pushAllClean && !pushApplySucceeded) {
-        let pullEntities: string[] | undefined;
-        // If there were rejections, check only conflicted entities
-        const rejected = lastPushResult?.rejected;
-        if (rejected && rejected.length > 0) {
-          const conflicted = new Set<string>();
-          for (const r of rejected) {
-            if (r?.entity) conflicted.add(r.entity);
-          }
-          if (conflicted.size > 0) pullEntities = [...conflicted];
-        }
-
-        let hasChanges = true;
-        try {
-          const cr = pullEntities
-            ? { hasChanges: true, changed: Object.fromEntries(pullEntities.map(e => [e, 1])) }
-            : await apiSyncCheck(freshToken(), this._lastSyncAt, userId);
-          hasChanges = cr.hasChanges;
-        } catch (checkErr) {
-          if (this.isKickedOutError(checkErr)) { this.handleKickedOut(); return; }
-          hasChanges = true;
-        }
-
-        if (hasChanges) {
-          let pullResult: SyncPullResult | null = null;
-          try {
-            if (pullEntities) {
-              pullResult = await apiSyncPullPost(freshToken(), { entities: pullEntities, since: this._lastSyncAt > 0 ? this._lastSyncAt : undefined });
-            } else {
-              pullResult = await apiSyncPull(freshToken(), userId, this._lastSyncAt > 0 ? this._lastSyncAt : undefined);
-            }
-          } catch (pullErr) {
-            if (this.isKickedOutError(pullErr)) { this.handleKickedOut(); return; }
-            log.error(pullErr, { phase: 'pull' });
-          }
-
-          if (pullResult?.data) {
-            let patch: Record<string, unknown> = {};
-            try {
-              patch = await this.applyServerChanges(pullResult.data, this._deletedIdsProvider?.(), signal);
-            } catch (applyErr) {
-              log.error(applyErr, { phase: 'applyServerChanges' });
-            }
-            if (patch && Object.keys(patch).length) this._onChanges?.(patch);
-
-            // Per-entity timestamps
-            try {
-              const st = pullResult.serverTime;
-              const iso = st > 0 ? new Date(st).toISOString() : new Date().toISOString();
-              for (const entity of Object.keys(pullResult.data)) {
-                if (Array.isArray(pullResult.data[entity]) && pullResult.data[entity].length > 0) {
-                  await setLastSyncTimestamp(entity, iso);
-                }
-              }
-            } catch (tsErr) {
-              log.warn(tsErr, { phase: 'updateSyncTimestamps' });
-            }
-          }
-
-          if (this._syncGeneration === myGeneration) {
-            const st = pushResult?.serverTime ?? pullResult?.serverTime ?? this._lastSyncAt;
-            this._lastSyncAt = Math.max(this._lastSyncAt, st);
-            await this.saveLastSyncAt(this._lastSyncAt);
-            if (st) this.updateClockOffset(st);
-          }
-        }
-      }
+      // Pull phase
+      await this._pullService.executePull(
+        ctx.pushedAnything, ctx.pushedItemCount, ctx.lastPushResult, ctx.pushApplySucceeded,
+        token, userId, freshToken, this._timestampManager.getLastSyncAt(), signal,
+        this._applyService, this._onChanges,
+        (err) => this.isKickedOutError(err), () => this.handleKickedOut(),
+        () => this._deletedIdsProvider?.() ?? new Set(),
+        PUSH_PULL_SEPARATE_THRESHOLD,
+      );
 
       // Cleanup
       await this.internalCleanup();
-      this.recordMetric(Date.now() - this._syncingSince, pushedItemCount, 0, true);
+      this.recordMetric(Date.now() - this._syncingSince, ctx.pushedItemCount, 0, true);
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : String(err);
       if (err instanceof Error && err.name === 'AbortError') log.warn('Aborted');
@@ -951,7 +294,7 @@ export class SyncEngine {
 
   async getSyncStatus(): Promise<{ lastSyncAt: number; pendingCount: number; isSyncing: boolean }> {
     const pendingCount = await getQueueCount().catch(() => 0);
-    return { lastSyncAt: this._lastSyncAt, pendingCount, isSyncing: this._syncing };
+    return { lastSyncAt: this._timestampManager.getLastSyncAt(), pendingCount, isSyncing: this._syncing };
   }
 
   isSyncing(): boolean { return this._syncing; }
@@ -971,16 +314,32 @@ export class SyncEngine {
     try {
       const db = await openDatabase();
       const done = await getState(db, 'corruptionCleanupDone');
-      if (done === 'true') return;
-      const r1 = await db.runAsync("DELETE FROM habits WHERE name IS NULL OR name = '' OR name = 'undefined'");
-      if (r1.changes > 0) log.info(`Cleaned ${r1.changes} corrupted habits`);
-      const r2 = await db.runAsync("DELETE FROM mind_reflections WHERE content IS NULL OR content = ''");
-      if (r2.changes > 0) log.info(`Cleaned ${r2.changes} corrupted reflections`);
-      const r3 = await db.runAsync("DELETE FROM plans WHERE name IS NULL OR name = ''");
-      if (r3.changes > 0) log.info(`Cleaned ${r3.changes} corrupted plans`);
-      const r4 = await db.runAsync("DELETE FROM exercise_entries WHERE sport_key IS NULL OR sport_key = '' OR sport_key = 'unknown'");
-      if (r4.changes > 0) log.info(`Cleaned ${r4.changes} corrupted exercises`);
-      await setState(db, 'corruptionCleanupDone', 'true');
+      if (done !== 'true') {
+        const r1 = await db.runAsync("DELETE FROM habits WHERE name IS NULL OR name = '' OR name = 'undefined'");
+        if (r1.changes > 0) log.info(`Cleaned ${r1.changes} corrupted habits`);
+        const r2 = await db.runAsync("DELETE FROM mind_reflections WHERE content IS NULL OR content = ''");
+        if (r2.changes > 0) log.info(`Cleaned ${r2.changes} corrupted reflections`);
+        const r3 = await db.runAsync("DELETE FROM plans WHERE name IS NULL OR name = ''");
+        if (r3.changes > 0) log.info(`Cleaned ${r3.changes} corrupted plans`);
+        const r4 = await db.runAsync("DELETE FROM exercise_entries WHERE sport_key IS NULL OR sport_key = '' OR sport_key = 'unknown'");
+        if (r4.changes > 0) log.info(`Cleaned ${r4.changes} corrupted exercises`);
+        await setState(db, 'corruptionCleanupDone', 'true');
+      }
+      // Always clean empty-name mantra_defs (may be created by sync bugs)
+      const r5 = await db.runAsync("DELETE FROM mantra_defs WHERE (name IS NULL OR name = '') AND deleted = 0");
+      if (r5.changes > 0) log.info(`Cleaned ${r5.changes} corrupted mantra_defs`);
+      // Clean empty-name thought trails
+      const r6 = await db.runAsync("DELETE FROM thought_trails WHERE (name IS NULL OR name = '') AND deleted = 0");
+      if (r6.changes > 0) log.info(`Cleaned ${r6.changes} corrupted thought_trails`);
+      // Clean empty-content trail notes
+      const r7 = await db.runAsync("DELETE FROM trail_notes WHERE (content IS NULL OR content = '') AND deleted = 0");
+      if (r7.changes > 0) log.info(`Cleaned ${r7.changes} corrupted trail_notes`);
+      // Clean empty-text visions
+      const r8 = await db.runAsync("DELETE FROM visions WHERE (text IS NULL OR text = '') AND deleted = 0");
+      if (r8.changes > 0) log.info(`Cleaned ${r8.changes} corrupted visions`);
+      // Clean empty-name daily custom todos
+      const r9 = await db.runAsync("DELETE FROM daily_custom_todos WHERE (name IS NULL OR name = '') AND deleted = 0");
+      if (r9.changes > 0) log.info(`Cleaned ${r9.changes} corrupted daily_custom_todos`);
     } catch (e) {
       log.error(e, { phase: 'cleanupCorruptedRecords' });
     }
@@ -999,231 +358,40 @@ export class SyncEngine {
   async push(): Promise<void> { /* push-only not yet needed */ return this.runSync(); }
   async pull(): Promise<void> { /* pull-only not yet needed */ return this.runSync(); }
   async forceFullSync(): Promise<void> {
-    this._lastSyncAt = 0;
-    this._lastSyncAtLoaded = false;
-    await this.saveLastSyncAt(0);
+    this._timestampManager.resetLastSyncAt();
+    await this._timestampManager.saveLastSyncAt(0);
     return this.runSync();
   }
 
-  // ── Rehydrate ───────────────────────────────────────────────────
+  // ── Rehydrate (delegated to SyncRehydrationManager) ─────────────────
   async rehydrateFromDb(entities?: string[]): Promise<Record<string, unknown>> {
-    const db = await openDatabase();
-    const patch: Record<string, unknown> = {};
-    const REHYDRATE_MAP: Record<string, { table: string; query: string; mapper: (r: Record<string, unknown>) => unknown; storeKey: string }> = {
-      habit: { table: 'habits', query: 'SELECT * FROM habits WHERE deleted = 0', mapper: rowToHabit, storeKey: 'habits' },
-      food: { table: 'food_entries', query: '', mapper: rowToFood, storeKey: 'foodLog' },
-      reflection: { table: 'mind_reflections', query: 'SELECT * FROM mind_reflections WHERE deleted = 0', mapper: rowToReflection, storeKey: 'reflections' },
-      fasting: { table: 'fasting_sessions', query: 'SELECT * FROM fasting_sessions WHERE deleted = 0', mapper: rowToFasting, storeKey: 'fastingHistory' },
-      checkin: { table: 'checkin_records', query: 'SELECT * FROM checkin_records WHERE deleted = 0', mapper: rowToCheckin, storeKey: 'checkinHistory' },
-      exercise: { table: 'exercise_entries', query: 'SELECT * FROM exercise_entries WHERE deleted = 0', mapper: rowToExercise, storeKey: 'exerciseLog' },
-      meditation: { table: 'meditation_history', query: 'SELECT * FROM meditation_history WHERE deleted = 0', mapper: rowToMeditation, storeKey: 'medHistory' },
-      profile: { table: 'user_profiles', query: 'SELECT * FROM user_profiles WHERE deleted = 0', mapper: rowToProfile, storeKey: 'userProfile' },
-      plan: { table: 'plans', query: 'SELECT * FROM plans WHERE deleted = 0', mapper: rowToPlan, storeKey: 'plans' },
-      planItem: { table: 'plan_items', query: 'SELECT * FROM plan_items WHERE deleted = 0', mapper: rowToPlanItem, storeKey: 'planItems' },
-      planItemCheckin: { table: 'plan_item_checkins', query: 'SELECT * FROM plan_item_checkins WHERE deleted = 0', mapper: rowToPlanItemCheckin, storeKey: 'planItemCheckins' },
-      grace: { table: 'grace_history', query: 'SELECT * FROM grace_history WHERE deleted = 0', mapper: rowToGrace, storeKey: 'graceHistory' },
-      dailyCustomTodo: { table: 'daily_custom_todos', query: 'SELECT * FROM daily_custom_todos WHERE deleted = 0', mapper: rowToDailyCustomTodo, storeKey: 'dailyCustomTodos' },
-      dailyTodoHistory: { table: 'daily_todo_history', query: 'SELECT * FROM daily_todo_history WHERE deleted = 0', mapper: rowToDailyTodoHistory, storeKey: 'dailyTodoHistory' },
-      thoughtTrail: { table: 'thought_trails', query: 'SELECT * FROM thought_trails WHERE deleted = 0', mapper: rowToThoughtTrail, storeKey: 'thoughtTrails' },
-      trailNote: { table: 'trail_notes', query: 'SELECT * FROM trail_notes WHERE deleted = 0', mapper: rowToTrailNote, storeKey: 'trailNotes' },
-      reflectionLink: { table: 'reflection_links', query: 'SELECT * FROM reflection_links WHERE deleted = 0', mapper: rowToReflectionLink, storeKey: 'reflectionLinks' },
-      aiConfig: { table: 'ai_configs', query: "SELECT * FROM ai_configs WHERE config_id='self' AND deleted=0", mapper: rowToAIConfig, storeKey: '_aiConfig' },
-      checkinReview: { table: 'checkin_reviews', query: 'SELECT * FROM checkin_reviews WHERE deleted = 0', mapper: rowToCheckinReview, storeKey: 'checkinReviews' },
-      bodyGoal: { table: 'body_goals', query: 'SELECT * FROM body_goals WHERE deleted = 0', mapper: rowToBodyGoal, storeKey: 'bodyGoals' },
-      bodyPlan: { table: 'body_plans', query: 'SELECT * FROM body_plans WHERE deleted = 0', mapper: rowToBodyPlan, storeKey: 'bodyPlans' },
-      weightRecord: { table: 'body_weight_records', query: 'SELECT * FROM body_weight_records WHERE deleted = 0', mapper: rowToWeightRecord, storeKey: 'weightRecords' },
-      bodyCheckin: { table: 'body_checkins', query: 'SELECT * FROM body_checkins WHERE deleted = 0', mapper: rowToBodyCheckin, storeKey: 'bodyCheckins' },
-      sleep: { table: 'sleep_records', query: 'SELECT * FROM sleep_records WHERE deleted = 0', mapper: rowToSleep, storeKey: 'sleepHistory' },
-      give: { table: 'give_entries', query: 'SELECT * FROM give_entries WHERE deleted = 0', mapper: rowToGive, storeKey: 'giveHistory' },
-      motivationEntry: { table: 'eating_motivations', query: 'SELECT * FROM eating_motivations WHERE deleted = 0', mapper: rowToMotivationEntry, storeKey: 'motivationLog' },
-      customWuxing: { table: 'custom_wuxing_maps', query: 'SELECT * FROM custom_wuxing_maps WHERE deleted = 0', mapper: rowToCustomWuxing, storeKey: 'customWuxingMaps' },
-      vision: { table: 'visions', query: 'SELECT * FROM visions WHERE deleted = 0', mapper: rowToVision, storeKey: 'visions' },
-      visionPractice: { table: 'vision_practices', query: 'SELECT * FROM vision_practices WHERE deleted = 0', mapper: rowToVisionPractice, storeKey: 'visionPractices' },
-      mantraDef: { table: 'mantra_defs', query: 'SELECT * FROM mantra_defs WHERE deleted = 0', mapper: rowToMantraDef, storeKey: 'mantraDefs' },
-      mantraSession: { table: 'mantra_sessions', query: 'SELECT * FROM mantra_sessions WHERE deleted = 0', mapper: rowToMantraSession, storeKey: 'mantraSessions' },
-      dedication: { table: 'dedications', query: 'SELECT * FROM dedications WHERE deleted = 0', mapper: rowToDedication, storeKey: 'dedications' },
-      fearEntry: { table: 'fear_entries', query: 'SELECT * FROM fear_entries WHERE deleted = 0', mapper: rowToFearEntry, storeKey: 'fearEntries' },
-      courageEntry: { table: 'courage_entries', query: 'SELECT * FROM courage_entries WHERE deleted = 0', mapper: rowToCourageEntry, storeKey: 'courageEntries' },
-      fearAchievement: { table: 'fear_achievements', query: 'SELECT * FROM fear_achievements WHERE deleted = 0', mapper: rowToFearAchievement, storeKey: 'achievements' },
-      sutraReading: { table: 'sutra_reading_sessions', query: 'SELECT * FROM sutra_reading_sessions WHERE deleted = 0', mapper: rowToSutraReading, storeKey: 'readingSessions' },
-      breath: { table: 'breath_records', query: 'SELECT * FROM breath_records WHERE deleted = 0', mapper: rowToBreath, storeKey: 'breathHistory' },
-      zhiguanSession: { table: 'zhiguan_sessions', query: 'SELECT * FROM zhiguan_sessions WHERE deleted = 0', mapper: rowToZhiguanSession, storeKey: 'sessions' },
-    };
-
-    const targets = entities ?? Object.keys(REHYDRATE_MAP);
-    console.log(`[rehydrateFromDb] Rehydrating ${targets.length} entities: ${targets.join(', ')}`);
-
-    // Parallel rehydration — all entity queries are independent
-    const results = await Promise.all(targets.map(async (entity) => {
-      try {
-        if (entity === 'food') {
-          const rows = await dbGetAllFoodEntries(db) as unknown as Record<string, unknown>[];
-          const sorted = rows.length
-            ? rows.sort((a, b) => ((b as Record<string, unknown>).timestamp as number) - ((a as Record<string, unknown>).timestamp as number))
-            : [];
-          console.log(`[rehydrateFromDb] ${entity}: ${rows.length} rows`);
-          return { entity, data: sorted, storeKey: 'foodLog' };
-        }
-        const config = REHYDRATE_MAP[entity];
-        if (!config) return null;
-        const rows = await db.getAllAsync<Record<string, unknown>>(config.query);
-        console.log(`[rehydrateFromDb] ${entity}: ${rows.length} rows from ${config.table}`);
-        return { entity, rows, config };
-      } catch (e) {
-        log.error(e, { phase: 'rehydrateFromDb', entity });
-        return null;
-      }
-    }));
-
-    // Merge results into patch
-    for (const result of results) {
-      if (!result) continue;
-      if ('data' in result && result.data) {
-        // food entity (pre-sorted)
-        patch[result.storeKey] = result.data;
-        continue;
-      }
-      const { rows, config } = result as { entity: string; rows: Record<string, unknown>[]; config: NonNullable<typeof REHYDRATE_MAP[string]> };
-      if (!rows || !config) continue;
-      if (config.storeKey === '_aiConfig') {
-        if (rows.length) {
-          const mapped = rows.map(config.mapper);
-          const ai = mapped[0] as { mode: string; models: unknown[] };
-          if (ai) { patch.aiMode = ai.mode; patch.aiModels = ai.models; }
-        }
-      } else if (config.storeKey === 'userProfile') {
-        if (rows.length) {
-          patch.userProfile = rows.map(config.mapper)[0];
-        }
-      } else {
-        patch[config.storeKey] = rows.length ? rows.map(config.mapper) : [];
-      }
-    }
-
-    console.log(`[rehydrateFromDb] Final patch keys: ${Object.keys(patch).join(', ')}`);
-    if (patch.plans) {
-      try {
-        const { computePlanProgress } = await import('@egoless-do/core');
-        (patch.plans as Record<string, unknown>[]).forEach((p) => {
-          if (!p.deleted) p.progress = computePlanProgress(p as unknown as Parameters<typeof computePlanProgress>[0]);
-        });
-      } catch {} // intentional: computePlanProgress is optional enhancement
-    }
-    return patch;
+    return this._rehydrationManager.rehydrateFromDb(entities);
   }
 
   /** Lazy-load a single entity from SQLite into the store. Useful for cold-start optimization. */
   async lazyRehydrate(entity: string): Promise<void> {
-    if (!this._onChanges) return;
-    const patch = await this.rehydrateFromDb([entity]);
-    if (Object.keys(patch).length) this._onChanges(patch);
+    return this._rehydrationManager.lazyRehydrate(entity, this._onChanges);
   }
 
-  // ── Initial sync (Phase 1 only — priority entities) ─────────────
-  // Phase 2/3 are pulled by resumeInitialSync() called from useSync's
-  // mount effect. This avoids duplicate pulls and ensures pulled data
-  // propagates to the Zustand store via rehydrateFromDb().
+  // ── Initial sync (delegated to SyncRehydrationManager) ────────────
   async initialSync(token: string, userId?: string): Promise<'done' | 'partial'> {
-    const db = await openDatabase();
-    const doneState = await getState(db, 'initialSyncDone');
-    if (doneState === 'true') return 'done';
-
-    this._initialSyncing = true;
-    try {
-      const PHASE_1: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace'];
-
-      await this.pullEntitiesParallel(PHASE_1, 1, 1, token, userId);
-      await setState(db, 'initialSyncPhase', '2');
-      await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
-
-      // Also pull remaining entities so rehydrateFromDb has all data
-      const allEntities: SyncEntity[] = ['reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession', 'sutraReading', 'fearEntry', 'courageEntry', 'fearAchievement', 'zhiguanSession', 'breath'];
-      await this.pullEntitiesParallel(allEntities, 1, 2, token, userId);
-      await setState(db, 'initialSyncDone', 'true');
-      await setState(db, 'initialSyncPhase', 'done');
-
-      return 'done';
-    } catch (err: unknown) {
-      if (this.isKickedOutError(err)) throw err;
-      log.error(err, { phase: 'initialSync' });
-      throw err;
-    } finally {
-      this._initialSyncing = false;
-    }
+    return this._rehydrationManager.initialSync(
+      token, userId,
+      this.applyServerChanges.bind(this),
+      (err) => this.isKickedOutError(err),
+      (v) => { this._initialSyncing = v; },
+    );
   }
 
   async resumeInitialSync(token: string, userId?: string): Promise<void> {
-    const db = await openDatabase();
-    if ((await getState(db, 'initialSyncDone')) === 'true') return;
-    const allEntities: SyncEntity[] = ['profile', 'checkin', 'habit', 'grace', 'reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession', 'sutraReading', 'fearEntry', 'courageEntry', 'fearAchievement', 'zhiguanSession', 'breath'];
-
-    for (const entity of allEntities) {
-      const p = await getSyncProgress(entity);
-      if (p?.status === 'done') continue;
-      const phase = p?.phase ?? (['profile','checkin','habit','grace'].includes(entity) ? 1 : ['reflection','fasting','food','exercise','meditation'].includes(entity) ? 2 : 3);
-      await this.pullEntityWithRetry(entity, phase, token, userId);
-    }
-    await setState(db, 'initialSyncDone', 'true');
-    await setState(db, 'initialSyncPhase', 'done');
-    await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
+    await this._rehydrationManager.resumeInitialSync(
+      token, userId,
+      this.applyServerChanges.bind(this),
+      (err) => this.isKickedOutError(err),
+    );
     // Update _lastSyncAt using server-adjusted time to avoid clock skew issues
-    const serverNow = Date.now() + this._clockOffset;
-    this._lastSyncAt = serverNow;
-    await this.saveLastSyncAt(serverNow);
-  }
-
-  private async pullEntityWithRetry(entity: SyncEntity, phase: number, token: string, userId?: string): Promise<void> {
-    const progress = await getSyncProgress(entity);
-    let page = progress?.last_page || 1;
-    await updateSyncProgress(entity, { phase, status: 'downloading' });
-
-    const MAX_PAGES = 50; // Safety guard against infinite pagination
-    while (page <= MAX_PAGES) {
-      try {
-        const result = await apiSyncPullEntity(token, entity, page, 200, userId);
-        console.log(`[SyncEngine] pullEntityWithRetry ${entity}: page=${page}, data.length=${result.data.length}, hasMore=${result.hasMore}, total=${result.total}`);
-        if (result.data.length === 0) {
-          await updateSyncProgress(entity, { status: 'done' });
-          return;
-        }
-        await this.applyServerChanges({ [entity]: result.data });
-        const pulled = (progress?.pulled_count ?? 0) + result.data.length;
-        await updateSyncProgress(entity, { pulled_count: pulled, total_count: result.total, last_page: page, retry_count: 0, next_retry_at: 0, last_error: null });
-        if (!result.hasMore) {
-          await updateSyncProgress(entity, { status: 'done' });
-          return;
-        }
-        page++;
-      } catch (err: unknown) {
-        if (this.isKickedOutError(err)) throw err;
-        const currentProgress = await getSyncProgress(entity);
-        const attempt = (currentProgress?.retry_count ?? 0) + 1;
-        if (phase === 1 || attempt >= 5) {
-          await updateSyncProgress(entity, { status: 'failed', last_error: (err as Error).message, retry_count: attempt });
-          if (phase === 1) throw err;
-          return;
-        }
-        const delay = Math.min(Math.pow(2, attempt) * 1000, 60000);
-        await updateSyncProgress(entity, { retry_count: attempt, next_retry_at: Date.now() + delay });
-        await new Promise<void>(resolve => setTimeout(resolve, delay));
-      }
-    }
-  }
-
-  private async pullEntitiesParallel(entities: SyncEntity[], concurrency: number, phase: number, token: string, userId?: string): Promise<void> {
-    const queue = [...entities];
-    const workers: Promise<void>[] = [];
-    for (let i = 0; i < concurrency; i++) {
-      workers.push((async () => {
-        while (queue.length > 0) {
-          const entity = queue.shift();
-          if (!entity) break;
-          const existing = await getSyncProgress(entity);
-          if (existing?.status === 'done') continue;
-          await this.pullEntityWithRetry(entity, phase, token, userId);
-        }
-      })());
-    }
-    await Promise.all(workers);
+    const serverNow = Date.now() + this._timestampManager.getClockOffset();
+    this._timestampManager.setLastSyncAt(serverNow);
+    await this._timestampManager.saveLastSyncAt(serverNow);
   }
 }

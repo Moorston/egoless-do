@@ -105,7 +105,7 @@ export default function PracticeScreen() {
     const preceptHabits = (habits ?? []).filter(h => !h.deleted && isPreceptHabit(h.name));
     const preceptWeekDays = new Set<string>();
     for (let i = 0; i < 7; i++) {
-      const d = new Date(now - i * 24 * 3600 * 3600 * 1000);
+      const d = new Date(now - i * 24 * 3600 * 1000);
       const ds = dateStr(d);
       if (preceptHabits.length > 0 && preceptHabits.some(h => (h.checkedDates ?? []).includes(ds))) {
         preceptWeekDays.add(ds);

@@ -11,13 +11,22 @@ routerAdd("POST", "/api/sync", function(e) {
     var ENTITY_ID_FIELD_MAP = {habit:"habit_id",reflection:"reflection_id",fasting:"session_id",food:"food_id",checkin:"date",meditation:"date",profile:"profile_id",exercise:"exercise_id",plan:"plan_id",planItem:"plan_item_id",planItemCheckin:"checkin_id",dailyCustomTodo:"todo_id",dailyTodoHistory:"history_id",grace:"date",thoughtTrail:"trail_id",trailNote:"note_id",reflectionLink:"link_id",aiConfig:"config_id",checkinReview:"review_id",motivationEntry:"motivation_id",customWuxing:"wuxing_id",fearEntry:"fear_id",courageEntry:"courage_id",fearAchievement:"achievement_id",sutraReading:"reading_id",sleep:"sleep_id",give:"give_id",bodyGoal:"goal_id",bodyPlan:"plan_id",weightRecord:"weight_id",bodyCheckin:"checkin_id",vision:"vision_id",visionPractice:"practice_id",dedication:"dedication_id",mantraDef:"mantra_id",mantraSession:"session_id",zhiguanSession:"zhiguan_id",breath:"breath_id"};
     var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+    var uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    var idRe = /^[a-zA-Z0-9_-]{1,128}$/;
+    function isValidId(v) { return typeof v === 'string' && (uuidRe.test(v) || idRe.test(v)); }
     function buildUserFilter(userId, sinceDate) {
-      var f = "user_id = '" + escapeFilterValue(userId) + "'";
-      // Note: PocketBase system field 'updated' may not be available in all versions
-      // For incremental sync, we rely on client-side filtering of updatedAt
-      return f;
+      return "user_id = '" + escapeFilterValue(userId) + "'";
     }
     function buildFilter(field, value, userId) { return field + " = '" + escapeFilterValue(value) + "' && user_id = '" + escapeFilterValue(userId) + "'"; }
+    function safeFindRecords(app, coll, filter, limit, offset) {
+      try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
+        try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
+          try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
+            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+          }
+        }
+      }
+    }
     function parseRecordData(rec) { var raw = rec.get("data"); var obj = {}; if (typeof raw === 'string') { try { obj = JSON.parse(raw); } catch(pe) { obj = {}; } } else if (raw && typeof raw === 'object') { for (var k in raw) obj[k] = raw[k]; } return obj; }
     function exportRecord(rec) { var exported = rec.publicExport(); var dd = exported.data; if (typeof dd === 'string') { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } } if (dd && typeof dd === 'object') { for (var dk in dd) { if (dk === 'id' || dk === 'created' || dk === 'updated' || dk === 'user_id') continue; exported[dk] = dd[dk]; } if (dd.id !== undefined) exported.id = dd.id; if (dd.updatedAt !== undefined) exported.updatedAt = dd.updatedAt; exported.deleted = !!dd.deleted; } else { exported.deleted = false; } if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime(); delete exported.data; var efKeys = Object.keys(exported); for (var efi = 0; efi < efKeys.length; efi++) { if (typeof exported[efKeys[efi]] === 'function') delete exported[efKeys[efi]]; } return exported; }
 
@@ -42,6 +51,7 @@ routerAdd("POST", "/api/sync", function(e) {
       var entity = c.entity, entityId = c.entityId, operation = c.operation, payload = c.payload;
       var coll = ENTITY_COLL_MAP[entity], idField = ENTITY_ID_FIELD_MAP[entity];
       if (!coll || !idField) { rejected.push({ entity: entity, entityId: entityId, error: "Unknown entity" }); continue; }
+      if (!isValidId(entityId)) { rejected.push({ entity: entity, entityId: entityId, error: "Invalid entityId" }); continue; }
       try {
         if (operation === "delete") {
           var delRecs = $app.findRecordsByFilter(coll, buildFilter(idField, entityId, userId), "", 10);
@@ -49,6 +59,7 @@ routerAdd("POST", "/api/sync", function(e) {
             var curObj = parseRecordData(delRecs[dj]);
             curObj.deleted = true; curObj.updatedAt = Date.now();
             delRecs[dj].set("data", JSON.stringify(curObj));
+            delRecs[dj].set("deleted", true);
             $app.save(delRecs[dj]);
           }
           applied.push({ entity: entity, entityId: entityId, operation: "delete" });
@@ -68,7 +79,7 @@ routerAdd("POST", "/api/sync", function(e) {
           merged.updatedAt = Date.now();
           rec.set("data", JSON.stringify(merged));
           rec.set("updated_at", new Date().toISOString());
-          rec.set("deleted", false);
+          rec.set("deleted", merged.deleted === true ? true : false);
           $app.save(rec);
           applied.push({ entity: entity, entityId: entityId, operation: "upsert" });
         }
@@ -84,7 +95,7 @@ routerAdd("POST", "/api/sync", function(e) {
           var ent = entitiesToPull[ei];
           var entColl = ENTITY_COLL_MAP[ent];
           if (!entColl) continue;
-          var recs = $app.findRecordsByFilter(entColl, buildUserFilter(userId, lastSyncAt > 0 ? sinceDate : null), "-created", 500);
+          var recs = safeFindRecords($app, entColl, buildUserFilter(userId, lastSyncAt > 0 ? sinceDate : null), 500);
           var payloads = [];
           for (var ri = 0; ri < recs.length; ri++) {
             try {
@@ -115,10 +126,7 @@ routerAdd("GET", "/api/sync", function(e) {
     var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
     function buildUserFilter(userId, sinceDate) {
-      var f = "user_id = '" + escapeFilterValue(userId) + "'";
-      // Note: PocketBase system field 'updated' may not be available in all versions
-      // For incremental sync, we rely on client-side filtering of updatedAt
-      return f;
+      return "user_id = '" + escapeFilterValue(userId) + "'";
     }
     function exportRecord(rec) { var exported = rec.publicExport(); var dd = exported.data; if (typeof dd === 'string') { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } } if (dd && typeof dd === 'object') { for (var dk in dd) { if (dk === 'id' || dk === 'created' || dk === 'updated' || dk === 'user_id') continue; exported[dk] = dd[dk]; } if (dd.id !== undefined) exported.id = dd.id; if (dd.updatedAt !== undefined) exported.updatedAt = dd.updatedAt; exported.deleted = !!dd.deleted; } else { exported.deleted = false; } if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime(); delete exported.data; var efKeys = Object.keys(exported); for (var efi = 0; efi < efKeys.length; efi++) { if (typeof exported[efKeys[efi]] === 'function') delete exported[efKeys[efi]]; } return exported; }
 
@@ -128,6 +136,8 @@ routerAdd("GET", "/api/sync", function(e) {
 
     var since = parseInt((info.query || {}).since || "0", 10);
     var sinceDate = since > 0 ? new Date(since).toISOString() : '1970-01-01T00:00:00.000Z';
+    var page = parseInt((info.query || {}).page || "0", 10);
+    var pageSize = parseInt((info.query || {}).pageSize || "0", 10);
     var data = {};
 
     for (var ei = 0; ei < ENTITY_LIST.length; ei++) {
@@ -135,16 +145,33 @@ routerAdd("GET", "/api/sync", function(e) {
         var ent = ENTITY_LIST[ei];
         var coll = ENTITY_COLL_MAP[ent];
         if (!coll) continue;
-        var recs = $app.findRecordsByFilter(coll, buildUserFilter(userId, since > 0 ? sinceDate : null), "-created", 500);
+        var allRecs = [];
+        var totalCount = 0;
+        if (page > 0 && pageSize > 0) {
+          // Paginated mode
+          var countRecs = $app.findRecordsByFilter(coll, buildUserFilter(userId, since > 0 ? sinceDate : null), "", 0);
+          totalCount = countRecs ? countRecs.length : 0;
+          var offset = (page - 1) * pageSize;
+          var batch = safeFindRecords($app, coll, buildUserFilter(userId, since > 0 ? sinceDate : null), pageSize, offset);
+          if (batch) { for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]); }
+        } else {
+          // Full pull with safety cap
+          var recs = safeFindRecords($app, coll, buildUserFilter(userId, since > 0 ? sinceDate : null), 5000);
+          if (recs) { for (var bi = 0; bi < recs.length; bi++) allRecs.push(recs[bi]); }
+        }
         var payloads = [];
-        for (var ri = 0; ri < recs.length; ri++) {
+        for (var ri = 0; ri < allRecs.length; ri++) {
           try {
-            var exported = exportRecord(recs[ri]);
+            var exported = exportRecord(allRecs[ri]);
             var idF = ENTITY_ID_FIELD_MAP[ent];
             if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
           } catch (recErr) {}
         }
         if (payloads.length > 0) data[ent] = payloads;
+        if (page > 0 && pageSize > 0) {
+          if (!data._meta) data._meta = {};
+          data._meta[ent] = { page: page, pageSize: pageSize, totalItems: totalCount, totalPages: Math.ceil(totalCount / pageSize) };
+        }
       } catch (qErr) {}
     }
 
@@ -164,10 +191,7 @@ routerAdd("GET", "/api/sync/check", function(e) {
     var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
     function buildUserFilter(userId, sinceDate) {
-      var f = "user_id = '" + escapeFilterValue(userId) + "'";
-      // Note: PocketBase system field 'updated' may not be available in all versions
-      // For incremental sync, we rely on client-side filtering of updatedAt
-      return f;
+      return "user_id = '" + escapeFilterValue(userId) + "'";
     }
 
     var info = e.requestInfo();
@@ -184,7 +208,7 @@ routerAdd("GET", "/api/sync/check", function(e) {
         var ent = ENTITY_LIST[ei];
         var coll = ENTITY_COLL_MAP[ent];
         if (!coll) continue;
-        var recs = $app.findRecordsByFilter(coll, buildUserFilter(userId, since > 0 ? sinceDate : null), "-created", 1);
+        var recs = safeFindRecords($app, coll, buildUserFilter(userId, since > 0 ? sinceDate : null), 1);
         if (recs.length > 0) { changed[ent] = recs.length; totalChanges++; }
       } catch (qErr) {}
     }

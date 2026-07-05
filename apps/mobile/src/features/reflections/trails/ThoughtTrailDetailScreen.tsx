@@ -31,14 +31,15 @@ export default function ThoughtTrailDetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'ThoughtTrailDetail'>>();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const trailId = route.params?.trailId;
-  if (!trailId) return null;
+
+  // ── Hooks must be called unconditionally (before any early return) ──
 
   const {
     trail, overview, timelineItems, links, reflections, trailNotes,
     trailPlanItems, trailPlanCheckins, relatedTrails,
-  } = useTrailData(trailId);
+  } = useTrailData(trailId ?? '');
 
-  const { handleGenerateInsight, handleGenerateReview, insightCacheStale, reviewCacheStale } = useTrailAI(trailId, trail);
+  const { handleGenerateInsight, handleGenerateReview, insightCacheStale, reviewCacheStale } = useTrailAI(trailId ?? '', trail);
 
   const {
     handleWriteReflection,
@@ -54,7 +55,7 @@ export default function ThoughtTrailDetailScreen() {
     handleNavigateToPlan,
     handleNavigateToTrail,
     handleUpdateNote,
-  } = useTrailActions(trailId);
+  } = useTrailActions(trailId ?? '');
 
   // ─── Inline editing ─────────────────────────────────────────────
   const [editingName, setEditingName] = useState(false);
@@ -68,63 +69,74 @@ export default function ThoughtTrailDetailScreen() {
   const [showSelectReflection, setShowSelectReflection] = useState(false);
   const [showCreatePlan, setShowCreatePlan] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // ─── Local UI handlers ──────────────────────────────────────────
+  // ── useCallback hooks must be before any early return ──
+
+  /** Opens the "select existing reflection" modal. */
   const handleSelectExisting = useCallback(() => {
     setShowSelectReflection(true);
   }, []);
 
+  /** Opens the "write note" modal with an optional guided question. */
   const handleWriteNote = useCallback((question?: string) => {
     setGuidedQuestion(question);
     setShowWriteNote(true);
   }, []);
 
+  /** Opens the "edit note" modal for a specific trail note. */
   const handleEditNote = useCallback((note: TrailNote) => {
     setEditingNote(note);
     setShowEditNote(true);
   }, []);
 
+  /** Opens the "create plan from reflection" modal. */
   const handleCreatePlanFromReflection = useCallback(() => {
     setShowCreatePlan(true);
   }, []);
 
+  /** Starts inline name editing — pre-fills with current trail name. */
   const handleStartEditName = useCallback(() => {
     if (trail) { setEditName(trail.name); setEditingName(true); }
   }, [trail]);
 
+  /** Commits the edited name and exits editing mode. */
   const handleFinishEditName = useCallback(() => {
     handleUpdateName(editName);
     setEditingName(false);
   }, [editName, handleUpdateName]);
 
+  /** Starts inline description editing — pre-fills with current trail description. */
   const handleStartEditDesc = useCallback(() => {
     if (trail) { setEditDesc(trail.description ?? ''); setEditingDesc(true); }
   }, [trail]);
 
+  /** Commits the edited description and exits editing mode. */
   const handleFinishEditDesc = useCallback(() => {
     handleUpdateDescription(editDesc);
     setEditingDesc(false);
   }, [editDesc, handleUpdateDescription]);
 
+  /** Saves a note and closes the write-note modal. */
   const handleSaveNoteAndClose = useCallback((form: Parameters<typeof handleSaveNote>[0]) => {
     handleSaveNote(form);
     setShowWriteNote(false);
     setGuidedQuestion(undefined);
   }, [handleSaveNote]);
 
+  /** Creates a plan and closes the create-plan modal. */
   const handlePlanCreateAndClose = useCallback((form: Parameters<typeof handleCreatePlan>[0]) => {
     handleCreatePlan(form);
     setShowCreatePlan(false);
   }, [handleCreatePlan]);
 
+  /** Confirms selected reflections and closes the selection modal. */
   const handleConfirmReflections = useCallback((selectedIds: string[]) => {
     handleSelectReflectionsConfirm(selectedIds);
     setShowSelectReflection(false);
   }, [handleSelectReflectionsConfirm]);
 
-  // ─── Pull to refresh ────────────────────────────────────────────
-  const [refreshing, setRefreshing] = useState(false);
-
+  /** Pull-to-refresh handler — regenerates insight and review. */
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -134,6 +146,9 @@ export default function ThoughtTrailDetailScreen() {
       setRefreshing(false);
     }
   }, [trail, handleGenerateInsight, handleGenerateReview]);
+
+  // ── Early return AFTER all hooks are declared ──
+  if (!trailId) return null;
 
   // ─── Render ─────────────────────────────────────────────────────
   if (!trail) {

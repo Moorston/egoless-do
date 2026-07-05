@@ -1,17 +1,26 @@
 import { useState, useCallback, useRef } from 'react';
-import * as FileSystem from 'expo-file-system';
 
-const AUDIO_DIR = `${FileSystem.documentDirectory ?? ''}audio/`;
+// Lazy-loaded expo-file-system — deferred until first audio cache access
+let _FS: typeof import('expo-file-system') | null = null;
+function getFS() { return _FS ??= require('expo-file-system'); }
+
+let _audioDir: string | null = null;
+function getAudioDir(): string {
+  if (!_audioDir) _audioDir = `${getFS().documentDirectory ?? ''}audio/`;
+  return _audioDir;
+}
 
 async function ensureAudioDir(): Promise<void> {
-  const info = await FileSystem.getInfoAsync(AUDIO_DIR);
+  const FS = getFS();
+  const dir = getAudioDir();
+  const info = await FS.getInfoAsync(dir);
   if (!info.exists) {
-    await FileSystem.makeDirectoryAsync(AUDIO_DIR, { intermediates: true });
+    await FS.makeDirectoryAsync(dir, { intermediates: true });
   }
 }
 
 function localPath(id: string): string {
-  return `${AUDIO_DIR}${id}.mp3`;
+  return `${getAudioDir()}${id}.mp3`;
 }
 
 export function useAudioCache() {
@@ -21,8 +30,9 @@ export function useAudioCache() {
 
   /** Returns local file URI if cached, otherwise null */
   const getCachedPath = useCallback(async (id: string): Promise<string | null> => {
+    const FS = getFS();
     const path = localPath(id);
-    const info = await FileSystem.getInfoAsync(path);
+    const info = await FS.getInfoAsync(path);
     return info.exists ? path : null;
   }, []);
 
@@ -37,16 +47,17 @@ export function useAudioCache() {
     if (existing) return existing;
 
     const promise = (async () => {
+      const FS = getFS();
       await ensureAudioDir();
       const dest = localPath(id);
       setDownloading(id);
       setProgress(0);
 
-      const downloadResumable = FileSystem.createDownloadResumable(
+      const downloadResumable = FS.createDownloadResumable(
         remoteUrl,
         dest,
         {},
-        (p) => {
+        (p: any) => {
           const fraction = p.totalBytesExpectedToWrite > 0
             ? p.totalBytesWritten / p.totalBytesExpectedToWrite
             : 0;
@@ -62,8 +73,8 @@ export function useAudioCache() {
       } catch (err) {
         // Clean up partial file
         try {
-          const info = await FileSystem.getInfoAsync(dest);
-          if (info.exists) await FileSystem.deleteAsync(dest, { idempotent: true });
+          const info = await FS.getInfoAsync(dest);
+          if (info.exists) await FS.deleteAsync(dest, { idempotent: true });
         } catch {}
         throw err;
       } finally {
@@ -79,16 +90,18 @@ export function useAudioCache() {
 
   /** Check if audio is cached for given id */
   const isCached = useCallback(async (id: string): Promise<boolean> => {
+    const FS = getFS();
     const path = localPath(id);
-    const info = await FileSystem.getInfoAsync(path);
+    const info = await FS.getInfoAsync(path);
     return info.exists;
   }, []);
 
   /** Remove cached audio file for given id */
   const removeCached = useCallback(async (id: string): Promise<void> => {
+    const FS = getFS();
     const path = localPath(id);
-    const info = await FileSystem.getInfoAsync(path);
-    if (info.exists) await FileSystem.deleteAsync(path, { idempotent: true });
+    const info = await FS.getInfoAsync(path);
+    if (info.exists) await FS.deleteAsync(path, { idempotent: true });
   }, []);
 
   return { getCachedPath, downloadAudio, isCached, removeCached, downloading, progress };

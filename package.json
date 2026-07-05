@@ -1,19 +1,13 @@
 {
   "name": "egoless-do",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "mobile": "pnpm --filter mobile start",
     "mobile:android": "pnpm --filter mobile android",
     "mobile:ios": "pnpm --filter mobile ios",
-    "web": "pnpm --filter web dev",
     "pb": "cd backend && pocketbase.exe serve --http=0.0.0.0:8090",
     "pb:setup": "powershell -ExecutionPolicy Bypass -File backend\\setup.ps1",
     "build:mobile": "pnpm --filter mobile build",
-    "build:web": "pnpm --filter web build",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "test": "vitest run",

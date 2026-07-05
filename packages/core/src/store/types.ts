@@ -30,6 +30,8 @@ import type { VisionSlice } from './createVisionSlice';
 export type { VisionSlice } from './createVisionSlice';
 import type { DedicationSlice } from './createDedicationSlice';
 export type { DedicationSlice } from './createDedicationSlice';
+import type { PracticeSlice } from './createPracticeSlice';
+export type { PracticeSlice } from './createPracticeSlice';
 import type { MantraSlice } from './createMantraSlice';
 export type { MantraSlice } from './createMantraSlice';
 import type { MindSlice } from './mindSliceTypes';
@@ -50,19 +52,34 @@ export interface FoodSlice {
   removeCustomFoodPreset: (id: string) => void;
 }
 
-export interface ExerciseSlice {
-  exerciseLog: ExerciseEntry[];
-  addExercise: (entry: Omit<ExerciseEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
-  deleteExercise: (id: string) => void;
-}
+/** @deprecated Use CheckinSlice instead */
+export type ExerciseSlice = CheckinSlice;
 
 export interface CheckinSlice {
+  // Checkin
   checkinHistory: CheckinEntry[];
   streak: number;
   graceHistory: GraceHistoryEntry[];
   submitCheckin: (done: boolean, note: string, date?: string, weight?: number, grace?: boolean) => void;
   calculateStreak: () => void;
   addGraceRecord: (date: string) => void;
+
+  // Exercise
+  exerciseLog: ExerciseEntry[];
+  addExercise: (entry: Omit<ExerciseEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
+  deleteExercise: (id: string) => void;
+
+  // Meditation
+  totalMedMinutes: number;
+  medHistory: MedHistoryEntry[];
+  addMedMinutes: (min: number, trackId?: string, note?: string) => void;
+  calculateTotalMedMin: () => void;
+
+  // Fasting
+  activeFasting: FastingSession | null;
+  fastingHistory: FastingSession[];
+  startFasting: (hours: number) => void;
+  stopFasting: (opts?: StopFastingOpts & { note?: string }) => void;
 }
 
 export interface ProfileSlice {
@@ -77,46 +94,14 @@ export interface ProfileSlice {
   setWeightUnit: (u: 'kg' | 'lb') => void;
 }
 
-export interface SettingsSlice {
-  theme: ThemeName;
-  language: string;
-  remindEnabled: boolean;
-  remindTime: string;
-  setTheme: (t: ThemeName) => void;
-  setLanguage: (l: string) => void;
-  setRemindEnabled: (v: boolean) => void;
-  setRemindTime: (t: string) => void;
-}
+import type { SettingsSlice } from './createSettingsSlice';
+export type { SettingsSlice } from './createSettingsSlice';
 
-export interface TagMoodSlice {
-  customTags: string[];
-  customMoods: string[];
-  allTagsOrder: string[];
-  allMoodsOrder: string[];
-  addCustomTag: (tag: string) => void;
-  removeCustomTag: (tag: string) => void;
-  updateCustomTag: (oldTag: string, newTag: string) => void;
-  reorderCustomTag: (fromIndex: number, toIndex: number) => void;
-  addCustomMood: (mood: string) => void;
-  removeCustomMood: (mood: string) => void;
-  updateCustomMood: (oldMood: string, newMood: string) => void;
-  reorderCustomMood: (fromIndex: number, toIndex: number) => void;
-  reorderAllTag: (fromIndex: number, toIndex: number) => void;
-  reorderAllMood: (fromIndex: number, toIndex: number) => void;
-}
+/** @deprecated Use CheckinSlice instead */
+export type MeditationSlice = CheckinSlice;
 
-export interface MeditationSlice {
-  totalMedMinutes: number;
-  medHistory: MedHistoryEntry[];
-  addMedMinutes: (min: number, trackId?: string, note?: string) => void;
-  calculateTotalMedMin: () => void;
-}
-
-export interface BreathSlice {
-  breathHistory: import('../types/breath').BreathingRecord[];
-  addBreathRecord: (data: Omit<import('../types/breath').BreathingRecord, 'id' | 'updatedAt' | 'deleted'>) => void;
-  removeBreathRecord: (id: string) => void;
-}
+/** @deprecated Use ZhiguanSlice instead */
+export type BreathSlice = import('./zhiguanSliceTypes').ZhiguanSlice;
 
 export interface SleepSlice {
   sleepHistory: SleepEntry[];
@@ -164,24 +149,51 @@ export interface HabitSlice {
 }
 
 export interface ReflectionSlice {
+  // Reflection
   reflections: MindReflection[];
   reflectionFilters: ReflectionFilters;
   addReflection: (params: CreateReflectionParams) => MindReflection | undefined;
   togglePin: (id: string) => void;
   deleteReflection: (id: string) => void;
   updateReflection: (id: string, updates: Partial<Pick<MindReflection, 'content' | 'tags' | 'mood' | 'link' | 'colors'>>) => void;
-  /** 解绑感念与计划任务 */
   unlinkReflectionFromPlanItem: (reflectionId: string) => void;
-  /** 更新感念筛选条件 */
   setReflectionFilters: (filters: ReflectionFilters | ((prev: ReflectionFilters) => ReflectionFilters)) => void;
+
+  // Tags & Moods
+  customTags: string[];
+  customMoods: string[];
+  allTagsOrder: string[];
+  allMoodsOrder: string[];
+  addCustomTag: (tag: string) => void;
+  removeCustomTag: (tag: string) => void;
+  updateCustomTag: (oldTag: string, newTag: string) => void;
+  reorderCustomTag: (fromIndex: number, toIndex: number) => void;
+  addCustomMood: (mood: string) => void;
+  removeCustomMood: (mood: string) => void;
+  updateCustomMood: (oldMood: string, newMood: string) => void;
+  reorderCustomMood: (fromIndex: number, toIndex: number) => void;
+  reorderAllTag: (fromIndex: number, toIndex: number) => void;
+  reorderAllMood: (fromIndex: number, toIndex: number) => void;
+
+  // Reflection Links
+  reflectionLinks: ReflectionLink[];
+  createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => string;
+  updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => void;
+  deleteReflectionLink: (id: string) => void;
+  getLinksByReflection: (reflectionId: string) => ReflectionLink[];
+  getLinksFromReflection: (reflectionId: string) => ReflectionLink[];
+  getLinksToReflection: (reflectionId: string) => ReflectionLink[];
+  deleteLinksByReflection: (reflectionId: string) => void;
 }
 
-export interface FastingSlice {
-  activeFasting: FastingSession | null;
-  fastingHistory: FastingSession[];
-  startFasting: (hours: number) => void;
-  stopFasting: (opts?: StopFastingOpts & { note?: string }) => void;
-}
+/** @deprecated Use ReflectionSlice instead */
+export type TagMoodSlice = ReflectionSlice;
+
+/** @deprecated Use ReflectionSlice instead */
+export type ReflectionLinkSlice = ReflectionSlice;
+
+/** @deprecated Use CheckinSlice instead */
+export interface FastingSlice extends CheckinSlice {}
 
 export interface PlanSlice {
   plans: Plan[];
@@ -238,6 +250,7 @@ export interface RecycleBinSlice {
 
 export interface ThoughtTrailSlice {
   thoughtTrails: ThoughtTrail[];
+  trailNotes: TrailNote[];
   ignoredRecPatterns: string[];  // 用户忽略的推荐模式
   createThoughtTrail: (name: string, description?: string, reflectionIds?: string[], source?: 'auto' | 'manual' | 'recommended' | 'ai') => string;
   updateThoughtTrail: (id: string, patch: Partial<ThoughtTrail>) => void;
@@ -251,15 +264,14 @@ export interface ThoughtTrailSlice {
   getTrailPlanItems: (trailId: string) => PlanItem[];
   addIgnoredRecPattern: (pattern: string) => void;
   clearIgnoredRecPatterns: () => void;
-}
-
-export interface TrailNoteSlice {
-  trailNotes: TrailNote[];
   addTrailNote: (trailId: string, form: { content: string; tags?: string[]; mood?: string; source: 'guided' | 'free'; guidedQuestion?: string }) => TrailNote;
   updateTrailNote: (noteId: string, patch: Partial<TrailNote>) => void;
   deleteTrailNote: (noteId: string) => void;
   getNotesByTrail: (trailId: string) => TrailNote[];
 }
+
+/** @deprecated Use ThoughtTrailSlice instead */
+export type TrailNoteSlice = ThoughtTrailSlice;
 
 export interface ReviewSlice {
   checkinReviews: CheckinReview[];
@@ -270,34 +282,24 @@ export interface ReviewSlice {
   clearAllReviews: () => void;
 }
 
-export interface AISlice {
-  aiMode: AIMode;
-  aiModels: ModelConfig[];
-  setAIMode: (mode: AIMode) => void;
-  addAIModel: (model: ModelConfig) => void;
-  updateAIModel: (modelId: string, updates: Partial<ModelConfig>) => void;
-  removeAIModel: (modelId: string) => void;
-  setDefaultAIModel: (modelId: string) => void;
-  toggleAIModel: (modelId: string) => void;
-}
-
-export interface ReflectionLinkSlice {
-  reflectionLinks: ReflectionLink[];
-  createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => string;
-  updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => void;
-  deleteReflectionLink: (id: string) => void;
-  getLinksByReflection: (reflectionId: string) => ReflectionLink[];
-  getLinksFromReflection: (reflectionId: string) => ReflectionLink[];
-  getLinksToReflection: (reflectionId: string) => ReflectionLink[];
-  deleteLinksByReflection: (reflectionId: string) => void;
-}
+export interface AISlice extends SettingsSlice {}
 
 // ─── Diet slice ─────────────────────────────────────────────
 
 export interface DietSlice {
+  // Food (from FoodSlice)
+  foodLog: FoodEntry[];
+  calGoal: number;
+  customFoodPresets: CustomFoodPreset[];
+  addFood: (entry: Omit<FoodEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
+  deleteFood: (id: string) => void;
+  setCalGoal: (n: number) => void;
+  addCustomFoodPreset: (name: string, calories: number, note?: string) => void;
+  removeCustomFoodPreset: (id: string) => void;
+
+  // Diet/Wu Xing
   motivationLog: EatingMotivationEntry[];
   customWuxingMaps: CustomWuxingMap[];
-
   setFoodMotivation: (entry: Omit<EatingMotivationEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
   removeFoodMotivation: (foodId: string) => void;
   addCustomWuxingMap: (map: Omit<CustomWuxingMap, 'id' | 'updatedAt' | 'deleted'>) => void;
@@ -312,9 +314,9 @@ export interface DietSlice {
 
 // ─── FullStore composition ─────────────────────────────────────
 
-export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice & GiveSlice
-  & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MantraSlice & MindSlice & ZhiguanSlice & BreathSlice & { resetData: () => void };
+export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & CheckinSlice & SleepSlice & GiveSlice
+  & ProfileSlice & SettingsSlice
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReviewSlice & BodySlice & DietSlice & PracticeSlice & MantraSlice & MindSlice & ZhiguanSlice & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 

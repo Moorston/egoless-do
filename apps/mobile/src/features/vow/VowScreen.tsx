@@ -8,15 +8,15 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useAppStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, COLORS } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, COLORS, dateStr } from '@egoless-do/core';
 import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
 import { Flag, Target, Plus, Check, Archive, Trash2, X, Star } from 'lucide-react-native';
 import VisionCard from './components/VisionCard';
 
-const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: number; color?: string }>; label: string; color: string }> = {
-  lifetime: { icon: Star, label: '终极愿景', color: '#F59E0B' },
-  long: { icon: Flag, label: '长期愿景', color: '#8B5CF6' },
-  short: { icon: Target, label: '短期愿景', color: '#10B981' },
+const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: number; color?: string }>; labelKey: string; color: string }> = {
+  lifetime: { icon: Star, labelKey: 'vowLifetime', color: '#F59E0B' },
+  long: { icon: Flag, labelKey: 'vowLong', color: '#8B5CF6' },
+  short: { icon: Target, labelKey: 'vowShort', color: '#10B981' },
 };
 
 function AddVisionModal({
@@ -86,7 +86,7 @@ function AddVisionModal({
                 >
                   {React.createElement(cfg.icon, { size: 18, color: active ? cfg.color : TH.sub })}
                   <Text style={{ fontSize: FONT_BADGE, color: active ? cfg.color : TH.sub, marginTop: 4, fontWeight: active ? '600' : '400' }}>
-                    {cfg.label}
+                    {T(cfg.labelKey)}
                   </Text>
                 </TouchableOpacity>
               );
@@ -96,7 +96,9 @@ function AddVisionModal({
             <>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
-                {VISION_TIME_FRAMES.map(tf => {
+                {VISION_TIME_FRAMES.filter(tf =>
+                  type === 'long' ? LONG_TIME_FRAMES.includes(tf.key as VisionTimeFrame) : SHORT_TIME_FRAMES.includes(tf.key as VisionTimeFrame)
+                ).map(tf => {
                   const active = timeFrame === tf.key;
                   return (
                     <TouchableOpacity
@@ -109,7 +111,7 @@ function AddVisionModal({
                       }}
                     >
                       <Text style={{ fontSize: FONT_BADGE, color: active ? TH.primary : TH.sub, fontWeight: active ? '600' : '400' }}>
-                        {tf.labelKey}
+                        {T(tf.labelKey)}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -128,14 +130,14 @@ function AddVisionModal({
           />
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 20 }}>
             <TouchableOpacity onPress={onClose} style={{ flex: 1, padding: 12, borderRadius: 10, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-              <Text style={{ color: TH.sub }}>{T('cancel')}</Text>
+              <Text style={{ color: TH.sub }}>{T('vowCancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
               disabled={!canSave}
               style={{ flex: 1, padding: 12, borderRadius: 10, backgroundColor: canSave ? TH.primary : TH.border, alignItems: 'center' }}
             >
-              <Text style={{ color: '#fff', fontWeight: '600' }}>{existing ? T('save') : T('vowCreate')}</Text>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>{existing ? T('vowSave') : T('vowCreate')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -200,34 +202,36 @@ export default function VowScreen() {
       updateVision(editingVision.id, data);
     } else {
       const existing = (visionsRaw ?? []).filter(v => !v.deleted);
-      const typeLabels: Record<string, string> = { lifetime: '终极愿景', long: '长期愿景', short: '短期愿景' };
       const conflict = existing.find(v => v.type === data.type && v.status === 'active');
       if (conflict) {
-        Alert.alert('提示', `已有进行中的${typeLabels[data.type] ?? data.type}，请先将其标记达成或归档后再创建新的`);
+        Alert.alert(
+          T('vowTitle'),
+          T('vowNeedArchive').replace('{type}', T(`vow${data.type === 'lifetime' ? 'Lifetime' : data.type === 'long' ? 'Long' : 'Short'}`)),
+        );
         return;
       }
-      addVision(data);
+      addVision({ ...data, startDate: dateStr() });
     }
   };
 
   const handleAchieve = (id: string) => {
-    Alert.alert('达成愿景', '确认达成这个愿景吗？', [
-      { text: '取消', style: 'cancel' },
-      { text: '确认达成', onPress: () => achieveVision(id) },
+    Alert.alert(T('vowAchieve'), '', [
+      { text: T('vowCancel'), style: 'cancel' },
+      { text: T('vowAchieve'), onPress: () => achieveVision(id) },
     ]);
   };
 
   const handleArchive = (id: string) => {
-    Alert.alert('归档愿景', '确认归档这个愿景吗？', [
-      { text: '取消', style: 'cancel' },
-      { text: '确认归档', onPress: () => archiveVision(id) },
+    Alert.alert(T('vowArchive'), '', [
+      { text: T('vowCancel'), style: 'cancel' },
+      { text: T('vowArchive'), onPress: () => archiveVision(id) },
     ]);
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert('删除愿景', '确定要删除这个愿景吗？', [
-      { text: '取消', style: 'cancel' },
-      { text: '删除', style: 'destructive', onPress: () => removeVision(id) },
+    Alert.alert(T('vowDelete'), '', [
+      { text: T('vowCancel'), style: 'cancel' },
+      { text: T('vowDelete'), style: 'destructive', onPress: () => removeVision(id) },
     ]);
   };
 
@@ -235,7 +239,7 @@ export default function VowScreen() {
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Vow" />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>我的愿景</Text>
+        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{T('vowTitle')}</Text>
         <TouchableOpacity onPress={handleAdd} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <Plus size={18} color={TH.primary} />
           <Text style={{ color: TH.primary, fontSize: FONT_SUB, fontWeight: '600' }}>{T('commonAdd')}</Text>
@@ -252,8 +256,8 @@ export default function VowScreen() {
             <Flag size={22} color={TH.primary} />
           </View>
           <View>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>进行中的愿景</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{activeCount} 个</Text>
+            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowActive')}</Text>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{activeCount}</Text>
           </View>
         </View>
 
@@ -261,7 +265,7 @@ export default function VowScreen() {
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
           {(['active', 'achieved', 'archived', 'all'] as const).map(s => {
             const active = filterStatus === s;
-            const labels: Record<string, string> = { active: '进行中', achieved: '已达成', archived: '已归档', all: '全部' };
+            const labels: Record<string, string> = { active: T('vowActive'), achieved: T('vowAchieved'), archived: T('vowArchived'), all: T('allStatus') };
             return (
               <TouchableOpacity
                 key={s}
@@ -282,10 +286,10 @@ export default function VowScreen() {
         {grouped.length === 0 ? (
           <View style={{ alignItems: 'center', marginTop: 60 }}>
             <Text style={{ fontSize: 48, marginBottom: 12 }}>🎯</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有愿景</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>立下一个愿景，为修行指引方向</Text>
+            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('vowNoVision')}</Text>
+            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>{T('vowLifetimeHint')}</Text>
             <TouchableOpacity onPress={handleAdd} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 立愿</Text>
+              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ {T('vowCreate')}</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -293,7 +297,7 @@ export default function VowScreen() {
             <View key={type} style={{ marginBottom: 20 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10, marginLeft: 4 }}>
                 {React.createElement(TYPE_CONFIG[type].icon, { size: 16, color: TYPE_CONFIG[type].color })}
-                <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{TYPE_CONFIG[type].label}</Text>
+                <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{T(TYPE_CONFIG[type].labelKey)}</Text>
                 <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length}</Text>
               </View>
               {items.map(v => {

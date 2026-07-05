@@ -1,6 +1,7 @@
-import type { EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats, MotivationStats, EmotionSensitiveDay, WuxingElement, FlavorType, EatingMotivation } from '../types';
+import type { FoodEntry, CustomFoodPreset, EatingMotivationEntry, CustomWuxingMap, FoodWuxingItem, WuxingStats, FlavorStats, MotivationStats, EmotionSensitiveDay, WuxingElement, FlavorType, EatingMotivation } from '../types';
 import { WUXING_MAP, FLAVOR_CONFIG, WUXING_ELEMENT_CONFIG } from '../constants';
 import { uid, dateStr } from '../utils';
+import { deleteFoodFromList } from '../business';
 import type { StorageAdapter, DietSlice } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
@@ -23,6 +24,45 @@ export function createDietSlice(
   onSync?: () => void,
 ): SliceCreator<DietSlice> {
   return (set, get) => ({
+    foodLog: [],
+    calGoal: 2000,
+    customFoodPresets: [],
+
+    addFood(entry: Omit<FoodEntry, 'id' | 'updatedAt' | 'deleted'>) {
+      const e: FoodEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false };
+      set(s => ({ foodLog: [e, ...(s.foodLog ?? [])] }));
+      adapter.persistChange('food', e.id, e).catch(e => log.error(e));
+      onSync?.();
+    },
+
+    deleteFood(id: string) {
+      const state = get();
+      const food = (state.foodLog ?? []).find(f => f.id === id && !f.deleted);
+      set(s => ({
+        foodLog: deleteFoodFromList(s.foodLog ?? [], id),
+        ...(food ? { recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'food' as const, data: food, deletedAt: Date.now() }] } : {}),
+      }));
+      adapter.markDeleted('food', id).catch(e => log.error(e));
+      onSync?.();
+    },
+
+    setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); },
+
+    addCustomFoodPreset(name: string, calories: number, note?: string) {
+      set(s => ({
+        customFoodPresets: [
+          { id: uid(), name, calories, note },
+          ...(s.customFoodPresets ?? []),
+        ],
+      }));
+    },
+
+    removeCustomFoodPreset(id: string) {
+      set(s => ({
+        customFoodPresets: (s.customFoodPresets ?? []).filter(p => p.id !== id),
+      }));
+    },
+
     motivationLog: [],
     customWuxingMaps: [],
 
@@ -65,10 +105,14 @@ export function createDietSlice(
     },
 
     removeCustomWuxingMap(id: string) {
-      const updated = { ...get().customWuxingMaps.find(m => m.id === id), deleted: true, updatedAt: Date.now() } as CustomWuxingMap;
-      set(s => ({
-        customWuxingMaps: s.customWuxingMaps.map(m => m.id === id ? updated : m),
-      }));
+      let deleted: CustomWuxingMap | undefined;
+      set(s => {
+        const newList = (s.customWuxingMaps ?? []).map(m => {
+          if (m.id === id) { deleted = { ...m, deleted: true, updatedAt: Date.now() } as CustomWuxingMap; return deleted; }
+          return m;
+        });
+        return { customWuxingMaps: newList };
+      });
       adapter.markDeleted('customWuxing', id).catch(e => log.error(e));
       onSync?.();
     },

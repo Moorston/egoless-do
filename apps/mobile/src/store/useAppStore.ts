@@ -146,6 +146,8 @@ export const useAppStore = create<MobileStore>()(
       }, async (token, userId) => {
         // Mobile pullServerData: phased initial sync → SQLite → store
         await initialSync(token, userId);
+        // Flush pending writes before rehydration to avoid losing optimistic updates
+        await flushWrites();
         // Rehydrate store from SQLite after Phase 1 completes
         const dbPatch = await rehydrateFromDb();
         if (Object.keys(dbPatch).length) {
@@ -276,7 +278,8 @@ export const useAppStore = create<MobileStore>()(
               await setAppState(db, 'needs_initial_sync', '1');
             }
 
-            // Step 2: Load all entities from SQLite via unified rehydrateFromDb
+            // Step 2: Flush pending writes, then load all entities from SQLite
+            await flushWrites();
             const dbPatch = await rehydrateFromDb();
 
             if (Object.keys(dbPatch).length > 0) {

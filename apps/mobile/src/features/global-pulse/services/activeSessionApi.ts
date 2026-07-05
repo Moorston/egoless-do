@@ -180,6 +180,7 @@ export async function deleteSessionsByUserHash(userHash: string): Promise<void> 
   const filter = encodeURIComponent(`user_hash = "${userHash}"`);
   // Paginate until all sessions are deleted
   let page = 1;
+  // eslint-disable-next-line no-constant-condition -- intentional infinite loop with break
   while (true) {
     const result = await pbRequest<any>(
       `/api/collections/${COLLECTION}/records?filter=${filter}&perPage=50&page=${page}`

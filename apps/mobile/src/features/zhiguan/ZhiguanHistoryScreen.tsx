@@ -11,6 +11,7 @@ import {
   EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS,
   SAM_STAGE_LABEL_KEYS,
   ZHIGUAN_METHOD_DEFS,
+  dateStr as toLocalDateStr,
 } from '@egoless-do/core';
 
 const COLORS = ['rgba(139, 115, 85, 0.15)', 'rgba(139, 115, 85, 0.35)', 'rgba(201, 169, 110, 0.55)', 'rgba(201, 169, 110, 0.75)', 'rgba(201, 169, 110, 1)'];
@@ -196,7 +197,7 @@ function HeatmapBlock({ sessions, year, month, T }: { sessions: ZhiguanSession[]
   for (let d = 1; d <= daysInMonth; d += 1) {
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const ms = sessions
-      .filter(s => !s.deleted && new Date(s.startTs).toISOString().slice(0, 10) === dateStr)
+      .filter(s => !s.deleted && toLocalDateStr(new Date(s.startTs)) === dateStr)
       .reduce((sum, s) => sum + Math.max(0, (s.endTs ?? Date.now()) - s.startTs), 0);
     cells.push({ date: dateStr, minutes: Math.floor(ms / 60000) });
   }

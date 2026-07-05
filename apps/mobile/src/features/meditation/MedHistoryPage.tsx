@@ -385,8 +385,8 @@ export default function MedHistoryPage() {
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有冥想记录</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次静坐都是送给自己的礼物</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，给自己几分钟安静的时光</Text>
-            <TouchableOpacity onPress={() => (nav as any).navigate('MainTabs', { screen: 'Meditation' })} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
-              {/* any: nested navigator type mismatch between RootStack and MainTab */}
+            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Meditation' } as never)} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+              {/* 修复: 移除 as any */}
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次冥想</Text>
             </TouchableOpacity>
           </View>

@@ -18,7 +18,8 @@ egoless-do/ (Turborepo + pnpm workspaces)
 │   │       ├── net/               # 网络层工具 (offlineAware)
 │   │       ├── i18n/              # 国际化初始化 (i18next)
 │   │       └── navigation/        # 导航配置
-│   └── web/                       # Next.js 15 PWA (deprecated)
+│   └── _archive/                    # 归档的遗留代码
+	│       └── web-legacy/              # Next.js 15 PWA (archived)
 ├── packages/
 │   ├── core/                      # 共享业务逻辑（平台无关）
 │   │   ├── ai/                    # AI 服务 + RAG
@@ -69,6 +70,6 @@ egoless-do/ (Turborepo + pnpm workspaces)
 
 ### 已知技术债务
 
-- `apps/web/` — deprecated，待归档
+- `_archive/web-legacy/` — 已归档的废弃 web 应用
 - `apps/mobile/src/features/reflections/` — 7 个子目录，复杂度高，待解体
 - 6 个测试失败（预先存在），待修复

@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/mobile/frontend/index.md", "reason": "Mobile frontend conventions: component guidelines, hook patterns, FlatList requirements, useTheme() usage"}
+{"file": ".trellis/spec/core/frontend/hook-guidelines.md", "reason": "Custom hook patterns: use* naming, pure logic extraction, testability requirements"}
+{"file": ".trellis/spec/core/frontend/component-guidelines.md", "reason": "Component structure: memo, Props interface, single responsibility"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Cross-layer rules: core vs app separation, interface injection patterns"}

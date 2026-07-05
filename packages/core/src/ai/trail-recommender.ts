@@ -476,11 +476,9 @@ export async function parseSmartQuery(
 
 // ─── Availability check ──────────────────────────────────────────────
 
-export function isAIRecommendAvailable(config?: { mode?: string; models?: ModelConfig[] }): boolean {
+export function isAIRecommendAvailable(): boolean {
   try {
-    const service = config
-      ? getAIService({ mode: config.mode as AIMode, models: config.models })
-      : getAIService();
+    const service = getAIService();
     const cfg = service.getConfig();
     return cfg.mode !== 'local' && service.getDefaultModel() !== null;
   } catch {

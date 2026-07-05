@@ -7,9 +7,10 @@ import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
-import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY } from '@egoless-do/core';
+import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY, createLogger } from '@egoless-do/core';
+const log = createLogger('FastingScreen');
 import {
-  Clock, Flame, Globe, Scale,
+  Flame, Globe, Scale,
   AlertTriangle, Check, ChevronRight, StopCircle,
 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
@@ -60,7 +61,7 @@ export default function FastingScreen() {
       setElapsed(0);
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [activeFasting?.id]);
+  }, [activeFasting?.id, activeFasting?.startedAt]);
 
   const pct  = useMemo(() => {
     if (!activeFasting) return 0;
@@ -142,7 +143,7 @@ export default function FastingScreen() {
           sessionIdRef.current = result.data.session_id;
         }
       }).catch(e => {
-        console.warn('Failed to create fasting session:', e);
+        log.warn('Failed to create fasting session:', e);
       });
     } else if (!isActive && sessionIdRef.current) {
       // Flush final insight before deleting session
@@ -168,6 +169,7 @@ export default function FastingScreen() {
 
   // 组件卸载时清理
   useEffect(() => () => {
+    if (debounceTimerRef.current) { clearTimeout(debounceTimerRef.current); debounceTimerRef.current = null; }
     if (sessionIdRef.current) {
       deleteSession(sessionIdRef.current);
       sessionIdRef.current = null;
@@ -278,7 +280,7 @@ export default function FastingScreen() {
                 <Flame size={16} color={COLORS.ORANGE} />
                 <Text style={{ color:TH.sub, fontSize:22 }}>{Math.round(pct * 100)}%</Text>
               </View>
-              <PrimaryButton label={T('stopFasting')} onPress={() => { setNoteText(''); setShowNoteModal(true); }} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
+              <PrimaryButton label={T('stopFasting')} onPress={() => { setNoteText(''); setInsight(''); setShowNoteModal(true); }} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
             </>
           ) : (
             <View style={{ gap:10, width:'100%' }}>

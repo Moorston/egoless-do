@@ -46,7 +46,7 @@ export function detectHabitAbandonRisk(habits: Habit[]): RiskWarning[] {
     // 中风险：打卡率低于50%
     const recentDays = 7;
     const recentChecked = checkedDates.filter(d => {
-      const diff = Math.floor((todayDate.getTime() - new Date(d).getTime()) / (24 * 60 * 60 * 1000));
+      const diff = Math.floor((todayDate.getTime() - parseLocal(d).getTime()) / (24 * 60 * 60 * 1000));
       return diff < recentDays;
     }).length;
     

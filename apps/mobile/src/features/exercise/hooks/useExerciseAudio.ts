@@ -104,7 +104,7 @@ export function useExerciseAudio() {
       setShowSoundPicker(false);
       return next.key;
     });
-  }, [bgPlayer, audioSessionManager]);
+  }, [bgPlayer]);
 
   return {
     selectedSound, setSelectedSound,

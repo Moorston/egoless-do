@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, TextInput, Alert,
+  View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Alert,
   KeyboardAvoidingView, Platform, Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

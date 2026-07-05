@@ -59,7 +59,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
                 <Pressable
                   key={opt.key}
                   style={[styles.option, localSettings.breathPattern === opt.key && styles.optionActive]}
-                  onPress={() => setLocalSettings(s => ({ ...s, breathPattern: opt.key as string }))}
+                  onPress={() => setLocalSettings(s => ({ ...s, breathPattern: opt.key as 'standard' | 'calming' | 'closing' }))}
                 >
                   <Text style={[styles.optionText, localSettings.breathPattern === opt.key && styles.optionTextActive]}>
                     {T(opt.labelKey)}
@@ -98,7 +98,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
                 <Pressable
                   key={opt.key}
                   style={[styles.option, localSettings.backgroundSound === opt.key && styles.optionActive]}
-                  onPress={() => setLocalSettings(s => ({ ...s, backgroundSound: opt.key as string }))}
+                  onPress={() => setLocalSettings(s => ({ ...s, backgroundSound: opt.key as 'none' | 'bell' | 'rain' | 'bowl' }))}
                 >
                   <Text style={[styles.optionText, localSettings.backgroundSound === opt.key && styles.optionTextActive]}>
                     {T(opt.labelKey)}

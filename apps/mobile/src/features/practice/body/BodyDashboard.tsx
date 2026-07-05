@@ -77,7 +77,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
 
   const handlePressSport = useCallback((sportKey: string) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
-    (nav as any).navigate('Sport', { // any: nested navigator type mismatch between RootStack and MainTab
+    nav.navigate('Sport' as never, { // 修复: 移除 as any
       key: sportKey,
       icon: sport?.icon ?? '🏃',
       color: sport?.color ?? '#f59e0b',

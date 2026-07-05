@@ -57,7 +57,7 @@ export default function PreceptScreen() {
     // Streak: consecutive days where ALL precepts were checked
     const sortedDates = [...allDates].sort().reverse();
     let streak = 0;
-    let checkDate = new Date();
+    const checkDate = new Date();
     if (!allDates.has(today)) checkDate.setDate(checkDate.getDate() - 1);
     for (let i = 0; i < 365; i++) {
       const ds = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;

@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/mobile/frontend/component-guidelines.md", "reason": "Component patterns, hooks composition rules — needed for sub-component extraction and new component design"}
+{"file": ".trellis/spec/mobile/frontend/directory-structure.md", "reason": "Feature module organization — needed to create components/ and hooks/ subdirectories correctly"}
+{"file": ".trellis/spec/mobile/frontend/hook-guidelines.md", "reason": "Custom hook patterns — needed for useHabitForm and useHabitActions hooks"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "Code standards and forbidden patterns — needed to ensure refactored code follows project conventions"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "Zustand slice patterns — needed to understand store interaction patterns"}
+{"file": ".trellis/spec/core/frontend/state-management.md", "reason": "Core store slice factory pattern — needed for business logic additions (stats functions)"}

@@ -29,6 +29,7 @@ import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core'
 import {
   Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3,
 } from 'lucide-react-native';
+import SearchFilterBar from './SearchFilterBar';
 
 const log = createLogger('Reflections');
 import ReflectionDetailContent from './ReflectionDetailContent';
@@ -234,6 +235,7 @@ export default function ReflectionsScreen() {
   const [category, setCategory]   = useState('');
   const [confirmDel, setConfirmDel] = useState<string|null>(null);
   const [shareReflection, setShareReflection] = useState<MindReflection | null>(null);
+  const savingRef = useRef(false);
 
   // Long press action menu state
   const [actionMenuId, setActionMenuId] = useState<string|null>(null);
@@ -278,7 +280,8 @@ export default function ReflectionsScreen() {
   }, [reflections]);
 
   const saveReflection = () => {
-    if (!content.trim()) return;
+    if (!content.trim() || savingRef.current) return;
+    savingRef.current = true;
     // Add category tag if selected
     const found = REFLECTION_CATEGORIES.find(c => c.key === category);
     const categoryTag = found ? `#${found.label}` : '';
@@ -291,6 +294,7 @@ export default function ReflectionsScreen() {
     }
     setContent(''); setTags([]); setMood(''); setLink(''); setColorIdx(0); setCategory('');
     setShowNew(false);
+    savingRef.current = false;
   };
 
   const openEdit = (r: MindReflection) => {
@@ -409,45 +413,19 @@ export default function ReflectionsScreen() {
         {/* Trail Suggestion Banner */}
         <TrailSuggestionBanner />
 
-        {/* Search + toggle row */}
-        <View style={{ flexDirection:'row', gap:8, marginBottom:16 }}>
-          <View style={{ flex:1, flexDirection:'row', alignItems:'center', gap:6, backgroundColor:TH.card, borderRadius:12, paddingHorizontal:12, paddingVertical:10 }}>
-            <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>🔍</Text>
-            <TextInput value={searchInput} onChangeText={setSearchInput} placeholder="搜索感念..." placeholderTextColor={TH.sub}
-              style={{ flex:1, color:TH.text, fontSize:FONT_BODY, padding:0 }} />
-            {searchInput.length > 0 && (
-              <TouchableOpacity onPress={() => { setSearchInput(''); removeFilter('search'); }}>
-                <X size={16} color={TH.sub} />
-              </TouchableOpacity>
-            )}
-          </View>
-          <TouchableOpacity onPress={() => setShowFilterDrawer(f => !f)}
-            style={{ paddingHorizontal:14, borderRadius:10, backgroundColor: showFilterDrawer ? `${P}20` : TH.card, justifyContent:'center' }}>
-            <Text style={{ color: showFilterDrawer ? P : TH.sub, fontSize:FONT_SMALL, fontWeight:'600' }}>筛选</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => rootNav.navigate('ReflectionStats')}
-            style={{ paddingHorizontal:14, borderRadius:10, backgroundColor: TH.card, justifyContent:'center' }}>
-            <BarChart3 size={18} color={TH.sub} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Active Filters Bar */}
-        {hasActiveFilters && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap:6 }} style={{ marginBottom:12 }}>
-            {activeFilters.map((f, i) => (
-              <TouchableOpacity key={`${f.key}-${f.value ?? i}`}
-                onPress={() => removeFilter(f.key, f.value)}
-                style={{ flexDirection:'row', alignItems:'center', gap:4, paddingHorizontal:10, paddingVertical:6, borderRadius:16, backgroundColor:`${P}15`, borderWidth:1, borderColor:`${P}30` }}>
-                <Text style={{ color:P, fontSize:FONT_SMALL }}>{f.label}</Text>
-                <X size={12} color={P} />
-              </TouchableOpacity>
-            ))}
-            <TouchableOpacity onPress={clearAllFilters}
-              style={{ paddingHorizontal:10, paddingVertical:6, borderRadius:16, backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }}>
-              <Text style={{ color:TH.sub, fontSize:FONT_SMALL }}>清除全部</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        )}
+        {/* Search + Filters */}
+        <SearchFilterBar
+          searchInput={searchInput}
+          onSearchChange={setSearchInput}
+          onSearchClear={() => { setSearchInput(''); removeFilter('search'); }}
+          onFilterPress={() => setShowFilterDrawer(f => !f)}
+          onStatsPress={() => rootNav.navigate('ReflectionStats')}
+          showFilterDrawer={showFilterDrawer}
+          hasActiveFilters={hasActiveFilters}
+          activeFilters={activeFilters}
+          onRemoveFilter={removeFilter}
+          onClearAllFilters={clearAllFilters}
+        />
 
         {/* Timeline */}
         {Object.entries(byDay).map(([day, items]) => {

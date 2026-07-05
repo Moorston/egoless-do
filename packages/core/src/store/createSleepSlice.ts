@@ -28,80 +28,55 @@ export function createSleepSlice(
 
     completeBarrier(opts) {
       const today = dateStr();
-      const existing = get().sleepHistory.find(s => s.date === today && !s.deleted);
       const now = Date.now();
-
-      if (existing) {
-        const updated: SleepEntry = {
-          ...existing,
-          barrierDone: true,
-          barrierMin: opts.barrierMin,
-          awayMin: opts.awayMin,
-          practice: opts.practice,
-          updatedAt: now,
-        };
-        set(s => ({
-          sleepHistory: s.sleepHistory.map(e => e.id === existing.id ? updated : e),
-        }));
-        adapter.persistChange('sleep', updated.id, updated).catch(e => log.error(e));
-      } else {
-        const entry: SleepEntry = {
-          id: uuid(),
-          date: today,
-          barrierDone: true,
-          barrierMin: opts.barrierMin,
-          awayMin: opts.awayMin,
-          practice: opts.practice,
-          updatedAt: now,
-          deleted: false,
-        };
-        set(s => ({ sleepHistory: [...s.sleepHistory, entry] }));
-        adapter.persistChange('sleep', entry.id, entry).catch(e => log.error(e));
-      }
+      let persistEntry: SleepEntry | undefined;
+      set(s => {
+        const existing = (s.sleepHistory ?? []).find(e => e.date === today && !e.deleted);
+        if (existing) {
+          const updated: SleepEntry = { ...existing, barrierDone: true, barrierMin: opts.barrierMin, awayMin: opts.awayMin, practice: opts.practice, updatedAt: now };
+          persistEntry = updated;
+          return { sleepHistory: s.sleepHistory.map(e => e.id === existing.id ? updated : e) };
+        }
+        const entry: SleepEntry = { id: uuid(), date: today, barrierDone: true, barrierMin: opts.barrierMin, awayMin: opts.awayMin, practice: opts.practice, updatedAt: now, deleted: false };
+        persistEntry = entry;
+        return { sleepHistory: [...s.sleepHistory, entry] };
+      });
+      if (persistEntry) adapter.persistChange('sleep', persistEntry.id, persistEntry).catch(e => log.error(e));
       onSync?.();
     },
 
     saveSleepDiary(partial) {
       const today = dateStr();
-      const existing = get().sleepHistory.find(s => s.date === today && !s.deleted);
       const now = Date.now();
-
-      if (existing) {
-        const updated: SleepEntry = {
-          ...existing,
-          ...partial,
-          id: existing.id,
-          date: today,
-          updatedAt: now,
-        };
-        // Recalculate duration if both times present
-        if (updated.bedtimeAt && updated.wakeAt) {
-          updated.durationMin = Math.round((updated.wakeAt - updated.bedtimeAt) / 60000);
+      let persistEntry: SleepEntry | undefined;
+      set(s => {
+        const existing = (s.sleepHistory ?? []).find(e => e.date === today && !e.deleted);
+        if (existing) {
+          const updated: SleepEntry = { ...existing, ...partial, id: existing.id, date: today, updatedAt: now };
+          if (updated.bedtimeAt && updated.wakeAt) {
+            let diff = updated.wakeAt - updated.bedtimeAt;
+            if (diff < 0) diff += 24 * 60 * 60 * 1000; // cross-midnight correction
+            updated.durationMin = Math.round(diff / 60000);
+          }
+          persistEntry = updated;
+          return { sleepHistory: s.sleepHistory.map(e => e.id === existing.id ? updated : e) };
         }
-        set(s => ({
-          sleepHistory: s.sleepHistory.map(e => e.id === existing.id ? updated : e),
-        }));
-        adapter.persistChange('sleep', updated.id, updated).catch(e => log.error(e));
-      } else {
-        const entry: SleepEntry = {
-          id: uuid(),
-          date: today,
-          barrierDone: false,
-          updatedAt: now,
-          deleted: false,
-          ...partial,
-        };
+        const entry: SleepEntry = { id: uuid(), date: today, barrierDone: false, updatedAt: now, deleted: false, ...partial };
         if (entry.bedtimeAt && entry.wakeAt) {
-          entry.durationMin = Math.round((entry.wakeAt - entry.bedtimeAt) / 60000);
+          let diff = entry.wakeAt - entry.bedtimeAt;
+          if (diff < 0) diff += 24 * 60 * 60 * 1000;
+          entry.durationMin = Math.round(diff / 60000);
         }
-        set(s => ({ sleepHistory: [...s.sleepHistory, entry] }));
-        adapter.persistChange('sleep', entry.id, entry).catch(e => log.error(e));
-      }
+        persistEntry = entry;
+        return { sleepHistory: [...s.sleepHistory, entry] };
+      });
+      if (persistEntry) adapter.persistChange('sleep', persistEntry.id, persistEntry).catch(e => log.error(e));
       onSync?.();
     },
 
     setSleepGoal(goal) {
       set({ sleepGoal: goal });
+      adapter.persistChange('profile', 'self', { sleepGoal: goal } as any).catch(e => log.error(e));
     },
   });
 }

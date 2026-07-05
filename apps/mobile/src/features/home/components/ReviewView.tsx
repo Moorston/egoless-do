@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, RefreshControl, FlatList } fr
 import { useAppStore } from '../../../store/useAppStore';
 import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, computeItemCheckinStats, createLogger } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, countItemDoneDays, computeItemProgress, createLogger, dateStr } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
 
 const log = createLogger('Home');
@@ -50,7 +50,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       if (!cancelled) setLoading(false);
     });
     return () => { cancelled = true; };
-  }, [period]);
+  }, [period, generateReview]);
 
   const loadReview = async () => {
     if (!mountedRef.current) return;
@@ -271,7 +271,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
 
     const allPlanItems = (planItems ?? []).filter(i => !i.deleted);
     const checkins = (planItemCheckins ?? []).filter(c => !c.deleted);
-    const today = new Date().toISOString().slice(0, 10);
+    const today = dateStr();
 
     return (
       <View style={{
@@ -309,7 +309,8 @@ export default function ReviewView({ period }: ReviewViewProps) {
               {items.length > 0 && (
                 <View style={{ marginLeft: 8 }}>
                   {items.map((item, idx) => {
-                    const stats = computeItemCheckinStats(item, checkins, today);
+                    const { doneCount, expectedDays } = countItemDoneDays(item, checkins, today);
+                    const progress = computeItemProgress(item, checkins, today);
                     const isLast = idx === items.length - 1;
 
                     return (
@@ -321,11 +322,11 @@ export default function ReviewView({ period }: ReviewViewProps) {
                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
                           <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>·</Text>
                           <Text style={{ flex: 1, fontSize: FONT_SUB, color: item.status === 'completed' ? TH.sub : TH.text, textDecorationLine: item.status === 'completed' ? 'line-through' : 'none' }} numberOfLines={1}>{item.name}</Text>
-                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{stats.doneCount}/{stats.expectedDays}</Text>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{doneCount}/{expectedDays}</Text>
                           <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-                            <View style={{ height: 4, backgroundColor: item.status === 'completed' ? TH.primary : COLORS.GREEN, borderRadius: 2, width: `${stats.progress}%` }} />
+                            <View style={{ height: 4, backgroundColor: item.status === 'completed' ? TH.primary : COLORS.GREEN, borderRadius: 2, width: `${progress}%` }} />
                           </View>
-                          <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{stats.progress}%</Text>
+                          <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{progress}%</Text>
                         </View>
                       </View>
                     );

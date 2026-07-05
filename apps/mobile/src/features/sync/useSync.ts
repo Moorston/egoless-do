@@ -9,10 +9,10 @@ import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
 import { getState, openDatabase } from '../../db/schema';
 import { useAppStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
-import type { AIMode, ModelConfig } from '@egoless-do/core';
-import { mobileStorageAdapter, setStorageAdapterTrigger } from '../../store/storageAdapter';
+import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger } from '../../store/storageAdapter';
 import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
 import { useMusicStore } from '../music/useMusicStore';
+import { mergeSyncPatch } from './mergeSyncPatch';
 
 const log = createLogger('Sync');
 
@@ -83,110 +83,33 @@ export function useSync() {
 
     setSyncChangeHandler(async (patch: SyncPatch) => {
       try {
-      // Map store keys back to entity names for rehydrateFromDb
-      const STORE_KEY_TO_ENTITY: Record<string, string> = {
-        habits: 'habit', reflections: 'reflection', fastingHistory: 'fasting',
-        foodLog: 'food', checkinHistory: 'checkin', exerciseLog: 'exercise',
-        medHistory: 'meditation', userProfile: 'profile',
-        plans: 'plan', planItems: 'planItem', planItemCheckins: 'planItemCheckin',
-        dailyCustomTodos: 'dailyCustomTodo', dailyTodoHistory: 'dailyTodoHistory',
-        graceHistory: 'grace', thoughtTrails: 'thoughtTrail',
-        trailNotes: 'trailNote', reflectionLinks: 'reflectionLink',
-        checkinReviews: 'checkinReview',
-        bodyGoals: 'bodyGoal', bodyPlans: 'bodyPlan',
-        weightRecords: 'weightRecord', bodyCheckins: 'bodyCheckin',
-        sleepHistory: 'sleep', giveHistory: 'give',
-        motivationLog: 'motivationEntry', customWuxingMaps: 'customWuxing',
-        visions: 'vision', visionPractices: 'visionPractice', dedications: 'dedication',
-        mantraDefs: 'mantraDef', mantraSessions: 'mantraSession',
-        readingSessions: 'sutraReading',
-        fearEntries: 'fearEntry', courageEntries: 'courageEntry', achievements: 'fearAchievement',
-        breathHistory: 'breath', sessions: 'zhiguanSession',
-      };
-
-      // Patch from applyServerChanges contains DELTA records (only changed items).
-      // Merge them into existing store arrays by id, rather than replacing.
-      const storePatch: Partial<MobileStore> = {};
-      const isStoreKey = (k: string) => !!STORE_KEY_TO_ENTITY[k];
-      for (const [key, value] of Object.entries(patch)) {
-        if (key === 'totalMedMinutes') {
-          storePatch.totalMedMinutes = value as number;
-        } else if (key === 'aiMode') {
-          storePatch.aiMode = value as AIMode;
-        } else if (key === 'aiModels') {
-          storePatch.aiModels = value as ModelConfig[];
-        } else if (isStoreKey(key) && Array.isArray(value)) {
-          // Merge delta into existing array by id/date to prevent truncation
-          const existing = (useAppStore.getState() as Record<string, unknown[]>)[key];
-          if (Array.isArray(existing) && existing.length > 0) {
-            const map = new Map(existing.map((item: Record<string, unknown>) => [item.id ?? item.date, item]));
-            for (const item of value) {
-              const k = (item as Record<string, unknown>)?.id ?? (item as Record<string, unknown>)?.date;
-              if (k) map.set(k, item);
-            }
-            (storePatch as Record<string, unknown[]>)[key] = [...map.values()];
-          } else {
-            (storePatch as Record<string, unknown[]>)[key] = value;
-          }
-        }
-      }
-
-      if (Object.keys(storePatch).length) {
-        useAppStore.setState(storePatch);
-      }
-
-      // Derived state recalculation
-      const changedEntities = Object.keys(patch)
-        .map(k => STORE_KEY_TO_ENTITY[k] ?? (k === 'aiMode' || k === 'aiModels' ? 'aiConfig' : null))
-        .filter(Boolean) as string[];
-
-      // Restore music data from synced profile
-      if (changedEntities.includes('profile') || storePatch.userProfile) {
-        const up = useAppStore.getState().userProfile;
-        if (up) {
-          const musicPatch: Record<string, unknown> = {};
-          if (up.musicFavorites && Array.isArray(up.musicFavorites)) musicPatch.favorites = up.musicFavorites;
-          if (up.musicVolume !== undefined && typeof up.musicVolume === 'number') musicPatch.volume = up.musicVolume;
-          if (up.musicPlayMode && typeof up.musicPlayMode === 'string') musicPatch.playMode = up.musicPlayMode;
-          if (Object.keys(musicPatch).length) useMusicStore.setState(musicPatch as Partial<ReturnType<typeof useMusicStore.getState>>);
-        }
-      }
-
-      if (changedEntities.includes('meditation')) {
-        useAppStore.getState().calculateTotalMedMin();
-      }
-
-      // thoughtTrailIds reconciliation: rebuild from canonical thoughtTrail.reflectionIds
-      if (changedEntities.includes('thoughtTrail') || changedEntities.includes('reflection')) {
-        const state = useAppStore.getState();
-        const trails = state.thoughtTrails ?? [];
-        const trailMap = new Map<string, string[]>();
-        for (const trail of trails) {
-          if (trail.deleted) continue;
-          for (const rid of (trail.reflectionIds ?? [])) {
-            const arr = trailMap.get(rid) ?? [];
-            arr.push(trail.id);
-            trailMap.set(rid, arr);
-          }
-        }
-        const reflections = state.reflections ?? [];
-        const updated = reflections.map(r => {
-          const ids = trailMap.get(r.id) ?? [];
-          const current = r.thoughtTrailIds ?? [];
-          // Sort both arrays for order-independent comparison
-          const sortedNew = [...ids].sort();
-          const sortedCurrent = [...current].sort();
-          if (sortedNew.length === sortedCurrent.length && sortedNew.every((id, i) => id === sortedCurrent[i])) return r;
-          return { ...r, thoughtTrailIds: ids };
+        // Use functional updater to ensure atomicity (prevents race conditions)
+        let changedEntities: string[] = [];
+        useAppStore.setState((state: MobileStore) => {
+          const result = mergeSyncPatch(state, patch);
+          changedEntities = result.changedEntities;
+          return result.storePatch;
         });
-        if (updated.some((r, i) => r !== reflections[i])) {
-          useAppStore.setState({ reflections: updated } as Partial<MobileStore>);
-        }
-      }
 
-      if (changedEntities.includes('checkin')) {
-        useAppStore.getState().calculateStreak();
-      }
+        // Restore music data from synced profile
+        if (changedEntities.includes('profile') || patch.userProfile) {
+          const up = useAppStore.getState().userProfile;
+          if (up) {
+            const musicPatch: Record<string, unknown> = {};
+            if (up.musicFavorites && Array.isArray(up.musicFavorites)) musicPatch.favorites = up.musicFavorites;
+            if (up.musicVolume !== undefined && typeof up.musicVolume === 'number') musicPatch.volume = up.musicVolume;
+            if (up.musicPlayMode && typeof up.musicPlayMode === 'string') musicPatch.playMode = up.musicPlayMode;
+            if (Object.keys(musicPatch).length) useMusicStore.setState(musicPatch as Partial<ReturnType<typeof useMusicStore.getState>>);
+          }
+        }
+
+        if (changedEntities.includes('meditation')) {
+          useAppStore.getState().calculateTotalMedMin();
+        }
+
+        if (changedEntities.includes('checkin')) {
+          useAppStore.getState().calculateStreak();
+        }
       } catch (callbackErr) {
         log.error(callbackErr, { msg: '_onChanges callback error' });
       }
@@ -269,7 +192,8 @@ export function useSync() {
         if (initialDone !== 'true' && token) {
           const userId = useAppStore.getState().auth.user?.id;
           await resumeInitialSync(token, userId);
-          // Rehydrate after resume
+          // Rehydrate after resume — flush pending writes first
+          await flushWrites();
           const dbPatch = await rehydrateFromDb();
           if (Object.keys(dbPatch).length) {
             useAppStore.setState(dbPatch as Partial<MobileStore>);

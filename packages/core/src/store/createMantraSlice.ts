@@ -1,5 +1,6 @@
 import type { MantraDef, MantraSession, SutraReadingSession, PresetSutraEntry, MantraCategory } from '../types';
 import { PRESET_SUTRA_NAMES } from '../types';
+import { dateStr } from '../utils';
 import type { StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
@@ -69,19 +70,23 @@ export function createMantraSlice(
     },
 
     updateMantraDef(id, updates) {
-      set((s: MantraSlice) => ({
-        mantraDefs: (s.mantraDefs ?? []).map((d: MantraDef) => d.id === id ? { ...d, ...updates, updatedAt: Date.now() } : d),
-      }));
-      const entry = get().mantraDefs.find((d: MantraDef) => d.id === id);
+      let entry: MantraDef | undefined;
+      set((s: MantraSlice) => {
+        const newList = (s.mantraDefs ?? []).map((d: MantraDef) => d.id === id ? { ...d, ...updates, updatedAt: Date.now() } : d);
+        entry = newList.find((d: MantraDef) => d.id === id);
+        return { mantraDefs: newList };
+      });
       if (entry) adapter.persistChange('mantraDef', id, entry).catch(e => log.error(e));
       onSync?.();
     },
 
     removeMantraDef(id) {
-      set((s: MantraSlice) => ({
-        mantraDefs: (s.mantraDefs ?? []).map((d: MantraDef) => d.id === id ? { ...d, deleted: true, updatedAt: Date.now() } : d),
-      }));
-      const entry = get().mantraDefs.find((d: MantraDef) => d.id === id);
+      let entry: MantraDef | undefined;
+      set((s: MantraSlice) => {
+        const newList = (s.mantraDefs ?? []).map((d: MantraDef) => d.id === id ? { ...d, deleted: true, updatedAt: Date.now() } : d);
+        entry = newList.find((d: MantraDef) => d.id === id);
+        return { mantraDefs: newList };
+      });
       if (entry) adapter.persistChange('mantraDef', id, entry).catch(e => log.error(e));
       onSync?.();
     },
@@ -220,10 +225,12 @@ export function createMantraSlice(
     },
 
     removeMantraSession(id) {
-      set((s: MantraSlice) => ({
-        mantraSessions: (s.mantraSessions ?? []).map((s2: MantraSession) => s2.id === id ? { ...s2, deleted: true, updatedAt: Date.now() } : s2),
-      }));
-      const entry = get().mantraSessions.find((s2: MantraSession) => s2.id === id);
+      let entry: MantraSession | undefined;
+      set((s: MantraSlice) => {
+        const newList = (s.mantraSessions ?? []).map((s2: MantraSession) => s2.id === id ? { ...s2, deleted: true, updatedAt: Date.now() } : s2);
+        entry = newList.find((s2: MantraSession) => s2.id === id);
+        return { mantraSessions: newList };
+      });
       if (entry) adapter.persistChange('mantraSession', id, entry).catch(e => log.error(e));
       onSync?.();
     },
@@ -253,7 +260,7 @@ export function createMantraSlice(
     },
 
     getMantraTodayCount(mantraId) {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = dateStr();
       return (get().mantraSessions ?? [])
         .filter((s: MantraSession) => s.mantraId === mantraId && !s.deleted && s.date === today)
         .reduce((sum: number, s: MantraSession) => sum + s.count, 0);
@@ -273,10 +280,12 @@ export function createMantraSlice(
     },
 
     removeReadingSession(id) {
-      set((s: MantraSlice) => ({
-        readingSessions: (s.readingSessions ?? []).map((r: SutraReadingSession) => r.id === id ? { ...r, deleted: true, updatedAt: Date.now() } : r),
-      }));
-      const entry = get().readingSessions.find((r: SutraReadingSession) => r.id === id);
+      let entry: SutraReadingSession | undefined;
+      set((s: MantraSlice) => {
+        const newList = (s.readingSessions ?? []).map((r: SutraReadingSession) => r.id === id ? { ...r, deleted: true, updatedAt: Date.now() } : r);
+        entry = newList.find((r: SutraReadingSession) => r.id === id);
+        return { readingSessions: newList };
+      });
       if (entry) adapter.persistChange('sutraReading', id, entry).catch(e => log.error(e));
       onSync?.();
     },

@@ -14,6 +14,7 @@ const ENTITY_TYPE_MAP: Record<RecycleBinEntityType, SyncEntity> = {
   food: 'food',
   exercise: 'exercise',
   plan: 'plan',
+  breath: 'breath',
 };
 
 export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<RecycleBinSlice> {
@@ -37,6 +38,7 @@ export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<Re
         food: 'foodLog',
         exercise: 'exerciseLog',
         plan: 'plans',
+        breath: 'breathHistory',
       };
 
       const targetKey = restoreMap[item.entityType as RecycleBinEntityType];

@@ -81,7 +81,7 @@ export function getTrailStats(
   dateRange: { start: string; end: string } | null;
   moodChanges: string[];
 } {
-  const trailReflections = trail.reflectionIds
+  const trailReflections = (trail.reflectionIds ?? [])
     .map(id => reflections.find(r => !r.deleted && r.id === id))
     .filter((r): r is MindReflection => r != null);
 
@@ -119,7 +119,7 @@ export function getTrailsByReflection(
   reflectionId: string,
   thoughtTrails: ThoughtTrail[],
 ): ThoughtTrail[] {
-  return thoughtTrails.filter(t => !t.deleted && t.reflectionIds.includes(reflectionId));
+  return thoughtTrails.filter(t => !t.deleted && (t.reflectionIds ?? []).includes(reflectionId));
 }
 
 /**
@@ -174,7 +174,7 @@ export function getTrailOverview(
   reflections: MindReflection[],
   trailNotes: TrailNote[],
 ): TrailOverview {
-  const trailReflections = trail.reflectionIds
+  const trailReflections = (trail.reflectionIds ?? [])
     .map(id => reflections.find(r => r.id === id))
     .filter((r): r is MindReflection => r != null && !r.deleted);
 
@@ -304,7 +304,7 @@ function getTrailTagSet(
 ): Set<string> {
   const tagCounts = new Map<string, number>();
 
-  for (const id of trail.reflectionIds) {
+  for (const id of trail.reflectionIds ?? []) {
     const r = reflections.find(r => r.id === id);
     if (r && !r.deleted) {
       for (const tag of r.tags ?? []) {
@@ -339,7 +339,7 @@ export function getTrailTimelineItems(
 ): TimelineItem[] {
   const items: TimelineItem[] = [];
 
-  for (const id of trail.reflectionIds) {
+  for (const id of trail.reflectionIds ?? []) {
     const r = reflections.find(r => r.id === id);
     if (r && !r.deleted) {
       items.push({ kind: 'reflection', data: r, timestamp: r.timestamp });

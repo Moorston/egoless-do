@@ -20,7 +20,7 @@ export function calcGoalProgress(
   target: number | undefined,
   initial: number | undefined,
 ): number {
-  if (!current || !target || !initial) return 0;
+  if (current == null || target == null || initial == null) return 0;
   const totalChange = Math.abs(initial - target);
   if (totalChange === 0) return 100;
   const achieved = Math.abs(initial - current);

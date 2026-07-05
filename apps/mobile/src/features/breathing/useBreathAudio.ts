@@ -1,35 +1,56 @@
 // ─── Breathing Audio Hook ──────────────────────────────────
-// expo-audio: phase cue sounds
-// expo-speech: voice counting + phase announcements
+// expo-audio: phase cue sounds (loaded on first use)
+// expo-speech: voice counting + phase announcements (loaded on first use)
 
 import { useEffect, useRef, useCallback } from 'react';
-import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
-import * as Speech from 'expo-speech';
 import { createLogger } from '@egoless-do/core';
 
 const log = createLogger('BreathAudio');
 
-const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
+// Lazy-loaded native modules — deferred until first actual use
+let _Speech: typeof import('expo-speech') | null = null;
+let _AudioModeAsync: typeof import('expo-audio').setAudioModeAsync | null = null;
+let _useAudioPlayer: typeof import('expo-audio').useAudioPlayer | null = null;
 
-const PHASE_LABELS: Record<string, string> = {
-  inhale: '吸气',
-  hold: '闭气',
-  exhale: '呼气',
-};
+function getSpeech() {
+  if (!_Speech) _Speech = require('expo-speech');
+  return _Speech;
+}
+
+function getAudioModeAsync() {
+  if (!_AudioModeAsync) {
+    _AudioModeAsync = require('expo-audio').setAudioModeAsync;
+  }
+  return _AudioModeAsync;
+}
+
+function getUseAudioPlayer() {
+  if (!_useAudioPlayer) {
+    _useAudioPlayer = require('expo-audio').useAudioPlayer;
+  }
+  return _useAudioPlayer;
+}
+
+const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 
 export interface BreathAudioOptions {
   cueEnabled: boolean;
   voiceEnabled: boolean;
+  phaseLabels?: Record<string, string>;
+  speechLanguage?: string;
 }
 
 export function useBreathAudio(opts: BreathAudioOptions) {
-  const cuePlayer = useAudioPlayer(opts.cueEnabled ? BELL_FILE : undefined);
+  // useAudioPlayer is a hook — must be called unconditionally.
+  // We lazy-require the module but call the hook synchronously.
+  const useAudioPlayerHook = getUseAudioPlayer()!;
+  const cuePlayer = useAudioPlayerHook(opts.cueEnabled ? BELL_FILE : undefined);
   const lastCountRef = useRef(-1);
   const voiceEnabledRef = useRef(opts.voiceEnabled);
   voiceEnabledRef.current = opts.voiceEnabled;
 
   useEffect(() => {
-    setAudioModeAsync({
+    getAudioModeAsync()!({
       playsInSilentMode: true,
     }).catch(e => log.warn('setAudioMode failed', e));
   }, []);
@@ -52,26 +73,28 @@ export function useBreathAudio(opts: BreathAudioOptions) {
     if (!voiceEnabledRef.current) return;
     if (num === lastCountRef.current) return;
     lastCountRef.current = num;
+    const Speech = getSpeech()!;
     Speech.stop();
-    Speech.speak(String(num), { language: 'zh-CN', rate: 0.9 });
-  }, []);
+    Speech.speak(String(num), { language: opts.speechLanguage ?? 'zh-CN', rate: 0.9 });
+  }, [opts.speechLanguage]);
 
   const speakPhase = useCallback((phaseType: string) => {
     if (!voiceEnabledRef.current) return;
-    const label = PHASE_LABELS[phaseType];
+    const label = opts.phaseLabels?.[phaseType];
     if (label) {
+      const Speech = getSpeech()!;
       Speech.stop();
-      Speech.speak(label, { language: 'zh-CN', rate: 0.7 });
+      Speech.speak(label, { language: opts.speechLanguage ?? 'zh-CN', rate: 0.7 });
     }
-  }, []);
+  }, [opts.phaseLabels, opts.speechLanguage]);
 
   const resetCount = useCallback(() => {
     lastCountRef.current = -1;
   }, []);
 
-  // Stop speech on unmount
+  // Stop speech on unmount (lazy load only if speech was ever used)
   useEffect(() => {
-    return () => { Speech.stop(); };
+    return () => { if (_Speech) _Speech.stop(); };
   }, []);
 
   return { playPhaseSound, speakCount, speakPhase, resetCount };

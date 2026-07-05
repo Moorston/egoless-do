@@ -6,7 +6,7 @@
 
 ## Overview
 
-`@egoless-do/config` is a **shared tooling package** — ESLint and TypeScript configs consumed by `apps/mobile` and `apps/web`. It defines the cross-cutting quality bar.
+`@egoless-do/config` is a **shared tooling package** — ESLint and TypeScript configs consumed by `apps/mobile` (and formerly `apps/web`, now archived).
 
 ---
 

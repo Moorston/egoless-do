@@ -64,12 +64,13 @@ export default function MeditationScreen() {
 
   // ── 实时会话管理 ──
   const sessionIdRef = useRef<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [insight, setInsight] = useState('');
   const { resolveGoal } = useGoalResolver();
 
   // 心跳
-  useSessionHeartbeat(sessionIdRef.current, sessionIdRef.current ? 'meditation' : null);
+  useSessionHeartbeat(sessionId, sessionId ? 'meditation' : null);
 
   // 创建会话
   const createMeditationSession = useCallback(async () => {
@@ -85,6 +86,7 @@ export default function MeditationScreen() {
       });
       if (result.success && result.data) {
         sessionIdRef.current = result.data.session_id;
+        setSessionId(result.data.session_id);
       }
     } catch (e) {
       log.warn('Failed to create meditation session', e);

@@ -33,7 +33,7 @@ export default function BreathRing({ pattern, visible = true, size = 220, style 
     );
     if (visible) loop.start();
     return () => loop.stop();
-  }, [total, visible]);
+  }, [total, visible, anim]);
 
   const scale = anim.interpolate({
     inputRange: [0, inhaleRatio, inhaleRatio + holdRatio, 1],

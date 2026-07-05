@@ -9,7 +9,7 @@
 `packages/core` contains **no React hooks** (no `useState`, `useEffect`, etc.). Hooks are platform-specific and live in:
 - `apps/mobile/src/features/*/use<Service>.ts` — feature hooks (e.g., `useBreathAudio`)
 - `apps/mobile/src/navigation/hooks.ts` — navigation hooks
-- `apps/web/src/hooks/` (deprecated)
+- `_archive/web-legacy/src/hooks/` (archived)
 
 Core exports **pure functions** that hooks may call:
 - `business/breathing.ts` → `cycleDuration`, `phaseLabelKey`

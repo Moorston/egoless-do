@@ -113,8 +113,6 @@ channel:
 packages:
   mobile:
     path: apps/mobile
-  web:
-    path: apps/web
   config:
     path: packages/config
   core:

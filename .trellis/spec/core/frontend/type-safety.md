@@ -41,7 +41,7 @@ types/
 |---------|----------|
 | Multiple packages (mobile, web, core) | `packages/core/src/types/` |
 | Mobile-only | `apps/mobile/src/navigation/types.ts` |
-| Web-only | `apps/web/...` (deprecated) |
+| Web-only | `_archive/web-legacy/...` (archived) |
 
 **Rule**: If the same shape exists in two places, it should be lifted to core.
 

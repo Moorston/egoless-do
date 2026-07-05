@@ -18,6 +18,9 @@ export interface EntityConfig {
 /** Row mapper function type */
 export type RowMapper = (row: Record<string, unknown>) => Record<string, unknown>;
 
+/** Function to get row mapper for an entity */
+export type GetRowMapperFn = (entity: string) => RowMapper | undefined;
+
 /** Result of orphan recovery scan */
 export interface OrphanRecoveryResult {
   total: number;
@@ -30,7 +33,7 @@ export interface OrphanRecoveryResult {
  */
 export async function recoverOrphans(
   entityConfig: Record<string, EntityConfig>,
-  rowMappers: Record<string, RowMapper>,
+  getRowMapper: GetRowMapperFn,
   maxRounds = 5,
   batchSize = 200,
 ): Promise<OrphanRecoveryResult> {
@@ -55,7 +58,7 @@ export async function recoverOrphans(
 
           try {
             // Convert snake_case SQLite row to camelCase entity for consistent server data
-            const mapper = rowMappers[entity];
+            const mapper = getRowMapper(entity);
             const entityData = mapper ? mapper(full) : full;
             await enqueueChange(entity as SyncEntity, id, 'upsert', entityData as Record<string, unknown>);
           } catch (e) {

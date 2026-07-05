@@ -138,3 +138,92 @@ export function syncHabitsFromModules(
 
   return changed ? result : habits;
 }
+
+// ── Habit statistics helpers ────────────────────────────────────
+
+/** Compute weekly completion rates as percentages (last N weeks) */
+export function computeWeeklyCompletionRates(
+  checkedDates: string[], weeks: number = 8,
+): number[] {
+  const sorted = (checkedDates ?? []).slice().sort();
+  if (sorted.length === 0) return Array(weeks).fill(0);
+
+  const today = new Date();
+  const rates: number[] = [];
+
+  for (let w = weeks - 1; w >= 0; w--) {
+    const weekStart = new Date(today);
+    weekStart.setDate(weekStart.getDate() - w * 7 - today.getDay());
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
+    const startStr = dateStr(weekStart);
+    const endStr = dateStr(weekEnd);
+    const count = sorted.filter(d => d >= startStr && d < endStr).length;
+    rates.push(Math.round((count / 7) * 100));
+  }
+
+  return rates;
+}
+
+/** Compute weekly streak counts (last N weeks) */
+export function computeWeeklyStreaks(
+  checkedDates: string[], weeks: number = 8,
+): number[] {
+  const sorted = (checkedDates ?? []).slice().sort();
+  if (sorted.length === 0) return Array(weeks).fill(0);
+
+  const today = new Date();
+  const streaks: number[] = [];
+
+  for (let w = weeks - 1; w >= 0; w--) {
+    const weekStart = new Date(today);
+    weekStart.setDate(weekStart.getDate() - w * 7 - today.getDay());
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
+    const startStr = dateStr(weekStart);
+    const endStr = dateStr(weekEnd);
+    const weekDates = sorted.filter(d => d >= startStr && d < endStr);
+
+    // Count max consecutive days in this week
+    let maxStreak = 0;
+    let current = 0;
+    for (let i = 0; i < weekDates.length; i++) {
+      if (i === 0) { current = 1; }
+      else {
+        const prev = new Date(weekDates[i - 1]);
+        const cur = new Date(weekDates[i]);
+        const diff = (cur.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
+        current = diff === 1 ? current + 1 : 1;
+      }
+      maxStreak = Math.max(maxStreak, current);
+    }
+    streaks.push(maxStreak);
+  }
+
+  return streaks;
+}
+
+export interface HeatmapEntry {
+  date: string;
+  count: number;
+}
+
+/** Build heatmap data for the last N months */
+export function buildHeatmapData(
+  checkedDates: string[], months: number = 3,
+): HeatmapEntry[] {
+  const set = new Set(checkedDates ?? []);
+  const entries: HeatmapEntry[] = [];
+  const today = new Date();
+
+  for (let d = months * 30; d >= 0; d--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - d);
+    const ds = dateStr(date);
+    entries.push({ date: ds, count: set.has(ds) ? 1 : 0 });
+  }
+
+  return entries;
+}

@@ -72,7 +72,7 @@ export default function MantraHistoryScreen() {
     const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
     if (sortedDates.includes(todayStr) || sortedDates.includes(yesterdayStr)) {
       streak = 1;
-      let checkDate = new Date(sortedDates.includes(todayStr) ? today : yesterday);
+      const checkDate = new Date(sortedDates.includes(todayStr) ? today : yesterday);
       for (let i = 1; i < 365; i++) {
         checkDate.setDate(checkDate.getDate() - 1);
         const ds = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;

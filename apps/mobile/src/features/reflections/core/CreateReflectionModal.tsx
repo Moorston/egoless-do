@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
@@ -38,6 +38,7 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [selectedMood, setSelectedMood] = useState<Mood | undefined>();
+  const savingRef = useRef(false);
 
   const handleAddTag = useCallback(() => {
     const tag = tagInput.trim();
@@ -52,7 +53,8 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
   }, []);
 
   const handleSave = useCallback(() => {
-    if (!content.trim()) return;
+    if (!content.trim() || savingRef.current) return;
+    savingRef.current = true;
 
     // 创建感念
     const newR = addReflection({
@@ -71,6 +73,7 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
     setTags([]);
     setSelectedMood(undefined);
     setTagInput('');
+    savingRef.current = false;
     onClose();
   }, [content, tags, selectedMood, trailId, addReflection, addReflectionToTrail, onClose]);
 

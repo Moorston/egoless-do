@@ -65,6 +65,7 @@ export function filterReflections(
 ): MindReflection[] {
   return reflections.filter(r => {
     if (r.deleted) return false;
+    if (!r.content?.trim()) return false;
     const tags = r.tags ?? [];
     if (filters.tags.length > 0 && !filters.tags.some(t => tags.includes(t))) return false;
     if (filters.moods.length > 0 && !filters.moods.includes(r.mood)) return false;
@@ -124,7 +125,7 @@ export function computeDynamicTagCounts(
     if (filters.search.trim()) {
       const q = filters.search.toLowerCase();
       const match = r.content.toLowerCase().includes(q) ||
-        r.tags.some(t => t.toLowerCase().includes(q)) ||
+        (r.tags ?? []).some(t => t.toLowerCase().includes(q)) ||
         (r.mood && r.mood.toLowerCase().includes(q));
       if (!match) return false;
     }
@@ -155,7 +156,7 @@ export function computeDynamicMoodCounts(
     if (filters.search.trim()) {
       const q = filters.search.toLowerCase();
       const match = r.content.toLowerCase().includes(q) ||
-        r.tags.some(t => t.toLowerCase().includes(q)) ||
+        (r.tags ?? []).some(t => t.toLowerCase().includes(q)) ||
         (r.mood && r.mood.toLowerCase().includes(q));
       if (!match) return false;
     }

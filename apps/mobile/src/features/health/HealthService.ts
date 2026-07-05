@@ -153,7 +153,8 @@ export async function readTodaySteps(): Promise<number> {
           endTime: now.toISOString(),
         },
       });
-      return result.reduce((sum: number, r: { count?: number }) => sum + (r.count ?? 0), 0);
+      const records = result.records ?? result;
+      return (Array.isArray(records) ? records : []).reduce((sum: number, r: { count?: number }) => sum + (r.count ?? 0), 0);
     }
 
     return 0;
@@ -200,10 +201,13 @@ export async function readLatestWeight(): Promise<{ value: number; date: string 
         ascendingOrder: false,
         pageSize: 1,
       });
-      if (result.length === 0) return null;
-      const r = result[0];
+      const records = result.records ?? result;
+      if (!Array.isArray(records) || records.length === 0) return null;
+      const r = records[0];
+      const kg = r.weight?.inKilograms ?? r.weight;
+      if (kg == null || isNaN(kg)) return null;
       return {
-        value: Math.round((r.weight?.inKilograms ?? r.weight) * 10) / 10,
+        value: Math.round(kg * 10) / 10,
         date: r.time?.slice(0, 10) ?? dateStr(),
       };
     }

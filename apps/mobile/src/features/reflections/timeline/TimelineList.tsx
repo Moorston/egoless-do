@@ -52,7 +52,7 @@ export function TimelineList({
         // 计算时间间隔
         let dayGap = 0;
         if (nextItem) {
-          dayGap = Math.round((nextItem.timestamp - ti.timestamp) / DAY_MS);
+          dayGap = Math.round((ti.timestamp - nextItem.timestamp) / DAY_MS);
         }
 
         // 查找与下一条的连接

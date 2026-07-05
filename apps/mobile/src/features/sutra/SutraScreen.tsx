@@ -7,7 +7,7 @@ import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/U
 import { useRootNavigation } from '../../navigation/hooks';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES, dateStr } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import type { MantraDef, MantraCategory } from '@egoless-do/core';
 import { MalaRing } from '../shared/components/MalaRing';
@@ -42,6 +42,7 @@ function SutraScreenInner() {
   })));
   useKeepAwake();
   const { playSutra, stopSutra, isPlaying } = useSutraAudio();
+  useEffect(() => () => { stopSutra(); }, [stopSutra]);
   const { getCachedPath, downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
 
   const [page, setPage] = useState<SutraPage>('select');
@@ -235,7 +236,7 @@ function SutraScreenInner() {
     if (!selectedSutra || !pendingSessionData) { setShowDedication(false); setPage('select'); return; }
     addMantraSession({
       mantraId: selectedSutra.id,
-      date: new Date().toISOString().slice(0, 10),
+      date: dateStr(),
       count: pendingSessionData.count,
       rounds: pendingSessionData.rounds,
       durationSec: pendingSessionData.durationSec,

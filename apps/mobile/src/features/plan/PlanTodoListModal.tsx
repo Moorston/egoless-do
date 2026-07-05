@@ -16,7 +16,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
   const today = dateStr();
 
   const activePlan = useMemo(() => getActivePlan(plans ?? []), [plans]);
-  const checkins = planItemCheckins ?? [];
+  const checkins = useMemo(() => planItemCheckins ?? [], [planItemCheckins]);
   const todayItems = useMemo(() => {
     if (!activePlan) return [];
     return getTodayItems(planItems ?? [], activePlan, today, checkins);

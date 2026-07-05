@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Flag, Target, Star, Plus, ChevronDown, ChevronUp } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
-import type { Vision, VisionType, VisionStatus, Theme, Plan, PlanItem, RefType, VisionTimeFrame } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
+import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import VisionCard from './components/VisionCard';
@@ -16,12 +16,13 @@ interface Props {
 
 export default function VowTab({ TH, T, visionProgress }: Props) {
   const { visions: visionsRaw, plans: plansRaw, planItems: planItemsRaw,
-    updateVision, removeVisionPracticesByVision, addVisionPractice, addVision,
+    updateVision, updatePlan, removeVisionPracticesByVision, addVisionPractice, addVision,
     achieveVision, archiveVision } = useAppStore(useShallow(s => ({
     visions: s.visions,
     plans: s.plans,
     planItems: s.planItems,
     updateVision: s.updateVision,
+    updatePlan: s.updatePlan,
     removeVisionPracticesByVision: s.removeVisionPracticesByVision,
     addVisionPractice: s.addVisionPractice,
     addVision: s.addVision,
@@ -60,8 +61,12 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
       taskDone += items.filter((i: PlanItem) => i.status === 'completed').length;
       taskTotal += items.length;
     }
-    return { planDone, planTotal: linked.length, taskDone, taskTotal };
+    return { planDone, planTotal: linked.length, taskDone, taskTotal, linkedPlans: linked };
   }, [plans, planItems]);
+
+  const handleTimeFrameChange = useCallback((visionId: string, tf: VisionTimeFrame) => {
+    updateVision(visionId, { timeFrame: tf });
+  }, [updateVision]);
 
   const handleCreate = (type: VisionType) => {
     const existing = visions.find(v => v.type === type && v.status === 'active');
@@ -83,28 +88,41 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
     setShowModal(true);
   };
 
-  const handleSave = (data: { text: string; timeFrame?: string; deadline?: string; linkedPractices: { refType: RefType; refId: string }[] }) => {
+  const handleSave = (data: { text: string; timeFrame?: string; startDate?: string; deadline?: string; linkedHabitIds: string[]; linkedPlanIds: string[] }) => {
     if (editingVision) {
       updateVision(editingVision.id, {
         text: data.text,
         timeFrame: data.timeFrame as VisionTimeFrame | undefined,
+        startDate: data.startDate,
         deadline: data.deadline,
       });
-      // Update linked practices
+      // Update habit practices (via VisionPractice)
       removeVisionPracticesByVision(editingVision.id);
-      for (const lp of data.linkedPractices) {
-        addVisionPractice({ visionId: editingVision.id, refType: lp.refType, refId: lp.refId });
+      for (const hId of data.linkedHabitIds) {
+        addVisionPractice({ visionId: editingVision.id, refType: 'habit', refId: hId });
+      }
+      // Update plan links (via Plan.visionId)
+      const prevLinkedPlanIds = plans.filter(p => p.visionId === editingVision.id).map(p => p.id);
+      for (const pid of prevLinkedPlanIds) {
+        if (!data.linkedPlanIds.includes(pid)) updatePlan(pid, { visionId: undefined });
+      }
+      for (const pid of data.linkedPlanIds) {
+        if (!prevLinkedPlanIds.includes(pid)) updatePlan(pid, { visionId: editingVision.id });
       }
     } else {
       const result = addVision({
         type: editType,
         text: data.text,
         timeFrame: data.timeFrame,
+        startDate: data.startDate || dateStr(),
         deadline: data.deadline,
       });
       if (result) {
-        for (const lp of data.linkedPractices) {
-          addVisionPractice({ visionId: result.id, refType: lp.refType, refId: lp.refId });
+        for (const hId of data.linkedHabitIds) {
+          addVisionPractice({ visionId: result.id, refType: 'habit', refId: hId });
+        }
+        for (const pid of data.linkedPlanIds) {
+          updatePlan(pid, { visionId: result.id });
         }
       }
     }
@@ -140,9 +158,11 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
             T={T}
             pct={getProgress(active)}
             {...getVisionStats(active)}
+            planItems={planItems}
             onEdit={handleEdit}
             onAchieve={handleAchieve}
             onArchive={handleArchive}
+            onTimeFrameChange={handleTimeFrameChange}
           />
         ) : (
           <TouchableOpacity
@@ -198,6 +218,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
               T={T}
               pct={getProgress(v)}
               {...getVisionStats(v)}
+              planItems={planItems}
               onEdit={handleEdit}
               onAchieve={handleAchieve}
               onArchive={handleArchive}

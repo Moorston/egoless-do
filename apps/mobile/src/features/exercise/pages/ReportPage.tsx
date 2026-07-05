@@ -26,7 +26,7 @@ export default function ReportPage(props: ExercisePageProps) {
         <View style={{ height: 200, margin: 16, borderRadius: 16, overflow: 'hidden' }}>
           {amapReady && MapView ? (
             <MapView style={{ flex: 1 }} initialCameraPosition={{ target: initialPos, zoom: 14 }} myLocationEnabled={false} zoomGesturesEnabled={false} scrollGesturesEnabled={false}>
-              {Polyline && <Polyline coordinates={coords} color={COLORS.GREEN} width={4} />}
+              {Polyline && <Polyline points={coords} color={COLORS.GREEN} width={4} />}
             </MapView>
           ) : (
             <View style={{ flex: 1, backgroundColor: '#1a1a2e' }} />

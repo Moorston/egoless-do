@@ -3,7 +3,7 @@
  * 封装反向地理编码服务为 React Hook
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { getCityInfo, CityInfo } from '@egoless-do/core';
 
 // 全局缓存，避免重复请求
@@ -102,6 +102,10 @@ export function useCityNameBatch(
   coordinates: Array<{ lat: number; lng: number }>
 ): Map<string, UseCityNameResult> {
   const [results, setResults] = useState<Map<string, UseCityNameResult>>(new Map());
+  const coordKey = useMemo(
+    () => coordinates.map(c => `${c.lat.toFixed(3)},${c.lng.toFixed(3)}`).join('|'),
+    [coordinates]
+  );
   const mountedRef = useRef(true);
 
   useEffect(() => {
@@ -176,7 +180,7 @@ export function useCityNameBatch(
     };
 
     loadCities();
-  }, [coordinates]);
+  }, [coordKey]);
 
   return results;
 }

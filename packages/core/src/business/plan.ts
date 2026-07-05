@@ -115,11 +115,10 @@ export function computeExpectedDays(
   frequency: CheckinFrequency | undefined,
   startDate: string,
   endDate: string,
-  today: string,
+  _today: string,
 ): number {
   const freq = frequency ?? { mode: 'daily' };
-  const clampedEnd = today > endDate ? endDate : today;
-  const totalElapsed = daysBetween(startDate, clampedEnd) + 1;
+  const totalElapsed = daysBetween(startDate, endDate) + 1;
   if (totalElapsed <= 0) return 0;
 
   switch (freq.mode) {
@@ -127,10 +126,10 @@ export function computeExpectedDays(
       return totalElapsed;
 
     case 'interval': {
-      // Every N days: count how many period starts fall within [startDate, clampedEnd]
+      // Every N days: count how many period starts fall within [startDate, endDate]
       const every = Math.max(1, freq.every);
       // First period start is startDate, then startDate + every, startDate + 2*every, ...
-      const elapsed = daysBetween(startDate, clampedEnd);
+      const elapsed = daysBetween(startDate, endDate);
       return Math.floor(elapsed / every) + 1;
     }
 
@@ -139,11 +138,11 @@ export function computeExpectedDays(
       const target = freq.target;
       let expected = 0;
       let cursor = startDate;
-      while (cursor <= clampedEnd) {
+      while (cursor <= endDate) {
         const ws = weekStart(cursor);
         const we = addDays(ws, 6);
         const periodStart = cursor > ws ? cursor : ws;
-        const periodEnd = clampedEnd < we ? clampedEnd : we;
+        const periodEnd = endDate < we ? endDate : we;
         const periodDays = daysBetween(periodStart, periodEnd) + 1;
         expected += Math.min(Math.ceil((periodDays / 7) * target), target);
         cursor = addDays(we, 1);
@@ -152,12 +151,12 @@ export function computeExpectedDays(
     }
 
     case 'weekly_fixed': {
-      // Count how many of the specified weekdays fall within [startDate, clampedEnd]
+      // Count how many of the specified weekdays fall within [startDate, endDate]
       if (!freq.days || freq.days.length === 0) return 0; // Guard: empty days = no expected
       const daySet = new Set(freq.days);
       let count = 0;
       let cursor = startDate;
-      while (cursor <= clampedEnd) {
+      while (cursor <= endDate) {
         if (daySet.has(dayOfWeek(cursor))) count++;
         cursor = addDays(cursor, 1);
       }
@@ -169,11 +168,11 @@ export function computeExpectedDays(
       const target = freq.target;
       let expected = 0;
       let cursor = startDate;
-      while (cursor <= clampedEnd) {
+      while (cursor <= endDate) {
         const ms = monthStart(cursor);
         const me = addDays(addDays(ms, daysInMonth(ms) - 1), 0); // last day of month
         const periodStart = cursor > ms ? cursor : ms;
-        const periodEnd = clampedEnd < me ? clampedEnd : me;
+        const periodEnd = endDate < me ? endDate : me;
         const monthDays = daysInMonth(periodStart);
         const periodDays = daysBetween(periodStart, periodEnd) + 1;
         expected += Math.min(Math.ceil((periodDays / monthDays) * target), target);
@@ -183,11 +182,11 @@ export function computeExpectedDays(
     }
 
     case 'monthly_fixed': {
-      // Count how many of the specified month-days fall within [startDate, clampedEnd]
+      // Count how many of the specified month-days fall within [startDate, endDate]
       const dateSet = new Set(freq.dates);
       let count = 0;
       let cursor = startDate;
-      while (cursor <= clampedEnd) {
+      while (cursor <= endDate) {
         const dom = dayOfMonth(cursor);
         const maxDom = daysInMonth(cursor);
         // Check if today's day-of-month is in the set (skip dates > month length)
@@ -234,7 +233,9 @@ export function shouldShowToday(
           doneInPeriod++;
         }
       }
-      return doneInPeriod < 1; // target = 1 per interval period
+      // Keep visible today if already checked in (prevents task from disappearing after completion)
+      const hasTodayCheckin = checkins.some(c => c.date === today && !c.deleted);
+      return hasTodayCheckin || doneInPeriod < 1; // target = 1 per interval period
     }
 
     case 'weekly': {
@@ -242,7 +243,9 @@ export function shouldShowToday(
       const ws = weekStart(today);
       const we = addDays(ws, 6);
       const doneThisWeek = checkins.filter(c => c.done && !c.deleted && c.date >= ws && c.date <= we).length;
-      return doneThisWeek < freq.target;
+      // Keep visible today if already checked in (prevents task from disappearing after completion)
+      const hasTodayCheckin = checkins.some(c => c.date === today && !c.deleted);
+      return hasTodayCheckin || doneThisWeek < freq.target;
     }
 
     case 'weekly_fixed':

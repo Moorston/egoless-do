@@ -173,12 +173,12 @@ export function ReviewAIPanel({
                     {insightCache.summary}
                   </Text>
 
-                  {insightCache.keyPoints.length > 0 && (
+                  {(insightCache.keyPoints ?? []).length > 0 && (
                     <>
                       <Text style={[styles.sectionLabel, { color: TH.sub }]}>
                         {T('trailInsightKeyPoints')}
                       </Text>
-                      {insightCache.keyPoints.map((point, i) => (
+                      {(insightCache.keyPoints ?? []).map((point, i) => (
                         <Text key={i} style={[styles.bulletText, { color: TH.text }]}>
                           • {point}
                         </Text>
@@ -186,12 +186,12 @@ export function ReviewAIPanel({
                     </>
                   )}
 
-                  {insightCache.turningPoints.length > 0 && (
+                  {(insightCache.turningPoints ?? []).length > 0 && (
                     <>
                       <Text style={[styles.sectionLabel, { color: TH.sub }]}>
                         {T('trailInsightTurningPoints')}
                       </Text>
-                      {insightCache.turningPoints.map((point, i) => (
+                      {(insightCache.turningPoints ?? []).map((point, i) => (
                         <Text key={i} style={[styles.bulletText, { color: TH.text }]}>
                           • {point}
                         </Text>
@@ -199,12 +199,12 @@ export function ReviewAIPanel({
                     </>
                   )}
 
-                  {insightCache.suggestions.length > 0 && (
+                  {(insightCache.suggestions ?? []).length > 0 && (
                     <>
                       <Text style={[styles.sectionLabel, { color: TH.sub }]}>
                         {T('trailInsightSuggestions')}
                       </Text>
-                      {insightCache.suggestions.map((s, i) => (
+                      {(insightCache.suggestions ?? []).map((s, i) => (
                         <Text key={i} style={[styles.bulletText, { color: TH.text }]}>
                           • {s}
                         </Text>

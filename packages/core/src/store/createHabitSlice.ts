@@ -26,8 +26,12 @@ export function createHabitSlice(
     },
 
     updateHabit(id: string, patch: Partial<Habit>) {
-      set(s => ({ habits: updateHabitInList(s.habits ?? [], id, patch) }));
-      const updated = get().habits.find(h => h.id === id && !h.deleted);
+      let updated: Habit | undefined;
+      set(s => {
+        const newList = updateHabitInList(s.habits ?? [], id, patch);
+        updated = newList.find(h => h.id === id && !h.deleted);
+        return { habits: newList };
+      });
       if (updated) adapter.persistChange('habit', id, updated).catch(e => log.error(e));
     },
 
@@ -42,35 +46,49 @@ export function createHabitSlice(
         .map(i => i.id);
 
       // Atomic: recycle bin + soft-delete + plan item cleanup in one set()
-      set(s => ({
-        habits: deleteHabitFromList(s.habits ?? [], id),
-        planItems: (s.planItems ?? []).map(i =>
+      // Capture updated plan items inside set() to avoid race condition
+      let updatedPlanItems: import('../types').PlanItem[] = [];
+      set(s => {
+        const newPlanItems = (s.planItems ?? []).map(i =>
           affectedPlanItemIds.includes(i.id)
             ? { ...i, linkConfig: { ...i.linkConfig, habitId: undefined }, updatedAt: Date.now() }
             : i
-        ),
-        ...(habit ? { recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'habit' as const, data: habit, deletedAt: Date.now() }] } : {}),
-      }));
+        );
+        updatedPlanItems = newPlanItems;
+        return {
+          habits: deleteHabitFromList(s.habits ?? [], id),
+          planItems: newPlanItems,
+          ...(habit ? { recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'habit' as const, data: habit, deletedAt: Date.now() }] } : {}),
+        };
+      });
       adapter.markDeleted('habit', id).catch(e => log.error(e));
 
-      // Persist affected plan items
+      // Persist affected plan items (captured from inside set())
       const planItemIdSet = new Set(affectedPlanItemIds);
-      (get().planItems ?? [])
+      (updatedPlanItems ?? [])
         .filter(i => planItemIdSet.has(i.id))
         .forEach(i => adapter.persistChange('planItem', i.id, i).catch(e => log.error(e)));
       onSync?.();
     },
 
     checkinHabit(id: string, date: string) {
-      set(s => ({ habits: checkinHabitInList(s.habits ?? [], id, date) }));
-      const updated = get().habits.find(h => h.id === id && !h.deleted);
+      let updated: Habit | undefined;
+      set(s => {
+        const newList = checkinHabitInList(s.habits ?? [], id, date);
+        updated = newList.find(h => h.id === id && !h.deleted);
+        return { habits: newList };
+      });
       if (updated) adapter.persistChange('habit', id, updated).catch(e => log.error(e));
       onSync?.();
     },
 
     changeHabitStatus(id: string, ns: Habit['status'], reason?: string) {
-      set(s => ({ habits: changeHabitStatusInList(s.habits ?? [], id, ns, reason) }));
-      const updated = get().habits.find(h => h.id === id && !h.deleted);
+      let updated: Habit | undefined;
+      set(s => {
+        const newList = changeHabitStatusInList(s.habits ?? [], id, ns, reason);
+        updated = newList.find(h => h.id === id && !h.deleted);
+        return { habits: newList };
+      });
       if (updated) adapter.persistChange('habit', id, updated).catch(e => log.error(e));
     },
 

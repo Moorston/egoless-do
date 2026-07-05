@@ -15,7 +15,15 @@ export const translations: Record<string, I18nKeys> = {
 };
 
 export const getT = (lang: string): I18nKeys => translations[lang] ?? zh;
-export const t = (key: I18nKey | (string & {}), lang: string = 'zh'): string => {
+
+/**
+ * Type-safe translation lookup.
+ * @param key - Must be a valid key from I18nKeys (compile-time checked).
+ *                If you need dynamic keys, use getT(lang)[key as I18nKey].
+ * @param lang - Language code ('zh', 'en', 'zh-Hant'). Defaults to 'zh'.
+ * @returns Translated string, or the key itself if translation is missing.
+ */
+export const t = (key: I18nKey, lang: string = 'zh'): string => {
   const dict = translations[lang] ?? translations['zh'];
   return (dict as unknown as Record<string, string>)?.[key]
     ?? (translations['en'] as unknown as Record<string, string>)?.[key]

@@ -1,20 +1,32 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import * as Notifications from 'expo-notifications';
 import { AppState, Platform } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
-import { dateStr } from '@egoless-do/core';
-import { createLogger } from '@egoless-do/core';
+import { dateStr, createLogger } from '@egoless-do/core';
+
 const log = createLogger('SleepNotify');
 
-// Configure notification handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+// Lazy-loaded expo-notifications — deferred until first actual use
+let _Notifications: typeof import('expo-notifications') | null = null;
+let _handlerConfigured = false;
+
+function getNotifications(): typeof import('expo-notifications') {
+  if (!_Notifications) {
+    _Notifications = require('expo-notifications');
+  }
+  // Configure handler once on first access
+  if (!_handlerConfigured) {
+    _handlerConfigured = true;
+    _Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+      }),
+    });
+  }
+  return _Notifications;
+}
 
 export function useSleepNotifications() {
   const { sleepGoal, getTodaySleep, saveSleepDiary } = useAppStore(useShallow(s => ({
@@ -29,6 +41,7 @@ export function useSleepNotifications() {
   // Request notification permissions
   const requestPermissions = useCallback(async () => {
     if (Platform.OS === 'web') return false;
+    const Notifications = getNotifications();
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
@@ -41,6 +54,7 @@ export function useSleepNotifications() {
   // Schedule sleep reminders
   const scheduleReminders = useCallback(async () => {
     if (!sleepGoal.enabled) return;
+    const Notifications = getNotifications();
 
     // Cancel existing sleep notifications
     await cancelReminders();
@@ -96,6 +110,7 @@ export function useSleepNotifications() {
 
   // Cancel sleep notifications
   const cancelReminders = useCallback(async () => {
+    const Notifications = getNotifications();
     await Notifications.cancelScheduledNotificationAsync('sleep-reminder-before').catch(() => {});
     await Notifications.cancelScheduledNotificationAsync('sleep-reminder-bedtime').catch(() => {});
   }, []);
@@ -103,6 +118,7 @@ export function useSleepNotifications() {
   // Handle foreground notification (show modal instead)
   useEffect(() => {
     if (!sleepGoal.enabled) return;
+    const Notifications = getNotifications();
 
     const subscription = Notifications.addNotificationReceivedListener(notification => {
       const type = notification.request.content.data?.type;
@@ -129,6 +145,7 @@ export function useSleepNotifications() {
   // Handle notification tap (when app was in background)
   useEffect(() => {
     if (!sleepGoal.enabled) return;
+    const Notifications = getNotifications();
 
     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
       const type = response.notification.request.content.data?.type;

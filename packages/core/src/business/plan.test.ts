@@ -88,58 +88,62 @@ describe('updatePlanItem', () => {
 });
 
 describe('computeExpectedDays', () => {
-  it('should return total elapsed days for daily mode', () => {
+  it('should return total expected days for the full item period (daily mode)', () => {
     const freq: CheckinFrequency = { mode: 'daily' };
-    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-05')).toBe(5);
+    // today before endDate — still returns total (10 days)
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-05')).toBe(10);
     expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-10')).toBe(10);
-    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-15')).toBe(10); // clamped to endDate
+    // today past endDate — still returns total
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-15')).toBe(10);
   });
 
   it('should return correct count for interval mode', () => {
     const freq: CheckinFrequency = { mode: 'interval', every: 3 };
-    // Every 3 days: day 1, 4, 7, 10 = 4 periods in 10 days
+    // Every 3 days: day 1, 4, 7, 10 = 4 periods in 10 days (regardless of today)
     expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-10')).toBe(4);
-    // Every 3 days: day 1, 4 = 2 periods in 5 days
-    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-05')).toBe(2);
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-10', '2026-01-05')).toBe(4);
   });
 
-  it('should return correct count for weekly mode with incomplete weeks', () => {
+  it('should return correct count for weekly mode', () => {
     const freq: CheckinFrequency = { mode: 'weekly', target: 3 };
-    // Jan 1 2026 is Thursday
-    // First partial week: Jan 1 (Thu) to Jan 4 (Sun) = 4 days, 4/7 * 3 = 1.71, ceil = 2
-    // Second partial week: Jan 5 (Mon) to Jan 7 (Wed) = 3 days, 3/7 * 3 = 1.29, ceil = 2
-    // Total: 2 + 2 = 4
-    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-14', '2026-01-07')).toBe(4);
-    // Full week Mon-Sun = 7 days, 7/7 * 3 = 3
-    expect(computeExpectedDays(freq, '2026-01-05', '2026-01-18', '2026-01-11')).toBe(3);
+    // Jan 1-14 (Thu→Wed): partial week (4/7*3=ceil1.71=2) + full week (3) + partial week (3/7*3=ceil1.29=2) = 7
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-14', '2026-01-07')).toBe(7);
+    // Jan 5-18 (Mon→Sun): full week (3) + full week (3) = 6
+    expect(computeExpectedDays(freq, '2026-01-05', '2026-01-18', '2026-01-11')).toBe(6);
   });
 
   it('should return correct count for weekly_fixed mode', () => {
     const freq: CheckinFrequency = { mode: 'weekly_fixed', days: [1, 3, 5] }; // Mon, Wed, Fri
-    // Jan 1 2026 is Thursday, so Jan 1-7 has: Fri(2), Mon(5), Wed(7) = 3 days
+    // Jan 1-7 has: Fri(2), Mon(5), Wed(7) = 3 days (regardless of today)
     expect(computeExpectedDays(freq, '2026-01-01', '2026-01-07', '2026-01-07')).toBe(3);
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-07', '2026-01-03')).toBe(3);
   });
 
   it('should return correct count for monthly mode', () => {
     const freq: CheckinFrequency = { mode: 'monthly', target: 10 };
-    // January has 31 days, 10 days target
-    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-31', '2026-01-15')).toBe(5); // 15/31 * 10 = 4.8, ceil = 5
+    // January has 31 days, 10 days target — total is 10 (regardless of today)
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-31', '2026-01-15')).toBe(10);
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-31', '2026-01-31')).toBe(10);
   });
 
   it('should return correct count for monthly_fixed mode', () => {
     const freq: CheckinFrequency = { mode: 'monthly_fixed', dates: [1, 15] };
-    // Jan 1-31 has day 1 and day 15 = 2 dates
+    // Jan 1-31 has day 1 and day 15 = 2 dates (regardless of today)
     expect(computeExpectedDays(freq, '2026-01-01', '2026-01-31', '2026-01-31')).toBe(2);
-    // Jan 1-10 has only day 1 = 1 date
-    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-31', '2026-01-10')).toBe(1);
+    expect(computeExpectedDays(freq, '2026-01-01', '2026-01-31', '2026-01-10')).toBe(2);
   });
 
   it('should default to daily mode when frequency is undefined', () => {
-    expect(computeExpectedDays(undefined, '2026-01-01', '2026-01-10', '2026-01-05')).toBe(5);
+    expect(computeExpectedDays(undefined, '2026-01-01', '2026-01-10', '2026-01-05')).toBe(10);
   });
 
-  it('should return 0 when today is before startDate', () => {
-    expect(computeExpectedDays({ mode: 'daily' }, '2026-01-05', '2026-01-10', '2026-01-01')).toBe(0);
+  it('should return total range even when today is before startDate', () => {
+    // startDate=Jan 5, endDate=Jan 10 → 6 days total
+    expect(computeExpectedDays({ mode: 'daily' }, '2026-01-05', '2026-01-10', '2026-01-01')).toBe(6);
+  });
+
+  it('should return 0 when endDate is before startDate', () => {
+    expect(computeExpectedDays({ mode: 'daily' }, '2026-01-10', '2026-01-05', '2026-01-01')).toBe(0);
   });
 });
 
@@ -157,13 +161,15 @@ describe('shouldShowToday', () => {
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-02', [])).toBe(true);
   });
 
-  it('should NOT show on interval day if already checked in that period', () => {
+  it('should stay visible on interval checkin day, hide next period', () => {
     const freq: CheckinFrequency = { mode: 'interval', every: 3 };
     const checkins: PlanItemCheckin[] = [
       { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
     ];
-    // Period 0 target met (1 checkin done) → should NOT show
-    expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', checkins)).toBe(false);
+    // Checked in today → stays visible
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-01', checkins)).toBe(true);
+    // Next day (same period, already done) → hidden
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-02', checkins)).toBe(false);
     // Period 1 (day 3-5) has no checkins → should show
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-04', checkins)).toBe(true);
   });
@@ -177,13 +183,16 @@ describe('shouldShowToday', () => {
     expect(shouldShowToday(freq, '2026-01-01', '2026-01-07', checkins)).toBe(true);
   });
 
-  it('should not show if weekly target met', () => {
+  it('should stay visible on weekly checkin day, hide later in week when target met', () => {
     const freq: CheckinFrequency = { mode: 'weekly', target: 2 };
     const checkins: PlanItemCheckin[] = [
       { id: 'c1', planItemId: 'item1', date: '2026-01-06', done: true, updatedAt: 0, deleted: false },
       { id: 'c2', planItemId: 'item1', date: '2026-01-07', done: true, updatedAt: 0, deleted: false },
     ];
-    expect(shouldShowToday(freq, '2026-01-01', '2026-01-07', checkins)).toBe(false);
+    // Checked in today (Jan 7) → stays visible
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-07', checkins)).toBe(true);
+    // Later in same week, target met → hidden
+    expect(shouldShowToday(freq, '2026-01-01', '2026-01-08', checkins)).toBe(false);
   });
 
   it('should show only on specified weekdays for weekly_fixed', () => {
@@ -239,8 +248,8 @@ describe('computeItemProgress', () => {
       { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
       { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
     ];
-    // 2 done / 5 expected = 40%
-    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(40);
+    // 2 done / 10 total expected = 20%
+    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(20);
   });
 
   it('should calculate progress for interval mode', () => {
@@ -266,8 +275,8 @@ describe('computeItemProgress', () => {
       { id: 'c1', planItemId: 'other', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
       { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
     ];
-    // 1 done / 5 expected = 20%
-    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(20);
+    // 1 done / 10 total expected = 10%
+    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(10);
   });
 
   it('should ignore undone checkins', () => {
@@ -275,8 +284,8 @@ describe('computeItemProgress', () => {
       { id: 'c1', planItemId: 'item1', date: '2026-01-01', done: true, updatedAt: 0, deleted: false },
       { id: 'c2', planItemId: 'item1', date: '2026-01-02', done: false, updatedAt: 0, deleted: false },
     ];
-    // 1 done / 5 expected = 20%
-    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(20);
+    // 1 done / 10 total expected = 10%
+    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(10);
   });
 
   it('should clamp today to endDate', () => {
@@ -295,7 +304,7 @@ describe('computeItemProgress', () => {
       { id: 'c3', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
       { id: 'c4', planItemId: 'item1', date: '2026-01-02', done: true, updatedAt: 0, deleted: false },
     ];
-    // 2 unique dates done / 5 expected = 40%
-    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(40);
+    // 2 unique dates done / 10 total expected = 20%
+    expect(computeItemProgress(baseItem, checkins, '2026-01-05')).toBe(20);
   });
 });

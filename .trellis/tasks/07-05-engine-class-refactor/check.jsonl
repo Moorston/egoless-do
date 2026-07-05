@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/mobile/frontend/index.md", "reason": "Mobile frontend rules: file size limits (<800 lines hard), useTheme() required, no hardcoded colors"}
+{"file": ".trellis/spec/core/frontend/hook-guidelines.md", "reason": "Hook naming (use*), dependency injection patterns, testability"}
+{"file": ".trellis/spec/core/frontend/component-guidelines.md", "reason": "Single responsibility, Props interface, memo usage"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Cross-layer boundary: no app-specific deps in core hooks"}

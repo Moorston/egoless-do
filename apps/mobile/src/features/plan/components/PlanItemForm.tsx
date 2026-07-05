@@ -44,12 +44,7 @@ const FREQ_MODE_LABELS: Record<string, string> = {
   monthly_fixed: '每月固定',
 };
 
-const today = dateStr();
-const defaultEnd = (() => {
-  const d = new Date();
-  d.setDate(d.getDate() + 30);
-  return dateStr(d);
-})();
+// These are computed at render time inside the component to avoid stale dates after midnight
 
 export function PlanItemForm({
   initialValues,
@@ -60,6 +55,8 @@ export function PlanItemForm({
   errors = {},
 }: PlanItemFormProps) {
   const TH = useTheme();
+  const today = dateStr();
+  const defaultEnd = (() => { const d = new Date(); d.setDate(d.getDate() + 30); return dateStr(d); })();
 
   const [name, setName] = useState(initialValues?.name ?? '');
   const [description, setDescription] = useState(initialValues?.description ?? '');

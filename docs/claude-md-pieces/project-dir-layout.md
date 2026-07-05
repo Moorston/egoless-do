@@ -14,7 +14,7 @@
 │   │       ├── net/               # 网络层工具 (offline-aware)
 │   │       ├── i18n/              # 国际化初始化
 │   │       └── navigation/        # 导航配置
-│   └── web/                       # Web 端 (可选/PWA)
+│   └── _archive/ web-legacy/         # 已归档的废弃 web 应用
 ├── packages/
 │   ├── core/                      # 共享业务逻辑（平台无关）
 │   │   ├── ai/                    # AI 服务 + RAG

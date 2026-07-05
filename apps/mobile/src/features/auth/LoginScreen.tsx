@@ -47,8 +47,9 @@ export default function LoginScreen() {
       } else {
         setEmailStatus('registered');
       }
-    } catch {
+    } catch (e) {
       if (!mountedRef.current) return;
+      log.warn('Email check failed:', e);
       setEmailStatus('idle');
     }
   };

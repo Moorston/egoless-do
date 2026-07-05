@@ -1,5 +1,5 @@
 export type RootStackParamList = {
-  MainTabs: undefined;
+  MainTabs: { screen?: keyof MainTabParamList; [key: string]: unknown } | undefined;
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;

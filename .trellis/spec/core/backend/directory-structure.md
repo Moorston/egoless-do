@@ -6,7 +6,7 @@
 
 ## Overview
 
-`packages/core/src/` is the **sole source of truth** for business logic, types, shared state slices, sync protocol, and utilities. Both `apps/mobile/` and `apps/web/` import from here.
+`packages/core/src/` is the **sole source of truth** for business logic, types, shared state slices, sync protocol, and utilities. Both `apps/mobile/` (and previously `apps/web/`, now archived) import from here.
 
 Core must remain **platform-agnostic** — no React, no React Native, no DOM APIs. Pure TypeScript only.
 

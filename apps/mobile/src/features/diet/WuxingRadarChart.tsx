@@ -24,19 +24,17 @@ export default function WuxingRadarChart({ stats, size = 240, colors = DEFAULT_C
   const radius = size / 2 - 30; // leave space for labels
   const levels = 5; // 5 concentric pentagons
 
-  // Calculate pentagon vertices for a given radius
-  const getVertices = (r: number) => {
-    return ELEMENTS.map((_, i) => {
-      const angle = (i * 72 - 90) * Math.PI / 180;
-      return {
-        x: center + r * Math.cos(angle),
-        y: center + r * Math.sin(angle),
-      };
-    });
-  };
-
   // Grid lines (concentric pentagons)
   const gridPolygons = useMemo(() => {
+    const getVertices = (r: number) => {
+      return ELEMENTS.map((_, i) => {
+        const angle = (i * 72 - 90) * Math.PI / 180;
+        return {
+          x: center + r * Math.cos(angle),
+          y: center + r * Math.sin(angle),
+        };
+      });
+    };
     return Array.from({ length: levels }, (_, i) => {
       const r = (radius * (i + 1)) / levels;
       const vertices = getVertices(r);

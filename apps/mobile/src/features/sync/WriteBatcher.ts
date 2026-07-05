@@ -29,14 +29,17 @@ export class WriteBatcher {
     const key = `${entity}:${id}`;
     const existing = this._pendingWrites.get(key);
     if (existing) {
-      // Merge: keep the latest data, merge changedFields
-      existing.data = { ...existing.data, ...data };
-      existing.operation = 'upsert';
-      if (changedFields) {
-        existing.changedFields = existing.changedFields
-          ? [...new Set([...existing.changedFields, ...changedFields])]
-          : changedFields;
-      }
+      // If the existing entry is a delete, don't resurrect it — keep the delete
+      if (existing.operation === 'delete') return;
+      // Create a NEW object (don't mutate in-place) to avoid corrupting in-flight flush snapshots
+      this._pendingWrites.set(key, {
+        entity, id,
+        data: { ...existing.data, ...data },
+        operation: 'upsert',
+        changedFields: changedFields
+          ? [...new Set([...(existing.changedFields ?? []), ...changedFields])]
+          : existing.changedFields,
+      });
     } else {
       this._pendingWrites.set(key, { entity, id, data, operation: 'upsert', changedFields });
     }
@@ -82,8 +85,6 @@ export class WriteBatcher {
 
     const db = await openDatabase();
     try {
-      // Ensure sync_queue unique index exists (defensive)
-      await db.execAsync('CREATE UNIQUE INDEX IF NOT EXISTS idx_sync_queue_entity ON sync_queue(entity, entity_id)');
       await withDbLock(async () => {
         for (const w of writes) {
           const config = ENTITY_TABLE_MAP[w.entity];
@@ -109,7 +110,7 @@ export class WriteBatcher {
             if (result.changes === 0) {
               try {
                 await db.runAsync(
-                  `INSERT INTO ${config.table} (${columns.join(',')},synced) VALUES (${placeholders},0)`,
+                  `INSERT INTO ${config.table} (${columns.join(',')},deleted,synced) VALUES (${placeholders},0,0)`,
                   values,
                 );
               } catch (insertErr: unknown) {
@@ -143,47 +144,47 @@ export class WriteBatcher {
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
       let allFallbacksOk = true;
-      for (const w of writes) {
-        const config = ENTITY_TABLE_MAP[w.entity];
-        if (!config) continue;
-        try {
-          const db2 = await openDatabase();
-          // Fallback: write to both data table AND sync_queue individually
-          if (w.operation === 'delete') {
-            await db2.runAsync(
-              `UPDATE ${config.table} SET deleted = 1, synced = 0, updated_at = ? WHERE ${config.pk} = ?`,
-              [Date.now(), w.id],
-            );
-          } else {
-            const row = config.toRow(w.data);
-            const cols = Object.keys(row);
-            const vals = Object.values(row) as (string | number | null)[];
-            const setClause = cols.map(c => `${c}=?`).join(',');
-            const placeholders = cols.map(() => '?').join(',');
-            const r = await db2.runAsync(
-              `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
-              [...vals, w.id],
-            );
-            if (r.changes === 0) {
-              await db2.runAsync(
-                `INSERT INTO ${config.table} (${cols.join(',')},synced) VALUES (${placeholders},0)`,
-                vals,
+      await withDbLock(async () => {
+        for (const w of writes) {
+          const config = ENTITY_TABLE_MAP[w.entity];
+          if (!config) continue;
+          try {
+            // Fallback: write to both data table AND sync_queue individually
+            if (w.operation === 'delete') {
+              await db.runAsync(
+                `UPDATE ${config.table} SET deleted = 1, synced = 0, updated_at = ? WHERE ${config.pk} = ?`,
+                [Date.now(), w.id],
               );
+            } else {
+              const row = config.toRow(w.data);
+              const cols = Object.keys(row);
+              const vals = Object.values(row) as (string | number | null)[];
+              const setClause = cols.map(c => `${c}=?`).join(',');
+              const placeholders = cols.map(() => '?').join(',');
+              const r = await db.runAsync(
+                `UPDATE ${config.table} SET ${setClause},synced=0 WHERE ${config.pk}=?`,
+                [...vals, w.id],
+              );
+              if (r.changes === 0) {
+                await db.runAsync(
+                  `INSERT INTO ${config.table} (${cols.join(',')},synced) VALUES (${placeholders},0)`,
+                  vals,
+                );
+              }
             }
+            const fallbackPayload = w.changedFields
+              ? { ...w.data, _changedFields: w.changedFields }
+              : w.data;
+            await db.runAsync(
+              SYNC_QUEUE_UPSERT_SQL,
+              [w.entity, w.id, w.operation, JSON.stringify(fallbackPayload), Date.now(), 'pending'],
+            );
+          } catch (reErr) {
+            log.error(reErr, { msg: 'fallback write failed' });
+            allFallbacksOk = false;
           }
-          const fallbackPayload = w.changedFields
-            ? { ...w.data, _changedFields: w.changedFields }
-            : w.data;
-          await db2.runAsync(
-            SYNC_QUEUE_UPSERT_SQL,
-            [w.entity, w.id, w.operation, JSON.stringify(fallbackPayload), Date.now(), 'pending'],
-          );
-          // Mark this entry as successfully flushed even in fallback
-        } catch (reErr) {
-          log.error(reErr, { msg: 'fallback write failed' });
-          allFallbacksOk = false;
         }
-      }
+      });
       if (allFallbacksOk) {
         // All fallback writes succeeded — remove entries not merged with new data
         for (const k of keys) {

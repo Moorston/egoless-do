@@ -9,7 +9,7 @@ import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
 import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_EMPTY, MS_PER_DAY, MS_PER_WEEK } from '@egoless-do/core';
 import type { RecycleBinItem, RecycleBinEntityType } from '@egoless-do/core';
 import {
-  Trash2, RotateCcw, Target, Sparkles, Utensils, Dumbbell, ClipboardList, Clock,
+  Trash2, RotateCcw, Target, Sparkles, Utensils, Dumbbell, ClipboardList, Clock, Wind,
 } from 'lucide-react-native';
 
 const EXPIRY_MS = MS_PER_WEEK;
@@ -20,6 +20,7 @@ const ENTITY_ICONS: Record<RecycleBinEntityType, React.ComponentType<{ size?: nu
   food: Utensils,
   exercise: Dumbbell,
   plan: ClipboardList,
+  breath: Wind,
 };
 
 const ENTITY_COLORS: Record<RecycleBinEntityType, string> = {
@@ -28,16 +29,18 @@ const ENTITY_COLORS: Record<RecycleBinEntityType, string> = {
   food: COLORS.ORANGE,
   exercise: COLORS.BLUE,
   plan: '#E11D48',
+  breath: '#0EA5E9',
 };
 
 function getItemName(item: RecycleBinItem): string {
-  const d = item.data as Record<string, unknown>;
+  const d = item.data as unknown as Record<string, unknown>;
   switch (item.entityType) {
     case 'habit': return (d.name as string) ?? '习惯';
     case 'reflection': return ((d.content as string) ?? '').slice(0, 30) || '感念';
     case 'food': return (d.name as string) ?? '饮食';
     case 'exercise': return (d.sportKey as string) ?? '运动';
     case 'plan': return (d.name as string) ?? '计划';
+    case 'breath': return (d.presetKey as string) ?? '调息';
     default: return '未知';
   }
 }

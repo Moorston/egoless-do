@@ -269,9 +269,8 @@ export default function StatsScreen() {
               {items.length > 0 && (
                 <View style={{ marginLeft: 8 }}>
                   {items.map((item, idx) => {
-                    const clampedToday = today > item.endDate ? item.endDate : today;
                     const checkedDays = item.totalCheckinDays;
-                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, item.endDate);
+                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
                     const itemPct = expectedDays > 0 ? Math.min(Math.round((checkedDays / expectedDays) * 100), 100) : 0;
                     const isLast = idx === items.length - 1;
                     return (
