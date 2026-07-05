@@ -6,7 +6,6 @@ import { View, Text, Animated, Easing, AppState, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { FONT_BODY, createLogger, fmtMS, dateStr } from '@egoless-do/core';
 import type { BreathingPreset } from '@egoless-do/core';
 import { cycleDuration } from '@egoless-do/core';
@@ -51,7 +50,7 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
   const T = useT();
 
   /** Extract store actions and language for audio cue localization. */
-  const { addBreathRecord, addMedMinutes, addReflection, language } = useAppStore(useShallow(s => ({
+  const { addBreathRecord, addMedMinutes, addReflection, language } = useShallowStore(s => ({
     addBreathRecord: s.addBreathRecord,
     addMedMinutes: s.addMedMinutes,
     addReflection: s.addReflection,

@@ -8,7 +8,6 @@ import { useTheme, useT } from '../../components/UI';
 import { dateStr } from '@egoless-do/core';
 import { getCurrentPeriod, getNextSleepPeriod, formatSleepDuration, BODY_CLOCK } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
@@ -26,7 +25,7 @@ export default function SleepEngine() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const { getTodaySleep, completeBarrier, sleepGoal, sleepHistory, saveSleepDiary, addReflection, autoSyncHabits } = useAppStore(useShallow(s => ({ getTodaySleep: s.getTodaySleep, completeBarrier: s.completeBarrier, sleepGoal: s.sleepGoal, sleepHistory: s.sleepHistory, saveSleepDiary: s.saveSleepDiary, addReflection: s.addReflection, autoSyncHabits: s.autoSyncHabits })));
+  const { getTodaySleep, completeBarrier, sleepGoal, sleepHistory, saveSleepDiary, addReflection, autoSyncHabits } = useShallowStore(s => ({ getTodaySleep: s.getTodaySleep, completeBarrier: s.completeBarrier, sleepGoal: s.sleepGoal, sleepHistory: s.sleepHistory, saveSleepDiary: s.saveSleepDiary, addReflection: s.addReflection, autoSyncHabits: s.autoSyncHabits })));
   const { showBedtimeModal, dismissBedtimeModal } = useSleepNotifications();
 
   const [page, setPage] = useState<Page>('home');

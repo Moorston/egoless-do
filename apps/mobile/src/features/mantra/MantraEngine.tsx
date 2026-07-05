@@ -3,7 +3,6 @@ import { View, Alert } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import type { MantraDef } from '@egoless-do/core';
 import { useMantraAudio } from './useMantraAudio';
@@ -31,14 +30,14 @@ export default function MantraEngine() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { mantraDefs, getMantraTotalCount, getMantraTodayCount, getMantraStreak, addMantraSession, removeMantraDef, addMantraDef } = useAppStore(useShallow(s => ({
+  const { mantraDefs, getMantraTotalCount, getMantraTodayCount, getMantraStreak, addMantraSession, removeMantraDef, addMantraDef } = useShallowStore(s => ({
     mantraDefs: s.mantraDefs, getMantraTotalCount: s.getMantraTotalCount,
     getMantraTodayCount: s.getMantraTodayCount, getMantraStreak: s.getMantraStreak,
     addMantraSession: s.addMantraSession, removeMantraDef: s.removeMantraDef, addMantraDef: s.addMantraDef,
   })));
   useLazyKeepAwake();
   const { playMantra, stopMantra, isPlaying } = useMantraAudio();
-  const { getCachedPath, downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
+  const { downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
 
   const [page, setPage] = useState<MantraPage>('select');
   const [selectedMantra, setSelectedMantra] = useState<MantraDef | null>(null);
