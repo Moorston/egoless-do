@@ -436,6 +436,10 @@ apps/mobile/src/**/*.test.ts            ← UI 交互可选
 #### AR-06: Reflections 模块解构
 - **现状**: 7 个子目录（core/hooks/insights/review/shared/timeline/trails），总代码量 3000+ 行
 - **风险**: CLAUDE.md 已标记为 "待解体"，复杂度黑洞
+- **进度**:
+  - ✅ AR-06-1: RelationMapView.tsx 拆分 → core/business/reflectionGraph.ts（340 行，图构建逻辑 core 化）+ insights/hooks/useRelationGraph.ts（交互布局）+ insights/types.ts + 精简主视图（799→451 行，-44%）
+  - ✅ useQuickTrailSearch.ts Phase 2+3 helper 提取 + 修复 isAIRecommendAvailable 签名错误
+  - AR-06-2: useQuickTrailSearch.ts 剩余拆分 → 搜索/筛选逻辑进一步 core 化
 - **方案**:
   1. 识别可复用的子模块（hooks → shared/hooks; insights → analytics/）
   2. 按用户任务分治：创建流（CreateReflectionModal + QuickCreateTrailScreen）独立为子 feature
