@@ -69,3 +69,39 @@ Split three large Engine components (MantraEngine 624→243 lines, SleepEngine 1
 ### Status
 
 [OK] **Completed**
+
+
+## Session 2: Engine class refactoring + bug fixes + ESLint hardening
+
+**Date**: 2026-07-05
+**Task**: Engine class refactoring + bug fixes + ESLint hardening
+**Package**: mobile
+**Branch**: `master`
+
+### Summary
+
+Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→384) into hooks+page components. Added ESLint no-restricted-imports to core. Cleaned 120+ unused imports, fixed 20+ exhaustive-deps, replaced console.warn with createLogger.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6310295` | (see git log) |
+| `714f03d` | (see git log) |
+| `e38c972` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
