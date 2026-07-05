@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Flag, Target, Star, Plus, ChevronDown, ChevronUp } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
-import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
-import { useShallow } from 'zustand/react/shallow';
+import { FONT_BODY, FONT_SUB, dateStr } from '@egoless-do/core';
+import type { Vision, VisionType, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
 import VisionCard from './components/VisionCard';
 import VisionEditModal from './modals/VisionEditModal';
@@ -17,7 +16,7 @@ interface Props {
 export default function VowTab({ TH, T, visionProgress }: Props) {
   const { visions: visionsRaw, plans: plansRaw, planItems: planItemsRaw,
     updateVision, updatePlan, removeVisionPracticesByVision, addVisionPractice, addVision,
-    achieveVision, archiveVision } = useAppStore(useShallow(s => ({
+    achieveVision, archiveVision } = useShallowStore(s => ({
     visions: s.visions,
     plans: s.plans,
     planItems: s.planItems,
@@ -28,7 +27,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
     addVision: s.addVision,
     achieveVision: s.achieveVision,
     archiveVision: s.archiveVision,
-  })));
+  }));
   const [showModal, setShowModal] = useState(false);
   const [editType, setEditType] = useState<VisionType>('long');
   const [editingVision, setEditingVision] = useState<Vision | null>(null);

@@ -55,7 +55,7 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
     addMedMinutes: s.addMedMinutes,
     addReflection: s.addReflection,
     language: s.language,
-  })));
+  }));
 
   /** Persistent user preferences (guideStyle, voice, cue toggles). */
   const settings = useBreathSettings();

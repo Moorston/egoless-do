@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
-import { useShallow } from 'zustand/react/shallow';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -19,10 +18,10 @@ export default function GiveScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const { giveHistory: giveHistoryRaw, addGive } = useAppStore(useShallow(s => ({
+  const { giveHistory: giveHistoryRaw, addGive } = useShallowStore(s => ({
     giveHistory: s.giveHistory,
     addGive: s.addGive,
-  })));
+  }));
 
   const [showModal, setShowModal] = useState(false);
   const [giveType, setGiveType] = useState<GiveType>('material');

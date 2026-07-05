@@ -1,18 +1,17 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
-  View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Alert,
+  View, Text, ScrollView, TouchableOpacity, TextInput, Alert,
   KeyboardAvoidingView, Platform, Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, canEditPlan, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
-import type { ItemForm, CheckinFrequency, Vision } from '@egoless-do/core';
+import { COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
+import type { ItemForm, Vision } from '@egoless-do/core';
 import { LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
-import { Card, useTheme, useT, PrimaryButton, OutlineButton, ThemedInput } from '../../components/UI';
+import { Card, useTheme, useT, PrimaryButton } from '../../components/UI';
 import DatePickerModal from '../../components/DatePickerModal';
 import DateRangePickerModal from '../../components/DateRangePickerModal';
 import { ChevronLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react-native';
@@ -42,7 +41,7 @@ export default function PlanCreateScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { reflections, plans, planItems, visions, habits, addPlan, updatePlan, addPlanItem, updatePlanItem, deletePlanItem } = useAppStore(useShallow(s => ({
+  const { reflections, plans, planItems, visions, habits, addPlan, updatePlan, addPlanItem, updatePlanItem, deletePlanItem } = useShallowStore(s => ({
     reflections: s.reflections,
     plans: s.plans,
     planItems: s.planItems,
@@ -53,7 +52,7 @@ export default function PlanCreateScreen() {
     addPlanItem: s.addPlanItem,
     updatePlanItem: s.updatePlanItem,
     deletePlanItem: s.deletePlanItem,
-  })));
+  }));
   const nav = useRootNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'PlanCreate'>>();
   const planId = route.params?.planId as string | undefined;

@@ -1,10 +1,9 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, isPlanDelayed, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress, getFrequencySummary, MS_PER_DAY } from '@egoless-do/core';
-import type { Plan, PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress, getFrequencySummary, MS_PER_DAY } from '@egoless-do/core';
+import type { PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
 import PlanCountdown from '../../components/PlanCountdown';
@@ -22,7 +21,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { performDailyReset, plans, planItems, planItemCheckins, reflections, thoughtTrails, canArchivePlan, unlinkAllReflectionsFromPlan, deletePlan, completePlan, resumePlan, pausePlan, cancelPlan } = useAppStore(useShallow(s => ({
+  const { performDailyReset, plans, planItems, planItemCheckins, reflections, thoughtTrails, canArchivePlan, unlinkAllReflectionsFromPlan, deletePlan, completePlan, resumePlan, pausePlan, cancelPlan } = useShallowStore(s => ({
     performDailyReset: s.performDailyReset,
     plans: s.plans,
     planItems: s.planItems,
@@ -36,7 +35,7 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
     resumePlan: s.resumePlan,
     pausePlan: s.pausePlan,
     cancelPlan: s.cancelPlan,
-  })));
+  }));
   const nav = useRootNavigation();
 
   // 日期状态，支持跨天自动刷新
@@ -258,7 +257,6 @@ export default function PlanDetailContent({ planId, onClose }: { planId: string;
   // Derived values that require `plan` to be non-null
   const totalDays = Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1;
   const elapsed = Math.max(0, Math.round((new Date(today > plan.endDate ? plan.endDate : today).getTime() - new Date(plan.startDate).getTime()) / MS_PER_DAY) + 1);
-  const planDelayed = isPlanDelayed(plan, today);
   const deletable = canDeletePlan(plan.status);
   const editable = canEditPlan(plan.status);
   const completable = plan.status === 'in_progress' || plan.status === 'paused';

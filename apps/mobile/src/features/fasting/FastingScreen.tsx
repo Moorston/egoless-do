@@ -3,7 +3,6 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioPlayer } from 'expo-audio';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
@@ -28,13 +27,13 @@ export default function FastingScreen() {
   const {
     activeFasting, fastingHistory, userProfile,
     startFasting, stopFasting,
-  } = useAppStore(useShallow(s => ({
+  } = useShallowStore(s => ({
     activeFasting: s.activeFasting,
     fastingHistory: s.fastingHistory,
     userProfile: s.userProfile,
     startFasting: s.startFasting,
     stopFasting: s.stopFasting,
-  })));
+  }));
   const nav   = useRootNavigation();
   const T     = useT();
 

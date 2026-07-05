@@ -1,18 +1,17 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
-  KeyboardAvoidingView, Platform, TextInput, Linking, Alert, StyleSheet,
+  KeyboardAvoidingView, Platform, Linking, Alert,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../../navigation/hooks';
 import {
-  useTheme, ScreenHeader, TagPill, PrimaryButton, OutlineButton,
-  ThemedInput, useT, PillSelector,
+  useTheme, ScreenHeader, PrimaryButton, OutlineButton,
+  useT,
 } from '../../../components/UI';
 import ItemManagerPanel from '../../../components/ItemManagerPanel';
 import SimpleHeader from '../../../navigation/SimpleHeader';
@@ -23,11 +22,11 @@ import MindTrailEntryCard from '../trails/MindTrailEntryCard';
 import TrailSuggestionBanner from '../trails/TrailSuggestionBanner';
 import ReflectionForm from './ReflectionForm';
 import { useReflections } from '../hooks/useReflections';
-import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_STAT_CARD, FONT_EMPTY, FONT_LABEL, dateStr, REFLECTION_CATEGORIES, createLogger } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger } from '@egoless-do/core';
 import type { Habit, MindReflection } from '@egoless-do/core';
-import { highlightSearchMatch, computeSmartCollections } from '@egoless-do/core';
+import { highlightSearchMatch } from '@egoless-do/core';
 import {
-  Settings, X, Eye, EyeOff, ExternalLink, ArrowLeft, Link, BarChart3,
+  X, ExternalLink, Link,
 } from 'lucide-react-native';
 import SearchFilterBar from './SearchFilterBar';
 
@@ -96,7 +95,7 @@ function getManagerProps(
 export default function ReflectionsScreen() {
   const TH    = useTheme();
   const P     = TH.primary;
-  const { reflections, addReflection, addReflectionToTrail, updateReflection, deleteReflection, getActivePlan, createPlanItem, planItems, thoughtTrails, deletePlanItem, unlinkReflectionFromPlanItem, habits, customTags, addCustomTag, updateCustomTag, removeCustomTag, reorderAllTag, customMoods, addCustomMood, updateCustomMood, removeCustomMood, reorderAllMood } = useAppStore(useShallow(s => ({
+  const { reflections, addReflection, addReflectionToTrail, updateReflection, deleteReflection, getActivePlan, createPlanItem, planItems, thoughtTrails, deletePlanItem, unlinkReflectionFromPlanItem } = useShallowStore(s => ({
     reflections: s.reflections,
     addReflection: s.addReflection,
     addReflectionToTrail: s.addReflectionToTrail,
@@ -108,18 +107,7 @@ export default function ReflectionsScreen() {
     thoughtTrails: s.thoughtTrails,
     deletePlanItem: s.deletePlanItem,
     unlinkReflectionFromPlanItem: s.unlinkReflectionFromPlanItem,
-    habits: s.habits,
-    customTags: s.customTags,
-    addCustomTag: s.addCustomTag,
-    updateCustomTag: s.updateCustomTag,
-    removeCustomTag: s.removeCustomTag,
-    reorderAllTag: s.reorderAllTag,
-    customMoods: s.customMoods,
-    addCustomMood: s.addCustomMood,
-    updateCustomMood: s.updateCustomMood,
-    removeCustomMood: s.removeCustomMood,
-    reorderAllMood: s.reorderAllMood,
-  })));
+  }));
   const T     = useT();
   const route = useRoute<RouteProp<MainTabParamList, 'Reflections'>>();
   const nav   = useTabNavigation();
@@ -129,16 +117,11 @@ export default function ReflectionsScreen() {
   // Use shared reflections hook (includes filters, debounced search, dynamic counts, etc.)
   const {
     filters, setFilters, searchInput, setSearchInput,
-    showDeletedTags, setShowDeletedTags,
-    toggleTag, toggleMood, applyCollection, clearAllFilters, removeFilter,
+    clearAllFilters, removeFilter,
     activeFilters, hasActiveFilters,
-    allTags, allUsedTags, deletedTagsWithData, visibleTags,
-    allTagOptions, allMoodOptions, habitTags,
+    allTagOptions, allMoodOptions,
     filtered, byDay,
     dynamicTagCounts, dynamicMoodCounts,
-    totalCount, topTag, streakDays,
-    sparklineData, moodStats, allMoods,
-    smartCollections, tagFrequency,
     handleShare,
   } = useReflections();
 
@@ -262,23 +245,6 @@ export default function ReflectionsScreen() {
   const [showCreatePlanRefModal, setShowCreatePlanRefModal] = useState(false);
   const [createPlanReflection, setCreatePlanReflection] = useState<MindReflection | null>(null);
 
-  // Calendar heatmap data (last 35 days = 5 weeks)
-  const calendarData = useMemo(() => {
-    const today = new Date();
-    const data: { date: string; count: number; dayLabel: string }[] = [];
-    for (let i = 34; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      const ds = dateStr(d);
-      const count = (reflections ?? []).filter(r =>
-        !r.deleted && dateStr(new Date(r.timestamp ?? 0)) === ds
-      ).length;
-      const dayLabel = d.toLocaleDateString('zh-CN', { weekday: 'narrow' });
-      data.push({ date: ds, count, dayLabel });
-    }
-    return data;
-  }, [reflections]);
-
   const saveReflection = () => {
     if (!content.trim() || savingRef.current) return;
     savingRef.current = true;
@@ -347,11 +313,6 @@ export default function ReflectionsScreen() {
       { text: T('cancel'), style: 'cancel' },
     ]);
   };
-
-  const handleEdit = useCallback((id: string) => {
-    const r = (reflections ?? []).find(x => !x.deleted && x.id === id);
-    if (r) openEdit(r);
-  }, [reflections]);
 
   const handleCreatePlanItem = useCallback((id: string) => {
     const r = (reflections ?? []).find(x => !x.deleted && x.id === id);
@@ -468,7 +429,7 @@ export default function ReflectionsScreen() {
                 <Text style={{ color:TH.sub, fontSize:FONT_SUB, fontWeight:'600' }}>{day}</Text>
                 <View style={{ flex:1, height:1, backgroundColor:TH.border }} />
               </TouchableOpacity>
-              {items.map((r, idx) => {
+              {items.map((r, _idx) => {
                 const linkedPlanItem = r.linkedPlanItemId
                   ? (planItems ?? []).find(i => i.id === r.linkedPlanItemId && !i.deleted)
                   : null;
@@ -826,5 +787,3 @@ export default function ReflectionsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-});

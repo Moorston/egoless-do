@@ -3,11 +3,10 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import { FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { isPreceptHabit } from '@egoless-do/core';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
-import { useRootNavigation, useTabNavigation } from '../../navigation/hooks';
+import { useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Wind, Dumbbell, Moon, Salad,
@@ -37,7 +36,7 @@ export default function PracticeScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useTabNavigation();
-  const { visions, exerciseLog, fastingHistory, checkinHistory, habits, giveHistory, totalMedMinutes } = useAppStore(useShallow(s => ({
+  const { visions, exerciseLog, fastingHistory, checkinHistory, habits, giveHistory, totalMedMinutes } = useShallowStore(s => ({
     visions: s.visions,
     exerciseLog: s.exerciseLog,
     fastingHistory: s.fastingHistory,
@@ -45,7 +44,7 @@ export default function PracticeScreen() {
     habits: s.habits,
     giveHistory: s.giveHistory,
     totalMedMinutes: s.totalMedMinutes,
-  })));
+  }));
 
   const groups: PracticeGroup[] = useMemo(() => [
     {

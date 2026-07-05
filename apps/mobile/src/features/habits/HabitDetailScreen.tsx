@@ -7,10 +7,9 @@ import type { RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
 import { ArrowLeft, Link, Bell, BellOff } from 'lucide-react-native';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT, ProgressBar } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, COLORS, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
-import type { HabitStatus } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
+
 import { STATUS_COLORS, STATUS_LABELS } from './constants';
 import CalendarGrid from '../../components/charts/CalendarGrid';
 import HabitStatsSection from './HabitStatsSection';
@@ -22,7 +21,7 @@ export default function HabitDetailScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { habits, reflections, updateHabit } = useAppStore(useShallow(s => ({ habits: s.habits, reflections: s.reflections, updateHabit: s.updateHabit })));
+  const { habits, reflections, updateHabit } = useShallowStore(s => ({ habits: s.habits, reflections: s.reflections, updateHabit: s.updateHabit }));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'HabitDetail'>>();
 
@@ -56,7 +55,7 @@ export default function HabitDetailScreen() {
   const statusColor = STATUS_COLORS[habit.status] ?? STATUS_COLORS.notStarted;
   const statusLabel = T(STATUS_LABELS[habit.status] ?? STATUS_LABELS.notStarted);
   const pct = habit.targetDays > 0 ? Math.min(100, (habit.doneDays / habit.targetDays) * 100) : 0;
-  const calHistory = (habit.checkedDates ?? []).map(d => ({ date: d, done: true }));
+  const calHistory = (habit.checkedDates ?? []).map(d => ({ date: d, done: true });
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>

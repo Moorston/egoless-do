@@ -5,7 +5,6 @@ import { useKeepAwake } from 'expo-keep-awake';
 import * as Haptics from 'expo-haptics';
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES, dateStr } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -19,7 +18,6 @@ type SutraPage = 'select' | 'start' | 'active' | 'report';
 
 const BEAD_COUNT = 108;
 const SUTRA_CATEGORY_ORDER: MantraCategory[] = ['sutra', 'dharani', 'buddha_name', 'custom'];
-const KEY_SUTRA_PRESETS_V1 = 'sutraPresetsV1';
 
 export default function SutraScreen() {
   return <SutraScreenInner />;
@@ -29,7 +27,7 @@ function SutraScreenInner() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { mantraDefs, getMantraTotalCount, getMantraStreak, getMantraTodayCount, addMantraSession, removeMantraDef, initializePresetsIncremental, addPresetSutra, addMantraDef } = useAppStore(useShallow(s => ({
+  const { mantraDefs, getMantraTotalCount, getMantraStreak, getMantraTodayCount, addMantraSession, removeMantraDef, initializePresetsIncremental, addPresetSutra, addMantraDef } = useShallowStore(s => ({
     mantraDefs: s.mantraDefs,
     getMantraTotalCount: s.getMantraTotalCount,
     getMantraStreak: s.getMantraStreak,
@@ -39,11 +37,11 @@ function SutraScreenInner() {
     initializePresetsIncremental: s.initializePresetsIncremental,
     addPresetSutra: s.addPresetSutra,
     addMantraDef: s.addMantraDef,
-  })));
+  }));
   useKeepAwake();
   const { playSutra, stopSutra, isPlaying } = useSutraAudio();
   useEffect(() => () => { stopSutra(); }, [stopSutra]);
-  const { getCachedPath, downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
+  const { downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();
 
   const [page, setPage] = useState<SutraPage>('select');
   const [selectedSutra, setSelectedSutra] = useState<MantraDef | null>(null);

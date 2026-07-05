@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl, FlatList } from 'react-native';
 import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, countItemDoneDays, computeItemProgress, createLogger, dateStr } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
@@ -21,13 +20,13 @@ interface ReviewViewProps {
 export default function ReviewView({ period }: ReviewViewProps) {
   const TH = useTheme();
   const T = useT();
-  const { generateReview, checkinReviews, plans, planItems, planItemCheckins } = useAppStore(useShallow(s => ({
+  const { generateReview, checkinReviews, plans, planItems, planItemCheckins } = useShallowStore(s => ({
     generateReview: s.generateReview,
     checkinReviews: s.checkinReviews,
     plans: s.plans,
     planItems: s.planItems,
     planItemCheckins: s.planItemCheckins,
-  })));
+  }));
   const nav = useRootNavigation();
   
   const [review, setReview] = useState<CheckinReview | null>(null);

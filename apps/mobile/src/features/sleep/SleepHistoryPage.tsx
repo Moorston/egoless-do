@@ -4,9 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, FONT_STAT_CARD, dateStr, yesterday, type Theme } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, type Theme } from '@egoless-do/core';
 import { formatSleepDuration } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight, Moon, Trash2, X, Heart } from 'lucide-react-native';
 import type { SleepEntry } from '@egoless-do/core';
@@ -60,7 +59,7 @@ function renderStars(quality?: number): string {
 }
 
 // ── Stats Card ──
-function StatsCard({ entries, TH }: { entries: SleepEntry[]; TH: Theme }) {
+function StatsCard({ entries, TH: _TH }: { entries: SleepEntry[]; TH: Theme }) {
   const totalDays = useMemo(() => new Set(entries.map(e => e.date)).size, [entries]);
   const avgDuration = useMemo(() => {
     const withDur = entries.filter(e => (e.durationMin ?? 0) > 0);
@@ -179,7 +178,7 @@ function Heatmap({ entries, TH, onPress }: { entries: SleepEntry[]; TH: Theme; o
 }
 
 // ── Detail Modal ──
-function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: SleepEntry | null; TH: Theme; T: (key: string) => string; onClose: () => void; onDelete: (id: string) => void }) {
+function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntry | null; TH: Theme; T: (key: string) => string; onClose: () => void; onDelete: (id: string) => void }) {
   const [editingNote, setEditingNote] = useState(false);
   const [noteText, setNoteText] = useState('');
 
@@ -344,7 +343,7 @@ export default function SleepHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { sleepHistory } = useAppStore(useShallow(s => ({ sleepHistory: s.sleepHistory })));
+  const { sleepHistory } = useShallowStore(s => ({ sleepHistory: s.sleepHistory }));
   const [selectedEntry, setSelectedEntry] = useState<SleepEntry | null>(null);
 
   const activeEntries = useMemo(() =>

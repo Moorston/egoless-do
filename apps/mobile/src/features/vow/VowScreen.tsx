@@ -1,16 +1,14 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, KeyboardAvoidingView, Platform,
+  View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useShallow } from 'zustand/react/shallow';
-import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useAppStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, COLORS, dateStr } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, dateStr } from '@egoless-do/core';
 import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
-import { Flag, Target, Plus, Check, Archive, Trash2, X, Star } from 'lucide-react-native';
+import { Flag, Target, Plus, X, Star } from 'lucide-react-native';
 import VisionCard from './components/VisionCard';
 
 const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: number; color?: string }>; labelKey: string; color: string }> = {
@@ -147,11 +145,10 @@ function AddVisionModal({
 }
 
 export default function VowScreen() {
-  const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
   const { plans: plansRaw, planItems: planItemsRaw, visions: visionsRaw,
-    updateVision, addVision, achieveVision, archiveVision, removeVision } = useAppStore(useShallow(s => ({
+    updateVision, addVision, achieveVision, archiveVision, removeVision } = useShallowStore(s => ({
     plans: s.plans,
     planItems: s.planItems,
     visions: s.visions,
@@ -160,7 +157,7 @@ export default function VowScreen() {
     achieveVision: s.achieveVision,
     archiveVision: s.archiveVision,
     removeVision: s.removeVision,
-  })));
+  }));
 
   const [showModal, setShowModal] = useState(false);
   const [editingVision, setEditingVision] = useState<Vision | null>(null);

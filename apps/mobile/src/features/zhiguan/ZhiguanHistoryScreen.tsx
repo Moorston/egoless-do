@@ -24,8 +24,6 @@ export default function ZhiguanHistoryScreen() {
 
   const stats = computeZhiguanStats(sessions);
   const today = new Date();
-  const monthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-  const todayStr = `${monthKey}-${String(today.getDate()).padStart(2, '0')}`;
 
   const handleDelete = useCallback((id: string) => {
     Alert.alert(T('zhiguanDeleteRecord'), T('zhiguanDeleteConfirm'), [
@@ -83,7 +81,7 @@ export default function ZhiguanHistoryScreen() {
       </View>
 
       {/* 热力图 (本月) */}
-      <HeatmapBlock sessions={sessions} year={today.getFullYear()} month={today.getMonth() + 1} T={T} />
+      <HeatmapBlock sessions={sessions} year={today.getFullYear()} month={today.getMonth() + 1} />
 
       {/* 历史列表 */}
       {sessions.length === 0 ? (
@@ -134,7 +132,7 @@ export default function ZhiguanHistoryScreen() {
                 {selRecord.fiveHindrances && (
                   <View style={styles.detailSection}>
                     <Text style={styles.detailSectionLabel}>{T('zhiguanFiveHindrancesTitle')}</Text>
-                    {FIVE_HINDRANCE_KEYS.map((key, idx) => (
+                    {FIVE_HINDRANCE_KEYS.map((key, _idx) => (
                       <Text key={key} style={styles.detailSectionText}>
                         {T(FIVE_HINDRANCE_LABEL_KEYS[key])}: {selRecord.fiveHindrances[key]}
                       </Text>
@@ -191,7 +189,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function HeatmapBlock({ sessions, year, month, T }: { sessions: ZhiguanSession[]; year: number; month: number; T: (key: string) => string }) {
+function HeatmapBlock({ sessions, year, month }: { sessions: ZhiguanSession[]; year: number; month: number }) {
   const daysInMonth = new Date(year, month, 0).getDate();
   const cells: Array<{ date: string; minutes: number }> = [];
   for (let d = 1; d <= daysInMonth; d += 1) {

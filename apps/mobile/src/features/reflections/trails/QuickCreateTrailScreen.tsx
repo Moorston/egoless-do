@@ -11,7 +11,6 @@ import {
   ArrowLeft, X, Send, Check, ChevronDown,
   RefreshCw, Plus, Sparkles, Loader2,
 } from 'lucide-react-native';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import {
@@ -39,12 +38,12 @@ export default function QuickCreateTrailScreen() {
   const T = useT();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'QuickCreateTrail'>>();
-  const { reflections: rawReflections, aiMode, aiModels, createThoughtTrail } = useAppStore(useShallow(s => ({
+  const { reflections: rawReflections, aiMode, aiModels, createThoughtTrail } = useShallowStore(s => ({
     reflections: s.reflections,
     aiMode: s.aiMode,
     aiModels: s.aiModels,
     createThoughtTrail: s.createThoughtTrail,
-  })));
+  }));
 
   const initialText = route.params?.initialText ?? '';
   const initialSelectedIds = route.params?.selectedIds ?? [];
@@ -66,7 +65,7 @@ export default function QuickCreateTrailScreen() {
     selectedMoods, setSelectedMoods, toggleMood,
     matchMode, matchResults,
     smartResult, setSmartResult,
-    analysisSteps, isAnalyzing, isSmartParsing,
+    analysisSteps, isAnalyzing,
     aiDegraded,
     selectedIds, setSelectedIds,
     trailName, setTrailName,
@@ -117,7 +116,7 @@ export default function QuickCreateTrailScreen() {
   }, [setSelectedIds]);
 
   const handleSelectAll = useCallback(() => {
-    setSelectedIds(new Set(matchResults.map(r => r.id)));
+    setSelectedIds(new Set(matchResults.map(r => r.id));
   }, [matchResults, setSelectedIds]);
 
   const handleDeselectAll = useCallback(() => {

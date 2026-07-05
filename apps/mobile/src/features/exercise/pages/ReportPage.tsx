@@ -6,7 +6,7 @@ import type { ExercisePageProps } from './types';
 
 export default function ReportPage(props: ExercisePageProps) {
   const {
-    sportName, sportType, sec, isGpsSport, distKm, sets, currentSetReps, totalReps,
+    sportName, sportType, sec, isGpsSport, distKm, sets, totalReps,
     calories, coords, initialPos, amapReady, MapView, Polyline, segmentPaces,
     handleSave, TH, T,
   } = props;

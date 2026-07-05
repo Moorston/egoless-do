@@ -3,7 +3,6 @@ import {
   View, Text, TouchableOpacity, Modal, ScrollView,
 } from 'react-native';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { COLORS, getTodayItems, getActivePlan, getTodoItemStatus, computeDailyTodoStats, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import { X, CheckCircle2, Check } from 'lucide-react-native';
@@ -12,7 +11,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { plans, planItemCheckins, planItems, checkinPlanItem, uncheckinPlanItem } = useAppStore(useShallow(s => ({ plans: s.plans, planItemCheckins: s.planItemCheckins, planItems: s.planItems, checkinPlanItem: s.checkinPlanItem, uncheckinPlanItem: s.uncheckinPlanItem })));
+  const { plans, planItemCheckins, planItems, checkinPlanItem, uncheckinPlanItem } = useShallowStore(s => ({ plans: s.plans, planItemCheckins: s.planItemCheckins, planItems: s.planItems, checkinPlanItem: s.checkinPlanItem, uncheckinPlanItem: s.uncheckinPlanItem }));
   const today = dateStr();
 
   const activePlan = useMemo(() => getActivePlan(plans ?? []), [plans]);

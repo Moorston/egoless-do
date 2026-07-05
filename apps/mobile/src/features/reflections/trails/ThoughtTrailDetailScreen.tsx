@@ -35,14 +35,13 @@ export default function ThoughtTrailDetailScreen() {
   // ── Hooks must be called unconditionally (before any early return) ──
 
   const {
-    trail, overview, timelineItems, links, reflections, trailNotes,
+    trail, overview, timelineItems, links, reflections,
     trailPlanItems, trailPlanCheckins, relatedTrails,
   } = useTrailData(trailId ?? '');
 
   const { handleGenerateInsight, handleGenerateReview, insightCacheStale, reviewCacheStale } = useTrailAI(trailId ?? '', trail);
 
   const {
-    handleWriteReflection,
     handleSelectReflectionsConfirm,
     handleRemoveReflection,
     handleDeleteNote,

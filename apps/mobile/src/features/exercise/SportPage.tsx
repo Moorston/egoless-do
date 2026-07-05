@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { View, Animated } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useTheme, useT } from '../../components/UI';
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, FONT_HERO, FONT_SUB, FONT_TITLE, FONT_STAT_CARD, FONT_STAT_SECTION, getSoftTarget, getSportExperienceType, formatPace, createLogger } from '@egoless-do/core';
-import type { SportType } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, createLogger } from '@egoless-do/core';
 
 const log = createLogger('Exercise');
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
-import { Pause } from 'lucide-react-native';
 import type { RootStackParamList } from '../../navigation/hooks';
 
 // 实时会话
@@ -50,7 +47,7 @@ export default function SportPage() {
   const route = useRoute<Route>();
   const TH    = useTheme();
   const T     = useT();
-  const { auth, userProfile, addExercise, exerciseLog } = useAppStore(useShallow(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog })));
+  const { auth, userProfile, addExercise, exerciseLog } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog }));
   const { MapView, Polyline, ready: amapReady } = useAmapComponents();
   const { key: sportName, icon, color, gps: gpsParam } = route.params;
 

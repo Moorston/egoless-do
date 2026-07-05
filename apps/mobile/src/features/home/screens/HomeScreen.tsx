@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
@@ -48,7 +47,7 @@ export default function HomeScreen() {
     setWaterGoal, setCalGoal, checkAutoStatus, autoSyncPlanItems,
     checkinPlanItem, uncheckinPlanItem, toggleDailyCustomTodo,
     addFood, deleteFood,
-  } = useAppStore(useShallow(s => ({
+  } = useShallowStore(s => ({
     checkinHistory: s.checkinHistory,
     plans: s.plans,
     planItemCheckins: s.planItemCheckins,
@@ -77,13 +76,12 @@ export default function HomeScreen() {
     toggleDailyCustomTodo: s.toggleDailyCustomTodo,
     addFood: s.addFood,
     deleteFood: s.deleteFood,
-  })));
+  }));
   const nav   = useRootNavigation();
 
   // ── Date state ──
   const [viewDate, setViewDate] = useState(dateStr());
   const isToday = viewDate === dateStr();
-  const today = viewDate; // alias for compatibility
 
   const weightUnit = useAppStore(s => s.weightUnit);
 
@@ -378,7 +376,7 @@ export default function HomeScreen() {
   // ── Delayed plan reminder ──
   const [showDelayedReminder, setShowDelayedReminder] = useState(true);
   const delayedPlan = useMemo(() => {
-    return (plans ?? []).find(p => !p.deleted && isPlanDelayed(p, dateStr()));
+    return (plans ?? []).find(p => !p.deleted && isPlanDelayed(p, dateStr());
   }, [plans]);
   const showDelayed = isToday && delayedPlan && showDelayedReminder;
 

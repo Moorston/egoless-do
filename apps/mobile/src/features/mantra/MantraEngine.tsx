@@ -34,7 +34,7 @@ export default function MantraEngine() {
     mantraDefs: s.mantraDefs, getMantraTotalCount: s.getMantraTotalCount,
     getMantraTodayCount: s.getMantraTodayCount, getMantraStreak: s.getMantraStreak,
     addMantraSession: s.addMantraSession, removeMantraDef: s.removeMantraDef, addMantraDef: s.addMantraDef,
-  })));
+  }));
   useLazyKeepAwake();
   const { playMantra, stopMantra, isPlaying } = useMantraAudio();
   const { downloadAudio, isCached, downloading, progress: dlProgress } = useAudioCache();

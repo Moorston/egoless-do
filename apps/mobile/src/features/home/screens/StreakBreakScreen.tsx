@@ -3,7 +3,6 @@ import { View, Text, ScrollView, Pressable, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT, ScreenHeader, Card } from '../../../components/UI';
 import {
   COLORS,
@@ -17,11 +16,11 @@ export default function StreakBreakScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { checkinHistory, graceHistory, userProfile } = useAppStore(useShallow(s => ({
+  const { checkinHistory, graceHistory, userProfile } = useShallowStore(s => ({
     checkinHistory: s.checkinHistory,
     graceHistory: s.graceHistory,
     userProfile: s.userProfile,
-  })));
+  }));
   const nav = useRootNavigation();
 
   const history = (checkinHistory ?? []).filter(c => !c.deleted);

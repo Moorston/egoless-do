@@ -2,11 +2,10 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useShallow } from 'zustand/react/shallow';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, dateStr, COLORS, type Theme } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, dateStr, COLORS, type Theme } from '@egoless-do/core';
 import { Calendar, Flame, X, Trash2 } from 'lucide-react-native';
 import type { FastingSession } from '@egoless-do/core';
 
@@ -49,7 +48,7 @@ function calcStreak(entries: FastingSession[]): number {
 }
 
 // ── Stats Card ──
-function StatsCard({ entries, TH }: { entries: FastingSession[]; TH: Theme }) {
+function StatsCard({ entries, TH: _TH }: { entries: FastingSession[]; TH: Theme }) {
   const totalHours = useMemo(() => Math.round(entries.reduce((s, f) => s + (getDur(f).totalMin / 60), 0)), [entries]);
   const streak = useMemo(() => calcStreak(entries), [entries]);
   const totalKcal = useMemo(() => entries.reduce((s, f) => s + (f.estimatedKcal ?? 0), 0), [entries]);
@@ -128,7 +127,7 @@ function Heatmap({ entries, TH, onPress }: { entries: FastingSession[]; TH: Them
 export function FastCalendarScreen() {
   const TH = useTheme();
   const nav = useRootNavigation();
-  const entries = useAppStore(useShallow(s => (s.fastingHistory ?? []).filter(f => !f.deleted)));
+  const entries = useShallowStore(s => (s.fastingHistory ?? []).filter(f => !f.deleted));
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
   const dateSet = useMemo(() => { const s = new Set<string>(); entries.forEach(f => { const d = new Date(f.startedAt ?? 0); s.add(dateStr(d)); }); return s; }, [entries]);
@@ -262,7 +261,7 @@ export default function FastHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { fastingHistory } = useAppStore(useShallow(s => ({ fastingHistory: s.fastingHistory })));
+  const { fastingHistory } = useShallowStore(s => ({ fastingHistory: s.fastingHistory }));
   const [selectedEntry, setSelectedEntry] = useState<FastingSession | null>(null);
 
   const activeEntries = useMemo(() =>

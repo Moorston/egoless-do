@@ -85,7 +85,7 @@ export function useQuickTrailSearch(
     return Array.from(moods).sort();
   }, [reflections]);
 
-  const aiAvailable = useMemo(() => isAIRecommendAvailable(aiConfig), [aiConfig]);
+  const aiAvailable = useMemo(() => isAIRecommendAvailable(), []);
 
   const handleRemoveFilter = useCallback((type: keyof SmartQueryFilters, value?: string) => {
     if (type === 'tags' && value) {
@@ -175,6 +175,87 @@ export function useQuickTrailSearch(
     });
   }, []);
 
+  // ── AI Pipeline 共享逻辑 ───────────────────────────────────────
+  interface PipelineResult {
+    results: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>;
+    smartResult: SmartQueryResult | null;
+    aiDegraded: boolean;
+  }
+
+  const runAIPhase2 = useCallback(async (
+    reflections: MindReflection[],
+    trimmed: string,
+    candidates: MindReflection[],
+    currentFilters: TrailFilters,
+    allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>,
+    existingIds: Set<string>,
+  ): Promise<{ smartResult: SmartQueryResult | null; shouldReturn: boolean }> => {
+    if (!aiAvailable) return { smartResult: null, shouldReturn: false };
+    try {
+      const result = await parseSmartQuery(reflections, trimmed, chatHistoryRef.current);
+      if (result.question && chatHistoryRef.current.length < 3) {
+        return { smartResult: result, shouldReturn: true };
+      }
+      if (result.topic || (result.filters && Object.keys(result.filters).length > 0)) {
+        const newFilters: TrailFilters = {
+          timeRange: result.filters.timeRange || currentFilters.timeRange,
+          tags: result.filters.tags?.length ? result.filters.tags : currentFilters.tags,
+          moods: result.filters.moods?.length ? result.filters.moods : currentFilters.moods,
+        };
+        const newCandidates = computeCandidatePool(reflections, newFilters);
+        const newIndex = buildIndex(newCandidates);
+        const topic = result.topic || trimmed;
+        const newScored = retrieveTopK(topic, newIndex, 20);
+        for (const s of newScored) {
+          if (!existingIds.has(s.index.id)) {
+            const ref = newCandidates.find(r => r.id === s.index.id);
+            if (ref) { allResults.push({ ref, score: s.score, source: 'direct' }); existingIds.add(ref.id); }
+          }
+        }
+        return { smartResult: result, shouldReturn: false };
+      }
+      return { smartResult: null, shouldReturn: false };
+    } catch (e) {
+      log.debug('AI Phase 2 failed:', e);
+      return { smartResult: null, shouldReturn: false };
+    }
+  }, [aiAvailable]);
+
+  const runAIPhase3 = useCallback(async (
+    reflections: MindReflection[],
+    trimmed: string,
+    allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>,
+    existingIds: Set<string>,
+  ): Promise<{ count: number; failed: boolean }> => {
+    if (!aiAvailable) return { count: 0, failed: false };
+    try {
+      const semanticResults = await semanticSearchReflections(reflections, trimmed);
+      if (semanticResults.length > 0) {
+        const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
+        for (const sr of sorted) {
+          const ref = reflections[sr.reflectionIndex];
+          if (ref && !existingIds.has(ref.id)) {
+            allResults.push({ ref, score: sr.relevance * 0.5, source: 'extended' });
+            existingIds.add(ref.id);
+          }
+        }
+        return { count: semanticResults.length, failed: false };
+      }
+      return { count: 0, failed: false };
+    } catch (e) {
+      log.debug('AI Phase 3 failed:', e);
+      return { count: 0, failed: true };
+    }
+  }, [aiAvailable]);
+
+  const mergeResults = useCallback((
+    allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>,
+  ): MindReflection[] => {
+    const direct = allResults.filter(r => r.source === 'direct').sort((a, b) => b.score - a.score);
+    const extended = allResults.filter(r => r.source === 'extended').sort((a, b) => b.score - a.score);
+    return [...direct, ...extended].map(r => r.ref);
+  }, []);
+
   // ── Handlers ──────────────────────────────────────────────────
   const toggleTag = useCallback((tag: string) => {
     setSelectedTags(prev => {
@@ -247,113 +328,66 @@ export function useQuickTrailSearch(
     setAnalysisSteps(steps);
 
     try {
-      // Phase 1: RAG local multi-dimensional search
+      // Phase 1: Local RAG search
       const index = buildIndex(candidates);
       const scored = retrieveTopK(trimmed, index, 20);
-
-      const directResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }> = [];
+      const allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }> = [];
+      const existingIds = new Set<string>();
       for (const s of scored) {
         const ref = candidates.find(r => r.id === s.index.id);
-        if (ref) directResults.push({ ref, score: s.score, source: 'direct' });
+        if (ref) { allResults.push({ ref, score: s.score, source: 'direct' }); existingIds.add(ref.id); }
       }
-
       updateStep('phase1', {
         status: 'done',
-        detail: directResults.length > 0
-          ? T('searchPhaseLocalResult').replace('{n}', String(directResults.length))
+        detail: allResults.length > 0
+          ? T('searchPhaseLocalResult').replace('{n}', String(allResults.length))
           : T('searchPhaseLocalEmpty')
       });
 
-      const allResults = directResults;
-
-      // Phase 2: Intent understanding (if <= 3 results)
-      if (directResults.length <= 3 && aiAvailable) {
+      // Phase 2: Intent understanding
+      if (allResults.length <= 3) {
         updateStep('phase2', { status: 'loading' });
-        try {
-          const result = await parseSmartQuery(reflections, trimmed, chatHistoryRef.current);
-          if (result.question && chatHistoryRef.current.length < 3) {
-            setSmartResult(result);
-            updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
-            const sorted = allResults.sort((a, b) => b.score - a.score);
-            setMatchResults(sorted.map(r => r.ref));
-            setMatchMode(allResults.length > 0 ? 'local' : 'idle');
-            setIsSmartParsing(false);
-            if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
-            analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
-            return;
-          }
-          if (result.topic || (result.filters && Object.keys(result.filters).length > 0)) {
-            setSmartResult(result);
-            const newFilters: TrailFilters = {
-              timeRange: result.filters.timeRange || timeRange,
-              tags: result.filters.tags?.length ? result.filters.tags : selectedTags,
-              moods: result.filters.moods?.length ? result.filters.moods : selectedMoods,
-            };
-            const newCandidates = computeCandidatePool(reflections, newFilters);
-            const newIndex = buildIndex(newCandidates);
-            const topic = result.topic || trimmed;
-            const newScored = retrieveTopK(topic, newIndex, 20);
-            const existingIds = new Set(allResults.map(r => r.ref.id));
-            for (const s of newScored) {
-              if (!existingIds.has(s.index.id)) {
-                const ref = newCandidates.find(r => r.id === s.index.id);
-                if (ref) { allResults.push({ ref, score: s.score, source: 'direct' }); existingIds.add(ref.id); }
-              }
-            }
-            updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentResult').replace('{n}', String(allResults.length)) });
-          } else {
-            updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
-          }
-        } catch (e) {
-          log.debug('SmartQuery Phase 2 failed:', e);
-          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentFail') });
+        const { smartResult: sr, shouldReturn } = await runAIPhase2(reflections, trimmed, candidates, filters, allResults, existingIds);
+        if (sr) setSmartResult(sr);
+        if (shouldReturn) {
+          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
+          const sorted = allResults.sort((a, b) => b.score - a.score);
+          setMatchResults(sorted.map(r => r.ref));
+          setMatchMode(allResults.length > 0 ? 'local' : 'idle');
+          setIsSmartParsing(false);
+          if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
+          analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
+          return;
         }
+        updateStep('phase2', { status: 'done', detail: sr ? T('searchPhaseIntentResult').replace('{n}', String(allResults.length)) : T('searchPhaseIntentSkip') });
       } else {
         updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
       }
 
-      // Phase 3: Semantic expansion (if still <= 3 results)
-      if (allResults.length <= 3 && aiAvailable) {
+      // Phase 3: Semantic expansion
+      if (allResults.length <= 3) {
         updateStep('phase3', { status: 'loading' });
-        try {
-          const semanticResults = await semanticSearchReflections(reflections, trimmed);
-          if (semanticResults.length > 0) {
-            const existingIds = new Set(allResults.map(r => r.ref.id));
-            const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
-            for (const sr of sorted) {
-              const ref = reflections[sr.reflectionIndex];
-              if (ref && !existingIds.has(ref.id)) {
-                allResults.push({ ref, score: sr.relevance * 0.5, source: 'extended' });
-                existingIds.add(ref.id);
-              }
-            }
-            updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticResult').replace('{n}', String(semanticResults.length)) });
-          } else {
-            updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticEmpty') });
-          }
-        } catch (e) {
-          log.debug('SmartQuery Phase 3 failed:', e);
-          setAiDegraded(true);
-          updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') });
-        }
+        const { count, failed } = await runAIPhase3(reflections, trimmed, allResults, existingIds);
+        if (failed) { setAiDegraded(true); updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') }); }
+        else updateStep('phase3', { status: 'done', detail: count > 0 ? T('searchPhaseSemanticResult').replace('{n}', String(count)) : T('searchPhaseSemanticEmpty') });
       } else {
         updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticSkip') });
       }
 
-      // Merge: sort direct first, then extended
+      // Merge
       updateStep('merge', { status: 'loading' });
-      const direct = allResults.filter(r => r.source === 'direct').sort((a, b) => b.score - a.score);
-      const extended = allResults.filter(r => r.source === 'extended').sort((a, b) => b.score - a.score);
-      const finalResults = [...direct, ...extended];
-      setMatchResults(finalResults.map(r => r.ref));
+      const directCount = allResults.filter(r => r.source === 'direct').length;
+      const extendedCount = allResults.filter(r => r.source === 'extended').length;
+      const finalResults = mergeResults(allResults);
+      setMatchResults(finalResults);
       setMatchMode(finalResults.length > 0 ? 'ai' : 'idle');
       if (finalResults.length > 0) addToHistory(trimmed);
       updateStep('merge', {
         status: 'done',
         detail: T('searchPhaseMergeResult')
           .replace('{n}', String(finalResults.length))
-          .replace('{d}', String(direct.length))
-          .replace('{e}', String(extended.length))
+          .replace('{d}', String(directCount))
+          .replace('{e}', String(extendedCount))
       });
     } catch (e) {
       log.warn('SmartQuery pipeline error:', e);
@@ -372,7 +406,7 @@ export function useQuickTrailSearch(
       if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
       analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
-  }, [searchQuery, reflections, candidates, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep, addToHistory, T]);
+  }, [searchQuery, reflections, candidates, filters, aiAvailable, runAIPhase2, runAIPhase3, mergeResults, updateStep, addToHistory, T]);
 
   // AI on-demand search (Phase 2 + 3, appends to local results)
   const handleAISearch = useCallback(async () => {
@@ -396,81 +430,39 @@ export function useQuickTrailSearch(
       const allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }> =
         matchResults.map(r => ({ ref: r, score: 0, source: 'direct' as const }));
 
-      // Phase 2: Intent understanding
-      try {
-        const result = await parseSmartQuery(reflections, trimmed, chatHistoryRef.current);
-        if (result.question && chatHistoryRef.current.length < 3) {
-          setSmartResult(result);
-          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
-          setIsSmartParsing(false);
-          setIsAISearching(false);
-          if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
-          analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
-          return;
-        }
-        if (result.topic || (result.filters && Object.keys(result.filters).length > 0)) {
-          setSmartResult(result);
-          const newFilters: TrailFilters = {
-            timeRange: result.filters.timeRange || timeRange,
-            tags: result.filters.tags?.length ? result.filters.tags : selectedTags,
-            moods: result.filters.moods?.length ? result.filters.moods : selectedMoods,
-          };
-          const newCandidates = computeCandidatePool(reflections, newFilters);
-          const newIndex = buildIndex(newCandidates);
-          const topic = result.topic || trimmed;
-          const newScored = retrieveTopK(topic, newIndex, 20);
-          for (const s of newScored) {
-            if (!existingIds.has(s.index.id)) {
-              const ref = newCandidates.find(r => r.id === s.index.id);
-              if (ref) { allResults.push({ ref, score: s.score, source: 'direct' }); existingIds.add(ref.id); }
-            }
-          }
-          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentResult').replace('{n}', String(allResults.length)) });
-        } else {
-          updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentSkip') });
-        }
-      } catch (e) {
-        log.debug('AISearch Phase 2 failed:', e);
-        updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentFail') });
+      // Phase 2
+      const { smartResult: sr, shouldReturn } = await runAIPhase2(reflections, trimmed, [], filters, allResults, existingIds);
+      if (sr) setSmartResult(sr);
+      if (shouldReturn) {
+        updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
+        setIsSmartParsing(false);
+        setIsAISearching(false);
+        if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
+        analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
+        return;
       }
+      updateStep('phase2', { status: 'done', detail: sr ? T('searchPhaseIntentResult').replace('{n}', String(allResults.length)) : T('searchPhaseIntentSkip') });
 
-      // Phase 3: Semantic expansion
+      // Phase 3
       updateStep('phase3', { status: 'loading' });
-      try {
-        const semanticResults = await semanticSearchReflections(reflections, trimmed);
-        if (semanticResults.length > 0) {
-          const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
-          for (const sr of sorted) {
-            const ref = reflections[sr.reflectionIndex];
-            if (ref && !existingIds.has(ref.id)) {
-              allResults.push({ ref, score: sr.relevance * 0.5, source: 'extended' });
-              existingIds.add(ref.id);
-            }
-          }
-          updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticResult').replace('{n}', String(semanticResults.length)) });
-        } else {
-          updateStep('phase3', { status: 'done', detail: T('searchPhaseSemanticEmpty') });
-        }
-      } catch (e) {
-        log.debug('AISearch Phase 3 failed:', e);
-        setAiDegraded(true);
-        updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') });
-      }
+      const { count, failed } = await runAIPhase3(reflections, trimmed, allResults, existingIds);
+      if (failed) { setAiDegraded(true); updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') }); }
+      else updateStep('phase3', { status: 'done', detail: count > 0 ? T('searchPhaseSemanticResult').replace('{n}', String(count)) : T('searchPhaseSemanticEmpty') });
 
       // Merge
       updateStep('merge', { status: 'loading' });
-      const direct = allResults.filter(r => r.source === 'direct').sort((a, b) => b.score - a.score);
-      const extended = allResults.filter(r => r.source === 'extended').sort((a, b) => b.score - a.score);
-      const finalResults = [...direct, ...extended];
-      setMatchResults(finalResults.map(r => r.ref));
+      const directCount = allResults.filter(r => r.source === 'direct').length;
+      const extendedCount = allResults.filter(r => r.source === 'extended').length;
+      const finalResults = mergeResults(allResults);
+      setMatchResults(finalResults);
       setMatchMode(finalResults.length > 0 ? 'ai' : 'idle');
       if (finalResults.length > 0) addToHistory(trimmed);
       updateStep('merge', {
         status: 'done',
         detail: T('searchPhaseMergeResult')
           .replace('{n}', String(finalResults.length))
-          .replace('{d}', String(direct.length))
-          .replace('{e}', String(extended.length))
+          .replace('{d}', String(directCount))
+          .replace('{e}', String(extendedCount))
       });
     } catch (e) {
       log.warn('AISearch pipeline error:', e);
@@ -481,7 +473,7 @@ export function useQuickTrailSearch(
       if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
       analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
-  }, [searchQuery, reflections, matchResults, chatHistory, aiAvailable, timeRange, selectedTags, selectedMoods, updateStep, addToHistory, T]);
+  }, [searchQuery, reflections, matchResults, filters, aiAvailable, runAIPhase2, runAIPhase3, mergeResults, updateStep, addToHistory, T]);
 
   const handleSmartAnswer = useCallback((answer: string) => {
     setChatHistory(prev => {

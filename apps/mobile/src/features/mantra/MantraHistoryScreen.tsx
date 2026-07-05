@@ -1,12 +1,11 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 import type { RootStackParamList } from '../../navigation/types';
 
 export default function MantraHistoryScreen() {
@@ -14,8 +13,8 @@ export default function MantraHistoryScreen() {
   const { mantraId } = route.params ?? {};
   const nav = useRootNavigation();
   const TH = useTheme();
-  const T = useT();
-  const { mantraDefs, mantraSessions } = useAppStore(useShallow(s => ({ mantraDefs: s.mantraDefs, mantraSessions: s.mantraSessions })));
+  const _T = useT();
+  const { mantraDefs, mantraSessions } = useShallowStore(s => ({ mantraDefs: s.mantraDefs, mantraSessions: s.mantraSessions }));
   const [monthOffset, setMonthOffset] = useState(0);
 
   // 当前显示的月份
@@ -27,7 +26,6 @@ export default function MantraHistoryScreen() {
 
   const monthYear = displayMonth.getFullYear();
   const monthIdx = displayMonth.getMonth();
-  const monthStr = `${monthYear}-${String(monthIdx + 1).padStart(2, '0')}`;
 
   // 咒语名称映射
   const mantraNames = useMemo(() => {

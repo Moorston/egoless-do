@@ -4,10 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme } from '@egoless-do/core';
-import { Calendar, ChevronLeft, ChevronRight, Music, FileText, Trash2, X } from 'lucide-react-native';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme } from '@egoless-do/core';
+import { Calendar, ChevronLeft, ChevronRight, Music, Trash2, X } from 'lucide-react-native';
 import type { MedHistoryEntry } from '@egoless-do/core';
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
@@ -53,7 +52,7 @@ function getWeekStart(): string {
 }
 
 // ── Stats Card ──
-function StatsCard({ entries, TH }: { entries: MedHistoryEntry[]; TH: Theme }) {
+function StatsCard({ entries }: { entries: MedHistoryEntry[] }) {
   const totalMin = useMemo(() => entries.reduce((s, e) => s + (e.durMin || 0), 0), [entries]);
   const totalDays = useMemo(() => new Set(entries.map(e => e.date)).size, [entries]);
   const streak = useMemo(() => calcStreak(entries), [entries]);
@@ -186,10 +185,9 @@ export function MedCalendarScreen() {
 }
 
 // ── Detail Modal ──
-function DetailModal({ entry, TH, T, onClose, onDelete }: { entry: MedHistoryEntry | null; TH: Theme; T: (key: string) => string; onClose: () => void; onDelete: (date: string) => void }) {
+function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry | null; TH: Theme; onClose: () => void; onDelete: (date: string) => void }) {
   const [editingNote, setEditingNote] = useState(false);
   const [noteText, setNoteText] = useState('');
-  const adapter = useAppStore(s => s);
 
   if (!entry) return null;
 
@@ -274,7 +272,7 @@ export default function MedHistoryPage() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { medHistory } = useAppStore(useShallow(s => ({ medHistory: s.medHistory })));
+  const { medHistory } = useShallowStore(s => ({ medHistory: s.medHistory }));
   const [selectedEntry, setSelectedEntry] = useState<MedHistoryEntry | null>(null);
 
   const activeEntries = useMemo(() =>
@@ -317,7 +315,7 @@ export default function MedHistoryPage() {
   }, []);
 
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {
-    if (item.type === 'statCard') return <StatsCard entries={activeEntries} TH={TH} />;
+    if (item.type === 'statCard') return <StatsCard entries={activeEntries} />;
     if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('MedCalendar' as never)} />;
     if (item.type === 'monthHeader') {
       return (
@@ -406,7 +404,7 @@ export default function MedHistoryPage() {
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       />
-      <DetailModal entry={selectedEntry} TH={TH} T={T} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />
+      <DetailModal entry={selectedEntry} TH={TH} onClose={() => setSelectedEntry(null)} onDelete={handleDelete} />
     </SafeAreaView>
   );
 }

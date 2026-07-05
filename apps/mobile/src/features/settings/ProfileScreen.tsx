@@ -4,10 +4,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { Card, useTheme, useT, RowItem } from '../../components/UI';
+import { Card, useTheme, useT } from '../../components/UI';
 import {
   COLORS, FONT_TITLE, FONT_BODY, FONT_SUB,
   createLogger,
@@ -29,7 +28,7 @@ export default function ProfileScreen() {
     userProfile, auth, checkinHistory, habits, reflections,
     exerciseLog, fastingHistory, plans, planItems,
     waterGoal, streak, totalMedMinutes,
-  } = useAppStore(useShallow(s => ({
+  } = useShallowStore(s => ({
     userProfile: s.userProfile,
     auth: s.auth,
     checkinHistory: s.checkinHistory,
@@ -42,7 +41,7 @@ export default function ProfileScreen() {
     waterGoal: s.waterGoal,
     streak: s.streak,
     totalMedMinutes: s.totalMedMinutes,
-  })));
+  }));
   const nav = useRootNavigation();
 
   const [editNickname, setEditNickname] = useState(userProfile.nickname ?? '');
@@ -147,11 +146,6 @@ export default function ProfileScreen() {
     setEditingMotto(false);
   };
 
-  const saveWeight = () => {
-    const num = editWeight ? parseFloat(editWeight) : undefined;
-    useAppStore.getState().updateUserProfile({ weight: num });
-  };
-
   const debouncedSaveWeight = useCallback((val: string) => {
     setEditWeight(val);
     weightRef.current = val;
@@ -162,11 +156,6 @@ export default function ProfileScreen() {
       useAppStore.getState().updateUserProfile({ weight: num });
     }, 800);
   }, []);
-
-  const saveWaterGoal = () => {
-    const num = parseInt(editWaterGoal, 10);
-    if (!isNaN(num) && num > 0) useAppStore.getState().setWaterGoal(num);
-  };
 
   const debouncedSaveHeight = useCallback((val: string) => {
     setEditHeight(val);

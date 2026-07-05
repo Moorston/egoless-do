@@ -1,18 +1,17 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON, createLogger, MS_PER_DAY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_TINY, createLogger, MS_PER_DAY } from '@egoless-do/core';
 import {
   getTrailStats, getMoodIcon,
-  computeRecommendations, computeHybridRecommendations, applyUserPreferences, buildIgnoredPattern, mergeAndRank,
+  computeRecommendations, applyUserPreferences, buildIgnoredPattern, mergeAndRank,
   isAIRecommendAvailable, parseSmartQuery, matchReflectionsToTopic, matchByKeyword, computeCandidatePool,
 } from '@egoless-do/core';
 import { recommendTrailsViaAI } from '@egoless-do/core';
@@ -28,7 +27,7 @@ const TRAIL_IGNORED_KEY = 'trailIgnoredPatterns';
 export default function MindTrailScreen() {
   const TH = useTheme();
   const T = useT();
-  const { ignoredRecPatterns, aiMode, aiModels, thoughtTrails: rawThoughtTrails, reflections: rawReflections, createThoughtTrail, deleteThoughtTrail, addIgnoredRecPattern } = useAppStore(useShallow(s => ({
+  const { ignoredRecPatterns, aiMode, aiModels, thoughtTrails: rawThoughtTrails, reflections: rawReflections, createThoughtTrail, deleteThoughtTrail, addIgnoredRecPattern } = useShallowStore(s => ({
     ignoredRecPatterns: s.ignoredRecPatterns,
     aiMode: s.aiMode,
     aiModels: s.aiModels,
@@ -37,7 +36,7 @@ export default function MindTrailScreen() {
     createThoughtTrail: s.createThoughtTrail,
     deleteThoughtTrail: s.deleteThoughtTrail,
     addIgnoredRecPattern: s.addIgnoredRecPattern,
-  })));
+  }));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -401,7 +400,7 @@ export default function MindTrailScreen() {
     // Recommendations section
     items.push({ type: 'rec-header' });
     if (visibleRecs.length > 0) {
-      visibleRecs.forEach((rec, i) => {
+      visibleRecs.forEach((rec, _i) => {
         items.push({ type: 'rec-item', rec, realIdx: recommendations.indexOf(rec) });
       });
       items.push({ type: 'rec-refresh' });
