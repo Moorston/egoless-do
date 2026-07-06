@@ -120,7 +120,7 @@ export async function initApp(): Promise<void> {
     }
 
     // ── Step 5: Wire auth token changes → SecureStore ─────────
-    useAppStore.subscribe((state: any, prevState: any) => {
+    useAppStore.subscribe((state, prevState) => {
       const newToken = state.auth.token;
       const newRefresh = state.auth.refreshToken;
       const oldToken = prevState.auth.token;

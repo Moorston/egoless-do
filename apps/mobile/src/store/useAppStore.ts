@@ -139,8 +139,8 @@ let _autoSyncCallback: (() => void) | null = null;
 const triggerAutoSync = () => _autoSyncCallback?.();
 
 // Lazy store reference to avoid circular dependency
-let _storeRef: any = null;
-const getStore = () => _storeRef;
+let _storeRef: MobileStore | null = null;
+const getStore = () => _storeRef!;
 
 export const useAppStore = create<MobileStore>()(
   (...a) => {

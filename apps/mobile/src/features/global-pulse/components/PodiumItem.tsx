@@ -7,7 +7,7 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, type ViewStyle } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
-import { formatDisplayName, getCheckinTypeColor } from '../services/globalPulseApi';
+import { formatDisplayName } from '../services/globalPulseApi';
 import { LeaderboardEntry } from '@egoless-do/core';
 
 interface PodiumItemProps {
@@ -35,7 +35,6 @@ export const PodiumItem: React.FC<PodiumItemProps> = React.memo(({
   const { city, loading } = useCityName(entry.lat, entry.lng, entry.city);
 
   const displayName = formatDisplayName(entry.nickname, entry.user_hash);
-  const typeColor = getCheckinTypeColor(entry.type);
   const startFormatted = useMemo(() => formatDate(entry.created_at), [entry.created_at]);
 
   return (

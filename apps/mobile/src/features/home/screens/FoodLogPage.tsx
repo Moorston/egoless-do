@@ -61,19 +61,22 @@ export default function FoodLogPage() {
         </Card>
 
         <Card>
-          {getTodayFoodLog(filteredFoodLog).length === 0 ? (
-            <Text style={{ color:TH.sub, fontSize:FONT_EMPTY, textAlign:'center', padding:24 }}>{T('foodEmpty')}</Text>
-          ) : (
-            getTodayFoodLog(filteredFoodLog).map((f) => (
-              <View key={f.id} style={{ flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                <View style={{ flex:1 }}>
-                  <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{f.name}</Text>
-                  {f.note ? <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{f.note}</Text> : null}
+          {(() => {
+            const todayLog = getTodayFoodLog(filteredFoodLog);
+            return todayLog.length === 0 ? (
+              <Text style={{ color:TH.sub, fontSize:FONT_EMPTY, textAlign:'center', padding:24 }}>{T('foodEmpty')}</Text>
+            ) : (
+              todayLog.map((f, idx) => (
+                <View key={f.id} style={{ flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12, ...(idx < todayLog.length - 1 ? { borderBottomWidth: 1, borderBottomColor: TH.border } : {}) }}>
+                  <View style={{ flex:1 }}>
+                    <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{f.name}</Text>
+                    {f.note ? <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{f.note}</Text> : null}
+                  </View>
+                  <Text style={{ fontWeight:'700', color:P }}>{f.calories ?? 0} kcal</Text>
                 </View>
-                <Text style={{ fontWeight:'700', color:P }}>{f.calories ?? 0} kcal</Text>
-              </View>
-            ))
-          )}
+              ))
+            );
+          })()}
         </Card>
 
         <TouchableOpacity onPress={() => setShowAdd(true)}

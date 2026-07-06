@@ -76,7 +76,7 @@ export function createSleepSlice(
 
     setSleepGoal(goal) {
       set({ sleepGoal: goal });
-      adapter.persistChange('profile', 'self', { sleepGoal: goal } as any).catch(e => log.error(e));
+      adapter.persistSettings('sleepGoal', goal).catch(e => log.error(e));
     },
   });
 }

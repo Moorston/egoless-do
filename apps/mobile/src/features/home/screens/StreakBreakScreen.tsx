@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, FlatList } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
@@ -52,49 +52,6 @@ export default function StreakBreakScreen() {
     const m = parseInt(t.month.split('-')[1]);
     return `${m}月`;
   });
-
-  const renderBreakItem = useCallback(({ item, index }: { item: (typeof breaks)[number]; index: number }) => {
-    const b = item;
-    const hypothetical = hypotheticals[index];
-    return (
-      <Card>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
-              {b.breakDate}
-            </Text>
-            {hypothetical?.available && (
-              <View style={{
-                backgroundColor: `${COLORS.ORANGE}15`, borderColor: `${COLORS.ORANGE}40`,
-                borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2,
-                flexDirection: 'row', alignItems: 'center', gap: 4,
-              }}>
-                <Shield size={12} color={COLORS.ORANGE} />
-                <Text style={{ fontSize: FONT_TINY, color: COLORS.ORANGE, fontWeight: '600' }}>
-                  {T('streakBreakHypothetical').replace('{n}', String(hypothetical.hypotheticalStreak))}
-                </Text>
-              </View>
-            )}
-          </View>
-          <View style={{
-            backgroundColor: '#EF444420', borderRadius: 8,
-            paddingHorizontal: 10, paddingVertical: 3,
-          }}>
-            <Text style={{ color: '#EF4444', fontSize: FONT_BADGE, fontWeight: '600' }}>
-              -{b.lostStreak} {T('streakBreakDays')}
-            </Text>
-          </View>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('streakBreakRange')}：{b.startDate}</Text>
-          <ArrowRight size={12} color={TH.sub} />
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{b.breakDate}</Text>
-        </View>
-      </Card>
-    );
-  }, [T, TH, hypotheticals, P]);
-
-  const breakKeyExtractor = useCallback((item: (typeof breaks)[number], index: number) => item.breakDate ?? String(index), []);
 
 
   return (
@@ -237,7 +194,7 @@ export default function StreakBreakScreen() {
           breaks.map((b, index) => {
             const hypothetical = hypotheticals[index];
             return (
-              <Card key={b.breakDate ?? String(index)}>
+              <Card key={`break-${b.breakDate}-${index}`}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
                     <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{b.breakDate}</Text>

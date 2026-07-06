@@ -193,7 +193,7 @@ export function createPracticeSlice(
         updated = { ...s.dedicationSettings, ...settings };
         return { dedicationSettings: updated };
       });
-      if (updated) adapter.persistChange('profile', 'self', { dedicationSettings: updated } as any).catch(e => log.error(e));
+      if (updated) adapter.persistSettings('dedicationSettings', updated).catch(e => log.error(e));
     },
 
     // ── Give ───────────────────────────────────────────────────────────

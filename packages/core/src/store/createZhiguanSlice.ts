@@ -6,7 +6,7 @@ import type {
   ZhiguanMethod,
 } from '../types';
 import type { BreathingRecord } from '../types/breath';
-import type { ZhiguanSlice } from './types';
+import type { ZhiguanSlice, FullStore } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
 import { computeZhiguanStats, sortSessionsByDateDesc } from '../business/zhiguanHistory';
@@ -48,7 +48,7 @@ export function createZhiguanSlice(
     removeBreathRecord(id: string) {
       const record = (get().breathHistory ?? []).find((r: BreathingRecord) => r.id === id && !r.deleted);
       if (record) {
-        (get() as any).addToRecycleBin({ id: record.id, entityType: 'breath', data: record });
+        (get() as FullStore).addToRecycleBin({ id: record.id, entityType: 'breath', data: record });
       }
       set(s => ({
         breathHistory: (s.breathHistory ?? []).map((r: BreathingRecord) =>
