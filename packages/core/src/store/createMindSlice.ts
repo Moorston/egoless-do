@@ -6,6 +6,7 @@ import type {
 import { ACHIEVEMENT_DEFS } from '../types';
 import { uid, dateStr } from '../utils';
 import type { StorageAdapter } from './types';
+import type { FullStore } from './types';
 import type { MindSlice } from './mindSliceTypes';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
@@ -268,7 +269,7 @@ export function createMindSlice(
       }
 
       // 冥想关联
-      const medHistory = (s as unknown as Record<string, unknown>).medHistory as { timestamp?: number; durationSec?: number }[] | undefined;
+      const medHistory = (get() as unknown as FullStore).medHistory as { timestamp?: number; durationSec?: number }[] | undefined;
       if (medHistory && medHistory.length > 0) {
         const recentMedDates = new Set(
           medHistory.filter((m: any) => !m.deleted && m.timestamp && Date.now() - m.timestamp < 30 * 86400000)

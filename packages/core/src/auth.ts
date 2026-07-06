@@ -2,6 +2,9 @@
 import type { AuthUser } from './types';
 import type { SyncPushResult, SyncCheckResult, SyncPullPostBody, SyncPullResult, SyncChange, SyncPushResponseItem } from './sync/types';
 import { buildHeaders, fetchWithTimeout, handleJsonResponse, SYNC_REQUEST_TIMEOUT } from './fetch';
+import { createLogger } from './logger';
+
+const log = createLogger('Auth');
 
 export interface AuthResponse {
   user: AuthUser;
@@ -196,7 +199,7 @@ export async function apiSyncPullEntity(token: string, entity: string, page: num
   // Calculate if there are more pages
   const offset = (page - 1) * pageSize;
   const hasMore = (offset + entityData.length) < total;
-  console.log(`[apiSyncPullEntity] ${entity}: page=${page}, pageSize=${pageSize}, returned=${entityData.length}, total=${total}, hasMore=${hasMore}`);
+  log.debug(`apiSyncPullEntity ${entity}: page=${page}, pageSize=${pageSize}, returned=${entityData.length}, total=${total}, hasMore=${hasMore}`);
   return {
     data: entityData,
     total,

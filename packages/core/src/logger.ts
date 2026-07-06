@@ -16,7 +16,7 @@ function logToConsole(level: LogLevel, tag: string, args: unknown[]) {
       if (__DEV__) console.log(prefix, ...args);
       break;
     case 'info':
-      console.log(prefix, ...args);
+      if (__DEV__) console.log(prefix, ...args);
       break;
     case 'warn':
       console.warn(prefix, ...args);

@@ -23,8 +23,9 @@ export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<Rec
 
     addToRecycleBin(item: Omit<RecycleBinItem, 'deletedAt'>) {
       const entry: RecycleBinItem = { ...item, deletedAt: Date.now() };
-      set(s => ({ recycleBin: [entry, ...(s.recycleBin ?? [])] }));
-      adapter.persistSettings('recycleBin', [entry, ...(get().recycleBin ?? [])]).catch(e => log.error(e));
+      let newBin: RecycleBinItem[];
+      set(s => { newBin = [entry, ...(s.recycleBin ?? [])]; return { recycleBin: newBin }; });
+      adapter.persistSettings('recycleBin', newBin!).catch(e => log.error(e));
     },
 
     restoreFromRecycleBin(id: string) {
@@ -111,8 +112,9 @@ export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<Rec
     },
 
     removeFromRecycleBin(id: string) {
-      set(s => ({ recycleBin: s.recycleBin.filter(r => r.id !== id) }));
-      adapter.persistSettings('recycleBin', (get().recycleBin ?? []).filter(r => r.id !== id)).catch(e => log.error(e));
+      let newBin: RecycleBinItem[];
+      set(s => { newBin = s.recycleBin.filter(r => r.id !== id); return { recycleBin: newBin }; });
+      adapter.persistSettings('recycleBin', newBin!).catch(e => log.error(e));
     },
 
     emptyRecycleBin() {

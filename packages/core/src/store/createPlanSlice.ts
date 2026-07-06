@@ -21,7 +21,7 @@ import {
   linkReflectionToPlanItem,
 } from '../business/reflections';
 import { uid, dateStr, activeOnly, parseDateParts } from '../utils';
-import type { StorageAdapter, PlanSlice } from './types';
+import type { StorageAdapter, PlanSlice, FullStore } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
 import { notifyDelayedPlan } from '../services/notification';
@@ -32,8 +32,11 @@ const log = createLogger('Store');
 // ═══════════════════════════════════════════════════════════════════
 
 // Shared toggle logic for checkin/uncheckin deduplication
+type SetState = (fn: (s: FullStore) => Partial<FullStore>) => void;
+type GetState = () => FullStore;
+
 function toggleCheckin(
-  set: any, get: any, adapter: StorageAdapter,
+  set: SetState, get: GetState, adapter: StorageAdapter,
   action: 'checkin' | 'uncheckin', planItemId: string, date?: string,
 ) {
   const today = date ?? dateStr();
@@ -41,7 +44,7 @@ function toggleCheckin(
   let item: PlanItem | undefined;
   let historyEntry: DailyTodoHistory | undefined;
   let updatedPlan: Plan | undefined;
-  set((s: PlanSlice & Record<string, any>) => {
+  set((s: FullStore) => {
     const newCheckins = action === 'checkin'
       ? checkinItem(s.planItemCheckins ?? [], planItemId, today)
       : uncheckinItem(s.planItemCheckins ?? [], planItemId, today);
