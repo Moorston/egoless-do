@@ -54,6 +54,18 @@ export default function MusicCategoryScreen() {
     }
   }, [currentTrack, isPlaying, play, pause, resume, tracks, setQueue]);
 
+  const renderTrackItem = useCallback(({ item }: { item: MusicTrack }) => (
+    <TrackListItem
+      track={item}
+      isCurrent={currentTrack?.id === item.id}
+      isPlaying={currentTrack?.id === item.id && isPlaying}
+      isFavorite={favorites.includes(item.id)}
+      onPlay={() => handlePlay(item)}
+      onToggleFavorite={() => toggleFavorite(item.id)}
+      primaryColor={P}
+    />
+  ), [currentTrack, isPlaying, favorites, handlePlay, toggleFavorite, P]);
+
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* Header */}
@@ -82,17 +94,7 @@ export default function MusicCategoryScreen() {
         <FlatList
           data={tracks}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <TrackListItem
-              track={item}
-              isCurrent={currentTrack?.id === item.id}
-              isPlaying={currentTrack?.id === item.id && isPlaying}
-              isFavorite={favorites.includes(item.id)}
-              onPlay={() => handlePlay(item)}
-              onToggleFavorite={() => toggleFavorite(item.id)}
-              primaryColor={P}
-            />
-          )}
+          renderItem={renderTrackItem}
           ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: TH.border, marginHorizontal: 16 }} />}
           contentContainerStyle={{ paddingBottom: 100 }}
         />

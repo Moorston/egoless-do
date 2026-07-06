@@ -20,7 +20,7 @@ interface Props {
   showFavorite?: boolean;
 }
 
-export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor, showFavorite = true }: Props) {
+function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onToggleFavorite, primaryColor, showFavorite = true }: Props) {
   const TH = useTheme();
   const T = useT();
 
@@ -87,3 +87,5 @@ export default function TrackListItem({ track, isCurrent, isPlaying, isFavorite,
     </TouchableOpacity>
   );
 }
+
+export default React.memo(TrackListItem);

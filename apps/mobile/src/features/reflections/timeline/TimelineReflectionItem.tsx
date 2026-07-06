@@ -24,7 +24,7 @@ interface TimelineReflectionItemProps {
   onCreatePlan: (id: string) => void;
 }
 
-export function TimelineReflectionItem({
+function TimelineReflectionItemComponent({
   reflection: r,
   primaryColor,
   isLast,
@@ -109,6 +109,8 @@ export function TimelineReflectionItem({
     </View>
   );
 }
+
+export const TimelineReflectionItem = React.memo(TimelineReflectionItemComponent);
 
 const styles = StyleSheet.create({
   container: {

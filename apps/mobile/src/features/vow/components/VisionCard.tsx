@@ -54,7 +54,7 @@ const STATUS_I18N: Record<PlanItemStatus, string> = {
   cancelled: 'planStatusCancelled',
 };
 
-export default function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onTimeFrameChange, linkedPlans = [], planItems = [] }: Props) {
+function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onTimeFrameChange, linkedPlans = [], planItems = [] }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [showTfPicker, setShowTfPicker] = useState(false);
   const Icon = TYPE_ICON[vision.type] ?? Flag;
@@ -297,3 +297,5 @@ export default function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal
     </View>
   );
 }
+
+export default React.memo(VisionCard);

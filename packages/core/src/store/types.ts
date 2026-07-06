@@ -179,7 +179,6 @@ export interface ReflectionSlice {
   reflectionLinks: ReflectionLink[];
   createReflectionLink: (fromId: string, toId: string, type: LinkType, note?: string) => string;
   updateReflectionLink: (id: string, patch: Partial<ReflectionLink>) => void;
-  deleteReflectionLink: (id: string) => void;
   getLinksByReflection: (reflectionId: string) => ReflectionLink[];
   getLinksFromReflection: (reflectionId: string) => ReflectionLink[];
   getLinksToReflection: (reflectionId: string) => ReflectionLink[];
@@ -263,7 +262,6 @@ export interface ThoughtTrailSlice {
   createPlanItemFromTrail: (trailId: string, form: { name: string; description?: string; priority: PlanItemPriority; startDate: string; endDate: string }) => boolean;
   getTrailPlanItems: (trailId: string) => PlanItem[];
   addIgnoredRecPattern: (pattern: string) => void;
-  clearIgnoredRecPatterns: () => void;
   addTrailNote: (trailId: string, form: { content: string; tags?: string[]; mood?: string; source: 'guided' | 'free'; guidedQuestion?: string }) => TrailNote;
   updateTrailNote: (noteId: string, patch: Partial<TrailNote>) => void;
   deleteTrailNote: (noteId: string) => void;

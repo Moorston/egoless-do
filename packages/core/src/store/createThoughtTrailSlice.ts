@@ -8,7 +8,7 @@ import { uid, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 
-export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<ThoughtTrailSlice> {
+export function createThoughtTrailSlice(adapter: StorageAdapter): SliceCreator<ThoughtTrailSlice> {
   return (set, get) => ({
     thoughtTrails: [],
     trailNotes: [],
@@ -48,10 +48,10 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
       });
 
       for (const r of capturedReflections) {
-        adapter?.persistChange('reflection', r.id, r).catch(e => log.error(e));
+        adapter.persistChange('reflection', r.id, r).catch(e => log.error(e));
       }
 
-      adapter?.persistChange('thoughtTrail', id, trail).catch(e => log.error(e));
+      adapter.persistChange('thoughtTrail', id, trail).catch(e => log.error(e));
       return id;
     },
 
@@ -63,7 +63,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
           return t;
         }),
       }));
-      if (updated) adapter?.persistChange('thoughtTrail', id, updated).catch(e => log.error(e));
+      if (updated) adapter.persistChange('thoughtTrail', id, updated).catch(e => log.error(e));
     },
 
     deleteThoughtTrail: (id) => {
@@ -109,14 +109,14 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
       });
 
       for (const r of updatedReflections) {
-        adapter?.persistChange('reflection', r.id, r).catch(e => log.error(e));
+        adapter.persistChange('reflection', r.id, r).catch(e => log.error(e));
       }
-      adapter?.batchDelete([
+      adapter.batchDelete([
         ...notesToDelete.map(n => ({ entity: 'trailNote' as const, id: n.id })),
         { entity: 'thoughtTrail', id },
       ]).catch(e => log.error(e));
       for (const item of updatedPlanItems) {
-        adapter?.persistChange('planItem', item.id, item).catch(e => log.error(e));
+        adapter.persistChange('planItem', item.id, item).catch(e => log.error(e));
       }
     },
 
@@ -141,8 +141,8 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
           return updatedReflection;
         }),
       }));
-      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(e => log.error(e));
-      if (updatedTrail) adapter?.persistChange('thoughtTrail', trailId, updatedTrail).catch(e => log.error(e));
+      if (updatedReflection) adapter.persistChange('reflection', reflectionId, updatedReflection).catch(e => log.error(e));
+      if (updatedTrail) adapter.persistChange('thoughtTrail', trailId, updatedTrail).catch(e => log.error(e));
     },
 
     removeReflectionFromTrail: (trailId, reflectionId) => {
@@ -163,8 +163,8 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
           return updatedReflection;
         }),
       }));
-      if (updatedReflection) adapter?.persistChange('reflection', reflectionId, updatedReflection).catch(e => log.error(e));
-      if (updatedTrail) adapter?.persistChange('thoughtTrail', trailId, updatedTrail).catch(e => log.error(e));
+      if (updatedReflection) adapter.persistChange('reflection', reflectionId, updatedReflection).catch(e => log.error(e));
+      if (updatedTrail) adapter.persistChange('thoughtTrail', trailId, updatedTrail).catch(e => log.error(e));
     },
 
     setInsightSummary: (trailId, summary) => {
@@ -176,7 +176,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         trail = newList.find(t => t.id === trailId && !t.deleted);
         return { thoughtTrails: newList };
       });
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
+      if (trail) adapter.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
     },
 
     setInsightCache: (trailId, cache) => {
@@ -188,7 +188,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         trail = newList.find(t => t.id === trailId && !t.deleted);
         return { thoughtTrails: newList };
       });
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
+      if (trail) adapter.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
     },
 
     setReviewCache: (trailId, cache) => {
@@ -200,7 +200,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         trail = newList.find(t => t.id === trailId && !t.deleted);
         return { thoughtTrails: newList };
       });
-      if (trail) adapter?.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
+      if (trail) adapter.persistChange('thoughtTrail', trailId, trail).catch(e => log.error(e));
     },
 
     /** @deprecated Use get().createPlanItem({ type: 'trail', id }, form) instead */
@@ -228,10 +228,6 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
       set(s => ({
         ignoredRecPatterns: [...new Set([...(s.ignoredRecPatterns ?? []), pattern])],
       }));
-    },
-
-    clearIgnoredRecPatterns: () => {
-      set({ ignoredRecPatterns: [] });
     },
 
     // ── Trail Note CRUD ────────────────────────────────────────────────
@@ -265,8 +261,8 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         return { trailNotes: [...(s.trailNotes ?? []), note], thoughtTrails: newTrails };
       });
 
-      if (updatedTrail) adapter?.persistChange('thoughtTrail', trailId, updatedTrail).catch(e => log.error(e));
-      adapter?.persistChange('trailNote', note.id, note).catch(e => log.error(e));
+      if (updatedTrail) adapter.persistChange('thoughtTrail', trailId, updatedTrail).catch(e => log.error(e));
+      adapter.persistChange('trailNote', note.id, note).catch(e => log.error(e));
       return note;
     },
 
@@ -279,7 +275,7 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         updatedNote = newList.find(n => n.id === noteId && !n.deleted);
         return { trailNotes: newList };
       });
-      if (updatedNote) adapter?.persistChange('trailNote', noteId, updatedNote).catch(e => log.error(e));
+      if (updatedNote) adapter.persistChange('trailNote', noteId, updatedNote).catch(e => log.error(e));
     },
 
     deleteTrailNote: (noteId) => {
@@ -302,8 +298,8 @@ export function createThoughtTrailSlice(adapter?: StorageAdapter): SliceCreator<
         };
       });
 
-      if (updatedTrail) adapter?.persistChange('thoughtTrail', note.trailId, updatedTrail).catch(e => log.error(e));
-      adapter?.markDeleted('trailNote', noteId).catch(e => log.error(e));
+      if (updatedTrail) adapter.persistChange('thoughtTrail', note.trailId, updatedTrail).catch(e => log.error(e));
+      adapter.markDeleted('trailNote', noteId).catch(e => log.error(e));
     },
 
     getNotesByTrail: (trailId) => {

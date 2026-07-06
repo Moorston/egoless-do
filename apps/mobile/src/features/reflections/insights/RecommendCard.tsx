@@ -13,7 +13,7 @@ interface Props {
   onNotInterested: (rec: TrailRecommendation) => void;
 }
 
-export default function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested }: Props) {
+function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested }: Props) {
   const TH = useTheme();
   const T = useT();
 
@@ -170,3 +170,5 @@ export default function RecommendCard({ rec, onOneClickCreate, onCustomCreate, o
     </View>
   );
 }
+
+export default React.memo(RecommendCard);

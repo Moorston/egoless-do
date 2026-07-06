@@ -19,7 +19,7 @@ export { type ReflectionSlice } from './types';
 
 export function createReflectionSlice(
   adapter: StorageAdapter,
-  onPersist?: () => void,
+  onSync?: () => void,
 ): SliceCreator<ReflectionSlice> {
   return (set, get) => ({
     // ── Reflection ─────────────────────────────────────────────────────
@@ -148,14 +148,14 @@ export function createReflectionSlice(
         customTags: addCustomItem(s.customTags ?? [], tag),
         allTagsOrder: (s.allTagsOrder ?? []).includes(tag) ? s.allTagsOrder : [...(s.allTagsOrder ?? []), tag],
       }));
-      onPersist?.();
+      onSync?.();
     },
     removeCustomTag(tag: string) {
       set(s => ({
         customTags: removeCustomItem(s.customTags ?? [], tag),
         allTagsOrder: (s.allTagsOrder ?? []).filter(t => t !== tag),
       }));
-      onPersist?.();
+      onSync?.();
     },
     updateCustomTag(oldTag: string, newTag: string) {
       set(s => {
@@ -167,7 +167,7 @@ export function createReflectionSlice(
             : s.allTagsOrder,
         };
       });
-      onPersist?.();
+      onSync?.();
     },
     addCustomMood(mood: string) {
       if (!mood.trim()) return;
@@ -175,14 +175,14 @@ export function createReflectionSlice(
         customMoods: addCustomItem(s.customMoods ?? [], mood),
         allMoodsOrder: (s.allMoodsOrder ?? []).includes(mood) ? s.allMoodsOrder : [...(s.allMoodsOrder ?? []), mood],
       }));
-      onPersist?.();
+      onSync?.();
     },
     removeCustomMood(mood: string) {
       set(s => ({
         customMoods: removeCustomItem(s.customMoods ?? [], mood),
         allMoodsOrder: (s.allMoodsOrder ?? []).filter(m => m !== mood),
       }));
-      onPersist?.();
+      onSync?.();
     },
     updateCustomMood(oldMood: string, newMood: string) {
       set(s => {
@@ -194,10 +194,10 @@ export function createReflectionSlice(
             : s.allMoodsOrder,
         };
       });
-      onPersist?.();
+      onSync?.();
     },
-    reorderCustomTag(fromIndex: number, toIndex: number) { set(s => ({ customTags: reorderItem(s.customTags ?? [], fromIndex, toIndex) })); onPersist?.(); },
-    reorderCustomMood(fromIndex: number, toIndex: number) { set(s => ({ customMoods: reorderItem(s.customMoods ?? [], fromIndex, toIndex) })); onPersist?.(); },
+    reorderCustomTag(fromIndex: number, toIndex: number) { set(s => ({ customTags: reorderItem(s.customTags ?? [], fromIndex, toIndex) })); onSync?.(); },
+    reorderCustomMood(fromIndex: number, toIndex: number) { set(s => ({ customMoods: reorderItem(s.customMoods ?? [], fromIndex, toIndex) })); onSync?.(); },
     reorderAllTag(fromIndex: number, toIndex: number) {
       set(s => {
         const currentOrder = s.allTagsOrder ?? [];
@@ -206,7 +206,7 @@ export function createReflectionSlice(
           : [...TAGS_PRESET, ...(s.customTags ?? [])];
         return { allTagsOrder: reorderItem(order, fromIndex, toIndex) };
       });
-      onPersist?.();
+      onSync?.();
     },
     reorderAllMood(fromIndex: number, toIndex: number) {
       set(s => {
@@ -216,7 +216,7 @@ export function createReflectionSlice(
           : [...MOODS, ...(s.customMoods ?? [])];
         return { allMoodsOrder: reorderItem(order, fromIndex, toIndex) };
       });
-      onPersist?.();
+      onSync?.();
     },
 
     // ── Reflection Links ───────────────────────────────────────────────
@@ -246,15 +246,6 @@ export function createReflectionSlice(
         return { reflectionLinks: newList };
       });
       if (link) adapter.persistChange('reflectionLink', id, link).catch(e => log.error(e));
-    },
-
-    deleteReflectionLink: (id: string) => {
-      set(s => ({
-        reflectionLinks: (s.reflectionLinks ?? []).map(l =>
-          l.id === id ? { ...l, deleted: true, updatedAt: Date.now() } : l
-        ),
-      }));
-      adapter.markDeleted('reflectionLink', id).catch(e => log.error(e));
     },
 
     getLinksByReflection: (reflectionId: string) => {

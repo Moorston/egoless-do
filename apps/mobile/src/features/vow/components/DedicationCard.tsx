@@ -12,7 +12,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export default function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
+function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
   const habitDone = dedication.habitStats.filter(h => h.completed > 0).length;
   const habitTotal = dedication.habitStats.length;
 
@@ -133,3 +133,5 @@ export default function DedicationCard({ TH, T, dedication, expanded, onToggle }
     </View>
   );
 }
+
+export default React.memo(DedicationCard);

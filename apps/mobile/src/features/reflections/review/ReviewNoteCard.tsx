@@ -12,7 +12,7 @@ interface ReviewNoteCardProps {
   onEdit: (note: TrailNote) => void;
 }
 
-export function ReviewNoteCard({ note, onDelete, onEdit }: ReviewNoteCardProps) {
+function ReviewNoteCardComponent({ note, onDelete, onEdit }: ReviewNoteCardProps) {
   const TH = useTheme();
   const [expanded, setExpanded] = useState(false);
 
@@ -94,6 +94,8 @@ export function ReviewNoteCard({ note, onDelete, onEdit }: ReviewNoteCardProps) 
     </View>
   );
 }
+
+export const ReviewNoteCard = React.memo(ReviewNoteCardComponent);
 
 const styles = StyleSheet.create({
   card: {

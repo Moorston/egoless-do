@@ -46,31 +46,6 @@ export const STATUS_GRADIENTS = {
   ERROR:   ['#EF4444', '#DC2626'] as [string, string],
 } as const;
 
-/** Level 3: Stats 渐变派生 — 从主题渐变派生 4 组渐变，透明度递增 */
-export function deriveStatsGradients(themeGrad: [string, string]): [string, string][] {
-  const [c1, c2] = themeGrad;
-  const opacities = [0.10, 0.15, 0.20, 0.25];
-  return opacities.map(op => {
-    const hex = Math.round(op * 255).toString(16).padStart(2, '0');
-    return [`${c1}${hex}`, `${c2}${hex}`] as [string, string];
-  });
-}
-
-/** @deprecated Use THEME_GRADIENTS + STATUS_GRADIENTS instead */
-export const BANNER_COLORS = {
-  CHECKED:  '#7C3AED',
-  NOT_DONE: '#F59E0B',
-  DONE:     '#4F46E5',
-} as const;
-
-/** @deprecated Use deriveStatsGradients(THEME_GRADIENTS[theme]) instead */
-export const STATS_GRADIENT = [
-  ['#7117EA', '#EA6060'],
-  ['#6078EA', '#17EAD9'],
-  ['#9A4EFF', '#20ECFF'],
-  ['#8446FF', '#18CEFF'],
-] as const;
-
 /** 统一卡片背景色: 将 color 以 opacity 混合到 bg 上 */
 export function cardAccent(color: string, bg: string, opacity: number): string {
   const hexToRgb = (hex: string) => {

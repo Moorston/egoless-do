@@ -32,7 +32,7 @@ function resolvePlan(plan: BodyPlan | undefined, T: (k: string) => string) {
   return { icon: '🏋️', label: plan.part, isRest: ['休息', 'Rest', 'rest'].includes(plan.part), key: plan.part };
 }
 
-export default function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: Props) {
+function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: Props) {
   const activePlans = plans.filter(p => !p.deleted);
   const today = new Date();
   const todayDow = today.getDay() === 0 ? 7 : today.getDay();
@@ -47,7 +47,7 @@ export default function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, on
   const exerciseByDate = new Map<string, ExerciseEntry[]>();
   for (const e of exerciseLog ?? []) {
     if (e.deleted) continue;
-    const d = dateStr(new Date(e.ts ?? 0));
+    const d = dateStr(new Date(e.timestamp ?? 0));
     if (!exerciseByDate.has(d)) exerciseByDate.set(d, []);
     exerciseByDate.get(d)!.push(e);
   }
@@ -231,3 +231,5 @@ export default function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, on
     </View>
   );
 }
+
+export default React.memo(BodyWeekPlanCard);

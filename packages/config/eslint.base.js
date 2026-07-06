@@ -6,5 +6,8 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-explicit-any': 'warn',
     'eqeqeq': ['error', 'smart'],
+    // ── Architecture rules (docs/architecture-rules.md) ──
+    'max-lines-per-function': ['warn', { max: 300, skipBlankLines: true, skipComments: true }],
+    'max-depth': ['warn', 4],
   },
 };

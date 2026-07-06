@@ -14,7 +14,7 @@ interface TimelineNoteItemProps {
   onCreatePlan: (id: string) => void;
 }
 
-export function TimelineNoteItem({
+function TimelineNoteItemComponent({
   note,
   primaryColor,
   isLast,
@@ -102,6 +102,8 @@ export function TimelineNoteItem({
     </View>
   );
 }
+
+export const TimelineNoteItem = React.memo(TimelineNoteItemComponent);
 
 const styles = StyleSheet.create({
   container: {

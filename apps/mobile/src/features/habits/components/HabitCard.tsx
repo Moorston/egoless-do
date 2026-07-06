@@ -22,7 +22,7 @@ interface Props {
   onCalendar: (id: string) => void;
 }
 
-export default function HabitCard({
+function HabitCard({
   habit: h, primaryColor: P, onPress, onLongPress, onCheckin, onStart, onCalendar,
 }: Props) {
   const TH = useTheme();
@@ -160,3 +160,5 @@ export default function HabitCard({
     </View>
   );
 }
+
+export default React.memo(HabitCard);

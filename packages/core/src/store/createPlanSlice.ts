@@ -27,6 +27,10 @@ import { createLogger } from '../logger';
 import { notifyDelayedPlan } from '../services/notification';
 const log = createLogger('Store');
 
+// ═══════════════════════════════════════════════════════════════════
+// Section 1: Shared Helpers
+// ═══════════════════════════════════════════════════════════════════
+
 // Shared toggle logic for checkin/uncheckin deduplication
 function toggleCheckin(
   set: any, get: any, adapter: StorageAdapter,
@@ -80,6 +84,10 @@ export function createPlanSlice(
     planItemCheckins: [],
     dailyCustomTodos: [],
     dailyTodoHistory: [],
+
+    // ═══════════════════════════════════════════════════════════════
+    // Plan CRUD & Lifecycle
+    // ═══════════════════════════════════════════════════════════════
 
     addPlan(form) {
       let planId = '';
@@ -253,6 +261,10 @@ export function createPlanSlice(
       }
     },
 
+    // ═══════════════════════════════════════════════════════════════
+    // PlanItem CRUD & Checkin
+    // ═══════════════════════════════════════════════════════════════
+
     addPlanItem(form) {
       const prevCount = (get().planItems ?? []).filter(i => !i.deleted).length;
       let addedItem: PlanItem | undefined;
@@ -385,6 +397,10 @@ export function createPlanSlice(
         }
       }
     },
+
+    // ═══════════════════════════════════════════════════════════════
+    // Daily Custom Todos & History
+    // ═══════════════════════════════════════════════════════════════
 
     addDailyCustomTodo(planId, name, date, recurring) {
       const today = date ?? dateStr();
@@ -519,6 +535,10 @@ export function createPlanSlice(
         }
       }
     },
+
+    // ═══════════════════════════════════════════════════════════════
+    // Queries & Helpers
+    // ═══════════════════════════════════════════════════════════════
 
     getActivePlan() {
       return getActivePlanBiz(get().plans ?? []);

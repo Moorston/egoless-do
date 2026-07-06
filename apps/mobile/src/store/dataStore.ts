@@ -19,7 +19,6 @@ export interface DataStore {
 
   // Batch operations
   setEntities: (collection: string, items: Array<{ id: string; data: unknown }>) => void;
-  clearCollection: (collection: string) => void;
 
   // Loading states
   loading: Record<string, boolean>;
@@ -76,14 +75,6 @@ export const useDataStore = create<DataStore>()((set, get) => ({
           ...state.entities[collection],
           ...Object.fromEntries(items.map((item) => [item.id, item.data])),
         },
-      },
-    })),
-
-  clearCollection: (collection) =>
-    set((state) => ({
-      entities: {
-        ...state.entities,
-        [collection]: {},
       },
     })),
 
