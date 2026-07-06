@@ -19,7 +19,6 @@ import {
   rowToSutraReading,
   rowToBreath, rowToZhiguanSession,
 } from '../../store/rowMappers';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const log = createLogger('Rehydration');
 const DEVICE_SYNCED_KEY = 'device_initial_synced';
@@ -27,7 +26,12 @@ const DEVICE_SYNCED_KEY = 'device_initial_synced';
 export class SyncRehydrationManager {
   /** Check if device has been synced before */
   async isDeviceSyncedBefore(): Promise<boolean> {
-    return (await AsyncStorage.getItem(DEVICE_SYNCED_KEY)) === '1';
+    try {
+      const db = await openDatabase();
+      return (await getState(db, DEVICE_SYNCED_KEY)) === '1';
+    } catch {
+      return false;
+    }
   }
 
   /** Rehydrate entities from SQLite into a store patch */
@@ -167,7 +171,7 @@ export class SyncRehydrationManager {
 
       await this.pullEntitiesParallel(PHASE_1, 1, 1, token, userId, applyServerChanges, isKickedOut);
       await setState(db, 'initialSyncPhase', '2');
-      await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
+      await setState(db, DEVICE_SYNCED_KEY, '1');
 
       // Also pull remaining entities so rehydrateFromDb has all data
       const allEntities: SyncEntity[] = ['reflection', 'fasting', 'food', 'exercise', 'meditation', 'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview', 'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice', 'dedication', 'mantraDef', 'mantraSession', 'sutraReading', 'fearEntry', 'courageEntry', 'fearAchievement', 'zhiguanSession', 'breath'];
@@ -207,7 +211,7 @@ export class SyncRehydrationManager {
     }
     await setState(db, 'initialSyncDone', 'true');
     await setState(db, 'initialSyncPhase', 'done');
-    await AsyncStorage.setItem(DEVICE_SYNCED_KEY, '1');
+    await setState(db, DEVICE_SYNCED_KEY, '1');
   }
 
   // ── Pull helpers ──────────────────────────────────────────────────────

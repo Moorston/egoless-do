@@ -12,7 +12,6 @@ import {
   ALL_ENTITY_TABLES,
 } from '@egoless-do/core';
 import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig, type GetRowMapperFn } from './orphanRecovery';
 import { SyncApplyService, ENTITY_CONFIG } from './SyncApplyService';
 import { SyncRealtimeController } from './SyncRealtimeController';

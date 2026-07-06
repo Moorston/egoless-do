@@ -3,7 +3,6 @@
 // Manages clock offset and last sync timestamp persistence.
 
 import { openDatabase, getState, setState } from '../../db/schema';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createLogger, MS_PER_DAY } from '@egoless-do/core';
 
 const log = createLogger('SyncTimestamp');
@@ -22,14 +21,18 @@ export class SyncTimestampManager {
 
   async loadClockOffset(): Promise<void> {
     try {
-      const v = await AsyncStorage.getItem(CLOCK_OFFSET_KEY);
+      const db = await openDatabase();
+      const v = await getState(db, CLOCK_OFFSET_KEY);
       if (v) this._clockOffset = parseInt(v, 10) || 0;
     } catch {} // intentional: clock offset is optional, defaults to 0
   }
 
   async saveClockOffset(offset: number): Promise<void> {
     this._clockOffset = offset;
-    try { await AsyncStorage.setItem(CLOCK_OFFSET_KEY, String(offset)); } catch {} // intentional: best-effort persistence
+    try {
+      const db = await openDatabase();
+      await setState(db, CLOCK_OFFSET_KEY, String(offset));
+    } catch {} // intentional: best-effort persistence
   }
 
   updateClockOffset(serverTime: number): void {

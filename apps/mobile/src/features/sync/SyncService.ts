@@ -11,7 +11,6 @@ import {
   getSyncProgress, updateSyncProgress, resetSyncProgress, getQueueCount,
 } from '../../db/syncQueue';
 import { dbGetAllFoodEntries } from '../../db/queries';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const log = createLogger('Sync');
 let _syncTriggerCallback: (() => void) | null = null;

@@ -4,7 +4,6 @@
 
 import { openDatabase, setState, withDbLock } from '../../db/schema';
 import { createLogger, ALL_ENTITY_TABLES } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const log = createLogger('SyncReset');
 const DEVICE_SYNCED_KEY = 'device_initial_synced';
@@ -46,9 +45,9 @@ export class SyncResetService {
         await db.runAsync("DELETE FROM app_state WHERE key IN ('initialSyncDone', 'initialSyncPhase')");
         await db.runAsync('DELETE FROM sync_progress');
       });
-      // Clear AsyncStorage sync keys outside the lock
-      await AsyncStorage.removeItem(DEVICE_SYNCED_KEY);
-      await AsyncStorage.removeItem(CLOCK_OFFSET_KEY);
+      // Clear sync keys in SQLite app_state
+      await setState(db, DEVICE_SYNCED_KEY, '0');
+      await setState(db, CLOCK_OFFSET_KEY, '0');
     } catch (e) {
       log.warn(e, { phase: 'hardReset' });
     }
