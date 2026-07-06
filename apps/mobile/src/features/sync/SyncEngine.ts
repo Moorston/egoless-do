@@ -90,7 +90,7 @@ export class SyncEngine {
     this.disconnectRealtime();
     this._realtimeController.connectRealtime(
       pbUrl,
-      () => this._tokenProvider?.(),
+      () => this._tokenProvider?.() ?? null,
       (patch) => this._onChanges?.(patch),
       () => this.handleKickedOut(),
       this._timestampManager.getLastSyncAt(),
@@ -173,13 +173,13 @@ export class SyncEngine {
       pushedAnything = true;
       pushedItemCount += items.length;
 
-      const changes: Array<{ entity: string; entityId: string; payload: Record<string, unknown>; operation: string; changedFields?: string[] }> = [];
+      const changes: Array<{ entity: SyncEntity; entityId: string; payload: Record<string, unknown>; op: 'upsert' | 'delete'; changedFields?: string[] }> = [];
       for (const item of items) {
         try {
           const parsed = JSON.parse(item.payload);
           const changedFields = parsed._changedFields;
           if (changedFields) delete parsed._changedFields;
-          changes.push({ entity: item.entity, entityId: item.entity_id, payload: parsed, operation: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });
+          changes.push({ entity: item.entity as SyncEntity, entityId: item.entity_id, payload: parsed, op: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });
         } catch {
           await markQueueItemFailed(item.id, 'Corrupt payload');
         }

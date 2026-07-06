@@ -15,6 +15,10 @@ vi.mock('../../../../apps/mobile/src/db/schema', () => ({
   setState: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock('../../../../apps/mobile/src/store/storageAdapter', () => ({
+  flushWrites: vi.fn().mockResolvedValue(true),
+}));
+
 vi.mock('../../../../apps/mobile/src/db/syncQueue', () => ({
   drainQueue: vi.fn().mockResolvedValue([]),
   removeQueueItems: vi.fn().mockResolvedValue(undefined),
