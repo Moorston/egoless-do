@@ -108,6 +108,7 @@ export function createAuthSlice(
         await get().pullServerData(res.token);
         log.debug('after pull', { signedIn: get().auth.isSignedIn });
         onSync();
+        adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
       } catch (e) {
         set(s => ({ auth: { ...s.auth, isLoading: false } }));
         throw e;
@@ -126,6 +127,7 @@ export function createAuthSlice(
         });
         await get().pullServerData(res.token);
         onSync();
+        adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
       } catch (e) {
         set(s => ({ auth: { ...s.auth, isLoading: false } }));
         throw e;
@@ -142,6 +144,7 @@ export function createAuthSlice(
       clearAICaches();
       resetAIService();
       onLogout?.();
+      adapter.persistSettings('auth', { isSignedIn: false, user: null, isGuest: false }).catch(e => log.error(e));
     },
 
     async clearDataAndLogout() {
@@ -156,6 +159,7 @@ export function createAuthSlice(
       resetAIService();
       await onClearData?.();
       onLogout?.();
+      adapter.persistSettings('auth', { isSignedIn: false, user: null, isGuest: false }).catch(e => log.error(e));
     },
 
     async refreshAuth() {

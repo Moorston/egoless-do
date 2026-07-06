@@ -1,9 +1,9 @@
 // ─── UI Store ────────────────────────────────────────────────────
 // Manages UI-specific state: modals, loading, theme, etc.
+// Note: theme & language defaults are replaced by main store's SQLite
+//       settings after initApp() runs on startup.
 
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface ModalState {
   visible: boolean;
@@ -37,61 +37,51 @@ export interface UiStore {
 }
 
 export const useUiStore = create<UiStore>()(
-  persist(
-    (set, get) => ({
-      // Modal states
-      modals: {},
-      showModal: (type, data) =>
-        set((state) => ({
-          modals: {
-            ...state.modals,
-            [type]: { visible: true, type, data },
-          },
-        })),
-      hideModal: (type) =>
-        set((state) => ({
-          modals: {
-            ...state.modals,
-            [type]: { ...state.modals[type], visible: false },
-          },
-        })),
-      hideAllModals: () =>
-        set((state) => ({
-          modals: Object.fromEntries(
-            Object.entries(state.modals).map(([key, modal]) => [
-              key,
-              { ...modal, visible: false },
-            ])
-          ),
-        })),
+  (set, get) => ({
+    // Modal states
+    modals: {},
+    showModal: (type, data) =>
+      set((state) => ({
+        modals: {
+          ...state.modals,
+          [type]: { visible: true, type, data },
+        },
+      })),
+    hideModal: (type) =>
+      set((state) => ({
+        modals: {
+          ...state.modals,
+          [type]: { ...state.modals[type], visible: false },
+        },
+      })),
+    hideAllModals: () =>
+      set((state) => ({
+        modals: Object.fromEntries(
+          Object.entries(state.modals).map(([key, modal]) => [
+            key,
+            { ...modal, visible: false },
+          ])
+        ),
+      })),
 
-      // Loading states
-      loading: {},
-      setLoading: (key, loading) =>
-        set((state) => ({
-          loading: { ...state.loading, [key]: loading },
-        })),
+    // Loading states
+    loading: {},
+    setLoading: (key, loading) =>
+      set((state) => ({
+        loading: { ...state.loading, [key]: loading },
+      })),
 
-      // Theme
-      theme: 'light',
-      setTheme: (theme) => set({ theme }),
+    // Theme
+    theme: 'light',
+    setTheme: (theme) => set({ theme }),
 
-      // Language
-      language: 'zh',
-      setLanguage: (language) => set({ language }),
+    // Language
+    language: 'zh',
+    setLanguage: (language) => set({ language }),
 
-      // Toast
-      toast: null,
-      showToast: (message, type = 'info') => set({ toast: { message, type } }),
-      hideToast: () => set({ toast: null }),
-    }),
-    {
-      name: 'egoless-do-ui',
-      storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({
-        theme: state.theme,
-        language: state.language,
-      }),
-    }
-  )
+    // Toast
+    toast: null,
+    showToast: (message, type = 'info') => set({ toast: { message, type } }),
+    hideToast: () => set({ toast: null }),
+  })
 );

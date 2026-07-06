@@ -24,6 +24,7 @@ export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<Rec
     addToRecycleBin(item: Omit<RecycleBinItem, 'deletedAt'>) {
       const entry: RecycleBinItem = { ...item, deletedAt: Date.now() };
       set(s => ({ recycleBin: [entry, ...(s.recycleBin ?? [])] }));
+      adapter.persistSettings('recycleBin', [entry, ...(get().recycleBin ?? [])]).catch(e => log.error(e));
     },
 
     restoreFromRecycleBin(id: string) {
@@ -82,6 +83,9 @@ export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<Rec
           } : {}),
         }));
 
+        // Persist updated recycle bin after restoration
+        adapter.persistSettings('recycleBin', (get().recycleBin ?? []).filter(r => r.id !== id)).catch(e => log.error(e));
+
         // Persist to SQLite and enqueue for sync (overwrites deleted=1 row)
         const syncEntity = ENTITY_TYPE_MAP[item.entityType as RecycleBinEntityType];
         if (syncEntity) {
@@ -108,17 +112,19 @@ export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<Rec
 
     removeFromRecycleBin(id: string) {
       set(s => ({ recycleBin: s.recycleBin.filter(r => r.id !== id) }));
+      adapter.persistSettings('recycleBin', (get().recycleBin ?? []).filter(r => r.id !== id)).catch(e => log.error(e));
     },
 
     emptyRecycleBin() {
       set({ recycleBin: [] });
+      adapter.persistSettings('recycleBin', []).catch(e => log.error(e));
     },
 
     cleanupRecycleBin() {
       const now = Date.now();
-      set(s => ({
-        recycleBin: (s.recycleBin ?? []).filter(r => now - r.deletedAt < EXPIRY_MS),
-      }));
+      const filtered = (get().recycleBin ?? []).filter(r => now - r.deletedAt < EXPIRY_MS);
+      set({ recycleBin: filtered });
+      adapter.persistSettings('recycleBin', filtered).catch(e => log.error(e));
     },
   });
 }
