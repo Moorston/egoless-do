@@ -343,6 +343,27 @@ export default function HomeScreen() {
     setTimeout(() => saveField(), 0);
   }, [isReadOnly, toggleDailyCustomTodo, saveField]);
 
+  // ── Extracted inline arrow functions ──
+  const openStatsModal = useCallback(() => setShowStatsModal(true), []);
+  const closeStatsModal = useCallback(() => setShowStatsModal(false), []);
+  const closeWaterGoalModal = useCallback(() => setShowWG(false), []);
+  const closeReasonModal = useCallback(() => setShowReasonModal(false), []);
+  const goToGrace = useCallback(() => nav.navigate('Grace'), [nav]);
+  const goToPlan = useCallback(() => nav.navigate('MainTabs' as any, { screen: 'Plan' } as any), [nav]);
+  const dismissDelayedReminder = useCallback(() => setShowDelayedReminder(false), []);
+  const goToPrevDate = useCallback(() => goToDate(addDays(viewDate, -1)), [goToDate, viewDate]);
+  const goToNextDate = useCallback(() => {
+    const next = addDays(viewDate, 1);
+    if (next <= dateStr()) goToDate(next);
+  }, [goToDate, viewDate]);
+  const toggleWeightUnit = useCallback(() => setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg'), [weightUnit, setWeightUnit]);
+  const openWaterGoal = useCallback(() => { setWgi(String(waterGoal)); setShowWG(true); }, [waterGoal]);
+  const saveWaterGoal = useCallback(() => {
+    setWaterGoal(Math.max(500, Math.min(3000, +wgi || 2000)));
+    setShowWG(false);
+  }, [wgi, setWaterGoal]);
+  const handleSaveWeight = useCallback(() => saveWeight(weight), [saveWeight, weight]);
+
   const renderHabitItem = useCallback(({ item }: any) => {
     const h = item as { id: string; name: string; streak: number; checkedDates?: string[] };
     const habitDone = h.checkedDates?.includes(viewDate) ?? false;
@@ -456,7 +477,7 @@ export default function HomeScreen() {
                 marginBottom: 12, borderBottomWidth: 1, borderBottomColor: TH.border,
               }}>
                 <TouchableOpacity
-                  onPress={() => goToDate(addDays(viewDate, -1))}
+                  onPress={goToPrevDate}
                   style={styles.padding6}
                   activeOpacity={0.6}
                 >
@@ -466,10 +487,7 @@ export default function HomeScreen() {
                   {formatDateBar(viewDate, isToday, T)}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => {
-                    const next = addDays(viewDate, 1);
-                    if (next <= dateStr()) goToDate(next);
-                  }}
+                  onPress={goToNextDate}
                   style={styles.padding6}
                   activeOpacity={0.6}
                   disabled={isToday}
@@ -517,14 +535,14 @@ export default function HomeScreen() {
 
                 {/* Stats row */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <TouchableOpacity style={styles.centerFlex1} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
+                  <TouchableOpacity style={styles.centerFlex1} onPress={openStatsModal} activeOpacity={0.7}>
                     <Text style={[styles.whiteSubText, { fontSize: FONT_SUB }]}>{T('totalCompleted')}</Text>
                     <Text style={[styles.whiteTextExtraBold, { fontSize: FONT_STAT_CARD }]}>{isToday ? totalCompleted : viewDateStats.totalDays}</Text>
                     <Text style={[styles.whiteDimText, { fontSize: FONT_SMALL }]}>{T('days')}</Text>
                     <BarChart3 size={12} color="rgba(255,255,255,.4)" style={styles.marginTop4} />
                   </TouchableOpacity>
                   <View style={styles.separator} />
-                  <TouchableOpacity style={styles.centerFlex1} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
+                  <TouchableOpacity style={styles.centerFlex1} onPress={openStatsModal} activeOpacity={0.7}>
                     <Text style={[styles.whiteSubText, { fontSize: FONT_SUB }]}>{T('streak')}</Text>
                     <Text style={[styles.whiteTextExtraBold, { fontSize: FONT_STAT_CARD }]}>{isToday ? streak : viewDateStats.streak}</Text>
                     <Text style={[styles.whiteDimText, { fontSize: FONT_SMALL }]}>{T('days')}</Text>
@@ -543,7 +561,7 @@ export default function HomeScreen() {
               {/* ── Grace reminder ── */}
               {showGrace && (
                 <TouchableOpacity
-                  onPress={() => nav.navigate('Grace')}
+                  onPress={goToGrace}
                   activeOpacity={0.8}
                   style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
                 >
@@ -561,7 +579,7 @@ export default function HomeScreen() {
               {/* ── Delayed plan reminder ── */}
               {showDelayed && (
                 <TouchableOpacity
-                  onPress={() => nav.navigate('MainTabs' as any, { screen: 'Plan' } as any)}
+                  onPress={goToPlan}
                   activeOpacity={0.8}
                   style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
                 >
@@ -573,7 +591,7 @@ export default function HomeScreen() {
                         {T('planDelayed')}: {delayedPlan.name}
                       </Text>
                     </View>
-                    <TouchableOpacity onPress={() => setShowDelayedReminder(false)} style={{ padding: 4 }}>
+                    <TouchableOpacity onPress={dismissDelayedReminder} style={{ padding: 4 }}>
                       <X size={16} color={cardTextColor(TH.bg)} />
                     </TouchableOpacity>
                   </View>
@@ -653,7 +671,7 @@ export default function HomeScreen() {
                       <TextInput
                         value={weight}
                         onChangeText={setWeight}
-                        onBlur={() => saveWeight(weight)}
+                        onBlur={handleSaveWeight}
                         placeholder="—"
                         placeholderTextColor={TH.sub}
                         keyboardType="numeric"
@@ -665,7 +683,7 @@ export default function HomeScreen() {
                       />
                     )}
                     <TouchableOpacity
-                      onPress={() => setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg')}
+                      onPress={toggleWeightUnit}
                       style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, backgroundColor: `${P}20` }}
                     >
                       <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB }}>{weightUnit === 'kg' ? 'kg' : 'lb'}</Text>
@@ -707,7 +725,7 @@ export default function HomeScreen() {
                         <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
                           <Text style={{ fontWeight: '600', color: P }}>{waterMl}</Text> / {waterGoal} ml
                         </Text>
-                        <TouchableOpacity onPress={() => { setWgi(String(waterGoal)); setShowWG(true); }}>
+                        <TouchableOpacity onPress={openWaterGoal}>
                           <Pencil size={14} color={TH.sub} />
                         </TouchableOpacity>
                       </>
@@ -788,7 +806,7 @@ export default function HomeScreen() {
       />
 
       {/* Water Goal Modal */}
-      <Modal visible={showWG} transparent animationType="fade" onRequestClose={() => setShowWG(false)}>
+      <Modal visible={showWG} transparent animationType="fade" onRequestClose={closeWaterGoalModal}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)', justifyContent: 'center', padding: 24 }}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, alignItems: 'center' }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, marginBottom: 6, color: TH.text }}>{T('waterGoalSetting')}</Text>
@@ -802,12 +820,12 @@ export default function HomeScreen() {
               }}
             />
             <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>
-              <TouchableOpacity onPress={() => setShowWG(false)}
+              <TouchableOpacity onPress={closeWaterGoalModal}
                 style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => { setWaterGoal(Math.max(500, Math.min(3000, +wgi || 2000))); setShowWG(false); }}
+                onPress={saveWaterGoal}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
                 <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('save')}</Text>
               </TouchableOpacity>
@@ -817,7 +835,7 @@ export default function HomeScreen() {
       </Modal>
 
       {/* Incomplete Reason Modal */}
-      <Modal visible={showReasonModal} transparent animationType="fade" onRequestClose={() => setShowReasonModal(false)}>
+      <Modal visible={showReasonModal} transparent animationType="fade" onRequestClose={closeReasonModal}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)' }}>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flex1}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }} keyboardShouldPersistTaps="handled">
@@ -870,7 +888,7 @@ export default function HomeScreen() {
 
               {/* Buttons */}
               <View style={{ flexDirection: 'row', gap: 10 }}>
-                <TouchableOpacity onPress={() => setShowReasonModal(false)}
+                <TouchableOpacity onPress={closeReasonModal}
                   style={{ flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                   <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>{T('incompleteReasonBack')}</Text>
                 </TouchableOpacity>
@@ -887,7 +905,7 @@ export default function HomeScreen() {
 
       <CheckinStatsModal
         visible={showStatsModal}
-        onClose={() => setShowStatsModal(false)}
+        onClose={closeStatsModal}
       />
     </SafeAreaView>
     </KeyboardAvoidingView>
