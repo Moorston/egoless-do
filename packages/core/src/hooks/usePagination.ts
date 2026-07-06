@@ -1,7 +1,7 @@
 // ─── usePagination hook ──────────────────────────────────────────
 // Provides offset-based pagination for FlatList with onEndReached.
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 
 export interface UsePaginationOptions<T> {
   /** Full dataset to paginate */
@@ -46,6 +46,16 @@ export function usePagination<T>({
 }: UsePaginationOptions<T>): UsePaginationResult<T> {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const prevDataRef = useRef(data);
+
+  // Reset page when data array identity changes
+  useEffect(() => {
+    if (prevDataRef.current !== data) {
+      prevDataRef.current = data;
+      setPage(1);
+      setIsLoading(false);
+    }
+  }, [data]);
 
   const total = data.length;
   const totalPages = Math.ceil(total / pageSize);

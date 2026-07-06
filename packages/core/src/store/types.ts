@@ -52,8 +52,6 @@ export interface FoodSlice {
   removeCustomFoodPreset: (id: string) => void;
 }
 
-/** @deprecated Use CheckinSlice instead */
-export type ExerciseSlice = CheckinSlice;
 
 export interface CheckinSlice {
   // Checkin

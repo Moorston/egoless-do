@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
-import type { CheckinEntry } from '@egoless-do/core';
+import type { CheckinEntry, Habit } from '@egoless-do/core';
 
 const log = createLogger('Home');
 import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
@@ -365,8 +365,7 @@ export default function HomeScreen() {
   }, [wgi, setWaterGoal]);
   const handleSaveWeight = useCallback(() => saveWeight(weight), [saveWeight, weight]);
 
-  const renderHabitItem = useCallback(({ item }: any) => {
-    const h = item as { id: string; name: string; streak: number; checkedDates?: string[] };
+  const renderHabitItem = useCallback(({ item: h }: { item: Habit }) => {
     const habitDone = h.checkedDates?.includes(viewDate) ?? false;
     return (
       <View style={{

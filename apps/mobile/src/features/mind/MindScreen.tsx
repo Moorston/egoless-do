@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useAppStore, type MobileStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr } from '@egoless-do/core';
-import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType } from '@egoless-do/core';
+import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType, CourageEntry, FearAchievement } from '@egoless-do/core';
 import { FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS } from '@egoless-do/core';
 import { useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -229,7 +229,7 @@ export default function MindScreen() {
     );
   }, [stats, heatmap, activeFears, TH, T, resetFearForm]);
 
-  const renderCourageItem = useCallback(({ item: c }: { item: any }) => (
+  const renderCourageItem = useCallback(({ item: c }: { item: CourageEntry }) => (
     <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
       <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{c.action}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
@@ -245,8 +245,8 @@ export default function MindScreen() {
   // ── 勇气行动 Tab ──
   const renderCourageTab = useCallback(() => {
     const trend = getCourageTrend();
-    const recentCourage = courageEntries.filter((c: any) => !c.deleted).slice(0, 10);
-    const unlockedTypes = new Set(achievements.filter((a: any) => !a.deleted).map((a: any) => a.type));
+    const recentCourage = courageEntries.filter(c => !c.deleted).slice(0, 10);
+    const unlockedTypes = new Set(achievements.filter(a => !a.deleted).map(a => a.type));
     return (
       <View>
         {/* 今日行动卡片 */}
@@ -273,7 +273,7 @@ export default function MindScreen() {
           <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('mindInsightCourageTrend')}</Text>
             <View style={{ height: 100, flexDirection: 'row', alignItems: 'flex-end', gap: 2 }}>
-              {trend.map((t: any, i: number) => {
+              {trend.map((t, i) => {
                 const h = Math.max(t.avgFearBefore / 10 * 80, 4);
                 return (
                   <View key={i} style={{ flex: 1, height: h, backgroundColor: t.avgFearBefore > 6 ? '#EF4444' : t.avgFearBefore > 3 ? '#F59E0B' : '#10B981', borderRadius: 3 }} />

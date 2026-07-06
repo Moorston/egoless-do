@@ -152,7 +152,10 @@ export async function initApp(): Promise<void> {
 
     // ── Step 7: Create DailyResetManager with SQLite storage ──
     const dailyReset = new DailyResetManager({
-      getLastReset: () => adapter.getSettings('lastDailyReset') as Promise<string | null>,
+      getLastReset: async () => {
+        const val = await adapter.getSettings('lastDailyReset');
+        return typeof val === 'string' ? val : null;
+      },
       setLastReset: (date: string) => { adapter.persistSettings('lastDailyReset', date).catch(e => log.error(e)); },
       getCheckinHistory: () => store().checkinHistory ?? [],
       applyPatch: (patch) => setState(patch as PartialMobileStore),

@@ -1,6 +1,0 @@
-// Backward-compatible re-export. Tags & Moods are now part of ReflectionSlice.
-import { createReflectionSlice, type ReflectionSlice } from './createReflectionSlice';
-
-export { createReflectionSlice as createTagMoodSlice };
-
-export type { ReflectionSlice as TagMoodSlice };
