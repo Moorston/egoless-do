@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { createTrailNoteSlice } from './createTrailNoteSlice';
+import { createThoughtTrailSlice } from './createThoughtTrailSlice';
 import type { StorageAdapter } from './types';
 import type { ThoughtTrail } from '../types/thought-trail';
 
@@ -40,13 +40,13 @@ const makeTrail = (overrides: Partial<ThoughtTrail> = {}): ThoughtTrail => ({
   ...overrides,
 });
 
-describe('createTrailNoteSlice', () => {
+describe('createThoughtTrailSlice', () => {
   describe('addTrailNote', () => {
     it('creates a note and adds to trail noteIds', () => {
       const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createTrailNoteSlice(noopAdapter)(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       const note = slice.addTrailNote('t1', {
         content: 'test note',
@@ -72,7 +72,7 @@ describe('createTrailNoteSlice', () => {
           { id: 'existing', trailId: 't1', content: 'old', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice(noopAdapter)(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       const note = slice.addTrailNote('t1', { content: 'new', source: 'guided', guidedQuestion: 'why?' });
       expect(note.order).toBe(1);
@@ -87,7 +87,7 @@ describe('createTrailNoteSlice', () => {
           { id: 'n1', trailId: 't1', content: 'old', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice(noopAdapter)(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       slice.updateTrailNote('n1', { content: 'updated', tags: ['#new'] });
 
@@ -106,7 +106,7 @@ describe('createTrailNoteSlice', () => {
           { id: 'n2', trailId: 't1', content: 'b', tags: [], source: 'free', order: 1, createdAt: 2000, updatedAt: 2000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice(noopAdapter)(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       slice.deleteTrailNote('n1');
 
@@ -129,7 +129,7 @@ describe('createTrailNoteSlice', () => {
           { id: 'n4', trailId: 't2', content: 'd', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createTrailNoteSlice(noopAdapter)(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       const notes = slice.getNotesByTrail('t1');
       expect(notes).toHaveLength(2);

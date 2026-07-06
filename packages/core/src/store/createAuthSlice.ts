@@ -1,4 +1,4 @@
-import type { AuthSlice, UiSlice, StorageAdapter } from './types';
+import type { AuthSlice, StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { defaultAuthState } from '../types';
 import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull } from '../auth';
@@ -16,30 +16,44 @@ function buildMergePatch(
 ): Record<string, unknown> {
   const patch: Record<string, unknown> = {};
 
-  // Entity merges
-  if (data.habit)      patch.habits = mergeById(data.habit as Record<string, any>[], (s.habits ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.reflection) patch.reflections = mergeById(data.reflection as Record<string, any>[], (s.reflections ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.fasting)    patch.fastingHistory = mergeById(data.fasting as Record<string, any>[], (s.fastingHistory ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.food)       patch.foodLog = mergeById(data.food as Record<string, any>[], (s.foodLog ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.checkin)    patch.checkinHistory = mergeById(data.checkin as Record<string, any>[], (s.checkinHistory ?? []) as Record<string, any>[], 'date').filter(i => !i.deleted);
-  if (data.exercise)   patch.exerciseLog = mergeById(data.exercise as Record<string, any>[], (s.exerciseLog ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  // ── 标准实体合并：配置表驱动 ──────────────────────────────────
+  // [syncKey, storeKey, mergeKey]
+  const ENTITY_MERGE_MAP: Array<[string, string, string]> = [
+    ['habit',           'habits',            'id'],
+    ['reflection',      'reflections',       'id'],
+    ['fasting',         'fastingHistory',    'id'],
+    ['food',            'foodLog',           'id'],
+    ['checkin',         'checkinHistory',    'date'],
+    ['exercise',        'exerciseLog',       'id'],
+    ['plan',            'plans',             'id'],
+    ['planItem',        'planItems',         'id'],
+    ['planItemCheckin', 'planItemCheckins',  'id'],
+    ['dailyCustomTodo', 'dailyCustomTodos',  'id'],
+    ['dailyTodoHistory','dailyTodoHistory',  'id'],
+    ['grace',           'graceHistory',      'date'],
+    ['thoughtTrail',    'thoughtTrails',     'id'],
+    ['trailNote',       'trailNotes',        'id'],
+    ['reflectionLink',  'reflectionLinks',   'id'],
+    ['checkinReview',   'checkinReviews',    'id'],
+  ];
+
+  for (const [syncKey, storeKey, mergeKey] of ENTITY_MERGE_MAP) {
+    const incoming = data[syncKey];
+    if (!incoming) continue;
+    const existing = (s[storeKey] ?? []) as Record<string, any>[];
+    patch[storeKey] = mergeById(incoming as Record<string, any>[], existing, mergeKey)
+      .filter((i: Record<string, any>) => !i.deleted);
+  }
+
+  // ── 特殊实体：meditation（需 activeOnly + totalMedMinutes 计算）
   if (data.meditation) {
     const mergedMed = mergeById(data.meditation as Record<string, any>[], (s.medHistory ?? []) as Record<string, any>[], 'date');
     patch.medHistory = activeOnly(mergedMed);
-    patch.totalMedMinutes = (mergedMed as Array<{ durMin?: number; deleted?: boolean }>).filter(m => !m.deleted).reduce((sum, m) => sum + (m.durMin || 0), 0);
+    patch.totalMedMinutes = (mergedMed as Array<{ durMin?: number; deleted?: boolean }>)
+      .filter(m => !m.deleted).reduce((sum, m) => sum + (m.durMin || 0), 0);
   }
-  if (data.plan)            patch.plans = mergeById(data.plan as Record<string, any>[], (s.plans ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.planItem)        patch.planItems = mergeById(data.planItem as Record<string, any>[], (s.planItems ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.planItemCheckin) patch.planItemCheckins = mergeById(data.planItemCheckin as Record<string, any>[], (s.planItemCheckins ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.dailyCustomTodo) patch.dailyCustomTodos = mergeById(data.dailyCustomTodo as Record<string, any>[], (s.dailyCustomTodos ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.dailyTodoHistory) patch.dailyTodoHistory = mergeById(data.dailyTodoHistory as Record<string, any>[], (s.dailyTodoHistory ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.grace)           patch.graceHistory = mergeById(data.grace as Record<string, any>[], (s.graceHistory ?? []) as Record<string, any>[], 'date').filter(i => !i.deleted);
-  if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail as Record<string, any>[], (s.thoughtTrails ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.trailNote)       patch.trailNotes = mergeById(data.trailNote as Record<string, any>[], (s.trailNotes ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.reflectionLink)  patch.reflectionLinks = mergeById(data.reflectionLink as Record<string, any>[], (s.reflectionLinks ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
-  if (data.checkinReview)   patch.checkinReviews = mergeById(data.checkinReview as Record<string, any>[], (s.checkinReviews ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
 
-  // AI config merge
+  // ── 特殊实体：aiConfig（取最新一条）
   if (data.aiConfig?.length) {
     const latest = (data.aiConfig as Record<string, unknown>[])
       .filter((c: Record<string, unknown>) => !c.deleted)
@@ -51,7 +65,7 @@ function buildMergePatch(
     }
   }
 
-  // Profile merge
+  // ── 特殊实体：profile（解析 data 字段 + 设置时间覆盖）
   if (data.profile?.length) {
     const latest = (data.profile as Record<string, unknown>[])
       .filter((p: Record<string, unknown>) => !p.deleted)

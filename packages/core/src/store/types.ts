@@ -22,14 +22,6 @@ import type { CreateReflectionParams } from '../business/reflections';
 import type { StopFastingOpts } from '../business/fasting';
 import type { BodySlice } from './createBodySlice';
 export type { BodySlice } from './createBodySlice';
-import type { WeightSlice } from './createWeightSlice';
-export type { WeightSlice } from './createWeightSlice';
-import type { BodyCheckinSlice } from './createBodyCheckinSlice';
-export type { BodyCheckinSlice } from './createBodyCheckinSlice';
-import type { VisionSlice } from './createVisionSlice';
-export type { VisionSlice } from './createVisionSlice';
-import type { DedicationSlice } from './createDedicationSlice';
-export type { DedicationSlice } from './createDedicationSlice';
 import type { PracticeSlice } from './createPracticeSlice';
 export type { PracticeSlice } from './createPracticeSlice';
 import type { MantraSlice } from './createMantraSlice';
@@ -95,11 +87,6 @@ export interface ProfileSlice {
 import type { SettingsSlice } from './createSettingsSlice';
 export type { SettingsSlice } from './createSettingsSlice';
 
-/** @deprecated Use CheckinSlice instead */
-export type MeditationSlice = CheckinSlice;
-
-/** @deprecated Use ZhiguanSlice instead */
-export type BreathSlice = import('./zhiguanSliceTypes').ZhiguanSlice;
 
 export interface SleepSlice {
   sleepHistory: SleepEntry[];
@@ -116,12 +103,6 @@ export interface GiveSlice {
   deleteGive: (id: string) => void;
 }
 
-// ─── Legacy UiSlice (compatibility alias) ──────────────────────
-
-/** @deprecated Use FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice instead */
-export type UiSlice = FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice & {
-  resetData: () => void;
-};
 
 // ─── Existing slices (unchanged) ───────────────────────────────
 
@@ -183,14 +164,7 @@ export interface ReflectionSlice {
   deleteLinksByReflection: (reflectionId: string) => void;
 }
 
-/** @deprecated Use ReflectionSlice instead */
-export type TagMoodSlice = ReflectionSlice;
 
-/** @deprecated Use ReflectionSlice instead */
-export type ReflectionLinkSlice = ReflectionSlice;
-
-/** @deprecated Use CheckinSlice instead */
-export interface FastingSlice extends CheckinSlice {}
 
 export interface PlanSlice {
   plans: Plan[];
@@ -266,8 +240,6 @@ export interface ThoughtTrailSlice {
   getNotesByTrail: (trailId: string) => TrailNote[];
 }
 
-/** @deprecated Use ThoughtTrailSlice instead */
-export type TrailNoteSlice = ThoughtTrailSlice;
 
 export interface ReviewSlice {
   checkinReviews: CheckinReview[];
@@ -310,7 +282,7 @@ export interface DietSlice {
 
 // ─── FullStore composition ─────────────────────────────────────
 
-export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & CheckinSlice & SleepSlice & GiveSlice
+export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & CheckinSlice & SleepSlice
   & ProfileSlice & SettingsSlice
   & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReviewSlice & BodySlice & DietSlice & PracticeSlice & MantraSlice & MindSlice & ZhiguanSlice & { resetData: () => void };
 

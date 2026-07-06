@@ -3,20 +3,19 @@ import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { AppState } from 'react-native';
 import type {
-  AuthSlice, HabitSlice, ReflectionSlice, FastingSlice, MeditationSlice, SleepSlice, GiveSlice,
-  FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
-  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, TrailNoteSlice, ReflectionLinkSlice, AISlice, ReviewSlice, BodySlice,
-  WeightSlice, BodyCheckinSlice, DietSlice, VisionSlice, DedicationSlice, MindSlice, MantraSlice, ZhiguanSlice, BreathSlice,
+  AuthSlice, HabitSlice, ReflectionSlice, SleepSlice,
+  FoodSlice, CheckinSlice, ProfileSlice, SettingsSlice,
+  PlanSlice, RecycleBinSlice, ThoughtTrailSlice, ReviewSlice, BodySlice,
+  DietSlice, MindSlice, MantraSlice, ZhiguanSlice, PracticeSlice,
 } from '@egoless-do/core';
 import {
   setApiBase, setPushApiBase, setSyncApiBase,
-  createAuthSlice, createHabitSlice, createReflectionSlice, createFastingSlice, createMeditationSlice, createSleepSlice, createGiveSlice,
-  createFoodSlice, createExerciseSlice, createCheckinSlice, createProfileSlice, createSettingsSlice, createTagMoodSlice,
-  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createTrailNoteSlice, createReflectionLinkSlice, createAISlice, createReviewSlice, createBodySlice,
-  createWeightSlice, createBodyCheckinSlice, createDietSlice,
-  createVisionSlice, createDedicationSlice, createMindSlice, createMantraSlice,
+  createAuthSlice, createHabitSlice, createReflectionSlice, createSleepSlice,
+  createFoodSlice, createCheckinSlice, createProfileSlice, createSettingsSlice,
+  createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createReviewSlice, createBodySlice,
+  createDietSlice,
+  createPracticeSlice, createMindSlice, createMantraSlice,
   createZhiguanSlice,
-  createBreathSlice,
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
@@ -120,10 +119,10 @@ AppState.addEventListener('change', async (state) => {
   }
 });
 
-export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlice & MeditationSlice & SleepSlice & GiveSlice
-  & FoodSlice & ExerciseSlice & CheckinSlice & ProfileSlice & SettingsSlice & TagMoodSlice
-  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & TrailNoteSlice & ReflectionLinkSlice & AISlice & ReviewSlice
-  & BodySlice & WeightSlice & BodyCheckinSlice & DietSlice & VisionSlice & DedicationSlice & MindSlice & MantraSlice & ZhiguanSlice & BreathSlice;
+export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & SleepSlice
+  & FoodSlice & CheckinSlice & ProfileSlice & SettingsSlice
+  & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReviewSlice
+  & BodySlice & DietSlice & PracticeSlice & MindSlice & MantraSlice & ZhiguanSlice;
 
 /** Partial store type for setState calls */
 export type PartialMobileStore = Partial<MobileStore>;
@@ -167,28 +166,18 @@ export const useAppStore = create<MobileStore>()(
       })(...a),
       ...createHabitSlice(adapter, triggerAutoSync)(...a),
       ...createReflectionSlice(adapter)(...a),
-      ...createFastingSlice(adapter, triggerAutoSync)(...a),
-      ...createMeditationSlice(adapter, triggerAutoSync)(...a),
       ...createSleepSlice(adapter, triggerAutoSync)(...a),
-      ...createGiveSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = getStore().getState(); getStore().setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(adapter), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = getStore().getState(); getStore().setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createReflectionSlice(adapter), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
       ...createThoughtTrailSlice(adapter)(...a),
-      ...createTrailNoteSlice(adapter)(...a),
-      ...createReflectionLinkSlice(adapter)(...a),
-      ...createAISlice(persistAIConfig)(...a),
       ...createReviewSlice(adapter, triggerAutoSync)(...a),
       ...createBodySlice(adapter, triggerAutoSync)(...a),
-      ...createWeightSlice(adapter, triggerAutoSync)(...a),
-      ...createBodyCheckinSlice(adapter, triggerAutoSync)(...a),
       ...createDietSlice(adapter, triggerAutoSync)(...a),
-      ...createVisionSlice(adapter, triggerAutoSync)(...a),
-      ...createDedicationSlice(adapter, triggerAutoSync)(...a),
+      ...createPracticeSlice(adapter, triggerAutoSync)(...a),
       ...createMindSlice(adapter, triggerAutoSync)(...a),
       ...createMantraSlice(adapter, triggerAutoSync)(...a),
       ...createZhiguanSlice(adapter, () => getStore().getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a),
-      ...createBreathSlice(adapter, triggerAutoSync)(...a),
     };
     _storeRef = store;
 

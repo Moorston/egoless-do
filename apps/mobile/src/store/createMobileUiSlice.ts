@@ -1,7 +1,7 @@
 // ─── Mobile-specific UiSlice extension ─────────────────────────
 import type { StateCreator } from 'zustand';
 import type {
-  FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice,
+  FoodSlice, CheckinSlice, ProfileSlice, SettingsSlice, ReflectionSlice,
   StorageAdapter, FullStore,
 } from '@egoless-do/core';
 import { submitCheckinEntry, createResetDataPatch, createLogger } from '@egoless-do/core';
@@ -15,7 +15,7 @@ export interface PersistError {
   timestamp: number;
 }
 
-export interface MobileUiSlice extends FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice {
+export interface MobileUiSlice extends FoodSlice, CheckinSlice, ProfileSlice, SettingsSlice, ReflectionSlice {
   healthSyncEnabled: boolean;
   todaySteps: number | null;
   setHealthSyncEnabled: (v: boolean) => void;
@@ -32,11 +32,10 @@ export interface MobileUiSlice extends FoodSlice, ExerciseSlice, CheckinSlice, P
 export function createMobileUiSlice(
   adapter: StorageAdapter,
   foodSlice: StateCreator<FullStore, [], [], FoodSlice>,
-  exerciseSlice: StateCreator<FullStore, [], [], ExerciseSlice>,
   checkinSlice: StateCreator<FullStore, [], [], CheckinSlice>,
   profileSlice: StateCreator<FullStore, [], [], ProfileSlice>,
   settingsSlice: StateCreator<FullStore, [], [], SettingsSlice>,
-  tagMoodSlice: StateCreator<FullStore, [], [], TagMoodSlice>,
+  reflectionSlice: StateCreator<FullStore, [], [], ReflectionSlice>,
   onReset?: () => void,
   onSettingsPersist?: () => void,
   onRunSync?: () => Promise<void>,
@@ -44,11 +43,10 @@ export function createMobileUiSlice(
 ): StateCreator<FullStore, [], [], MobileUiSlice> {
   return (set, get, api) => ({
     ...foodSlice(set, get, api),
-    ...exerciseSlice(set, get, api),
     ...checkinSlice(set, get, api),
     ...profileSlice(set, get, api),
     ...settingsSlice(set, get, api),
-    ...tagMoodSlice(set, get, api),
+    ...reflectionSlice(set, get, api),
 
     healthSyncEnabled: false,
     todaySteps: null,

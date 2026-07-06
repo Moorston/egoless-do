@@ -7,7 +7,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
+import { THEMES, COLORS, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
 import type { CheckinEntry, Habit } from '@egoless-do/core';
 
 const log = createLogger('Home');
@@ -17,15 +17,18 @@ import { useNavigateToTab } from '../../../navigation/useAppNavigation';
 import SimpleHeader from '../../../navigation/SimpleHeader';
 import {
   Scale, Footprints,
-  Droplets, Pencil, Check, X, Shield, Star, Sparkles,
-  ClipboardList, Target, BarChart3, AlertTriangle,
+  Droplets, Pencil, Check, X, Star, Sparkles,
+  ClipboardList, Target, BarChart3,
   ChevronLeft, ChevronRight, Calendar,
 } from 'lucide-react-native';
 import CheckinStatsModal from '../components/CheckinStatsModal';
-import { formatDateBar } from '@egoless-do/core';
 import HomeBubble from '../components/HomeBubble';
 import HomeFoodSection from '../components/HomeFoodSection';
 import HomePlanSection from '../components/HomePlanSection';
+import DateBar from '../components/DateBar';
+import Banner from '../components/Banner';
+import GraceReminder from '../components/GraceReminder';
+import DelayedReminder from '../components/DelayedReminder';
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
 
@@ -352,11 +355,6 @@ export default function HomeScreen() {
   const goToGrace = useCallback(() => nav.navigate('Grace'), [nav]);
   const goToPlan = useCallback(() => useNavigateToTab()('Plan'), []);
   const dismissDelayedReminder = useCallback(() => setShowDelayedReminder(false), []);
-  const goToPrevDate = useCallback(() => goToDate(addDays(viewDate, -1)), [goToDate, viewDate]);
-  const goToNextDate = useCallback(() => {
-    const next = addDays(viewDate, 1);
-    if (next <= dateStr()) goToDate(next);
-  }, [goToDate, viewDate]);
   const toggleWeightUnit = useCallback(() => setWeightUnit(weightUnit === 'kg' ? 'lb' : 'kg'), [weightUnit, setWeightUnit]);
   const openWaterGoal = useCallback(() => { setWgi(String(waterGoal)); setShowWG(true); }, [waterGoal]);
   const saveWaterGoal = useCallback(() => {
@@ -442,8 +440,6 @@ export default function HomeScreen() {
   }, [plans]);
   const showDelayed = isToday && delayedPlan && showDelayedReminder;
 
-  const warnBg = cardAccent('#F59E0B', TH.bg, 0.45);
-
   // ── No record state ──
   const hasRecord = !!todayRecord;
 
@@ -470,32 +466,7 @@ export default function HomeScreen() {
             <View style={{ padding: 16, paddingBottom: 0 }}>
 
               {/* ── Date Bar (hidden on today) ── */}
-              {!isToday && (
-              <View style={{
-                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                height: 48, backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 12,
-                marginBottom: 12, borderBottomWidth: 1, borderBottomColor: TH.border,
-              }}>
-                <TouchableOpacity
-                  onPress={goToPrevDate}
-                  style={styles.padding6}
-                  activeOpacity={0.6}
-                >
-                  <ChevronLeft size={20} color={TH.text} />
-                </TouchableOpacity>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
-                  {formatDateBar(viewDate, isToday, T)}
-                </Text>
-                <TouchableOpacity
-                  onPress={goToNextDate}
-                  style={styles.padding6}
-                  activeOpacity={0.6}
-                  disabled={isToday}
-                >
-                  <ChevronRight size={20} color={isToday ? TH.border : TH.text} />
-                </TouchableOpacity>
-              </View>
-              )}
+              <DateBar viewDate={viewDate} onNavigate={goToDate} />
 
               {/* ── No record state ── */}
               {!hasRecord && !isToday ? (
@@ -509,94 +480,25 @@ export default function HomeScreen() {
               ) : (
                 <>
               {/* ── Banner: stats + status ── */}
-              <LinearGradient
-                colors={bannerGrad}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{ borderRadius: 16, padding: 18, marginBottom: 12 }}
-              >
-                {/* Status — prominent */}
-                <View style={{ alignItems: 'center', marginBottom: 14 }}>
-                  <View style={[styles.pillBadge, { backgroundColor: 'rgba(255,255,255,.2)' }]}>
-                    {status === 'done'
-                      ? <Check size={18} color="#fff" />
-                      : status === 'editing'
-                      ? <Pencil size={18} color="#fff" />
-                      : <Target size={18} color="#fff" />
-                    }
-                    <Text style={[styles.whiteTextBold, { fontSize: FONT_BODY }]}>
-                      {bannerStatusText}
-                    </Text>
-                  </View>
-                  {bannerTimeText ? (
-                    <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB, marginTop: 6 }}>{bannerTimeText}</Text>
-                  ) : null}
-                </View>
-
-                {/* Stats row */}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <TouchableOpacity style={styles.centerFlex1} onPress={openStatsModal} activeOpacity={0.7}>
-                    <Text style={[styles.whiteSubText, { fontSize: FONT_SUB }]}>{T('totalCompleted')}</Text>
-                    <Text style={[styles.whiteTextExtraBold, { fontSize: FONT_STAT_CARD }]}>{isToday ? totalCompleted : viewDateStats.totalDays}</Text>
-                    <Text style={[styles.whiteDimText, { fontSize: FONT_SMALL }]}>{T('days')}</Text>
-                    <BarChart3 size={12} color="rgba(255,255,255,.4)" style={styles.marginTop4} />
-                  </TouchableOpacity>
-                  <View style={styles.separator} />
-                  <TouchableOpacity style={styles.centerFlex1} onPress={openStatsModal} activeOpacity={0.7}>
-                    <Text style={[styles.whiteSubText, { fontSize: FONT_SUB }]}>{T('streak')}</Text>
-                    <Text style={[styles.whiteTextExtraBold, { fontSize: FONT_STAT_CARD }]}>{isToday ? streak : viewDateStats.streak}</Text>
-                    <Text style={[styles.whiteDimText, { fontSize: FONT_SMALL }]}>{T('days')}</Text>
-                    {isToday && showGrace && graceAvailable ? (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 4 }}>
-                        <Shield size={10} color="rgba(255,255,255,.7)" />
-                        <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL }}>{T('graceStreakPending')}</Text>
-                      </View>
-                    ) : (
-                      <BarChart3 size={12} color="rgba(255,255,255,.4)" style={styles.marginTop4} />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </LinearGradient>
+              <Banner
+                status={status}
+                bannerGrad={bannerGrad}
+                bannerStatusText={bannerStatusText}
+                bannerTimeText={bannerTimeText}
+                isToday={isToday}
+                totalCompleted={totalCompleted}
+                viewDateStats={viewDateStats}
+                streak={streak}
+                showGrace={showGrace}
+                graceAvailable={graceAvailable}
+                onStatsPress={openStatsModal}
+              />
 
               {/* ── Grace reminder ── */}
-              {showGrace && (
-                <TouchableOpacity
-                  onPress={goToGrace}
-                  activeOpacity={0.8}
-                  style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
-                >
-                  <View style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 10, backgroundColor: warnBg, borderRadius: 14 }}>
-                    <Shield size={20} color={cardTextColor(TH.bg)} />
-                    <View style={styles.flex1}>
-                      <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY }}>{T('graceRemindTitle')}</Text>
-                      <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>{T('graceRemindDesc')}</Text>
-                    </View>
-                    <Text style={{ color: cardTextColor(TH.bg), fontSize: FONT_SUB }}>→</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+              {showGrace && <GraceReminder onPress={goToGrace} />}
 
               {/* ── Delayed plan reminder ── */}
-              {showDelayed && (
-                <TouchableOpacity
-                  onPress={goToPlan}
-                  activeOpacity={0.8}
-                  style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
-                >
-                  <View style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 10, backgroundColor: cardAccent(COLORS.RED, TH.bg, 0.45), borderRadius: 14 }}>
-                    <AlertTriangle size={20} color={cardTextColor(TH.bg)} />
-                    <View style={styles.flex1}>
-                      <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY }}>{T('planDelayedNotify')}</Text>
-                      <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>
-                        {T('planDelayed')}: {delayedPlan.name}
-                      </Text>
-                    </View>
-                    <TouchableOpacity onPress={dismissDelayedReminder} style={{ padding: 4 }}>
-                      <X size={16} color={cardTextColor(TH.bg)} />
-                    </TouchableOpacity>
-                  </View>
-                </TouchableOpacity>
-              )}
+              {showDelayed && delayedPlan && <DelayedReminder plan={delayedPlan} onGoToPlan={goToPlan} onDismiss={dismissDelayedReminder} />}
 
               {/* ── Check-in form / details ── */}
               <View style={[styles.cardWithBorder, { backgroundColor: TH.card, borderColor: TH.border }]}>
