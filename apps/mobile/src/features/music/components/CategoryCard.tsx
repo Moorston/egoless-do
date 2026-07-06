@@ -17,7 +17,7 @@ interface Props {
   T: (key: string) => string;
 }
 
-export default function CategoryCard({ icon, name, count, gradient, onPress, T }: Props) {
+export default React.memo(function CategoryCard({ icon, name, count, gradient, onPress, T }: Props) {
   const IconComp = ICON_MAP[icon] ?? Music;
 
   return (
@@ -38,4 +38,4 @@ export default function CategoryCard({ icon, name, count, gradient, onPress, T }
       </LinearGradient>
     </TouchableOpacity>
   );
-}
+});

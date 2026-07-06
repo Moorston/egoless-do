@@ -23,7 +23,7 @@ function formatDate(dateString: string): string {
   return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 }
 
-export const PodiumItem: React.FC<PodiumItemProps> = ({
+export const PodiumItem: React.FC<PodiumItemProps> = React.memo(({
   entry,
   medal,
   isSelected,
@@ -82,7 +82,7 @@ export const PodiumItem: React.FC<PodiumItemProps> = ({
       </Text>
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   medal: {

@@ -234,13 +234,29 @@ export default function StreakBreakScreen() {
             </View>
           </Card>
         ) : (
-          <FlatList
-            data={breaks}
-            renderItem={renderBreakItem}
-            keyExtractor={breakKeyExtractor}
-            removeClippedSubviews={true}
-            scrollEnabled={false}
-          />
+          breaks.map((b, index) => {
+            const hypothetical = hypotheticals[index];
+            return (
+              <Card key={b.breakDate ?? String(index)}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
+                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{b.breakDate}</Text>
+                    {hypothetical?.available && (
+                      <View style={{ backgroundColor: `${COLORS.ORANGE}15`, borderColor: `${COLORS.ORANGE}40`, borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Shield size={12} color={COLORS.ORANGE} />
+                        <Text style={{ fontSize: FONT_TINY, color: COLORS.ORANGE, fontWeight: '600' }}>
+                          {T('streakBreakHypothetical').replace('{n}', String(hypothetical.hypotheticalStreak))}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                  <View style={{ backgroundColor: '#EF444420', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 3 }}>
+                    <Text style={{ color: '#EF4444', fontSize: FONT_BADGE, fontWeight: '600' }}>-{b.lostStreak} {T('streakBreakDays')}</Text>
+                  </View>
+                </View>
+              </Card>
+            );
+          })
         )}
 
         {/* Encouragement Card */}

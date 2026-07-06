@@ -33,7 +33,7 @@ function daysSince(dateString: string): number {
   return Math.max(0, Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-export const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
+export const LeaderboardItem: React.FC<LeaderboardItemProps> = React.memo(({
   entry,
   rank,
   isSelected,
@@ -106,7 +106,7 @@ export const LeaderboardItem: React.FC<LeaderboardItemProps> = ({
       </View>
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

@@ -30,7 +30,7 @@ function formatDuration(startedAt: string): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
-export const ActiveUserItem: React.FC<ActiveUserItemProps> = ({
+export const ActiveUserItem: React.FC<ActiveUserItemProps> = React.memo(({
   session,
   isCurrentUser,
   onPress,
@@ -124,7 +124,7 @@ export const ActiveUserItem: React.FC<ActiveUserItemProps> = ({
       </View>
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

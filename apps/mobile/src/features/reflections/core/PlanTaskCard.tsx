@@ -18,7 +18,7 @@ interface PlanTaskCardProps {
 const PRIORITY_COLORS = { high: '#EF4444', medium: '#F59E0B', low: '#10B981' };
 const PRIORITY_LABELS = { high: '高', medium: '中', low: '低' };
 
-export function PlanTaskCard({ planItem, checkins, onPress, onDelete }: PlanTaskCardProps) {
+export const PlanTaskCard = React.memo(function PlanTaskCard({ planItem, checkins, onPress, onDelete }: PlanTaskCardProps) {
   const TH = useTheme();
   const T = useT();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -79,7 +79,7 @@ export function PlanTaskCard({ planItem, checkins, onPress, onDelete }: PlanTask
       </View>
     </TouchableOpacity>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

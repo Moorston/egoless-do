@@ -11,7 +11,7 @@ interface TrailOverviewCardProps {
 
 const TREND_ICONS = { up: '↑', down: '↓', flat: '→' };
 
-export function TrailOverviewCard({ overview }: TrailOverviewCardProps) {
+export const TrailOverviewCard = React.memo(function TrailOverviewCard({ overview }: TrailOverviewCardProps) {
   const TH = useTheme();
   const T = useT();
 
@@ -49,7 +49,7 @@ export function TrailOverviewCard({ overview }: TrailOverviewCardProps) {
       )}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

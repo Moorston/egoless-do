@@ -9,7 +9,7 @@ interface SwipeableRowProps {
 
 const SWIPE_THRESHOLD = -80;
 
-export function SwipeableRow({ children, onDelete }: SwipeableRowProps) {
+export const SwipeableRow = React.memo(function SwipeableRow({ children, onDelete }: SwipeableRowProps) {
   const translateX = useRef(new Animated.Value(0)).current;
 
   const panResponder = useRef(
@@ -71,7 +71,7 @@ export function SwipeableRow({ children, onDelete }: SwipeableRowProps) {
       </Animated.View>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

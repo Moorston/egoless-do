@@ -11,7 +11,7 @@ interface Props {
   onToggle: () => void;
 }
 
-export default function ReflectionCheckItem({ ref, isSelected, onToggle }: Props) {
+export default React.memo(function ReflectionCheckItem({ ref, isSelected, onToggle }: Props) {
   const TH = useTheme();
   const T = useT();
 
@@ -67,4 +67,4 @@ export default function ReflectionCheckItem({ ref, isSelected, onToggle }: Props
       </View>
     </TouchableOpacity>
   );
-}
+});

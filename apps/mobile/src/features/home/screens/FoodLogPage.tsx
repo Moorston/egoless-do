@@ -61,25 +61,19 @@ export default function FoodLogPage() {
         </Card>
 
         <Card>
-          <FlatList
-            data={getTodayFoodLog(filteredFoodLog)}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item: f }) => (
-              <View style={{
-                flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12,
-              }}>
+          {getTodayFoodLog(filteredFoodLog).length === 0 ? (
+            <Text style={{ color:TH.sub, fontSize:FONT_EMPTY, textAlign:'center', padding:24 }}>{T('foodEmpty')}</Text>
+          ) : (
+            getTodayFoodLog(filteredFoodLog).map((f) => (
+              <View key={f.id} style={{ flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12, borderBottomWidth: 1, borderBottomColor: TH.border }}>
                 <View style={{ flex:1 }}>
                   <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{f.name}</Text>
                   {f.note ? <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{f.note}</Text> : null}
                 </View>
                 <Text style={{ fontWeight:'700', color:P }}>{f.calories ?? 0} kcal</Text>
               </View>
-            )}
-            scrollEnabled={false}
-            removeClippedSubviews={true}
-            ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: TH.border }} />}
-            ListEmptyComponent={<Text style={{ color:TH.sub, fontSize:FONT_EMPTY, textAlign:'center', padding:24 }}>{T('foodEmpty')}</Text>}
-          />
+            ))
+          )}
         </Card>
 
         <TouchableOpacity onPress={() => setShowAdd(true)}
