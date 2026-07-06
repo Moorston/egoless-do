@@ -11,7 +11,7 @@ import {
   Sparkles, Target, Flame, Footprints,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, createLogger } from '@egoless-do/core';
 import { useTheme } from '../components/UI';
 import StarfieldBackground from '../components/StarfieldBackground';
@@ -108,17 +108,17 @@ const Stack = createStackNavigator<RootStackParamList>();
 /** Wrap a lazy component for use in React Navigation. */
 
 // Wrapper for default-exported modules with named exports (FastHistoryPage, MedHistoryPage)
-function FastHistoryWrapper(props: StackScreenProps<RootStackParamList, 'FastHistory'>) {
+function FastHistoryWrapper() {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <FastHistoryModule {...props} />
+      <FastHistoryModule />
     </Suspense>
   );
 }
-function MedHistoryWrapper(props: StackScreenProps<RootStackParamList, 'MedHistory'>) {
+function MedHistoryWrapper() {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <MedHistoryModule {...props} />
+      <MedHistoryModule />
     </Suspense>
   );
 }
@@ -167,7 +167,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
         Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
         Animated.spring(transY, { toValue: finalY, useNativeDriver: false, bounciness: 8 }).start();
       } else {
-        tabNav?.navigate('Reflections' as never, { showNew: true } as never);
+        tabNav?.navigate('Reflections' as any, { showNew: true } as any);
       }
       return;
     }
@@ -232,7 +232,7 @@ const TAB_ROUTES: Record<string, string> = {
 
 function MainTabs() {
   const TH = useTheme();
-  const language = useAppStore(s => s.language);
+  const language = useShallowStore(s => s.language);
   const tabNavRef = useRef<NavigationContainerRef<MainTabParamList>>(null);
   const [tabNav, setTabNav] = useState<NavigationContainerRef<MainTabParamList> | null>(null);
 
@@ -251,9 +251,8 @@ function MainTabs() {
     <TabNavContext.Provider value={tabNav}>
     <View style={{ flex: 1 }}>
     <Tab.Navigator
-      ref={tabNavRef as any}
-      onReady={() => setTabNav(tabNavRef.current as any)}
-      screenOptions={({ route }) => {
+      id="main-tabs"
+      screenOptions={({ route }: { route: any }) => {
         return {
           headerShown: false,
           tabBarIcon: ({ focused }) => tabIcon(route.name, focused),
@@ -299,8 +298,8 @@ function MainTabs() {
 
 export default function AppNavigator() {
   const TH = useTheme();
-  const theme = useAppStore(s => s.theme);
-  const isSignedIn = useAppStore(s => s.auth.isSignedIn);
+  const theme = useShallowStore(s => s.theme);
+  const isSignedIn = useShallowStore(s => s.auth.isSignedIn);
   const navRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
   const { kickOutVisible, hasPendingData, handleSyncAndLogout, handleLogoutDirectly } = useSync();
   const [syncOverlayVisible, setSyncOverlayVisible] = useState(false);
@@ -342,7 +341,7 @@ export default function AppNavigator() {
     import('expo-notifications').then(Notifications => {
       if (!mounted) return;
       sub = Notifications.addNotificationResponseReceivedListener(response => {
-        const habitId = response.notification.request.content.data?.habitId;
+        const habitId = response.notification.request.content.data?.habitId as string;
         if (habitId && navRef.current) {
           navRef.current.navigate('HabitDetail', { habitId });
         }
@@ -375,7 +374,7 @@ export default function AppNavigator() {
         },
       }}
     >
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? 'MainTabs' : 'Login'}>
+      <Stack.Navigator id="root-stack" screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? 'MainTabs' : 'Login'}>
         <Stack.Screen name="Login"        component={LoginScreen} />
         <Stack.Screen name="Register"     component={RegisterScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />

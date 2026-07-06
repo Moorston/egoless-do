@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { t, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
 import { useTheme } from './UI';
 import {
@@ -31,16 +31,16 @@ interface AppHeaderProps {
 }
 
 export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
-  const theme = useAppStore(s => s.theme);
-  const streak = useAppStore(s => s.streak);
-  const language = useAppStore(s => s.language);
+  const theme = useShallowStore(s => s.theme);
+  const streak = useShallowStore(s => s.streak);
+  const language = useShallowStore(s => s.language);
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
   const tabLayoutsRef = useRef<Record<string, { x: number; width: number }>>({});
 
   const TH = useTheme();
   const P = TH.primary;
-  const T = (k: string) => t(k, language);
+  const T = (k: string) => t(k as import("@egoless-do/core").I18nKey, language);
 
   const today = new Date().toLocaleDateString(language === 'en' ? 'en-US' : 'zh-CN', {
     month: 'long', day: 'numeric', weekday: 'short',

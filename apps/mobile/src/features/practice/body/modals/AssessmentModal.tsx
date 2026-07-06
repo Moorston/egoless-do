@@ -14,8 +14,8 @@ interface Props {
 }
 
 export default function AssessmentModal({ visible, TH, T, profile, onClose, onSave }: Props) {
-  const [text, setText] = useState(profile.selfAssessment ?? '');
-  const [tags, setTags] = useState<string[]>(profile.bodyTags ?? []);
+  const [text, setText] = useState((profile.selfAssessment as string) ?? '');
+  const [tags, setTags] = useState<string[]>((profile.bodyTags as string[]) ?? []);
 
   const toggleTag = (tag: string) => {
     setTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);

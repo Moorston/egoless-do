@@ -182,7 +182,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
       _onMusicChange?.();
     } catch (e) {
-      log.error('添加用户音乐失败:', e);
+      log.error(e, { message: '添加用户音乐失败' });
     }
   },
 
@@ -203,7 +203,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         set({ currentTrack: null, isPlaying: false });
       }
     } catch (e) {
-      log.error('删除用户音乐失败:', e);
+      log.error(e, { message: '删除用户音乐失败' });
     }
   },
 
@@ -231,7 +231,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
           await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(valid));
         }
       }
-    } catch (e) { log.error('加载用户音乐失败:', e); }
+    } catch (e) { log.error(e, { message: '加载用户音乐失败' }); }
   },
 
   toggleFavorite: async (id) => {
@@ -244,7 +244,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       await AsyncStorage.setItem(MUSIC_FAVORITES_KEY, JSON.stringify(updated));
       _onMusicChange?.();
     } catch (e) {
-      log.error('切换收藏失败:', e);
+      log.error(e, { message: '切换收藏失败' });
     }
   },
 
@@ -254,7 +254,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       if (raw) {
         set({ favorites: JSON.parse(raw) });
       }
-    } catch (e) { log.error('加载收藏失败:', e); }
+    } catch (e) { log.error(e, { message: '加载收藏失败' }); }
   },
 
   getTracksByCategory: (cat) => {

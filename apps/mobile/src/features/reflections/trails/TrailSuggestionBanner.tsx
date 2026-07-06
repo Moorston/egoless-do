@@ -5,8 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
 import { Zap, X } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_SMALL, FONT_TINY, MS_PER_DAY, createLogger } from '@egoless-do/core';
 import { computeCandidatePool, computeRecommendations, buildIgnoredPattern } from '@egoless-do/core';
@@ -19,19 +18,19 @@ export default function TrailSuggestionBanner() {
   const TH = useTheme();
   const T = useT();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { reflections, thoughtTrails } = useAppStore(useShallow(s => ({
+  const { reflections, thoughtTrails } = useShallowStore(s => ({
     reflections: s.reflections,
     thoughtTrails: s.thoughtTrails,
-  })));
+  }));
   const [dismissed, setDismissed] = useState(false);
 
   const topRec = useMemo(() => {
-    const reflections = (reflections ?? []).filter(r => !r.deleted);
-    const allTrails = (thoughtTrails ?? []).filter(t => !t.deleted);
-    if (reflections.length < 5) return null;
+    const activeReflections = (reflections ?? []).filter((r: any) => !r.deleted);
+    const allTrails = (thoughtTrails ?? []).filter((t: any) => !t.deleted);
+    if (activeReflections.length < 5) return null;
 
     const thirtyDaysAgo = Date.now() - 30 * MS_PER_DAY;
-    const candidates = reflections.filter(r =>
+    const candidates = activeReflections.filter((r: any) =>
       r.timestamp >= thirtyDaysAgo &&
       (!r.thoughtTrailIds || r.thoughtTrailIds.length === 0)
     );

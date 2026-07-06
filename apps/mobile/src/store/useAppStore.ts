@@ -1,6 +1,7 @@
 // ─── Zustand store (mobile) — slice composition ────────────────
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { useShallow } from 'zustand/react/shallow';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState } from 'react-native';
 import { saveSecureTokens, loadSecureTokens, clearSecureTokens } from './secureAuth';
@@ -132,58 +133,72 @@ export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & FastingSlic
 /** Partial store type for setState calls */
 export type PartialMobileStore = Partial<MobileStore>;
 
+/** useShallow 的类型安全 wrapper。
+ *  显式绑定 MobileStore 以避免 useShallow 类型推断失败（TS7006/TS18046）。 */
+export function useShallowStore<U>(selector: (state: MobileStore) => U): U {
+  return useAppStore(useShallow(selector));
+}
+
 // Delayed sync callback - set after store is created
 let _autoSyncCallback: (() => void) | null = null;
 const triggerAutoSync = () => _autoSyncCallback?.();
 
+// Lazy store reference to avoid circular dependency
+let _storeRef: any = null;
+const getStore = () => _storeRef;
+
 export const useAppStore = create<MobileStore>()(
   persist(
-    (...a) => ({
-      ...createAuthSlice(adapter, () => { runSync().catch((e) => log.error(e)); }, async () => {
-        // onLogout: soft reset — clear sync metadata, preserve local data
-        await softResetSyncState();
-        resetMigrationFlag();
-      }, async (token, userId) => {
-        // Mobile pullServerData: phased initial sync → SQLite → store
-        await initialSync(token, userId);
-        // Flush pending writes before rehydration to avoid losing optimistic updates
-        await flushWrites();
-        // Rehydrate store from SQLite after Phase 1 completes
-        const dbPatch = await rehydrateFromDb();
-        if (Object.keys(dbPatch).length) {
-          useAppStore.setState(dbPatch as PartialMobileStore);
-          if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
-          if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
-        }
-      }, async () => {
-        // onClearData: hard logout — clear all local data
-        await resetSyncState();
-      })(...a),
-      ...createHabitSlice(adapter, triggerAutoSync)(...a),
-      ...createReflectionSlice(adapter)(...a),
-      ...createFastingSlice(adapter, triggerAutoSync)(...a),
-      ...createMeditationSlice(adapter, triggerAutoSync)(...a),
-      ...createSleepSlice(adapter, triggerAutoSync)(...a),
-      ...createGiveSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(persistProfileSettings), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
-      ...createPlanSlice(adapter)(...a),
-      ...createRecycleBinSlice(adapter)(...a),
-      ...createThoughtTrailSlice(adapter)(...a),
-      ...createTrailNoteSlice(adapter)(...a),
-      ...createReflectionLinkSlice(adapter)(...a),
-      ...createAISlice(persistAIConfig)(...a),
-      ...createReviewSlice(adapter, triggerAutoSync)(...a),
-      ...createBodySlice(adapter, triggerAutoSync)(...a),
-      ...createWeightSlice(adapter, triggerAutoSync)(...a),
-      ...createBodyCheckinSlice(adapter, triggerAutoSync)(...a),
-      ...createDietSlice(adapter, triggerAutoSync)(...a),
-      ...createVisionSlice(adapter, triggerAutoSync)(...a),
-      ...createDedicationSlice(adapter, triggerAutoSync)(...a),
-      ...createMindSlice(adapter, triggerAutoSync)(...a),
-      ...createMantraSlice(adapter, triggerAutoSync)(...a),
-      ...createZhiguanSlice(adapter, () => useAppStore.getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a),
-      ...createBreathSlice(adapter, triggerAutoSync)(...a),
-    }),
+    (...a) => {
+      const store = {
+        ...createAuthSlice(adapter, () => { runSync().catch((e) => log.error(e)); }, async () => {
+          // onLogout: soft reset — clear sync metadata, preserve local data
+          await softResetSyncState();
+          resetMigrationFlag();
+        }, async (token, userId) => {
+          // Mobile pullServerData: phased initial sync → SQLite → store
+          await initialSync(token, userId);
+          // Flush pending writes before rehydration to avoid losing optimistic updates
+          await flushWrites();
+          // Rehydrate store from SQLite after Phase 1 completes
+          const dbPatch = await rehydrateFromDb();
+          if (Object.keys(dbPatch).length) {
+            getStore().setState(dbPatch as PartialMobileStore);
+            if (dbPatch.medHistory) getStore().getState().calculateTotalMedMin();
+            if (dbPatch.checkinHistory) getStore().getState().calculateStreak();
+          }
+        }, async () => {
+          // onClearData: hard logout — clear all local data
+          await resetSyncState();
+        })(...a),
+        ...createHabitSlice(adapter, triggerAutoSync)(...a),
+        ...createReflectionSlice(adapter)(...a),
+        ...createFastingSlice(adapter, triggerAutoSync)(...a),
+        ...createMeditationSlice(adapter, triggerAutoSync)(...a),
+        ...createSleepSlice(adapter, triggerAutoSync)(...a),
+        ...createGiveSlice(adapter, triggerAutoSync)(...a),
+        ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createExerciseSlice(adapter, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = getStore().getState(); getStore().setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createTagMoodSlice(adapter), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => runSync(), () => resetSyncState())(...a),
+        ...createPlanSlice(adapter)(...a),
+        ...createRecycleBinSlice(adapter)(...a),
+        ...createThoughtTrailSlice(adapter)(...a),
+        ...createTrailNoteSlice(adapter)(...a),
+        ...createReflectionLinkSlice(adapter)(...a),
+        ...createAISlice(persistAIConfig)(...a),
+        ...createReviewSlice(adapter, triggerAutoSync)(...a),
+        ...createBodySlice(adapter, triggerAutoSync)(...a),
+        ...createWeightSlice(adapter, triggerAutoSync)(...a),
+        ...createBodyCheckinSlice(adapter, triggerAutoSync)(...a),
+        ...createDietSlice(adapter, triggerAutoSync)(...a),
+        ...createVisionSlice(adapter, triggerAutoSync)(...a),
+        ...createDedicationSlice(adapter, triggerAutoSync)(...a),
+        ...createMindSlice(adapter, triggerAutoSync)(...a),
+        ...createMantraSlice(adapter, triggerAutoSync)(...a),
+        ...createZhiguanSlice(adapter, () => getStore().getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a),
+        ...createBreathSlice(adapter, triggerAutoSync)(...a),
+      };
+      _storeRef = store;
+      return store;
+    },
     {
       name: 'egoless-do-mobile',
       storage: createJSONStorage(() => AsyncStorage),
@@ -209,9 +224,9 @@ export const useAppStore = create<MobileStore>()(
         // Restore auth tokens from SecureStore (migrated from AsyncStorage)
         loadSecureTokens().then(secureTokens => {
           if (secureTokens) {
-            const currentAuth = useAppStore.getState().auth;
+            const currentAuth = getStore().getState().auth;
             if (currentAuth.isSignedIn && !currentAuth.token) {
-              useAppStore.setState({
+              getStore().setState({
                 auth: { ...currentAuth, token: secureTokens.token, refreshToken: secureTokens.refreshToken },
               });
             }
@@ -219,7 +234,7 @@ export const useAppStore = create<MobileStore>()(
         }).catch(() => {});
 
         // Persist auth tokens to SecureStore whenever they change
-        useAppStore.subscribe((state, prevState) => {
+        getStore().subscribe((state: any, prevState: any) => {
           const newToken = state.auth.token;
           const newRefresh = state.auth.refreshToken;
           const oldToken = prevState.auth.token;
@@ -233,19 +248,19 @@ export const useAppStore = create<MobileStore>()(
 
         // Set the auto sync callback after store is created
         _autoSyncCallback = () => {
-          useAppStore.getState().autoSyncPlanItems?.();
-          useAppStore.getState().autoSyncHabits?.();
+          getStore().getState().autoSyncPlanItems?.();
+          getStore().getState().autoSyncHabits?.();
         };
 
         const dailyReset = new DailyResetManager({
           getLastReset: () => AsyncStorage.getItem(DAILY_RESET_KEY),
           setLastReset: (date) => { AsyncStorage.setItem(DAILY_RESET_KEY, date).catch((e) => log.error(e)); },
-          getCheckinHistory: () => useAppStore.getState().checkinHistory ?? [],
-          applyPatch: (patch) => useAppStore.setState(patch as PartialMobileStore),
-          getProfile: () => (useAppStore.getState().userProfile ?? {}) as Record<string, unknown>,
-          getWaterGoal: () => useAppStore.getState().waterGoal ?? 2000,
+          getCheckinHistory: () => getStore().getState().checkinHistory ?? [],
+          applyPatch: (patch) => getStore().setState(patch as PartialMobileStore),
+          getProfile: () => (getStore().getState().userProfile ?? {}) as Record<string, unknown>,
+          getWaterGoal: () => getStore().getState().waterGoal ?? 2000,
           persistProfile: (data) => {
-            const s = useAppStore.getState();
+            const s = getStore().getState();
             adapter.persistChange('profile', 'self', {
               ...data,
               calGoal: s.calGoal, customFoodPresets: s.customFoodPresets,
@@ -257,10 +272,10 @@ export const useAppStore = create<MobileStore>()(
             } as Record<string, unknown>).catch((e) => log.error(e));
           },
           onPlanDailyReset: (previousDate) => {
-            useAppStore.getState().performDailyReset?.(previousDate);
+            getStore().getState().performDailyReset?.(previousDate);
           },
           onHabitDailyReset: () => {
-            useAppStore.getState().checkHabitAutoStatus?.();
+            getStore().getState().checkHabitAutoStatus?.();
           },
           addVisibilityListener: (callback) => {
             AppState.addEventListener('change', (s) => {
@@ -283,12 +298,12 @@ export const useAppStore = create<MobileStore>()(
             const dbPatch = await rehydrateFromDb();
 
             if (Object.keys(dbPatch).length > 0) {
-              useAppStore.setState(dbPatch as PartialMobileStore);
+              getStore().setState(dbPatch as PartialMobileStore);
             }
 
             // Derived state recalculation
-            if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
-            if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
+            if (dbPatch.medHistory) getStore().getState().calculateTotalMedMin();
+            if (dbPatch.checkinHistory) getStore().getState().calculateStreak();
           } catch (err) {
             log.error(err, { message: 'SQLite entity load error' });
           }
@@ -299,7 +314,7 @@ export const useAppStore = create<MobileStore>()(
         dailyReset.start(dbReady);
 
         // Clean up expired recycle bin items
-        useAppStore.getState().cleanupRecycleBin();
+        getStore().getState().cleanupRecycleBin();
       },
     }
   )

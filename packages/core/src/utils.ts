@@ -75,7 +75,11 @@ let _uidCounter = 0;
 function _randHex(): string {
   try {
     const buf = new Uint8Array(8);
-    crypto.getRandomValues(buf);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const cryptoModule = typeof globalThis.crypto !== 'undefined'
+      ? globalThis.crypto
+      : (require as any)('crypto').webcrypto;
+    cryptoModule.getRandomValues(buf);
     return Array.from(buf, b => b.toString(16).padStart(2, '0')).join('');
   } catch { return Math.random().toString(36).slice(2, 10); }
 }

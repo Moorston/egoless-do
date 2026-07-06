@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, type MobileStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr } from '@egoless-do/core';
 import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType } from '@egoless-do/core';
@@ -57,7 +57,7 @@ export default function MindScreen() {
   const { fearEntries, courageEntries, achievements, addFearEntry, updateFearEntry, addCourageEntry,
     getFearStats, getCourageStreak, getBodyHeatmap, getDominantFearType, getFearTimeDistribution,
     getCourageTrend, getCrossModuleInsights } = useAppStore(
-    useShallow(s => ({
+    useShallow((s: MobileStore) => ({
       fearEntries: s.fearEntries, courageEntries: s.courageEntries, achievements: s.achievements,
       addFearEntry: s.addFearEntry, updateFearEntry: s.updateFearEntry, addCourageEntry: s.addCourageEntry,
       getFearStats: s.getFearStats, getCourageStreak: s.getCourageStreak, getBodyHeatmap: s.getBodyHeatmap,
@@ -131,11 +131,11 @@ export default function MindScreen() {
     setShowCourage(false); setCourageAction(''); setCourageFearBefore(5); setCourageFeelingTags([]);
   }, [courageAction, courageFearBefore, courageFeelingTags, addCourageEntry]);
 
-  const activeFears = useMemo(() => fearEntries.filter(f => !f.deleted).sort((a, b) => (a.fearIndex ?? 99) - (b.fearIndex ?? 99)), [fearEntries]);
+  const activeFears = useMemo(() => fearEntries.filter((f: FearEntry) => !f.deleted).sort((a: FearEntry, b: FearEntry) => (a.fearIndex ?? 99) - (b.fearIndex ?? 99)), [fearEntries]);
 
   // ── 恐惧图谱 Tab ──
   const renderFearTab = useCallback(() => {
-    const heatmapEntries = Object.entries(heatmap).sort((a, b) => b[1] - a[1]);
+    const heatmapEntries = Object.entries(heatmap).sort((a: [string, unknown], b: [string, unknown]) => (b[1] as number) - (a[1] as number));
     const topRegion = heatmapEntries[0];
     return (
       <View>
@@ -162,10 +162,10 @@ export default function MindScreen() {
             <View style={{ position: 'absolute', top: 35, width: 60, height: 80, borderRadius: 8, borderWidth: 2, borderColor: TH.border }} />
             <View style={{ position: 'absolute', top: 120, width: 50, height: 60, borderRadius: 8, borderWidth: 2, borderColor: TH.border }} />
             {/* 热图标注点 */}
-            {heatmapEntries.map(([region, count]) => {
+            {heatmapEntries.map(([region, count]: [string, unknown]) => {
               const pos = BODY_REGION_POSITIONS[region as BodyRegion];
               if (!pos) return null;
-              const intensity = Math.min(count / 5, 1);
+              const intensity = Math.min((count as number) / 5, 1);
               return (
                 <View key={region} style={{
                   position: 'absolute', left: `${pos.x}%`, top: `${pos.y}%`,
@@ -173,14 +173,14 @@ export default function MindScreen() {
                   backgroundColor: `rgba(239,68,68,${0.3 + intensity * 0.7})`,
                   alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <Text style={{ fontSize: 9, color: '#fff', fontWeight: '700' }}>{count}</Text>
+                  <Text style={{ fontSize: 9, color: '#fff', fontWeight: '700' }}>{count as number}</Text>
                 </View>
               );
             })}
           </View>
           {topRegion && (
             <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', marginTop: 8 }}>
-              {T('mindHeatmapHint')}{T(`mindBody${topRegion[0].charAt(0).toUpperCase() + topRegion[0].slice(1)}`)} ({topRegion[1]}次)
+              {T('mindHeatmapHint')}{T(`mindBody${(topRegion[0] as string).charAt(0).toUpperCase() + (topRegion[0] as string).slice(1)}` as any)} ({topRegion[1] as number}次)
             </Text>
           )}
         </View>
@@ -211,8 +211,8 @@ export default function MindScreen() {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
                   <Text style={{ fontSize: 10, color: TH.sub }}>{f.trigger}</Text>
-                  <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${CLASSIFICATION_COLORS[f.classification]}15` }}>
-                    <Text style={{ fontSize: 10, color: CLASSIFICATION_COLORS[f.classification] }}>{T(CLASSIFICATION_LABELS[f.classification])}</Text>
+                  <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${CLASSIFICATION_COLORS[f.classification as FearClassification]}15` }}>
+                    <Text style={{ fontSize: 10, color: CLASSIFICATION_COLORS[f.classification as FearClassification] }}>{T(CLASSIFICATION_LABELS[f.classification as FearClassification])}</Text>
                   </View>
                   <Text style={{ fontSize: 10, color: TH.sub }}>{f.occurrenceCount}次</Text>
                 </View>
@@ -230,8 +230,8 @@ export default function MindScreen() {
   // ── 勇气行动 Tab ──
   const renderCourageTab = useCallback(() => {
     const trend = getCourageTrend();
-    const recentCourage = courageEntries.filter(c => !c.deleted).slice(0, 10);
-    const unlockedTypes = new Set(achievements.filter(a => !a.deleted).map(a => a.type));
+    const recentCourage = courageEntries.filter((c: any) => !c.deleted).slice(0, 10);
+    const unlockedTypes = new Set(achievements.filter((a: any) => !a.deleted).map((a: any) => a.type));
     return (
       <View>
         {/* 今日行动卡片 */}
@@ -258,7 +258,7 @@ export default function MindScreen() {
           <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('mindInsightCourageTrend')}</Text>
             <View style={{ height: 100, flexDirection: 'row', alignItems: 'flex-end', gap: 2 }}>
-              {trend.map((t, i) => {
+              {trend.map((t: any, i: number) => {
                 const h = Math.max(t.avgFearBefore / 10 * 80, 4);
                 return (
                   <View key={i} style={{ flex: 1, height: h, backgroundColor: t.avgFearBefore > 6 ? '#EF4444' : t.avgFearBefore > 3 ? '#F59E0B' : '#10B981', borderRadius: 3 }} />
@@ -281,7 +281,7 @@ export default function MindScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
                   <Text style={{ fontSize: 10, color: TH.sub }}>{c.date}</Text>
                   <Text style={{ fontSize: 10, color: '#EF4444' }}>恐惧值 {c.fearBefore}</Text>
-                  {c.feelingTags.map(tag => (
+                  {c.feelingTags.map((tag: FeelingTag) => (
                     <Text key={tag} style={{ fontSize: 10, color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{T(FEELING_LABELS[tag] ?? tag)}</Text>
                   ))}
                 </View>
@@ -321,14 +321,14 @@ export default function MindScreen() {
   // ── 洞察分析 Tab ──
   const renderInsightTab = useCallback(() => {
     const timeSlots = getFearTimeDistribution();
-    const peakHours = timeSlots.sort((a, b) => b.count - a.count).slice(0, 3);
+    const peakHours = timeSlots.sort((a: any, b: any) => b.count - a.count).slice(0, 3);
     return (
       <View>
         {/* 主导恐惧类型 */}
         {dominant && (
           <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>{T('mindInsightDominant')}</Text>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.primary }}>{T(CATEGORY_LABELS[dominant.category])}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.primary }}>{T(CATEGORY_LABELS[dominant.category as FearCategory])}</Text>
             <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{dominant.percentage}% 的恐惧与此相关</Text>
           </View>
         )}
@@ -338,7 +338,7 @@ export default function MindScreen() {
           <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>{T('mindInsightFearTime')}</Text>
             <View style={{ flexDirection: 'row', gap: 12 }}>
-              {peakHours.map(h => (
+              {peakHours.map((h: any) => (
                 <View key={h.hour} style={{ flex: 1, alignItems: 'center', backgroundColor: `${TH.primary}10`, borderRadius: 8, padding: 8 }}>
                   <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.primary }}>{h.hour}:00</Text>
                   <Text style={{ fontSize: 10, color: TH.sub }}>{h.count}次</Text>

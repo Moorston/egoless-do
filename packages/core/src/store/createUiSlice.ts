@@ -19,7 +19,7 @@ export function createUiSlice(
     ...createCheckinSlice(adapter)(set, get, api),
     ...createProfileSlice(adapter)(set, get, api),
     ...createSettingsSlice()(set, get, api),
-    ...createTagMoodSlice()(set, get, api),
+    ...createTagMoodSlice(adapter)(set, get, api),
 
     resetData() {
       const { auth, theme, language } = get();

@@ -24,7 +24,7 @@ class _ErrorBoundary extends Component<Props & { t: (key: string) => string }, S
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    log.error(error, info.componentStack);
+    log.error(error, { componentStack: info.componentStack });
   }
 
   handleReset = () => {

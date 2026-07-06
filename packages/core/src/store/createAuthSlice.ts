@@ -9,9 +9,81 @@ import { resetAIService } from '../ai/ai-service';
 import { clearAICaches } from '../ai/trail-recommender';
 const log = createLogger('Store');
 
+/** Merge server sync data into current store state. Extracted for readability. */
+function buildMergePatch(
+  data: Record<string, unknown[]>,
+  s: Record<string, unknown>,
+): Record<string, unknown> {
+  const patch: Record<string, unknown> = {};
+
+  // Entity merges
+  if (data.habit)      patch.habits = mergeById(data.habit as Record<string, any>[], (s.habits ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.reflection) patch.reflections = mergeById(data.reflection as Record<string, any>[], (s.reflections ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.fasting)    patch.fastingHistory = mergeById(data.fasting as Record<string, any>[], (s.fastingHistory ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.food)       patch.foodLog = mergeById(data.food as Record<string, any>[], (s.foodLog ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.checkin)    patch.checkinHistory = mergeById(data.checkin as Record<string, any>[], (s.checkinHistory ?? []) as Record<string, any>[], 'date').filter(i => !i.deleted);
+  if (data.exercise)   patch.exerciseLog = mergeById(data.exercise as Record<string, any>[], (s.exerciseLog ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.meditation) {
+    const mergedMed = mergeById(data.meditation as Record<string, any>[], (s.medHistory ?? []) as Record<string, any>[], 'date');
+    patch.medHistory = activeOnly(mergedMed);
+    patch.totalMedMinutes = (mergedMed as Array<{ durMin?: number; deleted?: boolean }>).filter(m => !m.deleted).reduce((sum, m) => sum + (m.durMin || 0), 0);
+  }
+  if (data.plan)            patch.plans = mergeById(data.plan as Record<string, any>[], (s.plans ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.planItem)        patch.planItems = mergeById(data.planItem as Record<string, any>[], (s.planItems ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.planItemCheckin) patch.planItemCheckins = mergeById(data.planItemCheckin as Record<string, any>[], (s.planItemCheckins ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.dailyCustomTodo) patch.dailyCustomTodos = mergeById(data.dailyCustomTodo as Record<string, any>[], (s.dailyCustomTodos ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.dailyTodoHistory) patch.dailyTodoHistory = mergeById(data.dailyTodoHistory as Record<string, any>[], (s.dailyTodoHistory ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.grace)           patch.graceHistory = mergeById(data.grace as Record<string, any>[], (s.graceHistory ?? []) as Record<string, any>[], 'date').filter(i => !i.deleted);
+  if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail as Record<string, any>[], (s.thoughtTrails ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.trailNote)       patch.trailNotes = mergeById(data.trailNote as Record<string, any>[], (s.trailNotes ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.reflectionLink)  patch.reflectionLinks = mergeById(data.reflectionLink as Record<string, any>[], (s.reflectionLinks ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+  if (data.checkinReview)   patch.checkinReviews = mergeById(data.checkinReview as Record<string, any>[], (s.checkinReviews ?? []) as Record<string, any>[], 'id').filter(i => !i.deleted);
+
+  // AI config merge
+  if (data.aiConfig?.length) {
+    const latest = (data.aiConfig as Record<string, unknown>[])
+      .filter((c: Record<string, unknown>) => !c.deleted)
+      .sort((a: Record<string, unknown>, b: Record<string, unknown>) => ((b.updatedAt as number) ?? 0) - ((a.updatedAt as number) ?? 0))[0];
+    if (latest) {
+      const cfg = latest as Record<string, unknown>;
+      if (cfg.mode) patch.aiMode = cfg.mode;
+      if (cfg.models) patch.aiModels = cfg.models;
+    }
+  }
+
+  // Profile merge
+  if (data.profile?.length) {
+    const latest = (data.profile as Record<string, unknown>[])
+      .filter((p: Record<string, unknown>) => !p.deleted)
+      .sort((a: Record<string, unknown>, b: Record<string, unknown>) => ((b.updatedAt as number) ?? 0) - ((a.updatedAt as number) ?? 0))[0];
+    if (latest) {
+      let profileData = (latest as Record<string, unknown>).data ?? latest;
+      if (typeof profileData === 'string') {
+        try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
+      }
+      const p = profileData as Record<string, unknown>;
+      const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
+      const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = p;
+      patch.userProfile = { ...((s.userProfile as Record<string, unknown>) ?? {}), ...profileDataWithoutSettings };
+      if (p.waterMl !== undefined) patch.waterMl = p.waterMl;
+      if (p.waterGoal !== undefined) patch.waterGoal = p.waterGoal;
+      if (p.weightUnit !== undefined) patch.weightUnit = p.weightUnit;
+      const localUpdated = ((s.userProfile as Record<string, unknown>)?.updatedAt as number) ?? 0;
+      const serverUpdated = ((latest as Record<string, unknown>).updatedAt as number) ?? 0;
+      if (serverUpdated >= localUpdated) {
+        for (const sk of SETTINGS_KEYS) {
+          if (p[sk] !== undefined) (patch as Record<string, unknown>)[sk] = p[sk];
+        }
+      }
+    }
+  }
+
+  return patch;
+}
+
 export function createAuthSlice(
   adapter: StorageAdapter,
-  onSyncTrigger: () => void,
+  onSync: () => void,
   onLogout?: () => void | Promise<void>,
   onPullServerData?: (token: string, userId?: string) => Promise<void>,
   onClearData?: () => void | Promise<void>,
@@ -35,7 +107,7 @@ export function createAuthSlice(
         });
         await get().pullServerData(res.token);
         log.debug('after pull', { signedIn: get().auth.isSignedIn });
-        onSyncTrigger();
+        onSync();
       } catch (e) {
         set(s => ({ auth: { ...s.auth, isLoading: false } }));
         throw e;
@@ -53,7 +125,7 @@ export function createAuthSlice(
           },
         });
         await get().pullServerData(res.token);
-        onSyncTrigger();
+        onSync();
       } catch (e) {
         set(s => ({ auth: { ...s.auth, isLoading: false } }));
         throw e;
@@ -138,67 +210,7 @@ export function createAuthSlice(
         const data = result.data as Record<string, any[]>;
         // Use functional set() to merge with the latest state, avoiding stale-overwrite
         set(s => {
-          const patch: Record<string, unknown> = {};
-
-          if (data.habit)      patch.habits = mergeById(data.habit, s.habits ?? [], 'id').filter(i => !i.deleted);
-          if (data.reflection) patch.reflections = mergeById(data.reflection, s.reflections ?? [], 'id').filter(i => !i.deleted);
-          if (data.fasting)    patch.fastingHistory = mergeById(data.fasting, s.fastingHistory ?? [], 'id').filter(i => !i.deleted);
-          if (data.food)       patch.foodLog = mergeById(data.food, s.foodLog ?? [], 'id').filter(i => !i.deleted);
-          if (data.checkin)    patch.checkinHistory = mergeById(data.checkin, s.checkinHistory ?? [], 'date').filter(i => !i.deleted);
-          if (data.exercise)   patch.exerciseLog = mergeById(data.exercise, s.exerciseLog ?? [], 'id').filter(i => !i.deleted);
-          if (data.meditation) {
-            const mergedMed = mergeById(data.meditation, s.medHistory ?? [], 'date');
-            patch.medHistory = activeOnly(mergedMed);
-            patch.totalMedMinutes = (mergedMed as Array<{ durMin?: number; deleted?: boolean }>).filter(m => !m.deleted).reduce((sum, m) => sum + (m.durMin || 0), 0);
-          }
-          if (data.plan)            patch.plans = mergeById(data.plan, s.plans ?? [], 'id').filter(i => !i.deleted);
-          if (data.planItem)        patch.planItems = mergeById(data.planItem, s.planItems ?? [], 'id').filter(i => !i.deleted);
-          if (data.planItemCheckin) patch.planItemCheckins = mergeById(data.planItemCheckin, s.planItemCheckins ?? [], 'id').filter(i => !i.deleted);
-          if (data.dailyCustomTodo) patch.dailyCustomTodos = mergeById(data.dailyCustomTodo, s.dailyCustomTodos ?? [], 'id').filter(i => !i.deleted);
-          if (data.dailyTodoHistory) patch.dailyTodoHistory = mergeById(data.dailyTodoHistory, s.dailyTodoHistory ?? [], 'id').filter(i => !i.deleted);
-          if (data.grace)           patch.graceHistory = mergeById(data.grace, s.graceHistory ?? [], 'date').filter(i => !i.deleted);
-          if (data.thoughtTrail)    patch.thoughtTrails = mergeById(data.thoughtTrail, s.thoughtTrails ?? [], 'id').filter(i => !i.deleted);
-          if (data.trailNote)       patch.trailNotes = mergeById(data.trailNote, s.trailNotes ?? [], 'id').filter(i => !i.deleted);
-          if (data.reflectionLink)  patch.reflectionLinks = mergeById(data.reflectionLink, s.reflectionLinks ?? [], 'id').filter(i => !i.deleted);
-          if (data.checkinReview)   patch.checkinReviews = mergeById(data.checkinReview, s.checkinReviews ?? [], 'id').filter(i => !i.deleted);
-
-          if (data.aiConfig?.length) {
-            const latest = data.aiConfig
-              .filter((c: Record<string, unknown>) => !c.deleted)
-              .sort((a: Record<string, unknown>, b: Record<string, unknown>) => ((b.updatedAt as number) ?? 0) - ((a.updatedAt as number) ?? 0))[0];
-            if (latest) {
-              const cfg = latest as Record<string, unknown>;
-              if (cfg.mode) patch.aiMode = cfg.mode;
-              if (cfg.models) patch.aiModels = cfg.models;
-            }
-          }
-
-          if (data.profile?.length) {
-            const latest = data.profile
-              .filter((p: Record<string, unknown>) => !p.deleted)
-              .sort((a: Record<string, unknown>, b: Record<string, unknown>) => ((b.updatedAt as number) ?? 0) - ((a.updatedAt as number) ?? 0))[0];
-            if (latest) {
-              let profileData = (latest as Record<string, unknown>).data ?? latest;
-              if (typeof profileData === 'string') {
-                try { profileData = JSON.parse(profileData); } catch { profileData = {}; }
-              }
-              const p = profileData as Record<string, unknown>;
-              const SETTINGS_KEYS = ['calGoal', 'customFoodPresets', 'theme', 'language', 'remindEnabled', 'remindTime', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder'] as const;
-              const { calGoal: _cg, customFoodPresets: _cfp, theme: _th, language: _lg, remindEnabled: _re, remindTime: _rt, customTags: _ct, customMoods: _cm, allTagsOrder: _ato, allMoodsOrder: _amo, ...profileDataWithoutSettings } = p;
-              patch.userProfile = { ...(s.userProfile ?? {}), ...profileDataWithoutSettings };
-              if (p.waterMl !== undefined) patch.waterMl = p.waterMl;
-              if (p.waterGoal !== undefined) patch.waterGoal = p.waterGoal;
-              if (p.weightUnit !== undefined) patch.weightUnit = p.weightUnit;
-              const localUpdated = s.userProfile?.updatedAt ?? 0;
-              const serverUpdated = (latest as Record<string, unknown>).updatedAt as number ?? 0;
-              if (serverUpdated >= localUpdated) {
-                for (const sk of SETTINGS_KEYS) {
-                  if (p[sk] !== undefined) (patch as Record<string, unknown>)[sk] = p[sk];
-                }
-              }
-            }
-          }
-
+          const patch = buildMergePatch(data, s as unknown as Record<string, unknown>);
           if (patch.checkinHistory) {
             // Defer streak calculation to after set completes
             setTimeout(() => get().calculateStreak(), 0);

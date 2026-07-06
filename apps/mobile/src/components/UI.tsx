@@ -11,14 +11,14 @@ import { ChevronLeft, Check } from 'lucide-react-native';
 
 // ── useTheme ──────────────────────────────────────────────────────
 export function useTheme() {
-  const theme = useAppStore(s => s.theme);
+  const theme = useAppStore((s: any) => s.theme);
   return THEMES[theme];
 }
 
 // ── useT ──────────────────────────────────────────────────────────
 export function useT() {
-  const language = useAppStore(s => s.language);
-  return (key: string) => t(key, language);
+  const language = useAppStore((s: any) => s.language);
+  return (key: string) => t(key as import("@egoless-do/core").I18nKey, language);
 }
 
 // ── Card ──────────────────────────────────────────────────────────

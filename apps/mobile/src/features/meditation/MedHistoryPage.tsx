@@ -3,7 +3,7 @@ import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, A
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme } from '@egoless-do/core';
 import { Calendar, ChevronLeft, ChevronRight, Music, Trash2, X } from 'lucide-react-native';
@@ -28,7 +28,7 @@ function getTrackName(trackId?: string): string {
 }
 
 function calcStreak(entries: MedHistoryEntry[]): number {
-  const dates = entries.filter(e => !e.deleted).map(e => e.date).sort().reverse();
+  const dates = entries.filter((e: MedHistoryEntry) => !e.deleted).map((e: MedHistoryEntry) => e.date).sort().reverse();
   if (!dates.length) return 0;
   const today = dateStr();
   const yest = yesterday();
@@ -54,13 +54,13 @@ function getWeekStart(): string {
 // ── Stats Card ──
 function StatsCard({ entries }: { entries: MedHistoryEntry[] }) {
   const totalMin = useMemo(() => entries.reduce((s, e) => s + (e.durMin || 0), 0), [entries]);
-  const totalDays = useMemo(() => new Set(entries.map(e => e.date)).size, [entries]);
+  const totalDays = useMemo(() => new Set(entries.map((e: MedHistoryEntry) => e.date)).size, [entries]);
   const streak = useMemo(() => calcStreak(entries), [entries]);
   const weekStart = useMemo(() => getWeekStart(), []);
   const monthStart = useMemo(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`; }, []);
-  const weekMin = useMemo(() => entries.filter(e => e.date >= weekStart).reduce((s, e) => s + (e.durMin || 0), 0), [entries, weekStart]);
-  const monthMin = useMemo(() => entries.filter(e => e.date >= monthStart).reduce((s, e) => s + (e.durMin || 0), 0), [entries, monthStart]);
-  const longest = useMemo(() => Math.max(0, ...entries.map(e => e.durMin || 0)), [entries]);
+  const weekMin = useMemo(() => entries.filter((e: MedHistoryEntry) => e.date >= weekStart).reduce((s, e) => s + (e.durMin || 0), 0), [entries, weekStart]);
+  const monthMin = useMemo(() => entries.filter((e: MedHistoryEntry) => e.date >= monthStart).reduce((s, e) => s + (e.durMin || 0), 0), [entries, monthStart]);
+  const longest = useMemo(() => Math.max(0, ...entries.map((e: MedHistoryEntry) => e.durMin || 0)), [entries]);
 
   return (
     <View style={{ marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
@@ -91,7 +91,7 @@ function Heatmap({ entries, TH, onPress }: { entries: MedHistoryEntry[]; TH: The
   const month = now.getMonth();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
-  const dateSet = useMemo(() => new Set(entries.filter(e => !e.deleted).map(e => e.date)), [entries]);
+  const dateSet = useMemo(() => new Set(entries.filter((e: MedHistoryEntry) => !e.deleted).map((e: MedHistoryEntry) => e.date)), [entries]);
   const medDays = useMemo(() => { let c = 0; for (let d = 1; d <= daysInMonth; d++) { const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`; if (dateSet.has(ds)) c++; } return c; }, [dateSet, daysInMonth, year, month]);
 
   const cells: (number | null)[] = [];
@@ -129,11 +129,11 @@ function Heatmap({ entries, TH, onPress }: { entries: MedHistoryEntry[]; TH: The
 export function MedCalendarScreen() {
   const TH = useTheme();
   const nav = useRootNavigation();
-  const entries = useAppStore(s => s.medHistory ?? []);
-  const activeEntries = useMemo(() => entries.filter(e => !e.deleted), [entries]);
+  const entries = useShallowStore(s => s.medHistory ?? []);
+  const activeEntries = useMemo(() => entries.filter((e: MedHistoryEntry) => !e.deleted), [entries]);
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
-  const dateSet = useMemo(() => new Set(activeEntries.map(e => e.date)), [activeEntries]);
+  const dateSet = useMemo(() => new Set(activeEntries.map((e: MedHistoryEntry) => e.date)), [activeEntries]);
   const ym = `${year}-${String(month + 1).padStart(2, '0')}`;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
@@ -200,8 +200,8 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
   const startEdit = () => { setNoteText(entry.note ?? ''); setEditingNote(true); };
   const saveNote = () => {
     const updated = { ...entry, note: noteText, updatedAt: Date.now() };
-    const newHist = (useAppStore.getState().medHistory ?? []).map(e => e.date === entry.date ? updated : e);
-    const newTotal = newHist.filter(e => !e.deleted).reduce((s, e) => s + (e.durMin || 0), 0);
+    const newHist = (useAppStore.getState().medHistory ?? []).map((e: MedHistoryEntry) => e.date === entry.date ? updated : e);
+    const newTotal = newHist.filter((e: MedHistoryEntry) => !e.deleted).reduce((s, e) => s + (e.durMin || 0), 0);
     useAppStore.setState({ medHistory: newHist, totalMedMinutes: newTotal });
     import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
     setEditingNote(false);
@@ -309,8 +309,8 @@ export default function MedHistoryPage() {
 
   const handleDelete = useCallback((date: string) => {
     const s = useAppStore.getState();
-    const newHist = (s.medHistory ?? []).map(e => e.date === date ? { ...e, deleted: true, updatedAt: Date.now() } : e);
-    useAppStore.setState({ medHistory: newHist, totalMedMinutes: newHist.filter(e => !e.deleted).reduce((sum, e) => sum + (e.durMin || 0), 0) });
+    const newHist = (s.medHistory ?? []).map((e: MedHistoryEntry) => e.date === date ? { ...e, deleted: true, updatedAt: Date.now() } : e);
+    useAppStore.setState({ medHistory: newHist, totalMedMinutes: newHist.filter((e: MedHistoryEntry) => !e.deleted).reduce((sum, e) => sum + (e.durMin || 0), 0) });
     import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
   }, []);
 
@@ -383,7 +383,7 @@ export default function MedHistoryPage() {
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有冥想记录</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次静坐都是送给自己的礼物</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，给自己几分钟安静的时光</Text>
-            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Meditation' } as never)} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as any, { screen: 'Meditation' } as any)} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
               {/* 修复: 移除 as any */}
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次冥想</Text>
             </TouchableOpacity>

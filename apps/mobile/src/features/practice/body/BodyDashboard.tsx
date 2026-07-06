@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { ALL_SPORTS, type AgeBracket, type BodyGoal, type BodyPlan } from '@egoless-do/core';
@@ -27,7 +26,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
   const T = useT();
   const { userProfile, bodyGoals, bodyPlans, bodyCheckins, exerciseLog, weightRecords,
     updateUserProfile, updateBodyGoal, addBodyGoal, removeBodyPlan, addBodyPlan,
-    upsertBodyCheckin, addWeight } = useAppStore(useShallow(s => ({
+    upsertBodyCheckin, addWeight } = useShallowStore(s => ({
     userProfile: s.userProfile,
     bodyGoals: s.bodyGoals,
     bodyPlans: s.bodyPlans,
@@ -41,8 +40,8 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
     addBodyPlan: s.addBodyPlan,
     upsertBodyCheckin: s.upsertBodyCheckin,
     addWeight: s.addWeight,
-  })));
-  const profile = userProfile ?? {};
+  }));
+  const profile = (userProfile ?? {}) as Record<string, unknown>;
   const { todayPlan } = useTodayPlan();
 
   const [showAssessment, setShowAssessment] = useState(false);
@@ -77,7 +76,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
 
   const handlePressSport = useCallback((sportKey: string) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
-    nav.navigate('Sport' as never, { // 修复: 移除 as any
+    nav.navigate('Sport' as any, {
       key: sportKey,
       icon: sport?.icon ?? '🏃',
       color: sport?.color ?? '#f59e0b',
@@ -121,7 +120,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
       <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
       <PlanEditModal visible={showPlanEdit} TH={TH} T={T} plans={activePlans} onClose={() => setShowPlanEdit(false)} onSave={handleSavePlans} />
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
-      <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight} currentBodyFat={profile.bodyFat} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
+      <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
     </View>
   );
 }

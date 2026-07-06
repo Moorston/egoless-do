@@ -2,9 +2,10 @@ import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { View, Alert } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import type { MantraDef } from '@egoless-do/core';
+import { dateStr } from '@egoless-do/core';
 import { useMantraAudio } from './useMantraAudio';
 import { useAudioCache } from '../shared/hooks/useAudioCache';
 import { useMantraTimer } from './hooks/useMantraTimer';
@@ -57,7 +58,7 @@ export default function MantraEngine() {
   // Timer hook — manages count, elapsed, pause logic
   const timer = useMantraTimer({
     targetRounds,
-    onEndSession: (data) => { addMantraSession(data); },
+    onEndSession: (data) => { addMantraSession({ ...data, date: dateStr() }); },
     onStopAudio: () => { stopMantra(); setAudioLoop(false); },
   });
 
