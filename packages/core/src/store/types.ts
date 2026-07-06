@@ -365,4 +365,14 @@ export interface StorageAdapter {
   markDeleted(entity: SyncEntity, id: string): Promise<void>;
   /** Atomically delete multiple entities in a single transaction. */
   batchDelete(operations: Array<{ entity: SyncEntity; id: string }>): Promise<void>;
+
+  // ── Settings persistence (Phase 1: unified storage) ──────────
+  /** Persist a settings key-value pair to SQLite. */
+  persistSettings(key: string, value: unknown): Promise<void>;
+  /** Read a settings value from SQLite. Returns null if not found. */
+  getSettings(key: string): Promise<unknown | null>;
+
+  // ── Transaction support ──────────────────────────────────────
+  /** Run a callback inside a SQLite transaction. Rolls back on error. */
+  transaction<T>(fn: () => Promise<T>): Promise<T>;
 }

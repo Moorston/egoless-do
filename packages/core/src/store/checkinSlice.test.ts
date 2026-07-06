@@ -8,7 +8,14 @@ vi.mock('../../packages/core/src/logger', () => ({
 }));
 
 function createMockAdapter(): StorageAdapter {
-  return { persistChange: vi.fn().mockResolvedValue(undefined) };
+  return {
+    persistChange: vi.fn().mockResolvedValue(undefined),
+    markDeleted: vi.fn().mockResolvedValue(undefined),
+    batchDelete: vi.fn().mockResolvedValue(undefined),
+    persistSettings: vi.fn().mockResolvedValue(undefined),
+    getSettings: vi.fn().mockResolvedValue(null),
+    transaction: vi.fn().mockImplementation(async (fn: () => Promise<unknown>) => fn()),
+  };
 }
 
 describe('createCheckinSlice', () => {

@@ -12,6 +12,9 @@ function createMockAdapter(): StorageAdapter {
     persistChange: vi.fn().mockResolvedValue(undefined),
     markDeleted: vi.fn().mockResolvedValue(undefined),
     batchDelete: vi.fn().mockResolvedValue(undefined),
+    persistSettings: vi.fn().mockResolvedValue(undefined),
+    getSettings: vi.fn().mockResolvedValue(null),
+    transaction: vi.fn().mockImplementation(async (fn: () => Promise<unknown>) => fn()),
   };
 }
 

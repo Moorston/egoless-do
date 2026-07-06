@@ -1,6 +1,7 @@
 import type { StorageAdapter, SyncEntity, SyncDataMap } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 import { WriteBatcher } from '../features/sync/WriteBatcher';
+import { openDatabase, withDbLock, getState, setState } from '../db/schema';
 
 const log = createLogger('StorageAdapter');
 
@@ -38,5 +39,42 @@ export const mobileStorageAdapter: StorageAdapter = {
     }
     // Flush immediately for batch operations
     await _batcher.flushNow();
+  },
+
+  // ── Settings persistence (unified storage) ───────────────────
+  async persistSettings(key: string, value: unknown): Promise<void> {
+    const db = await openDatabase();
+    await withDbLock(async () => {
+      await setState(db, key, JSON.stringify(value));
+    });
+  },
+
+  async getSettings(key: string): Promise<unknown | null> {
+    const db = await openDatabase();
+    return withDbLock(async () => {
+      const raw = await getState(db, key);
+      if (raw === null) return null;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return raw;
+      }
+    });
+  },
+
+  // ── Transaction support ──────────────────────────────────────
+  async transaction<T>(fn: () => Promise<T>): Promise<T> {
+    const db = await openDatabase();
+    return withDbLock(async () => {
+      await db.execAsync('BEGIN TRANSACTION');
+      try {
+        const result = await fn();
+        await db.execAsync('COMMIT');
+        return result;
+      } catch (e) {
+        await db.execAsync('ROLLBACK');
+        throw e;
+      }
+    });
   },
 };

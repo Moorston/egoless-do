@@ -30,7 +30,7 @@ import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydr
 import { openDatabase, setState as setAppState } from '../db/schema';
 
 const log = createLogger('App');
-import { migrateAsyncStorageToSQLite } from './migrateAsyncStorage';
+import { migrateAsyncStorageToSQLite, migrateSettingsToSQLite } from './migrateAsyncStorage';
 
 // Configure API base for mobile
 const hostUri = Constants.expoConfig?.hostUri ?? Constants.experienceUrl?.split('?')[0]?.split('://')[1];
@@ -292,6 +292,9 @@ export const useAppStore = create<MobileStore>()(
               // Mark that a full sync push is needed to send migrated data to server
               await setAppState(db, 'needs_initial_sync', '1');
             }
+
+            // Step 1.5: Migrate settings from AsyncStorage to SQLite (one-time, idempotent)
+            await migrateSettingsToSQLite(db, adapter);
 
             // Step 2: Flush pending writes, then load all entities from SQLite
             await flushWrites();

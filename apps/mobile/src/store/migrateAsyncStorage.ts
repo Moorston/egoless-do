@@ -12,6 +12,7 @@ import { getState, setState } from '../db/schema';
 const log = createLogger('App');
 
 const MIGRATION_KEY = 'async_storage_migrated';
+const SETTINGS_MIGRATION_KEY = 'settings_migrated_to_sqlite';
 const STORE_KEY = 'egoless-do-mobile';
 
 // Entity arrays that were previously in partialize → SyncEntity mapping
@@ -161,4 +162,68 @@ export async function migrateAsyncStorageToSQLite(
 
   log.info(`Migrated ${migratedCount} entities to SQLite`);
   return true;
+}
+
+// ── Settings migration (partialize fields → app_state) ─────────
+
+/** Settings keys that were previously stored via Zustand partialize in AsyncStorage. */
+const SETTINGS_KEYS = [
+  'theme', 'language', 'streak',
+  'waterMl', 'waterGoal', 'calGoal',
+  'remindEnabled', 'remindTime', 'weightUnit',
+  'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder',
+  'customFoodPresets', 'reflectionFilters',
+  'healthSyncEnabled', 'ignoredRecPatterns',
+  'sleepGoal',
+];
+
+/**
+ * Migrates settings data from AsyncStorage partialize to SQLite app_state table.
+ * Uses the new adapter.persistSettings() method.
+ * Idempotent: safe to call multiple times.
+ */
+export async function migrateSettingsToSQLite(
+  db: SQLiteDatabase,
+  adapter: StorageAdapter,
+): Promise<boolean> {
+  const migrated = await getState(db, SETTINGS_MIGRATION_KEY);
+  if (migrated === '1') return false;
+
+  let raw: string | null = null;
+  try {
+    raw = await AsyncStorage.getItem(STORE_KEY);
+  } catch {
+    return false;
+  }
+  if (!raw) {
+    await setState(db, SETTINGS_MIGRATION_KEY, '1');
+    return false;
+  }
+
+  let oldData: Record<string, unknown>;
+  try {
+    oldData = JSON.parse(raw);
+  } catch {
+    await setState(db, SETTINGS_MIGRATION_KEY, '1');
+    return false;
+  }
+
+  let migratedCount = 0;
+  for (const key of SETTINGS_KEYS) {
+    if (oldData[key] !== undefined) {
+      try {
+        await adapter.persistSettings(key, oldData[key]);
+        migratedCount++;
+      } catch (err) {
+        log.error(err, { message: `Failed to migrate setting: ${key}` });
+      }
+    }
+  }
+
+  if (migratedCount > 0) {
+    log.info(`Migrated ${migratedCount} settings to SQLite`);
+  }
+
+  await setState(db, SETTINGS_MIGRATION_KEY, '1');
+  return migratedCount > 0;
 }

@@ -8,6 +8,9 @@ const noopAdapter: StorageAdapter = {
   persistChange: async () => {},
   markDeleted: async () => {},
   batchDelete: async () => {},
+  persistSettings: async () => {},
+  getSettings: async () => null,
+  transaction: async (fn) => fn(),
 };
 
 function makeTestStore(initialState: any = {}) {
