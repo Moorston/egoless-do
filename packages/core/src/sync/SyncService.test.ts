@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
 // Mock all dependencies before importing
-vi.mock('../../apps/mobile/src/db/schema', () => ({
+vi.mock('../../../../apps/mobile/src/db/schema', () => ({
   openDatabase: vi.fn().mockResolvedValue({
     execAsync: vi.fn(),
     runAsync: vi.fn().mockResolvedValue({ changes: 0 }),
@@ -15,7 +15,7 @@ vi.mock('../../apps/mobile/src/db/schema', () => ({
   setState: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('../../apps/mobile/src/db/syncQueue', () => ({
+vi.mock('../../../../apps/mobile/src/db/syncQueue', () => ({
   drainQueue: vi.fn().mockResolvedValue([]),
   removeQueueItems: vi.fn().mockResolvedValue(undefined),
   getQueueCount: vi.fn().mockResolvedValue(0),
@@ -28,19 +28,19 @@ vi.mock('../../apps/mobile/src/db/syncQueue', () => ({
   setLastSyncTimestamp: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('@egoless-do/core', () => {
+vi.mock('@egoless-do/core', async (importOriginal) => {
+  const actual = await importOriginal() as Record<string, unknown>;
   class KickedOutError extends Error {
     constructor(message: string) { super(message); this.name = 'KickedOutError'; }
   }
   return {
+    ...actual,
     apiSyncPush: vi.fn().mockResolvedValue({ serverTime: Date.now(), changes: [] }),
     apiSyncPull: vi.fn().mockResolvedValue({ data: {}, serverTime: Date.now() }),
     apiSyncPullPost: vi.fn().mockResolvedValue({ data: {}, serverTime: Date.now() }),
     apiSyncCheck: vi.fn().mockResolvedValue({ hasChanges: false, count: 0, changed: {} }),
     apiSyncPullEntity: vi.fn().mockResolvedValue({ data: [], total: 0 }),
     createLogger: vi.fn().mockReturnValue({ log: vi.fn(), warn: vi.fn(), error: vi.fn(), info: vi.fn() }),
-    SCHEMAS: new Proxy({}, { get: () => ({ sqlite: { table: 'test', pk: 'id' }, pocketbase: { collection: 'test', serverIdField: 'id' }, fields: [] }) }),
-    buildServerPayloadToRow: vi.fn().mockReturnValue(() => null),
     resolveConflict: vi.fn().mockImplementation(({ clientUpdated, serverUpdated }) => ({
       winner: (clientUpdated ?? 0) >= (serverUpdated ?? 0) ? 'client' : 'server',
     })),
@@ -51,7 +51,7 @@ vi.mock('@egoless-do/core', () => {
   };
 });
 
-vi.mock('../../apps/mobile/src/features/sync/RealtimeAgent', () => ({
+vi.mock('../../../../apps/mobile/src/features/sync/RealtimeAgent', () => ({
   RealtimeAgent: class {
     setChangeHandler() {}
     setStatusHandler() {}
@@ -75,8 +75,8 @@ vi.mock('@react-native-community/netinfo', () => ({
   },
 }));
 
-import { runSync, resetSyncState, setSyncTokenProvider, isSyncing } from '../../apps/mobile/src/features/sync/SyncService';
-import { drainQueue, markQueueItemFailed, removeQueueItems, enqueueChange, markQueueItemConflict } from '../../apps/mobile/src/db/syncQueue';
+import { runSync, resetSyncState, setSyncTokenProvider, isSyncing } from '../../../../apps/mobile/src/features/sync/SyncService';
+import { drainQueue, markQueueItemFailed, removeQueueItems, enqueueChange, markQueueItemConflict } from '../../../../apps/mobile/src/db/syncQueue';
 import { apiSyncPush, resolveConflict } from '@egoless-do/core';
 
 describe('SyncService', () => {

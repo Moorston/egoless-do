@@ -2,6 +2,7 @@
 // 将 Token 黑名单从本地 SQLite 迁移到 PocketBase 集合，确保服务重启后数据不丢失。
 
 import { getPb, getAdminPb, escapeFilter } from './pb.js';
+import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'token_blacklist';
 
@@ -15,10 +16,10 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
       `token = "${escapeFilter(token)}" && expires_at > ${Date.now()}`
     );
     return true;
-  } catch (err: any) {
-    if (err?.status === 404) return false;
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return false;
     // 如果集合不存在，回退到本地检查
-    console.warn('Token blacklist check failed, falling back to local:', err.message);
+    console.warn('Token blacklist check failed, falling back to local:', errMessage(err));
     return false;
   }
 }
@@ -34,8 +35,8 @@ export async function blacklistToken(token: string, expiresAt: number): Promise<
       expires_at: expiresAt,
       created_at: Date.now(),
     });
-  } catch (err: any) {
-    console.error('Failed to blacklist token:', err.message);
+  } catch (err: unknown) {
+    console.error('Failed to blacklist token:', errMessage(err));
     // 如果集合不存在，静默失败（不影响主流程）
   }
 }
@@ -60,8 +61,8 @@ export async function cleanupExpiredTokens(): Promise<number> {
       }
     }
     return deleted;
-  } catch (err: any) {
-    console.warn('Token blacklist cleanup failed:', err.message);
+  } catch (err: unknown) {
+    console.warn('Token blacklist cleanup failed:', errMessage(err));
     return 0;
   }
 }
@@ -75,8 +76,8 @@ export async function initTokenBlacklistCollection(): Promise<void> {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[TokenBlacklist] Collection '${COLLECTION_NAME}' exists`);
-  } catch (err: any) {
-    if (err?.status === 404) {
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) {
       console.log(`[TokenBlacklist] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
@@ -95,11 +96,11 @@ export async function initTokenBlacklistCollection(): Promise<void> {
           deleteRule: null,
         });
         console.log(`[TokenBlacklist] Collection '${COLLECTION_NAME}' created`);
-      } catch (createErr: any) {
-        console.error(`[TokenBlacklist] Failed to create collection: ${createErr.message}`);
+      } catch (createErr: unknown) {
+        console.error(`[TokenBlacklist] Failed to create collection: ${errMessage(createErr)}`);
       }
     } else {
-      console.error(`[TokenBlacklist] Failed to check collection: ${err.message}`);
+      console.error(`[TokenBlacklist] Failed to check collection: ${errMessage(err)}`);
     }
   }
 }

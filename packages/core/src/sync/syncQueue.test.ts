@@ -25,7 +25,7 @@ import {
   markQueueItemFailed,
   markQueueItemConflict,
   resetAllPendingForRetry,
-} from '../../apps/mobile/src/db/syncQueue';
+} from '../../../../apps/mobile/src/db/syncQueue';
 
 describe('syncQueue', () => {
   beforeEach(() => {

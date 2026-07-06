@@ -2,6 +2,7 @@
 import { Hono } from 'hono';
 import crypto from 'crypto';
 import { getAdminPb, escapeFilter } from '../pb.js';
+import { errStatus } from '../errors.js';
 import { getVerificationCode, deleteVerificationCode } from '../verification-code.js';
 import { blacklistToken } from '../token-blacklist.js';
 import { getClientIp, resetRateLimit } from '../rate-limit.js';
@@ -75,8 +76,8 @@ app.post('/reset-password', async (c) => {
     return c.json({ ok: true, message: '密码重置成功，请重新登录' });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : '';
-    const pbStatus = (err as any)?.status;
-    const isServerError = pbStatus >= 500 || msg.includes('ECONNREFUSED') || msg.includes('fetch failed') || msg.includes('timeout');
+    const pbStatus = errStatus(err);
+    const isServerError = (pbStatus != null && pbStatus >= 500) || msg.includes('ECONNREFUSED') || msg.includes('fetch failed') || msg.includes('timeout');
     return c.json({ error: sanitizeError(err, '密码重置失败') }, isServerError ? 500 : 400);
   }
 });

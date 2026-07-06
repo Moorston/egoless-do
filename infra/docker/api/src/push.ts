@@ -4,6 +4,7 @@
 import { Hono } from 'hono';
 import { verifyAuth } from './auth-middleware.js';
 import { getPb, escapeFilter } from './pb.js';
+import { errStatus } from './errors.js';
 import { getClientIp } from './rate-limit.js';
 
 const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
@@ -98,8 +99,8 @@ app.post('/push', async (c) => {
         platform,
         updated_at: new Date().toISOString(),
       });
-    } catch (lookupErr: any) {
-      if (lookupErr?.status !== 404) throw lookupErr;
+    } catch (lookupErr: unknown) {
+      if (errStatus(lookupErr) !== 404) throw lookupErr;
       await pb.collection('push_tokens').create({
         user_id: auth.userId,
         platform,

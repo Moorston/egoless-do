@@ -2,6 +2,7 @@
 import { Hono } from 'hono';
 import crypto from 'crypto';
 import { getPb } from '../pb.js';
+import { errStatus } from '../errors.js';
 import { getVerificationCode, deleteVerificationCode } from '../verification-code.js';
 import { getClientIp, registerRateLimit } from '../rate-limit.js';
 import { validatePassword, sanitizeError } from '../auth-middleware.js';
@@ -77,8 +78,8 @@ app.post('/register', async (c) => {
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : '';
-    const pbStatus = (err as any)?.status;
-    const isServerError = pbStatus >= 500 || msg.includes('ECONNREFUSED') || msg.includes('fetch failed') || msg.includes('timeout');
+    const pbStatus = errStatus(err);
+    const isServerError = (pbStatus != null && pbStatus >= 500) || msg.includes('ECONNREFUSED') || msg.includes('fetch failed') || msg.includes('timeout');
     return c.json({ error: sanitizeError(err, '注册失败') }, isServerError ? 500 : 400);
   }
 });

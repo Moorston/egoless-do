@@ -2,6 +2,7 @@
 // 实现基于时间的一次性密码 (TOTP) 多因素认证。
 
 import { getAdminPb, escapeFilter } from './pb.js';
+import { errMessage, errStatus } from './errors.js';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 
@@ -101,9 +102,9 @@ export async function isMFAEnabled(userId: string): Promise<boolean> {
       `user_id = "${escapeFilter(userId)}" && enabled = true`
     );
     return !!record;
-  } catch (err: any) {
-    if (err?.status === 404) return false;
-    console.warn('Failed to check MFA status:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return false;
+    console.warn('Failed to check MFA status:', errMessage(err));
     return false;
   }
 }
@@ -126,9 +127,9 @@ export async function getMFAConfig(userId: string): Promise<MFAConfig | null> {
       created_at: record.created_at,
       updated_at: record.updated_at,
     };
-  } catch (err: any) {
-    if (err?.status === 404) return null;
-    console.warn('Failed to get MFA config:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return null;
+    console.warn('Failed to get MFA config:', errMessage(err));
     return null;
   }
 }
@@ -151,8 +152,8 @@ export async function enableMFA(userId: string): Promise<{ secret: string; backu
       existing = await pb.collection(COLLECTION_NAME).getFirstListItem(
         `user_id = "${escapeFilter(userId)}"`
       );
-    } catch (err: any) {
-      if (err?.status !== 404) throw err;
+    } catch (err: unknown) {
+      if (errStatus(err) !== 404) throw err;
     }
 
     if (existing) {
@@ -176,8 +177,8 @@ export async function enableMFA(userId: string): Promise<{ secret: string; backu
     }
 
     return { secret, backupCodes: plainCodes };
-  } catch (err: any) {
-    console.error('Failed to enable MFA:', err.message);
+  } catch (err: unknown) {
+    console.error('Failed to enable MFA:', errMessage(err));
     throw err;
   }
 }
@@ -195,9 +196,9 @@ export async function disableMFA(userId: string): Promise<void> {
       enabled: false,
       updated_at: Date.now(),
     });
-  } catch (err: any) {
-    if (err?.status !== 404) {
-      console.error('Failed to disable MFA:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) !== 404) {
+      console.error('Failed to disable MFA:', errMessage(err));
       throw err;
     }
   }
@@ -250,8 +251,8 @@ export async function initMFACollection(): Promise<void> {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[MFA] Collection '${COLLECTION_NAME}' exists`);
-  } catch (err: any) {
-    if (err?.status === 404) {
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) {
       console.log(`[MFA] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
@@ -273,11 +274,11 @@ export async function initMFACollection(): Promise<void> {
           deleteRule: null,
         });
         console.log(`[MFA] Collection '${COLLECTION_NAME}' created`);
-      } catch (createErr: any) {
-        console.error(`[MFA] Failed to create collection: ${createErr.message}`);
+      } catch (createErr: unknown) {
+        console.error(`[MFA] Failed to create collection: ${errMessage(createErr)}`);
       }
     } else {
-      console.error(`[MFA] Failed to check collection: ${err.message}`);
+      console.error(`[MFA] Failed to check collection: ${errMessage(err)}`);
     }
   }
 }

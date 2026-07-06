@@ -36,20 +36,20 @@ export function createReviewSlice(
       }
       
       // 计算复盘数据
-      const reviewData = calculateReviewData(
+      const reviewData = calculateReviewData({
         period,
-        todayStr,
-        state.checkinHistory ?? [],
-        state.habits ?? [],
-        state.plans ?? [],
-        state.planItems ?? [],
-        state.foodLog ?? [],
-        state.exerciseLog ?? [],
-        state.fastingHistory ?? [],
-        state.medHistory ?? [],
-        state.graceHistory ?? [],
-        existingReview, // 用于对比
-      );
+        targetDate: todayStr,
+        checkinHistory: state.checkinHistory ?? [],
+        habits: state.habits ?? [],
+        plans: state.plans ?? [],
+        planItems: state.planItems ?? [],
+        foodLog: state.foodLog ?? [],
+        exerciseLog: state.exerciseLog ?? [],
+        fastingHistory: state.fastingHistory ?? [],
+        medHistory: state.medHistory ?? [],
+        graceHistory: state.graceHistory ?? [],
+        previousReview: existingReview,
+      });
       
       // 生成AI文案 - 使用最新的配置
       const aiModels = state.aiModels ?? [];

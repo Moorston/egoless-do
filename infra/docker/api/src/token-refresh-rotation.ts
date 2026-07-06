@@ -4,6 +4,7 @@
 
 import { randomBytes } from 'crypto';
 import { getAdminPb, escapeFilter } from './pb.js';
+import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'refresh_tokens';
 
@@ -38,8 +39,8 @@ export async function createRefreshToken(userId: string, token: string, expiresA
       created_at: Date.now(),
       is_revoked: false,
     });
-  } catch (err: any) {
-    console.error('Failed to create refresh token:', err.message);
+  } catch (err: unknown) {
+    console.error('Failed to create refresh token:', errMessage(err));
     // 如果集合不存在，静默失败
   }
 }
@@ -54,9 +55,9 @@ export async function validateRefreshToken(token: string): Promise<{ valid: bool
       `token = "${escapeFilter(token)}" && is_revoked = false && expires_at > ${Date.now()}`
     );
     return { valid: true, userId: record.user_id };
-  } catch (err: any) {
-    if (err?.status === 404) return { valid: false };
-    console.warn('Failed to validate refresh token:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return { valid: false };
+    console.warn('Failed to validate refresh token:', errMessage(err));
     return { valid: false };
   }
 }
@@ -74,9 +75,9 @@ export async function revokeRefreshToken(token: string): Promise<void> {
       is_revoked: true,
       used_at: Date.now(),
     });
-  } catch (err: any) {
-    if (err?.status !== 404) {
-      console.warn('Failed to revoke refresh token:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) !== 404) {
+      console.warn('Failed to revoke refresh token:', errMessage(err));
     }
   }
 }
@@ -101,8 +102,8 @@ export async function revokeAllUserRefreshTokens(userId: string): Promise<void> 
         // 忽略单个更新失败
       }
     }
-  } catch (err: any) {
-    console.warn('Failed to revoke user refresh tokens:', err.message);
+  } catch (err: unknown) {
+    console.warn('Failed to revoke user refresh tokens:', errMessage(err));
   }
 }
 
@@ -126,8 +127,8 @@ export async function cleanupExpiredRefreshTokens(): Promise<number> {
       }
     }
     return deleted;
-  } catch (err: any) {
-    console.warn('Refresh token cleanup failed:', err.message);
+  } catch (err: unknown) {
+    console.warn('Refresh token cleanup failed:', errMessage(err));
     return 0;
   }
 }
@@ -140,8 +141,8 @@ export async function initRefreshTokenCollection(): Promise<void> {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[RefreshToken] Collection '${COLLECTION_NAME}' exists`);
-  } catch (err: any) {
-    if (err?.status === 404) {
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) {
       console.log(`[RefreshToken] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
@@ -163,11 +164,11 @@ export async function initRefreshTokenCollection(): Promise<void> {
           deleteRule: null,
         });
         console.log(`[RefreshToken] Collection '${COLLECTION_NAME}' created`);
-      } catch (createErr: any) {
-        console.error(`[RefreshToken] Failed to create collection: ${createErr.message}`);
+      } catch (createErr: unknown) {
+        console.error(`[RefreshToken] Failed to create collection: ${errMessage(createErr)}`);
       }
     } else {
-      console.error(`[RefreshToken] Failed to check collection: ${err.message}`);
+      console.error(`[RefreshToken] Failed to check collection: ${errMessage(err)}`);
     }
   }
 }

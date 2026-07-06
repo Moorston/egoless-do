@@ -4,6 +4,7 @@ import { Hono } from 'hono';
 import nodemailer from 'nodemailer';
 import { verifyAuth } from './auth-middleware.js';
 import { getAdminPb } from './pb.js';
+import { errStatus } from './errors.js';
 import { getClientIp } from './rate-limit.js';
 
 function escapeHtml(s: string): string {
@@ -77,8 +78,8 @@ app.post('/notify-delayed', async (c) => {
     let user;
     try {
       user = await pb.collection('users').getOne(userId);
-    } catch (e: any) {
-      const status = e?.status ?? e?.response?.status;
+    } catch (e: unknown) {
+      const status = errStatus(e);
       if (status === 404) return c.json({ error: '用户不存在' }, 404);
       return c.json({ error: '服务器错误' }, 500);
     }

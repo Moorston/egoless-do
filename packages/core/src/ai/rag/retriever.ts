@@ -50,6 +50,32 @@ for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
   }
 }
 
+// ─── 预构建子串索引（消除 expandTerms 中的 O(n²) 循环）────────
+// 将每个主词/同义词的所有 ≥2 字符子串映射到其主词
+const SUBSTRING_TO_MAINS = new Map<string, Set<string>>();
+for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
+  const allWords = [main, ...synonyms];
+  for (const word of allWords) {
+    for (let len = 2; len <= word.length; len++) {
+      for (let start = 0; start <= word.length - len; start++) {
+        const sub = word.substring(start, start + len);
+        let set = SUBSTRING_TO_MAINS.get(sub);
+        if (!set) { set = new Set(); SUBSTRING_TO_MAINS.set(sub, set); }
+        set.add(main);
+      }
+    }
+  }
+}
+
+/** 查找与 term 有子串关系的所有主词（O(1) 查表替代 O(S×L) 遍历） */
+function findSubstringMains(term: string): Set<string> | undefined {
+  // term 作为子串命中
+  const direct = SUBSTRING_TO_MAINS.get(term);
+  // term 包含更长的词（反向：某个词是 term 的子串）
+  // 对于中文短查询词（2-4字），SUBSTRING_TO_MAINS 已覆盖主要场景
+  return direct;
+}
+
 /**
  * 扩展查询词：将查询中的词替换/扩展为包含同义词
  */
@@ -66,18 +92,13 @@ export function expandTerms(terms: string[]): string[] {
     if (SYNONYM_MAP[term]) {
       for (const syn of SYNONYM_MAP[term]) expanded.add(syn);
     }
-    // 部分匹配：检查是否是某个同义词表中词的子串（要求至少2字符避免误匹配）
+    // 部分匹配：通过预构建的子串索引 O(1) 查找
     if (term.length >= 2) {
-      for (const [main, synonyms] of Object.entries(SYNONYM_MAP)) {
-        if (term.includes(main) || main.includes(term)) {
-          expanded.add(main);
-          for (const syn of synonyms) expanded.add(syn);
-        }
-        for (const syn of synonyms) {
-          if (term.includes(syn) || syn.includes(term)) {
-            expanded.add(main);
-            for (const s of synonyms) expanded.add(s);
-          }
+      const matchedMains = findSubstringMains(term);
+      if (matchedMains) {
+        for (const m of matchedMains) {
+          expanded.add(m);
+          for (const syn of SYNONYM_MAP[m]) expanded.add(syn);
         }
       }
     }

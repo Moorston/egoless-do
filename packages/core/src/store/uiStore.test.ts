@@ -17,7 +17,7 @@ vi.mock('@react-native-async-storage/async-storage', () => ({
 }));
 
 // Import after mocks
-import { useUiStore } from '../../apps/mobile/src/store/uiStore';
+import { useUiStore } from '../../../../apps/mobile/src/store/uiStore';
 
 describe('UI Store', () => {
   beforeEach(() => {

@@ -40,7 +40,7 @@ describe('syncQueue', () => {
     });
 
     it('returns stored timestamp', async () => {
-      mockGetFirstAsync.mockResolvedValueOnce({ value: '2024-01-15T10:00:00.000Z' });
+      mockGetFirstAsync.mockResolvedValueOnce({ last_sync_timestamp: '2024-01-15T10:00:00.000Z' });
       const ts = await getLastSyncTimestamp('habit');
       expect(ts).toBe('2024-01-15T10:00:00.000Z');
     });

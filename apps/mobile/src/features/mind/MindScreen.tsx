@@ -336,7 +336,7 @@ export default function MindScreen() {
   // ── 洞察分析 Tab ──
   const renderInsightTab = useCallback(() => {
     const timeSlots = getFearTimeDistribution();
-    const peakHours = timeSlots.sort((a: any, b: any) => b.count - a.count).slice(0, 3);
+    const peakHours = timeSlots.sort((a, b) => b.count - a.count).slice(0, 3);
     return (
       <View>
         {/* 主导恐惧类型 */}
@@ -353,7 +353,7 @@ export default function MindScreen() {
           <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>{T('mindInsightFearTime')}</Text>
             <View style={{ flexDirection: 'row', gap: 12 }}>
-              {peakHours.map((h: any) => (
+              {peakHours.map((h) => (
                 <View key={h.hour} style={{ flex: 1, alignItems: 'center', backgroundColor: `${TH.primary}10`, borderRadius: 8, padding: 8 }}>
                   <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.primary }}>{h.hour}:00</Text>
                   <Text style={{ fontSize: 10, color: TH.sub }}>{h.count}次</Text>

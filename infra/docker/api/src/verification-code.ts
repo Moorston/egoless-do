@@ -2,6 +2,7 @@
 // 将验证码从本地 SQLite 迁移到 PocketBase 集合，确保服务重启后数据不丢失。
 
 import { getAdminPb, escapeFilter } from './pb.js';
+import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'verification_codes';
 
@@ -25,9 +26,9 @@ export async function saveVerificationCode(email: string, code: string, expiresA
       `email = "${escapeFilter(email)}"`
     );
     await pb.collection(COLLECTION_NAME).delete(existing.id);
-  } catch (err: any) {
-    if (err?.status !== 404) {
-      console.warn('Failed to delete old verification code:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) !== 404) {
+      console.warn('Failed to delete old verification code:', errMessage(err));
     }
   }
 
@@ -56,9 +57,9 @@ export async function getVerificationCode(email: string): Promise<VerificationCo
       expires_at: record.expires_at,
       created_at: record.created_at,
     };
-  } catch (err: any) {
-    if (err?.status === 404) return null;
-    console.warn('Failed to get verification code:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return null;
+    console.warn('Failed to get verification code:', errMessage(err));
     return null;
   }
 }
@@ -73,9 +74,9 @@ export async function deleteVerificationCode(email: string): Promise<void> {
       `email = "${escapeFilter(email)}"`
     );
     await pb.collection(COLLECTION_NAME).delete(existing.id);
-  } catch (err: any) {
-    if (err?.status !== 404) {
-      console.warn('Failed to delete verification code:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) !== 404) {
+      console.warn('Failed to delete verification code:', errMessage(err));
     }
   }
 }
@@ -100,8 +101,8 @@ export async function cleanupExpiredCodes(): Promise<number> {
       }
     }
     return deleted;
-  } catch (err: any) {
-    console.warn('Verification code cleanup failed:', err.message);
+  } catch (err: unknown) {
+    console.warn('Verification code cleanup failed:', errMessage(err));
     return 0;
   }
 }
@@ -117,9 +118,9 @@ export async function canSendCode(email: string): Promise<boolean> {
     );
     // 检查是否在 60 秒内
     return Date.now() - record.created_at >= 60 * 1000;
-  } catch (err: any) {
-    if (err?.status === 404) return true; // 没有记录，可以发送
-    console.warn('Failed to check send code rate:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return true; // 没有记录，可以发送
+    console.warn('Failed to check send code rate:', errMessage(err));
     return true; // 出错时允许发送
   }
 }
@@ -133,8 +134,8 @@ export async function initVerificationCodeCollection(): Promise<void> {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[VerificationCode] Collection '${COLLECTION_NAME}' exists`);
-  } catch (err: any) {
-    if (err?.status === 404) {
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) {
       console.log(`[VerificationCode] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
@@ -154,11 +155,11 @@ export async function initVerificationCodeCollection(): Promise<void> {
           deleteRule: null,
         });
         console.log(`[VerificationCode] Collection '${COLLECTION_NAME}' created`);
-      } catch (createErr: any) {
-        console.error(`[VerificationCode] Failed to create collection: ${createErr.message}`);
+      } catch (createErr: unknown) {
+        console.error(`[VerificationCode] Failed to create collection: ${errMessage(createErr)}`);
       }
     } else {
-      console.error(`[VerificationCode] Failed to check collection: ${err.message}`);
+      console.error(`[VerificationCode] Failed to check collection: ${errMessage(err)}`);
     }
   }
 }

@@ -2,6 +2,7 @@
 import { Hono } from 'hono';
 import { verifyAuth } from '../auth-middleware.js';
 import { getPb } from '../pb.js';
+import { errStatus } from '../errors.js';
 import { getClientIp } from '../rate-limit.js';
 
 const meRateLimit = (() => {
@@ -50,8 +51,8 @@ app.get('/me', async (c) => {
         createdAt: user.created ? new Date(user.created).getTime() : Date.now(),
       },
     });
-  } catch (e: any) {
-    const status = e?.status ?? e?.response?.status;
+  } catch (e: unknown) {
+    const status = errStatus(e);
     if (status === 404) return c.json({ error: '用户不存在' }, 404);
     return c.json({ error: '服务器错误' }, 500);
   }

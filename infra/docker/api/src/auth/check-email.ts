@@ -1,6 +1,7 @@
 // ─── POST /api/auth/check-email ──────────────────────────────────
 import { Hono } from 'hono';
 import { getAdminPb, escapeFilter } from '../pb.js';
+import { errMessage, errStatus } from '../errors.js';
 import { getClientIp, checkEmailRateLimit } from '../rate-limit.js';
 
 const app = new Hono();
@@ -21,11 +22,11 @@ app.post('/check-email', async (c) => {
     try {
       await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
       return c.json({ available: false });
-    } catch (err: any) {
-      if (err?.status === 404) {
+    } catch (err: unknown) {
+      if (errStatus(err) === 404) {
         return c.json({ available: true });
       }
-      console.error('check email error:', { status: err?.status, message: err?.message });
+      console.error('check email error:', { status: errStatus(err), message: errMessage(err) });
       return c.json({ available: false, error: '检查失败' }, 500);
     }
   } catch (err) {

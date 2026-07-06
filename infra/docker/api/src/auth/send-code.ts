@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import { getAdminPb, escapeFilter } from '../pb.js';
+import { errMessage, errStatus } from '../errors.js';
 import { saveVerificationCode, canSendCode, cleanupExpiredCodes } from '../verification-code.js';
 import { getClientIp, sendCodeRateLimit } from '../rate-limit.js';
 
@@ -49,9 +50,9 @@ app.post('/send-code', async (c) => {
     try {
       await pb.collection('users').getFirstListItem(`email = "${escapeFilter(email)}"`);
       emailExists = true;
-    } catch (err: any) {
-      if (err?.status !== 404) {
-        console.error('check email error:', { status: err?.status, message: err?.message });
+    } catch (err: unknown) {
+      if (errStatus(err) !== 404) {
+        console.error('check email error:', { status: errStatus(err), message: errMessage(err) });
         throw err;
       }
     }

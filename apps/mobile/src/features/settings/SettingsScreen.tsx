@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator, Image,
+  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';

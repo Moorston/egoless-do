@@ -81,19 +81,19 @@ describe('calculateReviewData', () => {
   ];
 
   it('should calculate completion rate correctly', () => {
-    const result = calculateReviewData(
-      'week',
-      '2026-06-11',
-      mockCheckinHistory,
-      mockHabits,
-      mockPlans,
-      mockPlanItems,
-      [],
-      [],
-      [],
-      [],
-      []
-    );
+    const result = calculateReviewData({
+      period: 'week',
+      targetDate: '2026-06-11',
+      checkinHistory: mockCheckinHistory,
+      habits: mockHabits,
+      plans: mockPlans,
+      planItems: mockPlanItems,
+      foodLog: [],
+      exerciseLog: [],
+      fastingHistory: [],
+      medHistory: [],
+      graceHistory: [],
+    });
 
     expect(result.completionRate).toBe(75); // 3 done out of 4 days in range
     expect(result.doneDays).toBe(3);
@@ -101,37 +101,37 @@ describe('calculateReviewData', () => {
   });
 
   it('should calculate streak days correctly', () => {
-    const result = calculateReviewData(
-      'week',
-      '2026-06-11',
-      mockCheckinHistory,
-      mockHabits,
-      mockPlans,
-      mockPlanItems,
-      [],
-      [],
-      [],
-      [],
-      []
-    );
+    const result = calculateReviewData({
+      period: 'week',
+      targetDate: '2026-06-11',
+      checkinHistory: mockCheckinHistory,
+      habits: mockHabits,
+      plans: mockPlans,
+      planItems: mockPlanItems,
+      foodLog: [],
+      exerciseLog: [],
+      fastingHistory: [],
+      medHistory: [],
+      graceHistory: [],
+    });
 
     expect(result.streakDays).toBe(1); // Only 2026-06-11 is done consecutively from end
   });
 
   it('should calculate habit progress correctly', () => {
-    const result = calculateReviewData(
-      'week',
-      '2026-06-11',
-      mockCheckinHistory,
-      mockHabits,
-      mockPlans,
-      mockPlanItems,
-      [],
-      [],
-      [],
-      [],
-      []
-    );
+    const result = calculateReviewData({
+      period: 'week',
+      targetDate: '2026-06-11',
+      checkinHistory: mockCheckinHistory,
+      habits: mockHabits,
+      plans: mockPlans,
+      planItems: mockPlanItems,
+      foodLog: [],
+      exerciseLog: [],
+      fastingHistory: [],
+      medHistory: [],
+      graceHistory: [],
+    });
 
     expect(result.habitProgress).toHaveLength(2);
     
@@ -146,19 +146,19 @@ describe('calculateReviewData', () => {
   });
 
   it('should calculate plan progress correctly', () => {
-    const result = calculateReviewData(
-      'week',
-      '2026-06-11',
-      mockCheckinHistory,
-      mockHabits,
-      mockPlans,
-      mockPlanItems,
-      [],
-      [],
-      [],
-      [],
-      []
-    );
+    const result = calculateReviewData({
+      period: 'week',
+      targetDate: '2026-06-11',
+      checkinHistory: mockCheckinHistory,
+      habits: mockHabits,
+      plans: mockPlans,
+      planItems: mockPlanItems,
+      foodLog: [],
+      exerciseLog: [],
+      fastingHistory: [],
+      medHistory: [],
+      graceHistory: [],
+    });
 
     expect(result.planProgress).toHaveLength(1);
     expect(result.planProgress[0].planName).toBe('学习计划');
@@ -168,19 +168,19 @@ describe('calculateReviewData', () => {
   });
 
   it('should calculate incomplete reasons correctly', () => {
-    const result = calculateReviewData(
-      'week',
-      '2026-06-11',
-      mockCheckinHistory,
-      mockHabits,
-      mockPlans,
-      mockPlanItems,
-      [],
-      [],
-      [],
-      [],
-      []
-    );
+    const result = calculateReviewData({
+      period: 'week',
+      targetDate: '2026-06-11',
+      checkinHistory: mockCheckinHistory,
+      habits: mockHabits,
+      plans: mockPlans,
+      planItems: mockPlanItems,
+      foodLog: [],
+      exerciseLog: [],
+      fastingHistory: [],
+      medHistory: [],
+      graceHistory: [],
+    });
 
     expect(result.incompleteReasons).toHaveLength(1);
     expect(result.incompleteReasons[0].code).toBe('time');
@@ -189,19 +189,19 @@ describe('calculateReviewData', () => {
   });
 
   it('should calculate metrics correctly', () => {
-    const result = calculateReviewData(
-      'week',
-      '2026-06-11',
-      mockCheckinHistory,
-      mockHabits,
-      mockPlans,
-      mockPlanItems,
-      [],
-      [],
-      [],
-      [],
-      []
-    );
+    const result = calculateReviewData({
+      period: 'week',
+      targetDate: '2026-06-11',
+      checkinHistory: mockCheckinHistory,
+      habits: mockHabits,
+      plans: mockPlans,
+      planItems: mockPlanItems,
+      foodLog: [],
+      exerciseLog: [],
+      fastingHistory: [],
+      medHistory: [],
+      graceHistory: [],
+    });
 
     expect(result.metrics.avgWeight).toBe(69.5); // (70 + 69.5 + 69) / 3
     expect(result.metrics.weightChange).toBe(-1); // 69 - 70
@@ -233,20 +233,20 @@ describe('calculateReviewData', () => {
       deleted: false,
     };
 
-    const result = calculateReviewData(
-      'week',
-      '2026-06-11',
-      mockCheckinHistory,
-      mockHabits,
-      mockPlans,
-      mockPlanItems,
-      [],
-      [],
-      [],
-      [],
-      [],
-      previousReview
-    );
+    const result = calculateReviewData({
+      period: 'week',
+      targetDate: '2026-06-11',
+      checkinHistory: mockCheckinHistory,
+      habits: mockHabits,
+      plans: mockPlans,
+      planItems: mockPlanItems,
+      foodLog: [],
+      exerciseLog: [],
+      fastingHistory: [],
+      medHistory: [],
+      graceHistory: [],
+      previousReview,
+    });
 
     expect(result.comparison.completionRateDiff).toBe(15); // 75 - 60
     expect(result.comparison.streakDiff).toBe(-1); // 1 - 2

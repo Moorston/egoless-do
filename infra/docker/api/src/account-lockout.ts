@@ -3,6 +3,7 @@
 // 连续登录失败超过阈值后，账户会被锁定一段时间。
 
 import { getAdminPb, escapeFilter } from './pb.js';
+import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'account_lockouts';
 
@@ -49,9 +50,9 @@ export async function isAccountLocked(email: string): Promise<{ locked: boolean;
     }
 
     return { locked: false };
-  } catch (err: any) {
-    if (err?.status === 404) return { locked: false };
-    console.warn('Failed to check account lockout:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return { locked: false };
+    console.warn('Failed to check account lockout:', errMessage(err));
     return { locked: false };
   }
 }
@@ -62,14 +63,15 @@ export async function isAccountLocked(email: string): Promise<{ locked: boolean;
 export async function recordLoginAttempt(email: string, success: boolean): Promise<{ locked: boolean; lockoutUntil?: number }> {
   try {
     const pb = await getAdminPb();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- PB record type
     let record: any;
 
     try {
       record = await pb.collection(COLLECTION_NAME).getFirstListItem(
         `email = "${escapeFilter(email)}"`
       );
-    } catch (err: any) {
-      if (err?.status === 404) {
+    } catch (err: unknown) {
+      if (errStatus(err) === 404) {
         // 创建新记录
         record = await pb.collection(COLLECTION_NAME).create({
           email,
@@ -123,8 +125,8 @@ export async function recordLoginAttempt(email: string, success: boolean): Promi
       locked: attempts >= MAX_LOGIN_ATTEMPTS,
       lockoutUntil: attempts >= MAX_LOGIN_ATTEMPTS ? lockoutUntil : undefined,
     };
-  } catch (err: any) {
-    console.warn('Failed to record login attempt:', err.message);
+  } catch (err: unknown) {
+    console.warn('Failed to record login attempt:', errMessage(err));
     return { locked: false };
   }
 }
@@ -153,8 +155,8 @@ export async function cleanupExpiredLockouts(): Promise<number> {
       }
     }
     return cleaned;
-  } catch (err: any) {
-    console.warn('Lockout cleanup failed:', err.message);
+  } catch (err: unknown) {
+    console.warn('Lockout cleanup failed:', errMessage(err));
     return 0;
   }
 }
@@ -167,8 +169,8 @@ export async function initAccountLockoutCollection(): Promise<void> {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[AccountLockout] Collection '${COLLECTION_NAME}' exists`);
-  } catch (err: any) {
-    if (err?.status === 404) {
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) {
       console.log(`[AccountLockout] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
@@ -190,11 +192,11 @@ export async function initAccountLockoutCollection(): Promise<void> {
           deleteRule: null,
         });
         console.log(`[AccountLockout] Collection '${COLLECTION_NAME}' created`);
-      } catch (createErr: any) {
-        console.error(`[AccountLockout] Failed to create collection: ${createErr.message}`);
+      } catch (createErr: unknown) {
+        console.error(`[AccountLockout] Failed to create collection: ${errMessage(createErr)}`);
       }
     } else {
-      console.error(`[AccountLockout] Failed to check collection: ${err.message}`);
+      console.error(`[AccountLockout] Failed to check collection: ${errMessage(err)}`);
     }
   }
 }

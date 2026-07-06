@@ -1,11 +1,28 @@
 // ─── Review business logic (pure functions) ─────────────────────
-import type { 
-  CheckinReview, IncompleteReasonStat, IncompleteItemStat, 
-  HabitProgressStat, PlanProgressStat, ReviewMetrics, ReviewComparison 
+import type {
+  CheckinReview, IncompleteReasonStat, IncompleteItemStat,
+  HabitProgressStat, PlanProgressStat, ReviewMetrics, ReviewComparison
 } from '../types';
 import type { CheckinEntry, Habit, Plan, PlanItem, FoodEntry, ExerciseEntry, FastingSession, MedHistoryEntry, GraceHistoryEntry } from '../types';
 import { INCOMPLETE_REASONS, parseCheckinNote } from './checkin';
 import { uid, dateStr } from '../utils';
+
+/** 输入参数对象 — 替代 calculateReviewData 的 12 个位置参数 */
+export interface ReviewDataInput {
+  period: 'week' | 'month';
+  targetDate: string;
+  checkinHistory: CheckinEntry[];
+  habits: Habit[];
+  plans: Plan[];
+  planItems: PlanItem[];
+  foodLog: FoodEntry[];
+  exerciseLog: ExerciseEntry[];
+  fastingHistory: FastingSession[];
+  medHistory: MedHistoryEntry[];
+  graceHistory: GraceHistoryEntry[];
+  /** 上期复盘，用于对比 */
+  previousReview?: CheckinReview;
+}
 
 /** 格式化日期为YYYY-MM-DD */
 function formatDate(date: Date): string {
@@ -104,19 +121,13 @@ function calculateLongestStreak(dates: string[], doneDates: Set<string>): number
  * 计算复盘数据（纯函数）
  */
 export function calculateReviewData(
-  period: 'week' | 'month',
-  targetDate: string,
-  checkinHistory: CheckinEntry[],
-  habits: Habit[],
-  plans: Plan[],
-  planItems: PlanItem[],
-  foodLog: FoodEntry[],
-  exerciseLog: ExerciseEntry[],
-  fastingHistory: FastingSession[],
-  medHistory: MedHistoryEntry[],
-  graceHistory: GraceHistoryEntry[],
-  previousReview?: CheckinReview,
+  input: ReviewDataInput,
 ): Omit<CheckinReview, 'id' | 'updatedAt' | 'deleted' | 'aiSummary' | 'highlights' | 'improvements'> {
+  const {
+    period, targetDate, checkinHistory, habits, plans, planItems,
+    foodLog, exerciseLog, fastingHistory, medHistory, graceHistory,
+    previousReview,
+  } = input;
   // 计算日期范围
   const target = parseLocalDate(targetDate);
   const range = period === 'week' ? getWeekRange(target) : getMonthRange(target);

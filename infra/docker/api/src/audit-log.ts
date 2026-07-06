@@ -2,6 +2,7 @@
 // 记录关键操作，用于安全审计和合规。
 
 import { getAdminPb, escapeFilter } from './pb.js';
+import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'audit_logs';
 
@@ -55,9 +56,9 @@ export async function logAuditEvent(entry: Omit<AuditLogEntry, 'id' | 'timestamp
       details: entry.details ? JSON.stringify(entry.details) : null,
       success: entry.success,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     // 审计日志失败不应影响主流程
-    console.warn('Failed to log audit event:', err.message);
+    console.warn('Failed to log audit event:', errMessage(err));
   }
 }
 
@@ -87,8 +88,8 @@ export async function getUserAuditLogs(
       details: record.details ? JSON.parse(record.details) : undefined,
       success: record.success,
     }));
-  } catch (err: any) {
-    console.warn('Failed to get user audit logs:', err.message);
+  } catch (err: unknown) {
+    console.warn('Failed to get user audit logs:', errMessage(err));
     return [];
   }
 }
@@ -119,8 +120,8 @@ export async function getRecentSecurityEvents(
       details: record.details ? JSON.parse(record.details) : undefined,
       success: record.success,
     }));
-  } catch (err: any) {
-    console.warn('Failed to get security events:', err.message);
+  } catch (err: unknown) {
+    console.warn('Failed to get security events:', errMessage(err));
     return [];
   }
 }
@@ -148,8 +149,8 @@ export async function cleanupExpiredAuditLogs(): Promise<number> {
       }
     }
     return deleted;
-  } catch (err: any) {
-    console.warn('Audit log cleanup failed:', err.message);
+  } catch (err: unknown) {
+    console.warn('Audit log cleanup failed:', errMessage(err));
     return 0;
   }
 }
@@ -162,8 +163,8 @@ export async function initAuditLogCollection(): Promise<void> {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[AuditLog] Collection '${COLLECTION_NAME}' exists`);
-  } catch (err: any) {
-    if (err?.status === 404) {
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) {
       console.log(`[AuditLog] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
@@ -187,11 +188,11 @@ export async function initAuditLogCollection(): Promise<void> {
           deleteRule: null,
         });
         console.log(`[AuditLog] Collection '${COLLECTION_NAME}' created`);
-      } catch (createErr: any) {
-        console.error(`[AuditLog] Failed to create collection: ${createErr.message}`);
+      } catch (createErr: unknown) {
+        console.error(`[AuditLog] Failed to create collection: ${errMessage(createErr)}`);
       }
     } else {
-      console.error(`[AuditLog] Failed to check collection: ${err.message}`);
+      console.error(`[AuditLog] Failed to check collection: ${errMessage(err)}`);
     }
   }
 }
@@ -199,7 +200,7 @@ export async function initAuditLogCollection(): Promise<void> {
 /**
  * 从请求中提取客户端信息
  */
-export function extractClientInfo(c: any): { ip: string; userAgent: string } {
+export function extractClientInfo(c: { req: { header: (name: string) => string | undefined } }): { ip: string; userAgent: string } {
   const ip = c.req.header('x-real-ip') ??
     c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ??
     'unknown';

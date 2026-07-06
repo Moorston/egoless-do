@@ -2,6 +2,7 @@
 import { Hono } from 'hono';
 import crypto from 'crypto';
 import { getPb, getAdminPb, escapeFilter } from '../pb.js';
+import { errMessage, errStatus } from '../errors.js';
 import { getClientIp, wechatRateLimit } from '../rate-limit.js';
 import { sanitizeError } from '../auth-middleware.js';
 import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';
@@ -50,8 +51,8 @@ app.post('/wechat', async (c) => {
       // Use admin client to bypass default viewRule on users collection
       const adminPb = await getAdminPb();
       user = await adminPb.collection('users').getFirstListItem(`wechat_openid = "${escapeFilter(openid)}"`);
-    } catch (lookupErr: any) {
-      if (lookupErr?.status !== 404) throw lookupErr;
+    } catch (lookupErr: unknown) {
+      if (errStatus(lookupErr) !== 404) throw lookupErr;
       try {
         const adminPbForCreate = await getAdminPb();
         user = await adminPbForCreate.collection('users').create({
@@ -60,9 +61,9 @@ app.post('/wechat', async (c) => {
           name: `微信用户${openid.slice(-4)}`,
           wechat_openid: openid,
         });
-      } catch (createErr: any) {
+      } catch (createErr: unknown) {
         // Race condition: concurrent request created the user — retry lookup
-        if (createErr?.status === 400 && createErr?.message?.includes('already exists')) {
+        if (errStatus(createErr) === 400 && errMessage(createErr).includes('already exists')) {
           const adminPb = await getAdminPb();
           user = await adminPb.collection('users').getFirstListItem(`wechat_openid = "${escapeFilter(openid)}"`);
         } else {

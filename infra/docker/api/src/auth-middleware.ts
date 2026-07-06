@@ -59,7 +59,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
         const { getAdminPb } = await import('./pb.js');
         const adminPb = await getAdminPb();
         const user = await adminPb.collection('users').getOne(userId);
-        const pwdChangedAt = (user as any).password_changed_at;
+        const pwdChangedAt = (user as Record<string, unknown>).password_changed_at;
         if (pwdChangedAt && iat < pwdChangedAt) return null;
       } catch {
         // If user lookup fails, continue (signature already verified)

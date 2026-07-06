@@ -2,6 +2,7 @@
 // 实现基于角色的访问控制。
 
 import { getAdminPb, escapeFilter } from './pb.js';
+import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'user_roles';
 
@@ -77,9 +78,9 @@ export async function getUserRole(userId: string): Promise<Role> {
       `user_id = "${escapeFilter(userId)}"`
     );
     return record.role as Role;
-  } catch (err: any) {
-    if (err?.status === 404) return Role.USER; // 默认角色
-    console.warn('Failed to get user role:', err.message);
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return Role.USER; // 默认角色
+    console.warn('Failed to get user role:', errMessage(err));
     return Role.USER;
   }
 }
@@ -97,8 +98,8 @@ export async function setUserRole(userId: string, role: Role): Promise<void> {
       existing = await pb.collection(COLLECTION_NAME).getFirstListItem(
         `user_id = "${escapeFilter(userId)}"`
       );
-    } catch (err: any) {
-      if (err?.status !== 404) throw err;
+    } catch (err: unknown) {
+      if (errStatus(err) !== 404) throw err;
     }
 
     if (existing) {
@@ -116,8 +117,8 @@ export async function setUserRole(userId: string, role: Role): Promise<void> {
         updated_at: Date.now(),
       });
     }
-  } catch (err: any) {
-    console.error('Failed to set user role:', err.message);
+  } catch (err: unknown) {
+    console.error('Failed to set user role:', errMessage(err));
     throw err;
   }
 }
@@ -156,8 +157,8 @@ export async function initRBACCollection(): Promise<void> {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[RBAC] Collection '${COLLECTION_NAME}' exists`);
-  } catch (err: any) {
-    if (err?.status === 404) {
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) {
       console.log(`[RBAC] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
@@ -177,11 +178,11 @@ export async function initRBACCollection(): Promise<void> {
           deleteRule: null,
         });
         console.log(`[RBAC] Collection '${COLLECTION_NAME}' created`);
-      } catch (createErr: any) {
-        console.error(`[RBAC] Failed to create collection: ${createErr.message}`);
+      } catch (createErr: unknown) {
+        console.error(`[RBAC] Failed to create collection: ${errMessage(createErr)}`);
       }
     } else {
-      console.error(`[RBAC] Failed to check collection: ${err.message}`);
+      console.error(`[RBAC] Failed to check collection: ${errMessage(err)}`);
     }
   }
 }
