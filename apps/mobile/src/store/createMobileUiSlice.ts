@@ -8,6 +8,13 @@ import { submitCheckinEntry, createResetDataPatch, createLogger } from '@egoless
 
 const log = createLogger('App');
 
+export interface PersistError {
+  error: string;
+  entity: string;
+  id: string;
+  timestamp: number;
+}
+
 export interface MobileUiSlice extends FoodSlice, ExerciseSlice, CheckinSlice, ProfileSlice, SettingsSlice, TagMoodSlice {
   healthSyncEnabled: boolean;
   todaySteps: number | null;
@@ -16,6 +23,10 @@ export interface MobileUiSlice extends FoodSlice, ExerciseSlice, CheckinSlice, P
   syncWeightFromHealth: (weight: number) => void;
   resetData: () => void;
   clearLocalData: () => Promise<void>;
+  /** Recent persist errors (max 10, newest first). UI can subscribe to show a banner. */
+  persistErrors: PersistError[];
+  addPersistError: (error: Error, entity: string, id: string) => void;
+  clearPersistErrors: () => void;
 }
 
 export function createMobileUiSlice(
@@ -41,6 +52,20 @@ export function createMobileUiSlice(
 
     healthSyncEnabled: false,
     todaySteps: null,
+    persistErrors: [],
+
+    addPersistError(error: Error, entity: string, id: string) {
+      set(s => ({
+        persistErrors: [
+          { error: error.message, entity, id, timestamp: Date.now() },
+          ...(s.persistErrors ?? []).slice(0, 9), // keep max 10
+        ],
+      } as Partial<FullStore>));
+    },
+
+    clearPersistErrors() {
+      set({ persistErrors: [] } as Partial<FullStore>);
+    },
 
     setHealthSyncEnabled(v: boolean) { set({ healthSyncEnabled: v } as Partial<FullStore>); onSettingsPersist?.(); },
     setTodaySteps(n: number) { set({ todaySteps: n } as Partial<FullStore>); },

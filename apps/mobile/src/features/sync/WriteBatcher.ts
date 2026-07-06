@@ -19,10 +19,12 @@ export class WriteBatcher {
   private _flushTimer: ReturnType<typeof setTimeout> | null = null;
   private _flushDelayMs: number;
   private _onFlushed: (() => void) | null = null;
+  private _onPersistError: ((error: Error, entity: string, id: string) => void) | null = null;
 
-  constructor(flushDelayMs = 100, onFlushed?: () => void) {
+  constructor(flushDelayMs = 100, onFlushed?: () => void, onPersistError?: (error: Error, entity: string, id: string) => void) {
     this._flushDelayMs = flushDelayMs;
     this._onFlushed = onFlushed ?? null;
+    this._onPersistError = onPersistError ?? null;
   }
 
   write(entity: SyncEntity, id: string, data: Record<string, unknown>, changedFields?: string[]) {
@@ -182,6 +184,10 @@ export class WriteBatcher {
           } catch (reErr) {
             log.error(reErr, { msg: 'fallback write failed' });
             allFallbacksOk = false;
+            if (this._onPersistError) {
+              const err = reErr instanceof Error ? reErr : new Error(String(reErr));
+              this._onPersistError(err, w.entity, w.id);
+            }
           }
         }
       });

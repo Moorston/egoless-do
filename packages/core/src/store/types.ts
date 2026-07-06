@@ -375,4 +375,8 @@ export interface StorageAdapter {
   // ── Transaction support ──────────────────────────────────────
   /** Run a callback inside a SQLite transaction. Rolls back on error. */
   transaction<T>(fn: () => Promise<T>): Promise<T>;
+
+  // ── Error feedback (Phase 3: architecture improvement) ───────
+  /** Optional callback invoked when a persist operation fails. UI can subscribe to show banners. */
+  onPersistError?: (error: Error, entity: string, id: string) => void;
 }

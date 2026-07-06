@@ -58,6 +58,17 @@ export function ErrorBoundary(props: Props) {
   return <_ErrorBoundary {...props} t={T} />;
 }
 
+/** HOC: wraps a screen component with an isolated ErrorBoundary. */
+export function withErrorBoundary<P extends object>(WrappedComponent: React.ComponentType<P>) {
+  return function ErrorBoundaryWrapper(props: P) {
+    return (
+      <ErrorBoundary>
+        <WrappedComponent {...props} />
+      </ErrorBoundary>
+    );
+  };
+}
+
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
   emoji: { fontSize: FONT_HERO, marginBottom: 16 },

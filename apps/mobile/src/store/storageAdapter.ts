@@ -15,7 +15,17 @@ export function setStorageAdapterTrigger(fn: () => void) { _triggerSync = fn; }
 const _batcher = new WriteBatcher(100, () => {
   log.debug('WriteBatcher flushed, triggering sync...');
   _triggerSync?.();
+}, (error, entity, id) => {
+  log.warn(`Persist failed: ${entity}/${id}`, error.message);
+  // Surface to UI via store (connected after store init)
+  _onPersistError?.(error, entity, id);
 });
+
+// Lazy reference for persist error callback (connected by useAppStore)
+let _onPersistError: ((error: Error, entity: string, id: string) => void) | null = null;
+export function setPersistErrorHandler(fn: (error: Error, entity: string, id: string) => void) {
+  _onPersistError = fn;
+}
 
 export function flushWrites(): Promise<boolean> {
   return _batcher.flushNow();
