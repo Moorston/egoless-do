@@ -17,3 +17,4 @@ export * from './ai';
 export * from './data';
 export * from './logger';
 export type { I18nKey, I18nKeys } from './i18n/types';
+export * from './zod';

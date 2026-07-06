@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "pocketbase": "^0.26.9",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "typescript": "^5.4.0",
