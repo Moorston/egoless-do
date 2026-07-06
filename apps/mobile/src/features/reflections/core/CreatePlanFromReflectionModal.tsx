@@ -71,8 +71,7 @@ export function CreatePlanFromReflectionModal({
       });
       setFormErrors({});
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reflection?.id]);
+  }, [reflection?.id, setForm, setFormErrors, defaultStart, defaultEnd]);
 
   const handleSubmit = useCallback(() => {
     const errors = validatePlanItemForm(form, { requireTargetMetric: true });

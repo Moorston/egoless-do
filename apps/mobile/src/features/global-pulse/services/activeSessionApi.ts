@@ -92,8 +92,8 @@ async function pbRequest<T>(
   }
 }
 
-function mapSession(raw: any): ActiveSession {
-  const item = raw as Record<string, unknown>;
+function mapSession(raw: Record<string, unknown>): ActiveSession {
+  const item = raw;
   return {
     session_id: (item.session_id || item.id) as string,
     user_hash: item.user_hash as string,

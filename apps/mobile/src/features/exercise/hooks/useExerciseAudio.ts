@@ -44,7 +44,7 @@ export function useExerciseAudio() {
         bgPlayer.play();
       }
     }
-  }, [bgSource]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [bgSource, bgPlayer, audioSessionManager]);
 
   // Init audio session + restore last selected sound
   useEffect(() => {

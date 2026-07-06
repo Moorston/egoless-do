@@ -149,7 +149,7 @@ export default function MeditationScreen() {
       musicStop();
       audioSessionManager.notifyStopped('music');
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [musicStop]);
 
   useEffect(() => {
     if (active) {

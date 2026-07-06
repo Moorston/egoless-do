@@ -374,8 +374,7 @@ export default function HomeScreen() {
   useEffect(() => {
     checkAutoStatus();
     autoSyncPlanItems();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [checkAutoStatus, autoSyncPlanItems]);
 
   useEffect(() => {
     if (!healthSyncEnabled) return;

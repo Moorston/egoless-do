@@ -44,8 +44,7 @@ export default function HabitsScreen() {
   useEffect(() => {
     checkHabitAutoStatus();
     autoSyncHabits?.();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [checkHabitAutoStatus, autoSyncHabits]);
 
   const allHabits = useMemo(() => (habits ?? []).filter(h => !h.deleted), [habits]);
 
