@@ -3,6 +3,7 @@
 
 import { getAdminPb, escapeFilter } from './pb.js';
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 
 const COLLECTION_NAME = 'user_mfa';
 
@@ -137,7 +138,9 @@ export async function getMFAConfig(userId: string): Promise<MFAConfig | null> {
  */
 export async function enableMFA(userId: string): Promise<{ secret: string; backupCodes: string[] }> {
   const secret = generateMFASecret();
-  const backupCodes = generateBackupCodes();
+  const plainCodes = generateBackupCodes();
+  // Hash backup codes before storage (bcrypt, 10 rounds)
+  const hashedCodes = await Promise.all(plainCodes.map(c => bcrypt.hash(c, 10)));
 
   try {
     const pb = await getAdminPb();
@@ -157,7 +160,7 @@ export async function enableMFA(userId: string): Promise<{ secret: string; backu
       await pb.collection(COLLECTION_NAME).update(existing.id, {
         secret,
         enabled: true,
-        backup_codes: backupCodes,
+        backup_codes: hashedCodes,
         updated_at: Date.now(),
       });
     } else {
@@ -166,13 +169,13 @@ export async function enableMFA(userId: string): Promise<{ secret: string; backu
         user_id: userId,
         secret,
         enabled: true,
-        backup_codes: backupCodes,
+        backup_codes: hashedCodes,
         created_at: Date.now(),
         updated_at: Date.now(),
       });
     }
 
-    return { secret, backupCodes };
+    return { secret, backupCodes: plainCodes };
   } catch (err: any) {
     console.error('Failed to enable MFA:', err.message);
     throw err;
@@ -207,10 +210,22 @@ export async function verifyMFACode(userId: string, code: string): Promise<boole
   const config = await getMFAConfig(userId);
   if (!config || !config.enabled) return true; // MFA 未启用，直接通过
 
-  // 先检查是否是备用代码
-  if (config.backup_codes.includes(code.toUpperCase())) {
+  // 先检查是否是备用代码（支持 bcrypt 哈希和 legacy 明文）
+  const upperCode = code.toUpperCase();
+  let matchedIndex = -1;
+  for (let i = 0; i < config.backup_codes.length; i++) {
+    const stored = config.backup_codes[i];
+    if (stored.startsWith('$2')) {
+      // bcrypt hash
+      if (await bcrypt.compare(upperCode, stored)) { matchedIndex = i; break; }
+    } else {
+      // legacy plaintext (pre-migration)
+      if (stored === upperCode) { matchedIndex = i; break; }
+    }
+  }
+  if (matchedIndex >= 0) {
     // 使用备用代码后删除它
-    const updatedCodes = config.backup_codes.filter(c => c !== code.toUpperCase());
+    const updatedCodes = config.backup_codes.filter((_, idx) => idx !== matchedIndex);
     try {
       const pb = await getAdminPb();
       await pb.collection(COLLECTION_NAME).update(config.id!, {

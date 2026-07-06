@@ -13,7 +13,8 @@ import { DailyResetManager } from '@egoless-do/core';
 import {
   rehydrateFromDb,
 } from '../features/sync/SyncService';
-import { createLogger } from '@egoless-do/core';
+import { createLogger, setSentryBridge } from '@egoless-do/core';
+import { captureException, captureMessage, addBreadcrumb, setSentryUser, clearSentryUser } from '../sentry';
 
 const log = createLogger('App');
 
@@ -61,6 +62,9 @@ async function loadSettingsPatch(): Promise<PartialMobileStore> {
  * 7. Clean up expired recycle bin items
  */
 export async function initApp(): Promise<void> {
+  // Wire up Sentry bridge for all logger.error/warn calls
+  setSentryBridge({ captureException, captureMessage, addBreadcrumb });
+
   const store = useAppStore.getState;
   const setState = useAppStore.setState;
 
@@ -119,7 +123,7 @@ export async function initApp(): Promise<void> {
       log.error(err, { message: 'SecureStore load failed (non-fatal)' });
     }
 
-    // ── Step 5: Wire auth token changes → SecureStore ─────────
+    // ── Step 5: Wire auth token changes → SecureStore + Sentry user ─
     useAppStore.subscribe((state, prevState) => {
       const newToken = state.auth.token;
       const newRefresh = state.auth.refreshToken;
@@ -129,6 +133,12 @@ export async function initApp(): Promise<void> {
         saveSecureTokens(newToken, newRefresh);
       } else if (!newToken && oldToken) {
         clearSecureTokens();
+      }
+      // Sync Sentry user context on auth state changes
+      if (state.auth.isSignedIn && state.auth.user && (!prevState.auth.isSignedIn || state.auth.user.id !== prevState.auth.user?.id)) {
+        setSentryUser({ id: state.auth.user.id, email: state.auth.user.email, name: state.auth.user.name });
+      } else if (!state.auth.isSignedIn && prevState.auth.isSignedIn) {
+        clearSentryUser();
       }
     });
 

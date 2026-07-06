@@ -20,7 +20,7 @@ import {
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
-import { mobileStorageAdapter, flushWrites } from './storageAdapter';
+import { mobileStorageAdapter, flushWrites, setPersistErrorHandler } from './storageAdapter';
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
 import { useMusicStore, setMusicSyncCallback } from '../features/music/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
@@ -191,6 +191,12 @@ export const useAppStore = create<MobileStore>()(
       ...createBreathSlice(adapter, triggerAutoSync)(...a),
     };
     _storeRef = store;
+
+    // Connect persist error handler: WriteBatcher failures → store.persistErrors
+    setPersistErrorHandler((error, entity, id) => {
+      store.addPersistError(error, entity, id);
+    });
+
     return store;
   },
 );

@@ -1,11 +1,13 @@
 // ─── POST /api/auth/refresh ──────────────────────────────────────
 import { Hono } from 'hono';
-import { getPb, getAdminPb } from '../pb.js';
 import { getClientIp, refreshRateLimit } from '../rate-limit.js';
 import { generateRefreshToken, createRefreshToken, validateRefreshToken, revokeRefreshToken } from '../token-refresh-rotation.js';
 
 const TOKEN_EXPIRES_IN = 1 * 60 * 60 * 1000; // 1 hour
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+const PB_URL = process.env.PB_URL ?? 'http://localhost:8090';
+const PB_ENCRYPTION_KEY = process.env.PB_ENCRYPTION_KEY ?? '';
 
 const app = new Hono();
 
@@ -30,23 +32,34 @@ app.post('/refresh', async (c) => {
     // 2. 撤销旧的 refresh token（轮换）
     await revokeRefreshToken(refreshToken);
 
-    // 3. 使用 PB admin 获取用户信息并生成新的 access token
-    const adminPb = await getAdminPb();
-    const user = await adminPb.collection('users').getOne(validation.userId);
+    // 3. 通过 PB hook 签发用户 scoped token（而非 admin token）
+    let userToken: string;
+    try {
+      const resp = await fetch(`${PB_URL}/api/auth/user-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Internal-Secret': PB_ENCRYPTION_KEY,
+        },
+        body: JSON.stringify({ userId: validation.userId }),
+      });
+      if (!resp.ok) {
+        throw new Error(`PB user-token endpoint returned ${resp.status}`);
+      }
+      const data = await resp.json() as { token: string };
+      userToken = data.token;
+    } catch (tokenErr) {
+      console.error('Failed to get user token from PB:', tokenErr);
+      return c.json({ error: 'Token 签发失败，请重新登录' }, 500);
+    }
 
-    // 使用用户的密码哈希重新认证（PocketBase 需要密码来生成 token）
-    // 由于我们无法获取用户的明文密码，使用 admin client 的 token 作为替代
-    // 注意：这是一个已知限制，PocketBase 没有原生的 impersonate 功能
-    const pb = getPb();
-    pb.authStore.save(adminPb.authStore.token, adminPb.authStore.record);
-
-    // 生成新的 refresh token
+    // 4. 生成新的 refresh token
     const newRefreshToken = generateRefreshToken();
     const refreshTokenExpiresAt = Date.now() + REFRESH_TOKEN_EXPIRES_IN;
     await createRefreshToken(validation.userId, newRefreshToken, refreshTokenExpiresAt);
 
     return c.json({
-      token: adminPb.authStore.token,
+      token: userToken,
       refreshToken: newRefreshToken,
       expiresAt: Date.now() + TOKEN_EXPIRES_IN,
     });

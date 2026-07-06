@@ -40,40 +40,37 @@ function toggleCheckin(
   action: 'checkin' | 'uncheckin', planItemId: string, date?: string,
 ) {
   const today = date ?? dateStr();
-  let checkin: PlanItemCheckin | undefined;
-  let item: PlanItem | undefined;
-  let historyEntry: DailyTodoHistory | undefined;
+  const s = get();
+
+  // 1. Pre-compute all new state and persist targets BEFORE set()
+  const newCheckins = action === 'checkin'
+    ? checkinItem(s.planItemCheckins ?? [], planItemId, today)
+    : uncheckinItem(s.planItemCheckins ?? [], planItemId, today);
+  const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, today);
+  const foundItem = newItems.find((i: PlanItem) => i.id === planItemId && !i.deleted);
+  const newHistory = foundItem
+    ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], foundItem.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
+    : s.dailyTodoHistory;
+
   let updatedPlan: Plan | undefined;
-  set((s: FullStore) => {
-    const newCheckins = action === 'checkin'
-      ? checkinItem(s.planItemCheckins ?? [], planItemId, today)
-      : uncheckinItem(s.planItemCheckins ?? [], planItemId, today);
-    const newItems = refreshPlanItemStats(s.planItems ?? [], newCheckins, today);
-    const foundItem = newItems.find((i: PlanItem) => i.id === planItemId && !i.deleted);
-    const newHistory = foundItem
-      ? saveDailyTodoHistoryBiz(s.dailyTodoHistory ?? [], foundItem.planId, today, newItems, newCheckins, s.dailyCustomTodos ?? [])
-      : s.dailyTodoHistory;
-    const patch: Record<string, unknown> = { planItemCheckins: newCheckins, planItems: newItems, dailyTodoHistory: newHistory };
-    if (foundItem) {
-      const plan = (s.plans ?? []).find((p: Plan) => p.id === foundItem.planId && !p.deleted);
-      if (plan) {
-        const newProgress = computePlanProgress(plan);
-        updatedPlan = { ...plan, progress: newProgress, updatedAt: Date.now() };
-        patch.plans = (s.plans ?? []).map((p: Plan) => p.id === plan.id ? updatedPlan! : p);
-      }
+  const patch: Record<string, unknown> = { planItemCheckins: newCheckins, planItems: newItems, dailyTodoHistory: newHistory };
+  if (foundItem) {
+    const plan = (s.plans ?? []).find((p: Plan) => p.id === foundItem.planId && !p.deleted);
+    if (plan) {
+      updatedPlan = { ...plan, progress: computePlanProgress(plan), updatedAt: Date.now() };
+      patch.plans = (s.plans ?? []).map((p: Plan) => p.id === plan.id ? updatedPlan! : p);
     }
-    // Capture entities inside set() for reliable persist
-    checkin = newCheckins.find((c: PlanItemCheckin) => c.planItemId === planItemId && c.date === today && !c.deleted);
-    item = foundItem;
-    if (item) {
-      historyEntry = (newHistory ?? []).find((h: DailyTodoHistory) => h.planId === item!.planId && h.date === today && !h.deleted);
-    }
-    return patch;
-  });
-  // Persist using captured values
+  }
+
+  // 2. Pure set() — no side effects inside updater
+  set(() => patch);
+
+  // 3. Persist using pre-computed values
+  const checkin = newCheckins.find((c: PlanItemCheckin) => c.planItemId === planItemId && c.date === today && !c.deleted);
   if (checkin) adapter.persistChange('planItemCheckin', checkin.id, checkin).catch(e => log.error(e));
   if (updatedPlan) adapter.persistChange('plan', updatedPlan.id, updatedPlan).catch(e => log.error(e));
-  if (item) {
+  if (foundItem && newHistory) {
+    const historyEntry = (newHistory ?? []).find((h: DailyTodoHistory) => h.planId === foundItem.planId && h.date === today && !h.deleted);
     if (historyEntry) adapter.persistChange('dailyTodoHistory', historyEntry.id, historyEntry).catch(e => log.error(e));
   }
 }
