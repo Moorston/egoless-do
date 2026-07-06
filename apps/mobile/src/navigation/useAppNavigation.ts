@@ -21,7 +21,7 @@ export function useNavigateToTab() {
   const nav = useAppNavigation();
 
   return (screen: keyof MainTabParamList, params?: Record<string, unknown>) => {
-    nav.navigate('MainTabs' as any, { screen, ...params } as any);
+    nav.navigate('MainTabs', { screen, ...params });
   };
 }
 
@@ -32,6 +32,6 @@ export function useGoToMainTab() {
   const nav = useAppNavigation();
 
   return (tab: keyof MainTabParamList) => {
-    nav.navigate('MainTabs' as any, { screen: tab } as any);
+    nav.navigate('MainTabs', { screen: tab });
   };
 }

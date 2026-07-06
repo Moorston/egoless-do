@@ -259,7 +259,7 @@ function MainTabs() {
     <View style={{ flex: 1 }}>
     <Tab.Navigator
       id="main-tabs"
-      screenOptions={({ route }: { route: any }) => {
+      screenOptions={({ route }) => {
         return {
           headerShown: false,
           tabBarIcon: ({ focused }) => tabIcon(route.name, focused),

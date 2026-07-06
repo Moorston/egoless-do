@@ -29,7 +29,16 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm vitest run
+      - name: Run core tests
+        run: pnpm vitest run --reporter=verbose
+      - name: Run mobile tests
+        run: pnpm --filter mobile test
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: coverage/
 
   build-mobile:
     name: EAS Build (preview)

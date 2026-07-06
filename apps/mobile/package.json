@@ -8,7 +8,9 @@
     "ios": "node ../../node_modules/expo/bin/cli start --ios",
     "build": "eas build",
     "submit": "eas submit",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@egoless-do/core": "workspace:*",

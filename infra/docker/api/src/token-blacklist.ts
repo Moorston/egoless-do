@@ -1,7 +1,7 @@
 // ─── Token 黑名单服务 (PocketBase 持久化) ───────────────────────
 // 将 Token 黑名单从本地 SQLite 迁移到 PocketBase 集合，确保服务重启后数据不丢失。
 
-import { getPb, escapeFilter } from './pb.js';
+import { getPb, getAdminPb, escapeFilter } from './pb.js';
 
 const COLLECTION_NAME = 'token_blacklist';
 
@@ -72,14 +72,14 @@ export async function cleanupExpiredTokens(): Promise<number> {
  */
 export async function initTokenBlacklistCollection(): Promise<void> {
   try {
-    const pb = getPb();
+    const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
     console.log(`[TokenBlacklist] Collection '${COLLECTION_NAME}' exists`);
   } catch (err: any) {
     if (err?.status === 404) {
       console.log(`[TokenBlacklist] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
-        const pb = getPb();
+        const pb = await getAdminPb();
         await pb.collections.create({
           name: COLLECTION_NAME,
           type: 'base',

@@ -138,11 +138,17 @@ export function createPlanSlice(
         .map(t => t.id);
       const recycleEntry: RecycleBinItem = { id, entityType: 'plan', data: plan, deletedAt: now };
 
-      // Capture updated entities INSIDE set() for reliable persist
-      const updatedReflections: MindReflection[] = [];
-      const updatedThoughtTrails: any[] = [];
+      // Pre-compute affected reflections and trails BEFORE set()
+      const updatedReflections: MindReflection[] = (s.reflections ?? [])
+        .filter(r => r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId) && !r.deleted)
+        .map(r => ({ ...r, linkedPlanItemId: undefined, updatedAt: now }));
+      const updatedTrails: ThoughtTrail[] = (s.thoughtTrails ?? [])
+        .filter(t => !t.deleted && t.linkedPlanItemIds?.some(pid => deletedItemIdsSet.has(pid)))
+        .map(t => ({ ...t, linkedPlanItemIds: t.linkedPlanItemIds!.filter(pid => !deletedItemIdsSet.has(pid)), updatedAt: now }));
+      const updatedReflectionIds = new Set(updatedReflections.map(r => r.id));
+      const updatedTrailIds = new Set(updatedTrails.map(t => t.id));
 
-      // Atomic: recycle bin + deletion in one set()
+      // Atomic: recycle bin + deletion in one set() — pure updater, no side effects
       set(prev => ({
         recycleBin: [recycleEntry, ...(prev.recycleBin ?? [])],
         plans: deletePlan(prev.plans ?? [], id),
@@ -152,22 +158,12 @@ export function createPlanSlice(
         planItemCheckins: (prev.planItemCheckins ?? []).map(c =>
           deletedCheckinIds.includes(c.id) ? { ...c, deleted: true, updatedAt: now } : c,
         ),
-        reflections: (prev.reflections ?? []).map(r => {
-          if (r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId)) {
-            const updated = { ...r, linkedPlanItemId: undefined, updatedAt: now };
-            updatedReflections.push(updated);
-            return updated;
-          }
-          return r;
-        }),
-        thoughtTrails: (prev.thoughtTrails ?? []).map(t => {
-          if (t.linkedPlanItemIds?.some(pid => deletedItemIdsSet.has(pid))) {
-            const updated = { ...t, linkedPlanItemIds: t.linkedPlanItemIds.filter(pid => !deletedItemIdsSet.has(pid)), updatedAt: now };
-            updatedThoughtTrails.push(updated);
-            return updated;
-          }
-          return t;
-        }),
+        reflections: (prev.reflections ?? []).map(r =>
+          updatedReflectionIds.has(r.id) ? updatedReflections.find(ur => ur.id === r.id)! : r,
+        ),
+        thoughtTrails: (prev.thoughtTrails ?? []).map(t =>
+          updatedTrailIds.has(t.id) ? updatedTrails.find(ut => ut.id === t.id)! : t,
+        ),
       }));
       // Atomic batch delete: plan + planItems + planItemCheckins in one transaction
       adapter.batchDelete([
@@ -175,12 +171,12 @@ export function createPlanSlice(
         ...deletedItemIds.map(itemId => ({ entity: 'planItem' as const, id: itemId })),
         ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),
       ]).catch(e => log.error(e));
-      // Persist affected reflections using captured values
+      // Persist affected reflections (pre-computed)
       for (const r of updatedReflections) {
         adapter.persistChange('reflection', r.id, r).catch(e => log.error(e));
       }
-      // Persist affected thought trails using captured values
-      for (const t of updatedThoughtTrails) {
+      // Persist affected thought trails (pre-computed)
+      for (const t of updatedTrails) {
         adapter.persistChange('thoughtTrail', t.id, t).catch(e => log.error(e));
       }
     },
@@ -301,43 +297,40 @@ export function createPlanSlice(
         .filter(t => !t.deleted && t.linkedPlanItemIds?.includes(id))
         .map(t => t.id);
 
-      // Capture updated entities INSIDE set() for reliable persist
-      const capturedReflections: MindReflection[] = [];
-      const capturedTrails: any[] = [];
+      // Pre-compute affected reflections and trails BEFORE set()
+      const s = get();
+      const updatedReflections: MindReflection[] = (s.reflections ?? [])
+        .filter(r => r.linkedPlanItemId === id && !r.deleted)
+        .map(r => ({ ...r, linkedPlanItemId: undefined, updatedAt: now }));
+      const updatedTrails: ThoughtTrail[] = (s.thoughtTrails ?? [])
+        .filter(t => !t.deleted && t.linkedPlanItemIds?.includes(id))
+        .map(t => ({ ...t, linkedPlanItemIds: t.linkedPlanItemIds!.filter(pid => pid !== id), updatedAt: now }));
+      const updatedReflectionIds = new Set(updatedReflections.map(r => r.id));
+      const updatedTrailIds = new Set(updatedTrails.map(t => t.id));
 
       set(prev => ({
         planItems: deletePlanItem(prev.planItems ?? [], id),
         planItemCheckins: (prev.planItemCheckins ?? []).map(c =>
           c.planItemId === id && !c.deleted ? { ...c, deleted: true, updatedAt: now } : c,
         ),
-        reflections: (prev.reflections ?? []).map(r => {
-          if (r.linkedPlanItemId === id) {
-            const updated = { ...r, linkedPlanItemId: undefined, updatedAt: now };
-            capturedReflections.push(updated);
-            return updated;
-          }
-          return r;
-        }),
-        thoughtTrails: (prev.thoughtTrails ?? []).map(t => {
-          if (t.linkedPlanItemIds?.includes(id)) {
-            const updated = { ...t, linkedPlanItemIds: t.linkedPlanItemIds.filter(pid => pid !== id), updatedAt: now };
-            capturedTrails.push(updated);
-            return updated;
-          }
-          return t;
-        }),
+        reflections: (prev.reflections ?? []).map(r =>
+          updatedReflectionIds.has(r.id) ? updatedReflections.find(ur => ur.id === r.id)! : r,
+        ),
+        thoughtTrails: (prev.thoughtTrails ?? []).map(t =>
+          updatedTrailIds.has(t.id) ? updatedTrails.find(ut => ut.id === t.id)! : t,
+        ),
       }));
       // Atomic batch delete: planItem + planItemCheckins in one transaction
       adapter.batchDelete([
         { entity: 'planItem', id },
         ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),
       ]).catch(e => log.error(e));
-      // Persist affected reflections using captured values
-      for (const r of capturedReflections) {
+      // Persist affected reflections (pre-computed)
+      for (const r of updatedReflections) {
         adapter.persistChange('reflection', r.id, r).catch(e => log.error(e));
       }
-      // Persist affected thought trails using captured values
-      for (const t of capturedTrails) {
+      // Persist affected thought trails (pre-computed)
+      for (const t of updatedTrails) {
         adapter.persistChange('thoughtTrail', t.id, t).catch(e => log.error(e));
       }
     },
@@ -404,36 +397,33 @@ export function createPlanSlice(
 
     addDailyCustomTodo(planId, name, date, recurring) {
       const today = date ?? dateStr();
-      let newTodo: DailyCustomTodo | undefined;
-      set(s => {
-        const newTodos = addDailyCustomTodoBiz(s.dailyCustomTodos ?? [], planId, name, today, recurring);
-        newTodo = [...newTodos].reverse().find(t => !t.deleted);
-        return { dailyCustomTodos: newTodos };
-      });
+      const s = get();
+      const newTodos = addDailyCustomTodoBiz(s.dailyCustomTodos ?? [], planId, name, today, recurring);
+      const newTodo = [...newTodos].reverse().find(t => !t.deleted);
+      set(() => ({ dailyCustomTodos: newTodos }));
       if (newTodo) adapter.persistChange('dailyCustomTodo', newTodo.id, newTodo).catch(e => log.error(e));
     },
 
     toggleDailyCustomTodo(id, date) {
       const today = date ?? dateStr();
-      let updated: DailyCustomTodo | undefined;
-      let historyEntry: DailyTodoHistory | undefined;
-      // Atomic: toggle todo and save history snapshot in one set()
-      set(s => {
-        const toggledTodos = toggleDailyCustomTodoBiz(s.dailyCustomTodos ?? [], id, today);
-        updated = toggledTodos.find((t) => t.id === id && !t.deleted);
-        const updatedHistory = updated
-          ? saveDailyTodoHistoryBiz(
-              s.dailyTodoHistory ?? [], updated.planId, today,
-              s.planItems ?? [], s.planItemCheckins ?? [], toggledTodos,
-            )
-          : s.dailyTodoHistory;
-        // Capture history entry inside set()
-        if (updated) {
-          historyEntry = (updatedHistory ?? []).find(h => h.planId === updated!.planId && h.date === today && !h.deleted);
-        }
-        return { dailyCustomTodos: toggledTodos, dailyTodoHistory: updatedHistory };
-      });
+      const s = get();
+      // Pre-compute all new state BEFORE set()
+      const toggledTodos = toggleDailyCustomTodoBiz(s.dailyCustomTodos ?? [], id, today);
+      const updated = toggledTodos.find((t) => t.id === id && !t.deleted);
+      const updatedHistory = updated
+        ? saveDailyTodoHistoryBiz(
+            s.dailyTodoHistory ?? [], updated.planId, today,
+            s.planItems ?? [], s.planItemCheckins ?? [], toggledTodos,
+          )
+        : s.dailyTodoHistory;
+      const historyEntry = updated
+        ? (updatedHistory ?? []).find(h => h.planId === updated.planId && h.date === today && !h.deleted)
+        : undefined;
+
+      // Pure set() — no side effects inside updater
+      set(() => ({ dailyCustomTodos: toggledTodos, dailyTodoHistory: updatedHistory }));
       if (updated) adapter.persistChange('dailyCustomTodo', id, updated).catch(e => log.error(e));
+      if (historyEntry) adapter.persistChange('dailyTodoHistory', historyEntry.id, historyEntry).catch(e => log.error(e));
       // 自动保存当天待办历史
       if (historyEntry) {
         adapter.persistChange('dailyTodoHistory', historyEntry.id, historyEntry).catch(e => log.error(e));
@@ -551,46 +541,37 @@ export function createPlanSlice(
 
       const planItemData = createPlanItemBiz(source, activePlan.id, form);
       const newItemId = uid();
+      const now = Date.now();
 
-      let persistedItem: PlanItem | undefined;
+      // Pre-compute all new state BEFORE set()
+      const newItem: PlanItem = { ...planItemData, id: newItemId, updatedAt: now, deleted: false };
+      const existingItems = s.planItems ?? [];
+      let updatedReflections = s.reflections ?? [];
+      let updatedTrails = s.thoughtTrails ?? [];
       let persistedReflection: MindReflection | undefined;
-      let persistedTrail: any | undefined;
+      let persistedTrail: ThoughtTrail | undefined;
 
-      set(prev => {
-        const items = prev.planItems ?? [];
-        const newItem: PlanItem = {
-          ...planItemData,
-          id: newItemId,
-          updatedAt: Date.now(),
-          deleted: false,
-        };
-        let updatedReflections = prev.reflections ?? [];
-        let updatedTrails = prev.thoughtTrails ?? [];
+      if (source.type === 'reflection') {
+        updatedReflections = linkReflectionToPlanItem(updatedReflections, source.id, newItem.id);
+        persistedReflection = updatedReflections.find(r => r.id === source.id && !r.deleted);
+      } else if (source.type === 'trail') {
+        updatedTrails = updatedTrails.map(t =>
+          t.id === source.id
+            ? { ...t, linkedPlanItemIds: [...(t.linkedPlanItemIds ?? []), newItem.id], updatedAt: now }
+            : t,
+        );
+        persistedTrail = updatedTrails.find(t => t.id === source.id && !t.deleted);
+      }
 
-        if (source.type === 'reflection') {
-          updatedReflections = linkReflectionToPlanItem(
-            updatedReflections, source.id, newItem.id,
-          );
-          persistedReflection = updatedReflections.find(r => r.id === source.id && !r.deleted);
-        } else if (source.type === 'trail') {
-          updatedTrails = updatedTrails.map(t =>
-            t.id === source.id
-              ? {
-                  ...t,
-                  linkedPlanItemIds: [...(t.linkedPlanItemIds ?? []), newItem.id],
-                  updatedAt: Date.now(),
-                }
-              : t,
-          );
-          persistedTrail = updatedTrails.find(t => t.id === source.id && !t.deleted);
-        }
+      // Pure set() — no side effects inside updater
+      set(() => ({
+        planItems: [...existingItems, newItem],
+        reflections: updatedReflections,
+        thoughtTrails: updatedTrails,
+      }));
 
-        persistedItem = newItem;
-        return { planItems: [...items, newItem], reflections: updatedReflections, thoughtTrails: updatedTrails };
-      });
-
-      // Persist AFTER set() using captured values
-      if (persistedItem) adapter.persistChange('planItem', newItemId, persistedItem).catch(e => log.error(e));
+      // Persist using pre-computed values
+      adapter.persistChange('planItem', newItemId, newItem).catch(e => log.error(e));
       if (source.type === 'reflection' && persistedReflection) {
         adapter.persistChange('reflection', source.id, persistedReflection).catch(e => log.error(e));
       } else if (source.type === 'trail' && persistedTrail) {

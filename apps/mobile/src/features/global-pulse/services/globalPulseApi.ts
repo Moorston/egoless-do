@@ -22,6 +22,21 @@ const STATS_COLLECTION = 'global_stats';
 
 const REQUEST_TIMEOUT = 10000;
 
+/** PocketBase list response shape */
+interface PbListResponse<T = Record<string, unknown>> {
+  items: T[];
+  page: number;
+  perPage: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+/** Generic success response for mutation endpoints */
+interface PbMutationResponse {
+  success?: boolean;
+  [key: string]: unknown;
+}
+
 /**
  * 通用 PocketBase 请求方法（使用 offlineAwareFetch）
  */
@@ -130,7 +145,7 @@ export async function getCheckins(params?: {
   queryParts.push('sort=-created_at');
   const query = queryParts.join('&');
 
-  const result = await pbRequest<any>(
+  const result = await pbRequest<PbListResponse<Record<string, unknown>>>(
     `/api/collections/${CHECKINS_COLLECTION}/records${query ? `?${query}` : ''}`
   );
 
@@ -162,14 +177,14 @@ export async function getCheckins(params?: {
  * 获取全球统计
  */
 export async function getGlobalStats(): Promise<ApiResponse<GlobalStats>> {
-  const result = await pbRequest<any>(
+  const result = await pbRequest<PbListResponse<Record<string, unknown>>>(
     `/api/collections/${STATS_COLLECTION}/records?perPage=1`
   );
 
   if (result.success && result.data?.items?.length > 0) {
     return {
       success: true,
-      data: result.data.items[0]
+      data: result.data.items[0] as unknown as GlobalStats
     };
   }
 
@@ -191,7 +206,7 @@ export async function getLeaderboard(params?: {
   const limit = params?.limit || 100;
 
   const query = `sort=-${sortField}&perPage=${limit}`;
-  const result = await pbRequest<any>(
+  const result = await pbRequest<PbListResponse<LeaderboardEntry>>(
     `/api/collections/leaderboard/records?${query}`
   );
 
@@ -220,7 +235,7 @@ export async function getLeaderboard(params?: {
  * 退出全球地图
  */
 export async function optOut(userHash: string): Promise<ApiResponse<{ message: string }>> {
-  const result = await pbRequest<any>('/api/global-pulse/opt-out', {
+  const result = await pbRequest<PbMutationResponse>('/api/global-pulse/opt-out', {
     method: 'POST',
     body: JSON.stringify({ user_hash: userHash }),
   });
@@ -235,7 +250,7 @@ export async function optOut(userHash: string): Promise<ApiResponse<{ message: s
  * 重新加入全球地图
  */
 export async function optIn(userHash: string): Promise<ApiResponse<{ message: string }>> {
-  const result = await pbRequest<any>('/api/global-pulse/opt-in', {
+  const result = await pbRequest<PbMutationResponse>('/api/global-pulse/opt-in', {
     method: 'POST',
     body: JSON.stringify({ user_hash: userHash }),
   });
@@ -250,7 +265,7 @@ export async function optIn(userHash: string): Promise<ApiResponse<{ message: st
  * 删除全球数据
  */
 export async function deleteGlobalData(userHash: string): Promise<ApiResponse<{ message: string }>> {
-  const result = await pbRequest<any>('/api/global-pulse/delete-data', {
+  const result = await pbRequest<PbMutationResponse>('/api/global-pulse/delete-data', {
     method: 'POST',
     body: JSON.stringify({ user_hash: userHash }),
   });
