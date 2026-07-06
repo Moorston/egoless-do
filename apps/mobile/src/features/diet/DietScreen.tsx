@@ -93,9 +93,9 @@ export default function DietScreen() {
       const motivationDef = motivation ? EATING_MOTIVATIONS.find(m => m.key === motivation.motivation) : null;
       return (
         <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{f.name}</Text>
+          <View style={[dietStyles.flexRowBetween, { alignItems: 'center' }]}>
+            <View style={dietStyles.flex1}>
+              <Text style={[dietStyles.subText, { color: TH.text }]}>{f.name}</Text>
               {wuxing && (
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
                   <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[wuxing.primaryElement]}20` }}>
@@ -103,7 +103,7 @@ export default function DietScreen() {
                       {FLAVOR_LABELS[wuxing.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[wuxing.primaryElement]?.label}
                     </Text>
                   </View>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{wuxing.nature === 'hot' ? '热' : wuxing.nature === 'warm' ? '温' : wuxing.nature === 'cool' ? '凉' : wuxing.nature === 'cold' ? '寒' : '平'}</Text>
+                  <Text style={[dietStyles.tinyText, { color: TH.sub }]}>{wuxing.nature === 'hot' ? '热' : wuxing.nature === 'warm' ? '温' : wuxing.nature === 'cool' ? '凉' : wuxing.nature === 'cold' ? '寒' : '平'}</Text>
                 </View>
               )}
             </View>
@@ -120,16 +120,16 @@ export default function DietScreen() {
 
     return (
       <View>
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
             <View>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>今日卡路里</Text>
+              <Text style={[dietStyles.subText, { color: TH.sub }]}>今日卡路里</Text>
               <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: totalCal > calGoal ? COLORS.RED : COLORS.GREEN }}>
-                {totalCal}<Text style={{ fontSize: FONT_SUB, color: TH.sub }}> / {calGoal} kcal</Text>
+                {totalCal}<Text style={[dietStyles.subText, { color: TH.sub }]}> / {calGoal} kcal</Text>
               </Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>五行平衡</Text>
+              <Text style={[dietStyles.subText, { color: TH.sub }]}>五行平衡</Text>
               <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: wuxingStats.isBalanced ? COLORS.GREEN : COLORS.YELLOW }}>
                 {wuxingStats.isBalanced ? '✅ 平衡' : `⚠️ 偏${WUXING_ELEMENT_CONFIG[wuxingStats.dominant]?.label ?? ''}`}
               </Text>
@@ -146,8 +146,8 @@ export default function DietScreen() {
           <Plus size={20} color="#fff" />
           <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '700' }}>{T('addFoodBtn') || '+ 添加食物'}</Text>
         </TouchableOpacity>
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietFlavorDist')}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietFlavorDist')}</Text>
           {FLAVORS.map(f => {
             const pct = Math.round((flavorStats[f] ?? 0) / total * 100);
             const element = FLAVOR_TO_ELEMENT[f];
@@ -163,8 +163,8 @@ export default function DietScreen() {
           })}
         </View>
 
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>五行分布</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>五行分布</Text>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             {ELEMENTS.map(e => {
               const pct = wuxingStats[e] ?? 0;
@@ -173,15 +173,15 @@ export default function DietScreen() {
                   <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: `${ELEMENT_COLORS[e]}20`, alignItems: 'center', justifyContent: 'center', marginBottom: 4 }}>
                     <Text style={{ fontSize: 18, fontWeight: '800', color: ELEMENT_COLORS[e] }}>{pct}</Text>
                   </View>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{WUXING_ELEMENT_CONFIG[e]?.label ?? e}</Text>
+                  <Text style={[dietStyles.subText, { color: TH.sub }]}>{WUXING_ELEMENT_CONFIG[e]?.label ?? e}</Text>
                 </View>
               );
             })}
           </View>
         </View>
 
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietFoodList')} ({todayFoods.length})</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietFoodList')} ({todayFoods.length})</Text>
           {todayFoods.length === 0 ? (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 20 }}>{T('dietNoFoodToday')}</Text>
           ) : (
@@ -192,7 +192,7 @@ export default function DietScreen() {
         {!wuxingStats.isBalanced && (
           <View style={{ backgroundColor: `${COLORS.YELLOW}15`, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: `${COLORS.YELLOW}30` }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: COLORS.YELLOW, marginBottom: 6 }}>{T('dietSuggestion')}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, lineHeight: 20 }}>
+            <Text style={[dietStyles.subTextLineHeight, { color: TH.sub }]}>
               {T('dietDominant')}: {WUXING_ELEMENT_CONFIG[wuxingStats.dominant]?.label}({wuxingStats[wuxingStats.dominant]}%){'\n'}
               {T('dietDeficient')}: {WUXING_ELEMENT_CONFIG[wuxingStats.deficient]?.label}({wuxingStats[wuxingStats.deficient]}%)
             </Text>
@@ -216,15 +216,15 @@ export default function DietScreen() {
           <WuxingRadarChart stats={wuxingStats as Record<string, number>} size={240} />
           {/* 偏性解读 */}
           <View style={{ marginTop: 16, alignSelf: 'stretch' }}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, lineHeight: 20 }}>
+            <Text style={[dietStyles.subTextLineHeight, { color: TH.sub }]}>
               {wuxingStats.isBalanced ? T('dietSuggestionBalanced') : `${T('dietDominant')}: ${WUXING_ELEMENT_CONFIG[wuxingStats.dominant]?.label} · ${T('dietDeficient')}: ${WUXING_ELEMENT_CONFIG[wuxingStats.deficient]?.label}`}
             </Text>
           </View>
         </View>
 
         {/* 食材搜索框 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietSearchFood') || '搜索食材'}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietSearchFood') || '搜索食材'}</Text>
           <TextInput
             value={foodSearch}
             onChangeText={setFoodSearch}
@@ -236,15 +236,15 @@ export default function DietScreen() {
             <View style={{ marginTop: 12 }}>
               {wuxingSearchResults.map(item => (
                 <View key={item.foodKey} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{item.name}</Text>
+                  <View style={dietStyles.flex1}>
+                    <Text style={[dietStyles.subText, { color: TH.text }]}>{item.name}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
                       <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[item.primaryElement]}20` }}>
                         <Text style={{ fontSize: 10, color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
                           {FLAVOR_LABELS[item.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[item.primaryElement]?.label}
                         </Text>
                       </View>
-                      <Text style={{ fontSize: 10, color: TH.sub }}>{item.nature === 'hot' ? '热' : item.nature === 'warm' ? '温' : item.nature === 'cool' ? '凉' : item.nature === 'cold' ? '寒' : '平'}</Text>
+                      <Text style={[dietStyles.tinyText, { color: TH.sub }]}>{item.nature === 'hot' ? '热' : item.nature === 'warm' ? '温' : item.nature === 'cool' ? '凉' : item.nature === 'cold' ? '寒' : '平'}</Text>
                     </View>
                   </View>
                   <Text style={{ fontSize: 11, color: TH.sub }}>{item.effect}</Text>
@@ -255,8 +255,8 @@ export default function DietScreen() {
         </View>
 
         {/* 食材五味速查 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietWuxingLookup')}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietWuxingLookup')}</Text>
           <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('dietCommonFoods')} ({commonFoods.length})</Text>
           {categories.map(cat => {
             const items = commonFoods.filter(m => m.category === cat);
@@ -332,26 +332,26 @@ export default function DietScreen() {
         </View>
 
         {/* 五行偏性月历 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>{T('dietHeatmapTitle') || '五行偏性月历'}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitleSm, { color: TH.text }]}>{T('dietHeatmapTitle') || '五行偏性月历'}</Text>
           <WuxingCalendar dayElementMap={dayElementMap as Record<string, import('@egoless-do/core').WuxingElement | null>} dayIntensityMap={dayIntensityMap} />
         </View>
         {/* 进食动机统计 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietMotivationTitle')}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietMotivationTitle')}</Text>
           {motivationStats.total === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>暂无数据</Text>
+            <Text style={[dietStyles.emptyText, { color: TH.sub }]}>暂无数据</Text>
           ) : (
             <View>
               {/* 生理 vs 情绪 */}
               <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
                 <View style={{ flex: 1, backgroundColor: '#10B98115', borderRadius: 12, padding: 12, alignItems: 'center' }}>
                   <Text style={{ fontSize: 24, fontWeight: '800', color: '#10B981' }}>{motivationStats.physical}%</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('dietMotivationPhysical')}</Text>
+                  <Text style={[dietStyles.subText, { color: TH.sub }]}>{T('dietMotivationPhysical')}</Text>
                 </View>
                 <View style={{ flex: 1, backgroundColor: '#EF444415', borderRadius: 12, padding: 12, alignItems: 'center' }}>
                   <Text style={{ fontSize: 24, fontWeight: '800', color: '#EF4444' }}>{motivationStats.emotional}%</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('dietMotivationEmotional')}</Text>
+                  <Text style={[dietStyles.subText, { color: TH.sub }]}>{T('dietMotivationEmotional')}</Text>
                 </View>
               </View>
               {/* 详细 breakdown */}
@@ -369,13 +369,13 @@ export default function DietScreen() {
         </View>
 
         {/* 情绪敏感日时间线 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietEmotionTimeline')}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietEmotionTimeline')}</Text>
           {sensitiveDays.length === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>暂无情绪敏感日记录</Text>
+            <Text style={[dietStyles.emptyText, { color: TH.sub }]}>暂无情绪敏感日记录</Text>
           ) : (
             sensitiveDays.slice(0, 10).map(day => (
-              <View key={day.date} style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+              <View key={day.date} style={dietStyles.row}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
                   <Text style={{ fontSize: 14 }}>🟡</Text>
                   <Text style={{ fontWeight: '600', fontSize: FONT_SUB, color: TH.text }}>{day.date}</Text>
@@ -405,20 +405,20 @@ export default function DietScreen() {
     return (
       <View>
         {/* 禁食状态 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>{T('dietFastingSync')}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitleSm, { color: TH.text }]}>{T('dietFastingSync')}</Text>
           {isActive ? (
-            <View style={{ alignItems: 'center', paddingVertical: 12 }}>
+            <View style={dietStyles.centerPad}>
               <Text style={{ fontSize: 20, fontWeight: '800', color: TH.primary }}>禁食进行中</Text>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>目标: {activeFasting?.targetHours}h</Text>
               <TouchableOpacity
                 onPress={() => stopFasting?.()}
                 style={{ marginTop: 12, paddingHorizontal: 24, paddingVertical: 10, borderRadius: 12, backgroundColor: '#EF4444' }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('stopFasting') || '停止禁食'}</Text>
+                <Text style={[dietStyles.whiteBold, { color: '#fff' }]}>{T('stopFasting') || '停止禁食'}</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={{ alignItems: 'center', paddingVertical: 12 }}>
+            <View style={dietStyles.centerPad}>
               <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginBottom: 12 }}>当前无活跃禁食</Text>
               <Text style={{ color: TH.sub, fontSize: 11, marginBottom: 8 }}>选择目标时长：</Text>
               <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -426,7 +426,7 @@ export default function DietScreen() {
                   <TouchableOpacity key={h}
                     onPress={() => startFasting?.(h)}
                     style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, backgroundColor: TH.primary }}>
-                    <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{h}h</Text>
+                    <Text style={[dietStyles.whiteBold, { color: '#fff' }]}>{h}h</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -437,14 +437,14 @@ export default function DietScreen() {
         {/* 禁食后首餐建议 */}
         <View style={{ backgroundColor: '#10B98115', borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#10B98130' }}>
           <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: '#10B981', marginBottom: 8 }}>{T('dietFastingSuggestion')}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, lineHeight: 20 }}>{T('dietFastingSuggestionText')}</Text>
+          <Text style={[dietStyles.subTextLineHeight, { color: TH.sub }]}>{T('dietFastingSuggestionText')}</Text>
         </View>
 
         {/* 禁食历史 */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 12 }}>{T('dietFastingHistory')}</Text>
+        <View style={[dietStyles.card, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <Text style={[dietStyles.sectionTitle, { color: TH.text }]}>{T('dietFastingHistory')}</Text>
           {history.length === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>暂无禁食记录</Text>
+            <Text style={[dietStyles.emptyText, { color: TH.sub }]}>暂无禁食记录</Text>
           ) : (
             history.map(f => {
               const startTime = f.startedAt ? new Date(f.startedAt) : null;
@@ -454,8 +454,8 @@ export default function DietScreen() {
               // 查禁食结束后首餐
               const afterMeal = endTime ? foodLog.filter(fd => !fd.deleted && fd.timestamp > f.endedAt!).slice(0, 2) : [];
               return (
-                <View key={f.id} style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View key={f.id} style={dietStyles.row}>
+                  <View style={[dietStyles.flexRowBetween, { alignItems: 'center' }]}>
                     <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{dateLabel}</Text>
                     <Text style={{ fontSize: FONT_SUB, color: durationH >= f.targetHours ? '#10B981' : COLORS.YELLOW, fontWeight: '600' }}>
                       ✓ {durationH}h
@@ -463,7 +463,7 @@ export default function DietScreen() {
                   </View>
                   {afterMeal.length > 0 && (
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
-                      <Text style={{ fontSize: 10, color: TH.sub }}>首餐: </Text>
+                      <Text style={[dietStyles.tinyText, { color: TH.sub }]}>首餐: </Text>
                       {afterMeal.map(m => {
                         const w = lookupWuxing(m.name);
                         return (
@@ -523,3 +523,18 @@ export default function DietScreen() {
     </View>
   );
 }
+
+const dietStyles = {
+  flex1: { flex: 1 },
+  flexRowBetween: { flexDirection: 'row' as const, justifyContent: 'space-between' as const, alignItems: 'center' as const },
+  card: { borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1 },
+  sectionTitle: { fontWeight: '700' as const, fontSize: FONT_BODY, marginBottom: 12 },
+  sectionTitleSm: { fontWeight: '700' as const, fontSize: FONT_BODY, marginBottom: 8 },
+  subText: { fontSize: FONT_SUB },
+  subTextLineHeight: { fontSize: FONT_SUB, lineHeight: 20 },
+  tinyText: { fontSize: 10 },
+  emptyText: { textAlign: 'center' as const, paddingVertical: 16 },
+  row: { paddingVertical: 10, borderBottomWidth: 1 },
+  centerPad: { alignItems: 'center' as const, paddingVertical: 12 },
+  whiteBold: { color: '#fff', fontWeight: '700' as const, fontSize: FONT_BODY },
+};
