@@ -352,7 +352,7 @@ export default function HomeScreen() {
         justifyContent: 'space-between', paddingVertical: 12,
         borderBottomWidth: 1, borderBottomColor: TH.border,
       }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+        <View style={styles.flexRowGap10}>
           <Star size={16} color={P} />
           <View>
             <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
@@ -433,12 +433,12 @@ export default function HomeScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
+      style={styles.flex1}
     >
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <StatusBar barStyle={TH === THEMES.light ? 'dark-content' : 'light-content'} />
       <SimpleHeader routeName="Home" />
-        <View style={{ flex: 1 }}
+        <View style={styles.flex1}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
@@ -457,7 +457,7 @@ export default function HomeScreen() {
               }}>
                 <TouchableOpacity
                   onPress={() => goToDate(addDays(viewDate, -1))}
-                  style={{ padding: 6 }}
+                  style={styles.padding6}
                   activeOpacity={0.6}
                 >
                   <ChevronLeft size={20} color={TH.text} />
@@ -470,7 +470,7 @@ export default function HomeScreen() {
                     const next = addDays(viewDate, 1);
                     if (next <= dateStr()) goToDate(next);
                   }}
-                  style={{ padding: 6 }}
+                  style={styles.padding6}
                   activeOpacity={0.6}
                   disabled={isToday}
                 >
@@ -499,18 +499,14 @@ export default function HomeScreen() {
               >
                 {/* Status — prominent */}
                 <View style={{ alignItems: 'center', marginBottom: 14 }}>
-                  <View style={{
-                    flexDirection: 'row', alignItems: 'center', gap: 8,
-                    backgroundColor: 'rgba(255,255,255,.2)', borderRadius: 20,
-                    paddingHorizontal: 16, paddingVertical: 6,
-                  }}>
+                  <View style={[styles.pillBadge, { backgroundColor: 'rgba(255,255,255,.2)' }]}>
                     {status === 'done'
                       ? <Check size={18} color="#fff" />
                       : status === 'editing'
                       ? <Pencil size={18} color="#fff" />
                       : <Target size={18} color="#fff" />
                     }
-                    <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>
+                    <Text style={[styles.whiteTextBold, { fontSize: FONT_BODY }]}>
                       {bannerStatusText}
                     </Text>
                   </View>
@@ -521,24 +517,24 @@ export default function HomeScreen() {
 
                 {/* Stats row */}
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
-                    <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('totalCompleted')}</Text>
-                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? totalCompleted : viewDateStats.totalDays}</Text>
-                    <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
-                    <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+                  <TouchableOpacity style={styles.centerFlex1} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
+                    <Text style={[styles.whiteSubText, { fontSize: FONT_SUB }]}>{T('totalCompleted')}</Text>
+                    <Text style={[styles.whiteTextExtraBold, { fontSize: FONT_STAT_CARD }]}>{isToday ? totalCompleted : viewDateStats.totalDays}</Text>
+                    <Text style={[styles.whiteDimText, { fontSize: FONT_SMALL }]}>{T('days')}</Text>
+                    <BarChart3 size={12} color="rgba(255,255,255,.4)" style={styles.marginTop4} />
                   </TouchableOpacity>
-                  <View style={{ width: 1, height: 40, backgroundColor: 'rgba(255,255,255,.2)' }} />
-                  <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
-                    <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('streak')}</Text>
-                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? streak : viewDateStats.streak}</Text>
-                    <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
+                  <View style={styles.separator} />
+                  <TouchableOpacity style={styles.centerFlex1} onPress={() => setShowStatsModal(true)} activeOpacity={0.7}>
+                    <Text style={[styles.whiteSubText, { fontSize: FONT_SUB }]}>{T('streak')}</Text>
+                    <Text style={[styles.whiteTextExtraBold, { fontSize: FONT_STAT_CARD }]}>{isToday ? streak : viewDateStats.streak}</Text>
+                    <Text style={[styles.whiteDimText, { fontSize: FONT_SMALL }]}>{T('days')}</Text>
                     {isToday && showGrace && graceAvailable ? (
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 4 }}>
                         <Shield size={10} color="rgba(255,255,255,.7)" />
                         <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL }}>{T('graceStreakPending')}</Text>
                       </View>
                     ) : (
-                      <BarChart3 size={12} color="rgba(255,255,255,.4)" style={{ marginTop: 4 }} />
+                      <BarChart3 size={12} color="rgba(255,255,255,.4)" style={styles.marginTop4} />
                     )}
                   </TouchableOpacity>
                 </View>
@@ -553,7 +549,7 @@ export default function HomeScreen() {
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 10, backgroundColor: warnBg, borderRadius: 14 }}>
                     <Shield size={20} color={cardTextColor(TH.bg)} />
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.flex1}>
                       <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY }}>{T('graceRemindTitle')}</Text>
                       <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>{T('graceRemindDesc')}</Text>
                     </View>
@@ -571,7 +567,7 @@ export default function HomeScreen() {
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 10, backgroundColor: cardAccent(COLORS.RED, TH.bg, 0.45), borderRadius: 14 }}>
                     <AlertTriangle size={20} color={cardTextColor(TH.bg)} />
-                    <View style={{ flex: 1 }}>
+                    <View style={styles.flex1}>
                       <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY }}>{T('planDelayedNotify')}</Text>
                       <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>
                         {T('planDelayed')}: {delayedPlan.name}
@@ -585,7 +581,7 @@ export default function HomeScreen() {
               )}
 
               {/* ── Check-in form / details ── */}
-              <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
+              <View style={[styles.cardWithBorder, { backgroundColor: TH.card, borderColor: TH.border }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 16 }}>
                   <ClipboardList size={16} color={P} />
                   <Text style={{ fontWeight: '700', fontSize: FONT_CARD_TITLE, color: TH.text }}>
@@ -642,13 +638,13 @@ export default function HomeScreen() {
               </View>
 
               {/* ── Weight card ── */}
-              <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <View style={[styles.cardWithBorder, { backgroundColor: TH.card, borderColor: TH.border }]}>
+                <View style={styles.flexRowBetween}>
+                  <View style={styles.flexRowGap6}>
                     <Scale size={16} color={P} />
                     <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todayWeight')}</Text>
                   </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={styles.flexRowGap6}>
                     {isReadOnly ? (
                       <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: P }}>
                         {weight || '—'}
@@ -678,8 +674,8 @@ export default function HomeScreen() {
                 </View>
                 {/* Steps */}
                 {isToday && healthSyncEnabled && todaySteps != null ? (
-                  <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={[styles.flexRowBetween, styles.marginTop10]}>
+                    <View style={styles.flexRowGap6}>
                       <Footprints size={16} color={P} />
                       <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todaySteps')}</Text>
                     </View>
@@ -688,8 +684,8 @@ export default function HomeScreen() {
                     </Text>
                   </View>
                 ) : !isToday ? (
-                  <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={[styles.flexRowBetween, styles.marginTop10]}>
+                    <View style={styles.flexRowGap6}>
                       <Footprints size={16} color={P} />
                       <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todaySteps')}</Text>
                     </View>
@@ -699,13 +695,13 @@ export default function HomeScreen() {
               </View>
 
               {/* ── Water card ── */}
-              <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
+              <View style={[styles.cardWithBorder, { backgroundColor: TH.card, borderColor: TH.border }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={styles.flexRowGap6}>
                     <Droplets size={16} color={P} />
                     <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('water')}</Text>
                   </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={styles.flexRowGap6}>
                     {isToday ? (
                       <>
                         <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
@@ -760,15 +756,15 @@ export default function HomeScreen() {
                     onPress={handleEdit}
                     style={{ backgroundColor: P, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 12 }}
                   >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <View style={styles.flexRowGap6}>
                       <Pencil size={18} color="#fff" />
-                      <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('checkinModify')}</Text>
+                      <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('checkinModify')}</Text>
                     </View>
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity onPress={handleSetDone}
                     style={{ backgroundColor: TH.accent, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 12 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                    <View style={styles.flexRowGap6}>
                       <Check size={18} color="#fff" />
                       <Text style={{ fontWeight: '700', fontSize: FONT_BUTTON, color: '#fff' }}>
                         {T('checkinSubmit')}
@@ -813,7 +809,7 @@ export default function HomeScreen() {
               <TouchableOpacity
                 onPress={() => { setWaterGoal(Math.max(500, Math.min(3000, +wgi || 2000))); setShowWG(false); }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('save')}</Text>
+                <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('save')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -823,7 +819,7 @@ export default function HomeScreen() {
       {/* Incomplete Reason Modal */}
       <Modal visible={showReasonModal} transparent animationType="fade" onRequestClose={() => setShowReasonModal(false)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)' }}>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flex1}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }} keyboardShouldPersistTaps="handled">
               <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
               <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, marginBottom: 12 }}>{T('incompleteReasonTitle')}</Text>
@@ -880,7 +876,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={confirmDoneWithReason} disabled={!selectedReason || !reasonNote.trim()}
                   style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: selectedReason && reasonNote.trim() ? P : TH.border, alignItems: 'center' }}>
-                  <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('incompleteReasonConfirm')}</Text>
+                  <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('incompleteReasonConfirm')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -897,3 +893,31 @@ export default function HomeScreen() {
     </KeyboardAvoidingView>
   );
 }
+
+const styles = {
+  flex1: { flex: 1 },
+  flexRow: { flexDirection: 'row' as const, alignItems: 'center' as const },
+  flexRowGap6: { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 6 },
+  flexRowGap10: { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 10 },
+  flexRowBetween: { flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'space-between' as const },
+  center: { alignItems: 'center' as const },
+  centerFlex1: { alignItems: 'center' as const, flex: 1 },
+  padding6: { padding: 6 },
+  marginTop4: { marginTop: 4 },
+  marginTop10: { marginTop: 10 },
+  card: { borderRadius: 16, padding: 16, marginBottom: 12 },
+  cardWithBorder: { borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1 },
+  cardPadded: { borderRadius: 16, padding: 14, marginBottom: 12 },
+  pillBadge: { flexDirection: 'row' as const, alignItems: 'center' as const, gap: 8, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 6 },
+  separator: { width: 1, height: 40 },
+  // Text styles (theme-dependent, use with array merge)
+  textBold: { fontWeight: '600' as const },
+  textSemiBold: { fontWeight: '700' as const },
+  textExtraBold: { fontWeight: '800' as const },
+  whiteText: { color: '#fff' },
+  whiteTextBold: { color: '#fff', fontWeight: '700' as const },
+  whiteTextExtraBold: { color: '#fff', fontWeight: '800' as const },
+  whiteSubText: { color: 'rgba(255,255,255,.6)' },
+  whiteDimText: { color: 'rgba(255,255,255,.5)' },
+  whiteSeparator: { backgroundColor: 'rgba(255,255,255,.2)' },
+};

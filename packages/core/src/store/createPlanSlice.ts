@@ -1,4 +1,4 @@
-import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm, RecycleBinItem } from '../types';
+import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm, RecycleBinItem, ThoughtTrail } from '../types';
 import type { MindReflection } from '../types/reflection';
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
