@@ -133,6 +133,27 @@ export default function MindScreen() {
 
   const activeFears = useMemo(() => fearEntries.filter((f: FearEntry) => !f.deleted).sort((a: FearEntry, b: FearEntry) => (a.fearIndex ?? 99) - (b.fearIndex ?? 99)), [fearEntries]);
 
+  const renderFearItem = useCallback(({ item: f }: { item: FearEntry }) => (
+    <TouchableOpacity onPress={() => { setForgeFear(f); setForgeOutcome(f.worstOutcome ?? ''); setForgeProbability(f.probability ?? 5); setForgeCoping(f.copingAbility ?? 5); setShowForge(true); }}
+      style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={{ color: TH.text, fontSize: FONT_BODY, fontWeight: '600', flex: 1 }} numberOfLines={1}>{f.content}</Text>
+        {f.fearIndex !== undefined && (
+          <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: f.fearIndex < 15 ? '#10B98120' : f.fearIndex < 35 ? '#F59E0B20' : '#EF444420' }}>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: f.fearIndex < 15 ? '#10B981' : f.fearIndex < 35 ? '#F59E0B' : '#EF4444' }}>{T('mindFearIndex')} {f.fearIndex}</Text>
+          </View>
+        )}
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+        <Text style={{ fontSize: 10, color: TH.sub }}>{f.trigger}</Text>
+        <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${CLASSIFICATION_COLORS[f.classification as FearClassification]}15` }}>
+          <Text style={{ fontSize: 10, color: CLASSIFICATION_COLORS[f.classification as FearClassification]}>{T(CLASSIFICATION_LABELS[f.classification as FearClassification])}</Text>
+        </View>
+        <Text style={{ fontSize: 10, color: TH.sub }}>{f.occurrenceCount}次</Text>
+      </View>
+    </TouchableOpacity>
+  ), [TH, T, setForgeFear, setForgeOutcome, setForgeProbability, setForgeCoping, setShowForge]);
+
   // ── 恐惧图谱 Tab ──
   const renderFearTab = useCallback(() => {
     const heatmapEntries = Object.entries(heatmap).sort((a: [string, unknown], b: [string, unknown]) => (b[1] as number) - (a[1] as number));
@@ -198,26 +219,7 @@ export default function MindScreen() {
           <FlatList
             data={activeFears}
             keyExtractor={(item) => item.id}
-            renderItem={({ item: f }) => (
-              <TouchableOpacity onPress={() => { setForgeFear(f); setForgeOutcome(f.worstOutcome ?? ''); setForgeProbability(f.probability ?? 5); setForgeCoping(f.copingAbility ?? 5); setShowForge(true); }}
-                style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={{ color: TH.text, fontSize: FONT_BODY, fontWeight: '600', flex: 1 }} numberOfLines={1}>{f.content}</Text>
-                  {f.fearIndex !== undefined && (
-                    <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: f.fearIndex < 15 ? '#10B98120' : f.fearIndex < 35 ? '#F59E0B20' : '#EF444420' }}>
-                      <Text style={{ fontSize: 11, fontWeight: '700', color: f.fearIndex < 15 ? '#10B981' : f.fearIndex < 35 ? '#F59E0B' : '#EF4444' }}>{T('mindFearIndex')} {f.fearIndex}</Text>
-                    </View>
-                  )}
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{f.trigger}</Text>
-                  <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${CLASSIFICATION_COLORS[f.classification as FearClassification]}15` }}>
-                    <Text style={{ fontSize: 10, color: CLASSIFICATION_COLORS[f.classification as FearClassification] }}>{T(CLASSIFICATION_LABELS[f.classification as FearClassification])}</Text>
-                  </View>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{f.occurrenceCount}次</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+            renderItem={renderFearItem}
             scrollEnabled={false}
             removeClippedSubviews={true}
             ListEmptyComponent={<Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 20 }}>{T('mindNoFears')}</Text>}
@@ -226,6 +228,19 @@ export default function MindScreen() {
       </View>
     );
   }, [stats, heatmap, activeFears, TH, T, resetFearForm]);
+
+  const renderCourageItem = useCallback(({ item: c }: { item: any }) => (
+    <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+      <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{c.action}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
+        <Text style={{ fontSize: 10, color: TH.sub }}>{c.date}</Text>
+        <Text style={{ fontSize: 10, color: '#EF4444' }}>恐惧值 {c.fearBefore}</Text>
+        {c.feelingTags.map((tag: FeelingTag) => (
+          <Text key={tag} style={{ fontSize: 10, color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{T(FEELING_LABELS[tag] ?? tag)}</Text>
+        ))}
+      </View>
+    </View>
+  ), [TH, T]);
 
   // ── 勇气行动 Tab ──
   const renderCourageTab = useCallback(() => {

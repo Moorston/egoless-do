@@ -216,6 +216,60 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     onClose();
   }, [store, onClose]);
 
+  const renderPlanItem = useCallback(({ item }: any) => {
+    const storeDone = planCheckins.some((c: any) => c.planItemId === item.id && c.date === targetDate && c.done);
+    const autoChecked = storeDone && planCheckins.some((c: any) => c.planItemId === item.id && c.date === targetDate && c.done && c.linkedModule);
+    const done = planToggles[item.id] ?? storeDone;
+    return (
+      <View style={{
+        flexDirection:'row', alignItems:'center', paddingVertical:8,
+        paddingHorizontal:4, borderRadius:8,
+        backgroundColor: done ? `${P}10` : 'transparent',
+        marginBottom:4,
+      }}>
+        <Checkbox on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} />
+        <View style={{ flex:1, marginLeft:8 }}>
+          <Text style={{
+            fontSize:FONT_BODY, color: done ? TH.sub : TH.text,
+            textDecorationLine: done ? 'line-through' : 'none',
+          }} numberOfLines={1}>{item.name}</Text>
+        </View>
+        {autoChecked && (
+          <CheckCircle2 size={10} color={P} style={{ marginLeft:4 }} />
+        )}
+      </View>
+    );
+  }, [planCheckins, targetDate, planToggles, P, TH, setPlanToggles]);
+
+  const renderTodoItem = useCallback(({ item: todo }: any) => (
+    <View style={{
+      flexDirection:'row', alignItems:'center', paddingVertical:8,
+      paddingHorizontal:4, borderRadius:8,
+      backgroundColor: todo.done ? `${P}10` : 'transparent',
+      marginBottom:4,
+    }}>
+      <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id, targetDate)} />
+      <Text style={{
+        flex:1, marginLeft:8, fontSize:FONT_BODY,
+        color: todo.done ? TH.sub : TH.text,
+        textDecorationLine: todo.done ? 'line-through' : 'none',
+      }}>{todo.name}</Text>
+    </View>
+  ), [P, TH, store, targetDate]);
+
+  const renderHabitItem = useCallback(({ item: h }: any) => (
+    <View style={{
+      flexDirection:'row', alignItems:'center', paddingVertical:8,
+      paddingHorizontal:4, borderRadius:8, marginBottom:4,
+    }}>
+      <Checkbox on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins(c => ({ ...c, [h.id]:!c[h.id] }))} />
+      <View style={{ flex:1, marginLeft:8 }}>
+        <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{h.name}</Text>
+        <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{h.streak} {T('checkinStreak')}</Text>
+      </View>
+    </View>
+  ), [habitCheckins, setHabitCheckins, TH, T]);
+
   // Show reflection prompt after successful checkin
   if (showReflection) {
     return (
@@ -341,30 +395,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                   <FlatList
                     data={todayPlanItems}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => {
-                      const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
-                      const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done && c.linkedModule);
-                      const done = planToggles[item.id] ?? storeDone;
-                      return (
-                        <View style={{
-                          flexDirection:'row', alignItems:'center', paddingVertical:8,
-                          paddingHorizontal:4, borderRadius:8,
-                          backgroundColor: done ? `${P}10` : 'transparent',
-                          marginBottom:4,
-                        }}>
-                          <Checkbox on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} />
-                          <View style={{ flex:1, marginLeft:8 }}>
-                            <Text style={{
-                              fontSize:FONT_BODY, color: done ? TH.sub : TH.text,
-                              textDecorationLine: done ? 'line-through' : 'none',
-                            }} numberOfLines={1}>{item.name}</Text>
-                          </View>
-                          {autoChecked && (
-                            <CheckCircle2 size={10} color={P} style={{ marginLeft:4 }} />
-                          )}
-                        </View>
-                      );
-                    }}
+                    renderItem={renderPlanItem}
                     scrollEnabled={false}
                     removeClippedSubviews={true}
                   />
@@ -378,21 +409,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                   <FlatList
                     data={dailyCustomTodos}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item: todo }) => (
-                      <View style={{
-                        flexDirection:'row', alignItems:'center', paddingVertical:8,
-                        paddingHorizontal:4, borderRadius:8,
-                        backgroundColor: todo.done ? `${P}10` : 'transparent',
-                        marginBottom:4,
-                      }}>
-                        <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id, targetDate)} />
-                        <Text style={{
-                          flex:1, marginLeft:8, fontSize:FONT_BODY,
-                          color: todo.done ? TH.sub : TH.text,
-                          textDecorationLine: todo.done ? 'line-through' : 'none',
-                        }}>{todo.name}</Text>
-                      </View>
-                    )}
+                    renderItem={renderTodoItem}
                     scrollEnabled={false}
                     removeClippedSubviews={true}
                   />
@@ -406,18 +423,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                   <FlatList
                     data={(store.habits ?? []).filter(h => !h.deleted && h.status==='inProgress')}
                     keyExtractor={(item) => item.id}
-                    renderItem={({ item: h }) => (
-                      <View style={{
-                        flexDirection:'row', alignItems:'center', paddingVertical:8,
-                        paddingHorizontal:4, borderRadius:8, marginBottom:4,
-                      }}>
-                        <Checkbox on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins(c => ({ ...c, [h.id]:!c[h.id] }))} />
-                        <View style={{ flex:1, marginLeft:8 }}>
-                          <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{h.name}</Text>
-                          <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{h.streak} {T('checkinStreak')}</Text>
-                        </View>
-                      </View>
-                    )}
+                    renderItem={renderHabitItem}
                     scrollEnabled={false}
                     removeClippedSubviews={true}
                   />

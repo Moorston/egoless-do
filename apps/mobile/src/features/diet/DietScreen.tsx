@@ -185,13 +185,7 @@ export default function DietScreen() {
           {todayFoods.length === 0 ? (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 20 }}>{T('dietNoFoodToday')}</Text>
           ) : (
-            <FlatList
-              data={todayFoods}
-              renderItem={renderFoodItem}
-              keyExtractor={(f) => f.id}
-              removeClippedSubviews={true}
-              scrollEnabled={false}
-            />
+            {todayFoods.map(f => renderFoodItem({ item: f }))}
           )}
         </View>
 

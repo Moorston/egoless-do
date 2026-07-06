@@ -76,7 +76,95 @@ export default function ReviewView({ period }: ReviewViewProps) {
       if (mountedRef.current) setRefreshing(false);
     }
   };
-  
+
+  const renderIncompleteReasonItem = useCallback(({ item: r }: { item: any }) => (
+    <View style={{
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+      paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border,
+    }}>
+      <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
+        {r.icon} {T(`incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}`)}
+      </Text>
+      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>
+        {r.count} {T('reviewTimes')} ({r.percentage}%)
+      </Text>
+    </View>
+  ), [TH, T]);
+
+  const renderIncompleteItem = useCallback(({ item }: { item: any }) => (
+    <View style={{
+      flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+      paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border,
+    }}>
+      <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
+        {item.name}
+      </Text>
+      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: COLORS.RED }}>
+        {item.count} {T('reviewTimes')}
+      </Text>
+    </View>
+  ), [TH, T]);
+
+  const renderHabitItem = useCallback(({ item: habit }: { item: any }) => (
+    <View style={{
+      paddingVertical: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: TH.border,
+    }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+        <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{habit.name}</Text>
+        <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
+          {habit.progress}%
+        </Text>
+      </View>
+
+      <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
+        <View style={{
+          height: 6,
+          width: `${habit.progress}%`,
+          backgroundColor: habit.progress >= 80 ? COLORS.GREEN : habit.progress >= 60 ? '#F59E0B' : COLORS.RED,
+          borderRadius: 3,
+        }} />
+      </View>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+          {habit.doneDays}/{habit.targetDays} {T('days')}
+        </Text>
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+          {T('reviewStreak')}: {habit.streak} {T('days')}
+        </Text>
+      </View>
+    </View>
+  ), [TH, T]);
+
+  const renderHistoryReviewItem = useCallback(({ item: r }: { item: any }) => (
+    <TouchableOpacity
+      onPress={() => nav.navigate('ReviewDetail', { reviewId: r.id })}
+      style={{
+        flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: TH.border,
+      }}
+    >
+      <View>
+        <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
+          {r.startDate} - {r.endDate}
+        </Text>
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+          {T('reviewCompletionRate')}: {r.completionRate}%
+        </Text>
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+        <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
+          {r.streakDays} {T('days')}
+        </Text>
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('reviewStreak')}</Text>
+      </View>
+    </TouchableOpacity>
+  ), [TH, T, nav]);
+
   const renderCoreMetrics = () => {
     if (!review) return null;
     
@@ -159,19 +247,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
         </Text>
         <FlatList
           data={review.incompleteReasons}
-          renderItem={({ item: r }) => (
-            <View style={{
-              flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-              paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border,
-            }}>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
-                {r.icon} {T(`incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}`)}
-              </Text>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>
-                {r.count} {T('reviewTimes')} ({r.percentage}%)
-              </Text>
-            </View>
-          )}
+          renderItem={renderIncompleteReasonItem}
           keyExtractor={(item, index) => item.code ?? String(index)}
           removeClippedSubviews={true}
           scrollEnabled={false}
@@ -184,19 +260,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
             </Text>
             <FlatList
               data={review.incompleteItems}
-              renderItem={({ item }) => (
-                <View style={{
-                  flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                  paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border,
-                }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
-                    {item.name}
-                  </Text>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: COLORS.RED }}>
-                    {item.count} {T('reviewTimes')}
-                  </Text>
-                </View>
-              )}
+              renderItem={renderIncompleteItem}
               keyExtractor={(item, index) => item.id ?? String(index)}
               removeClippedSubviews={true}
               scrollEnabled={false}
@@ -224,38 +288,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
 
         <FlatList
           data={review.habitProgress}
-          renderItem={({ item: habit }) => (
-            <View style={{
-              paddingVertical: 8,
-              borderBottomWidth: 1,
-              borderBottomColor: TH.border,
-            }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{habit.name}</Text>
-                <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
-                  {habit.progress}%
-                </Text>
-              </View>
-
-              <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
-                <View style={{
-                  height: 6,
-                  width: `${habit.progress}%`,
-                  backgroundColor: habit.progress >= 80 ? COLORS.GREEN : habit.progress >= 60 ? '#F59E0B' : COLORS.RED,
-                  borderRadius: 3,
-                }} />
-              </View>
-
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
-                  {habit.doneDays}/{habit.targetDays} {T('days')}
-                </Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
-                  {T('reviewStreak')}: {habit.streak} {T('days')}
-                </Text>
-              </View>
-            </View>
-          )}
+          renderItem={renderHabitItem}
           keyExtractor={(habit) => habit.id}
           removeClippedSubviews={true}
           scrollEnabled={false}
@@ -531,32 +564,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
         
         <FlatList
           data={historyReviews}
-          renderItem={({ item: r }) => (
-            <TouchableOpacity
-              onPress={() => nav.navigate('ReviewDetail', { reviewId: r.id })}
-              style={{
-                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                paddingVertical: 10,
-                borderBottomWidth: 1,
-                borderBottomColor: TH.border,
-              }}
-            >
-              <View>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
-                  {r.startDate} - {r.endDate}
-                </Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
-                  {T('reviewCompletionRate')}: {r.completionRate}%
-                </Text>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
-                  {r.streakDays} {T('days')}
-                </Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('reviewStreak')}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
+          renderItem={renderHistoryReviewItem}
           keyExtractor={(r) => r.id}
           removeClippedSubviews={true}
           scrollEnabled={false}

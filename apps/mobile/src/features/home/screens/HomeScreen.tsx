@@ -343,6 +343,33 @@ export default function HomeScreen() {
     setTimeout(() => saveField(), 0);
   }, [isReadOnly, toggleDailyCustomTodo, saveField]);
 
+  const renderHabitItem = useCallback(({ item }: any) => {
+    const h = item as { id: string; name: string; streak: number; checkedDates?: string[] };
+    const habitDone = h.checkedDates?.includes(viewDate) ?? false;
+    return (
+      <View style={{
+        flexDirection: 'row', alignItems: 'center',
+        justifyContent: 'space-between', paddingVertical: 12,
+        borderBottomWidth: 1, borderBottomColor: TH.border,
+      }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <Star size={16} color={P} />
+          <View>
+            <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
+          </View>
+        </View>
+        {isReadOnly ? (
+          habitDone
+            ? <Check size={18} color={COLORS.GREEN} />
+            : <X size={18} color={TH.sub} />
+        ) : (
+          <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} />
+        )}
+      </View>
+    );
+  }, [viewDate, TH, P, T, COLORS, isReadOnly, toggleHabit]);
+
   // ── Auto-sync plan items and health data on mount ──
   useEffect(() => {
     checkAutoStatus();
@@ -585,31 +612,7 @@ export default function HomeScreen() {
                     <FlatList
                       data={activeHabits}
                       keyExtractor={(item) => item.id}
-                      renderItem={({ item: h }) => {
-                        const habitDone = h.checkedDates?.includes(viewDate) ?? false;
-                        return (
-                          <View style={{
-                            flexDirection: 'row', alignItems: 'center',
-                            justifyContent: 'space-between', paddingVertical: 12,
-                            borderBottomWidth: 1, borderBottomColor: TH.border,
-                          }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                              <Star size={16} color={P} />
-                              <View>
-                                <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
-                                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
-                              </View>
-                            </View>
-                            {isReadOnly ? (
-                              habitDone
-                                ? <Check size={18} color={COLORS.GREEN} />
-                                : <X size={18} color={TH.sub} />
-                            ) : (
-                              <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} />
-                            )}
-                          </View>
-                        );
-                      }}
+                      renderItem={renderHabitItem}
                       scrollEnabled={false}
                       removeClippedSubviews={true}
                     />
