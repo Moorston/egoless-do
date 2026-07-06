@@ -9,10 +9,17 @@
 
 routerAdd("POST", "/api/auth/user-token", function(e) {
   try {
-    // 1. Verify internal secret
+    // 1. Verify internal secret (constant-time comparison to prevent timing attacks)
     var secret = e.request.header.get("X-Internal-Secret");
-    var expected = $os.getenv("PB_ENCRYPTION_KEY") || "";
-    if (!secret || secret !== expected) {
+    var expected = $os.getenv("INTERNAL_SECRET") || $os.getenv("PB_ENCRYPTION_KEY") || "";
+    if (!secret || !expected || secret.length !== expected.length) {
+      return e.json(403, { "error": "forbidden" });
+    }
+    var diff = 0;
+    for (var i = 0; i < secret.length; i++) {
+      diff |= secret.charCodeAt(i) ^ expected.charCodeAt(i);
+    }
+    if (diff !== 0) {
       return e.json(403, { "error": "forbidden" });
     }
 

@@ -5,19 +5,19 @@ import {
   StyleSheet, ViewStyle, TextStyle,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, type MobileStore } from '../store/useAppStore';
 import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
 import { ChevronLeft, Check } from 'lucide-react-native';
 
 // ── useTheme ──────────────────────────────────────────────────────
 export function useTheme() {
-  const theme = useAppStore((s: any) => s.theme);
+  const theme = useAppStore((s: MobileStore) => s.theme);
   return THEMES[theme];
 }
 
 // ── useT ──────────────────────────────────────────────────────────
 export function useT() {
-  const language = useAppStore((s: any) => s.language);
+  const language = useAppStore((s: MobileStore) => s.language);
   return (key: string) => t(key as import("@egoless-do/core").I18nKey, language);
 }
 

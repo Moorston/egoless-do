@@ -13,6 +13,7 @@ import type { CheckinEntry } from '@egoless-do/core';
 const log = createLogger('Home');
 import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
+import { useNavigateToTab } from '../../../navigation/useAppNavigation';
 import SimpleHeader from '../../../navigation/SimpleHeader';
 import {
   Scale, Footprints,
@@ -349,7 +350,7 @@ export default function HomeScreen() {
   const closeWaterGoalModal = useCallback(() => setShowWG(false), []);
   const closeReasonModal = useCallback(() => setShowReasonModal(false), []);
   const goToGrace = useCallback(() => nav.navigate('Grace'), [nav]);
-  const goToPlan = useCallback(() => nav.navigate('MainTabs' as any, { screen: 'Plan' } as any), [nav]);
+  const goToPlan = useCallback(() => useNavigateToTab()('Plan'), []);
   const dismissDelayedReminder = useCallback(() => setShowDelayedReminder(false), []);
   const goToPrevDate = useCallback(() => goToDate(addDays(viewDate, -1)), [goToDate, viewDate]);
   const goToNextDate = useCallback(() => {

@@ -5,6 +5,7 @@
 
 import { ActiveSession, ApiResponse, CheckinType } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
+import { escapeFilter } from './pbFilterEscape';
 
 const log = createLogger('GlobalPulse');
 
@@ -178,7 +179,7 @@ export async function deleteSession(recordId: string): Promise<ApiResponse<void>
 }
 
 export async function deleteSessionsByUserHash(userHash: string): Promise<void> {
-  const filter = encodeURIComponent(`user_hash = "${userHash}"`);
+  const filter = encodeURIComponent(`user_hash = "${escapeFilter(userHash)}"`);
   // Paginate until all sessions are deleted
   let page = 1;
   // eslint-disable-next-line no-constant-condition -- intentional infinite loop with break
@@ -200,7 +201,7 @@ export async function getActiveSessions(
 ): Promise<ApiResponse<ActiveSession[]>> {
   const filters: string[] = [];
   if (type) {
-    filters.push(`type = "${type}"`);
+    filters.push(`type = "${escapeFilter(type)}"`);
   }
 
   const queryParts: string[] = [];

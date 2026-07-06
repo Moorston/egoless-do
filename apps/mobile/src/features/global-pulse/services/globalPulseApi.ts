@@ -12,6 +12,7 @@ import {
   ApiResponse,
   LeaderboardSort
 } from '@egoless-do/core';
+import { escapeFilter } from './pbFilterEscape';
 
 // PocketBase API 基础 URL
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://egolessdo.freebytes.net';
@@ -119,12 +120,11 @@ export async function getCheckins(params?: {
   const filters: string[] = [];
 
   if (params?.type) {
-    // Sanitize: strip double-quotes to prevent filter injection
-    filters.push(`type = "${String(params.type).replace(/"/g, '')}"`);
+    filters.push(`type = "${escapeFilter(String(params.type))}"`);
   }
 
   if (params?.since) {
-    filters.push(`created_at >= "${String(params.since).replace(/"/g, '')}"`);
+    filters.push(`created_at >= "${escapeFilter(String(params.since))}"`);
   }
 
   // 排除已退出的用户

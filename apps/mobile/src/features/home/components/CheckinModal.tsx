@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
 import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
-import type { CheckinEntry } from '@egoless-do/core';
+import type { CheckinEntry, PlanItem, DailyCustomTodo, Habit } from '@egoless-do/core';
 import {
   Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
   ClipboardList, CheckCircle2, Circle, X, Check, Shield,
@@ -216,9 +216,9 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     onClose();
   }, [store, onClose]);
 
-  const renderPlanItem = useCallback(({ item }: any) => {
-    const storeDone = planCheckins.some((c: any) => c.planItemId === item.id && c.date === targetDate && c.done);
-    const autoChecked = storeDone && planCheckins.some((c: any) => c.planItemId === item.id && c.date === targetDate && c.done && c.linkedModule);
+  const renderPlanItem = useCallback(({ item }: { item: PlanItem }) => {
+    const storeDone = planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done);
+    const autoChecked = storeDone && planCheckins.some(c => c.planItemId === item.id && c.date === targetDate && c.done && c.linkedModule);
     const done = planToggles[item.id] ?? storeDone;
     return (
       <View style={{
@@ -241,7 +241,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     );
   }, [planCheckins, targetDate, planToggles, P, TH, setPlanToggles]);
 
-  const renderTodoItem = useCallback(({ item: todo }: any) => (
+  const renderTodoItem = useCallback(({ item: todo }: { item: DailyCustomTodo }) => (
     <View style={{
       flexDirection:'row', alignItems:'center', paddingVertical:8,
       paddingHorizontal:4, borderRadius:8,
@@ -257,7 +257,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     </View>
   ), [P, TH, store, targetDate]);
 
-  const renderHabitItem = useCallback(({ item: h }: any) => (
+  const renderHabitItem = useCallback(({ item: h }: { item: Habit }) => (
     <View style={{
       flexDirection:'row', alignItems:'center', paddingVertical:8,
       paddingHorizontal:4, borderRadius:8, marginBottom:4,

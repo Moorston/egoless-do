@@ -174,7 +174,7 @@ function FabButton({ primaryColor }: { primaryColor: string }) {
         Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
         Animated.spring(transY, { toValue: finalY, useNativeDriver: false, bounciness: 8 }).start();
       } else {
-        tabNav?.navigate('Reflections' as any, { showNew: true } as any);
+        tabNav?.navigate('Reflections', { showNew: true });
       }
       return;
     }
