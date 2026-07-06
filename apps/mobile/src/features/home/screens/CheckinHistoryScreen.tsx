@@ -1,8 +1,9 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, FlatList } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
+import { usePagination } from '@egoless-do/core';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote } from '@egoless-do/core';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { Shield } from 'lucide-react-native';
@@ -32,15 +33,20 @@ export default function CheckinHistoryScreen() {
     [checkinHistory]
   );
 
+  const { items: paginatedSorted, hasMore, loadMore, isLoading } = usePagination({
+    data: sorted,
+    pageSize: 30,
+  });
+
   const grouped = useMemo(() => {
-    const map = new Map<string, typeof sorted>();
-    for (const h of sorted) {
+    const map = new Map<string, typeof paginatedSorted>();
+    for (const h of paginatedSorted) {
       const key = h.date.slice(0, 7);
       if (!map.has(key)) map.set(key, []);
       map.get(key)!.push(h);
     }
     return Array.from(map.entries());
-  }, [sorted]);
+  }, [paginatedSorted]);
 
   const formatMonth = useCallback((key: string) => {
     const [y, m] = key.split('-');
@@ -234,13 +240,16 @@ export default function CheckinHistoryScreen() {
         <ReviewView period="month" />
       ) : (
         <FlatList
-          data={sorted.length === 0 ? [] : grouped}
+          data={paginatedSorted.length === 0 ? [] : grouped}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           removeClippedSubviews={true}
           ListEmptyComponent={ListEmptyComponent}
           contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
           showsVerticalScrollIndicator={false}
+          onEndReached={hasMore ? loadMore : undefined}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={hasMore && isLoading ? <ActivityIndicator style={{ padding: 16 }} /> : null}
         />
       )}
     </SafeAreaView>
