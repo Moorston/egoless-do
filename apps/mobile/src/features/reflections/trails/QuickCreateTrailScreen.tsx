@@ -160,11 +160,11 @@ export default function QuickCreateTrailScreen() {
     return (
       <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
         {/* Header */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+        <View style={trailStyles.rowBetweenBorder}>
           <TouchableOpacity onPress={() => nav.goBack()}>
             <ArrowLeft size={24} color={TH.text} />
           </TouchableOpacity>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('quickCreateTrail')}</Text>
+          <Text style={[trailStyles.title, { color: TH.text }]}>{T('quickCreateTrail')}</Text>
           <TouchableOpacity onPress={() => nav.goBack()}>
             <X size={24} color={TH.sub} />
           </TouchableOpacity>
@@ -189,7 +189,7 @@ export default function QuickCreateTrailScreen() {
             onPress={() => setSkipThreshold(true)}
             style={{ marginTop: 16, paddingVertical: 8 }}
           >
-            <Text style={{ fontSize: FONT_SMALL, color: TH.primary }}>{T('quickTrailManualSelect')} →</Text>
+            <Text style={[trailStyles.smallText, { color: TH.primary }]}>{T('quickTrailManualSelect')} →</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -198,13 +198,13 @@ export default function QuickCreateTrailScreen() {
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={trailStyles.flex1} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         {/* Header */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+        <View style={trailStyles.rowBetweenBorder}>
           <TouchableOpacity onPress={() => nav.goBack()}>
             <ArrowLeft size={24} color={TH.text} />
           </TouchableOpacity>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('quickCreateTrail')}</Text>
+          <Text style={[trailStyles.title, { color: TH.text }]}>{T('quickCreateTrail')}</Text>
           {selectedIds.size > 0 ? (
             <TouchableOpacity
               onPress={handleCreate}
@@ -220,7 +220,7 @@ export default function QuickCreateTrailScreen() {
         </View>
 
         <ScrollView
-          style={{ flex: 1 }}
+          style={trailStyles.flex1}
           contentContainerStyle={{ paddingBottom: 32 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -340,7 +340,7 @@ export default function QuickCreateTrailScreen() {
           {/* Filter row: dropdowns */}
           <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginTop: 12, gap: 8 }}>
             {/* Time range dropdown */}
-            <View style={{ position: 'relative', flex: 1 }}>
+            <View style={trailStyles.relativeFlex1}>
               <TouchableOpacity
                 onPress={() => { setShowTimeDropdown(!showTimeDropdown); setShowTagDropdown(false); setShowMoodDropdown(false); }}
                 style={{
@@ -351,7 +351,7 @@ export default function QuickCreateTrailScreen() {
                   borderColor: timeRange !== 'month' ? TH.primary : TH.border,
                 }}
               >
-                <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>{T(timeRangeLabel)}</Text>
+                <Text style={[trailStyles.smallText, { color: TH.text }]}>{T(timeRangeLabel)}</Text>
                 <ChevronDown size={14} color={TH.sub} />
               </TouchableOpacity>
               {showTimeDropdown && (
@@ -389,7 +389,7 @@ export default function QuickCreateTrailScreen() {
             </View>
 
             {/* Tags dropdown */}
-            <View style={{ position: 'relative', flex: 1 }}>
+            <View style={trailStyles.relativeFlex1}>
               <TouchableOpacity
                 onPress={() => { setShowTagDropdown(!showTagDropdown); setShowTimeDropdown(false); setShowMoodDropdown(false); }}
                 style={{
@@ -400,7 +400,7 @@ export default function QuickCreateTrailScreen() {
                   borderColor: selectedTags.length > 0 ? TH.primary : TH.border,
                 }}
               >
-                <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>
+                <Text style={[trailStyles.smallText, { color: TH.text }]}>
                   {selectedTags.length > 0 ? `标签 (${selectedTags.length})` : '标签'}
                 </Text>
                 <ChevronDown size={14} color={TH.sub} />
@@ -430,7 +430,7 @@ export default function QuickCreateTrailScreen() {
                       }}>
                         {selectedTags.length === 0 && <Check size={12} color="#fff" />}
                       </View>
-                      <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>全部</Text>
+                      <Text style={[trailStyles.smallText, { color: TH.text }]}>全部</Text>
                     </TouchableOpacity>
                     {userTags.map(tag => {
                       const active = selectedTags.includes(tag);
@@ -452,7 +452,7 @@ export default function QuickCreateTrailScreen() {
                           }}>
                             {active && <Check size={12} color="#fff" />}
                           </View>
-                          <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>{tag}</Text>
+                          <Text style={[trailStyles.smallText, { color: TH.text }]}>{tag}</Text>
                         </TouchableOpacity>
                       );
                     })}
@@ -462,7 +462,7 @@ export default function QuickCreateTrailScreen() {
             </View>
 
             {/* Moods dropdown */}
-            <View style={{ position: 'relative', flex: 1 }}>
+            <View style={trailStyles.relativeFlex1}>
               <TouchableOpacity
                 onPress={() => { setShowMoodDropdown(!showMoodDropdown); setShowTimeDropdown(false); setShowTagDropdown(false); }}
                 style={{
@@ -473,7 +473,7 @@ export default function QuickCreateTrailScreen() {
                   borderColor: selectedMoods.length > 0 ? '#8B5CF6' : TH.border,
                 }}
               >
-                <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>
+                <Text style={[trailStyles.smallText, { color: TH.text }]}>
                   {selectedMoods.length > 0 ? `心情 (${selectedMoods.length})` : '心情'}
                 </Text>
                 <ChevronDown size={14} color={TH.sub} />
@@ -503,7 +503,7 @@ export default function QuickCreateTrailScreen() {
                       }}>
                         {selectedMoods.length === 0 && <Check size={12} color="#fff" />}
                       </View>
-                      <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>全部</Text>
+                      <Text style={[trailStyles.smallText, { color: TH.text }]}>全部</Text>
                     </TouchableOpacity>
                     {userMoods.map(mood => {
                       const active = selectedMoods.includes(mood);
@@ -525,7 +525,7 @@ export default function QuickCreateTrailScreen() {
                           }}>
                             {active && <Check size={12} color="#fff" />}
                           </View>
-                          <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>
+                          <Text style={[trailStyles.smallText, { color: TH.text }]}>
                             {getMoodIcon(mood)} {mood}
                           </Text>
                         </TouchableOpacity>
@@ -618,8 +618,8 @@ export default function QuickCreateTrailScreen() {
           {/* ── Preview: pre-selected reflections ── */}
           {showPreviewSection && (
             <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <View style={[trailStyles.rowBetween, { marginBottom: 12 }]}>
+                <Text style={[trailStyles.bodyBold, { color: TH.text }]}>
                   已选感念 · {selectedIds.size}{T('quickTrailReflections')}
                 </Text>
                 <TouchableOpacity
@@ -627,7 +627,7 @@ export default function QuickCreateTrailScreen() {
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
                 >
                   <Plus size={14} color={TH.primary} />
-                  <Text style={{ fontSize: FONT_SMALL, color: TH.primary, fontWeight: '500' }}>添加更多</Text>
+                  <Text style={[trailStyles.smallTextPrimary, { color: TH.primary }]}>添加更多</Text>
                 </TouchableOpacity>
               </View>
 
@@ -642,9 +642,9 @@ export default function QuickCreateTrailScreen() {
                   }}
                 >
                   {/* Content */}
-                  <View style={{ flex: 1 }}>
+                  <View style={trailStyles.flex1}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+                      <Text style={[trailStyles.smallText, { color: TH.sub }]}>
                         {formatDateShort(ref.timestamp)}
                       </Text>
                       <Text style={{ fontSize: FONT_SMALL }}>{getMoodIcon(ref.mood)}</Text>
@@ -706,7 +706,7 @@ export default function QuickCreateTrailScreen() {
                       borderWidth: 1, borderColor: TH.border,
                     }}
                   >
-                    <Text style={{ fontSize: FONT_SMALL, color: TH.text }}>{q}</Text>
+                    <Text style={[trailStyles.smallText, { color: TH.text }]}>{q}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -728,8 +728,8 @@ export default function QuickCreateTrailScreen() {
                 </View>
               )}
 
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <View style={[trailStyles.rowBetween, { marginBottom: 12 }]}>
+                <Text style={[trailStyles.bodyBold, { color: TH.text }]}>
                   {T('quickTrailMatch')} · {matchResults.length}{T('quickTrailReflections')}
                 </Text>
               </View>
@@ -740,16 +740,16 @@ export default function QuickCreateTrailScreen() {
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
                     <View style={{ flexDirection: 'row', gap: 14 }}>
                       <TouchableOpacity onPress={handleSelectAll}>
-                        <Text style={{ fontSize: FONT_SMALL, color: TH.primary, fontWeight: '500' }}>{T('quickTrailSelectAll')}</Text>
+                        <Text style={[trailStyles.smallTextPrimary, { color: TH.primary }]}>{T('quickTrailSelectAll')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={handleDeselectAll}>
-                        <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('quickTrailDeselectAll')}</Text>
+                        <Text style={[trailStyles.smallText, { color: TH.sub }]}>{T('quickTrailDeselectAll')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={handleOnlyUnassigned}>
-                        <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('quickTrailOnlyUnassigned')}</Text>
+                        <Text style={[trailStyles.smallText, { color: TH.sub }]}>{T('quickTrailOnlyUnassigned')}</Text>
                       </TouchableOpacity>
                     </View>
-                    <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+                    <Text style={[trailStyles.smallText, { color: TH.sub }]}>
                       {T('quickTrailSelected').replace('{n}', String(selectedIds.size))}
                     </Text>
                   </View>
@@ -773,7 +773,7 @@ export default function QuickCreateTrailScreen() {
                         backgroundColor: `${TH.primary}10`,
                       }}
                     >
-                      <Text style={{ fontSize: FONT_SMALL, color: TH.primary }}>
+                      <Text style={[trailStyles.smallText, { color: TH.primary }]}>
                         {T('searchLoadMore').replace('{n}', String(Math.min(PAGE_SIZE, matchResults.length - page * PAGE_SIZE)))}
                       </Text>
                     </TouchableOpacity>
@@ -785,11 +785,11 @@ export default function QuickCreateTrailScreen() {
                   <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 4 }}>
                     {T('quickTrailNoResults')}
                   </Text>
-                  <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+                  <Text style={[trailStyles.smallText, { color: TH.sub }]}>
                     {T('quickTrailTryAgain')}
                   </Text>
                   <TouchableOpacity onPress={resetFilters} style={{ marginTop: 12 }}>
-                    <Text style={{ fontSize: FONT_SMALL, color: TH.primary }}>{T('quickTrailResetFilters')}</Text>
+                    <Text style={[trailStyles.smallText, { color: TH.primary }]}>{T('quickTrailResetFilters')}</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -800,5 +800,21 @@ export default function QuickCreateTrailScreen() {
     </SafeAreaView>
   );
 }
+
+const trailStyles = {
+  flex1: { flex: 1 },
+  flex1Bg: { flex: 1 },
+  relativeFlex1: { position: 'relative' as const, flex: 1 },
+  smallText: { fontSize: FONT_SMALL },
+  smallTextPrimary: { fontSize: FONT_SMALL, fontWeight: '500' as const },
+  title: { fontSize: FONT_TITLE, fontWeight: '700' as const },
+  bodyBold: { fontSize: FONT_BODY, fontWeight: '600' as const },
+  paddingHorizontal16: { paddingHorizontal: 16 },
+  rowBetween: { flexDirection: 'row' as const, justifyContent: 'space-between' as const, alignItems: 'center' as const },
+  rowBetweenBorder: { flexDirection: 'row' as const, alignItems: 'center' as const, justifyContent: 'space-between' as const, paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1 },
+  mb12: { marginBottom: 12 },
+  mt16: { marginTop: 16 },
+  mt8: { marginTop: 8 },
+};
 
 // ── ReflectionCheckItem moved to ./ReflectionCheckItem.tsx ──────
