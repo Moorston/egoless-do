@@ -161,6 +161,35 @@ export async function migrateAsyncStorageToSQLite(
   }
 
   log.info(`Migrated ${migratedCount} entities to SQLite`);
+
+  // ── Post-migration verification ─────────────────────────────
+  if (migratedCount > 0) {
+    try {
+      // Verify that at least one entity was actually persisted by reading it back
+      const verificationSample = ENTITY_MIGRATIONS.find(
+        ({ storeKey }) => Array.isArray(oldData[storeKey]) && (oldData[storeKey] as unknown[]).length > 0
+      );
+      if (verificationSample) {
+        const firstItem = (oldData[verificationSample.storeKey] as Record<string, unknown>[])[0];
+        const id = firstItem[verificationSample.idField] as string;
+        if (id) {
+          // Flush first so all batched writes are committed, then verify by reading from DB
+          await flushWrites();
+          const { rehydrateFromDb } = await import('../features/sync/SyncService');
+          const dbPatch = await rehydrateFromDb([verificationSample.entity]);
+          const arr = dbPatch[verificationSample.storeKey] as unknown[];
+          if (!arr || arr.length === 0) {
+            log.warn(`Migration verification: no ${verificationSample.entity} found after migration`);
+          } else {
+            log.info(`Migration verified: ${arr.length} ${verificationSample.entity}(s) in SQLite`);
+          }
+        }
+      }
+    } catch (err) {
+      log.error(err, { message: 'Migration verification failed (non-fatal)' });
+    }
+  }
+
   return true;
 }
 

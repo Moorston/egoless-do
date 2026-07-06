@@ -65,22 +65,38 @@ export async function initApp(): Promise<void> {
   const setState = useAppStore.setState;
 
   try {
-    // ── Step 1: Open SQLite DB and run migrations ─────────────
+    // ── Step 1: Open SQLite DB ─────────────────────────────────
     const db = await openDatabase();
 
-    const didMigrate = await migrateAsyncStorageToSQLite(db, adapter);
-    if (didMigrate) {
-      await setAppState(db, 'needs_initial_sync', '1');
+    // ── Step 2: Run migrations (one-time, idempotent) ──────────
+    try {
+      const didMigrate = await migrateAsyncStorageToSQLite(db, adapter);
+      if (didMigrate) {
+        await setAppState(db, 'needs_initial_sync', '1');
+      }
+    } catch (err) {
+      log.error(err, { message: 'Entity migration failed (non-fatal)' });
     }
-    await migrateSettingsToSQLite(db, adapter);
 
-    // ── Step 2: Flush pending writes, then load from SQLite ───
-    await flushWrites();
+    try {
+      await migrateSettingsToSQLite(db, adapter);
+    } catch (err) {
+      log.error(err, { message: 'Settings migration failed (non-fatal)' });
+    }
 
-    const [settingsPatch, entityPatch] = await Promise.all([
-      loadSettingsPatch(),
-      rehydrateFromDb(),
-    ]);
+    // ── Step 3: Flush pending writes, then load from SQLite ────
+    try { await flushWrites(); } catch (err) { log.error(err, { message: 'Flush failed (non-fatal)' }); }
+
+    let settingsPatch: PartialMobileStore = {};
+    let entityPatch: Record<string, unknown> = {};
+    try {
+      [settingsPatch, entityPatch] = await Promise.all([
+        loadSettingsPatch(),
+        rehydrateFromDb(),
+      ]);
+    } catch (err) {
+      log.error(err, { message: 'Data loading failed (non-fatal)' });
+    }
 
     // Merge settings + entities into store in one batch
     const fullPatch = { ...settingsPatch, ...entityPatch } as PartialMobileStore;
@@ -88,18 +104,22 @@ export async function initApp(): Promise<void> {
       setState(fullPatch);
     }
 
-    // ── Step 3: Restore auth tokens from SecureStore ──────────
-    const secureTokens = await loadSecureTokens();
-    if (secureTokens) {
-      const currentAuth = store().auth;
-      if (currentAuth.isSignedIn && !currentAuth.token) {
-        setState({
-          auth: { ...currentAuth, token: secureTokens.token, refreshToken: secureTokens.refreshToken },
-        } as PartialMobileStore);
+    // ── Step 4: Restore auth tokens from SecureStore ──────────
+    try {
+      const secureTokens = await loadSecureTokens();
+      if (secureTokens) {
+        const currentAuth = store().auth;
+        if (currentAuth.isSignedIn && !currentAuth.token) {
+          setState({
+            auth: { ...currentAuth, token: secureTokens.token, refreshToken: secureTokens.refreshToken },
+          } as PartialMobileStore);
+        }
       }
+    } catch (err) {
+      log.error(err, { message: 'SecureStore load failed (non-fatal)' });
     }
 
-    // ── Step 4: Wire auth token changes → SecureStore ─────────
+    // ── Step 5: Wire auth token changes → SecureStore ─────────
     useAppStore.subscribe((state: any, prevState: any) => {
       const newToken = state.auth.token;
       const newRefresh = state.auth.refreshToken;
@@ -112,7 +132,7 @@ export async function initApp(): Promise<void> {
       }
     });
 
-    // ── Step 5: Set up auto-sync callback ─────────────────────
+    // ── Step 6: Set up auto-sync callback ─────────────────────
     let autoSyncCallback: (() => void) | null = null;
     const triggerAutoSync = () => autoSyncCallback?.();
     autoSyncCallback = () => {
@@ -120,7 +140,7 @@ export async function initApp(): Promise<void> {
       store().autoSyncHabits?.();
     };
 
-    // ── Step 6: Create DailyResetManager with SQLite storage ──
+    // ── Step 7: Create DailyResetManager with SQLite storage ──
     const dailyReset = new DailyResetManager({
       getLastReset: () => adapter.getSettings('lastDailyReset') as Promise<string | null>,
       setLastReset: (date: string) => { adapter.persistSettings('lastDailyReset', date).catch(e => log.error(e)); },
@@ -153,19 +173,22 @@ export async function initApp(): Promise<void> {
       },
     });
 
-    // ── Step 7: Recalculate derived state ─────────────────────
-    if (entityPatch.medHistory) store().calculateTotalMedMin();
-    if (entityPatch.checkinHistory) store().calculateStreak();
+    // ── Step 8: Recalculate derived state ──────────────────────
+    try {
+      if (entityPatch.medHistory) store().calculateTotalMedMin();
+      if (entityPatch.checkinHistory) store().calculateStreak();
+    } catch (err) {
+      log.error(err, { message: 'Derived state recalculation failed (non-fatal)' });
+    }
 
-    // ── Step 8: Clean up expired recycle bin items ────────────
-    store().cleanupRecycleBin();
+    // ── Step 9: Clean up expired recycle bin items ─────────────
+    try { store().cleanupRecycleBin(); } catch (err) { log.error(err, { message: 'Recycle bin cleanup failed (non-fatal)' }); }
 
-    // ── Step 9: Start daily reset checks ──────────────────────
-    dailyReset.start(Promise.resolve());
+    // ── Step 10: Start daily reset checks ──────────────────────
+    try { dailyReset.start(Promise.resolve()); } catch (err) { log.error(err, { message: 'Daily reset start failed (non-fatal)' }); }
 
     log.info('App initialized successfully');
   } catch (err) {
-    log.error(err, { message: 'App initialization failed' });
-  } finally {
+    log.error(err, { message: 'App initialization failed — database open error' });
   }
 }
