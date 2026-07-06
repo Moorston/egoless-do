@@ -4,8 +4,8 @@ import {
   getActivePlan, addPlan, canDeletePlan, canEditPlan,
   isPlanActive, isPlanDelayed, startPlan, computePlanProgress,
   statusToI18nKey,
-} from '../../packages/core/src/business/plan';
-import type { Plan, PlanItem, PlanItemCheckin } from '../../packages/core/src/types';
+} from './plan';
+import type { Plan, PlanItem, PlanItemCheckin } from '../types';
 
 const mkPlan = (overrides: Partial<Plan> = {}): Plan => ({
   id: 'p1', name: 'Test', status: 'draft', deleted: false,

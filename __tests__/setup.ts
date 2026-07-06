@@ -1,6 +1,9 @@
 // ─── Test setup ───────────────────────────────────────────────────
 // Global test configuration and mocks.
 
+// @ts-expect-error — React Native global not available in test env
+globalThis.__DEV__ = false;
+
 // Mock expo-sqlite
 vi.mock('expo-sqlite', () => ({
   openDatabaseAsync: vi.fn().mockResolvedValue({

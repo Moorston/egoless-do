@@ -1,9 +1,9 @@
 // ─── Checkin slice tests ──────────────────────────────────────────
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createCheckinSlice } from '../../packages/core/src/store/createCheckinSlice';
-import type { StorageAdapter, CheckinSlice } from '../../packages/core/src/store/types';
+import { createCheckinSlice } from './createCheckinSlice';
+import type { StorageAdapter, CheckinSlice } from './types';
 
-vi.mock('../../packages/core/src/logger', () => ({
+vi.mock('../logger', () => ({
   createLogger: () => ({ log: vi.fn(), warn: vi.fn(), error: vi.fn(), info: vi.fn() }),
 }));
 

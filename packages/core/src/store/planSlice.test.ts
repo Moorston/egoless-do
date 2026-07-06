@@ -1,9 +1,9 @@
 // ─── Plan slice tests ──────────────────────────────────────────
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createPlanSlice } from '../../packages/core/src/store/createPlanSlice';
-import type { StorageAdapter, PlanSlice } from '../../packages/core/src/store/types';
+import { createPlanSlice } from './createPlanSlice';
+import type { StorageAdapter, PlanSlice } from './types';
 
-vi.mock('../../packages/core/src/logger', () => ({
+vi.mock('../logger', () => ({
   createLogger: () => ({ log: vi.fn(), warn: vi.fn(), error: vi.fn(), info: vi.fn() }),
 }));
 

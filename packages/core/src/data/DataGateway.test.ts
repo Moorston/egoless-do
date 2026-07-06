@@ -1,6 +1,6 @@
 // ─── DataGateway contract tests ───────────────────────────────────
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { NoopDataGateway } from '../../packages/core/src/data/DataGateway';
+import { NoopDataGateway } from './DataGateway';
 
 describe('DataGateway Contract', () => {
   describe('NoopDataGateway', () => {

@@ -1,11 +1,11 @@
 // ─── Habit slice tests ──────────────────────────────────────────
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createHabitSlice } from '../../packages/core/src/store/createHabitSlice';
-import type { StorageAdapter, HabitSlice } from '../../packages/core/src/store/types';
-import type { CreateHabitForm } from '../../packages/core/src/business/habits';
+import { createHabitSlice } from './createHabitSlice';
+import type { StorageAdapter, HabitSlice } from './types';
+import type { CreateHabitForm } from '../business/habits';
 
 // Mock logger
-vi.mock('../../packages/core/src/logger', () => ({
+vi.mock('../logger', () => ({
   createLogger: () => ({ log: vi.fn(), warn: vi.fn(), error: vi.fn(), info: vi.fn() }),
 }));
 
