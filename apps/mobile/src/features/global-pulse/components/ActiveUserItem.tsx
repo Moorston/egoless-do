@@ -3,10 +3,11 @@
  * 显示：昵称、活动图标、时长、城市、目标、感悟
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
+import { useGlobalTick } from '../hooks/useGlobalTick';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 import { ActiveSession } from '@egoless-do/core';
 
@@ -38,15 +39,8 @@ export const ActiveUserItem: React.FC<ActiveUserItemProps> = React.memo(({
   const theme = useTheme();
   const t = useT();
   const { city } = useCityName(session.lat, session.lng, session.city);
-  const [duration, setDuration] = useState(() => formatDuration(session.started_at));
-
-  // 每秒更新时长
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDuration(formatDuration(session.started_at));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [session.started_at]);
+  const tick = useGlobalTick(1000);
+  const duration = useMemo(() => formatDuration(session.started_at), [session.started_at, tick]);
 
   const displayName = useMemo(
     () => formatDisplayName(session.nickname, session.user_hash),

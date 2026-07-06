@@ -3,7 +3,7 @@
  * 支持打卡记录和实时活跃会话
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
+import { useGlobalTick } from '../hooks/useGlobalTick';
 import { GlobalCheckin, ActiveSession } from '@egoless-do/core';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 
@@ -61,17 +62,11 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
   const typeColor = getCheckinTypeColor(type);
 
   // 实时会话的持续时间
-  const [duration, setDuration] = useState(() =>
-    session ? formatDuration(session.started_at) : ''
+  const tick = useGlobalTick(1000);
+  const duration = useMemo(
+    () => session ? formatDuration(session.started_at) : '',
+    [session, tick]
   );
-
-  useEffect(() => {
-    if (!session) return;
-    const interval = setInterval(() => {
-      setDuration(formatDuration(session.started_at));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [session]);
 
   // 格式化日期
   const formatDate = (dateString: string) => {

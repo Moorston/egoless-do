@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { ActiveSession } from '@egoless-do/core';
 import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';
+import { useGlobalTick } from '../hooks/useGlobalTick';
 
 interface ActiveMarkerProps {
   session: ActiveSession;
@@ -30,7 +31,8 @@ function formatDuration(startedAt: string): string {
 export const ActiveMarker: React.FC<ActiveMarkerProps> = ({ session, city }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
-  const [duration, setDuration] = React.useState(() => formatDuration(session.started_at));
+  const tick = useGlobalTick(1000);
+  const duration = useMemo(() => formatDuration(session.started_at), [session.started_at, tick]);
 
   // 脉冲动画
   useEffect(() => {
@@ -65,14 +67,6 @@ export const ActiveMarker: React.FC<ActiveMarkerProps> = ({ session, city }) => 
     pulse.start();
     return () => pulse.stop();
   }, [scaleAnim, opacityAnim]);
-
-  // 更新时长
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDuration(formatDuration(session.started_at));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [session.started_at]);
 
   const displayName = useMemo(
     () => formatDisplayName(session.nickname, session.user_hash),
