@@ -366,6 +366,11 @@ export default function ReflectionsScreen() {
   // Section 3: Render
   // ═══════════════════════════════════════════════════════════════
 
+  const parseReflectionColors = (r: { colors?: unknown }): [string, string] => {
+    const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors); } catch { return null; } })() : r.colors;
+    return [c?.[0] || MIND_COLORS_EXTENDED[0][0], c?.[1] || MIND_COLORS_EXTENDED[0][1]];
+  };
+
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>
       <SimpleHeader routeName="Reflections" />
@@ -455,7 +460,7 @@ export default function ReflectionsScreen() {
                           activeOpacity={0.85}
                         >
                         <LinearGradient
-                        colors={(() => { const c = typeof r.colors === 'string' ? (() => { try { return JSON.parse(r.colors); } catch { return null; } })() : r.colors; return [c?.[0] || MIND_COLORS_EXTENDED[0][0], c?.[1] || MIND_COLORS_EXTENDED[0][1]]; })()}
+                        colors={parseReflectionColors(r)}
                         start={{ x:0, y:0 }} end={{ x:1, y:1 }}
                         style={{ padding:14 }}
                       >

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
@@ -27,7 +27,9 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
 
   if (!reflection) return null;
 
-  const parsedColors = typeof reflection.colors === 'string' ? (() => { try { return JSON.parse(reflection.colors); } catch { return null; } })() : reflection.colors;
+  const parsedColors = useMemo(() => {
+    return typeof reflection.colors === 'string' ? (() => { try { return JSON.parse(reflection.colors); } catch { return null; } })() : reflection.colors;
+  }, [reflection.colors]);
   const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (parsedColors?.[0]));
   const bgColor = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[0] ?? MIND_COLORS_EXTENDED[0][0];
   const bgColor2 = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[1] ?? MIND_COLORS_EXTENDED[0][1];
