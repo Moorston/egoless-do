@@ -4,11 +4,11 @@ import { NavigationContainer, type NavigationContainerRef } from '@react-navigat
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
-  View, Text, Image, TouchableOpacity, Animated, StyleSheet, useWindowDimensions,
+  View, Text, Image, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
-  Sparkles, Target, Flame, Footprints,
+  Target, Flame, Footprints,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppStore, useShallowStore } from '../store/useAppStore';
@@ -130,104 +130,10 @@ function MedHistoryWrapper() {
   );
 }
 
-// ─── Floating Action Button ───────────────────────────────────────
-const FAB_SIZE = 52;
-const FAB_HIDE_OFFSET = 30; // How much of the FAB is visible when hidden
+// ─── Floating Action Button context ──────────────────────────────
 const TabNavContext = createContext<NavigationContainerRef<MainTabParamList> | null>(null);
 
-function FabButton({ primaryColor }: { primaryColor: string }) {
-  const tabNav = useContext(TabNavContext);
-  const { width: vw, height: vh } = useWindowDimensions();
-  const posRef = useRef({ x: vw - FAB_SIZE - 20, y: vh - 85 - FAB_SIZE - 20 });
-  const transX = useRef(new Animated.Value(posRef.current.x)).current;
-  const transY = useRef(new Animated.Value(posRef.current.y)).current;
-  const touchStart = useRef({ x: 0, y: 0 });
-  const offset = useRef({ x: posRef.current.x, y: posRef.current.y });
-  const isDragging = useRef(false);
-  const isHidden = useRef(false);
-
-  const onTouchStart = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    isDragging.current = false;
-    touchStart.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
-    offset.current = { x: posRef.current.x, y: posRef.current.y };
-  }, []);
-
-  const onTouchMove = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    const dx = e.nativeEvent.pageX - touchStart.current.x;
-    const dy = e.nativeEvent.pageY - touchStart.current.y;
-    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging.current = true;
-    transX.setValue(offset.current.x + dx);
-    transY.setValue(offset.current.y + dy);
-  }, [transX, transY]);
-
-  const onTouchEnd = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    const dx = e.nativeEvent.pageX - touchStart.current.x;
-    const dy = e.nativeEvent.pageY - touchStart.current.y;
-    const finalX = offset.current.x + dx;
-    const finalY = offset.current.y + dy;
-
-    if (!isDragging.current) {
-      if (isHidden.current) {
-        isHidden.current = false;
-        const targetX = vw - FAB_SIZE - 20;
-        posRef.current = { x: targetX, y: finalY };
-        Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
-        Animated.spring(transY, { toValue: finalY, useNativeDriver: false, bounciness: 8 }).start();
-      } else {
-        tabNav?.navigate('Reflections', { showNew: true });
-      }
-      return;
-    }
-
-    const distL = finalX;
-    const distR = vw - finalX - FAB_SIZE;
-    let targetX: number;
-    if (distL < distR) {
-      targetX = -FAB_HIDE_OFFSET;
-      isHidden.current = true;
-    } else {
-      targetX = vw - FAB_SIZE + FAB_HIDE_OFFSET;
-      isHidden.current = true;
-    }
-    const minY = 100;
-    const maxY = vh - 85 - FAB_SIZE - 10;
-    const targetY = Math.max(minY, Math.min(maxY, finalY));
-    posRef.current = { x: targetX, y: targetY };
-    Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
-    Animated.spring(transY, { toValue: targetY, useNativeDriver: false, bounciness: 8 }).start();
-  }, [tabNav, vw, vh, transX, transY]);
-
-  return (
-    <Animated.View
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      style={[styles.fab, {
-        backgroundColor: primaryColor,
-        shadowColor: primaryColor,
-        transform: [{ translateX: transX }, { translateY: transY }],
-      }]}
-    >
-      <Sparkles size={24} color="#ffffff" strokeWidth={2.5} />
-    </Animated.View>
-  );
-}
-
-const styles = StyleSheet.create({
-  fab: {
-    position: 'absolute',
-    width: FAB_SIZE,
-    height: FAB_SIZE,
-    borderRadius: FAB_SIZE / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 60,
-    elevation: 8,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-  },
-});
+import FabButton from '../components/FabButton';
 
 export { SimpleHeaderComponent as SimpleHeader };
 
@@ -297,7 +203,7 @@ function MainTabs() {
       <Tab.Screen name="Reflections" component={withErrorBoundary(ReflectionsScreen)} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={withLazy(HabitsScreen)} options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
     </Tab.Navigator>
-    <FabButton primaryColor={TH.primary} />
+    <FabButton primaryColor={TH.primary} onPress={() => tabNav?.navigate('Reflections', { showNew: true })} />
     </View>
     </TabNavContext.Provider>
   );

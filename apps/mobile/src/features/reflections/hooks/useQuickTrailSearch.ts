@@ -1,11 +1,11 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   computeCandidatePool, buildIndex, retrieveTopK,
   isAIRecommendAvailable, parseSmartQuery, semanticSearchReflections,
   createLogger,
 } from '@egoless-do/core';
 import type { MindReflection, SmartQueryResult, SmartQueryFilters, TrailFilters } from '@egoless-do/core';
+import { useSearchHistory } from './useSearchHistory';
 
 const log = createLogger('Reflections');
 
@@ -19,7 +19,6 @@ export interface AnalysisStep {
   detail?: string;
 }
 
-const SEARCH_HISTORY_KEY = 'quickTrailSearchHistory';
 const PAGE_SIZE = 20;
 
 export function useQuickTrailSearch(
@@ -160,20 +159,7 @@ export function useQuickTrailSearch(
   }, [selectedReflections]);
 
   // ── Search history ─────────────────────────────────────────────
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  useEffect(() => {
-    AsyncStorage.getItem(SEARCH_HISTORY_KEY).then(v => {
-      if (v) try { setSearchHistory(JSON.parse(v)); } catch {}
-    }).catch(() => {});
-  }, []);
-
-  const addToHistory = useCallback((query: string) => {
-    setSearchHistory(prev => {
-      const next = [query, ...prev.filter(h => h !== query)].slice(0, 10);
-      AsyncStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(next)).catch(() => {});
-      return next;
-    });
-  }, []);
+  const { searchHistory, addToHistory } = useSearchHistory();
 
   // ── AI Pipeline 共享逻辑 ───────────────────────────────────────
   interface PipelineResult {
