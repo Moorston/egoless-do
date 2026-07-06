@@ -288,7 +288,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
         <BodyCheckinInline
           TH={TH} T={T} plan={todayPlan}
           onSave={(data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => {
-            store.upsertBodyCheckin(data);
+                (store as any).upsertBodyCheckin(data);
             setAwarenessData({ ...data, id: '', updatedAt: Date.now(), deleted: false, synced: false } as BodyCheckin);
             setStep('success');
           }}

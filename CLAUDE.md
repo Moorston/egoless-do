@@ -1,75 +1,27 @@
-<!-- SPECKIT START -->
-<!-- specs/ 目录已删除，specs 现在通过 openspec/ 管理 -->
-<!-- SPECKIT END -->
+# egoless-do — Claude Memory
+> Last analyzed: 2026-07-06
+> Re-analysis needed: NO — read .claude/rules/ files instead of source files
 
-## 项目架构（2026-07 重构后）
+## What this project is
+# 心流纪 · Egoless Do  跨平台正念修行 + 习惯追踪 + 思维记录综合应用。帮助用户养成健康饮食、规律冥想、运动习惯，同时捕捉内心感悟，实现身、心、思全面提升。
 
-### 目录结构
+## Quick reference
+- **Stack**: TypeScript + JavaScript + Zustand + Vitest + Turborepo + ESLint
+- **Dev**: `N/A`
+- **Test**: `vitest run`
+- **Build**: `N/A`
 
-```
-egoless-do/ (Turborepo + pnpm workspaces)
-├── apps/
-│   ├── mobile/                    # React Native + Expo (iOS/Android)
-│   │   └── src/
-│   │       ├── features/          # 25 个功能模块（各自为政，保留 features/ 范式）
-│   │       ├── components/        # 跨 feature 通用组件
-│   │       ├── db/                # SQLite schema + syncQueue
-│   │       ├── store/             # Zustand store (mobile 专属)
-│   │       ├── net/               # 网络层工具 (offlineAware)
-│   │       ├── i18n/              # 国际化初始化 (i18next)
-│   │       └── navigation/        # 导航配置
-│   └── _archive/                    # 归档的遗留代码
-	│       └── web-legacy/              # Next.js 15 PWA (archived)
-├── packages/
-│   ├── core/                      # 共享业务逻辑（平台无关）
-│   │   ├── ai/                    # AI 服务 + RAG
-│   │   ├── business/              # 纯业务函数
-│   │   ├── store/                 # 37 个 Zustand slice
-│   │   ├── sync/                  # 同步协议
-│   │   ├── i18n/                  # 国际化
-│   │   ├── types/                 # 共享类型
-│   │   ├── constants/             # 常量
-│   │   ├── data/                  # 数据网关接口
-│   │   └── utils/                 # 工具函数
-│   └── config/                    # ESLint + TypeScript 配置
-├── backend/                       # PocketBase 后端（唯一位置）
-│   ├── pb_hooks/                  # 服务端 JS hooks
-│   ├── pb_migrations/             # 数据库迁移脚本
-│   └── pb_schema.json             # schema 定义
-├── infra/                         # 部署和运维文件
-│   ├── docker/                    # 生产配置 (docker-compose.yml, Dockerfile.web)
-│   ├── nginx/                     # 反向代理配置
-│   └── scripts/                   # 运维脚本 (deploy.sh, backup-pb.sh, restore-pb.sh)
-└── openspec/                      # 架构决策记录
-```
+## Memory files (read these, not source files)
+- @.claude/rules/architecture.md — folder map, entry points, data flow
+- @.claude/rules/stack.md — tech stack, versions, all commands
+- @.claude/rules/modules.md — every module and what it does
+- @.claude/rules/models.md — DB schemas and data types
+- @.claude/rules/api.md — all routes and endpoints
+- @.claude/rules/conventions.md — naming, patterns, testing approach
+- @.claude/rules/gotchas.md — quirks, workarounds, do-not-touch
+- @.claude/rules/changelog.md — what changed and when
 
-### 核心原则
-
-1. **core 是 sole source of truth**：业务逻辑、类型、常量、纯函数只放 core
-2. **apps 是壳**：只放 app-specific 的 UI、导航、平台适配
-3. **infra 是运维**：部署、数据库、脚本
-4. **移动优于复制**：宁可 git mv 也不要留副本
-
-### 判断"该放哪"的决策树
-
-```
-这个文件是业务逻辑吗？
-├── 是 → packages/core/src/business/ 或 domain/
-└── 否 → 它是 UI 组件吗？
-         ├── 是 → 跨 app 共享吗？
-         │        ├── 是 → packages/core/src/ui/（仅纯 UI 原子）
-         │        └── 否 → apps/<app>/components/ 或 features/<name>/components/
-         └── 否 → 它是类型吗？
-                  ├── 是 → packages/core/src/types/
-                  └── 否 → 它是配置/常量吗？
-                           ├── 是 → packages/core/src/constants/
-                           └── 否 → 它是工具函数吗？
-                                    ├── 是 → packages/core/src/utils/
-                                    └── 否 → 重新评估，可能是设计问题
-```
-
-### 已知技术债务
-
-- `_archive/web-legacy/` — 已归档的废弃 web 应用
-- `apps/mobile/src/features/reflections/` — 7 个子目录，复杂度高，待解体
-- 6 个测试失败（预先存在），待修复
+## Instruction
+You have full codebase knowledge from the files above.
+Do NOT re-read source files to understand structure — use memory files.
+If something seems outdated, flag it rather than re-analyzing.

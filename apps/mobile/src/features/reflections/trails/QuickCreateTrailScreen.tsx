@@ -11,7 +11,7 @@ import {
   ArrowLeft, X, Send, Check, ChevronDown,
   RefreshCw, Plus, Sparkles, Loader2,
 } from 'lucide-react-native';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import {
   FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON,
@@ -116,7 +116,7 @@ export default function QuickCreateTrailScreen() {
   }, [setSelectedIds]);
 
   const handleSelectAll = useCallback(() => {
-    setSelectedIds(new Set(matchResults.map(r => r.id));
+    setSelectedIds(new Set(matchResults.map(r => r.id)));
   }, [matchResults, setSelectedIds]);
 
   const handleDeselectAll = useCallback(() => {

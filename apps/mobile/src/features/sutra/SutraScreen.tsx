@@ -5,7 +5,7 @@ import { useKeepAwake } from 'expo-keep-awake';
 import * as Haptics from 'expo-haptics';
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES, dateStr } from '@egoless-do/core';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import type { MantraDef, MantraCategory } from '@egoless-do/core';

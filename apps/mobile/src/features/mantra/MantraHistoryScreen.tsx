@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 import type { RootStackParamList } from '../../navigation/types';
 

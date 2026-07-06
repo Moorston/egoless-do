@@ -6,7 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_BODY, FONT_SMALL, FONT_TINY, createLogger, MS_PER_DAY } from '@egoless-do/core';
 import {
@@ -25,6 +25,9 @@ import SmartQueryPanel from './SmartQueryPanel';
 const TRAIL_IGNORED_KEY = 'trailIgnoredPatterns';
 
 export default function MindTrailScreen() {
+  // ═══════════════════════════════════════════════════════════════
+  // Section 1: Store Data & Navigation
+  // ═══════════════════════════════════════════════════════════════
   const TH = useTheme();
   const T = useT();
   const { ignoredRecPatterns, aiMode, aiModels, thoughtTrails: rawThoughtTrails, reflections: rawReflections, createThoughtTrail, deleteThoughtTrail, addIgnoredRecPattern } = useShallowStore(s => ({
@@ -39,6 +42,9 @@ export default function MindTrailScreen() {
   }));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
 
+  // ═══════════════════════════════════════════════════════════════
+  // Section 2: Local State & Refs
+  // ═══════════════════════════════════════════════════════════════
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [inputText, setInputText] = useState('');
   const [recommendations, setRecommendations] = useState<TrailRecommendation[]>([]);
@@ -76,6 +82,9 @@ export default function MindTrailScreen() {
     return [...new Set([...storePatterns, ...ignoredPatternsRef.current])];
   }, [ignoredRecPatterns, ignoredVersion]);
 
+  // ═══════════════════════════════════════════════════════════════
+  // Section 3: Data Filtering & AI Availability
+  // ═══════════════════════════════════════════════════════════════
   const aiAvailable = useMemo(() => {
     return isAIRecommendAvailable({ mode: aiMode, models: aiModels });
   }, [aiMode, aiModels]);
@@ -108,6 +117,10 @@ export default function MindTrailScreen() {
       (!r.thoughtTrailIds || r.thoughtTrailIds.length === 0)
     );
   }, [reflections]);
+
+  // ═══════════════════════════════════════════════════════════════
+  // Section 4: Recommendation Engine
+  // ═══════════════════════════════════════════════════════════════
 
   // Progressive loading: local first, then AI
   // 用 ref 读取 thoughtTrails 和 ignoredPatterns，避免 store rehydration 触发 effect 重新执行
@@ -558,6 +571,10 @@ export default function MindTrailScreen() {
     handleDeleteTrail, handleOneClickCreate, handleCustomCreate,
     handleNotInterested, handleRefresh,
   ]);
+
+  // ═══════════════════════════════════════════════════════════════
+  // Section 5: Render
+  // ═══════════════════════════════════════════════════════════════
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>

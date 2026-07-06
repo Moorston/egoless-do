@@ -3,8 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Settings, PenLine, History } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme } from '@egoless-do/core';
 import type { DedicationSettings, Dedication } from '@egoless-do/core';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import DedicationCard from './components/DedicationCard';
 import DedicationSettingsModal from './modals/DedicationSettingsModal';
 
@@ -15,7 +14,7 @@ interface Props {
 }
 
 export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
-  const { dedicationSettings, dedications, updateDedicationSettings } = useAppStore(useShallow(s => ({ dedicationSettings: s.dedicationSettings, dedications: s.dedications, updateDedicationSettings: s.updateDedicationSettings })));
+  const { dedicationSettings, dedications, updateDedicationSettings } = useShallowStore(s => ({ dedicationSettings: s.dedicationSettings, dedications: s.dedications, updateDedicationSettings: s.updateDedicationSettings }));
   const [showSettings, setShowSettings] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 

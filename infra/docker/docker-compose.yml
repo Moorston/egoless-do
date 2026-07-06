@@ -21,6 +21,32 @@ services:
     networks:
       - egoless-net
 
+  # ─── Auth API 服务 (Hono) ─────────────────────────────────────
+  auth-api:
+    build: ./api
+    container_name: egoless-do-auth-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - PB_URL=http://pocketbase:8090
+      - PB_ADMIN_EMAIL=${PB_ADMIN_EMAIL}
+      - PB_ADMIN_PASSWORD=${PB_ADMIN_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - WECHAT_APPID=${WECHAT_APPID}
+      - WECHAT_SECRET=${WECHAT_SECRET}
+    volumes:
+      - auth-api-data:/app/data
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+    networks:
+      - egoless-net
+
   # ─── 数据库自动备份 ──────────────────────────────────────────
   backup:
     image: alpine:3.19
@@ -47,6 +73,9 @@ services:
         condition: service_healthy
     networks:
       - egoless-net
+
+volumes:
+  auth-api-data:
 
 networks:
   egoless-net:

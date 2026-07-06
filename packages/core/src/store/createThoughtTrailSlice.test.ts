@@ -1,6 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { createThoughtTrailSlice } from './createThoughtTrailSlice';
+import type { StorageAdapter } from './types';
 import type { ThoughtTrail } from '../types/thought-trail';
+
+/** No-op adapter for unit tests — all persistence calls are silently ignored. */
+const noopAdapter: StorageAdapter = {
+  persistChange: async () => {},
+  markDeleted: async () => {},
+  batchDelete: async () => {},
+};
 
 function makeTestStore(initialState: any = {}) {
   let state: any = {
@@ -37,7 +45,7 @@ describe('createThoughtTrailSlice', () => {
       const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       const cache = {
         summary: 'test summary',
@@ -66,7 +74,7 @@ describe('createThoughtTrailSlice', () => {
       const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail({ insightCache: existingCache })],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       const newCache = { ...existingCache, summary: 'new', generatedAt: 2000 };
       slice.setInsightCache('t1', newCache);
@@ -81,7 +89,7 @@ describe('createThoughtTrailSlice', () => {
       const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       const cache = {
         perspectives: ['persp1'],
@@ -101,7 +109,7 @@ describe('createThoughtTrailSlice', () => {
   describe('createPlanItemFromTrail', () => {
     it('returns false when trail not found', () => {
       const { set, get, api } = makeTestStore();
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
       const result = slice.createPlanItemFromTrail('missing', {
         name: 'test',
         description: '',
@@ -116,7 +124,7 @@ describe('createThoughtTrailSlice', () => {
       const { set, get, api } = makeTestStore({
         thoughtTrails: [makeTrail()],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
       const result = slice.createPlanItemFromTrail('t1', {
         name: 'test',
         description: '',
@@ -138,7 +146,7 @@ describe('createThoughtTrailSlice', () => {
           { id: 'p4', trailId: 't1', name: 'task 4', deleted: true },
         ],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
       const items = slice.getTrailPlanItems('t1');
       expect(items).toHaveLength(2);
       expect(items[0].id).toBe('p1');
@@ -149,7 +157,7 @@ describe('createThoughtTrailSlice', () => {
       const { set, get, api } = makeTestStore({
         planItems: [{ id: 'p1', trailId: 't2', name: 'task', deleted: false }],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
       const items = slice.getTrailPlanItems('t1');
       expect(items).toEqual([]);
     });
@@ -165,7 +173,7 @@ describe('createThoughtTrailSlice', () => {
           { id: 'n3', trailId: 't2', content: 'c', tags: [], source: 'free', order: 0, createdAt: 1000, updatedAt: 1000, deleted: false },
         ],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       slice.deleteThoughtTrail('t1');
 
@@ -184,7 +192,7 @@ describe('createThoughtTrailSlice', () => {
           { id: 'r2', thoughtTrailIds: ['t1', 't2'], updatedAt: 0, deleted: false },
         ],
       });
-      const slice = createThoughtTrailSlice()(set, get, api);
+      const slice = createThoughtTrailSlice(noopAdapter)(set, get, api);
 
       slice.deleteThoughtTrail('t1');
 

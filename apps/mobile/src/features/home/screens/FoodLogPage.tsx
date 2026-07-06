@@ -2,8 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader } from '../../../components/UI';
 import { COLORS, getTodayFoodLog, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK, FONT_EMPTY } from '@egoless-do/core';
 import AddFoodModal from '../../../components/AddFoodModal';
@@ -14,11 +13,11 @@ export default function FoodLogPage() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const { foodLog, calGoal, deleteFood } = useAppStore(useShallow(s => ({
+  const { foodLog, calGoal, deleteFood } = useShallowStore(s => ({
     foodLog: s.foodLog,
     calGoal: s.calGoal,
     deleteFood: s.deleteFood,
-  })));
+  }));
   const [showAdd, setShowAdd]     = useState(false);
   const [showHistory, setShowHistory] = useState(true);
 

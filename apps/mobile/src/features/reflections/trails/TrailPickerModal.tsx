@@ -1,8 +1,7 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { X, Check, Plus, Link } from 'lucide-react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, getTrailsByReflection, getTrailStats } from '@egoless-do/core';
 import CreateThoughtTrailModal from './CreateThoughtTrailModal';
@@ -21,12 +20,12 @@ export default function TrailPickerModal({ visible, reflectionId, onClose, onTog
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { thoughtTrails: rawThoughtTrails, reflections: rawReflections, removeReflectionFromTrail, addReflectionToTrail } = useAppStore(useShallow(s => ({
+  const { thoughtTrails: rawThoughtTrails, reflections: rawReflections, removeReflectionFromTrail, addReflectionToTrail } = useShallowStore(s => ({
     thoughtTrails: s.thoughtTrails,
     reflections: s.reflections,
     removeReflectionFromTrail: s.removeReflectionFromTrail,
     addReflectionToTrail: s.addReflectionToTrail,
-  })));
+  }));
   const [showCreate, setShowCreate] = useState(false);
 
   const trails = useMemo(() =>

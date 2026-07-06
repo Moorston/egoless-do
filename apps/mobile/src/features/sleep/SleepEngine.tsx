@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
 import { dateStr } from '@egoless-do/core';
 import { getCurrentPeriod, getNextSleepPeriod, formatSleepDuration, BODY_CLOCK } from '@egoless-do/core';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';

@@ -3,7 +3,7 @@ import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, A
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, type Theme } from '@egoless-do/core';
 import { formatSleepDuration } from '@egoless-do/core';

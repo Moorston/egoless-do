@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { X, Link2, Check } from 'lucide-react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 import type { LinkType, MindReflection } from '@egoless-do/core';
@@ -25,10 +24,10 @@ export default function LinkReflectionModal({ visible, onClose, reflection }: Pr
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { reflections: rawReflections, createReflectionLink } = useAppStore(useShallow(s => ({
+  const { reflections: rawReflections, createReflectionLink } = useShallowStore(s => ({
     reflections: s.reflections,
     createReflectionLink: s.createReflectionLink,
-  })));
+  }));
 
   const [selectedType, setSelectedType] = useState<LinkType>('related');
   const [selectedReflectionId, setSelectedReflectionId] = useState<string | null>(null);

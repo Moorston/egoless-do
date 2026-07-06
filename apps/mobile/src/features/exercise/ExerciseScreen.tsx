@@ -6,8 +6,7 @@ import { useTheme, useT } from '../../components/UI';
 import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Footprints, Activity, Bike, Dumbbell, ChevronRight,
@@ -19,9 +18,9 @@ export default function ExerciseScreen() {
   const T     = useT();
   const P     = TH.primary;
   const nav   = useRootNavigation();
-  const { exerciseLog } = useAppStore(useShallow(s => ({
+  const { exerciseLog } = useShallowStore(s => ({
     exerciseLog: s.exerciseLog,
-  })));
+  }));
   const [showOther, setShowOther] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const SPORT_EMOJI: Record<string, string> = { '行走': '🚶', '跑步': '🏃', '骑行': '🚴' };

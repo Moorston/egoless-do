@@ -12,7 +12,7 @@ import { submitCheckin } from '../services/globalPulseApi';
 import { getUserHash, getFuzzSecret } from '../services/userHash';
 import { usePrivacy } from './usePrivacy';
 import { useNetworkStatus } from './useNetworkStatus';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const log = createLogger('GlobalPulse');
 

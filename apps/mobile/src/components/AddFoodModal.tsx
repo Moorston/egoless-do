@@ -4,7 +4,7 @@ import {
   KeyboardAvoidingView, Keyboard, Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { useTheme, useT, ThemedInput } from './UI';
 import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr } from '@egoless-do/core';
 import type { WuxingElement, FlavorType, FoodWuxingItem } from '@egoless-do/core';
@@ -28,8 +28,8 @@ export default function AddFoodModal({ visible, onClose, onFoodAdded }: Props) {
   const TH = useTheme();
   const T  = useT();
   const P  = TH.primary;
-  const language = useAppStore(s => s.language);
-  const customFoodPresets = useAppStore(s => s.customFoodPresets);
+  const language = useShallowStore(s => s.language);
+  const customFoodPresets = useShallowStore(s => s.customFoodPresets);
   const insets = useSafeAreaInsets();
 
   const [search, setSearch]     = useState('');

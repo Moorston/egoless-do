@@ -5,8 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Brain, TrendingUp, Calendar, Lightbulb } from 'lucide-react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK } from '@egoless-do/core';
 import { getMoodIcon } from '@egoless-do/core';
@@ -24,10 +23,10 @@ export default function InsightScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { reflections: rawReflections, thoughtTrails: rawThoughtTrails } = useAppStore(useShallow(s => ({
+  const { reflections: rawReflections, thoughtTrails: rawThoughtTrails } = useShallowStore(s => ({
     reflections: s.reflections,
     thoughtTrails: s.thoughtTrails,
-  })));
+  }));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const reflections = useMemo(() =>

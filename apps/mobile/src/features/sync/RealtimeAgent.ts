@@ -117,7 +117,7 @@ export class RealtimeAgent {
     const pbEvents = ['PB_CONNECTED', 'record_created', 'record_updated', 'record_deleted', 'sync_batch'];
     for (const evt of pbEvents) {
       (es as unknown as EventTarget).addEventListener(evt, (event: Event) => {
-        const msgEvent = event as MessageEvent;
+        const msgEvent = event as unknown as { type: string; data: unknown };
         this._handleEvent(msgEvent.type, msgEvent.data);
       });
     }

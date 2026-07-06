@@ -1,6 +1,5 @@
 import type { ThemeName } from '../types';
 import type { ModelConfig, AIMode } from '../ai/types';
-import type { StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 
 export interface SettingsSlice {

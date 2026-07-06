@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Flag, Target, Star, Plus, ChevronDown, ChevronUp } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, dateStr } from '@egoless-do/core';
 import type { Vision, VisionType, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import VisionCard from './components/VisionCard';
 import VisionEditModal from './modals/VisionEditModal';
 

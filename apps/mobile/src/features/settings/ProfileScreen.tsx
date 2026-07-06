@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, useT } from '../../components/UI';
 import {
@@ -75,8 +75,8 @@ export default function ProfileScreen() {
     if (!isNaN(wg) && wg > 0) useAppStore.getState().setWaterGoal(wg);
   }, []);
 
-  const weightUnit = useAppStore(s => s.weightUnit);
-  const setWeightUnit = useAppStore(s => s.setWeightUnit);
+  const weightUnit = useShallowStore(s => s.weightUnit);
+  const setWeightUnit = useShallowStore(s => s.setWeightUnit);
 
   const profileStats = useMemo(() => {
     const totalCheckinDays = (checkinHistory ?? []).filter(c => c.done && !c.deleted).length;

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { dateStr, createLogger } from '@egoless-do/core';
 
 const log = createLogger('SleepNotify');
@@ -29,11 +28,11 @@ function getNotifications(): typeof import('expo-notifications') {
 }
 
 export function useSleepNotifications() {
-  const { sleepGoal, getTodaySleep, saveSleepDiary } = useAppStore(useShallow(s => ({
+  const { sleepGoal, getTodaySleep, saveSleepDiary } = useShallowStore(s => ({
     sleepGoal: s.sleepGoal,
     getTodaySleep: s.getTodaySleep,
     saveSleepDiary: s.saveSleepDiary,
-  })));
+  }));
   const [showBedtimeModal, setShowBedtimeModal] = useState(false);
   const autoRecordTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const appStateRef = useRef(AppState.currentState);

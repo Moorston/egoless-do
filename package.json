@@ -7,6 +7,8 @@
     "mobile:ios": "pnpm --filter mobile ios",
     "pb": "cd backend && pocketbase.exe serve --http=0.0.0.0:8090",
     "pb:setup": "powershell -ExecutionPolicy Bypass -File backend\\setup.ps1",
+    "api": "cd infra/docker/api && npm run dev",
+    "api:build": "cd infra/docker/api && npm run build",
     "build:mobile": "pnpm --filter mobile build",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
@@ -42,6 +44,7 @@
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^8.0.7",
     "react-native-sse": "^1.2.1",
-    "uuid": "^14.0.0"
+    "uuid": "^14.0.0",
+    "zustand": "^5.0.0"
   }
 }

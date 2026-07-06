@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { isPreceptHabit } from '@egoless-do/core';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {

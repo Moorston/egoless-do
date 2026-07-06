@@ -4,8 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { X, Trash2 } from 'lucide-react-native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useShallowStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_SMALL, dateStr, addDays, fmtMS, BREATHING_PRESETS } from '@egoless-do/core';
 import type { BreathingRecord } from '@egoless-do/core';
 
@@ -13,7 +12,7 @@ export default function BreathHistoryPage() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const { breathHistory, removeBreathRecord } = useAppStore(useShallow(s => ({ breathHistory: s.breathHistory, removeBreathRecord: s.removeBreathRecord })));
+  const { breathHistory, removeBreathRecord } = useShallowStore(s => ({ breathHistory: s.breathHistory, removeBreathRecord: s.removeBreathRecord }));
 
   const records: BreathingRecord[] = useMemo(() => {
     return ((breathHistory ?? []) as BreathingRecord[])

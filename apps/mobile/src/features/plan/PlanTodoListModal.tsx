@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import {
   View, Text, TouchableOpacity, Modal, ScrollView,
 } from 'react-native';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { COLORS, getTodayItems, getActivePlan, getTodoItemStatus, computeDailyTodoStats, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { useTheme, useT } from '../../components/UI';
 import { X, CheckCircle2, Check } from 'lucide-react-native';

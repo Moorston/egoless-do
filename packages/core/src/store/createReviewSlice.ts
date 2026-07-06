@@ -10,7 +10,7 @@ const log = createLogger('Store');
 
 export function createReviewSlice(
   adapter: StorageAdapter,
-  triggerAutoSync?: () => void,
+  onSync?: () => void,
 ): SliceCreator<ReviewSlice> {
   return (set, get) => ({
     checkinReviews: [],
@@ -103,8 +103,8 @@ export function createReviewSlice(
       }
       
       // 触发同步
-      triggerAutoSync?.();
-      
+      onSync?.();
+
       return review;
     },
     
@@ -128,7 +128,7 @@ export function createReviewSlice(
       }));
       
       adapter.markDeleted('checkinReview', id).catch(e => log.error(e));
-      triggerAutoSync?.();
+      onSync?.();
     },
     
     clearAllReviews() {
@@ -147,7 +147,7 @@ export function createReviewSlice(
         adapter.batchDelete(toDelete).catch(e => log.error(e));
       }
       
-      triggerAutoSync?.();
+      onSync?.();
     },
   });
 }

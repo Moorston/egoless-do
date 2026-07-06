@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking, Alert, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useRootNavigation } from '../../../navigation/hooks';
 import { useT } from '../../../components/UI';
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger } from '@egoless-do/core';
@@ -30,13 +29,13 @@ export default function ReflectionDetailContent({
   onCreatePlanItem,
   onDelete,
 }: ReflectionDetailContentProps) {
-  const { reflections, thoughtTrails, planItems, deletePlanItem, unlinkReflectionFromPlanItem } = useAppStore(useShallow(s => ({
+  const { reflections, thoughtTrails, planItems, deletePlanItem, unlinkReflectionFromPlanItem } = useShallowStore(s => ({
     reflections: s.reflections,
     thoughtTrails: s.thoughtTrails,
     planItems: s.planItems,
     deletePlanItem: s.deletePlanItem,
     unlinkReflectionFromPlanItem: s.unlinkReflectionFromPlanItem,
-  })));
+  }));
   const nav = useRootNavigation();
   const T = useT();
   const [showMore, setShowMore] = useState(false);

@@ -3,7 +3,7 @@ import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, A
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, dateStr, COLORS, type Theme } from '@egoless-do/core';
 import { Calendar, Flame, X, Trash2 } from 'lucide-react-native';
@@ -195,7 +195,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession |
   const startEdit = () => { setNoteText(entry.note ?? ''); setEditingNote(true); };
   const saveNote = () => {
     const updated = { ...entry, note: noteText, updatedAt: Date.now() };
-    const newHist = (useAppStore.getState().fastingHistory ?? []).map(e => e.id === entry.id ? updated : e);
+    const newHist = (useAppStore.getState().fastingHistory ?? []).map((e: FastingSession) => e.id === entry.id ? updated : e);
     useAppStore.setState({ fastingHistory: newHist });
     import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
     setEditingNote(false);
@@ -297,7 +297,7 @@ export default function FastHistoryPage() {
   }, [activeEntries, grouped]);
 
   const handleDelete = useCallback((id: string) => {
-    const newHist = (useAppStore.getState().fastingHistory ?? []).map(f => f.id === id ? { ...f, deleted: true, updatedAt: Date.now() } : f);
+    const newHist = (useAppStore.getState().fastingHistory ?? []).map((f: FastingSession) => f.id === id ? { ...f, deleted: true, updatedAt: Date.now() } : f);
     useAppStore.setState({ fastingHistory: newHist });
     import('../../store/storageAdapter').then(({ flushWrites }) => flushWrites());
   }, []);
@@ -370,7 +370,7 @@ export default function FastHistoryPage() {
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>
-            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Fasting' } as never)} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
+            <TouchableOpacity onPress={() => nav.navigate('MainTabs', { screen: 'Fasting' })} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
               {/* 修复: 移除 as any，使用 as never 处理类型不匹配 */}
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次禁食</Text>
             </TouchableOpacity>

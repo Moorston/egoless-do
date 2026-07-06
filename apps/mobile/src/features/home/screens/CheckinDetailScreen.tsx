@@ -2,8 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
@@ -46,9 +45,9 @@ type DetailRoute = RouteProp<RootStackParamList, 'CheckinDetail'>;
 export default function CheckinDetailScreen() {
   const TH = useTheme();
   const T = useT();
-  const { checkinHistory } = useAppStore(useShallow(s => ({
+  const { checkinHistory } = useShallowStore(s => ({
     checkinHistory: s.checkinHistory,
-  })));
+  }));
   const nav = useRootNavigation();
   const route = useRoute<DetailRoute>();
   const date = route.params?.date ?? '';

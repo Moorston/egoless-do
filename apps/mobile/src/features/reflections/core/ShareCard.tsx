@@ -22,7 +22,7 @@ interface ShareCardProps {
 export default function ShareCard({ visible, onClose, reflection }: ShareCardProps) {
   const TH = useTheme();
   const T = useT();
-  const viewShotRef = useRef<{ capture: () => Promise<string> } | null>(null);
+  const viewShotRef = useRef<ViewShot>(null);
   const [capturing, setCapturing] = useState(false);
 
   if (!reflection) return null;

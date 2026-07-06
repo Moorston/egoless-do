@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress, getFrequencySummary, MS_PER_DAY } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, getFrequencySummary, MS_PER_DAY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -17,7 +17,7 @@ import { ChevronDown, ChevronRight, Check, Trash2, Pencil, CircleCheck, Play, Pa
 const EMPTY_CHECKINS: PlanItemCheckin[] = [];
 
 
-export default function PlanDetailContent({ planId, onClose }: { planId: string; onClose: () => void }) {
+export default function PlanDetailContent({ planId, onClose, addReflectionId }: { planId: string; onClose: () => void; addReflectionId?: string }) {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;

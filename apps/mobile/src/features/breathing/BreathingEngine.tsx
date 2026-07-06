@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { View, Text, Animated, Easing, AppState, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { FONT_BODY, createLogger, fmtMS, dateStr } from '@egoless-do/core';
 import type { BreathingPreset } from '@egoless-do/core';
 import { cycleDuration } from '@egoless-do/core';

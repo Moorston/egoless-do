@@ -4,8 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../navigation/types';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { FONT_BUTTON, tomorrow } from '@egoless-do/core';
 import type { Habit } from '@egoless-do/core';
@@ -29,12 +28,12 @@ export default function HabitsScreen() {
   const T = useT();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const { habits, checkHabitAutoStatus, autoSyncHabits, checkinHabit } = useAppStore(useShallow(s => ({
+  const { habits, checkHabitAutoStatus, autoSyncHabits, checkinHabit } = useShallowStore(s => ({
     habits: s.habits,
     checkHabitAutoStatus: s.checkHabitAutoStatus,
     autoSyncHabits: s.autoSyncHabits,
     checkinHabit: s.checkinHabit,
-  })));
+  }));
 
   const [filter, setFilter] = useState('all');
   const [showCal, setShowCal] = useState<string | null>(null);

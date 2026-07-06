@@ -3,7 +3,7 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioPlayer } from 'expo-audio';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
 import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY, createLogger } from '@egoless-do/core';
@@ -67,7 +67,7 @@ export default function FastingScreen() {
     const divisor = (activeFasting.targetHours ?? 8) * 3600;
     return divisor > 0 ? Math.min(elapsed / divisor, 1) : 0;
   }, [activeFasting, elapsed]);
-  const kcal = useMemo(() => estimateFastingKcal(elapsed / 3600, userProfile.weight ?? 70, userProfile.gender ?? 'male', userProfile.age ?? 30), [elapsed, userProfile]);
+  const kcal = useMemo(() => estimateFastingKcal(elapsed / 3600, userProfile.weight ?? 70, (userProfile.gender ?? 'male') as 'male' | 'female', userProfile.age ?? 30), [elapsed, userProfile]);
 
   useEffect(() => {
     if (pct >= 1 && !bellPlayedRef.current) {
@@ -387,13 +387,13 @@ export default function FastingScreen() {
             />
             <View style={{ flexDirection:'row', gap:10 }}>
               <TouchableOpacity
-                onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: userProfile?.gender ?? 'male', age: userProfile?.age ?? 30 }); setShowNoteModal(false); }}
+                onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: (userProfile?.gender ?? 'male') as 'male' | 'female', age: userProfile?.age ?? 30 }); setShowNoteModal(false); }}
                 style={{ flex:1, padding:14, borderRadius:12, borderWidth:1, borderColor:TH.border, alignItems:'center' }}
               >
                 <Text style={{ color:TH.sub, fontWeight:'600', fontSize:FONT_BODY }}>跳过</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: userProfile?.gender ?? 'male', age: userProfile?.age ?? 30, note: noteText.trim() || undefined }); setShowNoteModal(false); }}
+                onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: (userProfile?.gender ?? 'male') as 'male' | 'female', age: userProfile?.age ?? 30, note: noteText.trim() || undefined }); setShowNoteModal(false); }}
                 style={{ flex:1, padding:14, borderRadius:12, backgroundColor:P, alignItems:'center' }}
               >
                 <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BODY }}>完成</Text>

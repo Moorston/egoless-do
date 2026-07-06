@@ -4,8 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { X } from 'lucide-react-native';
 import { useTheme, useT } from '../../../components/UI';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote, MS_PER_WEEK } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 
@@ -18,10 +17,10 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { checkinHistory, streak } = useAppStore(useShallow(s => ({
+  const { checkinHistory, streak } = useShallowStore(s => ({
     checkinHistory: s.checkinHistory,
     streak: s.streak,
-  })));
+  }));
   const insets = useSafeAreaInsets();
 
   const historyArr = checkinHistory ?? [];

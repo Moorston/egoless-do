@@ -5,7 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, dateStr } from '@egoless-do/core';
 import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
 import { Flag, Target, Plus, X, Star } from 'lucide-react-native';

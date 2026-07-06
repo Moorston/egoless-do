@@ -4,8 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
 import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, dateStr, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
@@ -33,11 +32,11 @@ export default function MeditationScreen() {
   const P     = TH.primary;
   const {
     medHistory, totalMedMinutes, addMedMinutes,
-  } = useAppStore(useShallow(s => ({
+  } = useShallowStore(s => ({
     medHistory: s.medHistory,
     totalMedMinutes: s.totalMedMinutes,
     addMedMinutes: s.addMedMinutes,
-  })));
+  }));
   const nav   = useRootNavigation();
   const T     = useT();
 

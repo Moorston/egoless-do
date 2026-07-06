@@ -7,7 +7,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../../navigation/hooks';
 import {
   useTheme, ScreenHeader, PrimaryButton, OutlineButton,
@@ -34,6 +34,10 @@ const log = createLogger('Reflections');
 import ReflectionDetailContent from './ReflectionDetailContent';
 import TrailPickerModal from '../trails/TrailPickerModal';
 import { getTrailsByReflection } from '@egoless-do/core';
+
+// ═══════════════════════════════════════════════════════════════
+// Section 0: Helper Functions
+// ═══════════════════════════════════════════════════════════════
 
 // ── Manager helpers ───────────────────────────────────────────────
 function getManagerProps(
@@ -93,6 +97,9 @@ function getManagerProps(
 
 // ── ReflectionsScreen ────────────────────────────────────────────
 export default function ReflectionsScreen() {
+  // ═══════════════════════════════════════════════════════════════
+  // Section 1: Store Data & Navigation
+  // ═══════════════════════════════════════════════════════════════
   const TH    = useTheme();
   const P     = TH.primary;
   const { reflections, addReflection, addReflectionToTrail, updateReflection, deleteReflection, getActivePlan, createPlanItem, planItems, thoughtTrails, deletePlanItem, unlinkReflectionFromPlanItem } = useShallowStore(s => ({
@@ -354,6 +361,10 @@ export default function ReflectionsScreen() {
   const handleNavigateToPlan = useCallback((planId: string) => {
     rootNav.navigate('PlanDetail', { planId });
   }, [rootNav]);
+
+  // ═══════════════════════════════════════════════════════════════
+  // Section 3: Render
+  // ═══════════════════════════════════════════════════════════════
 
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>

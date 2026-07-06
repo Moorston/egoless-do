@@ -1,7 +1,6 @@
 // Backward-compatible re-export. Trail notes are now part of ThoughtTrailSlice.
 import { createThoughtTrailSlice } from './createThoughtTrailSlice';
-import type { ThoughtTrailSlice, StorageAdapter } from './types';
-import type { SliceCreator } from './sliceHelper';
+import type { ThoughtTrailSlice } from './types';
 
 export { createThoughtTrailSlice as createTrailNoteSlice };
 

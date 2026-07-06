@@ -3,8 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Plus, Lightbulb, TrendingUp, AlertTriangle, X } from 'lucide-react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 import { getMoodIcon } from '@egoless-do/core';
@@ -22,9 +21,9 @@ export default function StrategyLibrary() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { reflections: rawReflections } = useAppStore(useShallow(s => ({
+  const { reflections: rawReflections } = useShallowStore(s => ({
     reflections: s.reflections,
-  })));
+  }));
   const nav = useNavigation();
 
   const [showAddModal, setShowAddModal] = useState(false);

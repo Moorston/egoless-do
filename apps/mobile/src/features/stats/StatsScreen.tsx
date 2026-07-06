@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { Card, useTheme, useT } from '../../components/UI';
 import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB, activeOnly } from '@egoless-do/core';
@@ -37,7 +36,7 @@ type ChartKey = typeof CHART_TABS[number];
 export default function StatsScreen() {
   const TH = useTheme();
   const T = useT();
-  const { exerciseLog: rawExerciseLog, fastingHistory: rawFastingHistory, userProfile, totalMedMinutes: rawTotalMedMinutes, medHistory: rawMedHistory, reflections: rawReflections, plans: rawPlans, planItems: rawPlanItems, habits: rawHabits, graceHistory, checkinHistory: rawCheckinHistory, foodLog: rawFoodLog, streak } = useAppStore(useShallow(s => ({
+  const { exerciseLog: rawExerciseLog, fastingHistory: rawFastingHistory, userProfile, totalMedMinutes: rawTotalMedMinutes, medHistory: rawMedHistory, reflections: rawReflections, plans: rawPlans, planItems: rawPlanItems, habits: rawHabits, graceHistory, checkinHistory: rawCheckinHistory, foodLog: rawFoodLog, streak } = useShallowStore(s => ({
     exerciseLog: s.exerciseLog,
     fastingHistory: s.fastingHistory,
     userProfile: s.userProfile,
@@ -51,7 +50,7 @@ export default function StatsScreen() {
     checkinHistory: s.checkinHistory,
     foodLog: s.foodLog,
     streak: s.streak,
-  })));
+  }));
   const P = TH.primary;
   const nav = useRootNavigation();
 

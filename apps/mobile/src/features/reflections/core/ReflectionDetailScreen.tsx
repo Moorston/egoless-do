@@ -6,15 +6,14 @@ import type { RootStackParamList } from '../../../navigation/types';
 import type { MindReflection } from '@egoless-do/core';
 import ReflectionDetailContent from './ReflectionDetailContent';
 import ShareCard from './ShareCard';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useT } from '../../../components/UI';
 
 export default function ReflectionDetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'ReflectionDetail'>>();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { reflectionId } = route.params;
-  const { reflections, getActivePlan, deleteReflection } = useAppStore(useShallow(s => ({ reflections: s.reflections, getActivePlan: s.getActivePlan, deleteReflection: s.deleteReflection })));
+  const { reflections, getActivePlan, deleteReflection } = useShallowStore(s => ({ reflections: s.reflections, getActivePlan: s.getActivePlan, deleteReflection: s.deleteReflection }));
   const T = useT();
   const [shareReflection, setShareReflection] = useState<MindReflection | null>(null);
 

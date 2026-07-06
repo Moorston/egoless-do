@@ -4,12 +4,12 @@
  */
 
 import { useCallback } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { CheckinType } from '@egoless-do/core';
 
 export function useGoalResolver() {
-  const planItems = useAppStore(s => s.planItems);
-  const habits = useAppStore(s => s.habits);
+  const planItems = useShallowStore(s => s.planItems);
+  const habits = useShallowStore(s => s.habits);
 
   const resolveGoal = useCallback((activityType: CheckinType): string | null => {
     // 查找匹配类型的进行中计划项

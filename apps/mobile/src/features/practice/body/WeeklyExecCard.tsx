@@ -25,7 +25,7 @@ export default function WeeklyExecCard({ TH, T, plans, exerciseLog }: Props) {
 
   const weekExercises = (exerciseLog ?? []).filter((e: ExerciseEntry) => {
     if (e.deleted) return false;
-    const d = new Date(e.ts ?? 0);
+    const d = new Date(e.timestamp ?? 0);
     return dateStr(d) >= weekStartStr && dateStr(d) <= todayStr;
   });
 
@@ -51,12 +51,12 @@ export default function WeeklyExecCard({ TH, T, plans, exerciseLog }: Props) {
             dayDate.setDate(dayDate.getDate() + idx);
             const dayStr = dateStr(dayDate);
             const matched = !isRest && weekExercises.some((e: ExerciseEntry) => {
-              const eDate = dateStr(new Date(e.ts ?? 0));
+              const eDate = dateStr(new Date(e.timestamp ?? 0));
               return eDate === dayStr && (!dayPlan.sportKey || e.sportKey === dayPlan.sportKey);
             });
             if (matched) {
               completedDays++;
-              const dayExercises = weekExercises.filter((e: ExerciseEntry) => dateStr(new Date(e.ts ?? 0)) === dayStr);
+              const dayExercises = weekExercises.filter((e: ExerciseEntry) => dateStr(new Date(e.timestamp ?? 0)) === dayStr);
               totalKcal += dayExercises.reduce((s: number, e: ExerciseEntry) => s + (e.calories ?? 0), 0);
             }
             const dayName = T(dayKey);

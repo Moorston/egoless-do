@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { X, Check, Search } from 'lucide-react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, generateTrailName, getMoodIcon } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
@@ -18,11 +17,11 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { reflections: rawReflections, thoughtTrails: rawThoughtTrails, createThoughtTrail } = useAppStore(useShallow(s => ({
+  const { reflections: rawReflections, thoughtTrails: rawThoughtTrails, createThoughtTrail } = useShallowStore(s => ({
     reflections: s.reflections,
     thoughtTrails: s.thoughtTrails,
     createThoughtTrail: s.createThoughtTrail,
-  })));
+  }));
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');

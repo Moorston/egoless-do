@@ -4,8 +4,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import NetInfo from '@react-native-community/netinfo';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
@@ -36,7 +35,7 @@ export default function SettingsScreen() {
     theme, setTheme, language, setLanguage,
     auth, userProfile, streak,
     remindEnabled, remindTime, setRemindEnabled, setRemindTime,
-  } = useAppStore(useShallow(s => ({
+  } = useShallowStore(s => ({
     theme: s.theme,
     setTheme: s.setTheme,
     language: s.language,
@@ -48,11 +47,11 @@ export default function SettingsScreen() {
     remindTime: s.remindTime,
     setRemindEnabled: s.setRemindEnabled,
     setRemindTime: s.setRemindTime,
-  })));
+  }));
   const nav   = useRootNavigation();
 
-  const healthSyncEnabled = useAppStore(s => s.healthSyncEnabled);
-  const setHealthSyncEnabled = useAppStore(s => s.setHealthSyncEnabled);
+  const healthSyncEnabled = useShallowStore(s => s.healthSyncEnabled);
+  const setHealthSyncEnabled = useShallowStore(s => s.setHealthSyncEnabled);
   const [showTheme, setShowTheme]         = useState(false);
   const [showLang, setShowLang]           = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);

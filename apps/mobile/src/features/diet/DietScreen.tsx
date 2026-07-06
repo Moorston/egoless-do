@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, FlatList } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useShallowStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import AddFoodModal from '../../components/AddFoodModal';
@@ -63,8 +62,7 @@ export default function DietScreen() {
 
   const { foodLog, lookupWuxing, getDailyFlavorStats, getDailyWuxingStats,
     motivationLog, activeFasting, fastingHistory, getMotivationStats, getEmotionSensitiveDays,
-    calGoal, startFasting, stopFasting } = useAppStore(
-    useShallow(s => ({
+    calGoal, startFasting, stopFasting } = useShallowStore(s => ({
       foodLog: s.foodLog,
       lookupWuxing: s.lookupWuxing,
       getDailyFlavorStats: s.getDailyFlavorStats,
@@ -77,8 +75,7 @@ export default function DietScreen() {
       calGoal: s.calGoal,
       startFasting: s.startFasting,
       stopFasting: s.stopFasting,
-    }))
-  );
+  }));
 
   const today = useMemo(() => dateStr(), []);
   const todayFoods = useMemo(() => foodLog.filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === today), [foodLog, today]);
@@ -314,7 +311,7 @@ export default function DietScreen() {
       const d = new Date(now.getTime() - i * 24 * 3600 * 1000);
       const ds = dateStr(d);
       const ws = getDailyWuxingStats(ds);
-      if (ws.total > 0) {
+      if (ws.dominant) {
         dayElementMap[ds] = ws.dominant;
         dayIntensityMap[ds] = Math.min(1, (ws[ws.dominant] ?? 0) / 100);
       }

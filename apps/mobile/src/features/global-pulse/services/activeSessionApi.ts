@@ -92,18 +92,19 @@ async function pbRequest<T>(
   }
 }
 
-function mapSession(item: Record<string, unknown>): ActiveSession {
+function mapSession(raw: any): ActiveSession {
+  const item = raw as Record<string, unknown>;
   return {
-    session_id: item.session_id || item.id,
-    user_hash: item.user_hash,
-    nickname: item.nickname || '',
+    session_id: (item.session_id || item.id) as string,
+    user_hash: item.user_hash as string,
+    nickname: (item.nickname || '') as string,
     type: item.type as CheckinType,
-    started_at: item.started_at,
-    last_heartbeat: item.last_heartbeat,
-    goal: item.goal || undefined,
-    insight: item.insight || undefined,
-    sport_key: item.sport_key || undefined,
-    sport_icon: item.sport_icon || undefined,
+    started_at: item.started_at as string,
+    last_heartbeat: item.last_heartbeat as string,
+    goal: (item.goal || undefined) as string | undefined,
+    insight: (item.insight || undefined) as string | undefined,
+    sport_key: (item.sport_key || undefined) as string | undefined,
+    sport_icon: (item.sport_icon || undefined) as string | undefined,
     lat: item.lat != null ? Number(item.lat) : undefined,
     lng: item.lng != null ? Number(item.lng) : undefined,
   };
@@ -214,7 +215,7 @@ export async function getActiveSessions(
   );
 
   if (result.success && result.data) {
-    const sessions = (result.data.items || []).map(mapSession);
+    const sessions = (result.data.items || []).map((item: unknown) => mapSession(item));
     return { success: true, data: sessions };
   }
 

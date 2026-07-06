@@ -5,8 +5,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
 import { useT } from '../../components/UI';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useZhiguanTimer, usePracticeElapseHints } from './hooks/useZhiguanTimer';
 import { BREATH_PATTERNS, DEFAULT_RADAR, EMPTY_EIGHT_TACTILE, notifyBreath, initialRoundState } from '@egoless-do/core';
@@ -53,14 +52,14 @@ export default function ZhiguanScreen() {
   const nav = useRootNavigation();
   const {
     recordBreathCount, initDraft, updateDraft, resetDraft, startSession, completeSession,
-  } = useAppStore(useShallow(s => ({
+  } = useShallowStore(s => ({
     recordBreathCount: s.recordBreathCount,
     initDraft: s.initDraft,
     updateDraft: s.updateDraft,
     resetDraft: s.resetDraft,
     startSession: s.startSession,
     completeSession: s.completeSession,
-  })));
+  }));
   const musicStore = useMusicStore();
 
   const [mode, setMode] = useState<ViewMode>('idle');

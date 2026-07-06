@@ -27,6 +27,7 @@ export default function DailyDetail({ TH, T, dailyData }: Props) {
       {dailyData.map((day, index) => {
         const totalItems = day.habits.length + day.plans.length;
         const hasItems = totalItems > 0;
+        const isComplete = hasItems && day.habits.every((h: { name: string }) => !!h.name) && day.plans.every((p: { name: string }) => !!p.name);
 
         return (
           <View

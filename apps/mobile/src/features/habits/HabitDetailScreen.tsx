@@ -6,7 +6,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
 import { ArrowLeft, Link, Bell, BellOff } from 'lucide-react-native';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useTheme, useT, ProgressBar } from '../../components/UI';
 import { FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
 
@@ -55,7 +55,7 @@ export default function HabitDetailScreen() {
   const statusColor = STATUS_COLORS[habit.status] ?? STATUS_COLORS.notStarted;
   const statusLabel = T(STATUS_LABELS[habit.status] ?? STATUS_LABELS.notStarted);
   const pct = habit.targetDays > 0 ? Math.min(100, (habit.doneDays / habit.targetDays) * 100) : 0;
-  const calHistory = (habit.checkedDates ?? []).map(d => ({ date: d, done: true });
+  const calHistory = (habit.checkedDates ?? []).map(d => ({ date: d, done: true }));
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>

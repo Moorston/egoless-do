@@ -1,7 +1,6 @@
 // ─── useHabitForm: habit add/edit form state ─────────────────────
 import { useState, useCallback } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { activeOnly } from '@egoless-do/core';
 import type { Habit, HabitLink } from '@egoless-do/core';
 import { requestNotificationPermission, rescheduleAllHabitReminders } from '../../notifications/NotificationService';
@@ -35,10 +34,10 @@ const emptyForm: HabitFormState = {
 };
 
 export function useHabitForm(defaultStartDate: string) {
-  const { addHabit, updateHabit } = useAppStore(useShallow(s => ({
+  const { addHabit, updateHabit } = useShallowStore(s => ({
     addHabit: s.addHabit,
     updateHabit: s.updateHabit,
-  })));
+  }));
 
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

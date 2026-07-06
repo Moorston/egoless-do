@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Share } from 'react-native';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
 import {
@@ -26,7 +25,7 @@ export function useReflections() {
   const {
     reflectionFilters, setReflectionFilters, habits, reflections,
     customTags, allTagsOrder, customMoods, allMoodsOrder, planItems,
-  } = useAppStore(useShallow(s => ({
+  } = useShallowStore(s => ({
     reflectionFilters: s.reflectionFilters,
     setReflectionFilters: s.setReflectionFilters,
     habits: s.habits,
@@ -36,7 +35,7 @@ export function useReflections() {
     customMoods: s.customMoods,
     allMoodsOrder: s.allMoodsOrder,
     planItems: s.planItems,
-  })));
+  }));
 
   // ── Filter state (from store, persisted) ────────────────────
   const filters = reflectionFilters ?? { ...DEFAULT_REFLECTION_FILTERS };

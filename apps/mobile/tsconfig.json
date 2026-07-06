@@ -9,5 +9,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "App.tsx", "app.json"]
+  "include": ["src", "App.tsx", "app.json"],
+  "exclude": ["../../_archive/**", "../../node_modules/**"]
 }

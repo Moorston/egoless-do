@@ -12,7 +12,7 @@ import {
   onConnectionStateChange,
   type ConnectionState,
 } from '../services/activeSessionApi';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const HEARTBEAT_TIMEOUT_MS = 60000; // 60s 超时
 

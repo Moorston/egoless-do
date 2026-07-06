@@ -5,8 +5,7 @@ import {
 } from 'react-native';
 import { X, Star, Moon, Sun } from 'lucide-react-native';
 import { useTheme, useT } from '../../components/UI';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import {
   SleepEntry, SleepQuality, WorkState,
   BODY_STATE_PRESETS, MIND_STATE_PRESETS, formatSleepDuration,
@@ -47,11 +46,11 @@ export default function DiaryModal({ visible, onClose }: Props) {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const { getTodaySleep, saveSleepDiary, autoSyncHabits } = useAppStore(useShallow(s => ({
+  const { getTodaySleep, saveSleepDiary, autoSyncHabits } = useShallowStore(s => ({
     getTodaySleep: s.getTodaySleep,
     saveSleepDiary: s.saveSleepDiary,
     autoSyncHabits: s.autoSyncHabits,
-  })));
+  }));
 
   // ── Form state ──
   const [bedtimeStr, setBedtimeStr] = useState('');

@@ -6,8 +6,7 @@ import { Save, ArrowLeft } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import type { DedicationType } from '@egoless-do/core';
 import { useTheme, useT, ProgressBar } from '../../components/UI';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useVowProgress } from './useVowProgress';
 
 interface Props {
@@ -17,7 +16,7 @@ interface Props {
 export default function DedicationWriteScreen({ onBack }: Props) {
   const TH = useTheme();
   const T = useT();
-  const { dedicationSettings, addDedication } = useAppStore(useShallow(s => ({ dedicationSettings: s.dedicationSettings, addDedication: s.addDedication })));
+  const { dedicationSettings, addDedication } = useShallowStore(s => ({ dedicationSettings: s.dedicationSettings, addDedication: s.addDedication }));
   const progress = useVowProgress();
 
   const [insight, setInsight] = useState('');

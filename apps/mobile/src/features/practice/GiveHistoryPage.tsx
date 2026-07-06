@@ -2,8 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
@@ -18,9 +17,9 @@ export default function GiveHistoryPage() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const { giveHistory: giveHistoryRaw } = useAppStore(useShallow(s => ({
+  const { giveHistory: giveHistoryRaw } = useShallowStore(s => ({
     giveHistory: s.giveHistory,
-  })));
+  }));
   const [monthOffset, setMonthOffset] = useState(0);
 
   const now = useMemo(() => {

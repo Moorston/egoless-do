@@ -41,3 +41,4 @@ export * from './body';
 export * from './coordinateFuzzing';
 export * from './markerAggregation';
 export * from './reverseGeocoding';
+export * from './reflectionGraph';

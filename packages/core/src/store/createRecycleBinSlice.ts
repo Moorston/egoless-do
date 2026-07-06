@@ -17,7 +17,7 @@ const ENTITY_TYPE_MAP: Record<RecycleBinEntityType, SyncEntity> = {
   breath: 'breath',
 };
 
-export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<RecycleBinSlice> {
+export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<RecycleBinSlice> {
   return (set, get) => ({
     recycleBin: [],
 
@@ -84,12 +84,12 @@ export function createRecycleBinSlice(adapter?: StorageAdapter): SliceCreator<Re
 
         // Persist to SQLite and enqueue for sync (overwrites deleted=1 row)
         const syncEntity = ENTITY_TYPE_MAP[item.entityType as RecycleBinEntityType];
-        if (syncEntity && adapter) {
+        if (syncEntity) {
           adapter.persistChange(syncEntity, item.id, restoredData).catch(e => log.error(e));
         }
 
         // For plans, also persist child entities
-        if (item.entityType === 'plan' && adapter) {
+        if (item.entityType === 'plan') {
           for (const ci of childItems) {
             adapter.persistChange('planItem', ci.id, { ...ci, deleted: false, updatedAt: now }).catch(e => log.error(e));
           }

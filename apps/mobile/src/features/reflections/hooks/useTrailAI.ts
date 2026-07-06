@@ -1,5 +1,5 @@
 import { useCallback, useRef, useMemo, useEffect } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { getAIService } from '@egoless-do/core';
 import type { TrailInsightCache, TrailReviewCache, ThoughtTrail, MindReflection, TrailNote } from '@egoless-do/core';
 
@@ -28,11 +28,11 @@ function isCacheStale(
 }
 
 export function useTrailAI(trailId: string, trail: ThoughtTrail | undefined) {
-  const reflections = useAppStore(s => s.reflections);
-  const trailNotes = useAppStore(s => s.trailNotes);
-  const aiMode = useAppStore(s => s.aiMode);
-  const setInsightCache = useAppStore(s => s.setInsightCache);
-  const setReviewCache = useAppStore(s => s.setReviewCache);
+  const reflections = useShallowStore(s => s.reflections);
+  const trailNotes = useShallowStore(s => s.trailNotes);
+  const aiMode = useShallowStore(s => s.aiMode);
+  const setInsightCache = useShallowStore(s => s.setInsightCache);
+  const setReviewCache = useShallowStore(s => s.setReviewCache);
 
   const aiAbortRef = useRef<AbortController | null>(null);
 

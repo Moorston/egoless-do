@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT, ScreenHeader, Card } from '../../../components/UI';
 import {
   COLORS,

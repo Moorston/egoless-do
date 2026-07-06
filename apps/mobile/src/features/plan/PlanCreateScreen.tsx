@@ -6,7 +6,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../navigation/types';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
 import type { ItemForm, Vision } from '@egoless-do/core';

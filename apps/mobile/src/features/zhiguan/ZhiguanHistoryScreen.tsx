@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Share, Modal } from 'react-native';
 import { useT } from '../../components/UI';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { ZhiguanSession } from '@egoless-do/core';
 import {
   computeZhiguanStats,
@@ -18,8 +18,8 @@ const COLORS = ['rgba(139, 115, 85, 0.15)', 'rgba(139, 115, 85, 0.35)', 'rgba(20
 
 export default function ZhiguanHistoryScreen() {
   const T = useT();
-  const sessions = useAppStore(s => s.sessions);
-  const deleteSession = useAppStore(s => s.deleteSession);
+  const sessions = useShallowStore(s => s.sessions);
+  const deleteSession = useShallowStore(s => s.deleteSession);
   const [selRecord, setSelRecord] = useState<ZhiguanSession | null>(null);
 
   const stats = computeZhiguanStats(sessions);

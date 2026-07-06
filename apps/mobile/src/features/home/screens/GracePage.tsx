@@ -2,8 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader } from '../../../components/UI';
 import { COLORS, yesterday, dateStr, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_TINY,
   getMonthGraceCount, getRemainingGrace, isGraceAvailable } from '@egoless-do/core';
@@ -15,12 +14,12 @@ export default function GracePage() {
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const { checkinHistory, userProfile, graceHistory, updateUserProfile } = useAppStore(useShallow(s => ({
+  const { checkinHistory, userProfile, graceHistory, updateUserProfile } = useShallowStore(s => ({
     checkinHistory: s.checkinHistory,
     userProfile: s.userProfile,
     graceHistory: s.graceHistory,
     updateUserProfile: s.updateUserProfile,
-  })));
+  }));
 
   const [showCheckin, setShowCheckin] = useState(false);
 

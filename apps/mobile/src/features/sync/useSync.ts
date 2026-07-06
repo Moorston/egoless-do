@@ -7,7 +7,7 @@ import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHand
 import { migrateToSyncQueue } from './migrateToSyncQueue';
 import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
 import { getState, openDatabase } from '../../db/schema';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
 import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger } from '../../store/storageAdapter';
 import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
@@ -22,8 +22,8 @@ type SyncPatch = Record<string, SyncableItem[] | unknown>;
 const getNotifications = () => import('expo-notifications');
 
 export function useSync() {
-  const token = useAppStore(s => s.auth.token);
-  const isSignedIn = useAppStore(s => s.auth.isSignedIn);
+  const token = useShallowStore(s => s.auth.token);
+  const isSignedIn = useShallowStore(s => s.auth.isSignedIn);
   const syncingRef = useRef(false);
   const [kickOutVisible, setKickOutVisible] = useState(false);
   const [hasPendingData, setHasPendingData] = useState(false);

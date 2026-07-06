@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore } from '../store/useAppStore';
+import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
 import { useTheme } from '../components/UI';
 import {
@@ -18,9 +18,9 @@ const HEADER_TAB_ICONS: Record<string, React.ComponentType<any>> = {
 };
 
 export default function SimpleHeader({ routeName }: { routeName?: string }) {
-  const theme = useAppStore(s => s.theme);
-  const streak = useAppStore(s => s.streak);
-  const language = useAppStore(s => s.language);
+  const theme = useShallowStore(s => s.theme);
+  const streak = useShallowStore(s => s.streak);
+  const language = useShallowStore(s => s.language);
   const TH = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();

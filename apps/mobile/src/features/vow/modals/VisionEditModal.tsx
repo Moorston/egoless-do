@@ -3,8 +3,7 @@ import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView } from 'reac
 import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRAMES, dateStr } from '@egoless-do/core';
 import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan, VisionPractice } from '@egoless-do/core';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const TF_MONTHS: Record<VisionTimeFrame, number> = {
   '3months': 3, '6months': 6, '1year': 12,
@@ -102,7 +101,7 @@ interface Props {
 }
 
 export default function VisionEditModal({ visible, TH, T, vision, type, onClose, onSave }: Props) {
-  const { habits, plans, visionPractices } = useAppStore(useShallow(s => ({ habits: s.habits, plans: s.plans, visionPractices: s.visionPractices })));
+  const { habits, plans, visionPractices } = useShallowStore(s => ({ habits: s.habits, plans: s.plans, visionPractices: s.visionPractices }));
   const [text, setText] = useState('');
   const [timeFrame, setTimeFrame] = useState<VisionTimeFrame | ''>('');
   const [startDate, setStartDate] = useState('');

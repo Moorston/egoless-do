@@ -9,7 +9,7 @@ import { useTheme, useT } from '../../../components/UI';
 import { ActiveSession, CheckinType } from '@egoless-do/core';
 import { getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 import { ActiveUserItem } from './ActiveUserItem';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 interface ActiveUsersListProps {
   sessions: ActiveSession[];

@@ -10,8 +10,7 @@ import { FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
 import { ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType } from '@egoless-do/core';
 import { ActiveUsersList } from './ActiveUsersList';
 import { Leaderboard } from './Leaderboard';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 type TabKey = 'realtime' | 'leaderboard' | 'me';
 
@@ -42,7 +41,7 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
 }) => {
   const theme = useTheme();
   const t = useT();
-  const { streak, checkinHistory, totalMedMinutes } = useAppStore(useShallow(s => ({ streak: s.streak, checkinHistory: s.checkinHistory, totalMedMinutes: s.totalMedMinutes })));
+  const { streak, checkinHistory, totalMedMinutes } = useShallowStore(s => ({ streak: s.streak, checkinHistory: s.checkinHistory, totalMedMinutes: s.totalMedMinutes }));
   const [activeTab, setActiveTab] = useState<TabKey>('realtime');
 
   const tabs: { key: TabKey; label: string }[] = [

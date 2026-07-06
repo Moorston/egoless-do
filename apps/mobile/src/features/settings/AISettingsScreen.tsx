@@ -8,8 +8,7 @@ import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless
 import { PROVIDER_TEMPLATES } from '@egoless-do/core';
 import type { ModelConfig, ProviderTemplate, AIMode } from '@egoless-do/core';
 import { uid } from '@egoless-do/core';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 export default function AISettingsScreen() {
   const TH = useTheme();
@@ -17,7 +16,7 @@ export default function AISettingsScreen() {
   const P = TH.primary;
   const nav = useNavigation();
 
-  const store = useAppStore(useShallow(s => ({
+  const store = useShallowStore(s => ({
     aiMode: s.aiMode,
     aiModels: s.aiModels,
     setAIMode: s.setAIMode,
@@ -26,7 +25,7 @@ export default function AISettingsScreen() {
     toggleAIModel: s.toggleAIModel,
     setDefaultAIModel: s.setDefaultAIModel,
     removeAIModel: s.removeAIModel,
-  })));
+  }));
   const mode = store.aiMode;
   const models = store.aiModels;
   const testTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

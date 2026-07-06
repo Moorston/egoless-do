@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
 import type { PlanItem } from '@egoless-do/core';
@@ -10,15 +10,15 @@ import type { PlanItem } from '@egoless-do/core';
 export function useTrailActions(trailId: string) {
   const T = useT();
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const addReflectionToTrail = useAppStore(s => s.addReflectionToTrail);
-  const removeReflectionFromTrail = useAppStore(s => s.removeReflectionFromTrail);
-  const deleteTrailNote = useAppStore(s => s.deleteTrailNote);
-  const addTrailNote = useAppStore(s => s.addTrailNote);
-  const updateThoughtTrail = useAppStore(s => s.updateThoughtTrail);
-  const deleteThoughtTrail = useAppStore(s => s.deleteThoughtTrail);
-  const createPlanItemFromTrail = useAppStore(s => s.createPlanItemFromTrail);
-  const deletePlanItem = useAppStore(s => s.deletePlanItem);
-  const updateTrailNote = useAppStore(s => s.updateTrailNote);
+  const addReflectionToTrail = useShallowStore(s => s.addReflectionToTrail);
+  const removeReflectionFromTrail = useShallowStore(s => s.removeReflectionFromTrail);
+  const deleteTrailNote = useShallowStore(s => s.deleteTrailNote);
+  const addTrailNote = useShallowStore(s => s.addTrailNote);
+  const updateThoughtTrail = useShallowStore(s => s.updateThoughtTrail);
+  const deleteThoughtTrail = useShallowStore(s => s.deleteThoughtTrail);
+  const createPlanItemFromTrail = useShallowStore(s => s.createPlanItemFromTrail);
+  const deletePlanItem = useShallowStore(s => s.deletePlanItem);
+  const updateTrailNote = useShallowStore(s => s.updateTrailNote);
 
   const handleWriteReflection = useCallback(() => {
     nav.navigate('MainTabs' as never, { screen: 'Reflections', params: { showNew: true, trailId } } as never);

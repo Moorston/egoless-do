@@ -1,22 +1,23 @@
 import { useMemo } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 import { getTrailOverview, getRelatedTrails, getTrailTimelineItems } from '@egoless-do/core';
+import type { ThoughtTrail } from '@egoless-do/core';
 
 export function useTrailData(trailId: string) {
-  const thoughtTrails = useAppStore(s => s.thoughtTrails);
-  const reflections = useAppStore(s => s.reflections);
-  const trailNotes = useAppStore(s => s.trailNotes);
-  const reflectionLinks = useAppStore(s => s.reflectionLinks);
-  const planItemCheckins = useAppStore(s => s.planItemCheckins);
-  const getTrailPlanItems = useAppStore(s => s.getTrailPlanItems);
+  const thoughtTrails = useShallowStore(s => s.thoughtTrails);
+  const reflections = useShallowStore(s => s.reflections);
+  const trailNotes = useShallowStore(s => s.trailNotes);
+  const reflectionLinks = useShallowStore(s => s.reflectionLinks);
+  const planItemCheckins = useShallowStore(s => s.planItemCheckins);
+  const getTrailPlanItems = useShallowStore(s => s.getTrailPlanItems);
 
   const trail = useMemo(() =>
-    (thoughtTrails ?? []).find(t => !t.deleted && t.id === trailId),
+    (thoughtTrails ?? []).find((t: ThoughtTrail) => !t.deleted && t.id === trailId),
     [thoughtTrails, trailId]
   );
 
   const allTrails = useMemo(() =>
-    (thoughtTrails ?? []).filter(t => !t.deleted),
+    (thoughtTrails ?? []).filter((t: ThoughtTrail) => !t.deleted),
     [thoughtTrails]
   );
 

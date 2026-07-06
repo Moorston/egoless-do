@@ -2,8 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme, useT } from '../../components/UI';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { FONT_TITLE, ALL_SPORTS } from '@egoless-do/core';
 import BodyDashboard from './body/BodyDashboard';
@@ -20,9 +19,9 @@ export default function BodyScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { upsertBodyCheckin } = useAppStore(useShallow(s => ({
+  const { upsertBodyCheckin } = useShallowStore(s => ({
     upsertBodyCheckin: s.upsertBodyCheckin,
-  })));
+  }));
   const [page, setPage] = useState<BodyPage>('dashboard');
   const { todayPlan, weekday: todayWeekday } = useTodayPlan();
 

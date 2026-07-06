@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { HandHeart, Plus, BarChart3, Check, X } from 'lucide-react-native';

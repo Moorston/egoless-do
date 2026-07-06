@@ -3,11 +3,10 @@ import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, StyleSheet, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { X } from 'lucide-react-native';
-import { useShallow } from 'zustand/react/shallow';
 import { useTheme, useT } from '../../../components/UI';
 import { FONT_SMALL, FONT_BODY, FONT_TITLE, FONT_TINY } from '@egoless-do/core';
 import { getMoodIcon } from '@egoless-do/core';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import type { Mood } from '@egoless-do/core';
 
 interface CreateReflectionModalProps {
@@ -29,10 +28,10 @@ export function CreateReflectionModal({ visible, trailId, onClose }: CreateRefle
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { addReflection, addReflectionToTrail } = useAppStore(useShallow(s => ({
+  const { addReflection, addReflectionToTrail } = useShallowStore(s => ({
     addReflection: s.addReflection,
     addReflectionToTrail: s.addReflectionToTrail,
-  })));
+  }));
 
   const [content, setContent] = useState('');
   const [tagInput, setTagInput] = useState('');

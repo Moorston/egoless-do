@@ -4,10 +4,10 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useTheme, useT } from '../../components/UI';
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, createLogger } from '@egoless-do/core';
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger } from '@egoless-do/core';
 
 const log = createLogger('Exercise');
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { RootStackParamList } from '../../navigation/hooks';
 
 // 实时会话

@@ -3,8 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
 
@@ -24,7 +23,7 @@ export default function SutraHistoryScreen() {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { mantraSessions, mantraDefs } = useAppStore(useShallow(s => ({ mantraSessions: s.mantraSessions, mantraDefs: s.mantraDefs })));
+  const { mantraSessions, mantraDefs } = useShallowStore(s => ({ mantraSessions: s.mantraSessions, mantraDefs: s.mantraDefs }));
 
   const allSessions = useMemo(() =>
     (mantraSessions ?? []).filter(s => !s.deleted).sort((a, b) => b.startedAt - a.startedAt),

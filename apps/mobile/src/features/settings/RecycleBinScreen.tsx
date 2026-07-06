@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
 import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_EMPTY, MS_PER_DAY, MS_PER_WEEK } from '@egoless-do/core';
 import type { RecycleBinItem, RecycleBinEntityType } from '@egoless-do/core';
@@ -55,10 +55,10 @@ export default function RecycleBinScreen() {
   const T = useT();
   const P = TH.primary;
   const nav = useRootNavigation();
-  const recycleBin = useAppStore(s => s.recycleBin ?? []);
-  const restoreFromRecycleBin = useAppStore(s => s.restoreFromRecycleBin);
-  const removeFromRecycleBin = useAppStore(s => s.removeFromRecycleBin);
-  const emptyRecycleBin = useAppStore(s => s.emptyRecycleBin);
+  const recycleBin = useShallowStore(s => s.recycleBin ?? []);
+  const restoreFromRecycleBin = useShallowStore(s => s.restoreFromRecycleBin);
+  const removeFromRecycleBin = useShallowStore(s => s.removeFromRecycleBin);
+  const emptyRecycleBin = useShallowStore(s => s.emptyRecycleBin);
 
   const handleRestore = (id: string) => {
     Alert.alert(T('recycleBinRestore'), T('recycleBinRestoreConfirm'), [

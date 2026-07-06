@@ -4,8 +4,7 @@ import {
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAppStore } from '../../../store/useAppStore';
-import { useShallow } from 'zustand/react/shallow';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
 import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
@@ -27,7 +26,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
-  const store = useAppStore(useShallow(s => ({
+  const store = useShallowStore(s => ({
     checkinHistory: s.checkinHistory,
     foodLog: s.foodLog,
     plans: s.plans,
@@ -48,7 +47,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     toggleDailyCustomTodo: s.toggleDailyCustomTodo,
     addFood: s.addFood,
     addReflection: s.addReflection,
-  })));
+  }));
   const today = dateStr();
   const targetDate = graceDate ?? today;
   const isGraceMode = !!graceDate;

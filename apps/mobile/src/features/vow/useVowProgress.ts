@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { dateStr } from '@egoless-do/core';
-import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { Vision, VisionPractice, Dedication, HabitStat, PlanProgress, VisionProgress, Habit, Plan, PlanItem } from '@egoless-do/core';
 
 export interface DayData {
@@ -31,13 +30,13 @@ export interface VowProgressData {
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export function useVowProgress(): VowProgressData {
-  const { habits, plans, planItems, visions, visionPractices } = useAppStore(useShallow(s => ({
+  const { habits, plans, planItems, visions, visionPractices } = useShallowStore(s => ({
     habits: s.habits,
     plans: s.plans,
     planItems: s.planItems,
     visions: s.visions,
     visionPractices: s.visionPractices,
-  })));
+  }));
 
   return useMemo(() => {
     const today = new Date();

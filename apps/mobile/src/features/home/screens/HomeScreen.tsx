@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { THEMES, COLORS, cardAccent, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 
@@ -36,6 +36,9 @@ function parseWeight(raw: string | undefined): number | undefined {
 }
 
 export default function HomeScreen() {
+  // ═══════════════════════════════════════════════════════════════
+  // Section 1: Store Data & Navigation
+  // ═══════════════════════════════════════════════════════════════
   const TH    = useTheme();
   const T     = useT();
   const P     = TH.primary;
@@ -83,7 +86,11 @@ export default function HomeScreen() {
   const [viewDate, setViewDate] = useState(dateStr());
   const isToday = viewDate === dateStr();
 
-  const weightUnit = useAppStore(s => s.weightUnit);
+  const weightUnit = useShallowStore(s => s.weightUnit);
+
+  // ═══════════════════════════════════════════════════════════════
+  // Section 2: Derived Data & Status
+  // ═══════════════════════════════════════════════════════════════
 
   // ── Existing checkin ──
   const todayRecord = useMemo(
@@ -151,6 +158,10 @@ export default function HomeScreen() {
   const isLocked = status === 'done';
   // Whether in read-only mode (past dates or locked)
   const isReadOnly = !isToday || isLocked;
+
+  // ═══════════════════════════════════════════════════════════════
+  // Section 3: Gesture Handling & Effects
+  // ═══════════════════════════════════════════════════════════════
 
   // ── Swipe gesture (instant page switch) ──
   const touchStartX = useRef(0);
@@ -226,6 +237,10 @@ export default function HomeScreen() {
   }, [note, totalCal, viewDate, dailyCustomTodosMemo, todayPlanItems, planCheckins]);
 
   // ── Real-time save ──
+  // ═══════════════════════════════════════════════════════════════
+  // Section 4: Event Handlers & Callbacks
+  // ═══════════════════════════════════════════════════════════════
+
   const saveField = useCallback((doneOverride?: boolean) => {
     const done = doneOverride ?? localDoneRef.current ?? false;
     const weightNum = weightRef.current ? parseWeight(weightRef.current) : undefined;
@@ -376,7 +391,7 @@ export default function HomeScreen() {
   // ── Delayed plan reminder ──
   const [showDelayedReminder, setShowDelayedReminder] = useState(true);
   const delayedPlan = useMemo(() => {
-    return (plans ?? []).find(p => !p.deleted && isPlanDelayed(p, dateStr());
+    return (plans ?? []).find(p => !p.deleted && isPlanDelayed(p, dateStr()));
   }, [plans]);
   const showDelayed = isToday && delayedPlan && showDelayedReminder;
 
@@ -384,6 +399,10 @@ export default function HomeScreen() {
 
   // ── No record state ──
   const hasRecord = !!todayRecord;
+
+  // ═══════════════════════════════════════════════════════════════
+  // Section 5: Render
+  // ═══════════════════════════════════════════════════════════════
 
   return (
     <KeyboardAvoidingView
@@ -520,7 +539,7 @@ export default function HomeScreen() {
               {/* ── Delayed plan reminder ── */}
               {showDelayed && (
                 <TouchableOpacity
-                  onPress={() => nav.navigate('MainTabs' as never, { screen: 'Plan' } as never)}
+                  onPress={() => nav.navigate('MainTabs' as any, { screen: 'Plan' } as any)}
                   activeOpacity={0.8}
                   style={{ borderRadius: 14, marginBottom: 12, overflow: 'hidden' }}
                 >
