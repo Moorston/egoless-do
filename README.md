@@ -42,7 +42,8 @@ egoless-do/ (Turborepo + pnpm workspaces)
 │   │       ├── features/          # 25 个功能模块
 │   │       ├── components/        # 通用组件 (UI/ErrorBoundary/SyncBanner)
 │   │       ├── db/                # SQLite schema + syncQueue + 迁移
-│   │       ├── store/             # Zustand store (含 useNetworkStatus)
+│   │       ├── store/             # Zustand store (useAppStore + useShallowStore)
+│   │       ├── sentry.ts          # Sentry 监控配置 (DSN/tunnel/breadcrumbs)
 │   │       ├── net/               # 网络层工具 (offlineAware)
 │   │       ├── i18n/              # 国际化初始化 (i18next)
 │   │       ├── hooks/             # 跨 feature hooks
@@ -53,10 +54,12 @@ egoless-do/ (Turborepo + pnpm workspaces)
 │   ├── core/                      # 共享业务逻辑（平台无关）
 │   │   ├── ai/                    # AI 服务 + RAG + 风险预警 + 思维推荐
 │   │   ├── business/              # 纯业务函数 (习惯/打卡/禁食/计划/dateUtils/...)
-│   │   ├── store/                 # 37 个 Zustand slice
+│   │   ├── store/                 # Zustand slices + StorageAdapter + DailyResetManager
+│   │   ├── hooks/                 # usePagination 等共享 hooks
+│   │   ├── zod/                   # 运行时类型验证 Schema
 │   │   ├── sync/                  # 同步协议 (entities/conflict/merge)
 │   │   ├── i18n/                  # 国际化 (zh/en/zh-Hant)
-│   │   ├── types/                 # 共享类型定义
+│   │   ├── types/                 # 共享类型定义 (28 个严格实体接口)
 │   │   ├── constants/             # 常量 (THEMES/COLORS/...)
 │   │   ├── data/                  # 数据网关接口 (DataGateway)
 │   │   └── utils/                 # 工具函数
@@ -69,10 +72,10 @@ egoless-do/ (Turborepo + pnpm workspaces)
 │   ├── docker-compose.yml         # 开发配置（Cloudflare Tunnel）
 │   └── setup.ps1                  # 安装脚本
 ├── infra/                         # 部署和运维文件
-│   ├── docker/                    # 生产配置
-│   │   ├── docker-compose.yml
-│   │   └── Dockerfile.web
-│   ├── nginx/                     # 反向代理配置
+│   ├── docker/
+│   │   ├── docker-compose.yml     # PocketBase + Auth API + Nginx + Backup
+│   │   └── api/                   # Auth API 服务 (Hono)
+│   ├── nginx/                     # 反向代理 + Sentry tunnel
 │   │   └── nginx.conf
 │   └── scripts/                   # 运维脚本
 │       ├── deploy.sh
@@ -80,6 +83,33 @@ egoless-do/ (Turborepo + pnpm workspaces)
 │       └── restore-pb.sh
 └── openspec/                      # 架构决策记录
     └── changes/restructure-codebase/
+```
+
+### 存储架构（统一 SQLite）
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  Zustand Store (内存)                                            │
+│  30+ slices, 所有状态扁平挂载                                    │
+│  useShallowStore() — Domain Selector Hook                       │
+└─────────────────────────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  StorageAdapter → WriteBatcher → SQLite (expo-sqlite)           │
+│  - persistChange() — 实体数据 (100ms 防抖批量写入)              │
+│  - persistSettings() — 设置数据 (直接写入 app_state 表)         │
+│  - transaction() — 跨 Slice 原子操作                            │
+│  - 无 AsyncStorage 双轨持久化                                    │
+└─────────────────────────────────────────────────────────────────┘
+      │
+      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  SyncService → PocketBase (远程)                                │
+│  - 定期同步 + SSE 实时推送                                      │
+│  - 冲突解决 (LWW)                                               │
+│  - 零数据丢失保证                                               │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ## 数据同步架构
@@ -188,22 +218,32 @@ docker compose -f infra/docker/docker-compose.yml up -d
 
 ## 测试覆盖
 
-27 个测试文件，覆盖核心业务逻辑:
+87 个测试文件，947 个测试通过:
 
 ```
-__tests__/
-├── sync/           SyncService, syncQueue, conflict
-├── store/          checkinSlice, habitSlice, uiStore
-├── integration/    sync-flow 端到端
-├── components/     Button 组件
-└── realtime/       activeSessionApi
-
 packages/core/src/
-├── business/       10 个业务模块测试
+├── business/       14 个业务模块测试 (checkin, exercise, fasting, food, habits, plan, ...)
 ├── sync/           conflict, merge, entitySchemas
-├── store/          thoughtTrail, trailNote slices
+├── store/          12 个 slice 测试 (auth, checkin, diet, exercise, fasting, food, habit, mantra, mind, plan, thoughtTrail, trailNote)
+├── hooks/          usePagination 测试
 └── utils.test.ts
+
+apps/mobile/src/
+├── store/          initApp, storageAdapter, migrateAsyncStorage, uiStore
+├── features/sync/  SyncService, mergeSyncPatch, useSync
+├── features/global-pulse/hooks/  useGlobalTick 测试
+└── db/             syncQueue 测试
+
+__tests__/          setup.ts (全局 mock: expo-sqlite, netinfo, __DEV__)
 ```
+
+### 监控
+
+- **Sentry** — 错误上报 + 性能追踪 + 面包屑
+  - 121 个文件通过 `createLogger` 自动上报
+  - Server tunnel 路由绕过广告拦截器
+  - 用户上下文自动同步（登录/登出）
+- **GitHub Actions CI** — lint + type-check + test + EAS build
 
 ## 月度运营成本
 
