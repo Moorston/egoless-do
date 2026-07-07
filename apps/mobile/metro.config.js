@@ -18,6 +18,10 @@ config.resolver.nodeModulesPaths = [
 // Follow symlinks for workspace packages
 config.resolver.unstable_enableSymlinks = true;
 
+// Disable .babelrc lookup in node_modules to prevent conflicts
+// with packages that ship their own babel configs (e.g. @egjs/hammerjs)
+config.transformer.enableBabelRCLookup = false;
+
 // Exclude web app build outputs and other non-mobile directories from Metro's file map
 const blockList = config.resolver.blockList || [];
 config.resolver.blockList = [

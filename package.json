@@ -34,10 +34,14 @@
     "vitest": "^4.1.9"
   },
   "packageManager": "pnpm@9.0.0",
-  "overrides": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "@types/react": "^19.1.0"
+  "pnpm": {
+    "overrides": {
+      "react": "19.1.0",
+      "react-dom": "19.1.0",
+      "@types/react": "^19.1.0",
+      "@react-native/metro-config": "0.85.3",
+      "@react-native/babel-preset": "0.81.5"
+    }
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
