@@ -185,7 +185,7 @@ export default function DietScreen() {
           {todayFoods.length === 0 ? (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 20 }}>{T('dietNoFoodToday')}</Text>
           ) : (
-            {todayFoods.map(f => renderFoodItem({ item: f }))}
+            todayFoods.map(f => renderFoodItem({ item: f }))
           )}
         </View>
 
