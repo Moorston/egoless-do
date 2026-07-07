@@ -11,8 +11,7 @@ import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useAmapComponents } from './hooks/useAmapComponents';
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-native-amap3d types unavailable
-function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: Theme; P: string; T: (k: string) => string; MapView: any; Polyline: any }) {
+function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: Theme; P: string; T: (k: string) => string; MapView: React.ComponentType<Record<string, unknown>>; Polyline: React.ComponentType<Record<string, unknown>> }) {
   const trackCoords = (e.trackPoints ?? []).map(p => ({ latitude: p.lat, longitude: p.lng }));
   const center = trackCoords.length > 0 ? trackCoords[0] : { latitude: 39.9042, longitude: 116.4074 };
   const bestPace = (e.segmentPaces ?? []).length > 0 ? Math.min(...(e.segmentPaces ?? [])) : 0;

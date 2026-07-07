@@ -162,10 +162,10 @@ export async function initAuditLogCollection(): Promise<void> {
   try {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
-    console.log(`[AuditLog] Collection '${COLLECTION_NAME}' exists`);
+    console.info(`[AuditLog] Collection '${COLLECTION_NAME}' exists`);
   } catch (err: unknown) {
     if (errStatus(err) === 404) {
-      console.log(`[AuditLog] Collection '${COLLECTION_NAME}' not found, creating...`);
+      console.info(`[AuditLog] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
         await pb.collections.create({
@@ -187,7 +187,7 @@ export async function initAuditLogCollection(): Promise<void> {
           updateRule: null,  // 禁止更新
           deleteRule: null,
         });
-        console.log(`[AuditLog] Collection '${COLLECTION_NAME}' created`);
+        console.info(`[AuditLog] Collection '${COLLECTION_NAME}' created`);
       } catch (createErr: unknown) {
         console.error(`[AuditLog] Failed to create collection: ${errMessage(createErr)}`);
       }

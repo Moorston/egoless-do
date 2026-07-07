@@ -140,10 +140,10 @@ export async function initRefreshTokenCollection(): Promise<void> {
   try {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
-    console.log(`[RefreshToken] Collection '${COLLECTION_NAME}' exists`);
+    console.info(`[RefreshToken] Collection '${COLLECTION_NAME}' exists`);
   } catch (err: unknown) {
     if (errStatus(err) === 404) {
-      console.log(`[RefreshToken] Collection '${COLLECTION_NAME}' not found, creating...`);
+      console.info(`[RefreshToken] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
         await pb.collections.create({
@@ -163,7 +163,7 @@ export async function initRefreshTokenCollection(): Promise<void> {
           updateRule: '@request.auth.id != "" && user_id = @request.auth.id',  // 仅本人可更新
           deleteRule: null,
         });
-        console.log(`[RefreshToken] Collection '${COLLECTION_NAME}' created`);
+        console.info(`[RefreshToken] Collection '${COLLECTION_NAME}' created`);
       } catch (createErr: unknown) {
         console.error(`[RefreshToken] Failed to create collection: ${errMessage(createErr)}`);
       }

@@ -57,7 +57,7 @@ export function useAudioCache() {
         remoteUrl,
         dest,
         {},
-        (p: any) => {
+        (p: { totalBytesWritten: number; totalBytesExpectedToWrite: number }) => {
           const fraction = p.totalBytesExpectedToWrite > 0
             ? p.totalBytesWritten / p.totalBytesExpectedToWrite
             : 0;

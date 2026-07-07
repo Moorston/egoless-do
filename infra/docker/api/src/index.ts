@@ -107,11 +107,11 @@ Promise.all([
   initMFACollection(),
   initRBACCollection(),
 ]).then(() => {
-  console.log('[AuthAPI] PocketBase collections initialized');
+  console.info('[AuthAPI] PocketBase collections initialized');
 }).catch((err) => {
   console.error('[AuthAPI] Failed to initialize collections:', err);
 });
 
 serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`🟢 Auth API running on http://localhost:${info.port}`);
+  console.info(`🟢 Auth API running on http://localhost:${info.port}`);
 });

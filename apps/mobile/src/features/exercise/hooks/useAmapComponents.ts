@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ComponentType } from 'react';
 
-let _MapView: any = null;
-let _Polyline: any = null;
+let _MapView: ComponentType<Record<string, unknown>> | null = null;
+let _Polyline: ComponentType<Record<string, unknown>> | null = null;
 let _amapLoaded = false;
 
 export function useAmapComponents() {

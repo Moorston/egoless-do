@@ -133,10 +133,10 @@ export async function initVerificationCodeCollection(): Promise<void> {
   try {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
-    console.log(`[VerificationCode] Collection '${COLLECTION_NAME}' exists`);
+    console.info(`[VerificationCode] Collection '${COLLECTION_NAME}' exists`);
   } catch (err: unknown) {
     if (errStatus(err) === 404) {
-      console.log(`[VerificationCode] Collection '${COLLECTION_NAME}' not found, creating...`);
+      console.info(`[VerificationCode] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
         await pb.collections.create({
@@ -154,7 +154,7 @@ export async function initVerificationCodeCollection(): Promise<void> {
           updateRule: null,
           deleteRule: null,
         });
-        console.log(`[VerificationCode] Collection '${COLLECTION_NAME}' created`);
+        console.info(`[VerificationCode] Collection '${COLLECTION_NAME}' created`);
       } catch (createErr: unknown) {
         console.error(`[VerificationCode] Failed to create collection: ${errMessage(createErr)}`);
       }

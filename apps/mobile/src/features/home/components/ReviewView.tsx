@@ -79,7 +79,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
     }
   };
 
-  const renderIncompleteReasonItem = useCallback(({ item: r }: { item: any }) => (
+  const renderIncompleteReasonItem = useCallback(({ item: r }: { item: { icon: string; code: string; count: number; percentage: number } }) => (
     <View style={{
       flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
       paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border,
@@ -93,7 +93,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
     </View>
   ), [TH, T]);
 
-  const renderIncompleteItem = useCallback(({ item }: { item: any }) => (
+  const renderIncompleteItem = useCallback(({ item }: { item: { name: string; count: number } }) => (
     <View style={{
       flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
       paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border,
@@ -107,7 +107,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
     </View>
   ), [TH, T]);
 
-  const renderHabitItem = useCallback(({ item: habit }: { item: any }) => (
+  const renderHabitItem = useCallback(({ item: habit }: { item: { name: string; progress: number; streak: number } }) => (
     <View style={{
       paddingVertical: 8,
       borderBottomWidth: 1,
@@ -140,7 +140,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
     </View>
   ), [TH, T]);
 
-  const renderHistoryReviewItem = useCallback(({ item: r }: { item: any }) => (
+  const renderHistoryReviewItem = useCallback(({ item: r }: { item: { id: string; startDate: string; endDate: string; createdAt: number } }) => (
     <TouchableOpacity
       onPress={() => nav.navigate('ReviewDetail', { reviewId: r.id })}
       style={{

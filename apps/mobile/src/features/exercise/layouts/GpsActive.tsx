@@ -8,11 +8,10 @@ import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
 
 interface GpsActiveProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-native-amap3d types unavailable
-  MapView: any;
-  Polyline: any;
+  MapView: React.ComponentType<Record<string, unknown>>;
+  Polyline: React.ComponentType<Record<string, unknown>>;
   amapReady: boolean;
-  mapRef: React.RefObject<any>;
+  mapRef: React.RefObject<unknown>;
   initialPos: { latitude: number; longitude: number };
   coords: { latitude: number; longitude: number }[];
   color: string;

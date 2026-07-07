@@ -19,8 +19,7 @@ export async function getCurPos() {
   try { return await m.getCurrentPositionAsync({}); } catch { return null; }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- expo-location callback type unavailable at compile time
-export async function watchPos(cb: (loc: any) => void) {
+export async function watchPos(cb: (loc: { coords: { latitude: number; longitude: number; accuracy: number }; timestamp: number }) => void) {
   const m = await getLocation();
   if (!m) return { remove: () => {} };
   try { return await m.watchPositionAsync({ accuracy: m.Accuracy.High, timeInterval: 2000, distanceInterval: 5 }, cb); } catch { return { remove: () => {} }; }

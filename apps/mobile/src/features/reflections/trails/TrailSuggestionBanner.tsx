@@ -27,12 +27,12 @@ export default function TrailSuggestionBanner() {
   const [dismissed, setDismissed] = useState(false);
 
   const topRec = useMemo(() => {
-    const activeReflections = (reflections ?? []).filter((r: any) => !r.deleted);
-    const allTrails = (thoughtTrails ?? []).filter((t: any) => !t.deleted);
+    const activeReflections = (reflections ?? []).filter(r => !r.deleted);
+    const allTrails = (thoughtTrails ?? []).filter(t => !t.deleted);
     if (activeReflections.length < 5) return null;
 
     const thirtyDaysAgo = Date.now() - 30 * MS_PER_DAY;
-    const candidates = activeReflections.filter((r: any) =>
+    const candidates = activeReflections.filter(r =>
       r.timestamp >= thirtyDaysAgo &&
       (!r.thoughtTrailIds || r.thoughtTrailIds.length === 0)
     );

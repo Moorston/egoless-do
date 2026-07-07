@@ -269,10 +269,10 @@ export function createMindSlice(
       }
 
       // 冥想关联
-      const medHistory = (get() as unknown as FullStore).medHistory as { timestamp?: number; durationSec?: number }[] | undefined;
+      const medHistory = (get() as unknown as FullStore).medHistory as { timestamp?: number; durationSec?: number; deleted?: boolean }[] | undefined;
       if (medHistory && medHistory.length > 0) {
         const recentMedDates = new Set(
-          medHistory.filter((m: any) => !m.deleted && m.timestamp && Date.now() - m.timestamp < 30 * 86400000)
+          medHistory.filter(m => !m.deleted && m.timestamp && Date.now() - m.timestamp < 30 * 86400000)
             .map(m => dateStr(new Date(m.timestamp!)))
         );
         const fearsOnMedDays = fears.filter(f => recentMedDates.has(f.date));

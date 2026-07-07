@@ -78,7 +78,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
 
   const handlePressSport = useCallback((sportKey: string) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
-    nav.navigate('Sport' as any, {
+    (nav as { navigate: (name: string, params?: Record<string, unknown>) => void }).navigate('Sport', {
       key: sportKey,
       icon: sport?.icon ?? '🏃',
       color: sport?.color ?? '#f59e0b',

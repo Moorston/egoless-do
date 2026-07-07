@@ -250,10 +250,10 @@ export async function initMFACollection(): Promise<void> {
   try {
     const pb = await getAdminPb();
     await pb.collections.getOne(COLLECTION_NAME);
-    console.log(`[MFA] Collection '${COLLECTION_NAME}' exists`);
+    console.info(`[MFA] Collection '${COLLECTION_NAME}' exists`);
   } catch (err: unknown) {
     if (errStatus(err) === 404) {
-      console.log(`[MFA] Collection '${COLLECTION_NAME}' not found, creating...`);
+      console.info(`[MFA] Collection '${COLLECTION_NAME}' not found, creating...`);
       try {
         const pb = await getAdminPb();
         await pb.collections.create({
@@ -273,7 +273,7 @@ export async function initMFACollection(): Promise<void> {
           updateRule: '@request.auth.id != "" && user_id = @request.auth.id',  // 仅本人可更新
           deleteRule: null,
         });
-        console.log(`[MFA] Collection '${COLLECTION_NAME}' created`);
+        console.info(`[MFA] Collection '${COLLECTION_NAME}' created`);
       } catch (createErr: unknown) {
         console.error(`[MFA] Failed to create collection: ${errMessage(createErr)}`);
       }

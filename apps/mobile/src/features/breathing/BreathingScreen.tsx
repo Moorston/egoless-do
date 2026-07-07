@@ -17,10 +17,12 @@ const log = createLogger('Breathing');
 
 const GUIDE_STYLE_KEY = 'breathing_guide_style';
 
+import type { Theme } from '@egoless-do/core';
+
 // Lazy-load the heavy engine (contains expo-audio, expo-speech, rAF loop)
 const BreathingEngine = lazy(() => import('./BreathingEngine'));
 
-function EngineFallback({ TH }: { TH: any }) {
+function EngineFallback({ TH }: { TH: Theme }) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: TH.bg }}>
       <Text style={{ fontSize: 28, marginBottom: 8 }}>🪷</Text>
