@@ -321,14 +321,15 @@ describe('SyncApplyService', () => {
     });
 
     it('accumulates failed entities in _failedEntities and continues other entities', async () => {
-      let callCount = 0;
-      mockDb.runAsync.mockImplementation(async (sql: string) => {
-        callCount++;
-        if (sql.includes('habit_table') && callCount <= 1) {
-          throw new Error('DB error');
+      // Make getAllAsync throw for habit_table (this is outside the per-record try/catch,
+      // so the error propagates to the entity-level catch in applyServerChanges).
+      mockDb.getAllAsync.mockImplementation(async (sql: string) => {
+        if (sql.includes('habit_table')) {
+          throw new Error('DB meta error');
         }
-        return { changes: 1 };
+        return [];
       });
+      mockDb.runAsync.mockResolvedValue({ changes: 1 });
 
       const data = {
         habit: [{ id: 'h1', title: 'Fail' }],
@@ -338,6 +339,7 @@ describe('SyncApplyService', () => {
       const result = await svc.applyServerChanges(data);
 
       expect(result._failedEntities).toContain('habit');
+      // plan should still succeed despite habit failing
       expect(result.plans).toBeDefined();
     });
 
