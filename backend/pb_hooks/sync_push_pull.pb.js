@@ -186,7 +186,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
               exported.deleted = !!dd.deleted;
             } else {
               // Data field unparseable — skip record to prevent ghost entries
-              console.warn("[sync-pull] Skipping record with unparseable data:", ent, exported.id || exported[idF]);
+              console.warn("[sync-pull] Skipping record with unparseable data:", ent, exported.id || exported[idF] || exported[ENTITY_ID_FIELD_MAP[ent]]);
               continue;
             }
             if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime();

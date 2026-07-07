@@ -452,12 +452,12 @@ describe('Auto-sync wiring', () => {
   it('multiple slices receive triggerAutoSync as last argument', async () => {
     const coreModule = await import('@egoless-do/core');
 
-    // createDietSlice is composed via createMobileUiSlice → createFoodSlice, not called directly
     const slicesWithSync = [
       vi.mocked(coreModule.createHabitSlice),
       vi.mocked(coreModule.createSleepSlice),
       vi.mocked(coreModule.createReviewSlice),
       vi.mocked(coreModule.createBodySlice),
+      vi.mocked(coreModule.createDietSlice),
       vi.mocked(coreModule.createPracticeSlice),
       vi.mocked(coreModule.createMindSlice),
       vi.mocked(coreModule.createMantraSlice),

@@ -34,7 +34,7 @@ export function createDietSlice(
       const e: FoodEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false };
       log.debug('addFood:', e.id, e.name, e.calories);
       set(s => ({ foodLog: [e, ...(s.foodLog ?? [])] }));
-      adapter.persistChange('food', e.id, e).catch(e => log.error(e));
+      adapter.persistChange('food', e.id, e).catch(err => log.error(err));
       onSync?.();
     },
 

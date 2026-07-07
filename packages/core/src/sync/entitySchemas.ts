@@ -49,7 +49,14 @@ function parseBytes(v: unknown): string | null {
   // Only treat as byte array if ALL elements are numbers (char codes)
   // This prevents misidentifying JSON arrays like ["2026-01-01"] as byte arrays
   if (!v.every(e => typeof e === 'number' && e >= 0 && e <= 65535)) return null;
-  try { return String.fromCharCode(...v); } catch { return null; }
+  try {
+    // Use loop to avoid stack overflow with large arrays (>65000 elements)
+    let result = '';
+    for (let i = 0; i < v.length; i++) {
+      result += String.fromCharCode(v[i] as number);
+    }
+    return result;
+  } catch { return null; }
 }
 /** Normalize value that may be object, JSON string, or byte array */
 function parseDataField(v: unknown): unknown {
@@ -264,14 +271,9 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
     customServerPayloadToRow: (r) => {
-      // PocketBase may return data as object, JSON string, or byte array (char codes)
-      let src = r;
-      if (r.data !== undefined) {
-        let parsed = r.data;
-        if (typeof parsed === 'string') { try { parsed = JSON.parse(parsed); } catch {} }
-        if (Array.isArray(parsed)) { try { parsed = JSON.parse(String.fromCharCode(...parsed)); } catch {} }
-        if (parsed && typeof parsed === 'object') src = { ...parsed, ...r };
-      }
+      // Parse data field (may be object, JSON string, or byte array from PocketBase)
+      const parsed = parseDataField(r.data);
+      const src = parsed && typeof parsed === 'object' ? { ...parsed, ...r } : r;
       const ts = src.timestamp ?? src.ts ?? Date.now();
       const entryDate = src.entry_date || src.entryDate || (ts ? (() => {
         const d = new Date(Number(ts));

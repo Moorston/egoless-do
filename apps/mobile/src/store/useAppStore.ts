@@ -185,7 +185,7 @@ export const useAppStore = create<MobileStore>()(
       ...createThoughtTrailSlice(adapter, persistProfileSettings)(...a),
       ...createReviewSlice(adapter, triggerAutoSync)(...a),
       ...createBodySlice(adapter, triggerAutoSync)(...a),
-      // createDietSlice already composed via createMobileUiSlice → createFoodSlice — do NOT add again
+      ...createDietSlice(adapter, triggerAutoSync, persistProfileSettings)(...a),
       ...createPracticeSlice(adapter, triggerAutoSync)(...a),
       ...createMindSlice(adapter, triggerAutoSync)(...a),
       ...createMantraSlice(adapter, triggerAutoSync)(...a),
@@ -201,51 +201,7 @@ export const useAppStore = create<MobileStore>()(
   },
 );
 
-// One-time cleanup: remove ghost entries (empty key fields) from store + SQLite
-// Runs once after store initialization. Ghost entries are created by sync when
-// the server returns records with missing/empty data fields.
-{
-  const s = useAppStore.getState();
-  const patch: Record<string, unknown[]> = {};
-  const toDelete: Array<{ entity: string; id: string }> = [];
-
-  // Define ghost detection per entity: [storeKey, entityName, keyField]
-  const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
-    ['foodLog', 'food', f => !f.name],
-    ['exerciseLog', 'exercise', f => !f.sportKey],
-    ['plans', 'plan', f => !f.name],
-    ['medHistory', 'meditation', f => !f.date],
-    ['sleepHistory', 'sleep', f => !f.date],
-    ['breathHistory', 'breath', f => !f.date],
-    ['sessions', 'zhiguanSession', f => !f.startTs && !f.status],
-    ['mantraSessions', 'mantraSession', f => !f.mantraId && !f.date],
-    ['mantraDefs', 'mantraDef', f => !f.name],
-    ['visions', 'vision', f => !f.text && !f.type],
-    ['dedications', 'dedication', f => !f.date && !f.periodLabel],
-    ['fearEntries', 'fearEntry', f => !f.content && !f.date],
-    ['courageEntries', 'courageEntry', f => !f.action && !f.date],
-    ['giveHistory', 'give', f => !f.content],
-    ['motivationLog', 'motivationEntry', f => !f.foodId],
-    ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date],
-  ];
-
-  for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
-    const items = (s[storeKey as keyof typeof s] ?? []) as Array<Record<string, unknown>>;
-    const ghosts = items.filter(i => !i.deleted && isGhost(i));
-    if (ghosts.length > 0) {
-      log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
-      patch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
-      for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
-    }
-  }
-
-  if (Object.keys(patch).length > 0) {
-    useAppStore.setState(patch as PartialMobileStore);
-    for (const { entity, id } of toDelete) {
-      adapter.markDeleted(entity as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
-    }
-  }
-}
+// Ghost entry cleanup is in initApp.ts (runs after rehydrateFromDb loads actual data)
 
 // ─── Named handler for AppState changes (extracted for testability) ───
 async function handleAppStateChange(state: string) {

@@ -128,6 +128,48 @@ export async function initApp(): Promise<void> {
       setState(fullPatch);
     }
 
+    // ── Step 3b: Clean up ghost entries (after rehydrate loads actual data) ──
+    try {
+      const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
+        ['foodLog', 'food', f => !f.name],
+        ['exerciseLog', 'exercise', f => !f.sportKey],
+        ['plans', 'plan', f => !f.name],
+        ['medHistory', 'meditation', f => !f.date],
+        ['sleepHistory', 'sleep', f => !f.date],
+        ['breathHistory', 'breath', f => !f.date],
+        ['sessions', 'zhiguanSession', f => !f.startTs && !f.status],
+        ['mantraSessions', 'mantraSession', f => !f.mantraId && !f.date],
+        ['mantraDefs', 'mantraDef', f => !f.name],
+        ['visions', 'vision', f => !f.text && !f.type],
+        ['dedications', 'dedication', f => !f.date && !f.periodLabel],
+        ['fearEntries', 'fearEntry', f => !f.content && !f.date],
+        ['courageEntries', 'courageEntry', f => !f.action && !f.date],
+        ['giveHistory', 'give', f => !f.content],
+        ['motivationLog', 'motivationEntry', f => !f.foodId],
+        ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date],
+      ];
+      const ghostPatch: Record<string, unknown[]> = {};
+      const toDelete: Array<{ entity: string; id: string }> = [];
+      const s = store();
+      for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
+        const items = (s[storeKey as keyof typeof s] ?? []) as Array<Record<string, unknown>>;
+        const ghosts = items.filter(i => !i.deleted && isGhost(i));
+        if (ghosts.length > 0) {
+          log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
+          ghostPatch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
+          for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
+        }
+      }
+      if (Object.keys(ghostPatch).length > 0) {
+        setState(ghostPatch as PartialMobileStore);
+        for (const { entity, id } of toDelete) {
+          adapter.markDeleted(entity as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
+        }
+      }
+    } catch (err) {
+      log.error(err, { message: 'Ghost cleanup failed (non-fatal)' });
+    }
+
     // ── Step 4: Restore auth tokens from SecureStore ──────────
     try {
       const secureTokens = await loadSecureTokens();
