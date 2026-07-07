@@ -6,8 +6,9 @@ globalThis.__DEV__ = false;
 vi.mock('@egoless-do/core', () => ({
   dateStr: vi.fn().mockReturnValue('2026-07-07'),
   addDays: vi.fn((date: string, n: number) => {
-    const d = new Date(date + 'T12:00:00'); // noon to avoid timezone edge cases
-    d.setDate(d.getDate() + n);
+    // Use UTC to avoid timezone-dependent date shifts
+    const d = new Date(date + 'T12:00:00Z');
+    d.setUTCDate(d.getUTCDate() + n);
     return d.toISOString().slice(0, 10);
   }),
 }));
@@ -22,8 +23,8 @@ describe('useDateNavigation swipe logic', () => {
   }
 
   function getNextDate(currentDate: string, dx: number): string {
-    const d = new Date(currentDate + 'T12:00:00');
-    d.setDate(d.getDate() + (dx < 0 ? 1 : -1));
+    const d = new Date(currentDate + 'T12:00:00Z');
+    d.setUTCDate(d.getUTCDate() + (dx < 0 ? 1 : -1));
     return d.toISOString().slice(0, 10);
   }
 
