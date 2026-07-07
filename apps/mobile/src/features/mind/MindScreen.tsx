@@ -133,7 +133,10 @@ export default function MindScreen() {
 
   const activeFears = useMemo(() => fearEntries.filter((f: FearEntry) => !f.deleted).sort((a: FearEntry, b: FearEntry) => (a.fearIndex ?? 99) - (b.fearIndex ?? 99)), [fearEntries]);
 
-  const renderFearItem = useCallback(({ item: f }: { item: FearEntry }) => (
+  const renderFearItem = useCallback(({ item: f }: { item: FearEntry }) => {
+    const clsColor = CLASSIFICATION_COLORS[f.classification as FearClassification];
+    const clsLabel = CLASSIFICATION_LABELS[f.classification as FearClassification];
+    return (
     <TouchableOpacity onPress={() => { setForgeFear(f); setForgeOutcome(f.worstOutcome ?? ''); setForgeProbability(f.probability ?? 5); setForgeCoping(f.copingAbility ?? 5); setShowForge(true); }}
       style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -146,13 +149,14 @@ export default function MindScreen() {
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
         <Text style={{ fontSize: 10, color: TH.sub }}>{f.trigger}</Text>
-        <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${CLASSIFICATION_COLORS[f.classification as FearClassification]}15` }}>
-          <Text style={{ fontSize: 10, color: CLASSIFICATION_COLORS[f.classification as FearClassification]}>{T(CLASSIFICATION_LABELS[f.classification as FearClassification])}</Text>
+        <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${clsColor}15` }}>
+          <Text style={{ fontSize: 10, color: clsColor }}>{T(clsLabel)}</Text>
         </View>
         <Text style={{ fontSize: 10, color: TH.sub }}>{f.occurrenceCount}次</Text>
       </View>
     </TouchableOpacity>
-  ), [TH, T, setForgeFear, setForgeOutcome, setForgeProbability, setForgeCoping, setShowForge]);
+    );
+  }, [TH, T, setForgeFear, setForgeOutcome, setForgeProbability, setForgeCoping, setShowForge]);
 
   // ── 恐惧图谱 Tab ──
   const renderFearTab = useCallback(() => {
