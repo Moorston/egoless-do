@@ -1,12 +1,14 @@
-import React, { useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RootStackParamList } from '../../../navigation/types';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_SMALL, FONT_BODY, FONT_TINY, computeExpectedDays, dateStr } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { Trash2, Network } from 'lucide-react-native';
+import React, { useMemo } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+import type { RootStackParamList } from '../../../navigation/types';
+
 
 interface PlanTaskCardProps {
   planItem: PlanItem;

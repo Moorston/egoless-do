@@ -1,13 +1,14 @@
 // ─── SessionComplete 禅修结束卡片 ────────────────────────────────
 // 显示时长/日期 + 笔记 + 八触记录 + 禅定阶段 + 回向 + 完成/放弃
-import React, { useState } from 'react';
-import { View, Text, Pressable, TextInput, ScrollView, StyleSheet } from 'react-native';
-import { useT } from '../../components/UI';
 import {
   EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS, EMPTY_EIGHT_TACTILE,
   SAM_STAGE_LABEL_KEYS,
 } from '@egoless-do/core';
 import type { EightTactile, EightTactileKey, SamStage } from '@egoless-do/core';
+import React, { useState } from 'react';
+import { View, Text, Pressable, TextInput, ScrollView, StyleSheet } from 'react-native';
+
+import { useT } from '../../components/UI';
 
 interface ClosingData {
   closingNotes?: string;

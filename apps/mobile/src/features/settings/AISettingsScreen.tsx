@@ -1,13 +1,12 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY , PROVIDER_TEMPLATES , uid } from '@egoless-do/core';
+import type { ModelConfig, ProviderTemplate, AIMode } from '@egoless-do/core';
+import { useNavigation } from '@react-navigation/native';
+import { ArrowLeft, Check, X, Wifi, WifiOff, ChevronRight, Trash2, Plus, Star, Settings } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Switch, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Check, X, Wifi, WifiOff, ChevronRight, Trash2, Plus, Star, Settings } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
-import { PROVIDER_TEMPLATES } from '@egoless-do/core';
-import type { ModelConfig, ProviderTemplate, AIMode } from '@egoless-do/core';
-import { uid } from '@egoless-do/core';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 export default function AISettingsScreen() {

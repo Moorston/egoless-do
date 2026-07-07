@@ -1,10 +1,10 @@
 // ─── HabitDeleteConfirmModal: delete confirmation dialog ─────────
+import { FONT_BODY, COLORS } from '@egoless-do/core';
+import { Trash2 } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, Modal } from 'react-native';
-import { Trash2 } from 'lucide-react-native';
-import { useTheme, useT } from '../../../components/UI';
-import { OutlineButton, PrimaryButton } from '../../../components/UI';
-import { FONT_BODY, COLORS } from '@egoless-do/core';
+
+import { useTheme, useT , OutlineButton, PrimaryButton } from '../../../components/UI';
 
 interface Props {
   visible: boolean;

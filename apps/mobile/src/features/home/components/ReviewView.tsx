@@ -1,12 +1,14 @@
-import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl, FlatList } from 'react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, countItemDoneDays, computeItemProgress, createLogger, dateStr } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl, FlatList } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const log = createLogger('Home');
 import { useRootNavigation } from '../../../navigation/hooks';
+
 import {
   TrendingUp, TrendingDown, Minus,
   AlertTriangle, CheckCircle, Target,

@@ -1,29 +1,31 @@
+import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, dateStr, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
+import type { MusicTrack } from '@egoless-do/core';
+import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Sharing from 'expo-sharing';
+import { Globe, Binary, ChevronRight } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ViewShot from 'react-native-view-shot';
-import * as Sharing from 'expo-sharing';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 import { Card, useTheme, PrimaryButton, TagPill, ProgressBar, OutlineButton, useT } from '../../components/UI';
-import { MEDITATION_DURATIONS_MIN, COLORS, getTodayMedMinutes, dateStr, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_HERO, FONT_BADGE, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
-import type { MusicTrack } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 const log = createLogger('Meditation');
-import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Globe, Binary, ChevronRight } from 'lucide-react-native';
-import { useMusicStore } from '../music/useMusicStore';
-import { audioSessionManager } from '../music/services/AudioSessionManager';
+import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
+import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
+import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
+import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
 import MusicPickerModal from '../music/components/MusicPickerModal';
+import { audioSessionManager } from '../music/services/AudioSessionManager';
+import { useMusicStore } from '../music/useMusicStore';
+
 import MeditationMusicBar from './MeditationMusicBar';
 
 // 实时会话
-import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
-import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
-import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
-import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 

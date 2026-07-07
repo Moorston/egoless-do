@@ -1,8 +1,8 @@
 // ─── BreathRing 呼吸圆环 ────────────────────────────────────────
 // 纯呼吸动画组件，跟随吸气-屏-呼气节奏膨胀/收缩
+import { BreathPattern } from '@egoless-do/core';
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, Easing, StyleSheet } from 'react-native';
-import { BreathPattern } from '@egoless-do/core';
 
 interface BreathRingProps {
   pattern: BreathPattern;

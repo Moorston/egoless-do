@@ -1,12 +1,14 @@
+import { FONT_SMALL } from '@egoless-do/core';
+import type { TimelineItem , MindReflection, TrailNote, LinkType } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL } from '@egoless-do/core';
-import type { TimelineItem } from '@egoless-do/core';
-import type { MindReflection, TrailNote, LinkType } from '@egoless-do/core';
-import { TimelineReflectionItem } from './TimelineReflectionItem';
-import { TimelineNoteItem } from './TimelineNoteItem';
 import { SwipeableRow } from '../core/SwipeableRow';
+
+import { TimelineNoteItem } from './TimelineNoteItem';
+import { TimelineReflectionItem } from './TimelineReflectionItem';
+
 
 interface TimelineListProps {
   items: TimelineItem[];

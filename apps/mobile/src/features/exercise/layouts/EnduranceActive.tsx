@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
+import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_TITLE, FONT_CLOSE, FONT_BODY, fmt } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Play, Pause } from 'lucide-react-native';
-import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_TITLE, FONT_CLOSE, FONT_BODY, fmt } from '@egoless-do/core';
-import type { ExerciseLayoutProps } from './types';
-import ExerciseTopBar from '../shared/ExerciseTopBar';
-import CelebrationOverlay from '../shared/CelebrationOverlay';
+import React from 'react';
+import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
+
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import CelebrationOverlay from '../shared/CelebrationOverlay';
+import ExerciseTopBar from '../shared/ExerciseTopBar';
+
+import type { ExerciseLayoutProps } from './types';
 
 export default function EnduranceActive(props: ExerciseLayoutProps) {
   const {

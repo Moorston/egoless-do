@@ -1,17 +1,19 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme, useT } from '../../components/UI';
 import { SPORT_GROUPS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, FONT_BADGE, FONT_BACK, FONT_CLOSE, formatPace } from '@egoless-do/core';
 import type { SportItem } from '@egoless-do/core';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import SimpleHeader from '../../navigation/SimpleHeader';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   Footprints, Activity, Bike, Dumbbell, ChevronRight,
   Globe, X, Search,
 } from 'lucide-react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 
 export default function ExerciseScreen() {
   const TH    = useTheme();

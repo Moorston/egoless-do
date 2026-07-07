@@ -1,7 +1,8 @@
+import { dateStr, createLogger } from '@egoless-do/core';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform } from 'react-native';
+
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { dateStr, createLogger } from '@egoless-do/core';
 
 const log = createLogger('SleepNotify');
 

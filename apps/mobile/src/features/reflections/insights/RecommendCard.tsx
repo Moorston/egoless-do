@@ -1,10 +1,11 @@
+import { FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON , getMoodIcon, formatDateShort, trendArrow, trendLabel, trendColor } from '@egoless-do/core';
+import type { TrailRecommendation } from '@egoless-do/core';
+import { ChevronRight, ThumbsDown, Zap } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { ChevronRight, ThumbsDown, Zap } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON } from '@egoless-do/core';
-import { getMoodIcon, formatDateShort, trendArrow, trendLabel, trendColor } from '@egoless-do/core';
-import type { TrailRecommendation } from '@egoless-do/core';
+
 
 interface Props {
   rec: TrailRecommendation;

@@ -1,21 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator,
-} from 'react-native';
-import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import NetInfo from '@react-native-community/netinfo';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import SimpleHeader from '../../navigation/SimpleHeader';
-import {
-  Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
-} from '../../components/UI';
-import TimePickerModal from '../../components/TimePickerModal';
-import { SyncConflictPanel } from '../../components/SyncConflictPanel';
 import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
-
-const log = createLogger('Settings');
+import NetInfo from '@react-native-community/netinfo';
+import { Image } from 'expo-image';
 import {
   BarChart3, CalendarDays, Utensils, Shield, HeartCrack,
   Heart, RefreshCw, Hand, PersonStanding, Trash2,
@@ -23,6 +9,23 @@ import {
   Cloud, CloudUpload, History, Info, Lock, ClipboardList,
   Music, Binary, Brain, Dumbbell, Timer,
 } from 'lucide-react-native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  View, Text, ScrollView, TouchableOpacity, Modal, Alert, Platform, ActivityIndicator,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { SyncConflictPanel } from '../../components/SyncConflictPanel';
+import TimePickerModal from '../../components/TimePickerModal';
+import {
+  Card, useTheme, useT, ScreenHeader, RowItem, Toggle,
+} from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
+
+const log = createLogger('Settings');
+
 import { useRootNavigation } from '../../navigation/hooks';
 import {
   requestNotificationPermission, scheduleDailyReminder, cancelAllReminders,

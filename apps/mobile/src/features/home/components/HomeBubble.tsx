@@ -1,8 +1,10 @@
+import { FONT_SMALL } from '@egoless-do/core';
+import { Calendar } from 'lucide-react-native';
 import React, { useRef, useCallback, memo } from 'react';
 import { View, Text, Animated as RNAnimated } from 'react-native';
-import { Calendar } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL } from '@egoless-do/core';
+
 
 interface HomeBubbleProps {
   visible: boolean;

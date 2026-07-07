@@ -1,18 +1,20 @@
 // ─── useSync hook (mobile) ────────────────────────────────────────
 // Connects SyncService to the app lifecycle: foreground triggers sync,
 // token comes from Zustand store, server changes update store.
+import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform, type AppStateStatus } from 'react-native';
-import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger } from './SyncService';
-import { migrateToSyncQueue } from './migrateToSyncQueue';
-import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
+
 import { getState, openDatabase } from '../../db/schema';
+import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
+import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger } from '../../store/storageAdapter';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
-import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger } from '../../store/storageAdapter';
-import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
 import { useMusicStore } from '../music/useMusicStore';
+
+import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger } from './SyncService';
 import { mergeSyncPatch } from './mergeSyncPatch';
+import { migrateToSyncQueue } from './migrateToSyncQueue';
 
 const log = createLogger('Sync');
 

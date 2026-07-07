@@ -1,17 +1,19 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useTheme, useT } from '../../../components/UI';
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
-import { useRootNavigation, type RootStackParamList } from '../../../navigation/hooks';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import { 
   ChevronLeft, TrendingUp, TrendingDown,
   AlertTriangle, CheckCircle, Target,
   BarChart3
 } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT } from '../../../components/UI';
+import { useRootNavigation, type RootStackParamList } from '../../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 type DetailRoute = RouteProp<RootStackParamList, 'ReviewDetail'>;
 

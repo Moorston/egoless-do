@@ -2,8 +2,8 @@
 // expo-audio: phase cue sounds (loaded on first use)
 // expo-speech: voice counting + phase announcements (loaded on first use)
 
-import { useEffect, useRef, useCallback } from 'react';
 import { createLogger } from '@egoless-do/core';
+import { useEffect, useRef, useCallback } from 'react';
 
 const log = createLogger('BreathAudio');
 

@@ -3,9 +3,9 @@
  * 显示聚合的打卡标记数量
  */
 
+import { getClusterStyle } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getClusterStyle } from '@egoless-do/core';
 
 interface ClusterMarkerProps {
   count: number;

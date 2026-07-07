@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View, Text, Modal, ScrollView, TouchableOpacity, TextInput,
-  KeyboardAvoidingView, Platform, StyleSheet,
-} from 'react-native';
-import { X, Star, Moon, Sun } from 'lucide-react-native';
-import { useTheme, useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import {
   SleepEntry, SleepQuality, WorkState,
   BODY_STATE_PRESETS, MIND_STATE_PRESETS, formatSleepDuration,
   FONT_TITLE, FONT_BODY, FONT_SUB,
 } from '@egoless-do/core';
+import { X, Star, Moon, Sun } from 'lucide-react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  View, Text, Modal, ScrollView, TouchableOpacity, TextInput,
+  KeyboardAvoidingView, Platform, StyleSheet,
+} from 'react-native';
+
+import { useTheme, useT } from '../../components/UI';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 
 interface Props {
   visible: boolean;

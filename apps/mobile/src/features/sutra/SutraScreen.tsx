@@ -1,18 +1,21 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES, dateStr } from '@egoless-do/core';
+import type { MantraDef, MantraCategory } from '@egoless-do/core';
+import * as Haptics from 'expo-haptics';
+import { useKeepAwake } from 'expo-keep-awake';
+import { BarChart3, Plus, ChevronDown, ChevronRight, X } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, KeyboardAvoidingView, Platform, Alert, FlatList, ListRenderItemInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useKeepAwake } from 'expo-keep-awake';
-import * as Haptics from 'expo-haptics';
+
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_SMALL, DEDICATION_TEMPLATES, SUTRA_CATEGORIES, dateStr } from '@egoless-do/core';
-import SimpleHeader from '../../navigation/SimpleHeader';
-import type { MantraDef, MantraCategory } from '@egoless-do/core';
 import { MalaRing } from '../shared/components/MalaRing';
-import { useSutraAudio } from './useSutraAudio';
 import { useAudioCache } from '../shared/hooks/useAudioCache';
-import { BarChart3, Plus, ChevronDown, ChevronRight, X } from 'lucide-react-native';
+
+import { useSutraAudio } from './useSutraAudio';
+
 
 type SutraPage = 'select' | 'start' | 'active' | 'report';
 

@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Target, Play, Pause, XCircle, Circle, CircleCheck, Plus, ListChecks, Route } from 'lucide-react-native';
 import { COLORS } from '@egoless-do/core';
 import type { Plan, PlanStatus } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Target, Play, Pause, XCircle, Circle, CircleCheck, Plus, ListChecks, Route } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
 import { useTheme } from '../../components/UI';
 
 interface Props {

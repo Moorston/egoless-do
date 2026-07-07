@@ -1,39 +1,45 @@
+import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger , highlightSearchMatch , getTrailsByReflection } from '@egoless-do/core';
+import type { Habit, MindReflection } from '@egoless-do/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import {
+  X, ExternalLink, Link,
+} from 'lucide-react-native';
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
   KeyboardAvoidingView, Platform, Linking, Alert,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../../navigation/hooks';
+
+import ItemManagerPanel from '../../../components/ItemManagerPanel';
 import {
   useTheme, ScreenHeader, PrimaryButton, OutlineButton,
   useT,
 } from '../../../components/UI';
-import ItemManagerPanel from '../../../components/ItemManagerPanel';
 import SimpleHeader from '../../../navigation/SimpleHeader';
-import ShareCard from './ShareCard';
-import { CreatePlanFromReflectionModal } from './CreatePlanFromReflectionModal';
-import FilterDrawer from './FilterDrawer';
+import { useTabNavigation, useRootNavigation, type MainTabParamList } from '../../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useReflections } from '../hooks/useReflections';
 import MindTrailEntryCard from '../trails/MindTrailEntryCard';
 import TrailSuggestionBanner from '../trails/TrailSuggestionBanner';
+
+import { CreatePlanFromReflectionModal } from './CreatePlanFromReflectionModal';
+import FilterDrawer from './FilterDrawer';
 import ReflectionForm from './ReflectionForm';
-import { useReflections } from '../hooks/useReflections';
-import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger } from '@egoless-do/core';
-import type { Habit, MindReflection } from '@egoless-do/core';
-import { highlightSearchMatch } from '@egoless-do/core';
-import {
-  X, ExternalLink, Link,
-} from 'lucide-react-native';
 import SearchFilterBar from './SearchFilterBar';
+import ShareCard from './ShareCard';
+
+
+
+
+
 
 const log = createLogger('Reflections');
 import ReflectionDetailContent from './ReflectionDetailContent';
+
 import TrailPickerModal from '../trails/TrailPickerModal';
-import { getTrailsByReflection } from '@egoless-do/core';
 
 // ═══════════════════════════════════════════════════════════════
 // Section 0: Helper Functions

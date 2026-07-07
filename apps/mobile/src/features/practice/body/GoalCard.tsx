@@ -1,7 +1,7 @@
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_SMALL, calcGoalProgress, recommendStrategy, BODY_STRATEGIES, type BodyGoal, type Theme } from '@egoless-do/core';
+import { Target } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Target } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, FONT_SMALL, calcGoalProgress, recommendStrategy, BODY_STRATEGIES, type BodyGoal, type Theme } from '@egoless-do/core';
 
 interface Props {
   TH: Theme;

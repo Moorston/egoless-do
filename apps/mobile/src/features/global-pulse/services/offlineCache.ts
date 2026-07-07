@@ -3,8 +3,8 @@
  * 使用 SQLite 缓存地图瓦片和打卡数据
  */
 
-import * as SQLite from 'expo-sqlite';
 import { GlobalCheckin, GlobalStats, CheckinType } from '@egoless-do/core';
+import * as SQLite from 'expo-sqlite';
 
 // 数据库名称
 const DB_NAME = 'global_pulse.db';

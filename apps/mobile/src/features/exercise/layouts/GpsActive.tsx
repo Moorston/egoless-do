@@ -1,9 +1,11 @@
+import { COLORS, FONT_HERO, FONT_SUB, FONT_TITLE, formatPace } from '@egoless-do/core';
+import type { MusicTrack } from '@egoless-do/core';
+import { Pause } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Pause } from 'lucide-react-native';
-import { COLORS, FONT_HERO, FONT_SUB, FONT_TITLE, formatPace } from '@egoless-do/core';
+
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
-import type { MusicTrack } from '@egoless-do/core';
+
 
 interface GpsActiveProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-native-amap3d types unavailable

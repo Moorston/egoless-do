@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text } from 'react-native';
 import { FONT_BODY, FONT_SUB, type Theme } from '@egoless-do/core';
 import { Check } from 'lucide-react-native';
-import ProgressOverview from './components/ProgressOverview';
+import React from 'react';
+import { View, Text } from 'react-native';
+
 import DailyDetail from './components/DailyDetail';
+import ProgressOverview from './components/ProgressOverview';
 import type { VowProgressData } from './useVowProgress';
 
 interface Props {

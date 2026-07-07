@@ -2,6 +2,7 @@
 // Extracted from navigation/index.tsx (AR-04 refactoring)
 import React, { Suspense } from 'react';
 import { View, Text } from 'react-native';
+
 import { useTheme } from '../components/UI';
 
 export function LoadingFallback() {

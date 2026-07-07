@@ -8,7 +8,7 @@ import * as SQLite from 'expo-sqlite';
 
 // In-memory DB store
 const memoryDb = new Map<string, string>();
-let memoryAsyncStorage = new Map<string, string>();
+const memoryAsyncStorage = new Map<string, string>();
 
 // Mock AsyncStorage
 vi.mock('@react-native-async-storage/async-storage', () => ({

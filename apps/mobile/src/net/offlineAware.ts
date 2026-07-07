@@ -1,7 +1,7 @@
 // ─── Offline-Aware Fetch Wrapper ──────────────────────────────────
 // Automatically checks network status and attaches auth token.
-import { useNetworkStatus } from '../store/useNetworkStatus';
 import { getAuthToken } from '../store/authToken';
+import { useNetworkStatus } from '../store/useNetworkStatus';
 
 export class OfflineError extends Error {
   constructor() {

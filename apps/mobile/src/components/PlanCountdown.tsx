@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, AppState } from 'react-native';
-import { useTheme, useT } from './UI';
 import { COLORS, FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';
 import type { Plan, PlanStatus } from '@egoless-do/core';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { View, Text, AppState } from 'react-native';
+
+import { useTheme, useT } from './UI';
 
 interface Props {
   plan: Plan;

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
-import { useTheme } from './UI';
 import { dateStr, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_BUTTON } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
+
+import { useTheme } from './UI';
 
 interface Props {
   visible: boolean;

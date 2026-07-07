@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+
 import { useSyncStore } from '../store/syncStore';
+
 import { useTheme } from './UI';
 
 export function SyncConflictPanel() {

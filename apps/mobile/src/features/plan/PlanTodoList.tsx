@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { Check, ClipboardList, Pencil, Plus, Trash2, Repeat } from 'lucide-react-native';
 import { COLORS, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, FONT_EMPTY, getFrequencySummary } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
+import { Check, ClipboardList, Pencil, Plus, Trash2, Repeat } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+
 import { useTheme } from '../../components/UI';
+
 import { LinkBadge } from './components/LinkBadge';
 
 interface Props {

@@ -3,7 +3,6 @@
  * 直接使用 PocketBase REST API
  */
 
-import { offlineAwareFetch } from '../../../net/offlineAware';
 import {
   GlobalCheckin,
   GlobalStats,
@@ -12,6 +11,9 @@ import {
   ApiResponse,
   LeaderboardSort
 } from '@egoless-do/core';
+
+import { offlineAwareFetch } from '../../../net/offlineAware';
+
 import { escapeFilter } from './pbFilterEscape';
 
 // PocketBase API 基础 URL

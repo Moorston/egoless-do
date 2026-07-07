@@ -1,18 +1,21 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import {
-  View, Text, Modal, ScrollView, FlatList, TouchableOpacity, TextInput,
-  KeyboardAvoidingView, Platform,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
 import { COLORS, dateStr, getTodayFoodLog, getActivePlan, getTodayItems, getTodayCustomTodos, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_BADGE, getIncompleteItems, INCOMPLETE_REASONS, parseCheckinNote } from '@egoless-do/core';
 import type { CheckinEntry, PlanItem, DailyCustomTodo, Habit } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   Utensils, Droplets, Scale, Star, PersonStanding, Sparkles,
   ClipboardList, CheckCircle2, Circle, X, Check, Shield,
   Moon, Sunrise, Brain,
 } from 'lucide-react-native';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import {
+  View, Text, Modal, ScrollView, FlatList, TouchableOpacity, TextInput,
+  KeyboardAvoidingView, Platform,
+} from 'react-native';
+
+import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
+
 import CheckinReflection from './CheckinReflection';
 
 /** Parse weight string, return undefined if invalid or out of range (1-500 kg) */

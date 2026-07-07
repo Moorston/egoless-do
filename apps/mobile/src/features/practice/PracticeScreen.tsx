@@ -1,13 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FONT_SUB, FONT_STAT_CARD, dateStr , isPreceptHabit } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme, useT } from '../../components/UI';
-import { FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
-import { isPreceptHabit } from '@egoless-do/core';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useTabNavigation } from '../../navigation/hooks';
-import SimpleHeader from '../../navigation/SimpleHeader';
 import {
   Wind, Dumbbell, Moon, Salad,
   Flag, Binary, Brain,
@@ -16,6 +8,15 @@ import {
   Waves,
 } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
+import React, { useMemo } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
+import { useTabNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 
 interface PracticeItem {
   key: string;

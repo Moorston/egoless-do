@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { FONT_SMALL, FONT_BODY, FONT_TINY, MIND_COLORS_EXTENDED, REFLECTION_CATEGORIES , getMoodIcon } from '@egoless-do/core';
+import type { MindReflection, LinkType } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X } from 'lucide-react-native';
+import React, { useCallback } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_BODY, FONT_TINY, MIND_COLORS_EXTENDED, REFLECTION_CATEGORIES } from '@egoless-do/core';
-import { getMoodIcon } from '@egoless-do/core';
-import type { MindReflection, LinkType } from '@egoless-do/core';
+
 
 const LINK_LABELS: Record<LinkType, { icon: string; label: string }> = {
   inspire: { icon: '💭', label: '引发' },

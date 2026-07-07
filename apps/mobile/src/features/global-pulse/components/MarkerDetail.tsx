@@ -3,6 +3,7 @@
  * 支持打卡记录和实时活跃会话
  */
 
+import { GlobalCheckin, ActiveSession } from '@egoless-do/core';
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
@@ -12,10 +13,10 @@ import {
   Modal,
   ActivityIndicator
 } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { useGlobalTick } from '../hooks/useGlobalTick';
-import { GlobalCheckin, ActiveSession } from '@egoless-do/core';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
 
 interface MarkerDetailProps {

@@ -1,8 +1,9 @@
+import { apiCheckEmail, apiSendCode, apiResetPassword, validatePassword, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useRootNavigation } from '../../navigation/hooks';
+
 import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
-import { apiCheckEmail, apiSendCode, apiResetPassword, validatePassword, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
 
 const COOLDOWN = 60;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

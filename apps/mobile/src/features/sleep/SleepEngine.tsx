@@ -1,23 +1,24 @@
 // ─── SleepEngine — Sleep ritual page state machine ───────────────
 // Routes between home/barrier/gratitude/report pages using hooks.
 
+import { dateStr , getCurrentPeriod, getNextSleepPeriod, formatSleepDuration, BODY_CLOCK } from '@egoless-do/core';
+import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../components/UI';
-import { dateStr } from '@egoless-do/core';
-import { getCurrentPeriod, getNextSleepPeriod, formatSleepDuration, BODY_CLOCK } from '@egoless-do/core';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 import DiaryModal from './DiaryModal';
-import { useSleepNotifications } from './useSleepNotifications';
 import { useBarrierTimer } from './hooks/useBarrierTimer';
-import { styles } from './sleepStyles';
 import SleepBarrierPage from './pages/SleepBarrierPage';
 import SleepGratitudePage from './pages/SleepGratitudePage';
 import SleepReportPage from './pages/SleepReportPage';
+import { styles } from './sleepStyles';
+import { useSleepNotifications } from './useSleepNotifications';
 
 type Page = 'home' | 'barrier' | 'gratitude' | 'report';
 

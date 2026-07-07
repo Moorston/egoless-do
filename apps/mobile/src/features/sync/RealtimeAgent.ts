@@ -1,5 +1,5 @@
-import EventSource from 'react-native-sse';
 import { SYNC_ENTITIES, createLogger, SCHEMAS } from '@egoless-do/core';
+import EventSource from 'react-native-sse';
 
 const log = createLogger('Realtime');
 

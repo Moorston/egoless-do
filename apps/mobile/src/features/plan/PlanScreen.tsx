@@ -1,14 +1,17 @@
+import { COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';
+import { ClipboardList } from 'lucide-react-native';
 import React, { useMemo, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getActivePlan, FONT_BODY, FONT_BUTTON, FONT_HERO } from '@egoless-do/core';
+
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { ClipboardList } from 'lucide-react-native';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
+
 import PlanDetailContent from './PlanDetailContent';
 
 export default function PlanScreen() {

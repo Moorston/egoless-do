@@ -2,8 +2,9 @@
 // Extracted from SyncEngine.ts (PR-4 of AR-01 refactoring)
 // Handles soft and hard reset of sync state.
 
-import { openDatabase, setState, withDbLock } from '../../db/schema';
 import { createLogger, ALL_ENTITY_TABLES } from '@egoless-do/core';
+
+import { openDatabase, setState, withDbLock } from '../../db/schema';
 
 const log = createLogger('SyncReset');
 const DEVICE_SYNCED_KEY = 'device_initial_synced';

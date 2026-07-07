@@ -1,9 +1,10 @@
+import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL, dateStr } from '@egoless-do/core';
+import { X, Link, ListChecks, Calendar } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { X, Link, ListChecks, Calendar } from 'lucide-react-native';
-import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL, dateStr } from '@egoless-do/core';
-import { useTheme, useT, PillSelector } from '../../../components/UI';
+
 import DateRangePickerModal from '../../../components/DateRangePickerModal';
+import { useTheme, useT, PillSelector } from '../../../components/UI';
 
 interface Props {
   visible: boolean;

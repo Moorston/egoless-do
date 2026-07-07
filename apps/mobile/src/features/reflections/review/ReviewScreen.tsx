@@ -1,12 +1,13 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon } from '@egoless-do/core';
+import { useNavigation } from '@react-navigation/native';
+import { ArrowLeft, ChevronRight, Check, Calendar, Heart, Lightbulb } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, ChevronRight, Check, Calendar, Heart, Lightbulb } from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK } from '@egoless-do/core';
-import { getMoodIcon } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 type Step = 'mood' | 'insight' | 'action';
 

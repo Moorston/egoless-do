@@ -2,10 +2,12 @@
 // Lightweight banner shown during Phase 2/3 background sync.
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useTheme } from './UI';
-import { getAllSyncProgress } from '../db/syncQueue';
+
 import { getState, openDatabase } from '../db/schema';
+import { getAllSyncProgress } from '../db/syncQueue';
 import { isDeviceSyncedBefore } from '../features/sync/SyncService';
+
+import { useTheme } from './UI';
 
 interface SyncBannerProps {
   onDismiss?: () => void;

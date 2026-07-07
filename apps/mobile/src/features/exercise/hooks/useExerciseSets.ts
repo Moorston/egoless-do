@@ -1,7 +1,7 @@
+import type { ExerciseSet } from '@egoless-do/core';
+import * as Haptics from 'expo-haptics';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Animated } from 'react-native';
-import * as Haptics from 'expo-haptics';
-import type { ExerciseSet } from '@egoless-do/core';
 
 export function useExerciseSets(onCompleteSet: () => void) {
   const [sets, setSets]               = useState<ExerciseSet[]>([]);

@@ -1,29 +1,31 @@
+import {
+  FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON,
+  getMoodIcon, generateTrailName, formatDateShort,
+} from '@egoless-do/core';
+import type { MindReflection } from '@egoless-do/core';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import {
+  ArrowLeft, X, Send, Check, ChevronDown,
+  RefreshCw, Plus, Sparkles, Loader2,
+} from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput,
   KeyboardAvoidingView, Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import type { RootStackParamList } from '../../../navigation/types';
-import {
-  ArrowLeft, X, Send, Check, ChevronDown,
-  RefreshCw, Plus, Sparkles, Loader2,
-} from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useTheme, useT } from '../../../components/UI';
-import {
-  FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON,
-  getMoodIcon, generateTrailName, formatDateShort,
-} from '@egoless-do/core';
-import type { MindReflection } from '@egoless-do/core';
-import SelectionSummary from '../shared/SelectionSummary';
+import type { RootStackParamList } from '../../../navigation/types';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { FilterTags } from '../core/FilterTags';
+import { useQuickTrailSearch, type TimeRange } from '../hooks/useQuickTrailSearch';
+import { AIAnalysisStream, createAnalysisMessages } from '../insights/AIAnalysisStream';
 import InsightPanel from '../insights/InsightPanel';
 import { SmartQueryBubble } from '../insights/SmartQueryBubble';
-import { FilterTags } from '../core/FilterTags';
-import { AIAnalysisStream, createAnalysisMessages } from '../insights/AIAnalysisStream';
-import { useQuickTrailSearch, type TimeRange } from '../hooks/useQuickTrailSearch';
+import SelectionSummary from '../shared/SelectionSummary';
+
 import ReflectionCheckItem from './ReflectionCheckItem';
 
 const TIME_RANGE_OPTIONS: { key: TimeRange; labelKey: string }[] = [

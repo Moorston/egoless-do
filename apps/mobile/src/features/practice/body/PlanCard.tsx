@@ -1,7 +1,7 @@
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme } from '@egoless-do/core';
+import { Dumbbell, ChevronRight } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Dumbbell, ChevronRight } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme } from '@egoless-do/core';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const REST_VALUES = ['休息', 'Rest', 'rest']; // backward-compatible rest check

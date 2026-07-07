@@ -1,6 +1,7 @@
+import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, fmt, formatPace } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, fmt, formatPace } from '@egoless-do/core';
+
 import type { ExercisePageProps } from './types';
 
 

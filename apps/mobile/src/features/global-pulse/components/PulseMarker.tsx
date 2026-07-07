@@ -3,9 +3,10 @@
  * 彩色圆点标记 + 序号
  */
 
+import { CheckinType } from '@egoless-do/core';
 import React, { useMemo, memo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { CheckinType } from '@egoless-do/core';
+
 import { getCheckinTypeColor } from '../services/globalPulseApi';
 
 interface PulseMarkerProps {

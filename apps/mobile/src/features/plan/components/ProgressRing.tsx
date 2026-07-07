@@ -1,7 +1,7 @@
+import { FONT_TITLE } from '@egoless-do/core';
 import React from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { FONT_TITLE } from '@egoless-do/core';
 
 export const ProgressRing = React.memo(function ProgressRing({ progress, size = 64, strokeWidth = 6, color }: { progress: number; size?: number; strokeWidth?: number; color: string }) {
   const radius = (size - strokeWidth) / 2;

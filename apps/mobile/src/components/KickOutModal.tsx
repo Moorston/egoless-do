@@ -2,6 +2,7 @@
 // Shown when the current device is kicked out by a new login on another device.
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+
 import { useTheme } from './UI';
 
 interface KickOutModalProps {

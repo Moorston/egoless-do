@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text } from 'react-native';
 import { COLORS, dateStr, FONT_SUB, activeOnly } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, Theme } from '@egoless-do/core';
+import React, { useMemo, useState } from 'react';
+import { View, Text } from 'react-native';
 
 export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, T }: { checkins: PlanItemCheckin[]; items: PlanItem[]; plan: Plan; TH: Theme; T: (k: string) => string }) {
   const [containerWidth, setContainerWidth] = useState(0);

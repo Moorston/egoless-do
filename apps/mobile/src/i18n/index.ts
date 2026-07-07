@@ -1,7 +1,7 @@
 import 'intl-pluralrules';
+import { zh, zhHant, en } from '@egoless-do/core';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { zh, zhHant, en } from '@egoless-do/core';
 
 let lng = 'zh';
 try {

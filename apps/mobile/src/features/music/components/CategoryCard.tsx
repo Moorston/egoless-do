@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Waves, Bell, Dumbbell, Music, Heart } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Waves, Bell, Dumbbell, Music, Heart,

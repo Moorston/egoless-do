@@ -1,6 +1,6 @@
+import { FlashList, FlashListProps } from '@shopify/flash-list';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { FlashList, FlashListProps } from '@shopify/flash-list';
 
 interface VirtualListProps<T> extends Omit<FlashListProps<T>, 'renderItem' | 'data'> {
   items: T[];

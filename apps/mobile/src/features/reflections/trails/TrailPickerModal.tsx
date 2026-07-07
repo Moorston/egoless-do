@@ -1,9 +1,12 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, getTrailsByReflection, getTrailStats } from '@egoless-do/core';
+import { X, Check, Plus, Link } from 'lucide-react-native';
 import React, { useMemo, useCallback, useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { X, Check, Plus, Link } from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_BUTTON, getTrailsByReflection, getTrailStats } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
+
 import CreateThoughtTrailModal from './CreateThoughtTrailModal';
 
 interface Props {

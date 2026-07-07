@@ -1,11 +1,12 @@
 // ─── HabitStatsSection: statistics charts for habit detail ───────
+import { FONT_BODY, FONT_SMALL, COLORS, computeWeeklyCompletionRates, computeWeeklyStreaks } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, useWindowDimensions } from 'react-native';
+
 import { useTheme, useT } from '../../components/UI';
-import { FONT_BODY, FONT_SUB, FONT_SMALL, COLORS } from '@egoless-do/core';
 import BarChart from '../../components/charts/BarChart';
 import LineChart from '../../components/charts/LineChart';
-import { computeWeeklyCompletionRates, computeWeeklyStreaks } from '@egoless-do/core';
+
 
 interface Props {
   checkedDates: string[];

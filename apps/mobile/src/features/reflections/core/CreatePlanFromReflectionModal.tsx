@@ -1,15 +1,15 @@
+import { FONT_TITLE, FONT_SUB, FONT_BODY, FONT_SMALL, dateStr } from '@egoless-do/core';
+import type { MindReflection , UnifiedPlanItemForm } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, Platform,
 } from 'react-native';
-import { X } from 'lucide-react-native';
-import { useTheme, PrimaryButton, OutlineButton } from '../../../components/UI';
-import { FONT_TITLE, FONT_SUB, FONT_BODY, FONT_SMALL, dateStr } from '@egoless-do/core';
-import type { MindReflection } from '@egoless-do/core';
-import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
-import type { UnifiedPlanItemForm } from '@egoless-do/core';
-import { useAppStore } from '../../../store/useAppStore';
+
 import DatePickerModal from '../../../components/DatePickerModal';
+import { useTheme, PrimaryButton, OutlineButton } from '../../../components/UI';
+import { useAppStore } from '../../../store/useAppStore';
+import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
 
 interface CreatePlanFromReflectionModalProps {
   visible: boolean;

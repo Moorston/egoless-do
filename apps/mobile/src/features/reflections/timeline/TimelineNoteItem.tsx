@@ -1,10 +1,11 @@
+import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon } from '@egoless-do/core';
+import type { TrailNote } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { X } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_BODY, FONT_TINY } from '@egoless-do/core';
-import { getMoodIcon } from '@egoless-do/core';
-import type { TrailNote } from '@egoless-do/core';
+
 
 interface TimelineNoteItemProps {
   note: TrailNote;

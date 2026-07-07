@@ -3,10 +3,11 @@
 // where entity arrays were persisted in AsyncStorage via Zustand partialize.
 // Now entities live in SQLite only; this bridges the gap on first launch.
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { StorageAdapter, SyncEntity, AIMode, ModelConfig } from '@egoless-do/core';
-import type { SQLiteDatabase } from 'expo-sqlite';
 import { createLogger } from '@egoless-do/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { SQLiteDatabase } from 'expo-sqlite';
+
 import { getState, setState } from '../db/schema';
 
 const log = createLogger('App');

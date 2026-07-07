@@ -1,8 +1,10 @@
+import { FONT_HERO, FONT_TITLE } from '@egoless-do/core';
+import type { MusicTrack } from '@egoless-do/core';
 import React from 'react';
 import { View, Text } from 'react-native';
-import { FONT_HERO, FONT_TITLE } from '@egoless-do/core';
+
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
-import type { MusicTrack } from '@egoless-do/core';
+
 
 interface Props {
   countdown: number;

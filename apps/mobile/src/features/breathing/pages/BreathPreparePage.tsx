@@ -1,15 +1,15 @@
 // ─── BreathPreparePage — Pre-session preparation UI ─────────────
 // Shows preset info, phase diagram, distress scale, audio toggles.
 
+import { FONT_BODY, createLogger , phaseLabelKey, getDescKey, getTipsKey } from '@egoless-do/core';
+import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { X, Volume2, VolumeX } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../../components/UI';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FONT_BODY, createLogger } from '@egoless-do/core';
-import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
-import { phaseLabelKey, getDescKey, getTipsKey } from '@egoless-do/core';
-import { X, Volume2, VolumeX } from 'lucide-react-native';
 import { styles } from '../breathStyles';
 
 const log = createLogger('Breathing');

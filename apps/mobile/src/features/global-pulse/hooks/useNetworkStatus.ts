@@ -2,10 +2,9 @@
  * 网络状态检测 Hook
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { createLogger , NetworkStatus } from '@egoless-do/core';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
-import { createLogger } from '@egoless-do/core';
-import { NetworkStatus } from '@egoless-do/core';
+import { useState, useEffect, useCallback } from 'react';
 
 const log = createLogger('GlobalPulse');
 

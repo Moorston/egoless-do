@@ -1,11 +1,12 @@
 // ─── MantraActivePage — Active chanting session UI ───────────────
 // Shows MalaRing counter, controls (undo/audio/pause/stop), exit button.
 
+import { FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 import { MalaRing } from '../../shared/components/MalaRing';
 
 // ─── Props interface ────────────────────────────────────────────────

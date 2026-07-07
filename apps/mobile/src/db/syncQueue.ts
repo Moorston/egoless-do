@@ -1,6 +1,7 @@
 // ─── Mobile sync queue (SQLite-backed) ──────────────────────────
 import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
+
 import { openDatabase, withDbLock } from './schema';
 import { buildDeleteInStatement, buildSelectInStatement, SYNC_QUEUE_UPSERT_SQL } from './sqlHelper';
 

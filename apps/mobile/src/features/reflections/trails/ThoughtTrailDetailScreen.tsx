@@ -1,28 +1,31 @@
+import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import type { TrailNote } from '@egoless-do/core';
+import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ArrowLeft, Trash2, Pencil, ListChecks, Network } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, RefreshControl, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import type { RootStackParamList } from '../../../navigation/types';
-import { ArrowLeft, Trash2, Pencil, ListChecks, Network } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
-import type { TrailNote } from '@egoless-do/core';
-import { useTrailData } from '../hooks/useTrailData';
+import type { RootStackParamList } from '../../../navigation/types';
+import { AddReflectionFAB } from '../core/AddReflectionFAB';
+import { CreatePlanFromTrailModal } from '../core/CreatePlanFromTrailModal';
+import { PlanTasksSection } from '../core/PlanTasksSection';
 import { useTrailAI } from '../hooks/useTrailAI';
 import { useTrailActions } from '../hooks/useTrailActions';
-
-import { ReviewAIPanel } from './ReviewAIPanel';
-import { TimelineList } from '../timeline/TimelineList';
-import { ReviewNoteCard } from '../review/ReviewNoteCard';
+import { useTrailData } from '../hooks/useTrailData';
 import { EditNoteModal } from '../review/EditNoteModal';
-import { AddReflectionFAB } from '../core/AddReflectionFAB';
+import { ReviewNoteCard } from '../review/ReviewNoteCard';
 import { WriteNoteModal } from '../review/WriteNoteModal';
-import { SelectReflectionModal } from '../shared/SelectReflectionModal';
-import { PlanTasksSection } from '../core/PlanTasksSection';
-import { CreatePlanFromTrailModal } from '../core/CreatePlanFromTrailModal';
-import { RelatedTrailsSection } from './RelatedTrailsSection';
 import { SegmentBar } from '../shared/SegmentBar';
+import { SelectReflectionModal } from '../shared/SelectReflectionModal';
+import { TimelineList } from '../timeline/TimelineList';
+
+import { RelatedTrailsSection } from './RelatedTrailsSection';
+import { ReviewAIPanel } from './ReviewAIPanel';
+
+
 
 export default function ThoughtTrailDetailScreen() {
   const TH = useTheme();

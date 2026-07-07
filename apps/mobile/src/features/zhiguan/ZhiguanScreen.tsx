@@ -1,24 +1,25 @@
 // ─── ZhiguanScreen 止观页主控 ──────────────────────────────────
 // 三层渐进式架构：idle → practicing → complete
 // 使用 store 的 draft → startSession → completeSession 生命周期
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
-import { useT } from '../../components/UI';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useZhiguanTimer, usePracticeElapseHints } from './hooks/useZhiguanTimer';
 import { BREATH_PATTERNS, DEFAULT_RADAR, EMPTY_EIGHT_TACTILE, notifyBreath, initialRoundState } from '@egoless-do/core';
 import type { BreathPattern, ZhiguanMethod, FiveHindranceRadar, EightTactile, SamStage, CountingRoundState } from '@egoless-do/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { View, Text, Pressable, Animated, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useT } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useMusicStore } from '../music/useMusicStore';
 
+import SessionComplete from './SessionComplete';
+import ZhiguanSettingsSheet from './ZhiguanSettingsSheet';
 import BreathRing from './components/BreathRing';
 import CountingRound from './components/CountingRound';
 import VipassanaPanel from './components/VipassanaPanel';
-import SessionComplete from './SessionComplete';
-import ZhiguanSettingsSheet from './ZhiguanSettingsSheet';
+import { useZhiguanTimer, usePracticeElapseHints } from './hooks/useZhiguanTimer';
 
 type ViewMode = 'idle' | 'practicing' | 'complete';
 

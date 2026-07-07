@@ -3,6 +3,7 @@
  * 提供全球地图隐私设置
  */
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -13,7 +14,7 @@ import {
   Alert,
   ActivityIndicator
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { useTheme, useT } from '../../../components/UI';
 import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';
 import { getUserHash } from '../services/userHash';

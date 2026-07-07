@@ -1,11 +1,12 @@
 // ─── SleepGratitudePage — Gratitude form UI ──────────────────────
 // Quality rating, gratitude inputs, note, and save button.
 
+import { X, Star, Check } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../../components/UI';
-import { X, Star, Check } from 'lucide-react-native';
 import { styles } from '../sleepStyles';
 
 /**

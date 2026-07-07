@@ -1,6 +1,6 @@
+import { COLORS, FONT_STAT_CARD, FONT_SUB } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { COLORS, FONT_STAT_CARD, FONT_SUB } from '@egoless-do/core';
 
 interface Props {
   restSec: number;

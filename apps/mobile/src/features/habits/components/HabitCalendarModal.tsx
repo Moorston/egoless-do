@@ -1,9 +1,10 @@
 // ─── HabitCalendarModal: calendar modal wrapping CalendarGrid ────
+import { FONT_TITLE } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
-import { X } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE } from '@egoless-do/core';
 import CalendarGrid from '../../../components/charts/CalendarGrid';
 
 interface Props {

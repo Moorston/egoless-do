@@ -1,9 +1,11 @@
+import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import { Brain } from 'lucide-react-native';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Brain } from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 interface Props {
   onPress: () => void;

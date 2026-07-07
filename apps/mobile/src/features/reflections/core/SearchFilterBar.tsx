@@ -1,8 +1,10 @@
+import { FONT_BODY, FONT_SMALL, FONT_SUB } from '@egoless-do/core';
+import { X, BarChart3 } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { X, BarChart3 } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL, FONT_SUB } from '@egoless-do/core';
+
 
 interface FilterItem {
   key: string;

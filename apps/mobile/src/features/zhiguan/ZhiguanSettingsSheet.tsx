@@ -1,10 +1,11 @@
 // ─── ZhiguanSettingsSheet 止观设置弹窗 ──────────────────────────
 // 底部弹出 Sheet：呼吸节奏 / 目标时长 / 背景音 / 修行法 / 发愿
-import React, { useState } from 'react';
-import { View, Text, Pressable, TextInput, ScrollView, StyleSheet, Modal } from 'react-native';
-import { useT } from '../../components/UI';
 import { ZHIGUAN_METHOD_DEFS, FIVE_HINDRANCE_KEYS, FIVE_HINDRANCE_LABEL_KEYS, SANKALPA_TEMPLATES } from '@egoless-do/core';
 import type { ZhiguanMethod, FiveHindranceRadar } from '@egoless-do/core';
+import React, { useState } from 'react';
+import { View, Text, Pressable, TextInput, ScrollView, StyleSheet, Modal } from 'react-native';
+
+import { useT } from '../../components/UI';
 
 interface ZhiguanSettings {
   breathPattern: 'standard' | 'calming' | 'closing';

@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EXERCISE_SOUNDS } from '@egoless-do/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
+import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { audioSessionManager } from '../../music/services/AudioSessionManager';
 
 const SOUND_FILES: Record<string, number> = {

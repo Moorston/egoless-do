@@ -1,11 +1,13 @@
-import React, { useMemo, useCallback } from 'react';
-import { View, Text, Modal, TouchableOpacity, FlatList, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { X, Music } from 'lucide-react-native';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, MUSIC_CATEGORY_META } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import { useMusicStore } from '../useMusicStore';
+import { X, Music } from 'lucide-react-native';
+import React, { useMemo, useCallback } from 'react';
+import { View, Text, Modal, TouchableOpacity, FlatList, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
 import { audioSessionManager } from '../services/AudioSessionManager';
+import { useMusicStore } from '../useMusicStore';
+
 import TrackListItem from './TrackListItem';
 
 interface Props {

@@ -1,6 +1,6 @@
 // ─── SQLite schema & queries (expo-sqlite v15 API) ───────────────
-import * as SQLite from 'expo-sqlite';
 import { createLogger } from '@egoless-do/core';
+import * as SQLite from 'expo-sqlite';
 
 const log = createLogger('DB');
 

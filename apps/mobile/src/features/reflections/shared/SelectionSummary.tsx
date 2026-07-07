@@ -1,8 +1,8 @@
+import { FONT_SMALL, FONT_TINY , getMoodIcon, formatDateShort } from '@egoless-do/core';
 import React from 'react';
 import { View, Text } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
-import { getMoodIcon, formatDateShort } from '@egoless-do/core';
 
 interface Props {
   count: number;

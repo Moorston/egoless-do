@@ -1,7 +1,8 @@
+import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
-import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 
 interface Props {
   word: string;

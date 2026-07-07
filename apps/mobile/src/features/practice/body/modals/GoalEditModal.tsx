@@ -1,7 +1,8 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, recommendStrategy, BODY_STRATEGIES, type BodyStrategy, type BodyGoal, type Theme } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
-import { X } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, recommendStrategy, BODY_STRATEGIES, type BodyStrategy, type BodyGoal, type Theme } from '@egoless-do/core';
+
 import { PrimaryButton, OutlineButton } from '../../../../components/UI';
 
 interface Props {

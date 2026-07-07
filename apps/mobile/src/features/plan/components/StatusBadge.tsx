@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text } from 'react-native';
 import { PLAN_STATUS_COLORS, statusToI18nKey, FONT_BADGE } from '@egoless-do/core';
 import type { PlanStatus, PlanItemStatus } from '@egoless-do/core';
+import React from 'react';
+import { View, Text } from 'react-native';
 
 export const StatusLabel = React.memo(function StatusLabel({ status, T }: { status: PlanStatus | PlanItemStatus; T: (k: string) => string }) {
   return (

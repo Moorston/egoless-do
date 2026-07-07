@@ -1,7 +1,8 @@
 // ─── useHabitActions: action menu, status change, delete state ────
-import { useState, useCallback } from 'react';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import type { Habit, HabitStatus } from '@egoless-do/core';
+import { useState, useCallback } from 'react';
+
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 export function useHabitActions() {
   const { updateHabit, deleteHabit } = useShallowStore(s => ({

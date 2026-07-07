@@ -1,17 +1,19 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Animated,
-  KeyboardAvoidingView, Keyboard, Platform,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../store/useAppStore';
-import { useTheme, useT, ThemedInput } from './UI';
 import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr } from '@egoless-do/core';
 import type { WuxingElement, FlavorType, FoodWuxingItem } from '@egoless-do/core';
 import {
   Star, ChevronLeft, X, Search,
   Wheat, Beef, Leaf, Apple, CupSoda, Cookie, Utensils,
 } from 'lucide-react-native';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import {
+  View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Animated,
+  KeyboardAvoidingView, Keyboard, Platform,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useAppStore, useShallowStore } from '../store/useAppStore';
+
+import { useTheme, useT, ThemedInput } from './UI';
 
 /** Map FOOD_PRESETS icon name strings to Lucide components */
 const FOOD_ICON_MAP: Record<string, React.ComponentType<any>> = {

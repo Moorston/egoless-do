@@ -3,18 +3,19 @@
 // Loads all persisted data from SQLite, restores auth tokens,
 // and sets up daily reset management.
 
+import { DailyResetManager , createLogger, setSentryBridge } from '@egoless-do/core';
 import { AppState } from 'react-native';
-import { useAppStore, type PartialMobileStore } from './useAppStore';
-import { mobileStorageAdapter as adapter, flushWrites } from './storageAdapter';
+
 import { openDatabase, setState as setAppState } from '../db/schema';
-import { migrateAsyncStorageToSQLite, migrateSettingsToSQLite } from './migrateAsyncStorage';
-import { loadSecureTokens, saveSecureTokens, clearSecureTokens } from './secureAuth';
-import { DailyResetManager } from '@egoless-do/core';
 import {
   rehydrateFromDb,
 } from '../features/sync/SyncService';
-import { createLogger, setSentryBridge } from '@egoless-do/core';
 import { captureException, captureMessage, addBreadcrumb, setSentryUser, clearSentryUser } from '../sentry';
+
+import { migrateAsyncStorageToSQLite, migrateSettingsToSQLite } from './migrateAsyncStorage';
+import { loadSecureTokens, saveSecureTokens, clearSecureTokens } from './secureAuth';
+import { mobileStorageAdapter as adapter, flushWrites } from './storageAdapter';
+import { useAppStore, type PartialMobileStore } from './useAppStore';
 
 const log = createLogger('App');
 

@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
-import { useShallowStore } from '../../../../store/useAppStore';
 import { buildRelationGraph } from '@egoless-do/core';
+import { useMemo } from 'react';
+
+import { useShallowStore } from '../../../../store/useAppStore';
 import type { RelationContext, GraphBuildResult } from '../types';
 
 /**

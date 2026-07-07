@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, type Theme } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, TrendingUp, Flame } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, type Theme } from '@egoless-do/core';
+import React from 'react';
+import { View, Text } from 'react-native';
+
 import { ProgressBar } from '../../../components/UI';
 
 interface Props {

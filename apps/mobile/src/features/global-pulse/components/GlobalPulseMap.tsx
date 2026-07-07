@@ -1,3 +1,4 @@
+import { GlobalCheckin, LeaderboardEntry, ActiveSession , aggregateMarkers } from '@egoless-do/core';
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import {
   View,
@@ -6,20 +7,21 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import { formatDisplayName } from '../services/globalPulseApi';
 import MapView, { UrlTile, Marker } from 'react-native-maps';
+
 import { useTheme, useT } from '../../../components/UI';
-import { GlobalCheckin, LeaderboardEntry, ActiveSession } from '@egoless-do/core';
-import { useGlobalPulse } from '../hooks/useGlobalPulse';
 import { useActiveSessions } from '../hooks/useActiveSessions';
-import { aggregateMarkers } from '@egoless-do/core';
-import { PulseMarker } from './PulseMarker';
+import { useGlobalPulse } from '../hooks/useGlobalPulse';
+import { formatDisplayName } from '../services/globalPulseApi';
+import { getUserHash } from '../services/userHash';
+
 import { ActiveMarker } from './ActiveMarker';
-import { MarkerDetail } from './MarkerDetail';
-import { OfflineBanner } from './OfflineBanner';
 import { BottomPanel } from './BottomPanel';
 import { Leaderboard } from './Leaderboard';
-import { getUserHash } from '../services/userHash';
+import { MarkerDetail } from './MarkerDetail';
+import { OfflineBanner } from './OfflineBanner';
+import { PulseMarker } from './PulseMarker';
+
 
 const OSM_TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 

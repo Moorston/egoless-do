@@ -1,6 +1,7 @@
 // ─── All SQL query helpers ────────────────────────────────────────
-import type { SQLiteDatabase } from 'expo-sqlite';
 import type { Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession, ThoughtTrail } from '@egoless-do/core';
+import type { SQLiteDatabase } from 'expo-sqlite';
+
 import { rowToCheckin } from '../store/rowMappers';
 
 // ── Habits ────────────────────────────────────────────────────────

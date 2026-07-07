@@ -1,14 +1,16 @@
+import { FONT_TITLE, ALL_SPORTS } from '@egoless-do/core';
+import { useFocusEffect } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { FONT_TITLE, ALL_SPORTS } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 import BodyDashboard from './body/BodyDashboard';
 import BodyFlow from './body/BodyFlow';
 import BodyTodayPlanCard from './body/BodyTodayPlanCard';
-import SimpleHeader from '../../navigation/SimpleHeader';
 import { useTodayPlan } from './body/hooks/useTodayPlan';
 
 // ── Page state machine ──

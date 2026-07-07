@@ -1,11 +1,12 @@
+import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_HERO, FONT_STAT_SECTION, fmt, TARGET_PRESETS, getSoftTarget } from '@egoless-do/core';
+import type { MusicTrack , ExerciseEntry } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { X } from 'lucide-react-native';
-import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_HERO, FONT_STAT_SECTION, fmt, TARGET_PRESETS, getSoftTarget } from '@egoless-do/core';
-import type { MusicTrack } from '@egoless-do/core';
-import type { ExercisePageProps } from './types';
-import type { ExerciseEntry } from '@egoless-do/core';
+
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+
+import type { ExercisePageProps } from './types';
 
 export default function PrepPage(props: ExercisePageProps) {
   const {

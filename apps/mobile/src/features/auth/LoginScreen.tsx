@@ -1,11 +1,12 @@
+import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger , apiCheckEmail } from '@egoless-do/core';
+import { Image } from 'expo-image';
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Image } from 'expo-image';
-import { useAppStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
+
 import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
-import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
-import { apiCheckEmail } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore } from '../../store/useAppStore';
+
 
 const log = createLogger('Auth');
 

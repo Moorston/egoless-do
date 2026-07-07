@@ -1,6 +1,6 @@
+import { COLORS, FONT_BODY } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, Animated } from 'react-native';
-import { COLORS, FONT_BODY } from '@egoless-do/core';
 
 interface Props {
   showCelebration: boolean;

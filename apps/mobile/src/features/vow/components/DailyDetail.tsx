@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, Text } from 'react-native';
 import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme } from '@egoless-do/core';
 import { Check } from 'lucide-react-native';
+import React from 'react';
+import { View, Text } from 'react-native';
+
 import type { DayData } from '../useVowProgress';
 
 interface Props {

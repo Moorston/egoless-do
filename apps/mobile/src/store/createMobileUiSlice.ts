@@ -1,10 +1,10 @@
 // ─── Mobile-specific UiSlice extension ─────────────────────────
-import type { StateCreator } from 'zustand';
 import type {
   FoodSlice, CheckinSlice, ProfileSlice, SettingsSlice, ReflectionSlice,
   StorageAdapter, FullStore,
 } from '@egoless-do/core';
 import { submitCheckinEntry, createResetDataPatch, createLogger } from '@egoless-do/core';
+import type { StateCreator } from 'zustand';
 
 const log = createLogger('App');
 

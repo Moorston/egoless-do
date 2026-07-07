@@ -1,7 +1,7 @@
+import { COLORS } from '@egoless-do/core';
 import React from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Rect, Text as SvgText } from 'react-native-svg';
-import { COLORS } from '@egoless-do/core';
 
 export interface HeatmapCell {
   date: string;

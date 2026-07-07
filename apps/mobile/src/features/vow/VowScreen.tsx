@@ -1,14 +1,16 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, dateStr } from '@egoless-do/core';
+import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
+import { Flag, Target, Plus, X, Star } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, dateStr } from '@egoless-do/core';
-import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
-import { Flag, Target, Plus, X, Star } from 'lucide-react-native';
+
 import VisionCard from './components/VisionCard';
 
 const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: number; color?: string }>; labelKey: string; color: string }> = {

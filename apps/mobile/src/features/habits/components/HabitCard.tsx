@@ -1,15 +1,15 @@
 // ─── HabitCard: habit card with original prominent style ─────────
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Target, Pause, X, CheckCircle, Bell, BellOff } from 'lucide-react-native';
-import { useTheme, useT } from '../../../components/UI';
-import { Card, ProgressBar } from '../../../components/UI';
 import {
   COLORS, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB,
   FONT_SMALL, FONT_BADGE, FONT_STAT_CARD,
   HABIT_LINK_COLORS,
 } from '@egoless-do/core';
 import type { Habit } from '@egoless-do/core';
+import { Target, Pause, X, CheckCircle, Bell, BellOff } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+import { useTheme, useT , Card, ProgressBar } from '../../../components/UI';
 import { STATUS_COLORS, STATUS_LABELS } from '../constants';
 
 interface Props {

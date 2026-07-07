@@ -1,10 +1,10 @@
 // ─── HabitActionMenu: long-press action sheet ────────────────────
+import { FONT_BUTTON, COLORS } from '@egoless-do/core';
+import type { Habit } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, Modal } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BUTTON } from '@egoless-do/core';
-import { COLORS } from '@egoless-do/core';
-import type { Habit } from '@egoless-do/core';
 
 interface Props {
   habit: Habit | null;

@@ -2,8 +2,9 @@
 // Pure function: merges a sync delta patch into the current store state.
 // Returns the store patch to apply and the list of changed entities.
 // Side-effect free — safe to unit test.
-import type { MobileStore } from '../../store/useAppStore';
 import type { AIMode, ModelConfig } from '@egoless-do/core';
+
+import type { MobileStore } from '../../store/useAppStore';
 
 /** Maps Zustand store keys to entity names used by rehydrateFromDb / sync. */
 export const STORE_KEY_TO_ENTITY: Record<string, string> = {

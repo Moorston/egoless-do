@@ -1,13 +1,18 @@
+import { COLORS, isPlanDelayed, statusToI18nKey, PLAN_STATUS_COLORS, FONT_TITLE, FONT_BADGE, dateStr } from '@egoless-do/core';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { ChevronLeft } from 'lucide-react-native';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, RouteProp } from '@react-navigation/native';
+
+import { useTheme, useT } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, isPlanDelayed, statusToI18nKey, PLAN_STATUS_COLORS, FONT_TITLE, FONT_BADGE, dateStr } from '@egoless-do/core';
-import { useTheme, useT } from '../../components/UI';
-import { ChevronLeft } from 'lucide-react-native';
+
+
+
+
 import PlanDetailContent from './PlanDetailContent';
 
 export default function PlanDetailScreen() {

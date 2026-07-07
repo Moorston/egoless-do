@@ -1,11 +1,14 @@
+import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_TITLE, FONT_STAT_CARD, FONT_LABEL } from '@egoless-do/core';
+import { Utensils, Pencil, X } from 'lucide-react-native';
 import React, { useState, useMemo, memo } from 'react';
 import {
   View, Text, TouchableOpacity, Modal, TextInput,
 } from 'react-native';
-import { Utensils, Pencil, X } from 'lucide-react-native';
-import { useTheme, useT, ProgressBar } from '../../../components/UI';
-import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_TITLE, FONT_STAT_CARD, FONT_LABEL } from '@egoless-do/core';
+
 import AddFoodModal from '../../../components/AddFoodModal';
+import { useTheme, useT, ProgressBar } from '../../../components/UI';
+
+
 
 interface FoodItem {
   id: string;

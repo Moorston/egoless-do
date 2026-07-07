@@ -1,11 +1,12 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
+import type { MantraDef } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
-import type { MantraDef } from '@egoless-do/core';
 
 const WEEKDAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
 

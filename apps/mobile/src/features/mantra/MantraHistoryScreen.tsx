@@ -1,12 +1,13 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { useRootNavigation } from '../../navigation/hooks';
+
 import { useTheme, useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
 import type { RootStackParamList } from '../../navigation/types';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 export default function MantraHistoryScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'MantraHistory'>>();

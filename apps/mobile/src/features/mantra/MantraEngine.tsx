@@ -1,18 +1,20 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
-import { View, Alert } from 'react-native';
-import { useTheme, useT } from '../../components/UI';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import SimpleHeader from '../../navigation/SimpleHeader';
 import type { MantraDef } from '@egoless-do/core';
 import { dateStr } from '@egoless-do/core';
-import { useMantraAudio } from './useMantraAudio';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
+import { View, Alert } from 'react-native';
+
+import { useTheme, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useAudioCache } from '../shared/hooks/useAudioCache';
+
 import { useMantraTimer } from './hooks/useMantraTimer';
-import MantraSelectPage from './pages/MantraSelectPage';
-import MantraStartPage from './pages/MantraStartPage';
 import MantraActivePage from './pages/MantraActivePage';
 import MantraReportPage from './pages/MantraReportPage';
+import MantraSelectPage from './pages/MantraSelectPage';
+import MantraStartPage from './pages/MantraStartPage';
+import { useMantraAudio } from './useMantraAudio';
 
 // Lazy-loaded native modules — deferred until active session
 let _Haptics: typeof import('expo-haptics') | null = null;

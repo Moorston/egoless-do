@@ -4,6 +4,7 @@
 
 import { createLogger } from '@egoless-do/core';
 import type { SyncEntity } from '@egoless-do/core';
+
 import { openDatabase } from '../../db/schema';
 import { enqueueChange } from '../../db/syncQueue';
 

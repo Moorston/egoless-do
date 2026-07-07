@@ -1,10 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, FONT_TINY, REFLECTION_CATEGORIES, highlightSearchMatch, createLogger } from '@egoless-do/core';
+import type { MindReflection } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ExternalLink, Link } from 'lucide-react-native';
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, FONT_TINY, REFLECTION_CATEGORIES, highlightSearchMatch, createLogger } from '@egoless-do/core';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import type { MindReflection } from '@egoless-do/core';
+
 
 const log = createLogger('Reflections');
 

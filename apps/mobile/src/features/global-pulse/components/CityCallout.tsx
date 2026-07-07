@@ -2,12 +2,13 @@
  * 带城市信息的 Callout 内容组件
  */
 
+import { GlobalCheckin } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';
-import { GlobalCheckin } from '@egoless-do/core';
 
 interface CityCalloutProps {
   checkin: GlobalCheckin;

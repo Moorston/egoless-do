@@ -1,7 +1,4 @@
 // ─── Zustand store (mobile) — slice composition ────────────────
-import { create } from 'zustand';
-import { useShallow } from 'zustand/react/shallow';
-import { AppState } from 'react-native';
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, SleepSlice,
   FoodSlice, CheckinSlice, ProfileSlice, SettingsSlice,
@@ -19,10 +16,16 @@ import {
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
-import { mobileStorageAdapter, flushWrites, setPersistErrorHandler } from './storageAdapter';
-import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
+import { AppState } from 'react-native';
+import { create } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
+
+
 import { useMusicStore, setMusicSyncCallback } from '../features/music/useMusicStore';
 import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydrateFromDb, initialSync } from '../features/sync/SyncService';
+
+import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
+import { mobileStorageAdapter, flushWrites, setPersistErrorHandler } from './storageAdapter';
 
 const log = createLogger('App');
 
@@ -134,7 +137,7 @@ export function useShallowStore<U>(selector: (state: MobileStore) => U): U {
 }
 
 // Delayed sync callback - set after store is created
-let _autoSyncCallback: (() => void) | null = null;
+const _autoSyncCallback: (() => void) | null = null;
 const triggerAutoSync = () => _autoSyncCallback?.();
 
 // Lazy store reference to avoid circular dependency

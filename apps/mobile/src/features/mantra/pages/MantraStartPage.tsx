@@ -1,12 +1,13 @@
 // ─── MantraStartPage — Pre-session screen with mantra info and audio ───
 // Shows mantra details, audio download/preview, loop option, and begin button.
 
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
+import type { MantraDef } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
-import type { MantraDef } from '@egoless-do/core';
 
 // ─── Props interface ────────────────────────────────────────────────
 

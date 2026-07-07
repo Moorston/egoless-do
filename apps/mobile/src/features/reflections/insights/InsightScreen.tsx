@@ -1,14 +1,15 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon } from '@egoless-do/core';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ArrowLeft, Brain, TrendingUp, Calendar, Lightbulb } from 'lucide-react-native';
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import type { RootStackParamList } from '../../../navigation/types';
-import { ArrowLeft, Brain, TrendingUp, Calendar, Lightbulb } from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK } from '@egoless-do/core';
-import { getMoodIcon } from '@egoless-do/core';
+import type { RootStackParamList } from '../../../navigation/types';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 const MOOD_EMOJI: Record<string, string> = {
   '开心': '😊',

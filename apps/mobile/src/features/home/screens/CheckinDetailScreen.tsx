@@ -1,13 +1,15 @@
+import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
+import type { CheckinEntry } from '@egoless-do/core';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check, AlertTriangle, Moon, Sunrise, Brain } from 'lucide-react-native';
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useTheme, useT } from '../../../components/UI';
-import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
-import type { CheckinEntry } from '@egoless-do/core';
 import { useRootNavigation, type RootStackParamList } from '../../../navigation/hooks';
-import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check, AlertTriangle, Moon, Sunrise, Brain } from 'lucide-react-native';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 const styles = StyleSheet.create({
   card: {

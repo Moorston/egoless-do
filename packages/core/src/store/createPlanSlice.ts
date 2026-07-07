@@ -1,5 +1,6 @@
 import type { Plan, PlanItem, PlanItemCheckin, DailyCustomTodo, DailyTodoHistory, PlanItemSource, UnifiedPlanItemForm, RecycleBinItem, ThoughtTrail } from '../types';
 import type { MindReflection } from '../types/reflection';
+import type { SyncEntity } from '../sync/entities';
 import {
   addPlan, updatePlan, deletePlan, canDeletePlan,
   startPlan, pausePlan, resumePlan, completePlan, cancelPlan,
@@ -75,6 +76,47 @@ function toggleCheckin(
   }
 }
 
+/** Cascade: pre-compute all cross-slice mutations for a plan/planItem deletion. */
+function computeCascadeDelete(get: () => FullStore, type: 'plan' | 'item', targetId: string) {
+  const s = get();
+  const now = Date.now();
+  if (type === 'plan') {
+    const plan = (s.plans ?? []).find(p => p.id === targetId && !p.deleted);
+    if (!plan || !canDeletePlan(plan.status)) return null;
+    const planItemsToDelete = (s.planItems ?? []).filter(i => i.planId === targetId && !i.deleted);
+    const deletedItemIds = planItemsToDelete.map(i => i.id);
+    const deletedItemIdsSet = new Set(deletedItemIds);
+    const planIdByItemId = new Map<string, string>();
+    for (const i of (s.planItems ?? [])) planIdByItemId.set(i.id, i.planId);
+    const deletedCheckinIds = (s.planItemCheckins ?? [])
+      .filter(c => planIdByItemId.get(c.planItemId) === targetId && !c.deleted).map(c => c.id);
+    const updatedReflections = (s.reflections ?? [])
+      .filter(r => r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId) && !r.deleted)
+      .map(r => ({ ...r, linkedPlanItemId: undefined, updatedAt: now }));
+    const updatedTrails = (s.thoughtTrails ?? [])
+      .filter(t => !t.deleted && t.linkedPlanItemIds?.some(pid => deletedItemIdsSet.has(pid)))
+      .map(t => ({ ...t, linkedPlanItemIds: t.linkedPlanItemIds!.filter(pid => !deletedItemIdsSet.has(pid)), updatedAt: now }));
+    return { plan, deletedItemIds, deletedCheckinIds, updatedReflections, updatedTrails, now, recycleEntry: { id: targetId, entityType: 'plan' as const, data: plan, deletedAt: now } };
+  }
+  // type === 'item'
+  const deletedCheckinIds = (s.planItemCheckins ?? [])
+    .filter(c => c.planItemId === targetId && !c.deleted).map(c => c.id);
+  const updatedReflections = (s.reflections ?? [])
+    .filter(r => r.linkedPlanItemId === targetId && !r.deleted)
+    .map(r => ({ ...r, linkedPlanItemId: undefined, updatedAt: now }));
+  const updatedTrails = (s.thoughtTrails ?? [])
+    .filter(t => !t.deleted && t.linkedPlanItemIds?.includes(targetId))
+    .map(t => ({ ...t, linkedPlanItemIds: t.linkedPlanItemIds!.filter(pid => pid !== targetId), updatedAt: now }));
+  return { deletedCheckinIds, updatedReflections, updatedTrails, now };
+}
+
+/** Persist pre-computed reflection/trail updates and batch-delete entity records. */
+function persistCascade(adapter: StorageAdapter, batchOps: Array<{ entity: SyncEntity; id: string }>, reflections: MindReflection[], trails: ThoughtTrail[]) {
+  adapter.batchDelete(batchOps).catch((e: unknown) => log.error(e));
+  for (const r of reflections) adapter.persistChange('reflection', r.id, r).catch((e: unknown) => log.error(e));
+  for (const t of trails) adapter.persistChange('thoughtTrail', t.id, t).catch((e: unknown) => log.error(e));
+}
+
 export function createPlanSlice(
   adapter: StorageAdapter,
 ): SliceCreator<PlanSlice> {
@@ -115,40 +157,12 @@ export function createPlanSlice(
     },
 
     deletePlan(id) {
-      const s = get();
-      const plan = (s.plans ?? []).find(p => p.id === id && !p.deleted);
-      if (!plan || !canDeletePlan(plan.status)) return;
-      const now = Date.now();
-      // Pre-compute ALL affected IDs BEFORE set() to keep updater pure
-      const planItemsToDelete = (s.planItems ?? []).filter(i => i.planId === id && !i.deleted);
-      const deletedItemIdsSet = new Set(planItemsToDelete.map(i => i.id));
-      const deletedItemIds = planItemsToDelete.map(i => i.id);
-      const planIdByItemId = new Map<string, string>();
-      for (const i of (s.planItems ?? [])) {
-        planIdByItemId.set(i.id, i.planId);
-      }
-      const deletedCheckinIds = (s.planItemCheckins ?? [])
-        .filter(c => planIdByItemId.get(c.planItemId) === id && !c.deleted)
-        .map(c => c.id);
-      const affectedReflectionIds = (s.reflections ?? [])
-        .filter(r => !r.deleted && r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId))
-        .map(r => r.id);
-      const affectedTrailIds = (s.thoughtTrails ?? [])
-        .filter(t => !t.deleted && t.linkedPlanItemIds?.some(pid => deletedItemIdsSet.has(pid)))
-        .map(t => t.id);
-      const recycleEntry: RecycleBinItem = { id, entityType: 'plan', data: plan, deletedAt: now };
-
-      // Pre-compute affected reflections and trails BEFORE set()
-      const updatedReflections: MindReflection[] = (s.reflections ?? [])
-        .filter(r => r.linkedPlanItemId && deletedItemIdsSet.has(r.linkedPlanItemId) && !r.deleted)
-        .map(r => ({ ...r, linkedPlanItemId: undefined, updatedAt: now }));
-      const updatedTrails: ThoughtTrail[] = (s.thoughtTrails ?? [])
-        .filter(t => !t.deleted && t.linkedPlanItemIds?.some(pid => deletedItemIdsSet.has(pid)))
-        .map(t => ({ ...t, linkedPlanItemIds: t.linkedPlanItemIds!.filter(pid => !deletedItemIdsSet.has(pid)), updatedAt: now }));
+      const cascade = computeCascadeDelete(get, 'plan', id);
+      if (!cascade) return;
+      const { plan, deletedItemIds, deletedCheckinIds, updatedReflections, updatedTrails, now, recycleEntry } = cascade;
       const updatedReflectionIds = new Set(updatedReflections.map(r => r.id));
       const updatedTrailIds = new Set(updatedTrails.map(t => t.id));
 
-      // Atomic: recycle bin + deletion in one set() — pure updater, no side effects
       set(prev => ({
         recycleBin: [recycleEntry, ...(prev.recycleBin ?? [])],
         plans: deletePlan(prev.plans ?? [], id),
@@ -164,21 +178,12 @@ export function createPlanSlice(
         thoughtTrails: (prev.thoughtTrails ?? []).map(t =>
           updatedTrailIds.has(t.id) ? updatedTrails.find(ut => ut.id === t.id)! : t,
         ),
-      }));
-      // Atomic batch delete: plan + planItems + planItemCheckins in one transaction
-      adapter.batchDelete([
+      } as Partial<FullStore>));
+      persistCascade(adapter, [
         { entity: 'plan', id },
-        ...deletedItemIds.map(itemId => ({ entity: 'planItem' as const, id: itemId })),
+        ...(deletedItemIds ?? []).map(itemId => ({ entity: 'planItem' as const, id: itemId })),
         ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),
-      ]).catch(e => log.error(e));
-      // Persist affected reflections (pre-computed)
-      for (const r of updatedReflections) {
-        adapter.persistChange('reflection', r.id, r).catch(e => log.error(e));
-      }
-      // Persist affected thought trails (pre-computed)
-      for (const t of updatedTrails) {
-        adapter.persistChange('thoughtTrail', t.id, t).catch(e => log.error(e));
-      }
+      ], updatedReflections, updatedTrails);
     },
 
     startPlan(id) {
@@ -285,26 +290,9 @@ export function createPlanSlice(
     },
 
     deletePlanItem(id) {
-      const now = Date.now();
-      // Pre-compute ALL affected IDs BEFORE set() to keep updater pure
-      const deletedCheckinIds = (get().planItemCheckins ?? [])
-        .filter(c => c.planItemId === id && !c.deleted)
-        .map(c => c.id);
-      const affectedReflectionIds = (get().reflections ?? [])
-        .filter(r => !r.deleted && r.linkedPlanItemId === id)
-        .map(r => r.id);
-      const affectedTrailIds = (get().thoughtTrails ?? [])
-        .filter(t => !t.deleted && t.linkedPlanItemIds?.includes(id))
-        .map(t => t.id);
-
-      // Pre-compute affected reflections and trails BEFORE set()
-      const s = get();
-      const updatedReflections: MindReflection[] = (s.reflections ?? [])
-        .filter(r => r.linkedPlanItemId === id && !r.deleted)
-        .map(r => ({ ...r, linkedPlanItemId: undefined, updatedAt: now }));
-      const updatedTrails: ThoughtTrail[] = (s.thoughtTrails ?? [])
-        .filter(t => !t.deleted && t.linkedPlanItemIds?.includes(id))
-        .map(t => ({ ...t, linkedPlanItemIds: t.linkedPlanItemIds!.filter(pid => pid !== id), updatedAt: now }));
+      const cascade = computeCascadeDelete(get, 'item', id);
+      if (!cascade) return;
+      const { deletedCheckinIds, updatedReflections, updatedTrails, now } = cascade;
       const updatedReflectionIds = new Set(updatedReflections.map(r => r.id));
       const updatedTrailIds = new Set(updatedTrails.map(t => t.id));
 
@@ -320,19 +308,10 @@ export function createPlanSlice(
           updatedTrailIds.has(t.id) ? updatedTrails.find(ut => ut.id === t.id)! : t,
         ),
       }));
-      // Atomic batch delete: planItem + planItemCheckins in one transaction
-      adapter.batchDelete([
+      persistCascade(adapter, [
         { entity: 'planItem', id },
         ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),
-      ]).catch(e => log.error(e));
-      // Persist affected reflections (pre-computed)
-      for (const r of updatedReflections) {
-        adapter.persistChange('reflection', r.id, r).catch(e => log.error(e));
-      }
-      // Persist affected thought trails (pre-computed)
-      for (const t of updatedTrails) {
-        adapter.persistChange('thoughtTrail', t.id, t).catch(e => log.error(e));
-      }
+      ], updatedReflections, updatedTrails);
     },
 
     checkinPlanItem(planItemId, date) {
@@ -667,7 +646,4 @@ export function createPlanSlice(
         } catch (err) {
           log.error(err, { context: 'delayed plan notification' });
         }
-      }
-    },
-  });
-}
+     

@@ -2,8 +2,9 @@
 // Extracted from SyncEngine.ts (PR-4 of AR-01 refactoring)
 // Manages clock offset and last sync timestamp persistence.
 
-import { openDatabase, getState, setState } from '../../db/schema';
 import { createLogger, MS_PER_DAY } from '@egoless-do/core';
+
+import { openDatabase, getState, setState } from '../../db/schema';
 
 const log = createLogger('SyncTimestamp');
 const CLOCK_OFFSET_KEY = 'sync_clock_offset';

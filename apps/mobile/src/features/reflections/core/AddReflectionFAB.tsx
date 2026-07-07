@@ -1,6 +1,7 @@
+import { Pencil } from 'lucide-react-native';
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
-import { Pencil } from 'lucide-react-native';
+
 import { useTheme } from '../../../components/UI';
 
 interface AddReflectionFABProps {

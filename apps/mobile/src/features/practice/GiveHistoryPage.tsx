@@ -1,11 +1,12 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
 
 const GIVE_TYPE_CONFIG: Record<string, { icon: string; color: string; labelKey: string }> = {
   material: { icon: '💰', color: '#F59E0B', labelKey: 'giveMaterial' },

@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { X } from 'lucide-react-native';
-import { useTheme } from '../../../components/UI';
 import { FONT_TINY } from '@egoless-do/core';
 import type { SmartQueryFilters } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+import { useTheme } from '../../../components/UI';
+
 
 interface FilterTagsProps {
   filters: SmartQueryFilters;

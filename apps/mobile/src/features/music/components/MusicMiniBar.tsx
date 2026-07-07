@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Music, Play, Pause, Repeat, Repeat1, Shuffle } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import type { PlayMode } from '../useMusicStore';
-import WaveformBar from './WaveformBar';
-import { useMusicStore } from '../useMusicStore';
+import { Music, Play, Pause, Repeat, Repeat1, Shuffle } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
+import type { PlayMode } from '../useMusicStore';
+import { useMusicStore } from '../useMusicStore';
+
+import WaveformBar from './WaveformBar';
 
 const MODE_ICONS: Record<string, typeof Repeat> = {
   sequential: Repeat,

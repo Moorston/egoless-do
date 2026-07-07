@@ -1,13 +1,14 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak , isPreceptHabit, getPreceptDisplayName, getPreceptType, PRECEPT_PREFIX_AVOID } from '@egoless-do/core';
+import type { Habit } from '@egoless-do/core';
+import { ChevronLeft, ChevronRight, Shield, X, Trash2 } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak } from '@egoless-do/core';
-import { isPreceptHabit, getPreceptDisplayName, getPreceptType, PRECEPT_PREFIX_AVOID } from '@egoless-do/core';
-import { ChevronLeft, ChevronRight, Shield, X, Trash2 } from 'lucide-react-native';
-import type { Habit } from '@egoless-do/core';
+
 
 export default function PreceptHistoryPage() {
   const TH = useTheme();

@@ -1,10 +1,12 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
-import { X, Check, Search } from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, generateTrailName, getMoodIcon } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
+import { X, Check, Search } from 'lucide-react-native';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 interface Props {
   visible: boolean;

@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Check } from 'lucide-react-native';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_BODY, FONT_SMALL, FONT_TINY, getMoodIcon, formatDateShort } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
+import { Check } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+
 
 interface Props {
   ref: MindReflection;

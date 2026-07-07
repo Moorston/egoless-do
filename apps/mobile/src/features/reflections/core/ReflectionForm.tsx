@@ -1,8 +1,10 @@
+import { MIND_COLORS_EXTENDED, COLORS, FONT_BODY, FONT_LABEL, FONT_SMALL } from '@egoless-do/core';
+import { Settings, Link, Plus } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { Settings, Link, Plus } from 'lucide-react-native';
+
 import { useTheme, useT, PillSelector, PrimaryButton, ThemedInput } from '../../../components/UI';
-import { MIND_COLORS_EXTENDED, COLORS, FONT_BODY, FONT_LABEL, FONT_SMALL } from '@egoless-do/core';
+
 
 interface ReflectionFormProps {
   content: string;

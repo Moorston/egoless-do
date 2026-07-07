@@ -1,6 +1,6 @@
+import { Sparkles } from 'lucide-react-native';
 import React, { useRef, useCallback } from 'react';
 import { Animated, StyleSheet, useWindowDimensions } from 'react-native';
-import { Sparkles } from 'lucide-react-native';
 
 const FAB_SIZE = 52;
 const FAB_HIDE_OFFSET = 30;

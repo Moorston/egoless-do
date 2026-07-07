@@ -3,11 +3,12 @@
  * 绿色脉冲动画圆点 + 昵称 + 城市 + 活动时长
  */
 
+import { ActiveSession } from '@egoless-do/core';
 import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { ActiveSession } from '@egoless-do/core';
-import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';
+
 import { useGlobalTick } from '../hooks/useGlobalTick';
+import { formatDisplayName, getCheckinTypeIcon } from '../services/globalPulseApi';
 
 interface ActiveMarkerProps {
   session: ActiveSession;

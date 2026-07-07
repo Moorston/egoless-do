@@ -1,6 +1,6 @@
+import { FONT_HERO, FONT_CLOSE, FONT_TITLE } from '@egoless-do/core';
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, Dimensions, StyleSheet, StatusBar, type TextStyle } from 'react-native';
-import { FONT_HERO, FONT_CLOSE, FONT_TITLE } from '@egoless-do/core';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const STAR_COUNT = 80;

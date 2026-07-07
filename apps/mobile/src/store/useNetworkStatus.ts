@@ -1,7 +1,7 @@
 // ─── Unified Network Status ────────────────────────────────────────
 // Single source of truth for network connectivity across the app.
-import { create } from 'zustand';
 import NetInfo from '@react-native-community/netinfo';
+import { create } from 'zustand';
 
 interface NetworkStatus {
   isConnected: boolean;

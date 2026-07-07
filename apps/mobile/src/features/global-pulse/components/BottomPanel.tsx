@@ -3,14 +3,15 @@
  * TabBar（实时脉动 / 排行榜 / 我的）+ 内容切换
  */
 
+import { FONT_SUB, FONT_STAT_CARD, dateStr , ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType } from '@egoless-do/core';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
-import { ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { ActiveUsersList } from './ActiveUsersList';
 import { Leaderboard } from './Leaderboard';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 type TabKey = 'realtime' | 'leaderboard' | 'me';
 

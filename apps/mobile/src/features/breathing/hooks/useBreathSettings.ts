@@ -1,10 +1,10 @@
 // ─── useBreathSettings — Breathing audio preference persistence ───
 // Loads and saves guideStyle, voiceEnabled, cueEnabled to AsyncStorage.
 
-import { useState, useEffect, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createLogger } from '@egoless-do/core';
 import type { GuideStyle } from '@egoless-do/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState, useEffect, useCallback } from 'react';
 
 const log = createLogger('Breathing');
 const GUIDE_STYLE_KEY = 'breathing_guide_style';

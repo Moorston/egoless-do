@@ -1,20 +1,23 @@
+import { COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL , LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
+import type { ItemForm, Vision } from '@egoless-do/core';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { ChevronLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react-native';
 import React, { useState, useMemo, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput, Alert,
   KeyboardAvoidingView, Platform, Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../navigation/types';
-import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL } from '@egoless-do/core';
-import type { ItemForm, Vision } from '@egoless-do/core';
-import { LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
-import { Card, useTheme, useT, PrimaryButton } from '../../components/UI';
+
 import DatePickerModal from '../../components/DatePickerModal';
 import DateRangePickerModal from '../../components/DateRangePickerModal';
-import { ChevronLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react-native';
+import { Card, useTheme, useT, PrimaryButton } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
+import type { RootStackParamList } from '../../navigation/types';
+import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
+
+
+
 
 function FrequencyNumberInput({ value, prefix, suffix, min, max, editable, inputStyle, onCommit }: {
   value: number; prefix: string; suffix: string; min: number; max: number; editable: boolean; inputStyle: object; onCommit: (n: number) => void;

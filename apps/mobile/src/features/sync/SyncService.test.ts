@@ -76,8 +76,9 @@ vi.mock('@react-native-community/netinfo', () => ({
   },
 }));
 
-import { runSync, resetSyncState, setSyncTokenProvider, isSyncing } from './SyncService';
 import { drainQueue } from '../../db/syncQueue';
+
+import { runSync, resetSyncState, setSyncTokenProvider, isSyncing } from './SyncService';
 
 describe('SyncService', () => {
   beforeEach(() => {

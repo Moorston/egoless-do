@@ -1,7 +1,8 @@
+import { FONT_BODY, FONT_SMALL, FONT_EMPTY } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+
 import { useTheme, useT } from './UI';
-import { FONT_BODY, FONT_SMALL, FONT_EMPTY } from '@egoless-do/core';
 
 interface Props {
   icon?: string;

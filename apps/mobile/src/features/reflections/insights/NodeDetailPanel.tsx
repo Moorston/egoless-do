@@ -1,7 +1,9 @@
+import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+
 import type { RelationNode, NodeType } from './types';
 
 const NODE_LABELS: Record<NodeType, string> = {

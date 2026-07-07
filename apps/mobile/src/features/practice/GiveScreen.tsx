@@ -1,12 +1,14 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
+import type { GiveType } from '@egoless-do/core';
+import { HandHeart, Plus, BarChart3, Check, X } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
+
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { HandHeart, Plus, BarChart3, Check, X } from 'lucide-react-native';
-import type { GiveType } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 
 const GIVE_TYPES: { type: GiveType; icon: string; color: string }[] = [
   { type: 'material', icon: '💰', color: '#F59E0B' },

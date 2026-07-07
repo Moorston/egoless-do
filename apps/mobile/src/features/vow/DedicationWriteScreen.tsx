@@ -1,12 +1,14 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import type { DedicationType } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Save, ArrowLeft } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Save, ArrowLeft } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
-import type { DedicationType } from '@egoless-do/core';
+
 import { useTheme, useT, ProgressBar } from '../../components/UI';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 import { useVowProgress } from './useVowProgress';
 
 interface Props {

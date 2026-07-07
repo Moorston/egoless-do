@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text } from 'react-native';
 import { LINK_COLORS } from '@egoless-do/core';
 import type { PlanItemLink } from '@egoless-do/core';
+import React from 'react';
+import { View, Text } from 'react-native';
 
 export const LinkBadge = React.memo(function LinkBadge({ link, T, P }: { link: PlanItemLink; T: (k: string) => string; P: string }) {
   if (link === 'manual') return null;

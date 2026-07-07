@@ -1,12 +1,13 @@
 // ─── SleepReportPage — Session report UI ─────────────────────────
 // Shows barrier stats, gratitude count, practice log, streak.
 
+import { formatSleepDuration } from '@egoless-do/core';
+import { X, Clock, Moon, Star, Heart, Wind } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../../components/UI';
-import { formatSleepDuration } from '@egoless-do/core';
-import { X, Clock, Moon, Star, Heart, Wind } from 'lucide-react-native';
 import { styles } from '../sleepStyles';
 
 /**

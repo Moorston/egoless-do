@@ -1,6 +1,7 @@
+import { THEMES, FONT_HERO, FONT_BACK, FONT_ERROR, FONT_BUTTON, createLogger } from '@egoless-do/core';
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { THEMES, FONT_HERO, FONT_BACK, FONT_ERROR, FONT_BUTTON, createLogger } from '@egoless-do/core';
+
 import { useT } from './UI';
 
 const log = createLogger('App');

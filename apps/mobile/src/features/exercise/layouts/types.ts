@@ -1,6 +1,5 @@
+import type { SportType, ExerciseSet, MusicTrack, SoftTarget , SportExperienceType } from '@egoless-do/core';
 import type { Animated } from 'react-native';
-import type { SportType, ExerciseSet, MusicTrack, SoftTarget } from '@egoless-do/core';
-import type { SportExperienceType } from '@egoless-do/core';
 
 export interface ExerciseLayoutProps {
   // Identity

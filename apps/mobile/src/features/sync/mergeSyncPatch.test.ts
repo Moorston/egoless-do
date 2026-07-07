@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { mergeSyncPatch, STORE_KEY_TO_ENTITY } from './mergeSyncPatch';
+
 import type { MobileStore } from '../../store/useAppStore';
+
+import { mergeSyncPatch, STORE_KEY_TO_ENTITY } from './mergeSyncPatch';
 
 /**
  * Build a minimal MobileStore mock with only the fields mergeSyncPatch touches.

@@ -1,8 +1,10 @@
+import { FONT_BODY, FONT_SUB, cardAccent, cardTextColor } from '@egoless-do/core';
+import { Shield } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Shield } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SUB, cardAccent, cardTextColor } from '@egoless-do/core';
+
 
 interface Props {
   onPress: () => void;

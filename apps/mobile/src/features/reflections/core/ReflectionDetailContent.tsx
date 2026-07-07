@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Linking, Alert, Pressable } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useRootNavigation } from '../../../navigation/hooks';
-import { useT } from '../../../components/UI';
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Linking, Alert, Pressable } from 'react-native';
 
+import { useT } from '../../../components/UI';
+import { useRootNavigation } from '../../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { TrailPickerModal } from '../trails';
 
 const log = createLogger('Reflections');

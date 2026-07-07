@@ -1,7 +1,8 @@
+import { FONT_SMALL, FONT_TINY, FONT_BODY } from '@egoless-do/core';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, Animated, StyleSheet, Easing } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
-import { FONT_SMALL, FONT_TINY, FONT_BODY } from '@egoless-do/core';
 
 // ─── Types ───────────────────────────────────────────────────────────
 

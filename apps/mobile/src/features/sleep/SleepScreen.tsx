@@ -3,6 +3,7 @@
 // lucide-react-native (13 icons), and other heavy dependencies.
 import React, { lazy, Suspense } from 'react';
 import { View, Text } from 'react-native';
+
 import { useTheme } from '../../components/UI';
 
 const SleepEngine = lazy(() => import('./SleepEngine'));

@@ -1,26 +1,27 @@
+import { FONT_BUTTON, tomorrow } from '@egoless-do/core';
+import type { Habit } from '@egoless-do/core';
+import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Text, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
+
+import { useTheme, ScreenHeader, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import type { RootStackParamList } from '../../navigation/types';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_BUTTON, tomorrow } from '@egoless-do/core';
-import type { Habit } from '@egoless-do/core';
-import { STATUS_ORDER } from './constants';
-import SimpleHeader from '../../navigation/SimpleHeader';
 
-import { useHabitForm } from './hooks/useHabitForm';
-import { useHabitActions } from './hooks/useHabitActions';
+import HabitActionMenu from './components/HabitActionMenu';
+import HabitCalendarModal from './components/HabitCalendarModal';
 import HabitCard from './components/HabitCard';
+import HabitDeleteConfirmModal from './components/HabitDeleteConfirmModal';
+import HabitEmptyState from './components/HabitEmptyState';
 import HabitFilterBar from './components/HabitFilterBar';
 import HabitFormModal from './components/HabitFormModal';
-import HabitActionMenu from './components/HabitActionMenu';
 import HabitStatusReasonModal from './components/HabitStatusReasonModal';
-import HabitDeleteConfirmModal from './components/HabitDeleteConfirmModal';
-import HabitCalendarModal from './components/HabitCalendarModal';
-import HabitEmptyState from './components/HabitEmptyState';
+import { STATUS_ORDER } from './constants';
+import { useHabitActions } from './hooks/useHabitActions';
+import { useHabitForm } from './hooks/useHabitForm';
 
 export default function HabitsScreen() {
   const TH = useTheme();

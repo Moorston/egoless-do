@@ -1,20 +1,20 @@
 // ─── HabitFormModal: add/edit habit form ─────────────────────────
-import React from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, Modal,
-  KeyboardAvoidingView, Platform,
-} from 'react-native';
-import { X, Bell } from 'lucide-react-native';
-import { useTheme, useT } from '../../../components/UI';
-import {
-  PrimaryButton, Toggle, RowItem, ThemedInput,
-} from '../../../components/UI';
 import {
   FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_LABEL,
   HABIT_LINK_COLORS,
 } from '@egoless-do/core';
 import type { HabitLink } from '@egoless-do/core';
+import { X, Bell } from 'lucide-react-native';
+import React from 'react';
+import {
+  View, Text, ScrollView, TouchableOpacity, Modal,
+  KeyboardAvoidingView, Platform,
+} from 'react-native';
+
 import TimePickerModal from '../../../components/TimePickerModal';
+import { useTheme, useT ,
+  PrimaryButton, Toggle, RowItem, ThemedInput,
+} from '../../../components/UI';
 import type { HabitFormState } from '../hooks/useHabitForm';
 
 interface Props {

@@ -3,9 +3,10 @@
  * 从计划任务/习惯中解析当前活动的目标文本
  */
 
-import { useCallback } from 'react';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { CheckinType } from '@egoless-do/core';
+import { useCallback } from 'react';
+
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 export function useGoalResolver() {
   const planItems = useShallowStore(s => s.planItems);

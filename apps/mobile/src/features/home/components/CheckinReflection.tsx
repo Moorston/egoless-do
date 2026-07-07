@@ -1,8 +1,8 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL , getMoodIcon } from '@egoless-do/core';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
-import { getMoodIcon } from '@egoless-do/core';
 
 const MOOD_OPTIONS = [
   { key: '开心', emoji: '😊' },

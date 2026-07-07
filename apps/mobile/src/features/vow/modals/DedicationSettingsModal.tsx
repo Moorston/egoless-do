@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, TouchableOpacity, Switch } from 'react-native';
-import { X } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
 import type { DedicationType, DedicationSettings, Theme } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Modal, TouchableOpacity, Switch } from 'react-native';
 
 interface Props {
   visible: boolean;

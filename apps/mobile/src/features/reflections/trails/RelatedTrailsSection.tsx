@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 import type { ThoughtTrail } from '@egoless-do/core';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
 
 interface RelatedTrailItem {
   trail: ThoughtTrail;

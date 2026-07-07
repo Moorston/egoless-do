@@ -1,14 +1,14 @@
 // ─── BreathActivePage — Active breathing session UI ──────────────
 // Shows breathing bubble, cycle counter, pause button with ring progress.
 
+import type { BreathingPreset } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_STAT_SECTION, fmtMS , phaseLabelKey } from '@egoless-do/core';
+import { Play, Pause } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, Animated, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SUB, FONT_STAT_SECTION, fmtMS } from '@egoless-do/core';
-import type { BreathingPreset } from '@egoless-do/core';
-import { phaseLabelKey } from '@egoless-do/core';
-import { Play, Pause } from 'lucide-react-native';
 import { styles } from '../breathStyles';
 
 /**

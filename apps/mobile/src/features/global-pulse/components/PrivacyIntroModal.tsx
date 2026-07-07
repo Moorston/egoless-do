@@ -11,6 +11,7 @@ import {
   Modal,
   TouchableOpacity
 } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
 
 interface PrivacyIntroModalProps {

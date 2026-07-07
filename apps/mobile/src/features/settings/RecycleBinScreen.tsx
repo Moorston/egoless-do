@@ -1,16 +1,17 @@
-import React from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, Alert,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
 import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_EMPTY, MS_PER_DAY, MS_PER_WEEK } from '@egoless-do/core';
 import type { RecycleBinItem, RecycleBinEntityType } from '@egoless-do/core';
 import {
   Trash2, RotateCcw, Target, Sparkles, Utensils, Dumbbell, ClipboardList, Clock, Wind,
 } from 'lucide-react-native';
+import React from 'react';
+import {
+  View, Text, ScrollView, TouchableOpacity, Alert,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 const EXPIRY_MS = MS_PER_WEEK;
 

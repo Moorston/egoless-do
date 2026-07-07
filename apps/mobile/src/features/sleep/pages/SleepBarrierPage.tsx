@@ -1,11 +1,12 @@
 // ─── SleepBarrierPage — Barrier (仪轨) session UI ────────────────
 // Shows countdown circle, practice selection, and skip button.
 
+import { Wind, Brain, BellRing, BookOpen } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useT } from '../../../components/UI';
-import { Wind, Brain, BellRing, BookOpen } from 'lucide-react-native';
 import { styles } from '../sleepStyles';
 
 /**

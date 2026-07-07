@@ -1,13 +1,15 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_STAT_SECTION, FONT_CLOSE, fmt } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pause } from 'lucide-react-native';
-import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_STAT_SECTION, FONT_CLOSE, fmt } from '@egoless-do/core';
-import type { ExerciseLayoutProps } from './types';
+import React from 'react';
+import { View, Text, TouchableOpacity, Animated } from 'react-native';
+
+import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import CelebrationOverlay from '../shared/CelebrationOverlay';
 import ExerciseTopBar from '../shared/ExerciseTopBar';
 import RestOverlay from '../shared/RestOverlay';
-import CelebrationOverlay from '../shared/CelebrationOverlay';
-import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+
+import type { ExerciseLayoutProps } from './types';
 
 export default function MeditativeActive(props: ExerciseLayoutProps) {
   const {

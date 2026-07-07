@@ -2,9 +2,10 @@
  * 全球脉动数据管理 Hook
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useNetworkStatus } from '../../../store/useNetworkStatus';
 import { GlobalCheckin, GlobalStats } from '@egoless-do/core';
+import { useState, useEffect, useCallback, useRef } from 'react';
+
+import { useNetworkStatus } from '../../../store/useNetworkStatus';
 import { getCheckins, getGlobalStats } from '../services/globalPulseApi';
 import {
   getCachedCheckins,

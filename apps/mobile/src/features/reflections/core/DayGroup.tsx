@@ -1,9 +1,12 @@
+import { FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import type { MindReflection } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+
 import { useTheme } from '../../../components/UI';
+
 import ReflectionCard from './ReflectionCard';
-import type { MindReflection } from '@egoless-do/core';
+
 
 interface PlanItem {
   id: string;

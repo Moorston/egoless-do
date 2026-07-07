@@ -1,9 +1,11 @@
 // ─── HabitCheckinButton: animated check-in button ────────────────
+import { FONT_BUTTON } from '@egoless-do/core';
+import { CheckCircle } from 'lucide-react-native';
 import React, { useCallback, useRef } from 'react';
 import { View, Text, TouchableOpacity, Animated } from 'react-native';
-import { CheckCircle } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BUTTON } from '@egoless-do/core';
+
 
 interface Props {
   isChecked: boolean;

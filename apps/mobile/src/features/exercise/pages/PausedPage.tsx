@@ -1,10 +1,12 @@
+import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_TITLE, fmt, getMinDuration } from '@egoless-do/core';
+import { Play, Pause } from 'lucide-react-native';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
-import { Play, Pause } from 'lucide-react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_TITLE, fmt, getMinDuration } from '@egoless-do/core';
-import type { ExercisePageProps } from './types';
+
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+
+import type { ExercisePageProps } from './types';
 
 export default function PausedPage(props: ExercisePageProps) {
   const {

@@ -2,9 +2,10 @@
 // Shared hook for today's body plan + related derived data.
 // Used by BodyScreen, BodyDashboard, BodyFlow and related modals
 // to avoid duplicating today-plan lookup logic.
-import { useMemo } from 'react';
-import { useShallowStore } from '../../../../store/useAppStore';
 import type { BodyPlan } from '@egoless-do/core';
+import { useMemo } from 'react';
+
+import { useShallowStore } from '../../../../store/useAppStore';
 
 export interface TodayPlanData {
   /** today's plan if one exists for current weekday, else undefined */

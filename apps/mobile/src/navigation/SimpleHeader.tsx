@@ -1,14 +1,16 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { useNavigation } from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
-import { useTheme } from '../components/UI';
+import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
 import {
   Home, ClipboardList, Target, Sparkles, Flame,
 } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useTheme } from '../components/UI';
+import { useAppStore, useShallowStore } from '../store/useAppStore';
+
 
 const HEADER_TAB_KEYS = ['home', 'plan', 'habits', 'reflections'];
 const HEADER_TAB_ROUTES: Record<string, string> = {

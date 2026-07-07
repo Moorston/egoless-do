@@ -3,8 +3,8 @@
  * 封装反向地理编码服务为 React Hook
  */
 
-import { useState, useEffect, useRef, useMemo } from 'react';
 import { getCityInfo, CityInfo } from '@egoless-do/core';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 // 全局缓存，避免重复请求
 const cityCache = new Map<string, CityInfo | null>();

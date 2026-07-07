@@ -3,12 +3,13 @@
  * 显示详细信息：类型、城市、连续天数、累计天数、开始日期
  */
 
+import { LeaderboardEntry } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
-import { LeaderboardEntry } from '@egoless-do/core';
 
 interface LeaderboardItemProps {
   entry: LeaderboardEntry;

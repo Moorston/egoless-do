@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Animated
 } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
 
 interface LoadingOverlayProps {

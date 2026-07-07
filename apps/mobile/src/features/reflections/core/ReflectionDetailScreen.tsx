@@ -1,13 +1,16 @@
-import React, { useCallback, useState } from 'react';
-import { Alert, Share } from 'react-native';
+import type { MindReflection } from '@egoless-do/core';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import React, { useCallback, useState } from 'react';
+import { Alert, Share } from 'react-native';
+
+import { useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
-import type { MindReflection } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import ReflectionDetailContent from './ReflectionDetailContent';
 import ShareCard from './ShareCard';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useT } from '../../../components/UI';
+
 
 export default function ReflectionDetailScreen() {
   const route = useRoute<RouteProp<RootStackParamList, 'ReflectionDetail'>>();

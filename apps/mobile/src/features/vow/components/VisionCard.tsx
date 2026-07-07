@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
 import type { Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme } from '@egoless-do/core';
 import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
+import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
 import { ProgressBar } from '../../../components/UI';
 
 const TF_MONTHS: Record<VisionTimeFrame, number> = {

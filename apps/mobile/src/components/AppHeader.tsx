@@ -1,14 +1,18 @@
-import React, { useMemo, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../store/useAppStore';
 import { t, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, FONT_BODY } from '@egoless-do/core';
-import { useTheme } from './UI';
+import { Image } from 'expo-image';
 import {
   Home, ClipboardList, Timer, Binary, Sparkles, Dumbbell,
   Target, BarChart3, Settings, Flame,
 } from 'lucide-react-native';
+import React, { useMemo, useRef } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useAppStore, useShallowStore } from '../store/useAppStore';
+
+
+import { useTheme } from './UI';
+
 
 const TAB_ICONS_MAP: Record<string, React.ComponentType<any>> = {
   home: Home, plan: ClipboardList, fasting: Timer, meditation: Binary,

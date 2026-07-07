@@ -1,8 +1,10 @@
+import { FONT_BODY, dateStr, addDays, formatDateBar } from '@egoless-do/core';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, dateStr, addDays, formatDateBar } from '@egoless-do/core';
+
 
 interface Props {
   viewDate: string;

@@ -1,20 +1,22 @@
+import { ALL_SPORTS, type AgeBracket, type BodyGoal, type BodyPlan } from '@egoless-do/core';
 import React, { useState, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { ALL_SPORTS, type AgeBracket, type BodyGoal, type BodyPlan } from '@egoless-do/core';
-import BodyProfileCard from './BodyProfileCard';
-import GoalCard from './GoalCard';
-import BodyWeekPlanCard from './BodyWeekPlanCard';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import BodyAwarenessCard from './BodyAwarenessCard';
+import BodyProfileCard from './BodyProfileCard';
+import BodyWeekPlanCard from './BodyWeekPlanCard';
+import GoalCard from './GoalCard';
 import WeightTrendChart from './WeightTrendChart';
+import { useTodayPlan } from './hooks/useTodayPlan';
 import AssessmentModal from './modals/AssessmentModal';
+import BodyCheckinModal from './modals/BodyCheckinModal';
 import GoalEditModal from './modals/GoalEditModal';
 import PlanEditModal from './modals/PlanEditModal';
-import BodyCheckinModal from './modals/BodyCheckinModal';
 import WeightRecordModal from './modals/WeightRecordModal';
-import { useTodayPlan } from './hooks/useTodayPlan';
 
 interface DashboardProps {
   onFlowStart?: () => void;

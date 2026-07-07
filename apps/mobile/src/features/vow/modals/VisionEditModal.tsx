@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar } from 'lucide-react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRAMES, dateStr } from '@egoless-do/core';
 import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan, VisionPractice } from '@egoless-do/core';
+import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar } from 'lucide-react-native';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const TF_MONTHS: Record<VisionTimeFrame, number> = {

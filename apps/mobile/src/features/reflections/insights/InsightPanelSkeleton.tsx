@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
 
 export default function InsightPanelSkeleton() {

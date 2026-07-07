@@ -167,13 +167,12 @@ export function useQuickTrailSearch(
   const runAIPhase2Wrapped = useCallback(async (
     refs: MindReflection[],
     trimmed: string,
-    cands: MindReflection[],
     curFilters: TrailFilters,
     allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>,
     existingIds: Set<string>,
   ) => {
     if (!aiAvailable) return { smartResult: null, shouldReturn: false };
-    return runAIPhase2(refs, trimmed, cands, curFilters, allResults, existingIds, chatHistoryRef.current);
+    return runAIPhase2(refs, trimmed, curFilters, allResults, existingIds, chatHistoryRef.current);
   }, [aiAvailable]);
 
   const runAIPhase3Wrapped = useCallback(async (
@@ -277,7 +276,7 @@ export function useQuickTrailSearch(
       // Phase 2: Intent understanding
       if (allResults.length <= 3) {
         updateStep('phase2', { status: 'loading' });
-        const { smartResult: sr, shouldReturn } = await runAIPhase2Wrapped(reflections, trimmed, candidates, filters, allResults, existingIds);
+        const { smartResult: sr, shouldReturn } = await runAIPhase2Wrapped(reflections, trimmed, filters, allResults, existingIds);
         if (sr) setSmartResult(sr);
         if (shouldReturn) {
           updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
@@ -361,7 +360,7 @@ export function useQuickTrailSearch(
         matchResults.map(r => ({ ref: r, score: 0, source: 'direct' as const }));
 
       // Phase 2
-      const { smartResult: sr, shouldReturn } = await runAIPhase2Wrapped(reflections, trimmed, [], filters, allResults, existingIds);
+      const { smartResult: sr, shouldReturn } = await runAIPhase2Wrapped(reflections, trimmed, filters, allResults, existingIds);
       if (sr) setSmartResult(sr);
       if (shouldReturn) {
         updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });

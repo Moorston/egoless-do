@@ -1,7 +1,9 @@
-import { useMemo } from 'react';
 import { dateStr } from '@egoless-do/core';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { Vision, VisionPractice, Dedication, HabitStat, PlanProgress, VisionProgress, Habit, Plan, PlanItem } from '@egoless-do/core';
+import { useMemo } from 'react';
+
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 
 export interface DayData {
   date: string;

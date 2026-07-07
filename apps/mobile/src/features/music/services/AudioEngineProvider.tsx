@@ -1,8 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio';
-import { useMusicStore } from '../useMusicStore';
 import type { MusicTrack } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
+import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio';
+import React, { useEffect, useRef } from 'react';
+
+import { useMusicStore } from '../useMusicStore';
+
+
 import { audioPlayerRef } from './audioPlayerRef';
 
 const log = createLogger('Music');

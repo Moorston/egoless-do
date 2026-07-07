@@ -1,6 +1,6 @@
+import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_BADGE, COLORS } from '@egoless-do/core';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_BADGE, COLORS } from '@egoless-do/core';
 
 export interface CalendarGridProps {
   /** checkin history entries */

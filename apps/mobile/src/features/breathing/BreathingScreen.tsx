@@ -1,16 +1,17 @@
 // ─── BreathingScreen — Lightweight entry point ──────────────────
 // Shows the preset selection page immediately (zero native module deps).
 // Lazy-loads BreathingEngine when user starts a session.
+import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey } from '@egoless-do/core';
+import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ChevronRight } from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS } from '@egoless-do/core';
-import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
-import { BREATHING_PRESETS, cycleDuration, getDescKey } from '@egoless-do/core';
-import { useRootNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
-import { ChevronRight } from 'lucide-react-native';
+import { useRootNavigation } from '../../navigation/hooks';
+
 
 const log = createLogger('Breathing');
 

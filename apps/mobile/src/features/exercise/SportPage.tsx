@@ -1,43 +1,48 @@
+import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger } from '@egoless-do/core';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useKeepAwake } from 'expo-keep-awake';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Animated } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { useRootNavigation } from '../../navigation/hooks';
-import { useKeepAwake } from 'expo-keep-awake';
+
 import { useTheme, useT } from '../../components/UI';
-import { SPORT_BG_COLORS, COLORS, getSportType, TARGET_PRESETS, estimateCalories, MET_MAP, getSportExperienceType, createLogger } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
+
+
+
 
 const log = createLogger('Exercise');
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { RootStackParamList } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 // 实时会话
-import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
+import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
 import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
-import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
+import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
 
 // Hooks
-import { useExerciseTimer } from './hooks/useExerciseTimer';
-import { useExerciseAudio } from './hooks/useExerciseAudio';
-import { useMusicStore } from '../music/useMusicStore';
 import MusicPickerModal from '../music/components/MusicPickerModal';
+import { useMusicStore } from '../music/useMusicStore';
+
+import { useAmapComponents } from './hooks/useAmapComponents';
+import { useExerciseAudio } from './hooks/useExerciseAudio';
+import { reqLocPerm, getCurPos, watchPos, computeDistance } from './hooks/useExerciseGps';
 import { useExerciseRest } from './hooks/useExerciseRest';
 import { useExerciseSets } from './hooks/useExerciseSets';
 import { useExerciseTargets } from './hooks/useExerciseTargets';
-import { useAmapComponents } from './hooks/useAmapComponents';
-import { reqLocPerm, getCurPos, watchPos, computeDistance } from './hooks/useExerciseGps';
+import { useExerciseTimer } from './hooks/useExerciseTimer';
 
 // Pages
-import PrepPage from './pages/PrepPage';
+import EnduranceActive from './layouts/EnduranceActive';
+import GpsActive from './layouts/GpsActive';
+import MeditativeActive from './layouts/MeditativeActive';
+import StrengthActive from './layouts/StrengthActive';
 import CountdownPage from './pages/CountdownPage';
 import PausedPage from './pages/PausedPage';
+import PrepPage from './pages/PrepPage';
 import ReportPage from './pages/ReportPage';
 
 // Layouts
-import MeditativeActive from './layouts/MeditativeActive';
-import EnduranceActive from './layouts/EnduranceActive';
-import StrengthActive from './layouts/StrengthActive';
-import GpsActive from './layouts/GpsActive';
 
 
 type Route = RouteProp<RootStackParamList, 'Sport'>;

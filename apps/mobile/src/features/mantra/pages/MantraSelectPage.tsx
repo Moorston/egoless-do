@@ -1,13 +1,15 @@
 // ─── MantraSelectPage — Mantra selection and preset management ───
 // Extracted from MantraEngine.tsx for modularity.
 
-import React, { useMemo, useCallback } from 'react';
-import { View, Text, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView, Platform, ListRenderItemInfo } from 'react-native';
-import type { NavigationProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../../navigation/types';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, PRESET_SUTRAS } from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
+import type { NavigationProp } from '@react-navigation/native';
+import React, { useMemo, useCallback } from 'react';
+import { View, Text, TouchableOpacity, TextInput, FlatList, KeyboardAvoidingView, Platform, ListRenderItemInfo } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+import type { RootStackParamList } from '../../../navigation/types';
+
 
 // ─── Props interface ────────────────────────────────────────────────
 

@@ -1,8 +1,8 @@
 // ─── Data Store ──────────────────────────────────────────────────
 // Manages business data with normalized structure.
 
-import { create } from 'zustand';
 import type { DataGateway } from '@egoless-do/core';
+import { create } from 'zustand';
 
 export interface DataStore {
   // Entity caches (normalized by ID)

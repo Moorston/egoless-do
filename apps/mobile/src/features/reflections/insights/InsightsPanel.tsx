@@ -1,8 +1,10 @@
+import { FONT_SMALL } from '@egoless-do/core';
+import { Brain } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { Brain } from 'lucide-react-native';
+
 import { useTheme } from '../../../components/UI';
-import { FONT_SMALL } from '@egoless-do/core';
+
 
 interface Props {
   insights: string[];

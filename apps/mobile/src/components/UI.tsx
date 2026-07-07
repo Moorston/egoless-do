@@ -1,13 +1,15 @@
 // ─── Shared UI primitives ─────────────────────────────────────────
+import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ChevronLeft, Check } from 'lucide-react-native';
 import React from 'react';
 import {
   View, Text, TouchableOpacity, TextInput, ScrollView,
   StyleSheet, ViewStyle, TextStyle,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+
 import { useAppStore, type MobileStore } from '../store/useAppStore';
-import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
-import { ChevronLeft, Check } from 'lucide-react-native';
+
 
 // ── useTheme ──────────────────────────────────────────────────────
 export function useTheme() {

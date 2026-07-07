@@ -1,8 +1,10 @@
+import { COLORS, FONT_BODY, FONT_SUB, FONT_LABEL, FONT_BADGE } from '@egoless-do/core';
+import { ClipboardList, Sparkles, Check, X } from 'lucide-react-native';
 import React, { memo } from 'react';
 import { View, Text } from 'react-native';
-import { ClipboardList, Sparkles, Check, X } from 'lucide-react-native';
+
 import { useTheme, useT, Checkbox } from '../../../components/UI';
-import { COLORS, FONT_BODY, FONT_SUB, FONT_LABEL, FONT_BADGE } from '@egoless-do/core';
+
 
 interface PlanItem {
   id: string;

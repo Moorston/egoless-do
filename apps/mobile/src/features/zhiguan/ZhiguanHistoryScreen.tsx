@@ -1,9 +1,5 @@
 // ─── ZhiguanHistoryScreen 止观履历页 ────────────────────────────
 // 履历卡 + 月度热力图 + 历史列表 + 详情卡片 + JSON 导出
-import React, { useState, useCallback } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Share, Modal } from 'react-native';
-import { useT } from '../../components/UI';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { ZhiguanSession } from '@egoless-do/core';
 import {
   computeZhiguanStats,
@@ -13,6 +9,11 @@ import {
   ZHIGUAN_METHOD_DEFS,
   dateStr as toLocalDateStr,
 } from '@egoless-do/core';
+import React, { useState, useCallback } from 'react';
+import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Share, Modal } from 'react-native';
+
+import { useT } from '../../components/UI';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 const COLORS = ['rgba(139, 115, 85, 0.15)', 'rgba(139, 115, 85, 0.35)', 'rgba(201, 169, 110, 0.55)', 'rgba(201, 169, 110, 0.75)', 'rgba(201, 169, 110, 1)'];
 

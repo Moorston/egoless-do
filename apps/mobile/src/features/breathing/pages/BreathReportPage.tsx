@@ -1,13 +1,14 @@
 // ─── BreathReportPage — Post-session report + reflection UI ───────
 // Shows session summary, distress assessment, reflection input, save button.
 
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_BODY, createLogger, fmtMS } from '@egoless-do/core';
 import type { BreathingPreset } from '@egoless-do/core';
 import { X, Check } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT } from '../../../components/UI';
 import { styles } from '../breathStyles';
 
 const log = createLogger('Breathing');

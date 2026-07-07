@@ -1,16 +1,18 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import {
-  View, Text, TouchableOpacity, TextInput, Alert,
-  StyleSheet,
-} from 'react-native';
-import { FlatList, Swipeable } from 'react-native-gesture-handler';
-import { useAppStore } from '../store/useAppStore';
 import {
   COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON,
 } from '@egoless-do/core';
 import {
   ChevronLeft, Check, X, Pencil, Trash2, Eye, EyeOff,
 } from 'lucide-react-native';
+import React, { useState, useMemo, useCallback } from 'react';
+import {
+  View, Text, TouchableOpacity, TextInput, Alert,
+  StyleSheet,
+} from 'react-native';
+import { FlatList, Swipeable } from 'react-native-gesture-handler';
+
+import { useAppStore } from '../store/useAppStore';
+
 import { useTheme, useT } from './UI';
 
 const ROW_HEIGHT = 56;

@@ -11,8 +11,8 @@
 // from @egoless-do/core so typography stays consistent with the rest
 // of the app.
 
-import { StyleSheet } from 'react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   // Home page

@@ -1,12 +1,13 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY , getMoodIcon } from '@egoless-do/core';
+import { useNavigation } from '@react-navigation/native';
+import { ArrowLeft, Plus, Lightbulb, TrendingUp, AlertTriangle, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, Plus, Lightbulb, TrendingUp, AlertTriangle, X } from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
-import { getMoodIcon } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 interface Strategy {
   id: string;

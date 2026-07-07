@@ -1,11 +1,12 @@
-import React, { useMemo } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useTheme, useT } from '../../../components/UI';
 import {
   FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON, MS_PER_DAY, activeOnly,
   computeLocalInsights, formatDateShort,
 } from '@egoless-do/core';
 import type { HotTag, MindReflection } from '@egoless-do/core';
+import React, { useMemo } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
 
 interface Props {
   visible: boolean;

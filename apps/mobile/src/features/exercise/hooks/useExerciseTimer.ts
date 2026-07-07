@@ -1,6 +1,6 @@
+import * as Haptics from 'expo-haptics';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Animated, Easing } from 'react-native';
-import * as Haptics from 'expo-haptics';
 
 export type Page = 'prep' | 'countdown' | 'active' | 'paused' | 'report';
 

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Edit3, Check, ChevronDown } from 'lucide-react-native';
 import {
   FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE,
   calcBMI, calcBMR,
   type UserProfile, type AgeBracket, type Theme,
   AGE_BRACKETS, bracketMidpoint, ageToBracket, estimateBodyFat,
 } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Edit3, Check, ChevronDown } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
 
 interface Props {
   TH: Theme;

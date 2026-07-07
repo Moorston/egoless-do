@@ -1,23 +1,26 @@
-import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform,
-} from 'react-native';
-import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import * as ImagePicker from 'expo-image-picker';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import SimpleHeader from '../../navigation/SimpleHeader';
-import { Card, useTheme, useT } from '../../components/UI';
 import {
   COLORS, FONT_TITLE, FONT_BODY, FONT_SUB,
   createLogger,
 } from '@egoless-do/core';
+import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
 import {
   Pencil, Flame, Target, CalendarDays, Brain, Scale, Droplets,
   Database, LogOut, ChevronRight, Check, X, Camera,
   Trophy, Timer, Utensils, Quote, Footprints, ClipboardList, ListChecks,
 } from 'lucide-react-native';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import {
+  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { Card, useTheme, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
+
 
 const log = createLogger('Profile');
 

@@ -1,24 +1,26 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+
+import { useTheme, useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SMALL, FONT_TINY, createLogger, MS_PER_DAY } from '@egoless-do/core';
-import {
+import { FONT_BODY, FONT_SMALL, FONT_TINY, createLogger, MS_PER_DAY ,
   getTrailStats, getMoodIcon,
   computeRecommendations, applyUserPreferences, buildIgnoredPattern, mergeAndRank,
   isAIRecommendAvailable, parseSmartQuery, matchReflectionsToTopic, matchByKeyword, computeCandidatePool,
-} from '@egoless-do/core';
-import { recommendTrailsViaAI } from '@egoless-do/core';
+, recommendTrailsViaAI } from '@egoless-do/core';
+
+
 import type { TrailRecommendation, SmartQueryResult, TrailFilters, MindReflection, ThoughtTrail } from '@egoless-do/core';
 
 const log = createLogger('Reflections');
 import RecommendCard from '../insights/RecommendCard';
+
 import CreateThoughtTrailModal from './CreateThoughtTrailModal';
 import SmartQueryPanel from './SmartQueryPanel';
 

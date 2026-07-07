@@ -2,11 +2,13 @@
 // Extracted from SyncEngine.ts (PR-2 of AR-01 refactoring)
 // Manages realtime connection (SSE) and fallback polling.
 
-import { RealtimeAgent, type RealtimeChangeEvent } from './RealtimeAgent';
 import { apiSyncPullPost, apiSyncCheck, createLogger, KickedOutError } from '@egoless-do/core';
 import type { SyncEntity } from '@egoless-do/core';
 import NetInfo from '@react-native-community/netinfo';
+
 import { openDatabase, getState, setState } from '../../db/schema';
+
+import { RealtimeAgent, type RealtimeChangeEvent } from './RealtimeAgent';
 
 const log = createLogger('SyncRealtime');
 

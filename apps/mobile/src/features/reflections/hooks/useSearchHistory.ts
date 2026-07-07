@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState, useEffect, useCallback } from 'react';
 
 const SEARCH_HISTORY_KEY = 'quickTrailSearchHistory';
 const MAX_HISTORY = 10;

@@ -1,9 +1,11 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import { Brain, ChevronDown, ChevronUp } from 'lucide-react-native';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_SMALL, FONT_BODY } from '@egoless-do/core';
 import type { TrailInsightCache } from '@egoless-do/core';
+import { Brain, ChevronDown, ChevronUp } from 'lucide-react-native';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+
 
 interface InsightSectionProps {
   insightCache?: TrailInsightCache;

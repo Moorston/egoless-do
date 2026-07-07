@@ -1,11 +1,13 @@
-import { useCallback } from 'react';
-import { Alert } from 'react-native';
+import type { PlanItem } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useCallback } from 'react';
+import { Alert } from 'react-native';
+
 import { useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
-import type { PlanItem } from '@egoless-do/core';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+
 
 export function useTrailActions(trailId: string) {
   const T = useT();

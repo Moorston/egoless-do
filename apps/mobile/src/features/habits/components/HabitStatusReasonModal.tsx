@@ -1,10 +1,10 @@
 // ─── HabitStatusReasonModal: pause/abandon reason input ──────────
-import React from 'react';
-import { View, Text, Modal, KeyboardAvoidingView, Platform } from 'react-native';
-import { useTheme, useT } from '../../../components/UI';
-import { ThemedInput, OutlineButton, PrimaryButton } from '../../../components/UI';
 import { FONT_BODY } from '@egoless-do/core';
 import type { HabitStatus } from '@egoless-do/core';
+import React from 'react';
+import { View, Text, Modal, KeyboardAvoidingView, Platform } from 'react-native';
+
+import { useTheme, useT , ThemedInput, OutlineButton, PrimaryButton } from '../../../components/UI';
 
 interface Props {
   visible: boolean;

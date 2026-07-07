@@ -1,9 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Music, ChevronRight, Waves, CloudRain, Droplets, Bell, Wind, Bird, Dumbbell, Repeat, Repeat1 } from 'lucide-react-native';
 import { FONT_BODY, FONT_SUB, TRACK_VISUAL } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Music, ChevronRight, Waves, CloudRain, Droplets, Bell, Wind, Bird, Dumbbell, Repeat, Repeat1 } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
 import { useTheme, useT } from '../../components/UI';
 import AnimatedMusicIcon from '../music/components/AnimatedMusicIcon';
 

@@ -1,9 +1,10 @@
+import { FONT_BODY, FONT_TITLE, FONT_SUB } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRootNavigation } from '../../navigation/hooks';
+
 import { Card, useTheme, useT, ScreenHeader } from '../../components/UI';
-import { FONT_BODY, FONT_TITLE, FONT_SUB } from '@egoless-do/core';
+import { useRootNavigation } from '../../navigation/hooks';
 
 export default function PrivacyPolicyScreen() {
   const nav = useRootNavigation();

@@ -1,7 +1,8 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, BODY_TAGS_PRESET, dateStr, type BodyCheckin, type BodyPlan, EXERCISE_CATEGORIES, type Theme } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
-import { X } from 'lucide-react-native';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, BODY_TAGS_PRESET, dateStr, type BodyCheckin, type BodyPlan, EXERCISE_CATEGORIES, type Theme } from '@egoless-do/core';
+
 import { PrimaryButton, OutlineButton } from '../../../../components/UI';
 
 const DIMENSIONS: { key: keyof Pick<BodyCheckin, 'energy' | 'pain' | 'comfort' | 'sleep'>; color: string }[] = [

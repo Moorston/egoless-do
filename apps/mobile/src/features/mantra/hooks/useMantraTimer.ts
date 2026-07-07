@@ -1,8 +1,8 @@
 // ─── useMantraTimer — Mantra chanting timer and counter logic ────
 // Extracted from MantraEngine.tsx for testability and separation of concerns.
 
-import { useState, useRef, useCallback, useEffect } from 'react';
 import type { MantraDef } from '@egoless-do/core';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 /** Number of beads per round in a traditional mala (prayer beads). */
 const BEAD_COUNT = 108;

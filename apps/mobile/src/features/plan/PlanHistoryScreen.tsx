@@ -1,12 +1,15 @@
+import { PLAN_STATUS_COLORS, statusToI18nKey, getHistoryPlans, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import type { PlanStatus } from '@egoless-do/core';
+import { ChevronLeft, ClipboardList, ChevronRight } from 'lucide-react-native';
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import { PLAN_STATUS_COLORS, statusToI18nKey, getHistoryPlans, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
-import type { PlanStatus } from '@egoless-do/core';
+
 import { Card, useTheme, useT } from '../../components/UI';
-import { ChevronLeft, ClipboardList, ChevronRight } from 'lucide-react-native';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
+
 
 export default function PlanHistoryScreen() {
   const TH = useTheme();

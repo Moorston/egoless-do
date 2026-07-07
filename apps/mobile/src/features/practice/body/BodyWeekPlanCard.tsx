@@ -1,7 +1,7 @@
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, dateStr, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme, type ExerciseEntry } from '@egoless-do/core';
+import { Calendar, Check, Circle } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Calendar, Check, Circle } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, dateStr, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme, type ExerciseEntry } from '@egoless-do/core';
 
 function resolveDayBgColor(day: { isToday: boolean; matched: boolean; hasPlan: boolean; isPast: boolean }, border: string): string {
   if (day.isToday) return '#f59e0b';

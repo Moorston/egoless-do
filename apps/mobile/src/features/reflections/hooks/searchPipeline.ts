@@ -16,7 +16,6 @@ export type SearchResult = { ref: MindReflection; score: number; source: 'direct
 export async function runAIPhase2(
   reflections: MindReflection[],
   trimmed: string,
-  candidates: MindReflection[],
   currentFilters: TrailFilters,
   allResults: SearchResult[],
   existingIds: Set<string>,

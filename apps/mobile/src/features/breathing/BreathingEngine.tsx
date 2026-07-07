@@ -1,20 +1,21 @@
 // ─── BreathingEngine — rAF-driven breathing exercise controller ──
 // State machine + rAF loop + hooks; delegates UI to page components.
 
+import type { BreathingPreset } from '@egoless-do/core';
+import { FONT_BODY, createLogger, fmtMS, dateStr , cycleDuration } from '@egoless-do/core';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, Animated, Easing, AppState, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT } from '../../components/UI';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { FONT_BODY, createLogger, fmtMS, dateStr } from '@egoless-do/core';
-import type { BreathingPreset } from '@egoless-do/core';
-import { cycleDuration } from '@egoless-do/core';
-import { useBreathAudio } from './useBreathAudio';
-import { useBreathSettings } from './hooks/useBreathSettings';
+
 import { styles } from './breathStyles';
-import BreathPreparePage from './pages/BreathPreparePage';
+import { useBreathSettings } from './hooks/useBreathSettings';
 import BreathActivePage from './pages/BreathActivePage';
+import BreathPreparePage from './pages/BreathPreparePage';
 import BreathReportPage from './pages/BreathReportPage';
+import { useBreathAudio } from './useBreathAudio';
 
 const log = createLogger('Breathing');
 

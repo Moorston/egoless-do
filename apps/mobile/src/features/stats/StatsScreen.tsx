@@ -1,19 +1,20 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import { Card, useTheme, useT } from '../../components/UI';
 import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB, activeOnly } from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
   Clock, ClipboardList,
-} from 'lucide-react-native';
-import LineChart from '../../components/charts/LineChart';
+ ChevronLeft } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { Card, useTheme, useT } from '../../components/UI';
 import BarChart from '../../components/charts/BarChart';
 import CalendarGrid from '../../components/charts/CalendarGrid';
-import { ChevronLeft } from 'lucide-react-native';
+import LineChart from '../../components/charts/LineChart';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 
 const CHART_W = Dimensions.get('window').width - 64;
 

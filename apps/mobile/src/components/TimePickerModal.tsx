@@ -1,7 +1,8 @@
+import { FONT_HERO, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_BUTTON } from '@egoless-do/core';
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
+
 import { useTheme, useT } from './UI';
-import { FONT_HERO, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_BUTTON } from '@egoless-do/core';
 
 interface Props {
   visible: boolean;

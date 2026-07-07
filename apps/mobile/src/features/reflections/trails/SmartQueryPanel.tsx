@@ -1,10 +1,12 @@
+import { FONT_SMALL, FONT_BUTTON } from '@egoless-do/core';
+import type { SmartQueryResult } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { X } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_BUTTON } from '@egoless-do/core';
 import { SmartQueryBubble } from '../insights/SmartQueryBubble';
-import type { SmartQueryResult } from '@egoless-do/core';
+
 
 interface Props {
   show: boolean;

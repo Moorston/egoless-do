@@ -1,9 +1,11 @@
 // ─── HabitEmptyState: empty state with create prompt ─────────────
+import { FONT_BODY, FONT_BUTTON, FONT_SUB } from '@egoless-do/core';
+import { BookOpen } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { BookOpen } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_BUTTON, FONT_SUB } from '@egoless-do/core';
+
 
 interface Props {
   primaryColor: string;

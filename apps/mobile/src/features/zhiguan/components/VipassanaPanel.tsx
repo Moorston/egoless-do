@@ -1,8 +1,8 @@
 // ─── VipassanaPanel 四念处指引面板 ─────────────────────────────────
 // 滑入式面板，显示当前念处（身/受/心/法）的观照指引
+import { VIPASSANA_GUIDES } from '@egoless-do/core';
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal, ScrollView } from 'react-native';
-import { VIPASSANA_GUIDES } from '@egoless-do/core';
 
 interface Props {
   visible: boolean;

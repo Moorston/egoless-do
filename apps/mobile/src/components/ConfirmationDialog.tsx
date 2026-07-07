@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
-import { useTheme, useT } from './UI';
 import { FONT_BODY, FONT_SMALL, FONT_BUTTON } from '@egoless-do/core';
 import { X, AlertTriangle, Check } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+
+import { useTheme, useT } from './UI';
 
 interface Props {
   visible: boolean;

@@ -1,6 +1,6 @@
+import { Trash2 } from 'lucide-react-native';
 import React, { useRef, useCallback } from 'react';
 import { Animated, PanResponder, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { Trash2 } from 'lucide-react-native';
 
 interface SwipeableRowProps {
   children: React.ReactNode;

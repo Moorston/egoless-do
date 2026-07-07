@@ -3,12 +3,13 @@
  * 显示前3名详细信息
  */
 
+import { LeaderboardEntry } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, type ViewStyle } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { formatDisplayName } from '../services/globalPulseApi';
-import { LeaderboardEntry } from '@egoless-do/core';
 
 interface PodiumItemProps {
   entry: LeaderboardEntry;

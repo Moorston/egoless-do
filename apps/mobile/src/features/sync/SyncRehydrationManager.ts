@@ -2,11 +2,12 @@
 // Extracted from SyncEngine.ts (PR-3 of AR-01 refactoring)
 // Handles rehydration from SQLite and initial sync with phased pull.
 
-import { openDatabase, getState, setState } from '../../db/schema';
 import { createLogger, apiSyncPullEntity } from '@egoless-do/core';
 import type { SyncEntity } from '@egoless-do/core';
-import { getSyncProgress, updateSyncProgress } from '../../db/syncQueue';
+
 import { dbGetAllFoodEntries } from '../../db/queries';
+import { openDatabase, getState, setState } from '../../db/schema';
+import { getSyncProgress, updateSyncProgress } from '../../db/syncQueue';
 import {
   rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,

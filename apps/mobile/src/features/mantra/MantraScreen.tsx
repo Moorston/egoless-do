@@ -3,6 +3,7 @@
 // expo-av, expo-speech, expo-file-system, react-native-svg.
 import React, { lazy, Suspense } from 'react';
 import { View, Text } from 'react-native';
+
 import { useTheme } from '../../components/UI';
 
 const MantraEngine = lazy(() => import('./MantraEngine'));

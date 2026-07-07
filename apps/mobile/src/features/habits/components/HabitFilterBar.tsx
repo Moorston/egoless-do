@@ -1,8 +1,9 @@
 // ─── HabitFilterBar: status filter pills ─────────────────────────
+import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
 import { ALL_FILTERS } from '../constants';
 
 interface Props {

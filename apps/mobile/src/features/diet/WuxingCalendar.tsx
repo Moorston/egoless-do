@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
 import { dateStr, WUXING_ELEMENT_CONFIG } from '@egoless-do/core';
 import type { WuxingElement } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 interface Props {
   /** Map of date string -> dominant wuxing element */

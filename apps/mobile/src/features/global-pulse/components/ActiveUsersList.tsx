@@ -3,13 +3,16 @@
  * 按类型分组显示，每组标题（图标 + 类型名 + 人数），当前用户置顶
  */
 
+import { ActiveSession, CheckinType } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { ActiveSession, CheckinType } from '@egoless-do/core';
-import { getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
-import { ActiveUserItem } from './ActiveUserItem';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
+
+import { ActiveUserItem } from './ActiveUserItem';
+
 
 interface ActiveUsersListProps {
   sessions: ActiveSession[];

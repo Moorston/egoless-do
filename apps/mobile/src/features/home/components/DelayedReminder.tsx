@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { AlertTriangle, X } from 'lucide-react-native';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_BODY, FONT_SUB, COLORS, cardAccent, cardTextColor } from '@egoless-do/core';
 import type { Plan } from '@egoless-do/core';
+import { AlertTriangle, X } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+
 
 interface Props {
   plan: Plan;

@@ -1,21 +1,23 @@
+import { FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { ArrowLeft, Link, Bell, BellOff } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
-import type { RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../navigation/types';
-import { ArrowLeft, Link, Bell, BellOff } from 'lucide-react-native';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useTheme, useT, ProgressBar } from '../../components/UI';
-import { FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
 
-import { STATUS_COLORS, STATUS_LABELS } from './constants';
-import CalendarGrid from '../../components/charts/CalendarGrid';
-import HabitStatsSection from './HabitStatsSection';
 import TimePickerModal from '../../components/TimePickerModal';
-import { Toggle } from '../../components/UI';
+import { useTheme, useT, ProgressBar , Toggle } from '../../components/UI';
+import CalendarGrid from '../../components/charts/CalendarGrid';
+import type { RootStackParamList } from '../../navigation/types';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { requestNotificationPermission, rescheduleAllHabitReminders } from '../notifications/NotificationService';
+
+import HabitStatsSection from './HabitStatsSection';
+import { STATUS_COLORS, STATUS_LABELS } from './constants';
+
+
 
 export default function HabitDetailScreen() {
   const TH = useTheme();

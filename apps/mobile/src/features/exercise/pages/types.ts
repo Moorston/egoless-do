@@ -1,5 +1,5 @@
-import type { Animated, ViewStyle } from 'react-native';
 import type { SportType, ExerciseSet, ExerciseEntry, Theme, SportExperienceType } from '@egoless-do/core';
+import type { Animated, ViewStyle } from 'react-native';
 
 /** GPS coordinate */
 interface GpsCoord {

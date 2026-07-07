@@ -1,14 +1,15 @@
+import { FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_BODY, dateStr } from '@egoless-do/core';
+import type { TrailInsightCache, UnifiedPlanItemForm } from '@egoless-do/core';
+import { X } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import {
   View, Text, TouchableOpacity, Modal, ScrollView, KeyboardAvoidingView, Platform,
 } from 'react-native';
-import { X } from 'lucide-react-native';
-import { useTheme, useT, PrimaryButton, OutlineButton } from '../../../components/UI';
-import { FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_BODY, dateStr } from '@egoless-do/core';
-import type { TrailInsightCache, UnifiedPlanItemForm } from '@egoless-do/core';
-import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
-import { useAppStore } from '../../../store/useAppStore';
+
 import DatePickerModal from '../../../components/DatePickerModal';
+import { useTheme, useT, PrimaryButton, OutlineButton } from '../../../components/UI';
+import { useAppStore } from '../../../store/useAppStore';
+import { PlanItemForm, validatePlanItemForm } from '../../plan/components/PlanItemForm';
 
 interface CreatePlanFromTrailModalProps {
   visible: boolean;

@@ -1,8 +1,9 @@
 import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
+
 import { openDatabase, withDbLock } from '../../db/schema';
-import { ENTITY_TABLE_MAP } from '../../store/entityTableMap';
 import { SYNC_QUEUE_UPSERT_SQL } from '../../db/sqlHelper';
+import { ENTITY_TABLE_MAP } from '../../store/entityTableMap';
 
 const log = createLogger('Sync');
 

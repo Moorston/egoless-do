@@ -1,11 +1,12 @@
 // ─── MantraReportPage — Session completion report + dedication modal ──
 // Shows stats, dedication button, and finish action.
 
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, DEDICATION_TEMPLATES } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, DEDICATION_TEMPLATES } from '@egoless-do/core';
 
 // ─── Props interface ────────────────────────────────────────────────
 

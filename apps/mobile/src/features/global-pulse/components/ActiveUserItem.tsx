@@ -3,13 +3,14 @@
  * 显示：昵称、活动图标、时长、城市、目标、感悟
  */
 
+import { ActiveSession } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
 import { useCityName } from '../hooks/useCityName';
 import { useGlobalTick } from '../hooks/useGlobalTick';
 import { formatDisplayName, getCheckinTypeIcon, getCheckinTypeColor } from '../services/globalPulseApi';
-import { ActiveSession } from '@egoless-do/core';
 
 interface ActiveUserItemProps {
   session: ActiveSession;

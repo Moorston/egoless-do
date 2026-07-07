@@ -1,8 +1,8 @@
+import { WUXING_ELEMENT_CONFIG } from '@egoless-do/core';
+import type { WuxingElement } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Polygon, Line, Circle, Text as SvgText } from 'react-native-svg';
-import { WUXING_ELEMENT_CONFIG } from '@egoless-do/core';
-import type { WuxingElement } from '@egoless-do/core';
 
 interface Props {
   stats: Record<string, number>; // { wood: 20, fire: 10, earth: 30, metal: 15, water: 25 }

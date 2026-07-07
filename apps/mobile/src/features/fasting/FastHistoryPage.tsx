@@ -1,13 +1,15 @@
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, dateStr, COLORS, type Theme , FastingSession } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Calendar, Flame, X, Trash2 } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
+
+import { useTheme, ScreenHeader, useT } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useTheme, ScreenHeader, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, dateStr, COLORS, type Theme } from '@egoless-do/core';
-import { Calendar, Flame, X, Trash2 } from 'lucide-react-native';
-import type { FastingSession } from '@egoless-do/core';
+
+
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
 

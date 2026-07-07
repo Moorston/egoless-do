@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+
 import { useT } from '../../../components/UI';
 
 export const OfflineBanner: React.FC = () => {

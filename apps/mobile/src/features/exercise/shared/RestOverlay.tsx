@@ -1,7 +1,7 @@
+import { COLORS, FONT_HERO, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { COLORS, FONT_HERO, FONT_BODY, FONT_SUB } from '@egoless-do/core';
 
 interface Props {
   restSec: number;

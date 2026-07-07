@@ -1,17 +1,19 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
-import { useTheme, useT } from '../../components/UI';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import { useRootNavigation } from '../../navigation/hooks';
-import SimpleHeader from '../../navigation/SimpleHeader';
-import { Shield, Check, X, Plus, BarChart3, AlertTriangle } from 'lucide-react-native';
 import {
   PRECEPT_AVOID_PRESETS, PRACTICE_PRESETS, VIOLATION_TRIGGERS,
   PRECEPT_PREFIX_AVOID, PRECEPT_PREFIX_PRACTICE,
   isPreceptHabit, getPreceptDisplayName, getPreceptType,
   type PreceptPreset,
 } from '@egoless-do/core';
+import { Shield, Check, X, Plus, BarChart3, AlertTriangle } from 'lucide-react-native';
+import React, { useState, useMemo, useCallback } from 'react';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
+
+import { useTheme, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
+import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 
 export default function PreceptScreen() {
   const TH = useTheme();

@@ -1,11 +1,13 @@
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { X, Download, Share2 } from 'lucide-react-native';
 import React, { useRef, useState, useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import ViewShot from 'react-native-view-shot';
-import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
+
 import { useTheme, useT } from '../../../components/UI';
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
-import { X, Download, Share2 } from 'lucide-react-native';
+
 
 interface ShareCardProps {
   visible: boolean;

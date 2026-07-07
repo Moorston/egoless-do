@@ -1,10 +1,12 @@
+import { FONT_SMALL, FONT_BODY } from '@egoless-do/core';
+import type { TrailInsightCache, TrailReviewCache } from '@egoless-do/core';
+import { Brain, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { Brain, MessageCircle, ChevronDown, ChevronUp } from 'lucide-react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_SMALL, FONT_BODY } from '@egoless-do/core';
 import { SegmentBar } from '../shared/SegmentBar';
-import type { TrailInsightCache, TrailReviewCache } from '@egoless-do/core';
+
 
 interface ReviewAIPanelProps {
   insightCache?: TrailInsightCache;

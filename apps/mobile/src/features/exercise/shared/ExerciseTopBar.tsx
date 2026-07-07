@@ -1,7 +1,7 @@
+import { COLORS, FONT_BODY, FONT_SUB, FONT_CLOSE, EXERCISE_SOUNDS } from '@egoless-do/core';
+import { Music } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Music } from 'lucide-react-native';
-import { COLORS, FONT_BODY, FONT_SUB, FONT_CLOSE, EXERCISE_SOUNDS } from '@egoless-do/core';
 
 interface Props {
   icon: string;

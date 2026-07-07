@@ -1,9 +1,10 @@
+import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme , DedicationSettings, Dedication } from '@egoless-do/core';
+import { Settings, PenLine, History } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Settings, PenLine, History } from 'lucide-react-native';
-import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme } from '@egoless-do/core';
-import type { DedicationSettings, Dedication } from '@egoless-do/core';
+
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
 import DedicationCard from './components/DedicationCard';
 import DedicationSettingsModal from './modals/DedicationSettingsModal';
 

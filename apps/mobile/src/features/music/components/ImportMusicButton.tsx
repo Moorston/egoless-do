@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react';
-import { TouchableOpacity, Text, Alert } from 'react-native';
+import { FONT_BODY, createLogger } from '@egoless-do/core';
 import * as DocumentPicker from 'expo-document-picker';
 import { Upload } from 'lucide-react-native';
-import { FONT_BODY, createLogger } from '@egoless-do/core';
+import React, { useCallback, useState } from 'react';
+import { TouchableOpacity, Text, Alert } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
 import { useMusicStore } from '../useMusicStore';
 

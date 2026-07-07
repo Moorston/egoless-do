@@ -4,6 +4,7 @@
  * 直接使用已加载的 checkin 数据，无需额外 API 请求
  */
 
+import { GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType } from '@egoless-do/core';
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -12,8 +13,9 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType } from '@egoless-do/core';
+
 import { LeaderboardItem } from './LeaderboardItem';
 import { PodiumItem } from './PodiumItem';
 

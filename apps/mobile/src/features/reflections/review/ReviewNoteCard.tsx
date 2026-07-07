@@ -1,10 +1,11 @@
+import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon } from '@egoless-do/core';
+import type { TrailNote } from '@egoless-do/core';
+import { Pencil, Trash2 } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Pencil, Trash2 } from 'lucide-react-native';
+
 import { useTheme } from '../../../components/UI';
-import { FONT_SMALL, FONT_BODY, FONT_TINY } from '@egoless-do/core';
-import { getMoodIcon } from '@egoless-do/core';
-import type { TrailNote } from '@egoless-do/core';
+
 
 interface ReviewNoteCardProps {
   note: TrailNote;

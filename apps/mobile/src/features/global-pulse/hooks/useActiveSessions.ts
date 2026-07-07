@@ -3,8 +3,10 @@
  * 初始加载 + PocketBase SSE 订阅 + 客户端超时过滤
  */
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { ActiveSession, CheckinType } from '@egoless-do/core';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import {
   getActiveSessions,
   subscribeSessions,
@@ -12,7 +14,6 @@ import {
   onConnectionStateChange,
   type ConnectionState,
 } from '../services/activeSessionApi';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const HEARTBEAT_TIMEOUT_MS = 60000; // 60s 超时
 

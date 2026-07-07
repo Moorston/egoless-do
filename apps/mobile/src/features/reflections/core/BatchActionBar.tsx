@@ -1,7 +1,8 @@
+import { FONT_BODY, FONT_BUTTON, FONT_SMALL, COLORS } from '@egoless-do/core';
+import { Trash2, Pin, PinOff, Tag, X, CheckSquare, Square } from 'lucide-react-native';
 import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { Trash2, Pin, PinOff, Tag, X, CheckSquare, Square } from 'lucide-react-native';
-import { FONT_BODY, FONT_BUTTON, FONT_SMALL, COLORS } from '@egoless-do/core';
+
 import { useTheme, useT } from '../../../components/UI';
 
 interface Props {

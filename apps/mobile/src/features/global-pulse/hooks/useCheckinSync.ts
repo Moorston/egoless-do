@@ -3,16 +3,17 @@
  * 在打卡时收集位置并提交到全球脉动
  */
 
-import { useCallback } from 'react';
+import { createLogger , CheckinType , fuzzCoordinate } from '@egoless-do/core';
 import * as Location from 'expo-location';
-import { createLogger } from '@egoless-do/core';
-import { CheckinType } from '@egoless-do/core';
-import { fuzzCoordinate } from '@egoless-do/core';
+import { useCallback } from 'react';
+
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { submitCheckin } from '../services/globalPulseApi';
 import { getUserHash, getFuzzSecret } from '../services/userHash';
-import { usePrivacy } from './usePrivacy';
+
 import { useNetworkStatus } from './useNetworkStatus';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { usePrivacy } from './usePrivacy';
+
 
 const log = createLogger('GlobalPulse');
 

@@ -12,8 +12,8 @@
  * Styles are grouped by section with inline comments for quick navigation.
  */
 
-import { StyleSheet } from 'react-native';
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   // Preparation page

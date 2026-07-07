@@ -1,23 +1,27 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAudioPlayer } from 'expo-audio';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
-import SimpleHeader from '../../navigation/SimpleHeader';
-import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
 import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY, createLogger } from '@egoless-do/core';
-const log = createLogger('FastingScreen');
+import { useAudioPlayer } from 'expo-audio';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   Flame, Globe, Scale,
   AlertTriangle, Check, ChevronRight, StopCircle,
 } from 'lucide-react-native';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
+import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
+import { useAppStore, useShallowStore } from '../../store/useAppStore';
+
+
+const log = createLogger('FastingScreen');
+
 
 // 实时会话
-import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
-import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { ActiveInsightBar } from '../global-pulse/components/ActiveInsightBar';
+import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
+import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
 
 const BELL_FILE = require('../../../assets/sounds/temple_bell.mp3');
 

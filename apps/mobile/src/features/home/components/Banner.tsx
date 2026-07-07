@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_SMALL } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Check, Pencil, Target, BarChart3, Shield } from 'lucide-react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_SMALL } from '@egoless-do/core';
+
 
 interface Props {
   status: 'draft' | 'done' | 'editing';

@@ -1,33 +1,33 @@
 // ─── Navigation root ──────────────────────────────────────────────────────
-import React, { useRef, useEffect, useState, useCallback, createContext, useContext, Suspense } from 'react';
-import { NavigationContainer, type NavigationContainerRef } from '@react-navigation/native';
+import { t, FONT_BODY, createLogger } from '@egoless-do/core';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer, type NavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
-  View, Text, TouchableOpacity, StyleSheet,
-} from 'react-native';
-import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
-  Target, Flame, Footprints,
+  Target, Footprints, Sparkles,
 } from 'lucide-react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../store/useAppStore';
-import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL, createLogger } from '@egoless-do/core';
-import { useTheme } from '../components/UI';
-import StarfieldBackground from '../components/StarfieldBackground';
-import SimpleHeaderComponent from './SimpleHeader';
-import { LazyScreen, withLazy, LoadingFallback } from './LazyScreen';
+import React, { useRef, useEffect, useState, createContext, Suspense } from 'react';
+import {
+  View,
+} from 'react-native';
+
 import { ErrorBoundary, withErrorBoundary } from '../components/ErrorBoundary';
 import FabButton from '../components/FabButton';
 import { KickOutModal }  from '../components/KickOutModal';
-import { SyncProgressOverlay } from '../components/SyncProgressOverlay';
+import StarfieldBackground from '../components/StarfieldBackground';
 import { SyncBanner } from '../components/SyncBanner';
+import { SyncProgressOverlay } from '../components/SyncProgressOverlay';
+import { useTheme } from '../components/UI';
 import { useSync }       from '../features/sync/useSync';
-import { isDeviceSyncedBefore } from '../features/sync/SyncService';
-import type { StackScreenProps } from '@react-navigation/stack';
-import type { RootStackParamList, MainTabParamList } from './types';
+import { useAppStore, useShallowStore } from '../store/useAppStore';
 
-// All screen imports from screens.ts (single source, no duplicates)
+import { withLazy, LoadingFallback } from './LazyScreen';
+import SimpleHeaderComponent from './SimpleHeader';
+
+import { isDeviceSyncedBefore } from '../features/sync/SyncService';
+
+
 import {
   _HomeScreen, _FastingScreen, _ExerciseScreen, _SettingsScreen, _PlanScreen,
   ReflectionsScreen, ReflectionStatsScreen, MindTrailScreen,
@@ -50,6 +50,9 @@ import {
   StreakBreakScreen, SutraHistoryScreen, SutraScreen,
   VowScreen, ZhiguanHistoryScreen, ZhiguanScreen,
 } from './screens';
+import type { RootStackParamList, MainTabParamList } from './types';
+
+// All screen imports from screens.ts (single source, no duplicates)
 
 export type { RootStackParamList, MainTabParamList } from './types';
 export { useRootNavigation, useTabNavigation } from './hooks';

@@ -1,10 +1,11 @@
 // ─── One-time migration: move unsynced records into sync_queue ───
 // After upgrading from the old scan-based sync to the queue-based sync,
 // existing synced=0/2 records need to be enqueued so they get pushed.
-import { openDatabase } from '../../db/schema';
-import { enqueueChange } from '../../db/syncQueue';
 import type { SyncEntity } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
+
+import { openDatabase } from '../../db/schema';
+import { enqueueChange } from '../../db/syncQueue';
 
 const log = createLogger('Sync');
 

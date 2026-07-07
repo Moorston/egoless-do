@@ -2,6 +2,7 @@
 // Shown during Phase 1 initial sync with per-entity progress.
 import React, { useEffect, useState } from 'react';
 import { View, Text, Modal, StyleSheet, ActivityIndicator } from 'react-native';
+
 import { useTheme } from '../components/UI';
 import { getAllSyncProgress, type SyncProgressRow } from '../db/syncQueue';
 

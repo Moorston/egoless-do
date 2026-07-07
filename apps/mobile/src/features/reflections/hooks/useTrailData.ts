@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
-import { useShallowStore } from '../../../store/useAppStore';
 import { getTrailOverview, getRelatedTrails, getTrailTimelineItems } from '@egoless-do/core';
 import type { ThoughtTrail } from '@egoless-do/core';
+import { useMemo } from 'react';
+
+import { useShallowStore } from '../../../store/useAppStore';
 
 export function useTrailData(trailId: string) {
   const thoughtTrails = useShallowStore(s => s.thoughtTrails);

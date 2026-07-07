@@ -4,9 +4,10 @@
  * 禁食类型不启动心跳
  */
 
+import { CheckinType } from '@egoless-do/core';
 import { useEffect, useRef, useCallback } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
-import { CheckinType } from '@egoless-do/core';
+
 import { updateSession } from '../services/activeSessionApi';
 
 const HEARTBEAT_INTERVAL = 15000; // 15s

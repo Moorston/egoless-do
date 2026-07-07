@@ -1,7 +1,8 @@
 // ─── React hook: open DB, run migrations, expose instance ────────
-import { useEffect, useState } from 'react';
-import type { SQLiteDatabase } from 'expo-sqlite';
 import { createLogger } from '@egoless-do/core';
+import type { SQLiteDatabase } from 'expo-sqlite';
+import { useEffect, useState } from 'react';
+
 import { openDatabase } from './schema';
 
 const log = createLogger('DB');

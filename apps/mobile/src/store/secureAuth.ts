@@ -1,8 +1,8 @@
 // ─── Secure Auth Token Storage ────────────────────────────────────
 // Stores auth tokens in expo-secure-store (Keychain/EncryptedSharedPrefs)
 // instead of plaintext AsyncStorage.
-import * as SecureStore from 'expo-secure-store';
 import { createLogger } from '@egoless-do/core';
+import * as SecureStore from 'expo-secure-store';
 
 const log = createLogger('SecureAuth');
 

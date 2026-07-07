@@ -1,8 +1,10 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useTheme, useT } from '../../../components/UI';
 import { FONT_SMALL } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin } from '@egoless-do/core';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+import { useTheme, useT } from '../../../components/UI';
+
 import { PlanTaskCard } from './PlanTaskCard';
 
 interface PlanTasksSectionProps {

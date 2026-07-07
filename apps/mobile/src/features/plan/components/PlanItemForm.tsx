@@ -1,11 +1,11 @@
+import type { PlanItemPriority, UnifiedPlanItemForm, CheckinFrequency } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, dateStr , FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 import React, { useState, useCallback, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
 } from 'react-native';
+
 import { useTheme } from '../../../components/UI';
-import { FONT_SMALL, FONT_BODY, dateStr } from '@egoless-do/core';
-import type { PlanItemPriority, UnifiedPlanItemForm, CheckinFrequency } from '@egoless-do/core';
-import { FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 
 export function validatePlanItemForm(
   form: UnifiedPlanItemForm,
