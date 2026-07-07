@@ -735,7 +735,7 @@ export const en: I18nKeys = {
   preceptTitle:'Precepts', preceptSubtitle:'Precept Practice - Mindfulness', preceptQuote:'Pure precepts, calm mind', preceptStreak:'Streak', preceptTotalDays:'Total', preceptMonthRate:'Month Rate',
   preceptAvoid:'Avoid (stop doing)', preceptPractice:'Practice (keep doing)', preceptDone:'Done', preceptNotDone:'Not done', preceptViolated:'Not done',
   preceptTriggerTitle:'What triggered it?', preceptReflectionTitle:'Reflection', preceptReflectionPlaceholder:'Record your awareness...',
-  preceptSave:'Save reflection', preceptSkip:'Skip', preceptAddNew:'+ Add precept', preceptAddCustom:'Or custom',
+  preceptSave:'Save reflection', preceptSkip:'Skip', preceptAddNew:'Add precept', preceptAddCustom:'Or custom',
   preceptTemplateName:'Precept name', preceptTemplateGuide:'Practice guide', preceptTargetDays:'Target days',
   preceptType:'Type', preceptTypeAvoid:'Avoid', preceptTypePractice:'Practice',
   preceptHistory:'Precept History', preceptViolations:'Violations', preceptInsights:'Insights', preceptRecentInsight:'Recent Insights',

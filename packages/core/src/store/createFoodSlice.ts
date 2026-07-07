@@ -12,10 +12,10 @@ import type { SliceCreator } from './sliceHelper';
  */
 export function createFoodSlice(
   adapter: StorageAdapter,
-  _onSettingsPersist?: () => void,
+  onSettingsPersist?: () => void,
   onSync?: () => void,
 ): SliceCreator<DietSlice> {
-  return createDietSlice(adapter, onSync);
+  return createDietSlice(adapter, onSync, onSettingsPersist);
 }
 
 export type { DietSlice as FoodSlice };

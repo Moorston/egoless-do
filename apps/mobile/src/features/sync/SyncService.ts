@@ -42,6 +42,9 @@ export function resetSyncState() { return _engine.hardReset('CONFIRM_HARD_RESET'
 // Rehydrate
 export function rehydrateFromDb(entities?: string[]): Promise<Record<string, unknown>> { return _engine.rehydrateFromDb(entities); }
 
+// Register local delete (prevents sync resurrection)
+export function registerLocalDelete(entity: string, id: string) { _engine.registerLocalDelete(entity, id); }
+
 // Initial sync
 export function initialSync(token: string, userId?: string): Promise<'done' | 'partial'> { return _engine.initialSync(token, userId); }
 export function resumeInitialSync(token: string, userId?: string) { return _engine.resumeInitialSync(token, userId); }

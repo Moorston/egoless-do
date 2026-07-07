@@ -88,8 +88,9 @@ export function useExerciseAudio() {
   useEffect(() => { bellPlayerRef.current = bellPlayer; }, [bellPlayer]);
   useEffect(() => {
     return () => {
-      bgPlayerRef.current.pause();
-      bellPlayerRef.current.pause();
+      // remove() releases native resources; best-effort since hook may release first
+      try { bgPlayerRef.current.remove(); } catch {}
+      try { bellPlayerRef.current.remove(); } catch {}
       if (selectedSoundRef.current !== '无') {
         audioSessionManager.notifyStopped('ambient');
       }
@@ -111,10 +112,28 @@ export function useExerciseAudio() {
     });
   }, [bgPlayer]);
 
+  /** Stop all audio immediately (call on exercise end, not unmount) */
+  const stopAll = useCallback(() => {
+    try { bgPlayer.pause(); } catch {}
+    try { bellPlayer.pause(); } catch {}
+    audioSessionManager.notifyStopped('ambient');
+  }, [bgPlayer, bellPlayer]);
+
+  // Unmount cleanup — best-effort; stopAll should be called explicitly before navigation
+  useEffect(() => {
+    return () => {
+      try { bgPlayerRef.current.remove(); } catch {}
+      try { bellPlayerRef.current.remove(); } catch {}
+      if (selectedSoundRef.current !== '无') {
+        audioSessionManager.notifyStopped('ambient');
+      }
+    };
+  }, []);
+
   return {
     selectedSound, setSelectedSound,
     showSoundPicker, setShowSoundPicker,
     bgPlayer, bellPlayer,
-    playBell, selectSound, cycleSound,
+    playBell, selectSound, cycleSound, stopAll,
   };
 }

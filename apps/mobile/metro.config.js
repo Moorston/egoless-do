@@ -5,8 +5,10 @@ const config = getDefaultConfig(__dirname);
 
 // Resolve workspace packages from monorepo root
 config.projectRoot = __dirname;
+// Only watch directories that mobile actually needs (prevents heap OOM)
 config.watchFolders = [
-  path.resolve(__dirname, '../..'),  // monorepo root
+  __dirname,                                    // apps/mobile
+  path.resolve(__dirname, '../../packages/core'), // @egoless-do/core
 ];
 
 // Ensure Metro can resolve packages from root node_modules
@@ -22,13 +24,13 @@ config.resolver.unstable_enableSymlinks = true;
 // with packages that ship their own babel configs (e.g. @egjs/hammerjs)
 config.transformer.enableBabelRCLookup = false;
 
-// Exclude web app build outputs and other non-mobile directories from Metro's file map
+// Exclude build artifacts from watched directories
 const blockList = config.resolver.blockList || [];
 config.resolver.blockList = [
   ...blockList,
-  /apps\/web\/\.next\/.*/,
-  /apps\/web\/node_modules\/.*/,
-  /\.openspec\/.*/,
+  /packages\/core\/node_modules\/.*/,
+  /packages\/core\/dist\/.*/,
+  /packages\/core\/\.turbo\/.*/,
 ];
 
 module.exports = config;

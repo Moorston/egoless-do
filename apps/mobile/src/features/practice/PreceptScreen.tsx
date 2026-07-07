@@ -315,7 +315,7 @@ export default function PreceptScreen() {
           onPress={() => setShowAddModal(true)}
         >
           <Plus size={18} color={TH.primary} />
-          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptAddNew') || '+ 添加新戒条'}</Text>
+          <Text style={[styles.bottomBtnText, { color: TH.primary }]}>{T('preceptAddNew') || '添加新戒条'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.bottomBtn, { backgroundColor: `${TH.primary}15`, borderColor: `${TH.primary}30` }]}

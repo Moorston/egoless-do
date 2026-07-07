@@ -72,7 +72,7 @@ describe('createMantraSlice', () => {
       slice.removeMantraDef('m1');
 
       expect(store.state().mantraDefs[0].deleted).toBe(true);
-      expect(mockAdapter.persistChange).toHaveBeenCalled();
+      expect(mockAdapter.markDeleted).toHaveBeenCalled();
     });
   });
 
@@ -104,7 +104,7 @@ describe('createMantraSlice', () => {
       slice.removeMantraSession('s1');
 
       expect(store.state().mantraSessions[0].deleted).toBe(true);
-      expect(mockAdapter.persistChange).toHaveBeenCalled();
+      expect(mockAdapter.markDeleted).toHaveBeenCalled();
     });
   });
 });

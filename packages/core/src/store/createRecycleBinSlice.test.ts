@@ -39,6 +39,7 @@ const mockAdapter = {
   persistChange: vi.fn().mockResolvedValue(undefined),
   markDeleted: vi.fn().mockResolvedValue(undefined),
   batchDelete: vi.fn().mockResolvedValue(undefined),
+  hardDelete: vi.fn().mockResolvedValue(undefined),
   persistSettings: vi.fn().mockResolvedValue(undefined),
   getSettings: vi.fn().mockResolvedValue(undefined),
   transaction: vi.fn().mockResolvedValue(undefined),

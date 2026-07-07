@@ -138,7 +138,7 @@ export default function HomeScreen() {
   const [wgi, setWgi] = useState(String(waterGoal));
 
   // ── Derived data ──
-  const viewDateFoods = useMemo(() => getFoodLogByDate((foodLog ?? []).filter(f => !f.deleted), viewDate), [foodLog, viewDate]);
+  const viewDateFoods = useMemo(() => getFoodLogByDate((foodLog ?? []).filter(f => !f.deleted && f.name), viewDate), [foodLog, viewDate]);
   const totalCal = useMemo(() => viewDateFoods.reduce((a, f) => a + f.calories, 0), [viewDateFoods]);
   const recentFoods = useMemo(() => getRecentFoods((foodLog ?? []).filter(f => !f.deleted), 3), [foodLog]);
   const totalCompleted = useMemo(
@@ -509,27 +509,6 @@ export default function HomeScreen() {
                   </>
                 )}
 
-                {/* Note */}
-                <View style={{ marginTop: 16 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <Sparkles size={16} color={P} />
-                    <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY }}>{T('checkinNote')}</Text>
-                  </View>
-                  {isReadOnly ? (
-                    <Text style={{ color: TH.text, fontSize: FONT_BODY, lineHeight: 22 }}>
-                      {note || '—'}
-                    </Text>
-                  ) : (
-                    <ThemedInput
-                      value={note}
-                      onChangeText={saveNote}
-                      onBlur={handleNoteBlur}
-                      placeholder={T('checkinNotePlaceholder')}
-                      multiline
-                      numberOfLines={3}
-                    />
-                  )}
-                </View>
               </View>
 
               {/* ── Weight card ── */}
@@ -644,6 +623,29 @@ export default function HomeScreen() {
                 onSetCalGoal={setCalGoal}
               />
 
+              {/* ── Reflection card ── */}
+              <View style={[styles.cardWithBorder, { backgroundColor: TH.card, borderColor: TH.border, marginTop: 12 }]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Sparkles size={16} color={P} />
+                  <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY }}>{T('checkinNote')}</Text>
+                </View>
+                {isReadOnly ? (
+                  <Text style={{ color: TH.text, fontSize: FONT_BODY, lineHeight: 22 }}>
+                    {note || '—'}
+                  </Text>
+                ) : (
+                  <ThemedInput
+                    value={note}
+                    onChangeText={saveNote}
+                    onBlur={handleNoteBlur}
+                    placeholder={T('checkinNotePlaceholder')}
+                    multiline
+                    numberOfLines={3}
+                    style={{ minHeight: 80 }}
+                  />
+                )}
+              </View>
+
               {/* ── Status button (today only) ── */}
               {isToday && (
                 isLocked ? (
@@ -679,7 +681,7 @@ export default function HomeScreen() {
       {/* ── Floating bubble (draggable) ── */}
       <HomeBubble
         visible={!isToday}
-        onTap={() => setViewDate(dateStr())}
+        onTap={() => goToDate(dateStr())}
       />
 
       {/* Water Goal Modal */}

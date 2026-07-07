@@ -22,6 +22,7 @@ function zeroFlavor(): Record<FlavorType, number> {
 export function createDietSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
+  onSettingsPersist?: () => void,
 ): SliceCreator<DietSlice> {
   return (set, get) => ({
     foodLog: [],
@@ -29,7 +30,9 @@ export function createDietSlice(
     customFoodPresets: [],
 
     addFood(entry: Omit<FoodEntry, 'id' | 'updatedAt' | 'deleted'>) {
+      if (!entry?.name?.trim()) { log.warn('addFood: rejected empty entry', entry); return; }
       const e: FoodEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false };
+      log.debug('addFood:', e.id, e.name, e.calories);
       set(s => ({ foodLog: [e, ...(s.foodLog ?? [])] }));
       adapter.persistChange('food', e.id, e).catch(e => log.error(e));
       onSync?.();
@@ -46,7 +49,7 @@ export function createDietSlice(
       onSync?.();
     },
 
-    setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); },
+    setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); onSettingsPersist?.(); },
 
     addCustomFoodPreset(name: string, calories: number, note?: string) {
       set(s => ({
@@ -55,12 +58,14 @@ export function createDietSlice(
           ...(s.customFoodPresets ?? []),
         ],
       }));
+      onSettingsPersist?.();
     },
 
     removeCustomFoodPreset(id: string) {
       set(s => ({
         customFoodPresets: (s.customFoodPresets ?? []).filter(p => p.id !== id),
       }));
+      onSettingsPersist?.();
     },
 
     motivationLog: [],

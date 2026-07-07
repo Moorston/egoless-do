@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation';
 import { AudioEngineProvider } from './src/features/music';
 import SplashScreen from './src/features/splash/SplashScreen';
+import { initApp } from './src/store/initApp';
 
 const AMAP_KEY = Platform.select({
   android: process.env.EXPO_PUBLIC_AMAP_KEY_ANDROID ?? '',
@@ -84,6 +85,14 @@ function staggerPreload(modules: Array<() => Promise<any>>, gapMs = 50) {
 export default function App() {
   const [isReady, setIsReady] = useState(false);
   const preloadedRef = useRef(false);
+  const initStartedRef = useRef(false);
+
+  // Initialize app (SQLite, auth tokens, subscriptions) as early as possible
+  useEffect(() => {
+    if (initStartedRef.current) return;
+    initStartedRef.current = true;
+    initApp().catch(() => {});
+  }, []);
 
   useEffect(() => {
     import('react-native-amap3d').then(({ AMapSdk }) => {

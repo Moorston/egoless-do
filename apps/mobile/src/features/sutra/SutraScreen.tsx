@@ -322,13 +322,6 @@ function SutraScreenInner() {
 
   const sutraListHeader = useMemo(() => (
     <View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 8, paddingBottom: 8 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraSubtitle')}</Text>
-        <TouchableOpacity onPress={() => nav.navigate('SutraHistory', {})}>
-          <BarChart3 size={18} color={TH.sub} />
-        </TouchableOpacity>
-      </View>
-
       <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
         <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('sutraTargetRounds')}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
@@ -343,7 +336,7 @@ function SutraScreenInner() {
 
       <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('sutraMySutras')}</Text>
     </View>
-  ), [TH, T, targetRounds, nav]);
+  ), [TH, T, targetRounds]);
 
   const sutraEmptyState = useMemo(() => (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>

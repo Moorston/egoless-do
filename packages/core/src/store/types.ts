@@ -331,6 +331,8 @@ export interface StorageAdapter {
   markDeleted(entity: SyncEntity, id: string): Promise<void>;
   /** Atomically delete multiple entities in a single transaction. */
   batchDelete(operations: Array<{ entity: SyncEntity; id: string }>): Promise<void>;
+  /** Permanently remove entities from SQLite (physical row deletion) and enqueue delete for sync. */
+  hardDelete(operations: Array<{ entity: SyncEntity; id: string }>): Promise<void>;
 
   // ── Settings persistence (Phase 1: unified storage) ──────────
   /** Persist a settings key-value pair to SQLite. */

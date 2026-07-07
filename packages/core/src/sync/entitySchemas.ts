@@ -43,7 +43,28 @@ export interface EntitySchema {
 // ── Helpers ─────────────────────────────────────────────────────
 
 function bool(v: unknown): number { return v ? 1 : 0; }
-function json(v: unknown): string { return typeof v === 'string' ? v : JSON.stringify(v ?? []); }
+/** Parse byte array (char codes from PocketBase) to string */
+function parseBytes(v: unknown): string | null {
+  if (!Array.isArray(v) || v.length === 0) return null;
+  // Only treat as byte array if ALL elements are numbers (char codes)
+  // This prevents misidentifying JSON arrays like ["2026-01-01"] as byte arrays
+  if (!v.every(e => typeof e === 'number' && e >= 0 && e <= 65535)) return null;
+  try { return String.fromCharCode(...v); } catch { return null; }
+}
+/** Normalize value that may be object, JSON string, or byte array */
+function parseDataField(v: unknown): unknown {
+  if (v && typeof v === 'object' && !Array.isArray(v)) return v;
+  if (typeof v === 'string') { try { return JSON.parse(v); } catch { return null; } }
+  const s = parseBytes(v);
+  if (s !== null) { try { return JSON.parse(s); } catch { return null; } }
+  return null;
+}
+function json(v: unknown): string {
+  if (typeof v === 'string') return v;
+  const s = parseBytes(v);
+  if (s !== null) return s;
+  return JSON.stringify(v ?? []);
+}
 function num(v: unknown, d = 0): number { return typeof v === 'number' ? v : d; }
 function nullableNum(v: unknown): number | null { return typeof v === 'number' ? v : null; }
 function localDate(ts: number): string {
@@ -54,6 +75,8 @@ function localDate(ts: number): string {
 function boolRead(v: unknown): boolean { return v === 1 || v === true; }
 function parseJson<T>(v: unknown, fallback: T): T {
   if (typeof v === 'string') { try { return JSON.parse(v); } catch { return fallback; } }
+  const s = parseBytes(v);
+  if (s !== null) { try { return JSON.parse(s); } catch { return fallback; } }
   return (v as T) ?? fallback;
 }
 
@@ -69,7 +92,12 @@ function applyType(value: unknown, type?: FieldType): unknown {
 function applyReadType(value: unknown, type?: FieldType): unknown {
   switch (type) {
     case 'bool': return boolRead(value);
-    case 'json': return typeof value === 'string' ? value : JSON.stringify(value ?? []);
+    case 'json': {
+      if (typeof value === 'string') return value;
+      const s = parseBytes(value);
+      if (s !== null) return s;
+      return JSON.stringify(value ?? []);
+    }
     default: return value;
   }
 }
@@ -236,15 +264,23 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       updated_at: d.updatedAt ?? Date.now(), deleted: bool(d.deleted),
     }),
     customServerPayloadToRow: (r) => {
-      const ts = r.timestamp ?? r.ts ?? Date.now();
-      const entryDate = r.entry_date || r.entryDate || (ts ? (() => {
+      // PocketBase may return data as object, JSON string, or byte array (char codes)
+      let src = r;
+      if (r.data !== undefined) {
+        let parsed = r.data;
+        if (typeof parsed === 'string') { try { parsed = JSON.parse(parsed); } catch {} }
+        if (Array.isArray(parsed)) { try { parsed = JSON.parse(String.fromCharCode(...parsed)); } catch {} }
+        if (parsed && typeof parsed === 'object') src = { ...parsed, ...r };
+      }
+      const ts = src.timestamp ?? src.ts ?? Date.now();
+      const entryDate = src.entry_date || src.entryDate || (ts ? (() => {
         const d = new Date(Number(ts));
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       })() : '');
       return {
-        id: r.id, name: r.name ?? '', cal: r.calories ?? r.cal ?? 0, note: r.note ?? '',
+        id: src.id, name: src.name ?? '', cal: src.calories ?? src.cal ?? 0, note: src.note ?? '',
         entry_date: entryDate, ts,
-        updated_at: r.updatedAt ?? Date.now(), deleted: 0,
+        updated_at: src.updatedAt ?? Date.now(), deleted: 0,
       };
     },
     customRowToEntity: (r) => ({
@@ -350,15 +386,18 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       };
     },
     customServerPayloadToRow: (r) => {
+      // Parse data field (may be object, JSON string, or byte array from PocketBase)
+      const parsed = parseDataField(r.data);
+      const src = parsed && typeof parsed === 'object' ? { ...parsed, ...r } : r;
       // Filter out PocketBase system fields when constructing the data blob
       const PB_FIELDS = new Set(['id', 'created', 'updated', 'user_id', 'profile_id', 'profileId', 'deleted', 'updatedAt']);
       const profileData: Record<string, unknown> = {};
-      for (const [k, v] of Object.entries(r)) {
+      for (const [k, v] of Object.entries(src)) {
         if (!PB_FIELDS.has(k)) profileData[k] = v;
       }
       return {
         profile_id: r.profileId ?? r.profile_id ?? 'self',
-        data: typeof r.data === 'string' ? r.data : JSON.stringify(Object.keys(profileData).length ? profileData : {}),
+        data: JSON.stringify(Object.keys(profileData).length ? profileData : {}),
         updated_at: r.updatedAt ?? Date.now(), deleted: 0,
       };
     },

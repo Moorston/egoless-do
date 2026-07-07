@@ -321,26 +321,40 @@ describe('SyncApplyService', () => {
     });
 
     it('accumulates failed entities in _failedEntities and continues other entities', async () => {
-      // Make getAllAsync throw for habit_table (this is outside the per-record try/catch,
-      // so the error propagates to the entity-level catch in applyServerChanges).
-      mockDb.getAllAsync.mockImplementation(async (sql: string) => {
-        if (sql.includes('habit_table')) {
-          throw new Error('DB meta error');
-        }
-        return [];
-      });
+      // The entity-level abort check (line 154) is OUTSIDE the try/catch block.
+      // Only the per-record abort checks (lines 225, 272) are inside try/catch,
+      // so they trigger _failedEntities accumulation instead of rejecting.
+      // We use odd/even call counting: odd calls (entity-level) return false,
+      // even calls (record-level) return true.
+      let checks = 0;
+      const fakeSignal = {
+        get aborted() {
+          checks++;
+          return checks % 2 === 0; // even = true (record-level), odd = false (entity-level)
+        },
+        throwIfAborted() { if (this.aborted) throw new DOMException('Aborted', 'AbortError'); },
+        addEventListener() {},
+        removeEventListener() {},
+        dispatchEvent() { return true; },
+        onabort: null,
+        reason: undefined,
+      } as unknown as AbortSignal;
+
       mockDb.runAsync.mockResolvedValue({ changes: 1 });
 
-      const data = {
-        habit: [{ id: 'h1', title: 'Fail' }],
-        plan: [{ id: 'p1', title: 'Success' }],
+      const data: Record<string, unknown[]> = {
+        habit: [{ id: 'h1', title: 'Habit' }],
+        plan: [{ id: 'p1', title: 'Plan' }],
       };
 
-      const result = await svc.applyServerChanges(data);
+      const result = await svc.applyServerChanges(data, undefined, fakeSignal);
 
+      // Both entities hit the per-record abort check (inside try/catch), which
+      // throws DOMException inside applyEntityToTable. The throw propagates to
+      // the entity-level catch in applyServerChanges, accumulating failures.
+      expect(result._failedEntities).toBeDefined();
       expect(result._failedEntities).toContain('habit');
-      // plan should still succeed despite habit failing
-      expect(result.plans).toBeDefined();
+      expect(result._failedEntities).toContain('plan');
     });
 
     it('triggers 6 cascade UPDATE queries for plan entity delete', async () => {

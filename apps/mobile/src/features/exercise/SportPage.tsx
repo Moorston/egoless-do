@@ -23,6 +23,7 @@ import { createSession, deleteSession, updateSession } from '../global-pulse/ser
 // Hooks
 import MusicPickerModal from '../music/components/MusicPickerModal';
 import { useMusicStore } from '../music/useMusicStore';
+import { audioPlayerRef } from '../music/services/audioPlayerRef';
 
 import { useAmapComponents } from './hooks/useAmapComponents';
 import { useExerciseAudio } from './hooks/useExerciseAudio';
@@ -300,6 +301,8 @@ export default function SportPage() {
     savingRef.current = true;
     try {
       musicStop();
+      try { audioPlayerRef.current?.pause(); } catch {}
+      audio.stopAll();
       cleanupSession();
       stopGpsTracking();
       const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
@@ -331,12 +334,16 @@ export default function SportPage() {
       return;
     }
     try { nav.goBack(); } catch { savingRef.current = false; }
-  }, [timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, cleanupSession, stopGpsTracking]);
+  }, [timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
 
-  // Stop music when entering report page (exercise ended)
+  // Stop music and ambient audio when entering report page (exercise ended)
   useEffect(() => {
-    if (timer.page === 'report') musicStop();
-  }, [timer.page, musicStop]);
+    if (timer.page === 'report') {
+      musicStop();
+      try { audioPlayerRef.current?.pause(); } catch {}
+      audio.stopAll();
+    }
+  }, [timer.page, musicStop, audio.stopAll]);
 
   // ── GPS Pause handler (stays inline for GPS sports) ──
   const handleGpsPause = useCallback(() => {

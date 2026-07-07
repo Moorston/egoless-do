@@ -90,13 +90,10 @@ export function createPracticeSlice(
     },
 
     removeVision(id) {
-      let entry: Vision | undefined;
-      set((s: PracticeSlice) => {
-        const newList = (s.visions ?? []).map((v: Vision) => v.id === id ? { ...v, deleted: true, updatedAt: Date.now() } : v);
-        entry = newList.find((v: Vision) => v.id === id);
-        return { visions: newList };
-      });
-      if (entry) adapter.persistChange('vision', id, entry).catch(e => log.error(e));
+      set((s: PracticeSlice) => ({
+        visions: (s.visions ?? []).map((v: Vision) => v.id === id ? { ...v, deleted: true, updatedAt: Date.now() } : v),
+      }));
+      adapter.markDeleted('vision', id).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -137,13 +134,10 @@ export function createPracticeSlice(
     },
 
     removeVisionPractice(id) {
-      let entry: VisionPractice | undefined;
-      set((s: PracticeSlice) => {
-        const newList = (s.visionPractices ?? []).map((vp: VisionPractice) => vp.id === id ? { ...vp, deleted: true, updatedAt: Date.now() } : vp);
-        entry = newList.find((vp: VisionPractice) => vp.id === id);
-        return { visionPractices: newList };
-      });
-      if (entry) adapter.persistChange('visionPractice', id, entry).catch(e => log.error(e));
+      set((s: PracticeSlice) => ({
+        visionPractices: (s.visionPractices ?? []).map((vp: VisionPractice) => vp.id === id ? { ...vp, deleted: true, updatedAt: Date.now() } : vp),
+      }));
+      adapter.markDeleted('visionPractice', id).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -177,13 +171,10 @@ export function createPracticeSlice(
     },
 
     removeDedication(id) {
-      let entry: Dedication | undefined;
-      set((s: PracticeSlice) => {
-        const newList = (s.dedications ?? []).map((d: Dedication) => d.id === id ? { ...d, deleted: true, updatedAt: Date.now() } : d);
-        entry = newList.find((d: Dedication) => d.id === id);
-        return { dedications: newList };
-      });
-      if (entry) adapter.persistChange('dedication', id, entry).catch(e => log.error(e));
+      set((s: PracticeSlice) => ({
+        dedications: (s.dedications ?? []).map((d: Dedication) => d.id === id ? { ...d, deleted: true, updatedAt: Date.now() } : d),
+      }));
+      adapter.markDeleted('dedication', id).catch(e => log.error(e));
       onSync?.();
     },
 

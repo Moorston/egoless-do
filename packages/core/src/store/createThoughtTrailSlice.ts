@@ -8,7 +8,7 @@ import { uid, activeOnly } from '../utils';
 import { createLogger } from '../logger';
 const log = createLogger('Store');
 
-export function createThoughtTrailSlice(adapter: StorageAdapter): SliceCreator<ThoughtTrailSlice> {
+export function createThoughtTrailSlice(adapter: StorageAdapter, onSettingsPersist?: () => void): SliceCreator<ThoughtTrailSlice> {
   return (set, get) => ({
     thoughtTrails: [],
     trailNotes: [],
@@ -228,6 +228,7 @@ export function createThoughtTrailSlice(adapter: StorageAdapter): SliceCreator<T
       set(s => ({
         ignoredRecPatterns: [...new Set([...(s.ignoredRecPatterns ?? []), pattern])],
       }));
+      onSettingsPersist?.();
     },
 
     // ── Trail Note CRUD ────────────────────────────────────────────────

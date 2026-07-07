@@ -125,6 +125,16 @@ export interface ApplyResult extends Record<string, unknown> {
 }
 
 export class SyncApplyService {
+  /** In-memory set of recently deleted entity IDs (entity:id format) — prevents sync resurrection */
+  private _locallyDeleted = new Set<string>();
+
+  /** Register a locally deleted entity so sync won't resurrect it */
+  registerLocalDelete(entity: string, id: string) {
+    this._locallyDeleted.add(`${entity}:${id}`);
+    // Auto-expire after 60s to avoid unbounded growth
+    setTimeout(() => this._locallyDeleted.delete(`${entity}:${id}`), 60_000);
+  }
+
   /** Convert server payload to SQLite row format */
   serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<string, unknown> | null {
     return _serverPayloadToRowFns[entity]?.(r) ?? null;
@@ -232,15 +242,21 @@ export class SyncApplyService {
         continue;
       }
 
+      // Skip if recently deleted locally (in-memory guard against race conditions)
+      if (this._locallyDeleted.has(`${entity}:${id}`)) {
+        log.debug(`[applyEntityToTable] Skipping ${entity}:${id} — recently deleted locally`);
+        continue;
+      }
+
       const row = this.serverPayloadToRow(entity, r);
       if (!row) continue;
 
       const local = localMeta.get(id);
       const serverUpdated = (r.updated_at ?? r.updatedAt ?? 0) as number;
 
-      // Conflict resolution: server wins if newer OR local not synced
-      if (local && local.updated_at > serverUpdated && local.deleted === 0) {
-        log.debug(`[applyEntityToTable] Skipping ${entity}:${id} — local newer (${local.updated_at} > ${serverUpdated})`);
+      // Conflict resolution: local deletions and newer local versions take precedence
+      if (local && (local.deleted === 1 || local.updated_at > serverUpdated)) {
+        log.debug(`[applyEntityToTable] Skipping ${entity}:${id} — local ${local.deleted === 1 ? 'deleted' : 'newer'}`);
         continue;
       }
 

@@ -7,12 +7,12 @@ import { AppState, Platform, type AppStateStatus } from 'react-native';
 
 import { getState, openDatabase } from '../../db/schema';
 import { getQueueCount, setOnEnqueuedCallback } from '../../db/syncQueue';
-import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger } from '../../store/storageAdapter';
+import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger, setRegisterLocalDelete } from '../../store/storageAdapter';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
 import { useMusicStore } from '../music/useMusicStore';
 
-import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger } from './SyncService';
+import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger, registerLocalDelete } from './SyncService';
 import { mergeSyncPatch } from './mergeSyncPatch';
 import { migrateToSyncQueue } from './migrateToSyncQueue';
 
@@ -75,6 +75,8 @@ export function useSync() {
     setOnEnqueuedCallback(() => { triggerSyncDebounced(); });
     // Wire WriteBatcher flush → triggerSyncDebounced (breaks circular dependency)
     setStorageAdapterTrigger(() => { triggerSyncDebounced(); });
+    // Wire local delete → SyncApplyService (prevents sync resurrection)
+    setRegisterLocalDelete((entity, id) => { registerLocalDelete(entity, id); });
 
     // Register kicked out handler
     setKickedOutHandler(async () => {

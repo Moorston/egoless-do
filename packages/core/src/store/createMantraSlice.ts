@@ -81,13 +81,10 @@ export function createMantraSlice(
     },
 
     removeMantraDef(id) {
-      let entry: MantraDef | undefined;
-      set((s: MantraSlice) => {
-        const newList = (s.mantraDefs ?? []).map((d: MantraDef) => d.id === id ? { ...d, deleted: true, updatedAt: Date.now() } : d);
-        entry = newList.find((d: MantraDef) => d.id === id);
-        return { mantraDefs: newList };
-      });
-      if (entry) adapter.persistChange('mantraDef', id, entry).catch(e => log.error(e));
+      set((s: MantraSlice) => ({
+        mantraDefs: (s.mantraDefs ?? []).map((d: MantraDef) => d.id === id ? { ...d, deleted: true, updatedAt: Date.now() } : d),
+      }));
+      adapter.markDeleted('mantraDef', id).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -225,13 +222,10 @@ export function createMantraSlice(
     },
 
     removeMantraSession(id) {
-      let entry: MantraSession | undefined;
-      set((s: MantraSlice) => {
-        const newList = (s.mantraSessions ?? []).map((s2: MantraSession) => s2.id === id ? { ...s2, deleted: true, updatedAt: Date.now() } : s2);
-        entry = newList.find((s2: MantraSession) => s2.id === id);
-        return { mantraSessions: newList };
-      });
-      if (entry) adapter.persistChange('mantraSession', id, entry).catch(e => log.error(e));
+      set((s: MantraSlice) => ({
+        mantraSessions: (s.mantraSessions ?? []).map((s2: MantraSession) => s2.id === id ? { ...s2, deleted: true, updatedAt: Date.now() } : s2),
+      }));
+      adapter.markDeleted('mantraSession', id).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -280,13 +274,10 @@ export function createMantraSlice(
     },
 
     removeReadingSession(id) {
-      let entry: SutraReadingSession | undefined;
-      set((s: MantraSlice) => {
-        const newList = (s.readingSessions ?? []).map((r: SutraReadingSession) => r.id === id ? { ...r, deleted: true, updatedAt: Date.now() } : r);
-        entry = newList.find((r: SutraReadingSession) => r.id === id);
-        return { readingSessions: newList };
-      });
-      if (entry) adapter.persistChange('sutraReading', id, entry).catch(e => log.error(e));
+      set((s: MantraSlice) => ({
+        readingSessions: (s.readingSessions ?? []).map((r: SutraReadingSession) => r.id === id ? { ...r, deleted: true, updatedAt: Date.now() } : r),
+      }));
+      adapter.markDeleted('sutraReading', id).catch(e => log.error(e));
       onSync?.();
     },
 

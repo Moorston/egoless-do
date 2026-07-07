@@ -3,6 +3,7 @@ import { createLogger } from '@egoless-do/core';
 
 import { openDatabase, withDbLock, getState, setState } from '../db/schema';
 import { WriteBatcher } from '../features/sync/WriteBatcher';
+import { ENTITY_TABLE_MAP } from './entityTableMap';
 
 const log = createLogger('StorageAdapter');
 
@@ -10,6 +11,10 @@ const log = createLogger('StorageAdapter');
 // storageAdapter → SyncService → SyncEngine → storageAdapter
 let _triggerSync: (() => void) | null = null;
 export function setStorageAdapterTrigger(fn: () => void) { _triggerSync = fn; }
+
+// Lazy reference for registering local deletes with sync engine
+let _registerLocalDelete: ((entity: string, id: string) => void) | null = null;
+export function setRegisterLocalDelete(fn: (entity: string, id: string) => void) { _registerLocalDelete = fn; }
 
 // Global batcher coalesces all writes within a 100ms window into single transaction.
 // Flushes are also triggered on app background via useAppStore.
@@ -41,14 +46,35 @@ export const mobileStorageAdapter: StorageAdapter = {
   },
 
   async markDeleted(entity: SyncEntity, id: string) {
+    _registerLocalDelete?.(entity, id);
     _batcher.markDeleted(entity, id);
   },
 
   async batchDelete(operations: Array<{ entity: SyncEntity; id: string }>) {
     for (const { entity, id } of operations) {
+      _registerLocalDelete?.(entity, id);
       _batcher.markDeleted(entity, id);
     }
     // Flush immediately for batch operations
+    await _batcher.flushNow();
+  },
+
+  async hardDelete(operations: Array<{ entity: SyncEntity; id: string }>) {
+    const db = await openDatabase();
+    await withDbLock(async () => {
+      for (const { entity, id } of operations) {
+        const config = ENTITY_TABLE_MAP[entity];
+        if (!config) continue;
+        // Physically remove the row from SQLite
+        await db.runAsync(`DELETE FROM ${config.table} WHERE ${config.pk} = ?`, [id]);
+        // Register with SyncApplyService to prevent resurrection (60s window)
+        _registerLocalDelete?.(entity, id);
+      }
+    });
+    // Enqueue delete operations for sync push
+    for (const { entity, id } of operations) {
+      _batcher.markDeleted(entity, id);
+    }
     await _batcher.flushNow();
   },
 

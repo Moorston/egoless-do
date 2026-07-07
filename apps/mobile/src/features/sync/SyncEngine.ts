@@ -267,12 +267,31 @@ export class SyncEngine {
             const config = ENTITY_CONFIG[item.entity];
             let resolved = false;
             if (config) {
+              // Server says record is deleted — mark local as deleted too
+              if (rejection.error === 'deleted') {
+                const db = await openDatabase();
+                await db.runAsync(
+                  `UPDATE ${config.table} SET deleted=1, synced=1 WHERE ${config.pk}=?`,
+                  [item.entity_id],
+                );
+                log.debug(`[SyncEngine] Marked ${item.entity}:${item.entity_id} as deleted (server rejected)`);
+                resolved = true;
+              } else {
               const row = this._applyService.serverPayloadToRow(item.entity, rejection.serverData);
               if (row) {
                 const cols = Object.keys(row);
                 const vals = Object.values(row) as (string | number | null)[];
                 if (cols.length) {
                   const db = await openDatabase();
+                  // Don't resurrect locally-deleted records
+                  const local = await db.getFirstAsync<{ deleted: number }>(
+                    `SELECT deleted FROM ${config.table} WHERE ${config.pk}=?`, [item.entity_id],
+                  );
+                  if (local?.deleted === 1) {
+                    log.debug(`[SyncEngine] Skipping auto-resolve for deleted ${item.entity}:${item.entity_id}`);
+                    await markQueueItemConflict(item.id, 'Locally deleted');
+                    continue;
+                  }
                   const setClause = cols.map(c => `${c}=?`).join(',');
                   const r2 = await db.runAsync(`UPDATE ${config.table} SET ${setClause},deleted=0,synced=1 WHERE ${config.pk}=?`, [...vals, item.entity_id]);
                   if (r2.changes === 0) {
@@ -281,6 +300,7 @@ export class SyncEngine {
                   resolved = true;
                 }
               }
+              } // end else (not 'deleted' error)
             }
             if (resolved) {
               autoResolvedIds.push(item.id);
@@ -641,6 +661,11 @@ export class SyncEngine {
   // ── Rehydrate (delegated to SyncRehydrationManager) ─────────────────
   async rehydrateFromDb(entities?: string[]): Promise<Record<string, unknown>> {
     return this._rehydrationManager.rehydrateFromDb(entities);
+  }
+
+  /** Register a locally deleted entity so sync won't resurrect it within the next 60s */
+  registerLocalDelete(entity: string, id: string) {
+    this._applyService.registerLocalDelete(entity, id);
   }
 
   /** Lazy-load a single entity from SQLite into the store. Useful for cold-start optimization. */

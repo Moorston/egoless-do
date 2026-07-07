@@ -74,6 +74,8 @@ function flushProfileSettings() {
     customMoods: s.customMoods,
     allTagsOrder: s.allTagsOrder,
     allMoodsOrder: s.allMoodsOrder,
+    reflectionFilters: s.reflectionFilters,
+    ignoredRecPatterns: s.ignoredRecPatterns,
     musicFavorites: ms.favorites,
     musicUserTracks: ms.userTracks.map(t => ({ id: t.id, name: t.name, nameEn: t.nameEn, category: t.category })),
     musicVolume: ms.volume,
@@ -135,10 +137,6 @@ export function useShallowStore<U>(selector: (state: MobileStore) => U): U {
 const _autoSyncCallback: (() => void) | null = null;
 const triggerAutoSync = () => _autoSyncCallback?.();
 
-// Lazy store reference to avoid circular dependency
-let _storeRef: MobileStore | null = null;
-const getStore = () => _storeRef!;
-
 export const useAppStore = create<MobileStore>()(
   (...a) => {
     const store = {
@@ -154,30 +152,45 @@ export const useAppStore = create<MobileStore>()(
         // Rehydrate store from SQLite after Phase 1 completes
         const dbPatch = await rehydrateFromDb();
         if (Object.keys(dbPatch).length) {
-          getStore().setState(dbPatch as PartialMobileStore);
-          if (dbPatch.medHistory) getStore().getState().calculateTotalMedMin();
-          if (dbPatch.checkinHistory) getStore().getState().calculateStreak();
+          // Prevent rehydration from resurrecting any locally-deleted records.
+          // For each array in the patch, filter out records whose IDs are marked
+          // as deleted in the current in-memory store.
+          const current = useAppStore.getState();
+          for (const key of Object.keys(dbPatch)) {
+            const patchVal = dbPatch[key];
+            if (!Array.isArray(patchVal)) continue;
+            const currentVal = (current as Record<string, unknown>)[key];
+            if (!Array.isArray(currentVal)) continue;
+            const deletedIds = new Set(
+              currentVal.filter((r: Record<string, unknown>) => r.deleted).map((r: Record<string, unknown>) => r.id as string),
+            );
+            if (deletedIds.size > 0) {
+              dbPatch[key] = patchVal.filter((r: Record<string, unknown>) => !deletedIds.has(r.id as string));
+            }
+          }
+          useAppStore.setState(dbPatch as PartialMobileStore);
+          if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
+          if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
         }
       }, async () => {
         // onClearData: hard logout — clear all local data
         await resetSyncState();
       })(...a),
       ...createHabitSlice(adapter, triggerAutoSync)(...a),
-      ...createReflectionSlice(adapter)(...a),
+      ...createReflectionSlice(adapter, undefined, persistProfileSettings)(...a),
       ...createSleepSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = getStore().getState(); getStore().setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createReflectionSlice(adapter), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => resetSyncState())(...a),
+      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createReflectionSlice(adapter, undefined, persistProfileSettings), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => resetSyncState())(...a),
       ...createPlanSlice(adapter)(...a),
       ...createRecycleBinSlice(adapter)(...a),
-      ...createThoughtTrailSlice(adapter)(...a),
+      ...createThoughtTrailSlice(adapter, persistProfileSettings)(...a),
       ...createReviewSlice(adapter, triggerAutoSync)(...a),
       ...createBodySlice(adapter, triggerAutoSync)(...a),
-      ...createDietSlice(adapter, triggerAutoSync)(...a),
+      // createDietSlice already composed via createMobileUiSlice → createFoodSlice — do NOT add again
       ...createPracticeSlice(adapter, triggerAutoSync)(...a),
       ...createMindSlice(adapter, triggerAutoSync)(...a),
       ...createMantraSlice(adapter, triggerAutoSync)(...a),
-      ...createZhiguanSlice(adapter, () => getStore().getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a),
+      ...createZhiguanSlice(adapter, () => useAppStore.getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a),
     };
-    _storeRef = store;
 
     // Connect persist error handler: WriteBatcher failures → store.persistErrors
     setPersistErrorHandler((error, entity, id) => {
@@ -187,6 +200,52 @@ export const useAppStore = create<MobileStore>()(
     return store;
   },
 );
+
+// One-time cleanup: remove ghost entries (empty key fields) from store + SQLite
+// Runs once after store initialization. Ghost entries are created by sync when
+// the server returns records with missing/empty data fields.
+{
+  const s = useAppStore.getState();
+  const patch: Record<string, unknown[]> = {};
+  const toDelete: Array<{ entity: string; id: string }> = [];
+
+  // Define ghost detection per entity: [storeKey, entityName, keyField]
+  const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
+    ['foodLog', 'food', f => !f.name],
+    ['exerciseLog', 'exercise', f => !f.sportKey],
+    ['plans', 'plan', f => !f.name],
+    ['medHistory', 'meditation', f => !f.date],
+    ['sleepHistory', 'sleep', f => !f.date],
+    ['breathHistory', 'breath', f => !f.date],
+    ['sessions', 'zhiguanSession', f => !f.startTs && !f.status],
+    ['mantraSessions', 'mantraSession', f => !f.mantraId && !f.date],
+    ['mantraDefs', 'mantraDef', f => !f.name],
+    ['visions', 'vision', f => !f.text && !f.type],
+    ['dedications', 'dedication', f => !f.date && !f.periodLabel],
+    ['fearEntries', 'fearEntry', f => !f.content && !f.date],
+    ['courageEntries', 'courageEntry', f => !f.action && !f.date],
+    ['giveHistory', 'give', f => !f.content],
+    ['motivationLog', 'motivationEntry', f => !f.foodId],
+    ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date],
+  ];
+
+  for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
+    const items = (s[storeKey as keyof typeof s] ?? []) as Array<Record<string, unknown>>;
+    const ghosts = items.filter(i => !i.deleted && isGhost(i));
+    if (ghosts.length > 0) {
+      log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
+      patch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
+      for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
+    }
+  }
+
+  if (Object.keys(patch).length > 0) {
+    useAppStore.setState(patch as PartialMobileStore);
+    for (const { entity, id } of toDelete) {
+      adapter.markDeleted(entity as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
+    }
+  }
+}
 
 // ─── Named handler for AppState changes (extracted for testability) ───
 async function handleAppStateChange(state: string) {

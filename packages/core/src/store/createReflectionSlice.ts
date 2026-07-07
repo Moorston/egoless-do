@@ -20,6 +20,7 @@ export { type ReflectionSlice } from './types';
 export function createReflectionSlice(
   adapter: StorageAdapter,
   onSync?: () => void,
+  onSettingsPersist?: () => void,
 ): SliceCreator<ReflectionSlice> {
   return (set, get) => ({
     // ── Reflection ─────────────────────────────────────────────────────
@@ -134,6 +135,7 @@ export function createReflectionSlice(
       } else {
         set({ reflectionFilters: filters });
       }
+      onSettingsPersist?.();
     },
 
     // ── Tags & Moods ───────────────────────────────────────────────────

@@ -69,6 +69,12 @@ export function mergeSyncPatch(
       storePatch.aiModels = value as ModelConfig[];
     } else if (isStoreKey(key) && Array.isArray(value)) {
       const existing = (state as unknown as Record<string, unknown[]>)[key];
+      // Filter out entries without a valid key (id or date) to prevent ghost entries
+      let validDelta = (value as SyncableItem[]).filter(item => !!(item?.id ?? item?.date));
+      // For foodLog, also filter out entries with empty/missing name (server ghost data)
+      if (key === 'foodLog') {
+        validDelta = validDelta.filter(item => !!(item as Record<string, unknown>)?.name);
+      }
       if (Array.isArray(existing) && existing.length > 0) {
         // Merge delta items into existing array by id/date
         const map = new Map(
@@ -77,7 +83,7 @@ export function mergeSyncPatch(
             return [r.id ?? r.date, r];
           }),
         );
-        for (const item of value) {
+        for (const item of validDelta) {
           const rec = item as Record<string, unknown>;
           const k = rec?.id ?? rec?.date;
           if (k) map.set(k, item);
@@ -85,8 +91,8 @@ export function mergeSyncPatch(
         const merged = [...map.values()];
         storePatch[key] = merged;
       } else {
-        // No existing items — use delta directly
-        storePatch[key] = value;
+        // No existing items — use delta directly (only valid entries)
+        storePatch[key] = validDelta;
       }
       if (key === 'reflections') reflectionsChanged = true;
     }

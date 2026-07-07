@@ -287,7 +287,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
     checkCanArchive(() => {
       Alert.alert(T('planDelete'), T('planDeleteConfirm'), [
         { text: T('commonCancel'), style: 'cancel' },
-        { text: T('commonConfirm'), style: 'destructive', onPress: () => { deletePlan(plan.id); onClose(); } },
+        { text: T('commonConfirm'), style: 'destructive', onPress: async () => { await deletePlan(plan.id); onClose(); } },
       ]);
     });
   };

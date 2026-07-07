@@ -735,7 +735,7 @@ export const zh: I18nKeys = {
   preceptTitle:'持戒清净', preceptSubtitle:'持戒自律 - 保持正念', preceptQuote:'持戒清净，禅定现前', preceptStreak:'连续', preceptTotalDays:'累计', preceptMonthRate:'本月完成率',
   preceptAvoid:'止持（守护不做的）', preceptPractice:'作持（守护要做的）', preceptDone:'做到了', preceptNotDone:'未做到', preceptViolated:'未做到',
   preceptTriggerTitle:'什么触发了？', preceptReflectionTitle:'觉察反思', preceptReflectionPlaceholder:'记录此刻的觉察...',
-  preceptSave:'记录觉察', preceptSkip:'跳过', preceptAddNew:'+ 添加新戒条', preceptAddCustom:'或自定义',
+  preceptSave:'记录觉察', preceptSkip:'跳过', preceptAddNew:'添加新戒条', preceptAddCustom:'或自定义',
   preceptTemplateName:'戒条名称', preceptTemplateGuide:'修行指引', preceptTargetDays:'目标天数',
   preceptType:'类型', preceptTypeAvoid:'止持', preceptTypePractice:'作持',
   preceptHistory:'持戒历史', preceptViolations:'违戒次数', preceptInsights:'觉察记录', preceptRecentInsight:'最近觉察',

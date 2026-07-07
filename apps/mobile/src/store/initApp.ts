@@ -105,6 +105,25 @@ export async function initApp(): Promise<void> {
 
     // Merge settings + entities into store in one batch
     const fullPatch = { ...settingsPatch, ...entityPatch } as PartialMobileStore;
+
+    // Unpack profile fields into top-level store keys
+    // Profile blob is the primary source of truth (updated by flushProfileSettings on every change).
+    // Always override app_state values with profile blob values.
+    const profile = fullPatch.userProfile as Record<string, unknown> | undefined;
+    if (profile) {
+      const PROFILE_UNPACK_KEYS = [
+        'waterMl', 'waterGoal', 'weightUnit', 'calGoal', 'customFoodPresets',
+        'theme', 'language', 'remindEnabled', 'remindTime',
+        'healthSyncEnabled', 'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder',
+        'reflectionFilters', 'ignoredRecPatterns',
+      ] as const;
+      for (const key of PROFILE_UNPACK_KEYS) {
+        if (profile[key] !== undefined) {
+          (fullPatch as Record<string, unknown>)[key] = profile[key];
+        }
+      }
+    }
+
     if (Object.keys(fullPatch).length > 0) {
       setState(fullPatch);
     }

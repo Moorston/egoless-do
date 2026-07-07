@@ -111,8 +111,8 @@ function computeCascadeDelete(get: () => FullStore, type: 'plan' | 'item', targe
 }
 
 /** Persist pre-computed reflection/trail updates and batch-delete entity records. */
-function persistCascade(adapter: StorageAdapter, batchOps: Array<{ entity: SyncEntity; id: string }>, reflections: MindReflection[], trails: ThoughtTrail[]) {
-  adapter.batchDelete(batchOps).catch((e: unknown) => log.error(e));
+async function persistCascade(adapter: StorageAdapter, batchOps: Array<{ entity: SyncEntity; id: string }>, reflections: MindReflection[], trails: ThoughtTrail[]) {
+  await adapter.batchDelete(batchOps).catch((e: unknown) => log.error(e));
   for (const r of reflections) adapter.persistChange('reflection', r.id, r).catch((e: unknown) => log.error(e));
   for (const t of trails) adapter.persistChange('thoughtTrail', t.id, t).catch((e: unknown) => log.error(e));
 }
@@ -156,7 +156,7 @@ export function createPlanSlice(
       if (updated) adapter.persistChange('plan', id, updated).catch(e => log.error(e));
     },
 
-    deletePlan(id) {
+    async deletePlan(id) {
       const cascade = computeCascadeDelete(get, 'plan', id);
       if (!cascade) return;
       const { plan, deletedItemIds, deletedCheckinIds, updatedReflections, updatedTrails, now, recycleEntry } = cascade;
@@ -179,7 +179,7 @@ export function createPlanSlice(
           updatedTrailIds.has(t.id) ? updatedTrails.find(ut => ut.id === t.id)! : t,
         ),
       } as Partial<FullStore>));
-      persistCascade(adapter, [
+      await persistCascade(adapter, [
         { entity: 'plan', id },
         ...(deletedItemIds ?? []).map(itemId => ({ entity: 'planItem' as const, id: itemId })),
         ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),

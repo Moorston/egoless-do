@@ -35,7 +35,8 @@ routerAdd("POST", "/api/sync/push", function(e) {
           for (var dj = 0; dj < delRecs.length; dj++) {
             var curData = delRecs[dj].get("data");
             var curObj = {};
-            if (typeof curData === "string") { try { curObj = JSON.parse(curData); } catch(pe) {} }
+            if (Array.isArray(curData)) { try { curObj = JSON.parse(String.fromCharCode.apply(null, curData)); } catch(pe) {} }
+            else if (typeof curData === "string") { try { curObj = JSON.parse(curData); } catch(pe) {} }
             else if (curData && typeof curData === "object") { for (var ck in curData) curObj[ck] = curData[ck]; }
             curObj.deleted = true; curObj.updatedAt = Date.now();
             delRecs[dj].set("data", JSON.stringify(curObj));
@@ -47,17 +48,27 @@ routerAdd("POST", "/api/sync/push", function(e) {
           var upFilter = idField + " = '" + escapeFilterValue(entityId) + "' && user_id = '" + escapeFilterValue(userId) + "'";
           var upRecs = $app.findRecordsByFilter(coll, upFilter, "", 1);
           var rec = upRecs.length > 0 ? upRecs[0] : null;
-          if (rec && payload && payload.updatedAt) {
+          if (rec) {
             var rawD = rec.get("data");
             var existD = {};
-            if (typeof rawD === "string") { try { existD = JSON.parse(rawD); } catch(pe) {} }
+            if (Array.isArray(rawD)) { try { existD = JSON.parse(String.fromCharCode.apply(null, rawD)); } catch(pe) {} }
+            else if (typeof rawD === "string") { try { existD = JSON.parse(rawD); } catch(pe) {} }
             else if (rawD && typeof rawD === "object") { for (var ek in rawD) existD[ek] = rawD[ek]; }
-            if ((existD.updatedAt || 0) > payload.updatedAt) { rejected.push({ entity: entity, entityId: entityId, error: "conflict", serverData: existD }); continue; }
+            // If server record is already deleted, reject upsert — deletion takes priority
+            if (existD.deleted === true && !(payload && payload.deleted === true)) {
+              rejected.push({ entity: entity, entityId: entityId, error: "deleted", serverData: existD });
+              continue;
+            }
+            if (payload && payload.updatedAt && (existD.updatedAt || 0) > payload.updatedAt) {
+              rejected.push({ entity: entity, entityId: entityId, error: "conflict", serverData: existD });
+              continue;
+            }
           }
           if (!rec) { var colObj = $app.findCollectionByNameOrId(coll); rec = new Record(colObj); rec.set(idField, entityId); rec.set("user_id", userId); }
           var existObj = {};
           var rawE = rec.get("data");
-          if (typeof rawE === "string") { try { existObj = JSON.parse(rawE); } catch(pe) {} }
+          if (Array.isArray(rawE)) { try { existObj = JSON.parse(String.fromCharCode.apply(null, rawE)); } catch(pe) {} }
+          else if (typeof rawE === "string") { try { existObj = JSON.parse(rawE); } catch(pe) {} }
           else if (rawE && typeof rawE === "object") { for (var mk in rawE) existObj[mk] = rawE[mk]; }
           if (Object.keys(existObj).length > 500) { existObj = {}; }
           var changedFields = payload._changedFields;
@@ -166,13 +177,18 @@ routerAdd("POST", "/api/sync/pull", function(e) {
           try {
             var exported = allRecs[ri].publicExport();
             var dd = exported.data;
+            if (Array.isArray(dd)) { try { dd = JSON.parse(String.fromCharCode.apply(null, dd)); } catch(pe) { dd = null; } }
             if (typeof dd === "string") { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } }
             if (dd && typeof dd === "object") {
               for (var dk in dd) { if (dk === "id" || dk === "created" || dk === "updated" || dk === "user_id") continue; exported[dk] = dd[dk]; }
               if (dd.id !== undefined) exported.id = dd.id;
               if (dd.updatedAt !== undefined) exported.updatedAt = dd.updatedAt;
               exported.deleted = !!dd.deleted;
-            } else { exported.deleted = false; }
+            } else {
+              // Data field unparseable — skip record to prevent ghost entries
+              console.warn("[sync-pull] Skipping record with unparseable data:", ent, exported.id || exported[idF]);
+              continue;
+            }
             if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime();
             delete exported.data;
             var efKeys = Object.keys(exported);

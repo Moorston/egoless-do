@@ -58,13 +58,10 @@ export function createBodySlice(
     },
 
     removeBodyGoal(id) {
-      let entry: BodyGoal | undefined;
-      set(s => {
-        const newList = (s.bodyGoals ?? []).map(g => g.id === id ? { ...g, deleted: true, updatedAt: Date.now() } : g);
-        entry = newList.find(g => g.id === id);
-        return { bodyGoals: newList };
-      });
-      if (entry) adapter.persistChange('bodyGoal', id, entry).catch(e => log.error(e));
+      set(s => ({
+        bodyGoals: (s.bodyGoals ?? []).map(g => g.id === id ? { ...g, deleted: true, updatedAt: Date.now() } : g),
+      }));
+      adapter.markDeleted('bodyGoal', id).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -90,13 +87,10 @@ export function createBodySlice(
     },
 
     removeBodyPlan(id) {
-      let entry: BodyPlan | undefined;
-      set(s => {
-        const newList = (s.bodyPlans ?? []).map(p => p.id === id ? { ...p, deleted: true, updatedAt: Date.now() } : p);
-        entry = newList.find(p => p.id === id);
-        return { bodyPlans: newList };
-      });
-      if (entry) adapter.persistChange('bodyPlan', id, entry).catch(e => log.error(e));
+      set(s => ({
+        bodyPlans: (s.bodyPlans ?? []).map(p => p.id === id ? { ...p, deleted: true, updatedAt: Date.now() } : p),
+      }));
+      adapter.markDeleted('bodyPlan', id).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -130,13 +124,10 @@ export function createBodySlice(
     },
 
     removeWeight(id) {
-      let entry: WeightRecord | undefined;
-      set(s => {
-        const newList = (s.weightRecords ?? []).map(r => r.id === id ? { ...r, deleted: true, updatedAt: Date.now() } : r);
-        entry = newList.find(r => r.id === id);
-        return { weightRecords: newList };
-      });
-      if (entry) adapter.persistChange('weightRecord', id, entry).catch(e => log.error(e));
+      set(s => ({
+        weightRecords: (s.weightRecords ?? []).map(r => r.id === id ? { ...r, deleted: true, updatedAt: Date.now() } : r),
+      }));
+      adapter.markDeleted('weightRecord', id).catch(e => log.error(e));
       onSync?.();
     },
 
@@ -165,13 +156,10 @@ export function createBodySlice(
     },
 
     removeBodyCheckin(id) {
-      let entry: BodyCheckin | undefined;
-      set(s => {
-        const newList = (s.bodyCheckins ?? []).map(c => c.id === id ? { ...c, deleted: true, updatedAt: Date.now() } : c);
-        entry = newList.find(c => c.id === id);
-        return { bodyCheckins: newList };
-      });
-      if (entry) adapter.persistChange('bodyCheckin', id, entry).catch(e => log.error(e));
+      set(s => ({
+        bodyCheckins: (s.bodyCheckins ?? []).map(c => c.id === id ? { ...c, deleted: true, updatedAt: Date.now() } : c),
+      }));
+      adapter.markDeleted('bodyCheckin', id).catch(e => log.error(e));
       onSync?.();
     },
   });
