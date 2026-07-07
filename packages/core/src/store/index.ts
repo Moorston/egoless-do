@@ -11,7 +11,6 @@ export type { SliceCreator } from './sliceHelper';
 export { createAuthSlice } from './createAuthSlice';
 export { createHabitSlice } from './createHabitSlice';
 export { createReflectionSlice } from './createReflectionSlice';
-export { createUiSlice } from './createUiSlice';
 export { createPlanSlice } from './createPlanSlice';
 export { createRecycleBinSlice } from './createRecycleBinSlice';
 export { createFoodSlice } from './createFoodSlice';

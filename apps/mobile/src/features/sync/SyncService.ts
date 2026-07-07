@@ -2,15 +2,17 @@
 // All logic lives in SyncEngine.ts — this file creates a singleton and
 // re-exports its methods so existing imports continue to work.
 
-import { SyncEngine } from './SyncEngine';
-import type { SyncMetric } from './SyncEngine';
 import { createLogger, ApiError } from '@egoless-do/core';
+
+import { dbGetAllFoodEntries } from '../../db/queries';
 import { openDatabase, getState, setState } from '../../db/schema';
 import {
   getLastSyncTimestamp, setLastSyncTimestamp,
   getSyncProgress, updateSyncProgress, resetSyncProgress, getQueueCount,
 } from '../../db/syncQueue';
-import { dbGetAllFoodEntries } from '../../db/queries';
+
+import { SyncEngine } from './SyncEngine';
+import type { SyncMetric } from './SyncEngine';
 
 const log = createLogger('Sync');
 let _syncTriggerCallback: (() => void) | null = null;
@@ -89,11 +91,6 @@ export function resetOrphanRecoveryFlag() { _orphanRecoveryDone = false; }
 // applyServerChanges (used by useAppStore)
 export function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<Record<string, unknown>> {
   return _engine.applyServerChanges(data, deletedIds, signal);
-}
-
-// Legacy recalcDerived (kept for import compat)
-export function recalcDerived(_entities: string[], _currentPatch: Record<string, unknown>): Record<string, unknown> {
-  return {};
 }
 
 // Legacy sync-related imports re-exported for compat

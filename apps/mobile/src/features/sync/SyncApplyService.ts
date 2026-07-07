@@ -2,9 +2,10 @@
 // Extracted from SyncEngine.ts (PR-1 of AR-01 refactoring)
 // Handles applying server changes to local SQLite and generating store patches.
 
-import { openDatabase, withDbLock } from '../../db/schema';
 import type { SyncEntity } from '@egoless-do/core';
 import { SCHEMAS, buildServerPayloadToRow, createLogger } from '@egoless-do/core';
+
+import { openDatabase, withDbLock } from '../../db/schema';
 import {
   rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
@@ -17,6 +18,7 @@ import {
   rowToSutraReading,
   rowToBreath, rowToZhiguanSession,
 } from '../../store/rowMappers';
+
 import type { RowMapper } from './orphanRecovery';
 
 const log = createLogger('SyncApply');
@@ -117,6 +119,11 @@ const DOMException = (globalThis as Record<string, unknown>).DOMException as typ
     }
   };
 
+/** Result from applyServerChanges, extends the store patch with metadata. */
+export interface ApplyResult extends Record<string, unknown> {
+  _failedEntities?: string[];
+}
+
 export class SyncApplyService {
   /** Convert server payload to SQLite row format */
   serverPayloadToRow(entity: string, r: Record<string, unknown>): Record<string, unknown> | null {
@@ -133,9 +140,9 @@ export class SyncApplyService {
     data: Record<string, unknown[]>,
     deletedIds?: Set<string>,
     signal?: AbortSignal,
-  ): Promise<Record<string, unknown>> {
+  ): Promise<ApplyResult> {
     const db = await openDatabase();
-    const patch: Record<string, unknown> = {};
+    const patch: ApplyResult = {};
     const failedEntities: string[] = [];
     if (!data || typeof data !== 'object') return patch;
     const entries = Object.entries(data);
@@ -172,7 +179,7 @@ export class SyncApplyService {
       }
 
       if (failedEntities.length > 0) {
-        (patch as any)._failedEntities = failedEntities;
+        patch._failedEntities = failedEntities;
         log.warn(`[applyServerChanges] ${failedEntities.length} entity/entities failed to apply: ${failedEntities.join(', ')}`);
       }
       log.debug(`[applyServerChanges] Final patch keys: ${Object.keys(patch).join(', ')}`);

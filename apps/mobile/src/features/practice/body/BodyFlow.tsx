@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
 import {
   FONT_TITLE, FONT_BODY, FONT_SUB, ALL_SPORTS, EXERCISE_CATEGORIES,
-  type BodyPlan, type BodyCheckin, type Theme,
+  type BodyPlan, type BodyCheckin, type Theme, type BodySlice,
 } from '@egoless-do/core';
+import { LinearGradient } from 'expo-linear-gradient';
+import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+
 import { PrimaryButton, OutlineButton, Card } from '../../../components/UI';
+
 import BodyCheckinInline from './BodyCheckinInline';
 import CheckinSuccessCard from './CheckinSuccessCard';
 
@@ -17,7 +19,7 @@ interface FlowProps {
   T: (key: string) => string;
   onExit: () => void;
   todayPlan?: BodyPlan;
-  store: Record<string, unknown>;
+  store: Record<string, unknown> & Pick<BodySlice, 'upsertBodyCheckin'>;
   returnTick?: number;
   onGoToSport?: (sportKey: string) => void;
   onGoToBreathing?: () => void;
@@ -288,7 +290,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
         <BodyCheckinInline
           TH={TH} T={T} plan={todayPlan}
           onSave={(data: Omit<BodyCheckin, 'id' | 'updatedAt' | 'deleted' | 'synced'>) => {
-                (store as any).upsertBodyCheckin(data);
+                store.upsertBodyCheckin(data);
             setAwarenessData({ ...data, id: '', updatedAt: Date.now(), deleted: false, synced: false } as BodyCheckin);
             setStep('success');
           }}
