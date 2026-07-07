@@ -78,8 +78,11 @@ app.get('/check/:permission', async (c) => {
   return c.json({ has });
 });
 
-// 获取所有可用角色
+// 获取所有可用角色（需要登录）
 app.get('/roles', async (c) => {
+  const auth = await verifyAuth(c.req.header('authorization') ?? null);
+  if (!auth) return c.json({ error: '未登录' }, 401);
+
   return c.json({
     roles: Object.values(Role),
     permissions: Object.values(Permission),

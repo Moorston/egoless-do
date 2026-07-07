@@ -59,7 +59,7 @@ routerAdd("POST", "/api/auth/user-token", function(e) {
     try {
       var escapeFilterValue = function(v) {
         if (typeof v !== "string") return String(v);
-        return v.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        return v.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, "\\(").replace(/\)/g, "\\)").replace(/\0/g, "");
       };
       var filter = "profile_id = 'self' && user_id = '" + escapeFilterValue(userId) + "'";
       var profiles = $app.findRecordsByFilter("user_profiles", filter, "", 1);

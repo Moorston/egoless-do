@@ -97,11 +97,7 @@ export interface SleepSlice {
   setSleepGoal: (goal: SleepGoal) => void;
 }
 
-export interface GiveSlice {
-  giveHistory: GiveEntry[];
-  addGive: (entry: Omit<GiveEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
-  deleteGive: (id: string) => void;
-}
+// GiveSlice removed — functionality now lives in PracticeSlice
 
 
 // ─── Existing slices (unchanged) ───────────────────────────────

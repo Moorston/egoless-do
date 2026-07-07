@@ -93,6 +93,7 @@ export async function setUserRole(userId: string, role: Role): Promise<void> {
     const pb = await getAdminPb();
 
     // 检查是否已有角色
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- PB record type
     let existing: any;
     try {
       existing = await pb.collection(COLLECTION_NAME).getFirstListItem(

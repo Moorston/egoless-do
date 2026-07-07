@@ -3,11 +3,32 @@ import type { SliceCreator } from './sliceHelper';
 import { defaultAuthState } from '../types';
 import { apiLogin, apiRegister, apiLogout, apiRefreshToken, apiSyncPull } from '../auth';
 import { mergeById } from '../sync/merge';
-import { calculateCheckinStreak, activeOnly } from '../utils';
+import { activeOnly } from '../utils';
 import { createLogger } from '../logger';
 import { resetAIService } from '../ai/ai-service';
 import { clearAICaches } from '../ai/trail-recommender';
 const log = createLogger('Store');
+
+// ── 标准实体合并：配置表驱动 ──────────────────────────────────
+// [syncKey, storeKey, mergeKey]
+const ENTITY_MERGE_MAP: Array<[string, string, string]> = [
+  ['habit',           'habits',            'id'],
+  ['reflection',      'reflections',       'id'],
+  ['fasting',         'fastingHistory',    'id'],
+  ['food',            'foodLog',           'id'],
+  ['checkin',         'checkinHistory',    'date'],
+  ['exercise',        'exerciseLog',       'id'],
+  ['plan',            'plans',             'id'],
+  ['planItem',        'planItems',         'id'],
+  ['planItemCheckin', 'planItemCheckins',  'id'],
+  ['dailyCustomTodo', 'dailyCustomTodos',  'id'],
+  ['dailyTodoHistory','dailyTodoHistory',  'id'],
+  ['grace',           'graceHistory',      'date'],
+  ['thoughtTrail',    'thoughtTrails',     'id'],
+  ['trailNote',       'trailNotes',        'id'],
+  ['reflectionLink',  'reflectionLinks',   'id'],
+  ['checkinReview',   'checkinReviews',    'id'],
+];
 
 /** Merge server sync data into current store state. Extracted for readability. */
 function buildMergePatch(
@@ -15,27 +36,6 @@ function buildMergePatch(
   s: Record<string, unknown>,
 ): Record<string, unknown> {
   const patch: Record<string, unknown> = {};
-
-  // ── 标准实体合并：配置表驱动 ──────────────────────────────────
-  // [syncKey, storeKey, mergeKey]
-  const ENTITY_MERGE_MAP: Array<[string, string, string]> = [
-    ['habit',           'habits',            'id'],
-    ['reflection',      'reflections',       'id'],
-    ['fasting',         'fastingHistory',    'id'],
-    ['food',            'foodLog',           'id'],
-    ['checkin',         'checkinHistory',    'date'],
-    ['exercise',        'exerciseLog',       'id'],
-    ['plan',            'plans',             'id'],
-    ['planItem',        'planItems',         'id'],
-    ['planItemCheckin', 'planItemCheckins',  'id'],
-    ['dailyCustomTodo', 'dailyCustomTodos',  'id'],
-    ['dailyTodoHistory','dailyTodoHistory',  'id'],
-    ['grace',           'graceHistory',      'date'],
-    ['thoughtTrail',    'thoughtTrails',     'id'],
-    ['trailNote',       'trailNotes',        'id'],
-    ['reflectionLink',  'reflectionLinks',   'id'],
-    ['checkinReview',   'checkinReviews',    'id'],
-  ];
 
   for (const [syncKey, storeKey, mergeKey] of ENTITY_MERGE_MAP) {
     const incoming = data[syncKey];

@@ -26,7 +26,7 @@ export default function DelayedReminder({ plan, onGoToPlan, onDismiss }: Props) 
         <View style={{ flex: 1 }}>
           <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY }}>{T('planDelayedNotify')}</Text>
           <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>
-            {T('planDelayed')}: {plan.name}
+            {T('planDelayed')}: {plan?.name ?? ''}
           </Text>
         </View>
         <TouchableOpacity onPress={onDismiss} style={{ padding: 4 }}>

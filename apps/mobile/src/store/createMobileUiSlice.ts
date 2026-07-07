@@ -38,7 +38,6 @@ export function createMobileUiSlice(
   reflectionSlice: StateCreator<FullStore, [], [], ReflectionSlice>,
   onReset?: () => void,
   onSettingsPersist?: () => void,
-  onRunSync?: () => Promise<void>,
   onResetSyncState?: () => Promise<void>,
 ): StateCreator<FullStore, [], [], MobileUiSlice> {
   return (set, get, api) => ({

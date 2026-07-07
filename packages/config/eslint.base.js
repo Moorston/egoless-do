@@ -1,6 +1,9 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  parserOptions: {
+    project: true, // auto-detect closest tsconfig.json
+  },
+  plugins: ['@typescript-eslint', 'import'],
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   rules: {
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
@@ -9,6 +12,14 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     '@typescript-eslint/no-unsafe-call': 'warn',
     'eqeqeq': ['error', 'smart'],
+    // ── Import rules ──
+    'import/no-duplicates': 'error',
+    'import/order': ['warn', {
+      groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+      'newlines-between': 'always',
+      alphabetize: { order: 'asc' },
+    }],
+    'import/newline-after-import': ['warn', { count: 1 }],
     // ── Architecture rules (docs/architecture-rules.md) ──
     'max-lines-per-function': ['warn', { max: 300, skipBlankLines: true, skipComments: true }],
     'max-depth': ['warn', 4],

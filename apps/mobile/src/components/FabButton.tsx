@@ -44,9 +44,9 @@ export default function FabButton({ primaryColor, onPress }: Props) {
       if (isHidden.current) {
         isHidden.current = false;
         const targetX = vw - FAB_SIZE - 20;
-        posRef.current = { x: targetX, y: finalY };
+        posRef.current = { x: targetX, y: posRef.current.y };
         Animated.spring(transX, { toValue: targetX, useNativeDriver: false, bounciness: 8 }).start();
-        Animated.spring(transY, { toValue: finalY, useNativeDriver: false, bounciness: 8 }).start();
+        Animated.spring(transY, { toValue: posRef.current.y, useNativeDriver: false, bounciness: 8 }).start();
       } else {
         onPress();
       }

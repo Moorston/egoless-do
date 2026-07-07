@@ -4,15 +4,11 @@ import * as SecureStore from 'expo-secure-store';
 const USER_HASH_KEY = 'global_pulse_user_hash';
 const FUZZ_SECRET_KEY = 'global_pulse_fuzz_secret';
 
-/** Generate a cryptographically strong random hex string.
- *  Uses SecureStore's random generation capabilities via UUID-like construction. */
+/** Generate a cryptographically strong random hex string. */
 function generateSecureRandomHex(length: number): string {
-  // Use multiple high-entropy sources combined
   const arr = new Uint8Array(length);
-  for (let i = 0; i < length; i++) {
-    // Combine multiple entropy sources: performance timing, random, and counter
-    arr[i] = Math.floor(Math.random() * 256);
-  }
+  // Hermes engine exposes global crypto.getRandomValues()
+  crypto.getRandomValues(arr);
   return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
 }
 

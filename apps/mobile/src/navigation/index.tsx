@@ -1,4 +1,4 @@
-// ─── Navigation root ──────────────────────────────────────────────
+// ─── Navigation root ──────────────────────────────────────────────────────
 import React, { useRef, useEffect, useState, useCallback, createContext, useContext, Suspense } from 'react';
 import { NavigationContainer, type NavigationContainerRef } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -18,103 +18,55 @@ import StarfieldBackground from '../components/StarfieldBackground';
 import SimpleHeaderComponent from './SimpleHeader';
 import { LazyScreen, withLazy, LoadingFallback } from './LazyScreen';
 import { ErrorBoundary, withErrorBoundary } from '../components/ErrorBoundary';
+import FabButton from '../components/FabButton';
+import { KickOutModal }  from '../components/KickOutModal';
+import { SyncProgressOverlay } from '../components/SyncProgressOverlay';
+import { SyncBanner } from '../components/SyncBanner';
+import { useSync }       from '../features/sync/useSync';
+import { isDeviceSyncedBefore } from '../features/sync/SyncService';
+import type { StackScreenProps } from '@react-navigation/stack';
+import type { RootStackParamList, MainTabParamList } from './types';
+
+// All screen imports from screens.ts (single source, no duplicates)
+import {
+  _HomeScreen, _FastingScreen, _ExerciseScreen, _SettingsScreen, _PlanScreen,
+  ReflectionsScreen, ReflectionStatsScreen, MindTrailScreen,
+  ThoughtTrailDetailScreen, QuickCreateTrailScreen,
+  ReflectionDetailScreen, InsightScreen, ReviewScreen,
+  StrategyLibrary, RelationMapView,
+  AISettingsScreen, BodyScreen, BreathHistoryPage, BreathingScreen,
+  CheckinDetailScreen, CheckinHistoryScreen, DietScreen,
+  ExerciseHistoryScreen, FastHistoryModule, FoodLogPage,
+  ForgotPasswordScreen, GiveHistoryPage, GiveScreen,
+  GlobalPulseScreen, GracePage, HabitDetailScreen, HabitsScreen,
+  LoginScreen, MantraHistoryScreen, MantraScreen,
+  MedHistoryModule, MeditationScreen, MindScreen,
+  MusicCategoryScreen, MusicScreen,
+  PlanCreateScreen, PlanDetailScreen, PlanHistoryScreen,
+  PracticeScreen, PreceptHistoryPage, PreceptScreen,
+  PrivacyPolicyScreen, ProfileScreen, RecycleBinScreen,
+  RegisterScreen, ReviewDetailScreen, ReviewHistoryScreen,
+  SleepHistoryPage, SleepScreen, SportPage, StatsScreen,
+  StreakBreakScreen, SutraHistoryScreen, SutraScreen,
+  VowScreen, ZhiguanHistoryScreen, ZhiguanScreen,
+} from './screens';
+
+export type { RootStackParamList, MainTabParamList } from './types';
+export { useRootNavigation, useTabNavigation } from './hooks';
 
 const log = createLogger('App');
 
-// ─── Visible tab screens (must be eagerly loaded, wrapped with ErrorBoundary) ───
-import _HomeScreen       from '../features/home/screens/HomeScreen';
-import _FastingScreen    from '../features/fasting/FastingScreen';
-import _ExerciseScreen   from '../features/exercise/ExerciseScreen';
-import _SettingsScreen   from '../features/settings/SettingsScreen';
-import _PlanScreen       from '../features/plan/PlanScreen';
-
+// ─── Wrap eager tab screens with ErrorBoundary ─────────────────────────────
 const HomeScreen     = withErrorBoundary(_HomeScreen);
 const FastingScreen  = withErrorBoundary(_FastingScreen);
 const ExerciseScreen = withErrorBoundary(_ExerciseScreen);
 const SettingsScreen = withErrorBoundary(_SettingsScreen);
 const PlanScreen     = withErrorBoundary(_PlanScreen);
 
-// ─── Lazy-loaded screens (loaded on first navigation) ────────────
-const MeditationScreen  = React.lazy(() => import('../features/meditation/MeditationScreen'));
-const PracticeScreen    = React.lazy(() => import('../features/practice/PracticeScreen'));
-const BreathingScreen   = React.lazy(() => import('../features/breathing/BreathingScreen'));
-const SleepScreen       = React.lazy(() => import('../features/sleep/SleepScreen'));
-const PreceptScreen     = React.lazy(() => import('../features/practice/PreceptScreen'));
-const GiveScreen        = React.lazy(() => import('../features/practice/GiveScreen'));
-const BodyScreen        = React.lazy(() => import('../features/practice/BodyScreen'));
-const VowScreen         = React.lazy(() => import('../features/vow/VowScreen'));
-const MantraScreen      = React.lazy(() => import('../features/mantra/MantraScreen'));
-const SutraScreen       = React.lazy(() => import('../features/sutra/SutraScreen'));
-const SutraHistoryScreen  = React.lazy(() => import('../features/sutra/SutraHistoryScreen'));
-const MantraHistoryScreen = React.lazy(() => import('../features/mantra/MantraHistoryScreen'));
-const ZhiguanScreen       = React.lazy(() => import('../features/zhiguan/ZhiguanScreen'));
-const ZhiguanHistoryScreen = React.lazy(() => import('../features/zhiguan/ZhiguanHistoryScreen'));
-const DietScreen        = React.lazy(() => import('../features/diet/DietScreen'));
-const MindScreen        = React.lazy(() => import('../features/mind/MindScreen'));
-
-// Stack screens — reflections (named exports, statically imported)
-import {
-  ReflectionsScreen,
-  ReflectionStatsScreen,
-  MindTrailScreen,
-  ThoughtTrailDetailScreen,
-  QuickCreateTrailScreen,
-  ReflectionDetailScreen,
-  InsightScreen,
-  ReviewScreen,
-  StrategyLibrary,
-  RelationMapView,
-} from '../features/reflections';
-const HabitDetailScreen     = React.lazy(() => import('../features/habits/HabitDetailScreen'));
-const HabitsScreen          = React.lazy(() => import('../features/habits/HabitsScreen'));
-const StatsScreen           = React.lazy(() => import('../features/stats/StatsScreen'));
-const GlobalPulseScreen     = React.lazy(() => import('../features/home/screens/GlobalPulseScreen'));
-const SportPage             = React.lazy(() => import('../features/exercise/SportPage'));
-const ExerciseHistoryScreen = React.lazy(() => import('../features/exercise/ExerciseHistoryScreen'));
-const FastHistoryModule     = React.lazy(() => import('../features/fasting/FastHistoryPage'));
-const MedHistoryModule      = React.lazy(() => import('../features/meditation/MedHistoryPage'));
-const SleepHistoryPage      = React.lazy(() => import('../features/sleep/SleepHistoryPage'));
-const PreceptHistoryPage    = React.lazy(() => import('../features/practice/PreceptHistoryPage'));
-const BreathHistoryPage     = React.lazy(() => import('../features/breathing/BreathHistoryPage'));
-const GiveHistoryPage       = React.lazy(() => import('../features/practice/GiveHistoryPage'));
-const FoodLogPage           = React.lazy(() => import('../features/home/screens/FoodLogPage'));
-const GracePage             = React.lazy(() => import('../features/home/screens/GracePage'));
-const StreakBreakScreen     = React.lazy(() => import('../features/home/screens/StreakBreakScreen'));
-const CheckinHistoryScreen  = React.lazy(() => import('../features/home/screens/CheckinHistoryScreen'));
-const CheckinDetailScreen   = React.lazy(() => import('../features/home/screens/CheckinDetailScreen'));
-const ReviewHistoryScreen   = React.lazy(() => import('../features/home/screens/ReviewHistoryScreen'));
-const ReviewDetailScreen    = React.lazy(() => import('../features/home/screens/ReviewDetailScreen'));
-const PlanCreateScreen      = React.lazy(() => import('../features/plan/PlanCreateScreen'));
-const PlanDetailScreen      = React.lazy(() => import('../features/plan/PlanDetailScreen'));
-const PlanHistoryScreen     = React.lazy(() => import('../features/plan/PlanHistoryScreen'));
-const LoginScreen           = React.lazy(() => import('../features/auth/LoginScreen'));
-const RegisterScreen        = React.lazy(() => import('../features/auth/RegisterScreen'));
-const ForgotPasswordScreen  = React.lazy(() => import('../features/auth/ForgotPasswordScreen'));
-const RecycleBinScreen      = React.lazy(() => import('../features/settings/RecycleBinScreen'));
-const PrivacyPolicyScreen   = React.lazy(() => import('../features/settings/PrivacyPolicyScreen'));
-const AISettingsScreen      = React.lazy(() => import('../features/settings/AISettingsScreen'));
-const ProfileScreen         = React.lazy(() => import('../features/settings/ProfileScreen'));
-const MusicScreen           = React.lazy(() => import('../features/music/screens/MusicScreen'));
-const MusicCategoryScreen   = React.lazy(() => import('../features/music/screens/MusicCategoryScreen'));
-import { useSync }       from '../features/sync/useSync';
-import { isDeviceSyncedBefore } from '../features/sync/SyncService';
-import { KickOutModal }  from '../components/KickOutModal';
-import { SyncProgressOverlay } from '../components/SyncProgressOverlay';
-import { SyncBanner } from '../components/SyncBanner';
-import { ErrorBoundary } from '../components/ErrorBoundary';
-import type { StackScreenProps } from '@react-navigation/stack';
-import type { RootStackParamList, MainTabParamList } from './types';
-
-export type { RootStackParamList, MainTabParamList } from './types';
-export { useRootNavigation, useTabNavigation } from './hooks';
-
 const Tab   = createBottomTabNavigator<MainTabParamList>();
 const Stack = createStackNavigator<RootStackParamList>();
 
-// ─── Suspense wrapper for lazy-loaded screens ─────────────────────
-/** Wrap a lazy component for use in React Navigation. */
-
-// Wrapper for default-exported modules with named exports (FastHistoryPage, MedHistoryPage)
+// ─── Suspense wrappers for named-export modules ────────────────────────────
 function FastHistoryWrapper() {
   return (
     <Suspense fallback={<LoadingFallback />}>
@@ -130,10 +82,8 @@ function MedHistoryWrapper() {
   );
 }
 
-// ─── Floating Action Button context ──────────────────────────────
+// ─── Floating Action Button context ────────────────────────────────────────
 const TabNavContext = createContext<NavigationContainerRef<MainTabParamList> | null>(null);
-
-import FabButton from '../components/FabButton';
 
 export { SimpleHeaderComponent as SimpleHeader };
 

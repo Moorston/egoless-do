@@ -19,7 +19,7 @@ onRecordCreateRequest(function(e) {
 
 // Update global_stats and leaderboard when a global_checkin is created
 onRecordAfterCreateSuccess(function(e) {
-  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
   function buildUserHashFilter(userHash, additionalFilter) {
     var escaped = escapeFilterValue(userHash);
     var filter = 'user_hash = "' + escaped + '"';
@@ -72,7 +72,7 @@ onRecordAfterCreateSuccess(function(e) {
 
 // Bulk opt-out/opt-in/delete endpoints
 routerAdd("POST", "/api/global-pulse/opt-out", function(c) {
-  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
   function buildUserHashFilter(userHash, additionalFilter) {
     var escaped = escapeFilterValue(userHash);
     var filter = 'user_hash = "' + escaped + '"';
@@ -93,7 +93,7 @@ routerAdd("POST", "/api/global-pulse/opt-out", function(c) {
 });
 
 routerAdd("POST", "/api/global-pulse/opt-in", function(c) {
-  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
   function buildUserHashFilter(userHash, additionalFilter) {
     var escaped = escapeFilterValue(userHash);
     var filter = 'user_hash = "' + escaped + '"';
@@ -114,7 +114,7 @@ routerAdd("POST", "/api/global-pulse/opt-in", function(c) {
 });
 
 routerAdd("POST", "/api/global-pulse/delete-data", function(c) {
-  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
   function buildUserHashFilter(userHash) {
     return 'user_hash = "' + escapeFilterValue(userHash) + '"';
   }

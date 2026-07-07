@@ -9,7 +9,7 @@
 
 // Token refresh hook: bumps login_epoch and embeds it in the new token
 onRecordAuthRefreshRequest(function(e) {
-  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+  function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
   try {
     var userId = e.record.id;
     var epoch = (function(userId) {
