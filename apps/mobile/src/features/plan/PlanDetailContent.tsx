@@ -427,7 +427,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             {items.length === 0 ? (
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</Text>
             ) : (
-              {sortedItems.map((item, index) => renderItemRow({ item, index }))}
+              sortedItems.map((item, index) => renderItemRow({ item, index }))
             )}
           </Card>
 
