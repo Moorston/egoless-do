@@ -62,7 +62,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
         <Image
           source={require('../../assets/header-logo.png')}
           style={{ width: 108, height: 54 }}
-          resizeMode="contain"
+          contentFit="contain"
         />
         <View style={styles.streakBox}>
           <Text style={[styles.streakLabel, { color: TH.sub }]}>{T('streak')}</Text>

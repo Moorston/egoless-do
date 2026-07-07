@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { getClientIp, refreshRateLimit } from '../rate-limit.js';
 import { generateRefreshToken, createRefreshToken, validateRefreshToken, revokeRefreshToken } from '../token-refresh-rotation.js';
 
-const TOKEN_EXPIRES_IN = 1 * 60 * 60 * 1000; // 1 hour
+const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const PB_URL = process.env.PB_URL ?? 'http://localhost:8090';

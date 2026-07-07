@@ -79,13 +79,17 @@ export function useExerciseAudio() {
     setShowSoundPicker(false);
   }, [bgPlayer]);
 
-  // 环境音停止时通知管理器（仅在组件卸载时，非 sound 切换时）
+  // 环境音和钟声在组件卸载时停止，并通知管理器
   const selectedSoundRef = useRef(selectedSound);
-  useEffect(() => {
-    selectedSoundRef.current = selectedSound;
-  }, [selectedSound]);
+  const bgPlayerRef = useRef(bgPlayer);
+  const bellPlayerRef = useRef(bellPlayer);
+  useEffect(() => { selectedSoundRef.current = selectedSound; }, [selectedSound]);
+  useEffect(() => { bgPlayerRef.current = bgPlayer; }, [bgPlayer]);
+  useEffect(() => { bellPlayerRef.current = bellPlayer; }, [bellPlayer]);
   useEffect(() => {
     return () => {
+      bgPlayerRef.current.pause();
+      bellPlayerRef.current.pause();
       if (selectedSoundRef.current !== '无') {
         audioSessionManager.notifyStopped('ambient');
       }

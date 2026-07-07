@@ -7,7 +7,7 @@ import { getClientIp, wechatRateLimit } from '../rate-limit.js';
 import { sanitizeError } from '../auth-middleware.js';
 import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';
 
-const TOKEN_EXPIRES_IN = 1 * 60 * 60 * 1000; // 1 hour (short-lived access token)
+const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 function wechatPassword(openid: string) {

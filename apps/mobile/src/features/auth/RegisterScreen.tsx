@@ -133,7 +133,7 @@ export default function RegisterScreen() {
               alignSelf: 'center',
               marginBottom: 40,
             }}
-            resizeMode="contain"
+            contentFit="contain"
           />
 
           <Card style={{ marginBottom: 16 }}>

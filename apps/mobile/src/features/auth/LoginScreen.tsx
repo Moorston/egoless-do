@@ -130,7 +130,7 @@ export default function LoginScreen() {
               alignSelf: 'center',
               marginBottom: 40,
             }}
-            resizeMode="contain"
+            contentFit="contain"
           />
 
           <Card style={{ marginBottom: 16 }}>

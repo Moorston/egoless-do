@@ -113,14 +113,9 @@ function persistAIConfig() {
   _aiConfigPersistTimer = setTimeout(flushAIConfig, 500);
 }
 
-// Flush pending writes when app goes to background
-AppState.addEventListener('change', async (state) => {
-  if (state !== 'active') {
-    flushProfileSettings();
-    flushAIConfig();
-    await flushWrites(); // flush WriteBatcher buffer before suspension
-  }
-});
+// Backward-compatible: register AppState listener at module load time
+// via initMobileStore() (defined after useAppStore to avoid circular reference).
+initMobileStore();
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & SleepSlice
   & FoodSlice & CheckinSlice & ProfileSlice & SettingsSlice
@@ -192,3 +187,26 @@ export const useAppStore = create<MobileStore>()(
     return store;
   },
 );
+
+// ─── Named handler for AppState changes (extracted for testability) ───
+async function handleAppStateChange(state: string) {
+  if (state !== 'active') {
+    flushProfileSettings();
+    flushAIConfig();
+    await flushWrites(); // flush WriteBatcher buffer before suspension
+  }
+}
+
+/**
+ * Initialize mobile store side effects — registers the AppState listener
+ * that flushes pending writes when the app goes to background.
+ *
+ * Called automatically at module load time for backward compatibility.
+ * Can also be called explicitly in tests to control initialization timing.
+ *
+ * Note: setApiBase, setPushApiBase, setSyncApiBase, and setMusicSyncCallback
+ * remain as inline module-level calls since they don't reference useAppStore.
+ */
+export function initMobileStore() {
+  AppState.addEventListener('change', handleAppStateChange);
+}

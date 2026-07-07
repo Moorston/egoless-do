@@ -1,15 +1,17 @@
 // ─── Navigation root ──────────────────────────────────────────────────────
 import { t, FONT_BODY, createLogger } from '@egoless-do/core';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, type NavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
   Home, ClipboardList, Timer, Binary, Dumbbell, Settings,
   Target, Footprints, Sparkles,
 } from 'lucide-react-native';
-import React, { useRef, useEffect, useState, createContext, Suspense } from 'react';
+import React, { useRef, useEffect, useState, Suspense } from 'react';
 import {
   View,
+  Pressable,
+  Text,
 } from 'react-native';
 
 import { ErrorBoundary, withErrorBoundary } from '../components/ErrorBoundary';
@@ -55,6 +57,7 @@ import type { RootStackParamList, MainTabParamList } from './types';
 // All screen imports from screens.ts (single source, no duplicates)
 
 export type { RootStackParamList, MainTabParamList } from './types';
+import { useRootNavigation } from './hooks';
 export { useRootNavigation, useTabNavigation } from './hooks';
 
 const log = createLogger('App');
@@ -85,9 +88,6 @@ function MedHistoryWrapper() {
   );
 }
 
-// ─── Floating Action Button context ────────────────────────────────────────
-const TabNavContext = createContext<NavigationContainerRef<MainTabParamList> | null>(null);
-
 export { SimpleHeaderComponent as SimpleHeader };
 
 const TAB_ROUTES: Record<string, string> = {
@@ -96,11 +96,16 @@ const TAB_ROUTES: Record<string, string> = {
   habits: 'Habits', stats: 'Stats',
 };
 
-function MainTabs() {
+// Ref to hold the Tab navigator's navigate function — set by MainTabBar, read by FabButton
+const tabNavRef: { navigate: ((screen: string, params?: Record<string, unknown>) => void) | null } = { navigate: null };
+
+function MainTabBar({ state, navigation, descriptors, insets }: BottomTabBarProps) {
   const TH = useTheme();
   const language = useShallowStore(s => s.language);
-  const tabNavRef = useRef<NavigationContainerRef<MainTabParamList>>(null);
-  const [tabNav, setTabNav] = useState<NavigationContainerRef<MainTabParamList> | null>(null);
+  const visibleRoutes = state.routes.filter(r => {
+    const opts = descriptors[r.key]?.options;
+    return (opts?.tabBarItemStyle as Record<string, unknown>)?.display !== 'none';
+  });
 
   const iconMap: Record<string, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
     Home, Plan: ClipboardList, Fasting: Timer, Meditation: Binary, Practice: Footprints,
@@ -108,33 +113,60 @@ function MainTabs() {
     Habits: Target,
   };
 
-  const tabIcon = (name: string, focused: boolean) => {
-    const Icon = iconMap[name] ?? Home;
-    return <Icon size={22} color={focused ? TH.primary : TH.sub} strokeWidth={focused ? 2.2 : 1.5} />;
+  const titleMap: Record<string, string> = {
+    Home: t('navTabHome', language),
+    Exercise: t('navTabExercise', language),
+    Fasting: t('navTabFasting', language),
+    Practice: t('navTabPractice', language),
+    Settings: t('navTabSettings', language),
   };
 
+  // Expose Tab navigator's navigate to FabButton via module-level ref
+  React.useEffect(() => {
+    tabNavRef.navigate = (screen: string, params?: Record<string, unknown>) => {
+      navigation.navigate(screen as never, params as never);
+    };
+    return () => { tabNavRef.navigate = null; };
+  }, [navigation]);
+
   return (
-    <TabNavContext.Provider value={tabNav}>
-    <View style={{ flex: 1 }}>
+    <View style={{
+      flexDirection: 'row',
+      backgroundColor: TH.navBg,
+      borderTopColor: TH.border,
+      borderTopWidth: 1,
+      height: 85,
+      paddingBottom: insets?.bottom ?? 6,
+      paddingTop: 6,
+    }}>
+      {visibleRoutes.map(route => {
+        const focused = state.index === state.routes.indexOf(route);
+        const Icon = iconMap[route.name] ?? Home;
+        return (
+          <Pressable
+            key={route.key}
+            onPress={() => navigation.navigate(route.name)}
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Icon size={22} color={focused ? TH.primary : TH.sub} strokeWidth={focused ? 2.2 : 1.5} />
+            <Text style={{ fontSize: FONT_BODY, fontWeight: '500', color: focused ? TH.primary : TH.sub, marginTop: 2 }}>
+              {titleMap[route.name] ?? route.name}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+function MainTabs() {
+  const language = useShallowStore(s => s.language);
+
+  return (
     <Tab.Navigator
       id="main-tabs"
-      screenOptions={({ route }) => {
-        return {
-          headerShown: false,
-          tabBarIcon: ({ focused }) => tabIcon(route.name, focused),
-          tabBarActiveTintColor:   TH.primary,
-          tabBarInactiveTintColor: TH.sub,
-          tabBarStyle: {
-            backgroundColor: TH.navBg,
-            borderTopColor:  TH.border,
-            borderTopWidth:  1,
-            height: 85,
-            paddingBottom: 6,
-            paddingTop: 6,
-          },
-          tabBarLabelStyle: { fontSize: FONT_BODY, fontWeight: '500' },
-        };
-      }}
+      tabBar={props => <MainTabBar {...props} />}
+      screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home"        component={HomeScreen}        options={{ title: t('navTabHome', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Exercise"    component={ExerciseScreen}    options={{ title: t('navTabExercise', language), tabBarItemStyle: { flex: 1 } }} />
@@ -156,9 +188,6 @@ function MainTabs() {
       <Tab.Screen name="Reflections" component={withErrorBoundary(ReflectionsScreen)} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={withLazy(HabitsScreen)} options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
     </Tab.Navigator>
-    <FabButton primaryColor={TH.primary} onPress={() => tabNav?.navigate('Reflections', { showNew: true })} />
-    </View>
-    </TabNavContext.Provider>
   );
 }
 
@@ -297,6 +326,12 @@ export default function AppNavigator() {
     />
     <SyncProgressOverlay visible={syncOverlayVisible && isSignedIn} phase={syncPhase} />
     {isSignedIn && !syncOverlayVisible && <SyncBanner />}
+    {isSignedIn && (
+      <FabButton
+        primaryColor={TH.primary}
+        onPress={() => tabNavRef.navigate?.('Reflections', { showNew: true })}
+      />
+    )}
     </View>
     </ErrorBoundary>
   );

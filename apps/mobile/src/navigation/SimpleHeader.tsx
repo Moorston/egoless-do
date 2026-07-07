@@ -37,7 +37,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
         <Image
           source={require('../../assets/header-logo.png')}
           style={{ width: 108, height: 54 }}
-          resizeMode="contain"
+          contentFit="contain"
         />
         <View style={{ alignItems: 'flex-end' }}>
           <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{t('streak', language)}</Text>

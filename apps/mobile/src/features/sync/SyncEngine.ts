@@ -45,12 +45,29 @@ export interface SyncMetric {
   error?: string;
 }
 
+export interface SyncEngineDeps {
+  applyService?: SyncApplyService;
+  realtimeController?: SyncRealtimeController;
+  rehydrationManager?: SyncRehydrationManager;
+  resetService?: SyncResetService;
+  timestampManager?: SyncTimestampManager;
+}
+
 export class SyncEngine {
-  private _applyService = new SyncApplyService();
-  private _realtimeController = new SyncRealtimeController();
-  private _rehydrationManager = new SyncRehydrationManager();
-  private _timestampManager = new SyncTimestampManager();
-  private _resetService = new SyncResetService();
+  private _applyService: SyncApplyService;
+  private _realtimeController: SyncRealtimeController;
+  private _rehydrationManager: SyncRehydrationManager;
+  private _timestampManager: SyncTimestampManager;
+  private _resetService: SyncResetService;
+
+  constructor(deps?: SyncEngineDeps) {
+    this._applyService = deps?.applyService ?? new SyncApplyService();
+    this._realtimeController = deps?.realtimeController ?? new SyncRealtimeController();
+    this._rehydrationManager = deps?.rehydrationManager ?? new SyncRehydrationManager();
+    this._timestampManager = deps?.timestampManager ?? new SyncTimestampManager();
+    this._resetService = deps?.resetService ?? new SyncResetService();
+  }
+
   private _syncing = false;
   private _syncingSince = 0;
   private _syncGeneration = 0;

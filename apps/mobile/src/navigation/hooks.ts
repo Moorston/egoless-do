@@ -12,5 +12,5 @@ export function useRootNavigation() {
 
 /** Typed navigation hook for the main tabs */
 export function useTabNavigation() {
-  return useNavigation<NavigationProp<MainTabParamList>>();
+  return useNavigation<NavigationProp<MainTabParamList>>({ id: 'main-tabs' });
 }

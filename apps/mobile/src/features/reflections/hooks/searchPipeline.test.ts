@@ -1,6 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
-import { mergeResults } from './searchPipeline';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { mergeResults, runAIPhase2, runAIPhase3 } from './searchPipeline';
 import type { MindReflection } from '@egoless-do/core';
+import {
+  parseSmartQuery, computeCandidatePool, buildIndex,
+  retrieveTopK, semanticSearchReflections,
+} from '@egoless-do/core';
 
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
@@ -32,6 +36,10 @@ function makeReflection(id: string, overrides: Partial<MindReflection> = {}): Mi
 }
 
 describe('searchPipeline', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe('mergeResults', () => {
     it('returns empty array for empty input', () => {
       expect(mergeResults([])).toEqual([]);
@@ -91,6 +99,246 @@ describe('searchPipeline', () => {
       const merged = mergeResults([{ ref: r, score: 1.0, source: 'direct' as const }]);
       expect(merged).toHaveLength(1);
       expect(merged[0].id).toBe('only');
+    });
+  });
+
+  describe('runAIPhase2', () => {
+    it('returns shouldReturn=true when result has question and chatHistory is short', async () => {
+      const reflections = [makeReflection('r1')];
+      vi.mocked(parseSmartQuery).mockResolvedValue({
+        topic: '', filters: {}, question: 'What do you mean?',
+      } as any);
+
+      const result = await runAIPhase2(reflections, 'test', {}, [], new Set(), []);
+
+      expect(result).toEqual({
+        smartResult: { topic: '', filters: {}, question: 'What do you mean?' },
+        shouldReturn: true,
+      });
+    });
+
+    it('does not return early when question exists but chatHistory is >= 3', async () => {
+      const reflections = [makeReflection('r1')];
+      vi.mocked(parseSmartQuery).mockResolvedValue({
+        topic: '', filters: {}, question: 'What do you mean?',
+      } as any);
+
+      const result = await runAIPhase2(
+        reflections, 'test', {}, [], new Set(), ['a', 'b', 'c'],
+      );
+
+      // question path skipped, no topic/filters either → returns null
+      expect(result.smartResult).toBeNull();
+      expect(result.shouldReturn).toBe(false);
+    });
+
+    it('expands candidates when result has a topic', async () => {
+      const r1 = makeReflection('r1');
+      const r2 = makeReflection('r2');
+      const reflections = [r1, r2];
+      vi.mocked(parseSmartQuery).mockResolvedValue({
+        topic: 'meditation', filters: {}, question: '',
+      } as any);
+      vi.mocked(computeCandidatePool).mockReturnValue([r1, r2]);
+      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(retrieveTopK).mockReturnValue([
+        { index: { id: 'r1' }, score: 0.9 },
+        { index: { id: 'r2' }, score: 0.7 },
+      ]);
+
+      const allResults: any[] = [];
+      const existingIds = new Set<string>();
+      const result = await runAIPhase2(
+        reflections, 'meditation', {}, allResults, existingIds, [],
+      );
+
+      expect(computeCandidatePool).toHaveBeenCalled();
+      expect(allResults).toHaveLength(2);
+      expect(allResults[0].source).toBe('direct');
+      expect(existingIds.has('r1')).toBe(true);
+      expect(existingIds.has('r2')).toBe(true);
+      expect(result.smartResult).toBeTruthy();
+      expect(result.shouldReturn).toBe(false);
+    });
+
+    it('expands candidates when result has filters but no topic', async () => {
+      const r1 = makeReflection('r1');
+      vi.mocked(parseSmartQuery).mockResolvedValue({
+        topic: '', filters: { tags: ['yoga'] }, question: '',
+      } as any);
+      vi.mocked(computeCandidatePool).mockReturnValue([r1]);
+      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(retrieveTopK).mockReturnValue([
+        { index: { id: 'r1' }, score: 0.8 },
+      ]);
+
+      const allResults: any[] = [];
+      const result = await runAIPhase2(
+        [r1], 'yoga', { tags: ['old'] }, allResults, new Set(), [],
+      );
+
+      expect(computeCandidatePool).toHaveBeenCalledWith(
+        [r1],
+        expect.objectContaining({ tags: ['yoga'] }),
+      );
+      expect(allResults).toHaveLength(1);
+      expect(result.shouldReturn).toBe(false);
+    });
+
+    it('merges filters: uses currentFilters as fallback when result filters are empty', async () => {
+      const r1 = makeReflection('r1');
+      vi.mocked(parseSmartQuery).mockResolvedValue({
+        topic: '', filters: { tags: [], moods: [] }, question: '',
+      } as any);
+      vi.mocked(computeCandidatePool).mockReturnValue([r1]);
+      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(retrieveTopK).mockReturnValue([]);
+
+      const currentFilters = { tags: ['meditation'], moods: ['calm'], timeRange: 'week' } as any;
+      await runAIPhase2(
+        [r1], 'test', currentFilters, [], new Set(), [],
+      );
+
+      expect(computeCandidatePool).toHaveBeenCalledWith(
+        [r1],
+        expect.objectContaining({
+          tags: ['meditation'],
+          moods: ['calm'],
+          timeRange: 'week',
+        }),
+      );
+    });
+
+    it('deduplicates results via existingIds', async () => {
+      const r1 = makeReflection('r1');
+      const r2 = makeReflection('r2');
+      vi.mocked(parseSmartQuery).mockResolvedValue({
+        topic: 'mindfulness', filters: {}, question: '',
+      } as any);
+      vi.mocked(computeCandidatePool).mockReturnValue([r1, r2]);
+      vi.mocked(buildIndex).mockReturnValue({ id: 'idx' });
+      vi.mocked(retrieveTopK).mockReturnValue([
+        { index: { id: 'r1' }, score: 0.9 },
+        { index: { id: 'r2' }, score: 0.7 },
+      ]);
+
+      const allResults: any[] = [];
+      const existingIds = new Set(['r1']); // r1 already seen
+      await runAIPhase2(
+        [r1, r2], 'mindfulness', {}, allResults, existingIds, [],
+      );
+
+      // only r2 should be added
+      expect(allResults).toHaveLength(1);
+      expect(allResults[0].ref.id).toBe('r2');
+    });
+
+    it('returns null smartResult when no question, topic, or filters', async () => {
+      vi.mocked(parseSmartQuery).mockResolvedValue({
+        topic: '', filters: {}, question: '',
+      } as any);
+
+      const result = await runAIPhase2(
+        [], 'query', {}, [], new Set(), [],
+      );
+
+      expect(result.smartResult).toBeNull();
+      expect(result.shouldReturn).toBe(false);
+    });
+
+    it('returns null smartResult and shouldReturn=false on error', async () => {
+      vi.mocked(parseSmartQuery).mockRejectedValue(new Error('AI down'));
+
+      const result = await runAIPhase2(
+        [makeReflection('r1')], 'test', {}, [], new Set(), [],
+      );
+
+      expect(result.smartResult).toBeNull();
+      expect(result.shouldReturn).toBe(false);
+    });
+  });
+
+  describe('runAIPhase3', () => {
+    it('adds semantic results sorted by relevance with source=extended', async () => {
+      const r1 = makeReflection('r1');
+      const r2 = makeReflection('r2');
+      vi.mocked(semanticSearchReflections).mockResolvedValue([
+        { reflectionIndex: 1, relevance: 0.6 },
+        { reflectionIndex: 0, relevance: 0.9 },
+      ] as any);
+
+      const allResults: any[] = [];
+      const existingIds = new Set<string>();
+      const result = await runAIPhase3([r1, r2], 'peace', allResults, existingIds);
+
+      // sorted by relevance descending: index 0 (0.9) first, then index 1 (0.6)
+      expect(allResults).toHaveLength(2);
+      expect(allResults[0].ref.id).toBe('r1');
+      expect(allResults[0].score).toBeCloseTo(0.45); // 0.9 * 0.5
+      expect(allResults[0].source).toBe('extended');
+      expect(allResults[1].ref.id).toBe('r2');
+      expect(allResults[1].score).toBeCloseTo(0.3); // 0.6 * 0.5
+      expect(existingIds.has('r1')).toBe(true);
+      expect(existingIds.has('r2')).toBe(true);
+      expect(result).toEqual({ count: 2, failed: false });
+    });
+
+    it('returns count=0 when semantic search returns empty', async () => {
+      vi.mocked(semanticSearchReflections).mockResolvedValue([]);
+
+      const allResults: any[] = [];
+      const result = await runAIPhase3(
+        [makeReflection('r1')], 'test', allResults, new Set(),
+      );
+
+      expect(allResults).toHaveLength(0);
+      expect(result).toEqual({ count: 0, failed: false });
+    });
+
+    it('returns count=0 and failed=true on error', async () => {
+      vi.mocked(semanticSearchReflections).mockRejectedValue(
+        new Error('embedding service down'),
+      );
+
+      const result = await runAIPhase3(
+        [makeReflection('r1')], 'test', [], new Set(),
+      );
+
+      expect(result).toEqual({ count: 0, failed: true });
+    });
+
+    it('deduplicates: skips reflections already in existingIds', async () => {
+      const r1 = makeReflection('r1');
+      const r2 = makeReflection('r2');
+      vi.mocked(semanticSearchReflections).mockResolvedValue([
+        { reflectionIndex: 0, relevance: 0.9 },
+        { reflectionIndex: 1, relevance: 0.7 },
+      ] as any);
+
+      const allResults: any[] = [];
+      const existingIds = new Set(['r1']); // r1 already seen
+      const result = await runAIPhase3([r1, r2], 'test', allResults, existingIds);
+
+      expect(allResults).toHaveLength(1);
+      expect(allResults[0].ref.id).toBe('r2');
+      // count reports total semantic matches, not added count
+      expect(result.count).toBe(2);
+    });
+
+    it('skips results where reflectionIndex is out of bounds', async () => {
+      const r1 = makeReflection('r1');
+      vi.mocked(semanticSearchReflections).mockResolvedValue([
+        { reflectionIndex: 0, relevance: 0.8 },
+        { reflectionIndex: 5, relevance: 0.9 }, // out of bounds
+      ] as any);
+
+      const allResults: any[] = [];
+      const result = await runAIPhase3([r1], 'test', allResults, new Set());
+
+      // only r1 is added; index 5 is undefined → skipped
+      expect(allResults).toHaveLength(1);
+      expect(allResults[0].ref.id).toBe('r1');
+      expect(result.count).toBe(2);
     });
   });
 });
