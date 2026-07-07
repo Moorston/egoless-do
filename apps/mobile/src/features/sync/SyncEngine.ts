@@ -1,3 +1,10 @@
+import {
+  apiSyncPush, apiSyncPull, apiSyncPullPost, apiSyncCheck,
+  createLogger, ApiError, KickedOutError,
+  ALL_ENTITY_TABLES,
+} from '@egoless-do/core';
+import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
+
 import { openDatabase, getState, setState, withDbLock } from '../../db/schema';
 import {
   drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems,
@@ -6,18 +13,13 @@ import {
   type SyncQueueItem,
 } from '../../db/syncQueue';
 import { flushWrites } from '../../store/storageAdapter';
-import {
-  apiSyncPush, apiSyncPull, apiSyncPullPost, apiSyncCheck,
-  createLogger, ApiError, KickedOutError,
-  ALL_ENTITY_TABLES,
-} from '@egoless-do/core';
-import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
-import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig, type GetRowMapperFn } from './orphanRecovery';
+
 import { SyncApplyService, ENTITY_CONFIG } from './SyncApplyService';
 import { SyncRealtimeController } from './SyncRealtimeController';
 import { SyncRehydrationManager } from './SyncRehydrationManager';
-import { SyncTimestampManager } from './SyncTimestampManager';
 import { SyncResetService } from './SyncResetService';
+import { SyncTimestampManager } from './SyncTimestampManager';
+import { recoverOrphans, shouldRunOrphanRecovery, type EntityConfig, type GetRowMapperFn } from './orphanRecovery';
 
 const DOMException = (globalThis as Record<string, unknown>).DOMException as typeof Error | undefined
   ?? class DOMException extends Error {
@@ -66,6 +68,9 @@ export class SyncEngine {
   private _initialSyncing = false;
   private _pendingSyncAfterInit = false;
   private _lastOrphanScanAt = 0;
+  private _syncTriggerCallback: (() => void) | null = null;
+  private _syncTriggerTimer: ReturnType<typeof setTimeout> | null = null;
+  private static SYNC_TRIGGER_DEBOUNCE_MS = 2000;
 
   // ── Configuration ────────────────────────────────────────────────
   setTokenProvider(fn: () => string | null) { this._tokenProvider = fn; }
@@ -74,9 +79,32 @@ export class SyncEngine {
   setDeletedIdsProvider(fn: () => Set<string>) { this._deletedIdsProvider = fn; }
   setKickedOutHandler(fn: () => void) { this._onKickedOut = fn; }
   setMigrationDone(v: boolean) { this._migrationDone = v; }
-  setLastSyncAt(ts: number) { this._timestampManager.setLastSyncAt(ts); }
   getMigrationDone(): boolean { return this._migrationDone; }
+  setLastSyncAt(ts: number) { this._timestampManager.setLastSyncAt(ts); }
   getClockOffset(): number { return this._timestampManager.getClockOffset(); }
+
+  // ── Debounced sync trigger ────────────────────────────────────────
+  setSyncTriggerCallback(fn: () => void) { this._syncTriggerCallback = fn; }
+
+  triggerSyncDebounced(): void {
+    if (!this._syncTriggerCallback) {
+      log.warn('triggerSyncDebounced called but _syncTriggerCallback is null');
+      return;
+    }
+    if (this._syncTriggerTimer) clearTimeout(this._syncTriggerTimer);
+    this._syncTriggerTimer = setTimeout(async () => {
+      this._syncTriggerTimer = null;
+      log.debug('Debounced sync trigger firing');
+      this._syncTriggerCallback?.();
+      const { getQueueCount: checkQueueCount } = await import('../../db/syncQueue');
+      const remaining = await checkQueueCount();
+      if (remaining > 0) this.triggerSyncDebounced();
+    }, SyncEngine.SYNC_TRIGGER_DEBOUNCE_MS);
+  }
+
+  clearSyncTrigger(): void {
+    if (this._syncTriggerTimer) { clearTimeout(this._syncTriggerTimer); this._syncTriggerTimer = null; }
+  }
 
   async isDeviceSyncedBefore(): Promise<boolean> {
     return this._rehydrationManager.isDeviceSyncedBefore();

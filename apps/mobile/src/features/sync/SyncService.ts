@@ -2,10 +2,7 @@
 // All logic lives in SyncEngine.ts — this file creates a singleton and
 // re-exports its methods so existing imports continue to work.
 
-import { createLogger, ApiError } from '@egoless-do/core';
-
 import { dbGetAllFoodEntries } from '../../db/queries';
-import { openDatabase, getState, setState } from '../../db/schema';
 import {
   getLastSyncTimestamp, setLastSyncTimestamp,
   getSyncProgress, updateSyncProgress, resetSyncProgress, getQueueCount,
@@ -13,11 +10,6 @@ import {
 
 import { SyncEngine } from './SyncEngine';
 import type { SyncMetric } from './SyncEngine';
-
-const log = createLogger('Sync');
-let _syncTriggerCallback: (() => void) | null = null;
-let _syncTriggerTimer: ReturnType<typeof setTimeout> | null = null;
-const SYNC_TRIGGER_DEBOUNCE_MS = 2000;
 
 const _engine = new SyncEngine();
 
@@ -54,39 +46,15 @@ export function rehydrateFromDb(entities?: string[]): Promise<Record<string, unk
 export function initialSync(token: string, userId?: string): Promise<'done' | 'partial'> { return _engine.initialSync(token, userId); }
 export function resumeInitialSync(token: string, userId?: string) { return _engine.resumeInitialSync(token, userId); }
 
-// Debounced sync trigger (cross-module callbacks)
-export function setSyncTriggerCallback(fn: () => void) { _syncTriggerCallback = fn; }
-export function triggerSyncDebounced(): void {
-  if (!_syncTriggerCallback) {
-    log.warn('triggerSyncDebounced called but _syncTriggerCallback is null');
-    return;
-  }
-  if (_syncTriggerTimer) clearTimeout(_syncTriggerTimer);
-  _syncTriggerTimer = setTimeout(async () => {
-    _syncTriggerTimer = null;
-    log.debug('Debounced sync trigger firing');
-    _syncTriggerCallback?.();
-    // After runSync completes, check for remaining pending items
-    const { getQueueCount: checkQueueCount } = await import('../../db/syncQueue');
-    const remaining = await checkQueueCount();
-    if (remaining > 0) {
-      triggerSyncDebounced();
-    }
-  }, SYNC_TRIGGER_DEBOUNCE_MS);
-}
-export function clearSyncTrigger(): void {
-  if (_syncTriggerTimer) { clearTimeout(_syncTriggerTimer); _syncTriggerTimer = null; }
-}
+// Debounced sync trigger (delegated to engine)
+export function setSyncTriggerCallback(fn: () => void) { _engine.setSyncTriggerCallback(fn); }
+export function triggerSyncDebounced(): void { _engine.triggerSyncDebounced(); }
+export function clearSyncTrigger(): void { _engine.clearSyncTrigger(); }
 
-// Migration flags (forwarded to engine)
-let _migrationDone = false;
-export function resetMigrationFlag() { _migrationDone = false; _engine.setMigrationDone(false); }
-export function setMigrationDone() { _migrationDone = true; _engine.setMigrationDone(true); }
-export function isMigrationDone() { return _migrationDone; }
-
-// Orphan recovery reset (for testing)
-let _orphanRecoveryDone = false;
-export function resetOrphanRecoveryFlag() { _orphanRecoveryDone = false; }
+// Migration flags (delegated to engine)
+export function resetMigrationFlag() { _engine.setMigrationDone(false); }
+export function setMigrationDone() { _engine.setMigrationDone(true); }
+export function isMigrationDone() { return _engine.getMigrationDone(); }
 
 // applyServerChanges (used by useAppStore)
 export function applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<Record<string, unknown>> {
