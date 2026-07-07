@@ -1,11 +1,13 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   computeCandidatePool, buildIndex, retrieveTopK,
-  isAIRecommendAvailable, parseSmartQuery, semanticSearchReflections,
+  isAIRecommendAvailable,
   createLogger,
 } from '@egoless-do/core';
 import type { MindReflection, SmartQueryResult, SmartQueryFilters, TrailFilters } from '@egoless-do/core';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+
 import { useSearchHistory } from './useSearchHistory';
+import { runAIPhase2, runAIPhase3, mergeResults } from './searchPipeline';
 
 const log = createLogger('Reflections');
 
@@ -161,86 +163,28 @@ export function useQuickTrailSearch(
   // ── Search history ─────────────────────────────────────────────
   const { searchHistory, addToHistory } = useSearchHistory();
 
-  // ── AI Pipeline 共享逻辑 ───────────────────────────────────────
-  interface PipelineResult {
-    results: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>;
-    smartResult: SmartQueryResult | null;
-    aiDegraded: boolean;
-  }
-
-  const runAIPhase2 = useCallback(async (
-    reflections: MindReflection[],
+  // ── AI Pipeline — thin wrappers over pure functions ───────────────
+  const runAIPhase2Wrapped = useCallback(async (
+    refs: MindReflection[],
     trimmed: string,
-    candidates: MindReflection[],
-    currentFilters: TrailFilters,
+    cands: MindReflection[],
+    curFilters: TrailFilters,
     allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>,
     existingIds: Set<string>,
-  ): Promise<{ smartResult: SmartQueryResult | null; shouldReturn: boolean }> => {
+  ) => {
     if (!aiAvailable) return { smartResult: null, shouldReturn: false };
-    try {
-      const result = await parseSmartQuery(reflections, trimmed, chatHistoryRef.current);
-      if (result.question && chatHistoryRef.current.length < 3) {
-        return { smartResult: result, shouldReturn: true };
-      }
-      if (result.topic || (result.filters && Object.keys(result.filters).length > 0)) {
-        const newFilters: TrailFilters = {
-          timeRange: result.filters.timeRange || currentFilters.timeRange,
-          tags: result.filters.tags?.length ? result.filters.tags : currentFilters.tags,
-          moods: result.filters.moods?.length ? result.filters.moods : currentFilters.moods,
-        };
-        const newCandidates = computeCandidatePool(reflections, newFilters);
-        const newIndex = buildIndex(newCandidates);
-        const topic = result.topic || trimmed;
-        const newScored = retrieveTopK(topic, newIndex, 20);
-        for (const s of newScored) {
-          if (!existingIds.has(s.index.id)) {
-            const ref = newCandidates.find(r => r.id === s.index.id);
-            if (ref) { allResults.push({ ref, score: s.score, source: 'direct' }); existingIds.add(ref.id); }
-          }
-        }
-        return { smartResult: result, shouldReturn: false };
-      }
-      return { smartResult: null, shouldReturn: false };
-    } catch (e) {
-      log.debug('AI Phase 2 failed:', e);
-      return { smartResult: null, shouldReturn: false };
-    }
+    return runAIPhase2(refs, trimmed, cands, curFilters, allResults, existingIds, chatHistoryRef.current);
   }, [aiAvailable]);
 
-  const runAIPhase3 = useCallback(async (
-    reflections: MindReflection[],
+  const runAIPhase3Wrapped = useCallback(async (
+    refs: MindReflection[],
     trimmed: string,
     allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>,
     existingIds: Set<string>,
-  ): Promise<{ count: number; failed: boolean }> => {
+  ) => {
     if (!aiAvailable) return { count: 0, failed: false };
-    try {
-      const semanticResults = await semanticSearchReflections(reflections, trimmed);
-      if (semanticResults.length > 0) {
-        const sorted = semanticResults.sort((a, b) => b.relevance - a.relevance);
-        for (const sr of sorted) {
-          const ref = reflections[sr.reflectionIndex];
-          if (ref && !existingIds.has(ref.id)) {
-            allResults.push({ ref, score: sr.relevance * 0.5, source: 'extended' });
-            existingIds.add(ref.id);
-          }
-        }
-        return { count: semanticResults.length, failed: false };
-      }
-      return { count: 0, failed: false };
-    } catch (e) {
-      log.debug('AI Phase 3 failed:', e);
-      return { count: 0, failed: true };
-    }
+    return runAIPhase3(refs, trimmed, allResults, existingIds);
   }, [aiAvailable]);
-
-  const mergeResults = useCallback((
-    allResults: Array<{ ref: MindReflection; score: number; source: 'direct' | 'extended' }>,
-  ): MindReflection[] => {
-    const direct = allResults.filter(r => r.source === 'direct').sort((a, b) => b.score - a.score);
-    const extended = allResults.filter(r => r.source === 'extended').sort((a, b) => b.score - a.score);
-    return [...direct, ...extended].map(r => r.ref);
-  }, []);
 
   // ── Handlers ──────────────────────────────────────────────────
   const toggleTag = useCallback((tag: string) => {
@@ -333,7 +277,7 @@ export function useQuickTrailSearch(
       // Phase 2: Intent understanding
       if (allResults.length <= 3) {
         updateStep('phase2', { status: 'loading' });
-        const { smartResult: sr, shouldReturn } = await runAIPhase2(reflections, trimmed, candidates, filters, allResults, existingIds);
+        const { smartResult: sr, shouldReturn } = await runAIPhase2Wrapped(reflections, trimmed, candidates, filters, allResults, existingIds);
         if (sr) setSmartResult(sr);
         if (shouldReturn) {
           updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
@@ -353,7 +297,7 @@ export function useQuickTrailSearch(
       // Phase 3: Semantic expansion
       if (allResults.length <= 3) {
         updateStep('phase3', { status: 'loading' });
-        const { count, failed } = await runAIPhase3(reflections, trimmed, allResults, existingIds);
+        const { count, failed } = await runAIPhase3Wrapped(reflections, trimmed, allResults, existingIds);
         if (failed) { setAiDegraded(true); updateStep('phase3', { status: 'error', detail: T('searchPhaseSemanticFail') }); }
         else updateStep('phase3', { status: 'done', detail: count > 0 ? T('searchPhaseSemanticResult').replace('{n}', String(count)) : T('searchPhaseSemanticEmpty') });
       } else {
@@ -392,7 +336,7 @@ export function useQuickTrailSearch(
       if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
       analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
-  }, [searchQuery, reflections, candidates, filters, aiAvailable, runAIPhase2, runAIPhase3, mergeResults, updateStep, addToHistory, T]);
+  }, [searchQuery, reflections, candidates, filters, aiAvailable, runAIPhase2Wrapped, runAIPhase3Wrapped, updateStep, addToHistory, T]);
 
   // AI on-demand search (Phase 2 + 3, appends to local results)
   const handleAISearch = useCallback(async () => {
@@ -417,7 +361,7 @@ export function useQuickTrailSearch(
         matchResults.map(r => ({ ref: r, score: 0, source: 'direct' as const }));
 
       // Phase 2
-      const { smartResult: sr, shouldReturn } = await runAIPhase2(reflections, trimmed, [], filters, allResults, existingIds);
+      const { smartResult: sr, shouldReturn } = await runAIPhase2Wrapped(reflections, trimmed, [], filters, allResults, existingIds);
       if (sr) setSmartResult(sr);
       if (shouldReturn) {
         updateStep('phase2', { status: 'done', detail: T('searchPhaseIntentQuestion') });
@@ -459,7 +403,7 @@ export function useQuickTrailSearch(
       if (analyzingTimerRef.current) clearTimeout(analyzingTimerRef.current);
       analyzingTimerRef.current = setTimeout(() => setIsAnalyzing(false), 2000);
     }
-  }, [searchQuery, reflections, matchResults, filters, aiAvailable, runAIPhase2, runAIPhase3, mergeResults, updateStep, addToHistory, T]);
+  }, [searchQuery, reflections, matchResults, filters, aiAvailable, runAIPhase2Wrapped, runAIPhase3Wrapped, updateStep, addToHistory, T]);
 
   const handleSmartAnswer = useCallback((answer: string) => {
     setChatHistory(prev => {
