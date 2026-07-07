@@ -646,4 +646,7 @@ export function createPlanSlice(
         } catch (err) {
           log.error(err, { context: 'delayed plan notification' });
         }
-     
+      }
+    },
+  });
+}
