@@ -1,10 +1,10 @@
 import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr } from '@egoless-do/core';
-import type { MindReflection ,
+import {
   filterReflections, groupReflectionsByDate, computeDynamicTagCounts, computeDynamicMoodCounts,
   computeMoodTrend, computeWritingHeatmap, computeTagCooccurrence,
-  computeSmartCollections, type SmartCollection,
-  type ReflectionFilters, DEFAULT_REFLECTION_FILTERS,
-  type MoodTrendPoint, type HeatmapDay, type TagGraph,
+  computeSmartCollections, DEFAULT_REFLECTION_FILTERS,
+  type MindReflection, type SmartCollection,
+  type ReflectionFilters, type MoodTrendPoint, type HeatmapDay, type TagGraph,
 } from '@egoless-do/core';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { Share } from 'react-native';
