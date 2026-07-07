@@ -1,34 +1,36 @@
-import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import {
-  View, Text, ScrollView, FlatList, TouchableOpacity,
-  StatusBar, Modal, TextInput,
-  KeyboardAvoidingView, Platform,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 import { THEMES, COLORS, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
 import type { CheckinEntry, Habit } from '@egoless-do/core';
-
-const log = createLogger('Home');
-import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
-import { useRootNavigation } from '../../../navigation/hooks';
-import { useNavigateToTab } from '../../../navigation/useAppNavigation';
-import SimpleHeader from '../../../navigation/SimpleHeader';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   Scale, Footprints,
   Droplets, Pencil, Check, X, Star, Sparkles,
   ClipboardList, Target, BarChart3,
   ChevronLeft, ChevronRight, Calendar,
 } from 'lucide-react-native';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import {
+  View, Text, ScrollView, FlatList, TouchableOpacity,
+  StatusBar, Modal, TextInput,
+  KeyboardAvoidingView, Platform,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme, useT, ProgressBar, Checkbox, ThemedInput } from '../../../components/UI';
+import SimpleHeader from '../../../navigation/SimpleHeader';
+import { useRootNavigation } from '../../../navigation/hooks';
+import { useNavigateToTab } from '../../../navigation/useAppNavigation';
+import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useDateNavigation } from '../hooks/useDateNavigation';
+
+const log = createLogger('Home');
+import Banner from '../components/Banner';
 import CheckinStatsModal from '../components/CheckinStatsModal';
+import DateBar from '../components/DateBar';
+import DelayedReminder from '../components/DelayedReminder';
+import GraceReminder from '../components/GraceReminder';
 import HomeBubble from '../components/HomeBubble';
 import HomeFoodSection from '../components/HomeFoodSection';
 import HomePlanSection from '../components/HomePlanSection';
-import DateBar from '../components/DateBar';
-import Banner from '../components/Banner';
-import GraceReminder from '../components/GraceReminder';
-import DelayedReminder from '../components/DelayedReminder';
 
 type CheckinStatus = 'draft' | 'done' | 'editing';
 
@@ -87,8 +89,7 @@ export default function HomeScreen() {
   const nav   = useRootNavigation();
 
   // ── Date state ──
-  const [viewDate, setViewDate] = useState(dateStr());
-  const isToday = viewDate === dateStr();
+  const { viewDate, isToday, goToDate, onTouchStart, onTouchEnd, viewDateRef } = useDateNavigation();
 
   const weightUnit = useShallowStore(s => s.weightUnit);
 
@@ -167,39 +168,13 @@ export default function HomeScreen() {
   // Section 3: Gesture Handling & Effects
   // ═══════════════════════════════════════════════════════════════
 
-  // ── Swipe gesture (instant page switch) ──
-  const touchStartX = useRef(0);
-  const touchStartY = useRef(0);
-  const viewDateRef = useRef(viewDate);
-  viewDateRef.current = viewDate;
+  // ── Swipe gesture (instant page switch) — handled by useDateNavigation ──
   const noteRef = useRef(note);
   noteRef.current = note;
   const weightRef = useRef(weight);
   weightRef.current = weight;
   const localDoneRef = useRef(localDone);
   localDoneRef.current = localDone;
-
-  const onTouchStart = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    touchStartX.current = e.nativeEvent.pageX;
-    touchStartY.current = e.nativeEvent.pageY;
-  }, []);
-
-  const onTouchEnd = useCallback((e: { nativeEvent: { pageX: number; pageY: number } }) => {
-    const dx = e.nativeEvent.pageX - touchStartX.current;
-    const dy = e.nativeEvent.pageY - touchStartY.current;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.2) {
-      if (dx < 0) {
-        const nextDate = addDays(viewDateRef.current, 1);
-        if (nextDate <= dateStr()) setViewDate(nextDate);
-      } else {
-        setViewDate(addDays(viewDateRef.current, -1));
-      }
-    }
-  }, []);
-
-  const goToDate = useCallback((target: string) => {
-    setViewDate(target);
-  }, []);
 
   // ── Re-sync local state when todayRecord changes ──
   useEffect(() => {
