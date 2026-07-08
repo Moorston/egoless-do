@@ -193,6 +193,15 @@ routerAdd("GET", "/api/sync/check", function(e) {
     function buildUserFilter(userId, sinceDate) {
       return "user_id = '" + escapeFilterValue(userId) + "'";
     }
+    function safeFindRecords(app, coll, filter, limit, offset) {
+      try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
+        try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
+          try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
+            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+          }
+        }
+      }
+    }
 
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;

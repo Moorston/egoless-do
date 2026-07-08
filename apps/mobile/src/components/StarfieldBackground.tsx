@@ -74,12 +74,13 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
     mountedRef.current = true;
     const animate = () => {
       if (!mountedRef.current) return;
+      const introParallel = Animated.parallel([
+        Animated.timing(opacity, { toValue: maxOpacity, duration: 2000, useNativeDriver: true }),
+        Animated.spring(scale, { toValue: 1, friction: 2, tension: 20, useNativeDriver: true }),
+      ]);
       const intro = Animated.sequence([
         Animated.delay(Math.random() * 3000),
-        Animated.parallel([
-          Animated.timing(opacity, { toValue: maxOpacity, duration: 2000, useNativeDriver: true }),
-          Animated.spring(scale, { toValue: 1, friction: 2, tension: 20, useNativeDriver: true }),
-        }),
+        introParallel,
       ]);
       activeAnimRef.current = intro;
       intro.start(() => {
@@ -181,12 +182,13 @@ function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowCol
     mountedRef.current = true;
     const animate = () => {
       if (!mountedRef.current) return;
+      const introParallel = Animated.parallel([
+        Animated.timing(opacity, { toValue: maxOpacity, duration: 1500, useNativeDriver: true }),
+        Animated.spring(scale, { toValue: 1, friction: 3, tension: 30, useNativeDriver: true }),
+      ]);
       const intro = Animated.sequence([
         Animated.delay(Math.random() * 2000),
-        Animated.parallel([
-          Animated.timing(opacity, { toValue: maxOpacity, duration: 1500, useNativeDriver: true }),
-          Animated.spring(scale, { toValue: 1, friction: 3, tension: 30, useNativeDriver: true }),
-        }),
+        introParallel,
       ]);
       activeAnimRef.current = intro;
       intro.start(() => {
@@ -255,7 +257,7 @@ function ShootingStar({ delay: initialDelay, screenW, screenH }: { delay: number
       translateX.setValue(startX);
       translateY.setValue(startY);
 
-      Animated.sequence([
+      const shotAnim = [
         Animated.delay(initialDelay + Math.random() * 10000),
         Animated.parallel([
           Animated.timing(opacity, { toValue: 1, duration: 50, useNativeDriver: true }),
@@ -269,7 +271,8 @@ function ShootingStar({ delay: initialDelay, screenW, screenH }: { delay: number
           Animated.timing(opacity, { toValue: 0, duration: 200, useNativeDriver: true }),
           Animated.timing(tailScale, { toValue: 0, duration: 200, useNativeDriver: true }),
         ]),
-      ]).start(() => {
+      ];
+      Animated.sequence(shotAnim).start(() => {
         if (!mountedRef.current) return;
         timerRef.current = setTimeout(animate, 3000 + Math.random() * 8000);
       });

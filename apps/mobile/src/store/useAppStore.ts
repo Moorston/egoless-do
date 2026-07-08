@@ -179,16 +179,23 @@ export const useAppStore = create<MobileStore>()(
     }, async () => {
       await resetSyncState();
     })(...a);
-    const foodSlice = createFoodSlice(adapter, persistProfileSettings, triggerAutoSync)(...a);
-    const checkinSlice = createCheckinSlice(adapter, triggerAutoSync)(...a);
-    const profileSlice = createProfileSlice(adapter)(...a);
-    const settingsSlice = createSettingsSlice(persistProfileSettings, () => {
+    // StateCreator factories (needed by createMobileUiSlice before resolution)
+    const foodCreator = createFoodSlice(adapter, persistProfileSettings, triggerAutoSync);
+    const checkinCreator = createCheckinSlice(adapter, triggerAutoSync);
+    const profileCreator = createProfileSlice(adapter);
+    const settingsCreator = createSettingsSlice(persistProfileSettings, () => {
       const s = useAppStore.getState();
       useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore);
-    })(...a);
-    const reflectionSlice = createReflectionSlice(adapter, undefined, persistProfileSettings)(...a);
+    });
+    const reflectionCreator = createReflectionSlice(adapter, undefined, persistProfileSettings);
+    // Resolve slices for store composition
+    const foodSlice = foodCreator(...a);
+    const checkinSlice = checkinCreator(...a);
+    const profileSlice = profileCreator(...a);
+    const settingsSlice = settingsCreator(...a);
+    const reflectionSlice = reflectionCreator(...a);
     const mobileUiSlice = createMobileUiSlice(
-      adapter, foodSlice, checkinSlice, profileSlice, settingsSlice, reflectionSlice,
+      adapter, foodCreator, checkinCreator, profileCreator, settingsCreator, reflectionCreator,
       () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); },
       persistProfileSettings, () => resetSyncState(),
     )(...a);
