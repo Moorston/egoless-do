@@ -358,9 +358,11 @@ export default function StarfieldBackground() {
   const brightStars = scaledStars.filter(s => s.size >= 4);
   const normalStars = scaledStars.filter(s => s.size < 4);
   // 低端设备跳过星座连线计算
+  // NOTE: isLowEndDevice is a module-level constant — including it in deps is harmless
+  // but unnecessary. Kept for clarity that the computation depends on device capability.
   const constellationLines = useMemo(
     () => isLowEndDevice ? [] : generateConstellations(brightStars),
-    [brightStars, isLowEndDevice]
+    [brightStars] // eslint-disable-line react-hooks/exhaustive-deps -- isLowEndDevice is constant
   );
 
   return (

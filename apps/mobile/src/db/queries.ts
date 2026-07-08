@@ -70,7 +70,8 @@ export async function dbGetCheckins(db: SQLiteDatabase): Promise<CheckinEntry[]>
 
 // ── Safe JSON parse ──────────────────────────────────────────────
 function safeParse<T>(raw: string | null | undefined, fallback: T): T {
-  try { return JSON.parse(raw ?? '') as T; } catch { return fallback; }
+  if (raw == null) return fallback; // Distinguish null/undefined from empty string
+  try { return JSON.parse(raw) as T; } catch { return fallback; }
 }
 
 // ── Row mappers ───────────────────────────────────────────────────
