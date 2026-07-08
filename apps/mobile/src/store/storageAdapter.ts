@@ -104,6 +104,13 @@ export const mobileStorageAdapter: StorageAdapter = {
   },
 
   // ── Transaction support ──────────────────────────────────────
+  // NOTE: withDbLock already serializes all database access, making the inner
+  // BEGIN TRANSACTION redundant for single-writer scenarios. The nested
+  // transaction pattern is safe because withDbLock ensures only one writer
+  // at a time — no deadlock risk. However, if a caller calls transaction()
+  // from within another withDbLock context, SQLite may deadlock.
+  // Use withDbLock directly for simple serialization, and this transaction()
+  // method only when you need atomic rollback across multiple operations.
   async transaction<T>(fn: () => Promise<T>): Promise<T> {
     const db = await openDatabase();
     return withDbLock(async () => {

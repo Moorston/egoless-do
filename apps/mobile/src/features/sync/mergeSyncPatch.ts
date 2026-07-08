@@ -5,27 +5,12 @@
 import type { AIMode, ModelConfig } from '@egoless-do/core';
 
 import type { MobileStore } from '../../store/useAppStore';
+import { ENTITY_STORE_KEY } from './SyncApplyService';
 
-/** Maps Zustand store keys to entity names used by rehydrateFromDb / sync. */
-export const STORE_KEY_TO_ENTITY: Record<string, string> = {
-  habits: 'habit', reflections: 'reflection', fastingHistory: 'fasting',
-  foodLog: 'food', checkinHistory: 'checkin', exerciseLog: 'exercise',
-  medHistory: 'meditation', userProfile: 'profile',
-  plans: 'plan', planItems: 'planItem', planItemCheckins: 'planItemCheckin',
-  dailyCustomTodos: 'dailyCustomTodo', dailyTodoHistory: 'dailyTodoHistory',
-  graceHistory: 'grace', thoughtTrails: 'thoughtTrail',
-  trailNotes: 'trailNote', reflectionLinks: 'reflectionLink',
-  checkinReviews: 'checkinReview',
-  bodyGoals: 'bodyGoal', bodyPlans: 'bodyPlan',
-  weightRecords: 'weightRecord', bodyCheckins: 'bodyCheckin',
-  sleepHistory: 'sleep', giveHistory: 'give',
-  motivationLog: 'motivationEntry', customWuxingMaps: 'customWuxing',
-  visions: 'vision', visionPractices: 'visionPractice', dedications: 'dedication',
-  mantraDefs: 'mantraDef', mantraSessions: 'mantraSession',
-  readingSessions: 'sutraReading',
-  fearEntries: 'fearEntry', courageEntries: 'courageEntry', achievements: 'fearAchievement',
-  breathHistory: 'breath', sessions: 'zhiguanSession',
-};
+/** Maps Zustand store keys to entity names — derived from SyncApplyService.ENTITY_STORE_KEY (reverse). */
+export const STORE_KEY_TO_ENTITY: Record<string, string> = Object.fromEntries(
+  Object.entries(ENTITY_STORE_KEY).map(([k, v]) => [v, k])
+);
 
 export interface SyncMergeResult {
   storePatch: Partial<MobileStore>;

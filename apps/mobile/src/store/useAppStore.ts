@@ -150,57 +150,68 @@ const triggerAutoSync = () => _autoSyncCallback?.();
 
 export const useAppStore = create<MobileStore>()(
   (...a) => {
-    const store = {
-      ...createAuthSlice(adapter, () => { runSync().catch((e) => log.error(e)); }, async () => {
-        // onLogout: soft reset — clear sync metadata, preserve local data
-        await softResetSyncState();
-        resetMigrationFlag();
-      }, async (token, userId) => {
-        // Mobile pullServerData: phased initial sync → SQLite → store
-        await initialSync(token, userId);
-        // Flush pending writes before rehydration to avoid losing optimistic updates
-        await flushWrites();
-        // Rehydrate store from SQLite after Phase 1 completes
-        const dbPatch = await rehydrateFromDb();
-        if (Object.keys(dbPatch).length) {
-          // Prevent rehydration from resurrecting any locally-deleted records.
-          // For each array in the patch, filter out records whose IDs are marked
-          // as deleted in the current in-memory store.
-          const current = useAppStore.getState();
-          for (const key of Object.keys(dbPatch)) {
-            const patchVal = dbPatch[key];
-            if (!Array.isArray(patchVal)) continue;
-            const currentVal = (current as Record<string, unknown>)[key];
-            if (!Array.isArray(currentVal)) continue;
-            const deletedIds = new Set(
-              currentVal.filter((r: Record<string, unknown>) => r.deleted).map((r: Record<string, unknown>) => r.id as string),
-            );
-            if (deletedIds.size > 0) {
-              dbPatch[key] = patchVal.filter((r: Record<string, unknown>) => !deletedIds.has(r.id as string));
-            }
+    // Extract slice factories for readability (avoids deeply nested inline calls)
+    const authSlice = createAuthSlice(adapter, () => { runSync().catch((e) => log.error(e)); }, async () => {
+      await softResetSyncState();
+      resetMigrationFlag();
+    }, async (token, userId) => {
+      await initialSync(token, userId);
+      await flushWrites();
+      const dbPatch = await rehydrateFromDb();
+      if (Object.keys(dbPatch).length) {
+        const current = useAppStore.getState();
+        for (const key of Object.keys(dbPatch)) {
+          const patchVal = dbPatch[key];
+          if (!Array.isArray(patchVal)) continue;
+          const currentVal = (current as Record<string, unknown>)[key];
+          if (!Array.isArray(currentVal)) continue;
+          const deletedIds = new Set(
+            currentVal.filter((r: Record<string, unknown>) => r.deleted).map((r: Record<string, unknown>) => r.id as string),
+          );
+          if (deletedIds.size > 0) {
+            dbPatch[key] = patchVal.filter((r: Record<string, unknown>) => !deletedIds.has(r.id as string));
           }
-          useAppStore.setState(dbPatch as PartialMobileStore);
-          if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
-          if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
         }
-      }, async () => {
-        // onClearData: hard logout — clear all local data
-        await resetSyncState();
-      })(...a),
-      ...createHabitSlice(adapter, triggerAutoSync)(...a),
-      ...createReflectionSlice(adapter, undefined, persistProfileSettings)(...a),
-      ...createSleepSlice(adapter, triggerAutoSync)(...a),
-      ...createMobileUiSlice(adapter, createFoodSlice(adapter, persistProfileSettings, triggerAutoSync), createCheckinSlice(adapter, triggerAutoSync), createProfileSlice(adapter), createSettingsSlice(persistProfileSettings, () => { const s = useAppStore.getState(); useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore); }), createReflectionSlice(adapter, undefined, persistProfileSettings), () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); }, persistProfileSettings, () => resetSyncState())(...a),
-      ...createPlanSlice(adapter)(...a),
-      ...createRecycleBinSlice(adapter)(...a),
-      ...createThoughtTrailSlice(adapter, persistProfileSettings)(...a),
-      ...createReviewSlice(adapter, triggerAutoSync)(...a),
-      ...createBodySlice(adapter, triggerAutoSync)(...a),
-      ...createDietSlice(adapter, triggerAutoSync, persistProfileSettings)(...a),
-      ...createPracticeSlice(adapter, triggerAutoSync)(...a),
-      ...createMindSlice(adapter, triggerAutoSync)(...a),
-      ...createMantraSlice(adapter, triggerAutoSync)(...a),
-      ...createZhiguanSlice(adapter, () => useAppStore.getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a),
+        useAppStore.setState(dbPatch as PartialMobileStore);
+        if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
+        if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
+      }
+    }, async () => {
+      await resetSyncState();
+    })(...a);
+    const foodSlice = createFoodSlice(adapter, persistProfileSettings, triggerAutoSync)(...a);
+    const checkinSlice = createCheckinSlice(adapter, triggerAutoSync)(...a);
+    const profileSlice = createProfileSlice(adapter)(...a);
+    const settingsSlice = createSettingsSlice(persistProfileSettings, () => {
+      const s = useAppStore.getState();
+      useAppStore.setState({ userProfile: { ...(s.userProfile ?? {}), updatedAt: Date.now() } } as PartialMobileStore);
+    })(...a);
+    const reflectionSlice = createReflectionSlice(adapter, undefined, persistProfileSettings)(...a);
+    const mobileUiSlice = createMobileUiSlice(
+      adapter, foodSlice, checkinSlice, profileSlice, settingsSlice, reflectionSlice,
+      () => { resetSyncState().catch((e) => log.error(e)); resetMigrationFlag(); },
+      persistProfileSettings, () => resetSyncState(),
+    )(...a);
+    const habitSlice = createHabitSlice(adapter, triggerAutoSync)(...a);
+    const sleepSlice = createSleepSlice(adapter, triggerAutoSync)(...a);
+    const planSlice = createPlanSlice(adapter)(...a);
+    const recycleBinSlice = createRecycleBinSlice(adapter)(...a);
+    const thoughtTrailSlice = createThoughtTrailSlice(adapter, persistProfileSettings)(...a);
+    const reviewSlice = createReviewSlice(adapter, triggerAutoSync)(...a);
+    const bodySlice = createBodySlice(adapter, triggerAutoSync)(...a);
+    const dietSlice = createDietSlice(adapter, triggerAutoSync, persistProfileSettings)(...a);
+    const practiceSlice = createPracticeSlice(adapter, triggerAutoSync)(...a);
+    const mindSlice = createMindSlice(adapter, triggerAutoSync)(...a);
+    const mantraSlice = createMantraSlice(adapter, triggerAutoSync)(...a);
+    const zhiguanSlice = createZhiguanSlice(adapter, () => useAppStore.getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a);
+
+    const store = {
+      ...authSlice,
+      ...habitSlice, ...reflectionSlice, ...sleepSlice,
+      ...foodSlice, ...checkinSlice, ...profileSlice, ...settingsSlice,
+      ...mobileUiSlice, ...planSlice, ...recycleBinSlice, ...thoughtTrailSlice,
+      ...reviewSlice, ...bodySlice, ...dietSlice, ...practiceSlice,
+      ...mindSlice, ...mantraSlice, ...zhiguanSlice,
     };
 
     // Connect persist error handler: WriteBatcher failures → store.persistErrors

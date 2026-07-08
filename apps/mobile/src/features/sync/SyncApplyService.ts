@@ -50,26 +50,34 @@ export const ENTITY_STORE_KEY: Record<string, string> = {
   breath: 'breathHistory', zhiguanSession: 'sessions',
 };
 
+// DEV-only validation: ensure all SCHEMAS entities have a store key mapping
+if (__DEV__) {
+  const registeredEntities = new Set(Object.keys(SCHEMAS));
+  const mappedEntities = new Set(Object.keys(ENTITY_STORE_KEY));
+  for (const entity of registeredEntities) {
+    if (!mappedEntities.has(entity)) {
+      console.warn(`[SyncApply] Entity "${entity}" found in SCHEMAS but missing from ENTITY_STORE_KEY`);
+    }
+  }
+}
+
 // ── Constants: Collection name → Entity mapping ─────────────────────
-export const ENTITY_COLL_MAP: Record<string, string> = {
-  habits: 'habit', mind_reflections: 'reflection', fasting_sessions: 'fasting',
-  food_entries: 'food', checkin_records: 'checkin', meditation_history: 'meditation',
-  user_profiles: 'profile', exercise_entries: 'exercise', plans: 'plan',
-  plan_items: 'planItem', plan_item_checkins: 'planItemCheckin',
-  daily_custom_todos: 'dailyCustomTodo', daily_todo_history: 'dailyTodoHistory',
-  grace_history: 'grace', thought_trails: 'thoughtTrail', trail_notes: 'trailNote',
-  reflection_links: 'reflectionLink', ai_configs: 'aiConfig', checkin_reviews: 'checkinReview',
-  body_goals: 'bodyGoal', body_plans: 'bodyPlan',
-  body_weight_records: 'weightRecord', body_checkins: 'bodyCheckin',
-  sleep_records: 'sleep',
-  give_entries: 'give',
-  eating_motivations: 'motivationEntry', custom_wuxing_maps: 'customWuxing',
-  visions: 'vision', vision_practices: 'visionPractice', dedications: 'dedication',
-  mantra_defs: 'mantraDef', mantra_sessions: 'mantraSession',
-  sutra_reading_sessions: 'sutraReading',
-  fear_entries: 'fearEntry', courage_entries: 'courageEntry', fear_achievements: 'fearAchievement',
-  breath_records: 'breath', zhiguan_sessions: 'zhiguanSession',
+// Derive from SCHEMAS — the sqlite.table field is the canonical source for collection names
+const SCHEMA_COLLECTION_MAP: Record<string, string> = Object.fromEntries(
+  (Object.keys(SCHEMAS) as SyncEntity[]).map(k => [SCHEMAS[k].sqlite.table, k])
+);
+export const ENTITY_COLL_MAP: Record<string, string> = { ...SCHEMA_COLLECTION_MAP };
+
+// Add aliases for entities whose collection name differs between PocketBase and SQLite
+// (e.g., AI configs have a different collection name on the PB side)
+// Override any entries that differ from the auto-derived mapping
+const PB_COLLECTION_OVERRIDES: Record<string, string> = {
+  ai_configs: 'aiConfig',
+  // Add other PB-specific overrides here if needed
 };
+for (const [pbColl, entity] of Object.entries(PB_COLLECTION_OVERRIDES)) {
+  ENTITY_COLL_MAP[pbColl] = entity;
+}
 
 // ── Row mappers: Entity → Mapper function ───────────────────────────
 const _rowToEntityMap: Record<string, (row: Record<string, unknown>) => unknown> = {
