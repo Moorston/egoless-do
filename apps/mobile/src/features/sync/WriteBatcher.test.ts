@@ -34,7 +34,7 @@ import { WriteBatcher } from './WriteBatcher';
 
 describe('WriteBatcher', () => {
   let batcher: WriteBatcher;
-  let onFlushed: ReturnType<typeof vi.fn>;
+  let onFlushed: () => void;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -149,7 +149,7 @@ describe('WriteBatcher', () => {
     vi.setSystemTime(42);
 
     const onPersistError = vi.fn();
-    const b = new WriteBatcher(100, onFlushed, onPersistError);
+    const b = new WriteBatcher(100, onFlushed, onPersistError as unknown as (error: Error, entity: string, id: string) => void);
 
     mockRunAsync
       .mockRejectedValueOnce(new Error('transaction failed'))

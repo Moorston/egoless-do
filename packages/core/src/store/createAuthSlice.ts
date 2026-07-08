@@ -148,10 +148,14 @@ export function createAuthSlice(
       }
     },
 
-    logout() {
+    async logout() {
       const { auth } = get();
       if (auth.token && auth.refreshToken) {
-        apiLogout(auth.token, auth.refreshToken).catch((e: unknown) => log.error(e));
+        try {
+          await apiLogout(auth.token, auth.refreshToken);
+        } catch (e: unknown) {
+          log.error(e);
+        }
       }
       set({ auth: defaultAuthState });
       // Clear AI caches and reset service to prevent stale data leakage

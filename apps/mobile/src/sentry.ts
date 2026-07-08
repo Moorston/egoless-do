@@ -35,8 +35,6 @@ export function initSentry(): void {
     sessionTrackingIntervalMillis: 30_000,
     // Attach useful context
     attachStacktrace: true,
-    // Breadcrumbs from console calls
-    enableConsoleLogging: false, // We use createLogger → Sentry directly
     // Max breadcrumbs to keep
     maxBreadcrumbs: 50,
     // Ignore known noisy errors
@@ -47,6 +45,12 @@ export function initSentry(): void {
     ],
     // beforeSend: drop sensitive data
     beforeSend(event) {
+      // Strip PII from user context — keep only id for crash grouping
+      if (event.user) {
+        event.user = {
+          id: event.user.id ?? event.user.email ?? 'unknown',
+        };
+      }
       // Strip auth tokens from breadcrumbs if any leaked
       if (event.breadcrumbs) {
         event.breadcrumbs = event.breadcrumbs.map(b => {
@@ -108,14 +112,11 @@ export function addBreadcrumb(category: string, message: string, data?: Record<s
 /**
  * Set the current user context for Sentry.
  * Call after login with userId and optional email.
+ * Only the user id is sent to Sentry — email and name are stripped for privacy.
  */
 export function setSentryUser(user: { id: string; email?: string; name?: string }): void {
   if (!SENTRY_DSN) return;
-  Sentry.setUser({
-    id: user.id,
-    email: user.email,
-    username: user.name,
-  });
+  Sentry.setUser({ id: user.id });
 }
 
 /**

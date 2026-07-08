@@ -41,7 +41,7 @@ export class WriteBatcher {
         operation: 'upsert',
         changedFields: changedFields
           ? [...new Set([...(existing.changedFields ?? []), ...changedFields])]
-          : existing.changedFields,
+          : existing.changedFields ?? [],
       });
     } else {
       this._pendingWrites.set(key, { entity, id, data, operation: 'upsert', changedFields });

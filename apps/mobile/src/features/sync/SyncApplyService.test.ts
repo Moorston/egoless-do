@@ -1,6 +1,14 @@
 // ─── SyncApplyService tests ──────────────────────────────────────────
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
+// DOMException polyfill for test environment
+class TestDOMException extends Error {
+  constructor(message?: string, name?: string) {
+    super(message);
+    this.name = name ?? 'DOMException';
+  }
+}
+
 // ── Known entity keys (mirrors entities in SyncApplyService) ─────────
 const { MOCK_SCHEMAS } = vi.hoisted(() => {
   const keys = [
@@ -224,7 +232,7 @@ describe('SyncApplyService', () => {
 
       // Only alive records are mapped to the store
       expect(result.habits).toBeDefined();
-      expect(result.habits!.length).toBe(1);
+      expect((result.habits as unknown[]).length).toBe(1);
     });
 
     it('skips server record when local has newer updated_at (conflict resolution)', async () => {
@@ -332,7 +340,7 @@ describe('SyncApplyService', () => {
           checks++;
           return checks % 2 === 0; // even = true (record-level), odd = false (entity-level)
         },
-        throwIfAborted() { if (this.aborted) throw new DOMException('Aborted', 'AbortError'); },
+        throwIfAborted(this: { aborted: boolean }) { if (this.aborted) throw new TestDOMException('Aborted', 'AbortError'); },
         addEventListener() {},
         removeEventListener() {},
         dispatchEvent() { return true; },

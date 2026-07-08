@@ -137,7 +137,7 @@ export class SyncRealtimeController {
         if (checkErr instanceof KickedOutError) {
           // Import dynamically to avoid circular dependency
           const { useAppStore } = await import('../../store/useAppStore');
-          useAppStore.getState().logout();
+          await useAppStore.getState().logout();
           return;
         }
         log.warn(checkErr, { phase: 'poll-check' });
@@ -267,7 +267,7 @@ export class SyncRealtimeController {
       if (err instanceof KickedOutError) {
         // Import dynamically to avoid circular dependency
         const { useAppStore } = await import('../../store/useAppStore');
-        useAppStore.getState().logout();
+        await useAppStore.getState().logout();
         return;
       }
       log.warn(err, { phase: 'realtime-pull' });

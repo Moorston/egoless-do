@@ -2,6 +2,7 @@
 // Connects SyncService to the app lifecycle: foreground triggers sync,
 // token comes from Zustand store, server changes update store.
 import { registerPushToken, getSyncUrl, createLogger } from '@egoless-do/core';
+import type { RecycleBinItem } from '@egoless-do/core';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { AppState, Platform, type AppStateStatus } from 'react-native';
 
@@ -49,12 +50,12 @@ export function useSync() {
       }
     }
     setKickOutVisible(false);
-    useAppStore.getState().logout();
+    void useAppStore.getState().logout();
   }, []);
 
   const handleLogoutDirectly = useCallback(() => {
     setKickOutVisible(false);
-    useAppStore.getState().logout();
+    void useAppStore.getState().logout();
   }, []);
 
   // Wire up token provider & change handler once
@@ -121,7 +122,7 @@ export function useSync() {
     // Provide recycle bin IDs so sync can skip locally deleted items
     setDeletedIdsProvider(() => {
       const recycleBin = useAppStore.getState().recycleBin ?? [];
-      return new Set(recycleBin.map((r) => ((r as unknown) as Record<string, unknown>).id as string));
+      return new Set(recycleBin.map((r: RecycleBinItem) => r.id as string));
     });
   }, []);
 

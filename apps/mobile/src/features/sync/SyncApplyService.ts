@@ -6,6 +6,7 @@ import type { SyncEntity } from '@egoless-do/core';
 import { SCHEMAS, buildServerPayloadToRow, createLogger } from '@egoless-do/core';
 
 import { openDatabase, withDbLock } from '../../db/schema';
+import { isValidSqlName } from '../../db/sqlHelper';
 import {
   rowToHabit, rowToReflection, rowToFasting, rowToFood, rowToCheckin,
   rowToExercise, rowToMeditation, rowToProfile, rowToPlan, rowToPlanItem,
@@ -208,6 +209,8 @@ export class SyncApplyService {
     const config = ENTITY_CONFIG[entity];
     if (!config) return { applied: [], storeMapped: [] };
     const { table, pk } = config;
+    if (!isValidSqlName(table)) throw new Error(`Invalid table name: ${table}`);
+    if (!isValidSqlName(pk)) throw new Error(`Invalid pk name: ${pk}`);
 
     const alive = records.filter(r => r && !r.deleted);
     const dead = records.filter(r => r && r.deleted);
@@ -264,6 +267,9 @@ export class SyncApplyService {
       try {
         const cols = Object.keys(row);
         const vals = Object.values(row) as (string | number | null)[];
+        for (const col of cols) {
+          if (!isValidSqlName(col)) throw new Error(`Invalid column name: ${col}`);
+        }
         if (cols.length === 0) continue;
 
         const setClause = cols.map(c => `${c}=?`).join(',');
@@ -326,6 +332,8 @@ export class SyncApplyService {
           if (!ids?.length) continue;
           const config = ENTITY_CONFIG[entity];
           if (!config) continue;
+          if (!isValidSqlName(config.table)) throw new Error(`Invalid table name: ${config.table}`);
+          if (!isValidSqlName(config.pk)) throw new Error(`Invalid pk name: ${config.pk}`);
           const ph = ids.map(() => '?').join(',');
           await db.runAsync(`UPDATE ${config.table} SET synced=1 WHERE ${config.pk} IN (${ph})`, ids);
         }
@@ -334,6 +342,8 @@ export class SyncApplyService {
           if (!ids?.length) continue;
           const config = ENTITY_CONFIG[entity];
           if (!config) continue;
+          if (!isValidSqlName(config.table)) throw new Error(`Invalid table name: ${config.table}`);
+          if (!isValidSqlName(config.pk)) throw new Error(`Invalid pk name: ${config.pk}`);
           const ph = ids.map(() => '?').join(',');
           await db.runAsync(`UPDATE ${config.table} SET synced=1 WHERE ${config.pk} IN (${ph}) AND deleted=1`, ids);
         }

@@ -6,6 +6,7 @@ import {
 import type { SyncEntity, SyncPushResult, SyncPullResult } from '@egoless-do/core';
 
 import { openDatabase, getState, setState, withDbLock } from '../../db/schema';
+import { isValidSqlName } from '../../db/sqlHelper';
 import {
   drainQueue, removeQueueItems, getQueueCount, pruneStaleQueueItems,
   markQueueItemFailed, markQueueItemConflict, markQueueItemRetry, resetAllPendingForRetry,
@@ -207,6 +208,7 @@ export class SyncEngine {
     freshToken: () => string,
     lastSyncAt: number,
     signal: AbortSignal,
+    generation: number,
   ): Promise<{ pushedAnything: boolean; pushedItemCount: number; pushApplySucceeded: boolean; lastPushResult: SyncPushResult | null }> {
     let pushedAnything = false;
     let pushedItemCount = 0;
@@ -214,6 +216,12 @@ export class SyncEngine {
     let lastPushResult: SyncPushResult | null = null;
 
     for (let batch = 0; batch < 10; batch++) {
+      // Reset items stuck in 'syncing' status from a previous crashed sync
+      // before drainQueue so they get picked up again
+      try {
+        const { resetAllPendingForRetry: resetStuck } = await import('../../db/syncQueue');
+        await resetStuck();
+      } catch {}
       const items = await drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
       log.debug(`drainQueue batch ${batch + 1}: ${items.length} items`);
       if (!items.length) break;
@@ -275,6 +283,8 @@ export class SyncEngine {
             const config = ENTITY_CONFIG[item.entity];
             let resolved = false;
             if (config) {
+              if (!isValidSqlName(config.table)) throw new Error(`Invalid table name: ${config.table}`);
+              if (!isValidSqlName(config.pk)) throw new Error(`Invalid pk name: ${config.pk}`);
               // Server says record is deleted — mark local as deleted too
               if (rejection.error === 'deleted') {
                 const db = await openDatabase();
@@ -289,6 +299,9 @@ export class SyncEngine {
               if (row) {
                 const cols = Object.keys(row);
                 const vals = Object.values(row) as (string | number | null)[];
+                for (const col of cols) {
+                  if (!isValidSqlName(col)) throw new Error(`Invalid column name: ${col}`);
+                }
                 if (cols.length) {
                   const db = await openDatabase();
                   // Don't resurrect locally-deleted records
@@ -357,7 +370,7 @@ export class SyncEngine {
           if (pullResult?.data) {
             const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal);
             // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
-            if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
+            if (patch && Object.keys(patch).length && this._syncGeneration === generation) this._onChanges?.(patch);
             pushApplySucceeded = true;
           }
         } catch (pushPullErr) {
@@ -367,7 +380,7 @@ export class SyncEngine {
 
       // Update timestamps
       if (pushResult.serverTime) {
-        this.updateTimestamps(pushResult.serverTime);
+        this.updateTimestamps(pushResult.serverTime, generation);
       }
     }
 
@@ -383,7 +396,6 @@ export class SyncEngine {
     token: string,
     userId: string | undefined,
     freshToken: () => string,
-    lastSyncAt: number,
     signal: AbortSignal,
     myGeneration: number,
   ): Promise<void> {
@@ -407,7 +419,7 @@ export class SyncEngine {
       try {
         const cr = pullEntities
           ? { hasChanges: true, changed: Object.fromEntries(pullEntities.map(e => [e, 1])) }
-          : await apiSyncCheck(freshToken(), lastSyncAt, userId);
+          : await apiSyncCheck(freshToken(), this.lastSyncAt, userId);
         hasChanges = cr.hasChanges;
       } catch (checkErr) {
         if (this.isKickedOutError(checkErr)) { this.handleKickedOut(); return; }
@@ -418,9 +430,9 @@ export class SyncEngine {
         let pullResult: SyncPullResult | null = null;
         try {
           if (pullEntities) {
-            pullResult = await apiSyncPullPost(freshToken(), { entities: pullEntities, since: lastSyncAt > 0 ? lastSyncAt : undefined });
+            pullResult = await apiSyncPullPost(freshToken(), { entities: pullEntities, since: this.lastSyncAt > 0 ? this.lastSyncAt : undefined });
           } else {
-            pullResult = await apiSyncPull(freshToken(), userId, lastSyncAt > 0 ? lastSyncAt : undefined);
+            pullResult = await apiSyncPull(freshToken(), userId, this.lastSyncAt > 0 ? this.lastSyncAt : undefined);
           }
         } catch (pullErr) {
           if (this.isKickedOutError(pullErr)) { this.handleKickedOut(); return; }
@@ -456,9 +468,9 @@ export class SyncEngine {
     // Large-push safeguard: even when push was clean, check if server has new changes
     if (wasLargePush) {
       try {
-        const cr = await apiSyncCheck(freshToken(), lastSyncAt, userId);
+        const cr = await apiSyncCheck(freshToken(), this.lastSyncAt, userId);
         if (cr.hasChanges) {
-          const pullResult = await apiSyncPull(freshToken(), userId, lastSyncAt > 0 ? lastSyncAt : undefined);
+          const pullResult = await apiSyncPull(freshToken(), userId, this.lastSyncAt > 0 ? this.lastSyncAt : undefined);
           if (pullResult?.data) {
             const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal);
             // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
@@ -473,10 +485,8 @@ export class SyncEngine {
   }
 
   // ── Timestamp update helper ─────────────────────────────────────
-  private _currentSyncGeneration = 0;
-
-  private updateTimestamps(serverTime: number): void {
-    if (this._syncGeneration === this._currentSyncGeneration && serverTime > 0) {
+  private updateTimestamps(serverTime: number, generation: number): void {
+    if (this._syncGeneration === generation && serverTime > 0) {
       this._timestampManager.setLastSyncAt(Math.max(this._timestampManager.getLastSyncAt(), serverTime));
       this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
       this._timestampManager.updateClockOffset(serverTime);
@@ -485,16 +495,23 @@ export class SyncEngine {
 
   // ── Main sync ────────────────────────────────────────────────────
   async runSync(): Promise<void> {
-    // ── Concurrency guard ──────────────────────────────────────────────
-    if (this._syncing) {
-      if (Date.now() - this._syncingSince > SYNC_TIMEOUT_MS) {
-        log.warn('Previous sync timed out, aborting');
-        this._abortController?.abort();
-        this._abortController = null;
-        this._syncing = false;
-        this._syncGeneration++;
-      } else return;
+    // ── Concurrency guard (generation-based, avoids TOCTOU) ──
+    const myGeneration = ++this._syncGeneration;
+
+    // Abort previous sync if timed out
+    if (this._syncing && Date.now() - this._syncingSince > SYNC_TIMEOUT_MS) {
+      log.warn('Previous sync timed out, aborting');
+      this._abortController?.abort();
+      this._abortController = null;
+      this._syncing = false;
     }
+
+    // Another healthy sync is still running — defer
+    if (this._syncing) {
+      log.info('Sync already in progress, deferring');
+      return;
+    }
+
     if (this._initialSyncing) {
       log.info('Initial sync in progress, deferring runSync');
       this._pendingSyncAfterInit = true;
@@ -519,7 +536,7 @@ export class SyncEngine {
         }
         if (!token) {
           log.warn('No recovery possible, logging out');
-          useAppStore.getState().logout();
+          void useAppStore.getState().logout();
           this._syncing = false;
           return;
         }
@@ -540,9 +557,6 @@ export class SyncEngine {
     await this._timestampManager.loadClockOffset();
     this._abortController = new AbortController();
     const { signal } = this._abortController;
-    const myGeneration = ++this._syncGeneration;
-    this._currentSyncGeneration = myGeneration;
-    const currentLastSyncAt = this._timestampManager.getLastSyncAt();
 
     // Reset failed/conflict items back to pending so they get another chance
     await resetAllPendingForRetry().catch(e => log.error(e, { phase: 'resetFailed' }));
@@ -568,13 +582,14 @@ export class SyncEngine {
     // ── Execute phases ─────────────────────────────────────────────────
     try {
       // Push phase
-      const ctx = await this.executePush(token, userId, freshToken, currentLastSyncAt, signal);
+      const ctx = await this.executePush(token, userId, freshToken, this._timestampManager.getLastSyncAt(), signal, myGeneration);
       if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
+      if (this._syncGeneration !== myGeneration) { log.info('Sync superseded after push'); return; }
 
       // Pull phase
       await this.executePull(
         ctx.pushedAnything, ctx.pushedItemCount, ctx.lastPushResult, ctx.pushApplySucceeded,
-        token, userId, freshToken, this._timestampManager.getLastSyncAt(), signal,
+        token, userId, freshToken, signal,
         myGeneration,
       );
 
@@ -612,6 +627,7 @@ export class SyncEngine {
     try {
       const db = await openDatabase();
       for (const table of ALL_ENTITY_TABLES) {
+        if (!isValidSqlName(table)) { log.warn(`Skipping invalid table name: ${table}`); continue; }
         await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
       }
     } catch (e) {

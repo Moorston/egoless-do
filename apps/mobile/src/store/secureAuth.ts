@@ -40,8 +40,8 @@ export async function loadSecureTokens(): Promise<{ token: string; refreshToken:
 export async function clearSecureTokens(): Promise<void> {
   try {
     await Promise.all([
-      SecureStore.deleteItemAsync(TOKEN_KEY).catch(() => {}),
-      SecureStore.deleteItemAsync(REFRESH_KEY).catch(() => {}),
+      SecureStore.deleteItemAsync(TOKEN_KEY).catch((err) => { log.error(err, { phase: 'clearSecureTokens', key: TOKEN_KEY }); }),
+      SecureStore.deleteItemAsync(REFRESH_KEY).catch((err) => { log.error(err, { phase: 'clearSecureTokens', key: REFRESH_KEY }); }),
     ]);
   } catch (err) {
     log.error(err, { phase: 'clearSecureTokens' });

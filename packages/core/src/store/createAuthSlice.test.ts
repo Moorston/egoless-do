@@ -177,7 +177,7 @@ describe('createAuthSlice', () => {
   });
 
   describe('logout', () => {
-    it('resets auth state to default', () => {
+    it('resets auth state to default', async () => {
       const store = makeTestStore({
         auth: { ...defaultAuthState, isSignedIn: true, token: 't', refreshToken: 'r' },
       });
@@ -185,13 +185,13 @@ describe('createAuthSlice', () => {
         mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
-      slice.logout();
+      await slice.logout();
 
       expect(store.state().auth).toEqual(defaultAuthState);
       expect(mockOnLogout).toHaveBeenCalled();
     });
 
-    it('calls apiLogout with token and refreshToken', () => {
+    it('calls apiLogout with token and refreshToken', async () => {
       const store = makeTestStore({
         auth: { ...defaultAuthState, isSignedIn: true, token: 't', refreshToken: 'r' },
       });
@@ -199,7 +199,7 @@ describe('createAuthSlice', () => {
         mockAdapter as any, mockOnSync, mockOnLogout, mockOnPullServerData, mockOnClearData,
       )(store.set, store.get, store.api);
 
-      slice.logout();
+      await slice.logout();
 
       expect(apiLogout).toHaveBeenCalledWith('t', 'r');
     });

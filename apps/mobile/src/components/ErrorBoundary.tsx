@@ -9,6 +9,8 @@ const log = createLogger('App');
 interface Props {
   children: ReactNode;
   theme?: 'dark' | 'light' | 'ocean' | 'rose' | 'cosmos';
+  /** Incremented by the parent wrapper to force a full remount on retry. */
+  resetKey?: number;
 }
 
 interface State {
@@ -17,7 +19,7 @@ interface State {
 }
 
 /** Inner class component that catches render errors (class required for getDerivedStateFromError). */
-class _ErrorBoundary extends Component<Props & { t: (key: string) => string }, State> {
+class _ErrorBoundary extends Component<Props & { t: (key: string) => string; onReset?: () => void }, State> {
   state: State = { hasError: false, error: null };
 
   static getDerivedStateFromError(error: Error): State {
@@ -27,10 +29,6 @@ class _ErrorBoundary extends Component<Props & { t: (key: string) => string }, S
   componentDidCatch(error: Error, info: ErrorInfo) {
     log.error(error, { componentStack: info.componentStack });
   }
-
-  handleReset = () => {
-    this.setState({ hasError: false, error: null });
-  };
 
   render() {
     if (this.state.hasError) {
@@ -43,7 +41,7 @@ class _ErrorBoundary extends Component<Props & { t: (key: string) => string }, S
           <Text style={[styles.message, { color: TH.sub }]}>
             {this.state.error?.message ?? T('errorUnknown')}
           </Text>
-          <TouchableOpacity style={[styles.button, { backgroundColor: TH.primary }]} onPress={this.handleReset}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: TH.primary }]} onPress={this.props.onReset}>
             <Text style={styles.buttonText}>{T('errorRetry')}</Text>
           </TouchableOpacity>
         </View>
@@ -53,10 +51,17 @@ class _ErrorBoundary extends Component<Props & { t: (key: string) => string }, S
   }
 }
 
-/** Public ErrorBoundary wrapper that provides translation context. */
+/**
+ * Public ErrorBoundary wrapper that provides translation context.
+ * Uses a key-based reset: when `onRetry` fires, `resetKey` increments
+ * which remounts _ErrorBoundary entirely — the failed child is destroyed
+ * and a fresh instance is created with clean state.
+ */
 export function ErrorBoundary(props: Props) {
   const T = useT();
-  return <_ErrorBoundary {...props} t={T} />;
+  const [resetKey, setResetKey] = React.useState(0);
+  const handleRetry = React.useCallback(() => setResetKey(k => k + 1), []);
+  return <_ErrorBoundary key={resetKey} {...props} t={T} onReset={handleRetry} />;
 }
 
 /** HOC: wraps a screen component with an isolated ErrorBoundary. */

@@ -4,6 +4,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 // @ts-expect-error — React Native global not available in test env
 globalThis.__DEV__ = false;
 
+// DOMException polyfill for test environment
+class TestDOMException extends Error {
+  constructor(message?: string, name?: string) {
+    super(message);
+    this.name = name ?? 'DOMException';
+  }
+}
+
 // ── Hoisted mocks ─────────────────────────────────────────────────
 const {
   mockDb,
@@ -335,7 +343,7 @@ describe('SyncEngine', () => {
 
       const p1 = engine.runSync();
       // Yield to microtask so runSync gets past token check and into drainQueue
-      await new Promise(r => setTimeout(r, 0));
+      await new Promise<void>(r => setTimeout(r, 0));
 
       // Second sync should return immediately since _syncing=true
       await engine.runSync();
@@ -562,7 +570,7 @@ describe('SyncEngine', () => {
         return { data: {}, serverTime: Date.now() };
       });
       mockApplyService.applyServerChanges.mockRejectedValueOnce(
-        new DOMException('Aborted', 'AbortError'),
+        new TestDOMException('Aborted', 'AbortError'),
       );
 
       // Should not throw — caught by the try/catch in runSync
