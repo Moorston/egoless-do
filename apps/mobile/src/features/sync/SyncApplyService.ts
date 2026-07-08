@@ -255,6 +255,7 @@ export class SyncApplyService {
       const serverUpdated = (r.updated_at ?? r.updatedAt ?? 0) as number;
 
       // Conflict resolution: local deletions and newer local versions take precedence
+      // Tie-break: client uses strict > so equal timestamps → server wins (server is authoritative)
       if (local && (local.deleted === 1 || local.updated_at > serverUpdated)) {
         log.debug(`[applyEntityToTable] Skipping ${entity}:${id} — local ${local.deleted === 1 ? 'deleted' : 'newer'}`);
         continue;

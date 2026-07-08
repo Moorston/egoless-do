@@ -33,11 +33,13 @@ export default function RegisterScreen() {
   useEffect(() => () => { mountedRef.current = false; }, []);
 
   const startCooldown = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
     setCooldown(COOLDOWN);
     timerRef.current = setInterval(() => {
       setCooldown(prev => {
         if (prev <= 1) {
           if (timerRef.current) clearInterval(timerRef.current);
+          timerRef.current = null;
           return 0;
         }
         return prev - 1;

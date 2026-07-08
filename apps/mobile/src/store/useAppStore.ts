@@ -133,8 +133,10 @@ export function useShallowStore<U>(selector: (state: MobileStore) => U): U {
   return useAppStore(useShallow(selector));
 }
 
-// Delayed sync callback - set after store is created
-const _autoSyncCallback: (() => void) | null = null;
+// Delayed sync callback - set after store is created (mutable for initApp injection)
+let _autoSyncCallback: (() => void) | null = null;
+/** Inject the auto-sync callback after SyncEngine is initialized */
+export function setAutoSyncCallback(cb: () => void) { _autoSyncCallback = cb; }
 const triggerAutoSync = () => _autoSyncCallback?.();
 
 export const useAppStore = create<MobileStore>()(

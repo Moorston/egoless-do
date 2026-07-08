@@ -157,8 +157,8 @@ export function createMantraSlice(
           if (!d.pageCount && presetDef.pageCount) updates.pageCount = presetDef.pageCount;
           if (!d.fullText && presetDef.fileKey) updates.fullText = SUTRA_TEXTS[presetDef.fileKey]?.content;
         }
-        Object.assign(d, updates);
-        migrated.push(d);
+        const updated = { ...d, ...updates };
+        migrated.push(updated);
       }
 
       // 步骤2：补全新预设（现有中完全不存在的名字）

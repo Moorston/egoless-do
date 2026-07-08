@@ -278,7 +278,7 @@ export function createDietSlice(
     // ── 情绪敏感日检测 ──
 
     getEmotionSensitiveDays(dateFrom: string, dateTo: string): EmotionSensitiveDay[] {
-      const reflections = get().reflections.filter(r => {
+      const reflections = (get().reflections ?? []).filter(r => {
         if (r.deleted) return false;
         const d = dateStr(new Date(r.timestamp));
         return d >= dateFrom && d <= dateTo;

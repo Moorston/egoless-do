@@ -82,6 +82,8 @@ export class SyncEngine {
   private _deletedIdsProvider: (() => Set<string>) | null = null;
   private _onKickedOut: (() => void) | null = null;
   private _hasSyncedDeletes = false;
+  private _forcePull = false;
+  private _lastRoutineCleanupAt = 0;
   private _initialSyncing = false;
   private _pendingSyncAfterInit = false;
   private _lastOrphanScanAt = 0;
@@ -239,9 +241,15 @@ export class SyncEngine {
         if (this.isKickedOutError(pushErr)) { this.handleKickedOut(); return { pushedAnything, pushedItemCount, pushApplySucceeded, lastPushResult: null }; }
         log.error(pushErr, { phase: 'push' });
         for (const item of items) {
-          const na = item.retry_count + 1;
-          if (na >= MAX_RETRY_ATTEMPTS) await markQueueItemFailed(item.id, (pushErr instanceof Error ? pushErr.message : null) || 'Push failed');
-          else await markQueueItemRetry(item.id, na, Date.now() + Math.min(Math.pow(2, na) * 1000, 60000));
+          try {
+            const na = item.retry_count + 1;
+            if (na >= MAX_RETRY_ATTEMPTS) await markQueueItemFailed(item.id, (pushErr instanceof Error ? pushErr.message : null) || 'Push failed');
+            else await markQueueItemRetry(item.id, na, Date.now() + Math.min(Math.pow(2, na) * 1000, 60000));
+          } catch (markErr) {
+            // Atomicity guard: if marking retry fails, mark as failed instead of losing the item
+            log.error(markErr, { phase: 'markRetry-fallback', itemId: item.id });
+            try { await markQueueItemFailed(item.id, 'Retry mark failed'); } catch {} // last resort
+          }
         }
         break;
       }
@@ -348,7 +356,8 @@ export class SyncEngine {
           const pullResult = await apiSyncPullPost(freshToken(), { entities: affectedEntities, since: lastSyncAt > 0 ? lastSyncAt : undefined });
           if (pullResult?.data) {
             const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal);
-            if (patch && Object.keys(patch).length) this._onChanges?.(patch);
+            // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
+            if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
             pushApplySucceeded = true;
           }
         } catch (pushPullErr) {
@@ -376,11 +385,13 @@ export class SyncEngine {
     freshToken: () => string,
     lastSyncAt: number,
     signal: AbortSignal,
+    myGeneration: number,
   ): Promise<void> {
-    // If push applied everything cleanly + no rejections, skip full pull
+    // If push applied everything cleanly + no rejections, skip full pull (unless forcePull)
     const pushAllClean = pushedAnything && lastPushResult?.rejected?.length === 0;
     const wasLargePush = pushAllClean && pushedItemCount > PUSH_PULL_SEPARATE_THRESHOLD;
-    if (!pushAllClean && !pushApplySucceeded) {
+    if (this._forcePull || (!pushAllClean && !pushApplySucceeded)) {
+      this._forcePull = false;
       let pullEntities: string[] | undefined;
       // If there were rejections, check only conflicted entities
       const rejected = lastPushResult?.rejected;
@@ -423,7 +434,8 @@ export class SyncEngine {
           } catch (applyErr) {
             log.error(applyErr, { phase: 'applyServerChanges' });
           }
-          if (patch && Object.keys(patch).length) this._onChanges?.(patch);
+          // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
+          if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
 
           // Per-entity timestamps
           try {
@@ -449,7 +461,8 @@ export class SyncEngine {
           const pullResult = await apiSyncPull(freshToken(), userId, lastSyncAt > 0 ? lastSyncAt : undefined);
           if (pullResult?.data) {
             const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal);
-            if (patch && Object.keys(patch).length) this._onChanges?.(patch);
+            // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
+            if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
           }
         }
       } catch (checkErr) {
@@ -562,6 +575,7 @@ export class SyncEngine {
       await this.executePull(
         ctx.pushedAnything, ctx.pushedItemCount, ctx.lastPushResult, ctx.pushApplySucceeded,
         token, userId, freshToken, this._timestampManager.getLastSyncAt(), signal,
+        myGeneration,
       );
 
       // Cleanup
@@ -620,21 +634,27 @@ export class SyncEngine {
         if (r4.changes > 0) log.info(`Cleaned ${r4.changes} corrupted exercises`);
         await setState(db, 'corruptionCleanupDone', 'true');
       }
-      // Always clean empty-name mantra_defs (may be created by sync bugs)
-      const r5 = await db.runAsync("DELETE FROM mantra_defs WHERE (name IS NULL OR name = '') AND deleted = 0");
-      if (r5.changes > 0) log.info(`Cleaned ${r5.changes} corrupted mantra_defs`);
-      // Clean empty-name thought trails
-      const r6 = await db.runAsync("DELETE FROM thought_trails WHERE (name IS NULL OR name = '') AND deleted = 0");
-      if (r6.changes > 0) log.info(`Cleaned ${r6.changes} corrupted thought_trails`);
-      // Clean empty-content trail notes
-      const r7 = await db.runAsync("DELETE FROM trail_notes WHERE (content IS NULL OR content = '') AND deleted = 0");
-      if (r7.changes > 0) log.info(`Cleaned ${r7.changes} corrupted trail_notes`);
-      // Clean empty-text visions
-      const r8 = await db.runAsync("DELETE FROM visions WHERE (text IS NULL OR text = '') AND deleted = 0");
-      if (r8.changes > 0) log.info(`Cleaned ${r8.changes} corrupted visions`);
-      // Clean empty-name daily custom todos
-      const r9 = await db.runAsync("DELETE FROM daily_custom_todos WHERE (name IS NULL OR name = '') AND deleted = 0");
-      if (r9.changes > 0) log.info(`Cleaned ${r9.changes} corrupted daily_custom_todos`);
+      // Throttled routine cleanup — only run every 5 minutes to avoid per-sync overhead
+      const ROUTINE_CLEANUP_INTERVAL = 5 * 60 * 1000;
+      const now = Date.now();
+      if (now - this._lastRoutineCleanupAt > ROUTINE_CLEANUP_INTERVAL) {
+        this._lastRoutineCleanupAt = now;
+        // Always clean empty-name mantra_defs (may be created by sync bugs)
+        const r5 = await db.runAsync("DELETE FROM mantra_defs WHERE (name IS NULL OR name = '') AND deleted = 0");
+        if (r5.changes > 0) log.info(`Cleaned ${r5.changes} corrupted mantra_defs`);
+        // Clean empty-name thought trails
+        const r6 = await db.runAsync("DELETE FROM thought_trails WHERE (name IS NULL OR name = '') AND deleted = 0");
+        if (r6.changes > 0) log.info(`Cleaned ${r6.changes} corrupted thought_trails`);
+        // Clean empty-content trail notes
+        const r7 = await db.runAsync("DELETE FROM trail_notes WHERE (content IS NULL OR content = '') AND deleted = 0");
+        if (r7.changes > 0) log.info(`Cleaned ${r7.changes} corrupted trail_notes`);
+        // Clean empty-text visions
+        const r8 = await db.runAsync("DELETE FROM visions WHERE (text IS NULL OR text = '') AND deleted = 0");
+        if (r8.changes > 0) log.info(`Cleaned ${r8.changes} corrupted visions`);
+        // Clean empty-name daily custom todos
+        const r9 = await db.runAsync("DELETE FROM daily_custom_todos WHERE (name IS NULL OR name = '') AND deleted = 0");
+        if (r9.changes > 0) log.info(`Cleaned ${r9.changes} corrupted daily_custom_todos`);
+      }
     } catch (e) {
       log.error(e, { phase: 'cleanupCorruptedRecords' });
     }
@@ -655,6 +675,7 @@ export class SyncEngine {
   async forceFullSync(): Promise<void> {
     this._timestampManager.resetLastSyncAt();
     await this._timestampManager.saveLastSyncAt(0);
+    this._forcePull = true;
     return this.runSync();
   }
 

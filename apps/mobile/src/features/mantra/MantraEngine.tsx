@@ -96,6 +96,7 @@ export default function MantraEngine() {
     const H = getHaptics();
     H.impactAsync(H.ImpactFeedbackStyle.Light);
     timer.increment();
+    // timer.count is pre-increment (stale closure), so count+1 = post-increment value
     if ((timer.count + 1) % timer.BEAD_COUNT === 0 && timer.count > 0) {
       H.notificationAsync(H.NotificationFeedbackType.Success);
     }

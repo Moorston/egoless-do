@@ -75,16 +75,20 @@ const Stack = createStackNavigator<RootStackParamList>();
 // ─── Suspense wrappers for named-export modules ────────────────────────────
 function FastHistoryWrapper() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <FastHistoryModule />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <FastHistoryModule />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 function MedHistoryWrapper() {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <MedHistoryModule />
-    </Suspense>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <MedHistoryModule />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 
@@ -174,16 +178,16 @@ function MainTabs() {
       <Tab.Screen name="Practice"    component={withErrorBoundary(withLazy(PracticeScreen))}    options={{ title: t('navTabPractice', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Settings"    component={SettingsScreen}    options={{ title: t('navTabSettings', language), tabBarItemStyle: { flex: 1 } }} />
       <Tab.Screen name="Meditation"  component={withErrorBoundary(withLazy(MeditationScreen))}  options={{ title: t('navTabMeditation', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Breathing"   component={withLazy(BreathingScreen)}   options={{ title: t('breathingTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Sleep"       component={withLazy(SleepScreen)}       options={{ title: '调眠', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Precept"    component={withLazy(PreceptScreen)}     options={{ title: '持戒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Give"       component={withLazy(GiveScreen)}        options={{ title: '布施', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Body"        component={withLazy(BodyScreen)}        options={{ title: '调身', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Vow"         component={withLazy(VowScreen)}         options={{ title: '发愿', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Mantra"      component={withLazy(MantraScreen)}      options={{ title: '持咒', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Sutra"       component={withLazy(SutraScreen)}       options={{ title: '诵经', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Diet"        component={withLazy(DietScreen)}        options={{ title: '调食', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Mind"        component={withLazy(MindScreen)}        options={{ title: '调心', tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Breathing"   component={withErrorBoundary(withLazy(BreathingScreen))}   options={{ title: t('breathingTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Sleep"       component={withErrorBoundary(withLazy(SleepScreen))}       options={{ title: t('sleepTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Precept"    component={withErrorBoundary(withLazy(PreceptScreen))}     options={{ title: t('preceptTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Give"       component={withErrorBoundary(withLazy(GiveScreen))}        options={{ title: t('giveTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Body"        component={withErrorBoundary(withLazy(BodyScreen))}        options={{ title: t('bodyTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Vow"         component={withErrorBoundary(withLazy(VowScreen))}         options={{ title: t('vowTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Mantra"      component={withErrorBoundary(withLazy(MantraScreen))}      options={{ title: t('mantraTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Sutra"       component={withErrorBoundary(withLazy(SutraScreen))}       options={{ title: t('sutraTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Diet"        component={withErrorBoundary(withLazy(DietScreen))}        options={{ title: t('dietTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Mind"        component={withErrorBoundary(withLazy(MindScreen))}        options={{ title: t('mindTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={withErrorBoundary(ReflectionsScreen)} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Habits"      component={withLazy(HabitsScreen)} options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
@@ -270,12 +274,12 @@ export default function AppNavigator() {
       }}
     >
       <Stack.Navigator id="root-stack" screenOptions={{ headerShown: false }} initialRouteName={isSignedIn ? 'MainTabs' : 'Login'}>
-        <Stack.Screen name="Login"        component={LoginScreen} />
-        <Stack.Screen name="Register"     component={RegisterScreen} />
+        <Stack.Screen name="Login"        component={withErrorBoundary(LoginScreen)} />
+        <Stack.Screen name="Register"     component={withErrorBoundary(RegisterScreen)} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="MainTabs"     component={MainTabs} />
         <Stack.Screen name="GlobalMap"    component={GlobalPulseScreen} />
-        <Stack.Screen name="Sport"        component={SportPage} />
+        <Stack.Screen name="Sport"        component={withErrorBoundary(SportPage)} />
         <Stack.Screen name="FastHistory"  component={FastHistoryWrapper} />
         <Stack.Screen name="FastCalendar" component={withLazy(React.lazy(async () => ({ default: (await import('../features/fasting/FastHistoryPage')).FastCalendarScreen })))} />
         <Stack.Screen name="MedHistory"   component={MedHistoryWrapper} />

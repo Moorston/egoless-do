@@ -7,7 +7,10 @@ const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const PB_URL = process.env.PB_URL ?? 'http://localhost:8090';
-const INTERNAL_SECRET = process.env.INTERNAL_SECRET ?? process.env.PB_ENCRYPTION_KEY ?? '';
+const INTERNAL_SECRET = process.env.INTERNAL_SECRET ?? process.env.PB_ENCRYPTION_KEY;
+if (!INTERNAL_SECRET) {
+  console.error('[auth/refresh] INTERNAL_SECRET or PB_ENCRYPTION_KEY must be set');
+}
 
 const app = new Hono();
 

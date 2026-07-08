@@ -102,7 +102,7 @@ routerAdd("POST", "/api/sync", function(e) {
               var exported = exportRecord(recs[ri]);
               var hasId = exported.id || exported[ENTITY_ID_FIELD_MAP[ent]] || exported.date || exported.name;
               if (hasId) payloads.push(exported);
-            } catch (recErr) {}
+            } catch (recErr) { console.warn("[sync] pull record error for " + ent + ": " + (recErr.message || String(recErr))); }
           }
           if (payloads.length > 0) serverData[ent] = payloads;
         } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.message || String(qErr)); }
@@ -165,14 +165,14 @@ routerAdd("GET", "/api/sync", function(e) {
             var exported = exportRecord(allRecs[ri]);
             var idF = ENTITY_ID_FIELD_MAP[ent];
             if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
-          } catch (recErr) {}
+          } catch (recErr) { console.warn("[sync-get] record error for " + ent + ": " + (recErr.message || String(recErr))); }
         }
         if (payloads.length > 0) data[ent] = payloads;
         if (page > 0 && pageSize > 0) {
           if (!data._meta) data._meta = {};
           data._meta[ent] = { page: page, pageSize: pageSize, totalItems: totalCount, totalPages: Math.ceil(totalCount / pageSize) };
         }
-      } catch (qErr) {}
+      } catch (qErr) { console.error("[sync-get] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.message || String(qErr))); }
     }
 
     return e.json(200, { data: data, serverTime: Date.now() });
@@ -210,7 +210,7 @@ routerAdd("GET", "/api/sync/check", function(e) {
         if (!coll) continue;
         var recs = safeFindRecords($app, coll, buildUserFilter(userId, since > 0 ? sinceDate : null), 1);
         if (recs.length > 0) { changed[ent] = recs.length; totalChanges++; }
-      } catch (qErr) {}
+      } catch (qErr) { console.error("[sync-check] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.message || String(qErr))); }
     }
 
     return e.json(200, { hasChanges: totalChanges > 0, changed: changed, count: totalChanges, serverTime: Date.now() });

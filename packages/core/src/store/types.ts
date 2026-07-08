@@ -183,7 +183,7 @@ export interface PlanSlice {
     link?: PlanItemLink; priority?: PlanItemPriority; targetMetric?: string; linkConfig?: PlanItem['linkConfig']; reflectionId?: string; order?: number; frequency?: PlanItem['frequency']; tags?: string[];
   }) => void;
   updatePlanItem: (id: string, patch: Partial<PlanItem>) => void;
-  deletePlanItem: (id: string) => void;
+  deletePlanItem: (id: string) => Promise<void>;
   checkinPlanItem: (planItemId: string, date?: string) => void;
   uncheckinPlanItem: (planItemId: string, date?: string) => void;
   autoSyncPlanItems: () => void;

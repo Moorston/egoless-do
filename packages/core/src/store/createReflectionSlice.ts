@@ -150,14 +150,14 @@ export function createReflectionSlice(
         customTags: addCustomItem(s.customTags ?? [], tag),
         allTagsOrder: (s.allTagsOrder ?? []).includes(tag) ? s.allTagsOrder : [...(s.allTagsOrder ?? []), tag],
       }));
-      onSync?.();
+      onSettingsPersist?.();
     },
     removeCustomTag(tag: string) {
       set(s => ({
         customTags: removeCustomItem(s.customTags ?? [], tag),
         allTagsOrder: (s.allTagsOrder ?? []).filter(t => t !== tag),
       }));
-      onSync?.();
+      onSettingsPersist?.();
     },
     updateCustomTag(oldTag: string, newTag: string) {
       set(s => {
@@ -169,7 +169,7 @@ export function createReflectionSlice(
             : s.allTagsOrder,
         };
       });
-      onSync?.();
+      onSettingsPersist?.();
     },
     addCustomMood(mood: string) {
       if (!mood.trim()) return;
@@ -177,14 +177,14 @@ export function createReflectionSlice(
         customMoods: addCustomItem(s.customMoods ?? [], mood),
         allMoodsOrder: (s.allMoodsOrder ?? []).includes(mood) ? s.allMoodsOrder : [...(s.allMoodsOrder ?? []), mood],
       }));
-      onSync?.();
+      onSettingsPersist?.();
     },
     removeCustomMood(mood: string) {
       set(s => ({
         customMoods: removeCustomItem(s.customMoods ?? [], mood),
         allMoodsOrder: (s.allMoodsOrder ?? []).filter(m => m !== mood),
       }));
-      onSync?.();
+      onSettingsPersist?.();
     },
     updateCustomMood(oldMood: string, newMood: string) {
       set(s => {
@@ -198,8 +198,8 @@ export function createReflectionSlice(
       });
       onSync?.();
     },
-    reorderCustomTag(fromIndex: number, toIndex: number) { set(s => ({ customTags: reorderItem(s.customTags ?? [], fromIndex, toIndex) })); onSync?.(); },
-    reorderCustomMood(fromIndex: number, toIndex: number) { set(s => ({ customMoods: reorderItem(s.customMoods ?? [], fromIndex, toIndex) })); onSync?.(); },
+    reorderCustomTag(fromIndex: number, toIndex: number) { set(s => ({ customTags: reorderItem(s.customTags ?? [], fromIndex, toIndex) })); onSettingsPersist?.(); },
+    reorderCustomMood(fromIndex: number, toIndex: number) { set(s => ({ customMoods: reorderItem(s.customMoods ?? [], fromIndex, toIndex) })); onSettingsPersist?.(); },
     reorderAllTag(fromIndex: number, toIndex: number) {
       set(s => {
         const currentOrder = s.allTagsOrder ?? [];

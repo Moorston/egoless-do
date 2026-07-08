@@ -289,7 +289,7 @@ export function createPlanSlice(
       if (updated) adapter.persistChange('planItem', id, updated).catch(e => log.error(e));
     },
 
-    deletePlanItem(id) {
+    async deletePlanItem(id) {
       const cascade = computeCascadeDelete(get, 'item', id);
       if (!cascade) return;
       const { deletedCheckinIds, updatedReflections, updatedTrails, now } = cascade;
@@ -308,7 +308,7 @@ export function createPlanSlice(
           updatedTrailIds.has(t.id) ? updatedTrails.find(ut => ut.id === t.id)! : t,
         ),
       }));
-      persistCascade(adapter, [
+      await persistCascade(adapter, [
         { entity: 'planItem', id },
         ...deletedCheckinIds.map(checkinId => ({ entity: 'planItemCheckin' as const, id: checkinId })),
       ], updatedReflections, updatedTrails);
@@ -403,10 +403,6 @@ export function createPlanSlice(
       set(() => ({ dailyCustomTodos: toggledTodos, dailyTodoHistory: updatedHistory }));
       if (updated) adapter.persistChange('dailyCustomTodo', id, updated).catch(e => log.error(e));
       if (historyEntry) adapter.persistChange('dailyTodoHistory', historyEntry.id, historyEntry).catch(e => log.error(e));
-      // 自动保存当天待办历史
-      if (historyEntry) {
-        adapter.persistChange('dailyTodoHistory', historyEntry.id, historyEntry).catch(e => log.error(e));
-      }
     },
 
     deleteDailyCustomTodo(id) {

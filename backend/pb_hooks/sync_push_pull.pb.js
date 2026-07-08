@@ -195,7 +195,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
             for (var efi = 0; efi < efKeys.length; efi++) { if (typeof exported[efKeys[efi]] === "function") delete exported[efKeys[efi]]; }
             var idF = ENTITY_ID_FIELD_MAP[ent];
             if (exported.id || exported[idF] || exported.date || exported.name) payloads.push(exported);
-          } catch (recErr) {}
+          } catch (recErr) { console.warn("[sync-pull] record error for " + ent + ": " + (recErr.message || String(recErr))); }
         }
         if (payloads.length > 0) data[ent] = payloads;
         // Include total count for paginated requests
@@ -203,7 +203,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
           if (!data._meta) data._meta = {};
           data._meta[ent] = { total: totalCount };
         }
-      } catch (qErr) {}
+      } catch (qErr) { console.error("[sync-pull] entity error for " + (entities[ei] || '?') + ": " + (qErr.message || String(qErr))); }
     }
     return e.json(200, { data: data, serverTime: Date.now() });
   } catch (err) {

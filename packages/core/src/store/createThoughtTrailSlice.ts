@@ -183,7 +183,7 @@ export function createThoughtTrailSlice(adapter: StorageAdapter, onSettingsPersi
       let trail: ThoughtTrail | undefined;
       set(s => {
         const newList = (s.thoughtTrails ?? []).map(t =>
-          t.id === trailId ? { ...t, insightCache: cache, updatedAt: Date.now() } : t
+          t.id === trailId && !t.deleted ? { ...t, insightCache: cache, updatedAt: Date.now() } : t
         );
         trail = newList.find(t => t.id === trailId && !t.deleted);
         return { thoughtTrails: newList };
@@ -195,7 +195,7 @@ export function createThoughtTrailSlice(adapter: StorageAdapter, onSettingsPersi
       let trail: ThoughtTrail | undefined;
       set(s => {
         const newList = (s.thoughtTrails ?? []).map(t =>
-          t.id === trailId ? { ...t, reviewCache: cache, updatedAt: Date.now() } : t
+          t.id === trailId && !t.deleted ? { ...t, reviewCache: cache, updatedAt: Date.now() } : t
         );
         trail = newList.find(t => t.id === trailId && !t.deleted);
         return { thoughtTrails: newList };

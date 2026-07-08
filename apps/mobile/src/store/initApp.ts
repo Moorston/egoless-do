@@ -9,13 +9,14 @@ import { AppState } from 'react-native';
 import { openDatabase, setState as setAppState } from '../db/schema';
 import {
   rehydrateFromDb,
+  runSync,
 } from '../features/sync/SyncService';
 import { captureException, captureMessage, addBreadcrumb, setSentryUser, clearSentryUser } from '../sentry';
 
 import { migrateAsyncStorageToSQLite, migrateSettingsToSQLite } from './migrateAsyncStorage';
 import { loadSecureTokens, saveSecureTokens, clearSecureTokens } from './secureAuth';
 import { mobileStorageAdapter as adapter, flushWrites } from './storageAdapter';
-import { useAppStore, type PartialMobileStore } from './useAppStore';
+import { useAppStore, setAutoSyncCallback, type PartialMobileStore } from './useAppStore';
 
 const log = createLogger('App');
 
@@ -205,12 +206,12 @@ export async function initApp(): Promise<void> {
     });
 
     // ── Step 6: Set up auto-sync callback ─────────────────────
-    let autoSyncCallback: (() => void) | null = null;
-    const triggerAutoSync = () => autoSyncCallback?.();
-    autoSyncCallback = () => {
+    // Connect the store's triggerAutoSync → SyncEngine so data mutations trigger sync
+    setAutoSyncCallback(() => {
       store().autoSyncPlanItems?.();
       store().autoSyncHabits?.();
-    };
+      runSync().catch((e) => log.error(e));
+    });
 
     // ── Step 7: Create DailyResetManager with SQLite storage ──
     const dailyReset = new DailyResetManager({
