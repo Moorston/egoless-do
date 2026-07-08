@@ -103,6 +103,8 @@ export class SyncEngine {
   setTokenRecoveryFn(fn: () => Promise<string | null>) { this._tokenRecoveryFn = fn; }
   setRealtimeLogoutHandler(fn: () => void) { this._realtimeController.setLogoutHandler(fn); }
   setRealtimeUserIdProvider(fn: () => string | undefined) { this._realtimeController.setUserIdProvider(fn); }
+  setRealtimeRunSync(fn: () => void) { this._realtimeController.setRunSync(fn); }
+  setRealtimeApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { this._realtimeController.setApplyServerChanges(fn); }
   setMigrationDone(v: boolean) { this._migrationDone = v; }
   getMigrationDone(): boolean { return this._migrationDone; }
   setSyncErrorHandler(fn: (error: string) => void) { this._onSyncError = fn; }
@@ -142,6 +144,11 @@ export class SyncEngine {
     if (!token) return;
 
     this.disconnectRealtime();
+    // Wire callbacks to eliminate dynamic imports in SyncRealtimeController
+    this._realtimeController.setRunSync(() => { this.runSync().catch(e => log.error(e, { phase: 'realtime-sync' })); });
+    this._realtimeController.setApplyServerChanges(
+      (data, deletedIds) => this._applyService.applyServerChanges(data, deletedIds),
+    );
     this._realtimeController.connectRealtime(
       pbUrl,
       () => this._tokenProvider?.() ?? null,

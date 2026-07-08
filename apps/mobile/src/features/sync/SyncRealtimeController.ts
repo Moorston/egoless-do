@@ -7,6 +7,7 @@ import type { SyncEntity } from '@egoless-do/core';
 import NetInfo from '@react-native-community/netinfo';
 
 import { openDatabase, getState, setState } from '../../db/schema';
+import { getQueueCount, resetAllPendingForRetry } from '../../db/syncQueue';
 
 import { RealtimeAgent, type RealtimeChangeEvent } from './RealtimeAgent';
 
@@ -21,11 +22,15 @@ export class SyncRealtimeController {
   private _realtimeEventTimes = new Map<string, number[]>();
   private _logoutHandler: (() => void) | null = null;
   private _userIdProvider: (() => string | undefined) | null = null;
+  private _runSync: (() => void) | null = null;
+  private _applyServerChanges: ((data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) | null = null;
 
   constructor() {}
 
   setLogoutHandler(fn: () => void) { this._logoutHandler = fn; }
   setUserIdProvider(fn: () => string | undefined) { this._userIdProvider = fn; }
+  setRunSync(fn: () => void) { this._runSync = fn; }
+  setApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { this._applyServerChanges = fn; }
 
   // ── Connection Management ──────────────────────────────────────────────
 
@@ -100,13 +105,9 @@ export class SyncRealtimeController {
     deletedIdsProvider: () => Set<string>,
   ): Promise<void> {
     try {
-      // Import dynamically to avoid circular dependency
-      const { getQueueCount } = await import('../../db/syncQueue');
       const queueCount = await getQueueCount();
       if (queueCount > 0) {
-        // Import dynamically to avoid circular dependency
-        const { runSync } = await import('./SyncService');
-        runSync();
+        this._runSync?.();
         return;
       }
 
@@ -122,10 +123,8 @@ export class SyncRealtimeController {
             since: lastSyncAt > 0 ? lastSyncAt : undefined,
           });
           if (result?.data) {
-            // Import dynamically to avoid circular dependency
-            const { applyServerChanges } = await import('./SyncService');
             const deletedIds = deletedIdsProvider();
-            const patch = await applyServerChanges(result.data, deletedIds);
+            const patch = await (this._applyServerChanges?.(result.data, deletedIds) ?? Promise.resolve({}));
             if (patch && Object.keys(patch).length) onChange(patch);
 
             // Update lastSyncAt if server provided a newer timestamp
@@ -144,9 +143,7 @@ export class SyncRealtimeController {
         log.warn(checkErr, { phase: 'poll-check' });
       }
 
-      // Import dynamically to avoid circular dependency
-      const { runSync } = await import('./SyncService');
-      runSync();
+      this._runSync?.();
     } catch (err) {
       log.error(err, { phase: 'poll' });
     }
@@ -163,15 +160,11 @@ export class SyncRealtimeController {
     if (this._netInfoUnsubscribe) return;
     this._netInfoUnsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected && state.isInternetReachable) {
-        // Import dynamically to avoid circular dependency
         (async () => {
-          const { resetAllPendingForRetry } = await import('../../db/syncQueue');
           const count = await resetAllPendingForRetry().catch(() => 0);
           if (count > 0) {
             log.info(`Network recovered, resetting ${count} items`);
-            // Import dynamically to avoid circular dependency
-            const { runSync } = await import('./SyncService');
-            runSync();
+            this._runSync?.();
           }
         })();
       }
@@ -238,10 +231,8 @@ export class SyncRealtimeController {
     try {
       if (payload) {
         // Direct payload processing - apply immediately
-        // Import dynamically to avoid circular dependency
-        const { applyServerChanges } = await import('./SyncService');
         const deletedIds = deletedIdsProvider();
-        const patch = await applyServerChanges({ [entity]: [payload] }, deletedIds);
+        const patch = await (this._applyServerChanges?.({ [entity]: [payload] }, deletedIds) ?? Promise.resolve({}));
         if (patch && Object.keys(patch).length) onChange(patch);
         return;
       }
@@ -253,10 +244,8 @@ export class SyncRealtimeController {
         since: currentLastSyncAt > 0 ? currentLastSyncAt : undefined,
       });
       if (result?.data?.[entity]) {
-        // Import dynamically to avoid circular dependency
-        const { applyServerChanges } = await import('./SyncService');
         const deletedIds = deletedIdsProvider();
-        const patch = await applyServerChanges({ [entity]: result.data[entity] }, deletedIds);
+        const patch = await (this._applyServerChanges?.({ [entity]: result.data[entity] }, deletedIds) ?? Promise.resolve({}));
         if (patch && Object.keys(patch).length) onChange(patch);
       }
 

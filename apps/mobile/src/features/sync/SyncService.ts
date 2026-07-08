@@ -23,6 +23,8 @@ export function setKickedOutHandler(fn: () => void) { _engine.setKickedOutHandle
 export function setTokenRecoveryFn(fn: () => Promise<string | null>) { _engine.setTokenRecoveryFn(fn); }
 export function setRealtimeLogoutHandler(fn: () => void) { _engine.setRealtimeLogoutHandler(fn); }
 export function setRealtimeUserIdProvider(fn: () => string | undefined) { _engine.setRealtimeUserIdProvider(fn); }
+export function setRealtimeRunSync(fn: () => void) { _engine.setRealtimeRunSync(fn); }
+export function setRealtimeApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { _engine.setRealtimeApplyServerChanges(fn); }
 export function setLastSyncAt(ts: number) { _engine.setLastSyncAt(ts); }
 
 export function runSync(): Promise<void> { return _engine.runSync(); }
