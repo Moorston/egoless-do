@@ -126,7 +126,15 @@ export interface ApplyResult extends Record<string, unknown> {
 }
 
 export class SyncApplyService {
-  /** In-memory set of recently deleted entity IDs (entity:id format) — prevents sync resurrection */
+  /**
+   * In-memory set of recently deleted entity IDs (entity:id format) — prevents sync resurrection.
+   *
+   * Limitation: The 60-second window is lost on app restart. If the app is killed and
+   * restarted within 60 seconds of a delete, the server delete may be applied back to
+   * local state before the local delete re-propagates. This is acceptable because the
+   * orphan recovery mechanism in SyncEngine handles cross-session consistency by detecting
+   * and re-deleting items that were locally deleted but not yet synced.
+   */
   private _locallyDeleted = new Set<string>();
 
   /** Register a locally deleted entity so sync won't resurrect it */

@@ -167,6 +167,7 @@ export class DailyResetManager {
       }
     }
 
+    // Stored for debugging/observability — not read in production logic
     this.lastCheckedDate = today;
 
     // Persist updated profile

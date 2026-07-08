@@ -1,3 +1,5 @@
+// @deprecated — This file is unused. Scheduled for removal.
+// No file in the codebase imports from this module (verified 2026-07-08).
 // ─── Data Store ──────────────────────────────────────────────────
 // Manages business data with normalized structure.
 

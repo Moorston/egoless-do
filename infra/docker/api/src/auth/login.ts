@@ -102,7 +102,8 @@ app.post('/login', async (c) => {
     // 登录失败，记录失败尝试
     const lockResult = await recordLoginAttempt(email.toLowerCase(), false);
 
-    // 记录失败登录事件
+    // 记录失败登录事件 (sanitize error to avoid leaking passwords/tokens in audit log)
+    const errCode = (err instanceof Error && 'status' in err) ? (err as Record<string, unknown>).status : 'unknown';
     await logAuditEvent({
       event: AuditEvent.LOGIN_FAILURE,
       email: email.toLowerCase(),
@@ -110,7 +111,7 @@ app.post('/login', async (c) => {
       user_agent: clientInfo.userAgent,
       success: false,
       details: {
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: `auth_failed_${errCode}`,
         locked: lockResult.locked,
       },
     });

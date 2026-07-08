@@ -92,6 +92,7 @@ export class SyncEngine {
   private _syncTriggerCallback: (() => void) | null = null;
   private _syncTriggerTimer: ReturnType<typeof setTimeout> | null = null;
   private static SYNC_TRIGGER_DEBOUNCE_MS = 2000;
+  private _onSyncError: ((error: string) => void) | null = null;
 
   // ── Configuration ────────────────────────────────────────────────
   setTokenProvider(fn: () => string | null) { this._tokenProvider = fn; }
@@ -104,6 +105,7 @@ export class SyncEngine {
   setRealtimeUserIdProvider(fn: () => string | undefined) { this._realtimeController.setUserIdProvider(fn); }
   setMigrationDone(v: boolean) { this._migrationDone = v; }
   getMigrationDone(): boolean { return this._migrationDone; }
+  setSyncErrorHandler(fn: (error: string) => void) { this._onSyncError = fn; }
   setLastSyncAt(ts: number) { this._timestampManager.setLastSyncAt(ts); }
   getClockOffset(): number { return this._timestampManager.getClockOffset(); }
 
@@ -602,6 +604,7 @@ export class SyncEngine {
       if (err instanceof Error && err.name === 'AbortError') log.warn('Aborted');
       else log.error(err);
       this.recordMetric(Date.now() - this._syncingSince, 0, 0, false, errMsg);
+      this._onSyncError?.(errMsg);
     } finally {
       if (this._syncGeneration === myGeneration) {
         this._syncing = false;
@@ -627,10 +630,12 @@ export class SyncEngine {
   private async purgeDeletedRecords(): Promise<void> {
     try {
       const db = await openDatabase();
-      for (const table of ALL_ENTITY_TABLES) {
-        if (!isValidSqlName(table)) { log.warn(`Skipping invalid table name: ${table}`); continue; }
-        await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
-      }
+      await withDbLock(async () => {
+        for (const table of ALL_ENTITY_TABLES) {
+          if (!isValidSqlName(table)) { log.warn(`Skipping invalid table name: ${table}`); continue; }
+          await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
+        }
+      });
     } catch (e) {
       log.error(e, { phase: 'purgeDeletedRecords' });
     }
@@ -641,36 +646,45 @@ export class SyncEngine {
       const db = await openDatabase();
       const done = await getState(db, 'corruptionCleanupDone');
       if (done !== 'true') {
-        const r1 = await db.runAsync("DELETE FROM habits WHERE name IS NULL OR name = '' OR name = 'undefined'");
-        if (r1.changes > 0) log.info(`Cleaned ${r1.changes} corrupted habits`);
-        const r2 = await db.runAsync("DELETE FROM mind_reflections WHERE content IS NULL OR content = ''");
-        if (r2.changes > 0) log.info(`Cleaned ${r2.changes} corrupted reflections`);
-        const r3 = await db.runAsync("DELETE FROM plans WHERE name IS NULL OR name = ''");
-        if (r3.changes > 0) log.info(`Cleaned ${r3.changes} corrupted plans`);
-        const r4 = await db.runAsync("DELETE FROM exercise_entries WHERE sport_key IS NULL OR sport_key = '' OR sport_key = 'unknown'");
-        if (r4.changes > 0) log.info(`Cleaned ${r4.changes} corrupted exercises`);
-        await setState(db, 'corruptionCleanupDone', 'true');
+        // First-time cleanup: wrap in withDbLock for transactional safety
+        await withDbLock(async () => {
+          const r1 = await db.runAsync("DELETE FROM habits WHERE name IS NULL OR name = '' OR name = 'undefined'");
+          if (r1.changes > 0) log.info(`Cleaned ${r1.changes} corrupted habits`);
+          const r2 = await db.runAsync("DELETE FROM mind_reflections WHERE content IS NULL OR content = ''");
+          if (r2.changes > 0) log.info(`Cleaned ${r2.changes} corrupted reflections`);
+          const r3 = await db.runAsync("DELETE FROM plans WHERE name IS NULL OR name = ''");
+          if (r3.changes > 0) log.info(`Cleaned ${r3.changes} corrupted plans`);
+          const r4 = await db.runAsync("DELETE FROM exercise_entries WHERE sport_key IS NULL OR sport_key = '' OR sport_key = 'unknown'");
+          if (r4.changes > 0) log.info(`Cleaned ${r4.changes} corrupted exercises`);
+          await setState(db, 'corruptionCleanupDone', 'true');
+        });
       }
       // Throttled routine cleanup — only run every 5 minutes to avoid per-sync overhead
       const ROUTINE_CLEANUP_INTERVAL = 5 * 60 * 1000;
       const now = Date.now();
       if (now - this._lastRoutineCleanupAt > ROUTINE_CLEANUP_INTERVAL) {
         this._lastRoutineCleanupAt = now;
-        // Always clean empty-name mantra_defs (may be created by sync bugs)
-        const r5 = await db.runAsync("DELETE FROM mantra_defs WHERE (name IS NULL OR name = '') AND deleted = 0");
-        if (r5.changes > 0) log.info(`Cleaned ${r5.changes} corrupted mantra_defs`);
-        // Clean empty-name thought trails
-        const r6 = await db.runAsync("DELETE FROM thought_trails WHERE (name IS NULL OR name = '') AND deleted = 0");
-        if (r6.changes > 0) log.info(`Cleaned ${r6.changes} corrupted thought_trails`);
-        // Clean empty-content trail notes
-        const r7 = await db.runAsync("DELETE FROM trail_notes WHERE (content IS NULL OR content = '') AND deleted = 0");
-        if (r7.changes > 0) log.info(`Cleaned ${r7.changes} corrupted trail_notes`);
-        // Clean empty-text visions
-        const r8 = await db.runAsync("DELETE FROM visions WHERE (text IS NULL OR text = '') AND deleted = 0");
-        if (r8.changes > 0) log.info(`Cleaned ${r8.changes} corrupted visions`);
-        // Clean empty-name daily custom todos
-        const r9 = await db.runAsync("DELETE FROM daily_custom_todos WHERE (name IS NULL OR name = '') AND deleted = 0");
-        if (r9.changes > 0) log.info(`Cleaned ${r9.changes} corrupted daily_custom_todos`);
+        // Each DELETE in its own try/catch so one failure doesn't block the rest
+        try {
+          const r5 = await db.runAsync("DELETE FROM mantra_defs WHERE (name IS NULL OR name = '') AND deleted = 0");
+          if (r5.changes > 0) log.info(`Cleaned ${r5.changes} corrupted mantra_defs`);
+        } catch (e) { log.warn(e, { phase: 'routineCleanup:mantra_defs' }); }
+        try {
+          const r6 = await db.runAsync("DELETE FROM thought_trails WHERE (name IS NULL OR name = '') AND deleted = 0");
+          if (r6.changes > 0) log.info(`Cleaned ${r6.changes} corrupted thought_trails`);
+        } catch (e) { log.warn(e, { phase: 'routineCleanup:thought_trails' }); }
+        try {
+          const r7 = await db.runAsync("DELETE FROM trail_notes WHERE (content IS NULL OR content = '') AND deleted = 0");
+          if (r7.changes > 0) log.info(`Cleaned ${r7.changes} corrupted trail_notes`);
+        } catch (e) { log.warn(e, { phase: 'routineCleanup:trail_notes' }); }
+        try {
+          const r8 = await db.runAsync("DELETE FROM visions WHERE (text IS NULL OR text = '') AND deleted = 0");
+          if (r8.changes > 0) log.info(`Cleaned ${r8.changes} corrupted visions`);
+        } catch (e) { log.warn(e, { phase: 'routineCleanup:visions' }); }
+        try {
+          const r9 = await db.runAsync("DELETE FROM daily_custom_todos WHERE (name IS NULL OR name = '') AND deleted = 0");
+          if (r9.changes > 0) log.info(`Cleaned ${r9.changes} corrupted daily_custom_todos`);
+        } catch (e) { log.warn(e, { phase: 'routineCleanup:daily_custom_todos' }); }
       }
     } catch (e) {
       log.error(e, { phase: 'cleanupCorruptedRecords' });

@@ -33,9 +33,13 @@ export class RealtimeAgent {
   private _onStatus: ((connected: boolean) => void) | null = null;
   private _destroyed = false;
   private _heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+  private _consecutiveHeartbeatFailures = 0;
+  private static MAX_HEARTBEAT_FAILURES = 3;
+  private _onKickedOut: (() => void) | null = null;
 
   setChangeHandler(fn: (event: RealtimeChangeEvent) => void) { this._onChange = fn; }
   setStatusHandler(fn: (connected: boolean) => void) { this._onStatus = fn; }
+  setKickedOutHandler(fn: () => void) { this._onKickedOut = fn; }
 
   connect(pbUrl: string, token: string) {
     if (this._es) this.disconnect();
@@ -43,6 +47,7 @@ export class RealtimeAgent {
     this._pbUrl = pbUrl.replace(/\/+$/, '');
     this._token = token;
     this._reconnectAttempt = 0;
+    this._consecutiveHeartbeatFailures = 0;
     this._open();
     this._startHeartbeat();
   }
@@ -65,7 +70,12 @@ export class RealtimeAgent {
       fetch(`${this._pbUrl}/api/realtime/ping`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${this._token}` },
+      }).then((res) => {
+        // Successful ping resets the failure counter
+        if (res.ok) this._consecutiveHeartbeatFailures = 0;
+        else this._consecutiveHeartbeatFailures++;
       }).catch(() => {
+        this._consecutiveHeartbeatFailures++;
         // Ping failed — but only reconnect if SSE is actually dead
         if (this._destroyed) return;
         if (this._es && (this._es as unknown as { readyState: number }).readyState === 1) { // 1 = EventSource.OPEN
@@ -77,6 +87,15 @@ export class RealtimeAgent {
         this._onStatus?.(false);
         this._scheduleReconnect();
       });
+
+      // After N consecutive failures, the connection is considered dead
+      if (this._consecutiveHeartbeatFailures >= RealtimeAgent.MAX_HEARTBEAT_FAILURES) {
+        log.warn(`${this._consecutiveHeartbeatFailures} consecutive heartbeat failures — treating as kicked out`);
+        this._consecutiveHeartbeatFailures = 0;
+        this._onStatus?.(false);
+        this._onKickedOut?.();
+        this._scheduleReconnect();
+      }
     }, 30_000);
   }
 
@@ -137,6 +156,7 @@ export class RealtimeAgent {
       if (eventType === 'PB_CONNECTED') {
         this._clientId = data.clientId;
         this._reconnectAttempt = 0;
+        this._consecutiveHeartbeatFailures = 0;
         this._onStatus?.(true);
         this._subscribe();
         return;

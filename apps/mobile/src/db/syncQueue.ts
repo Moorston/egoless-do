@@ -173,11 +173,18 @@ export async function clearQueue(): Promise<void> {
   await db.runAsync('DELETE FROM sync_queue');
 }
 
-/** Remove queue items older than maxAgeMs (default: 30 days). */
-export async function pruneStaleQueueItems(maxAgeMs = 30 * 24 * 60 * 60 * 1000): Promise<number> {
+/**
+ * Remove stale queue items.
+ * - Failed/conflict items older than 7 days are removed (shorter window to avoid stale retries).
+ * - Default maxAgeMs is 7 days (was 30 days).
+ */
+export async function pruneStaleQueueItems(maxAgeMs = 7 * 24 * 60 * 60 * 1000): Promise<number> {
   const db = await openDatabase();
   const cutoff = Date.now() - maxAgeMs;
-  const result = await db.runAsync('DELETE FROM sync_queue WHERE created_at < ?', [cutoff]);
+  const result = await db.runAsync(
+    "DELETE FROM sync_queue WHERE created_at < ? AND (status = 'failed' OR status = 'conflict')",
+    [cutoff]
+  );
   return result.changes;
 }
 

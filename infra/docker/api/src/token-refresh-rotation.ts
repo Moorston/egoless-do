@@ -4,9 +4,17 @@
 
 import { randomBytes } from 'crypto';
 import { getAdminPb, escapeFilter } from './pb.js';
-import { errMessage, errStatus } from './errors.js';
+import { errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'refresh_tokens';
+
+/** Safely extract an error identifier without leaking token data in logs. */
+function safeErrId(err: unknown): string {
+  const status = errStatus(err);
+  if (status) return `status_${status}`;
+  if (err instanceof Error) return err.name;
+  return 'unknown';
+}
 
 /**
  * 生成密码学安全的 refresh token
@@ -40,7 +48,7 @@ export async function createRefreshToken(userId: string, token: string, expiresA
       is_revoked: false,
     });
   } catch (err: unknown) {
-    console.error('Failed to create refresh token:', errMessage(err));
+    console.error('Failed to create refresh token:', safeErrId(err));
     // 如果集合不存在，静默失败
   }
 }
@@ -57,7 +65,7 @@ export async function validateRefreshToken(token: string): Promise<{ valid: bool
     return { valid: true, userId: record.user_id };
   } catch (err: unknown) {
     if (errStatus(err) === 404) return { valid: false };
-    console.warn('Failed to validate refresh token:', errMessage(err));
+    console.warn('Failed to validate refresh token:', safeErrId(err));
     return { valid: false };
   }
 }
@@ -77,7 +85,7 @@ export async function revokeRefreshToken(token: string): Promise<void> {
     });
   } catch (err: unknown) {
     if (errStatus(err) !== 404) {
-      console.warn('Failed to revoke refresh token:', errMessage(err));
+      console.warn('Failed to revoke refresh token:', safeErrId(err));
     }
   }
 }
@@ -103,7 +111,7 @@ export async function revokeAllUserRefreshTokens(userId: string): Promise<void> 
       }
     }
   } catch (err: unknown) {
-    console.warn('Failed to revoke user refresh tokens:', errMessage(err));
+    console.warn('Failed to revoke user refresh tokens:', safeErrId(err));
   }
 }
 
@@ -128,7 +136,7 @@ export async function cleanupExpiredRefreshTokens(): Promise<number> {
     }
     return deleted;
   } catch (err: unknown) {
-    console.warn('Refresh token cleanup failed:', errMessage(err));
+    console.warn('Refresh token cleanup failed:', safeErrId(err));
     return 0;
   }
 }
@@ -165,10 +173,10 @@ export async function initRefreshTokenCollection(): Promise<void> {
         });
         console.info(`[RefreshToken] Collection '${COLLECTION_NAME}' created`);
       } catch (createErr: unknown) {
-        console.error(`[RefreshToken] Failed to create collection: ${errMessage(createErr)}`);
+        console.error(`[RefreshToken] Failed to create collection: ${safeErrId(createErr)}`);
       }
     } else {
-      console.error(`[RefreshToken] Failed to check collection: ${errMessage(err)}`);
+      console.error(`[RefreshToken] Failed to check collection: ${safeErrId(err)}`);
     }
   }
 }

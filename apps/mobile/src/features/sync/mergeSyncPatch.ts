@@ -108,14 +108,14 @@ export function mergeSyncPatch(
     for (const trail of trails) {
       if (trail.deleted) continue;
       for (const rid of ((trail.reflectionIds ?? []) as string[])) {
-        const arr = trailMap.get(rid) ?? [];
+        const arr = trailMap.get(rid) ?? []; // Creates new empty array on first get — no shared reference issue
         arr.push(trail.id as string);
         trailMap.set(rid, arr);
       }
     }
     const reflections = ((storePatch.reflections ?? state.reflections ?? []) as unknown as Record<string, unknown>[]);
     const updated = reflections.map((r: Record<string, unknown>) => {
-      const ids = trailMap.get(r.id as string) ?? [];
+      const ids = trailMap.get(r.id as string) ?? []; // Creates new array each call — no shared reference
       const current = (r.thoughtTrailIds ?? []) as string[];
       const sortedNew = [...ids].sort();
       const sortedCurrent = [...current].sort();

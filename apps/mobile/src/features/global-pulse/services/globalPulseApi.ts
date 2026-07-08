@@ -93,12 +93,26 @@ async function pbRequest<T>(
   }
 }
 
+let _lastSubmitAt = 0;
+const SUBMIT_COOLDOWN_MS = 30_000;
+
 /**
  * 提交打卡记录
+ * Client-side rate limit: max 1 call per 30 seconds.
+ *
+ * NOTE: submitCheckin uses anonymous access by design — the global pulse
+ * is a community feature where users submit check-ins via their user hash,
+ * not via authenticated API calls. Rate limiting is handled server-side.
  */
 export async function submitCheckin(
   checkin: CheckinRequest
 ): Promise<ApiResponse<GlobalCheckin>> {
+  const now = Date.now();
+  if (now - _lastSubmitAt < SUBMIT_COOLDOWN_MS) {
+    return { success: false, error: { code: 'RATE_LIMITED', message: '操作过于频繁，请稍后再试' } };
+  }
+  _lastSubmitAt = now;
+
   const result = await pbRequest<GlobalCheckin>(
     `/api/collections/${CHECKINS_COLLECTION}/records`,
     {

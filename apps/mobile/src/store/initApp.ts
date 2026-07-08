@@ -132,7 +132,7 @@ export async function initApp(): Promise<void> {
       setState(fullPatch);
     }
 
-    // ── Step 3b: Clean up ghost entries (after rehydrate loads actual data) ──
+    // ── Step 3b: Clean up ghost entries (atomically inside setState to avoid race with realtime) ──
     try {
       const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
         ['foodLog', 'food', f => !f.name],
@@ -152,23 +152,24 @@ export async function initApp(): Promise<void> {
         ['motivationLog', 'motivationEntry', f => !f.foodId],
         ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date],
       ];
-      const ghostPatch: Record<string, unknown[]> = {};
       const toDelete: Array<{ entity: string; id: string }> = [];
-      const s = store();
-      for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
-        const items = (s[storeKey as keyof typeof s] ?? []) as Array<Record<string, unknown>>;
-        const ghosts = items.filter(i => !i.deleted && isGhost(i));
-        if (ghosts.length > 0) {
-          log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
-          ghostPatch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
-          for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
+      // Use functional setState so ghost check reads the latest state atomically,
+      // avoiding race with realtime events between store() read and setState.
+      setState(prev => {
+        const ghostPatch: Record<string, unknown[]> = {};
+        for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
+          const items = (prev[storeKey as keyof typeof prev] ?? []) as Array<Record<string, unknown>>;
+          const ghosts = items.filter(i => !i.deleted && isGhost(i));
+          if (ghosts.length > 0) {
+            log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
+            ghostPatch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
+            for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
+          }
         }
-      }
-      if (Object.keys(ghostPatch).length > 0) {
-        setState(ghostPatch as PartialMobileStore);
-        for (const { entity, id } of toDelete) {
-          adapter.markDeleted(entity as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
-        }
+        return ghostPatch as PartialMobileStore;
+      });
+      for (const { entity, id } of toDelete) {
+        adapter.markDeleted(entity as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
       }
     } catch (err) {
       log.error(err, { message: 'Ghost cleanup failed (non-fatal)' });
@@ -186,7 +187,7 @@ export async function initApp(): Promise<void> {
         }
       }
     } catch (err) {
-      log.error(err, { message: 'SecureStore load failed (non-fatal)' });
+      log.error(err, { message: 'SecureStore load failed — user may appear logged out despite valid tokens' });
     }
 
     // ── Step 5: Wire auth token changes → SecureStore + Sentry user ─
@@ -265,6 +266,10 @@ export async function initApp(): Promise<void> {
         store().checkHabitAutoStatus?.();
       },
       addVisibilityListener: (callback) => {
+        // NOTE: The subscription returned by AppState.addEventListener is intentionally discarded.
+        // The DailyResetManager lives for the entire app lifetime (created once in initApp),
+        // so the listener is never cleaned up. This is acceptable because the listener is
+        // passive (only fires on app foreground) and cannot outlive the JS context.
         AppState.addEventListener('change', (s) => {
           if (s === 'active') callback();
         });
@@ -283,6 +288,9 @@ export async function initApp(): Promise<void> {
     try { store().cleanupRecycleBin(); } catch (err) { log.error(err, { message: 'Recycle bin cleanup failed (non-fatal)' }); }
 
     // ── Step 10: Start daily reset checks ──────────────────────
+    // Pass Promise.resolve() so the first check runs immediately (no waiting for sync).
+    // This is intentional: the daily reset should fire on app start regardless of sync
+    // status, because the user's local timezone may have crossed midnight while offline.
     try { dailyReset.start(Promise.resolve()); } catch (err) { log.error(err, { message: 'Daily reset start failed (non-fatal)' }); }
 
     log.info('App initialized successfully');

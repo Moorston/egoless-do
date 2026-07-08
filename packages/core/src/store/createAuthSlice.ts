@@ -207,6 +207,8 @@ export function createAuthSlice(
       } finally {
         _refreshInFlight = null;
       }
+      // After refresh completes, verify user is still logged in
+      if (!get().auth.refreshToken) return;
     },
 
     async pullServerData(tokenOverride?: string) {

@@ -236,6 +236,9 @@ const POLL_INTERVAL_ACTIVE = 5_000;   // 5 seconds when map is visible
 const POLL_INTERVAL_IDLE = 30_000;    // 30 seconds when backgrounded
 const POLL_INTERVAL_INITIAL = 2_000;  // 2 seconds for first few polls after change
 
+// Module-level subscription tracker to prevent listener leaks on rapid subscribeSessions calls
+let _currentAppStateSub: { remove?: () => void } | null = null;
+
 /**
  * Subscribe to active_sessions collection changes via adaptive polling.
  * Polls faster (5s) when visible, slower (30s) when backgrounded.
@@ -320,10 +323,12 @@ export function subscribeSessions(
   void poll();
 
   // Visibility listener for adaptive interval
-  let _appStateSub: { remove?: () => void } | null = null;
+  // Clean up any previous subscription before creating a new one (prevents listener leaks on rapid calls)
+  _currentAppStateSub?.remove?.();
+  _currentAppStateSub = null;
   try {
     const { AppState } = require('react-native');
-    _appStateSub = AppState.addEventListener('change', (s: string) => {
+    _currentAppStateSub = AppState.addEventListener('change', (s: string) => {
       _isVisible = s === 'active';
       // Reset timer with new interval (in-flight poll will reschedule itself via scheduleNext)
       cleanup();
@@ -336,7 +341,8 @@ export function subscribeSessions(
   return () => {
     isActive = false;
     cleanup();
-    _appStateSub?.remove?.();
+    _currentAppStateSub?.remove?.();
+    _currentAppStateSub = null;
     setConnectionState('idle');
   };
 }

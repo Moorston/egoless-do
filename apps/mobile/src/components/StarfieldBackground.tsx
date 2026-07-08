@@ -68,25 +68,31 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const mountedRef = useRef(true);
   const loopRef = useRef<Animated.CompositeAnimation | null>(null);
+  const activeAnimRef = useRef<Animated.CompositeAnimation | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
     const animate = () => {
-      Animated.sequence([
+      if (!mountedRef.current) return;
+      const intro = Animated.sequence([
         Animated.delay(Math.random() * 3000),
         Animated.parallel([
           Animated.timing(opacity, { toValue: maxOpacity, duration: 2000, useNativeDriver: true }),
           Animated.spring(scale, { toValue: 1, friction: 2, tension: 20, useNativeDriver: true }),
-        ]),
-      ]).start(() => {
+        }),
+      ]);
+      activeAnimRef.current = intro;
+      intro.start(() => {
         const twinkle = () => {
           if (!mountedRef.current) return;
           const d1 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
           const d2 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
-          Animated.sequence([
+          const seq = Animated.sequence([
             Animated.timing(opacity, { toValue: minOpacity + Math.random() * 0.2, duration: d1, useNativeDriver: true }),
             Animated.timing(opacity, { toValue: maxOpacity, duration: d2, useNativeDriver: true }),
-          ]).start(twinkle);
+          ]);
+          activeAnimRef.current = seq;
+          seq.start(twinkle);
         };
         twinkle();
         loopRef.current = Animated.loop(
@@ -98,6 +104,7 @@ function BrightStar({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, g
     animate();
     return () => {
       mountedRef.current = false;
+      activeAnimRef.current?.stop();
       loopRef.current?.stop();
     };
   }, []);
@@ -168,31 +175,40 @@ function Star({ x, y, size, minOpacity, maxOpacity, twinkleSpeed, color, glowCol
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.3)).current;
   const mountedRef = useRef(true);
+  const activeAnimRef = useRef<Animated.CompositeAnimation | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
     const animate = () => {
-      Animated.sequence([
+      if (!mountedRef.current) return;
+      const intro = Animated.sequence([
         Animated.delay(Math.random() * 2000),
         Animated.parallel([
           Animated.timing(opacity, { toValue: maxOpacity, duration: 1500, useNativeDriver: true }),
           Animated.spring(scale, { toValue: 1, friction: 3, tension: 30, useNativeDriver: true }),
-        ]),
-      ]).start(() => {
+        }),
+      ]);
+      activeAnimRef.current = intro;
+      intro.start(() => {
         const twinkle = () => {
           if (!mountedRef.current) return;
           const d1 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
           const d2 = twinkleSpeed[0] + Math.random() * (twinkleSpeed[1] - twinkleSpeed[0]);
-          Animated.sequence([
+          const seq = Animated.sequence([
             Animated.timing(opacity, { toValue: minOpacity + Math.random() * (maxOpacity - minOpacity) * 0.5, duration: d1, useNativeDriver: true }),
             Animated.timing(opacity, { toValue: maxOpacity - Math.random() * (maxOpacity - minOpacity) * 0.3, duration: d2, useNativeDriver: true }),
-          ]).start(twinkle);
+          ]);
+          activeAnimRef.current = seq;
+          seq.start(twinkle);
         };
         twinkle();
       });
     };
     animate();
-    return () => { mountedRef.current = false; };
+    return () => {
+      mountedRef.current = false;
+      activeAnimRef.current?.stop();
+    };
   }, []);
 
   return (
