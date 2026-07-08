@@ -80,11 +80,14 @@ export function sanitizeError(err: unknown, fallback: string): string {
   return fallback;
 }
 
+const COMMON_PASSWORDS = ['password', '12345678', 'qwerty123', 'password1', 'admin123'];
+
 /** Validate password strength */
 export function validatePassword(pwd: string): string | null {
-  if (pwd.length < 8) return '密码需至少8位';
+  if (pwd.length < 10) return '密码需至少10位';
   if (!/[a-zA-Z]/.test(pwd)) return '密码需包含字母';
   if (!/[0-9]/.test(pwd)) return '密码需包含数字';
   if (/^[a-zA-Z0-9]+$/.test(pwd)) return '密码需包含特殊符号';
+  if (COMMON_PASSWORDS.some(p => pwd.toLowerCase().includes(p))) return '密码不能包含常见词汇';
   return null;
 }

@@ -46,7 +46,11 @@ function getCountdownType(plan: Plan, now: Date): CountdownType {
 }
 
 function calculateTimeDiff(targetDate: string, now: Date, isOverdue: boolean = false): CountdownTime {
-  const target = new Date(targetDate + 'T00:00:00');
+  // Parse date components manually to get local midnight (not UTC).
+  // new Date('2026-01-15T00:00:00') would be UTC midnight, which is wrong
+  // for users outside UTC+0.
+  const [y, m, d] = targetDate.split('-').map(Number);
+  const target = new Date(y, m - 1, d);
   const diffMs = isOverdue 
     ? now.getTime() - target.getTime()
     : target.getTime() - now.getTime();

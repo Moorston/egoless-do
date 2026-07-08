@@ -20,6 +20,9 @@ export function setSyncUserIdProvider(fn: () => string | null) { _engine.setUser
 export function setSyncChangeHandler(fn: (patch: Record<string, unknown>) => void) { _engine.setChangeHandler(fn); }
 export function setDeletedIdsProvider(fn: () => Set<string>) { _engine.setDeletedIdsProvider(fn); }
 export function setKickedOutHandler(fn: () => void) { _engine.setKickedOutHandler(fn); }
+export function setTokenRecoveryFn(fn: () => Promise<string | null>) { _engine.setTokenRecoveryFn(fn); }
+export function setRealtimeLogoutHandler(fn: () => void) { _engine.setRealtimeLogoutHandler(fn); }
+export function setRealtimeUserIdProvider(fn: () => string | undefined) { _engine.setRealtimeUserIdProvider(fn); }
 export function setLastSyncAt(ts: number) { _engine.setLastSyncAt(ts); }
 
 export function runSync(): Promise<void> { return _engine.runSync(); }

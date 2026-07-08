@@ -9,6 +9,9 @@
  * syntactic meaning in PB filter expressions.
  */
 export function escapeFilter(value: string): string {
+  if (value.length > 1000) {
+    value = value.slice(0, 1000);
+  }
   return value
     .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')

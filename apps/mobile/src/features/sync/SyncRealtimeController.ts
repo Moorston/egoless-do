@@ -19,8 +19,13 @@ export class SyncRealtimeController {
   private _netInfoUnsubscribe: (() => void) | null = null;
   private _realtimeDebounce = new Map<string, ReturnType<typeof setTimeout>>();
   private _realtimeEventTimes = new Map<string, number[]>();
+  private _logoutHandler: (() => void) | null = null;
+  private _userIdProvider: (() => string | undefined) | null = null;
 
   constructor() {}
+
+  setLogoutHandler(fn: () => void) { this._logoutHandler = fn; }
+  setUserIdProvider(fn: () => string | undefined) { this._userIdProvider = fn; }
 
   // ── Connection Management ──────────────────────────────────────────────
 
@@ -29,26 +34,26 @@ export class SyncRealtimeController {
     getToken: () => string | null,
     onChange: (patch: Record<string, unknown>) => void,
     onKickedOut: () => void,
-    lastSyncAt: number,
+    getLastSyncAt: () => number,
     deletedIdsProvider: () => Set<string>,
   ): void {
     const token = getToken();
     if (!token) return;
 
     this.disconnectRealtime();
-    this.startNetworkRecoveryListener(onChange, lastSyncAt, deletedIdsProvider, getToken);
+    this.startNetworkRecoveryListener(onChange, getLastSyncAt, deletedIdsProvider, getToken);
 
     if (pbUrl) {
-      this._realtimeAgent.setChangeHandler((event) => this.handleRealtimeEvent(event, onChange, lastSyncAt, deletedIdsProvider, getToken));
+      this._realtimeAgent.setChangeHandler((event) => this.handleRealtimeEvent(event, onChange, getLastSyncAt, deletedIdsProvider, getToken));
       this._realtimeAgent.setStatusHandler((connected) => {
         this._sseConnected = connected;
-        if (!connected && !this._realtimeFallbackTimer) this.startFallbackPolling(getToken, onChange, lastSyncAt, deletedIdsProvider);
+        if (!connected && !this._realtimeFallbackTimer) this.startFallbackPolling(getToken, onChange, getLastSyncAt, deletedIdsProvider);
         else if (connected) this.stopFallbackPolling();
       });
       this._realtimeAgent.connect(pbUrl, token);
     }
     // Only start fallback polling if SSE isn't going to be connected
-    if (!pbUrl) this.startFallbackPolling(getToken, onChange, lastSyncAt, deletedIdsProvider);
+    if (!pbUrl) this.startFallbackPolling(getToken, onChange, getLastSyncAt, deletedIdsProvider);
   }
 
   disconnectRealtime(): void {
@@ -78,13 +83,13 @@ export class SyncRealtimeController {
   private startFallbackPolling(
     getToken: () => string | null,
     onChange: (patch: Record<string, unknown>) => void,
-    lastSyncAt: number,
+    getLastSyncAt: () => number,
     deletedIdsProvider: () => Set<string>,
   ) {
     if (this._realtimeFallbackTimer) return;
     this._realtimeFallbackTimer = setInterval(() => {
       const currentToken = getToken();
-      if (currentToken) this.pollForChanges(currentToken, onChange, lastSyncAt, deletedIdsProvider);
+      if (currentToken) this.pollForChanges(currentToken, onChange, getLastSyncAt(), deletedIdsProvider);
     }, 120_000);
   }
 
@@ -106,9 +111,7 @@ export class SyncRealtimeController {
       }
 
       try {
-        // Import dynamically to avoid circular dependency
-        const { useAppStore } = await import('../../store/useAppStore');
-        const userId = useAppStore.getState().auth.user?.id ?? undefined;
+        const userId = this._userIdProvider?.() ?? undefined;
 
         const checkResult = await apiSyncCheck(token, lastSyncAt, userId);
         if (!checkResult.hasChanges) return;
@@ -135,9 +138,7 @@ export class SyncRealtimeController {
         }
       } catch (checkErr) {
         if (checkErr instanceof KickedOutError) {
-          // Import dynamically to avoid circular dependency
-          const { useAppStore } = await import('../../store/useAppStore');
-          await useAppStore.getState().logout();
+          this._logoutHandler?.();
           return;
         }
         log.warn(checkErr, { phase: 'poll-check' });
@@ -155,7 +156,7 @@ export class SyncRealtimeController {
 
   private startNetworkRecoveryListener(
     onChange: (patch: Record<string, unknown>) => void,
-    lastSyncAt: number,
+    getLastSyncAt: () => number,
     deletedIdsProvider: () => Set<string>,
     getToken: () => string | null,
   ): void {
@@ -197,7 +198,7 @@ export class SyncRealtimeController {
   handleRealtimeEvent(
     event: RealtimeChangeEvent,
     onChange: (patch: Record<string, unknown>) => void,
-    lastSyncAt: number,
+    getLastSyncAt: () => number,
     deletedIdsProvider: () => Set<string>,
     getToken: () => string | null,
   ): void {
@@ -206,7 +207,7 @@ export class SyncRealtimeController {
 
     const delay = this.getAdaptiveDebounce(entity);
     if (delay === 0) {
-      this.processRealtimeEntity(entity, payload, onChange, lastSyncAt, deletedIdsProvider, getToken);
+      this.processRealtimeEntity(entity, payload, onChange, getLastSyncAt, deletedIdsProvider, getToken);
       return;
     }
 
@@ -219,7 +220,7 @@ export class SyncRealtimeController {
     if (existing) clearTimeout(existing);
     this._realtimeDebounce.set(entity, setTimeout(() => {
       this._realtimeDebounce.delete(entity);
-      this.processRealtimeEntity(entity, null, onChange, lastSyncAt, deletedIdsProvider, getToken);
+      this.processRealtimeEntity(entity, null, onChange, getLastSyncAt, deletedIdsProvider, getToken);
     }, delay));
   }
 
@@ -227,7 +228,7 @@ export class SyncRealtimeController {
     entity: string,
     payload: unknown,
     onChange: (patch: Record<string, unknown>) => void,
-    lastSyncAt: number,
+    getLastSyncAt: () => number,
     deletedIdsProvider: () => Set<string>,
     getToken: () => string | null,
   ): Promise<void> {
@@ -246,9 +247,10 @@ export class SyncRealtimeController {
       }
 
       // No payload - do incremental pull
+      const currentLastSyncAt = getLastSyncAt();
       const result = await apiSyncPullPost(token, {
         entities: [entity],
-        since: lastSyncAt > 0 ? lastSyncAt : undefined,
+        since: currentLastSyncAt > 0 ? currentLastSyncAt : undefined,
       });
       if (result?.data?.[entity]) {
         // Import dynamically to avoid circular dependency
@@ -265,9 +267,7 @@ export class SyncRealtimeController {
       }
     } catch (err) {
       if (err instanceof KickedOutError) {
-        // Import dynamically to avoid circular dependency
-        const { useAppStore } = await import('../../store/useAppStore');
-        await useAppStore.getState().logout();
+        this._logoutHandler?.();
         return;
       }
       log.warn(err, { phase: 'realtime-pull' });

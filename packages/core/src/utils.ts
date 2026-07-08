@@ -157,6 +157,7 @@ export const estimateFastingKcal = (
   gender: 'male' | 'female' = 'male', age: number = 30,
   height: number = 170
 ): number => {
+  if (durationHours <= 0) return 0;
   const bmr = gender === 'male'
     ? 10 * weight + 6.25 * height - 5 * age + 5
     : 10 * weight + 6.25 * height - 5 * age - 161;

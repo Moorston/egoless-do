@@ -103,10 +103,11 @@ export class DailyResetManager {
         const todayDate = parseLocal(today);
         const daysDiff = Math.floor((todayDate.getTime() - lastDate.getTime()) / 86400000);
 
-        // Backfill missing days (up to 7 days to prevent excessive processing)
-        // Loop from lastDate to yesterday (daysDiff-1). performDailyReset derives
-        // today = previousDate+1, so passing yesterday yields the actual today.
-        if (daysDiff > 1) {
+        // Guard: invalid date string produces NaN, corrupted storage loses backfill silently
+        if (isNaN(daysDiff) || daysDiff < 0) {
+          log.warn('Invalid daysDiff, skipping backfill', { lastReset, today, daysDiff });
+          // Skip backfill — just update lastReset to today
+        } else if (daysDiff > 1) {
           for (let i = 0; i < Math.min(daysDiff, 7); i++) {
             const backfillDate = new Date(lastDate);
             backfillDate.setDate(backfillDate.getDate() + i);

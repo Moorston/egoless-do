@@ -10,13 +10,16 @@ import { openDatabase, setState as setAppState } from '../db/schema';
 import {
   rehydrateFromDb,
   runSync,
+  setTokenRecoveryFn,
+  setRealtimeLogoutHandler,
+  setRealtimeUserIdProvider,
 } from '../features/sync/SyncService';
 import { captureException, captureMessage, addBreadcrumb, setSentryUser, clearSentryUser } from '../sentry';
 
 import { migrateAsyncStorageToSQLite, migrateSettingsToSQLite } from './migrateAsyncStorage';
 import { loadSecureTokens, saveSecureTokens, clearSecureTokens } from './secureAuth';
 import { mobileStorageAdapter as adapter, flushWrites } from './storageAdapter';
-import { useAppStore, setAutoSyncCallback, type PartialMobileStore } from './useAppStore';
+import { useAppStore, setAutoSyncCallback, type PartialMobileStore, type MobileStore } from './useAppStore';
 
 const log = createLogger('App');
 
@@ -187,15 +190,16 @@ export async function initApp(): Promise<void> {
     }
 
     // ── Step 5: Wire auth token changes → SecureStore + Sentry user ─
-    useAppStore.subscribe((state, prevState) => {
+    // Store unsubscribe handle for testability (subscription is permanent in production).
+    const _unsubscribeAuth = useAppStore.subscribe((state: MobileStore, prevState: MobileStore) => {
       const newToken = state.auth.token;
       const newRefresh = state.auth.refreshToken;
       const oldToken = prevState.auth.token;
       const oldRefresh = prevState.auth.refreshToken;
       if (newToken && newRefresh && (newToken !== oldToken || newRefresh !== oldRefresh)) {
-        saveSecureTokens(newToken, newRefresh);
+        saveSecureTokens(newToken, newRefresh).catch(e => log.error(e, { phase: 'saveSecureTokens' }));
       } else if (!newToken && oldToken) {
-        clearSecureTokens();
+        clearSecureTokens().catch(e => log.error(e, { phase: 'clearSecureTokens' }));
       }
       // Sync Sentry user context on auth state changes
       if (state.auth.isSignedIn && state.auth.user && (!prevState.auth.isSignedIn || state.auth.user.id !== prevState.auth.user?.id)) {
@@ -204,6 +208,8 @@ export async function initApp(): Promise<void> {
         clearSentryUser();
       }
     });
+    // Suppress unused variable warning — _unsubscribeAuth is stored for testability
+    void _unsubscribeAuth;
 
     // ── Step 6: Set up auto-sync callback ─────────────────────
     // Connect the store's triggerAutoSync → SyncEngine so data mutations trigger sync
@@ -212,6 +218,22 @@ export async function initApp(): Promise<void> {
       store().autoSyncHabits?.();
       runSync().catch((e) => log.error(e));
     });
+
+    // ── Step 6b: Wire token recovery for SyncEngine ──────────
+    // Avoids circular import: SyncEngine → useAppStore
+    setTokenRecoveryFn(async () => {
+      const auth = store().auth;
+      if (auth.refreshToken) {
+        await store().refreshAuth();
+        return store().auth.token ?? null;
+      }
+      return null;
+    });
+
+    // ── Step 6c: Wire realtime controller callbacks ──────────
+    // Avoids circular import: SyncRealtimeController → useAppStore
+    setRealtimeLogoutHandler(() => { void store().logout(); });
+    setRealtimeUserIdProvider(() => store().auth.user?.id ?? undefined);
 
     // ── Step 7: Create DailyResetManager with SQLite storage ──
     const dailyReset = new DailyResetManager({

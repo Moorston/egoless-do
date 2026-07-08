@@ -2,7 +2,7 @@ export type { StorageAdapter, SyncDataMap } from './storageAdapter';
 export type {
   AuthSlice, HabitSlice, ReflectionSlice, PlanSlice, RecycleBinSlice,
   FoodSlice, CheckinSlice, ProfileSlice, SleepSlice,
-  ThoughtTrailSlice, FullStore,
+  ThoughtTrailSlice, ReviewSlice, FullStore,
   BodySlice, DietSlice, MindSlice, MantraSlice, ZhiguanSlice,
   SettingsSlice,
 } from './types';

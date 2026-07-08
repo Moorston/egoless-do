@@ -25,7 +25,7 @@ export class SyncTimestampManager {
       const db = await openDatabase();
       const v = await getState(db, CLOCK_OFFSET_KEY);
       if (v) this._clockOffset = parseInt(v, 10) || 0;
-    } catch {} // intentional: clock offset is optional, defaults to 0
+    } catch (err) { log.warn(err, { context: 'loadClockOffset' }); }
   }
 
   async saveClockOffset(offset: number): Promise<void> {
@@ -33,7 +33,7 @@ export class SyncTimestampManager {
     try {
       const db = await openDatabase();
       await setState(db, CLOCK_OFFSET_KEY, String(offset));
-    } catch {} // intentional: best-effort persistence
+    } catch (err) { log.warn(err, { context: 'saveClockOffset' }); }
   }
 
   updateClockOffset(serverTime: number): void {
@@ -52,7 +52,7 @@ export class SyncTimestampManager {
       const db = await openDatabase();
       const val = await getState(db, 'lastSyncAt');
       if (val) this._lastSyncAt = Number(val) || 0;
-    } catch {} // intentional: lastSyncAt defaults to 0
+    } catch (err) { log.warn(err, { context: 'loadLastSyncAt' }); }
     this._lastSyncAtLoaded = true;
   }
 
@@ -60,7 +60,7 @@ export class SyncTimestampManager {
     try {
       const db = await openDatabase();
       await setState(db, 'lastSyncAt', String(ts));
-    } catch {} // intentional: best-effort persistence
+    } catch (err) { log.warn(err, { context: 'saveLastSyncAt' }); }
   }
 
   resetLastSyncAt(): void {

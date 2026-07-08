@@ -154,7 +154,7 @@ export function createAuthSlice(
         try {
           await apiLogout(auth.token, auth.refreshToken);
         } catch (e: unknown) {
-          log.error(e);
+          log.error(e, { context: 'logout API call' });
         }
       }
       set({ auth: defaultAuthState });

@@ -30,7 +30,10 @@ export const BODY_CLOCK: BodyClockPeriod[] = [
 /** 获取当前时辰 */
 export function getCurrentPeriod(): BodyClockPeriod {
   const hour = new Date().getHours();
-  // 子时特殊处理：23:00-00:59 属于子时
+  // Fragile boundary: BODY_CLOCK[0] (zi/shi) starts at hour 23 and wraps to hours 0-0.
+  // The loop walks backwards so that the first entry whose startHour <= `hour` wins.
+  // The special case `i === 0 && hour < 1` handles the midnight wrap (00:00-00:59).
+  // If BODY_CLOCK order or startHour values ever change, this logic must be re-verified.
   for (let i = BODY_CLOCK.length - 1; i >= 0; i--) {
     if (hour >= BODY_CLOCK[i].startHour || (i === 0 && hour < 1)) {
       return BODY_CLOCK[i];

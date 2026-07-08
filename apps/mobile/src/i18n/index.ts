@@ -7,7 +7,9 @@ let lng = 'zh';
 try {
   const Localization = require('expo-localization');
   lng = Localization.getLocales()[0]?.languageCode ?? 'zh';
-} catch {}
+} catch {
+  // expo-localization not available (e.g., in tests or bare workflow) — fallback to 'zh'
+}
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v4',

@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS habits (
   deleted        INTEGER NOT NULL DEFAULT 0,
   synced         INTEGER NOT NULL DEFAULT 0
 );
+CREATE INDEX IF NOT EXISTS idx_habits_status ON habits(status, deleted);
 
 CREATE TABLE IF NOT EXISTS food_entries (
   id         TEXT PRIMARY KEY,
@@ -843,7 +844,9 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   }
 
   // Relax plan_id constraint (server data may have null plan_id for standalone todos)
+  // Wrapped in explicit transaction so DROP+RENAME is atomic
   try {
+    await db.execAsync('BEGIN TRANSACTION');
     await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos_new (
       id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
       name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
@@ -853,7 +856,11 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync(`INSERT OR IGNORE INTO daily_custom_todos_new SELECT * FROM daily_custom_todos`);
     await db.execAsync(`DROP TABLE daily_custom_todos`);
     await db.execAsync(`ALTER TABLE daily_custom_todos_new RENAME TO daily_custom_todos`);
-  } catch (e) { /* Table may already have correct schema */ }
+    await db.execAsync('COMMIT');
+  } catch (e) {
+    try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
+    log.warn('[DB] daily_custom_todos migration transaction failed:', e);
+  }
 
   // Ensure daily_todo_history table exists
   const dailyTodoHistoryTableCheck = await db.getFirstAsync<{ name: string }>(
@@ -893,18 +900,26 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
 
   // Remove CHECK(length(insight) <= 20) constraint from fasting_sessions
   // by recreating the table (SQLite doesn't support ALTER TABLE DROP CHECK)
+  // Wrapped in explicit transaction so INSERT+DROP+RENAME is atomic
   const hasInsightCheck = await db.getFirstAsync<{ sql: string }>(
     "SELECT sql FROM sqlite_master WHERE type='table' AND name='fasting_sessions'"
   );
   if (hasInsightCheck?.sql?.includes('CHECK(length(insight)')) {
-    await db.execAsync(`CREATE TABLE fasting_sessions_new (
-      id TEXT PRIMARY KEY, target_hours REAL NOT NULL, started_at INTEGER NOT NULL,
-      ended_at INTEGER, estimated_kcal INTEGER, insight TEXT, note TEXT NOT NULL DEFAULT '',
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync(`INSERT INTO fasting_sessions_new SELECT * FROM fasting_sessions`);
-    await db.execAsync(`DROP TABLE fasting_sessions`);
-    await db.execAsync(`ALTER TABLE fasting_sessions_new RENAME TO fasting_sessions`);
+    try {
+      await db.execAsync('BEGIN TRANSACTION');
+      await db.execAsync(`CREATE TABLE fasting_sessions_new (
+        id TEXT PRIMARY KEY, target_hours REAL NOT NULL, started_at INTEGER NOT NULL,
+        ended_at INTEGER, estimated_kcal INTEGER, insight TEXT, note TEXT NOT NULL DEFAULT '',
+        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      )`);
+      await db.execAsync(`INSERT INTO fasting_sessions_new SELECT * FROM fasting_sessions`);
+      await db.execAsync(`DROP TABLE fasting_sessions`);
+      await db.execAsync(`ALTER TABLE fasting_sessions_new RENAME TO fasting_sessions`);
+      await db.execAsync('COMMIT');
+    } catch (e) {
+      try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
+      log.warn('[DB] fasting_sessions CHECK removal transaction failed:', e);
+    }
   }
 
   // Add note column to fasting_sessions if missing

@@ -82,6 +82,7 @@ export class SyncEngine {
   private _onChanges: ((patch: Record<string, unknown>) => void) | null = null;
   private _deletedIdsProvider: (() => Set<string>) | null = null;
   private _onKickedOut: (() => void) | null = null;
+  private _tokenRecoveryFn: (() => Promise<string | null>) | null = null;
   private _hasSyncedDeletes = false;
   private _forcePull = false;
   private _lastRoutineCleanupAt = 0;
@@ -98,6 +99,9 @@ export class SyncEngine {
   setChangeHandler(fn: (patch: Record<string, unknown>) => void) { this._onChanges = fn; }
   setDeletedIdsProvider(fn: () => Set<string>) { this._deletedIdsProvider = fn; }
   setKickedOutHandler(fn: () => void) { this._onKickedOut = fn; }
+  setTokenRecoveryFn(fn: () => Promise<string | null>) { this._tokenRecoveryFn = fn; }
+  setRealtimeLogoutHandler(fn: () => void) { this._realtimeController.setLogoutHandler(fn); }
+  setRealtimeUserIdProvider(fn: () => string | undefined) { this._realtimeController.setUserIdProvider(fn); }
   setMigrationDone(v: boolean) { this._migrationDone = v; }
   getMigrationDone(): boolean { return this._migrationDone; }
   setLastSyncAt(ts: number) { this._timestampManager.setLastSyncAt(ts); }
@@ -141,7 +145,7 @@ export class SyncEngine {
       () => this._tokenProvider?.() ?? null,
       (patch) => this._onChanges?.(patch),
       () => this.handleKickedOut(),
-      this._timestampManager.getLastSyncAt(),
+      () => this._timestampManager.getLastSyncAt(),
       () => this._deletedIdsProvider?.() ?? new Set(),
     );
   }
@@ -526,17 +530,14 @@ export class SyncEngine {
     if (!token) {
       log.warn('runSync: no token, attempting recovery...');
       try {
-        const { useAppStore } = await import('../../store/useAppStore');
-        const auth = useAppStore.getState().auth;
-        if (auth.refreshToken) {
-          log.debug('Attempting token refresh...');
-          await useAppStore.getState().refreshAuth();
-          token = useAppStore.getState().auth.token ?? undefined;
+        if (this._tokenRecoveryFn) {
+          log.debug('Attempting token refresh via recovery function...');
+          token = await this._tokenRecoveryFn() ?? undefined;
           if (token) log.info('Token refreshed, proceeding with sync');
         }
         if (!token) {
           log.warn('No recovery possible, logging out');
-          void useAppStore.getState().logout();
+          this._onKickedOut?.();
           this._syncing = false;
           return;
         }

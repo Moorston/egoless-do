@@ -70,6 +70,7 @@ function getDaysInRange(start: string, end: string): number {
   const startDate = parseLocalDate(start);
   const endDate = parseLocalDate(end);
   const diffTime = endDate.getTime() - startDate.getTime();
+  if (diffTime < 0) return 0; // Guard: inverted date range
   return Math.round(diffTime / (1000 * 60 * 60 * 24)) + 1;
 }
 

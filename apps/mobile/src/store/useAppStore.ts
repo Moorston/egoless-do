@@ -32,6 +32,8 @@ const log = createLogger('App');
 // Configure API base for mobile
 const hostUri = Constants.expoConfig?.hostUri ?? Constants.experienceUrl?.split('?')[0]?.split('://')[1];
 const devHost = hostUri?.split(':')[0] ?? 'localhost';
+// NOTE: HTTP (not HTTPS) is intentional for local development (Expo Go / device on LAN).
+// Production URLs MUST use HTTPS — verify EXPO_PUBLIC_API_URL and EXPO_PUBLIC_PB_URL are https:// in production.
 const DEV_API = `http://${devHost}:3000`;
 const PROD_API = process.env.EXPO_PUBLIC_API_URL ?? 'https://egolessdo.freebytes.net';
 const apiBase = __DEV__ ? DEV_API : PROD_API;
@@ -39,6 +41,7 @@ setApiBase(apiBase);
 setPushApiBase(apiBase);
 
 // PocketBase URL for sync endpoints (separate from auth API)
+// NOTE: HTTP (not HTTPS) is intentional for local development. Production URLs MUST use HTTPS.
 const DEV_PB = `http://${devHost}:8090`;
 // Fallback chain: EXPO_PUBLIC_PB_URL → EXPO_PUBLIC_POCKETBASE_URL → apiBase
 const PROD_PB = process.env.EXPO_PUBLIC_PB_URL
@@ -50,6 +53,12 @@ const adapter = mobileStorageAdapter;
 
 // Debounced profile settings persistence (piggyback settings onto profile entity)
 let _settingsPersistTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** Flush all pending debounce timers. Call on app shutdown / background. */
+export function flushAllPendingTimers(): void {
+  if (_settingsPersistTimer) { clearTimeout(_settingsPersistTimer); _settingsPersistTimer = null; flushProfileSettings(); }
+  if (_aiConfigPersistTimer) { clearTimeout(_aiConfigPersistTimer); _aiConfigPersistTimer = null; flushAIConfig(); }
+}
 
 function flushProfileSettings() {
   if (_settingsPersistTimer) {

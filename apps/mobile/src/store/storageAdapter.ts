@@ -38,9 +38,13 @@ export function flushWrites(): Promise<boolean> {
 }
 
 export const mobileStorageAdapter: StorageAdapter = {
-  // Writes are batched (100ms debounce) for performance. The promise resolves
-  // immediately — use flushWrites() if you need to guarantee DB persistence
-  // before proceeding (e.g., during migration).
+  /**
+   * Persist a single entity change to SQLite via WriteBatcher.
+   * ⚠️ The returned Promise resolves IMMEDIATELY (before the actual DB write).
+   * The write is batched and flushed after a 100ms debounce window.
+   * If you need to guarantee the write has landed in SQLite before reading
+   * (e.g., during migration or before a sync pull), call `flushWrites()` explicitly.
+   */
   async persistChange<K extends SyncEntity>(entity: K, id: string, data: SyncDataMap[K]): Promise<void> {
     _batcher.write(entity, id, data as Record<string, unknown>);
   },

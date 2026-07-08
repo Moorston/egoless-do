@@ -15,7 +15,7 @@ export const initialRoundState: CountingRoundState = {
 
 /** 一次完整呼吸（呼气结束点） */
 export function notifyBreath(state: CountingRoundState): CountingRoundState {
-  const total = state.totalBreaths + 1;
+  const total = Math.max(0, state.totalBreaths) + 1;
 
   // 计算 (total-1) / 10 的商和余数以正确处理 10 的边界：
   // total=1..10  → cycle=0 (第1轮) counted=1..10
@@ -35,8 +35,9 @@ export function notifyBreath(state: CountingRoundState): CountingRoundState {
 
 /** 10-batch rounds helper — 总呼吸数 → (cycles, counted) */
 export function computeRounds(total: number): { cycles: number; counted: number; currentCycle: number } {
-  if (total === 0) return { cycles: 0, counted: 0, currentCycle: 1 };
-  const zeroBasedIdx = total - 1;
+  const safeTotal = Math.max(0, Math.floor(total));
+  if (safeTotal === 0) return { cycles: 0, counted: 0, currentCycle: 1 };
+  const zeroBasedIdx = safeTotal - 1;
   const cycles = Math.floor(zeroBasedIdx / 10);
   const counted = (zeroBasedIdx % 10) + 1;
   return { cycles, counted, currentCycle: cycles + 1 };

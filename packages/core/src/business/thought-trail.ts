@@ -52,7 +52,8 @@ export function generateTrailName(reflections: MindReflection[], t?: (key: strin
   let primaryTag = '';
   let bestCount = 0;
   for (const [tag, count] of tagCounts) {
-    if (count > bestCount) { primaryTag = tag; bestCount = count; }
+    // Deterministic tiebreaker: prefer lexicographically smaller tag
+    if (count > bestCount || (count === bestCount && tag < primaryTag)) { primaryTag = tag; bestCount = count; }
   }
 
   // 情绪有变化
