@@ -193,7 +193,7 @@ function MainTabs() {
       <Tab.Screen name="Mind"        component={withErrorBoundary(withLazy(MindScreen))}        options={{ title: t('mindTitle'), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Plan"        component={PlanScreen}        options={{ title: t('navTabPlan', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
       <Tab.Screen name="Reflections" component={withErrorBoundary(ReflectionsScreen)} options={{ title: t('navTabReflections', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
-      <Tab.Screen name="Habits"      component={withLazy(HabitsScreen)} options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
+      <Tab.Screen name="Habits"      component={withErrorBoundary(withLazy(HabitsScreen))} options={{ title: t('navTabHabits', language), tabBarButton: () => null, tabBarItemStyle: { display: 'none' } }} />
     </Tab.Navigator>
   );
 }
@@ -221,7 +221,7 @@ export default function AppNavigator() {
             setSyncPhase(parseInt(phase || '1', 10));
           }
         });
-      }).catch(() => {});
+      }).catch(e => log.error(e, { phase: 'navigation-init' }));
     });
   }, [isSignedIn]);
 
@@ -232,7 +232,7 @@ export default function AppNavigator() {
     const refreshAuth = useAppStore.getState().refreshAuth;
     // Only refresh if token is actually expired (not just on startup)
     if (expiresAt && expiresAt < Date.now()) {
-      refreshAuth().catch(() => {});
+      refreshAuth().catch(e => log.error(e, { phase: 'navigation-init' }));
     }
   }, [isSignedIn]);
 
@@ -287,42 +287,42 @@ export default function AppNavigator() {
         <Stack.Screen name="FastCalendar" component={withLazy(React.lazy(async () => ({ default: (await import('../features/fasting/FastHistoryPage')).FastCalendarScreen })))} />
         <Stack.Screen name="MedHistory"   component={MedHistoryWrapper} />
         <Stack.Screen name="MedCalendar"  component={withLazy(React.lazy(async () => ({ default: (await import('../features/meditation/MedHistoryPage')).MedCalendarScreen })))} />
-        <Stack.Screen name="SleepHistory" component={SleepHistoryPage} />
-        <Stack.Screen name="PreceptHistory" component={PreceptHistoryPage} />
-        <Stack.Screen name="BreathHistory" component={BreathHistoryPage} />
-        <Stack.Screen name="GiveHistory" component={GiveHistoryPage} />
-        <Stack.Screen name="FoodLog"      component={FoodLogPage} />
-        <Stack.Screen name="Grace"        component={GracePage} />
+        <Stack.Screen name="SleepHistory" component={withErrorBoundary(SleepHistoryPage)} />
+        <Stack.Screen name="PreceptHistory" component={withErrorBoundary(PreceptHistoryPage)} />
+        <Stack.Screen name="BreathHistory" component={withErrorBoundary(BreathHistoryPage)} />
+        <Stack.Screen name="GiveHistory" component={withErrorBoundary(GiveHistoryPage)} />
+        <Stack.Screen name="FoodLog"      component={withErrorBoundary(FoodLogPage)} />
+        <Stack.Screen name="Grace"        component={withErrorBoundary(GracePage)} />
         <Stack.Screen name="StreakBreak" component={StreakBreakScreen} />
-        <Stack.Screen name="CheckinHistory" component={CheckinHistoryScreen} />
-        <Stack.Screen name="CheckinDetail" component={CheckinDetailScreen} />
-        <Stack.Screen name="ReviewHistory" component={ReviewHistoryScreen} />
+        <Stack.Screen name="CheckinHistory" component={withErrorBoundary(CheckinHistoryScreen)} />
+        <Stack.Screen name="CheckinDetail" component={withErrorBoundary(CheckinDetailScreen)} />
+        <Stack.Screen name="ReviewHistory" component={withErrorBoundary(ReviewHistoryScreen)} />
         <Stack.Screen name="ReviewDetail" component={ReviewDetailScreen} />
-        <Stack.Screen name="ExerciseHistory" component={ExerciseHistoryScreen} />
-        <Stack.Screen name="PlanCreate"     component={PlanCreateScreen} />
-        <Stack.Screen name="PlanDetail"     component={PlanDetailScreen} />
-        <Stack.Screen name="PlanHistory"    component={PlanHistoryScreen} />
+        <Stack.Screen name="ExerciseHistory" component={withErrorBoundary(ExerciseHistoryScreen)} />
+        <Stack.Screen name="PlanCreate"     component={withErrorBoundary(PlanCreateScreen)} />
+        <Stack.Screen name="PlanDetail"     component={withErrorBoundary(PlanDetailScreen)} />
+        <Stack.Screen name="PlanHistory"    component={withErrorBoundary(PlanHistoryScreen)} />
         <Stack.Screen name="RecycleBin"    component={RecycleBinScreen} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
-        <Stack.Screen name="AISettings"    component={AISettingsScreen} />
-        <Stack.Screen name="Profile"       component={ProfileScreen} />
-        <Stack.Screen name="Music"         component={MusicScreen} />
+        <Stack.Screen name="AISettings"    component={withErrorBoundary(AISettingsScreen)} />
+        <Stack.Screen name="Profile"       component={withErrorBoundary(ProfileScreen)} />
+        <Stack.Screen name="Music"         component={withErrorBoundary(MusicScreen)} />
         <Stack.Screen name="MusicCategory" component={MusicCategoryScreen} />
-        <Stack.Screen name="Stats"         component={StatsScreen} />
+        <Stack.Screen name="Stats"         component={withErrorBoundary(StatsScreen)} />
         <Stack.Screen name="ReflectionStats" component={ReflectionStatsScreen} />
         <Stack.Screen name="MindTrail"     component={MindTrailScreen} />
         <Stack.Screen name="QuickCreateTrail" component={QuickCreateTrailScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ThoughtTrailDetail" component={ThoughtTrailDetailScreen} />
-        <Stack.Screen name="ReflectionDetail" component={ReflectionDetailScreen} />
+        <Stack.Screen name="ReflectionDetail" component={withErrorBoundary(ReflectionDetailScreen)} />
         <Stack.Screen name="Insight"       component={InsightScreen} />
         <Stack.Screen name="Review"        component={ReviewScreen} />
         <Stack.Screen name="StrategyLibrary" component={StrategyLibrary} />
-        <Stack.Screen name="HabitDetail"   component={HabitDetailScreen} />
+        <Stack.Screen name="HabitDetail"   component={withErrorBoundary(HabitDetailScreen)} />
         <Stack.Screen name="RelationMap"   component={RelationMapView} />
         <Stack.Screen name="MantraHistory" component={MantraHistoryScreen} />
-        <Stack.Screen name="SutraHistory" component={SutraHistoryScreen} />
+        <Stack.Screen name="SutraHistory" component={withErrorBoundary(SutraHistoryScreen)} />
         <Stack.Screen name="Zhiguan" component={ZhiguanScreen} />
-        <Stack.Screen name="ZhiguanHistory" component={ZhiguanHistoryScreen} />
+        <Stack.Screen name="ZhiguanHistory" component={withErrorBoundary(ZhiguanHistoryScreen)} />
       </Stack.Navigator>
     </NavigationContainer>
     <KickOutModal

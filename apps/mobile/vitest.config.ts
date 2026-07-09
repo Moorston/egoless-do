@@ -8,7 +8,7 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.test.{ts,tsx}'],
     exclude: ['node_modules', 'dist', '.expo'],
-    setupFiles: [path.resolve(__dirname, '../../__tests__/setup.ts')],
+    setupFiles: [path.resolve(__dirname, '../../setup.ts')],
   },
   resolve: {
     alias: {

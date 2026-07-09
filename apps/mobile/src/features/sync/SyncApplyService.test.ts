@@ -193,10 +193,12 @@ describe('SyncApplyService', () => {
     it('has a collection mapping for every table with non-empty values', () => {
       const entries = Object.entries(ENTITY_COLL_MAP);
       expect(entries.length).toBeGreaterThan(0);
-      expect(ENTITY_COLL_MAP.habits).toBe('habit');
-      expect(ENTITY_COLL_MAP.mind_reflections).toBe('reflection');
-      expect(ENTITY_COLL_MAP.fasting_sessions).toBe('fasting');
-      expect(ENTITY_COLL_MAP.plans).toBe('plan');
+      expect(ENTITY_COLL_MAP.habit_table).toBe('habit');
+      expect(ENTITY_COLL_MAP.reflection_table).toBe('reflection');
+      expect(ENTITY_COLL_MAP.fasting_table).toBe('fasting');
+      expect(ENTITY_COLL_MAP.plan_table).toBe('plan');
+      expect(ENTITY_COLL_MAP.aiConfig_table).toBe('aiConfig'); // aiConfig has PB override too
+      // Verify PB_COLLECTION_OVERRIDES: ai_configs -> aiConfig
       expect(ENTITY_COLL_MAP.ai_configs).toBe('aiConfig');
       for (const [table, entity] of entries) {
         expect(typeof table).toBe('string');

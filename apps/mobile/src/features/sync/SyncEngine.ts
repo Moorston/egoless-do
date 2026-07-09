@@ -526,8 +526,6 @@ export class SyncEngine {
   // ── Main sync ────────────────────────────────────────────────────
   async runSync(): Promise<void> {
     // ── Concurrency guard (generation-based, avoids TOCTOU) ──
-    const myGeneration = ++this._syncGeneration;
-
     // Abort previous sync if timed out
     if (this._syncing && Date.now() - this._syncingSince > SYNC_TIMEOUT_MS) {
       log.warn('Previous sync timed out, aborting');
@@ -541,6 +539,8 @@ export class SyncEngine {
       log.info('Sync already in progress, deferring');
       return;
     }
+
+    const myGeneration = ++this._syncGeneration;
 
     // ── Token check ────────────────────────────────────────────────────
     this._syncing = true;

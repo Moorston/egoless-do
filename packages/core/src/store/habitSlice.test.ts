@@ -1,3 +1,4 @@
+// @deprecated — Superseded by createHabitSlice.test.ts. Remove after verifying coverage.
 // ─── Habit slice tests ──────────────────────────────────────────
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createHabitSlice } from './createHabitSlice';

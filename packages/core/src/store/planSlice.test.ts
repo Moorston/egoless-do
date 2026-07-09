@@ -1,3 +1,4 @@
+// @deprecated — Superseded by createPlanSlice.test.ts. Remove after verifying coverage.
 // ─── Plan slice tests ──────────────────────────────────────────
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createPlanSlice } from './createPlanSlice';

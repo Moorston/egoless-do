@@ -88,6 +88,8 @@ const {
       connectRealtime: vi.fn(),
       disconnectRealtime: vi.fn(),
       isRealtimeConnected: vi.fn().mockReturnValue(false),
+      setRunSync: vi.fn(),
+      setApplyServerChanges: vi.fn(),
     },
     mockRehydrationManager: {
       isDeviceSyncedBefore: vi.fn().mockResolvedValue(false),
@@ -279,8 +281,9 @@ describe('SyncEngine', () => {
         expect.any(Function), // token getter
         expect.any(Function), // change handler
         expect.any(Function), // kicked-out handler
-        0,                    // lastSyncAt from timestampManager
+        expect.any(Function), // lastSyncAt getter (was raw value, now a function)
         expect.any(Function), // deletedIds provider
+        expect.any(Function), // onServerTime callback
       );
       // Verify the token getter returns our value
       const tokenGetter = mockRealtimeController.connectRealtime.mock.calls[0][1];
@@ -380,6 +383,7 @@ describe('SyncEngine', () => {
     it('proceeds when _initialSyncing=true (no longer defers)', async () => {
       // Set _initialSyncing directly via private access
       (engine as unknown as Record<string, boolean>)._initialSyncing = true;
+      engine.setTokenProvider(() => 'token');
 
       await engine.runSync();
 
@@ -400,6 +404,11 @@ describe('SyncEngine', () => {
       });
       mockDrainQueue.mockResolvedValue([]);
       mockAppStore.getState.mockReturnValue(mockAppStore);
+      engine.setTokenProvider(() => mockAppStore._auth?.token ?? null);
+      engine.setTokenRecoveryFn(async () => {
+        await mockAppStore.refreshAuth();
+        return mockAppStore._auth.token;
+      });
 
       await engine.runSync();
 
@@ -411,6 +420,12 @@ describe('SyncEngine', () => {
       mockAppStore._auth = { token: null, refreshToken: 'refresh-123', user: { id: 'u1' } };
       mockAppStore.getState.mockReturnValue(mockAppStore);
       mockAppStore.refreshAuth.mockResolvedValue(undefined); // refresh doesn't set token
+      engine.setTokenProvider(() => mockAppStore._auth?.token ?? null);
+      engine.setTokenRecoveryFn(async () => {
+        await mockAppStore.refreshAuth();
+        return mockAppStore._auth.token;
+      });
+      engine.setKickedOutHandler(() => mockAppStore.logout());
 
       await engine.runSync();
 
