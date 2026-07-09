@@ -105,3 +105,37 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: 修复第二轮审计 36 项问题
+
+**Date**: 2026-07-09
+**Task**: 修复第二轮审计 36 项问题
+**Package**: mobile
+**Branch**: `master`
+
+### Summary
+
+第二轮全面审查发现 36 项问题（安全、Sync 引擎、Store 一致性、低优先级），分 4 个批次在 22 个文件中全部修复。核心修复：PB 集合权限收紧、Sync 引擎空 catch 消除、withDbLock 事务保护、store set() 纯化。608 测试通过。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `04215d9` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
