@@ -189,23 +189,35 @@ export function createAuthSlice(
     async refreshAuth() {
       const { auth } = get();
       if (!auth.refreshToken) return;
-      // Don't refresh if token is still valid (not expired)
-      if (auth.expiresAt && auth.expiresAt > Date.now()) return;
+      // Proactive refresh: refresh when token is within 5 minutes of expiration
+      // This prevents the race where token expires mid-API-call
+      const PROACTIVE_WINDOW_MS = 5 * 60 * 1000;
+      if (auth.expiresAt && auth.expiresAt > Date.now() + PROACTIVE_WINDOW_MS) return;
       if (_refreshInFlight) return _refreshInFlight;
       _refreshInFlight = (async () => {
-        try {
-          const res = await apiRefreshToken(auth.refreshToken!, auth.token ?? undefined);
-          // Only apply if user is still logged in (not logged out during refresh)
-          if (get().auth.isSignedIn && get().auth.refreshToken) {
-            set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
+        // Retry up to 2 times on transient network errors
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            const res = await apiRefreshToken(auth.refreshToken!, auth.token ?? undefined);
+            // Only apply if user is still logged in (not logged out during refresh)
+            if (get().auth.isSignedIn && get().auth.refreshToken) {
+              set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
+            }
+            return; // Success — exit retry loop
+          } catch {
+            if (attempt === 0) {
+              // First failure: brief wait before retry (transient network blip)
+              await new Promise(r => setTimeout(r, 1000));
+              continue;
+            }
+            // Second failure: only clear auth if token is actually expired
+            const currentAuth = get().auth;
+            if (currentAuth.refreshToken && currentAuth.expiresAt && currentAuth.expiresAt < Date.now()) {
+              log.warn('Token refresh failed after 2 attempts, clearing auth', { context: 'refreshAuth' });
+              set({ auth: defaultAuthState });
+            }
+            // If token is still valid, keep the auth state — network error is transient
           }
-        } catch {
-          // Only clear auth if token is actually expired (not just a network error)
-          const currentAuth = get().auth;
-          if (currentAuth.refreshToken && currentAuth.expiresAt && currentAuth.expiresAt < Date.now()) {
-            set({ auth: defaultAuthState });
-          }
-          // If token is still valid, keep the auth state — network error is transient
         }
       })();
       try {
