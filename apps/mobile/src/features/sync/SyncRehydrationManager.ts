@@ -84,6 +84,8 @@ export class SyncRehydrationManager {
     log.debug(`[rehydrateFromDb] Rehydrating ${targets.length} entities: ${targets.join(', ')}`);
 
     // Parallel rehydration — all entity queries are independent
+    // Note: ~35 entities queried simultaneously; avoid adding more entities that could
+    // increase peak memory usage on low-end devices
     const results = await Promise.all(targets.map(async (entity) => {
       try {
         if (entity === 'food') {

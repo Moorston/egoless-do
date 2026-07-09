@@ -87,7 +87,6 @@ export class SyncEngine {
   private _forcePull = false;
   private _lastRoutineCleanupAt = 0;
   private _initialSyncing = false;
-  private _pendingSyncAfterInit = false;
   private _lastOrphanScanAt = 0;
   private _syncTriggerCallback: (() => void) | null = null;
   private _syncTriggerTimer: ReturnType<typeof setTimeout> | null = null;
@@ -156,6 +155,13 @@ export class SyncEngine {
       () => this.handleKickedOut(),
       () => this._timestampManager.getLastSyncAt(),
       () => this._deletedIdsProvider?.() ?? new Set(),
+      (serverTime) => {
+        if (serverTime > 0) {
+          this._timestampManager.setLastSyncAt(Math.max(this._timestampManager.getLastSyncAt(), serverTime));
+          this._timestampManager.saveLastSyncAt(this._timestampManager.getLastSyncAt());
+          this._timestampManager.updateClockOffset(serverTime);
+        }
+      },
     );
   }
 
@@ -234,7 +240,7 @@ export class SyncEngine {
       try {
         const { resetAllPendingForRetry: resetStuck } = await import('../../db/syncQueue');
         await resetStuck();
-      } catch {}
+      } catch (e) { log.error(e, { phase: 'resetStuck' }); }
       const items = await drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
       log.debug(`drainQueue batch ${batch + 1}: ${items.length} items`);
       if (!items.length) break;
@@ -269,7 +275,7 @@ export class SyncEngine {
           } catch (markErr) {
             // Atomicity guard: if marking retry fails, mark as failed instead of losing the item
             log.error(markErr, { phase: 'markRetry-fallback', itemId: item.id });
-            try { await markQueueItemFailed(item.id, 'Retry mark failed'); } catch {} // last resort
+            try { await markQueueItemFailed(item.id, 'Retry mark failed'); } catch (e) { log.error(e, { phase: 'markRetry-fallback' }); } // last resort
           }
         }
         break;
@@ -300,11 +306,13 @@ export class SyncEngine {
               if (!isValidSqlName(config.pk)) throw new Error(`Invalid pk name: ${config.pk}`);
               // Server says record is deleted — mark local as deleted too
               if (rejection.error === 'deleted') {
-                const db = await openDatabase();
-                await db.runAsync(
-                  `UPDATE ${config.table} SET deleted=1, synced=1 WHERE ${config.pk}=?`,
-                  [item.entity_id],
-                );
+                await withDbLock(async () => {
+                  const db = await openDatabase();
+                  await db.runAsync(
+                    `UPDATE ${config.table} SET deleted=1, synced=1 WHERE ${config.pk}=?`,
+                    [item.entity_id],
+                  );
+                });
                 log.debug(`[SyncEngine] Marked ${item.entity}:${item.entity_id} as deleted (server rejected)`);
                 resolved = true;
               } else {
@@ -317,19 +325,25 @@ export class SyncEngine {
                 }
                 if (cols.length) {
                   const db = await openDatabase();
-                  // Don't resurrect locally-deleted records
-                  const local = await db.getFirstAsync<{ deleted: number }>(
-                    `SELECT deleted FROM ${config.table} WHERE ${config.pk}=?`, [item.entity_id],
-                  );
-                  if (local?.deleted === 1) {
+                  const skipReason = await withDbLock<string | null>(async () => {
+                    // Don't resurrect locally-deleted records
+                    const local = await db.getFirstAsync<{ deleted: number }>(
+                      `SELECT deleted FROM ${config.table} WHERE ${config.pk}=?`, [item.entity_id],
+                    );
+                    if (local?.deleted === 1) {
+                      await markQueueItemConflict(item.id, 'Locally deleted');
+                      return 'deleted';
+                    }
+                    const setClause = cols.map(c => `${c}=?`).join(',');
+                    const r2 = await db.runAsync(`UPDATE ${config.table} SET ${setClause},deleted=0,synced=1 WHERE ${config.pk}=?`, [...vals, item.entity_id]);
+                    if (r2.changes === 0) {
+                      await db.runAsync(`INSERT INTO ${config.table} (${cols.join(',')},synced) VALUES (${cols.map(() => '?').join(',')},1)`, vals);
+                    }
+                    return null;
+                  });
+                  if (skipReason === 'deleted') {
                     log.debug(`[SyncEngine] Skipping auto-resolve for deleted ${item.entity}:${item.entity_id}`);
-                    await markQueueItemConflict(item.id, 'Locally deleted');
                     continue;
-                  }
-                  const setClause = cols.map(c => `${c}=?`).join(',');
-                  const r2 = await db.runAsync(`UPDATE ${config.table} SET ${setClause},deleted=0,synced=1 WHERE ${config.pk}=?`, [...vals, item.entity_id]);
-                  if (r2.changes === 0) {
-                    await db.runAsync(`INSERT INTO ${config.table} (${cols.join(',')},synced) VALUES (${cols.map(() => '?').join(',')},1)`, vals);
                   }
                   resolved = true;
                 }
@@ -350,7 +364,7 @@ export class SyncEngine {
                   remoteData: rejection.serverData,
                   timestamp: Date.now(),
                 });
-              } catch {} // intentional: conflict UI is optional
+              } catch (e) { log.warn(e, { phase: 'addConflict' }); } // intentional: conflict UI is optional
             }
           } catch (resolveErr) {
             log.error(resolveErr, { entity: item.entity, id: item.entity_id, phase: 'auto-resolve' });
@@ -360,7 +374,7 @@ export class SyncEngine {
           await markQueueItemConflict(item.id, 'Server rejected');
         }
       }
-      if (autoResolvedIds.length) await removeQueueItems(autoResolvedIds);
+      if (autoResolvedIds.length) await withDbLock(async () => { await removeQueueItems(autoResolvedIds); });
 
       // Mark synced
       try {
@@ -525,12 +539,6 @@ export class SyncEngine {
       return;
     }
 
-    if (this._initialSyncing) {
-      log.info('Initial sync in progress, deferring runSync');
-      this._pendingSyncAfterInit = true;
-      return;
-    }
-
     // ── Token check ────────────────────────────────────────────────────
     this._syncing = true;
     this._syncingSince = Date.now();
@@ -570,7 +578,7 @@ export class SyncEngine {
 
     // Reset failed/conflict items back to pending so they get another chance
     await resetAllPendingForRetry().catch(e => log.error(e, { phase: 'resetFailed' }));
-    pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
+    await pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
 
     // Orphan recovery — skip if last sync was <30s ago (orphan events are rare)
     if (shouldRunOrphanRecovery(this._lastOrphanScanAt)) {

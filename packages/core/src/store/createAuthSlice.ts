@@ -28,6 +28,12 @@ const ENTITY_MERGE_MAP: Array<[string, string, string]> = [
   ['trailNote',       'trailNotes',        'id'],
   ['reflectionLink',  'reflectionLinks',   'id'],
   ['checkinReview',   'checkinReviews',    'id'],
+  ['bodyGoal',        'bodyGoals',         'id'],
+  ['bodyPlan',        'bodyPlans',         'id'],
+  ['weightRecord',    'weightRecords',     'id'],
+  ['bodyCheckin',     'bodyCheckins',      'id'],
+  ['sleep',           'sleepHistory',      'id'],
+  ['give',            'giveHistory',       'id'],
 ];
 
 /** Merge server sync data into current store state. Extracted for readability. */

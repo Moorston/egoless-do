@@ -18,6 +18,7 @@ export async function saveSecureTokens(token: string, refreshToken: string): Pro
     ]);
   } catch (err) {
     log.error(err, { phase: 'saveSecureTokens' });
+    throw err; // Propagate to caller so they know the save failed
   }
 }
 

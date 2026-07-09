@@ -5,15 +5,15 @@ migrate((app) => {
   // These collections previously had updateRule/deleteRule of '@request.auth.id != ""'
   // which allowed ANY authenticated user to modify ANY other user's data.
 
-  // active_sessions: restrict update/delete to the creator
+  // active_sessions: mutations are handled by server-side hooks, admin-only via API
   const activeSessions = app.findCollectionByNameOrId("active_sessions");
-  activeSessions.updateRule = '@request.auth.id != "" && user_hash != ""';
-  activeSessions.deleteRule = '@request.auth.id != "" && user_hash != ""';
+  activeSessions.updateRule = null;
+  activeSessions.deleteRule = null;
   app.save(activeSessions);
 
-  // leaderboard: restrict update to the creator, no delete
+  // leaderboard: mutations are handled by server-side hooks, admin-only via API
   const leaderboard = app.findCollectionByNameOrId("leaderboard");
-  leaderboard.updateRule = '@request.auth.id != "" && user_hash != ""';
+  leaderboard.updateRule = null;
   app.save(leaderboard);
 
   // global_stats: only server-side hooks should update, remove direct API update

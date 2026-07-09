@@ -74,7 +74,7 @@ export function createDietSlice(
     // ── 进食动机 ──
 
     setFoodMotivation(entry) {
-      const existing = get().motivationLog.find(m => m.foodId === entry.foodId && !m.deleted);
+      const existing = (get().motivationLog ?? []).find(m => m.foodId === entry.foodId && !m.deleted);
       if (existing) {
         const updated = { ...existing, ...entry, updatedAt: Date.now() };
         set(s => ({
@@ -90,7 +90,7 @@ export function createDietSlice(
     },
 
     removeFoodMotivation(foodId: string) {
-      const existing = get().motivationLog.find(m => m.foodId === foodId && !m.deleted);
+      const existing = (get().motivationLog ?? []).find(m => m.foodId === foodId && !m.deleted);
       if (!existing) return;
       const updated = { ...existing, deleted: true, updatedAt: Date.now() };
       set(s => ({
@@ -143,7 +143,7 @@ export function createDietSlice(
       if (candidates.length > 0) return candidates[0];
 
       // 4. 自定义映射
-      const custom = get().customWuxingMaps.find(m => m.foodName === foodName && !m.deleted);
+      const custom = (get().customWuxingMaps ?? []).find(m => m.foodName === foodName && !m.deleted);
       if (custom) {
         return {
           foodKey: `custom_${custom.foodName}`,
@@ -166,7 +166,7 @@ export function createDietSlice(
     // ── 五味统计 ──
 
     getDailyFlavorStats(date: string): FlavorStats {
-      const foodLog = get().foodLog.filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === date);
+      const foodLog = (get().foodLog ?? []).filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === date);
       const stats = { ...zeroFlavor(), total: 0 };
       const lookup = get().lookupWuxing;
 
@@ -211,7 +211,7 @@ export function createDietSlice(
     },
 
     getWuxingStatsRange(dateFrom: string, dateTo: string): WuxingStats {
-      const foodLog = get().foodLog.filter(f => {
+      const foodLog = (get().foodLog ?? []).filter(f => {
         if (f.deleted) return false;
         const d = dateStr(new Date(f.timestamp));
         return d >= dateFrom && d <= dateTo;
@@ -252,7 +252,7 @@ export function createDietSlice(
     // ── 进食动机统计 ──
 
     getMotivationStats(dateFrom: string, dateTo: string): MotivationStats {
-      const logs = get().motivationLog.filter(m => {
+      const logs = (get().motivationLog ?? []).filter(m => {
         if (m.deleted) return false;
         return m.date >= dateFrom && m.date <= dateTo;
       });
@@ -298,7 +298,7 @@ export function createDietSlice(
         }
       }
 
-      const motivationLogs = get().motivationLog.filter(m => !m.deleted && m.date >= dateFrom && m.date <= dateTo);
+      const motivationLogs = (get().motivationLog ?? []).filter(m => !m.deleted && m.date >= dateFrom && m.date <= dateTo);
       const dayMotivations = new Map<string, EatingMotivation[]>();
       for (const m of motivationLogs) {
         const existing = dayMotivations.get(m.date);

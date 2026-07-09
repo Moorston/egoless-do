@@ -45,10 +45,10 @@ export class SyncResetService {
         }
         await db.runAsync("DELETE FROM app_state WHERE key IN ('initialSyncDone', 'initialSyncPhase')");
         await db.runAsync('DELETE FROM sync_progress');
+        // Clear sync keys — inside lock for transactional safety
+        await setState(db, DEVICE_SYNCED_KEY, '0');
+        await setState(db, CLOCK_OFFSET_KEY, '0');
       });
-      // Clear sync keys in SQLite app_state
-      await setState(db, DEVICE_SYNCED_KEY, '0');
-      await setState(db, CLOCK_OFFSET_KEY, '0');
     } catch (e) {
       log.warn(e, { phase: 'hardReset' });
     }

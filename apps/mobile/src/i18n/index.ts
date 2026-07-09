@@ -6,7 +6,8 @@ import { initReactI18next } from 'react-i18next';
 let lng = 'zh';
 try {
   const Localization = require('expo-localization');
-  lng = Localization.getLocales()[0]?.languageCode ?? 'zh';
+  const locale = Localization.getLocales()[0];
+  lng = locale?.languageTag ?? locale?.languageCode ?? 'zh';
 } catch {
   // expo-localization not available (e.g., in tests or bare workflow) — fallback to 'zh'
 }

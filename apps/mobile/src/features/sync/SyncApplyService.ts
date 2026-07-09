@@ -235,7 +235,7 @@ export class SyncApplyService {
     const mapper = _rowToEntityMap[entity];
 
     // Build local metadata lookup for alive records
-    const allIds = [...alive, ...dead].map(r => this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined)).filter(Boolean) as string[];
+    const allIds = [...alive, ...dead].map(r => this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined)).filter((id): id is string => id !== undefined && id !== '') as string[];
     const localMeta = new Map<string, { updated_at: number; deleted: number }>();
     if (allIds.length > 0) {
       try {

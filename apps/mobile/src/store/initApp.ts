@@ -153,21 +153,22 @@ export async function initApp(): Promise<void> {
         ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date],
       ];
       const toDelete: Array<{ entity: string; id: string }> = [];
-      // Use functional setState so ghost check reads the latest state atomically,
-      // avoiding race with realtime events between store() read and setState.
-      setState(prev => {
-        const ghostPatch: Record<string, unknown[]> = {};
-        for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
-          const items = (prev[storeKey as keyof typeof prev] ?? []) as Array<Record<string, unknown>>;
-          const ghosts = items.filter(i => !i.deleted && isGhost(i));
-          if (ghosts.length > 0) {
-            log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
-            ghostPatch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
-            for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
-          }
+      // Step 1: Pure computation — find ghosts from current store state (outside setState)
+      const s = store();
+      const ghostPatch: Record<string, unknown[]> = {};
+      for (const [storeKey, entity, isGhost] of GHOST_CHECKS) {
+        const items = (s[storeKey as keyof typeof s] ?? []) as Array<Record<string, unknown>>;
+        const ghosts = items.filter(i => !i.deleted && isGhost(i));
+        if (ghosts.length > 0) {
+          log.warn(`cleanupGhosts: ${storeKey} — removing ${ghosts.length} ghost entries`);
+          ghostPatch[storeKey] = items.map(i => ghosts.some(g => g.id === i.id) ? { ...i, deleted: true, updatedAt: Date.now() } : i);
+          for (const g of ghosts) toDelete.push({ entity, id: g.id as string });
         }
-        return ghostPatch as PartialMobileStore;
-      });
+      }
+      // Step 2: Apply state atomically
+      if (Object.keys(ghostPatch).length > 0) {
+        setState(ghostPatch as PartialMobileStore);
+      }
       for (const { entity, id } of toDelete) {
         adapter.markDeleted(entity as Parameters<typeof adapter.markDeleted>[0], id).catch(e => log.error(e));
       }

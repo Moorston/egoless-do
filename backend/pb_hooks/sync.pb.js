@@ -105,13 +105,13 @@ routerAdd("POST", "/api/sync", function(e) {
             } catch (recErr) { console.warn("[sync] pull record error for " + ent + ": " + (recErr.message || String(recErr))); }
           }
           if (payloads.length > 0) serverData[ent] = payloads;
-        } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.message || String(qErr)); }
+        } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.name || "SyncError"); }
       }
     }
 
     return e.json(200, { changes: applied, rejected: rejected, data: serverData, serverTime: Date.now() });
   } catch (err) {
-    console.error("[sync-combined] Error:", err.message || String(err));
+    console.error("[sync-combined] Error:", err.name || "SyncError");
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });
@@ -172,12 +172,12 @@ routerAdd("GET", "/api/sync", function(e) {
           if (!data._meta) data._meta = {};
           data._meta[ent] = { page: page, pageSize: pageSize, totalItems: totalCount, totalPages: Math.ceil(totalCount / pageSize) };
         }
-      } catch (qErr) { console.error("[sync-get] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.message || String(qErr))); }
+      } catch (qErr) { console.error("[sync-get] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.name || "SyncError")); }
     }
 
     return e.json(200, { data: data, serverTime: Date.now() });
   } catch (err) {
-    console.error("[sync-get] Error:", err.message || String(err));
+    console.error("[sync-get] Error:", err.name || "SyncError");
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });
@@ -219,7 +219,7 @@ routerAdd("GET", "/api/sync/check", function(e) {
         if (!coll) continue;
         var recs = safeFindRecords($app, coll, buildUserFilter(userId, since > 0 ? sinceDate : null), 1);
         if (recs.length > 0) { changed[ent] = recs.length; totalChanges++; }
-      } catch (qErr) { console.error("[sync-check] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.message || String(qErr))); }
+      } catch (qErr) { console.error("[sync-check] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.name || "SyncError")); }
     }
 
     return e.json(200, { hasChanges: totalChanges > 0, changed: changed, count: totalChanges, serverTime: Date.now() });

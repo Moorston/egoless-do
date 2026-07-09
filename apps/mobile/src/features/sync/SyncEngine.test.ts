@@ -377,15 +377,14 @@ describe('SyncEngine', () => {
       try { await p1; } catch { /* ignore */ }
     });
 
-    it('defers when _initialSyncing=true', async () => {
+    it('proceeds when _initialSyncing=true (no longer defers)', async () => {
       // Set _initialSyncing directly via private access
       (engine as unknown as Record<string, boolean>)._initialSyncing = true;
 
       await engine.runSync();
 
-      expect(mockDrainQueue).not.toHaveBeenCalled();
-      // _pendingSyncAfterInit should be set
-      expect((engine as unknown as Record<string, boolean>)._pendingSyncAfterInit).toBe(true);
+      // The deferral was removed; sync proceeds normally
+      expect(mockDrainQueue).toHaveBeenCalled();
     });
   });
 

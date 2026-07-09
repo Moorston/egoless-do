@@ -24,6 +24,7 @@ export class SyncRealtimeController {
   private _userIdProvider: (() => string | undefined) | null = null;
   private _runSync: (() => void) | null = null;
   private _applyServerChanges: ((data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) | null = null;
+  private _onServerTime: ((serverTime: number) => void) | null = null;
 
   constructor() {}
 
@@ -31,6 +32,7 @@ export class SyncRealtimeController {
   setUserIdProvider(fn: () => string | undefined) { this._userIdProvider = fn; }
   setRunSync(fn: () => void) { this._runSync = fn; }
   setApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { this._applyServerChanges = fn; }
+  setOnServerTime(fn: (serverTime: number) => void) { this._onServerTime = fn; }
 
   // ── Connection Management ──────────────────────────────────────────────
 
@@ -41,7 +43,9 @@ export class SyncRealtimeController {
     onKickedOut: () => void,
     getLastSyncAt: () => number,
     deletedIdsProvider: () => Set<string>,
+    onServerTime?: (serverTime: number) => void,
   ): void {
+    this._onServerTime = onServerTime ?? null;
     const token = getToken();
     if (!token) return;
 
@@ -127,10 +131,9 @@ export class SyncRealtimeController {
             const patch = await (this._applyServerChanges?.(result.data, deletedIds) ?? Promise.resolve({}));
             if (patch && Object.keys(patch).length) onChange(patch);
 
-            // Update lastSyncAt if server provided a newer timestamp
+            // Update lastSyncAt via callback
             if (result?.serverTime) {
-              // This should be handled by the caller since we don't have access to SyncEngine's state
-              // In the original code, this was done by the SyncEngine itself
+              this._onServerTime?.(result.serverTime);
             }
           }
           return;
@@ -249,10 +252,9 @@ export class SyncRealtimeController {
         if (patch && Object.keys(patch).length) onChange(patch);
       }
 
-      // Update lastSyncAt if server provided a newer timestamp
+      // Update lastSyncAt via callback
       if (result?.serverTime) {
-        // This should be handled by the caller since we don't have access to SyncEngine's state
-        // In the original code, this was done by the SyncEngine itself
+        this._onServerTime?.(result.serverTime);
       }
     } catch (err) {
       if (err instanceof KickedOutError) {

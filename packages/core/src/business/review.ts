@@ -88,7 +88,11 @@ function getDatesInRange(start: string, end: string): string[] {
   return dates;
 }
 
-/** 计算连续天数 */
+/**
+ * 计算连续天数 — 从数组开头计数（调用者需先 reverse() 以从末尾计）
+ * @param dates 日期数组（已排序，从旧到新或新到旧取决于调用者）
+ * @param doneDates 已完成的日期集合
+ */
 function calculateStreakForRange(dates: string[], doneDates: Set<string>): number {
   let streak = 0;
   for (const date of dates) {

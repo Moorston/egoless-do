@@ -25,6 +25,7 @@ export function setRealtimeLogoutHandler(fn: () => void) { _engine.setRealtimeLo
 export function setRealtimeUserIdProvider(fn: () => string | undefined) { _engine.setRealtimeUserIdProvider(fn); }
 export function setRealtimeRunSync(fn: () => void) { _engine.setRealtimeRunSync(fn); }
 export function setRealtimeApplyServerChanges(fn: (data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) { _engine.setRealtimeApplyServerChanges(fn); }
+export function setSyncErrorHandler(fn: (error: string) => void) { _engine.setSyncErrorHandler(fn); }
 export function setLastSyncAt(ts: number) { _engine.setLastSyncAt(ts); }
 
 export function runSync(): Promise<void> { return _engine.runSync(); }

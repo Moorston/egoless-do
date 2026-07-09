@@ -113,6 +113,15 @@ function mapSession(raw: Record<string, unknown>): ActiveSession {
 
 // ── CRUD operations ───────────────────────────────────────────────
 
+/**
+ * 创建匿名活跃会话。
+ * 用于全球脉动的实时地图功能。
+ *
+ * NOTE: createSession uses anonymous access by design — active sessions
+ * are a community feature where users submit data via their user hash,
+ * not via authenticated API calls. All mutations are handled server-side
+ * via PB hooks, and the PB REST API collection is admin-only.
+ */
 export async function createSession(
   data: Omit<ActiveSession, 'session_id' | 'last_heartbeat' | 'started_at'> & { session_id?: string; started_at?: string }
 ): Promise<ApiResponse<ActiveSession>> {

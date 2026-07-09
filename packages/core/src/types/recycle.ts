@@ -5,12 +5,13 @@ import type { FoodEntry } from './food';
 import type { ExerciseEntry } from './exercise';
 import type { Plan } from './plan';
 import type { BreathingRecord } from './breath';
+import type { PlanItem } from './plan';
 
-export type RecycleBinEntityType = 'habit' | 'reflection' | 'food' | 'exercise' | 'plan' | 'breath';
+export type RecycleBinEntityType = 'habit' | 'reflection' | 'food' | 'exercise' | 'plan' | 'breath' | 'planItem';
 
 export interface RecycleBinItem {
   id: string;
   entityType: RecycleBinEntityType;
-  data: Habit | MindReflection | FoodEntry | ExerciseEntry | Plan | BreathingRecord;
+  data: Habit | MindReflection | FoodEntry | ExerciseEntry | Plan | BreathingRecord | PlanItem;
   deletedAt: number;
 }

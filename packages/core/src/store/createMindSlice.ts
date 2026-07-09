@@ -71,10 +71,12 @@ export function createMindSlice(
           if (updated.probability !== undefined && updated.copingAbility !== undefined) {
             updated.fearIndex = updated.probability * (10 - updated.copingAbility);
           }
-          adapter.persistChange('fearEntry', id, updated).catch(err => log.error(err));
           return updated;
         }),
       }));
+      // Outside set() — side effect
+      const updatedEntry = get().fearEntries.find(f => f.id === id);
+      if (updatedEntry) adapter.persistChange('fearEntry', id, updatedEntry).catch(err => log.error(err));
       onSync?.();
       get().checkAchievements();
     },

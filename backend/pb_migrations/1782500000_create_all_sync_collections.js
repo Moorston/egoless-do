@@ -294,11 +294,11 @@ migrate(function(txApp) {
   });
 
   const AUTH_RULES = {
-    listRule: '@request.auth.id != ""',
-    viewRule: '@request.auth.id != ""',
-    createRule: '@request.auth.id != ""',
-    updateRule: '@request.auth.id != ""',
-    deleteRule: '@request.auth.id != ""',
+    listRule: '@request.auth.id = user_id',
+    viewRule: '@request.auth.id = user_id',
+    createRule: '@request.auth.id = user_id',
+    updateRule: '@request.auth.id = user_id',
+    deleteRule: '@request.auth.id = user_id',
   };
   for (const name of [
     "exercise_entries", "plans", "plan_items", "plan_item_checkins",

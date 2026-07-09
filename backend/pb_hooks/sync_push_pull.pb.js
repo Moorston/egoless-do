@@ -90,11 +90,11 @@ routerAdd("POST", "/api/sync/push", function(e) {
           $app.save(rec);
           applied.push({ entity: entity, entityId: entityId, operation: "upsert" });
         }
-      } catch (recErr) { console.error("[sync-push] record error for " + entity + "/" + entityId + ":", recErr.message || String(recErr)); rejected.push({ entity: entity, entityId: entityId, error: "Server error processing record" }); }
+      } catch (recErr) { console.error("[sync-push] record error for " + entity + ":", recErr.name || "SyncError"); rejected.push({ entity: entity, entityId: entityId, error: "Server error processing record" }); }
     }
     return e.json(200, { applied: applied, rejected: rejected, serverTime: Date.now() });
   } catch (err) {
-    console.error("[sync-push] Error:", err.message || String(err));
+    console.error("[sync-push] Error:", err.name || "SyncError");
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });
@@ -203,11 +203,11 @@ routerAdd("POST", "/api/sync/pull", function(e) {
           if (!data._meta) data._meta = {};
           data._meta[ent] = { total: totalCount };
         }
-      } catch (qErr) { console.error("[sync-pull] entity error for " + (entities[ei] || '?') + ": " + (qErr.message || String(qErr))); }
+      } catch (qErr) { console.error("[sync-pull] entity error for " + (entities[ei] || '?') + ": " + (qErr.name || "SyncError")); }
     }
     return e.json(200, { data: data, serverTime: Date.now() });
   } catch (err) {
-    console.error("[sync-pull] Error:", err.message || String(err));
+    console.error("[sync-pull] Error:", err.name || "SyncError");
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });
@@ -262,7 +262,7 @@ routerAdd("POST", "/api/push", function(e) {
 
     return e.json(200, { ok: true });
   } catch (err) {
-    console.error("[push] Error:", err.message || String(err));
+    console.error("[push] Error:", err.name || "SyncError");
     return e.json(500, { code: "INTERNAL_ERROR", message: "Internal error" });
   }
 });

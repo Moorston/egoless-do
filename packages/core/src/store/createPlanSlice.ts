@@ -296,7 +296,15 @@ export function createPlanSlice(
       const updatedReflectionIds = new Set(updatedReflections.map(r => r.id));
       const updatedTrailIds = new Set(updatedTrails.map(t => t.id));
 
+      // Add item to recycleBin before deletion
+      const item = get().planItems.find(pi => pi.id === id && !pi.deleted);
+      let recycleEntry: RecycleBinItem | undefined;
+      if (item) {
+        recycleEntry = { id: item.id, entityType: 'planItem' as const, data: item, deletedAt: now };
+      }
+
       set(prev => ({
+        recycleBin: recycleEntry ? [recycleEntry, ...(prev.recycleBin ?? [])] : prev.recycleBin,
         planItems: deletePlanItem(prev.planItems ?? [], id),
         planItemCheckins: (prev.planItemCheckins ?? []).map(c =>
           c.planItemId === id && !c.deleted ? { ...c, deleted: true, updatedAt: now } : c,
@@ -435,7 +443,7 @@ export function createPlanSlice(
       const [py, pm, pd] = parseDateParts(previousDate);
       const [ty, tm, td] = parseDateParts(today);
       const dayCount = Math.round((new Date(ty, tm, td).getTime() - new Date(py, pm, pd).getTime()) / 86400000);
-      if (dayCount <= 0) return; // No reset needed
+      if (isNaN(dayCount) || dayCount <= 0) return; // Guard: invalid dates or no reset needed
 
       const s = get();
       let prevDate = previousDate;

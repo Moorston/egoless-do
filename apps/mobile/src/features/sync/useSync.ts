@@ -12,8 +12,9 @@ import { mobileStorageAdapter, flushWrites, setStorageAdapterTrigger, setRegiste
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import type { MobileStore } from '../../store/useAppStore';
 import { useMusicStore } from '../music/useMusicStore';
+import { useSyncStore } from '../../store/syncStore';
 
-import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger, registerLocalDelete } from './SyncService';
+import { runSync, setSyncTokenProvider, setSyncUserIdProvider, setSyncChangeHandler, setDeletedIdsProvider, connectRealtime, disconnectRealtime, isMigrationDone, setMigrationDone, resetMigrationFlag, rehydrateFromDb, setKickedOutHandler, resumeInitialSync, setSyncTriggerCallback, triggerSyncDebounced, clearSyncTrigger, registerLocalDelete, setSyncErrorHandler } from './SyncService';
 import { mergeSyncPatch } from './mergeSyncPatch';
 import { migrateToSyncQueue } from './migrateToSyncQueue';
 
@@ -84,6 +85,11 @@ export function useSync() {
       const count = await getQueueCount();
       setHasPendingData(count > 0);
       setKickOutVisible(true);
+    });
+
+    // Wire sync error to UI store
+    setSyncErrorHandler((error) => {
+      useSyncStore.getState().setSyncError(error);
     });
 
     setSyncChangeHandler(async (patch: SyncPatch) => {
