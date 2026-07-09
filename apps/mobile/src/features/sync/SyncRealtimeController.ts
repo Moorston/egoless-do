@@ -59,6 +59,11 @@ export class SyncRealtimeController {
         if (!connected && !this._realtimeFallbackTimer) this.startFallbackPolling(getToken, onChange, getLastSyncAt, deletedIdsProvider);
         else if (connected) this.stopFallbackPolling();
       });
+      // Wire heartbeat failure detection → logout handler
+      this._realtimeAgent.setKickedOutHandler(() => {
+        log.warn('Realtime heartbeat failure threshold reached, triggering kicked-out');
+        this._logoutHandler?.();
+      });
       this._realtimeAgent.connect(pbUrl, token);
     }
     // Only start fallback polling if SSE isn't going to be connected
