@@ -1,4 +1,4 @@
-import { registerPushToken, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger , apiCheckEmail } from '@egoless-do/core';
+import { FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger , apiCheckEmail } from '@egoless-do/core';
 import { Image } from 'expo-image';
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
@@ -6,12 +6,12 @@ import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollVie
 import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
+import { registerExpoPushToken } from './pushTokenRegistration';
 
 
 const log = createLogger('Auth');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const getNotifications = () => import('expo-notifications');
 
 export default function LoginScreen() {
   const TH = useTheme();
@@ -75,39 +75,7 @@ export default function LoginScreen() {
       // Register push token in background (non-blocking)
       const token = useAppStore.getState().auth.token;
       if (token) {
-        requestAnimationFrame(() => {
-          const getExpoPushToken = async () => {
-            try {
-              const Notifications = await getNotifications();
-              const { status: existingStatus } = await Notifications.getPermissionsAsync();
-              let finalStatus = existingStatus;
-
-              if (existingStatus !== 'granted') {
-                const { status } = await Notifications.requestPermissionsAsync();
-                finalStatus = status;
-              }
-
-              if (finalStatus !== 'granted') {
-                log.info('Push permission denied');
-                return null;
-              }
-
-              const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
-              if (!projectId) {
-                log.info('No project ID configured for push');
-                return null;
-              }
-
-              const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
-              return tokenData.data;
-            } catch (err) {
-              log.error(err, { message: 'Failed to get push token' });
-              return null;
-            }
-          };
-
-          registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken);
-        });
+        requestAnimationFrame(() => { registerExpoPushToken(token); });
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : T('authLoginFailed'));

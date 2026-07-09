@@ -7,6 +7,7 @@ import { getVerificationCode, deleteVerificationCode } from '../verification-cod
 import { getClientIp, registerRateLimit } from '../rate-limit.js';
 import { validatePassword, sanitizeError } from '../auth-middleware.js';
 import { generateRefreshToken, createRefreshToken } from '../token-refresh-rotation.js';
+import { logAuditEvent, AuditEvent, extractClientInfo } from '../audit-log.js';
 
 const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -15,7 +16,16 @@ const app = new Hono();
 
 app.post('/register', async (c) => {
   const ip = getClientIp(c);
+  const { ip: auditIp, userAgent } = extractClientInfo(c);
+
   if (!registerRateLimit(ip)) {
+    await logAuditEvent({
+      event: AuditEvent.RATE_LIMIT_EXCEEDED,
+      ip: auditIp,
+      user_agent: userAgent,
+      success: false,
+      details: { endpoint: 'register' },
+    });
     return c.json({ error: '请求过于频繁，请稍后再试' }, 429);
   }
 
@@ -70,6 +80,16 @@ app.post('/register', async (c) => {
     const refreshTokenExpiresAt = Date.now() + REFRESH_TOKEN_EXPIRES_IN;
     await createRefreshToken(user.id, refreshToken, refreshTokenExpiresAt);
 
+    // Audit log: successful registration
+    logAuditEvent({
+      event: AuditEvent.REGISTER,
+      user_id: user.id,
+      email,
+      ip: auditIp,
+      user_agent: userAgent,
+      success: true,
+    }).catch(() => { /* audit log failure must not block response */ });
+
     return c.json({
       user: { id: user.id, email: user.email, name: user.name, createdAt: user.created ? new Date(user.created).getTime() : Date.now() },
       token: authData.token,
@@ -80,7 +100,19 @@ app.post('/register', async (c) => {
     const msg = err instanceof Error ? err.message : '';
     const pbStatus = errStatus(err);
     const isServerError = (pbStatus != null && pbStatus >= 500) || msg.includes('ECONNREFUSED') || msg.includes('fetch failed') || msg.includes('timeout');
-    return c.json({ error: sanitizeError(err, '注册失败') }, isServerError ? 500 : 400);
+    const error = sanitizeError(err, '注册失败');
+
+    // Audit log: failed registration (fire-and-forget)
+    logAuditEvent({
+      event: AuditEvent.REGISTER,
+      email: undefined, // email may not be in scope here
+      ip: auditIp,
+      user_agent: userAgent,
+      success: false,
+      details: { reason: isServerError ? 'server_error' : 'client_error' },
+    }).catch(() => { /* audit log failure must not block response */ });
+
+    return c.json({ error }, isServerError ? 500 : 400);
   }
 });
 

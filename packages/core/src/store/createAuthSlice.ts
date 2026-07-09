@@ -110,32 +110,42 @@ export function createAuthSlice(
 ): SliceCreator<AuthSlice> {
   // Guard against concurrent refresh calls (shared across the slice lifetime)
   let _refreshInFlight: Promise<void> | null = null;
+  let _loginInFlight: Promise<void> | null = null;
 
   return (set, get) => ({
     auth: defaultAuthState,
 
     async login(email: string, password: string) {
-      set(s => ({ auth: { ...s.auth, isLoading: true } }));
+      if (_loginInFlight) return _loginInFlight;
+      _loginInFlight = (async () => {
+        set(s => ({ auth: { ...s.auth, isLoading: true } }));
+        try {
+          const res = await apiLogin(email, password);
+          log.debug('login response', { hasToken: !!res.token, hasRefreshToken: !!res.refreshToken, expiresAt: res.expiresAt });
+          // Set token and user immediately (for API calls), but keep isLoading true
+          // until pullServerData completes — prevents UI from rendering empty data
+          set({
+            auth: {
+              user: res.user, token: res.token, refreshToken: res.refreshToken,
+              isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
+            },
+          });
+          await get().pullServerData(res.token);
+          log.debug('after pull', { signedIn: get().auth.isSignedIn });
+          // Now data is loaded — mark as fully ready
+          set(s => ({ auth: { ...s.auth, isLoading: false } }));
+          onSync();
+          adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
+        } catch (e) {
+          // Rollback auth state on failure — clear token to prevent half-logged-in state
+          set({ auth: defaultAuthState });
+          throw e;
+        }
+      })();
       try {
-        const res = await apiLogin(email, password);
-        log.debug('login response', { hasToken: !!res.token, hasRefreshToken: !!res.refreshToken, expiresAt: res.expiresAt });
-        // Set token and user immediately (for API calls), but keep isLoading true
-        // until pullServerData completes — prevents UI from rendering empty data
-        set({
-          auth: {
-            user: res.user, token: res.token, refreshToken: res.refreshToken,
-            isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
-          },
-        });
-        await get().pullServerData(res.token);
-        log.debug('after pull', { signedIn: get().auth.isSignedIn });
-        // Now data is loaded — mark as fully ready
-        set(s => ({ auth: { ...s.auth, isLoading: false } }));
-        onSync();
-        adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
-      } catch (e) {
-        set(s => ({ auth: { ...s.auth, isLoading: false } }));
-        throw e;
+        await _loginInFlight;
+      } finally {
+        _loginInFlight = null;
       }
     },
 
@@ -156,7 +166,8 @@ export function createAuthSlice(
         onSync();
         adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
       } catch (e) {
-        set(s => ({ auth: { ...s.auth, isLoading: false } }));
+        // Rollback auth state on failure — clear token to prevent half-logged-in state
+        set({ auth: defaultAuthState });
         throw e;
       }
     },
