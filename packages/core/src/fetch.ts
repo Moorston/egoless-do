@@ -74,6 +74,10 @@ function classifyError(res: Response, data: unknown): Error {
 
 export async function handleJsonResponse<T = unknown>(res: Response): Promise<T> {
   const text = await res.text();
+  if (text.trim().length === 0) {
+    if (res.ok) return {} as T; // Empty response with ok status — return empty object
+    throw new ApiError(res.status, 'EMPTY_RESPONSE', `服务器返回了空的响应 (${res.status})`);
+  }
   let data: unknown;
   try {
     data = JSON.parse(text);

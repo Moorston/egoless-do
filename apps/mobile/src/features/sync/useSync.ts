@@ -192,11 +192,14 @@ export function useSync() {
       if (syncingRef.current) return; // Prevent concurrent syncs
       syncingRef.current = true;
       try {
-        // Proactive token refresh: refresh before it expires to avoid mid-sync auth failures
-        try {
-          await useAppStore.getState().refreshAuth();
-        } catch {
-          // Best-effort: if refresh fails, sync will handle token recovery
+        // Proactive token refresh: only refresh if token is within 5 min of expiry
+        const auth = useAppStore.getState().auth;
+        if (auth.expiresAt && auth.expiresAt < Date.now() + 5 * 60 * 1000) {
+          try {
+            await useAppStore.getState().refreshAuth();
+          } catch {
+            // Best-effort: if refresh fails, sync will handle token recovery
+          }
         }
 
         // One-time migration: move old unsynced records to sync_queue

@@ -11,7 +11,7 @@ const COLLECTION_NAME = 'token_blacklist';
  */
 export async function isTokenBlacklisted(token: string): Promise<boolean> {
   try {
-    const pb = getPb();
+    const pb = await getAdminPb();
     await pb.collection(COLLECTION_NAME).getFirstListItem(
       `token = "${escapeFilter(token)}" && expires_at > ${Date.now()}`
     );
@@ -29,7 +29,7 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
  */
 export async function blacklistToken(token: string, expiresAt: number): Promise<void> {
   try {
-    const pb = getPb();
+    const pb = await getAdminPb();
     await pb.collection(COLLECTION_NAME).create({
       token,
       expires_at: expiresAt,
@@ -46,7 +46,7 @@ export async function blacklistToken(token: string, expiresAt: number): Promise<
  */
 export async function cleanupExpiredTokens(): Promise<number> {
   try {
-    const pb = getPb();
+    const pb = await getAdminPb();
     const expired = await pb.collection(COLLECTION_NAME).getFullList({
       filter: `expires_at < ${Date.now()}`,
     });

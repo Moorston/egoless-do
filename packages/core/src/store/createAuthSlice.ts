@@ -183,6 +183,8 @@ export function createAuthSlice(
       resetAIService();
       await onClearData?.();
       onLogout?.();
+      // Note: SecureStore is cleared by the Zustand subscription in initApp.ts
+      // which watches auth.token changes and calls clearSecureTokens()
       adapter.persistSettings('auth', { isSignedIn: false, user: null, isGuest: false }).catch(e => log.error(e));
     },
 
@@ -195,6 +197,9 @@ export function createAuthSlice(
       if (auth.expiresAt && auth.expiresAt > Date.now() + PROACTIVE_WINDOW_MS) return;
       if (_refreshInFlight) return _refreshInFlight;
       _refreshInFlight = (async () => {
+        // Note: retry only helps with transient network errors.
+        // 400/401 responses from the server are not retried (they land in catch too,
+        // but the second attempt will receive the same server response and fail again).
         // Retry up to 2 times on transient network errors
         for (let attempt = 0; attempt < 2; attempt++) {
           try {

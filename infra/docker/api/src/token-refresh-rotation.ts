@@ -49,7 +49,7 @@ export async function createRefreshToken(userId: string, token: string, expiresA
     });
   } catch (err: unknown) {
     console.error('Failed to create refresh token:', safeErrId(err));
-    // 如果集合不存在，静默失败
+    throw new Error('Failed to create refresh token'); // Re-throw so callers know it failed
   }
 }
 

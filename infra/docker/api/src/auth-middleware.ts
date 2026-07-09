@@ -66,6 +66,24 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
       }
     }
 
+    // Verify login_epoch — guards against token reuse after re-login
+    try {
+      const { getAdminPb } = await import('./pb.js');
+      const adminPb = await getAdminPb();
+      const userProfile = await adminPb.collection('user_profiles').getFirstListItem(`user_id="${userId}"`);
+      const profileData = (userProfile as Record<string, unknown>).data;
+      if (profileData) {
+        const data = typeof profileData === 'string' ? JSON.parse(profileData) : profileData;
+        const expectedEpoch = (data as Record<string, unknown>).login_epoch || 0;
+        const tokenEpoch = (payload as Record<string, unknown>).epoch || 0;
+        if (tokenEpoch < expectedEpoch) {
+          return null; // Token was issued before a newer login — reject it
+        }
+      }
+    } catch {
+      // Profile not found — allow (fresh accounts may not have profile yet)
+    }
+
     return { userId };
   } catch {
     return null;

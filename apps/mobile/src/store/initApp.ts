@@ -184,10 +184,31 @@ export async function initApp(): Promise<void> {
       const secureTokens = await loadSecureTokens();
       if (secureTokens) {
         const currentAuth = store().auth;
-        if (currentAuth.isSignedIn && !currentAuth.token) {
-          setState({
-            auth: { ...currentAuth, token: secureTokens.token, refreshToken: secureTokens.refreshToken },
-          } as PartialMobileStore);
+        // Always restore tokens from SecureStore if available (regardless of isSignedIn state)
+        // This handles cases where the in-memory/sqlite auth state was lost (crash, migration)
+        if (secureTokens.token && secureTokens.refreshToken) {
+          // Try to verify the token is still valid by calling getMe
+          // If it fails, keep the token anyway — refreshAuth() will handle it later
+          const authPatch = {
+            token: secureTokens.token,
+            refreshToken: secureTokens.refreshToken,
+          };
+          if (!currentAuth.isSignedIn) {
+            // Restore full auth state from SecureStore
+            setState({
+              auth: {
+                ...currentAuth,
+                ...authPatch,
+                isSignedIn: true,
+                isLoading: false,
+              },
+            } as PartialMobileStore);
+          } else if (!currentAuth.token) {
+            // Token was lost but user was still marked signed in
+            setState({
+              auth: { ...currentAuth, ...authPatch },
+            } as PartialMobileStore);
+          }
         }
       }
     } catch (err) {

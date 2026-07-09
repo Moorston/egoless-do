@@ -5,6 +5,8 @@ import { getPb } from '../pb.js';
 import { errStatus } from '../errors.js';
 import { getClientIp } from '../rate-limit.js';
 
+// NOTE: Uses standalone Map-based rate limiter (not the shared createRateLimiter from rate-limit.ts).
+// For multi-instance support, migrate to the shared factory.
 const meRateLimit = (() => {
   const attempts = new Map<string, { count: number; resetAt: number }>();
   let lastCleanup = 0;

@@ -39,7 +39,7 @@ export function getSyncUrl(): string {
 }
 
 export function validatePassword(pwd: string): string | null {
-  if (pwd.length < 8) return '密码长度至少8位';
+  if (pwd.length < 10) return '密码长度至少10位';
   if (!/[a-zA-Z]/.test(pwd)) return '密码需包含字母';
   if (!/[0-9]/.test(pwd)) return '密码需包含数字';
   if (!/[^a-zA-Z0-9]/.test(pwd)) return '密码需包含特殊符号';
@@ -116,11 +116,15 @@ export async function apiGetMe(token: string): Promise<{ user: AuthUser }> {
 
 // ── Logout ────────────────────────────────────────────────────────
 export async function apiLogout(token: string, refreshToken: string): Promise<void> {
-  await fetchWithTimeout(`${apiBase}/api/auth/logout`, {
+  const res = await fetchWithTimeout(`${apiBase}/api/auth/logout`, {
     method: 'POST',
     headers: buildHeaders(token),
     body: JSON.stringify({ refreshToken }),
   });
+  if (!res.ok) {
+    const text = await res.text();
+    log.error(`Logout failed: ${res.status}`, text);
+  }
 }
 
 // ── Reset password ──────────────────────────────────────────────
