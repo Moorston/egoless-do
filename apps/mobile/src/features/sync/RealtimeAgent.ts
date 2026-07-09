@@ -33,8 +33,6 @@ export class RealtimeAgent {
   private _onStatus: ((connected: boolean) => void) | null = null;
   private _destroyed = false;
   private _heartbeatTimer: ReturnType<typeof setInterval> | null = null;
-  private _consecutiveHeartbeatFailures = 0;
-  private static MAX_HEARTBEAT_FAILURES = 5;
   private _onKickedOut: (() => void) | null = null;
 
   setChangeHandler(fn: (event: RealtimeChangeEvent) => void) { this._onChange = fn; }
@@ -71,31 +69,23 @@ export class RealtimeAgent {
         method: 'POST',
         headers: { Authorization: `Bearer ${this._token}` },
       }).then((res) => {
-        // Successful ping resets the failure counter
-        if (res.ok) this._consecutiveHeartbeatFailures = 0;
-        else this._consecutiveHeartbeatFailures++;
+        if (!res.ok) {
+          log.debug(`Heartbeat ping returned ${res.status}`);
+        }
       }).catch(() => {
-        // Ping failed — only count as failure if SSE is also dead
+        // Ping failed — check if SSE is still alive
         if (this._destroyed) return;
         if (this._es && (this._es as unknown as { readyState: number }).readyState === 1) { // 1 = EventSource.OPEN
           // SSE is still healthy; ping failure is transient (mobile network blip)
           log.debug('Ping failed but SSE still open, ignoring');
           return;
         }
-        this._consecutiveHeartbeatFailures++;
+        // SSE is also dead — trigger reconnect, but NOT kicked-out
+        // Kicked-out is detected by API 401 KICKED_OUT responses, not heartbeat
         log.warn('Ping failed and SSE is not open, triggering reconnect');
         this._onStatus?.(false);
         this._scheduleReconnect();
       });
-
-      // After N consecutive failures, the connection is considered dead
-      if (this._consecutiveHeartbeatFailures >= RealtimeAgent.MAX_HEARTBEAT_FAILURES) {
-        log.warn(`${this._consecutiveHeartbeatFailures} consecutive heartbeat failures — treating as kicked out`);
-        this._consecutiveHeartbeatFailures = 0;
-        this._onStatus?.(false);
-        this._onKickedOut?.();
-        // Don't schedule reconnect — kicked-out handler will manage re-auth
-      }
     }, 30_000);
   }
 
