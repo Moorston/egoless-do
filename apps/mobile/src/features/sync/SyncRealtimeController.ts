@@ -60,6 +60,9 @@ export class SyncRealtimeController {
         else if (connected) this.stopFallbackPolling();
       });
       // Wire heartbeat failure detection → logout handler
+      // Note: RealtimeAgent no longer uses heartbeat failures for kicked-out detection.
+      // This handler is kept for compatibility but will only fire if explicitly triggered
+      // by the RealtimeAgent in the future. Kicked-out is handled via API 401 KICKED_OUT.
       this._realtimeAgent.setKickedOutHandler(() => {
         log.warn('Realtime heartbeat failure threshold reached, triggering kicked-out');
         this._logoutHandler?.();
