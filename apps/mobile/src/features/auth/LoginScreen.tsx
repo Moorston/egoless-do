@@ -69,43 +69,46 @@ export default function LoginScreen() {
     try {
       await login(email.trim(), password);
 
-      // Register push token after login
+      // Navigate immediately — don't wait for push token registration
+      nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
+
+      // Register push token in background (non-blocking)
       const token = useAppStore.getState().auth.token;
       if (token) {
-        const getExpoPushToken = async () => {
-          try {
-            const Notifications = await getNotifications();
-            const { status: existingStatus } = await Notifications.getPermissionsAsync();
-            let finalStatus = existingStatus;
+        requestAnimationFrame(() => {
+          const getExpoPushToken = async () => {
+            try {
+              const Notifications = await getNotifications();
+              const { status: existingStatus } = await Notifications.getPermissionsAsync();
+              let finalStatus = existingStatus;
 
-            if (existingStatus !== 'granted') {
-              const { status } = await Notifications.requestPermissionsAsync();
-              finalStatus = status;
-            }
+              if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+              }
 
-            if (finalStatus !== 'granted') {
-              log.info('Push permission denied');
+              if (finalStatus !== 'granted') {
+                log.info('Push permission denied');
+                return null;
+              }
+
+              const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
+              if (!projectId) {
+                log.info('No project ID configured for push');
+                return null;
+              }
+
+              const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
+              return tokenData.data;
+            } catch (err) {
+              log.error(err, { message: 'Failed to get push token' });
               return null;
             }
+          };
 
-            const projectId = process.env.EXPO_PUBLIC_PROJECT_ID;
-            if (!projectId) {
-              log.info('No project ID configured for push');
-              return null;
-            }
-
-            const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
-            return tokenData.data;
-          } catch (err) {
-            log.error(err, { message: 'Failed to get push token' });
-            return null;
-          }
-        };
-
-        registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken);
+          registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken);
+        });
       }
-
-      nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : T('authLoginFailed'));
     }

@@ -81,6 +81,10 @@ export default function RegisterScreen() {
       setError(T('authInvalidEmailAddr'));
       return;
     }
+    if (emailStatus === 'taken') {
+      setError(T('authAlreadyRegistered'));
+      return;
+    }
     setError('');
     setSending(true);
     try {

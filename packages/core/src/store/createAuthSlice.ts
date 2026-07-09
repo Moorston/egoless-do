@@ -119,14 +119,18 @@ export function createAuthSlice(
       try {
         const res = await apiLogin(email, password);
         log.debug('login response', { hasToken: !!res.token, hasRefreshToken: !!res.refreshToken, expiresAt: res.expiresAt });
+        // Set token and user immediately (for API calls), but keep isLoading true
+        // until pullServerData completes — prevents UI from rendering empty data
         set({
           auth: {
             user: res.user, token: res.token, refreshToken: res.refreshToken,
-            isSignedIn: true, isLoading: false, expiresAt: res.expiresAt,
+            isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
           },
         });
         await get().pullServerData(res.token);
         log.debug('after pull', { signedIn: get().auth.isSignedIn });
+        // Now data is loaded — mark as fully ready
+        set(s => ({ auth: { ...s.auth, isLoading: false } }));
         onSync();
         adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
       } catch (e) {
@@ -139,13 +143,16 @@ export function createAuthSlice(
       set(s => ({ auth: { ...s.auth, isLoading: true } }));
       try {
         const res = await apiRegister(email, password, name, code);
+        // Set token and user immediately, keep isLoading true until pullServerData
         set({
           auth: {
             user: res.user, token: res.token, refreshToken: res.refreshToken,
-            isSignedIn: true, isLoading: false, expiresAt: res.expiresAt,
+            isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
           },
         });
         await get().pullServerData(res.token);
+        // Now data is loaded — mark as fully ready
+        set(s => ({ auth: { ...s.auth, isLoading: false } }));
         onSync();
         adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
       } catch (e) {
