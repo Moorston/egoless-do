@@ -2,7 +2,7 @@
 import type { Habit, MindReflection, FoodEntry, CheckinEntry, FastingSession, ThoughtTrail } from '@egoless-do/core';
 import type { SQLiteDatabase } from 'expo-sqlite';
 
-import { rowToCheckin } from '../store/rowMappers';
+import { rowToCheckin, rowToHabit, rowToReflection, rowToThoughtTrail } from '../store/rowMappers';
 
 // ── Habits ────────────────────────────────────────────────────────
 export async function dbGetAllHabits(db: SQLiteDatabase): Promise<Habit[]> {
@@ -74,77 +74,10 @@ function safeParse<T>(raw: string | null | undefined, fallback: T): T {
   try { return JSON.parse(raw) as T; } catch { return fallback; }
 }
 
-// ── Row mappers ───────────────────────────────────────────────────
-function rowToHabit(r: Record<string, unknown>): Habit {
-  return {
-    id: r.id as string, name: r.name as string,
-    startDate: r.start_date as string,
-    targetDays: r.target_days as number,
-    goal: (r.goal as string) ?? '',
-    insight: (r.insight as string) ?? '',
-    createTag: (r.create_tag as number) === 1,
-    doneDays: r.done_days as number,
-    streak: r.streak as number,
-    interrupted: r.interrupted as number,
-    status: r.status as Habit['status'],
-    checkedDates: safeParse<string[]>(r.checked_dates as string, []),
-    pauseReason: (r.pause_reason as string) ?? '',
-    abandonReason: (r.abandon_reason as string) ?? '',
-    updatedAt: (r.updated_at as number) ?? 0,
-    deleted: (r.deleted as number) === 1,
-    alarmEnabled: (r.alarm_enabled as number) === 1,
-    alarmHour: (r.alarm_hour as number) ?? 8,
-    alarmMinute: (r.alarm_minute as number) ?? 0,
-    link: (r.link as Habit['link']) ?? 'none',
-  };
-}
-
-function rowToReflection(r: Record<string, unknown>): MindReflection {
-  const defaultColors: readonly [string, string] = ['#6366f1', '#8b5cf6'];
-  let colors = defaultColors;
-  if (r.colors) {
-    const parsed = safeParse<unknown>(r.colors as string, null);
-    if (Array.isArray(parsed) && parsed.length === 2) colors = parsed as [string, string];
-  }
-  return {
-    id: r.id as string,
-    timestamp: r.created_at as number,
-    content: r.content as string,
-    tags: safeParse<string[]>(r.tags as string, []),
-    mood: r.mood as MindReflection['mood'],
-    cardTheme: r.card_theme as string | undefined,
-    link: r.link as string | undefined,
-    linkedPlanItemId: r.linked_plan_id as string | undefined,
-    isPinned: (r.is_pinned as number) === 1,
-    isPublished: (r.is_published as number) === 1,
-    colors,
-    updatedAt: (r.updated_at as number) ?? 0,
-    deleted: (r.deleted as number) === 1,
-  };
-}
-
 // ── Thought Trails ───────────────────────────────────────────────
 export async function dbGetAllThoughtTrails(db: SQLiteDatabase): Promise<ThoughtTrail[]> {
   const rows = await db.getAllAsync<Record<string, unknown>>(
     'SELECT * FROM thought_trails WHERE deleted = 0 ORDER BY created_at DESC'
   );
   return rows.map(rowToThoughtTrail);
-}
-
-function rowToThoughtTrail(r: Record<string, unknown>): ThoughtTrail {
-  return {
-    id: r.id as string,
-    name: r.name as string,
-    description: (r.description as string) ?? '',
-    reflectionIds: safeParse<string[]>(r.reflection_ids as string, []),
-    noteIds: safeParse<string[]>(r.note_ids as string, []),
-    source: (r.source as ThoughtTrail['source']) ?? 'manual',
-    insightSummary: r.insight_summary as string | undefined,
-    insightCache: r.insight_cache ? safeParse(r.insight_cache as string, undefined) : undefined,
-    reviewCache: r.review_cache ? safeParse(r.review_cache as string, undefined) : undefined,
-    linkedPlanItemIds: r.linked_plan_item_ids ? safeParse(r.linked_plan_item_ids as string, undefined) : undefined,
-    createdAt: (r.created_at as number) ?? 0,
-    updatedAt: (r.updated_at as number) ?? 0,
-    deleted: (r.deleted as number) === 1,
-  };
 }

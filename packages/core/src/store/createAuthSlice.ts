@@ -196,7 +196,7 @@ export function createAuthSlice(
         try {
           const res = await apiRefreshToken(auth.refreshToken!, auth.token ?? undefined);
           // Only apply if user is still logged in (not logged out during refresh)
-          if (get().auth.refreshToken) {
+          if (get().auth.isSignedIn && get().auth.refreshToken) {
             set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
           }
         } catch {
