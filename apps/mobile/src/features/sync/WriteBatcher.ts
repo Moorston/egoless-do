@@ -21,6 +21,7 @@ export class WriteBatcher {
   private _flushDelayMs: number;
   private _onFlushed: (() => void) | null = null;
   private _onPersistError: ((error: Error, entity: string, id: string) => void) | null = null;
+  private _retryCount = 0;
 
   constructor(flushDelayMs = 100, onFlushed?: () => void, onPersistError?: (error: Error, entity: string, id: string) => void) {
     this._flushDelayMs = flushDelayMs;
@@ -143,6 +144,7 @@ export class WriteBatcher {
       for (const k of keys) {
         if (this._pendingWrites.get(k) === snapRefs.get(k)) this._pendingWrites.delete(k);
       }
+      this._retryCount = 0;
       this._onFlushed?.();
     } catch (err) {
       log.error(err, { msg: 'flush failed' });
@@ -197,12 +199,20 @@ export class WriteBatcher {
         for (const k of keys) {
           if (this._pendingWrites.get(k) === snapRefs.get(k)) this._pendingWrites.delete(k);
         }
+        this._retryCount = 0;
       } else {
         // Remove only successfully written entries; keep failed ones for retry
         // We can't distinguish which succeeded, so keep all for retry
         // but new arrivals are still preserved since we use specific keys
         // Schedule a retry with backoff so stuck entries are eventually flushed
         if (!this._flushTimer) {
+          this._retryCount++;
+          if (this._retryCount >= 10) {
+            log.error('WriteBatcher: max retries reached, clearing pending writes', { count: this._pendingWrites.size });
+            this._pendingWrites.clear();
+            this._retryCount = 0;
+            return;
+          }
           this._flushTimer = setTimeout(() => {
             this._flushTimer = null;
             if (this._pendingWrites.size > 0) this._flush();

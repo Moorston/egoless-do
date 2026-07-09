@@ -149,6 +149,7 @@ export class SyncRealtimeController {
           return;
         }
         log.warn(checkErr, { phase: 'poll-check' });
+        return;
       }
 
       this._runSync?.();

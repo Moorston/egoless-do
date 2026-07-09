@@ -28,10 +28,12 @@ export function SyncProgressOverlay({ visible, phase }: SyncProgressOverlayProps
 
   useEffect(() => {
     if (!visible) return;
+    // Poll every 2s for sync progress updates (less frequent to reduce DB reads)
+    const INTERVAL_MS = 2000;
     const timer = setInterval(async () => {
       const rows = await getAllSyncProgress();
       setProgress(rows);
-    }, 500);
+    }, INTERVAL_MS);
     return () => clearInterval(timer);
   }, [visible]);
 

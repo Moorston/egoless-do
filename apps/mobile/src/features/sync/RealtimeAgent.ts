@@ -94,7 +94,7 @@ export class RealtimeAgent {
         this._consecutiveHeartbeatFailures = 0;
         this._onStatus?.(false);
         this._onKickedOut?.();
-        this._scheduleReconnect();
+        // Don't schedule reconnect — kicked-out handler will manage re-auth
       }
     }, 30_000);
   }

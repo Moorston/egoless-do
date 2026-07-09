@@ -30,10 +30,10 @@ export function SyncBanner({ onDismiss }: SyncBannerProps) {
           return;
         }
         const rows = await getAllSyncProgress();
-        const done = rows.filter(r => r.status === 'done').length;
+        const doneCount = rows.filter(r => r.status === 'done').length;
         const total = rows.length;
-        setDoneCount(done);
-        setVisible(total > 0 && done < total);
+        setDoneCount(doneCount);
+        setVisible(total > 0 && doneCount < total);
       } catch {
         setVisible(false);
       }

@@ -23,6 +23,9 @@ import { useAppStore, setAutoSyncCallback, type PartialMobileStore, type MobileS
 
 const log = createLogger('App');
 
+/** Tracks visibility listener subscription for cleanup on teardown. */
+let _visibilitySubscription: { remove: () => void } | null = null;
+
 /** Settings keys persisted via adapter.persistSettings() to app_state table. */
 const SETTINGS_KEYS = [
   'theme', 'language', 'waterMl', 'waterGoal', 'calGoal',
@@ -267,11 +270,8 @@ export async function initApp(): Promise<void> {
         store().checkHabitAutoStatus?.();
       },
       addVisibilityListener: (callback) => {
-        // NOTE: The subscription returned by AppState.addEventListener is intentionally discarded.
-        // The DailyResetManager lives for the entire app lifetime (created once in initApp),
-        // so the listener is never cleaned up. This is acceptable because the listener is
-        // passive (only fires on app foreground) and cannot outlive the JS context.
-        AppState.addEventListener('change', (s) => {
+        // Store subscription for cleanup on teardown
+        _visibilitySubscription = AppState.addEventListener('change', (s) => {
           if (s === 'active') callback();
         });
       },

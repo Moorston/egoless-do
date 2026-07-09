@@ -333,10 +333,13 @@ export function subscribeSessions(
 
   // Visibility listener for adaptive interval
   // Clean up any previous subscription before creating a new one (prevents listener leaks on rapid calls)
-  _currentAppStateSub?.remove?.();
-  _currentAppStateSub = null;
   try {
     const { AppState } = require('react-native');
+    // Move cleanup after require so that if require fails, the old listener survives
+    if (_currentAppStateSub) {
+      _currentAppStateSub.remove();
+      _currentAppStateSub = null;
+    }
     _currentAppStateSub = AppState.addEventListener('change', (s: string) => {
       _isVisible = s === 'active';
       // Reset timer with new interval (in-flight poll will reschedule itself via scheduleNext)

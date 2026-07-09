@@ -184,6 +184,7 @@ export function useSync() {
   }, [isSignedIn, token]);
 
   // Sync on foreground if signed in
+  const prevTokenRef = useRef(token);
   useEffect(() => {
     if (!isSignedIn || !token) return;
 
@@ -221,6 +222,11 @@ export function useSync() {
         syncingRef.current = false;
       }
     };
+
+    // Only trigger sync if token actually changed (prevents retry loop on token refresh)
+    if (prevTokenRef.current !== token) {
+      prevTokenRef.current = token;
+    }
 
     // Initial sync on mount
     sync();
