@@ -8,6 +8,7 @@ interface VirtualListProps<T> extends Omit<FlashListProps<T>, 'renderItem' | 'da
   keyExtractor: (item: T, index: number) => string;
   emptyMessage?: string;
   emptyStyle?: object;
+  estimatedItemSize?: number;
 }
 
 export default function VirtualList<T>({
@@ -16,6 +17,7 @@ export default function VirtualList<T>({
   keyExtractor,
   emptyMessage,
   emptyStyle,
+  estimatedItemSize,
   ...rest
 }: VirtualListProps<T>) {
   if (items.length === 0 && emptyMessage) {
@@ -31,6 +33,7 @@ export default function VirtualList<T>({
       data={items}
       renderItem={({ item, index }) => renderItem(item, index)}
       keyExtractor={(item, index) => keyExtractor(item, index)}
+      estimatedItemSize={estimatedItemSize ?? 80}
       {...rest}
     />
   );

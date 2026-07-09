@@ -1,8 +1,9 @@
-import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, fmt, formatPace } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_SUB, FONT_BODY, FONT_CLOSE, fmt, formatPace, formatDate } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 import type { ExercisePageProps } from './types';
+import { useAppStore } from '../../../store/useAppStore';
 
 
 export default function ReportPage(props: ExercisePageProps) {
@@ -12,6 +13,7 @@ export default function ReportPage(props: ExercisePageProps) {
     handleSave, TH, T,
   } = props;
 
+  const language = useAppStore(s => s.language);
   const displayReps = totalReps;
   const bestPace = segmentPaces.length > 0 ? Math.min(...segmentPaces) : 0;
 
@@ -19,7 +21,7 @@ export default function ReportPage(props: ExercisePageProps) {
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 16, backgroundColor: TH.cardSolid }}>
         <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('exerciseReport')}</Text>
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{sportName} · {new Date().toLocaleDateString('zh-CN')}</Text>
+        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{sportName} · {formatDate(new Date(), language)}</Text>
       </View>
 
       {/* Map snapshot (GPS) */}

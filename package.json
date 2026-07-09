@@ -40,14 +40,11 @@
       "react-dom": "19.1.0",
       "@types/react": "^19.1.0",
       "@react-native/metro-config": "0.85.3",
-      "@react-native/babel-preset": "0.81.5"
+      "@react-native/babel-preset": "0.81.5",
+      "postcss": ">=8.5.10"
     }
   },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.10.0",
-    "expo-image": "^57.0.0",
-    "nodemailer": "^8.0.7",
     "react-native-sse": "^1.2.1",
     "uuid": "^14.0.0",
     "zustand": "^5.0.0"

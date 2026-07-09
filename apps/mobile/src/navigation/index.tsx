@@ -142,7 +142,7 @@ function MainTabBar({ state, navigation, descriptors, insets }: BottomTabBarProp
       height: 85,
       paddingBottom: insets?.bottom ?? 6,
       paddingTop: 6,
-    }}>
+    }} accessibilityRole="tablist">
       {visibleRoutes.map(route => {
         const focused = state.index === state.routes.indexOf(route);
         const Icon = iconMap[route.name] ?? Home;
@@ -151,6 +151,9 @@ function MainTabBar({ state, navigation, descriptors, insets }: BottomTabBarProp
             key={route.key}
             onPress={() => navigation.navigate(route.name)}
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: focused }}
+            accessibilityLabel={titleMap[route.name] ?? route.name}
           >
             <Icon size={22} color={focused ? TH.primary : TH.sub} strokeWidth={focused ? 2.2 : 1.5} />
             <Text style={{ fontSize: FONT_BODY, fontWeight: '500', color: focused ? TH.primary : TH.sub, marginTop: 2 }}>

@@ -246,6 +246,19 @@ export default function MindScreen() {
     </View>
   ), [TH, T]);
 
+  const renderInsightItem = useCallback(({ item: insight, index: i }: { item: { titleKey: string; metric?: string; description: string }; index: number }) => (
+    <View style={{ paddingVertical: 10, borderBottomWidth: i < insights.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+        <Text style={{ fontSize: 14 }}>💡</Text>
+        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T(insight.titleKey)}</Text>
+        {insight.metric && (
+          <Text style={{ fontSize: 10, color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{insight.metric}</Text>
+        )}
+      </View>
+      <Text style={{ fontSize: FONT_SUB, color: TH.sub, lineHeight: 18, marginLeft: 20 }}>{insight.description}</Text>
+    </View>
+  ), [T, TH, insights.length]);
+
   // ── 勇气行动 Tab ──
   const renderCourageTab = useCallback(() => {
     const trend = getCourageTrend();
@@ -294,18 +307,7 @@ export default function MindScreen() {
           <FlatList
             data={recentCourage}
             keyExtractor={(item) => item.id}
-            renderItem={({ item: c }) => (
-              <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{c.action}</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{c.date}</Text>
-                  <Text style={{ fontSize: 10, color: '#EF4444' }}>恐惧值 {c.fearBefore}</Text>
-                  {c.feelingTags.map((tag: FeelingTag) => (
-                    <Text key={tag} style={{ fontSize: 10, color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{T(FEELING_LABELS[tag] ?? tag)}</Text>
-                  ))}
-                </View>
-              </View>
-            )}
+            renderItem={renderCourageItem}
             scrollEnabled={false}
             removeClippedSubviews={true}
             ListEmptyComponent={<Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>{T('mindNoCourage')}</Text>}
@@ -373,18 +375,7 @@ export default function MindScreen() {
           <FlatList
             data={insights}
             keyExtractor={(_, i) => String(i)}
-            renderItem={({ item: insight, index: i }) => (
-              <View style={{ paddingVertical: 10, borderBottomWidth: i < insights.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                  <Text style={{ fontSize: 14 }}>💡</Text>
-                  <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T(insight.titleKey)}</Text>
-                  {insight.metric && (
-                    <Text style={{ fontSize: 10, color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{insight.metric}</Text>
-                  )}
-                </View>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, lineHeight: 18, marginLeft: 20 }}>{insight.description}</Text>
-              </View>
-            )}
+            renderItem={renderInsightItem}
             scrollEnabled={false}
             removeClippedSubviews={true}
             ListEmptyComponent={<Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>记录更多数据后将生成洞察</Text>}

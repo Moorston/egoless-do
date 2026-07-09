@@ -91,6 +91,8 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
               styles.tab,
               { backgroundColor: activeTab === tab.key ? P : TH.card },
             ]}
+            accessibilityRole="button"
+            accessibilityLabel={T(tab.labelKey)}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               {(() => {

@@ -369,7 +369,7 @@ export default function SettingsScreen() {
                 overflow: 'hidden',
               }}>
                 {userProfile.avatar ? (
-                  <Image source={{ uri: userProfile.avatar }} style={{ width: 56, height: 56, borderRadius: 28 }} />
+                  <Image source={{ uri: userProfile.avatar }} style={{ width: 56, height: 56, borderRadius: 28 }} contentFit="cover" />
                 ) : (
                   <Text style={{ fontSize: 22, fontWeight: '700', color: P }}>
                     {(userProfile.nickname ?? auth.user?.name ?? '?').charAt(0).toUpperCase()}

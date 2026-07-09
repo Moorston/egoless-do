@@ -191,7 +191,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Profile" />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 60 }}
         showsVerticalScrollIndicator={false}
@@ -208,7 +208,7 @@ export default function ProfileScreen() {
                 overflow: 'hidden',
               }}>
                 {avatarUri ? (
-                  <Image source={{ uri: avatarUri }} style={{ width: 80, height: 80, borderRadius: 40 }} />
+                  <Image source={{ uri: avatarUri }} style={{ width: 80, height: 80, borderRadius: 40 }} contentFit="cover" />
                 ) : (
                   <Text style={{ fontSize: 32, fontWeight: '700', color: P }}>
                     {displayName.charAt(0).toUpperCase()}

@@ -5,7 +5,7 @@
  */
 
 import { GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType } from '@egoless-do/core';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -108,7 +108,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
     );
   };
 
-  const renderItem = ({ item, index }: { item: LeaderboardEntry; index: number }) => {
+  const renderItem = useCallback(({ item, index }: { item: LeaderboardEntry; index: number }) => {
     const rank = compact ? index + 1 : index + 4;
     const isSelected = selectedUserId === item.user_hash;
 
@@ -120,7 +120,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
         onPress={onUserPress}
       />
     );
-  };
+  }, [compact, selectedUserId, onUserPress]);
 
   return (
     <View style={[styles.container, compact && styles.containerCompact, { backgroundColor: compact ? 'transparent' : theme.bg }]}>

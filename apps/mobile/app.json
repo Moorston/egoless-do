@@ -21,6 +21,8 @@
       "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "用于选择个人头像图片",
+        "NSCameraUsageDescription": "用于拍摄个人头像",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "允许心流纪在后台访问位置以记录运动轨迹",
         "NSLocationWhenInUseUsageDescription": "用于记录运动轨迹和全球打卡地图",
         "NSHealthShareUsageDescription": "用于读取健康数据，追踪运动目标",

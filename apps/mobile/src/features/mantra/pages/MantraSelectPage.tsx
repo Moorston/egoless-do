@@ -223,7 +223,7 @@ export default function MantraSelectPage(props: Props) {
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('mantraSubtitle')}</Text>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <FlatList
           data={myMantras}
           renderItem={renderMantraItem}

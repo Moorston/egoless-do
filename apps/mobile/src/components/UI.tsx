@@ -1,5 +1,6 @@
 // ─── Shared UI primitives ─────────────────────────────────────────
 import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
+import type { I18nKey } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, Check } from 'lucide-react-native';
 import React from 'react';
@@ -20,7 +21,7 @@ export function useTheme() {
 // ── useT ──────────────────────────────────────────────────────────
 export function useT() {
   const language = useAppStore((s: MobileStore) => s.language);
-  return (key: string) => t(key as import("@egoless-do/core").I18nKey, language);
+  return (key: I18nKey) => t(key, language);
 }
 
 // ── Card ──────────────────────────────────────────────────────────
@@ -196,12 +197,13 @@ export function ScreenHeader({
 
 // ── ThemedInput ──────────────────────────────────────────────────
 export function ThemedInput({
-  value, onChangeText, placeholder, multiline, numberOfLines, keyboardType, secureTextEntry, maxLength, onBlur, style, autoCapitalize,
+  value, onChangeText, placeholder, multiline, numberOfLines, keyboardType, secureTextEntry, maxLength, onBlur, style, autoCapitalize, accessibilityLabel,
 }: {
   value: string; onChangeText: (t: string) => void;
   placeholder?: string; multiline?: boolean; numberOfLines?: number;
   keyboardType?: 'default' | 'numeric' | 'number-pad' | 'email-address'; secureTextEntry?: boolean;
   maxLength?: number; onBlur?: () => void; style?: TextStyle; autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  accessibilityLabel?: string;
 }) {
   const TH = useTheme();
   return (
@@ -217,6 +219,7 @@ export function ThemedInput({
       maxLength={maxLength}
       onBlur={onBlur}
       autoCapitalize={autoCapitalize}
+      accessibilityLabel={accessibilityLabel ?? placeholder ?? 'Input'}
       style={[{
         backgroundColor: TH.card,
         borderWidth: 1, borderColor: TH.border,

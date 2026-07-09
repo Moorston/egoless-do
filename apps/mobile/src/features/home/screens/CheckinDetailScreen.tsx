@@ -1,4 +1,4 @@
-import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
+import { COLORS, calculateCheckinStreak, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BACK, formatTimestamp as formatTime, parseCheckinNote, INCOMPLETE_REASONS } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ChevronLeft, CheckCircle2, PenLine, Hand, Utensils, Droplets, Star, PersonStanding, Sparkles, Circle, Check, AlertTriangle, Moon, Sunrise, Brain } from 'lucide-react-native';

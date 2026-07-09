@@ -559,8 +559,20 @@ export function getRecoveryData(
   return { state: 'active', currentStreak: 0 };
 }
 
+const LOCALE_MAP: Record<string, string> = { zh: 'zh-CN', 'zh-Hant': 'zh-TW', en: 'en-US' };
+
+export function formatDate(date: Date, language: string, options?: Intl.DateTimeFormatOptions): string {
+  const locale = LOCALE_MAP[language] ?? 'en-US';
+  return date.toLocaleDateString(locale, options);
+}
+
+export function formatTime(date: Date, language: string, options?: Intl.DateTimeFormatOptions): string {
+  const locale = LOCALE_MAP[language] ?? 'en-US';
+  return date.toLocaleTimeString(locale, options);
+}
+
 /** Format timestamp or date string to readable date-time format */
-export const formatTime = (ts?: number, date?: string): string => {
+export const formatTimestamp = (ts?: number, date?: string): string => {
   if (ts != null) {
     const d = new Date(ts);
     const pad = (n: number) => String(n).padStart(2, '0');
