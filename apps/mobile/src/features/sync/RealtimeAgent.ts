@@ -34,7 +34,7 @@ export class RealtimeAgent {
   private _destroyed = false;
   private _heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   private _consecutiveHeartbeatFailures = 0;
-  private static MAX_HEARTBEAT_FAILURES = 3;
+  private static MAX_HEARTBEAT_FAILURES = 5;
   private _onKickedOut: (() => void) | null = null;
 
   setChangeHandler(fn: (event: RealtimeChangeEvent) => void) { this._onChange = fn; }
@@ -75,14 +75,14 @@ export class RealtimeAgent {
         if (res.ok) this._consecutiveHeartbeatFailures = 0;
         else this._consecutiveHeartbeatFailures++;
       }).catch(() => {
-        this._consecutiveHeartbeatFailures++;
-        // Ping failed — but only reconnect if SSE is actually dead
+        // Ping failed — only count as failure if SSE is also dead
         if (this._destroyed) return;
         if (this._es && (this._es as unknown as { readyState: number }).readyState === 1) { // 1 = EventSource.OPEN
           // SSE is still healthy; ping failure is transient (mobile network blip)
           log.debug('Ping failed but SSE still open, ignoring');
           return;
         }
+        this._consecutiveHeartbeatFailures++;
         log.warn('Ping failed and SSE is not open, triggering reconnect');
         this._onStatus?.(false);
         this._scheduleReconnect();
@@ -127,7 +127,10 @@ export class RealtimeAgent {
     });
     this._es = es;
 
-    es.addEventListener('open', () => log.info('SSE opened'));
+    es.addEventListener('open', () => {
+      log.info('SSE opened');
+      this._consecutiveHeartbeatFailures = 0; // Reset heartbeat failure counter on successful connect
+    });
 
     es.addEventListener('message', (event) => {
       if (event.type === 'message') this._handleEvent('message', event.data);
