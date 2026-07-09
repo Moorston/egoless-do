@@ -123,6 +123,9 @@ export class SyncEngine {
       this._syncTriggerTimer = null;
       log.debug('Debounced sync trigger firing');
       this._syncTriggerCallback?.();
+      // Only re-trigger if there's still a token (prevents infinite loop after logout)
+      const token = this._tokenProvider?.();
+      if (!token) return;
       const { getQueueCount: checkQueueCount } = await import('../../db/syncQueue');
       const remaining = await checkQueueCount();
       if (remaining > 0) this.triggerSyncDebounced();
@@ -554,6 +557,7 @@ export class SyncEngine {
         }
         if (!token) {
           log.warn('No recovery possible, logging out');
+          this.clearSyncTrigger(); // Stop debounced trigger loop (no token = no point retrying)
           this._onKickedOut?.();
           this._syncing = false;
           return;
