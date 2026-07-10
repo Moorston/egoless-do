@@ -65,15 +65,15 @@ app.post('/register', async (c) => {
       return c.json({ error: '验证码错误' }, 400);
     }
 
+    // Delete used verification code BEFORE creating user (prevents concurrent code reuse)
+    await deleteVerificationCode(email);
+
     const pb = getPb();
     const user = await pb.collection('users').create({
       email, password, passwordConfirm: password, name,
     });
 
     const authData = await pb.collection('users').authWithPassword(email, password);
-
-    // Delete used verification code AFTER successful registration
-    await deleteVerificationCode(email);
 
     // 生成独立的 refresh token
     const refreshToken = generateRefreshToken();

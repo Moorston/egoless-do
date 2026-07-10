@@ -12,6 +12,24 @@ const MAX_LOGIN_ATTEMPTS = 5;  // 最大登录尝试次数
 const LOCKOUT_DURATION = 15 * 60 * 1000;  // 锁定时长：15 分钟
 const ATTEMPT_WINDOW = 5 * 60 * 1000;  // 尝计数窗口：5 分钟
 
+// 内存锁：防止同一邮箱的并发登录尝试绕过计数
+const emailLocks = new Map<string, Promise<void>>();
+async function withEmailLock<T>(email: string, fn: () => Promise<T>): Promise<T> {
+  const prev = emailLocks.get(email) ?? Promise.resolve();
+  const { promise, resolve } = Promise.withResolvers<void>();
+  emailLocks.set(email, prev.then(() => promise));
+  try {
+    await prev;
+    return await fn();
+  } finally {
+    resolve();
+    // 清理：如果当前锁链就是本锁，移除它
+    if (emailLocks.get(email) === prev.then(() => promise)) {
+      emailLocks.delete(email);
+    }
+  }
+}
+
 export interface AccountLockout {
   id?: string;
   email: string;
@@ -61,6 +79,10 @@ export async function isAccountLocked(email: string): Promise<{ locked: boolean;
  * 记录登录尝试
  */
 export async function recordLoginAttempt(email: string, success: boolean): Promise<{ locked: boolean; lockoutUntil?: number }> {
+  return withEmailLock(email, () => recordLoginAttemptLocked(email, success));
+}
+
+async function recordLoginAttemptLocked(email: string, success: boolean): Promise<{ locked: boolean; lockoutUntil?: number }> {
   try {
     const pb = await getAdminPb();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- PB record type

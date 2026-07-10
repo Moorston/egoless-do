@@ -1,7 +1,7 @@
 // ─── POST /api/auth/refresh ──────────────────────────────────────
 import { Hono } from 'hono';
 import { getClientIp, refreshRateLimit } from '../rate-limit.js';
-import { generateRefreshToken, createRefreshToken, validateRefreshToken, revokeRefreshToken } from '../token-refresh-rotation.js';
+import { generateRefreshToken, createRefreshToken, validateAndRevokeRefreshToken } from '../token-refresh-rotation.js';
 import { getInternalSecret } from '../config.js';
 
 const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -23,16 +23,13 @@ app.post('/refresh', async (c) => {
       return c.json({ error: '缺少 refreshToken' }, 400);
     }
 
-    // 1. 验证 refresh token
-    const validation = await validateRefreshToken(refreshToken);
+    // 1. 原子校验+撤销旧 refresh token（防并发竞态）
+    const validation = await validateAndRevokeRefreshToken(refreshToken);
     if (!validation.valid || !validation.userId) {
       return c.json({ error: 'Refresh token 无效或已过期，请重新登录' }, 401);
     }
 
-    // 2. 撤销旧的 refresh token（轮换）
-    await revokeRefreshToken(refreshToken);
-
-    // 3. 通过 PB hook 签发用户 scoped token（而非 admin token）
+    // 2. 通过 PB hook 签发用户 scoped token（而非 admin token）
     let userToken: string;
     try {
       const resp = await fetch(`${PB_URL}/api/auth/user-token`, {

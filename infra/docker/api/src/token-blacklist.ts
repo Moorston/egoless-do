@@ -18,9 +18,10 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
     return true;
   } catch (err: unknown) {
     if (errStatus(err) === 404) return false;
-    // 如果集合不存在，回退到本地检查
-    console.warn('Token blacklist check failed, falling back to local:', errMessage(err));
-    return false;
+    // Fail-closed: if blacklist check fails (PB down, network error), deny access
+    // Better to reject a valid token temporarily than to accept a revoked one
+    console.warn('Token blacklist check failed, denying access (fail-closed):', errMessage(err));
+    return true;
   }
 }
 
