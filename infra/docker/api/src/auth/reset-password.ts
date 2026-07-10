@@ -5,6 +5,7 @@ import { getAdminPb, escapeFilter } from '../pb.js';
 import { errStatus } from '../errors.js';
 import { getVerificationCode, deleteVerificationCode } from '../verification-code.js';
 import { blacklistToken } from '../token-blacklist.js';
+import { revokeAllUserRefreshTokens } from '../token-refresh-rotation.js';
 import { getClientIp, resetRateLimit } from '../rate-limit.js';
 import { validatePassword, sanitizeError } from '../auth-middleware.js';
 
@@ -72,6 +73,11 @@ app.post('/reset-password', async (c) => {
     } catch (e) {
       console.error('Failed to blacklist token:', e);
     }
+
+    // Revoke ALL refresh tokens for this user (critical: prevents stolen refresh token reuse)
+    await revokeAllUserRefreshTokens(user.id).catch((e) => {
+      console.error('Failed to revoke refresh tokens after password reset:', e);
+    });
 
     return c.json({ ok: true, message: '密码重置成功，请重新登录' });
   } catch (err: unknown) {
