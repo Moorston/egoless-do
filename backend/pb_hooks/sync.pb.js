@@ -128,6 +128,15 @@ routerAdd("GET", "/api/sync", function(e) {
     function buildUserFilter(userId, sinceDate) {
       return "user_id = '" + escapeFilterValue(userId) + "'";
     }
+    function safeFindRecords(app, coll, filter, limit, offset) {
+      try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
+        try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
+          try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
+            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+          }
+        }
+      }
+    }
     function exportRecord(rec) { var exported = rec.publicExport(); var dd = exported.data; if (typeof dd === 'string') { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } } if (dd && typeof dd === 'object') { for (var dk in dd) { if (dk === 'id' || dk === 'created' || dk === 'updated' || dk === 'user_id') continue; exported[dk] = dd[dk]; } if (dd.id !== undefined) exported.id = dd.id; if (dd.updatedAt !== undefined) exported.updatedAt = dd.updatedAt; exported.deleted = !!dd.deleted; } else { exported.deleted = false; } if (exported.updated_at) exported.updatedAt = new Date(exported.updated_at).getTime(); delete exported.data; var efKeys = Object.keys(exported); for (var efi = 0; efi < efKeys.length; efi++) { if (typeof exported[efKeys[efi]] === 'function') delete exported[efKeys[efi]]; } return exported; }
 
     var info = e.requestInfo();

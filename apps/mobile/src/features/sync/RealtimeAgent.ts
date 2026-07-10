@@ -65,10 +65,8 @@ export class RealtimeAgent {
     this._heartbeatTimer = setInterval(() => {
       if (this._destroyed) { this._stopHeartbeat(); return; }
       if (!this._token || !this._pbUrl) return;
-      fetch(`${this._pbUrl}/api/realtime/ping`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${this._token}` },
-      }).then((res) => {
+      // Use PB health endpoint (old /api/realtime/ping was removed in PB 0.38.x)
+      fetch(`${this._pbUrl}/api/health`).then((res) => {
         if (!res.ok) {
           log.debug(`Heartbeat ping returned ${res.status}`);
         }

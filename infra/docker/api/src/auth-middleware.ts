@@ -32,26 +32,33 @@ export async function isBlacklisted(token: string): Promise<boolean> {
 /**
  * Verify a Bearer token: format check → blacklist check → PocketBase signature verification.
  * Uses PocketBase authRefresh() which validates the JWT signature server-side.
+ *
+ * SECURITY: userId is extracted from the authRefresh response (verified), NOT from
+ * the decoded JWT payload (unverified). This prevents using a tampered payload to
+ * query another user's password_changed_at or login_epoch before signature verification.
  */
 export async function verifyAuth(authHeader: string | null): Promise<{ userId: string } | null> {
   if (!authHeader?.startsWith('Bearer ')) return null;
   const token = authHeader.slice(7);
 
-  // Fast local checks first
+  // Fast local checks (format only — payload is NOT trusted yet)
   const payload = jwtPayload(token);
-  const userId = typeof payload?.id === 'string' ? payload.id : undefined;
-  if (!userId || !payload) return null;
+  if (!payload) return null;
 
   // Check blacklist (for logged-out tokens)
   if (await isBlacklisted(token)) return null;
 
   try {
-    // Verify signature via PocketBase
+    // Verify signature via PocketBase — this is the actual security gate
     const { getPb } = await import('./pb.js');
     const pb = getPb();
     pb.authStore.save(token, null);
+    let verifiedUserId: string;
     try {
       await pb.collection('users').authRefresh();
+      const recordId = pb.authStore.record?.id;
+      if (!recordId) return null;
+      verifiedUserId = recordId;
     } catch (refreshErr: unknown) {
       return null;
     }
@@ -66,12 +73,12 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
       console.warn('[verifyAuth] Admin PB unavailable, skipping password_changed_at and login_epoch checks:', (adminErr as Error)?.message ?? 'unknown');
     }
 
-    // Check password_changed_at
+    // Check password_changed_at (uses VERIFIED userId)
     if (adminPb) {
       const iat = typeof payload.iat === 'number' ? payload.iat * 1000 : 0;
       if (iat > 0) {
         try {
-          const user = await adminPb.collection('users').getOne(userId, { fields: 'password_changed_at' });
+          const user = await adminPb.collection('users').getOne(verifiedUserId, { fields: 'password_changed_at' });
           const pwdChangedAt = (user as Record<string, unknown>).password_changed_at;
           if (pwdChangedAt && iat < pwdChangedAt) return null;
         } catch {
@@ -87,7 +94,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
       const tokenEpoch = (payload as Record<string, unknown>).epoch;
       if (typeof tokenEpoch === 'number' && tokenEpoch > 0) {
         try {
-          const userProfile = await adminPb.collection('user_profiles').getFirstListItem(`user_id="${userId}"`, { fields: 'data' });
+          const userProfile = await adminPb.collection('user_profiles').getFirstListItem(`user_id="${verifiedUserId}"`, { fields: 'data' });
           const profileData = (userProfile as Record<string, unknown>).data;
           if (profileData) {
             const data = typeof profileData === 'string' ? JSON.parse(profileData) : profileData;
@@ -101,7 +108,7 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
       }
     }
 
-    return { userId };
+    return { userId: verifiedUserId };
   } catch {
     return null;
   }

@@ -54,7 +54,13 @@ app.post('/refresh', async (c) => {
     // 4. 生成新的 refresh token
     const newRefreshToken = generateRefreshToken();
     const refreshTokenExpiresAt = Date.now() + REFRESH_TOKEN_EXPIRES_IN;
-    await createRefreshToken(validation.userId, newRefreshToken, refreshTokenExpiresAt);
+    try {
+      await createRefreshToken(validation.userId, newRefreshToken, refreshTokenExpiresAt);
+    } catch (createErr) {
+      // Cannot store refresh token — the user token we just issued would be un-refreshable
+      console.error('Failed to store refresh token, rejecting refresh:', (createErr as Error)?.name ?? 'unknown');
+      return c.json({ error: 'Token 刷新失败，请重新登录' }, 500);
+    }
 
     return c.json({
       token: userToken,

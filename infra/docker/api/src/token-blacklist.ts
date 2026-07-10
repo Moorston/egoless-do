@@ -18,10 +18,11 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
     return true;
   } catch (err: unknown) {
     if (errStatus(err) === 404) return false;
-    // Fail-closed: if blacklist check fails (PB down, network error), deny access
-    // Better to reject a valid token temporarily than to accept a revoked one
-    console.warn('Token blacklist check failed, denying access (fail-closed):', errMessage(err));
-    return true;
+    // Fail-open for blacklist: PB down should not block ALL authenticated requests.
+    // Blacklist is a secondary defense — primary defense is token expiry (7 days).
+    // A temporarily usable revoked token is less harmful than blocking all users.
+    console.warn('Token blacklist check failed, allowing access (fail-open):', errMessage(err));
+    return false;
   }
 }
 

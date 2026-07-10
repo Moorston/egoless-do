@@ -50,12 +50,15 @@ export const ENTITY_STORE_KEY: Record<string, string> = {
   breath: 'breathHistory', zhiguanSession: 'sessions',
 };
 
+// Entities that intentionally have no store key (handled via special logic in applyEntityToTable)
+const _specialEntities = new Set(['aiConfig']);
+
 // DEV-only validation: ensure all SCHEMAS entities have a store key mapping
 if (__DEV__) {
   const registeredEntities = new Set(Object.keys(SCHEMAS));
   const mappedEntities = new Set(Object.keys(ENTITY_STORE_KEY));
   for (const entity of registeredEntities) {
-    if (!mappedEntities.has(entity)) {
+    if (!mappedEntities.has(entity) && !_specialEntities.has(entity)) {
       console.warn(`[SyncApply] Entity "${entity}" found in SCHEMAS but missing from ENTITY_STORE_KEY`);
     }
   }
@@ -107,7 +110,6 @@ const _serverPayloadToRowFns = Object.fromEntries(
 ) as Record<string, (r: Record<string, unknown>) => Record<string, unknown> | null>;
 
 // Validate all SCHEMAS entities are covered (dev-only check)
-const _specialEntities = new Set(['aiConfig']);
 if (__DEV__) {
   for (const key of Object.keys(SCHEMAS) as SyncEntity[]) {
     if (!ENTITY_STORE_KEY[key] && !_specialEntities.has(key)) {
