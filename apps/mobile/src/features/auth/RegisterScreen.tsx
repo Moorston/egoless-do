@@ -26,7 +26,6 @@ export default function RegisterScreen() {
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
-  const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'ok' | 'taken'>('idle');
   const [emailError, setEmailError] = useState('');
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const mountedRef = useRef(true);
@@ -51,38 +50,18 @@ export default function RegisterScreen() {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
 
-  const handleEmailBlur = async () => {
+  const handleEmailBlur = () => {
     const em = email.trim();
     if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
       setEmailError(T('authInvalidEmail'));
-      setEmailStatus('idle');
-      return;
-    }
-    setEmailError('');
-    if (!em) {
-      setEmailStatus('idle');
-      return;
-    }
-    setEmailStatus('checking');
-    try {
-      const res = await apiCheckEmail(em);
-      if (!mountedRef.current) return;
-      setEmailStatus(res.available ? 'ok' : 'taken');
-      if (!res.available) setEmailError(res.error || T('authAlreadyRegistered'));
-    } catch (e: unknown) {
-      if (!mountedRef.current) return;
-      setEmailStatus('idle');
-      setEmailError(e instanceof Error ? e.message : T('authCheckFailed'));
+    } else {
+      setEmailError('');
     }
   };
 
   const handleSendCode = async () => {
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError(T('authInvalidEmailAddr'));
-      return;
-    }
-    if (emailStatus === 'taken') {
-      setError(T('authAlreadyRegistered'));
       return;
     }
     setError('');
@@ -116,6 +95,7 @@ export default function RegisterScreen() {
       await register(email.trim(), password, name.trim(), code.trim());
       nav.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
     } catch (e: unknown) {
+      // Show generic error — don't reveal whether email exists
       setError(e instanceof Error ? e.message : T('authRegisterFailed'));
     }
   };
@@ -149,22 +129,16 @@ export default function RegisterScreen() {
               placeholder={T('authNicknamePlaceholder')}
               style={{ marginBottom: 12 }}
             />
-            <View style={{ position: 'relative', marginBottom: emailError ? 4 : 12 }}>
-              <ThemedInput
-                value={email}
-                onChangeText={v => { setEmail(v); setEmailStatus('idle'); setEmailError(''); }}
-                onBlur={handleEmailBlur}
-                placeholder={T('authEmailPlaceholder')}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                style={{ marginBottom: 0, paddingRight: 80, ...(emailError || emailStatus === 'taken' ? { borderColor: '#ef4444' } : emailStatus === 'ok' ? { borderColor: '#10b981' } : {}) }}
-              />
-              {emailStatus === 'checking' && <Text style={{ position: 'absolute', right: 14, top: 14, fontSize: FONT_SUB, color: TH.sub }}>{T('authChecking')}</Text>}
-              {emailStatus === 'ok' && <View style={{ position: 'absolute', right: 14, top: 14, flexDirection: 'row', alignItems: 'center', gap: 4 }}><Check size={14} color="#10b981" /><Text style={{ fontSize: FONT_SUB, color: '#10b981' }}>{T('authAvailable')}</Text></View>}
-              {emailStatus === 'taken' && <View style={{ position: 'absolute', right: 14, top: 14, flexDirection: 'row', alignItems: 'center', gap: 4 }}><X size={14} color="#ef4444" /><Text style={{ fontSize: FONT_SUB, color: '#ef4444' }}>{T('authAlreadyRegistered')}</Text></View>}
-            </View>
+            <ThemedInput
+              value={email}
+              onChangeText={v => { setEmail(v); setEmailError(''); }}
+              onBlur={handleEmailBlur}
+              placeholder={T('authEmailPlaceholder')}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              style={{ marginBottom: emailError ? 4 : 12, ...(emailError ? { borderColor: '#ef4444' } : {}) }}
+            />
             {emailError ? <Text style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>{emailError}</Text> : null}
-            {emailStatus === 'taken' && !emailError ? <Text style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>{T('authAlreadyRegistered')}</Text> : null}
             <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
               <View style={{ flex: 1 }}>
                 <ThemedInput

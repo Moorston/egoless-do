@@ -1,13 +1,12 @@
-import { FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger , apiCheckEmail } from '@egoless-do/core';
+import { FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION, createLogger } from '@egoless-do/core';
 import { Image } from 'expo-image';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 import { useTheme, useT, PrimaryButton, ThemedInput, Card } from '../../components/UI';
 import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore } from '../../store/useAppStore';
 import { registerExpoPushToken } from './pushTokenRegistration';
-
 
 const log = createLogger('Auth');
 
@@ -24,35 +23,12 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [emailStatus, setEmailStatus] = useState<'idle' | 'checking' | 'registered' | 'not_registered'>('idle');
-  const mountedRef = useRef(true);
-  useEffect(() => () => { mountedRef.current = false; }, []);
 
-  const handleEmailBlur = async () => {
+  const handleEmailBlur = () => {
     if (email && !EMAIL_REGEX.test(email)) {
       setEmailError(T('authInvalidEmail'));
-      setEmailStatus('idle');
-      return;
-    }
-    setEmailError('');
-    if (!email) {
-      setEmailStatus('idle');
-      return;
-    }
-    setEmailStatus('checking');
-    try {
-      const res = await apiCheckEmail(email.trim());
-      if (!mountedRef.current) return;
-      if (res.available) {
-        setEmailStatus('not_registered');
-        setEmailError(T('authEmailNotRegistered'));
-      } else {
-        setEmailStatus('registered');
-      }
-    } catch (e) {
-      if (!mountedRef.current) return;
-      log.warn('Email check failed:', e);
-      setEmailStatus('idle');
+    } else {
+      setEmailError('');
     }
   };
 
@@ -78,7 +54,8 @@ export default function LoginScreen() {
         setTimeout(() => { registerExpoPushToken(token); }, 0);
       }
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : T('authLoginFailed'));
+      // Don't reveal whether email exists — show generic error
+      setError(T('authLoginFailed'));
     }
   };
 
@@ -107,7 +84,7 @@ export default function LoginScreen() {
           <Card style={{ marginBottom: 16 }}>
             <ThemedInput
               value={email}
-              onChangeText={(text) => { setEmail(text); setEmailError(''); setEmailStatus('idle'); }}
+              onChangeText={(text) => { setEmail(text); setEmailError(''); }}
               onBlur={handleEmailBlur}
               placeholder={T('authEmailPlaceholder')}
               keyboardType="email-address"
