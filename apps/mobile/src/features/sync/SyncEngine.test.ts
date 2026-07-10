@@ -294,6 +294,7 @@ describe('SyncEngine', () => {
       vi.useFakeTimers();
       const cb = vi.fn();
       engine.setSyncTriggerCallback(cb);
+      engine.setTokenProvider(() => 'test-token');
 
       engine.triggerSyncDebounced();
       expect(cb).not.toHaveBeenCalled();
@@ -306,6 +307,7 @@ describe('SyncEngine', () => {
       vi.useFakeTimers();
       const cb = vi.fn();
       engine.setSyncTriggerCallback(cb);
+      engine.setTokenProvider(() => 'test-token');
 
       engine.triggerSyncDebounced();
       vi.advanceTimersByTime(1000);
