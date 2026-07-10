@@ -66,7 +66,13 @@ app.post('/reset-password', async (c) => {
         const parts = token.split('.');
         if (parts.length === 3 && parts[1]) {
           const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
-          const expiresAt = payload.exp ? payload.exp * 1000 : Date.now() + 7 * 24 * 3600 * 1000;
+          const rawExp = typeof payload.exp === 'number' ? payload.exp : null;
+          // 校验 exp 合理性：必须是正数、不能超过 30 天、不能早于现在
+          const nowSec = Math.floor(Date.now() / 1000);
+          const maxExp = nowSec + 30 * 24 * 3600; // 30 days from now
+          const expiresAt = (rawExp && rawExp > nowSec && rawExp <= maxExp)
+            ? rawExp * 1000
+            : Date.now() + 7 * 24 * 3600 * 1000; // fallback: 7 days
           await blacklistToken(token, expiresAt);
         }
       }

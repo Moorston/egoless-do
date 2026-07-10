@@ -68,12 +68,13 @@ export async function validateAndRevokeRefreshToken(token: string): Promise<{ va
       `token = "${escapeFilter(token)}" && is_revoked = false && expires_at > ${Date.now()}`
     );
 
-    // Step 2: Revoke immediately
-    const revokeTimestamp = Date.now();
+    // Step 2: Revoke immediately, using a random nonce as used_at for race detection
+    // (Date.now() would collide if two requests arrive in the same millisecond)
+    const revokeNonce = Date.now() * 1000 + Math.floor(Math.random() * 1000);
     try {
       await pb.collection(COLLECTION_NAME).update(record.id, {
         is_revoked: true,
-        used_at: revokeTimestamp,
+        used_at: revokeNonce,
       });
     } catch (revokeErr) {
       // Revoke failed — token may have been revoked by a concurrent request
@@ -85,7 +86,7 @@ export async function validateAndRevokeRefreshToken(token: string): Promise<{ va
     // If another concurrent request also revoked this token, used_at will differ
     try {
       const updated = await pb.collection(COLLECTION_NAME).getOne(record.id);
-      if (updated.used_at !== revokeTimestamp) {
+      if (updated.used_at !== revokeNonce) {
         console.warn('Token revoke race detected — used_at mismatch, rejecting');
         return { valid: false };
       }
@@ -142,26 +143,45 @@ export async function revokeRefreshToken(token: string): Promise<void> {
 
 /**
  * 撤销用户的所有 refresh token（用于登出或密码重置）
+ * 如果没有任何 token 被成功撤销，抛出错误以便调用方感知。
  */
 export async function revokeAllUserRefreshTokens(userId: string): Promise<void> {
+  let records: Array<{ id: string }> = [];
   try {
     const pb = await getAdminPb();
-    const records = await pb.collection(COLLECTION_NAME).getFullList({
+    records = await pb.collection(COLLECTION_NAME).getFullList({
       filter: `user_id = "${escapeFilter(userId)}" && is_revoked = false`,
     });
-
-    for (const record of records) {
-      try {
-        await pb.collection(COLLECTION_NAME).update(record.id, {
-          is_revoked: true,
-          used_at: Date.now(),
-        });
-      } catch (err) {
-        console.warn('[RefreshToken] Skipping single record update:', safeErrId(err));
-      }
-    }
   } catch (err: unknown) {
-    console.warn('Failed to revoke user refresh tokens:', safeErrId(err));
+    // 查询失败 — 无法撤销任何 token，必须报错
+    throw new Error(`Failed to list refresh tokens for user: ${safeErrId(err)}`);
+  }
+
+  if (records.length === 0) return; // 没有活跃 token，正常
+
+  let succeeded = 0;
+  let lastError: unknown = null;
+  for (const record of records) {
+    try {
+      const pb = await getAdminPb();
+      await pb.collection(COLLECTION_NAME).update(record.id, {
+        is_revoked: true,
+        used_at: Date.now(),
+      });
+      succeeded++;
+    } catch (err) {
+      lastError = err;
+      console.warn('[RefreshToken] Skipping single record update:', safeErrId(err));
+    }
+  }
+
+  // 全部失败 — 报错以便调用方知道撤销没成功
+  if (succeeded === 0 && records.length > 0) {
+    throw new Error(`Failed to revoke any of ${records.length} refresh tokens: ${safeErrId(lastError)}`);
+  }
+  // 部分失败 — 日志警告但不抛出
+  if (succeeded > 0 && succeeded < records.length) {
+    console.warn(`[RefreshToken] Only revoked ${succeeded}/${records.length} tokens`);
   }
 }
 
