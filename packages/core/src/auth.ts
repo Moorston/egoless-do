@@ -38,7 +38,16 @@ export function getSyncUrl(): string {
   return getSyncBase();
 }
 
-const COMMON_PASSWORDS = ['password', '12345678', 'qwerty123', 'password1', 'admin123', 'password123', '123456789', 'iloveyou'];
+const COMMON_PASSWORDS = [
+  'password', '12345678', 'qwerty123', 'password1', 'admin123',
+  'password123', '123456789', 'iloveyou', 'abc123456', 'monkey123',
+  'dragon123', 'letmein123', 'trustno1', 'sunshine1', 'princess1',
+  'football1', 'shadow123', 'master123', 'hello1234', 'charlie1',
+  'donald123', 'qwerty12', 'login123', 'welcome1', 'passw0rd',
+  'michael1', 'ninja123', 'mustang1', 'jessica1', 'hunter12',
+  'summer12', 'qwerty1234', 'zaq12wsx', 'asdfghjk', '1qaz2wsx',
+  'qwertyui', '1q2w3e4r', '00000000', '11111111', '1234567890',
+];
 
 export function validatePassword(pwd: string): string | null {
   if (pwd.length < 10) return '密码长度至少10位';

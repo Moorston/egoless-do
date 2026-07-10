@@ -245,6 +245,7 @@ export function createAuthSlice(
         // 400/401 responses from the server are not retried (they land in catch too,
         // but the second attempt will receive the same server response and fail again).
         // Retry up to 2 times on transient network errors
+        let lastError: unknown;
         for (let attempt = 0; attempt < 2; attempt++) {
           try {
             const res = await apiRefreshToken(auth.refreshToken!, auth.token ?? undefined);
@@ -254,6 +255,7 @@ export function createAuthSlice(
             }
             return; // Success — exit retry loop
           } catch (e) {
+            lastError = e;
             if (attempt === 0 && e instanceof NetworkError) {
               // First failure on network error: brief wait before retry
               await new Promise(r => setTimeout(r, 1000));
@@ -268,6 +270,11 @@ export function createAuthSlice(
             }
             // If token is still valid, keep the auth state — network error is transient
           }
+        }
+        // After retry loop completes without success, propagate the error
+        // so callers know the refresh failed (don't silently resolve)
+        if (lastError) {
+          log.error(lastError, { context: 'refreshAuth failed after retries' });
         }
       })();
       try {

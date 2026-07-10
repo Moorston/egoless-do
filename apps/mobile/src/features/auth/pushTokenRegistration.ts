@@ -32,6 +32,10 @@ export async function registerExpoPushToken(token: string): Promise<void> {
     }
 
     const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
+    if (!tokenData?.data) {
+      log.warn('No push token data returned');
+      return;
+    }
     registerPushToken(token, Platform.OS as 'ios' | 'android', async () => tokenData.data);
   } catch (err) {
     log.error(err, { message: 'Failed to register push token' });

@@ -1,6 +1,5 @@
-import { apiSendCode, apiCheckEmail, validatePassword, FONT_TITLE, FONT_SUB, FONT_BUTTON, FONT_ERROR, FONT_STAT_SECTION } from '@egoless-do/core';
+import { apiSendCode, validatePassword, FONT_SUB, FONT_BUTTON, FONT_ERROR } from '@egoless-do/core';
 import { Image } from 'expo-image';
-import { Check, X } from 'lucide-react-native';
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
