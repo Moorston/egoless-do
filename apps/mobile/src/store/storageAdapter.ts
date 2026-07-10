@@ -2,7 +2,7 @@ import type { StorageAdapter, SyncEntity, SyncDataMap } from '@egoless-do/core';
 import { createLogger } from '@egoless-do/core';
 
 import { openDatabase, withDbLock, getState, setState } from '../db/schema';
-import { WriteBatcher } from '../features/sync/WriteBatcher';
+import { WriteBatcher } from './WriteBatcher';
 import { ENTITY_TABLE_MAP } from './entityTableMap';
 
 const log = createLogger('StorageAdapter');

@@ -1,4 +1,5 @@
-import { usePagination , COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote } from '@egoless-do/core';
+import { usePagination } from '../../../hooks/usePagination';
 import { Shield } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, FlatList, ActivityIndicator } from 'react-native';

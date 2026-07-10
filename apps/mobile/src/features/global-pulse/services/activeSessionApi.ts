@@ -9,7 +9,7 @@ import { escapeFilter } from './pbFilterEscape';
 
 const log = createLogger('GlobalPulse');
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://egolessdo.freebytes.net';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://egolessdo.freebytes.net';
 const COLLECTION = 'active_sessions';
 const REQUEST_TIMEOUT = 10000;
 

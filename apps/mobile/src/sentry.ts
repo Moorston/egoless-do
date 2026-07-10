@@ -5,6 +5,8 @@
 import * as Sentry from '@sentry/react-native';
 import Constants from 'expo-constants';
 
+// Expo 环境变量：EXPO_PUBLIC_ 前缀在 .env 中设置，对 JS bundle 可见。
+// SENTRY_DSN 是非 Expo 环境（如 EAS 后构建脚本）的 fallback。
 const SENTRY_DSN = process.env.EXPO_PUBLIC_SENTRY_DSN ?? process.env.SENTRY_DSN;
 
 /**

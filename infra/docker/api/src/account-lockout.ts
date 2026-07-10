@@ -151,7 +151,7 @@ export async function cleanupExpiredLockouts(): Promise<number> {
         });
         cleaned++;
       } catch (err) {
-        // 忽略单个更新失败
+        console.warn('[AccountLockout] Skipping single record update:', errMessage(err));
       }
     }
     return cleaned;

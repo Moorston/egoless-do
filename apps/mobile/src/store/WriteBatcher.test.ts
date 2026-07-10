@@ -10,16 +10,16 @@ const { mockRunAsync, mockWithDbLock, mockOpenDatabase } = vi.hoisted(() => {
   return { mockRunAsync, mockWithDbLock, mockOpenDatabase };
 });
 
-vi.mock('../../db/schema', () => ({
+vi.mock('../db/schema', () => ({
   openDatabase: mockOpenDatabase,
   withDbLock: mockWithDbLock,
 }));
 
-vi.mock('../../db/sqlHelper', () => ({
+vi.mock('../db/sqlHelper', () => ({
   SYNC_QUEUE_UPSERT_SQL: 'INSERT OR REPLACE INTO sync_queue VALUES (?, ?, ?, ?, ?, ?)',
 }));
 
-vi.mock('../../store/entityTableMap', () => ({
+vi.mock('./entityTableMap', () => ({
   ENTITY_TABLE_MAP: {
     habit: { table: 'habits', pk: 'id', toRow: (data: Record<string, unknown>) => ({ ...data, synced: 0 }) },
     reflection: { table: 'mind_reflections', pk: 'id', toRow: (data: Record<string, unknown>) => ({ ...data, synced: 0 }) },

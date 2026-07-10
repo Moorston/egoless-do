@@ -107,7 +107,7 @@ export async function revokeAllUserRefreshTokens(userId: string): Promise<void> 
           used_at: Date.now(),
         });
       } catch (err) {
-        // 忽略单个更新失败
+        console.warn('[RefreshToken] Skipping single record update:', safeErrId(err));
       }
     }
   } catch (err: unknown) {
@@ -131,7 +131,7 @@ export async function cleanupExpiredRefreshTokens(): Promise<number> {
         await pb.collection(COLLECTION_NAME).delete(record.id);
         deleted++;
       } catch (err) {
-        // 忽略单个删除失败
+        console.warn('[RefreshToken] Skipping single record deletion:', safeErrId(err));
       }
     }
     return deleted;

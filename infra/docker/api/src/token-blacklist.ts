@@ -57,7 +57,7 @@ export async function cleanupExpiredTokens(): Promise<number> {
         await pb.collection(COLLECTION_NAME).delete(record.id);
         deleted++;
       } catch (err) {
-        // 忽略单个删除失败
+        console.warn('[TokenBlacklist] Skipping single record deletion:', errMessage(err));
       }
     }
     return deleted;

@@ -145,7 +145,7 @@ export async function cleanupExpiredAuditLogs(): Promise<number> {
         await pb.collection(COLLECTION_NAME).delete(record.id);
         deleted++;
       } catch (err) {
-        // 忽略单个删除失败
+        console.warn('[AuditLog] Skipping single record deletion:', errMessage(err));
       }
     }
     return deleted;

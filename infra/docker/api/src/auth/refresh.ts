@@ -50,7 +50,7 @@ app.post('/refresh', async (c) => {
       userToken = data.token;
     } catch (tokenErr) {
       // Sanitize: log only error code, not message (may contain tokens)
-      console.error('Failed to get user token from PB:', (tokenErr as Record<string, unknown>).code || (tokenErr instanceof Error ? tokenErr.name : 'unknown'));
+      console.error('Failed to get user token from PB:', (tokenErr as Record<string, unknown>).code ?? (tokenErr instanceof Error ? tokenErr.name : 'unknown'));
       return c.json({ error: 'Token 签发失败，请重新登录' }, 500);
     }
 
@@ -66,7 +66,7 @@ app.post('/refresh', async (c) => {
     });
   } catch (err: unknown) {
     // Sanitize: log only error code, not message (may contain tokens)
-    console.error('Token refresh failed:', (err as Record<string, unknown>).code || (err instanceof Error ? err.name : 'unknown'));
+    console.error('Token refresh failed:', (err as Record<string, unknown>).code ?? (err instanceof Error ? err.name : 'unknown'));
     return c.json({ error: 'Token 刷新失败，请重新登录' }, 401);
   }
 });

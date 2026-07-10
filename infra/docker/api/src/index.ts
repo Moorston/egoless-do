@@ -114,7 +114,7 @@ app.onError((err, c) => {
   return c.json({ error: 'Internal Server Error' }, 500);
 });
 
-const port = Number(process.env.PORT ?? 3000);
+const port = cfg.port;
 
 // 初始化 PocketBase 集合（异步，不阻塞启动）
 Promise.all([
@@ -127,8 +127,10 @@ Promise.all([
   initRBACCollection(),
 ]).then(() => {
   console.info('[AuthAPI] PocketBase collections initialized');
+  _ready = true;
 }).catch((err) => {
   console.error('[AuthAPI] Failed to initialize collections:', err);
+  // 初始化失败不设 _ready，healthz 持续返回 503
 });
 
 serve({ fetch: app.fetch, port }, (info) => {
