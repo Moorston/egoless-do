@@ -1,4 +1,4 @@
-import { t, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
+import { t, formatDate, FONT_BODY, FONT_SUB, FONT_STAT_SECTION, FONT_LABEL } from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import {

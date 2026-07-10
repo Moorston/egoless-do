@@ -83,12 +83,3 @@ export function recommendMethod(radar: FiveHindranceRadar): ZhiguanRecommendatio
     hindranceTrigger: topHindrance,
   };
 }
-
-/**
- * 返回五盖中最高的靶点（用于 UI 标记 🙏）
- */
-export function getHighestHindrance(radar: FiveHindranceRadar): { key: FiveHindranceKey; score: number } | null {
-  const entries = Object.entries(radar) as [FiveHindranceKey, number][];
-  const max = entries.reduce((a, b) => a[1] >= b[1] ? a : b);
-  return { key: max[0], score: max[1] };
-}

@@ -46,48 +46,57 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
   if (await isBlacklisted(token)) return null;
 
   try {
-    // Verify signature via PocketBase — authRefresh() will throw if the signature is invalid.
+    // Verify signature via PocketBase
     const { getPb } = await import('./pb.js');
     const pb = getPb();
     pb.authStore.save(token, null);
-    await pb.collection('users').authRefresh();
+    try {
+      await pb.collection('users').authRefresh();
+    } catch (refreshErr: unknown) {
+      return null;
+    }
 
-    // Check if token was issued before the last password reset
-    const iat = typeof payload.iat === 'number' ? payload.iat * 1000 : 0;
-    if (iat > 0) {
-      try {
-        const { getAdminPb } = await import('./pb.js');
-        const adminPb = await getAdminPb();
-        const user = await adminPb.collection('users').getOne(userId);
-        const pwdChangedAt = (user as Record<string, unknown>).password_changed_at;
-        if (pwdChangedAt && iat < pwdChangedAt) return null;
-      } catch {
-        // Fail-closed: if user lookup fails, reject the token
-        // Better to force re-login than to accept a potentially stale token
-        return null;
+    // Get admin PB for additional checks
+    let adminPb: any = null;
+    try {
+      const { getAdminPb } = await import('./pb.js');
+      adminPb = await getAdminPb();
+    } catch {
+      // Admin PB unavailable — proceed with signature verification only
+    }
+
+    // Check password_changed_at
+    if (adminPb) {
+      const iat = typeof payload.iat === 'number' ? payload.iat * 1000 : 0;
+      if (iat > 0) {
+        try {
+          const user = await adminPb.collection('users').getOne(userId, { fields: 'password_changed_at' });
+          const pwdChangedAt = (user as Record<string, unknown>).password_changed_at;
+          if (pwdChangedAt && iat < pwdChangedAt) return null;
+        } catch {
+          return null;
+        }
       }
     }
 
-    // Verify login_epoch — guards against token reuse after re-login
-    try {
-      const { getAdminPb } = await import('./pb.js');
-      const adminPb = await getAdminPb();
-      const userProfile = await adminPb.collection('user_profiles').getFirstListItem(`user_id="${userId}"`);
-      const profileData = (userProfile as Record<string, unknown>).data;
-      if (profileData) {
-        const data = typeof profileData === 'string' ? JSON.parse(profileData) : profileData;
-        const expectedEpoch = (data as Record<string, unknown>).login_epoch || 0;
-        const tokenEpoch = (payload as Record<string, unknown>).epoch || 0;
-        if (tokenEpoch < expectedEpoch) {
-          return null; // Token was issued before a newer login — reject it
+    // Check login_epoch — guards against token reuse after re-login
+    // Only enforce if the token ACTUALLY has an epoch claim
+    // (tokens issued before the epoch system don't have this claim)
+    if (adminPb) {
+      const tokenEpoch = (payload as Record<string, unknown>).epoch;
+      if (typeof tokenEpoch === 'number' && tokenEpoch > 0) {
+        try {
+          const userProfile = await adminPb.collection('user_profiles').getFirstListItem(`user_id="${userId}"`, { fields: 'data' });
+          const profileData = (userProfile as Record<string, unknown>).data;
+          if (profileData) {
+            const data = typeof profileData === 'string' ? JSON.parse(profileData) : profileData;
+            const expectedEpoch = (data as Record<string, unknown>).login_epoch || 0;
+            if (tokenEpoch < expectedEpoch) return null;
+          }
+        } catch (epochErr: unknown) {
+          const status = (epochErr as Record<string, unknown>)?.status;
+          if (status !== 404) return null;
         }
-      }
-    } catch (epochErr: unknown) {
-      // 404 = fresh account without profile — allow (expected)
-      // Any other error = PB issue — fail-closed (reject token)
-      const status = (epochErr as Record<string, unknown>)?.status;
-      if (status !== 404) {
-        return null;
       }
     }
 

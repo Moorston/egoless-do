@@ -28,20 +28,3 @@ export function resolveConflict({ clientUpdated, serverUpdated, clientDeleted, s
     winner: clientUpdated > serverUpdated ? 'client' : 'server',
   };
 }
-
-/** Merge server fields into local data for field-level conflict resolution.
- *  Only applies changedFields from the winning side, preserving local values for other fields.
- */
-export function mergeFieldLevel(
-  local: Record<string, unknown>,
-  server: Record<string, unknown>,
-  changedFields: string[],
-): Record<string, unknown> {
-  const result = { ...local };
-  for (const field of changedFields) {
-    if (field in server) {
-      result[field] = server[field];
-    }
-  }
-  return result;
-}

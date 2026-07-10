@@ -63,14 +63,6 @@ export const tomorrow = () => {
 
 export const daysInMonth = (y: number, m: number) => new Date(y, m + 1, 0).getDate();
 
-export const formatAgoT = (ts: number, T: (key: string) => string) => {
-  const d = Math.floor((Date.now() - ts) / 60000);
-  if (d < 1) return T('timeAgoJustNow');
-  if (d < 60) return T('timeAgoMinutes').replace('{n}', String(d));
-  if (d < 1440) return T('timeAgoHours').replace('{n}', String(Math.floor(d / 60)));
-  return T('timeAgoDays').replace('{n}', String(Math.floor(d / 1440)));
-};
-
 let _uidCounter = 0;
 function _randHex(): string {
   try {

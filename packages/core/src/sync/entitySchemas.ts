@@ -75,7 +75,6 @@ function json(v: unknown): string {
   return JSON.stringify(v ?? []);
 }
 function num(v: unknown, d = 0): number { return typeof v === 'number' ? v : d; }
-function nullableNum(v: unknown): number | null { return typeof v === 'number' ? v : null; }
 function localDate(ts: number): string {
   const d = new Date(ts);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;

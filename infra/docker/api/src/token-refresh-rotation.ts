@@ -8,6 +8,11 @@ import { errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'refresh_tokens';
 
+/** Generate a cryptographically secure nonce for race detection */
+function generateNonce(): string {
+  return randomBytes(8).toString('hex');
+}
+
 /** Safely extract an error identifier without leaking token data in logs. */
 function safeErrId(err: unknown): string {
   const status = errStatus(err);
@@ -68,9 +73,8 @@ export async function validateAndRevokeRefreshToken(token: string): Promise<{ va
       `token = "${escapeFilter(token)}" && is_revoked = false && expires_at > ${Date.now()}`
     );
 
-    // Step 2: Revoke immediately, using a random nonce as used_at for race detection
-    // (Date.now() would collide if two requests arrive in the same millisecond)
-    const revokeNonce = Date.now() * 1000 + Math.floor(Math.random() * 1000);
+    // Step 2: Revoke immediately, using a crypto-random nonce for race detection
+    const revokeNonce = generateNonce();
     try {
       await pb.collection(COLLECTION_NAME).update(record.id, {
         is_revoked: true,
@@ -83,7 +87,6 @@ export async function validateAndRevokeRefreshToken(token: string): Promise<{ va
     }
 
     // Step 3: Post-revoke verification — re-read and check used_at matches
-    // If another concurrent request also revoked this token, used_at will differ
     try {
       const updated = await pb.collection(COLLECTION_NAME).getOne(record.id);
       if (updated.used_at !== revokeNonce) {
@@ -153,17 +156,17 @@ export async function revokeAllUserRefreshTokens(userId: string): Promise<void> 
       filter: `user_id = "${escapeFilter(userId)}" && is_revoked = false`,
     });
   } catch (err: unknown) {
-    // 查询失败 — 无法撤销任何 token，必须报错
     throw new Error(`Failed to list refresh tokens for user: ${safeErrId(err)}`);
   }
 
-  if (records.length === 0) return; // 没有活跃 token，正常
+  if (records.length === 0) return;
 
+  // Get admin PB once, reuse across all updates
+  const pb = await getAdminPb();
   let succeeded = 0;
   let lastError: unknown = null;
   for (const record of records) {
     try {
-      const pb = await getAdminPb();
       await pb.collection(COLLECTION_NAME).update(record.id, {
         is_revoked: true,
         used_at: Date.now(),
