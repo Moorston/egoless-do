@@ -31,6 +31,8 @@ export interface FieldMapping {
 export interface EntitySchema {
   sqlite: { table: string; pk: string };
   pocketbase: { collection: string; serverIdField: string };
+  /** Optional override for Zustand store key (defaults to `${entity}s`) */
+  storeKey?: string;
   fields: FieldMapping[];
   /** Custom toRow override — takes precedence over generated version */
   customToRow?: (data: Record<string, unknown>) => Record<string, unknown>;

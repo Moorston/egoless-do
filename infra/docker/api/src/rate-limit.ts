@@ -134,3 +134,99 @@ export function getClientIp(c: { req: { header: (name: string) => string | undef
     'unknown'
   );
 }
+
+// ─── PocketBase-backed rate limiter (multi-instance safe) ────────────
+
+interface PBRLRecord {
+  key: string;
+  count: number;
+  window_start: number;
+  expires_at: number;
+}
+
+const RATE_LIMIT_COLLECTION = 'rate_limits';
+
+/**
+ * PocketBase-backed rate limiter — survives restarts and works across instances.
+ * Falls back to allow (fail open) if PocketBase is unreachable.
+ */
+export async function createPBRateLimiter(maxCount: number, windowMs: number) {
+  return async (key: string): Promise<boolean> => {
+    try {
+      const { getAdminPb, escapeFilter } = await import('./pb.js');
+      const pb = await getAdminPb();
+      const now = Date.now();
+      const windowStart = now - windowMs;
+
+      // Ensure collection exists
+      try {
+        await pb.collections.getOne(RATE_LIMIT_COLLECTION);
+      } catch {
+        try {
+          await pb.collections.create({
+            name: RATE_LIMIT_COLLECTION,
+            type: 'base',
+            schema: [
+              { name: 'key', type: 'text', required: true },
+              { name: 'count', type: 'number', required: true },
+              { name: 'window_start', type: 'number', required: true },
+              { name: 'expires_at', type: 'number', required: true },
+            ],
+            listRule: null, viewRule: null, createRule: null,
+            updateRule: null, deleteRule: null,
+          });
+        } catch { /* collection may already exist from another instance */ }
+      }
+
+      // Try to find existing record in current window
+      try {
+        const records = await pb.collection(RATE_LIMIT_COLLECTION).getList(1, 1, {
+          filter: `key = "${escapeFilter(key)}" && window_start > ${windowStart}`,
+          sort: '-window_start',
+        });
+        if (records.items.length > 0) {
+          const record = records.items[0];
+          const count = (record.count || 0) + 1;
+          if (count > maxCount) return false;
+          await pb.collection(RATE_LIMIT_COLLECTION).update(record.id, { count });
+          return true;
+        }
+      } catch { /* record not found - create new below */ }
+
+      // Create new window record
+      await pb.collection(RATE_LIMIT_COLLECTION).create({
+        key, count: 1, window_start: now, expires_at: now + windowMs,
+      });
+      return true;
+    } catch {
+      // Fail open if PocketBase is unreachable
+      return true;
+    }
+  };
+}
+
+export async function cleanupExpiredRateLimits(): Promise<void> {
+  try {
+    const { getAdminPb } = await import('./pb.js');
+    const pb = await getAdminPb();
+    // Delete expired records in batches of 100
+    const { totalItems } = await pb.collection(RATE_LIMIT_COLLECTION).getList(1, 1, {
+      filter: `expires_at < ${Date.now()}`,
+    });
+    if (totalItems > 0) {
+      for (let page = 1; page <= Math.ceil(totalItems / 100); page++) {
+        const list = await pb.collection(RATE_LIMIT_COLLECTION).getList(page, 100, {
+          filter: `expires_at < ${Date.now()}`,
+        });
+        for (const item of list.items) {
+          await pb.collection(RATE_LIMIT_COLLECTION).delete(item.id);
+        }
+      }
+    }
+  } catch { /* best-effort cleanup */ }
+}
+
+// Run cleanup every 5 minutes
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => { cleanupExpiredRateLimits().catch(() => {}); }, 5 * 60 * 1000);
+}

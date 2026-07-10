@@ -52,6 +52,27 @@ export interface SyncEngineDeps {
   rehydrationManager?: SyncRehydrationManager;
   resetService?: SyncResetService;
   timestampManager?: SyncTimestampManager;
+  // Injectable db and queue dependencies (for testability)
+  db?: {
+    openDatabase: typeof openDatabase;
+    getState: typeof getState;
+    setState: typeof setState;
+    withDbLock: typeof withDbLock;
+  };
+  syncQueue?: {
+    drainQueue: typeof drainQueue;
+    removeQueueItems: typeof removeQueueItems;
+    getQueueCount: typeof getQueueCount;
+    pruneStaleQueueItems: typeof pruneStaleQueueItems;
+    markQueueItemFailed: typeof markQueueItemFailed;
+    markQueueItemConflict: typeof markQueueItemConflict;
+    markQueueItemRetry: typeof markQueueItemRetry;
+    resetAllPendingForRetry: typeof resetAllPendingForRetry;
+    setLastSyncTimestamp: typeof setLastSyncTimestamp;
+  };
+  storageAdapter?: {
+    flushWrites: typeof flushWrites;
+  };
 }
 
 export class SyncEngine {
@@ -60,6 +81,9 @@ export class SyncEngine {
   private _rehydrationManager: SyncRehydrationManager;
   private _timestampManager: SyncTimestampManager;
   private _resetService: SyncResetService;
+  private _db: NonNullable<SyncEngineDeps['db']> | null = null;
+  private _syncQueue: NonNullable<SyncEngineDeps['syncQueue']> | null = null;
+  private _storageAdapter: NonNullable<SyncEngineDeps['storageAdapter']> | null = null;
 
   constructor(deps?: SyncEngineDeps) {
     this._applyService = deps?.applyService ?? new SyncApplyService();
@@ -67,6 +91,47 @@ export class SyncEngine {
     this._rehydrationManager = deps?.rehydrationManager ?? new SyncRehydrationManager();
     this._timestampManager = deps?.timestampManager ?? new SyncTimestampManager();
     this._resetService = deps?.resetService ?? new SyncResetService();
+    this._db = deps?.db ?? null;
+    this._syncQueue = deps?.syncQueue ?? null;
+    this._storageAdapter = deps?.storageAdapter ?? null;
+  }
+
+  // ── Injected-dependency helpers (fall back to direct imports) ──────────
+  private _openDatabase(): ReturnType<typeof openDatabase> {
+    return this._db ? this._db.openDatabase() : openDatabase();
+  }
+  private _withDbLock<T>(fn: () => Promise<T>): Promise<T> {
+    return this._db ? this._db.withDbLock(fn) : withDbLock(fn);
+  }
+  private _flushWrites(): ReturnType<typeof flushWrites> {
+    return this._storageAdapter ? this._storageAdapter.flushWrites() : flushWrites();
+  }
+  private _drainQueue(limit: number): ReturnType<typeof drainQueue> {
+    return this._syncQueue ? this._syncQueue.drainQueue(limit) : drainQueue(limit);
+  }
+  private _removeQueueItems(ids: number[]): ReturnType<typeof removeQueueItems> {
+    return this._syncQueue ? this._syncQueue.removeQueueItems(ids) : removeQueueItems(ids);
+  }
+  private _getQueueCount(): ReturnType<typeof getQueueCount> {
+    return this._syncQueue ? this._syncQueue.getQueueCount() : getQueueCount();
+  }
+  private _pruneStaleQueueItems(): ReturnType<typeof pruneStaleQueueItems> {
+    return this._syncQueue ? this._syncQueue.pruneStaleQueueItems() : pruneStaleQueueItems();
+  }
+  private _markQueueItemFailed(id: number, reason: string): ReturnType<typeof markQueueItemFailed> {
+    return this._syncQueue ? this._syncQueue.markQueueItemFailed(id, reason) : markQueueItemFailed(id, reason);
+  }
+  private _markQueueItemConflict(id: number, reason: string): ReturnType<typeof markQueueItemConflict> {
+    return this._syncQueue ? this._syncQueue.markQueueItemConflict(id, reason) : markQueueItemConflict(id, reason);
+  }
+  private _markQueueItemRetry(id: number, attempt: number, nextRetryAt: number): ReturnType<typeof markQueueItemRetry> {
+    return this._syncQueue ? this._syncQueue.markQueueItemRetry(id, attempt, nextRetryAt) : markQueueItemRetry(id, attempt, nextRetryAt);
+  }
+  private _resetAllPendingForRetry(): ReturnType<typeof resetAllPendingForRetry> {
+    return this._syncQueue ? this._syncQueue.resetAllPendingForRetry() : resetAllPendingForRetry();
+  }
+  private _setLastSyncTimestamp(entity: string, iso: string): ReturnType<typeof setLastSyncTimestamp> {
+    return this._syncQueue ? this._syncQueue.setLastSyncTimestamp(entity, iso) : setLastSyncTimestamp(entity, iso);
   }
 
   private _syncing = false;
@@ -126,8 +191,7 @@ export class SyncEngine {
       // Only re-trigger if there's still a token (prevents infinite loop after logout)
       const token = this._tokenProvider?.();
       if (!token) return;
-      const { getQueueCount: checkQueueCount } = await import('../../db/syncQueue');
-      const remaining = await checkQueueCount();
+      const remaining = await this._getQueueCount();
       if (remaining > 0) this.triggerSyncDebounced();
     }, SyncEngine.SYNC_TRIGGER_DEBOUNCE_MS);
   }
@@ -241,10 +305,9 @@ export class SyncEngine {
       // Reset items stuck in 'syncing' status from a previous crashed sync
       // before drainQueue so they get picked up again
       try {
-        const { resetAllPendingForRetry: resetStuck } = await import('../../db/syncQueue');
-        await resetStuck();
+        await this._resetAllPendingForRetry();
       } catch (e) { log.error(e, { phase: 'resetStuck' }); }
-      const items = await drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
+      const items = await this._drainQueue(50).catch(e => { log.error(e, { phase: 'drain' }); return [] as SyncQueueItem[]; });
       log.debug(`drainQueue batch ${batch + 1}: ${items.length} items`);
       if (!items.length) break;
       pushedAnything = true;
@@ -258,7 +321,7 @@ export class SyncEngine {
           if (changedFields) delete parsed._changedFields;
           changes.push({ entity: item.entity as SyncEntity, entityId: item.entity_id, payload: parsed, op: item.operation === 'delete' ? 'delete' : 'upsert', changedFields });
         } catch {
-          await markQueueItemFailed(item.id, 'Corrupt payload');
+          await this._markQueueItemFailed(item.id, 'Corrupt payload');
         }
       }
       if (!changes.length) continue;
@@ -273,12 +336,12 @@ export class SyncEngine {
         for (const item of items) {
           try {
             const na = item.retry_count + 1;
-            if (na >= MAX_RETRY_ATTEMPTS) await markQueueItemFailed(item.id, (pushErr instanceof Error ? pushErr.message : null) || 'Push failed');
-            else await markQueueItemRetry(item.id, na, Date.now() + Math.min(Math.pow(2, na) * 1000, 60000));
+            if (na >= MAX_RETRY_ATTEMPTS) await this._markQueueItemFailed(item.id, (pushErr instanceof Error ? pushErr.message : null) || 'Push failed');
+            else await this._markQueueItemRetry(item.id, na, Date.now() + Math.min(Math.pow(2, na) * 1000, 60000));
           } catch (markErr) {
             // Atomicity guard: if marking retry fails, mark as failed instead of losing the item
             log.error(markErr, { phase: 'markRetry-fallback', itemId: item.id });
-            try { await markQueueItemFailed(item.id, 'Retry mark failed'); } catch (e) { log.error(e, { phase: 'markRetry-fallback' }); } // last resort
+            try { await this._markQueueItemFailed(item.id, 'Retry mark failed'); } catch (e) { log.error(e, { phase: 'markRetry-fallback' }); } // last resort
           }
         }
         break;
@@ -309,8 +372,8 @@ export class SyncEngine {
               if (!isValidSqlName(config.pk)) throw new Error(`Invalid pk name: ${config.pk}`);
               // Server says record is deleted — mark local as deleted too
               if (rejection.error === 'deleted') {
-                await withDbLock(async () => {
-                  const db = await openDatabase();
+                await this._withDbLock(async () => {
+                  const db = await this._openDatabase();
                   await db.runAsync(
                     `UPDATE ${config.table} SET deleted=1, synced=1 WHERE ${config.pk}=?`,
                     [item.entity_id],
@@ -327,14 +390,14 @@ export class SyncEngine {
                   if (!isValidSqlName(col)) throw new Error(`Invalid column name: ${col}`);
                 }
                 if (cols.length) {
-                  const db = await openDatabase();
-                  const skipReason = await withDbLock<string | null>(async () => {
+                  const db = await this._openDatabase();
+                  const skipReason = await this._withDbLock<string | null>(async () => {
                     // Don't resurrect locally-deleted records
                     const local = await db.getFirstAsync<{ deleted: number }>(
                       `SELECT deleted FROM ${config.table} WHERE ${config.pk}=?`, [item.entity_id],
                     );
                     if (local?.deleted === 1) {
-                      await markQueueItemConflict(item.id, 'Locally deleted');
+                      await this._markQueueItemConflict(item.id, 'Locally deleted');
                       return 'deleted';
                     }
                     const setClause = cols.map(c => `${c}=?`).join(',');
@@ -356,7 +419,7 @@ export class SyncEngine {
             if (resolved) {
               autoResolvedIds.push(item.id);
             } else {
-              await markQueueItemConflict(item.id, 'Invalid serverData');
+              await this._markQueueItemConflict(item.id, 'Invalid serverData');
               try {
                 const { useSyncStore } = await import('../../store/syncStore');
                 useSyncStore.getState().addConflict({
@@ -371,13 +434,13 @@ export class SyncEngine {
             }
           } catch (resolveErr) {
             log.error(resolveErr, { entity: item.entity, id: item.entity_id, phase: 'auto-resolve' });
-            await markQueueItemConflict(item.id, 'Auto-resolve failed');
+            await this._markQueueItemConflict(item.id, 'Auto-resolve failed');
           }
         } else {
-          await markQueueItemConflict(item.id, 'Server rejected');
+          await this._markQueueItemConflict(item.id, 'Server rejected');
         }
       }
-      if (autoResolvedIds.length) await withDbLock(async () => { await removeQueueItems(autoResolvedIds); });
+      if (autoResolvedIds.length) await this._withDbLock(async () => { await this._removeQueueItems(autoResolvedIds); });
 
       // Mark synced
       try {
@@ -485,7 +548,7 @@ export class SyncEngine {
             const iso = st > 0 ? new Date(st).toISOString() : new Date().toISOString();
             for (const entity of Object.keys(pullResult.data)) {
               if (Array.isArray(pullResult.data[entity]) && pullResult.data[entity].length > 0) {
-                await setLastSyncTimestamp(entity, iso);
+                await this._setLastSyncTimestamp(entity, iso);
               }
             }
           } catch (tsErr) {
@@ -574,15 +637,15 @@ export class SyncEngine {
     const freshToken = () => this._tokenProvider?.() ?? '';
 
     // ── Pre-sync preparation ───────────────────────────────────────────
-    await flushWrites();
+    await this._flushWrites();
     await this._timestampManager.loadLastSyncAt();
     await this._timestampManager.loadClockOffset();
     this._abortController = new AbortController();
     const { signal } = this._abortController;
 
     // Reset failed/conflict items back to pending so they get another chance
-    await resetAllPendingForRetry().catch(e => log.error(e, { phase: 'resetFailed' }));
-    await pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
+    await this._resetAllPendingForRetry().catch(e => log.error(e, { phase: 'resetFailed' }));
+    await this._pruneStaleQueueItems().catch(e => log.error(e, { phase: 'prune' }));
 
     // Orphan recovery — skip if last sync was <30s ago (orphan events are rare)
     if (shouldRunOrphanRecovery(this._lastOrphanScanAt)) {
@@ -640,7 +703,7 @@ export class SyncEngine {
   getSyncMetrics(): SyncMetric[] { return [...this._syncMetrics]; }
 
   async getSyncStatus(): Promise<{ lastSyncAt: number; pendingCount: number; isSyncing: boolean }> {
-    const pendingCount = await getQueueCount().catch(() => 0);
+    const pendingCount = await this._getQueueCount().catch(() => 0);
     return { lastSyncAt: this._timestampManager.getLastSyncAt(), pendingCount, isSyncing: this._syncing };
   }
 
@@ -648,8 +711,8 @@ export class SyncEngine {
 
   private async purgeDeletedRecords(): Promise<void> {
     try {
-      const db = await openDatabase();
-      await withDbLock(async () => {
+      const db = await this._openDatabase();
+      await this._withDbLock(async () => {
         for (const table of ALL_ENTITY_TABLES) {
           if (!isValidSqlName(table)) { log.warn(`Skipping invalid table name: ${table}`); continue; }
           await db.runAsync(`DELETE FROM ${table} WHERE deleted = 1 AND synced = 1`);
@@ -662,11 +725,11 @@ export class SyncEngine {
 
   private async cleanupCorruptedRecords(): Promise<void> {
     try {
-      const db = await openDatabase();
+      const db = await this._openDatabase();
       const done = await getState(db, 'corruptionCleanupDone');
       if (done !== 'true') {
         // First-time cleanup: wrap in withDbLock for transactional safety
-        await withDbLock(async () => {
+        await this._withDbLock(async () => {
           const r1 = await db.runAsync("DELETE FROM habits WHERE name IS NULL OR name = '' OR name = 'undefined'");
           if (r1.changes > 0) log.info(`Cleaned ${r1.changes} corrupted habits`);
           const r2 = await db.runAsync("DELETE FROM mind_reflections WHERE content IS NULL OR content = ''");

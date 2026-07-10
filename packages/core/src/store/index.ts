@@ -26,3 +26,4 @@ export { createPracticeSlice } from './createPracticeSlice';
 export { createMindSlice } from './createMindSlice';
 export { createMantraSlice } from './createMantraSlice';
 export { createZhiguanSlice } from './createZhiguanSlice';
+export { buildMergePatch, ENTITY_MERGE_MAP } from './mergeEngine';
