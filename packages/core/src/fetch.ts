@@ -40,7 +40,12 @@ export async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs
   const controller = new AbortController();
   // If caller provided a signal, abort our controller when caller's signal aborts
   if (init.signal) {
-    init.signal.addEventListener('abort', () => controller.abort(), { once: true });
+    if (init.signal.aborted) {
+      // Signal already aborted — propagate immediately
+      controller.abort();
+    } else {
+      init.signal.addEventListener('abort', () => controller.abort(), { once: true });
+    }
   }
   const timer = setTimeout(() => controller.abort(), timeoutMs ?? REQUEST_TIMEOUT);
   try {
@@ -82,7 +87,11 @@ function classifyError(res: Response, data: unknown): Error {
 export async function handleJsonResponse<T = unknown>(res: Response): Promise<T> {
   const text = await res.text();
   if (text.trim().length === 0) {
-    throw new ApiError(res.status, 'EMPTY_RESPONSE', `服务器返回了空的响应 (${res.status})`);
+    // HTTP 204 No Content is a valid success response (common for DELETE operations)
+    if (res.status === 204) return {} as T;
+    if (!res.ok) throw new ApiError(res.status, 'EMPTY_RESPONSE', `服务器返回了空的响应 (${res.status})`);
+    // 200/201 with empty body — some APIs return void on success
+    return {} as T;
   }
   let data: unknown;
   try {

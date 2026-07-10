@@ -75,7 +75,7 @@ export default function LoginScreen() {
       // Register push token in background (non-blocking)
       const token = useAppStore.getState().auth.token;
       if (token) {
-        requestAnimationFrame(() => { registerExpoPushToken(token); });
+        setTimeout(() => { registerExpoPushToken(token); }, 0);
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : T('authLoginFailed'));

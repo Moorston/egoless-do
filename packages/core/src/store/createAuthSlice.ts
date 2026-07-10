@@ -211,7 +211,7 @@ export function createAuthSlice(
       // Clear AI caches and reset service to prevent stale data leakage
       clearAICaches();
       resetAIService();
-      onLogout?.();
+      await onLogout?.();
       adapter.persistSettings('auth', { isSignedIn: false, user: null, isGuest: false }).catch(e => log.error(e));
     },
 
@@ -226,7 +226,7 @@ export function createAuthSlice(
       clearAICaches();
       resetAIService();
       await onClearData?.();
-      onLogout?.();
+      await onLogout?.();
       // Note: SecureStore is cleared by the Zustand subscription in initApp.ts
       // which watches auth.token changes and calls clearSecureTokens()
       adapter.persistSettings('auth', { isSignedIn: false, user: null, isGuest: false }).catch(e => log.error(e));
