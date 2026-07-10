@@ -205,7 +205,7 @@ export default function MindScreen() {
           </View>
           {topRegion && (
             <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', marginTop: 8 }}>
-              {T('mindHeatmapHint')}{T(`mindBody${(topRegion[0] as string).charAt(0).toUpperCase() + (topRegion[0] as string).slice(1)}` as any)} ({topRegion[1] as number}次)
+              {T('mindHeatmapHint')}{T(`mindBody${(topRegion[0] as string).charAt(0).toUpperCase() + (topRegion[0] as string).slice(1)}` as import('@egoless-do/core').I18nKey)} ({topRegion[1] as number}次)
             </Text>
           )}
         </View>

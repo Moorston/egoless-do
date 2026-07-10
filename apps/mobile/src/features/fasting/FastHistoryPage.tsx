@@ -372,8 +372,7 @@ export default function FastHistoryPage() {
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>
-            <TouchableOpacity onPress={() => nav.navigate('MainTabs', { screen: 'Fasting' })} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
-              {/* 修复: 移除 as any，使用 as never 处理类型不匹配 */}
+            <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Fasting' } as never)} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
               <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次禁食</Text>
             </TouchableOpacity>
           </View>
