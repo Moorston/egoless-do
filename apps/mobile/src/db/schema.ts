@@ -968,6 +968,9 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_items_plan_id ON plan_items(plan_id)');
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_plan_item_checkins_lookup ON plan_item_checkins(plan_item_id, date)');
   await db.execAsync('CREATE INDEX IF NOT EXISTS idx_daily_custom_todos_lookup ON daily_custom_todos(plan_id, date)');
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_fasting_started ON fasting_sessions(started_at)');
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_weight_date ON body_weight_records(date)');
+  await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_checkins_date ON body_checkins(date)');
 
   // Migrate checkin_reviews: add UNIQUE index on review_id for UPSERT support
   try {

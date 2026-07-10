@@ -24,6 +24,21 @@ export function createDietSlice(
   onSync?: () => void,
   onSettingsPersist?: () => void,
 ): SliceCreator<DietSlice> {
+  // ── Simple memoization for expensive stat computations ──
+  // Caches results per (method, date, foodLog length+firstId).
+  // Invalidated automatically when foodLog changes.
+  const _cache = new Map<string, { sig: string; value: unknown }>();
+  function memoStat<T>(method: string, date: string, get: () => { foodLog?: unknown[] }, compute: () => T): T {
+    const fl = get().foodLog ?? [];
+    const sig = `${fl.length}:${(fl[0] as { id?: string })?.id ?? ''}`;
+    const key = `${method}:${date}`;
+    const hit = _cache.get(key);
+    if (hit && hit.sig === sig) return hit.value as T;
+    const value = compute();
+    _cache.set(key, { sig, value });
+    return value;
+  }
+
   return (set, get) => ({
     foodLog: [],
     calGoal: 2000,
@@ -166,87 +181,93 @@ export function createDietSlice(
     // ── 五味统计 ──
 
     getDailyFlavorStats(date: string): FlavorStats {
-      const foodLog = (get().foodLog ?? []).filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === date);
-      const stats = { ...zeroFlavor(), total: 0 };
-      const lookup = get().lookupWuxing;
+      return memoStat('flavor', date, get, () => {
+        const foodLog = (get().foodLog ?? []).filter(f => !f.deleted && dateStr(new Date(f.timestamp)) === date);
+        const stats = { ...zeroFlavor(), total: 0 };
+        const lookup = get().lookupWuxing;
 
-      for (const food of foodLog) {
-        const wuxing = lookup(food.name);
-        if (wuxing) {
-          stats[wuxing.primaryFlavor]++;
-          if (wuxing.secondaryFlavor) stats[wuxing.secondaryFlavor]++;
-          stats.total++;
+        for (const food of foodLog) {
+          const wuxing = lookup(food.name);
+          if (wuxing) {
+            stats[wuxing.primaryFlavor]++;
+            if (wuxing.secondaryFlavor) stats[wuxing.secondaryFlavor]++;
+            stats.total++;
+          }
         }
-      }
-      return stats;
+        return stats;
+      });
     },
 
     // ── 五行统计 ──
 
     getDailyWuxingStats(date: string): WuxingStats {
-      const stats = get().getDailyFlavorStats(date);
-      const wuxing = zeroWuxing();
+      return memoStat('wuxing', date, get, () => {
+        const stats = get().getDailyFlavorStats(date);
+        const wuxing = zeroWuxing();
 
-      for (const flavor of FLAVORS) {
-        const element = FLAVOR_CONFIG[flavor]?.element as WuxingElement;
-        if (element) wuxing[element] += stats[flavor];
-      }
+        for (const flavor of FLAVORS) {
+          const element = FLAVOR_CONFIG[flavor]?.element as WuxingElement;
+          if (element) wuxing[element] += stats[flavor];
+        }
 
-      const total = Object.values(wuxing).reduce((a, b) => a + b, 0);
-      if (total === 0) {
-        return { ...wuxing, dominant: 'earth', deficient: 'earth', isBalanced: true };
-      }
+        const total = Object.values(wuxing).reduce((a, b) => a + b, 0);
+        if (total === 0) {
+          return { ...wuxing, dominant: 'earth', deficient: 'earth', isBalanced: true };
+        }
 
-      const pcts = Object.fromEntries(
-        Object.entries(wuxing).map(([k, v]) => [k, Math.round(v / total * 100)])
-      ) as Record<WuxingElement, number>;
+        const pcts = Object.fromEntries(
+          Object.entries(wuxing).map(([k, v]) => [k, Math.round(v / total * 100)])
+        ) as Record<WuxingElement, number>;
 
-      const sorted = Object.entries(pcts).sort((a, b) => b[1] - a[1]);
-      return {
-        ...pcts,
-        dominant: sorted[0][0] as WuxingElement,
-        deficient: sorted[sorted.length - 1][0] as WuxingElement,
-        isBalanced: sorted[0][1] <= 40 && sorted[sorted.length - 1][1] >= 10,
-      };
+        const sorted = Object.entries(pcts).sort((a, b) => b[1] - a[1]);
+        return {
+          ...pcts,
+          dominant: sorted[0][0] as WuxingElement,
+          deficient: sorted[sorted.length - 1][0] as WuxingElement,
+          isBalanced: sorted[0][1] <= 40 && sorted[sorted.length - 1][1] >= 10,
+        };
+      });
     },
 
     getWuxingStatsRange(dateFrom: string, dateTo: string): WuxingStats {
-      const foodLog = (get().foodLog ?? []).filter(f => {
-        if (f.deleted) return false;
-        const d = dateStr(new Date(f.timestamp));
-        return d >= dateFrom && d <= dateTo;
-      });
-      const wuxing = zeroWuxing();
-      const lookup = get().lookupWuxing;
+      return memoStat('wuxingRange', `${dateFrom}:${dateTo}`, get, () => {
+        const foodLog = (get().foodLog ?? []).filter(f => {
+          if (f.deleted) return false;
+          const d = dateStr(new Date(f.timestamp));
+          return d >= dateFrom && d <= dateTo;
+        });
+        const wuxing = zeroWuxing();
+        const lookup = get().lookupWuxing;
 
-      for (const food of foodLog) {
-        const item = lookup(food.name);
-        if (item) {
-          const element = FLAVOR_CONFIG[item.primaryFlavor]?.element as WuxingElement;
-          if (element) wuxing[element]++;
-          if (item.secondaryFlavor) {
-            const secElement = FLAVOR_CONFIG[item.secondaryFlavor]?.element as WuxingElement;
-            if (secElement) wuxing[secElement]++;
+        for (const food of foodLog) {
+          const item = lookup(food.name);
+          if (item) {
+            const element = FLAVOR_CONFIG[item.primaryFlavor]?.element as WuxingElement;
+            if (element) wuxing[element]++;
+            if (item.secondaryFlavor) {
+              const secElement = FLAVOR_CONFIG[item.secondaryFlavor]?.element as WuxingElement;
+              if (secElement) wuxing[secElement]++;
+            }
           }
         }
-      }
 
-      const total = Object.values(wuxing).reduce((a, b) => a + b, 0);
-      if (total === 0) {
-        return { ...wuxing, dominant: 'earth', deficient: 'earth', isBalanced: true };
-      }
+        const total = Object.values(wuxing).reduce((a, b) => a + b, 0);
+        if (total === 0) {
+          return { ...wuxing, dominant: 'earth', deficient: 'earth', isBalanced: true };
+        }
 
-      const pcts = Object.fromEntries(
-        Object.entries(wuxing).map(([k, v]) => [k, Math.round(v / total * 100)])
-      ) as Record<WuxingElement, number>;
+        const pcts = Object.fromEntries(
+          Object.entries(wuxing).map(([k, v]) => [k, Math.round(v / total * 100)])
+        ) as Record<WuxingElement, number>;
 
-      const sorted = Object.entries(pcts).sort((a, b) => b[1] - a[1]);
-      return {
-        ...pcts,
-        dominant: sorted[0][0] as WuxingElement,
-        deficient: sorted[sorted.length - 1][0] as WuxingElement,
-        isBalanced: sorted[0][1] <= 40 && sorted[sorted.length - 1][1] >= 10,
-      };
+        const sorted = Object.entries(pcts).sort((a, b) => b[1] - a[1]);
+        return {
+          ...pcts,
+          dominant: sorted[0][0] as WuxingElement,
+          deficient: sorted[sorted.length - 1][0] as WuxingElement,
+          isBalanced: sorted[0][1] <= 40 && sorted[sorted.length - 1][1] >= 10,
+        };
+      });
     },
 
     // ── 进食动机统计 ──
