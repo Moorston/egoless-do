@@ -54,7 +54,39 @@ export async function createRefreshToken(userId: string, token: string, expiresA
 }
 
 /**
- * 验证 refresh token 是否有效
+ * 原子校验+撤销 refresh token（防并发竞态）
+ * 使用 "revoke-first" 策略：先尝试撤销，成功则说明 token 有效。
+ * 避免 validate → revoke 之间的竞态窗口。
+ */
+export async function validateAndRevokeRefreshToken(token: string): Promise<{ valid: boolean; userId?: string }> {
+  try {
+    const pb = await getAdminPb();
+    // 先查找 token（必须有效且未撤销）
+    const record = await pb.collection(COLLECTION_NAME).getFirstListItem(
+      `token = "${escapeFilter(token)}" && is_revoked = false && expires_at > ${Date.now()}`
+    );
+    // 立即撤销（同一请求内）
+    try {
+      await pb.collection(COLLECTION_NAME).update(record.id, {
+        is_revoked: true,
+        used_at: Date.now(),
+      });
+    } catch (revokeErr) {
+      // 如果撤销失败，token 可能被另一个并发请求抢先撤销 — 视为无效
+      console.warn('Token found but revoke failed (possible race):', safeErrId(revokeErr));
+      return { valid: false };
+    }
+    return { valid: true, userId: record.user_id };
+  } catch (err: unknown) {
+    if (errStatus(err) === 404) return { valid: false };
+    console.warn('Failed to validate+revoke refresh token:', safeErrId(err));
+    return { valid: false };
+  }
+}
+
+/**
+ * 验证 refresh token 是否有效（只读，不撤销）
+ * 注意：用于刷新时请使用 validateAndRevokeRefreshToken 以防止竞态
  */
 export async function validateRefreshToken(token: string): Promise<{ valid: boolean; userId?: string }> {
   try {
