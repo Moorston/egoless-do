@@ -337,7 +337,7 @@ export function useReflections() {
         message: `「${r.content}」${tagsStr}${moodStr}${linkStr}\n\n📅 ${timeStr}\n— 来自心流纪 · Egoless Do\nhttps://egoless-do.app`,
       });
       return { type: 'text' };
-    } catch {}
+    } catch { /* Share API unavailable — ignore */ }
   }, []);
 
   return {

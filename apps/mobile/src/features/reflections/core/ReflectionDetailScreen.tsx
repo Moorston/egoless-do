@@ -36,7 +36,7 @@ export default function ReflectionDetailScreen() {
             await Share.share({
               message: `「${r.content}」${tagsStr}${moodStr}\n\n📅 ${timeStr}\n— 来自心流纪 · Egoless Do\nhttps://egoless-do.app`,
             });
-          } catch {}
+          } catch { /* Share API unavailable — ignore */ }
         },
       },
       { text: T('shareImageShare'), onPress: () => setShareReflection(r) },

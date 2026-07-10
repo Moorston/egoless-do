@@ -141,7 +141,7 @@ export default function MeditationScreen() {
     try {
       bellPlayer.seekTo(0);
       bellPlayer.play();
-    } catch {}
+    } catch { /* bell audio unavailable — ignore */ }
   }, [bellPlayer]);
 
   // Cleanup timer + music on unmount

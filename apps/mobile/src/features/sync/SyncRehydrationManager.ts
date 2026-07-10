@@ -139,7 +139,7 @@ export class SyncRehydrationManager {
         (patch.plans as Record<string, unknown>[]).forEach((p) => {
           if (!p.deleted) p.progress = computePlanProgress(p as unknown as Parameters<typeof computePlanProgress>[0]);
         });
-      } catch {} // intentional: computePlanProgress is optional enhancement
+      } catch { /* computePlanProgress is optional enhancement — ignore */ }
     }
     return patch;
   }
