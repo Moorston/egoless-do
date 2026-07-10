@@ -7,7 +7,8 @@ import { buildDeleteInStatement, buildSelectInStatement, SYNC_QUEUE_UPSERT_SQL }
 
 const log = createLogger('DB');
 
-const MAX_QUEUE_SIZE = 1000;
+const MAX_QUEUE_SIZE = 2000; // Increased from 1000 for better offline capacity
+const QUEUE_WARN_SIZE = 1500; // Warn user when queue reaches this threshold
 
 // Callback triggered after successful enqueue (set by SyncService)
 let _onEnqueued: (() => void) | null = null;

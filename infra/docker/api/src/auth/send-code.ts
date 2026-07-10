@@ -6,6 +6,7 @@ import { getAdminPb, escapeFilter } from '../pb.js';
 import { errMessage, errStatus } from '../errors.js';
 import { saveVerificationCode, canSendCode, cleanupExpiredCodes } from '../verification-code.js';
 import { getClientIp, sendCodeRateLimit } from '../rate-limit.js';
+import { cfg } from '../config.js';
 
 const CODE_EXPIRES_MS = 5 * 60 * 1000;
 const CODE_LENGTH = 6;
@@ -15,13 +16,16 @@ function generateCode(): string {
 }
 
 function getTransporter() {
+  if (!cfg.smtp.user || !cfg.smtp.pass) {
+    throw new Error('[send-code] SMTP credentials not configured — set SMTP_USER and SMTP_PASS in .env');
+  }
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST ?? 'smtp.qq.com',
-    port: Number(process.env.SMTP_PORT ?? 465),
+    host: cfg.smtp.host,
+    port: cfg.smtp.port,
     secure: true,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: cfg.smtp.user,
+      pass: cfg.smtp.pass,
     },
   });
 }
@@ -85,7 +89,7 @@ app.post('/send-code', async (c) => {
     const purpose = type === 'reset' ? '密码重置验证码' : '注册验证码';
 
     await transporter.sendMail({
-      from: `"心流纪 Egoless Do" <${process.env.SMTP_USER}>`,
+      from: `"心流纪 Egoless Do" <${cfg.smtp.user}>`,
       to: email,
       subject,
       html: `

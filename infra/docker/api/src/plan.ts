@@ -6,19 +6,23 @@ import { verifyAuth } from './auth-middleware.js';
 import { getAdminPb } from './pb.js';
 import { errStatus } from './errors.js';
 import { getClientIp } from './rate-limit.js';
+import { cfg } from './config.js';
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function getTransporter() {
+  if (!cfg.smtp.user || !cfg.smtp.pass) {
+    throw new Error('[plan] SMTP credentials not configured — set SMTP_USER and SMTP_PASS in .env');
+  }
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST ?? 'smtp.qq.com',
-    port: Number(process.env.SMTP_PORT ?? 465),
+    host: cfg.smtp.host,
+    port: cfg.smtp.port,
     secure: true,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: cfg.smtp.user,
+      pass: cfg.smtp.pass,
     },
   });
 }
@@ -91,7 +95,7 @@ app.post('/notify-delayed', async (c) => {
     // 发送邮件
     const transporter = getTransporter();
     await transporter.sendMail({
-      from: `"心流纪 Egoless Do" <${process.env.SMTP_USER}>`,
+      from: `"心流纪 Egoless Do" <${cfg.smtp.user}>`,
       to: user.email,
       subject: '【心流纪】计划延期提醒',
       html: `
