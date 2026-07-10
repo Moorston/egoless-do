@@ -33,7 +33,7 @@ export async function loadSecureTokens(): Promise<{ token: string; refreshToken:
     return null;
   } catch (err) {
     log.error(err, { phase: 'loadSecureTokens' });
-    return null;
+    throw err; // Propagate so callers know the load failed
   }
 }
 

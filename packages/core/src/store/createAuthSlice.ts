@@ -7,6 +7,7 @@ import { activeOnly } from '../utils';
 import { createLogger } from '../logger';
 import { resetAIService } from '../ai/ai-service';
 import { clearAICaches } from '../ai/trail-recommender';
+import { NetworkError } from '../fetch';
 const log = createLogger('Store');
 
 // ── 标准实体合并：配置表驱动 ──────────────────────────────────
@@ -111,6 +112,7 @@ export function createAuthSlice(
   // Guard against concurrent refresh calls (shared across the slice lifetime)
   let _refreshInFlight: Promise<void> | null = null;
   let _loginInFlight: Promise<void> | null = null;
+  let _registerInFlight: Promise<void> | null = null;
 
   return (set, get) => ({
     auth: defaultAuthState,
@@ -137,9 +139,17 @@ export function createAuthSlice(
           onSync();
           adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
         } catch (e) {
-          // Rollback auth state on failure — clear token to prevent half-logged-in state
-          set({ auth: defaultAuthState });
-          throw e;
+          // If we already have a token (login succeeded but pull failed), keep auth state
+          // The token is valid — user can retry data pull later
+          const currentAuth = get().auth;
+          if (currentAuth.token) {
+            set(s => ({ auth: { ...s.auth, isLoading: false } }));
+            log.error(e, { context: 'pullServerData after login' });
+          } else {
+            // Login itself failed — clear everything
+            set({ auth: defaultAuthState });
+            throw e;
+          }
         }
       })();
       try {
@@ -150,25 +160,41 @@ export function createAuthSlice(
     },
 
     async register(email: string, password: string, name: string, code: string) {
-      set(s => ({ auth: { ...s.auth, isLoading: true } }));
+      if (_registerInFlight) return _registerInFlight;
+      _registerInFlight = (async () => {
+        set(s => ({ auth: { ...s.auth, isLoading: true } }));
+        try {
+          const res = await apiRegister(email, password, name, code);
+          // Set token and user immediately, keep isLoading true until pullServerData
+          set({
+            auth: {
+              user: res.user, token: res.token, refreshToken: res.refreshToken,
+              isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
+            },
+          });
+          await get().pullServerData(res.token);
+          // Now data is loaded — mark as fully ready
+          set(s => ({ auth: { ...s.auth, isLoading: false } }));
+          onSync();
+          adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
+        } catch (e) {
+          // If we already have a token (register succeeded but pull failed), keep auth state
+          // The token is valid — user can retry data pull later
+          const currentAuth = get().auth;
+          if (currentAuth.token) {
+            set(s => ({ auth: { ...s.auth, isLoading: false } }));
+            log.error(e, { context: 'pullServerData after register' });
+          } else {
+            // Register itself failed — clear everything
+            set({ auth: defaultAuthState });
+            throw e;
+          }
+        }
+      })();
       try {
-        const res = await apiRegister(email, password, name, code);
-        // Set token and user immediately, keep isLoading true until pullServerData
-        set({
-          auth: {
-            user: res.user, token: res.token, refreshToken: res.refreshToken,
-            isSignedIn: true, isLoading: true, expiresAt: res.expiresAt,
-          },
-        });
-        await get().pullServerData(res.token);
-        // Now data is loaded — mark as fully ready
-        set(s => ({ auth: { ...s.auth, isLoading: false } }));
-        onSync();
-        adapter.persistSettings('auth', { isSignedIn: true, user: res.user, isGuest: false }).catch(e => log.error(e));
-      } catch (e) {
-        // Rollback auth state on failure — clear token to prevent half-logged-in state
-        set({ auth: defaultAuthState });
-        throw e;
+        await _registerInFlight;
+      } finally {
+        _registerInFlight = null;
       }
     },
 
@@ -227,13 +253,14 @@ export function createAuthSlice(
               set(s => ({ auth: { ...s.auth, token: res.token, refreshToken: res.refreshToken, expiresAt: res.expiresAt } }));
             }
             return; // Success — exit retry loop
-          } catch {
-            if (attempt === 0) {
-              // First failure: brief wait before retry (transient network blip)
+          } catch (e) {
+            if (attempt === 0 && e instanceof NetworkError) {
+              // First failure on network error: brief wait before retry
               await new Promise(r => setTimeout(r, 1000));
               continue;
             }
-            // Second failure: only clear auth if token is actually expired
+            // 401/400 etc: don't retry, fall through to check token expiry
+            // Second failure or non-retryable error: only clear auth if token is actually expired
             const currentAuth = get().auth;
             if (currentAuth.refreshToken && currentAuth.expiresAt && currentAuth.expiresAt < Date.now()) {
               log.warn('Token refresh failed after 2 attempts, clearing auth', { context: 'refreshAuth' });

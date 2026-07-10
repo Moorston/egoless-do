@@ -38,11 +38,18 @@ export class ConflictError extends Error {
 
 export async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs?: number): Promise<Response> {
   const controller = new AbortController();
+  // If caller provided a signal, abort our controller when caller's signal aborts
+  if (init.signal) {
+    init.signal.addEventListener('abort', () => controller.abort(), { once: true });
+  }
   const timer = setTimeout(() => controller.abort(), timeoutMs ?? REQUEST_TIMEOUT);
   try {
     return await fetch(url, { ...init, signal: controller.signal });
   } catch (err: unknown) {
     if (err instanceof Error && err.name === 'AbortError') {
+      if (init.signal?.aborted) {
+        throw new NetworkError('请求被取消');
+      }
       throw new NetworkError('请求超时，请检查网络');
     }
     throw new NetworkError('网络连接失败');
@@ -75,7 +82,6 @@ function classifyError(res: Response, data: unknown): Error {
 export async function handleJsonResponse<T = unknown>(res: Response): Promise<T> {
   const text = await res.text();
   if (text.trim().length === 0) {
-    if (res.ok) return {} as T; // Empty response with ok status — return empty object
     throw new ApiError(res.status, 'EMPTY_RESPONSE', `服务器返回了空的响应 (${res.status})`);
   }
   let data: unknown;
