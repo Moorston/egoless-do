@@ -183,14 +183,20 @@ export class SyncEngine {
       log.warn('triggerSyncDebounced called but _syncTriggerCallback is null');
       return;
     }
+    // Guard: skip entirely if not authenticated (prevents false kicked-out on cold start)
+    const token = this._tokenProvider?.();
+    if (!token) {
+      log.debug('triggerSyncDebounced: no token, skipping');
+      return;
+    }
     if (this._syncTriggerTimer) clearTimeout(this._syncTriggerTimer);
     this._syncTriggerTimer = setTimeout(async () => {
       this._syncTriggerTimer = null;
       log.debug('Debounced sync trigger firing');
       this._syncTriggerCallback?.();
       // Only re-trigger if there's still a token (prevents infinite loop after logout)
-      const token = this._tokenProvider?.();
-      if (!token) return;
+      const freshToken = this._tokenProvider?.();
+      if (!freshToken) return;
       const remaining = await this._getQueueCount();
       if (remaining > 0) this.triggerSyncDebounced();
     }, SyncEngine.SYNC_TRIGGER_DEBOUNCE_MS);
@@ -619,9 +625,15 @@ export class SyncEngine {
           if (token) log.info('Token refreshed, proceeding with sync');
         }
         if (!token) {
-          log.warn('No recovery possible, logging out');
-          this.clearSyncTrigger(); // Stop debounced trigger loop (no token = no point retrying)
-          this._onKickedOut?.();
+          log.warn('No recovery possible');
+          this.clearSyncTrigger();
+          // Only show "kicked out" if user was actually logged in (had a userId).
+          // If userId is also null, the user was never logged in — silently skip.
+          const userId = this._userIdProvider?.();
+          if (userId) {
+            log.warn('User was logged in but token recovery failed — triggering kicked out');
+            this._onKickedOut?.();
+          }
           this._syncing = false;
           return;
         }
