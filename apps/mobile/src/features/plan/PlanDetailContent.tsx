@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, StyleSheet } from 'react-native';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
 import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, getFrequencySummary, MS_PER_DAY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress } from '@egoless-do/core';
@@ -187,48 +187,45 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
     const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium'));
     const effectiveStatus = getItemEffectiveStatus(item);
     return (
-      <View style={{
-        padding: 12, marginBottom: index < sortedItems.length - 1 ? 8 : 0, borderRadius: 10,
-        backgroundColor: `${TH.card}80`, borderWidth: 1, borderColor: TH.border,
-      }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-          {p ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: p.color }} /> : null}
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
+      <View style={[styles.itemRow, { backgroundColor: `${TH.card}80`, borderColor: TH.border, marginBottom: index < sortedItems.length - 1 ? 8 : 0 }]}>
+        <View style={styles.itemHeaderRow}>
+          {p ? <View style={[styles.priorityDot, { backgroundColor: p.color }]} /> : null}
+          <Text style={[styles.textBodySemiBold, { color: TH.text }]} numberOfLines={1}>{item.name}</Text>
           <LinkBadge link={item.link} T={T} P={P} />
           <StatusLabel status={effectiveStatus} T={T} />
         </View>
-        <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginBottom: 4 }}>
+        <Text style={[styles.textBadgeDim, { color: TH.sub }]}>
           {item.startDate} ~ {item.endDate}
         </Text>
-        {item.targetMetric ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }} numberOfLines={1}>🎯 {item.targetMetric}</Text> : null}
-        {item.description ? <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }} numberOfLines={2}>{item.description}</Text> : null}
+        {item.targetMetric ? <Text style={[styles.textSubDim, { color: TH.sub }]} numberOfLines={1}>🎯 {item.targetMetric}</Text> : null}
+        {item.description ? <Text style={[styles.textSubDimMb6, { color: TH.sub }]} numberOfLines={2}>{item.description}</Text> : null}
         {item.tags && item.tags.length > 0 && (
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+          <View style={styles.tagsContainer}>
             {item.tags.map((tag, ti) => (
-              <View key={ti} style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}>
-                <Text style={{ fontSize: FONT_BADGE, color: P }}>{tag}</Text>
+              <View key={ti} style={[styles.tag, { borderColor: `${P}30` }]}>
+                <Text style={[styles.textBadgePrimary, { color: P }]}>{tag}</Text>
               </View>
             ))}
           </View>
         )}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
-            <View style={{ height: 4, width: `${prog.progress}%`, backgroundColor: P, borderRadius: 2 }} />
+        <View style={styles.progressRow}>
+          <View style={[styles.progressTrack, { backgroundColor: TH.border }]}>
+            <View style={[styles.progressFillItem, { width: `${prog.progress}%`, backgroundColor: P }]} />
           </View>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.doneCount}/{prog.expectedDays}</Text>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{prog.progress}%</Text>
+          <Text style={[styles.textBadgeDim, { color: TH.sub }]}>{prog.doneCount}/{prog.expectedDays}</Text>
+          <Text style={[styles.textBadgeDim, { color: TH.sub }]}>{prog.progress}%</Text>
         </View>
         {/* Frequency summary */}
-        <Text style={{ fontSize: FONT_BADGE, color: P, marginTop: 4 }}>
+        <Text style={[styles.textFrequency, { color: P }]}>
           {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today, item.id)}
         </Text>
         {/* Heatmap toggle */}
         <TouchableOpacity
           onPress={() => toggleHeatmap(item.id)}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8 }}
+          style={styles.heatmapToggleRow}
         >
           <BarChart2 size={14} color={P} />
-          <Text style={{ fontSize: FONT_BADGE, color: P }}>
+          <Text style={[styles.textBadgePrimary, { color: P }]}>
             {expandedHeatmaps.has(item.id) ? T('planHideHeatmap') : T('planShowHeatmap')}
           </Text>
           {expandedHeatmaps.has(item.id)
@@ -237,7 +234,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
         </TouchableOpacity>
         {/* Item Heatmap */}
         {expandedHeatmaps.has(item.id) && (
-          <View style={{ marginTop: 8 }}>
+          <View style={styles.itemHeatmapContainer}>
             <ItemHeatmap item={item} checkins={checkins} TH={TH} T={T} />
           </View>
         )}
@@ -248,7 +245,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
   // ── Early return (AFTER all hooks are declared) ──
   if (!plan) {
     return (
-      <Card style={{ alignItems: 'center', padding: 32 }}>
+      <Card style={styles.emptyCard}>
         <Text style={{ color: TH.sub }}>{T('planNotFound')}</Text>
       </Card>
     );
@@ -334,26 +331,23 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
     <>
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
+      style={styles.flex1}
     >
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 32 }}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
       {/* Tab switcher */}
-      <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+      <View style={styles.tabContainer}>
         {(['detail', 'todo'] as const).map(t => {
             const active = tab === t;
             return (
               <TouchableOpacity
                 key={t}
                 onPress={() => setTab(t)}
-                style={{
-                  flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: 'center',
-                  backgroundColor: active ? P : TH.card,
-                }}
+                style={[styles.tabButton, { backgroundColor: active ? P : TH.card }]}
               >
-                <Text style={{ fontSize: FONT_SUB, fontWeight: active ? '700' : '500', color: active ? '#fff' : TH.sub }}>
+                <Text style={[styles.textTabLabel, { fontWeight: active ? '700' : '500', color: active ? '#fff' : TH.sub }]}>
                   {t === 'detail' ? T('planDetail') : T('planTodoList')}
                 </Text>
               </TouchableOpacity>
@@ -366,66 +360,66 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
           {/* Plan hero card */}
           <Card>
             {/* Plan name with icon */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <View style={styles.sectionHeaderRow}>
               <ClipboardList size={18} color={P} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, flex: 1 }} numberOfLines={1}>{plan.name}</Text>
+              <Text style={[styles.textBodyBold, { color: TH.text }]} numberOfLines={1}>{plan.name}</Text>
               <StatusLabel status={plan.status} T={T} />
             </View>
 
             {plan.slogan ? (
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontStyle: 'italic', marginBottom: 12, lineHeight: 22 }}>
+              <Text style={[styles.textSlogan, { color: TH.text }]}>
                 &ldquo;{plan.slogan}&rdquo;
               </Text>
             ) : null}
 
             {/* Progress ring + stats */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 12 }}>
+            <View style={styles.statsRow}>
               <ProgressRing progress={planProgress} color={P} />
-              <View style={{ flex: 1, gap: 6 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planStartDate')}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{plan.startDate}</Text>
+              <View style={styles.statsCol}>
+                <View style={styles.statRow}>
+                  <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planStartDate')}</Text>
+                  <Text style={[styles.textSubDim, { color: TH.text }]}>{plan.startDate}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planEndDate')}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{plan.endDate}</Text>
+                <View style={styles.statRow}>
+                  <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planEndDate')}</Text>
+                  <Text style={[styles.textSubDim, { color: TH.text }]}>{plan.endDate}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planProgress')}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{elapsed}/{totalDays} {T('planDays')}</Text>
+                <View style={styles.statRow}>
+                  <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planProgress')}</Text>
+                  <Text style={[styles.textSubBold, { color: TH.text }]}>{elapsed}/{totalDays} {T('planDays')}</Text>
                 </View>
               </View>
             </View>
 
             {/* Linear progress bar */}
-            <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
-              <View style={{ height: 6, width: `${planProgress}%`, backgroundColor: P, borderRadius: 3 }} />
+            <View style={[styles.planProgressTrack, { backgroundColor: TH.border }]}>
+              <View style={[styles.planProgressFill, { width: `${planProgress}%`, backgroundColor: P }]} />
             </View>
-            
+
             {/* Countdown */}
             <PlanCountdown plan={plan} />
           </Card>
 
           {/* Goal */}
           <Card>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <View style={styles.sectionHeaderRow}>
               <Target size={18} color={P} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planGoal')}</Text>
+              <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planGoal')}</Text>
             </View>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 22 }}>{plan.goal}</Text>
+            <Text style={[styles.textGoal, { color: TH.text }]}>{plan.goal}</Text>
           </Card>
 
           {/* Items */}
           <Card>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={styles.itemsHeaderRow}>
+              <View style={styles.sectionHeaderRow}>
                 <ListChecks size={18} color={P} />
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planItems')}</Text>
+                <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planItems')}</Text>
               </View>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{items.length}</Text>
+              <Text style={[styles.textSubDim, { color: TH.sub }]}>{items.length}</Text>
             </View>
             {items.length === 0 ? (
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>{T('planNoItems')}</Text>
+              <Text style={[styles.textNoItems, { color: TH.sub }]}>{T('planNoItems')}</Text>
             ) : (
               sortedItems.map((item, index) => (
                 <React.Fragment key={item.id}>
@@ -442,26 +436,26 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
               <TouchableOpacity
                 onPress={() => setShowRelated(v => !v)}
                 activeOpacity={0.7}
-                style={{ flexDirection: 'row', alignItems: 'center' }}
+                style={styles.relatedToggleRow}
               >
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <View style={styles.flex1}>
+                  <View style={styles.sectionHeaderRowMb8}>
                     <Link2 size={18} color={P} />
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planLinkedContent')}</Text>
+                    <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planLinkedContent')}</Text>
                   </View>
-                  <View style={{ flexDirection: 'row', gap: 16 }}>
+                  <View style={styles.relatedCountsRow}>
                     {relatedReflections.total > 0 && (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                      <View style={styles.inlineRowGap4}>
                         <MessageCircle size={14} color={P} />
-                        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                        <Text style={[styles.textSubDim, { color: TH.sub }]}>
                           {relatedReflections.total} {T('planRelatedReflections')}
                         </Text>
                       </View>
                     )}
                     {relatedTrails.length > 0 && (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                      <View style={styles.inlineRowGap4}>
                         <Route size={14} color={P} />
-                        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                        <Text style={[styles.textSubDim, { color: TH.sub }]}>
                           {relatedTrails.length} {T('planRelatedTrails')}
                         </Text>
                       </View>
@@ -475,16 +469,16 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
 
               {/* Expanded content */}
               {showRelated && (
-                <View style={{ marginTop: 12, gap: 8 }}>
+                <View style={styles.expandedContent}>
                   {/* Related Reflections */}
                   {relatedReflections.items.map(r => (
                     <TouchableOpacity
                       key={r.id}
                       onPress={() => nav.navigate('ReflectionDetail', { reflectionId: r.id })}
-                      style={{ backgroundColor: `${TH.card}80`, borderWidth: 1, borderColor: TH.border, borderRadius: 10, padding: 12 }}
+                      style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border }]}
                     >
-                      <Text style={{ fontSize: FONT_BODY, color: TH.text }} numberOfLines={2}>{r.content}</Text>
-                      <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+                      <Text style={[styles.textBodyDim, { color: TH.text }]} numberOfLines={2}>{r.content}</Text>
+                      <Text style={[styles.textSubDimMt4, { color: TH.sub }]}>
                         {new Date(r.timestamp).toLocaleDateString()}
                       </Text>
                     </TouchableOpacity>
@@ -495,10 +489,10 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                     <TouchableOpacity
                       key={trail.id}
                       onPress={() => nav.navigate('ThoughtTrailDetail', { trailId: trail.id })}
-                      style={{ backgroundColor: `${TH.card}80`, borderWidth: 1, borderColor: TH.border, borderRadius: 10, padding: 12 }}
+                      style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border }]}
                     >
-                      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{trail.name}</Text>
-                      <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+                      <Text style={[styles.textBodySemiBold, { color: TH.text }]}>{trail.name}</Text>
+                      <Text style={[styles.textSubDimMt4, { color: TH.sub }]}>
                         {(trail.reflectionIds ?? []).length} {T('planTrailReflectionCount')}
                       </Text>
                     </TouchableOpacity>
@@ -507,7 +501,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                   {/* Show "more" hint if reflections were truncated */}
                   {relatedReflections.total > 3 && (
                     <TouchableOpacity onPress={() => nav.navigate('MindTrail')}>
-                      <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', paddingVertical: 4 }}>
+                      <Text style={[styles.textMoreLink, { color: TH.sub }]}>
                         +{relatedReflections.total - 3}
                       </Text>
                     </TouchableOpacity>
@@ -520,12 +514,12 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
           {/* Relation Map Entry */}
           <TouchableOpacity
             onPress={() => nav.navigate('RelationMap', { context: { type: 'plan', id: planId } })}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16, backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }}
+            style={[styles.relationMapButton, { backgroundColor: TH.card, borderColor: TH.border }]}
           >
             <Link size={18} color={P} />
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planRelationMap')}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planRelationMapDesc')}</Text>
+            <View style={styles.flex1}>
+              <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planRelationMap')}</Text>
+              <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planRelationMapDesc')}</Text>
             </View>
             <ChevronRight size={18} color={TH.sub} />
           </TouchableOpacity>
@@ -534,18 +528,18 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
           <Card>
             <TouchableOpacity
               onPress={() => setShowHeatmap(v => !v)}
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+              style={styles.heatmapHeaderRow}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View style={styles.sectionHeaderRow}>
                 <BarChart2 size={18} color={P} />
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('planHeatmap')}</Text>
+                <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planHeatmap')}</Text>
               </View>
               {showHeatmap
                 ? <ChevronDown size={18} color={TH.sub} />
                 : <ChevronRight size={18} color={TH.sub} />}
             </TouchableOpacity>
             {showHeatmap && (
-              <View style={{ marginTop: 12 }}>
+              <View style={styles.heatmapContent}>
                 <Heatmap checkins={checkins} items={items} plan={plan} TH={TH} T={T} />
               </View>
             )}
@@ -557,26 +551,26 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
           {/* Today's tasks — only for active plans */}
           {(plan.status === 'in_progress' || plan.status === 'paused') && (
             <>
-              <Card style={{ alignItems: 'center', paddingVertical: 20 }}>
-                <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 8 }}>{T('planTodoToday')}</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: P }}>{stats.totalDone}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>/ {stats.totalItems}</Text>
+              <Card style={styles.todayStatsCard}>
+                <Text style={[styles.textBodyDimMb8, { color: TH.sub }]}>{T('planTodoToday')}</Text>
+                <View style={styles.todayStatsRow}>
+                  <Text style={[styles.textStatValue, { color: P }]}>{stats.totalDone}</Text>
+                  <Text style={[styles.textBodyDim, { color: TH.sub }]}>/ {stats.totalItems}</Text>
                 </View>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{today}</Text>
+                <Text style={[styles.textSubDimMt4, { color: TH.sub }]}>{today}</Text>
               </Card>
 
               <Card>
                 {/* Plan items */}
                 {todayItems.length === 0 && dailyCustomTodos.length === 0 ? (
-                  <Text style={{ fontSize: FONT_EMPTY, color: TH.sub, textAlign: 'center', padding: 24 }}>{T('planNoItems')}</Text>
+                  <Text style={[styles.textEmptyCentered, { color: TH.sub }]}>{T('planNoItems')}</Text>
                 ) : (
                   <>
                     {/* Plan items group header */}
                     {todayItems.length > 0 && (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 }}>
+                      <View style={styles.groupHeaderRow}>
                         <ClipboardList size={14} color={P} />
-                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T('planTodoList')} ({todayItems.length})</Text>
+                        <Text style={[styles.textSubSemiBold, { color: TH.text }]}>{T('planTodoList')} ({todayItems.length})</Text>
                       </View>
                     )}
                     {todayItems.map((item, i, arr) => {
@@ -586,43 +580,30 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       return (
                         <View
                           key={item.id}
-                          style={{
-                            flexDirection: 'row', alignItems: 'center', gap: 12,
-                            paddingVertical: 10, paddingHorizontal: 12,
-                            borderBottomWidth: i < arr.length - 1 || dailyCustomTodos.length > 0 ? 1 : 0, borderBottomColor: TH.border,
-                            opacity: autoChecked ? 0.7 : 1,
-                          }}
+                          style={[styles.todoItemRow, { borderBottomColor: TH.border, borderBottomWidth: i < arr.length - 1 || dailyCustomTodos.length > 0 ? 1 : 0, opacity: autoChecked ? 0.7 : 1 }]}
                         >
-                          <TouchableOpacity onPress={() => toggleItem(item.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
-                            <View style={{
-                              width: 22, height: 22, borderRadius: 6,
-                              borderWidth: 2, borderColor: done ? P : TH.border,
-                              alignItems: 'center', justifyContent: 'center',
-                              backgroundColor: done ? P : 'transparent',
-                            }}>
+                          <TouchableOpacity onPress={() => toggleItem(item.id)} style={styles.checkboxTouchTarget}>
+                            <View style={[styles.checkbox, { borderColor: done ? P : TH.border, backgroundColor: done ? P : 'transparent' }]}>
                               {done && <Check size={14} color="#fff" />}
                             </View>
                           </TouchableOpacity>
                           {autoChecked && (
-                            <View style={{ backgroundColor:`${COLORS.GREEN}20`, paddingHorizontal:4, paddingVertical:1, borderRadius:4 }}>
-                              <Text style={{ fontSize:9, color:COLORS.GREEN, fontWeight:'600' }}>{T('planAutoChecked')}</Text>
+                            <View style={styles.autoCheckedBadge}>
+                              <Text style={styles.autoCheckedBadgeText}>{T('planAutoChecked')}</Text>
                             </View>
                           )}
                           {item.status === 'delayed' && !done && (
-                            <View style={{ backgroundColor:`${COLORS.ORANGE}20`, paddingHorizontal:4, paddingVertical:1, borderRadius:4 }}>
-                              <Text style={{ fontSize:9, color:COLORS.ORANGE, fontWeight:'600' }}>{T('planStatusDelayed')}</Text>
+                            <View style={styles.delayedBadge}>
+                              <Text style={styles.delayedBadgeText}>{T('planStatusDelayed')}</Text>
                             </View>
                           )}
-                          <View style={{ flex: 1, minWidth: 0 }}>
-                            <Text style={{
-                              fontSize: FONT_BODY, fontWeight: '500',
-                              color: TH.text,
-                            }}>{item.name}</Text>
-                            <Text style={{ fontSize: FONT_TINY, color: P, marginTop: 1 }}>
+                          <View style={styles.todoContentCol}>
+                            <Text style={[styles.textBodyMedium, { color: TH.text }]}>{item.name}</Text>
+                            <Text style={[styles.textFrequencyTiny, { color: P }]}>
                               {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today, item.id)}
                             </Text>
                             {item.description ? (
-                              <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{item.description}</Text>
+                              <Text style={[styles.textBadgeDimMt2, { color: TH.sub }]} numberOfLines={1}>{item.description}</Text>
                             ) : null}
                           </View>
                           <LinkBadge link={item.link} T={T} P={P} />
@@ -632,36 +613,24 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
 
                     {/* Custom todos group header */}
                     {dailyCustomTodos.length > 0 && (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12, borderTopWidth: todayItems.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
+                      <View style={[styles.customTodoHeaderRow, { borderTopColor: TH.border, borderTopWidth: todayItems.length > 0 ? 1 : 0 }]}>
                         <Pencil size={14} color={P} />
-                        <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
+                        <Text style={[styles.textSubSemiBold, { color: TH.text }]}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
                       </View>
                     )}
                     {/* Custom todos */}
                     {dailyCustomTodos.map((todo, i, arr) => (
                       <View
                         key={todo.id}
-                        style={{
-                          flexDirection: 'row', alignItems: 'center', gap: 12,
-                          paddingVertical: 10, paddingHorizontal: 12,
-                          borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border,
-                        }}
+                        style={[styles.customTodoRow, { borderBottomColor: TH.border, borderBottomWidth: i < arr.length - 1 ? 1 : 0 }]}
                       >
-                        <TouchableOpacity onPress={() => toggleCustomTodo(todo.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
-                          <View style={{
-                            width: 22, height: 22, borderRadius: 6,
-                            borderWidth: 2, borderColor: todo.done ? P : TH.border,
-                            alignItems: 'center', justifyContent: 'center',
-                            backgroundColor: todo.done ? P : 'transparent',
-                          }}>
+                        <TouchableOpacity onPress={() => toggleCustomTodo(todo.id)} style={styles.checkboxTouchTarget}>
+                          <View style={[styles.checkbox, { borderColor: todo.done ? P : TH.border, backgroundColor: todo.done ? P : 'transparent' }]}>
                             {todo.done && <Check size={14} color="#fff" />}
                           </View>
                         </TouchableOpacity>
-                        <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Text style={{
-                            fontSize: FONT_BODY, fontWeight: '500',
-                            color: TH.text,
-                          }}>{todo.name}</Text>
+                        <View style={styles.customTodoContentCol}>
+                          <Text style={[styles.textBodyMedium, { color: TH.text }]}>{todo.name}</Text>
                           {todo.recurring && <Repeat size={12} color={P} />}
                         </View>
                         <TouchableOpacity
@@ -671,7 +640,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                               { text: T('commonConfirm'), style: 'destructive', onPress: () => deleteCustomTodo(todo.id) },
                             ]);
                           }}
-                          style={{ padding: 4 }}
+                          style={styles.deleteTodoTouchTarget}
                         >
                           <Trash2 size={16} color={COLORS.RED} />
                         </TouchableOpacity>
@@ -681,12 +650,9 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                 )}
 
                 {/* Add custom todo */}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, borderTopWidth: todayItems.length > 0 || dailyCustomTodos.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
+                  <View style={[styles.addTodoContainer, { borderTopColor: TH.border, borderTopWidth: todayItems.length > 0 || dailyCustomTodos.length > 0 ? 1 : 0 }]}>
                     <TextInput
-                      style={{
-                        flex: 1, height: 36, borderWidth: 1, borderColor: TH.border, borderRadius: 8,
-                        paddingHorizontal: 10, fontSize: FONT_SUB, color: TH.text, backgroundColor: TH.bg,
-                      }}
+                      style={[styles.addTodoInput, { borderColor: TH.border, color: TH.text, backgroundColor: TH.bg }]}
                       placeholder={T('planAddCustomTodoPlaceholder')}
                       placeholderTextColor={TH.sub}
                       value={newTodoName}
@@ -696,13 +662,13 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                     />
                     <TouchableOpacity
                       onPress={() => setNewTodoRecurring(!newTodoRecurring)}
-                      style={{ padding: 8, borderRadius: 8, borderWidth: 1, borderColor: newTodoRecurring ? P : TH.border, backgroundColor: newTodoRecurring ? `${P}15` : 'transparent' }}
+                      style={[styles.recurringButton, { borderColor: newTodoRecurring ? P : TH.border, backgroundColor: newTodoRecurring ? `${P}15` : 'transparent' }]}
                     >
                       <Repeat size={16} color={newTodoRecurring ? P : TH.sub} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={addCustomTodo}
-                      style={{ padding: 8, backgroundColor: P, borderRadius: 8 }}
+                      style={[styles.addButton, { backgroundColor: P }]}
                     >
                       <Plus size={16} color="#fff" />
                     </TouchableOpacity>
@@ -711,83 +677,71 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             </>
             )}
           {plan.status !== 'in_progress' && plan.status !== 'paused' && (
-            <Card style={{ alignItems:'center', paddingVertical:20 }}>
-              <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T(statusToI18nKey(plan.status))}</Text>
+            <Card style={styles.inactiveCard}>
+              <Text style={[styles.textBodyDim, { color: TH.sub }]}>{T(statusToI18nKey(plan.status))}</Text>
             </Card>
           )}
 
           {/* History section */}
-          <View style={{ marginTop: 24 }}>
+          <View style={styles.historySection}>
             <TouchableOpacity onPress={() => setShowHistory(v => !v)}
-              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: showHistory ? 12 : 0 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text }}>{T('planTodoHistory')}</Text>
+              style={[styles.historyHeader, { marginBottom: showHistory ? 12 : 0 }]}>
+              <View style={styles.historyTitleRow}>
+                <Text style={[styles.textHistoryTitle, { color: TH.text }]}>{T('planTodoHistory')}</Text>
                 {showHistory ? <ChevronDown size={18} color={TH.text} /> : <ChevronRight size={18} color={TH.text} />}
               </View>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{historyGroups.length} {T('planDays')}</Text>
+              <Text style={[styles.textSubDim, { color: TH.sub }]}>{historyGroups.length} {T('planDays')}</Text>
             </TouchableOpacity>
 
             {showHistory && (
               <>
                 {historyGroups.length > 0 && (
-                  <View style={{ flexDirection: 'row', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, borderRadius: 14, paddingVertical: 14, marginBottom: 16 }}>
+                  <View style={[styles.historySummaryCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
                     {[
                       { value: String(historySummary.totalDays), label: T('planDays') },
                       { value: String(historySummary.totalDoneItems), label: T('planTodoDone') },
                     ].map(s => (
-                      <View key={s.label} style={{ flex: 1, alignItems: 'center' }}>
-                        <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{s.value}</Text>
-                        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{s.label}</Text>
+                      <View key={s.label} style={styles.historyStatItem}>
+                        <Text style={[styles.textHistoryStatValue, { color: P }]}>{s.value}</Text>
+                        <Text style={[styles.textHistoryStatLabel, { color: TH.sub }]}>{s.label}</Text>
                       </View>
                     ))}
                   </View>
                 )}
 
                 {historyGroups.length === 0 ? (
-                  <Text style={{ color: TH.sub, fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 }}>{T('noHistory')}</Text>
+                  <Text style={[styles.textNoHistory, { color: TH.sub }]}>{T('noHistory')}</Text>
                 ) : (
-                  <View style={{ position: 'relative', paddingLeft: 20 }}>
-                    <View style={{ position: 'absolute', left: 6, top: 6, bottom: 6, width: 2, backgroundColor: TH.border, borderRadius: 1 }} />
+                  <View style={styles.timelineContainer}>
+                    <View style={[styles.timelineLine, { backgroundColor: TH.border }]} />
                     {historyGroups.map((group) => {
                       const allItems = mergeHistoryItems(group);
                       const doneCount = allItems.filter(i => i.done).length;
                       const isExpanded = expandedDates.has(group.date);
                       return (
-                        <View key={group.date} style={{ position: 'relative', marginBottom: 16 }}>
-                          <View style={{ position: 'absolute', left: -17, top: 14, width: 10, height: 10, borderRadius: 5, backgroundColor: P, borderWidth: 2, borderColor: TH.bg }} />
-                          <View style={{ backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, borderRadius: 12, overflow: 'hidden' }}>
+                        <View key={group.date} style={styles.timelineItem}>
+                          <View style={[styles.timelineDot, { backgroundColor: P, borderColor: TH.bg }]} />
+                          <View style={[styles.historyItemCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
                             <TouchableOpacity
                               onPress={() => toggleDateExpand(group.date)}
-                              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: `${P}08`, borderBottomWidth: isExpanded ? 1 : 0, borderBottomColor: TH.border }}
+                              style={[styles.historyItemHeader, { borderBottomColor: TH.border, borderBottomWidth: isExpanded ? 1 : 0 }]}
                             >
-                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                              <View style={styles.historyItemTitleRow}>
                                 {isExpanded ? <ChevronDown size={16} color={TH.text} /> : <ChevronRight size={16} color={TH.text} />}
-                                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{group.date}</Text>
+                                <Text style={[styles.textBodyDate, { color: TH.text }]}>{group.date}</Text>
                               </View>
-                              <Text style={{ fontSize: FONT_BODY, color: P, fontWeight: '700' }}>{doneCount} {T('planTodoDone')}</Text>
+                              <Text style={[styles.textBodyDoneCount, { color: P }]}>{doneCount} {T('planTodoDone')}</Text>
                             </TouchableOpacity>
                             {isExpanded && allItems.map((item, i) => (
-                              <View key={i} style={{
-                                flexDirection: 'row', alignItems: 'center', gap: 8,
-                                paddingVertical: 8, paddingHorizontal: 14,
-                                borderTopWidth: i > 0 ? 1 : 0, borderTopColor: TH.border,
-                                opacity: item.done ? 1 : 0.5,
-                              }}>
-                                <View style={{
-                                  width: 18, height: 18, borderRadius: 4,
-                                  backgroundColor: item.done ? P : `${TH.border}80`,
-                                  alignItems: 'center', justifyContent: 'center',
-                                }}>
+                              <View key={i} style={[styles.historyItemRow, { borderTopColor: TH.border, borderTopWidth: i > 0 ? 1 : 0, opacity: item.done ? 1 : 0.5 }]}>
+                                <View style={[styles.historyCheckbox, { backgroundColor: item.done ? P : `${TH.border}80` }]}>
                                   {item.done && <Check size={10} color="#fff" />}
                                 </View>
-                                <Text style={{
-                                  fontSize: FONT_BODY, color: TH.text, flex: 1,
-                                  textDecorationLine: item.done ? 'line-through' : 'none',
-                                }}>{item.name}</Text>
+                                <Text style={[styles.historyItemName, { color: TH.text, textDecorationLine: item.done ? 'line-through' : 'none' }]}>{item.name}</Text>
                                 {item.type === 'plan' && <LinkBadge link={item.link} T={T} P={P} />}
                                 {item.type === 'custom' && (
-                                  <View style={{ backgroundColor: `${P}15`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
-                                    <Text style={{ fontSize: 10, color: P, fontWeight: '500' }}>{T('planDailyCustomTodos')}</Text>
+                                  <View style={styles.customTodoBadge}>
+                                    <Text style={styles.customTodoBadgeText}>{T('planDailyCustomTodos')}</Text>
                                   </View>
                                 )}
                               </View>
@@ -806,47 +760,47 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
 
       {/* Action buttons — only on detail tab */}
       {tab === 'detail' && (editable || pausable || resumable || cancellable || completable || deletable) && (
-        <View style={{ gap: 8, marginTop: 24 }}>
+        <View style={styles.actionsContainer}>
           {editable && (
             <TouchableOpacity onPress={() => nav.navigate('PlanCreate', { planId: plan.id })}
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
+              style={[styles.actionButtonOutline, { backgroundColor: TH.card, borderColor: TH.border }]}>
               <Pencil size={16} color={TH.text} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('commonEdit')}</Text>
+              <Text style={[styles.textActionLabel, { color: TH.text }]}>{T('commonEdit')}</Text>
             </TouchableOpacity>
           )}
           {pausable && (
             <TouchableOpacity onPress={handlePause}
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: COLORS.YELLOW }}>
+              style={[styles.actionButtonFill, { backgroundColor: COLORS.YELLOW }]}>
               <Pause size={16} color="#fff" />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('planPause')}</Text>
+              <Text style={styles.textActionLabelWhite}>{T('planPause')}</Text>
             </TouchableOpacity>
           )}
           {resumable && (
             <TouchableOpacity onPress={handleResume}
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: COLORS.GREEN }}>
+              style={[styles.actionButtonFill, { backgroundColor: COLORS.GREEN }]}>
               <Play size={16} color="#fff" />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('planResume')}</Text>
+              <Text style={styles.textActionLabelWhite}>{T('planResume')}</Text>
             </TouchableOpacity>
           )}
           {cancellable && (
             <TouchableOpacity onPress={handleCancel}
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: `${COLORS.RED}15`, borderWidth: 1, borderColor: `${COLORS.RED}30` }}>
+              style={[styles.actionButtonDanger, { borderColor: `${COLORS.RED}30` }]}>
               <XCircle size={16} color={COLORS.RED} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: COLORS.RED }}>{T('planCancelPlan')}</Text>
+              <Text style={[styles.textActionLabel, { color: COLORS.RED }]}>{T('planCancelPlan')}</Text>
             </TouchableOpacity>
           )}
           {completable && (
             <TouchableOpacity onPress={handleComplete}
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: P }}>
+              style={[styles.actionButtonFill, { backgroundColor: P }]}>
               <CircleCheck size={16} color="#fff" />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('planComplete')}</Text>
+              <Text style={styles.textActionLabelWhite}>{T('planComplete')}</Text>
             </TouchableOpacity>
           )}
           {deletable && (
             <TouchableOpacity onPress={handleDelete}
-              style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: `${COLORS.RED}15`, borderWidth: 1, borderColor: `${COLORS.RED}30` }}>
+              style={[styles.actionButtonDanger, { borderColor: `${COLORS.RED}30` }]}>
               <Trash2 size={16} color={COLORS.RED} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: COLORS.RED }}>{T('planDelete')}</Text>
+              <Text style={[styles.textActionLabel, { color: COLORS.RED }]}>{T('planDelete')}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -856,3 +810,142 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  // Layout
+  flex1: { flex: 1 },
+  scrollContent: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 32 },
+  emptyCard: { alignItems: 'center', padding: 32 },
+  sectionHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  sectionHeaderRowMb8: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  inlineRowGap4: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  itemsHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
+  statRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  statsRow: { flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 12 },
+  statsCol: { flex: 1, gap: 6 },
+  expandedContent: { marginTop: 12, gap: 8 },
+  relatedToggleRow: { flexDirection: 'row', alignItems: 'center' },
+  relatedCountsRow: { flexDirection: 'row', gap: 16 },
+  heatmapHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  heatmapContent: { marginTop: 12 },
+
+  // Tab
+  tabContainer: { flexDirection: 'row', gap: 8, marginBottom: 16 },
+  tabButton: { flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: 'center' },
+
+  // Item row
+  itemRow: { padding: 12, borderRadius: 10, borderWidth: 1 },
+  itemHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  priorityDot: { width: 8, height: 8, borderRadius: 4 },
+  tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 },
+  tag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: undefined, borderWidth: 1 },
+  progressRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  progressTrack: { flex: 1, height: 4, borderRadius: 2, overflow: 'hidden' },
+  progressFillItem: { height: 4, borderRadius: 2 },
+  heatmapToggleRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8 },
+  itemHeatmapContainer: { marginTop: 8 },
+  textFrequency: { fontSize: FONT_BADGE, marginTop: 4 },
+
+  // Plan progress bar
+  planProgressTrack: { height: 6, borderRadius: 3, overflow: 'hidden' },
+  planProgressFill: { height: 6, borderRadius: 3 },
+
+  // Slogan
+  textSlogan: { fontSize: FONT_BODY, fontStyle: 'italic', marginBottom: 12, lineHeight: 22 },
+
+  // Goal
+  textGoal: { fontSize: FONT_BODY, lineHeight: 22 },
+
+  // No items
+  textNoItems: { fontSize: FONT_SUB, textAlign: 'center', padding: 12 },
+
+  // Related items
+  relatedItemCard: { borderWidth: 1, borderRadius: 10, padding: 12 },
+  textMoreLink: { fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 4 },
+
+  // Relation map
+  relationMapButton: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16, borderRadius: 12, borderWidth: 1, marginBottom: 12 },
+
+  // Today stats
+  todayStatsCard: { alignItems: 'center', paddingVertical: 20 },
+  todayStatsRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
+  textBodyDimMb8: { fontSize: FONT_BODY, marginBottom: 8 },
+  textStatValue: { fontSize: FONT_STAT_SECTION, fontWeight: '800' },
+  textEmptyCentered: { fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 },
+
+  // Todo items
+  groupHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 },
+  todoItemRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingHorizontal: 12 },
+  checkboxTouchTarget: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  checkbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  autoCheckedBadge: { backgroundColor: `${COLORS.GREEN}20`, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4 },
+  autoCheckedBadgeText: { fontSize: 9, color: COLORS.GREEN, fontWeight: '600' },
+  delayedBadge: { backgroundColor: `${COLORS.ORANGE}20`, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4 },
+  delayedBadgeText: { fontSize: 9, color: COLORS.ORANGE, fontWeight: '600' },
+  todoContentCol: { flex: 1, minWidth: 0 },
+  textFrequencyTiny: { fontSize: FONT_TINY, marginTop: 1 },
+
+  // Custom todos
+  customTodoHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 },
+  customTodoRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingHorizontal: 12 },
+  customTodoContentCol: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 6 },
+  deleteTodoTouchTarget: { padding: 4 },
+
+  // Add todo
+  addTodoContainer: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12 },
+  addTodoInput: { flex: 1, height: 36, borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, fontSize: FONT_SUB },
+  recurringButton: { padding: 8, borderRadius: 8, borderWidth: 1 },
+  addButton: { padding: 8, borderRadius: 8 },
+
+  // Inactive card
+  inactiveCard: { alignItems: 'center', paddingVertical: 20 },
+
+  // History
+  historySection: { marginTop: 24 },
+  historyHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  historyTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  textHistoryTitle: { fontWeight: '700', fontSize: FONT_TITLE },
+  historySummaryCard: { flexDirection: 'row', borderWidth: 1, borderRadius: 14, paddingVertical: 14, marginBottom: 16 },
+  historyStatItem: { flex: 1, alignItems: 'center' },
+  textHistoryStatValue: { fontSize: FONT_STAT_CARD, fontWeight: '800' },
+  textHistoryStatLabel: { fontSize: FONT_SUB, marginTop: 2 },
+  textNoHistory: { fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 },
+  timelineContainer: { position: 'relative', paddingLeft: 20 },
+  timelineLine: { position: 'absolute', left: 6, top: 6, bottom: 6, width: 2, borderRadius: 1 },
+  timelineItem: { position: 'relative', marginBottom: 16 },
+  timelineDot: { position: 'absolute', left: -17, top: 14, width: 10, height: 10, borderRadius: 5, borderWidth: 2 },
+  historyItemCard: { borderWidth: 1, borderRadius: 12, overflow: 'hidden' },
+  historyItemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: undefined },
+  historyItemTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  textBodyDate: { fontSize: FONT_BODY, fontWeight: '600' },
+  textBodyDoneCount: { fontSize: FONT_BODY, fontWeight: '700' },
+  historyItemRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, paddingHorizontal: 14 },
+  historyCheckbox: { width: 18, height: 18, borderRadius: 4, alignItems: 'center', justifyContent: 'center' },
+  historyItemName: { fontSize: FONT_BODY, flex: 1 },
+  customTodoBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+  customTodoBadgeText: { fontSize: 10, fontWeight: '500' },
+
+  // Action buttons
+  actionsContainer: { gap: 8, marginTop: 24 },
+  actionButtonBase: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12 },
+  actionButtonOutline: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, borderWidth: 1 },
+  actionButtonFill: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12 },
+  actionButtonDanger: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: `${COLORS.RED}15`, borderWidth: 1 },
+
+  // Shared text styles
+  textBodySemiBold: { fontSize: FONT_BODY, fontWeight: '600', flex: 1 },
+  textBodyBold: { fontSize: FONT_BODY, fontWeight: '700' },
+  textBodyMedium: { fontSize: FONT_BODY, fontWeight: '500' },
+  textBodyDim: { fontSize: FONT_BODY },
+  textSubDim: { fontSize: FONT_SUB },
+  textSubDimMb6: { fontSize: FONT_SUB, marginBottom: 6 },
+  textSubDimMt4: { fontSize: FONT_SUB, marginTop: 4 },
+  textSubBold: { fontSize: FONT_SUB, fontWeight: '600' },
+  textSubSemiBold: { fontSize: FONT_SUB, fontWeight: '600' },
+  textBadgeDim: { fontSize: FONT_BADGE },
+  textBadgeDimMt2: { fontSize: FONT_BADGE, marginTop: 2 },
+  textBadgePrimary: { fontSize: FONT_BADGE },
+  textTabLabel: { fontSize: FONT_SUB },
+  textActionLabel: { fontSize: FONT_BODY, fontWeight: '600' },
+  textActionLabelWhite: { fontSize: FONT_BODY, fontWeight: '600', color: '#fff' },
+});
