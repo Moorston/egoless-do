@@ -26,6 +26,7 @@ import { runSync, resetSyncState, softResetSyncState, resetMigrationFlag, rehydr
 
 import { createMobileUiSlice, type MobileUiSlice } from './createMobileUiSlice';
 import { mobileStorageAdapter, flushWrites, setPersistErrorHandler } from './storageAdapter';
+import { API_URL, PB_URL } from '../config';
 
 const log = createLogger('App');
 
@@ -35,19 +36,14 @@ const devHost = hostUri?.split(':')[0] ?? 'localhost';
 // NOTE: HTTP (not HTTPS) is intentional for local development (Expo Go / device on LAN).
 // Production URLs MUST use HTTPS — verify EXPO_PUBLIC_API_URL and EXPO_PUBLIC_PB_URL are https:// in production.
 const DEV_API = `http://${devHost}:3000`;
-const PROD_API = process.env.EXPO_PUBLIC_API_URL ?? 'https://egolessdo.freebytes.net';
-const apiBase = __DEV__ ? DEV_API : PROD_API;
+const apiBase = __DEV__ ? DEV_API : API_URL;
 setApiBase(apiBase);
 setPushApiBase(apiBase);
 
 // PocketBase URL for sync endpoints (separate from auth API)
 // NOTE: HTTP (not HTTPS) is intentional for local development. Production URLs MUST use HTTPS.
 const DEV_PB = `http://${devHost}:8090`;
-// Fallback chain: EXPO_PUBLIC_PB_URL → EXPO_PUBLIC_POCKETBASE_URL → apiBase
-const PROD_PB = process.env.EXPO_PUBLIC_PB_URL
-  ?? process.env.EXPO_PUBLIC_POCKETBASE_URL
-  ?? 'https://egolessdo.freebytes.net';
-setSyncApiBase(__DEV__ ? DEV_PB : PROD_PB);
+setSyncApiBase(__DEV__ ? DEV_PB : PB_URL);
 
 const adapter = mobileStorageAdapter;
 

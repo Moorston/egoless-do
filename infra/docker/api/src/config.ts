@@ -46,12 +46,12 @@ export const cfg = {
   pbAdminEmail: envRequired('PB_ADMIN_EMAIL'),
   pbAdminPassword: envRequired('PB_ADMIN_PASSWORD'),
 
-  /** SMTP 邮件配置 */
+  /** SMTP 邮件配置（可选，仅在发邮件时才需要） */
   smtp: {
     host: env('SMTP_HOST', 'smtp.qq.com'),
     port: Number(env('SMTP_PORT', '465')),
-    user: envRequired('SMTP_USER'),
-    pass: envRequired('SMTP_PASS'),
+    user: env('SMTP_USER'),
+    pass: env('SMTP_PASS'),
   },
 
   /** CORS 允许的来源 */

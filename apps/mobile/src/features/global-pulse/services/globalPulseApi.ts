@@ -13,11 +13,9 @@ import {
 } from '@egoless-do/core';
 
 import { offlineAwareFetch } from '../../../net/offlineAware';
+import { API_URL as API_BASE_URL } from '../../../config';
 
 import { escapeFilter } from './pbFilterEscape';
-
-// PocketBase API 基础 URL（集中配置）
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://egolessdo.freebytes.net';
 
 // PocketBase 集合名称
 const CHECKINS_COLLECTION = 'global_checkins';
