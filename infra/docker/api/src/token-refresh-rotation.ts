@@ -8,9 +8,10 @@ import { errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'refresh_tokens';
 
-/** Generate a cryptographically secure nonce for race detection */
-function generateNonce(): string {
-  return randomBytes(8).toString('hex');
+/** Generate a cryptographically secure numeric nonce for race detection.
+ *  Returns a number that fits in PB's `used_at` number field. */
+function generateNonce(): number {
+  return Number(BigInt('0x' + randomBytes(6).toString('hex')));
 }
 
 /** Safely extract an error identifier without leaking token data in logs. */
@@ -149,9 +150,9 @@ export async function revokeRefreshToken(token: string): Promise<void> {
  * 如果没有任何 token 被成功撤销，抛出错误以便调用方感知。
  */
 export async function revokeAllUserRefreshTokens(userId: string): Promise<void> {
+  const pb = await getAdminPb();
   let records: Array<{ id: string }> = [];
   try {
-    const pb = await getAdminPb();
     records = await pb.collection(COLLECTION_NAME).getFullList({
       filter: `user_id = "${escapeFilter(userId)}" && is_revoked = false`,
     });
@@ -161,8 +162,6 @@ export async function revokeAllUserRefreshTokens(userId: string): Promise<void> 
 
   if (records.length === 0) return;
 
-  // Get admin PB once, reuse across all updates
-  const pb = await getAdminPb();
   let succeeded = 0;
   let lastError: unknown = null;
   for (const record of records) {

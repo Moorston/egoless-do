@@ -1,5 +1,5 @@
 import type { MedHistoryEntry } from '../types';
-import { activeOnly } from '../utils';
+import { activeOnly, dateStr } from '../utils';
 import { addMedMinutesToList } from '../business/meditation';
 import type { StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
@@ -25,12 +25,11 @@ export function createMeditationSlice(
       set(s => {
         const result = addMedMinutesToList(s.medHistory ?? [], s.totalMedMinutes, min, trackId, note);
         const reconciledTotal = activeOnly(result.history).reduce((sum, m) => sum + (m.durMin || 0), 0);
-        const today = new Date();
-        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        const todayStr = dateStr();
         entry = result.history.find(m => m.date === todayStr && !m.deleted);
         return { totalMedMinutes: reconciledTotal, medHistory: result.history };
       });
-      if (entry) adapter.persistChange('meditation', entry.date, entry).catch(e => log.error(e));
+      if (entry) adapter.persistChange('meditation', entry.date, entry).catch(err => log.error(err));
       onSync?.();
     },
     calculateTotalMedMin() {
