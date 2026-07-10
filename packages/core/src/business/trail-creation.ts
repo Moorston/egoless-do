@@ -2,6 +2,7 @@
 import type { MindReflection } from '../types/reflection';
 import type { ThoughtTrail } from '../types/thought-trail';
 import { createLogger } from '../logger';
+import { formatDate } from '../utils';
 import { getMoodIcon } from './thought-trail';
 
 const log = createLogger('TrailCreation');
@@ -418,8 +419,8 @@ export function trendColor(trend: 'up' | 'down' | 'flat'): string {
   return trend === 'up' ? '#4CAF50' : trend === 'down' ? '#F44336' : '#9E9E9E';
 }
 
-export function buildReflectionSummary(ref: MindReflection): string {
-  const date = new Date(ref.timestamp).toLocaleDateString('zh-CN', {
+export function buildReflectionSummary(ref: MindReflection, language: string = 'zh'): string {
+  const date = formatDate(new Date(ref.timestamp), language, {
     month: 'numeric', day: 'numeric',
   });
   const tags = ref.tags.length > 0 ? ` #${ref.tags.join(' #')}` : '';

@@ -47,7 +47,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
   const P = TH.primary;
   const T = (k: string) => t(k as import("@egoless-do/core").I18nKey, language);
 
-  const today = new Date().toLocaleDateString(language === 'en' ? 'en-US' : 'zh-CN', {
+  const today = formatDate(new Date(), language, {
     month: 'long', day: 'numeric', weekday: 'short',
   });
 

@@ -1,4 +1,4 @@
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL, formatDate } from '@egoless-do/core';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { X, Download, Share2 } from 'lucide-react-native';
@@ -36,7 +36,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
   const bgColor = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[0] ?? MIND_COLORS_EXTENDED[0][0];
   const bgColor2 = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[1] ?? MIND_COLORS_EXTENDED[0][1];
 
-  const timeStr = new Date(reflection.timestamp ?? 0).toLocaleString('zh-CN', {
+  const timeStr = formatDate(new Date(reflection.timestamp ?? 0), 'zh', {
     year: 'numeric', month: 'long', day: 'numeric', weekday: 'short',
   });
 

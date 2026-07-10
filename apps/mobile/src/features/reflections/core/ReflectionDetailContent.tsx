@@ -1,4 +1,4 @@
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, dateStr, getTrailsByReflection, createLogger, formatDate, formatTime } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ExternalLink, Link, Pin, Network, MoreHorizontal } from 'lucide-react-native';
@@ -38,6 +38,7 @@ export default function ReflectionDetailContent({
   }));
   const nav = useRootNavigation();
   const T = useT();
+  const language = useAppStore(s => s.language);
   const [showMore, setShowMore] = useState(false);
   const [showTrailPicker, setShowTrailPicker] = useState(false);
 
@@ -83,9 +84,9 @@ export default function ReflectionDetailContent({
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             {r.isPinned && <Pin size={14} color="#fff" />}
             <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL }}>
-              {new Date(r.timestamp ?? 0).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+              {formatDate(new Date(r.timestamp ?? 0), language, { year: 'numeric', month: 'long', day: 'numeric' })}
               {' '}
-              {new Date(r.timestamp ?? 0).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+              {formatTime(new Date(r.timestamp ?? 0), language, { hour: '2-digit', minute: '2-digit' })}
             </Text>
           </View>
         </View>

@@ -1,4 +1,4 @@
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, FONT_TINY, REFLECTION_CATEGORIES, highlightSearchMatch, createLogger } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SMALL, FONT_TINY, REFLECTION_CATEGORIES, highlightSearchMatch, createLogger, formatTime } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ExternalLink, Link } from 'lucide-react-native';
@@ -6,6 +6,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
+import { useAppStore } from '../../../store/useAppStore';
 
 
 const log = createLogger('Reflections');
@@ -39,6 +40,7 @@ function ReflectionCardComponent({
 }: Props) {
   const TH = useTheme();
   const P = TH.primary;
+  const language = useAppStore(s => s.language);
   const [expanded, setExpanded] = useState(false);
 
   const displayContent = useMemo(() => {
@@ -83,7 +85,7 @@ function ReflectionCardComponent({
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.timeText}>
-          {new Date(r.timestamp ?? 0).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
+          {formatTime(new Date(r.timestamp ?? 0), language, { hour: '2-digit', minute: '2-digit' })}
         </Text>
         <View style={styles.badges}>
           {linkedPlanItem && (

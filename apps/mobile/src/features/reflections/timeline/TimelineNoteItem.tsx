@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon, formatDate, formatTime } from '@egoless-do/core';
 import type { TrailNote } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
@@ -42,9 +42,9 @@ function TimelineNoteItemComponent({
     : (note.content.length > 100 ? note.content.slice(0, 100) + '...' : note.content);
 
   const dateObj = new Date(note.createdAt);
-  const month = dateObj.toLocaleDateString('zh-CN', { month: 'short' });
+  const month = formatDate(dateObj, 'zh', { month: 'short' });
   const day = dateObj.getDate();
-  const time = dateObj.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  const time = formatTime(dateObj, 'zh', { hour: '2-digit', minute: '2-digit' });
 
   return (
     <View style={styles.container}>

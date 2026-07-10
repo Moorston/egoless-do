@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_BODY, FONT_TINY, MIND_COLORS_EXTENDED, REFLECTION_CATEGORIES , getMoodIcon } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, FONT_TINY, MIND_COLORS_EXTENDED, REFLECTION_CATEGORIES , getMoodIcon, formatDate, formatTime } from '@egoless-do/core';
 import type { MindReflection, LinkType } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X } from 'lucide-react-native';
@@ -50,9 +50,9 @@ function TimelineReflectionItemComponent({
   const displayContent = r.content.length > 100 ? r.content.slice(0, 100) + '...' : r.content;
 
   const dateObj = new Date(r.timestamp);
-  const month = dateObj.toLocaleDateString('zh-CN', { month: 'short' });
+  const month = formatDate(dateObj, 'zh', { month: 'short' });
   const day = dateObj.getDate();
-  const time = dateObj.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  const time = formatTime(dateObj, 'zh', { hour: '2-digit', minute: '2-digit' });
 
   return (
     <View style={styles.container}>

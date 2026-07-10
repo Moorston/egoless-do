@@ -1,4 +1,4 @@
-import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr } from '@egoless-do/core';
+import { ensureOrderContains, TAGS_PRESET, MOODS, REFLECTION_CATEGORIES, dateStr, formatDate, formatTime } from '@egoless-do/core';
 import {
   filterReflections, groupReflectionsByDate, computeDynamicTagCounts, computeDynamicMoodCounts,
   computeMoodTrend, computeWritingHeatmap, computeTagCooccurrence,
@@ -298,8 +298,8 @@ export function useReflections() {
     filters.tags.forEach(t => list.push({ key: 'tag', label: t, value: t }));
     filters.moods.forEach(m => list.push({ key: 'mood', label: m, value: m }));
     if (filters.dateRange) {
-      const from = new Date(filters.dateRange.from).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
-      const to = new Date(filters.dateRange.to).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+      const from = formatDate(new Date(filters.dateRange.from), 'zh', { month: 'short', day: 'numeric' });
+      const to = formatDate(new Date(filters.dateRange.to), 'zh', { month: 'short', day: 'numeric' });
       list.push({ key: 'dateRange', label: `${from} - ${to}` });
     }
     if (filters.hasLink) list.push({ key: 'hasLink', label: '有链接' });
@@ -332,7 +332,7 @@ export function useReflections() {
       const tagsStr = r.tags?.length ? `\n🏷️ ${r.tags.join(' ')}` : '';
       const moodStr = r.mood ? `\n💭 ${r.mood}` : '';
       const linkStr = r.link ? `\n🔗 ${r.link}` : '';
-      const timeStr = new Date(r.timestamp ?? 0).toLocaleString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+      const timeStr = formatDate(new Date(r.timestamp ?? 0), 'zh', { year: 'numeric', month: 'long', day: 'numeric' });
       await Share.share({
         message: `「${r.content}」${tagsStr}${moodStr}${linkStr}\n\n📅 ${timeStr}\n— 来自心流纪 · Egoless Do\nhttps://egoless-do.app`,
       });

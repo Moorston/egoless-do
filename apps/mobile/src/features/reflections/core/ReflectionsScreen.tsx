@@ -1,4 +1,4 @@
-import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger , highlightSearchMatch , getTrailsByReflection } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger , highlightSearchMatch , getTrailsByReflection, formatTime } from '@egoless-do/core';
 import type { Habit, MindReflection } from '@egoless-do/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute, RouteProp } from '@react-navigation/native';
@@ -122,6 +122,7 @@ export default function ReflectionsScreen() {
     unlinkReflectionFromPlanItem: s.unlinkReflectionFromPlanItem,
   }));
   const T     = useT();
+  const language = useAppStore(s => s.language);
   const route = useRoute<RouteProp<MainTabParamList, 'Reflections'>>();
   const nav   = useTabNavigation();
   const rootNav = useRootNavigation();
@@ -472,7 +473,7 @@ export default function ReflectionsScreen() {
                       >
                         <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
                           <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>
-                            {new Date(r.timestamp ?? 0).toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' })}
+                            {formatTime(new Date(r.timestamp ?? 0), language, { hour:'2-digit', minute:'2-digit' })}
                           </Text>
                           <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
                             {linkedPlanItem && (

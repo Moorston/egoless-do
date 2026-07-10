@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, formatDate } from '@egoless-do/core';
 import {
   PRECEPT_AVOID_PRESETS, PRACTICE_PRESETS, VIOLATION_TRIGGERS,
   PRECEPT_PREFIX_AVOID, PRECEPT_PREFIX_PRACTICE,
@@ -19,6 +19,7 @@ export default function PreceptScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
+  const language = useAppStore(s => s.language);
   const { habits, reflections, checkinHabit, addReflection, addHabit } = useShallowStore(s => ({
     habits: s.habits,
     reflections: s.reflections,
@@ -333,7 +334,7 @@ export default function PreceptScreen() {
           {recentInsights.map(r => (
             <View key={r.id} style={[styles.insightRow, { borderLeftColor: '#F59E0B' }]}>
               <Text style={[styles.insightDate, { color: TH.sub }]}>
-                {new Date(r.timestamp).toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+                {formatDate(new Date(r.timestamp), language, { month: '2-digit', day: '2-digit' })}
               </Text>
               <Text style={[styles.insightContent, { color: TH.text }]} numberOfLines={2}>{r.content}</Text>
             </View>

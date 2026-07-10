@@ -1,9 +1,10 @@
-import { FONT_SUB, FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_SUB, FONT_SMALL, FONT_TINY, formatDate } from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { useTheme } from '../../../components/UI';
+import { useAppStore } from '../../../store/useAppStore';
 
 import ReflectionCard from './ReflectionCard';
 
@@ -40,12 +41,13 @@ function DayGroupComponent({
 }: Props) {
   const TH = useTheme();
   const P = TH.primary;
+  const language = useAppStore(s => s.language);
 
   const dayNum = date.slice(8, 10);
   const month = date.slice(5, 7);
   const [dy, dm, dd] = date.split('-').map(Number);
   const dateObj = new Date(dy, dm - 1, dd);
-  const weekday = dateObj.toLocaleDateString('zh-CN', { weekday: 'short' });
+  const weekday = formatDate(dateObj, language, { weekday: 'short' });
 
   return (
     <View style={styles.container}>

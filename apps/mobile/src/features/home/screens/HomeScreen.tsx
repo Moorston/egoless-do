@@ -1,4 +1,4 @@
-import { THEMES, COLORS, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger } from '@egoless-do/core';
+import { THEMES, COLORS, cardTextColor, dateStr, yesterday, addDays, getFoodLogByDate, getRecentFoods, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, FONT_CARD_TITLE, parseCheckinNote, getActivePlan, getTodayItems, getTodayCustomTodos, isPlanDelayed, getIncompleteItems, INCOMPLETE_REASONS, getStatsForDate, isGraceAvailable, createLogger, formatTime } from '@egoless-do/core';
 import type { CheckinEntry, Habit } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -87,6 +87,7 @@ export default function HomeScreen() {
     deleteFood: s.deleteFood,
   }));
   const nav   = useRootNavigation();
+  const language = useAppStore(s => s.language);
 
   // ── Date state ──
   const { viewDate, isToday, goToDate, onTouchStart, onTouchEnd, viewDateRef } = useDateNavigation();
@@ -395,7 +396,7 @@ export default function HomeScreen() {
     : (isToday ? T('checkinDoneToday') : T('checkinNotDoneBanner'));
 
   const bannerTimeText = todayRecord?.timestamp
-    ? new Date(todayRecord.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+    ? formatTime(new Date(todayRecord.timestamp), language, { hour: '2-digit', minute: '2-digit' })
     : '';
 
   // ── Grace reminder ──

@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon, formatDate, formatTime } from '@egoless-do/core';
 import type { TrailNote } from '@egoless-do/core';
 import { Pencil, Trash2 } from 'lucide-react-native';
 import React, { useState } from 'react';
@@ -26,8 +26,8 @@ function ReviewNoteCardComponent({ note, onDelete, onEdit }: ReviewNoteCardProps
   const day = String(dateObj.getDate()).padStart(2, '0');
   const title = `反思复盘-${month}${day}`;
 
-  const dateStr = dateObj.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
-  const timeStr = dateObj.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  const dateStr = formatDate(dateObj, 'zh', { month: 'long', day: 'numeric', weekday: 'short' });
+  const timeStr = formatTime(dateObj, 'zh', { hour: '2-digit', minute: '2-digit' });
   const sourceLabel = isGuided ? '引导式' : '自由反思';
 
   const isLongContent = note.content.length > 80;

@@ -299,7 +299,7 @@ export default function SettingsScreen() {
           right: (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
               {lastSyncAt
-                ? new Date(lastSyncAt).toLocaleString('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                ? formatDate(new Date(lastSyncAt), language, { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
                 : T('settingsNeverSync')}
             </Text>
           ),

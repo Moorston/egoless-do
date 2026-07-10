@@ -1,6 +1,7 @@
 // ─── Reflection business logic (pure functions) ────────────────
 import type { MindReflection, PlanItem, ReflectionFilters } from '../types';
 import { createReflection } from '../defaults';
+import { formatDate } from '../utils';
 
 export type CreateReflectionParams = Parameters<typeof createReflection>[0];
 
@@ -95,12 +96,13 @@ export function filterReflections(
 /** Group reflections by date (descending order) */
 export function groupReflectionsByDate(
   reflections: MindReflection[],
+  language: string = 'zh',
 ): Record<string, MindReflection[]> {
   const m: Record<string, MindReflection[]> = {};
   const sorted = [...reflections].sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0));
   sorted.forEach(r => {
     if (!r.timestamp) return;
-    const d = new Date(r.timestamp).toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
+    const d = formatDate(new Date(r.timestamp), language, { month: 'long', day: 'numeric', weekday: 'short' });
     if (!m[d]) m[d] = [];
     m[d].push(r);
   });

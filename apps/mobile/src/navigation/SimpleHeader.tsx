@@ -27,7 +27,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
   const TH = useTheme();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const today = new Date().toLocaleDateString(language === 'en' ? 'en-US' : 'zh-CN', { month: 'long', day: 'numeric', weekday: 'short' });
+  const today = formatDate(new Date(), language, { month: 'long', day: 'numeric', weekday: 'short' });
   const showTabs = Object.values(HEADER_TAB_ROUTES).includes(routeName ?? '');
   const activeKey = Object.entries(HEADER_TAB_ROUTES).find(([, r]) => r === routeName)?.[0] ?? 'home';
 

@@ -1,5 +1,6 @@
 // ─── RAG Prompt 构建器 ─────────────────────────────────────────
 import type { ReflectionIndex } from './indexer';
+import { formatDate } from '../../utils';
 
 const MAX_PROMPT_LENGTH = 800;
 const MAX_CONTENT_LENGTH = 60;
@@ -8,8 +9,8 @@ const MAX_CONTENT_LENGTH = 60;
  * 将感念格式化为紧凑的摘要格式
  * 格式: [日期] 情绪 内容... [标签]
  */
-export function formatReflectionSummary(item: ReflectionIndex): string {
-  const date = new Date(item.timestamp).toLocaleDateString('zh-CN', {
+export function formatReflectionSummary(item: ReflectionIndex, language: string = 'zh'): string {
+  const date = formatDate(new Date(item.timestamp), language, {
     month: 'numeric',
     day: 'numeric',
   });

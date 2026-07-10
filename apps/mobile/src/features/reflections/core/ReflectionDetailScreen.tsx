@@ -1,4 +1,5 @@
 import type { MindReflection } from '@egoless-do/core';
+import { formatDate } from '@egoless-do/core';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useState } from 'react';
@@ -18,6 +19,7 @@ export default function ReflectionDetailScreen() {
   const { reflectionId } = route.params;
   const { reflections, getActivePlan, deleteReflection } = useShallowStore(s => ({ reflections: s.reflections, getActivePlan: s.getActivePlan, deleteReflection: s.deleteReflection }));
   const T = useT();
+  const language = useAppStore(s => s.language);
   const [shareReflection, setShareReflection] = useState<MindReflection | null>(null);
 
   const handleEdit = useCallback((r: MindReflection) => {
@@ -32,7 +34,7 @@ export default function ReflectionDetailScreen() {
           try {
             const tagsStr = r.tags?.length ? `\n🏷️ ${r.tags.join(' ')}` : '';
             const moodStr = r.mood ? `\n💭 ${r.mood}` : '';
-            const timeStr = new Date(r.timestamp ?? 0).toLocaleString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = formatDate(new Date(r.timestamp ?? 0), language, { year: 'numeric', month: 'long', day: 'numeric' });
             await Share.share({
               message: `「${r.content}」${tagsStr}${moodStr}\n\n📅 ${timeStr}\n— 来自心流纪 · Egoless Do\nhttps://egoless-do.app`,
             });
