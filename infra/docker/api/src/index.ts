@@ -4,13 +4,26 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { config } from 'dotenv';
-import path from 'path';
+import { fileURLToPath } from 'url';
 
-// 加载项目根目录的 .env 文件
-// infra/docker/api/src/index.ts → 向上 4 级到项目根目录
-const rootEnvPath = path.resolve(process.cwd(), '../../../.env');
-config({ path: rootEnvPath });
+/* ── 加载集中式配置（在静态导入阶段执行 dotenv）────────────── */
+import { cfg } from './config.js';
+
+/* ── 启动时校验关键环境变量（fail-fast）───────────────────── */
+import path from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+function requireEnv(name: string): string {
+  const val = process.env[name];
+  if (!val) {
+    throw new Error(`[AuthAPI] MISSING REQUIRED ENV: ${name} — server will not start without it`);
+  }
+  return val;
+}
+// 以下变量必须在启动时存在，缺一个就 crash
+requireEnv('INTERNAL_SECRET');
+requireEnv('PB_ADMIN_EMAIL');
+requireEnv('PB_ADMIN_PASSWORD');
 
 // 初始化持久化服务
 import { initTokenBlacklistCollection } from './token-blacklist.js';
@@ -64,8 +77,14 @@ app.use('*', async (c, next) => {
   }
 });
 
+/* ── Ready flag: 初始化完成前返回 503 ─────────────────────────── */
+let _ready = false;
+
 // Health check
-app.get('/healthz', (c) => c.json({ status: 'ok', service: 'egoless-auth-api' }));
+app.get('/healthz', (c) => {
+  if (!_ready) return c.json({ status: 'starting', service: 'egoless-auth-api' }, 503);
+  return c.json({ status: 'ok', service: 'egoless-auth-api' });
+});
 
 // Mount auth routes
 app.route('/api/auth', loginApp);

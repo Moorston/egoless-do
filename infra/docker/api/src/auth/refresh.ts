@@ -2,15 +2,12 @@
 import { Hono } from 'hono';
 import { getClientIp, refreshRateLimit } from '../rate-limit.js';
 import { generateRefreshToken, createRefreshToken, validateRefreshToken, revokeRefreshToken } from '../token-refresh-rotation.js';
+import { getInternalSecret } from '../config.js';
 
 const TOKEN_EXPIRES_IN = 7 * 24 * 60 * 60 * 1000; // 7 days
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 const PB_URL = process.env.PB_URL ?? 'http://localhost:8090';
-const INTERNAL_SECRET = process.env.INTERNAL_SECRET ?? process.env.PB_ENCRYPTION_KEY;
-if (!INTERNAL_SECRET) {
-  throw new Error('[auth/refresh] INTERNAL_SECRET or PB_ENCRYPTION_KEY must be set — server will not start without it');
-}
 
 const app = new Hono();
 
@@ -42,7 +39,7 @@ app.post('/refresh', async (c) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Internal-Secret': INTERNAL_SECRET,
+          'X-Internal-Secret': getInternalSecret(),
         },
         body: JSON.stringify({ userId: validation.userId }),
       });
