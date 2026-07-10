@@ -60,7 +60,7 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
   const savePref = async (show: boolean) => {
     try {
       await AsyncStorage.setItem(PREFERENCES_KEY, JSON.stringify({ show_on_global_map: show }));
-    } catch {}
+    } catch (e) { log.warn(e, { context: 'PrivacyControl savePref' }); }
   };
 
   // 处理开关切换

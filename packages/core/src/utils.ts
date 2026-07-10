@@ -220,7 +220,7 @@ export const aggregateDailyWater = (
       if (typeof data === 'object' && data !== null && typeof data.water === 'number') {
         map.set(e.date, (map.get(e.date) ?? 0) + data.water);
       }
-    } catch {}
+    } catch { /* malformed note JSON — skip entry */ }
   }
   return Array.from(map.entries()).map(([k, v]) => ({
     label: k.slice(5),

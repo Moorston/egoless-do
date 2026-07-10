@@ -17,7 +17,7 @@ async function ensureHandler() {
       } as const),
     });
     handlerSet = true;
-  } catch {}
+  } catch (e) { log.warn(e, { context: 'NotificationService ensureHandler' }); }
 }
 
 export async function requestNotificationPermission(): Promise<boolean> {

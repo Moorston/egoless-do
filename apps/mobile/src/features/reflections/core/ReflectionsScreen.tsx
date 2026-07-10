@@ -159,10 +159,10 @@ export default function ReflectionsScreen() {
       AsyncStorage.getItem('hiddenMoods'),
     ]).then(([tagsData, moodsData]) => {
       if (tagsData) {
-        try { setHiddenTags(JSON.parse(tagsData)); } catch {}
+        try { setHiddenTags(JSON.parse(tagsData)); } catch { /* corrupted cache — ignore */ }
       }
       if (moodsData) {
-        try { setHiddenMoods(JSON.parse(moodsData)); } catch {}
+        try { setHiddenMoods(JSON.parse(moodsData)); } catch { /* corrupted cache — ignore */ }
       }
     }).catch((e) => log.error(e));
   }, []);
