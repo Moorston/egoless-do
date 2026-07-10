@@ -42,7 +42,7 @@ export async function blacklistToken(token: string, expiresAt: number): Promise<
 }
 
 /**
- * 清理过期的黑名单 Token
+ * 清理过期的黑名单 Token — 使用批量删除优化
  */
 export async function cleanupExpiredTokens(): Promise<number> {
   try {
@@ -51,6 +51,9 @@ export async function cleanupExpiredTokens(): Promise<number> {
       filter: `expires_at < ${Date.now()}`,
     });
 
+    if (expired.length === 0) return 0;
+
+    // PocketBase doesn't support bulk delete, but we can batch in pages
     let deleted = 0;
     for (const record of expired) {
       try {

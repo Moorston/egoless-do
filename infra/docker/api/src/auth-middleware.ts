@@ -98,11 +98,21 @@ export function sanitizeError(err: unknown, fallback: string): string {
   return fallback;
 }
 
-const COMMON_PASSWORDS = ['password', '12345678', 'qwerty123', 'password1', 'admin123'];
+const COMMON_PASSWORDS = [
+  'password', '12345678', 'qwerty123', 'password1', 'admin123',
+  'password123', '123456789', 'iloveyou', 'abc123456', 'monkey123',
+  'dragon123', 'letmein123', 'trustno1', 'sunshine1', 'princess1',
+  'football1', 'shadow123', 'master123', 'hello1234', 'charlie1',
+  'donald123', 'qwerty12', 'login123', 'welcome1', 'passw0rd',
+  'michael1', 'ninja123', 'mustang1', 'jessica1', 'hunter12',
+  'summer12', 'qwerty1234', 'zaq12wsx', 'asdfghjk', '1qaz2wsx',
+  'qwertyui', '1q2w3e4r', '00000000', '11111111', '1234567890',
+];
 
-/** Validate password strength */
+/** Validate password strength — must match packages/core/src/auth.ts */
 export function validatePassword(pwd: string): string | null {
   if (pwd.length < 10) return '密码需至少10位';
+  if (pwd.length > 128) return '密码不能超过128位';
   if (!/[a-zA-Z]/.test(pwd)) return '密码需包含字母';
   if (!/[0-9]/.test(pwd)) return '密码需包含数字';
   if (/^[a-zA-Z0-9]+$/.test(pwd)) return '密码需包含特殊符号';
