@@ -1,77 +1,65 @@
-import { Audio } from 'expo-av';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useAudioPlayer, useAudioPlayerStatus, setAudioModeAsync } from 'expo-audio';
+import { useState, useCallback, useEffect } from 'react';
 
 import { useAudioCache } from '../shared/hooks/useAudioCache';
 
 /**
  * Hook for sutra audio playback (MP3 only, no TTS fallback).
+ * Uses expo-audio (migrated from expo-av).
  */
 export function useSutraAudio() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const soundRef = useRef<Audio.Sound | null>(null);
+  const [source, setSource] = useState<{ uri: string } | undefined>(undefined);
+  const [shouldLoop, setShouldLoop] = useState(false);
   const { getCachedPath } = useAudioCache();
 
-  const stopAudio = useCallback(async () => {
-    const sound = soundRef.current;
-    if (!sound) { setIsPlaying(false); return; }
-    soundRef.current = null; // prevent re-entry
+  const player = useAudioPlayer(source);
+  const status = useAudioPlayerStatus(player);
+
+  // Sync loop setting
+  useEffect(() => {
+    player.loop = shouldLoop;
+  }, [player, shouldLoop]);
+
+  // Track playing state from status
+  const isPlaying = status.isLoaded && status.playing;
+
+  // Handle playback finished
+  useEffect(() => {
+    if (status.didJustFinish && !shouldLoop) {
+      // Player auto-stops, nothing to do
+    }
+  }, [status.didJustFinish, shouldLoop]);
+
+  const stopAudio = useCallback(() => {
     try {
-      sound.setOnPlaybackStatusUpdate(null);
-      try { await sound.stopAsync(); } catch {}
-      await sound.unloadAsync();
+      player.pause();
     } catch {}
-    setIsPlaying(false);
-  }, []);
+    setSource(undefined);
+  }, [player]);
 
   /** Play sutra audio from cache. Returns false if not cached. */
   const playSutra = useCallback(async (
     sutraId: string,
     opts?: { loop?: boolean },
   ): Promise<boolean> => {
-    await stopAudio();
+    stopAudio();
 
     const cachedPath = await getCachedPath(sutraId);
     if (!cachedPath) return false;
 
     try {
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: cachedPath },
-        { shouldPlay: true, isLooping: opts?.loop ?? false },
-      );
-      soundRef.current = sound;
-      setIsPlaying(true);
-
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (!status.isLoaded) {
-          if ('error' in status && status.error) setIsPlaying(false);
-          return;
-        }
-        if (status.didJustFinish && !opts?.loop) {
-          setIsPlaying(false);
-        }
-      });
+      await setAudioModeAsync({ playsInSilentModeIOS: true });
+      setShouldLoop(opts?.loop ?? false);
+      setSource({ uri: cachedPath });
       return true;
     } catch {
-      setIsPlaying(false);
       return false;
     }
   }, [stopAudio, getCachedPath]);
 
-  const stopSutra = useCallback(async () => {
-    await stopAudio();
+  const stopSutra = useCallback(() => {
+    stopAudio();
   }, [stopAudio]);
-
-  useEffect(() => {
-    return () => {
-      if (soundRef.current) {
-        const sound = soundRef.current;
-        soundRef.current = null;
-        sound.setOnPlaybackStatusUpdate(null);
-        sound.unloadAsync().catch(() => {});
-      }
-    };
-  }, []);
 
   return { playSutra, stopSutra, isPlaying };
 }

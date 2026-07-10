@@ -12,7 +12,8 @@
 //
 // See: https://github.com/elysiajs/elysia-rate-limit for alternatives.
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFile, writeFile, mkdir } from 'fs/promises';
+import { existsSync } from 'fs';
 import { dirname } from 'path';
 
 interface RateLimitEntry {
@@ -29,22 +30,22 @@ const PERSIST_INTERVAL_MS = 30_000;
 const _namedLimiters = new Map<string, Map<string, RateLimitEntry>>();
 let _persistDirty = false;
 
-function loadPersistedState(): Record<string, Record<string, RateLimitEntry>> {
+async function loadPersistedState(): Promise<Record<string, Record<string, RateLimitEntry>>> {
   try {
     if (!existsSync(RATE_LIMIT_FILE)) return {};
-    const raw = readFileSync(RATE_LIMIT_FILE, 'utf8');
+    const raw = await readFile(RATE_LIMIT_FILE, 'utf8');
     return JSON.parse(raw) as Record<string, Record<string, RateLimitEntry>>;
   } catch {
     return {};
   }
 }
 
-function savePersistedState(): void {
+async function savePersistedState(): Promise<void> {
   if (!_persistDirty) return;
   _persistDirty = false;
   try {
     const dir = dirname(RATE_LIMIT_FILE);
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    await mkdir(dir, { recursive: true });
     const all: Record<string, Record<string, RateLimitEntry>> = {};
     const now = Date.now();
     for (const [name, attempts] of _namedLimiters) {
@@ -54,13 +55,13 @@ function savePersistedState(): void {
       }
       if (Object.keys(entries).length > 0) all[name] = entries;
     }
-    writeFileSync(RATE_LIMIT_FILE, JSON.stringify(all));
+    await writeFile(RATE_LIMIT_FILE, JSON.stringify(all));
   } catch { /* best-effort — ignore write failures */ }
 }
 
 // Load persisted state into registered maps (called once at startup)
-function initPersistence(): void {
-  const saved = loadPersistedState();
+async function initPersistence(): Promise<void> {
+  const saved = await loadPersistedState();
   const now = Date.now();
   for (const [name, attempts] of _namedLimiters) {
     const persisted = saved[name];
@@ -70,7 +71,7 @@ function initPersistence(): void {
     }
   }
   // Periodic save (interval keeps process alive — cleared on beforeExit)
-  const timer = setInterval(savePersistedState, PERSIST_INTERVAL_MS);
+  const timer = setInterval(() => { savePersistedState().catch(() => {}); }, PERSIST_INTERVAL_MS);
   timer.unref();
 }
 
