@@ -146,12 +146,19 @@ export class SyncApplyService {
    * and re-deleting items that were locally deleted but not yet synced.
    */
   private _locallyDeleted = new Set<string>();
+  private _locallyDeletedTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   /** Register a locally deleted entity so sync won't resurrect it */
   registerLocalDelete(entity: string, id: string) {
-    this._locallyDeleted.add(`${entity}:${id}`);
-    // Auto-expire after 60s to avoid unbounded growth
-    setTimeout(() => this._locallyDeleted.delete(`${entity}:${id}`), 60_000);
+    const key = `${entity}:${id}`;
+    // Clear existing timer to avoid accumulation on rapid re-deletes
+    const existing = this._locallyDeletedTimers.get(key);
+    if (existing) clearTimeout(existing);
+    this._locallyDeleted.add(key);
+    this._locallyDeletedTimers.set(key, setTimeout(() => {
+      this._locallyDeleted.delete(key);
+      this._locallyDeletedTimers.delete(key);
+    }, 60_000));
   }
 
   /** Convert server payload to SQLite row format */
@@ -169,6 +176,7 @@ export class SyncApplyService {
     data: Record<string, unknown[]>,
     deletedIds?: Set<string>,
     signal?: AbortSignal,
+    clockOffset = 0,
   ): Promise<ApplyResult> {
     const db = await openDatabase();
     const patch: ApplyResult = {};
@@ -183,7 +191,7 @@ export class SyncApplyService {
         if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
         try {
           log.debug(`[applyServerChanges] Processing ${entity}: ${records.length} records`);
-          const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal);
+          const { storeMapped } = await this.applyEntityToTable(db, entity, records as Record<string, unknown>[], deletedIds, signal, clockOffset);
           log.debug(`[applyServerChanges] ${entity}: applied ${storeMapped.length} records to store`);
 
           // Special handling for meditation (total minutes calculation)
@@ -223,6 +231,7 @@ export class SyncApplyService {
     records: Record<string, unknown>[],
     deletedIds?: Set<string>,
     signal?: AbortSignal,
+    clockOffset = 0,
   ): Promise<{ applied: unknown[]; storeMapped: unknown[] }> {
     const config = ENTITY_CONFIG[entity];
     if (!config) return { applied: [], storeMapped: [] };
@@ -251,61 +260,59 @@ export class SyncApplyService {
       }
     }
 
-    // Process alive records (upsert)
+    // ── Phase 1: Prepare all upsertable rows (sync filtering + conflict check) ──
+    type PreparedRow = { id: string; cols: string[]; vals: (string | number | null)[]; original: Record<string, unknown> };
+    const toUpsert: PreparedRow[] = [];
     for (const r of alive) {
       if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
       const id = this.resolveEntityId(r, pk, entity === 'profile' ? 'self' : undefined);
       if (!id) continue;
-
-      // Skip if locally deleted (recycle bin)
-      if (deletedIds?.has(id)) {
-        log.debug(`[applyEntityToTable] Skipping ${entity}:${id} — in recycle bin`);
-        continue;
-      }
-
-      // Skip if recently deleted locally (in-memory guard against race conditions)
-      if (this._locallyDeleted.has(`${entity}:${id}`)) {
-        log.debug(`[applyEntityToTable] Skipping ${entity}:${id} — recently deleted locally`);
-        continue;
-      }
+      if (deletedIds?.has(id)) continue;
+      if (this._locallyDeleted.has(`${entity}:${id}`)) continue;
 
       const row = this.serverPayloadToRow(entity, r);
       if (!row) continue;
 
       const local = localMeta.get(id);
-      // Resolve server updatedAt — supports nested PB data format { data: { updatedAt: ... } }
       const serverUpdated = (pbField(r, 'updated_at') ?? pbField(r, 'updatedAt') ?? 0) as number;
+      const adjustedLocalUpdated = local ? local.updated_at - clockOffset : 0;
+      if (local && (local.deleted === 1 || adjustedLocalUpdated > serverUpdated)) continue;
 
-      // Conflict resolution: local deletions and newer local versions take precedence
-      // Tie-break: client uses strict > so equal timestamps → server wins (server is authoritative)
-      if (local && (local.deleted === 1 || local.updated_at > serverUpdated)) {
-        log.debug(`[applyEntityToTable] Skipping ${entity}:${id} — local ${local.deleted === 1 ? 'deleted' : 'newer'}`);
-        continue;
-      }
+      const cols = Object.keys(row);
+      const vals = Object.values(row) as (string | number | null)[];
+      for (const col of cols) { if (!isValidSqlName(col)) throw new Error(`Invalid column name: ${col}`); }
+      if (cols.length === 0) continue;
+      toUpsert.push({ id, cols, vals, original: row });
+    }
 
-      try {
-        const cols = Object.keys(row);
-        const vals = Object.values(row) as (string | number | null)[];
-        for (const col of cols) {
-          if (!isValidSqlName(col)) throw new Error(`Invalid column name: ${col}`);
+    // ── Phase 2: Batch UPDATE (concurrent via Promise.all) ──
+    if (toUpsert.length > 0) {
+      // Group by column structure (all rows of same entity share the same columns)
+      const sampleCols = toUpsert[0].cols;
+      const setClause = sampleCols.map(c => `${c}=?`).join(',');
+      const updateResults = await Promise.all(
+        toUpsert.map(({ id, vals }) =>
+          db.runAsync(`UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`, [...vals, id])
+            .catch((e) => { log.error(e, { entity, id, phase: 'batch-update' }); return { changes: 0 }; })
+        )
+      );
+
+      // ── Phase 3: INSERT fallback for rows that didn't exist ──
+      const insertCols = sampleCols;
+      const insertPh = insertCols.map(() => '?').join(',');
+      for (let i = 0; i < toUpsert.length; i++) {
+        if (updateResults[i].changes === 0) {
+          try {
+            await db.runAsync(
+              `INSERT INTO ${table} (${insertCols.join(',')},deleted,synced) VALUES (${insertPh},0,1)`,
+              toUpsert[i].vals
+            );
+          } catch (e) {
+            log.error(e, { entity, id: toUpsert[i].id, phase: 'batch-insert-fallback' });
+          }
         }
-        if (cols.length === 0) continue;
-
-        const setClause = cols.map(c => `${c}=?`).join(',');
-        const result = await db.runAsync(
-          `UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`,
-          [...vals, id]
-        );
-        if (result.changes === 0) {
-          await db.runAsync(
-            `INSERT INTO ${table} (${cols.join(',')},deleted,synced) VALUES (${cols.map(() => '?').join(',')},0,1)`,
-            vals
-          );
-        }
-        applied.push(row);
-        if (mapper) storeMapped.push(mapper(row));
-      } catch (e) {
-        log.error(e, { entity, id, phase: 'applyEntity-alive' });
+        applied.push(toUpsert[i].original);
+        if (mapper) storeMapped.push(mapper(toUpsert[i].original));
       }
     }
 

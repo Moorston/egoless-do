@@ -23,7 +23,7 @@ export class WriteBatcher {
   private _onPersistError: ((error: Error, entity: string, id: string) => void) | null = null;
   private _retryCount = 0;
 
-  constructor(flushDelayMs = 100, onFlushed?: () => void, onPersistError?: (error: Error, entity: string, id: string) => void) {
+  constructor(flushDelayMs = 250, onFlushed?: () => void, onPersistError?: (error: Error, entity: string, id: string) => void) {
     this._flushDelayMs = flushDelayMs;
     this._onFlushed = onFlushed ?? null;
     this._onPersistError = onPersistError ?? null;
@@ -208,7 +208,11 @@ export class WriteBatcher {
         if (!this._flushTimer) {
           this._retryCount++;
           if (this._retryCount >= 10) {
-            log.error('WriteBatcher: max retries reached, clearing pending writes', { count: this._pendingWrites.size });
+            log.error('WriteBatcher: max retries reached, discarding pending writes', { count: this._pendingWrites.size });
+            // Notify about each discarded write so UI can show error state
+            for (const [, entry] of this._pendingWrites) {
+              this._onPersistError?.(new Error('Write discarded after max retries'), entry.entity, entry.id);
+            }
             this._pendingWrites.clear();
             this._retryCount = 0;
             return;

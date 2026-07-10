@@ -571,6 +571,7 @@ describe('SyncEngine', () => {
         serverData,
         expect.any(Set),
         expect.anything(),
+        expect.any(Number), // clockOffset
       );
     });
 

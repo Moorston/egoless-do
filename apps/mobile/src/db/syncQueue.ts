@@ -137,12 +137,13 @@ export async function resetQueueItemsForRetry(ids: number[]): Promise<void> {
   );
 }
 
-/** Reset pending items for retry in batches. Prevents push storms when many items accumulated. */
+/** Reset retry timing for failed/conflict items. Does NOT force-reset status to 'pending'
+ *  to prevent push storms. Only clears next_retry_at so the scheduler can pick them up. */
 export async function resetAllPendingForRetry(batchSize = 50): Promise<number> {
   const db = await openDatabase();
   const result = await db.runAsync(
-    `UPDATE sync_queue SET status = 'pending', next_retry_at = 0
-     WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict', 'syncing')
+    `UPDATE sync_queue SET next_retry_at = 0
+     WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict')
                   AND retry_count < 10
                   ORDER BY created_at LIMIT ?)`,
     [batchSize],

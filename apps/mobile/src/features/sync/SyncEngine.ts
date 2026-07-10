@@ -219,7 +219,7 @@ export class SyncEngine {
     // Wire callbacks to eliminate dynamic imports in SyncRealtimeController
     this._realtimeController.setRunSync(() => { this.runSync().catch(e => log.error(e, { phase: 'realtime-sync' })); });
     this._realtimeController.setApplyServerChanges(
-      (data, deletedIds) => this._applyService.applyServerChanges(data, deletedIds),
+      (data, deletedIds) => this._applyService.applyServerChanges(data, deletedIds, undefined, this.clockOffset),
     );
     this._realtimeController.connectRealtime(
       pbUrl,
@@ -280,7 +280,7 @@ export class SyncEngine {
 
   // ── Apply server changes (delegated to SyncApplyService) ─────────────
   async applyServerChanges(data: Record<string, unknown[]>, deletedIds?: Set<string>, signal?: AbortSignal): Promise<Record<string, unknown>> {
-    return this._applyService.applyServerChanges(data, deletedIds, signal);
+    return this._applyService.applyServerChanges(data, deletedIds, signal, this.clockOffset);
   }
 
   // ── Server payload helpers (delegated to SyncApplyService) ───────────
@@ -474,7 +474,7 @@ export class SyncEngine {
           const affectedEntities = [...new Set(items.map(i => i.entity))];
           const pullResult = await apiSyncPullPost(freshToken(), { entities: affectedEntities, since: lastSyncAt > 0 ? lastSyncAt : undefined });
           if (pullResult?.data) {
-            const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal);
+            const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
             // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
             if (patch && Object.keys(patch).length && this._syncGeneration === generation) this._onChanges?.(patch);
             pushApplySucceeded = true;
@@ -548,7 +548,7 @@ export class SyncEngine {
         if (pullResult?.data) {
           let patch: Record<string, unknown> = {};
           try {
-            patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal);
+            patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
           } catch (applyErr) {
             log.error(applyErr, { phase: 'applyServerChanges' });
           }
@@ -578,7 +578,7 @@ export class SyncEngine {
         if (cr.hasChanges) {
           const pullResult = await apiSyncPull(freshToken(), userId, this.lastSyncAt > 0 ? this.lastSyncAt : undefined);
           if (pullResult?.data) {
-            const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal);
+            const patch = await this._applyService.applyServerChanges(pullResult.data, this._deletedIdsProvider?.() ?? new Set(), signal, this.clockOffset);
             // Guard: skip _onChanges if this sync was superseded (ghost sync prevention)
             if (patch && Object.keys(patch).length && this._syncGeneration === myGeneration) this._onChanges?.(patch);
           }
