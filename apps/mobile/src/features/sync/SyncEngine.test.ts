@@ -323,6 +323,7 @@ describe('SyncEngine', () => {
       vi.useFakeTimers();
       const cb = vi.fn();
       engine.setSyncTriggerCallback(cb);
+      engine.setTokenProvider(() => 'test-token');
 
       engine.triggerSyncDebounced();
       engine.clearSyncTrigger();
@@ -418,11 +419,12 @@ describe('SyncEngine', () => {
       expect(mockDrainQueue).toHaveBeenCalled();
     });
 
-    it('calls logout when refreshAuth fails to produce a token', async () => {
+    it('calls logout when refreshAuth fails to produce a token (user was logged in)', async () => {
       mockAppStore._auth = { token: null, refreshToken: 'refresh-123', user: { id: 'u1' } };
       mockAppStore.getState.mockReturnValue(mockAppStore);
-      mockAppStore.refreshAuth.mockResolvedValue(undefined); // refresh doesn't set token
+      mockAppStore.refreshAuth.mockResolvedValue(undefined);
       engine.setTokenProvider(() => mockAppStore._auth?.token ?? null);
+      engine.setUserIdProvider(() => mockAppStore._auth?.user?.id ?? null);
       engine.setTokenRecoveryFn(async () => {
         await mockAppStore.refreshAuth();
         return mockAppStore._auth.token;
@@ -432,6 +434,19 @@ describe('SyncEngine', () => {
       await engine.runSync();
 
       expect(mockAppStore.logout).toHaveBeenCalled();
+      expect(mockDrainQueue).not.toHaveBeenCalled();
+    });
+
+    it('does NOT call logout when user was never logged in', async () => {
+      mockAppStore._auth = { token: null, refreshToken: null, user: null };
+      mockAppStore.getState.mockReturnValue(mockAppStore);
+      engine.setTokenProvider(() => mockAppStore._auth?.token ?? null);
+      engine.setUserIdProvider(() => mockAppStore._auth?.user?.id ?? null);
+      engine.setKickedOutHandler(() => mockAppStore.logout());
+
+      await engine.runSync();
+
+      expect(mockAppStore.logout).not.toHaveBeenCalled();
       expect(mockDrainQueue).not.toHaveBeenCalled();
     });
   });
