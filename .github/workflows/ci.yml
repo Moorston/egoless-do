@@ -40,6 +40,24 @@ jobs:
           name: test-results
           path: coverage/
 
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Audit dependencies
+        run: pnpm audit --audit-level=high 2>&1 || true
+      - name: Check for exposed secrets
+        run: |
+          if grep -rn "PB_ADMIN_PASSWORD\|INTERNAL_SECRET\|SMTP_PASS" .env 2>/dev/null; then
+            echo "::warning::Secrets found in .env — ensure .env is in .gitignore"
+          fi
+
   build-mobile:
     name: EAS Build (preview)
     needs: lint
