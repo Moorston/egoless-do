@@ -57,12 +57,13 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
     }
 
     // Get admin PB for additional checks
+    // If admin auth fails, skip admin-dependent checks — token signature already verified by authRefresh
     let adminPb: any = null;
     try {
       const { getAdminPb } = await import('./pb.js');
       adminPb = await getAdminPb();
-    } catch {
-      // Admin PB unavailable — proceed with signature verification only
+    } catch (adminErr) {
+      console.warn('[verifyAuth] Admin PB unavailable, skipping password_changed_at and login_epoch checks:', (adminErr as Error)?.message ?? 'unknown');
     }
 
     // Check password_changed_at

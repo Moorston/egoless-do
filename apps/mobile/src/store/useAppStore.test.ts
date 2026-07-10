@@ -101,6 +101,9 @@ vi.mock('@egoless-do/core', () => {
     createSleepSlice: vi.fn(() => sliceStub()),
     createFoodSlice: vi.fn(() => sliceStub()),
     createCheckinSlice: vi.fn(() => sliceStub()),
+    createExerciseSlice: vi.fn(() => sliceStub()),
+    createMeditationSlice: vi.fn(() => sliceStub()),
+    createFastingSlice: vi.fn(() => sliceStub()),
     createProfileSlice: vi.fn(() => sliceStub()),
     createSettingsSlice: vi.fn(() => sliceStub()),
     createPlanSlice: vi.fn(() => sliceStub()),
@@ -113,6 +116,7 @@ vi.mock('@egoless-do/core', () => {
     createMindSlice: vi.fn(() => sliceStub()),
     createMantraSlice: vi.fn(() => sliceStub()),
     createZhiguanSlice: vi.fn(() => sliceStub()),
+    createSliceErrorSlice: vi.fn(() => sliceStub()),
   };
 });
 

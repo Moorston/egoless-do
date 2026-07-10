@@ -443,7 +443,14 @@ export class SyncEngine {
             await this._markQueueItemConflict(item.id, 'Auto-resolve failed');
           }
         } else {
-          await this._markQueueItemConflict(item.id, 'Server rejected');
+          // No serverData → cannot auto-resolve.
+          // If this item has been retried too many times, mark as permanently failed to avoid infinite loop.
+          if (item.retry_count + 1 >= MAX_RETRY_ATTEMPTS) {
+            await this._markQueueItemFailed(item.id, rejection?.error || 'Server rejected — max retries exceeded');
+            log.warn(`[SyncEngine] Permanently failed: ${item.entity}:${item.entity_id} (${rejection?.error})`);
+          } else {
+            await this._markQueueItemConflict(item.id, rejection?.error || 'Server rejected');
+          }
         }
       }
       if (autoResolvedIds.length) await this._withDbLock(async () => { await this._removeQueueItems(autoResolvedIds); });

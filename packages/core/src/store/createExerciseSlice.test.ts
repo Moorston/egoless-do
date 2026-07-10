@@ -5,7 +5,7 @@ globalThis.__DEV__ = false;
 
 vi.mock('../logger', () => ({ createLogger: () => ({ error: vi.fn(), warn: vi.fn(), info: vi.fn(), debug: vi.fn() }) }));
 
-import { createCheckinSlice } from './createCheckinSlice';
+import { createExerciseSlice } from './createExerciseSlice';
 
 function makeTestStore(initialState: Record<string, unknown> = {}) {
   let state: Record<string, unknown> = {
@@ -53,7 +53,7 @@ const sampleEntry = {
   calories: 200,
 };
 
-describe('createCheckinSlice', () => {
+describe('createExerciseSlice', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -61,7 +61,7 @@ describe('createCheckinSlice', () => {
   describe('addExercise', () => {
     it('adds an exercise entry to exerciseLog', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise(sampleEntry);
 
@@ -75,7 +75,7 @@ describe('createCheckinSlice', () => {
 
     it('generates unique id for each entry', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise(sampleEntry);
       slice.addExercise({ ...sampleEntry, sportKey: 'cycling' });
@@ -86,7 +86,7 @@ describe('createCheckinSlice', () => {
 
     it('sets deleted to false and generates updatedAt', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise(sampleEntry);
 
@@ -96,7 +96,7 @@ describe('createCheckinSlice', () => {
 
     it('does nothing when sportKey is empty', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.addExercise({ ...sampleEntry, sportKey: '' });
 
@@ -109,7 +109,7 @@ describe('createCheckinSlice', () => {
   describe('deleteExercise', () => {
     it('soft-deletes an exercise entry', () => {
       const store = makeTestStore({ exerciseLog: [makeExercise()] });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.deleteExercise('exercise-1');
 
@@ -120,7 +120,7 @@ describe('createCheckinSlice', () => {
 
     it('adds deleted exercise to recycleBin with entityType exercise', () => {
       const store = makeTestStore({ exerciseLog: [makeExercise()] });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createExerciseSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.deleteExercise('exercise-1');
 

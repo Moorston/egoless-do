@@ -81,12 +81,8 @@ export const cfg = {
 
 export type AppConfig = typeof cfg;
 
-/** 获取 INTERNAL_SECRET，支持向后兼容的 PB_ENCRYPTION_KEY fallback（带警告）。 */
+/** 获取 INTERNAL_SECRET（必须单独设置，不 fallback 到 PB_ENCRYPTION_KEY）。 */
 export function getInternalSecret(): string {
   if (cfg.internalSecret) return cfg.internalSecret;
-  if (cfg.pbEncryptionKey) {
-    console.warn('[Config] INTERNAL_SECRET not set, falling back to PB_ENCRYPTION_KEY — set INTERNAL_SECRET separately for production');
-    return cfg.pbEncryptionKey;
-  }
-  throw new Error('[Config] INTERNAL_SECRET must be set');
+  throw new Error('[Config] INTERNAL_SECRET must be set — do NOT fallback to PB_ENCRYPTION_KEY (different security domains)');
 }

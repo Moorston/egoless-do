@@ -1,4 +1,4 @@
-import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger } from '@egoless-do/core';
+import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger, formatDate } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
 import NetInfo from '@react-native-community/netinfo';
 import { Image } from 'expo-image';

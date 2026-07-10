@@ -12,7 +12,7 @@ vi.mock('../logger', () => ({
   }),
 }));
 
-import { createCheckinSlice } from './createCheckinSlice';
+import { createFastingSlice } from './createFastingSlice';
 
 function makeTestStore(initialState: Record<string, unknown> = {}) {
   let state: Record<string, unknown> = {
@@ -40,7 +40,7 @@ const mockAdapter = {
 
 const mockSync = vi.fn();
 
-describe('createCheckinSlice', () => {
+describe('createFastingSlice', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -48,7 +48,7 @@ describe('createCheckinSlice', () => {
   describe('startFasting', () => {
     it('creates a new fasting session and sets activeFasting', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.startFasting(16);
 
@@ -61,7 +61,7 @@ describe('createCheckinSlice', () => {
 
     it('persists the new fasting session via adapter', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.startFasting(16);
 
@@ -75,7 +75,7 @@ describe('createCheckinSlice', () => {
     it('does not start a new session if one is already active', () => {
       const existingSession = { id: 'existing', startedAt: Date.now(), targetHours: 12 };
       const store = makeTestStore({ activeFasting: existingSession });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.startFasting(16);
 
@@ -85,7 +85,7 @@ describe('createCheckinSlice', () => {
 
     it('sets activeFasting to non-null after starting', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       expect(store.state().activeFasting).toBeNull();
       slice.startFasting(24);
@@ -98,7 +98,7 @@ describe('createCheckinSlice', () => {
       const store = makeTestStore({
         activeFasting: { id: 'fast-1', startedAt: Date.now() - 3600000, targetHours: 16 },
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.stopFasting();
 
@@ -109,7 +109,7 @@ describe('createCheckinSlice', () => {
       const store = makeTestStore({
         activeFasting: { id: 'fast-1', startedAt: Date.now() - 3600000, targetHours: 16 },
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.stopFasting();
 
@@ -122,7 +122,7 @@ describe('createCheckinSlice', () => {
       const store = makeTestStore({
         activeFasting: { id: 'fast-1', startedAt: Date.now() - 3600000, targetHours: 16 },
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.stopFasting();
 
@@ -137,7 +137,7 @@ describe('createCheckinSlice', () => {
       const store = makeTestStore({
         activeFasting: { id: 'fast-1', startedAt: Date.now() - 3600000, targetHours: 16 },
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.stopFasting();
 
@@ -146,7 +146,7 @@ describe('createCheckinSlice', () => {
 
     it('does nothing if no active fasting session', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.stopFasting();
 
@@ -161,7 +161,7 @@ describe('createCheckinSlice', () => {
         activeFasting: { id: 'fast-2', startedAt: Date.now() - 3600000, targetHours: 16 },
         fastingHistory: [{ id: 'fast-old', startedAt: 1000, endedAt: 2000, targetHours: 12 }],
       });
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       slice.stopFasting();
 
@@ -175,7 +175,7 @@ describe('createCheckinSlice', () => {
   describe('deleteFastingRecord', () => {
     it('is not implemented as a separate method on the fasting slice', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       // deleteFastingRecord does not exist — the CheckinSlice
       // only exposes startFasting and stopFasting for the fasting feature.
@@ -186,7 +186,7 @@ describe('createCheckinSlice', () => {
   describe('state keys', () => {
     it('has activeFasting initialized to null', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       expect(store.state()).toHaveProperty('activeFasting');
       expect(store.state().activeFasting).toBeNull();
@@ -194,7 +194,7 @@ describe('createCheckinSlice', () => {
 
     it('has fastingHistory initialized to empty array', () => {
       const store = makeTestStore();
-      const slice = createCheckinSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
+      const slice = createFastingSlice(mockAdapter as any, mockSync)(store.set, store.get, store.api);
 
       expect(store.state()).toHaveProperty('fastingHistory');
       expect(store.state().fastingHistory).toEqual([]);

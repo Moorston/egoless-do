@@ -110,6 +110,19 @@ function applyReadType(value: unknown, type?: FieldType): unknown {
   }
 }
 
+/**
+ * Resolve a field value from a PB record, supporting nested `data` format.
+ * PB hook returns { id, habit_id, user_id, data: { name, startDate, ... } }.
+ * Tries: r[key] → r.data[key] → undefined
+ */
+export function pbField(r: Record<string, unknown>, key: string): unknown {
+  const val = r[key];
+  if (val !== undefined && val !== null) return val;
+  const nested = r.data;
+  if (nested && typeof nested === 'object') return (nested as Record<string, unknown>)[key];
+  return undefined;
+}
+
 function resolveFallback(field: FieldMapping, value: unknown): unknown {
   if (value !== undefined && value !== null) return value;
   if (field.fallback !== undefined) {
@@ -145,10 +158,10 @@ export function buildServerPayloadToRow(schema: EntitySchema): (r: Record<string
       if (f.readOnly) continue;
       // Skip deleted field — always force to 0 for server payloads
       if (f.entity === 'deleted') { row[f.col] = 0; continue; }
-      // Try camelCase server name first, then snake_case col name
+      // Resolve from PB record (supports nested data)
       const serverName = f.server ?? f.entity;
-      let raw = r[serverName];
-      if (raw === undefined || raw === null) raw = r[f.col];
+      let raw = pbField(r, serverName);
+      if (raw === undefined || raw === null) raw = pbField(r, f.col);
       // Check required
       if (f.required && (raw === undefined || raw === null || raw === '')) return null;
       const value = resolveFallback(f, raw);

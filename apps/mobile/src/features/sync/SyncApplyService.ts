@@ -3,7 +3,7 @@
 // Handles applying server changes to local SQLite and generating store patches.
 
 import type { SyncEntity } from '@egoless-do/core';
-import { SCHEMAS, buildServerPayloadToRow, createLogger } from '@egoless-do/core';
+import { SCHEMAS, buildServerPayloadToRow, pbField, createLogger } from '@egoless-do/core';
 
 import { openDatabase, withDbLock } from '../../db/schema';
 import { isValidSqlName } from '../../db/sqlHelper';
@@ -157,9 +157,9 @@ export class SyncApplyService {
     return _serverPayloadToRowFns[entity]?.(r) ?? null;
   }
 
-  /** Resolve entity ID from payload using PK or fallbacks */
+  /** Resolve entity ID from payload using PK or fallbacks (supports nested data) */
   resolveEntityId(r: Record<string, unknown>, pk: string, fallback?: string): string | undefined {
-    return (r[pk] ?? r.id ?? r.date) as string | undefined ?? fallback;
+    return (pbField(r, pk) ?? pbField(r, 'id') ?? pbField(r, 'date')) as string | undefined ?? fallback;
   }
 
   /** Apply server changes to SQLite and generate store patch */
@@ -271,7 +271,8 @@ export class SyncApplyService {
       if (!row) continue;
 
       const local = localMeta.get(id);
-      const serverUpdated = (r.updated_at ?? r.updatedAt ?? 0) as number;
+      // Resolve server updatedAt — supports nested PB data format { data: { updatedAt: ... } }
+      const serverUpdated = (pbField(r, 'updated_at') ?? pbField(r, 'updatedAt') ?? 0) as number;
 
       // Conflict resolution: local deletions and newer local versions take precedence
       // Tie-break: client uses strict > so equal timestamps → server wins (server is authoritative)

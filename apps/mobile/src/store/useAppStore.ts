@@ -1,18 +1,22 @@
 // ─── Zustand store (mobile) — slice composition ────────────────
 import type {
   AuthSlice, HabitSlice, ReflectionSlice, SleepSlice,
-  FoodSlice, CheckinSlice, ProfileSlice, SettingsSlice,
+  FoodSlice, CheckinSlice, ExerciseSlice, MeditationSlice, FastingSlice,
+  ProfileSlice, SettingsSlice,
   PlanSlice, RecycleBinSlice, ThoughtTrailSlice, ReviewSlice, BodySlice,
   DietSlice, MindSlice, MantraSlice, ZhiguanSlice, PracticeSlice,
+  SliceErrorState,
 } from '@egoless-do/core';
 import {
   setApiBase, setPushApiBase, setSyncApiBase,
   createAuthSlice, createHabitSlice, createReflectionSlice, createSleepSlice,
-  createFoodSlice, createCheckinSlice, createProfileSlice, createSettingsSlice,
+  createFoodSlice, createCheckinSlice, createExerciseSlice, createMeditationSlice, createFastingSlice,
+  createProfileSlice, createSettingsSlice,
   createPlanSlice, createRecycleBinSlice, createThoughtTrailSlice, createReviewSlice, createBodySlice,
   createDietSlice,
   createPracticeSlice, createMindSlice, createMantraSlice,
   createZhiguanSlice,
+  createSliceErrorSlice,
   createLogger,
 } from '@egoless-do/core';
 import Constants from 'expo-constants';
@@ -125,9 +129,10 @@ function persistAIConfig() {
 initMobileStore();
 
 export type MobileStore = AuthSlice & HabitSlice & ReflectionSlice & SleepSlice
-  & FoodSlice & CheckinSlice & ProfileSlice & SettingsSlice
+  & FoodSlice & CheckinSlice & ExerciseSlice & MeditationSlice & FastingSlice
+  & ProfileSlice & SettingsSlice
   & MobileUiSlice & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReviewSlice
-  & BodySlice & DietSlice & PracticeSlice & MindSlice & MantraSlice & ZhiguanSlice;
+  & BodySlice & DietSlice & PracticeSlice & MindSlice & MantraSlice & ZhiguanSlice & SliceErrorState;
 
 /** Partial store type for setState calls */
 export type PartialMobileStore = Partial<MobileStore>;
@@ -196,6 +201,9 @@ export const useAppStore = create<MobileStore>()(
       persistProfileSettings, () => resetSyncState(),
     )(...a);
     const habitSlice = createHabitSlice(adapter, triggerAutoSync)(...a);
+    const exerciseSlice = createExerciseSlice(adapter, triggerAutoSync)(...a);
+    const meditationSlice = createMeditationSlice(adapter, triggerAutoSync)(...a);
+    const fastingSlice = createFastingSlice(adapter, triggerAutoSync)(...a);
     const sleepSlice = createSleepSlice(adapter, triggerAutoSync)(...a);
     const planSlice = createPlanSlice(adapter)(...a);
     const recycleBinSlice = createRecycleBinSlice(adapter)(...a);
@@ -207,14 +215,17 @@ export const useAppStore = create<MobileStore>()(
     const mindSlice = createMindSlice(adapter, triggerAutoSync)(...a);
     const mantraSlice = createMantraSlice(adapter, triggerAutoSync)(...a);
     const zhiguanSlice = createZhiguanSlice(adapter, () => useAppStore.getState().auth?.user?.id ?? 'anonymous', triggerAutoSync)(...a);
+    const sliceErrorSlice = createSliceErrorSlice()(...a);
 
     const store = {
       ...authSlice,
       ...habitSlice, ...reflectionSlice, ...sleepSlice,
-      ...foodSlice, ...checkinSlice, ...profileSlice, ...settingsSlice,
+      ...foodSlice, ...checkinSlice, ...exerciseSlice, ...meditationSlice, ...fastingSlice,
+      ...profileSlice, ...settingsSlice,
       ...mobileUiSlice, ...planSlice, ...recycleBinSlice, ...thoughtTrailSlice,
       ...reviewSlice, ...bodySlice, ...dietSlice, ...practiceSlice,
       ...mindSlice, ...mantraSlice, ...zhiguanSlice,
+      ...sliceErrorSlice,
     };
 
     // Connect persist error handler: WriteBatcher failures → store.persistErrors

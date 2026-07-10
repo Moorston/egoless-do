@@ -30,6 +30,20 @@ import type { MindSlice } from './mindSliceTypes';
 export type { MindSlice } from './mindSliceTypes';
 import type { ZhiguanSlice } from './zhiguanSliceTypes';
 export type { ZhiguanSlice } from './zhiguanSliceTypes';
+import type { ExerciseSlice } from './createExerciseSlice';
+export type { ExerciseSlice } from './createExerciseSlice';
+import type { MeditationSlice } from './createMeditationSlice';
+export type { MeditationSlice } from './createMeditationSlice';
+import type { FastingSlice } from './createFastingSlice';
+export type { FastingSlice } from './createFastingSlice';
+
+/** Error record for slice-level persistence failures */
+export interface SliceError {
+  entity: string;
+  id: string;
+  error: string;
+  timestamp: number;
+}
 
 // ─── Granular slice interfaces ─────────────────────────────────
 
@@ -53,23 +67,6 @@ export interface CheckinSlice {
   submitCheckin: (done: boolean, note: string, date?: string, weight?: number, grace?: boolean) => void;
   calculateStreak: () => void;
   addGraceRecord: (date: string) => void;
-
-  // Exercise
-  exerciseLog: ExerciseEntry[];
-  addExercise: (entry: Omit<ExerciseEntry, 'id' | 'updatedAt' | 'deleted'>) => void;
-  deleteExercise: (id: string) => void;
-
-  // Meditation
-  totalMedMinutes: number;
-  medHistory: MedHistoryEntry[];
-  addMedMinutes: (min: number, trackId?: string, note?: string) => void;
-  calculateTotalMedMin: () => void;
-
-  // Fasting
-  activeFasting: FastingSession | null;
-  fastingHistory: FastingSession[];
-  startFasting: (hours: number) => void;
-  stopFasting: (opts?: StopFastingOpts & { note?: string }) => void;
 }
 
 export interface ProfileSlice {
@@ -276,11 +273,18 @@ export interface DietSlice {
   getEmotionSensitiveDays: (dateFrom: string, dateTo: string) => EmotionSensitiveDay[];
 }
 
+/** Slice-level error tracking — shared across all slices */
+export interface SliceErrorState {
+  sliceErrors: SliceError[];
+  addSliceError: (error: SliceError) => void;
+  clearSliceErrors: () => void;
+}
+
 // ─── FullStore composition ─────────────────────────────────────
 
-export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & CheckinSlice & SleepSlice
+export type FullStore = AuthSlice & HabitSlice & ReflectionSlice & CheckinSlice & ExerciseSlice & MeditationSlice & FastingSlice & SleepSlice
   & ProfileSlice & SettingsSlice
-  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReviewSlice & BodySlice & DietSlice & PracticeSlice & MantraSlice & MindSlice & ZhiguanSlice & { resetData: () => void };
+  & PlanSlice & RecycleBinSlice & ThoughtTrailSlice & ReviewSlice & BodySlice & DietSlice & PracticeSlice & MantraSlice & MindSlice & ZhiguanSlice & SliceErrorState & { resetData: () => void };
 
 // ─── Sync data mapping ────────────────────────────────────────
 

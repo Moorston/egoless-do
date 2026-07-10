@@ -115,11 +115,11 @@ export async function markQueueItemRetry(id: number, attempt: number, nextRetryA
   );
 }
 
-/** Mark a queue item as conflict. */
+/** Mark a queue item as conflict (increments retry_count to prevent infinite retry loops). */
 export async function markQueueItemConflict(id: number, error: string): Promise<void> {
   const db = await openDatabase();
   await db.runAsync(
-    "UPDATE sync_queue SET status = 'conflict', last_error = ? WHERE id = ?",
+    "UPDATE sync_queue SET status = 'conflict', last_error = ?, retry_count = retry_count + 1 WHERE id = ?",
     [error, id],
   );
 }

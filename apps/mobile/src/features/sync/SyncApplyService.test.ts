@@ -76,6 +76,13 @@ vi.mock('@egoless-do/core', () => ({
     const { collection: _c, ...rest } = row as Record<string, unknown> & { collection?: unknown };
     return rest;
   },
+  pbField: (r: Record<string, unknown>, key: string) => {
+    const val = r[key];
+    if (val !== undefined && val !== null) return val;
+    const nested = r.data;
+    if (nested && typeof nested === 'object') return (nested as Record<string, unknown>)[key];
+    return undefined;
+  },
   createLogger: () => ({
     debug: vi.fn(),
     error: vi.fn(),
