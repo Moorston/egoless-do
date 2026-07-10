@@ -114,6 +114,10 @@ function applyReadType(value: unknown, type?: FieldType): unknown {
  * Resolve a field value from a PB record, supporting nested `data` format.
  * PB hook returns { id, habit_id, user_id, data: { name, startDate, ... } }.
  * Tries: r[key] → r.data[key] → undefined
+ *
+ * NOTE: If the top-level field is explicitly `null`, pbField falls through to nested data.
+ * This is intentional — PB hook stores entity data in `data` JSON and may set top-level
+ * fields to null when they're not applicable. The nested `data` is always the source of truth.
  */
 export function pbField(r: Record<string, unknown>, key: string): unknown {
   const val = r[key];
@@ -162,8 +166,9 @@ export function buildServerPayloadToRow(schema: EntitySchema): (r: Record<string
       const serverName = f.server ?? f.entity;
       let raw = pbField(r, serverName);
       if (raw === undefined || raw === null) raw = pbField(r, f.col);
-      // Check required
-      if (f.required && (raw === undefined || raw === null || raw === '')) return null;
+      // Check required — only reject truly missing values (undefined/null), not empty strings.
+      // Empty string is a valid value; non-emptiness is a business logic concern, not a sync concern.
+      if (f.required && (raw === undefined || raw === null)) return null;
       const value = resolveFallback(f, raw);
       row[f.col] = applyType(value, f.type);
     }
@@ -531,8 +536,8 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'planId',    col: 'plan_id',    server: 'planId' },
-      { entity: 'date',      col: 'date',       server: 'date' },
-      { entity: 'name',      col: 'name',       server: 'name' },
+      { entity: 'date',      col: 'date',       server: 'date',      required: true },
+      { entity: 'name',      col: 'name',       server: 'name',      required: true },
       { entity: 'done',      col: 'done',       server: 'done',      type: 'bool' },
       { entity: 'order',     col: 'todo_order', server: 'order',     type: 'num', fallback: 0 },
       { entity: 'recurring', col: 'recurring',  server: 'recurring', type: 'bool' },
@@ -564,6 +569,9 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'description',       col: 'description',           server: 'description',       fallback: '' },
       { entity: 'reflectionIds',     col: 'reflection_ids',        server: 'reflectionIds',     type: 'json' },
       { entity: 'noteIds',           col: 'note_ids',              server: 'noteIds',           type: 'json', fallback: [] },
+      // NOTE: thoughtTrail.source defaults to 'manual' (how the trail was created)
+      //       trailNote.source defaults to 'free' (note type: 'free' writing vs 'guided' prompt)
+      //       These are intentionally different — do NOT unify without understanding the distinction.
       { entity: 'source',            col: 'source',                server: 'source',            fallback: 'manual' },
       { entity: 'insightSummary',    col: 'insight_summary',       server: 'insightSummary',    fallback: null },
       { entity: 'insightCache',      col: 'insight_cache',         server: 'insightCache',      type: 'json', fallback: null },

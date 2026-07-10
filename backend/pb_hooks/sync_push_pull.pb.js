@@ -85,12 +85,26 @@ routerAdd("POST", "/api/sync/push", function(e) {
           }
           existObj.updatedAt = payload.updatedAt || Date.now();
           rec.set("data", JSON.stringify(existObj));
-          rec.set("updated_at", new Date().toISOString());
+          rec.set("updated_at", Date.now());
           rec.set("deleted", existObj.deleted === true ? true : false);
+          // Set top-level fields required by specific collections (PB hook stores most data in `data` JSON)
+          // NOTE: These fields exist in BOTH top-level and data JSON. The pull hook merges data over
+          // top-level, so data JSON is the source of truth. Top-level fields are for PB query/filter support.
+          if (entity === "checkinReview") {
+            rec.set("period", existObj.period || "week");
+            rec.set("start_date", existObj.startDate || existObj.start_date || "");
+            rec.set("end_date", existObj.endDate || existObj.end_date || "");
+          }
+          if (entity === "trailNote") {
+            rec.set("trail_id", existObj.trailId || existObj.trail_id || "");
+            rec.set("content", existObj.content || "");
+            rec.set("source", existObj.source || "free");
+            rec.set("created_at", existObj.createdAt || existObj.created_at || Date.now());
+          }
           $app.save(rec);
           applied.push({ entity: entity, entityId: entityId, operation: "upsert" });
         }
-      } catch (recErr) { console.error("[sync-push] record error for " + entity + ":", recErr.name || "SyncError"); rejected.push({ entity: entity, entityId: entityId, error: "Server error processing record" }); }
+      } catch (recErr) { console.error("[sync-push] record error for " + entity + ":", recErr.name || "SyncError", recErr.message || ""); rejected.push({ entity: entity, entityId: entityId, error: "Server error processing record" }); }
     }
     return e.json(200, { applied: applied, rejected: rejected, serverTime: Date.now() });
   } catch (err) {

@@ -26,14 +26,9 @@ const log = createLogger('App');
 /** Tracks visibility listener subscription for cleanup on teardown. */
 let _visibilitySubscription: { remove: () => void } | null = null;
 
-/** Settings keys persisted via adapter.persistSettings() to app_state table. */
+/** Non-profile keys persisted in app_state table (profile settings use profile entity instead). */
 const SETTINGS_KEYS = [
-  'theme', 'language', 'waterMl', 'waterGoal', 'calGoal',
-  'remindEnabled', 'remindTime', 'weightUnit',
-  'customTags', 'customMoods', 'allTagsOrder', 'allMoodsOrder',
-  'customFoodPresets', 'reflectionFilters',
-  'healthSyncEnabled', 'ignoredRecPatterns',
-  'sleepGoal',
+  'sleepGoal',      // SleepGoal object — persisted via SleepSlice.persistSettings, not in profile
   'auth',           // { isSignedIn, user, isGuest } — no tokens
   'recycleBin',     // RecycleBinItem[]
 ] as const;
@@ -115,7 +110,7 @@ export async function initApp(): Promise<void> {
 
     // Unpack profile fields into top-level store keys
     // Profile blob is the primary source of truth (updated by flushProfileSettings on every change).
-    // Always override app_state values with profile blob values.
+    // These fields are NOT loaded from app_state — profile entity is the sole source.
     const profile = fullPatch.userProfile as Record<string, unknown> | undefined;
     if (profile) {
       const PROFILE_UNPACK_KEYS = [

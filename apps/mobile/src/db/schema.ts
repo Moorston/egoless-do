@@ -273,7 +273,7 @@ CREATE TABLE IF NOT EXISTS daily_custom_todos (
 
 CREATE TABLE IF NOT EXISTS daily_todo_history (
   id          TEXT PRIMARY KEY,
-  plan_id     TEXT    NOT NULL,
+  plan_id     TEXT,
   date        TEXT    NOT NULL,
   plan_items  TEXT    NOT NULL DEFAULT '[]',
   custom_todos TEXT   NOT NULL DEFAULT '[]',
@@ -288,6 +288,7 @@ CREATE TABLE IF NOT EXISTS thought_trails (
   description     TEXT    DEFAULT '',
   reflection_ids  TEXT    NOT NULL DEFAULT '[]',
   note_ids        TEXT    NOT NULL DEFAULT '[]',
+  linked_plan_item_ids TEXT,
   source          TEXT    DEFAULT 'manual',
   insight_summary TEXT,
   insight_cache   TEXT,
@@ -709,7 +710,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   if (!thoughtTrailTableCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS thought_trails (
       id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT DEFAULT '',
-      reflection_ids TEXT NOT NULL DEFAULT '[]',
+      reflection_ids TEXT NOT NULL DEFAULT '[]', linked_plan_item_ids TEXT,
       source TEXT DEFAULT 'manual', insight_summary TEXT,
       created_at INTEGER NOT NULL, updated_at INTEGER,
       deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
@@ -868,10 +869,33 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   );
   if (!dailyTodoHistoryTableCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_todo_history (
-      id TEXT PRIMARY KEY, plan_id TEXT NOT NULL, date TEXT NOT NULL,
+      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
       plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
       updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
     )`);
+  }
+
+  // Migrate daily_todo_history: make plan_id nullable for existing databases
+  try {
+    const colInfo = await db.getAllAsync<{ name: string; notnull: number }>(
+      "PRAGMA table_info(daily_todo_history)"
+    );
+    const planIdCol = colInfo.find(c => c.name === 'plan_id');
+    if (planIdCol && planIdCol.notnull === 1) {
+      await db.execAsync('BEGIN TRANSACTION');
+      await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_todo_history_new (
+        id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+        plan_items TEXT NOT NULL DEFAULT '[]', custom_todos TEXT NOT NULL DEFAULT '[]',
+        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      )`);
+      await db.execAsync(`INSERT OR IGNORE INTO daily_todo_history_new SELECT * FROM daily_todo_history`);
+      await db.execAsync(`DROP TABLE daily_todo_history`);
+      await db.execAsync(`ALTER TABLE daily_todo_history_new RENAME TO daily_todo_history`);
+      await db.execAsync('COMMIT');
+    }
+  } catch (e) {
+    try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
+    log.warn('[DB] daily_todo_history plan_id nullable migration failed:', e);
   }
 
   if (!planTableCheck) {
@@ -1080,7 +1104,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   );
   if (!zhiguanSessionsCheck) {
     await db.execAsync(`CREATE TABLE IF NOT EXISTS zhiguan_sessions (
-      id TEXT PRIMARY KEY, user_id TEXT, status TEXT NOT NULL DEFAULT 'active',
+      id TEXT PRIMARY KEY, user_id TEXT, status TEXT NOT NULL DEFAULT 'completed',
       start_ts INTEGER NOT NULL, end_ts INTEGER, sankalpa TEXT,
       preliminary_level TEXT, chosen_method TEXT,
       samatha_ratio_avg REAL, vipassana_ratio_avg REAL,
