@@ -164,7 +164,7 @@ export default function ReflectionStatsScreen() {
       await Share.share({
         message: `我的感念统计：共 ${stats.totalCount} 条感念，连续写作 ${stats.streakDays} 天！`,
       });
-    } catch {}
+    } catch { /* Share API unavailable — ignore */ }
   };
 
   const renderTrendTab = () => {

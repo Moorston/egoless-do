@@ -10,7 +10,7 @@ export function useSearchHistory() {
 
   useEffect(() => {
     AsyncStorage.getItem(SEARCH_HISTORY_KEY).then(v => {
-      if (v) try { setSearchHistory(JSON.parse(v)); } catch {}
+      if (v) try { setSearchHistory(JSON.parse(v)); } catch { /* corrupted cache — ignore */ }
     }).catch(() => {});
   }, []);
 

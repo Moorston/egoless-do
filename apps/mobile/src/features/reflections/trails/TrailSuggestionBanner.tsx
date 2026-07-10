@@ -69,7 +69,7 @@ export default function TrailSuggestionBanner() {
     const pattern = buildIgnoredPattern(topRec);
     AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
       let ignored: string[] = [];
-      try { if (raw) ignored = JSON.parse(raw); } catch {}
+      try { if (raw) ignored = JSON.parse(raw); } catch { /* corrupted cache — ignore */ }
       const next = [...new Set([...ignored, pattern])];
       AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
     }).catch((e) => log.error(e));

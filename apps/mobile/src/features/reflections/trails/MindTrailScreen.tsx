@@ -73,7 +73,7 @@ export default function MindTrailScreen() {
   useEffect(() => {
     AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
       if (raw) {
-        try { ignoredPatternsRef.current = JSON.parse(raw); } catch {}
+        try { ignoredPatternsRef.current = JSON.parse(raw); } catch { /* corrupted cache — ignore */ }
       }
     });
   }, []);
