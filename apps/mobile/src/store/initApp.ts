@@ -3,7 +3,7 @@
 // Loads all persisted data from SQLite, restores auth tokens,
 // and sets up daily reset management.
 
-import { DailyResetManager , createLogger, setSentryBridge } from '@egoless-do/core';
+import { DailyResetManager , createLogger, setSentryBridge, apiGetMe } from '@egoless-do/core';
 import { AppState } from 'react-native';
 
 import { openDatabase, setState as setAppState } from '../db/schema';
@@ -193,6 +193,19 @@ export async function initApp(): Promise<void> {
             token: secureTokens.token,
             refreshToken: secureTokens.refreshToken,
           };
+
+          // Verify token validity in background — don't block app startup
+          apiGetMe(secureTokens.token).then(({ user }) => {
+            // Token is valid — update user info
+            const latestAuth = store().auth;
+            if (latestAuth.token === secureTokens.token) {
+              setState({ auth: { ...latestAuth, user } } as PartialMobileStore);
+            }
+          }).catch(() => {
+            // Token expired or invalid — will be refreshed by refreshAuth() on next sync
+            log.info('SecureStore token expired, will refresh on next sync');
+          });
+
           if (!currentAuth.isSignedIn) {
             // Restore full auth state from SecureStore
             setState({

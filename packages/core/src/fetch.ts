@@ -4,7 +4,7 @@ const REQUEST_TIMEOUT = 15_000;
 export const SYNC_REQUEST_TIMEOUT = 60_000;
 
 export function buildHeaders(token?: string): Record<string, string> {
-  const h: Record<string, string> = { 'Content-Type': 'application/json', 'Accept-Encoding': 'gzip' };
+  const h: Record<string, string> = { 'Content-Type': 'application/json' };
   if (token) h['Authorization'] = `Bearer ${token}`;
   return h;
 }

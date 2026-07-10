@@ -32,6 +32,14 @@ export default function LoginScreen() {
     }
   };
 
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    // Real-time format validation on change
+    if (emailError) {
+      setEmailError(text && !EMAIL_REGEX.test(text) ? T('authInvalidEmail') : '');
+    }
+  };
+
   const handleLogin = async () => {
     setError('');
     if (!email.trim() || !password.trim()) {
@@ -84,7 +92,7 @@ export default function LoginScreen() {
           <Card style={{ marginBottom: 16 }}>
             <ThemedInput
               value={email}
-              onChangeText={(text) => { setEmail(text); setEmailError(''); }}
+              onChangeText={handleEmailChange}
               onBlur={handleEmailBlur}
               placeholder={T('authEmailPlaceholder')}
               keyboardType="email-address"
