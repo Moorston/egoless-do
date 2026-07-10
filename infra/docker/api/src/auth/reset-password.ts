@@ -75,11 +75,20 @@ app.post('/reset-password', async (c) => {
     }
 
     // Revoke ALL refresh tokens for this user (critical: prevents stolen refresh token reuse)
-    await revokeAllUserRefreshTokens(user.id).catch((e) => {
+    let revokeFailed = false;
+    try {
+      await revokeAllUserRefreshTokens(user.id);
+    } catch (e) {
       console.error('Failed to revoke refresh tokens after password reset:', e);
-    });
+      revokeFailed = true;
+    }
 
-    return c.json({ ok: true, message: '密码重置成功，请重新登录' });
+    return c.json({
+      ok: true,
+      message: revokeFailed
+        ? '密码重置成功，但其他设备会话可能未被注销。建议登录后手动注销所有设备。'
+        : '密码重置成功，请重新登录',
+    });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : '';
     const pbStatus = errStatus(err);

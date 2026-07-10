@@ -17,14 +17,15 @@ const emailLocks = new Map<string, Promise<void>>();
 async function withEmailLock<T>(email: string, fn: () => Promise<T>): Promise<T> {
   const prev = emailLocks.get(email) ?? Promise.resolve();
   const { promise, resolve } = Promise.withResolvers<void>();
-  emailLocks.set(email, prev.then(() => promise));
+  const chained = prev.then(() => promise);
+  emailLocks.set(email, chained);
   try {
     await prev;
     return await fn();
   } finally {
     resolve();
-    // 清理：如果当前锁链就是本锁，移除它
-    if (emailLocks.get(email) === prev.then(() => promise)) {
+    // Only delete if this is still the latest lock in the chain
+    if (emailLocks.get(email) === chained) {
       emailLocks.delete(email);
     }
   }

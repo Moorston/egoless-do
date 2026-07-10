@@ -82,8 +82,13 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
           return null; // Token was issued before a newer login — reject it
         }
       }
-    } catch {
-      // Profile not found — allow (fresh accounts may not have profile yet)
+    } catch (epochErr: unknown) {
+      // 404 = fresh account without profile — allow (expected)
+      // Any other error = PB issue — fail-closed (reject token)
+      const status = (epochErr as Record<string, unknown>)?.status;
+      if (status !== 404) {
+        return null;
+      }
     }
 
     return { userId };

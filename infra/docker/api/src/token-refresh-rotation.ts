@@ -54,28 +54,46 @@ export async function createRefreshToken(userId: string, token: string, expiresA
 }
 
 /**
- * 原子校验+撤销 refresh token（防并发竞态）
- * 使用 "revoke-first" 策略：先尝试撤销，成功则说明 token 有效。
- * 避免 validate → revoke 之间的竞态窗口。
+ * 校验+撤销 refresh token（防并发竞态）
+ * 策略：find → revoke → re-read 验证 used_at 是否匹配。
+ * 如果两个并发请求都通过了 find，后到的 re-read 会发现 used_at 不匹配。
+ * 注意：PocketBase 不支持原子 UPDATE...RETURNING，仍有微小竞态窗口，
+ * 但 post-revoke 验证将窗口从"无限"缩小到"两个 PB 请求之间"。
  */
 export async function validateAndRevokeRefreshToken(token: string): Promise<{ valid: boolean; userId?: string }> {
   try {
     const pb = await getAdminPb();
-    // 先查找 token（必须有效且未撤销）
+    // Step 1: Find token (must be valid and not revoked)
     const record = await pb.collection(COLLECTION_NAME).getFirstListItem(
       `token = "${escapeFilter(token)}" && is_revoked = false && expires_at > ${Date.now()}`
     );
-    // 立即撤销（同一请求内）
+
+    // Step 2: Revoke immediately
+    const revokeTimestamp = Date.now();
     try {
       await pb.collection(COLLECTION_NAME).update(record.id, {
         is_revoked: true,
-        used_at: Date.now(),
+        used_at: revokeTimestamp,
       });
     } catch (revokeErr) {
-      // 如果撤销失败，token 可能被另一个并发请求抢先撤销 — 视为无效
+      // Revoke failed — token may have been revoked by a concurrent request
       console.warn('Token found but revoke failed (possible race):', safeErrId(revokeErr));
       return { valid: false };
     }
+
+    // Step 3: Post-revoke verification — re-read and check used_at matches
+    // If another concurrent request also revoked this token, used_at will differ
+    try {
+      const updated = await pb.collection(COLLECTION_NAME).getOne(record.id);
+      if (updated.used_at !== revokeTimestamp) {
+        console.warn('Token revoke race detected — used_at mismatch, rejecting');
+        return { valid: false };
+      }
+    } catch (verifyErr) {
+      // If re-read fails, proceed cautiously — the revoke succeeded
+      console.warn('Post-revoke verification failed, proceeding:', safeErrId(verifyErr));
+    }
+
     return { valid: true, userId: record.user_id };
   } catch (err: unknown) {
     if (errStatus(err) === 404) return { valid: false };
