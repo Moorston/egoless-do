@@ -79,7 +79,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
           }
           existObj.updatedAt = payload.updatedAt || Date.now();
           rec.set("data", JSON.stringify(existObj));
-          rec.set("updated_at", Date.now());
+          rec.set("updated_at", new Date().toISOString());
           rec.set("deleted", existObj.deleted === true ? true : false);
           // Set top-level fields required by specific collections (PB hook stores most data in `data` JSON)
           // NOTE: These fields exist in BOTH top-level and data JSON. The pull hook merges data over
