@@ -166,7 +166,18 @@ export function useSync() {
       }
     };
 
-    registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken);
+    // Retry once with refreshed token if auth fails
+    registerPushToken(token, Platform.OS as 'ios' | 'android', getExpoPushToken).catch(() => {
+      const { refreshToken, refreshAuth } = useAppStore.getState();
+      if (refreshToken) {
+        refreshAuth().then(() => {
+          const freshToken = useAppStore.getState().auth.token;
+          if (freshToken) {
+            registerPushToken(freshToken, Platform.OS as 'ios' | 'android', getExpoPushToken).catch(() => {});
+          }
+        }).catch(() => {});
+      }
+    });
   }, [isSignedIn, token]);
 
   // Connect realtime on sign in (short polling)

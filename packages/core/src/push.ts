@@ -73,5 +73,6 @@ export async function registerPushToken(
     }
   } catch (err) {
     log.error(err, { message: 'Failed to register token' });
+    throw err;
   }
 }
