@@ -376,7 +376,7 @@ export default function MeditationScreen() {
                   <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('shareCardSession')}</Text>
                 </View>
               </View>
-              <Text style={{ color:'rgba(255,255,255,0.3)', fontSize:FONT_BADGE, marginTop:32 }}>egoless-do.app</Text>
+              <Text style={{ color:'rgba(255,255,255,0.7)', fontSize:FONT_BADGE, marginTop:32 }}>egoless-do.app</Text>
             </View>
           </ViewShot>
           <View style={{ flexDirection:'row', gap:12, marginTop:20, width:300 }}>

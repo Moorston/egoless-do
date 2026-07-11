@@ -78,7 +78,7 @@ export default function PrepPage(props: ExercisePageProps) {
             <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
               {availableTargetTypes.map(t => (
                 <TouchableOpacity key={t} onPress={() => { setTargetType(t); setTargetValue(presets[t]?.[0]?.value ?? 0); setShowCustomInput(false); setCustomInputValue(''); }}
-                  style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: targetType === t ? 'rgba(255,255,255,.3)' : 'rgba(255,255,255,.1)' }}>
+                  style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: targetType === t ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.1)' }}>
                   <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: targetType === t ? '700' : '400' }}>
                     {targetTypeLabels[t] ?? t}
                   </Text>
@@ -88,7 +88,7 @@ export default function PrepPage(props: ExercisePageProps) {
             <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
               {(presets[targetType as keyof typeof presets] ?? []).map((p: { label: string; value: number }) => (
                 <TouchableOpacity key={p.label} onPress={() => { setTargetValue(p.value); setShowCustomInput(false); setCustomInputValue(''); setCustomTargetValue(v => { const n = { ...v }; delete n[targetType]; return n; }); }}
-                  style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10, backgroundColor: targetValue === p.value ? 'rgba(255,255,255,.3)' : 'rgba(255,255,255,.1)' }}>
+                  style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10, backgroundColor: targetValue === p.value ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.1)' }}>
                   <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: targetValue === p.value ? '700' : '400' }}>{p.label}</Text>
                 </TouchableOpacity>
               ))}
@@ -109,7 +109,7 @@ export default function PrepPage(props: ExercisePageProps) {
                       setShowCustomInput(v => !v);
                     }
                   }}
-                    style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10, backgroundColor: customActive || showCustomInput ? 'rgba(255,255,255,.3)' : 'rgba(255,255,255,.1)' }}>
+                    style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10, backgroundColor: customActive || showCustomInput ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.1)' }}>
                     <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: customActive || showCustomInput ? '700' : '400' }}>{customLabel}</Text>
                   </TouchableOpacity>
                 );
@@ -122,7 +122,7 @@ export default function PrepPage(props: ExercisePageProps) {
                   onChangeText={setCustomInputValue}
                   keyboardType="numeric"
                   placeholder={targetType === 'time' ? '30' : '200'}
-                  placeholderTextColor="rgba(255,255,255,.4)"
+                  placeholderTextColor="rgba(255,255,255,.7)"
                   style={{ flex: 1, height: 44, borderRadius: 10, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 14, color: '#fff', fontSize: FONT_BODY }}
                 />
                 <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SUB }}>

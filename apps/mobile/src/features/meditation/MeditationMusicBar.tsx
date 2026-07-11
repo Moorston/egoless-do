@@ -105,7 +105,7 @@ export default function MeditationMusicBar({ track, isActive, isPlaying, primary
           {subtitleKey ? T(subtitleKey) : T('medTapToSelect')}
         </Text>
       </View>
-      <ChevronRight size={16} color="rgba(255,255,255,.4)" />
+      <ChevronRight size={16} color="rgba(255,255,255,.7)" />
     </TouchableOpacity>
   );
 }

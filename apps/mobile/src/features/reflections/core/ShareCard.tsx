@@ -133,7 +133,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
                 {/* Footer */}
                 <View style={{ borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)', paddingTop: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>📅 {timeStr}</Text>
-                  <Text style={{ color: 'rgba(255,255,255,.4)', fontSize: 10 }}>❤️ 心流纪 · Egoless Do</Text>
+                  <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: 10 }}>❤️ 心流纪 · Egoless Do</Text>
                 </View>
               </View>
             </View>

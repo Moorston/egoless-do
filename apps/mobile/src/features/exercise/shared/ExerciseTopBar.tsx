@@ -28,7 +28,7 @@ export default function ExerciseTopBar({ icon, sportName, targetInfo, selectedSo
             <Text style={{ fontSize: FONT_SUB, color: COLORS.GREEN }}>{targetInfo}</Text>
           ) : null}
           <TouchableOpacity onPress={onToggleSoundPicker} style={{ padding: 4 }}>
-            <Music size={18} color={selectedSound !== '无' ? COLORS.ORANGE : 'rgba(255,255,255,.4)'} />
+            <Music size={18} color={selectedSound !== '无' ? COLORS.ORANGE : 'rgba(255,255,255,.7)'} />
           </TouchableOpacity>
         </View>
       </View>

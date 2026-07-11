@@ -99,7 +99,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
           </Animated.View>
         </View>
 
-        <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.45)', marginTop: 6 }}>{T('exerciseReps')}</Text>
+        <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.65)', marginTop: 6 }}>{T('exerciseReps')}</Text>
 
         {/* Complete set button */}
         {currentSetReps > 0 && (
@@ -124,7 +124,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
             })}
             {sets.length > 3 && (
               <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' }}>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.3)' }}>+{sets.length - 3}</Text>
+                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>+{sets.length - 3}</Text>
               </View>
             )}
           </View>
@@ -136,7 +136,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
             <View style={{ height: 6, backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
               <Animated.View style={{ height: 6, width: `${Math.min(targetProgress * 100, 100)}%`, backgroundColor: COLORS.GREEN, borderRadius: 3, opacity: pulseAnim }} />
             </View>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4, textAlign: 'center' }}>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' }}>
               {targetType === 'reps' ? `${totalReps} / ${targetValue} ${T('exerciseReps')}` : `${Math.round(targetProgress * 100)}%`}
             </Text>
           </View>
@@ -161,7 +161,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>
             {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}
           </Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
+          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
         </View>
 
         <Animated.View style={{ transform: [{ scale: pauseHoldAnim }] }}>
@@ -176,7 +176,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
 
         <View style={{ alignItems: 'center', flex: 1 }}>
           <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: COLORS.ORANGE }}>{calories}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>kcal</Text>
+          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>kcal</Text>
         </View>
       </View>
     </LinearGradient>

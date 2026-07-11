@@ -73,7 +73,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
         ) : (
           <>
             <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.45)', marginTop: 6 }}>min</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.65)', marginTop: 6 }}>min</Text>
           </>
         )}
 
@@ -83,7 +83,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
             <View style={{ height: 6, backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
               <View style={{ height: 6, width: `${Math.min(targetProgress * 100, 100)}%`, backgroundColor: COLORS.GREEN, borderRadius: 3 }} />
             </View>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4, textAlign: 'center' }}>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' }}>
               {Math.round(targetProgress * 100)}%
             </Text>
           </View>
@@ -96,7 +96,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>
             {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}
           </Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
+          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
         </View>
 
         <Animated.View style={{ transform: [{ scale: pauseHoldAnim }] }}>
@@ -111,7 +111,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
 
         <View style={{ alignItems: 'center', flex: 1 }}>
           <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: COLORS.ORANGE }}>{calories}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 2 }}>kcal</Text>
+          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>kcal</Text>
         </View>
       </View>
     </LinearGradient>

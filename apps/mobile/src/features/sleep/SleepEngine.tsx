@@ -314,7 +314,7 @@ export default function SleepEngine() {
               <Moon size={60} color="#8B5CF6" />
               <Text style={[styles.barrierTime, { marginTop: 24 }]}>现在是 {sleepGoal.targetBedtime}</Text>
               <Text style={[styles.barrierLabel, { fontSize: 18, marginTop: 8 }]}>该入睡了 🌙</Text>
-              <Text style={[styles.barrierAwayText, { color: 'rgba(255,255,255,0.4)', marginTop: 8 }]}>
+              <Text style={[styles.barrierAwayText, { color: 'rgba(255,255,255,0.7)', marginTop: 8 }]}>
                 1 分钟无操作将自动记录入睡
               </Text>
               <View style={{ flexDirection: 'row', gap: 16, marginTop: 32 }}>

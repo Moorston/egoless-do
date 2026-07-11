@@ -57,15 +57,15 @@ export default function GpsActive({
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 }}>
           <View style={{ alignItems: 'center', flex: 1 }}>
             <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'] }}>{distKm.toFixed(2)}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>km</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>km</Text>
           </View>
           <View style={{ alignItems: 'center', flex: 1 }}>
             <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'] }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseTime')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>{T('exerciseTime')}</Text>
           </View>
           <View style={{ alignItems: 'center', flex: 1 }}>
             <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'] }}>{formatPace(distKm > 0 ? sec / distKm : 0)}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exercisePace')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>{T('exercisePace')}</Text>
           </View>
         </View>
         <View style={{ alignItems: 'center', marginBottom: 24 }}>

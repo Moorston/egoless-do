@@ -59,11 +59,11 @@ export default function EnduranceActive(props: ExerciseLayoutProps) {
         <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
           <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 16, padding: 16, alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>{fmt(sec)}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseTotalDuration')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>{T('exerciseTotalDuration')}</Text>
           </View>
           <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 16, padding: 16, alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>{elevation}m</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseElevation')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>{T('exerciseElevation')}</Text>
           </View>
         </View>
 
@@ -71,11 +71,11 @@ export default function EnduranceActive(props: ExerciseLayoutProps) {
         <View style={{ flexDirection: 'row', gap: 12 }}>
           <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 16, padding: 16, alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>{floors}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseFloors')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>{T('exerciseFloors')}</Text>
           </View>
           <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.06)', borderRadius: 16, padding: 16, alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>{heartRate}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4 }}>{T('exerciseHeartRate')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4 }}>{T('exerciseHeartRate')}</Text>
           </View>
         </View>
 
@@ -85,7 +85,7 @@ export default function EnduranceActive(props: ExerciseLayoutProps) {
             <View style={{ height: 6, backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
               <View style={{ height: 6, width: `${Math.min(targetProgress * 100, 100)}%`, backgroundColor: COLORS.GREEN, borderRadius: 3 }} />
             </View>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)', marginTop: 4, textAlign: 'center' }}>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' }}>
               {T('exerciseTargetProgress').replace('{value}', targetType === 'time' ? `${Math.floor(targetValue / 60)}min` : `${targetValue}`).replace('{percent}', String(Math.round(targetProgress * 100)))}
             </Text>
           </View>
@@ -112,7 +112,7 @@ export default function EnduranceActive(props: ExerciseLayoutProps) {
 
         {/* Settings placeholder (gray) */}
         <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,.08)', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.3)' }}>{T('settings')}</Text>
+          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>{T('settings')}</Text>
         </View>
       </View>
     </LinearGradient>

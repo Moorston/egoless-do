@@ -108,21 +108,21 @@ export default function PausedPage(props: ExercisePageProps) {
         <View style={{ flexDirection: 'row', gap: 24, marginBottom: 32 }}>
           <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: '#fff' }}>{fmt(sec)}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)' }}>{T('exerciseTotalDuration')}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>{T('exerciseTotalDuration')}</Text>
           </View>
           {sportType === 'repetition' && (
             <View style={{ alignItems: 'center' }}>
               <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: '#fff' }}>{pausedReps}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)' }}>{T('exerciseReps')}</Text>
+              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>{T('exerciseReps')}</Text>
             </View>
           )}
           <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: '#fff' }}>{sets.length}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)' }}>{T('exerciseSets') || '组'}</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>{T('exerciseSets') || '组'}</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: COLORS.ORANGE }}>{props.calories}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.4)' }}>kcal</Text>
+            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>kcal</Text>
           </View>
         </View>
 

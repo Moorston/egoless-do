@@ -143,7 +143,7 @@ export default function FoodLogPage() {
                               <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
                                 <Text style={{ fontWeight:'700', color:P, fontSize:FONT_BODY }}>{f.calories ?? 0} kcal</Text>
                                 <TouchableOpacity onPress={() => confirmDelete(f.id)} style={{ paddingLeft:8 }}>
-                                  <X size={18} color="rgba(255,255,255,.3)" />
+                                  <X size={18} color="rgba(255,255,255,.7)" />
                                 </TouchableOpacity>
                               </View>
                             </View>
