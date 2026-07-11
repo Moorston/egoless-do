@@ -2,7 +2,7 @@ import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, ChevronLeft, ChevronRight, Music, Trash2, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
@@ -66,21 +66,21 @@ function StatsCard({ entries }: { entries: MedHistoryEntry[] }) {
   const longest = useMemo(() => Math.max(0, ...entries.map((e: MedHistoryEntry) => e.durMin || 0)), [entries]);
 
   return (
-    <View style={{ marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
-      <LinearGradient colors={['#8446FF', '#18CEFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 20 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff', marginBottom: 16 }}>✦ 累计冥想</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+    <View style={styles.statsOuter}>
+      <LinearGradient colors={['#8446FF', '#18CEFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradientPadding}>
+        <Text style={styles.heroTitle}>✦ 累计冥想</Text>
+        <View style={styles.heroStatsRow}>
           {[{ val: totalMin, label: '分钟' }, { val: totalDays, label: '天' }, { val: entries.length, label: '次' }, { val: streak, label: '天连续' }].map((s, i) => (
-            <View key={i} style={{ alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{s.val}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{s.label}</Text>
+            <View key={i} style={styles.heroStatCol}>
+              <Text style={styles.heroStatValue}>{s.val}</Text>
+              <Text style={styles.heroStatLabel}>{s.label}</Text>
             </View>
           ))}
         </View>
-        <View style={{ flexDirection: 'row', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)' }}>
-          <View style={{ flex: 1 }}><Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{weekMin}min</Text><Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>本周</Text></View>
-          <View style={{ flex: 1 }}><Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{monthMin}min</Text><Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>本月</Text></View>
-          <View style={{ flex: 1 }}><Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{longest}min</Text><Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>最长</Text></View>
+        <View style={styles.heroKcalRow}>
+          <View style={styles.flex1}><Text style={styles.heroKcalValue}>{weekMin}min</Text><Text style={styles.heroSub}>本周</Text></View>
+          <View style={styles.flex1}><Text style={styles.heroKcalValue}>{monthMin}min</Text><Text style={styles.heroSub}>本月</Text></View>
+          <View style={styles.flex1}><Text style={styles.heroKcalValue}>{longest}min</Text><Text style={styles.heroSub}>最长</Text></View>
         </View>
       </LinearGradient>
     </View>
@@ -103,20 +103,20 @@ function Heatmap({ entries, TH, onPress }: { entries: MedHistoryEntry[]; TH: The
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={{ backgroundColor: TH.card, borderRadius: 16, padding: 14, marginBottom: 16 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+      <View style={styles.heatmapHeader}>
         <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(`${year}-${String(month + 1).padStart(2, '0')}`)} 冥想热力图</Text>
-        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{medDays}/{daysInMonth}天</Text>
+        <Text style={[styles.badgeFont, { color: TH.sub }]}>{medDays}/{daysInMonth}天</Text>
       </View>
-      <View style={{ flexDirection: 'row', marginBottom: 6 }}>
-        {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_BADGE, color: TH.sub }}>{w}</Text>)}
+      <View style={styles.heatmapWeekdaysRow}>
+        {WEEKDAYS.map(w => <Text key={w} style={[styles.weekdayText, { color: TH.sub }]}>{w}</Text>)}
       </View>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+      <View style={styles.heatmapGrid}>
         {cells.map((d, i) => {
-          if (d === null) return <View key={`e${i}`} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 2 }}><View /></View>;
+          if (d === null) return <View key={`e${i}`} style={[styles.heatmapCell, { width: `${100 / 7}%` }]}><View /></View>;
           const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
           const has = dateSet.has(ds);
           return (
-            <View key={d} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 2 }}>
+            <View key={d} style={[styles.heatmapCell, { width: `${100 / 7}%` }]}>
               <View style={{ flex: 1, borderRadius: 4, backgroundColor: has ? TH.primary : `${TH.border}80`, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontSize: 10, color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
               </View>
@@ -161,26 +161,26 @@ export function MedCalendarScreen() {
           <TouchableOpacity onPress={nextMonth}><ChevronRight size={24} color={TH.text} /></TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', marginBottom: 8 }}>
-          {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_SUB, color: TH.sub, fontWeight: '600' }}>{w}</Text>)}
+          {WEEKDAYS.map(w => <Text key={w} style={[styles.calendarWeekdayText, { color: TH.sub }]}>{w}</Text>)}
         </View>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        <View style={styles.heatmapGrid}>
           {cells.map((d, i) => {
-            if (d === null) return <View key={`e${i}`} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 3 }} />;
+            if (d === null) return <View key={`e${i}`} style={[styles.calendarCell, { width: `${100 / 7}%` }]} />;
             const ds = `${ym}-${String(d).padStart(2, '0')}`;
             const has = dateSet.has(ds);
             return (
-              <View key={d} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 3 }}>
+              <View key={d} style={[styles.calendarCell, { width: `${100 / 7}%` }]}>
                 <View style={{ flex: 1, borderRadius: 8, backgroundColor: has ? TH.primary : `${TH.border}60`, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ fontSize: 14, color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
+                  <Text style={[styles.calendarDayFontSize, { color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }]}>{d}</Text>
                 </View>
               </View>
             );
           })}
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20, backgroundColor: TH.card, borderRadius: 12, padding: 16 }}>
-          <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{medDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>本月</Text></View>
-          <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{totalDays}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>累计天数</Text></View>
-          <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{streak}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>连续天数</Text></View>
+        <View style={[styles.calendarStatsRow, { marginTop: 20, backgroundColor: TH.card }]}>
+          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{medDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>本月</Text></View>
+          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{totalDays}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>累计天数</Text></View>
+          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{streak}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>连续天数</Text></View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -212,24 +212,24 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
 
   return (
     <Modal visible transparent animationType="fade">
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
-        <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
+      <View style={styles.detailOverlay}>
+        <View style={[styles.detailInner, { backgroundColor: TH.cardSolid }]}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{`${parseInt(String(m))}月${parseInt(String(d))}日 ${weekday}`}</Text>
             <TouchableOpacity onPress={onClose}><X size={20} color={TH.sub} /></TouchableOpacity>
           </View>
-          <Text style={{ fontSize: 32, fontWeight: '900', color: TH.primary, textAlign: 'center', marginBottom: 4 }}>{entry.durMin}</Text>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 16 }}>分钟</Text>
+          <Text style={[styles.detailDuration, { color: TH.primary }]}>{entry.durMin}</Text>
+          <Text style={[styles.detailDurationLabel, { color: TH.sub }]}>分钟</Text>
           {trackName ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <View style={styles.detailTrackRow}>
               <Music size={16} color={TH.primary} />
               <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{trackName}</Text>
             </View>
           ) : null}
-          <View style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>感悟笔记</Text>
-              {!editingNote && <TouchableOpacity onPress={startEdit}><Text style={{ fontSize: FONT_BADGE, color: TH.primary }}>{entry.note ? '编辑' : '添加'}</Text></TouchableOpacity>}
+          <View style={styles.detailSection}>
+            <View style={styles.detailNoteHeader}>
+              <Text style={[styles.subBold, { color: TH.text }]}>感悟笔记</Text>
+              {!editingNote && <TouchableOpacity onPress={startEdit}><Text style={[styles.badgeFont, { color: TH.primary }]}>{entry.note ? '编辑' : '添加'}</Text></TouchableOpacity>}
             </View>
             {editingNote ? (
               <>
@@ -248,9 +248,9 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
               { text: '取消', style: 'cancel' },
               { text: '删除', style: 'destructive', onPress: () => { onDelete(entry.date); onClose(); } },
             ]);
-          }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12 }}>
+          }} style={styles.deleteBtn}>
             <Trash2 size={16} color="#ef4444" />
-            <Text style={{ color: '#ef4444', fontSize: FONT_BODY }}>删除记录</Text>
+            <Text style={styles.deleteText}>删除记录</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -322,10 +322,10 @@ export default function MedHistoryPage() {
     if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('MedCalendar' as never)} />;
     if (item.type === 'monthHeader') {
       return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
-          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary }} />
+        <View style={styles.monthHeaderRow}>
+          <View style={[styles.timelineDot, { backgroundColor: TH.primary }]} />
           <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length}次 · {item.monthMin}min</Text>
+          <Text style={[styles.badgeFont, { color: TH.sub }]}>{item.items!.length}次 · {item.monthMin}min</Text>
         </View>
       );
     }
@@ -337,16 +337,16 @@ export default function MedHistoryPage() {
     const notePreview = m.note ? (m.note.length > 30 ? m.note.slice(0, 30) + '...' : m.note) : '';
     return (
       <TouchableOpacity onPress={() => setSelectedEntry(m)} activeOpacity={0.7}>
-        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
-          <View style={{ alignItems: 'center', width: 24 }}>
-            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary, zIndex: 1 }} />
-            {!item.isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${TH.primary}30` }} />}
+        <View style={styles.entryRow}>
+          <View style={styles.timelineCol}>
+            <View style={[styles.timelineDot, { backgroundColor: TH.primary, zIndex: 1 }]} />
+            {!item.isLast && <View style={[styles.timelineLine, { backgroundColor: `${TH.primary}30` }]} />}
           </View>
           <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: TH.primary }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: trackName || notePreview ? 4 : 0 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{dayStr}</Text>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>周{getWeekday(m.date)}</Text>
+              <View style={styles.entryInfoRow}>
+                <Text style={[styles.badgeFont, { color: TH.sub }]}>{dayStr}</Text>
+                <Text style={[styles.badgeFont, { color: TH.sub }]}>周{getWeekday(m.date)}</Text>
               </View>
               <View style={{ backgroundColor: `${TH.primary}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
                 <Text style={{ color: TH.primary, fontWeight: '700', fontSize: FONT_SUB }}>{m.durMin}min</Text>
@@ -368,9 +368,9 @@ export default function MedHistoryPage() {
   }, [activeEntries, TH, nav]);
 
   const ListHeader = useMemo(() => (
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <View style={styles.headerRow}>
       <ScreenHeader title={T('meditationHistory')} onBack={() => nav.goBack()} />
-      <TouchableOpacity onPress={() => nav.navigate('MedCalendar' as never)} style={{ padding: 8 }}>
+      <TouchableOpacity onPress={() => nav.navigate('MedCalendar' as never)} style={styles.calendarBtnPadding}>
         <Calendar size={22} color={TH.primary} />
       </TouchableOpacity>
     </View>
@@ -379,15 +379,15 @@ export default function MedHistoryPage() {
   if (activeEntries.length === 0) {
     return (
       <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-        <View style={{ paddingHorizontal: 16 }}>
+        <View style={styles.emptyPagePad}>
           {ListHeader}
-          <View style={{ alignItems: 'center', marginTop: 80 }}>
-            <Text style={{ fontSize: 64, marginBottom: 16 }}>🧘</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有冥想记录</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次静坐都是送给自己的礼物</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，给自己几分钟安静的时光</Text>
-            <TouchableOpacity onPress={() => useNavigateToTab()('Meditation')} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次冥想</Text>
+          <View style={styles.emptyCenter}>
+            <Text style={styles.emptyEmoji}>🧘</Text>
+            <Text style={[styles.emptyTitle, { color: TH.text }]}>还没有冥想记录</Text>
+            <Text style={[styles.emptyDesc, { color: TH.sub }]}>每一次静坐都是送给自己的礼物</Text>
+            <Text style={[styles.emptySubDesc, { color: TH.sub }]}>从今天开始，给自己几分钟安静的时光</Text>
+            <TouchableOpacity onPress={() => useNavigateToTab()('Meditation')} style={[styles.emptyCtaBtn, { backgroundColor: TH.primary }]}>
+              <Text style={styles.whiteBodyBold}>✦ 开始第一次冥想</Text>
             </TouchableOpacity>
           </View>
         </View>

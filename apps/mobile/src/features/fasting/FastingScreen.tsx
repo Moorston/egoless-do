@@ -6,7 +6,7 @@ import {
   AlertTriangle, Check, ChevronRight, StopCircle,
 } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, useTheme, PrimaryButton, OutlineButton, useT } from '../../components/UI';
@@ -185,70 +185,70 @@ export default function FastingScreen() {
       <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
 
         {/* Hero Banner */}
-        <View style={{ marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
+        <View style={styles.heroOuter}>
           <LinearGradient
             colors={['#8446FF', '#18CEFF']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={{ padding: 20 }}
+            style={styles.heroPadding}
           >
             {/* Title row */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <View style={styles.heroTitleRow}>
               <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('fasting')}</Text>
               <TouchableOpacity onPress={() => nav.navigate('FastHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600' }}>{T('fastingHistory')}</Text>
+                <Text style={styles.heroLinkText}>{T('fastingHistory')}</Text>
                 <ChevronRight size={16} color="rgba(255,255,255,.8)" />
               </TouchableOpacity>
             </View>
             {/* Stats 3 columns */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <View style={{ alignItems: 'center', flex: 1 }}>
+            <View style={styles.heroStatsRow}>
+              <View style={styles.heroStatCol}>
                 <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(fastingHistory ?? []).filter(f => !f.deleted).length}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('fastTotal')}</Text>
+                <Text style={styles.heroStatLabel}>{T('fastTimes')}</Text>
+                <Text style={styles.heroStatSub}>{T('fastTotal')}</Text>
               </View>
-              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-              <View style={{ alignItems: 'center', flex: 1 }}>
+              <View style={styles.heroDivider} />
+              <View style={styles.heroStatCol}>
                 <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{totalFastHours}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastHours')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('fastTotalHours')}</Text>
+                <Text style={styles.heroStatLabel}>{T('fastHours')}</Text>
+                <Text style={styles.heroStatSub}>{T('fastTotalHours')}</Text>
               </View>
-              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-              <View style={{ alignItems: 'center', flex: 1 }}>
+              <View style={styles.heroDivider} />
+              <View style={styles.heroStatCol}>
                 <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{currentFastingStreak}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('days')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('fastStreak')}</Text>
+                <Text style={styles.heroStatLabel}>{T('days')}</Text>
+                <Text style={styles.heroStatSub}>{T('fastStreak')}</Text>
               </View>
             </View>
             {/* kcal row */}
-            <View style={{ flexDirection: 'row', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)' }}>
-              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={styles.heroKcalRow}>
+              <View style={styles.heroKcalCol}>
                 <Flame size={16} color="rgba(255,255,255,.8)" />
                 <View>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{kcal} kcal</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>{T('fastKcalSaved')}</Text>
+                  <Text style={styles.heroKcalValue}>{kcal} kcal</Text>
+                  <Text style={styles.heroKcalSub}>{T('fastKcalSaved')}</Text>
                 </View>
               </View>
-              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <View style={styles.heroKcalCol}>
                 <Scale size={16} color="rgba(255,255,255,.8)" />
                 <View>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{(kcal / 7700).toFixed(2)} {T('fastKg')}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>{T('fastWeightLoss')}</Text>
+                  <Text style={styles.heroKcalValue}>{(kcal / 7700).toFixed(2)} {T('fastKg')}</Text>
+                  <Text style={styles.heroKcalSub}>{T('fastWeightLoss')}</Text>
                 </View>
               </View>
             </View>
             {/* Global fasting entry */}
             <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('globalFasting')}`, type: 'fasting' })}
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.2)' }}>
+              style={styles.heroGlobalRow}>
               <Globe size={18} color="rgba(255,255,255,.8)" />
-              <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600', flex: 1 }}>{T('linkWorld')} — {T('globalFasting')}</Text>
+              <Text style={styles.heroGlobalText}>{T('linkWorld')} — {T('globalFasting')}</Text>
               <ChevronRight size={16} color="rgba(255,255,255,.8)" />
             </TouchableOpacity>
           </LinearGradient>
         </View>
 
         {/* Main card */}
-        <Card style={{ alignItems:'center', paddingVertical:32 }}>
+        <Card style={styles.mainCardInner}>
           {isActive ? (
             <>
               {/* 在线人数 + 感悟输入 */}
@@ -259,13 +259,9 @@ export default function FastingScreen() {
                 goal={resolveGoal('fasting')}
               />
               {/* SVG Ring Progress */}
-              <View style={{ width:160, height:160, marginBottom:16, position:'relative', alignItems:'center', justifyContent:'center' }}>
-                <View style={{
-                  width:160, height:160, borderRadius:80, borderWidth:10,
-                  borderColor: TH.border, position:'absolute',
-                }} />
-                <View style={{
-                  width:160, height:160, borderRadius:80, borderWidth:10,
+              <View style={styles.ringContainer}>
+                <View style={[styles.ringBase, { borderColor: TH.border }]} />
+                <View style={[styles.ringBase, {
                   borderColor: P, position:'absolute',
                   borderTopColor: pct >= 0.25 ? P : TH.border,
                   borderRightColor: pct >= 0.5 ? P : TH.border,

@@ -2,7 +2,7 @@ import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, dateStr
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, Flame, X, Trash2 } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, Modal, TextInput, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, ScreenHeader, useT } from '../../components/UI';
@@ -60,20 +60,20 @@ function StatsCard({ entries, TH: _TH }: { entries: FastingSession[]; TH: Theme 
   const monthCount = useMemo(() => entries.filter(f => { const d = new Date(f.startedAt ?? 0); return dateStr(d) >= monthStart; }).length, [entries, monthStart]);
 
   return (
-    <View style={{ marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
-      <LinearGradient colors={['#8446FF', '#18CEFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 20 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff', marginBottom: 16 }}>✦ 累计禁食</Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+    <View style={styles.statsCardOuter}>
+      <LinearGradient colors={['#8446FF', '#18CEFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.statsCardGradient}>
+        <Text style={styles.statsTitle}>✦ 累计禁食</Text>
+        <View style={styles.statsRow}>
           {[{ val: totalHours, label: '小时' }, { val: entries.length, label: '次' }, { val: streak, label: '天连续' }, { val: totalKcal, label: 'kcal' }].map((s, i) => (
-            <View key={i} style={{ alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{s.val}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{s.label}</Text>
+            <View key={i} style={styles.statsItem}>
+              <Text style={styles.statsValue}>{s.val}</Text>
+              <Text style={styles.statsLabel}>{s.label}</Text>
             </View>
           ))}
         </View>
-        <View style={{ flexDirection: 'row', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)' }}>
-          <View style={{ flex: 1 }}><Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{weekCount}次</Text><Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>本周</Text></View>
-          <View style={{ flex: 1 }}><Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{monthCount}次</Text><Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>本月</Text></View>
+        <View style={styles.statsLayout}>
+          <View style={styles.statsLayoutCol}><Text style={styles.statsLayoutValue}>{weekCount}次</Text><Text style={styles.statsLayoutLabel}>本周</Text></View>
+          <View style={styles.statsLayoutCol}><Text style={styles.statsLayoutValue}>{monthCount}次</Text><Text style={styles.statsLayoutLabel}>本月</Text></View>
         </View>
       </LinearGradient>
     </View>
@@ -100,20 +100,20 @@ function Heatmap({ entries, TH, onPress }: { entries: FastingSession[]; TH: Them
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={{ backgroundColor: TH.card, borderRadius: 16, padding: 14, marginBottom: 16 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+      <View style={styles.heatmapHeaderRow}>
         <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(`${year}-${String(month + 1).padStart(2, '0')}`)} 禁食热力图</Text>
         <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{fastDays}/{daysInMonth}天</Text>
       </View>
-      <View style={{ flexDirection: 'row', marginBottom: 6 }}>
+      <View style={styles.heatmapWeekdayRow}>
         {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_BADGE, color: TH.sub }}>{w}</Text>)}
       </View>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+      <View style={styles.heatmapCellsRow}>
         {cells.map((d, i) => {
-          if (d === null) return <View key={`e${i}`} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 2 }} />;
+          if (d === null) return <View key={`e${i}`} style={styles.heatmapCell} />;
           const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
           const has = dateSet.has(ds);
           return (
-            <View key={d} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 2 }}>
+            <View key={d} style={styles.heatmapCell}>
               <View style={{ flex: 1, borderRadius: 4, backgroundColor: has ? '#8446FF' : `${TH.border}80`, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontSize: 10, color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
               </View>
@@ -148,23 +148,23 @@ export function FastCalendarScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={styles.calendarContent}>
         <ScreenHeader title="禁食日历" onBack={() => nav.goBack()} />
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <View style={styles.calendarMonthRow}>
           <TouchableOpacity onPress={prevMonth}><Text style={{ fontSize: 24, color: TH.text }}>{'‹'}</Text></TouchableOpacity>
           <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{formatMonth(ym)}</Text>
           <TouchableOpacity onPress={nextMonth}><Text style={{ fontSize: 24, color: TH.text }}>{'›'}</Text></TouchableOpacity>
         </View>
-        <View style={{ flexDirection: 'row', marginBottom: 8 }}>
+        <View style={styles.calendarWeekdayRow}>
           {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_SUB, color: TH.sub, fontWeight: '600' }}>{w}</Text>)}
         </View>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        <View style={styles.calendarCellsRow}>
           {cells.map((d, i) => {
-            if (d === null) return <View key={`e${i}`} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 3 }} />;
+            if (d === null) return <View key={`e${i}`} style={styles.calendarCell} />;
             const ds = `${ym}-${String(d).padStart(2, '0')}`;
             const has = dateSet.has(ds);
             return (
-              <View key={d} style={{ width: `${100 / 7}%`, aspectRatio: 1, padding: 3 }}>
+              <View key={d} style={styles.calendarCell}>
                 <View style={{ flex: 1, borderRadius: 8, backgroundColor: has ? '#8446FF' : `${TH.border}60`, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={{ fontSize: 14, color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
                 </View>
@@ -173,9 +173,9 @@ export function FastCalendarScreen() {
           })}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20, backgroundColor: TH.card, borderRadius: 12, padding: 16 }}>
-          <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#8446FF' }}>{fastDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>本月</Text></View>
-          <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#8446FF' }}>{entries.length}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>累计次数</Text></View>
-          <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#8446FF' }}>{streak}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>连续天数</Text></View>
+          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{fastDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>本月</Text></View>
+          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{entries.length}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>累计次数</Text></View>
+          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{streak}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>连续天数</Text></View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -205,40 +205,40 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession |
 
   return (
     <Modal visible transparent animationType="fade">
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
+      <View style={styles.modalContainer}>
         <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <View style={styles.modalHeaderRow}>
             <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{formatTime(entry.startedAt ?? 0)} 周{weekday}</Text>
             <TouchableOpacity onPress={onClose}><X size={20} color={TH.sub} /></TouchableOpacity>
           </View>
-          <Text style={{ fontSize: 32, fontWeight: '900', color: '#8446FF', textAlign: 'center', marginBottom: 4 }}>{h}h {m}m</Text>
+          <Text style={styles.modalDuration}>{h}h {m}m</Text>
           <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>目标 {entry.targetHours}h · 完成 {completionRate}%</Text>
           <View style={{ height: 6, backgroundColor: `${TH.border}80`, borderRadius: 3, marginBottom: 16, overflow: 'hidden' }}>
             <View style={{ height: 6, width: `${completionRate}%`, backgroundColor: completionRate >= 100 ? '#10b981' : '#8446FF', borderRadius: 3 }} />
           </View>
-          <View style={{ flexDirection: 'row', gap: 16, marginBottom: 16 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}><Flame size={16} color={COLORS.ORANGE} /><Text style={{ fontSize: FONT_BODY, color: TH.text }}>~{entry.estimatedKcal ?? 0} kcal</Text></View>
+          <View style={styles.modalCalRow}>
+            <View style={styles.modalCalItem}><Flame size={16} color={COLORS.ORANGE} /><Text style={{ fontSize: FONT_BODY, color: TH.text }}>~{entry.estimatedKcal ?? 0} kcal</Text></View>
           </View>
           {entry.insight ? <Text style={{ fontSize: FONT_BODY, color: TH.sub, fontStyle: 'italic', marginBottom: 12 }}>「{entry.insight}」</Text> : null}
-          <View style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+          <View style={styles.noteContainer}>
+            <View style={styles.noteHeaderRow}>
               <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>感悟笔记</Text>
               {!editingNote && <TouchableOpacity onPress={startEdit}><Text style={{ fontSize: FONT_BADGE, color: '#8446FF' }}>{entry.note ? '编辑' : '添加'}</Text></TouchableOpacity>}
             </View>
             {editingNote ? (
               <>
                 <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top' }} multiline maxLength={500} value={noteText} onChangeText={setNoteText} placeholder="写下你的感悟..." placeholderTextColor={TH.sub} />
-                <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+                <View style={styles.noteButtonRow}>
                   <TouchableOpacity onPress={() => setEditingNote(false)} style={{ flex: 1, padding: 10, borderRadius: 8, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}><Text style={{ color: TH.sub }}>取消</Text></TouchableOpacity>
-                  <TouchableOpacity onPress={saveNote} style={{ flex: 1, padding: 10, borderRadius: 8, backgroundColor: '#8446FF', alignItems: 'center' }}><Text style={{ color: '#fff', fontWeight: '600' }}>保存</Text></TouchableOpacity>
+                  <TouchableOpacity onPress={saveNote} style={styles.noteSaveBtn}><Text style={{ color: '#fff', fontWeight: '600' }}>保存</Text></TouchableOpacity>
                 </View>
               </>
             ) : (
               <Text style={{ fontSize: FONT_BODY, color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
             )}
           </View>
-          <TouchableOpacity onPress={() => { Alert.alert('删除记录', '确定要删除这条禁食记录吗？', [{ text: '取消', style: 'cancel' }, { text: '删除', style: 'destructive', onPress: () => { onDelete(entry.id); onClose(); } }]); }} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12 }}>
-            <Trash2 size={16} color="#ef4444" /><Text style={{ color: '#ef4444', fontSize: FONT_BODY }}>删除记录</Text>
+          <TouchableOpacity onPress={() => { Alert.alert('删除记录', '确定要删除这条禁食记录吗？', [{ text: '取消', style: 'cancel' }, { text: '删除', style: 'destructive', onPress: () => { onDelete(entry.id); onClose(); } }]); }} style={styles.deleteBtn}>
+            <Trash2 size={16} color="#ef4444" /><Text style={styles.deleteBtnText}>删除记录</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -309,8 +309,8 @@ export default function FastHistoryPage() {
     if (item.type === 'heatmap') return <Heatmap entries={activeEntries} TH={TH} onPress={() => nav.navigate('FastCalendar' as never)} />;
     if (item.type === 'monthHeader') {
       return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
-          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#8446FF' }} />
+        <View style={styles.monthHeaderRow}>
+          <View style={styles.monthHeaderDot} />
           <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
           <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length}次 · {item.monthKcal}kcal</Text>
         </View>
@@ -324,26 +324,26 @@ export default function FastHistoryPage() {
     const notePreview = f.note ? (f.note.length > 30 ? f.note.slice(0, 30) + '...' : f.note) : '';
     return (
       <TouchableOpacity onPress={() => setSelectedEntry(f)} activeOpacity={0.7}>
-        <View style={{ flexDirection: 'row', marginLeft: 4 }}>
-          <View style={{ alignItems: 'center', width: 24 }}>
-            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#8446FF', zIndex: 1 }} />
-            {!item.isLast && <View style={{ width: 2, flex: 1, backgroundColor: '#8446FF30' }} />}
+        <View style={styles.entryRow}>
+          <View style={styles.entryLineCol}>
+            <View style={styles.entryDot} />
+            {!item.isLast && <View style={styles.entryLine} />}
           </View>
           <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: '#8446FF' }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+            <View style={styles.entryHeaderRow}>
               <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(f.startedAt ?? 0)}</Text>
-              <View style={{ backgroundColor: '#8446FF15', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                <Text style={{ color: '#8446FF', fontWeight: '700', fontSize: FONT_SUB }}>{h}h {m}m</Text>
+              <View style={styles.durationBadge}>
+                <Text style={styles.durationBadgeText}>{h}h {m}m</Text>
               </View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+            <View style={styles.targetRow}>
               <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>目标 {f.targetHours}h</Text>
               <View style={{ flex: 1, height: 4, backgroundColor: `${TH.border}80`, borderRadius: 2, overflow: 'hidden' }}>
                 <View style={{ height: 4, width: `${completionRate}%`, backgroundColor: completionRate >= 100 ? '#10b981' : '#8446FF', borderRadius: 2 }} />
               </View>
               <Text style={{ fontSize: FONT_BADGE, color: completionRate >= 100 ? '#10b981' : '#8446FF', fontWeight: '600' }}>{completionRate}%</Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 12 }}>
+            <View style={styles.entryKcalRow}>
               <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>🔥 ~{f.estimatedKcal ?? 0} kcal</Text>
             </View>
             {notePreview ? <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text> : null}

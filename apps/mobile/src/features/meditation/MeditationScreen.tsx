@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Sharing from 'expo-sharing';
 import { Globe, Binary, ChevronRight } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ViewShot from 'react-native-view-shot';
 
@@ -255,17 +255,17 @@ export default function MeditationScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Meditation" />
-      <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
 
         {/* Hero Banner */}
-        <View style={{ marginHorizontal: 0, marginBottom: 12, borderRadius: 20, overflow: 'hidden' }}>
+        <View style={styles.heroBanner}>
           <LinearGradient
             colors={['#7117EA', '#A855F7']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={{ padding: 20 }}
+            style={styles.heroGradient}
           >
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <View style={styles.heroHeader}>
               <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('meditation')}</Text>
               <TouchableOpacity onPress={() => nav.navigate('MedHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600' }}>{T('meditationHistory')}</Text>

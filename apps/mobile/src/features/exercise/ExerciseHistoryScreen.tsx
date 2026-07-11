@@ -1,7 +1,7 @@
 import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, getSportType, formatPace } from '@egoless-do/core';
 import type { ExerciseEntry, Theme } from '@egoless-do/core';
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, useTheme, ScreenHeader, useT } from '../../components/UI';
@@ -18,68 +18,68 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
   const sportType = e.isGpsSport ? 'gps' as const : getSportType(e.sportKey, false);
 
   return (
-    <View style={{ marginTop: 12, borderTopWidth: 1, borderTopColor: TH.border, paddingTop: 12 }}>
+    <View style={[styles.detailContainer, { borderTopColor: TH.border }]}>
       {trackCoords.length > 1 && MapView && Polyline && (
-        <View style={{ height: 160, borderRadius: 12, overflow: 'hidden', marginBottom: 12 }}>
-          <MapView style={{ flex: 1 }} initialCameraPosition={{ target: center, zoom: 14 }} myLocationEnabled={false} zoomGesturesEnabled={false} scrollGesturesEnabled={false}>
+        <View style={styles.mapContainer}>
+          <MapView style={styles.flex1} initialCameraPosition={{ target: center, zoom: 14 }} myLocationEnabled={false} zoomGesturesEnabled={false} scrollGesturesEnabled={false}>
             <Polyline points={trackCoords} color={P} width={4} />
           </MapView>
         </View>
       )}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
+      <View style={styles.statsGrid}>
         {sportType === 'gps' && e.distanceKm ? (
-          <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseDistance')}</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{e.distanceKm.toFixed(2)} km</Text>
+          <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
+            <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseDistance')}</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{e.distanceKm.toFixed(2)} km</Text>
           </View>
         ) : null}
         {sportType === 'repetition' && e.reps != null ? (
-          <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseTotalReps')}</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{e.reps}</Text>
+          <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
+            <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTotalReps')}</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{e.reps}</Text>
           </View>
         ) : null}
-        <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseTime')}</Text>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{Math.floor(e.durationSec / 60)}:{String(e.durationSec % 60).padStart(2, '0')}</Text>
+        <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
+          <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTime')}</Text>
+          <Text style={[styles.statValue, { color: TH.text }]}>{Math.floor(e.durationSec / 60)}:{String(e.durationSec % 60).padStart(2, '0')}</Text>
         </View>
         {sportType === 'gps' && e.avgPace ? (
-          <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseAvgPace')}</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{formatPace(e.avgPace)}</Text>
+          <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
+            <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseAvgPace')}</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{formatPace(e.avgPace)}</Text>
           </View>
         ) : null}
         {e.calories ? (
-          <View style={{ width: '47%', backgroundColor: `${P}15`, borderRadius: 10, padding: 10 }}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('exerciseTotalCal')}</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{e.calories} kcal</Text>
+          <View style={[styles.statCardBase, { backgroundColor: `${P}15` }]}>
+            <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTotalCal')}</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{e.calories} kcal</Text>
           </View>
         ) : null}
       </View>
       {(e.sets ?? []).length > 0 && (
-        <View style={{ marginTop: 4 }}>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 6 }}>{T('exerciseSets')}</Text>
-          <View style={{ backgroundColor: `${P}10`, borderRadius: 10, padding: 10 }}>
+        <View style={styles.mt4}>
+          <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('exerciseSets')}</Text>
+          <View style={[styles.setDataCard, { backgroundColor: `${P}10` }]}>
             {(e.sets ?? []).map((s, i) => (
-              <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4, borderBottomWidth: i < (e.sets ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
-                <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{s.reps} {T('exerciseReps')}</Text>
+              <View key={i} style={[styles.setRow, { borderBottomWidth: i < (e.sets ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }]}>
+                <Text style={[styles.subFont, { color: TH.text }]}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
+                <Text style={[styles.subBold, { color: TH.text }]}>{s.reps} {T('exerciseReps')}</Text>
               </View>
             ))}
           </View>
         </View>
       )}
       {(e.segmentPaces ?? []).length > 0 && (
-        <View style={{ marginTop: 4 }}>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 6 }}>{T('exerciseSegmentPace')}</Text>
-          <View style={{ backgroundColor: `${P}10`, borderRadius: 10, padding: 10 }}>
+        <View style={styles.mt4}>
+          <Text style={[styles.sectionTitle, { color: TH.text }]}>{T('exerciseSegmentPace')}</Text>
+          <View style={[styles.setDataCard, { backgroundColor: `${P}10` }]}>
             {(e.segmentPaces ?? []).map((p, i) => {
               const isBest = p === bestPace;
               const c = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
               return (
-                <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4, borderBottomWidth: i < (e.segmentPaces ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{i + 1} km</Text>
-                  <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: c }}>{formatPace(p)}</Text>
+                <View key={i} style={[styles.setRow, { borderBottomWidth: i < (e.segmentPaces ?? []).length - 1 ? 1 : 0, borderBottomColor: TH.border }]}>
+                  <Text style={[styles.subFont, { color: TH.text }]}>{i + 1} km</Text>
+                  <Text style={[styles.subBold, { color: c }]}>{formatPace(p)}</Text>
                 </View>
               );
             })}
@@ -203,13 +203,9 @@ export default function ExerciseHistoryScreen() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 14 }} contentContainerStyle={{ gap: 8 }}>
         <TouchableOpacity
           onPress={() => setSelectedSport(null)}
-          style={{
-            paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
-            backgroundColor: !selectedSport ? P : TH.card,
-            borderWidth: 1, borderColor: !selectedSport ? P : TH.border,
-          }}
+          style={[styles.filterBtnBase, { backgroundColor: !selectedSport ? P : TH.card, borderWidth: 1, borderColor: !selectedSport ? P : TH.border }]}
         >
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: !selectedSport ? '#fff' : TH.sub }}>{T('allStatus')}</Text>
+          <Text style={[styles.badgeFont, { fontWeight: '600', color: !selectedSport ? '#fff' : TH.sub }]}>{T('allStatus')}</Text>
         </TouchableOpacity>
         {sportKeys.map(([key, { icon, count }]) => {
           const active = selectedSport === key;
@@ -217,16 +213,11 @@ export default function ExerciseHistoryScreen() {
             <TouchableOpacity
               key={key}
               onPress={() => setSelectedSport(active ? null : key)}
-              style={{
-                paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
-                backgroundColor: active ? P : TH.card,
-                borderWidth: 1, borderColor: active ? P : TH.border,
-                flexDirection: 'row', alignItems: 'center', gap: 4,
-              }}
+              style={[styles.filterBtnBase, { backgroundColor: active ? P : TH.card, borderWidth: 1, borderColor: active ? P : TH.border, flexDirection: 'row', alignItems: 'center', gap: 4 }]}
             >
-              <Text style={{ fontSize: FONT_SUB }}>{icon}</Text>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: active ? '#fff' : TH.text }}>{key}</Text>
-              <Text style={{ fontSize: FONT_BADGE, color: active ? '#fff' : TH.sub }}>({count})</Text>
+              <Text style={styles.badgeFont}>{icon}</Text>
+              <Text style={[styles.badgeFont, { fontWeight: '600', color: active ? '#fff' : TH.text }]}>{key}</Text>
+              <Text style={[styles.badgeFont, { color: active ? '#fff' : TH.sub }]}>({count})</Text>
             </TouchableOpacity>
           );
         })}
@@ -237,14 +228,14 @@ export default function ExerciseHistoryScreen() {
   const renderItem = useCallback(({ item }: { item: FlatItem }) => {
     if (item.type === 'statCards') {
       return (
-        <View style={{ flexDirection: 'row', gap: 10, marginBottom: 14 }}>
-          <Card style={{ flex: 1, alignItems: 'center', padding: 14 }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{totalMin}</Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('exerciseMin')}</Text>
+        <View style={styles.statCardsRow}>
+          <Card style={styles.statCardInner}>
+            <Text style={[styles.statCardValue, { color: P }]}>{totalMin}</Text>
+            <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseMin')}</Text>
           </Card>
-          <Card style={{ flex: 1, alignItems: 'center', padding: 14 }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: P }}>{filtered.length}</Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('exerciseTotalCount')}</Text>
+          <Card style={styles.statCardInner}>
+            <Text style={[styles.statCardValue, { color: P }]}>{filtered.length}</Text>
+            <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTotalCount')}</Text>
           </Card>
         </View>
       );
