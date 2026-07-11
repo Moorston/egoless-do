@@ -83,7 +83,7 @@ export default function ReflectionDetailContent({
           </TouchableOpacity>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             {r.isPinned && <Pin size={14} color="#fff" />}
-            <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL }}>
+            <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL() }}>
               {formatDate(new Date(r.timestamp ?? 0), language, { year: 'numeric', month: 'long', day: 'numeric' })}
               {' '}
               {formatTime(new Date(r.timestamp ?? 0), language, { hour: '2-digit', minute: '2-digit' })}
@@ -93,19 +93,19 @@ export default function ReflectionDetailContent({
 
         <ScrollView>
           {/* Content */}
-          <Text style={{ color: '#fff', fontSize: FONT_BODY, lineHeight: 28, marginBottom: 16 }}>{r.content}</Text>
+          <Text style={{ color: '#fff', fontSize: FONT_BODY(), lineHeight: 28, marginBottom: 16 }}>{r.content}</Text>
 
           {/* Tags + Mood */}
           {(r.tags.length > 0 || r.mood) && (
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
               {r.tags.map(tag => (
                 <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,.2)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 }}>
-                  <Text style={{ color: '#fff', fontSize: FONT_SMALL }}>{tag}</Text>
+                  <Text style={{ color: '#fff', fontSize: FONT_SMALL() }}>{tag}</Text>
                 </View>
               ))}
               {r.mood && (
                 <View style={{ backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 }}>
-                  <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SMALL }}>{r.mood}</Text>
+                  <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SMALL() }}>{r.mood}</Text>
                 </View>
               )}
             </View>
@@ -115,7 +115,7 @@ export default function ReflectionDetailContent({
           {r.link && (
             <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch((e) => log.error(e))} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
               <Link size={14} color="rgba(255,255,255,.7)" />
-              <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL, textDecorationLine: 'underline', flex: 1 }} numberOfLines={2}>{r.link}</Text>
+              <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL(), textDecorationLine: 'underline', flex: 1 }} numberOfLines={2}>{r.link}</Text>
             </TouchableOpacity>
           )}
 
@@ -126,7 +126,7 @@ export default function ReflectionDetailContent({
               style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 10 }}
             >
               <ExternalLink size={14} color="#fff" />
-              <Text style={{ color: '#fff', fontSize: FONT_SMALL }} numberOfLines={1}>{linkedPlanItem.name}</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_SMALL() }} numberOfLines={1}>{linkedPlanItem.name}</Text>
             </TouchableOpacity>
           )}
         </ScrollView>
@@ -136,29 +136,29 @@ export default function ReflectionDetailContent({
           {onEdit && (
             <TouchableOpacity onPress={() => { onClose(); onEdit(r); }}
               style={{ flex: 1, backgroundColor: 'rgba(255,255,255,.25)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflEditTitle')}</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('reflEditTitle')}</Text>
             </TouchableOpacity>
           )}
           {linkedTrails.length > 0 ? (
             <TouchableOpacity onPress={() => { onClose(); nav.navigate('ThoughtTrailDetail', { trailId: linkedTrails[0].id }); }}
               style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflLinkedTrail')}</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('reflLinkedTrail')}</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity onPress={() => setShowTrailPicker(true)}
               style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflLinkTrail')}</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('reflLinkTrail')}</Text>
             </TouchableOpacity>
           )}
           {r.linkedPlanItemId ? (
             <TouchableOpacity onPress={handleUnlink}
               style={{ flex: 1, backgroundColor: 'rgba(139,92,246,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflUnlinkTask')}</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('reflUnlinkTask')}</Text>
             </TouchableOpacity>
           ) : onCreatePlanItem ? (
             <TouchableOpacity onPress={() => { onClose(); onCreatePlanItem(r.id); }}
               style={{ flex: 1, backgroundColor: 'rgba(16,185,129,.3)', paddingVertical: 12, borderRadius: 12, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('reflCreateTask')}</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('reflCreateTask')}</Text>
             </TouchableOpacity>
           ) : null}
           <View style={{ position: 'relative' }}>
@@ -171,19 +171,19 @@ export default function ReflectionDetailContent({
                 <TouchableOpacity onPress={() => { setShowMore(false); onClose(); nav.navigate('RelationMap', { context: { type: 'reflection', id: reflectionId } }); }}
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 16 }}>
                   <Network size={16} color="#fff" />
-                  <Text style={{ color: '#fff', fontSize: FONT_BUTTON }}>{T('reflRelationMap')}</Text>
+                  <Text style={{ color: '#fff', fontSize: FONT_BUTTON() }}>{T('reflRelationMap')}</Text>
                 </TouchableOpacity>
                 {onShare && (
                   <TouchableOpacity onPress={() => { setShowMore(false); onClose(); onShare(r); }}
                     style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 16 }}>
                     <ExternalLink size={16} color="#fff" />
-                    <Text style={{ color: '#fff', fontSize: FONT_BUTTON }}>{T('reflShare')}</Text>
+                    <Text style={{ color: '#fff', fontSize: FONT_BUTTON() }}>{T('reflShare')}</Text>
                   </TouchableOpacity>
                 )}
                 {isToday && onDelete && (
                   <TouchableOpacity onPress={() => { setShowMore(false); onClose(); onDelete(r.id); }}
                     style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 16 }}>
-                    <Text style={{ color: '#ff6b6b', fontSize: FONT_BUTTON }}>{T('reflDelete')}</Text>
+                    <Text style={{ color: '#ff6b6b', fontSize: FONT_BUTTON() }}>{T('reflDelete')}</Text>
                   </TouchableOpacity>
                 )}
               </Pressable>

@@ -431,13 +431,13 @@ export default function ReflectionsScreen() {
                 style={{ flexDirection:'row', alignItems:'center', gap:10, marginBottom:10, paddingHorizontal:14, paddingVertical:12, borderRadius:12, backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }}>
                 <View style={{ width:8, height:8, borderRadius:4, backgroundColor:P }} />
                 <View style={{ flex:1 }}>
-                  <Text style={{ color:TH.text, fontSize:FONT_SUB, fontWeight:'600' }}>{day}</Text>
+                  <Text style={{ color:TH.text, fontSize:FONT_SUB(), fontWeight:'600' }}>{day}</Text>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginTop:4, flexWrap:'wrap' }}>
-                    <Text style={{ color:TH.sub, fontSize:FONT_SMALL }}>{items.length} 条感念</Text>
+                    <Text style={{ color:TH.sub, fontSize:FONT_SMALL() }}>{items.length} 条感念</Text>
                     {topTags.map(tag => (
-                      <Text key={tag} style={{ color:P, fontSize:FONT_SMALL }}>{tag}</Text>
+                      <Text key={tag} style={{ color:P, fontSize:FONT_SMALL() }}>{tag}</Text>
                     ))}
-                    {topMood && <Text style={{ color:TH.sub, fontSize:FONT_SMALL }}>· {topMood}</Text>}
+                    {topMood && <Text style={{ color:TH.sub, fontSize:FONT_SMALL() }}>· {topMood}</Text>}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -449,7 +449,7 @@ export default function ReflectionsScreen() {
               <TouchableOpacity onPress={() => toggleDayCollapse(day)} activeOpacity={0.7}
                 style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
                 <View style={{ width:8, height:8, borderRadius:4, backgroundColor:P }} />
-                <Text style={{ color:TH.sub, fontSize:FONT_SUB, fontWeight:'600' }}>{day}</Text>
+                <Text style={{ color:TH.sub, fontSize:FONT_SUB(), fontWeight:'600' }}>{day}</Text>
                 <View style={{ flex:1, height:1, backgroundColor:TH.border }} />
               </TouchableOpacity>
               {items.map((r, _idx) => {
@@ -520,7 +520,7 @@ export default function ReflectionsScreen() {
                               );
                             })}
                             {r.mood && (
-                              <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>· {r.mood}</Text>
+                              <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL() }}>· {r.mood}</Text>
                             )}
                           </View>
                         )}
@@ -532,7 +532,7 @@ export default function ReflectionsScreen() {
                               {linkedTrails.map(t => (
                                 <View key={t.id} style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:'rgba(255,255,255,.15)' }}>
                                   <Link size={10} color="rgba(255,255,255,.7)" />
-                                  <Text style={{ fontSize:FONT_TINY, color:'rgba(255,255,255,.7)' }}>{t.name}</Text>
+                                  <Text style={{ fontSize:FONT_TINY(), color:'rgba(255,255,255,.7)' }}>{t.name}</Text>
                                 </View>
                               ))}
                             </View>
@@ -548,7 +548,7 @@ export default function ReflectionsScreen() {
           );
         })}
         {filtered.length === 0 && (
-          <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY }}>{T('reflEmpty')}</Text>
+          <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY() }}>{T('reflEmpty')}</Text>
         )}
       </ScrollView>
 
@@ -572,7 +572,7 @@ export default function ReflectionsScreen() {
         <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.5)' }}>
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
             <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:20, marginBottom:16 }}>
-              <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflNewTitle')}</Text>
+              <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE() }}>{T('reflNewTitle')}</Text>
               <TouchableOpacity onPress={() => { setShowNew(false); setManagerMode(null); setPendingTrailIds([]); }}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
             <ReflectionForm
@@ -633,7 +633,7 @@ export default function ReflectionsScreen() {
               if (r) openEdit(r);
               setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:P, alignItems:'center' }}>
-              <Text style={{ color:'#fff', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflEditTitle')}</Text>
+              <Text style={{ color:'#fff', fontSize:FONT_BUTTON(), fontWeight:'600' }}>{T('reflEditTitle')}</Text>
             </TouchableOpacity>
             {/* 创建/解除计划任务 */}
             {(() => {
@@ -656,7 +656,7 @@ export default function ReflectionsScreen() {
                   }
                   setActionMenuId(null);
                 }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(139,92,246,.15)', alignItems:'center' }}>
-                  <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON, fontWeight:'600' }}>🔗 解除任务关联</Text>
+                  <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON(), fontWeight:'600' }}>🔗 解除任务关联</Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={() => {
@@ -670,7 +670,7 @@ export default function ReflectionsScreen() {
                   if (r) { setCreatePlanReflection(r); setShowCreatePlanRefModal(true); }
                   setActionMenuId(null);
                 }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(16,185,129,.15)', alignItems:'center' }}>
-                  <Text style={{ color:'#10B981', fontSize:FONT_BUTTON, fontWeight:'600' }}>🎯 创建为计划任务</Text>
+                  <Text style={{ color:'#10B981', fontSize:FONT_BUTTON(), fontWeight:'600' }}>🎯 创建为计划任务</Text>
                 </TouchableOpacity>
               );
             })()}
@@ -678,14 +678,14 @@ export default function ReflectionsScreen() {
               setTrailPickerId(actionMenuId);
               setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(139,92,246,.15)', alignItems:'center' }}>
-              <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON, fontWeight:'600' }}>🔗 关联思维脉络</Text>
+              <Text style={{ color:'#8B5CF6', fontSize:FONT_BUTTON(), fontWeight:'600' }}>🔗 关联思维脉络</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
               const r = (reflections ?? []).find(x => !x.deleted && x.id === actionMenuId);
               if (r) onShare(r);
               else setActionMenuId(null);
             }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(59,130,246,.15)', alignItems:'center' }}>
-              <Text style={{ color:'#3B82F6', fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflShare')}</Text>
+              <Text style={{ color:'#3B82F6', fontSize:FONT_BUTTON(), fontWeight:'600' }}>{T('reflShare')}</Text>
             </TouchableOpacity>
             {(() => {
               const r = (reflections ?? []).find(x => x.id === actionMenuId && !x.deleted);
@@ -695,7 +695,7 @@ export default function ReflectionsScreen() {
                   setConfirmDel(actionMenuId);
                   setActionMenuId(null);
                 }} style={{ marginHorizontal:16, marginBottom:12, paddingVertical:14, borderRadius:12, backgroundColor:'rgba(239,68,68,.15)', alignItems:'center' }}>
-                  <Text style={{ color:COLORS.RED, fontSize:FONT_BUTTON, fontWeight:'600' }}>{T('reflDelete')}</Text>
+                  <Text style={{ color:COLORS.RED, fontSize:FONT_BUTTON(), fontWeight:'600' }}>{T('reflDelete')}</Text>
                 </TouchableOpacity>
               ) : null;
             })()}
@@ -737,7 +737,7 @@ export default function ReflectionsScreen() {
       <Modal visible={!!confirmDel} transparent animationType="fade">
         <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.7)', justifyContent:'center', padding:24 }}>
           <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24, alignItems:'center' }}>
-            <Text style={{ fontWeight:'700', fontSize:FONT_BODY, color:TH.text, marginBottom:12 }}>{T('reflDeleteConfirm')}</Text>
+            <Text style={{ fontWeight:'700', fontSize:FONT_BODY(), color:TH.text, marginBottom:12 }}>{T('reflDeleteConfirm')}</Text>
             <View style={{ flexDirection:'row', gap:10, width:'100%' }}>
               <OutlineButton label={T('cancel')} onPress={() => setConfirmDel(null)} style={{ flex:1 }} />
               <PrimaryButton label={T('confirm')} onPress={() => { if(confirmDel) deleteReflection(confirmDel); setConfirmDel(null); }} color={COLORS.RED} style={{ flex:1 }} />
@@ -751,7 +751,7 @@ export default function ReflectionsScreen() {
         <KeyboardAvoidingView behavior={Platform.OS==='ios'?'padding':'height'} style={{ flex:1, justifyContent:'flex-end', backgroundColor:'rgba(0,0,0,.5)' }}>
           <View style={{ backgroundColor:TH.cardSolid, borderTopLeftRadius:24, borderTopRightRadius:24, paddingHorizontal:24, paddingBottom:40, maxHeight:'90%' }}>
             <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingTop:20, marginBottom:16 }}>
-              <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>{T('reflEditTitle')}</Text>
+              <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE() }}>{T('reflEditTitle')}</Text>
               <TouchableOpacity onPress={cancelEdit}><X size={26} color={TH.sub} /></TouchableOpacity>
             </View>
             <ReflectionForm
@@ -818,11 +818,11 @@ const styles = StyleSheet.create({
   newButtonText: {
     color: '#fff',
     fontWeight: '700',
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
   },
   reflTime: {
     color: 'rgba(255,255,255,.7)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   linkedPlanBadge: {
     flexDirection: 'row',
@@ -835,11 +835,11 @@ const styles = StyleSheet.create({
   },
   linkedPlanText: {
     color: '#fff',
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
   },
   reflContent: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     lineHeight: 22,
     marginBottom: 8,
   },
@@ -849,12 +849,12 @@ const styles = StyleSheet.create({
   },
   reflLinkText: {
     color: 'rgba(255,255,255,.7)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textDecorationLine: 'underline',
   },
   tagText: {
     color: 'rgba(255,255,255,.8)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     backgroundColor: 'rgba(255,255,255,.15)',
     paddingHorizontal: 6,
     paddingVertical: 2,

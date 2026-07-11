@@ -149,7 +149,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
       <View style={{ marginBottom: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8, marginLeft: 4 }}>
           <Icon size={16} color={color} />
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{label}</Text>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{label}</Text>
         </View>
 
         {active ? (
@@ -175,7 +175,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
             }}
           >
             <Plus size={20} color={color} />
-            <Text style={{ fontSize: FONT_BODY, color: color, fontWeight: '600' }}>
+            <Text style={{ fontSize: FONT_BODY(), color: color, fontWeight: '600' }}>
               {type === 'lifetime' ? T('vowNoLifetime') : type === 'long' ? T('vowCreateLong') : T('vowCreateShort')}
             </Text>
           </TouchableOpacity>
@@ -205,7 +205,7 @@ export default function VowTab({ TH, T, visionProgress }: Props) {
               paddingVertical: 12, paddingHorizontal: 4,
             }}
           >
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.sub }}>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub }}>
               {T('vowAchievedList')} ({achievedOrArchived.length})
             </Text>
             {showAchieved ? <ChevronUp size={16} color={TH.sub} /> : <ChevronDown size={16} color={TH.sub} />}

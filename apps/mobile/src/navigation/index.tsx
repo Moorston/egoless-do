@@ -156,7 +156,7 @@ function MainTabBar({ state, navigation, descriptors, insets }: BottomTabBarProp
             accessibilityLabel={titleMap[route.name] ?? route.name}
           >
             <Icon size={22} color={focused ? TH.primary : TH.sub} strokeWidth={focused ? 2.2 : 1.5} />
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '500', color: focused ? TH.primary : TH.sub, marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '500', color: focused ? TH.primary : TH.sub, marginTop: 2 }}>
               {titleMap[route.name] ?? route.name}
             </Text>
           </Pressable>

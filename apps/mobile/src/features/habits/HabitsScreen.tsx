@@ -85,7 +85,7 @@ export default function HabitsScreen() {
         right={
           <TouchableOpacity onPress={formState.openAdd}
             style={{ backgroundColor: P, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 }}>
-            <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>+ {T('habitAdd')}</Text>
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>+ {T('habitAdd')}</Text>
           </TouchableOpacity>
         }
       />

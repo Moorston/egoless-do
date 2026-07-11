@@ -30,15 +30,15 @@ export default function TopicChip({ word, category, count, onPress }: Props) {
         alignItems: 'center',
       }}
     >
-      <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.text }}>
+      <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text }}>
         {word}
       </Text>
       {category ? (
-        <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginTop: 2 }}>
+        <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 2 }}>
           {category}
         </Text>
       ) : null}
-      <Text style={{ fontSize: FONT_TINY, color: TH.primary, marginTop: 2 }}>
+      <Text style={{ fontSize: FONT_TINY(), color: TH.primary, marginTop: 2 }}>
         {count}次
       </Text>
     </TouchableOpacity>

@@ -21,7 +21,7 @@ export default function DailyDetail({ TH, T, dailyData }: Props) {
       borderWidth: 1,
       borderColor: TH.border,
     }}>
-      <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
+      <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>
         {T('vowProgressWeekly')}
       </Text>
 
@@ -48,7 +48,7 @@ export default function DailyDetail({ TH, T, dailyData }: Props) {
               borderRadius: 6, paddingVertical: 2,
             }}>
               <Text style={{
-                fontSize: FONT_BADGE,
+                fontSize: FONT_BADGE(),
                 fontWeight: day.isToday ? '700' : '400',
                 color: day.isToday ? TH.primary : TH.sub,
               }}>
@@ -77,11 +77,11 @@ export default function DailyDetail({ TH, T, dailyData }: Props) {
             {/* Items list */}
             <View style={{ flex: 1, marginLeft: 4 }}>
               {totalItems > 0 ? (
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }} numberOfLines={1}>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text }} numberOfLines={1}>
                   {day.habits.map(h => h.name).concat(day.plans.map(p => p.name)).join(', ')}
                 </Text>
               ) : (
-                <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>-</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>-</Text>
               )}
             </View>
 

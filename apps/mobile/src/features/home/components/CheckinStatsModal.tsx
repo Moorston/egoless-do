@@ -106,7 +106,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
         <View style={{ flex: 1, backgroundColor: TH.bg }}>
           {/* Header */}
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: insets.top + 12, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('checkinStats')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('checkinStats')}</Text>
             <TouchableOpacity onPress={onClose} style={{ padding: 8 }}>
               <X size={24} color={TH.text} />
             </TouchableOpacity>
@@ -129,8 +129,8 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
               {stats.map((stat, i) => (
                 <View key={i} style={{ backgroundColor: TH.card, borderRadius: 14, padding: 12, width: '48%', borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                   <Text style={{ fontSize: 26, fontWeight: '700', color: P }}>{stat.value}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{stat.label}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2, textAlign: 'center' }}>{stat.sub}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{stat.label}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2, textAlign: 'center' }}>{stat.sub}</Text>
                 </View>
               ))}
             </View>
@@ -138,7 +138,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             {/* Incomplete Reason Distribution */}
             {reasonDistribution.length > 0 && (
               <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: TH.border }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('incompleteReasonStats')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('incompleteReasonStats')}</Text>
                 <FlatList
                   data={reasonDistribution}
                   keyExtractor={(item) => item.code}
@@ -146,8 +146,8 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
                     const labelKey = `incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}` as string;
                     return (
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 8 }}>
-                        <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{r.icon} {T(labelKey)}</Text>
-                        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: P }}>{r.count} {T('days')}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{r.icon} {T(labelKey)}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: P }}>{r.count} {T('days')}</Text>
                       </View>
                     );
                   }}

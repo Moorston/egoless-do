@@ -28,28 +28,28 @@ export default function RestOverlay({ restSec, totalSec = 60, lastSetReps, setIn
             strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
             strokeLinecap="round" rotation="-90" origin="60,60" />
         </Svg>
-        <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: COLORS.ORANGE }}>{restSec}</Text>
+        <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: COLORS.ORANGE }}>{restSec}</Text>
       </View>
-      <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.7)', marginTop: 12 }}>{label}</Text>
+      <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,.7)', marginTop: 12 }}>{label}</Text>
 
       <View style={{ marginTop: 24, backgroundColor: 'rgba(255,255,255,.08)', borderRadius: 16, paddingHorizontal: 24, paddingVertical: 16, minWidth: 200 }}>
         {lastSetReps !== null && (
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>{T('exerciseSet').replace('{n}', String(setIndex))}</Text>
-            <Text style={{ fontSize: FONT_BODY, color: '#fff', fontWeight: '600' }}>{lastSetReps} {T('exerciseReps')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)' }}>{T('exerciseSet').replace('{n}', String(setIndex))}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: '#fff', fontWeight: '600' }}>{lastSetReps} {T('exerciseReps')}</Text>
           </View>
         )}
         {targetReps !== undefined && (
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>{T('exerciseSet').replace('{n}', String(setIndex + 1))}</Text>
-            <Text style={{ fontSize: FONT_BODY, color: COLORS.GREEN, fontWeight: '600' }}>{T('exerciseRepsTarget').replace('{n}', String(targetReps))}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)' }}>{T('exerciseSet').replace('{n}', String(setIndex + 1))}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: COLORS.GREEN, fontWeight: '600' }}>{T('exerciseRepsTarget').replace('{n}', String(targetReps))}</Text>
           </View>
         )}
       </View>
 
       <TouchableOpacity onPress={onSkip}
         style={{ marginTop: 32, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 24, backgroundColor: 'rgba(255,255,255,.15)' }}>
-        <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '700' }}>{T('exerciseSkip')}</Text>
+        <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '700' }}>{T('exerciseSkip')}</Text>
       </TouchableOpacity>
     </View>
   );

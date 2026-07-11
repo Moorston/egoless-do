@@ -413,14 +413,14 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   descText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   descEditRow: {
     paddingHorizontal: 16,
     paddingBottom: 4,
   },
   descInput: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     borderBottomWidth: 1,
     paddingVertical: 4,
   },
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   overviewText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   errorContainer: {
     flex: 1,
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   errorText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   emptyNotes: {
     alignItems: 'center',
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   emptyNotesText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 12,
   },
   emptyNotesButton: {
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
   },
   emptyNotesButtonText: {
     color: '#fff',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
 });

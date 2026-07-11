@@ -291,13 +291,13 @@ function SutraScreenInner() {
         style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 8, borderWidth: 1, borderColor: TH.border }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{m.name}</Text>
-            {m.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{m.subtitle}</Text>}
-            {today > 0 && <Text style={{ fontSize: FONT_SMALL, color: '#10B981', marginTop: 4 }}>{T('sutraTodayCount')} {today}</Text>}
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{m.name}</Text>
+            {m.subtitle && <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{m.subtitle}</Text>}
+            {today > 0 && <Text style={{ fontSize: FONT_SMALL(), color: '#10B981', marginTop: 4 }}>{T('sutraTodayCount')} {today}</Text>}
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' }}>{total.toLocaleString()}</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('sutraTotalRounds')}</Text>
+            <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#D4A574' }}>{total.toLocaleString()}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('sutraTotalRounds')}</Text>
           </View>
         </View>
         {progress !== null && (
@@ -305,15 +305,15 @@ function SutraScreenInner() {
             <View style={{ height: 4, backgroundColor: TH.border + '60', borderRadius: 2, overflow: 'hidden' }}>
               <View style={{ height: 4, width: `${progress}%`, backgroundColor: '#D4A574', borderRadius: 2 }} />
             </View>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>
               {total.toLocaleString()} / {m.targetCount != null ? m.targetCount.toLocaleString() : '0'} ({progress}%)
             </Text>
           </View>
         )}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-          <Text style={{ fontSize: FONT_SMALL, color: '#F59E0B' }}>🔥 {streak}天</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#F59E0B' }}>🔥 {streak}天</Text>
           <TouchableOpacity onPress={() => removeFromMy(m.id)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Text style={{ fontSize: FONT_SMALL, color: '#EF4444' }}>{T('sutraRemove')}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>{T('sutraRemove')}</Text>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -323,33 +323,33 @@ function SutraScreenInner() {
   const sutraListHeader = useMemo(() => (
     <View>
       <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('sutraTargetRounds')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('sutraTargetRounds')}</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {[1, 3, 7, 21, 108].map(n => (
             <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
               style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, backgroundColor: targetRounds === n ? '#D4A574' : TH.border }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
 
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('sutraMySutras')}</Text>
+      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('sutraMySutras')}</Text>
     </View>
   ), [TH, T, targetRounds]);
 
   const sutraEmptyState = useMemo(() => (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>
       <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
-      <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('sutraNoSutras')}</Text>
-      <Text style={{ fontSize: FONT_SMALL, color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('sutraAddHint')}</Text>
+      <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('sutraNoSutras')}</Text>
+      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('sutraAddHint')}</Text>
     </View>
   ), [TH, T]);
 
   const sutraListFooter = useMemo(() => (
     <View style={{ marginTop: 16 }}>
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('sutraPresetLibrary')}</Text>
-      <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB, marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
+      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('sutraPresetLibrary')}</Text>
+      <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB(), marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
         placeholder={T('sutraSearchPlaceholder')} placeholderTextColor={TH.sub} value={presetSearch} onChangeText={setPresetSearch} />
 
       {SUTRA_CATEGORY_ORDER.map(cat => {
@@ -361,7 +361,7 @@ function SutraScreenInner() {
           <View key={cat} style={{ marginBottom: 16 }}>
             <TouchableOpacity onPress={() => toggleCategoryFold(cat)} style={{ marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
               {folded ? <ChevronRight size={16} color={color} /> : <ChevronDown size={16} color={color} />}
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color, marginLeft: 4 }}>{categoryLabel(cat)} ({list.length})</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color, marginLeft: 4 }}>{categoryLabel(cat)} ({list.length})</Text>
             </TouchableOpacity>
             {!folded && (
               <View style={{ gap: 6 }}>
@@ -372,13 +372,13 @@ function SutraScreenInner() {
                       style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: TH.card, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: TH.border }}>
                       <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{p.name}</Text>
+                          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{p.name}</Text>
                           <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: color + '20' }}>
                             <Text style={{ fontSize: 10, fontWeight: '600', color }}>{categoryLabel(p.category)}</Text>
                           </View>
                           {p.pageCount ? <Text style={{ fontSize: 10, color: TH.sub }}>{p.pageCount}页</Text> : null}
                         </View>
-                        {p.subtitle ? <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{p.subtitle}</Text> : null}
+                        {p.subtitle ? <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }} numberOfLines={1}>{p.subtitle}</Text> : null}
                       </View>
                       {added
                         ? <Text style={{ fontSize: 11, color: '#10B981', fontWeight: '700' }}>{T('sutraAlreadyAdded')}</Text>
@@ -395,7 +395,7 @@ function SutraScreenInner() {
       <TouchableOpacity onPress={() => setShowAddCustom(true)}
         style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 14, paddingHorizontal: 14, borderRadius: 14, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, marginTop: 8 }}>
         <Plus size={18} color={TH.primary} />
-        <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>{T('sutraImportCustom')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), color: TH.primary, fontWeight: '600' }}>{T('sutraImportCustom')}</Text>
       </TouchableOpacity>
     </View>
   ), [TH, T, presetSearch, presetByCategory, foldedCategories, toggleCategoryFold, categoryColor, categoryLabel, isPresetInMy, addPresetToMy, setShowAddCustom]);
@@ -405,7 +405,7 @@ function SutraScreenInner() {
       <View style={{ flex: 1, backgroundColor: TH.bg }}>
         <SimpleHeader routeName="Sutra" />
         <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraSubtitle')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraSubtitle')}</Text>
           <TouchableOpacity onPress={() => nav.navigate('SutraHistory', {})}>
             <BarChart3 size={18} color={TH.sub} />
           </TouchableOpacity>
@@ -429,30 +429,30 @@ function SutraScreenInner() {
           <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
             <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('sutraImportTitle')}</Text>
+                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('sutraImportTitle')}</Text>
                 <TouchableOpacity onPress={() => setShowAddCustom(false)}><X size={22} color={TH.sub} /></TouchableOpacity>
               </View>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportName')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportName')}</Text>
               <TextInput value={customName} onChangeText={setCustomName} placeholder="例如：药师经" placeholderTextColor={TH.sub}
-                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportSubtitle')}</Text>
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportSubtitle')}</Text>
               <TextInput value={customSubtitle} onChangeText={setCustomSubtitle} placeholder="" placeholderTextColor={TH.sub}
-                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportCategory')}</Text>
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border, marginBottom: 12 }} />
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportCategory')}</Text>
               <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
                 {SUTRA_CATEGORY_ORDER.map(cat => (
                   <TouchableOpacity key={cat} onPress={() => setCustomCategory(cat)}
                     style={{ flex: 1, paddingVertical: 10, borderRadius: 8, alignItems: 'center', backgroundColor: customCategory === cat ? categoryColor(cat) : TH.card, borderWidth: customCategory === cat ? 0 : 1, borderColor: TH.border }}>
-                    <Text style={{ color: customCategory === cat ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_SUB }}>{categoryLabel(cat)}</Text>
+                    <Text style={{ color: customCategory === cat ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_SUB() }}>{categoryLabel(cat)}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportText')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('sutraImportText')}</Text>
               <TextInput value={customText} onChangeText={setCustomText} placeholder={T('sutraImportPlaceholder')} placeholderTextColor={TH.sub} multiline
-                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: TH.border, marginBottom: 16 }} />
+                style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: TH.border, marginBottom: 16 }} />
               <TouchableOpacity onPress={addCustomSutra} disabled={!customName.trim()}
                 style={{ backgroundColor: '#D4A574', borderRadius: 12, padding: 14, alignItems: 'center', opacity: customName.trim() ? 1 : 0.5 }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('sutraImportBtn')}</Text>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>{T('sutraImportBtn')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -487,22 +487,22 @@ function SutraScreenInner() {
         <TouchableOpacity onPress={() => { stopSutra(); setPage('select'); }}
           style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
           <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
-          <Text style={{ fontSize: FONT_BODY, color: TH.text, marginLeft: 8 }}>{T('chantingBack')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginLeft: 8 }}>{T('chantingBack')}</Text>
         </TouchableOpacity>
 
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, marginBottom: 8, textAlign: 'center' }}>{selectedSutra.name}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, marginBottom: 8, textAlign: 'center' }}>{selectedSutra.name}</Text>
           {selectedSutra.subtitle && (
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16, textAlign: 'center' }}>{selectedSutra.subtitle}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 16, textAlign: 'center' }}>{selectedSutra.subtitle}</Text>
           )}
           {selectedSutra.pronunciation && (
-            <Text style={{ fontSize: FONT_BODY, color: '#D4A574', marginBottom: 16, textAlign: 'center' }}>{selectedSutra.pronunciation}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: '#D4A574', marginBottom: 16, textAlign: 'center' }}>{selectedSutra.pronunciation}</Text>
           )}
           {selectedSutra.meaning && (
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16, textAlign: 'center', fontStyle: 'italic' }}>{selectedSutra.meaning}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 16, textAlign: 'center', fontStyle: 'italic' }}>{selectedSutra.meaning}</Text>
           )}
           {selectedSutra.pageCount != null && (
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 24, textAlign: 'center' }}>{selectedSutra.pageCount} {T('sutraPages')} · 每遍 108 颗</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 24, textAlign: 'center' }}>{selectedSutra.pageCount} {T('sutraPages')} · 每遍 108 颗</Text>
           )}
 
           {/* Audio section */}
@@ -510,7 +510,7 @@ function SutraScreenInner() {
             <View style={{ alignItems: 'center', marginBottom: 24 }}>
               {downloading === selectedSutra.id ? (
                 <View style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: '#D4A57415', borderWidth: 1, borderColor: '#D4A57430', minWidth: 200, alignItems: 'center' }}>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#D4A574' }}>{T('chantingDownloadProgress')} {Math.round(dlProgress * 100)}%</Text>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#D4A574' }}>{T('chantingDownloadProgress')} {Math.round(dlProgress * 100)}%</Text>
                   <View style={{ height: 4, width: '100%', backgroundColor: `${TH.border}60`, borderRadius: 2, marginTop: 8 }}>
                     <View style={{ height: 4, width: `${dlProgress * 100}%`, backgroundColor: '#D4A574', borderRadius: 2 }} />
                   </View>
@@ -519,38 +519,38 @@ function SutraScreenInner() {
                 <TouchableOpacity onPress={audioCached ? handlePreviewAudio : handleDownloadAudio}
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: '#D4A57415', borderWidth: 1, borderColor: '#D4A57430' }}>
                   <Text style={{ fontSize: 20 }}>{isPlaying ? '🔊' : audioCached ? '▶️' : '⬇️'}</Text>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#D4A574' }}>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#D4A574' }}>
                     {isPlaying ? T('chantingListening') : audioCached ? T('chantingListening') : T('chantingDownloadAudio')}
                   </Text>
                 </TouchableOpacity>
               )}
               {selectedSutra.audioAttribution ? (
-                <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 8, textAlign: 'center' }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 8, textAlign: 'center' }}>
                   {T('chantingAudioSource')}: {selectedSutra.audioAttribution}
                 </Text>
               ) : null}
             </View>
           ) : (
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24 }}>{T('chantingNoAudio')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 24 }}>{T('chantingNoAudio')}</Text>
           )}
 
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('sutraTargetRounds')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('sutraTargetRounds')}</Text>
           <View style={{ flexDirection: 'row', gap: 8, marginBottom: 32, flexWrap: 'wrap', justifyContent: 'center' }}>
             {[1, 3, 7, 21, 108].map(n => (
               <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
                 style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 10, backgroundColor: targetRounds === n ? '#D4A574' : TH.border }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24, textAlign: 'center' }}>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 24, textAlign: 'center' }}>
             {T('sutraTargetDesc')}: {targetRounds} 遍 · 每遍 108 颗
           </Text>
 
           <TouchableOpacity onPress={beginChanting}
             style={{ paddingVertical: 16, paddingHorizontal: 48, borderRadius: 16, backgroundColor: '#D4A574' }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff' }}>{T('sutraStartChantNew')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('sutraStartChantNew')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -576,7 +576,7 @@ function SutraScreenInner() {
         {/* Exit button */}
         <TouchableOpacity onPress={handleExitActive}
           style={{ position: 'absolute', top: 16, right: 16, zIndex: 10, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, backgroundColor: `${TH.card}CC` }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>✕ {T('chantingExit')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#EF4444' }}>✕ {T('chantingExit')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -584,7 +584,7 @@ function SutraScreenInner() {
           activeOpacity={1}
           onPress={handleTap}
         >
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{selectedSutra?.name}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 4 }}>{selectedSutra?.name}</Text>
           {selectedSutra?.pronunciation && (
             <Text style={{ fontSize: 12, color: '#D4A574', marginBottom: 4 }}>{selectedSutra.pronunciation}</Text>
           )}
@@ -600,11 +600,11 @@ function SutraScreenInner() {
             centerLabel={T('sutraRound') + ' ' + currentRound}
           />
 
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 16 }}>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 16 }}>
             {formatTime(elapsed)} · {T('sutraTargetDesc')}: {targetRounds} 遍
           </Text>
 
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub + '80', marginTop: 8 }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub + '80', marginTop: 8 }}>
             {T('sutraTapAnywhere')}
           </Text>
         </TouchableOpacity>
@@ -612,12 +612,12 @@ function SutraScreenInner() {
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 20, paddingBottom: 20 }}>
           <TouchableOpacity onPress={handleUndo}
             style={{ paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, backgroundColor: TH.card }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('sutraUndo')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{T('sutraUndo')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleToggleAudio}
             style={{ paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12, backgroundColor: isPlaying ? '#D4A574' : TH.card }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: isPlaying ? '#fff' : TH.text }}>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: isPlaying ? '#fff' : TH.text }}>
               {isPlaying ? '🔊' : '🔇'}
             </Text>
           </TouchableOpacity>
@@ -625,18 +625,18 @@ function SutraScreenInner() {
           {isPaused ? (
             <TouchableOpacity onPress={togglePause}
               style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: '#10B981' }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('sutraResume')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#fff' }}>{T('sutraResume')}</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity onPress={togglePause}
               style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: TH.card }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('sutraPause')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{T('sutraPause')}</Text>
             </TouchableOpacity>
           )}
 
           <TouchableOpacity onPress={endSession}
             style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 12, backgroundColor: '#EF4444' }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('sutraStop')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#fff' }}>{T('sutraStop')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -658,18 +658,18 @@ function SutraScreenInner() {
         <TouchableOpacity onPress={resetSession} style={{ marginRight: 12 }}>
           <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraChantComplete')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraChantComplete')}</Text>
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
 
         <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
           <View style={{ backgroundColor: '#D4A574', padding: 24, alignItems: 'center' }}>
             <Text style={{ fontSize: 48 }}>☸</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff', marginTop: 8 }}>{selectedSutra?.name}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff', marginTop: 8 }}>{selectedSutra?.name}</Text>
             <Text style={{ fontSize: 36, fontWeight: '800', color: '#fff', marginTop: 8 }}>
               {reportCount.toLocaleString()} 颗 · {reportRounds} 遍
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.8)', marginTop: 4 }}>
               {reportDurationSec > 60 ? Math.floor(reportDurationSec / 60) + 'm' : reportDurationSec + 's'}
             </Text>
           </View>
@@ -678,18 +678,18 @@ function SutraScreenInner() {
         <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' }}>{totalAfter.toLocaleString()}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraTotalRounds')}</Text>
+              <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#D4A574' }}>{totalAfter.toLocaleString()}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('sutraTotalRounds')}</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#F59E0B' }}>🔥 {streak}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraStreak')}</Text>
+              <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#F59E0B' }}>🔥 {streak}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('sutraStreak')}</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#10B981' }}>
+              <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#10B981' }}>
                 {reportDurationSec > 60 ? Math.floor(reportDurationSec / 60) + 'm' : reportDurationSec + 's'}
               </Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('sutraSessionDuration')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('sutraSessionDuration')}</Text>
             </View>
           </View>
         </View>
@@ -698,8 +698,8 @@ function SutraScreenInner() {
           style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Text style={{ fontSize: 24 }}>🙏</Text>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('sutraDedication')}</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('sutraDedicationSelect')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{T('sutraDedication')}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('sutraDedicationSelect')}</Text>
           </View>
         </TouchableOpacity>
 
@@ -709,17 +709,17 @@ function SutraScreenInner() {
       <Modal visible={showDedication} transparent animationType="slide">
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
           <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '80%' }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 16 }}>{T('sutraDedication')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 16 }}>{T('sutraDedication')}</Text>
             <ScrollView style={{ maxHeight: 200, marginBottom: 12 }}>
               {DEDICATION_TEMPLATES.map((tmpl, i) => (
                 <TouchableOpacity key={i} onPress={() => setDedicationText(tmpl)}
                   style={{ padding: 12, borderRadius: 8, backgroundColor: dedicationText === tmpl ? '#D4A57415' : TH.card, marginBottom: 6, borderWidth: 1, borderColor: dedicationText === tmpl ? '#D4A574' : TH.border }}>
-                  <Text style={{ fontSize: FONT_SMALL, color: dedicationText === tmpl ? '#D4A574' : TH.text }}>{tmpl}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: dedicationText === tmpl ? '#D4A574' : TH.text }}>{tmpl}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
             <TextInput
-              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', marginBottom: 12 }}
+              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), minHeight: 80, textAlignVertical: 'top', marginBottom: 12 }}
               multiline maxLength={500} value={dedicationText} onChangeText={setDedicationText}
               placeholder="自定义回向文" placeholderTextColor={TH.sub}
             />

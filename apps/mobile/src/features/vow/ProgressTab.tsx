@@ -37,7 +37,7 @@ export default function ProgressTab({ TH, T, progress }: Props) {
           borderWidth: 1,
           borderColor: TH.border,
         }}>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>
             {T('vowProgressToday')}
           </Text>
           {todayCompleted.map((item, i) => (
@@ -59,8 +59,8 @@ export default function ProgressTab({ TH, T, progress }: Props) {
               }}>
                 <Check size={12} color="#fff" strokeWidth={3} />
               </View>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{item.name}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>{item.name}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
                 {item.type === 'habit' ? T('vowProgressHabitDone') : T('vowProgressPlanDone')}
               </Text>
             </View>
@@ -80,7 +80,7 @@ export default function ProgressTab({ TH, T, progress }: Props) {
           alignItems: 'center',
         }}>
           <Text style={{ fontSize: 32, marginBottom: 8 }}>🧘</Text>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
             {T('vowProgressToday')} - {T('noHistory')}
           </Text>
         </View>

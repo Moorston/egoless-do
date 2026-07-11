@@ -2,16 +2,70 @@ import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_B
 import { usePagination } from '../../../hooks/usePagination';
 import { Shield } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
+import { useShallowStore } from '../../../store/useAppStore';
 import ReviewView from '../components/ReviewView';
 
 const PRACTICE_LABELS: Record<string, string> = { sit: 'checkinSit', stand: 'checkinStand', chant: 'checkinSutra' };
 const PRACTICE_ICONS: Record<string, string> = { sit: '🌙', stand: '🌅', chant: '🧠' };
+
+const styles = StyleSheet.create({
+  // --- Groups ---
+  historyGroup: { marginBottom: 20 },
+  monthHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 },
+
+  // --- Timeline ---
+  monthDot: { width: 10, height: 10, borderRadius: 5 },
+  monthLabel: { fontWeight: '700' },
+  timelineRow: { flexDirection: 'row', marginLeft: 4 },
+  timelineCol: { alignItems: 'center', width: 24 },
+  timelineDot: { width: 10, height: 10, borderRadius: 5, zIndex: 1 },
+  timelineLine: { width: 2, flex: 1 },
+
+  // --- Card ---
+  card: { flex: 1, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3 },
+  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
+  centerRow: { flexDirection: 'row', alignItems: 'center' },
+  gap6: { gap: 6 },
+  badgeText: { fontWeight: '600' },
+
+  // --- Pill containers ---
+  graceBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 8, backgroundColor: `${COLORS.ORANGE}15` },
+  doneBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
+
+  // --- User note ---
+  userNote: { marginTop: 4 },
+
+  // --- Tags ---
+  tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
+  tagItem: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 },
+  tagIcon: { fontSize: 10 },
+  tagText: { fontSize: 10 },
+
+  // --- Streak row ---
+  streakRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6 },
+  gap12: { gap: 12 },
+  streakText: {},
+
+  // --- Header ---
+  headerBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14 },
+  headerTitle: { fontWeight: '700', marginLeft: 12 },
+  clearButton: { padding: 8 },
+  clearButtonText: { color: COLORS.RED, fontSize: FONT_SUB() },
+
+  // --- Tabs ---
+  tabRow: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 8 },
+  tabButton: { flex: 1, paddingVertical: 10, borderRadius: 10 },
+  tabText: { textAlign: 'center' },
+
+  // --- FlatList ---
+  listContent: { paddingHorizontal: 16, paddingBottom: 40 },
+  footerLoader: { padding: 16 },
+});
 
 export default function CheckinHistoryScreen() {
   const TH = useTheme();
@@ -87,11 +141,11 @@ export default function CheckinHistoryScreen() {
   const renderItem = useCallback(({ item: [monthKey, items] }: { item: [string, typeof sorted] }) => {
     const isLastGroup = monthKey === grouped[0]?.[0];
     return (
-      <View key={monthKey} style={{ marginBottom: 20 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
-          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: P }} />
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(monthKey)}</Text>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length} {T('days')}</Text>
+      <View key={monthKey} style={styles.historyGroup}>
+        <View style={styles.monthHeaderRow}>
+          <View style={[styles.monthDot, { backgroundColor: P }]} />
+          <Text style={[styles.monthLabel, { fontSize: FONT_SUB(), color: TH.text }]}>{formatMonth(monthKey)}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{items.length} {T('days')}</Text>
         </View>
 
         {items.map((h, idx) => {
@@ -109,47 +163,33 @@ export default function CheckinHistoryScreen() {
           for (const item of parsed.planItems) tags.push({ icon: '☐', text: String(typeof item === 'string' ? item : item.name ?? item.id ?? '') });
 
           return (
-            <View key={h.date ?? idx} style={{ flexDirection: 'row', marginLeft: 4 }}>
-              <View style={{ alignItems: 'center', width: 24 }}>
-                <View style={{
-                  width: 10, height: 10, borderRadius: 5,
-                  backgroundColor: h.done ? COLORS.GREEN : COLORS.RED, zIndex: 1,
-                }} />
-                {!isLast && <View style={{ width: 2, flex: 1, backgroundColor: `${P}30` }} />}
+            <View key={h.date ?? idx} style={styles.timelineRow}>
+              <View style={styles.timelineCol}>
+                <View style={[styles.timelineDot, { backgroundColor: h.done ? COLORS.GREEN : COLORS.RED }]} />
+                {!isLast && <View style={[styles.timelineLine, { backgroundColor: `${P}30` }]} />}
               </View>
 
               <TouchableOpacity
                 onPress={() => nav.navigate('CheckinDetail', { date: h.date })}
                 activeOpacity={0.7}
-                style={{
-                  flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14,
-                  marginBottom: 10, marginLeft: 8,
-                  borderLeftWidth: 3, borderLeftColor: h.done ? COLORS.GREEN : COLORS.RED,
-                }}
+                style={[styles.card, { backgroundColor: TH.card, borderLeftColor: h.done ? COLORS.GREEN : COLORS.RED }]}
               >
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatDay(h.date)}</Text>
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('dateWeekdayPrefix')}{getWeekday(h.date)}</Text>
+                <View style={styles.cardHeaderRow}>
+                  <View style={[styles.centerRow, styles.gap6]}>
+                    <Text style={[styles.badgeText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{formatDay(h.date)}</Text>
+                    <Text style={[styles.badgeText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{T('dateWeekdayPrefix')}{getWeekday(h.date)}</Text>
                   </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={[styles.centerRow, styles.gap6]}>
                     {h.grace && (
-                      <View style={{
-                        flexDirection: 'row', alignItems: 'center', gap: 3,
-                        paddingHorizontal: 7, paddingVertical: 3, borderRadius: 8,
-                        backgroundColor: `${COLORS.ORANGE}15`,
-                      }}>
+                      <View style={styles.graceBadge}>
                         <Shield size={10} color={COLORS.ORANGE} />
-                        <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: COLORS.ORANGE }}>
+                        <Text style={[styles.badgeText, { fontSize: FONT_BADGE(), color: COLORS.ORANGE }]}>
                           {T('graceTitle')}
                         </Text>
                       </View>
                     )}
-                    <View style={{
-                      paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8,
-                      backgroundColor: h.done ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.1)',
-                    }}>
-                      <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: h.done ? COLORS.GREEN : COLORS.RED }}>
+                    <View style={[styles.doneBadge, { backgroundColor: h.done ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.1)' }]}>
+                      <Text style={[styles.badgeText, { fontSize: FONT_BADGE(), color: h.done ? COLORS.GREEN : COLORS.RED }]}>
                         {h.done ? T('checkinDone') : T('checkinNotDone')}
                       </Text>
                     </View>
@@ -157,23 +197,23 @@ export default function CheckinHistoryScreen() {
                 </View>
 
                 {parsed.userNote ? (
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text, marginTop: 4 }} numberOfLines={2}>{parsed.userNote}</Text>
+                  <Text style={[styles.userNote, { fontSize: FONT_SUB(), color: TH.text }]} numberOfLines={2}>{parsed.userNote}</Text>
                 ) : null}
 
                 {tags.length > 0 && (
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+                  <View style={styles.tagsContainer}>
                     {tags.map((tag, i) => (
-                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: `${P}12`, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 }}>
-                        <Text style={{ fontSize: 10 }}>{tag.icon}</Text>
-                        <Text style={{ fontSize: 10, color: TH.sub }}>{tag.text}</Text>
+                      <View key={i} style={[styles.tagItem, { backgroundColor: `${P}12` }]}>
+                        <Text style={styles.tagIcon}>{tag.icon}</Text>
+                        <Text style={[styles.tagText, { color: TH.sub }]}>{tag.text}</Text>
                       </View>
                     ))}
                   </View>
                 )}
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 }}>
-                  {h.streak > 0 && <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('checkinStreak')}: {h.streak} {T('days')}</Text>}
-                  {h.weight ? <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{h.weight} {T('checkinKg')}</Text> : null}
+                <View style={[styles.streakRow, styles.gap12]}>
+                  {h.streak > 0 && <Text style={[styles.streakText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{T('checkinStreak')}: {h.streak} {T('days')}</Text>}
+                  {h.weight ? <Text style={[styles.streakText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{h.weight} {T('checkinKg')}</Text> : null}
                 </View>
               </TouchableOpacity>
             </View>
@@ -186,30 +226,30 @@ export default function CheckinHistoryScreen() {
   const keyExtractor = useCallback((item: [string, typeof sorted]) => item[0], []);
 
   const ListEmptyComponent = useMemo(() => (
-    <Text style={{ textAlign: 'center', color: TH.sub, marginTop: 60, fontSize: FONT_EMPTY }}>
+    <Text style={{ textAlign: 'center', marginTop: 60, color: TH.sub, fontSize: FONT_EMPTY() }}>
       {T('checkinNoRecords')}
     </Text>
   ), [TH.sub, T]);
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 14 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={styles.headerBar}>
+        <View style={styles.centerRow}>
           <TouchableOpacity onPress={() => nav.goBack()}>
-            <Text style={{ color: TH.text, fontSize: FONT_BACK }}>←</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BACK() }}>←</Text>
           </TouchableOpacity>
-          <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE, marginLeft: 12 }}>{T('checkinHistory')}</Text>
+          <Text style={[styles.headerTitle, { color: TH.text, fontSize: FONT_TITLE() }]}>{T('checkinHistory')}</Text>
         </View>
         <TouchableOpacity
           onPress={handleClearReviews}
-          style={{ padding: 8 }}
+          style={styles.clearButton}
         >
-          <Text style={{ color: COLORS.RED, fontSize: FONT_SUB }}>{T('clearReviewData')}</Text>
+          <Text style={styles.clearButtonText}>{T('clearReviewData')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Tab切换 */}
-      <View style={{ flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 8 }}>
+      <View style={styles.tabRow}>
         {(['weekReview', 'monthReview', 'history'] as const).map(tab => {
           const active = activeTab === tab;
           const labels = { history: T('history'), weekReview: T('reviewWeek'), monthReview: T('reviewMonth') };
@@ -217,16 +257,15 @@ export default function CheckinHistoryScreen() {
             <TouchableOpacity
               key={tab}
               onPress={() => setActiveTab(tab)}
-              style={{
-                flex: 1, paddingVertical: 10, borderRadius: 10,
+              style={[styles.tabButton, {
                 backgroundColor: active ? `${P}18` : 'transparent',
                 borderWidth: active ? 1 : 0, borderColor: active ? P : 'transparent',
-              }}
+              }]}
             >
-              <Text style={{
-                textAlign: 'center', fontSize: FONT_BODY, fontWeight: active ? '600' : '400',
+              <Text style={[styles.tabText, {
+                fontSize: FONT_BODY(), fontWeight: active ? '600' : '400',
                 color: active ? P : TH.sub,
-              }}>
+              }]}>
                 {labels[tab]}
               </Text>
             </TouchableOpacity>
@@ -246,11 +285,11 @@ export default function CheckinHistoryScreen() {
           keyExtractor={keyExtractor}
           removeClippedSubviews={true}
           ListEmptyComponent={ListEmptyComponent}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+          contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
           onEndReached={hasMore ? loadMore : undefined}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={hasMore && isLoading ? <ActivityIndicator style={{ padding: 16 }} /> : null}
+          ListFooterComponent={hasMore && isLoading ? <ActivityIndicator style={styles.footerLoader} /> : null}
         />
       )}
     </SafeAreaView>

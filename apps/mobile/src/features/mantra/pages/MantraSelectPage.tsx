@@ -104,15 +104,15 @@ export default function MantraSelectPage(props: Props) {
         style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 8 }}>
         <View style={s.rowBetween}>
           <View style={s.flex1}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{m.name}</Text>
-            {m.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{m.subtitle}</Text>}
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{m.name}</Text>
+            {m.subtitle && <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{m.subtitle}</Text>}
             {today > 0 && (
               <Text style={s.todayCount}>{T('mantraTodayCount')} {today}</Text>
             )}
           </View>
           <View style={s.alignEnd}>
             <Text style={s.totalCount}>{total.toLocaleString()}</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('mantraCumulative')}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('mantraCumulative')}</Text>
           </View>
         </View>
         {progress !== null && (
@@ -120,7 +120,7 @@ export default function MantraSelectPage(props: Props) {
             <View style={{ height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2 }}>
               <View style={{ height: 4, width: `${progress}%`, backgroundColor: '#FBBF24', borderRadius: 2 }} />
             </View>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>
               {total.toLocaleString()} / {m.targetCount?.toLocaleString()} ({progress}%)
             </Text>
           </View>
@@ -145,20 +145,20 @@ export default function MantraSelectPage(props: Props) {
   const listHeader = useMemo(() => (
     <View>
       <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('mantraTargetRounds')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('mantraTargetRounds')}</Text>
         <View style={s.roundsRow}>
           {[1, 2, 3, 5, 7, 10].map(n => (
             <TouchableOpacity key={n} onPress={() => setTargetRounds(n)}
               style={[s.roundChip, { backgroundColor: targetRounds === n ? '#FBBF24' : TH.border }]}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: targetRounds === n ? '#fff' : TH.text }}>{n}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
       <View style={s.sectionHeaderRow}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('mantraMyMantras')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('mantraMyMantras')}</Text>
         <TouchableOpacity onPress={() => nav.navigate('MantraHistory', {})}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('mantraHistory')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('mantraHistory')}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -172,8 +172,8 @@ export default function MantraSelectPage(props: Props) {
   const emptyState = useMemo(() => (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>
       <Text style={s.emptyIcon}>📿</Text>
-      <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('mantraNoMantra')}</Text>
-      <Text style={{ fontSize: FONT_SMALL, color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('mantraAddHint')}</Text>
+      <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('mantraNoMantra')}</Text>
+      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('mantraAddHint')}</Text>
     </View>
   ), [TH, T]);
 
@@ -189,9 +189,9 @@ export default function MantraSelectPage(props: Props) {
    */
   const listFooter = useMemo(() => (
     <View style={s.footerContainer}>
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('mantraPresetLibrary')}</Text>
+      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('mantraPresetLibrary')}</Text>
       <TextInput
-        style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB, marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
+        style={{ backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 10, color: TH.text, fontSize: FONT_SUB(), marginBottom: 10, borderWidth: 1, borderColor: TH.border }}
         placeholder={T('mantraSearchPlaceholder')}
         placeholderTextColor={TH.sub}
         value={presetSearch}
@@ -203,14 +203,14 @@ export default function MantraSelectPage(props: Props) {
             style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: TH.card, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: TH.border }}>
             <View style={s.flex1}>
               <View style={s.categoryRow}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{p.name}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{p.name}</Text>
                 <View style={[s.categoryBadge, { backgroundColor: p.category === 'sutra' ? '#6366F120' : p.category === 'buddha_name' ? '#10B98120' : '#FBBF2420' }]}>
                   <Text style={[s.categoryBadgeText, { color: p.category === 'sutra' ? '#6366F1' : p.category === 'buddha_name' ? '#10B981' : '#D97706' }]}>
                     {p.category === 'sutra' ? T('sutraCategorySutra') : p.category === 'buddha_name' ? T('sutraCategoryBuddhaName') : T('sutraCategoryDharani')}
                   </Text>
                 </View>
               </View>
-              {p.subtitle && <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>{p.subtitle}</Text>}
+              {p.subtitle && <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{p.subtitle}</Text>}
             </View>
             <Text style={s.addIcon}>+</Text>
           </TouchableOpacity>
@@ -221,7 +221,7 @@ export default function MantraSelectPage(props: Props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
-      <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('mantraSubtitle')}</Text>
+      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('mantraSubtitle')}</Text>
       <KeyboardAvoidingView style={s.flex1} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <FlatList
           data={myMantras}
@@ -250,7 +250,7 @@ const s = StyleSheet.create({
     flex: 1,
   },
   todayCount: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     color: '#10B981',
     marginTop: 4,
   },
@@ -258,7 +258,7 @@ const s = StyleSheet.create({
     alignItems: 'flex-end',
   },
   totalCount: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '800',
     color: '#FBBF24',
   },
@@ -272,11 +272,11 @@ const s = StyleSheet.create({
     marginTop: 8,
   },
   streakText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     color: '#F59E0B',
   },
   removeText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     color: '#EF4444',
   },
   roundsRow: {

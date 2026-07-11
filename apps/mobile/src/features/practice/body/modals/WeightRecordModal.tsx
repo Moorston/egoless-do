@@ -41,14 +41,14 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('bodyRecordWeight')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyRecordWeight')}</Text>
             <TouchableOpacity onPress={handleClose}><X size={24} color={TH.sub} /></TouchableOpacity>
           </View>
 
           {/* Weight input */}
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('bodyWeight')} (kg){currentWeight ? ` - ${T('bodyCurrentWeight')}: ${currentWeight}kg` : ''}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('bodyWeight')} (kg){currentWeight ? ` - ${T('bodyCurrentWeight')}: ${currentWeight}kg` : ''}</Text>
           <TextInput
-            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, color: TH.text, fontSize: FONT_BODY, marginBottom: 16 }}
+            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, color: TH.text, fontSize: FONT_BODY(), marginBottom: 16 }}
             keyboardType="decimal-pad"
             value={weightStr}
             onChangeText={setWeightStr}
@@ -57,9 +57,9 @@ export default function WeightRecordModal({ visible, TH, T, currentWeight, curre
           />
 
           {/* Body fat input */}
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('bodyBodyFat')} (%){currentBodyFat ? ` - ${T('bodyCurrentBodyFat')}: ${currentBodyFat}%` : ''}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('bodyBodyFat')} (%){currentBodyFat ? ` - ${T('bodyCurrentBodyFat')}: ${currentBodyFat}%` : ''}</Text>
           <TextInput
-            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, color: TH.text, fontSize: FONT_BODY, marginBottom: 8 }}
+            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 14, color: TH.text, fontSize: FONT_BODY(), marginBottom: 8 }}
             keyboardType="decimal-pad"
             value={bodyFatStr}
             onChangeText={setBodyFatStr}

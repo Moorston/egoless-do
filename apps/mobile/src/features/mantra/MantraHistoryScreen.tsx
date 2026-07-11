@@ -153,9 +153,9 @@ export default function MantraHistoryScreen() {
     const [monthKey, groupSessions] = group;
     return (
       <View style={styles.groupContainer}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>
           {parseInt(monthKey.split('-')[0])}年{parseInt(monthKey.split('-')[1])}月
-          <Text style={{ fontSize: FONT_SMALL, fontWeight: '400', color: TH.sub }}> · {groupSessions.length}次</Text>
+          <Text style={{ fontSize: FONT_SMALL(), fontWeight: '400', color: TH.sub }}> · {groupSessions.length}次</Text>
         </Text>
         {groupSessions.map(s => (
           <View key={s.id} style={{
@@ -169,9 +169,9 @@ export default function MantraHistoryScreen() {
                     <Text style={styles.mantraBadgeText}>{mantraNames[s.mantraId]}</Text>
                   </View>
                 )}
-                <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{formatDate(s.startedAt)}</Text>
+                <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{formatDate(s.startedAt)}</Text>
               </View>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{formatShortTime(s.durationSec)}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{formatShortTime(s.durationSec)}</Text>
             </View>
             <View style={styles.sessionStatsContainer}>
               <View>
@@ -204,25 +204,25 @@ export default function MantraHistoryScreen() {
             <Text style={styles.totalCountNumber}>
               {stats.totalCount.toLocaleString()}
             </Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计次数</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>累计次数</Text>
           </View>
           <View style={styles.statItemCenter}>
             <Text style={styles.totalTimeNumber}>
               {formatTime(stats.totalSec)}
             </Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计时长</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>累计时长</Text>
           </View>
           <View style={styles.statItemCenter}>
             <Text style={styles.streakNumber}>
               🔥 {stats.streak}
             </Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>连续</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>连续</Text>
           </View>
           <View style={styles.statItemCenter}>
             <Text style={styles.averageNumber}>
               {formatShortTime(stats.avgSec)}
             </Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>平均</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>平均</Text>
           </View>
         </View>
       </View>
@@ -233,7 +233,7 @@ export default function MantraHistoryScreen() {
           <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)} style={styles.monthNavButton}>
             <Text style={{ fontSize: 18, color: TH.sub }}>‹</Text>
           </TouchableOpacity>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
             {monthYear}年{monthIdx + 1}月
           </Text>
           <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))} style={styles.monthNavButton}>
@@ -275,14 +275,14 @@ export default function MantraHistoryScreen() {
         </View>
       </View>
     </>
-  ), [stats.totalCount, stats.totalSec, stats.avgSec, stats.streak, formatTime, formatShortTime, FONT_BODY, FONT_SMALL, TH.primary, TH.text, TH.sub, monthYear, monthIdx, heatmapData, weekdayLabels]);
+  ), [stats.totalCount, stats.totalSec, stats.avgSec, stats.streak, formatTime, formatShortTime, FONT_BODY(), FONT_SMALL(), TH.primary, TH.text, TH.sub, monthYear, monthIdx, heatmapData, weekdayLabels]);
 
   const ListEmptyComponent = useMemo(() => (
     <View style={styles.emptyStateContainer}>
       <Text style={styles.emptyStateEmoji}>📿</Text>
-      <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>暂无持咒记录</Text>
+      <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>暂无持咒记录</Text>
     </View>
-  ), [FONT_BODY, TH.sub]);
+  ), [FONT_BODY(), TH.sub]);
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -292,16 +292,16 @@ export default function MantraHistoryScreen() {
           <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
         </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>
             {singleMantra?.name ?? '持咒记录'}
           </Text>
-          {!singleMantra && <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>全部咒语</Text>}
+          {!singleMantra && <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>全部咒语</Text>}
         </View>
         <View style={styles.headerStatsContainer}>
           <Text style={styles.totalCountNumber}>
             {stats.totalCount.toLocaleString()}
           </Text>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>累计</Text>
         </View>
       </View>
 
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FBBF2420',
   },
   mantraBadgeText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
     color: '#D97706',
   },

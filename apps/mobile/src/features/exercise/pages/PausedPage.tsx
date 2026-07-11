@@ -84,7 +84,7 @@ export default function PausedPage(props: ExercisePageProps) {
     <View style={{ flex: 1, backgroundColor: '#1a1a2e' }}>
       {/* Zone 1: Top bar */}
       <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('exercisePaused')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('exercisePaused')}</Text>
       </View>
 
       {/* Music bar */}
@@ -107,32 +107,32 @@ export default function PausedPage(props: ExercisePageProps) {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}>
         <View style={{ flexDirection: 'row', gap: 24, marginBottom: 32 }}>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: '#fff' }}>{fmt(sec)}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>{T('exerciseTotalDuration')}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#fff' }}>{fmt(sec)}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>{T('exerciseTotalDuration')}</Text>
           </View>
           {sportType === 'repetition' && (
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: '#fff' }}>{pausedReps}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>{T('exerciseReps')}</Text>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#fff' }}>{pausedReps}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>{T('exerciseReps')}</Text>
             </View>
           )}
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: '#fff' }}>{sets.length}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>{T('exerciseSets') || '组'}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#fff' }}>{sets.length}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>{T('exerciseSets') || '组'}</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: COLORS.ORANGE }}>{props.calories}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>kcal</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: COLORS.ORANGE }}>{props.calories}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)' }}>kcal</Text>
           </View>
         </View>
 
-        <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>
+        <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff' }}>
           {isGpsSport ? distKm.toFixed(2) : sportType === 'repetition' ? pausedReps : Math.floor(sec / 60)}
         </Text>
-        <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 4 }}>
+        <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)', marginTop: 4 }}>
           {isGpsSport ? 'km' : sportType === 'repetition' ? T('exerciseReps') : 'min'}
         </Text>
-        <Text style={{ fontSize: FONT_STAT_CARD, color: 'rgba(255,255,255,.7)', marginTop: 16 }}>{fmt(sec)}</Text>
+        <Text style={{ fontSize: FONT_STAT_CARD(), color: 'rgba(255,255,255,.7)', marginTop: 16 }}>{fmt(sec)}</Text>
       </View>
 
       {/* Zone 3: Bottom bar */}

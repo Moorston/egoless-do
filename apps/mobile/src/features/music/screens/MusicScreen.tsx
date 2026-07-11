@@ -56,7 +56,7 @@ export default function MusicScreen() {
           <TouchableOpacity onPress={() => nav.goBack()}>
             <ArrowLeft size={22} color={TH.text} />
           </TouchableOpacity>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('musicTitle')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('musicTitle')}</Text>
         </View>
         <ImportMusicButton T={T} primaryColor={P} />
       </View>
@@ -82,10 +82,10 @@ export default function MusicScreen() {
 
             {/* Track info */}
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }} numberOfLines={1}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }} numberOfLines={1}>
                 {currentTrack.name}
               </Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>
                 {isPlaying ? T('musicPlaying') : T('musicPaused')}
               </Text>
               {/* Mini waveform */}

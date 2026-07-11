@@ -49,32 +49,32 @@ export default function Banner({
             ? <Pencil size={18} color="#fff" />
             : <Target size={18} color="#fff" />
           }
-          <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>
+          <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>
             {bannerStatusText}
           </Text>
         </View>
         {bannerTimeText ? (
-          <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB, marginTop: 6 }}>{bannerTimeText}</Text>
+          <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB(), marginTop: 6 }}>{bannerTimeText}</Text>
         ) : null}
       </View>
 
       {/* Stats row */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={onStatsPress} activeOpacity={0.7}>
-          <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('totalCompleted')}</Text>
-          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? totalCompleted : viewDateStats.totalDays}</Text>
-          <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
+          <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB() }}>{T('totalCompleted')}</Text>
+          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD() }}>{isToday ? totalCompleted : viewDateStats.totalDays}</Text>
+          <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>{T('days')}</Text>
           <BarChart3 size={12} color="rgba(255,255,255,.7)" style={{ marginTop: 4 }} />
         </TouchableOpacity>
         <View style={{ width: 1, height: 40, backgroundColor: 'rgba(255,255,255,.2)' }} />
         <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={onStatsPress} activeOpacity={0.7}>
-          <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB }}>{T('streak')}</Text>
-          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD }}>{isToday ? streak : viewDateStats.streak}</Text>
-          <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>{T('days')}</Text>
+          <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB() }}>{T('streak')}</Text>
+          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD() }}>{isToday ? streak : viewDateStats.streak}</Text>
+          <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>{T('days')}</Text>
           {isToday && showGrace && graceAvailable ? (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 4 }}>
               <Shield size={10} color="rgba(255,255,255,.7)" />
-              <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL }}>{T('graceStreakPending')}</Text>
+              <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL() }}>{T('graceStreakPending')}</Text>
             </View>
           ) : (
             <BarChart3 size={12} color="rgba(255,255,255,.7)" style={{ marginTop: 4 }} />

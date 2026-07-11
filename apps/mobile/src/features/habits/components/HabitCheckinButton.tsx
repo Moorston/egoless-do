@@ -34,7 +34,7 @@ export default function HabitCheckinButton({ isChecked, onCheckin }: Props) {
         transform: [{ scale: scaleAnim }],
       }}>
         <CheckCircle size={20} color={P} />
-        <Text style={{ color: P, fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('habitChecked')}</Text>
+        <Text style={{ color: P, fontSize: FONT_BUTTON(), fontWeight: '700' }}>{T('habitChecked')}</Text>
       </Animated.View>
     );
   }
@@ -47,7 +47,7 @@ export default function HabitCheckinButton({ isChecked, onCheckin }: Props) {
         transform: [{ scale: scaleAnim }],
       }}>
         <CheckCircle size={20} color="#fff" />
-        <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('habitCheckinBtn')}</Text>
+        <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '700' }}>{T('habitCheckinBtn')}</Text>
       </Animated.View>
     </TouchableOpacity>
   );

@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   list: {
@@ -166,12 +166,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   trailName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 2,
   },
   trailCount: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   createButton: {
     flexDirection: 'row',
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   createText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
 });

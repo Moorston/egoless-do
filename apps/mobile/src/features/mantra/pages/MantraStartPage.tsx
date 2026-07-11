@@ -73,21 +73,21 @@ export default function MantraStartPage(props: Props) {
       <TouchableOpacity onPress={onBack}
         style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
         <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
-        <Text style={{ fontSize: FONT_BODY, color: TH.text, marginLeft: 8 }}>{T('chantingBack')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginLeft: 8 }}>{T('chantingBack')}</Text>
       </TouchableOpacity>
 
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, marginBottom: 8, textAlign: 'center' }}>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, marginBottom: 8, textAlign: 'center' }}>
           {mantra.name}
         </Text>
         {mantra.subtitle && (
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 16, textAlign: 'center' }}>{mantra.subtitle}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 16, textAlign: 'center' }}>{mantra.subtitle}</Text>
         )}
         {mantra.pronunciation && (
-          <Text style={{ fontSize: FONT_BODY, color: '#F59E0B', marginBottom: 16, textAlign: 'center' }}>{mantra.pronunciation}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: '#F59E0B', marginBottom: 16, textAlign: 'center' }}>{mantra.pronunciation}</Text>
         )}
         {mantra.meaning && (
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24, textAlign: 'center', fontStyle: 'italic' }}>{mantra.meaning}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 24, textAlign: 'center', fontStyle: 'italic' }}>{mantra.meaning}</Text>
         )}
 
         {/* Audio section */}
@@ -95,7 +95,7 @@ export default function MantraStartPage(props: Props) {
           <View style={{ alignItems: 'center', marginBottom: 24 }}>
             {downloading === mantra.id ? (
               <View style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30`, minWidth: 200, alignItems: 'center' }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>{T('chantingDownloadProgress')} {Math.round(dlProgress * 100)}%</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>{T('chantingDownloadProgress')} {Math.round(dlProgress * 100)}%</Text>
                 <View style={{ height: 4, width: '100%', backgroundColor: `${TH.border}60`, borderRadius: 2, marginTop: 8 }}>
                   <View style={{ height: 4, width: `${dlProgress * 100}%`, backgroundColor: TH.primary, borderRadius: 2 }} />
                 </View>
@@ -104,7 +104,7 @@ export default function MantraStartPage(props: Props) {
               <TouchableOpacity onPress={audioCached ? onPreviewAudio : onDownloadAudio}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30` }}>
                 <Text style={{ fontSize: 20 }}>{isPlaying ? '🔊' : audioCached ? '▶️' : '⬇️'}</Text>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>
                   {isPlaying ? T('chantingListening') : audioCached ? T('chantingListening') : T('chantingDownloadAudio')}
                 </Text>
               </TouchableOpacity>
@@ -116,27 +116,27 @@ export default function MantraStartPage(props: Props) {
                 <View style={{ width: 20, height: 20, borderRadius: 4, borderWidth: 2, borderColor: TH.primary, backgroundColor: audioLoop ? TH.primary : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
                   {audioLoop && <Text style={{ fontSize: 12, color: '#fff' }}>✓</Text>}
                 </View>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{T('chantingLoopAudio')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('chantingLoopAudio')}</Text>
               </TouchableOpacity>
             )}
 
             {mantra.audioAttribution ? (
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 8, textAlign: 'center' }}>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 8, textAlign: 'center' }}>
                 {T('chantingAudioSource')}: {mantra.audioAttribution}
               </Text>
             ) : null}
           </View>
         ) : (
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24 }}>{T('chantingNoAudio')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 24 }}>{T('chantingNoAudio')}</Text>
         )}
 
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 24, textAlign: 'center' }}>
+        <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 24, textAlign: 'center' }}>
           {T('mantraTargetDesc')}: {targetRounds} 遍 · 每遍 108 颗
         </Text>
 
         <TouchableOpacity onPress={onBeginChanting}
           style={{ paddingVertical: 16, paddingHorizontal: 48, borderRadius: 16, backgroundColor: '#FBBF24' }}>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff' }}>{T('mantraBegin')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('mantraBegin')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

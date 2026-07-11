@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   name: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '500',
     flex: 1,
     marginRight: 8,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   priorityText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '600',
   },
   progressRow: {
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   progressText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     minWidth: 60,
     textAlign: 'right',
   },
@@ -138,10 +138,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dateText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
   },
   statusText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '500',
   },
 });

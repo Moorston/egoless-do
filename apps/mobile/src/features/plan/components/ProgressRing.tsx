@@ -14,7 +14,7 @@ export const ProgressRing = React.memo(function ProgressRing({ progress, size = 
         <Circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={color} strokeWidth={strokeWidth}
           strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" />
       </Svg>
-      <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color }}>{progress}%</Text>
+      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color }}>{progress}%</Text>
     </View>
   );
 });

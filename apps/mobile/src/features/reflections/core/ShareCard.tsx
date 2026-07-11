@@ -107,7 +107,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
                 <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: 48, lineHeight: 52, marginBottom: -8 }}>「</Text>
 
                 {/* Content */}
-                <Text style={{ color: '#fff', fontSize: FONT_BODY + 2, lineHeight: 28, marginBottom: 8, fontWeight: '500' }}>
+                <Text style={{ color: '#fff', fontSize: FONT_BODY() + 2, lineHeight: 28, marginBottom: 8, fontWeight: '500' }}>
                   {reflection.content}
                 </Text>
 
@@ -119,12 +119,12 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
                     {reflection.tags.map(tag => (
                       <View key={tag} style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.2)' }}>
-                        <Text style={{ color: 'rgba(255,255,255,.9)', fontSize: FONT_SMALL }}>{tag}</Text>
+                        <Text style={{ color: 'rgba(255,255,255,.9)', fontSize: FONT_SMALL() }}>{tag}</Text>
                       </View>
                     ))}
                     {reflection.mood && (
                       <View style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.15)' }}>
-                        <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SMALL }}>💭 {reflection.mood}</Text>
+                        <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SMALL() }}>💭 {reflection.mood}</Text>
                       </View>
                     )}
                   </View>
@@ -132,7 +132,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
 
                 {/* Footer */}
                 <View style={{ borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)', paddingTop: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL }}>📅 {timeStr}</Text>
+                  <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>📅 {timeStr}</Text>
                   <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: 10 }}>❤️ 心流纪 · Egoless Do</Text>
                 </View>
               </View>
@@ -140,7 +140,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
           </ViewShot>
         ) : (
           <View style={{ width: 320, overflow: 'hidden', backgroundColor: bgColor, padding: 28, alignItems: 'center' }}>
-            <Text style={{ color: '#fff', fontSize: FONT_BODY }}>{T('shareCardLoading')}</Text>
+            <Text style={{ color: '#fff', fontSize: FONT_BODY() }}>{T('shareCardLoading')}</Text>
           </View>
         )}
 
@@ -149,12 +149,12 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
           <TouchableOpacity onPress={handleCapture} disabled={capturing}
             style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24, opacity: capturing ? 0.5 : 1 }}>
             <Share2 size={18} color="#fff" />
-            <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '600' }}>{T('shareCardShare')}</Text>
+            <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('shareCardShare')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSave} disabled={capturing}
             style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24, opacity: capturing ? 0.5 : 1 }}>
             <Download size={18} color="#fff" />
-            <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '600' }}>{T('shareCardSave')}</Text>
+            <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('shareCardSave')}</Text>
           </TouchableOpacity>
         </View>
       </View>

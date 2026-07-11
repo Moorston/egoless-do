@@ -31,18 +31,18 @@ export default function PlanHistoryScreen() {
       <Card style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <ClipboardList size={24} color={TH.text} />
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 4 }} numberOfLines={1}>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 4 }} numberOfLines={1}>
             {plan.name}
           </Text>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>
             {plan.startDate} ~ {plan.endDate}
           </Text>
         </View>
         <View style={{ alignItems: 'flex-end', gap: 4 }}>
           <View style={{ backgroundColor: `${PLAN_STATUS_COLORS[plan.status]}20`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
-            <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: PLAN_STATUS_COLORS[plan.status] }}>{statusLabel(plan.status)}</Text>
+            <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: PLAN_STATUS_COLORS[plan.status] }}>{statusLabel(plan.status)}</Text>
           </View>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{plan.progress}%</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{plan.progress}%</Text>
         </View>
         <ChevronRight size={16} color={TH.sub} />
       </Card>
@@ -52,7 +52,7 @@ export default function PlanHistoryScreen() {
   const renderEmpty = useCallback(() => (
     <Card style={{ alignItems: 'center', padding: 32 }}>
       <ClipboardList size={32} color={TH.sub} style={{ marginBottom: 8 }} />
-      <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('planNoHistory')}</Text>
+      <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('planNoHistory')}</Text>
     </Card>
   ), [TH, T]);
 
@@ -63,7 +63,7 @@ export default function PlanHistoryScreen() {
         <TouchableOpacity onPress={() => nav.goBack()}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text }}>{T('planHistory')}</Text>
+        <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text }}>{T('planHistory')}</Text>
       </View>
 
       <FlatList

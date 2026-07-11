@@ -39,13 +39,13 @@ export default function SearchFilterBar({
       {/* Search + toggle row */}
       <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: TH.card, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>🔍</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>🔍</Text>
           <TextInput
             value={searchInput}
             onChangeText={onSearchChange}
             placeholder="搜索感念..."
             placeholderTextColor={TH.sub}
-            style={{ flex: 1, color: TH.text, fontSize: FONT_BODY, padding: 0 }}
+            style={{ flex: 1, color: TH.text, fontSize: FONT_BODY(), padding: 0 }}
           />
           {searchInput.length > 0 && (
             <TouchableOpacity onPress={onSearchClear}>
@@ -57,7 +57,7 @@ export default function SearchFilterBar({
           onPress={onFilterPress}
           style={{ paddingHorizontal: 14, borderRadius: 10, backgroundColor: showFilterDrawer ? `${P}20` : TH.card, justifyContent: 'center' }}
         >
-          <Text style={{ color: showFilterDrawer ? P : TH.sub, fontSize: FONT_SMALL, fontWeight: '600' }}>筛选</Text>
+          <Text style={{ color: showFilterDrawer ? P : TH.sub, fontSize: FONT_SMALL(), fontWeight: '600' }}>筛选</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onStatsPress}
@@ -76,7 +76,7 @@ export default function SearchFilterBar({
               onPress={() => onRemoveFilter(f.key, f.value)}
               style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}
             >
-              <Text style={{ color: P, fontSize: FONT_SMALL }}>{f.label}</Text>
+              <Text style={{ color: P, fontSize: FONT_SMALL() }}>{f.label}</Text>
               <X size={12} color={P} />
             </TouchableOpacity>
           ))}
@@ -84,7 +84,7 @@ export default function SearchFilterBar({
             onPress={onClearAllFilters}
             style={{ paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}
           >
-            <Text style={{ color: TH.sub, fontSize: FONT_SMALL }}>清除全部</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SMALL() }}>清除全部</Text>
           </TouchableOpacity>
         </ScrollView>
       )}

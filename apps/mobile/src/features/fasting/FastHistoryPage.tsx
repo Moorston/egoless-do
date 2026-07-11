@@ -101,11 +101,11 @@ function Heatmap({ entries, TH, onPress }: { entries: FastingSession[]; TH: Them
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={{ backgroundColor: TH.card, borderRadius: 16, padding: 14, marginBottom: 16 }}>
       <View style={styles.heatmapHeaderRow}>
-        <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(`${year}-${String(month + 1).padStart(2, '0')}`)} 禁食热力图</Text>
-        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{fastDays}/{daysInMonth}天</Text>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(`${year}-${String(month + 1).padStart(2, '0')}`)} 禁食热力图</Text>
+        <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{fastDays}/{daysInMonth}天</Text>
       </View>
       <View style={styles.heatmapWeekdayRow}>
-        {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_BADGE, color: TH.sub }}>{w}</Text>)}
+        {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_BADGE(), color: TH.sub }}>{w}</Text>)}
       </View>
       <View style={styles.heatmapCellsRow}>
         {cells.map((d, i) => {
@@ -152,11 +152,11 @@ export function FastCalendarScreen() {
         <ScreenHeader title="禁食日历" onBack={() => nav.goBack()} />
         <View style={styles.calendarMonthRow}>
           <TouchableOpacity onPress={prevMonth}><Text style={{ fontSize: 24, color: TH.text }}>{'‹'}</Text></TouchableOpacity>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{formatMonth(ym)}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{formatMonth(ym)}</Text>
           <TouchableOpacity onPress={nextMonth}><Text style={{ fontSize: 24, color: TH.text }}>{'›'}</Text></TouchableOpacity>
         </View>
         <View style={styles.calendarWeekdayRow}>
-          {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_SUB, color: TH.sub, fontWeight: '600' }}>{w}</Text>)}
+          {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_SUB(), color: TH.sub, fontWeight: '600' }}>{w}</Text>)}
         </View>
         <View style={styles.calendarCellsRow}>
           {cells.map((d, i) => {
@@ -173,9 +173,9 @@ export function FastCalendarScreen() {
           })}
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20, backgroundColor: TH.card, borderRadius: 12, padding: 16 }}>
-          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{fastDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>本月</Text></View>
-          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{entries.length}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>累计次数</Text></View>
-          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{streak}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>连续天数</Text></View>
+          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{fastDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>本月</Text></View>
+          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{entries.length}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>累计次数</Text></View>
+          <View style={styles.calendarStatItem}><Text style={styles.calendarStatValue}>{streak}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>连续天数</Text></View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -208,33 +208,33 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: FastingSession |
       <View style={styles.modalContainer}>
         <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
           <View style={styles.modalHeaderRow}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{formatTime(entry.startedAt ?? 0)} 周{weekday}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{formatTime(entry.startedAt ?? 0)} 周{weekday}</Text>
             <TouchableOpacity onPress={onClose}><X size={20} color={TH.sub} /></TouchableOpacity>
           </View>
           <Text style={styles.modalDuration}>{h}h {m}m</Text>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>目标 {entry.targetHours}h · 完成 {completionRate}%</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 8 }}>目标 {entry.targetHours}h · 完成 {completionRate}%</Text>
           <View style={{ height: 6, backgroundColor: `${TH.border}80`, borderRadius: 3, marginBottom: 16, overflow: 'hidden' }}>
             <View style={{ height: 6, width: `${completionRate}%`, backgroundColor: completionRate >= 100 ? '#10b981' : '#8446FF', borderRadius: 3 }} />
           </View>
           <View style={styles.modalCalRow}>
-            <View style={styles.modalCalItem}><Flame size={16} color={COLORS.ORANGE} /><Text style={{ fontSize: FONT_BODY, color: TH.text }}>~{entry.estimatedKcal ?? 0} kcal</Text></View>
+            <View style={styles.modalCalItem}><Flame size={16} color={COLORS.ORANGE} /><Text style={{ fontSize: FONT_BODY(), color: TH.text }}>~{entry.estimatedKcal ?? 0} kcal</Text></View>
           </View>
-          {entry.insight ? <Text style={{ fontSize: FONT_BODY, color: TH.sub, fontStyle: 'italic', marginBottom: 12 }}>「{entry.insight}」</Text> : null}
+          {entry.insight ? <Text style={{ fontSize: FONT_BODY(), color: TH.sub, fontStyle: 'italic', marginBottom: 12 }}>「{entry.insight}」</Text> : null}
           <View style={styles.noteContainer}>
             <View style={styles.noteHeaderRow}>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>感悟笔记</Text>
-              {!editingNote && <TouchableOpacity onPress={startEdit}><Text style={{ fontSize: FONT_BADGE, color: '#8446FF' }}>{entry.note ? '编辑' : '添加'}</Text></TouchableOpacity>}
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>感悟笔记</Text>
+              {!editingNote && <TouchableOpacity onPress={startEdit}><Text style={{ fontSize: FONT_BADGE(), color: '#8446FF' }}>{entry.note ? '编辑' : '添加'}</Text></TouchableOpacity>}
             </View>
             {editingNote ? (
               <>
-                <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top' }} multiline maxLength={500} value={noteText} onChangeText={setNoteText} placeholder="写下你的感悟..." placeholderTextColor={TH.sub} />
+                <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), minHeight: 80, textAlignVertical: 'top' }} multiline maxLength={500} value={noteText} onChangeText={setNoteText} placeholder="写下你的感悟..." placeholderTextColor={TH.sub} />
                 <View style={styles.noteButtonRow}>
                   <TouchableOpacity onPress={() => setEditingNote(false)} style={{ flex: 1, padding: 10, borderRadius: 8, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}><Text style={{ color: TH.sub }}>取消</Text></TouchableOpacity>
                   <TouchableOpacity onPress={saveNote} style={styles.noteSaveBtn}><Text style={{ color: '#fff', fontWeight: '600' }}>保存</Text></TouchableOpacity>
                 </View>
               </>
             ) : (
-              <Text style={{ fontSize: FONT_BODY, color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
             )}
           </View>
           <TouchableOpacity onPress={() => { Alert.alert('删除记录', '确定要删除这条禁食记录吗？', [{ text: '取消', style: 'cancel' }, { text: '删除', style: 'destructive', onPress: () => { onDelete(entry.id); onClose(); } }]); }} style={styles.deleteBtn}>
@@ -311,8 +311,8 @@ export default function FastHistoryPage() {
       return (
         <View style={styles.monthHeaderRow}>
           <View style={styles.monthHeaderDot} />
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length}次 · {item.monthKcal}kcal</Text>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{item.items!.length}次 · {item.monthKcal}kcal</Text>
         </View>
       );
     }
@@ -331,22 +331,22 @@ export default function FastHistoryPage() {
           </View>
           <View style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 14, marginBottom: 10, marginLeft: 8, borderLeftWidth: 3, borderLeftColor: '#8446FF' }}>
             <View style={styles.entryHeaderRow}>
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(f.startedAt ?? 0)}</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{formatTime(f.startedAt ?? 0)}</Text>
               <View style={styles.durationBadge}>
                 <Text style={styles.durationBadgeText}>{h}h {m}m</Text>
               </View>
             </View>
             <View style={styles.targetRow}>
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>目标 {f.targetHours}h</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>目标 {f.targetHours}h</Text>
               <View style={{ flex: 1, height: 4, backgroundColor: `${TH.border}80`, borderRadius: 2, overflow: 'hidden' }}>
                 <View style={{ height: 4, width: `${completionRate}%`, backgroundColor: completionRate >= 100 ? '#10b981' : '#8446FF', borderRadius: 2 }} />
               </View>
-              <Text style={{ fontSize: FONT_BADGE, color: completionRate >= 100 ? '#10b981' : '#8446FF', fontWeight: '600' }}>{completionRate}%</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: completionRate >= 100 ? '#10b981' : '#8446FF', fontWeight: '600' }}>{completionRate}%</Text>
             </View>
             <View style={styles.entryKcalRow}>
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>🔥 ~{f.estimatedKcal ?? 0} kcal</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>🔥 ~{f.estimatedKcal ?? 0} kcal</Text>
             </View>
-            {notePreview ? <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text> : null}
+            {notePreview ? <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text> : null}
           </View>
         </View>
       </TouchableOpacity>
@@ -369,11 +369,11 @@ export default function FastHistoryPage() {
           {ListHeader}
           <View style={{ alignItems: 'center', marginTop: 80 }}>
             <Text style={{ fontSize: 64, marginBottom: 16 }}>🕐</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>
             <TouchableOpacity onPress={() => nav.navigate('MainTabs' as never, { screen: 'Fasting' } as never)} style={{ backgroundColor: '#8446FF', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ 开始第一次禁食</Text>
+              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>✦ 开始第一次禁食</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   statsTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     color: 'rgba(255,255,255,.9)',
     marginBottom: 12,
@@ -422,12 +422,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statsValue: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '800',
     color: '#fff',
   },
   statsLabel: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
     color: 'rgba(255,255,255,.7)',
     marginTop: 2,
   },
@@ -439,12 +439,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statsLayoutValue: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     color: '#fff',
   },
   statsLayoutLabel: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
     color: 'rgba(255,255,255,.7)',
     marginTop: 2,
   },
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   calendarStatValue: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '800',
     color: '#8446FF',
   },
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   modalDuration: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '800',
     color: '#8446FF',
     textAlign: 'center',
@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
     borderColor: '#ef4444',
   },
   deleteBtnText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     color: '#ef4444',
     fontWeight: '600',
   },
@@ -615,7 +615,7 @@ const styles = StyleSheet.create({
   durationBadgeText: {
     color: '#8446FF',
     fontWeight: '700',
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   targetRow: {
     flexDirection: 'row',

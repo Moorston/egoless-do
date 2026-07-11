@@ -7,6 +7,7 @@ globalThis.__DEV__ = false;
 // Mock all dependencies
 vi.mock('react-native', () => ({
   AppState: { addEventListener: vi.fn().mockReturnValue({ remove: vi.fn() }) },
+  PixelRatio: { getFontScale: vi.fn().mockReturnValue(1) },
 }));
 
 vi.mock('@sentry/react-native', () => ({

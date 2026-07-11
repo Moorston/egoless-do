@@ -62,7 +62,7 @@ export default function BodyProfileCard({
   return (
     <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
       <LinearGradient colors={PROFILE_CARD_GRADIENT} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 20 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff', marginBottom: 16 }}>{"📋 " + T('bodyProfile')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff', marginBottom: 16 }}>{"📋 " + T('bodyProfile')}</Text>
 
         {/* Top row — key metrics */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -78,9 +78,9 @@ export default function BodyProfileCard({
             },
           ].map((s, i) => (
             <TouchableOpacity key={i} style={{ alignItems: 'center', flex: 1 }} onPress={s.tappable ? onRecordWeight : undefined} activeOpacity={s.tappable ? 0.7 : 1}>
-              <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: s.isEstimate ? 'rgba(255,255,255,.75)' : s.sub ? bmiColor : '#fff' }}>{s.value}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{s.label}</Text>
-              {s.sub ? <Text style={{ fontSize: FONT_BADGE, color: s.isEstimate ? 'rgba(255,255,255,.6)' : bmiColor, marginTop: 2 }}>{s.sub}</Text> : null}
+              <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: s.isEstimate ? 'rgba(255,255,255,.75)' : s.sub ? bmiColor : '#fff' }}>{s.value}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{s.label}</Text>
+              {s.sub ? <Text style={{ fontSize: FONT_BADGE(), color: s.isEstimate ? 'rgba(255,255,255,.6)' : bmiColor, marginTop: 2 }}>{s.sub}</Text> : null}
             </TouchableOpacity>
           ))}
         </View>
@@ -91,38 +91,38 @@ export default function BodyProfileCard({
             {onPickAgeBracket ? (
               <TouchableOpacity onPress={() => setShowAgePicker(true)} activeOpacity={0.7}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{ageBracket ? bracketLabel(ageBracket, T) : '-'}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{ageBracket ? bracketLabel(ageBracket, T) : '-'}</Text>
                 <ChevronDown size={12} color="rgba(255,255,255,.6)" />
               </TouchableOpacity>
             ) : (
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{ageBracket ? bracketLabel(ageBracket, T) : '-'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{ageBracket ? bracketLabel(ageBracket, T) : '-'}</Text>
             )}
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('bodyAgeGroup')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('bodyAgeGroup')}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{profile.gender === 'female' ? T('bodyFemale') : T('bodyMale')}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('bodyGender')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{profile.gender === 'female' ? T('bodyFemale') : T('bodyMale')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('bodyGender')}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{bmr > 0 ? `${bmr}` : '-'}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('bodyBmr')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{bmr > 0 ? `${bmr}` : '-'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('bodyBmr')}</Text>
           </View>
         </View>
 
         {/* Self-assessment */}
         <TouchableOpacity onPress={onEditAssessment} style={{ marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: '#fff' }}>{"🗣️ " + T('bodySelfAssessment')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: '#fff' }}>{"🗣️ " + T('bodySelfAssessment')}</Text>
             <Edit3 size={14} color="rgba(255,255,255,.6)" />
           </View>
-          <Text style={{ fontSize: FONT_BODY, color: profile.selfAssessment ? 'rgba(255,255,255,.9)' : 'rgba(255,255,255,.5)', lineHeight: 20 }}>
+          <Text style={{ fontSize: FONT_BODY(), color: profile.selfAssessment ? 'rgba(255,255,255,.9)' : 'rgba(255,255,255,.5)', lineHeight: 20 }}>
             {profile.selfAssessment || T('bodySelfAssessmentPlaceholder')}
           </Text>
           {(profile.bodyTags ?? []).length > 0 && (
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
               {(profile.bodyTags ?? []).map((tag: string) => (
                 <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,.2)', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 }}>
-                  <Text style={{ fontSize: FONT_BADGE, color: '#fff' }}>#{tag}</Text>
+                  <Text style={{ fontSize: FONT_BADGE(), color: '#fff' }}>#{tag}</Text>
                 </View>
               ))}
             </View>
@@ -136,13 +136,13 @@ export default function BodyProfileCard({
         <TouchableOpacity activeOpacity={1} onPress={() => setShowAgePicker(false)}
           style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 16, padding: 8, width: 260 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, padding: 12 }}>{T('bodyAgeGroup')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, padding: 12 }}>{T('bodyAgeGroup')}</Text>
             {AGE_BRACKETS.map(b => {
               const active = b === ageBracket;
               return (
                 <TouchableOpacity key={b} onPress={() => { onPickAgeBracket?.(b); setShowAgePicker(false); }}
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12, borderRadius: 8, backgroundColor: active ? '#f59e0b15' : 'transparent' }}>
-                  <Text style={{ fontSize: FONT_BODY, color: active ? '#f59e0b' : TH.text, fontWeight: active ? '600' : '400' }}>{bracketLabel(b, T)}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: active ? '#f59e0b' : TH.text, fontWeight: active ? '600' : '400' }}>{bracketLabel(b, T)}</Text>
                   {active && <Check size={16} color="#f59e0b" />}
                 </TouchableOpacity>
               );

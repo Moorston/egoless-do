@@ -94,13 +94,13 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
           <View style={{ width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: 16, backgroundColor: `${TH.text}20` }} />
           
           {/* Title */}
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', textAlign: 'center', marginBottom: 24, color: TH.text }}>{T('timePickerTitle')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', textAlign: 'center', marginBottom: 24, color: TH.text }}>{T('timePickerTitle')}</Text>
           
           {/* Time picker */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 24 }}>
             {/* Hour column */}
             <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12, color: TH.sub }}>{T('timePickerHour')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', marginBottom: 12, color: TH.sub }}>{T('timePickerHour')}</Text>
               {renderColumn(HOURS, hour, setHour, hourRef)}
             </View>
             
@@ -112,7 +112,7 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
             
             {/* Minute column */}
             <View style={{ flex: 1, alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12, color: TH.sub }}>{T('timePickerMinute')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', marginBottom: 12, color: TH.sub }}>{T('timePickerMinute')}</Text>
               {renderColumn(MINUTES, minute, setMinute, minuteRef)}
             </View>
           </View>
@@ -132,11 +132,11 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
           <View style={{ flexDirection: 'row' }}>
             <TouchableOpacity onPress={onClose}
               style={{ flex: 1, paddingVertical: 16, borderRadius: 14, borderWidth: 1, borderColor: TH.border, alignItems: 'center', marginRight: 6 }}>
-              <Text style={{ fontSize: FONT_BUTTON, fontWeight: '600', color: TH.sub }}>{T('timePickerCancel')}</Text>
+              <Text style={{ fontSize: FONT_BUTTON(), fontWeight: '600', color: TH.sub }}>{T('timePickerCancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleConfirm}
               style={{ flex: 1, paddingVertical: 16, borderRadius: 14, backgroundColor: TH.primary, alignItems: 'center', marginLeft: 6 }}>
-              <Text style={{ fontSize: FONT_BUTTON, fontWeight: '700', color: '#fff' }}>{T('timePickerConfirm')}</Text>
+              <Text style={{ fontSize: FONT_BUTTON(), fontWeight: '700', color: '#fff' }}>{T('timePickerConfirm')}</Text>
             </TouchableOpacity>
           </View>
         </View>

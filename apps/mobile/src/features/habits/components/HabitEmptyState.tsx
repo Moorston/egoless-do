@@ -19,10 +19,10 @@ export default function HabitEmptyState({ primaryColor: P, onCreate }: Props) {
   return (
     <View style={{ alignItems: 'center', paddingTop: 80, paddingHorizontal: 40 }}>
       <BookOpen size={64} color={`${P}60`} style={{ marginBottom: 20 }} />
-      <Text style={{ color: TH.text, fontSize: FONT_BODY, fontWeight: '700', textAlign: 'center', marginBottom: 8 }}>
+      <Text style={{ color: TH.text, fontSize: FONT_BODY(), fontWeight: '700', textAlign: 'center', marginBottom: 8 }}>
         {T('habitEmptyTitle')}
       </Text>
-      <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', marginBottom: 24, lineHeight: 22 }}>
+      <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', marginBottom: 24, lineHeight: 22 }}>
         {T('habitEmptyDesc')}
       </Text>
       <TouchableOpacity
@@ -32,7 +32,7 @@ export default function HabitEmptyState({ primaryColor: P, onCreate }: Props) {
           borderRadius: 24, flexDirection: 'row', alignItems: 'center', gap: 8,
         }}
       >
-        <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>
+        <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>
           + {T('habitAdd')}
         </Text>
       </TouchableOpacity>

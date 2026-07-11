@@ -55,10 +55,10 @@ function TrackListItem({ track, isCurrent, isPlaying, isFavorite, onPlay, onTogg
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
         {/* Left: track info */}
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: FONT_BODY, color: isCurrent ? primaryColor : TH.text, fontWeight: isCurrent ? '600' : '400' }} numberOfLines={1}>
+          <Text style={{ fontSize: FONT_BODY(), color: isCurrent ? primaryColor : TH.text, fontWeight: isCurrent ? '600' : '400' }} numberOfLines={1}>
             {track.name}
           </Text>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>
             {categoryLabel}
           </Text>
         </View>

@@ -93,12 +93,12 @@ export default function BreathHistoryPage() {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{presetName}</Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{record.date}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{presetName}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{record.date}</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{record.cycles} {T('breathCycles')}</Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{fmtMS(record.durationSec)}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{record.cycles} {T('breathCycles')}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{fmtMS(record.durationSec)}</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => handleDelete(record)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
@@ -109,11 +109,11 @@ export default function BreathHistoryPage() {
         {/* Distress change */}
         {record.preDistress > 0 && (
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>😌</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{record.preDistress}</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>→</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{record.postDistress}</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: distressChange === 0 ? TH.sub : isImprove ? '#10B981' : '#EF4444', fontWeight: '600' }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>😌</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{record.preDistress}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>→</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{record.postDistress}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: distressChange === 0 ? TH.sub : isImprove ? '#10B981' : '#EF4444', fontWeight: '600' }}>
               {distressChange === 0 ? '—' : isImprove ? '↓' : '↑'}{distressChange === 0 ? '' : `${Math.abs(distressPercent)}%`}
             </Text>
           </View>
@@ -121,7 +121,7 @@ export default function BreathHistoryPage() {
 
         {/* Reflection */}
         {record.reflection && (
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 6, fontStyle: 'italic' }} numberOfLines={2}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, fontStyle: 'italic' }} numberOfLines={2}>
             "{record.reflection}"
           </Text>
         )}
@@ -144,14 +144,14 @@ export default function BreathHistoryPage() {
               { value: `${stats.distressImprove}%`, label: T('breathDistressImprove'), color: '#10B981' },
             ].map((s, i) => (
               <View key={i} style={{ alignItems: 'center', gap: 2 }}>
-                <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: s.color }}>{s.value}</Text>
+                <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: s.color }}>{s.value}</Text>
                 <Text style={{ fontSize: 11, color: TH.sub }}>{s.label}</Text>
               </View>
             ))}
           </View>
           {mostUsedPreset && (
             <View style={{ marginTop: 12, paddingTop: 10, borderTopWidth: 1, borderTopColor: `${TH.border}30` }}>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center' }}>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, textAlign: 'center' }}>
                 {T('breathMostUsed')}: {T(mostUsedPreset.nameKey)}
               </Text>
             </View>
@@ -160,11 +160,11 @@ export default function BreathHistoryPage() {
       )}
 
       {/* Recent sessions */}
-      <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('breathRecentSessions')}</Text>
+      <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('breathRecentSessions')}</Text>
 
       {records.length === 0 && (
         <View style={{ paddingVertical: 40, alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('breathNoRecords')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('breathNoRecords')}</Text>
         </View>
       )}
     </>
@@ -173,7 +173,7 @@ export default function BreathHistoryPage() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingBottom: 0 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('breathingHistory')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('breathingHistory')}</Text>
         <TouchableOpacity onPress={() => nav.goBack()}>
           <X size={22} color={TH.sub} />
         </TouchableOpacity>

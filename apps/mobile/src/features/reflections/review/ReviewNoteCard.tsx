@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     lineHeight: 22,
     marginRight: 8,
@@ -133,22 +133,22 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   subtitle: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginBottom: 8,
   },
   guidedQuestion: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontStyle: 'italic',
     marginBottom: 6,
     lineHeight: 18,
   },
   content: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     lineHeight: 22,
     marginBottom: 4,
   },
   expandHint: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginBottom: 6,
   },
   tagsRow: {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   tagPillText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   moodIcon: {

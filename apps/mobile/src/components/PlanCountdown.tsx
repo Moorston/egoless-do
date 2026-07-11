@@ -156,37 +156,37 @@ export default function PlanCountdown({ plan }: Props) {
       marginTop: 12,
       alignItems: 'center',
     }}>
-      <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>
+      <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>
         {label}
       </Text>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4 }}>
         {time.days > 0 && (
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>
+            <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
               {formatNumber(time.days)}
             </Text>
             <Text style={{ fontSize: 10, color: TH.sub }}>{T('planDays')}</Text>
           </View>
         )}
         {time.days > 0 && (
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
+          <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
         )}
         <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>
+          <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
             {formatNumber(time.hours)}
           </Text>
           <Text style={{ fontSize: 10, color: TH.sub }}>{T('planHours')}</Text>
         </View>
-        <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
+        <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
         <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>
+          <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
             {formatNumber(time.minutes)}
           </Text>
           <Text style={{ fontSize: 10, color: TH.sub }}>{T('planMinutes')}</Text>
         </View>
-        <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
+        <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
         <View style={{ alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>
+          <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
             {formatNumber(time.seconds)}
           </Text>
           <Text style={{ fontSize: 10, color: TH.sub }}>{T('planSeconds')}</Text>

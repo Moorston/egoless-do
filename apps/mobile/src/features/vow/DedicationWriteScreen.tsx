@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   headerTitle: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
   },
   gradientCard: {
@@ -250,12 +250,12 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   gradientSub: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: 'rgba(255,255,255,0.7)',
     marginBottom: 4,
   },
   gradientTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     color: '#fff',
   },
@@ -272,11 +272,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   summaryTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
   },
   autoHint: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
     marginBottom: 12,
   },
   sectionWrapper: {
@@ -288,10 +288,10 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   bodyText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   practiceDays: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
     color: '#8B5CF6',
   },
@@ -301,17 +301,17 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   sectionTitle: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
     fontWeight: '600',
     marginBottom: 6,
   },
   completedCount: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     color: '#10B981',
   },
   prevDelta: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
     color: '#F59E0B',
   },
   inputSection: {
@@ -321,14 +321,14 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   inputLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     marginBottom: 8,
   },
   insightInput: {
     borderRadius: 12,
     padding: 14,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 100,
     textAlignVertical: 'top',
     borderWidth: 1,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   adjustmentInput: {
     borderRadius: 12,
     padding: 14,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 80,
     textAlignVertical: 'top',
     borderWidth: 1,
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
   },
 });

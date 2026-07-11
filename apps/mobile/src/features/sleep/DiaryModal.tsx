@@ -411,7 +411,7 @@ const s = StyleSheet.create({
     paddingBottom: 8,
   },
   headerTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
 
@@ -429,7 +429,7 @@ const s = StyleSheet.create({
     marginBottom: 12,
   },
   sectionLabelText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
 
@@ -442,7 +442,7 @@ const s = StyleSheet.create({
     flex: 1,
   },
   timeLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginBottom: 6,
     flexDirection: 'row',
     alignItems: 'center',
@@ -453,7 +453,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     textAlign: 'center',
   },
@@ -465,7 +465,7 @@ const s = StyleSheet.create({
     borderRadius: 12,
   },
   durationText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
   },
 
@@ -491,7 +491,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
   },
   chipText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '500',
   },
 
@@ -508,7 +508,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   addTagBtn: {
     paddingHorizontal: 14,
@@ -517,7 +517,7 @@ const s = StyleSheet.create({
   },
   addTagBtnText: {
     color: '#fff',
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
   },
 
@@ -526,7 +526,7 @@ const s = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     padding: 14,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 80,
     textAlignVertical: 'top',
   },
@@ -540,7 +540,7 @@ const s = StyleSheet.create({
   },
   saveBtnText: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
   },
   cancelBtn: {
@@ -552,6 +552,6 @@ const s = StyleSheet.create({
     marginBottom: 4,
   },
   cancelBtnText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
 });

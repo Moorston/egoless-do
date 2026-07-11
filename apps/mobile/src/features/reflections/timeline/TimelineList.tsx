@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   emptyText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
     lineHeight: 22,
   },
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   gapText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
     marginHorizontal: 8,
   },

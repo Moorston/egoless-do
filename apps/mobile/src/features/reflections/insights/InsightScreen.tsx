@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   statLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginTop: 4,
   },
   section: {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   moodContainer: {
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   moodName: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 4,
   },
   moodBarBg: {
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   moodPercent: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginLeft: 10,
     minWidth: 40,
     textAlign: 'right',
@@ -301,10 +301,10 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   tagName: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   tagCount: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '600',
   },
   trailCard: {
@@ -314,25 +314,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   trailName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 4,
   },
   trailInfo: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   emptyContainer: {
     alignItems: 'center',
     paddingVertical: 60,
   },
   emptyTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginTop: 16,
     marginBottom: 8,
   },
   emptyText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
     paddingHorizontal: 40,
   },

@@ -71,7 +71,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
         }}>
           {/* Header */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>
               {T('vowDedSettings')}
             </Text>
             <TouchableOpacity onPress={onClose}>
@@ -80,7 +80,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
           </View>
 
           {/* Frequency */}
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>
             {T('vowDedFrequency')}
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
@@ -97,7 +97,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
                   }}
                 >
                   <Text style={{
-                    fontSize: FONT_BADGE, fontWeight: active ? '600' : '400',
+                    fontSize: FONT_BADGE(), fontWeight: active ? '600' : '400',
                     color: active ? '#8B5CF6' : TH.sub,
                   }}>
                     {T(opt.labelKey)}
@@ -110,7 +110,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
           {/* Day of week (for weekly/biweekly) */}
           {(frequency === 'weekly' || frequency === 'biweekly') && (
             <View style={{ marginBottom: 20 }}>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>
                 {T('vowDedDay')}
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
@@ -127,7 +127,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
                       }}
                     >
                       <Text style={{
-                        fontSize: FONT_BADGE,
+                        fontSize: FONT_BADGE(),
                         color: active ? '#8B5CF6' : TH.sub,
                         fontWeight: active ? '600' : '400',
                       }}>
@@ -143,7 +143,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
           {/* Day of month (for monthly) */}
           {frequency === 'monthly' && (
             <View style={{ marginBottom: 20 }}>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>
                 {T('vowDedDay')}
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
@@ -160,7 +160,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
                       }}
                     >
                       <Text style={{
-                        fontSize: FONT_BADGE,
+                        fontSize: FONT_BADGE(),
                         color: active ? '#8B5CF6' : TH.sub,
                         fontWeight: active ? '600' : '400',
                       }}>
@@ -176,7 +176,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
           {/* Custom days (for custom) */}
           {frequency === 'custom' && (
             <View style={{ marginBottom: 20 }}>
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>
                 天数
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
@@ -193,7 +193,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
                       }}
                     >
                       <Text style={{
-                        fontSize: FONT_BADGE,
+                        fontSize: FONT_BADGE(),
                         color: active ? '#8B5CF6' : TH.sub,
                         fontWeight: active ? '600' : '400',
                       }}>
@@ -211,7 +211,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
             paddingVertical: 12, borderTopWidth: 1, borderTopColor: `${TH.border}40`,
           }}>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{T('vowDedRemind')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('vowDedRemind')}</Text>
             <Switch
               value={remindEnabled}
               onValueChange={setRemindEnabled}
@@ -229,7 +229,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
                 borderWidth: 1, borderColor: TH.border, alignItems: 'center',
               }}
             >
-              <Text style={{ color: TH.sub, fontSize: FONT_BODY, fontWeight: '600' }}>{T('vowCancel')}</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_BODY(), fontWeight: '600' }}>{T('vowCancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
@@ -238,7 +238,7 @@ export default function DedicationSettingsModal({ visible, TH, T, settings, onCl
                 backgroundColor: '#8B5CF6', alignItems: 'center',
               }}
             >
-              <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '700' }}>{T('vowSave')}</Text>
+              <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '700' }}>{T('vowSave')}</Text>
             </TouchableOpacity>
           </View>
         </View>

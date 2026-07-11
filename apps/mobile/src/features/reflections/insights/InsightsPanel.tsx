@@ -36,7 +36,7 @@ export default function InsightsPanel({ insights }: Props) {
 const styles = StyleSheet.create({
   insightsPanel: { padding: 12, borderTopWidth: 1 },
   insightsHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
-  insightsTitle: { fontSize: FONT_SMALL, fontWeight: '600' },
+  insightsTitle: { fontSize: FONT_SMALL(), fontWeight: '600' },
   insightCard: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, borderWidth: 1, marginRight: 8 },
-  insightText: { fontSize: FONT_SMALL },
+  insightText: { fontSize: FONT_SMALL() },
 });

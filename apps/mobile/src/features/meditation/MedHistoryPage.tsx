@@ -104,7 +104,7 @@ function Heatmap({ entries, TH, onPress }: { entries: MedHistoryEntry[]; TH: The
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={{ backgroundColor: TH.card, borderRadius: 16, padding: 14, marginBottom: 16 }}>
       <View style={styles.heatmapHeader}>
-        <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(`${year}-${String(month + 1).padStart(2, '0')}`)} 冥想热力图</Text>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(`${year}-${String(month + 1).padStart(2, '0')}`)} 冥想热力图</Text>
         <Text style={[styles.badgeFont, { color: TH.sub }]}>{medDays}/{daysInMonth}天</Text>
       </View>
       <View style={styles.heatmapWeekdaysRow}>
@@ -157,7 +157,7 @@ export function MedCalendarScreen() {
         <ScreenHeader title="冥想日历" onBack={() => nav.goBack()} />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <TouchableOpacity onPress={prevMonth}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{formatMonth(ym)}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{formatMonth(ym)}</Text>
           <TouchableOpacity onPress={nextMonth}><ChevronRight size={24} color={TH.text} /></TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', marginBottom: 8 }}>
@@ -178,9 +178,9 @@ export function MedCalendarScreen() {
           })}
         </View>
         <View style={[styles.calendarStatsRow, { marginTop: 20, backgroundColor: TH.card }]}>
-          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{medDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>本月</Text></View>
-          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{totalDays}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>累计天数</Text></View>
-          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: TH.primary }}>{streak}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>连续天数</Text></View>
+          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: TH.primary }}>{medDays}/{daysInMonth}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>本月</Text></View>
+          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: TH.primary }}>{totalDays}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>累计天数</Text></View>
+          <View style={styles.alignCenter}><Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: TH.primary }}>{streak}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>连续天数</Text></View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -215,7 +215,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
       <View style={styles.detailOverlay}>
         <View style={[styles.detailInner, { backgroundColor: TH.cardSolid }]}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{`${parseInt(String(m))}月${parseInt(String(d))}日 ${weekday}`}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{`${parseInt(String(m))}月${parseInt(String(d))}日 ${weekday}`}</Text>
             <TouchableOpacity onPress={onClose}><X size={20} color={TH.sub} /></TouchableOpacity>
           </View>
           <Text style={[styles.detailDuration, { color: TH.primary }]}>{entry.durMin}</Text>
@@ -223,7 +223,7 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
           {trackName ? (
             <View style={styles.detailTrackRow}>
               <Music size={16} color={TH.primary} />
-              <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{trackName}</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{trackName}</Text>
             </View>
           ) : null}
           <View style={styles.detailSection}>
@@ -233,14 +233,14 @@ function DetailModal({ entry, TH, onClose, onDelete }: { entry: MedHistoryEntry 
             </View>
             {editingNote ? (
               <>
-                <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top' }} multiline maxLength={500} value={noteText} onChangeText={setNoteText} placeholder="写下你的感悟..." placeholderTextColor={TH.sub} />
+                <TextInput style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), minHeight: 80, textAlignVertical: 'top' }} multiline maxLength={500} value={noteText} onChangeText={setNoteText} placeholder="写下你的感悟..." placeholderTextColor={TH.sub} />
                 <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
                   <TouchableOpacity onPress={() => setEditingNote(false)} style={{ flex: 1, padding: 10, borderRadius: 8, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}><Text style={{ color: TH.sub }}>取消</Text></TouchableOpacity>
                   <TouchableOpacity onPress={saveNote} style={{ flex: 1, padding: 10, borderRadius: 8, backgroundColor: TH.primary, alignItems: 'center' }}><Text style={{ color: '#fff', fontWeight: '600' }}>保存</Text></TouchableOpacity>
                 </View>
               </>
             ) : (
-              <Text style={{ fontSize: FONT_BODY, color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
             )}
           </View>
           <TouchableOpacity onPress={() => {
@@ -324,7 +324,7 @@ export default function MedHistoryPage() {
       return (
         <View style={styles.monthHeaderRow}>
           <View style={[styles.timelineDot, { backgroundColor: TH.primary }]} />
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
           <Text style={[styles.badgeFont, { color: TH.sub }]}>{item.items!.length}次 · {item.monthMin}min</Text>
         </View>
       );
@@ -349,17 +349,17 @@ export default function MedHistoryPage() {
                 <Text style={[styles.badgeFont, { color: TH.sub }]}>周{getWeekday(m.date)}</Text>
               </View>
               <View style={{ backgroundColor: `${TH.primary}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-                <Text style={{ color: TH.primary, fontWeight: '700', fontSize: FONT_SUB }}>{m.durMin}min</Text>
+                <Text style={{ color: TH.primary, fontWeight: '700', fontSize: FONT_SUB() }}>{m.durMin}min</Text>
               </View>
             </View>
             {trackName ? (
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
                 <Music size={12} color={TH.sub} />
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{trackName}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{trackName}</Text>
               </View>
             ) : null}
             {notePreview ? (
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, marginTop: 2 }}>「{notePreview}」</Text>
             ) : null}
           </View>
         </View>
@@ -414,15 +414,15 @@ export default function MedHistoryPage() {
 const styles = StyleSheet.create({
   // ── StatsCard ──
   gradientPadding: { padding: 20 },
-  heroTitle: { fontSize: FONT_TITLE, fontWeight: '700', color: '#fff', marginBottom: 16 },
+  heroTitle: { fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff', marginBottom: 16 },
   heroStatsRow: { flexDirection: 'row', justifyContent: 'space-between' },
   heroStatCol: { alignItems: 'center', flex: 1 },
-  heroStatValue: { fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' },
-  heroStatLabel: { fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 },
+  heroStatValue: { fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: '#fff' },
+  heroStatLabel: { fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 2 },
   heroKcalRow: { flexDirection: 'row', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)' },
   flex1: { flex: 1 },
-  heroKcalValue: { fontSize: FONT_BODY, fontWeight: '700', color: '#fff' },
-  heroSub: { fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' },
+  heroKcalValue: { fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' },
+  heroSub: { fontSize: FONT_SUB(), color: 'rgba(255,255,255,.5)' },
   statsOuter: { marginBottom: 12, borderRadius: 20, overflow: 'hidden' },
   // ── Heatmap & Calendar ──
   heatmapWeekdaysRow: { flexDirection: 'row', marginBottom: 6 },
@@ -430,8 +430,8 @@ const styles = StyleSheet.create({
   heatmapCell: { aspectRatio: 1, padding: 2 },
   calendarCell: { aspectRatio: 1, padding: 3 },
   heatmapHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
-  weekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_BADGE },
-  calendarWeekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_SUB, fontWeight: '600' },
+  weekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_BADGE() },
+  calendarWeekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_SUB(), fontWeight: '600' },
   calendarDayFontSize: { fontSize: 14 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   calendarBtnPadding: { padding: 8 },
@@ -446,24 +446,24 @@ const styles = StyleSheet.create({
   entryInfoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   // ── Empty state ──
   emptyEmoji: { fontSize: 64, marginBottom: 16 },
-  emptyTitle: { fontSize: FONT_TITLE, fontWeight: '700', marginBottom: 8 },
-  emptyDesc: { fontSize: FONT_BODY, textAlign: 'center', marginBottom: 8 },
-  emptySubDesc: { fontSize: FONT_BODY, textAlign: 'center', marginBottom: 24 },
+  emptyTitle: { fontSize: FONT_TITLE(), fontWeight: '700', marginBottom: 8 },
+  emptyDesc: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 8 },
+  emptySubDesc: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 24 },
   emptyCtaBtn: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
-  whiteBodyBold: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY },
+  whiteBodyBold: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY() },
   listContentContainer: { paddingHorizontal: 16, paddingBottom: 40 },
   emptyPagePad: { paddingHorizontal: 16 },
   emptyCenter: { alignItems: 'center', marginTop: 80 },
   // ── Detail Modal ──
   detailOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 },
   detailInner: { borderRadius: 20, padding: 24 },
-  subBold: { fontSize: FONT_SUB, fontWeight: '600' },
-  deleteText: { fontSize: FONT_BODY, color: '#ef4444' },
+  subBold: { fontSize: FONT_SUB(), fontWeight: '600' },
+  deleteText: { fontSize: FONT_BODY(), color: '#ef4444' },
   deleteBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12 },
   detailDuration: { fontSize: 32, fontWeight: '900', textAlign: 'center', marginBottom: 4 },
-  detailDurationLabel: { fontSize: FONT_BODY, textAlign: 'center', marginBottom: 16 },
+  detailDurationLabel: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 16 },
   detailTrackRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   detailSection: { marginBottom: 16 },
   detailNoteHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  badgeFont: { fontSize: FONT_BADGE },
+  badgeFont: { fontSize: FONT_BADGE() },
 });

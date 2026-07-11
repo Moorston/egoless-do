@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     lineHeight: 32,
   },
   monthText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginTop: 2,
   },
   detailsColumn: {
@@ -131,13 +131,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   dateText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   weekdayText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   countText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   divider: {
     height: 1,

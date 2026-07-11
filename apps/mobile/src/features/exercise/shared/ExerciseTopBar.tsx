@@ -19,13 +19,13 @@ export default function ExerciseTopBar({ icon, sportName, targetInfo, selectedSo
     <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Text style={{ fontSize: FONT_CLOSE }}>{icon}</Text>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#bbb' }}>{sportName}</Text>
+          <Text style={{ fontSize: FONT_CLOSE() }}>{icon}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#bbb' }}>{sportName}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           {rightSlot}
           {targetInfo ? (
-            <Text style={{ fontSize: FONT_SUB, color: COLORS.GREEN }}>{targetInfo}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: COLORS.GREEN }}>{targetInfo}</Text>
           ) : null}
           <TouchableOpacity onPress={onToggleSoundPicker} style={{ padding: 4 }}>
             <Music size={18} color={selectedSound !== '无' ? COLORS.ORANGE : 'rgba(255,255,255,.7)'} />
@@ -37,7 +37,7 @@ export default function ExerciseTopBar({ icon, sportName, targetInfo, selectedSo
           {EXERCISE_SOUNDS.map(s => (
             <TouchableOpacity key={s.key} onPress={() => onSelectSound(s.key)}
               style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 14, backgroundColor: selectedSound === s.key ? `${COLORS.ORANGE}30` : 'rgba(255,255,255,.08)' }}>
-              <Text style={{ fontSize: FONT_SUB, color: selectedSound === s.key ? COLORS.ORANGE : 'rgba(255,255,255,.6)' }}>{s.key}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: selectedSound === s.key ? COLORS.ORANGE : 'rgba(255,255,255,.6)' }}>{s.key}</Text>
             </TouchableOpacity>
           ))}
         </View>

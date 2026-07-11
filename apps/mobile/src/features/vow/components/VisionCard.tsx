@@ -97,7 +97,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
         <View style={styles.leftColumn}>
           <View style={styles.typeBadgeRow}>
             <Icon size={14} color={typeColor} />
-            <Text style={{ fontSize: FONT_BADGE, color: typeColor, fontWeight: '600' }}>
+            <Text style={{ fontSize: FONT_BADGE(), color: typeColor, fontWeight: '600' }}>
               {T(vision.type === 'lifetime' ? 'vowLifetime' : vision.type === 'long' ? 'vowLong' : 'vowShort')}
             </Text>
             {vision.type !== 'lifetime' && (
@@ -126,11 +126,11 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
               ) : null
             )}
           </View>
-          <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 22 }}>{vision.text}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.text, lineHeight: 22 }}>{vision.text}</Text>
           {dateRange && (
             <View style={styles.dateRow}>
               <Calendar size={12} color={TH.sub} />
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{dateRange}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{dateRange}</Text>
             </View>
           )}
           {/* TimeFrame picker dropdown */}
@@ -153,7 +153,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                       borderWidth: 1, borderColor: active ? '#8B5CF6' : TH.border,
                     }}
                   >
-                    <Text style={{ fontSize: FONT_BADGE, color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
+                    <Text style={{ fontSize: FONT_BADGE(), color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
                       {T(tf.labelKey)}
                     </Text>
                   </TouchableOpacity>
@@ -163,15 +163,15 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
           )}
         </View>
         <TouchableOpacity onPress={() => onEdit(vision)} style={styles.editButton}>
-          <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6', fontWeight: '600' }}>{T('vowEdit')}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6', fontWeight: '600' }}>{T('vowEdit')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Progress bar */}
       <View style={styles.progressSection}>
         <View style={styles.progressHeader}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowProgress')}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: '#8B5CF6', fontWeight: '600' }}>{pct}%</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowProgress')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: '#8B5CF6', fontWeight: '600' }}>{pct}%</Text>
         </View>
         <ProgressBar pct={pct} color="#8B5CF6" />
       </View>
@@ -182,15 +182,15 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
           {planTotal > 0 && (
             <View style={styles.progressItem}>
               <Text style={{ fontSize: 13 }}>📋</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowPlanProgress')}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{planDone}/{planTotal}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowPlanProgress')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.text, fontWeight: '600' }}>{planDone}/{planTotal}</Text>
             </View>
           )}
           {taskTotal > 0 && (
             <View style={styles.progressItem}>
               <Text style={{ fontSize: 13 }}>✅</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowTaskProgress')}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{taskDone}/{taskTotal}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowTaskProgress')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.text, fontWeight: '600' }}>{taskDone}/{taskTotal}</Text>
             </View>
           )}
         </View>
@@ -208,7 +208,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                 backgroundColor: '#10B98120', borderRadius: 8,
               }}
             >
-              <Text style={{ fontSize: FONT_BADGE, color: '#10B981', fontWeight: '600' }}>{T('vowAchieve')}</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: '#10B981', fontWeight: '600' }}>{T('vowAchieve')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => onArchive(vision.id)}
@@ -218,18 +218,18 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                 backgroundColor: `${TH.border}60`, borderRadius: 8,
               }}
             >
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('vowArchive')}</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('vowArchive')}</Text>
             </TouchableOpacity>
           </>
         )}
         {vision.status === 'achieved' && (
           <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: '#10B98115' }}>
-            <Text style={{ fontSize: FONT_BADGE, color: '#10B981', fontWeight: '600' }}>{T('vowAchieved')}</Text>
+            <Text style={{ fontSize: FONT_BADGE(), color: '#10B981', fontWeight: '600' }}>{T('vowAchieved')}</Text>
           </View>
         )}
         {vision.status === 'archived' && (
           <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: `${TH.border}40` }}>
-            <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('vowArchived')}</Text>
+            <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('vowArchived')}</Text>
           </View>
         )}
       </View>
@@ -244,7 +244,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
             {expanded
               ? <ChevronDown size={14} color={TH.sub} />
               : <ChevronRight size={14} color={TH.sub} />}
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, fontWeight: '600' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, fontWeight: '600' }}>
               {T('vowLinkedPlans')} ({linkedPlans.length})
             </Text>
           </TouchableOpacity>
@@ -260,10 +260,10 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                 borderWidth: 1, borderColor: TH.border,
               }}>
                 <View style={styles.planItemHeader}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', flex: 1 }} numberOfLines={1}>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', flex: 1 }} numberOfLines={1}>
                     📋 {plan.name}
                   </Text>
-                  <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6', fontWeight: '600' }}>
+                  <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6', fontWeight: '600' }}>
                     {planPct}%
                   </Text>
                 </View>
@@ -277,7 +277,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                         <View key={item.id} style={styles.taskItemRow}>
                           <View style={styles.planItemRow}>
                             <Text style={styles.statusIcon}>{st.icon}</Text>
-                            <Text style={{ fontSize: FONT_SUB, color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
+                            <Text style={{ fontSize: FONT_SUB(), color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
                             <Text style={{ fontSize: 10, color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status]) ?? ''}</Text>
                           </View>
                           {item.status !== 'not_started' && item.status !== 'cancelled' && (

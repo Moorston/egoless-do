@@ -99,7 +99,7 @@ export default function GiveHistoryPage() {
           {item.anonymous && <Text style={{ fontSize: 14 }}>🤐</Text>}
           {item.amount && <Text style={{ fontSize: 12, color: '#F59E0B' }}>¥{item.amount}</Text>}
         </View>
-        <Text style={{ fontSize: FONT_BODY, color: TH.text }} numberOfLines={2}>{item.content}</Text>
+        <Text style={{ fontSize: FONT_BODY(), color: TH.text }} numberOfLines={2}>{item.content}</Text>
         {item.motivation && (
           <Text style={{ fontSize: 12, color: TH.sub, fontStyle: 'italic', marginTop: 2 }}>
             心念：{item.motivation}
@@ -120,7 +120,7 @@ export default function GiveHistoryPage() {
             { value: stats.longest, label: '最长连续' },
           ].map((s, i) => (
             <View key={i} style={{ alignItems: 'center', gap: 2 }}>
-              <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.text }}>{s.value}</Text>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{s.value}</Text>
               <Text style={{ fontSize: 11, color: TH.sub }}>{s.label}</Text>
             </View>
           ))}
@@ -133,7 +133,7 @@ export default function GiveHistoryPage() {
           <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)}>
             <ChevronLeft size={20} color={TH.sub} />
           </TouchableOpacity>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>
             {year}年{month + 1}月 · {stats.monthCount}次
           </Text>
           <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))}>
@@ -165,25 +165,25 @@ export default function GiveHistoryPage() {
 
       {/* Type Distribution */}
       <View style={{ marginBottom: 16 }}>
-        <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('giveDistribution') || '类型分布'}</Text>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('giveDistribution') || '类型分布'}</Text>
         {Object.entries(GIVE_TYPE_CONFIG).map(([type, config]) => {
           const count = stats.byType[type as keyof typeof stats.byType] || 0;
           const percent = stats.typePercent[type as keyof typeof stats.typePercent] || 0;
           return (
             <View key={type} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
               <Text style={{ fontSize: 16, marginRight: 8 }}>{config.icon}</Text>
-              <Text style={{ width: 60, fontSize: FONT_BODY, color: TH.text }}>{T(config.labelKey) || type}</Text>
+              <Text style={{ width: 60, fontSize: FONT_BODY(), color: TH.text }}>{T(config.labelKey) || type}</Text>
               <View style={{ flex: 1, height: 8, backgroundColor: `${config.color}20`, borderRadius: 4, overflow: 'hidden' }}>
                 <View style={{ width: `${percent}%`, height: '100%', backgroundColor: config.color, borderRadius: 4 }} />
               </View>
-              <Text style={{ width: 50, textAlign: 'right', fontSize: FONT_BODY, color: TH.sub }}>{count} ({percent}%)</Text>
+              <Text style={{ width: 50, textAlign: 'right', fontSize: FONT_BODY(), color: TH.sub }}>{count} ({percent}%)</Text>
             </View>
           );
         })}
       </View>
 
       {giveHistory.length > 0 && (
-        <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>善行时间线</Text>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>善行时间线</Text>
       )}
     </>
   ), [TH, T, stats, year, month, heatmapDays, giveHistory.length]);
@@ -191,7 +191,7 @@ export default function GiveHistoryPage() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingBottom: 0 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('giveHistory') || '布施历史'}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('giveHistory') || '布施历史'}</Text>
         <TouchableOpacity onPress={() => nav.goBack()}>
           <X size={22} color={TH.sub} />
         </TouchableOpacity>

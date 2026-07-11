@@ -72,10 +72,10 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <Settings size={18} color="#8B5CF6" />
           <View>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>
               {T('vowDedSettings')}
             </Text>
-            <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, marginTop: 2 }}>
               {frequencyLabel}
               {settings.remindEnabled ? ` · ${T('vowDedRemind')}` : ''}
             </Text>
@@ -88,7 +88,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
             borderRadius: 8, backgroundColor: '#8B5CF615',
           }}
         >
-          <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6', fontWeight: '600' }}>
+          <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6', fontWeight: '600' }}>
             {T('vowEdit')}
           </Text>
         </TouchableOpacity>
@@ -107,7 +107,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
       >
         <PenLine size={20} color={isOverdue ? '#fff' : '#8B5CF6'} />
         <Text style={{
-          fontSize: FONT_BODY, fontWeight: '700',
+          fontSize: FONT_BODY(), fontWeight: '700',
           color: isOverdue ? '#fff' : '#8B5CF6',
         }}>
           {T('vowDedWrite')}
@@ -130,10 +130,10 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
         marginBottom: 12, marginLeft: 4,
       }}>
         <History size={16} color={TH.sub} />
-        <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>
           {T('vowDedHistory')}
         </Text>
-        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{filteredDedications.length}</Text>
+        <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{filteredDedications.length}</Text>
       </View>
 
       {filteredDedications.length === 0 ? (
@@ -142,7 +142,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
           alignItems: 'center', borderWidth: 1, borderColor: TH.border,
         }}>
           <Text style={{ fontSize: 32, marginBottom: 8 }}>📝</Text>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
             {T('vowDedNoWrite')}
           </Text>
         </View>

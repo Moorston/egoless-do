@@ -286,12 +286,12 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
             {/* States */}
             {entry.bodyState && entry.bodyState.length > 0 && (
               <View style={{ marginBottom: 8 }}>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>身体: {entry.bodyState.join('、')}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>身体: {entry.bodyState.join('、')}</Text>
               </View>
             )}
             {entry.mindState && entry.mindState.length > 0 && (
               <View style={{ marginBottom: 8 }}>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>心理: {entry.mindState.join('、')}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>心理: {entry.mindState.join('、')}</Text>
               </View>
             )}
 
@@ -310,7 +310,7 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
                   </View>
                 </>
               ) : (
-                <Text style={{ fontSize: FONT_BODY, color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: entry.note ? TH.text : TH.sub }}>{entry.note || '暂无笔记'}</Text>
               )}
             </View>
 
@@ -322,7 +322,7 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
               ]);
             }} style={styles.detailDeleteBtn}>
               <Trash2 size={16} color="#ef4444" />
-              <Text style={{ color: '#ef4444', fontSize: FONT_BODY }}>删除记录</Text>
+              <Text style={{ color: '#ef4444', fontSize: FONT_BODY() }}>删除记录</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -508,7 +508,7 @@ function mkStyles(TH: Theme) {
       padding: 20,
     },
     statsTitle: {
-      fontSize: FONT_TITLE,
+      fontSize: FONT_TITLE(),
       fontWeight: '700',
       color: '#fff',
       marginBottom: 16,
@@ -522,12 +522,12 @@ function mkStyles(TH: Theme) {
       flex: 1,
     },
     statsValue: {
-      fontSize: FONT_STAT_CARD,
+      fontSize: FONT_STAT_CARD(),
       fontWeight: '900',
       color: '#fff',
     },
     statsLabel: {
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
       color: 'rgba(255,255,255,.7)',
       marginTop: 2,
     },
@@ -542,16 +542,16 @@ function mkStyles(TH: Theme) {
       flex: 1,
     },
     statsWeekLabel: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       fontWeight: '700',
       color: '#fff',
     },
     statsWeekSub: {
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
       color: 'rgba(255,255,255,.5)',
     },
     statsWeekValue: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       fontWeight: '700',
       color: '#fff',
     },
@@ -573,7 +573,7 @@ function mkStyles(TH: Theme) {
       padding: 4,
     },
     heatmapTitle: {
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
       fontWeight: '700',
       color: TH.text,
     },
@@ -583,7 +583,7 @@ function mkStyles(TH: Theme) {
       gap: 8,
     },
     heatmapStatsText: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     heatmapWeekdays: {
@@ -593,7 +593,7 @@ function mkStyles(TH: Theme) {
     heatmapWeekdayText: {
       flex: 1,
       textAlign: 'center',
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     heatmapGrid: {
@@ -620,16 +620,16 @@ function mkStyles(TH: Theme) {
       fontSize: 10,
     },
     heatmapDayText: {
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
       fontWeight: '700',
       color: TH.text,
     },
     heatmapDayLabel: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     heatmapDayValue: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
 
@@ -653,7 +653,7 @@ function mkStyles(TH: Theme) {
       marginBottom: 16,
     },
     detailDateText: {
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
       color: TH.sub,
     },
     detailDuration: {
@@ -664,7 +664,7 @@ function mkStyles(TH: Theme) {
       marginBottom: 4,
     },
     detailDurationLabel: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       color: TH.sub,
       textAlign: 'center',
       marginBottom: 16,
@@ -678,12 +678,12 @@ function mkStyles(TH: Theme) {
       alignItems: 'center',
     },
     detailTimeLabel: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
       marginTop: 4,
     },
     detailTimeValue: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       fontWeight: '700',
       color: TH.text,
     },
@@ -695,7 +695,7 @@ function mkStyles(TH: Theme) {
       marginBottom: 12,
     },
     detailQualityLabel: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
     },
     detailBarrierRow: {
       flexDirection: 'row',
@@ -710,14 +710,14 @@ function mkStyles(TH: Theme) {
       borderRadius: 4,
     },
     detailBarrierText: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     detailSection: {
       marginBottom: 12,
     },
     detailSectionTitle: {
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
       fontWeight: '600',
       color: TH.text,
       marginBottom: 6,
@@ -734,11 +734,11 @@ function mkStyles(TH: Theme) {
       borderRadius: 8,
     },
     detailTagText: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.primary,
     },
     detailGratitudeItem: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       color: TH.text,
       marginLeft: 8,
       marginBottom: 2,
@@ -753,7 +753,7 @@ function mkStyles(TH: Theme) {
       borderRadius: 12,
       padding: 12,
       color: TH.text,
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       minHeight: 80,
       textAlignVertical: 'top',
     },
@@ -798,19 +798,19 @@ function mkStyles(TH: Theme) {
       marginBottom: 16,
     },
     emptyTitle: {
-      fontSize: FONT_TITLE,
+      fontSize: FONT_TITLE(),
       fontWeight: '700',
       color: TH.text,
       marginBottom: 8,
     },
     emptySubtitle: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       color: TH.sub,
       textAlign: 'center',
       marginBottom: 8,
     },
     emptySubtitle2: {
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
       color: TH.sub,
       textAlign: 'center',
       marginBottom: 24,
@@ -824,7 +824,7 @@ function mkStyles(TH: Theme) {
     emptyBtnText: {
       color: '#fff',
       fontWeight: '700',
-      fontSize: FONT_BODY,
+      fontSize: FONT_BODY(),
     },
     monthHeader: {
       flexDirection: 'row',
@@ -840,12 +840,12 @@ function mkStyles(TH: Theme) {
       backgroundColor: TH.primary,
     },
     monthText: {
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
       fontWeight: '700',
       color: TH.text,
     },
     monthStatsText: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     timelineRow: {
@@ -885,11 +885,11 @@ function mkStyles(TH: Theme) {
       marginBottom: 4,
     },
     entryDayText: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     entryWeekday: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     durationBadge: {
@@ -899,10 +899,10 @@ function mkStyles(TH: Theme) {
     },
     durationText: {
       fontWeight: '700',
-      fontSize: FONT_SUB,
+      fontSize: FONT_SUB(),
     },
     qualityStars: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: '#fbbf24',
       marginTop: 2,
     },
@@ -913,7 +913,7 @@ function mkStyles(TH: Theme) {
       marginTop: 2,
     },
     gratitudeText: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
     },
     practiceTagRow: {
@@ -932,7 +932,7 @@ function mkStyles(TH: Theme) {
       color: TH.primary,
     },
     notePreview: {
-      fontSize: FONT_BADGE,
+      fontSize: FONT_BADGE(),
       color: TH.sub,
       marginTop: 2,
     },

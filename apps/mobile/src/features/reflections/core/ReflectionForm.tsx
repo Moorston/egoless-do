@@ -219,12 +219,12 @@ const styles = StyleSheet.create({
     minHeight: 90,
   },
   charCount: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     textAlign: 'right',
     marginTop: 4,
   },
   sectionLabel: {
-    fontSize: FONT_LABEL,
+    fontSize: FONT_LABEL(),
     marginBottom: 8,
   },
   pillsRow: {
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   trailChipText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   trailAddButton: {
@@ -272,6 +272,6 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   trailAddText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
 });

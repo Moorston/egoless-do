@@ -52,7 +52,7 @@ export default function HabitFormModal({
             flexDirection: 'row', justifyContent: 'space-between',
             alignItems: 'center', paddingTop: 20, marginBottom: 20,
           }}>
-            <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>
+            <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE() }}>
               {editingId ? T('habitEditTitle') : T('habitAddTitle')}
             </Text>
             <TouchableOpacity onPress={onClose}>
@@ -67,7 +67,7 @@ export default function HabitFormModal({
               { label: T('habitInsight'), key: 'insight' as const, ph: T('habitExample3') },
             ].map(({ label, key, ph }) => (
               <View key={key} style={{ marginBottom: 14 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 6 }}>{label}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginBottom: 6 }}>{label}</Text>
                 <ThemedInput
                   value={form[key]}
                   onChangeText={v => setForm(f => ({ ...f, [key]: v }))}
@@ -77,7 +77,7 @@ export default function HabitFormModal({
             ))}
             {/* Target days */}
             <View style={{ marginBottom: 14 }}>
-              <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 6 }}>{T('habitTargetDays')}</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginBottom: 6 }}>{T('habitTargetDays')}</Text>
               <ThemedInput
                 value={String(form.targetDays)}
                 onChangeText={v => setForm(f => ({ ...f, targetDays: v === '' ? 0 : +v }))}
@@ -109,15 +109,15 @@ export default function HabitFormModal({
                 }}
               >
                 <Bell size={16} color={P} />
-                <Text style={{ color: P, fontSize: FONT_BODY, fontWeight: '600' }}>
+                <Text style={{ color: P, fontSize: FONT_BODY(), fontWeight: '600' }}>
                   {String(form.alarmHour).padStart(2, '0')}:{String(form.alarmMinute).padStart(2, '0')}
                 </Text>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>· {T('habitTapToModify')}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>· {T('habitTapToModify')}</Text>
               </TouchableOpacity>
             )}
             {/* Linked module */}
             <View style={{ marginBottom: 14 }}>
-              <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 8 }}>{T('habitLink')}</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginBottom: 8 }}>{T('habitLink')}</Text>
               <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
                 {(['none', 'fasting', 'meditation', 'exercise', 'sleep'] as HabitLink[]).map(v => {
                   const isActive = (form.link ?? 'none') === v;
@@ -132,7 +132,7 @@ export default function HabitFormModal({
                       }}>
                       <Text style={{
                         color: isActive ? color : TH.text,
-                        fontSize: FONT_SMALL,
+                        fontSize: FONT_SMALL(),
                         fontWeight: isActive ? '700' : '400',
                       }}>
                         {T(`habitLink${v.charAt(0).toUpperCase() + v.slice(1)}`)}
@@ -145,7 +145,7 @@ export default function HabitFormModal({
             {/* Link config: fasting */}
             {form.link === 'fasting' && (
               <View style={{ marginBottom: 14 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 6 }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginBottom: 6 }}>
                   {T('planLinkFasting')} {T('planItemTarget')}（h）
                 </Text>
                 <ThemedInput
@@ -158,7 +158,7 @@ export default function HabitFormModal({
             {/* Link config: exercise */}
             {form.link === 'exercise' && (
               <View style={{ marginBottom: 14 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginBottom: 6 }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginBottom: 6 }}>
                   {T('planLinkExercise')} {T('planItemTarget')}（min）
                 </Text>
                 <ThemedInput

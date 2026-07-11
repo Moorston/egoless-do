@@ -77,9 +77,9 @@ export function withErrorBoundary<P extends object>(WrappedComponent: React.Comp
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 },
-  emoji: { fontSize: FONT_HERO, marginBottom: 16 },
-  title: { fontSize: FONT_BACK, fontWeight: '700', marginBottom: 8 },
-  message: { fontSize: FONT_ERROR, textAlign: 'center', marginBottom: 24, lineHeight: 20 },
+  emoji: { fontSize: FONT_HERO(), marginBottom: 16 },
+  title: { fontSize: FONT_BACK(), fontWeight: '700', marginBottom: 8 },
+  message: { fontSize: FONT_ERROR(), textAlign: 'center', marginBottom: 24, lineHeight: 20 },
   button: { paddingHorizontal: 32, paddingVertical: 12, borderRadius: 12 },
-  buttonText: { color: '#fff', fontWeight: '600', fontSize: FONT_BUTTON },
+  buttonText: { color: '#fff', fontWeight: '600', fontSize: FONT_BUTTON() },
 });

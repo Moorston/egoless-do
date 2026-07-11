@@ -551,11 +551,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   sectionDesc: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 12,
   },
   addButton: {
@@ -568,7 +568,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#fff',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   modeOption: {
@@ -581,11 +581,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   modeLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   modeDesc: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginTop: 2,
   },
   emptyCard: {
@@ -595,11 +595,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 4,
   },
   emptySubtext: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   modelCard: {
     padding: 14,
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   modelName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   defaultBadge: {
@@ -633,11 +633,11 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   defaultText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '500',
   },
   modelDetail: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginTop: 2,
   },
   modelActions: {
@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   actionText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   testResult: {
     marginTop: 10,
@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   testResultText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   templateCard: {
     flexDirection: 'row',
@@ -678,16 +678,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   templateName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 4,
   },
   templateDesc: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 4,
   },
   templateModels: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
   },
   modalOverlay: {
     position: 'absolute',
@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   templateSection: {
@@ -724,18 +724,18 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   templateChipText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   inputLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginBottom: 6,
   },
   input: {
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 12,
   },
   baseUrlHint: {
@@ -746,10 +746,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   hintText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
   },
   useText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '600',
   },
   modelHints: {
@@ -766,7 +766,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   modelChipText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   row: {
     flexDirection: 'row',

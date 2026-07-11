@@ -87,7 +87,7 @@ export default function PreceptHistoryPage() {
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingBottom: 0 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('preceptHistory') || '持戒历史'}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('preceptHistory') || '持戒历史'}</Text>
         <TouchableOpacity onPress={() => nav.goBack()}>
           <X size={22} color={TH.sub} />
         </TouchableOpacity>
@@ -104,7 +104,7 @@ export default function PreceptHistoryPage() {
               { value: stats.violationCount, label: '觉察记录' },
             ].map((s, i) => (
               <View key={i} style={{ alignItems: 'center', gap: 2 }}>
-                <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: i === 3 ? '#EF4444' : TH.text }}>{s.value}</Text>
+                <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: i === 3 ? '#EF4444' : TH.text }}>{s.value}</Text>
                 <Text style={{ fontSize: 11, color: TH.sub }}>{s.label}</Text>
               </View>
             ))}
@@ -117,7 +117,7 @@ export default function PreceptHistoryPage() {
             <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)}>
               <ChevronLeft size={20} color={TH.sub} />
             </TouchableOpacity>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>
               {year}年{month + 1}月 · {stats.monthDone}/{stats.monthTotal}天
             </Text>
             <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))}>
@@ -150,7 +150,7 @@ export default function PreceptHistoryPage() {
         {/* Per-precept stats */}
         {preceptHabits.length > 0 && (
           <View style={{ marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>每条戒统计</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>每条戒统计</Text>
             {preceptHabits.map(h => {
               const name = getPreceptDisplayName(h.name);
               const type = getPreceptType(h.name);
@@ -160,7 +160,7 @@ export default function PreceptHistoryPage() {
               return (
                 <View key={h.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: `${TH.border}20` }}>
                   <Text style={{ fontSize: 16, marginRight: 8 }}>{isAvoid ? '🚫' : '✨'}</Text>
-                  <Text style={{ flex: 1, fontSize: FONT_BODY, color: TH.text, fontWeight: '600' }}>{name}</Text>
+                  <Text style={{ flex: 1, fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{name}</Text>
                   <Text style={{ fontSize: 12, color: TH.sub, marginRight: 8 }}>{h.doneDays}天 🔥{h.streak}</Text>
                   {violations.length > 0 && (
                     <Text style={{ fontSize: 12, color: '#EF4444' }}>违{violations.length}</Text>
@@ -174,7 +174,7 @@ export default function PreceptHistoryPage() {
         {/* Insight Timeline */}
         {violationReflections.length > 0 && (
           <View>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>觉察时间线</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>觉察时间线</Text>
             {violationReflections.map(r => {
               const d = new Date(r.timestamp);
               const dateLabel = `${d.getMonth() + 1}/${d.getDate()}`;
@@ -185,7 +185,7 @@ export default function PreceptHistoryPage() {
                     <Text style={{ fontSize: 12, color: TH.sub }}>{dateLabel}</Text>
                     {triggerTag && <Text style={{ fontSize: 12, color: '#F59E0B' }}>#{triggerTag}</Text>}
                   </View>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }} numberOfLines={2}>{r.content}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }} numberOfLines={2}>{r.content}</Text>
                 </View>
               );
             })}

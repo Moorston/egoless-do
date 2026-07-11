@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   sectionTitle: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   list: {
     gap: 6,
   },
   createText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
 });

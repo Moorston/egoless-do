@@ -137,7 +137,7 @@ export default function RegisterScreen() {
               autoCapitalize="none"
               style={{ marginBottom: emailError ? 4 : 12, ...(emailError ? { borderColor: '#ef4444' } : {}) }}
             />
-            {emailError ? <Text style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>{emailError}</Text> : null}
+            {emailError ? <Text style={{ color: '#ef4444', fontSize: FONT_ERROR(), marginBottom: 12 }}>{emailError}</Text> : null}
             <View style={{ flexDirection: 'row', gap: 10, marginBottom: 12 }}>
               <View style={{ flex: 1 }}>
                 <ThemedInput
@@ -158,7 +158,7 @@ export default function RegisterScreen() {
                   justifyContent: 'center', alignItems: 'center', opacity: sending || cooldown > 0 ? 0.6 : 1,
                 }}
               >
-                <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: '600' }}>
+                <Text style={{ color: '#fff', fontSize: FONT_SUB(), fontWeight: '600' }}>
                   {cooldown > 0 ? `${cooldown}s` : sending ? T('authSending') : T('authSendCode')}
                 </Text>
               </TouchableOpacity>
@@ -180,7 +180,7 @@ export default function RegisterScreen() {
           </Card>
 
           {error !== '' && (
-            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR, textAlign: 'center', marginBottom: 12 }}>
+            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR(), textAlign: 'center', marginBottom: 12 }}>
               {error}
             </Text>
           )}
@@ -192,7 +192,7 @@ export default function RegisterScreen() {
           />
 
           <TouchableOpacity onPress={() => nav.navigate('Login')} activeOpacity={0.7}>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center' }}>
               {T('authHasAccount')}<Text style={{ color: TH.primary }}>{T('authGoLogin')}</Text>
             </Text>
           </TouchableOpacity>

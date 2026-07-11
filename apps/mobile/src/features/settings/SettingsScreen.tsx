@@ -144,7 +144,7 @@ export default function SettingsScreen() {
           right: (
             <TouchableOpacity accessibilityLabel={T('settingsRemindTime')} onPress={() => { setTimeEdit(remindTime); setShowTimePicker(true); }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{remindTime} {T('commonEdit')}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{remindTime} {T('commonEdit')}</Text>
                 <ChevronRight size={14} color={TH.sub} />
               </View>
             </TouchableOpacity>
@@ -217,7 +217,7 @@ export default function SettingsScreen() {
           right: (
             <TouchableOpacity accessibilityLabel={T('settingsSelectTheme')} onPress={() => setShowTheme(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[theme].name}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{THEMES[theme].name}</Text>
                 <ChevronRight size={14} color={TH.sub} />
               </View>
             </TouchableOpacity>
@@ -228,7 +228,7 @@ export default function SettingsScreen() {
           right: (
             <TouchableOpacity accessibilityLabel={T('settingsSelectLang')} onPress={() => setShowLang(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
                   {LANG_LIST.find(l => l.code === language)?.flag ?? '🇨🇳'}{' '}
                   {LANG_LIST.find(l => l.code === language)?.name ?? T('settingsLanguage')}
                 </Text>
@@ -292,12 +292,12 @@ export default function SettingsScreen() {
         },
         {
           label: T('settingsPending'), icon: <CloudUpload size={20} color={P} />,
-          right: <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{pendingCount} {T('settingsPendingUnit')}</Text>,
+          right: <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{pendingCount} {T('settingsPendingUnit')}</Text>,
         },
         {
           label: T('settingsLastSync'), icon: <History size={20} color={P} />,
           right: (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
               {lastSyncAt
                 ? formatDate(new Date(lastSyncAt), language, { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
                 : T('settingsNeverSync')}
@@ -309,7 +309,7 @@ export default function SettingsScreen() {
           icon: <RefreshCw size={20} color={P} />,
           right: (
             <TouchableOpacity accessibilityLabel={T('settingsManualSync')} onPress={triggerSync} disabled={syncing || !online}>
-              <Text style={{ color: P, fontSize: FONT_SUB }}>
+              <Text style={{ color: P, fontSize: FONT_SUB() }}>
                 {syncing ? T('settingsSyncing') : T('settingsSyncNow')}
               </Text>
             </TouchableOpacity>
@@ -370,7 +370,7 @@ export default function SettingsScreen() {
         },
         {
           label: T('settingsVersion'), icon: <Info size={20} color={P} />,
-          right: <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>v1.0.0</Text>,
+          right: <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>v1.0.0</Text>,
         },
         {
           label: T('settingsPrivacy'), icon: <Lock size={20} color={P} />,
@@ -409,10 +409,10 @@ export default function SettingsScreen() {
                 )}
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>
+                <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE() }}>
                   {userProfile.nickname ?? auth.user?.name ?? T('settingsDefaultName')}
                 </Text>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 3 }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB(), marginTop: 3 }}>
                   {streak} {T('checkinStreak')} · {auth.isSignedIn ? T('settingsConnected') : T('settingsOffline')}
                 </Text>
               </View>
@@ -421,7 +421,7 @@ export default function SettingsScreen() {
                   paddingHorizontal: 12, paddingVertical: 6,
                   borderRadius: 12, backgroundColor: `${P}20`,
                 }}>
-                  <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
+                  <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('settingsFreePlan')}</Text>
                 </View>
               ) : (
                 <TouchableOpacity
@@ -431,7 +431,7 @@ export default function SettingsScreen() {
                     paddingHorizontal: 16, paddingVertical: 8,
                     borderRadius: 12, backgroundColor: P,
                   }}>
-                  <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>{T('settingsLogin')}</Text>
+                  <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '700' }}>{T('settingsLogin')}</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -451,7 +451,7 @@ export default function SettingsScreen() {
             }}>
               <Music size={18} color={P} />
             </View>
-            <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1 }}>{T('musicTitle')}</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY(), flex: 1 }}>{T('musicTitle')}</Text>
             <ChevronRight size={18} color={TH.sub} />
           </TouchableOpacity>
         </Card>
@@ -461,7 +461,7 @@ export default function SettingsScreen() {
         {sections.map(({ title, rows }) => (
           <View key={title} style={{ marginBottom: 4 }}>
             <Text style={{
-              color: TH.sub, fontSize: FONT_SUB, fontWeight: '600',
+              color: TH.sub, fontSize: FONT_SUB(), fontWeight: '600',
               paddingVertical: 12, textTransform: 'uppercase', letterSpacing: 1,
             }}>
               {title}
@@ -479,7 +479,7 @@ export default function SettingsScreen() {
         {/* Footer brand */}
         <Text style={{
           textAlign: 'center', color: TH.sub,
-          fontSize: FONT_SUB, paddingVertical: 16,
+          fontSize: FONT_SUB(), paddingVertical: 16,
         }}>
           {T('settingsFooter')}
         </Text>
@@ -511,7 +511,7 @@ export default function SettingsScreen() {
             padding: 24, paddingBottom: 48,
           }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
-              <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{T('settingsSelectTheme')}</Text>
+              <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE() }}>{T('settingsSelectTheme')}</Text>
               <TouchableOpacity accessibilityLabel={T('commonClose')} onPress={() => setShowTheme(false)}>
                 <X size={26} color={TH.sub} />
               </TouchableOpacity>
@@ -535,7 +535,7 @@ export default function SettingsScreen() {
                       <View style={{ width: '40%', height: 3, borderRadius: 2, backgroundColor: th.card }} />
                     </View>
                     <View style={{ backgroundColor: TH.card, padding: 6, alignItems: 'center' }}>
-                      <Text style={{ color: TH.text, fontSize: FONT_SUB }}>{th.name}</Text>
+                      <Text style={{ color: TH.text, fontSize: FONT_SUB() }}>{th.name}</Text>
                     </View>
                   </TouchableOpacity>
                 );
@@ -554,7 +554,7 @@ export default function SettingsScreen() {
             padding: 24, paddingBottom: 48, maxHeight: '70%',
           }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
-              <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{T('settingsSelectLang')}</Text>
+              <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE() }}>{T('settingsSelectLang')}</Text>
               <TouchableOpacity accessibilityLabel={T('commonClose')} onPress={() => setShowLang(false)}>
                 <X size={26} color={TH.sub} />
               </TouchableOpacity>
@@ -572,8 +572,8 @@ export default function SettingsScreen() {
                 }}
               >
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Text style={{ fontSize: FONT_CLOSE }}>{l.flag}</Text>
-                  <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{l.name}</Text>
+                  <Text style={{ fontSize: FONT_CLOSE() }}>{l.flag}</Text>
+                  <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{l.name}</Text>
                 </View>
                 {l.code === language && (
                   <Check size={20} color={P} />

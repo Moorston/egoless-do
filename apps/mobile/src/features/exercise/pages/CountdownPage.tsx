@@ -20,8 +20,8 @@ interface Props {
 export default function CountdownPage({ countdown, label, musicTrack, musicIsPlaying, musicLoop, onMusicTogglePlay, onMusicToggleLoop, onMusicPress }: Props) {
   return (
     <View style={{ flex: 1, backgroundColor: '#000', alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>{countdown}</Text>
-      <Text style={{ fontSize: FONT_TITLE, color: 'rgba(255,255,255,.5)', marginTop: 16 }}>{label}</Text>
+      <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff' }}>{countdown}</Text>
+      <Text style={{ fontSize: FONT_TITLE(), color: 'rgba(255,255,255,.5)', marginTop: 16 }}>{label}</Text>
       {musicTrack && (
         <View style={{ position: 'absolute', bottom: 48, left: 20, right: 20 }}>
           <MeditationMusicBar

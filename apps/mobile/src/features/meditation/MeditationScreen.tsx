@@ -320,10 +320,10 @@ export default function MeditationScreen() {
               {/* Music display during meditation — non-interactive */}
               <MeditationMusicBar track={selectedTrack} isActive isPlaying={musicIsPlaying} primaryColor={P} />
               <View style={{ backgroundColor:`${P}18`, borderRadius:20, padding:28, marginBottom:20, width:'100%', alignItems:'center' }}>
-                <Text style={{ fontSize:FONT_HERO, fontWeight:'800', color:P, letterSpacing:2 }}>
+                <Text style={{ fontSize:FONT_HERO(), fontWeight:'800', color:P, letterSpacing:2 }}>
                   {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, '0')}
                 </Text>
-                <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginTop:6 }}>
+                <Text style={{ color:TH.sub, fontSize:FONT_BODY(), marginTop:6 }}>
                   {T('medActive')}
                 </Text>
               </View>
@@ -400,11 +400,11 @@ export default function MeditationScreen() {
       <Modal visible={showNoteModal} transparent animationType="fade">
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, textAlign: 'center', marginBottom: 4 }}>冥想完成 ✨</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 20 }}>{pendingDurMin} 分钟</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 8 }}>想记录点什么吗？(可选)</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, textAlign: 'center', marginBottom: 4 }}>冥想完成 ✨</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 20 }}>{pendingDurMin} 分钟</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', marginBottom: 8 }}>想记录点什么吗？(可选)</Text>
             <TextInput
-              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, maxHeight: 120, textAlignVertical: 'top', marginBottom: 20 }}
+              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), minHeight: 80, maxHeight: 120, textAlignVertical: 'top', marginBottom: 20 }}
               multiline maxLength={500} value={noteText} onChangeText={setNoteText}
               placeholder="写下此刻的感悟..." placeholderTextColor={TH.sub}
             />
@@ -413,13 +413,13 @@ export default function MeditationScreen() {
                 onPress={() => { addMedMinutes(pendingDurMin, selectedTrack?.id); setShowNoteModal(false); }}
                 style={{ flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}
               >
-                <Text style={{ color: TH.sub, fontWeight: '600', fontSize: FONT_BODY }}>跳过</Text>
+                <Text style={{ color: TH.sub, fontWeight: '600', fontSize: FONT_BODY() }}>跳过</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => { addMedMinutes(pendingDurMin, selectedTrack?.id, noteText.trim() || undefined); setShowNoteModal(false); }}
                 style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}
               >
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>完成</Text>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>完成</Text>
               </TouchableOpacity>
             </View>
           </View>

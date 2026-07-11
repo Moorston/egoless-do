@@ -78,10 +78,10 @@ export default function CheckinDetailScreen() {
             ? <CheckCircle2 size={36} color={COLORS.GREEN} style={{ marginBottom: 8 }} />
             : <PenLine size={36} color={COLORS.RED} style={{ marginBottom: 8 }} />
           }
-          <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: record.done ? COLORS.GREEN : COLORS.RED }}>
+          <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: record.done ? COLORS.GREEN : COLORS.RED }}>
             {record.done ? T('checkinDone') : T('checkinNotDone')}
           </Text>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginTop: 4 }}>{formatTime(record.timestamp, record.date)}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginTop: 4 }}>{formatTime(record.timestamp, record.date)}</Text>
         </View>
 
         <View style={{ backgroundColor: TH.card, borderRadius: 16, paddingHorizontal: 16, borderWidth: 1, borderColor: TH.border, marginBottom: 12 }}>
@@ -90,8 +90,8 @@ export default function CheckinDetailScreen() {
               flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
               paddingVertical: 13, borderBottomWidth: i === detailRows.length - 1 ? 0 : 1, borderBottomColor: TH.border,
             }}>
-              <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{r.label}</Text>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: r.color ?? TH.text }}>{r.value}</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{r.label}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: r.color ?? TH.text }}>{r.value}</Text>
             </View>
           ))}
         </View>
@@ -101,19 +101,19 @@ export default function CheckinDetailScreen() {
             {parsed.fasted && (
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, backgroundColor: 'rgba(16,185,129,.12)', borderRadius: 10, minWidth: 100 }}>
                 <Hand size={16} color={COLORS.GREEN} />
-                <Text style={{ fontSize: FONT_BODY, color: COLORS.GREEN, fontWeight: '600' }}>{T('checkinAbstinence')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: COLORS.GREEN, fontWeight: '600' }}>{T('checkinAbstinence')}</Text>
               </View>
             )}
             {parsed.waterMl > 0 && (
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, backgroundColor: 'rgba(59,130,246,.12)', borderRadius: 10, minWidth: 100 }}>
                 <Droplets size={16} color="#3B82F6" />
-                <Text style={{ fontSize: FONT_BODY, color: '#3B82F6', fontWeight: '600' }}>{parsed.waterMl}ml</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: '#3B82F6', fontWeight: '600' }}>{parsed.waterMl}ml</Text>
               </View>
             )}
             {parsed.food > 0 && (
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, backgroundColor: 'rgba(245,158,11,.12)', borderRadius: 10, minWidth: 100 }}>
                 <Utensils size={16} color="#F59E0B" />
-                <Text style={{ fontSize: FONT_BODY, color: '#F59E0B', fontWeight: '600' }}>{parsed.food} kcal</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: '#F59E0B', fontWeight: '600' }}>{parsed.food} kcal</Text>
               </View>
             )}
           </View>
@@ -127,7 +127,7 @@ export default function CheckinDetailScreen() {
       return (
         <View style={[styles.sectionHeader, { borderBottomColor: TH.border }]}>
           <Star size={18} color={TH.text} />
-          <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY }}>{item.label}</Text>
+          <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY() }}>{item.label}</Text>
         </View>
       );
     }
@@ -140,7 +140,7 @@ export default function CheckinDetailScreen() {
         <View style={[styles.listItem, item.isLast && { borderBottomWidth: 0 }]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             {practiceIcons[practice] ?? practice}
-            <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{practiceLabels[practice] ?? practice}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{practiceLabels[practice] ?? practice}</Text>
           </View>
           <Check size={16} color={COLORS.GREEN} />
         </View>
@@ -150,7 +150,7 @@ export default function CheckinDetailScreen() {
     if (item.kind === 'text') {
       return (
         <View style={[styles.textItem, item.isLast && { borderBottomWidth: 0 }]}>
-          <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{item.label}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{item.label}</Text>
           <Check size={16} color={COLORS.GREEN} />
         </View>
       );
@@ -159,8 +159,8 @@ export default function CheckinDetailScreen() {
     if (item.kind === 'detail') {
       return (
         <View style={[styles.listItem, item.isLast && { borderBottomWidth: 0 }]}>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{item.label}</Text>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: item.color ?? TH.text }}>{item.value}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{item.label}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: item.color ?? TH.text }}>{item.value}</Text>
         </View>
       );
     }
@@ -229,7 +229,7 @@ export default function CheckinDetailScreen() {
             <ChevronLeft size={24} color={TH.text} />
           </TouchableOpacity>
         </View>
-        <Text style={{ textAlign: 'center', color: TH.sub, padding: 40, fontSize: FONT_SUB }}>{T('checkinNoRecords')}</Text>
+        <Text style={{ textAlign: 'center', color: TH.sub, padding: 40, fontSize: FONT_SUB() }}>{T('checkinNoRecords')}</Text>
       </SafeAreaView>
     );
   }
@@ -240,7 +240,7 @@ export default function CheckinDetailScreen() {
         <TouchableOpacity onPress={() => nav.goBack()}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE, marginLeft: 12 }}>{T('checkinDetailTitle')}</Text>
+        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>{T('checkinDetailTitle')}</Text>
       </View>
       <FlatList
         style={{ flex: 1 }}

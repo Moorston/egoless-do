@@ -20,9 +20,9 @@ export default function WeightTrendChart({ TH, T, weightRecords }: Props) {
   if (last30.length === 0) {
     return (
       <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('bodyWeightTrend')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('bodyWeightTrend')}</Text>
         <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('bodyWeightNoData')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('bodyWeightNoData')}</Text>
         </View>
       </View>
     );
@@ -45,10 +45,10 @@ export default function WeightTrendChart({ TH, T, weightRecords }: Props) {
   return (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('bodyWeightTrend')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyWeightTrend')}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <TrendIcon size={14} color={trendColor} />
-          <Text style={{ fontSize: FONT_SMALL, color: trendColor }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: trendColor }}>
             {diff > 0 ? '+' : ''}{diff.toFixed(1)}kg
           </Text>
         </View>
@@ -56,8 +56,8 @@ export default function WeightTrendChart({ TH, T, weightRecords }: Props) {
 
       {/* Latest weight prominent */}
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4, marginBottom: 12 }}>
-        <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '900', color: TH.text }}>{last}</Text>
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>kg</Text>
+        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '900', color: TH.text }}>{last}</Text>
+        <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>kg</Text>
       </View>
 
       {/* Bar chart */}
@@ -83,7 +83,7 @@ export default function WeightTrendChart({ TH, T, weightRecords }: Props) {
       {/* Body fat if available */}
       {last30.some(r => r.bodyFat != null) && (
         <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 4 }}>{T('bodyBodyFat')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 4 }}>{T('bodyBodyFat')}</Text>
           <View style={{ flexDirection: 'row', gap: 2 }}>
             {last30.filter(r => r.bodyFat != null).slice(-14).map(r => {
               const bfMax = Math.max(...last30.filter(x => x.bodyFat != null).map(x => x.bodyFat!));

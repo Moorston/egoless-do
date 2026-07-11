@@ -245,14 +245,14 @@ export default function ExerciseHistoryScreen() {
       const maxMin = Math.max(...monthlyStats.map(([, s]) => s.min));
       return (
         <Card style={{ marginBottom: 14 }}>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('exerciseTotalTime')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text, marginBottom: 10 }}>{T('exerciseTotalTime')}</Text>
           {monthlyStats.map(([monthKey, stats]) => {
             const pct = maxMin > 0 ? (stats.min / maxMin * 100) : 0;
             return (
               <View key={monthKey} style={{ marginBottom: 8 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
-                  <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatMonth(monthKey)}</Text>
-                  <Text style={{ fontSize: FONT_BADGE, color: TH.text, fontWeight: '600' }}>{formatDuration(stats.min)} · {stats.count}{T('exerciseWorkouts')}</Text>
+                  <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{formatMonth(monthKey)}</Text>
+                  <Text style={{ fontSize: FONT_BADGE(), color: TH.text, fontWeight: '600' }}>{formatDuration(stats.min)} · {stats.count}{T('exerciseWorkouts')}</Text>
                 </View>
                 <View style={{ height: 6, backgroundColor: `${P}20`, borderRadius: 3, overflow: 'hidden' }}>
                   <View style={{ height: 6, width: `${pct}%`, backgroundColor: P, borderRadius: 3 }} />
@@ -264,14 +264,14 @@ export default function ExerciseHistoryScreen() {
       );
     }
     if (item.type === 'emptyText') {
-      return <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY }}>{T('exerciseNoHistory')}</Text>;
+      return <Text style={{ color: TH.sub, textAlign: 'center', marginTop: 60, fontSize: FONT_EMPTY() }}>{T('exerciseNoHistory')}</Text>;
     }
     if (item.type === 'monthHeader') {
       return (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
           <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: P }} />
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{item.items!.length} {T('exerciseWorkouts')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{formatMonth(item.monthKey!)}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{item.items!.length} {T('exerciseWorkouts')}</Text>
         </View>
       );
     }
@@ -297,22 +297,22 @@ export default function ExerciseHistoryScreen() {
         >
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION }}>{e.sportIcon}</Text>
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{formatTime(e.timestamp ?? 0)}</Text>
+              <Text style={{ fontSize: FONT_STAT_SECTION() }}>{e.sportIcon}</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{formatTime(e.timestamp ?? 0)}</Text>
             </View>
             <View style={{ backgroundColor: `${P}15`, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
-              <Text style={{ color: P, fontWeight: '700', fontSize: FONT_SUB }}>{durMin}:{String(durSec).padStart(2, '0')}</Text>
+              <Text style={{ color: P, fontWeight: '700', fontSize: FONT_SUB() }}>{durMin}:{String(durSec).padStart(2, '0')}</Text>
             </View>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
             {e.reps != null ? (
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.reps} {T('exerciseReps')}</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.reps} {T('exerciseReps')}</Text>
             ) : e.distanceKm ? (
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.distanceKm.toFixed(2)} km</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.distanceKm.toFixed(2)} km</Text>
             ) : null}
             {e.calories ? (
-              <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{e.calories} kcal</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{e.calories} kcal</Text>
             ) : null}
           </View>
           {isExpanded && <DetailCard e={e} TH={TH} P={P} T={T} MapView={MapView} Polyline={Polyline} />}
@@ -368,10 +368,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subFont: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   statValue: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '700',
     marginTop: 2,
   },
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   sectionTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     marginBottom: 8,
   },
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   subBold: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
   },
   filterBtnBase: {
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   badgeFont: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
   },
   statCardsRow: {
     flexDirection: 'row',
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   statCardValue: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
   },
 });

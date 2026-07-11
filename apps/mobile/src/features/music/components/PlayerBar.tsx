@@ -94,9 +94,9 @@ export default function PlayerBar({ primaryColor, category }: Props) {
         {/* Error banner */}
         {error && (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(239,68,68,.2)', borderRadius: 8, padding: 8, marginBottom: 8 }}>
-            <Text style={{ color: '#EF4444', fontSize: FONT_SUB, flex: 1 }}>{T('musicPlayFailed')}</Text>
+            <Text style={{ color: '#EF4444', fontSize: FONT_SUB(), flex: 1 }}>{T('musicPlayFailed')}</Text>
             <TouchableOpacity onPress={() => { setError(null); play(currentTrack); }}>
-              <Text style={{ color: primaryColor, fontSize: FONT_SUB, fontWeight: '600' }}>{T('musicRetry')}</Text>
+              <Text style={{ color: primaryColor, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('musicRetry')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -104,10 +104,10 @@ export default function PlayerBar({ primaryColor, category }: Props) {
         {/* Track info + controls */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600' }} numberOfLines={1}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }} numberOfLines={1}>
               {currentTrack.name}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>
               {currentTimeStr} / {durationStr}
             </Text>
           </View>
@@ -115,7 +115,7 @@ export default function PlayerBar({ primaryColor, category }: Props) {
           {/* Sleep timer */}
           {sleepTimerMinutes && (
             <TouchableOpacity onPress={() => setShowSleepModal(true)} style={{ padding: 6 }}>
-              <Text style={{ color: primaryColor, fontSize: FONT_SUB, fontWeight: '600' }}>
+              <Text style={{ color: primaryColor, fontSize: FONT_SUB(), fontWeight: '600' }}>
                 {formatSleepTime(sleepTimerRemaining)}
               </Text>
             </TouchableOpacity>
@@ -151,7 +151,7 @@ export default function PlayerBar({ primaryColor, category }: Props) {
 
           <View style={{ flex: 1 }} />
 
-          <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{modeLabel}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{modeLabel}</Text>
         </View>
 
         {/* Waveform progress bar */}
@@ -170,23 +170,23 @@ export default function PlayerBar({ primaryColor, category }: Props) {
       <Modal visible={showSleepModal} transparent animationType="fade" onRequestClose={() => setShowSleepModal(false)}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.5)', justifyContent: 'center', padding: 24 }}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, borderWidth: 1, borderColor: TH.border }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 16, textAlign: 'center' }}>{T('musicSleepTimer')}</Text>
+            <Text style={{ fontWeight: '700', fontSize: FONT_BODY(), color: TH.text, marginBottom: 16, textAlign: 'center' }}>{T('musicSleepTimer')}</Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center' }}>
               {SLEEP_PRESETS.map(min => (
                 <TouchableOpacity key={min} onPress={() => handleSleepSelect(min)}
                   style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: sleepTimerMinutes === min ? primaryColor : TH.card }}>
-                  <Text style={{ color: sleepTimerMinutes === min ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('musicMinutes').replace('{n}', String(min))}</Text>
+                  <Text style={{ color: sleepTimerMinutes === min ? '#fff' : TH.text, fontWeight: '600', fontSize: FONT_BODY() }}>{T('musicMinutes').replace('{n}', String(min))}</Text>
                 </TouchableOpacity>
               ))}
               {sleepTimerMinutes && (
                 <TouchableOpacity onPress={() => handleSleepSelect(null)}
                   style={{ paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12, backgroundColor: 'rgba(239,68,68,.15)', width: '100%', alignItems: 'center' }}>
-                  <Text style={{ color: '#EF4444', fontWeight: '600', fontSize: FONT_BODY }}>{T('musicSleepTimerOff')}</Text>
+                  <Text style={{ color: '#EF4444', fontWeight: '600', fontSize: FONT_BODY() }}>{T('musicSleepTimerOff')}</Text>
                 </TouchableOpacity>
               )}
             </View>
             <TouchableOpacity onPress={() => setShowSleepModal(false)} style={{ marginTop: 16, padding: 12, alignItems: 'center' }}>
-              <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('cancel')}</Text>
             </TouchableOpacity>
           </View>
         </View>

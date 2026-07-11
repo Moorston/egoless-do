@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   statItem: { alignItems: 'center' },
-  statNumber: { fontSize: FONT_BODY, fontWeight: '700' },
-  statLabel: { fontSize: FONT_TINY, marginTop: 2 },
+  statNumber: { fontSize: FONT_BODY(), fontWeight: '700' },
+  statLabel: { fontSize: FONT_TINY(), marginTop: 2 },
 });

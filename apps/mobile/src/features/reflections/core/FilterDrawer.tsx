@@ -194,7 +194,7 @@ function FilterDrawerComponent({
                     }]}
                   >
                     <Calendar size={14} color={isActive ? P : TH.sub} />
-                    <Text style={{ color: isActive ? P : TH.text, fontSize: FONT_SMALL }}>{label}</Text>
+                    <Text style={{ color: isActive ? P : TH.text, fontSize: FONT_SMALL() }}>{label}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -207,7 +207,7 @@ function FilterDrawerComponent({
                 }]}
               >
                 <Calendar size={14} color={activePreset === 'custom' ? P : TH.sub} />
-                <Text style={{ color: activePreset === 'custom' ? P : TH.text, fontSize: FONT_SMALL }}>{customLabel}</Text>
+                <Text style={{ color: activePreset === 'custom' ? P : TH.text, fontSize: FONT_SMALL() }}>{customLabel}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -224,7 +224,7 @@ function FilterDrawerComponent({
                 }]}
               >
                 <Link size={14} color={filters.hasLink ? P : TH.sub} />
-                <Text style={{ color: filters.hasLink ? P : TH.text, fontSize: FONT_SMALL }}>有链接</Text>
+                <Text style={{ color: filters.hasLink ? P : TH.text, fontSize: FONT_SMALL() }}>有链接</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleToggleHasLinkedTask}
@@ -234,7 +234,7 @@ function FilterDrawerComponent({
                 }]}
               >
                 <ListChecks size={14} color={filters.hasLinkedTask ? P : TH.sub} />
-                <Text style={{ color: filters.hasLinkedTask ? P : TH.text, fontSize: FONT_SMALL }}>关联任务</Text>
+                <Text style={{ color: filters.hasLinkedTask ? P : TH.text, fontSize: FONT_SMALL() }}>关联任务</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -243,10 +243,10 @@ function FilterDrawerComponent({
         {/* 底部按钮 */}
         <View style={styles.actions}>
           <TouchableOpacity onPress={handleClearAll} style={[styles.clearButton, { borderColor: TH.border }]}>
-            <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>清除全部</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_BUTTON() }}>清除全部</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onClose} style={[styles.applyButton, { backgroundColor: P }]}>
-            <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>应用筛选</Text>
+            <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>应用筛选</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: FONT_LABEL,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
     marginBottom: 10,
   },

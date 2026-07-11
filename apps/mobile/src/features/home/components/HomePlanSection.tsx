@@ -58,7 +58,7 @@ const HomePlanSection = memo(function HomePlanSection({
       {/* Plan items */}
       {todayPlanItems.length > 0 && (
         <>
-          <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('planTodoList')}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginTop: 16, marginBottom: 8 }}>{T('planTodoList')}</Text>
           {todayPlanItems.map(item => {
             const done = planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done);
             const autoChecked = done && planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done && c.linkedModule);
@@ -72,9 +72,9 @@ const HomePlanSection = memo(function HomePlanSection({
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                   <ClipboardList size={16} color={P} />
                   <View>
-                    <Text style={{ color: TH.text, fontSize: FONT_BODY }} numberOfLines={1}>{item.name}</Text>
+                    <Text style={{ color: TH.text, fontSize: FONT_BODY() }} numberOfLines={1}>{item.name}</Text>
                     {item.link && item.link !== 'manual' && (
-                      <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+                      <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
                         {T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
                       </Text>
                     )}
@@ -83,7 +83,7 @@ const HomePlanSection = memo(function HomePlanSection({
                 {autoChecked ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <Check size={14} color={COLORS.GREEN} />
-                    <Text style={{ fontSize: FONT_BADGE, color: COLORS.GREEN, fontWeight: '600' }}>{T('planAutoChecked')}</Text>
+                    <Text style={{ fontSize: FONT_BADGE(), color: COLORS.GREEN, fontWeight: '600' }}>{T('planAutoChecked')}</Text>
                   </View>
                 ) : isReadOnly ? (
                   done ? <Check size={18} color={COLORS.GREEN} /> : <X size={18} color={TH.sub} />
@@ -99,7 +99,7 @@ const HomePlanSection = memo(function HomePlanSection({
       {/* Daily custom todos */}
       {dailyCustomTodos.length > 0 && (
         <>
-          <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('planDailyCustomTodos')}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginTop: 16, marginBottom: 8 }}>{T('planDailyCustomTodos')}</Text>
           {dailyCustomTodos.map(todo => (
             <View key={todo.id} style={{
               flexDirection: 'row', alignItems: 'center',
@@ -108,7 +108,7 @@ const HomePlanSection = memo(function HomePlanSection({
             }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Sparkles size={16} color={P} />
-                <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{todo.name}</Text>
+                <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{todo.name}</Text>
               </View>
               {isReadOnly ? (
                 todo.done ? <Check size={18} color={COLORS.GREEN} /> : <X size={18} color={TH.sub} />

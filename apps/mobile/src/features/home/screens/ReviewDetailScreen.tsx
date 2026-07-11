@@ -37,7 +37,7 @@ export default function ReviewDetailScreen() {
             <ChevronLeft size={24} color={TH.text} />
           </TouchableOpacity>
         </View>
-        <Text style={{ textAlign: 'center', color: TH.sub, padding: 40, fontSize: FONT_SUB }}>
+        <Text style={{ textAlign: 'center', color: TH.sub, padding: 40, fontSize: FONT_SUB() }}>
           {T('reviewNoData')}
         </Text>
       </SafeAreaView>
@@ -53,7 +53,7 @@ export default function ReviewDetailScreen() {
         <TouchableOpacity onPress={() => nav.goBack()}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE, marginLeft: 12 }}>
+        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>
           {periodLabel}
         </Text>
       </View>
@@ -61,7 +61,7 @@ export default function ReviewDetailScreen() {
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
         {/* 日期范围 */}
         <View style={{ marginBottom: 16 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
             {review.startDate} - {review.endDate}
           </Text>
         </View>
@@ -75,10 +75,10 @@ export default function ReviewDetailScreen() {
             <Text style={{ fontSize: 28, fontWeight: '700', color: TH.primary }}>
               {review.completionRate}%
             </Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, marginTop: 4 }}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>
               {T('reviewCompletionRate')}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>
               {review.doneDays}/{review.totalDays} {T('days')}
             </Text>
           </View>
@@ -89,10 +89,10 @@ export default function ReviewDetailScreen() {
             <Text style={{ fontSize: 28, fontWeight: '700', color: TH.primary }}>
               {review.streakDays}
             </Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, marginTop: 4 }}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>
               {T('reviewStreakDays')}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>
               {T('days')}
             </Text>
           </View>
@@ -114,7 +114,7 @@ export default function ReviewDetailScreen() {
                 {review.comparison.completionRateDiff > 0 ? '+' : ''}{review.comparison.completionRateDiff}%
               </Text>
             </View>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, marginTop: 4 }}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>
               {T('reviewVsPrevious')}
             </Text>
           </View>
@@ -128,7 +128,7 @@ export default function ReviewDetailScreen() {
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <AlertTriangle size={18} color="#F59E0B" />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {T('reviewIncompleteAnalysis')}
               </Text>
             </View>
@@ -138,10 +138,10 @@ export default function ReviewDetailScreen() {
                 paddingVertical: 6, borderBottomWidth: i < review.incompleteReasons.length - 1 ? 1 : 0,
                 borderBottomColor: TH.border,
               }}>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>
                   {r.icon} {r.code}
                 </Text>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>
                   {r.count} {T('reviewTimes')} ({r.percentage}%)
                 </Text>
               </View>
@@ -157,7 +157,7 @@ export default function ReviewDetailScreen() {
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <CheckCircle size={18} color={COLORS.GREEN} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {T('reviewHabitProgress')}
               </Text>
             </View>
@@ -168,8 +168,8 @@ export default function ReviewDetailScreen() {
                 borderBottomColor: TH.border,
               }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{habit.name}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{habit.name}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.primary, fontWeight: '600' }}>
                     {habit.progress}%
                   </Text>
                 </View>
@@ -182,10 +182,10 @@ export default function ReviewDetailScreen() {
                   }} />
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
                     {habit.doneDays}/{habit.targetDays} {T('days')}
                   </Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
                     {T('reviewStreak')}: {habit.streak} {T('days')}
                   </Text>
                 </View>
@@ -202,7 +202,7 @@ export default function ReviewDetailScreen() {
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <Target size={18} color={TH.primary} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {T('reviewPlanProgress')}
               </Text>
             </View>
@@ -213,8 +213,8 @@ export default function ReviewDetailScreen() {
                 borderBottomColor: TH.border,
               }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{plan.planName}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{plan.planName}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.primary, fontWeight: '600' }}>
                     {plan.progress}%
                   </Text>
                 </View>
@@ -226,7 +226,7 @@ export default function ReviewDetailScreen() {
                     borderRadius: 3,
                   }} />
                 </View>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>
                   {plan.completedItems}/{plan.totalItems} {T('reviewTasks')}
                 </Text>
               </View>
@@ -242,19 +242,19 @@ export default function ReviewDetailScreen() {
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <BarChart3 size={18} color={TH.text} />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {T('reviewHealthMetrics')}
               </Text>
             </View>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
               {review.metrics.avgWeight !== undefined && (
                 <View style={{ width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>⚖️ {T('reviewWeight')}</Text>
-                  <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginTop: 4 }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>⚖️ {T('reviewWeight')}</Text>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 4 }}>
                     {review.metrics.avgWeight}kg
                   </Text>
                   {review.comparison.weightDiff !== undefined && review.comparison.weightDiff !== 0 && (
-                    <Text style={{ fontSize: FONT_SUB, color: review.comparison.weightDiff > 0 ? COLORS.RED : COLORS.GREEN }}>
+                    <Text style={{ fontSize: FONT_SUB(), color: review.comparison.weightDiff > 0 ? COLORS.RED : COLORS.GREEN }}>
                       {review.comparison.weightDiff > 0 ? '+' : ''}{review.comparison.weightDiff}kg
                     </Text>
                   )}
@@ -262,24 +262,24 @@ export default function ReviewDetailScreen() {
               )}
               {review.metrics.avgWater !== undefined && (
                 <View style={{ width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>💧 {T('reviewWater')}</Text>
-                  <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginTop: 4 }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>💧 {T('reviewWater')}</Text>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 4 }}>
                     {review.metrics.avgWater}ml
                   </Text>
                 </View>
               )}
               {review.metrics.avgCalories !== undefined && (
                 <View style={{ width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>🍽️ {T('reviewCalories')}</Text>
-                  <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginTop: 4 }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>🍽️ {T('reviewCalories')}</Text>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 4 }}>
                     {review.metrics.avgCalories}kcal
                   </Text>
                 </View>
               )}
               {review.metrics.totalExerciseMin !== undefined && (
                 <View style={{ width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>🏃 {T('reviewExercise')}</Text>
-                  <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginTop: 4 }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>🏃 {T('reviewExercise')}</Text>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 4 }}>
                     {review.metrics.totalExerciseMin}min
                   </Text>
                 </View>
@@ -296,35 +296,35 @@ export default function ReviewDetailScreen() {
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <Text style={{ fontSize: 18 }}>💡</Text>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {T('reviewAIAnalysis')}
               </Text>
             </View>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 24, marginBottom: 12 }}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, lineHeight: 24, marginBottom: 12 }}>
               {review.aiSummary}
             </Text>
             {review.highlights.length > 0 && (
               <View style={{ marginBottom: 12 }}>
-                <Text style={{ fontSize: FONT_SUB, color: COLORS.GREEN, fontWeight: '600', marginBottom: 6 }}>
+                <Text style={{ fontSize: FONT_SUB(), color: COLORS.GREEN, fontWeight: '600', marginBottom: 6 }}>
                   ✨ {T('reviewHighlights')}
                 </Text>
                 {review.highlights.map((h, i) => (
                   <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                    <Text style={{ fontSize: FONT_BODY, color: COLORS.GREEN, marginRight: 6 }}>•</Text>
-                    <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{h}</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: COLORS.GREEN, marginRight: 6 }}>•</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>{h}</Text>
                   </View>
                 ))}
               </View>
             )}
             {review.improvements.length > 0 && (
               <View>
-                <Text style={{ fontSize: FONT_SUB, color: '#F59E0B', fontWeight: '600', marginBottom: 6 }}>
+                <Text style={{ fontSize: FONT_SUB(), color: '#F59E0B', fontWeight: '600', marginBottom: 6 }}>
                   💪 {T('reviewImprovements')}
                 </Text>
                 {review.improvements.map((imp, i) => (
                   <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
-                    <Text style={{ fontSize: FONT_BODY, color: '#F59E0B', marginRight: 6 }}>•</Text>
-                    <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{imp}</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: '#F59E0B', marginRight: 6 }}>•</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>{imp}</Text>
                   </View>
                 ))}
               </View>

@@ -80,19 +80,19 @@ export default function CalendarGrid({
       {/* Header */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <TouchableOpacity onPress={goPrev} style={{ padding: 4, paddingHorizontal: 8 }}>
-          <Text style={{ fontSize: FONT_BACK, color: subColor }}>{'‹'}</Text>
+          <Text style={{ fontSize: FONT_BACK(), color: subColor }}>{'‹'}</Text>
         </TouchableOpacity>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: textColor }}>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: textColor }}>
             {viewYear}年 {MONTH_NAMES[viewMonth]}
           </Text>
-          <Text style={{ fontSize: FONT_SUB, color: subColor }}>
+          <Text style={{ fontSize: FONT_SUB(), color: subColor }}>
             {monthDone}/{monthTotal} 天
           </Text>
         </View>
         <TouchableOpacity onPress={goNext} disabled={isCurrentMonth}
           style={{ padding: 4, paddingHorizontal: 8, opacity: isCurrentMonth ? 0.3 : 1 }}>
-          <Text style={{ fontSize: FONT_BACK, color: subColor }}>{'›'}</Text>
+          <Text style={{ fontSize: FONT_BACK(), color: subColor }}>{'›'}</Text>
         </TouchableOpacity>
       </View>
 
@@ -100,7 +100,7 @@ export default function CalendarGrid({
       <View style={{ flexDirection: 'row', marginBottom: 4 }}>
         {DAY_LABELS.map(d => (
           <View key={d} style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: FONT_BADGE, color: 'rgba(128,128,128,.5)', fontWeight: '500' }}>{d}</Text>
+            <Text style={{ fontSize: FONT_BADGE(), color: 'rgba(128,128,128,.5)', fontWeight: '500' }}>{d}</Text>
           </View>
         ))}
       </View>
@@ -131,7 +131,7 @@ export default function CalendarGrid({
                   borderStyle: cell.grace && !cell.isToday ? 'dashed' : 'solid',
                 }}>
                 <Text style={{
-                  fontSize: FONT_SUB, fontWeight: cell.isToday ? '700' : '400',
+                  fontSize: FONT_SUB(), fontWeight: cell.isToday ? '700' : '400',
                   color: fg,
                 }}>{cell.day}</Text>
               </TouchableOpacity>

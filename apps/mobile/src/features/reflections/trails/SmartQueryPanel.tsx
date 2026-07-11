@@ -34,7 +34,7 @@ export default function SmartQueryPanel({
   return (
     <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8, borderTopWidth: 1, borderTopColor: TH.border }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <Text style={{ fontSize: FONT_SMALL, color: TH.primary, fontWeight: '600' }}>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.primary, fontWeight: '600' }}>
           🔍 智能查询
         </Text>
         <TouchableOpacity onPress={onClose}>
@@ -56,14 +56,14 @@ export default function SmartQueryPanel({
       {/* Loading indicator */}
       {isSmartParsing && (
         <View style={{ paddingVertical: 12, alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>🧠 智能解析中...</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>🧠 智能解析中...</Text>
         </View>
       )}
 
       {/* Query results */}
       {!isSmartParsing && queryResults.length > 0 && (
         <View style={{ marginTop: 8 }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 8 }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 8 }}>
             找到 {queryResults.length} 条相关感念
           </Text>
           <TouchableOpacity
@@ -77,7 +77,7 @@ export default function SmartQueryPanel({
               alignItems: 'center',
             }}
           >
-            <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>
+            <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>
               快速创建脉络 →
             </Text>
           </TouchableOpacity>
@@ -87,7 +87,7 @@ export default function SmartQueryPanel({
       {/* No results */}
       {!isSmartParsing && queryResults.length === 0 && !smartResult?.question && (
         <View style={{ paddingVertical: 12, alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>未找到匹配的感念</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>未找到匹配的感念</Text>
         </View>
       )}
     </View>

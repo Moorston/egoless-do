@@ -26,7 +26,7 @@ function FrequencyNumberInput({ value, prefix, suffix, min, max, editable, input
   React.useEffect(() => { setText(String(value)); }, [value]);
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-      <Text style={{ fontSize: FONT_LABEL, color: '#888' }}>{prefix}</Text>
+      <Text style={{ fontSize: FONT_LABEL(), color: '#888' }}>{prefix}</Text>
       <TextInput
         value={text}
         onChangeText={v => setText(v)}
@@ -35,7 +35,7 @@ function FrequencyNumberInput({ value, prefix, suffix, min, max, editable, input
         editable={editable}
         style={[inputStyle, { width: 60, textAlign: 'center', marginBottom: 0 }]}
       />
-      <Text style={{ fontSize: FONT_LABEL, color: '#888' }}>{suffix}</Text>
+      <Text style={{ fontSize: FONT_LABEL(), color: '#888' }}>{suffix}</Text>
     </View>
   );
 }
@@ -222,7 +222,7 @@ export default function PlanCreateScreen() {
 
   const inputStyle = {
     backgroundColor: TH.card, borderRadius: 10, borderWidth: 1, borderColor: TH.border,
-    paddingHorizontal: 12, paddingVertical: 10, fontSize: FONT_BODY, color: TH.text,
+    paddingHorizontal: 12, paddingVertical: 10, fontSize: FONT_BODY(), color: TH.text,
   };
 
   return (
@@ -232,7 +232,7 @@ export default function PlanCreateScreen() {
         <TouchableOpacity onPress={() => nav.goBack()}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text }}>{isEdit ? T('planEditTitle') : T('planCreate')}</Text>
+        <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text }}>{isEdit ? T('planEditTitle') : T('planCreate')}</Text>
       </View>
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -243,38 +243,38 @@ export default function PlanCreateScreen() {
       >
         {/* Plan basic info */}
         <Card>
-          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planName')} *</Text>
+          <Text style={{ fontSize: FONT_LABEL(), fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planName')} *</Text>
           <TextInput
             value={name} onChangeText={setName} placeholder={T('planName')}
             placeholderTextColor={TH.sub}
             editable={!isActive}
             style={[inputStyle, { marginBottom: errors.name ? 4 : 12, borderColor: errors.name ? COLORS.RED : TH.border, ...(isActive ? { opacity: 0.5 } : {}) }]}
           />
-          {errors.name ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginBottom: 8 }}>{errors.name}</Text> : null}
+          {errors.name ? <Text style={{ fontSize: FONT_ERROR(), color: COLORS.RED, marginBottom: 8 }}>{errors.name}</Text> : null}
 
-          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planGoal')} *</Text>
+          <Text style={{ fontSize: FONT_LABEL(), fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planGoal')} *</Text>
           <TextInput
             value={goal} onChangeText={setGoal} placeholder={T('planGoal')}
             placeholderTextColor={TH.sub} multiline
             style={[inputStyle, { minHeight: 60, textAlignVertical: 'top', marginBottom: errors.goal ? 4 : 12, borderColor: errors.goal ? COLORS.RED : TH.border }]}
           />
-          {errors.goal ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginBottom: 8 }}>{errors.goal}</Text> : null}
+          {errors.goal ? <Text style={{ fontSize: FONT_ERROR(), color: COLORS.RED, marginBottom: 8 }}>{errors.goal}</Text> : null}
 
           {/* Vision Selector */}
-          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planLinkVision')}</Text>
+          <Text style={{ fontSize: FONT_LABEL(), fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planLinkVision')}</Text>
           {selectedVision ? (
             <View style={{ backgroundColor: TH.card, borderRadius: 10, padding: 12, marginBottom: 12, borderWidth: 1, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6', fontWeight: '600' }}>
+                <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6', fontWeight: '600' }}>
                   {selectedVision.type === 'lifetime' ? '⭐' : selectedVision.type === 'long' ? '🟣' : '🟢'} {T(`vow${selectedVision.type === 'lifetime' ? 'Lifetime' : selectedVision.type === 'long' ? 'Long' : 'Short'}`)}
                 </Text>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text, marginTop: 2 }} numberOfLines={1}>{selectedVision.text}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 2 }} numberOfLines={1}>{selectedVision.text}</Text>
               </View>
               <TouchableOpacity onPress={() => setShowVisionPicker(true)} style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6, backgroundColor: `${TH.primary}15` }}>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.primary, fontWeight: '600' }}>{T('planChangeVision')}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.primary, fontWeight: '600' }}>{T('planChangeVision')}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setVisionId(undefined)} style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6, backgroundColor: '#EF444415' }}>
-                <Text style={{ fontSize: FONT_BADGE, color: '#EF4444', fontWeight: '600' }}>{T('planUnlinkVision')}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: '#EF4444', fontWeight: '600' }}>{T('planUnlinkVision')}</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -282,19 +282,19 @@ export default function PlanCreateScreen() {
               onPress={() => setShowVisionPicker(true)}
               style={[inputStyle, { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }]}
             >
-              <Text style={{ fontSize: FONT_BADGE, color: TH.primary, fontWeight: '600' }}>🔗</Text>
-              <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('planSelectVision')}</Text>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.primary, fontWeight: '600' }}>🔗</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('planSelectVision')}</Text>
             </TouchableOpacity>
           )}
 
-          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planSlogan')}</Text>
+          <Text style={{ fontSize: FONT_LABEL(), fontWeight: '600', color: TH.sub, marginBottom: 4 }}>{T('planSlogan')}</Text>
           <TextInput
             value={slogan} onChangeText={setSlogan} placeholder={T('planSlogan')}
             placeholderTextColor={TH.sub}
             style={[inputStyle, { marginBottom: 12 }]}
           />
 
-          <Text style={{ fontSize: FONT_LABEL, fontWeight: '600', color: TH.sub, marginBottom: 6 }}>{T('planPeriod')}</Text>
+          <Text style={{ fontSize: FONT_LABEL(), fontWeight: '600', color: TH.sub, marginBottom: 6 }}>{T('planPeriod')}</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }} contentContainerStyle={{ gap: 6 }}>
             {([
               { key: '1m', months: 1, label: T('planPeriod1m') },
@@ -317,37 +317,37 @@ export default function PlanCreateScreen() {
                   backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border,
                 }}
               >
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '500' }}>{opt.label}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB(), fontWeight: '500' }}>{opt.label}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
 
-          <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planTime')} *</Text>
+          <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('planTime')} *</Text>
           <TouchableOpacity
             onPress={() => !isActive && setShowRangePicker(true)}
             disabled={isActive}
             style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: (errors.startDate || errors.endDate) ? COLORS.RED : TH.border, ...(isActive ? { opacity: 0.5 } : {}) }]}
           >
-            <Text style={{ fontSize: FONT_BODY, color: (startDate && endDate) ? TH.text : TH.sub }}>
+            <Text style={{ fontSize: FONT_BODY(), color: (startDate && endDate) ? TH.text : TH.sub }}>
               {startDate && endDate ? `${startDate}  —  ${endDate}` : T('planDateRangePlaceholder')}
             </Text>
             <Calendar size={16} color={TH.sub} />
           </TouchableOpacity>
-          {errors.startDate ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginTop: 4 }}>{errors.startDate}</Text> : null}
-          {errors.endDate ? <Text style={{ fontSize: FONT_ERROR, color: COLORS.RED, marginTop: 4 }}>{errors.endDate}</Text> : null}
+          {errors.startDate ? <Text style={{ fontSize: FONT_ERROR(), color: COLORS.RED, marginTop: 4 }}>{errors.startDate}</Text> : null}
+          {errors.endDate ? <Text style={{ fontSize: FONT_ERROR(), color: COLORS.RED, marginTop: 4 }}>{errors.endDate}</Text> : null}
         </Card>
 
         {/* Items */}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 8 }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('planItems')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{T('planItems')}</Text>
           <TouchableOpacity onPress={addItem} style={{ backgroundColor: P, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 }}>
-            <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: '600' }}>+ {T('planAddItem')}</Text>
+            <Text style={{ color: '#fff', fontSize: FONT_SUB(), fontWeight: '600' }}>+ {T('planAddItem')}</Text>
           </TouchableOpacity>
         </View>
 
         {items.length === 0 && (
           <Card style={{ alignItems: 'center', padding: 24 }}>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{T('planNoItems')}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{T('planNoItems')}</Text>
           </Card>
         )}
 
@@ -363,18 +363,18 @@ export default function PlanCreateScreen() {
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14 }}
               >
                 {isExpanded ? <ChevronDown size={16} color={TH.sub} /> : <ChevronRight size={16} color={TH.sub} />}
-                <Text style={{ flex: 1, fontSize: FONT_SUB, fontWeight: '600', color: TH.text }} numberOfLines={1}>
+                <Text style={{ flex: 1, fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }} numberOfLines={1}>
                   {item.name || `${T('planItemName')} ${idx + 1}`}
                 </Text>
                 {(() => { const p = PRIORITY_OPTIONS.find(o => o.value === (item.priority ?? 'medium')); return p ? <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: p.color }} /> : null; })()}
                 {item.link !== 'manual' && (
-                  <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
+                  <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>
                     {T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
                   </Text>
                 )}
                 {item.tags && item.tags.length > 0 && item.tags.map((tag, ti) => (
                   <View key={ti} style={{ paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3, backgroundColor: `${P}15`, borderWidth: 1, borderColor: `${P}30` }}>
-                    <Text style={{ fontSize: FONT_BADGE, color: P }}>{tag}</Text>
+                    <Text style={{ fontSize: FONT_BADGE(), color: P }}>{tag}</Text>
                   </View>
                 ))}
               </TouchableOpacity>
@@ -388,23 +388,23 @@ export default function PlanCreateScreen() {
                     if (existingItem && !canEditPlanItem(existingItem.status)) {
                       return (
                         <View style={{ backgroundColor: `${COLORS.ORANGE}15`, padding: 10, borderRadius: 8, marginTop: 10, marginBottom: 8 }}>
-                          <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE }}>{T('freqCannotEdit')}</Text>
+                          <Text style={{ fontSize: FONT_SUB(), color: COLORS.ORANGE }}>{T('freqCannotEdit')}</Text>
                         </View>
                       );
                     }
                     return null;
                   })()}
                   <View pointerEvents={_editable ? 'auto' : 'none'} style={_editable ? {} : { opacity: 0.5 }}>
-                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4, marginTop: 10 }}>{T('planItemName')} *</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4, marginTop: 10 }}>{T('planItemName')} *</Text>
                   <TextInput
                     value={item.name} onChangeText={v => updateItem(item.id, { name: v })}
                     placeholder={T('planItemName')} placeholderTextColor={TH.sub}
                     editable={_editable}
                     style={[inputStyle, { marginBottom: 4, borderColor: errors[`item_${idx}_name`] ? COLORS.RED : TH.border }]}
                   />
-                  {errors[`item_${idx}_name`] ? <Text style={{ fontSize: FONT_BADGE, color: COLORS.RED, marginBottom: 6 }}>{errors[`item_${idx}_name`]}</Text> : null}
+                  {errors[`item_${idx}_name`] ? <Text style={{ fontSize: FONT_BADGE(), color: COLORS.RED, marginBottom: 6 }}>{errors[`item_${idx}_name`]}</Text> : null}
 
-                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planPriority')}</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('planPriority')}</Text>
                   <View style={{ flexDirection: 'row', gap: 6, marginBottom: 8 }}>
                     {PRIORITY_OPTIONS.map(opt => {
                       const active = (item.priority ?? 'medium') === opt.value;
@@ -420,7 +420,7 @@ export default function PlanCreateScreen() {
                           }}
                         >
                           <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: opt.color }} />
-                          <Text style={{ color: active ? opt.color : TH.sub, fontSize: FONT_SUB, fontWeight: active ? '600' : '400' }}>
+                          <Text style={{ color: active ? opt.color : TH.sub, fontSize: FONT_SUB(), fontWeight: active ? '600' : '400' }}>
                             {T(opt.labelKey)}
                           </Text>
                         </TouchableOpacity>
@@ -428,7 +428,7 @@ export default function PlanCreateScreen() {
                     })}
                   </View>
 
-                  <Text style={{ fontSize: FONT_LABEL, color: errors[`item_${idx}_targetMetric`] ? COLORS.RED : TH.sub, marginBottom: 4 }}>{T('planItemTarget')} *</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), color: errors[`item_${idx}_targetMetric`] ? COLORS.RED : TH.sub, marginBottom: 4 }}>{T('planItemTarget')} *</Text>
                   <TextInput
                     value={item.targetMetric} onChangeText={v => updateItem(item.id, { targetMetric: v })}
                     placeholder={T('planItemTarget')} placeholderTextColor={TH.sub}
@@ -436,7 +436,7 @@ export default function PlanCreateScreen() {
                     style={[inputStyle, { borderColor: errors[`item_${idx}_targetMetric`] ? COLORS.RED : TH.border, marginBottom: 8 }]}
                   />
 
-                  <Text style={{ fontSize: FONT_LABEL, color: errors[`item_${idx}_description`] ? COLORS.RED : TH.sub, marginBottom: 4 }}>{T('planItemDesc')} *</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), color: errors[`item_${idx}_description`] ? COLORS.RED : TH.sub, marginBottom: 4 }}>{T('planItemDesc')} *</Text>
                   <TextInput
                     value={item.description} onChangeText={v => updateItem(item.id, { description: v })}
                     placeholder={T('planItemDesc')} placeholderTextColor={TH.sub} multiline
@@ -446,33 +446,33 @@ export default function PlanCreateScreen() {
 
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: 8 }}>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemStart')} *</Text>
+                      <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('planItemStart')} *</Text>
                       <TouchableOpacity
                         onPress={() => { const today = dateStr(); const minStart = startDate ? (today < startDate ? startDate : today) : today; setDatePicker({ field: `itemStart_${item.id}`, value: item.startDate, min: minStart, max: endDate || undefined }); }}
                         style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: errors[`item_${idx}_startDate`] ? COLORS.RED : TH.border }]}
                       >
-                        <Text style={{ fontSize: FONT_BODY, color: item.startDate ? TH.text : TH.sub }}>{item.startDate || 'YYYY-MM-DD'}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), color: item.startDate ? TH.text : TH.sub }}>{item.startDate || 'YYYY-MM-DD'}</Text>
                         <Calendar size={14} color={TH.sub} />
                       </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemEnd')} *</Text>
+                      <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('planItemEnd')} *</Text>
                       <TouchableOpacity
                         onPress={() => setDatePicker({ field: `itemEnd_${item.id}`, value: item.endDate, min: item.startDate || startDate || undefined, max: endDate || undefined })}
                         style={[inputStyle, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: errors[`item_${idx}_endDate`] ? COLORS.RED : TH.border }]}
                       >
-                        <Text style={{ fontSize: FONT_BODY, color: item.endDate ? TH.text : TH.sub }}>{item.endDate || 'YYYY-MM-DD'}</Text>
+                        <Text style={{ fontSize: FONT_BODY(), color: item.endDate ? TH.text : TH.sub }}>{item.endDate || 'YYYY-MM-DD'}</Text>
                         <Calendar size={14} color={TH.sub} />
                       </TouchableOpacity>
                     </View>
                   </View>
                   {(errors[`item_${idx}_startDate`] || errors[`item_${idx}_endDate`]) ? (
-                    <Text style={{ fontSize: FONT_BADGE, color: COLORS.RED, marginBottom: 6 }}>
+                    <Text style={{ fontSize: FONT_BADGE(), color: COLORS.RED, marginBottom: 6 }}>
                       {errors[`item_${idx}_startDate`] || errors[`item_${idx}_endDate`]}
                     </Text>
                   ) : null}
 
-                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemContent')}</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('planItemContent')}</Text>
                   {item.tags && item.tags.length > 0 ? (
                     <TextInput
                       value={item.tags.join(', ')}
@@ -488,7 +488,7 @@ export default function PlanCreateScreen() {
                     />
                   )}
 
-                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planItemLink')}</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('planItemLink')}</Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
                     {LINK_OPTIONS.map(opt => (
                       <TouchableOpacity
@@ -500,7 +500,7 @@ export default function PlanCreateScreen() {
                           borderWidth: 1, borderColor: item.link === opt.value ? P : TH.border,
                         }}
                       >
-                        <Text style={{ color: item.link === opt.value ? '#fff' : TH.sub, fontSize: FONT_SUB, fontWeight: item.link === opt.value ? '600' : '400' }}>
+                        <Text style={{ color: item.link === opt.value ? '#fff' : TH.sub, fontSize: FONT_SUB(), fontWeight: item.link === opt.value ? '600' : '400' }}>
                           {T(opt.labelKey)}
                         </Text>
                       </TouchableOpacity>
@@ -508,7 +508,7 @@ export default function PlanCreateScreen() {
                   </ScrollView>
 
                   {/* Frequency selector */}
-                  <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('checkinFreq')}</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('checkinFreq')}</Text>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
                     {FREQUENCY_OPTIONS.map(opt => {
                       const active = (item.frequency?.mode ?? 'daily') === opt.mode;
@@ -522,7 +522,7 @@ export default function PlanCreateScreen() {
                             borderWidth: 1, borderColor: active ? P : TH.border,
                           }}
                         >
-                          <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SUB, fontWeight: active ? '600' : '400' }}>
+                          <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SUB(), fontWeight: active ? '600' : '400' }}>
                             {T(opt.labelKey)}
                           </Text>
                         </TouchableOpacity>
@@ -617,7 +617,7 @@ export default function PlanCreateScreen() {
 
                   {item.link === 'habit' && (
                     <>
-                      <Text style={{ fontSize: FONT_LABEL, color: TH.sub, marginBottom: 4 }}>{T('planLinkHabit')}</Text>
+                      <Text style={{ fontSize: FONT_LABEL(), color: TH.sub, marginBottom: 4 }}>{T('planLinkHabit')}</Text>
                       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
                         {(habits ?? []).filter(h => !h.deleted).map(h => {
                           const active = item.linkConfig?.habitId === h.id;
@@ -631,7 +631,7 @@ export default function PlanCreateScreen() {
                                 borderWidth: 1, borderColor: active ? P : TH.border,
                               }}
                             >
-                              <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SUB, fontWeight: active ? '600' : '400' }}>
+                              <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SUB(), fontWeight: active ? '600' : '400' }}>
                                 {h.name}
                               </Text>
                             </TouchableOpacity>
@@ -646,7 +646,7 @@ export default function PlanCreateScreen() {
                     onPress={() => removeItem(item.id)}
                     style={{ paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: `${COLORS.RED}40`, alignItems: 'center' }}
                   >
-                    <Text style={{ color: COLORS.RED, fontSize: FONT_SUB }}>{T('planDeleteItem')}</Text>
+                    <Text style={{ color: COLORS.RED, fontSize: FONT_SUB() }}>{T('planDeleteItem')}</Text>
                   </TouchableOpacity>
                 </View>
               )}
@@ -663,7 +663,7 @@ export default function PlanCreateScreen() {
               borderStyle: 'dashed', alignItems: 'center', marginTop: 4,
             }}
           >
-            <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{T('planAddItemHint')}</Text>
+            <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('planAddItemHint')}</Text>
           </TouchableOpacity>
         )}
       </ScrollView>
@@ -715,14 +715,14 @@ export default function PlanCreateScreen() {
           <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
             <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, maxHeight: '80%' }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('planSelectVision')}</Text>
+                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('planSelectVision')}</Text>
                 <TouchableOpacity onPress={() => setShowVisionPicker(false)}><X size={20} color={TH.sub} /></TouchableOpacity>
               </View>
               <ScrollView>
                 {activeVisions.length === 0 ? (
                   <View style={{ alignItems: 'center', padding: 24 }}>
                     <Text style={{ fontSize: 40, marginBottom: 8 }}>🎯</Text>
-                    <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('vowNoVision')}</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('vowNoVision')}</Text>
                   </View>
                 ) : activeVisions.map((v: Vision) => {
                   const typeColor = v.type === 'lifetime' ? '#F59E0B' : v.type === 'long' ? '#8B5CF6' : '#10B981';
@@ -742,11 +742,11 @@ export default function PlanCreateScreen() {
                       }}
                     >
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                        <Text style={{ fontSize: FONT_BADGE, color: typeColor, fontWeight: '600' }}>
+                        <Text style={{ fontSize: FONT_BADGE(), color: typeColor, fontWeight: '600' }}>
                           {v.type === 'lifetime' ? '⭐' : v.type === 'long' ? '🟣' : '🟢'} {typeLabel}
                         </Text>
                       </View>
-                      <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 20 }}>{v.text}</Text>
+                      <Text style={{ fontSize: FONT_BODY(), color: TH.text, lineHeight: 20 }}>{v.text}</Text>
                     </TouchableOpacity>
                   );
                 })}

@@ -29,9 +29,9 @@ export default function HabitFilterBar({ filter, filterCounts, primaryColor: P, 
               backgroundColor: isActive ? `${P}20` : TH.card,
               borderWidth: 1, borderColor: isActive ? P : TH.border,
             }}>
-            <Text style={{ color: isActive ? P : TH.text, fontSize: FONT_SMALL }}>{T(l)}</Text>
+            <Text style={{ color: isActive ? P : TH.text, fontSize: FONT_SMALL() }}>{T(l)}</Text>
             <View style={{ backgroundColor: `${P}20`, paddingHorizontal: 5, paddingVertical: 1, borderRadius: 6 }}>
-              <Text style={{ color: P, fontSize: FONT_TINY, fontWeight: '600' }}>{filterCounts[v] ?? 0}</Text>
+              <Text style={{ color: P, fontSize: FONT_TINY(), fontWeight: '600' }}>{filterCounts[v] ?? 0}</Text>
             </View>
           </TouchableOpacity>
         );

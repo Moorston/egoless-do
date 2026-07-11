@@ -3,8 +3,8 @@
 // Loads all persisted data from SQLite, restores auth tokens,
 // and sets up daily reset management.
 
-import { DailyResetManager , createLogger, setSentryBridge, apiGetMe } from '@egoless-do/core';
-import { AppState } from 'react-native';
+import { DailyResetManager , createLogger, setSentryBridge, apiGetMe, configureFontScale } from '@egoless-do/core';
+import { AppState, PixelRatio } from 'react-native';
 
 import { openDatabase, setState as setAppState } from '../db/schema';
 import {
@@ -67,6 +67,10 @@ async function loadSettingsPatch(): Promise<PartialMobileStore> {
 export async function initApp(): Promise<void> {
   // Wire up Sentry bridge for all logger.error/warn calls
   setSentryBridge({ captureException, captureMessage, addBreadcrumb });
+
+  // ── Step 0: Configure font scaling from system settings ─────
+  // Must run before any StyleSheet.create() evaluates FONT_* constants.
+  configureFontScale(PixelRatio.getFontScale());
 
   const store = useAppStore.getState;
   const setState = useAppStore.setState;

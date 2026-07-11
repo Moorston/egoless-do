@@ -40,9 +40,9 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
           contentFit="contain"
         />
         <View style={{ alignItems: 'flex-end' }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{t('streak', language)}</Text>
-          <Text style={{ fontWeight: '800', fontSize: FONT_STAT_SECTION, lineHeight: 42, color: '#EA6060' }}>
-            {streak} <Text style={{ fontSize: FONT_LABEL }}>{t('days', language)} </Text><Flame size={20} color="#EA6060" />
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{t('streak', language)}</Text>
+          <Text style={{ fontWeight: '800', fontSize: FONT_STAT_SECTION(), lineHeight: 42, color: '#EA6060' }}>
+            {streak} <Text style={{ fontSize: FONT_LABEL() }}>{t('days', language)} </Text><Flame size={20} color="#EA6060" />
           </Text>
         </View>
       </View>
@@ -60,7 +60,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
                   const Icon = HEADER_TAB_ICONS[key];
                   return Icon ? <Icon size={14} color={key === activeKey ? '#fff' : TH.sub} strokeWidth={key === activeKey ? 2.2 : 1.5} /> : null;
                 })()}
-                <Text style={{ fontSize: FONT_BODY, fontWeight: key === activeKey ? '700' : '500', color: key === activeKey ? '#fff' : TH.sub }}>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: key === activeKey ? '700' : '500', color: key === activeKey ? '#fff' : TH.sub }}>
                   {t(key, language)}
                 </Text>
               </View>
@@ -69,7 +69,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
         </View>
       )}
       <View style={{ paddingHorizontal: 16, paddingTop: 6, paddingBottom: 0, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: TH.border }}>
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+        <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
           {t('today', language)} · {today}
         </Text>
       </View>

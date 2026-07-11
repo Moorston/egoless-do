@@ -57,15 +57,15 @@ function BatchActionBarComponent({
         <View style={styles.selectActions}>
           <TouchableOpacity onPress={onSelectAll} style={styles.selectButton}>
             <CheckSquare size={16} color={P} />
-            <Text style={{ color: P, fontSize: FONT_SMALL }}>全选</Text>
+            <Text style={{ color: P, fontSize: FONT_SMALL() }}>全选</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onDeselectAll} style={styles.selectButton}>
             <Square size={16} color={TH.sub} />
-            <Text style={{ color: TH.sub, fontSize: FONT_SMALL }}>反选</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SMALL() }}>反选</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onCancel} style={styles.selectButton}>
             <X size={16} color={TH.sub} />
-            <Text style={{ color: TH.sub, fontSize: FONT_SMALL }}>取消</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SMALL() }}>取消</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -77,7 +77,7 @@ function BatchActionBarComponent({
           style={[styles.actionButton, { backgroundColor: `${COLORS.RED}15`, borderColor: `${COLORS.RED}30` }]}
         >
           <Trash2 size={18} color={COLORS.RED} />
-          <Text style={{ color: COLORS.RED, fontSize: FONT_BUTTON, fontWeight: '600' }}>删除</Text>
+          <Text style={{ color: COLORS.RED, fontSize: FONT_BUTTON(), fontWeight: '600' }}>删除</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -85,7 +85,7 @@ function BatchActionBarComponent({
           style={[styles.actionButton, { backgroundColor: `${P}15`, borderColor: `${P}30` }]}
         >
           <Pin size={18} color={P} />
-          <Text style={{ color: P, fontSize: FONT_BUTTON, fontWeight: '600' }}>置顶</Text>
+          <Text style={{ color: P, fontSize: FONT_BUTTON(), fontWeight: '600' }}>置顶</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -93,7 +93,7 @@ function BatchActionBarComponent({
           style={[styles.actionButton, { backgroundColor: `${COLORS.ORANGE}15`, borderColor: `${COLORS.ORANGE}30` }]}
         >
           <PinOff size={18} color={COLORS.ORANGE} />
-          <Text style={{ color: COLORS.ORANGE, fontSize: FONT_BUTTON, fontWeight: '600' }}>取消置顶</Text>
+          <Text style={{ color: COLORS.ORANGE, fontSize: FONT_BUTTON(), fontWeight: '600' }}>取消置顶</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -101,7 +101,7 @@ function BatchActionBarComponent({
           style={[styles.actionButton, { backgroundColor: `${COLORS.GREEN}15`, borderColor: `${COLORS.GREEN}30` }]}
         >
           <Tag size={18} color={COLORS.GREEN} />
-          <Text style={{ color: COLORS.GREEN, fontSize: FONT_BUTTON, fontWeight: '600' }}>打标签</Text>
+          <Text style={{ color: COLORS.GREEN, fontSize: FONT_BUTTON(), fontWeight: '600' }}>打标签</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectedText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   selectActions: {

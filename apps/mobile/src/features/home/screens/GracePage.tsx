@@ -79,17 +79,17 @@ export default function GracePage() {
               available ? (
                 <View style={{ alignItems: 'center' }}>
                   <Shield size={48} color={P} />
-                  <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginTop: 12 }}>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 12 }}>
                     {T('graceNeedRestore')}
                   </Text>
                 </View>
               ) : (
                 <View style={{ alignItems: 'center' }}>
                   <Shield size={48} color={TH.sub} />
-                  <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: COLORS.ORANGE, marginTop: 12 }}>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: COLORS.ORANGE, marginTop: 12 }}>
                     {T('graceQuotaExhausted')}
                   </Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>
                     {T('graceQuotaReset')}
                   </Text>
                 </View>
@@ -97,7 +97,7 @@ export default function GracePage() {
             ) : (
               <View style={{ alignItems: 'center' }}>
                 <CheckCircle2 size={48} color={COLORS.GREEN} />
-                <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: COLORS.GREEN, marginTop: 12 }}>
+                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: COLORS.GREEN, marginTop: 12 }}>
                   {T('graceAlreadyDone')}
                 </Text>
               </View>
@@ -112,8 +112,8 @@ export default function GracePage() {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Clock size={18} color={TH.sub} />
               <View>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{yStr}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('graceYesterday')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{yStr}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('graceYesterday')}</Text>
               </View>
             </View>
             <View style={{
@@ -121,7 +121,7 @@ export default function GracePage() {
               backgroundColor: missed ? `${COLORS.ORANGE}20` : `${COLORS.GREEN}20`,
             }}>
               <Text style={{
-                fontSize: FONT_SUB, fontWeight: '600',
+                fontSize: FONT_SUB(), fontWeight: '600',
                 color: missed ? COLORS.ORANGE : COLORS.GREEN,
               }}>
                 {missed ? T('graceNotDone') : T('graceDone')}
@@ -139,7 +139,7 @@ export default function GracePage() {
               }}
             >
               <Shield size={18} color="#fff" />
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>
+              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>
                 {T('graceButton')}
               </Text>
             </TouchableOpacity>
@@ -148,7 +148,7 @@ export default function GracePage() {
           {/* Grace hint */}
           {missed && !available && quota > 0 && (
             <View style={{ padding: 12, alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
                 {T('graceQuotaUsed').replace('{used}', String(monthUsed)).replace('{total}', String(quota))}
               </Text>
             </View>
@@ -159,10 +159,10 @@ export default function GracePage() {
         {quota > 0 && (
           <Card style={{ padding: 16, marginBottom: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {T('graceQuotaUsed').replace('{used}', String(monthUsed)).replace('{total}', String(quota))}
               </Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{remaining} {T('graceUsedTimes')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{remaining} {T('graceUsedTimes')}</Text>
             </View>
             <View style={{ height: 8, backgroundColor: TH.border, borderRadius: 4, overflow: 'hidden' }}>
               <View style={{
@@ -178,7 +178,7 @@ export default function GracePage() {
         <Card style={{ padding: 16, marginBottom: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <Settings size={16} color={P} />
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
               {T('graceSettingTitle')}
             </Text>
           </View>
@@ -194,13 +194,13 @@ export default function GracePage() {
                 }}
               >
                 <Text style={{
-                  fontSize: FONT_BODY, fontWeight: '700',
+                  fontSize: FONT_BODY(), fontWeight: '700',
                   color: quota === q ? '#fff' : TH.text,
                 }}>{q}</Text>
               </TouchableOpacity>
             ))}
           </View>
-          <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginTop: 8 }}>
+          <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 8 }}>
             {T('graceSettingHint')}
           </Text>
         </Card>
@@ -209,12 +209,12 @@ export default function GracePage() {
         <Card style={{ padding: 16, marginBottom: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <Calendar size={16} color={P} />
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
               {T('graceHistory')}
             </Text>
           </View>
           {graceHistorySorted.length === 0 ? (
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', padding: 12 }}>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, textAlign: 'center', padding: 12 }}>
               {T('graceHistoryEmpty')}
             </Text>
           ) : (
@@ -235,10 +235,10 @@ export default function GracePage() {
                       marginTop: 6,
                     }} />
                     <View style={{ flex: 1 }}>
-                      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                         {entry.date}
                       </Text>
-                      <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>
+                      <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
                         {T('graceCheckinTitle')} · {timeStr}
                       </Text>
                     </View>
@@ -251,7 +251,7 @@ export default function GracePage() {
 
         {/* Info Card */}
         <Card style={{ padding: 16 }}>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, lineHeight: 22 }}>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, lineHeight: 22 }}>
             {T('graceDesc')}
           </Text>
         </Card>

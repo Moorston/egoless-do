@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   summaryTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     marginBottom: 8,
   },
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   summaryValue: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
   },
   summaryUnit: {
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   groupTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     marginBottom: 10,
   },
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cardLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     textAlign: 'center',
   },

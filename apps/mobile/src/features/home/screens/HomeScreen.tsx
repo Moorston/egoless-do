@@ -350,8 +350,8 @@ export default function HomeScreen() {
         <View style={styles.flexRowGap10}>
           <Star size={16} color={P} />
           <View>
-            <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY, opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{h.streak} {T('checkinStreak')}</Text>
+            <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY(), opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{h.streak} {T('checkinStreak')}</Text>
           </View>
         </View>
         {isReadOnly ? (
@@ -451,7 +451,7 @@ export default function HomeScreen() {
                   borderWidth: 1, borderColor: TH.border, alignItems: 'center',
                 }}>
                   <Calendar size={40} color={TH.sub} style={{ marginBottom: 12 }} />
-                  <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('noCheckinRecord')}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('noCheckinRecord')}</Text>
                 </View>
               ) : (
                 <>
@@ -480,7 +480,7 @@ export default function HomeScreen() {
               <View style={[styles.cardWithBorder, { backgroundColor: TH.card, borderColor: TH.border }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 16 }}>
                   <ClipboardList size={16} color={P} />
-                  <Text style={{ fontWeight: '700', fontSize: FONT_CARD_TITLE, color: TH.text }}>
+                  <Text style={{ fontWeight: '700', fontSize: FONT_CARD_TITLE(), color: TH.text }}>
                     {isReadOnly ? (isToday && status === 'done' ? '今日目标已达成，点赞 👍' : viewDateLabel) : (isToday ? T('checkinDoneToday') : viewDateLabel)}
                   </Text>
                 </View>
@@ -499,7 +499,7 @@ export default function HomeScreen() {
                 {/* Habits */}
                 {activeHabits.length > 0 && (
                   <>
-                    <Text style={{ color: TH.sub, fontSize: FONT_LABEL, marginTop: 16, marginBottom: 8 }}>{T('checkinHabitCheck')}</Text>
+                    <Text style={{ color: TH.sub, fontSize: FONT_LABEL(), marginTop: 16, marginBottom: 8 }}>{T('checkinHabitCheck')}</Text>
                     <FlatList
                       data={activeHabits}
                       keyExtractor={(item) => item.id}
@@ -517,11 +517,11 @@ export default function HomeScreen() {
                 <View style={styles.flexRowBetween}>
                   <View style={styles.flexRowGap6}>
                     <Scale size={16} color={P} />
-                    <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todayWeight')}</Text>
+                    <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY() }}>{T('todayWeight')}</Text>
                   </View>
                   <View style={styles.flexRowGap6}>
                     {isReadOnly ? (
-                      <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: P }}>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: P }}>
                         {weight || '—'}
                       </Text>
                     ) : (
@@ -535,7 +535,7 @@ export default function HomeScreen() {
                         style={{
                           width: 70, textAlign: 'center', borderWidth: 1, borderColor: TH.border,
                           borderRadius: 8, paddingVertical: 6, color: TH.text, fontWeight: '700',
-                          fontSize: FONT_BODY, backgroundColor: TH.card,
+                          fontSize: FONT_BODY(), backgroundColor: TH.card,
                         }}
                       />
                     )}
@@ -544,7 +544,7 @@ export default function HomeScreen() {
                       accessibilityLabel={weightUnit === 'kg' ? '切换为磅' : '切换为千克'}
                       style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, backgroundColor: `${P}20` }}
                     >
-                      <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB }}>{weightUnit === 'kg' ? 'kg' : 'lb'}</Text>
+                      <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB() }}>{weightUnit === 'kg' ? 'kg' : 'lb'}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -553,9 +553,9 @@ export default function HomeScreen() {
                   <View style={[styles.flexRowBetween, styles.marginTop10]}>
                     <View style={styles.flexRowGap6}>
                       <Footprints size={16} color={P} />
-                      <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todaySteps')}</Text>
+                      <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY() }}>{T('todaySteps')}</Text>
                     </View>
-                    <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: P }}>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: P }}>
                       {todaySteps.toLocaleString()}
                     </Text>
                   </View>
@@ -563,9 +563,9 @@ export default function HomeScreen() {
                   <View style={[styles.flexRowBetween, styles.marginTop10]}>
                     <View style={styles.flexRowGap6}>
                       <Footprints size={16} color={P} />
-                      <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todaySteps')}</Text>
+                      <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY() }}>{T('todaySteps')}</Text>
                     </View>
-                    <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: TH.sub }}>--</Text>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: TH.sub }}>--</Text>
                   </View>
                 ) : null}
               </View>
@@ -575,12 +575,12 @@ export default function HomeScreen() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                   <View style={styles.flexRowGap6}>
                     <Droplets size={16} color={P} />
-                    <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('water')}</Text>
+                    <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY() }}>{T('water')}</Text>
                   </View>
                   <View style={styles.flexRowGap6}>
                     {isToday ? (
                       <>
-                        <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+                        <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
                           <Text style={{ fontWeight: '600', color: P }}>{waterMl}</Text> / {waterGoal} ml
                         </Text>
                         <TouchableOpacity onPress={openWaterGoal} accessibilityLabel="编辑饮水目标">
@@ -588,7 +588,7 @@ export default function HomeScreen() {
                         </TouchableOpacity>
                       </>
                     ) : (
-                      <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+                      <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
                         <Text style={{ fontWeight: '600', color: P }}>{parsed.waterMl}</Text> ml
                       </Text>
                     )}
@@ -602,7 +602,7 @@ export default function HomeScreen() {
                         <TouchableOpacity key={ml} onPress={() => addWaterCb(ml)}
                           accessibilityLabel={`添加${ml}毫升水`}
                           style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
-                          <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB }}>{ml}ml</Text>
+                          <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB() }}>{ml}ml</Text>
                         </TouchableOpacity>
                       ))}
                     </View>
@@ -630,10 +630,10 @@ export default function HomeScreen() {
               <View style={[styles.cardWithBorder, { backgroundColor: TH.card, borderColor: TH.border, marginTop: 12 }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                   <Sparkles size={16} color={P} />
-                  <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY }}>{T('checkinNote')}</Text>
+                  <Text style={{ fontWeight: '600', color: TH.text, fontSize: FONT_BODY() }}>{T('checkinNote')}</Text>
                 </View>
                 {isReadOnly ? (
-                  <Text style={{ color: TH.text, fontSize: FONT_BODY, lineHeight: 22 }}>
+                  <Text style={{ color: TH.text, fontSize: FONT_BODY(), lineHeight: 22 }}>
                     {note || '—'}
                   </Text>
                 ) : (
@@ -659,7 +659,7 @@ export default function HomeScreen() {
                   >
                     <View style={styles.flexRowGap6}>
                       <Pencil size={18} color="#fff" />
-                      <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('checkinModify')}</Text>
+                      <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON() }]}>{T('checkinModify')}</Text>
                     </View>
                   </TouchableOpacity>
                 ) : (
@@ -668,7 +668,7 @@ export default function HomeScreen() {
                     style={{ backgroundColor: TH.accent, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 12 }}>
                     <View style={styles.flexRowGap6}>
                       <Check size={18} color="#fff" />
-                      <Text style={{ fontWeight: '700', fontSize: FONT_BUTTON, color: '#fff' }}>
+                      <Text style={{ fontWeight: '700', fontSize: FONT_BUTTON(), color: '#fff' }}>
                         {T('checkinSubmit')}
                       </Text>
                     </View>
@@ -693,12 +693,12 @@ export default function HomeScreen() {
       <Modal visible={showWG} transparent animationType="fade" onRequestClose={closeWaterGoalModal}>
         <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)', justifyContent: 'center', padding: 24 }}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, alignItems: 'center' }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, marginBottom: 6, color: TH.text }}>{T('waterGoalSetting')}</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>{T('waterGoalHint')}</Text>
+            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), marginBottom: 6, color: TH.text }}>{T('waterGoalSetting')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginBottom: 16 }}>{T('waterGoalHint')}</Text>
             <TextInput
               value={wgi} onChangeText={setWgi} keyboardType="numeric"
               style={{
-                width: '100%', fontSize: FONT_STAT_CARD, fontWeight: '700', textAlign: 'center',
+                width: '100%', fontSize: FONT_STAT_CARD(), fontWeight: '700', textAlign: 'center',
                 backgroundColor: TH.card, borderWidth: 2, borderColor: COLORS.BLUE,
                 borderRadius: 12, padding: 14, color: TH.text, marginBottom: 20,
               }}
@@ -707,13 +707,13 @@ export default function HomeScreen() {
               <TouchableOpacity onPress={closeWaterGoalModal}
                 accessibilityLabel={T('cancel')}
                 style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={saveWaterGoal}
                 accessibilityLabel={T('save')}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-                <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('save')}</Text>
+                <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON() }]}>{T('save')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -726,14 +726,14 @@ export default function HomeScreen() {
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flex1}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }} keyboardShouldPersistTaps="handled">
               <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
-              <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, marginBottom: 12 }}>{T('incompleteReasonTitle')}</Text>
+              <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text, marginBottom: 12 }}>{T('incompleteReasonTitle')}</Text>
 
               {/* Incomplete items list */}
               <View style={{ marginBottom: 16 }}>
                 {incompleteItems.map((item, i) => (
                   <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
                     <X size={16} color="#C53364" style={{ marginRight: 8 }} />
-                    <Text style={{ fontSize: FONT_TITLE, color: TH.sub }}>{item.name}</Text>
+                    <Text style={{ fontSize: FONT_TITLE(), color: TH.sub }}>{item.name}</Text>
                   </View>
                 ))}
               </View>
@@ -751,7 +751,7 @@ export default function HomeScreen() {
                         borderWidth: 1.5, borderColor: selected ? P : TH.border,
                         backgroundColor: selected ? `${P}15` : 'transparent',
                       }}>
-                      <Text style={{ fontSize: FONT_BODY, color: selected ? P : TH.text }}>
+                      <Text style={{ fontSize: FONT_BODY(), color: selected ? P : TH.text }}>
                         {r.icon} {T(labelKey)}
                       </Text>
                     </TouchableOpacity>
@@ -760,7 +760,7 @@ export default function HomeScreen() {
               </View>
 
               {/* Additional note */}
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}><Text style={{ color: '#EF4444' }}>*</Text> {T('incompleteReasonNote')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}><Text style={{ color: '#EF4444' }}>*</Text> {T('incompleteReasonNote')}</Text>
               <TextInput
                 value={reasonNote} onChangeText={setReasonNote}
                 placeholder={T('incompleteReasonNotePlaceholder')}
@@ -768,7 +768,7 @@ export default function HomeScreen() {
                 multiline
                 style={{
                   width: '100%', minHeight: 60, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border,
-                  borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, marginBottom: 20,
+                  borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), marginBottom: 20,
                   textAlignVertical: 'top',
                 }}
               />
@@ -778,12 +778,12 @@ export default function HomeScreen() {
                 <TouchableOpacity onPress={closeReasonModal}
                   accessibilityLabel={T('incompleteReasonBack')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                  <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>{T('incompleteReasonBack')}</Text>
+                  <Text style={{ color: TH.sub, fontSize: FONT_BUTTON() }}>{T('incompleteReasonBack')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={confirmDoneWithReason} disabled={!selectedReason || !reasonNote.trim()}
                   accessibilityLabel={T('incompleteReasonConfirm')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: selectedReason && reasonNote.trim() ? P : TH.border, alignItems: 'center' }}>
-                  <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('incompleteReasonConfirm')}</Text>
+                  <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON() }]}>{T('incompleteReasonConfirm')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

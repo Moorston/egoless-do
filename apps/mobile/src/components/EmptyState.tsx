@@ -55,13 +55,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   title: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
     lineHeight: 20,
   },

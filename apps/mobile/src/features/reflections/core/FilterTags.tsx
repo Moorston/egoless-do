@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   tagText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '500',
   },
   addBtn: {

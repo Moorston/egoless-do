@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   sectionTitle: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
     marginBottom: 8,
   },
@@ -71,12 +71,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   trailName: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     flex: 1,
     marginRight: 8,
   },
   similarityText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '600',
   },
 });

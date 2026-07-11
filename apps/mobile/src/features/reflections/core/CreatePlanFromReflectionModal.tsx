@@ -94,13 +94,13 @@ export function CreatePlanFromReflectionModal({
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,.7)' }}>
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 40, maxHeight: '90%' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text }}>创建计划任务</Text>
+            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text }}>创建计划任务</Text>
             <TouchableOpacity onPress={handleClose}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
           </View>
           {activePlan && (
-            <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.sub, marginBottom: 16 }}>
+            <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.sub, marginBottom: 16 }}>
               关联计划: {activePlan.name}（{activePlan.startDate} ~ {activePlan.endDate}）
             </Text>
           )}
@@ -116,13 +116,13 @@ export function CreatePlanFromReflectionModal({
             />
 
             {/* 任务链接（只读，显示感念标签） */}
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>任务链接</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>任务链接</Text>
             <TextInput
               value={reflection.tags.join(', ')}
               editable={false}
               style={{
                 borderWidth: 1, borderColor: TH.border, borderRadius: 8, padding: 10, marginBottom: 12,
-                color: TH.sub, backgroundColor: TH.card, fontSize: FONT_BODY,
+                color: TH.sub, backgroundColor: TH.card, fontSize: FONT_BODY(),
               }}
             />
 

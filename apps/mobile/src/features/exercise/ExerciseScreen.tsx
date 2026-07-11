@@ -153,7 +153,7 @@ export default function ExerciseScreen() {
 
         {/* ── Quick Start Grid ── */}
         <View style={styles.quickStartSection}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseQuickStart')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseQuickStart')}</Text>
           <View style={styles.quickStartGrid}>
             {quickSports.map(s => (
               <TouchableOpacity key={s.key}
@@ -183,7 +183,7 @@ export default function ExerciseScreen() {
         {/* ── Recent Sports ── */}
         {recentSports.length > 0 && (
           <View style={styles.sectionContainer}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseRecentActivity')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseRecentActivity')}</Text>
             <View style={{ backgroundColor: TH.card, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: TH.border }}>
               {recentSports.map((s, i) => (
                 <TouchableOpacity key={s.key}
@@ -191,10 +191,10 @@ export default function ExerciseScreen() {
                   accessibilityLabel={s.key}
                   style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12, borderBottomWidth: i < recentSports.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
                   <Text style={styles.sportIcon}>{s.icon}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{s.key}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>{s.key}</Text>
                   {s.gps && (
                     <View style={{ backgroundColor: `${P}20`, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}>
-                      <Text style={{ fontSize: FONT_BADGE, color: P, fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
+                      <Text style={{ fontSize: FONT_BADGE(), color: P, fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
                     </View>
                   )}
                   <ChevronRight size={16} color={TH.sub} />
@@ -206,7 +206,7 @@ export default function ExerciseScreen() {
 
         {/* ── My Sports ── */}
         <View style={styles.sectionContainerMarginTop}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{SPORT_GROUPS[0]?.group ?? '我的运动'}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{SPORT_GROUPS[0]?.group ?? '我的运动'}</Text>
           <View style={{ backgroundColor: TH.card, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: TH.border }}>
             {mySports.map((s, i) => (
               <TouchableOpacity key={s.key}
@@ -214,10 +214,10 @@ export default function ExerciseScreen() {
                 accessibilityLabel={s.key}
                 style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12, borderBottomWidth: i < mySports.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
                 <Text style={styles.sportIcon}>{s.icon}</Text>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{s.key}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text, flex: 1 }}>{s.key}</Text>
                 {s.gps && (
                   <View style={{ backgroundColor: `${P}20`, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}>
-                    <Text style={{ fontSize: FONT_BADGE, color: P, fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
+                    <Text style={{ fontSize: FONT_BADGE(), color: P, fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
                   </View>
                 )}
                 <ChevronRight size={16} color={TH.sub} />
@@ -236,7 +236,7 @@ export default function ExerciseScreen() {
           <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, height: '88%' }}>
             <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: TH.border, alignSelf: 'center', marginBottom: 16 }} />
             <View style={styles.modalHeaderRow}>
-              <Text style={{ fontWeight: '700', fontSize: FONT_BACK, color: TH.text }}>{T('exerciseCategory')}</Text>
+              <Text style={{ fontWeight: '700', fontSize: FONT_BACK(), color: TH.text }}>{T('exerciseCategory')}</Text>
               <TouchableOpacity onPress={() => setShowOther(false)}
                 accessibilityLabel="关闭"
                 style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: TH.card, alignItems: 'center', justifyContent: 'center' }}>
@@ -270,7 +270,7 @@ export default function ExerciseScreen() {
               {filteredOtherSports.length > 0 ? (
                 filteredOtherSports.map(g => (
                   <View key={g.group}>
-                    <Text style={{ color: TH.sub, fontSize: FONT_BODY, fontWeight: '600', paddingVertical: 8 }}>{g.group}</Text>
+                    <Text style={{ color: TH.sub, fontSize: FONT_BODY(), fontWeight: '600', paddingVertical: 8 }}>{g.group}</Text>
                     {g.items.map(s => (
                       <TouchableOpacity key={s.key}
                         onPress={() => { startSport(s); setShowOther(false); }}
@@ -278,11 +278,11 @@ export default function ExerciseScreen() {
                         style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: TH.border }}>
                         <View style={styles.modalSportRowLeft}>
                           <Text style={styles.sportIcon}>{s.icon}</Text>
-                          <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{s.key}</Text>
+                          <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{s.key}</Text>
                         </View>
                         {s.gps && (
                           <View style={{ backgroundColor: `${P}20`, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}>
-                            <Text style={{ fontSize: FONT_BADGE, color: P, fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
+                            <Text style={{ fontSize: FONT_BADGE(), color: P, fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
                           </View>
                         )}
                       </TouchableOpacity>
@@ -291,7 +291,7 @@ export default function ExerciseScreen() {
                 ))
               ) : (
                 <View style={styles.emptySearchState}>
-                  <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('exerciseNoResults') ?? '未找到匹配的运动'}</Text>
+                  <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('exerciseNoResults') ?? '未找到匹配的运动'}</Text>
                 </View>
               )}
             </ScrollView>
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   heroTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     color: '#fff',
   },
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   heroHistoryText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     color: 'rgba(255,255,255,.8)',
     fontWeight: '600',
   },
@@ -345,17 +345,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   statValue: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '900',
     color: '#fff',
   },
   statSub: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: 'rgba(255,255,255,.7)',
     marginTop: 2,
   },
   statLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: 'rgba(255,255,255,.5)',
     marginTop: 2,
   },
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   noActivityText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     color: 'rgba(255,255,255,.8)',
     lineHeight: 22,
   },
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(255,255,255,.2)',
   },
   globalMapText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     color: 'rgba(255,255,255,.8)',
     fontWeight: '600',
     flex: 1,
@@ -416,12 +416,12 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   gpsPillText: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
     color: '#fff',
     fontWeight: '600',
   },
   quickSportLabel: {
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
     fontWeight: '700',
     color: '#fff',
     marginTop: 8,
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   sportIcon: {
-    fontSize: FONT_CLOSE,
+    fontSize: FONT_CLOSE(),
     width: 36,
     textAlign: 'center',
   },

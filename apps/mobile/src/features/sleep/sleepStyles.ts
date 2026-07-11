@@ -7,7 +7,7 @@
 //
 // Organizing styles here avoids duplication between SleepBarrierPage,
 // SleepGratitudePage, SleepReportPage, and the main SleepScreen.
-// Font sizes reference shared constants (FONT_TITLE, FONT_BODY, etc.)
+// Font sizes reference shared constants (FONT_TITLE(), FONT_BODY(), etc.)
 // from @egoless-do/core so typography stays consistent with the rest
 // of the app.
 
@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   clockTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     marginBottom: 12,
   },
@@ -34,15 +34,15 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
   },
   clockPeriod: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
   },
   clockOrgan: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   clockAdvice: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 12,
   },
   clockTimeline: {
@@ -61,7 +61,7 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
   },
   clockNext: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginTop: 12,
     textAlign: 'center',
   },
@@ -74,7 +74,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   goalTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     marginBottom: 12,
   },
@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
     fontSize: 11,
   },
   goalValue: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
   },
 
@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     marginBottom: 12,
   },
@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   diaryTag: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -121,12 +121,12 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   diaryLink: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginTop: 4,
   },
   diaryHint: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 12,
   },
   diaryBtn: {
@@ -136,7 +136,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   diaryBtnText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
   },
 
@@ -149,12 +149,12 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   ritualTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     color: '#fff',
   },
   ritualSub: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: 'rgba(255,255,255,0.6)',
   },
   ritualBtnRow: {
@@ -170,7 +170,7 @@ export const styles = StyleSheet.create({
     borderColor: 'rgba(139,92,246,0.4)',
   },
   ritualBtnText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     color: '#fff',
   },
@@ -182,7 +182,7 @@ export const styles = StyleSheet.create({
     padding: 8,
   },
   quickGratitudeText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     color: 'rgba(255,255,255,0.6)',
   },
 
@@ -200,14 +200,14 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   recentDate: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     width: 50,
   },
   recentTag: {
     fontSize: 14,
   },
   recentValue: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   recentStars: {
@@ -232,11 +232,11 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   historyBtnText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   streakText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     textAlign: 'center',
     marginTop: 4,
   },
@@ -249,7 +249,7 @@ export const styles = StyleSheet.create({
     padding: 24,
   },
   barrierPeriod: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: 'rgba(255,255,255,0.5)',
     marginBottom: 16,
   },
@@ -271,12 +271,12 @@ export const styles = StyleSheet.create({
     backgroundColor: '#0a0a1a',
   },
   barrierTime: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '900',
     color: '#fff',
   },
   barrierLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: 'rgba(255,255,255,0.6)',
   },
   practiceProgress: {
@@ -284,17 +284,17 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   practiceProgressTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     color: 'rgba(255,255,255,0.8)',
     marginBottom: 4,
   },
   practiceProgressItem: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     color: '#10B981',
   },
   barrierStepTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     color: 'rgba(255,255,255,0.8)',
     marginBottom: 12,
@@ -316,7 +316,7 @@ export const styles = StyleSheet.create({
     gap: 6,
   },
   barrierChoiceLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     color: '#fff',
   },
@@ -324,11 +324,11 @@ export const styles = StyleSheet.create({
     padding: 12,
   },
   barrierSkipText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     color: 'rgba(255,255,255,0.5)',
   },
   barrierAwayText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: '#EF4444',
     marginTop: 16,
   },
@@ -342,11 +342,11 @@ export const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   prepTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   qualityLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 12,
     textAlign: 'center',
@@ -358,7 +358,7 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
   },
   gratitudeTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 12,
   },
@@ -366,16 +366,16 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     padding: 14,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 10,
   },
   addGratitudeBtn: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 20,
   },
   noteLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 8,
   },
@@ -383,7 +383,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     padding: 14,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 80,
     textAlignVertical: 'top',
     marginBottom: 16,
@@ -399,7 +399,7 @@ export const styles = StyleSheet.create({
   },
   saveBtnText: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
   },
 
@@ -411,7 +411,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   reportTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     marginBottom: 16,
     textAlign: 'center',
@@ -423,11 +423,11 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   reportLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     flex: 1,
   },
   reportValue: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   reportBtnRow: {

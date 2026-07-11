@@ -100,13 +100,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
     marginBottom: 24,
     lineHeight: 20,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
     fontWeight: '600',
   },
 });

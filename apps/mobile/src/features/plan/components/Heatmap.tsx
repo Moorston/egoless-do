@@ -107,7 +107,7 @@ export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, 
             <Text style={{ fontSize: 10, color: TH.sub }}>{T('heatmapMore')}</Text>
           </View>
 
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 8, textAlign: 'center' }}>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 8, textAlign: 'center' }}>
             {plan.startDate} ~ {plan.endDate}
           </Text>
         </>

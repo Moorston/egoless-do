@@ -64,12 +64,12 @@ function AddVisionModal({
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 }}>
         <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>
               {existing ? T('vowEditTitle') : T('vowNewTitle')}
             </Text>
             <TouchableOpacity onPress={onClose}><X size={20} color={TH.sub} /></TouchableOpacity>
           </View>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowType')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowType')}</Text>
           <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
             {(Object.keys(TYPE_CONFIG) as VisionType[]).map(t => {
               const cfg = TYPE_CONFIG[t];
@@ -85,7 +85,7 @@ function AddVisionModal({
                   }}
                 >
                   {React.createElement(cfg.icon, { size: 18, color: active ? cfg.color : TH.sub })}
-                  <Text style={{ fontSize: FONT_BADGE, color: active ? cfg.color : TH.sub, marginTop: 4, fontWeight: active ? '600' : '400' }}>
+                  <Text style={{ fontSize: FONT_BADGE(), color: active ? cfg.color : TH.sub, marginTop: 4, fontWeight: active ? '600' : '400' }}>
                     {T(cfg.labelKey)}
                   </Text>
                 </TouchableOpacity>
@@ -94,7 +94,7 @@ function AddVisionModal({
           </View>
           {type !== 'lifetime' && (
             <>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
                 {VISION_TIME_FRAMES.filter(tf =>
                   type === 'long' ? LONG_TIME_FRAMES.includes(tf.key as VisionTimeFrame) : SHORT_TIME_FRAMES.includes(tf.key as VisionTimeFrame)
@@ -110,7 +110,7 @@ function AddVisionModal({
                         borderWidth: 1, borderColor: active ? TH.primary : TH.border,
                       }}
                     >
-                      <Text style={{ fontSize: FONT_BADGE, color: active ? TH.primary : TH.sub, fontWeight: active ? '600' : '400' }}>
+                      <Text style={{ fontSize: FONT_BADGE(), color: active ? TH.primary : TH.sub, fontWeight: active ? '600' : '400' }}>
                         {T(tf.labelKey)}
                       </Text>
                     </TouchableOpacity>
@@ -119,11 +119,11 @@ function AddVisionModal({
               </View>
             </>
           )}
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowContent')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowContent')}</Text>
           <TextInput
             style={{
               backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text,
-              fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: TH.border,
+              fontSize: FONT_BODY(), minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: TH.border,
             }}
             multiline maxLength={500} value={text} onChangeText={setText}
             placeholder={T('vowContentPlaceholder')} placeholderTextColor={TH.sub}
@@ -238,10 +238,10 @@ export default function VowScreen() {
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Vow" />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{T('vowTitle')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>{T('vowTitle')}</Text>
         <TouchableOpacity onPress={handleAdd} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <Plus size={18} color={TH.primary} />
-          <Text style={{ color: TH.primary, fontSize: FONT_SUB, fontWeight: '600' }}>{T('commonAdd')}</Text>
+          <Text style={{ color: TH.primary, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('commonAdd')}</Text>
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
@@ -255,8 +255,8 @@ export default function VowScreen() {
             <Flag size={22} color={TH.primary} />
           </View>
           <View>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowActive')}</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{activeCount}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowActive')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{activeCount}</Text>
           </View>
         </View>
 
@@ -274,7 +274,7 @@ export default function VowScreen() {
                   backgroundColor: active ? TH.primary : TH.card,
                 }}
               >
-                <Text style={{ fontSize: FONT_BADGE, color: active ? '#fff' : TH.sub, fontWeight: active ? '600' : '400' }}>
+                <Text style={{ fontSize: FONT_BADGE(), color: active ? '#fff' : TH.sub, fontWeight: active ? '600' : '400' }}>
                   {labels[s]}
                 </Text>
               </TouchableOpacity>
@@ -285,10 +285,10 @@ export default function VowScreen() {
         {grouped.length === 0 ? (
           <View style={{ alignItems: 'center', marginTop: 60 }}>
             <Text style={{ fontSize: 48, marginBottom: 12 }}>🎯</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('vowNoVision')}</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 24 }}>{T('vowLifetimeHint')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('vowNoVision')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 24 }}>{T('vowLifetimeHint')}</Text>
             <TouchableOpacity onPress={handleAdd} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>✦ {T('vowCreate')}</Text>
+              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>✦ {T('vowCreate')}</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -296,8 +296,8 @@ export default function VowScreen() {
             <View key={type} style={{ marginBottom: 20 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10, marginLeft: 4 }}>
                 {React.createElement(TYPE_CONFIG[type].icon, { size: 16, color: TYPE_CONFIG[type].color })}
-                <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>{T(TYPE_CONFIG[type].labelKey)}</Text>
-                <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{items.length}</Text>
+                <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T(TYPE_CONFIG[type].labelKey)}</Text>
+                <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{items.length}</Text>
               </View>
               {items.map(v => {
                 const linked = plans.filter((p: Plan) => !p.deleted && p.visionId === v.id);

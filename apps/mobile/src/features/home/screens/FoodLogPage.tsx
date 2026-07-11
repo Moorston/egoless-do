@@ -1,7 +1,7 @@
 import { COLORS, getTodayFoodLog, dateStr, FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BACK, FONT_EMPTY } from '@egoless-do/core';
 import { ChevronDown, ChevronRight, X } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import AddFoodModal from '../../../components/AddFoodModal';
@@ -50,31 +50,31 @@ export default function FoodLogPage() {
 
   return (
     <SafeAreaView style={{ flex:1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ padding:16, paddingBottom:40 }}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         <ScreenHeader title={T('foodTitle')} onBack={() => nav.goBack()} />
 
-        <Card style={{ alignItems:'center', paddingVertical:20 }}>
-          <Text style={{ color:TH.sub, fontSize:FONT_BODY, marginBottom:8 }}>{T('foodTodayKcal')}</Text>
-          <View style={{ flexDirection:'row', alignItems:'baseline', gap:8 }}>
-            <Text style={{ fontSize:FONT_STAT_SECTION, fontWeight:'800', color:P }}>{totalCal}</Text>
-            <Text style={{ fontSize:FONT_BACK, color:TH.sub }}>/ {calGoal}</Text>
+        <Card style={styles.todayCard}>
+          <Text style={{ color:TH.sub, fontSize:FONT_BODY(), marginBottom:8 }}>{T('foodTodayKcal')}</Text>
+          <View style={styles.todayRow}>
+            <Text style={{ fontSize:FONT_STAT_SECTION(), fontWeight:'800', color:P }}>{totalCal}</Text>
+            <Text style={{ fontSize:FONT_BACK(), color:TH.sub }}>/ {calGoal}</Text>
           </View>
-          <Text style={{ color: totalCal > calGoal ? COLORS.RED : COLORS.GREEN, fontSize:FONT_BODY, marginTop:6 }}>{T('foodRemaining')}: {Math.max(0, calGoal - totalCal)} kcal</Text>
+          <Text style={[styles.remainingText, { color: totalCal > calGoal ? COLORS.RED : COLORS.GREEN, fontSize:FONT_BODY() }]}>{T('foodRemaining')}: {Math.max(0, calGoal - totalCal)} kcal</Text>
         </Card>
 
         <Card>
           {(() => {
             const todayLog = getTodayFoodLog(filteredFoodLog);
             return todayLog.length === 0 ? (
-              <Text style={{ color:TH.sub, fontSize:FONT_EMPTY, textAlign:'center', padding:24 }}>{T('foodEmpty')}</Text>
+              <Text style={[styles.emptyText, { color:TH.sub, fontSize:FONT_EMPTY() }]}>{T('foodEmpty')}</Text>
             ) : (
               todayLog.map((f, idx) => (
-                <View key={f.id} style={{ flexDirection:'row', justifyContent:'space-between', paddingVertical:8, paddingHorizontal:12, ...(idx < todayLog.length - 1 ? { borderBottomWidth: 1, borderBottomColor: TH.border } : {}) }}>
-                  <View style={{ flex:1 }}>
-                    <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{f.name}</Text>
-                    {f.note ? <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{f.note}</Text> : null}
+                <View key={f.id} style={[styles.todayItem, idx < todayLog.length - 1 && { borderBottomWidth: 1, borderBottomColor: TH.border }]}>
+                  <View style={styles.itemNameCol}>
+                    <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>{f.name}</Text>
+                    {f.note ? <Text style={{ fontSize:FONT_SUB(), color:TH.sub }}>{f.note}</Text> : null}
                   </View>
-                  <Text style={{ fontWeight:'700', color:P }}>{f.calories ?? 0} kcal</Text>
+                  <Text style={[styles.boldText, { color:P }]}>{f.calories ?? 0} kcal</Text>
                 </View>
               ))
             );
@@ -82,16 +82,16 @@ export default function FoodLogPage() {
         </Card>
 
         <TouchableOpacity onPress={() => setShowAdd(true)}
-          style={{ backgroundColor:P, borderRadius:12, padding:14, alignItems:'center', marginTop:12 }}>
-          <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>{T('foodAdd')}</Text>
+          style={[styles.addButton, { backgroundColor:P }]}>
+          <Text style={[styles.addButtonText, { fontSize:FONT_BUTTON() }]}>{T('foodAdd')}</Text>
         </TouchableOpacity>
 
         {/* ── History ── */}
-        <View style={{ marginTop:24 }}>
+        <View style={styles.historySection}>
           <TouchableOpacity onPress={() => setShowHistory(v => !v)}
-            style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom: showHistory ? 12 : 0 }}>
-            <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-              <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, color:TH.text }}>{T('foodHistory')}</Text>
+            style={[styles.historyToggleButton, { marginBottom: showHistory ? 12 : 0 }]}>
+            <View style={styles.historyToggleView}>
+              <Text style={{ fontWeight:'700', fontSize:FONT_TITLE(), color:TH.text }}>{T('foodHistory')}</Text>
               {showHistory ? <ChevronDown size={18} color={TH.text} /> : <ChevronRight size={18} color={TH.text} />}
             </View>
           </TouchableOpacity>
@@ -99,50 +99,46 @@ export default function FoodLogPage() {
             <>
               {/* Summary stats */}
               {historyGroups.length > 0 && (
-                <View style={{ flexDirection:'row', backgroundColor:TH.card, borderWidth:1, borderColor:TH.border, borderRadius:14, paddingVertical:14, marginBottom:16 }}>
+                <View style={[styles.historyStatsRow, { backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }]}>
                   {[
                     { value: String(historyGroups.length), label: '天' },
                     { value: String(totalRecords), label: '条记录' },
                     { value: String(totalHistoryCal), label: 'kcal' },
-                  ].map(s => (
-                    <View key={s.label} style={{ flex:1, alignItems:'center' }}>
-                      <Text style={{ fontSize:FONT_STAT_CARD, fontWeight:'800', color:P }}>{s.value}</Text>
-                      <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginTop:2 }}>{s.label}</Text>
+                  ].map(st => (
+                    <View key={st.label} style={styles.statItem}>
+                      <Text style={{ fontSize:FONT_STAT_CARD(), fontWeight:'800', color:P }}>{st.value}</Text>
+                      <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginTop:2 }}>{st.label}</Text>
                     </View>
                   ))}
                 </View>
               )}
               {historyGroups.length === 0 ? (
-                <Text style={{ color:TH.sub, fontSize:FONT_EMPTY, textAlign:'center', padding:24 }}>{T('foodNoHistory')}</Text>
+                <Text style={[styles.emptyText, { color:TH.sub, fontSize:FONT_EMPTY() }]}>{T('foodNoHistory')}</Text>
               ) : (
-                <View style={{ position:'relative', paddingLeft:20 }}>
+                <View style={styles.timelineContainer}>
                   {/* Timeline vertical line */}
-                  <View style={{ position:'absolute', left:6, top:6, bottom:6, width:2, backgroundColor:TH.border, borderRadius:1 }} />
+                  <View style={[styles.timelineLine, { backgroundColor:TH.border }]} />
                   {historyGroups.map(([date, entries]) => {
                     const dayCal = entries.reduce((a, f) => a + (f.calories ?? 0), 0);
                     return (
-                      <View key={date} style={{ position:'relative', marginBottom:16 }}>
+                      <View key={date} style={styles.timelineEntry}>
                         {/* Timeline dot */}
-                        <View style={{ position:'absolute', left:-17, top:14, width:10, height:10, borderRadius:5, backgroundColor:P, borderWidth:2, borderColor:TH.bg }} />
+                        <View style={[styles.timelineDot, { backgroundColor:P, borderColor:TH.bg }]} />
                         {/* Card */}
-                        <View style={{ backgroundColor:TH.card, borderWidth:1, borderColor:TH.border, borderRadius:12, overflow:'hidden' }}>
-                          <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', paddingVertical:10, paddingHorizontal:14, borderBottomWidth:1, borderBottomColor:TH.border, backgroundColor:`${P}08` }}>
-                            <Text style={{ fontSize:FONT_BODY, fontWeight:'600', color:TH.text }}>{date}</Text>
-                            <Text style={{ fontSize:FONT_BODY, color:P, fontWeight:'700' }}>{dayCal} kcal</Text>
+                        <View style={[styles.historyCard, { backgroundColor:TH.card, borderWidth:1, borderColor:TH.border }]}>
+                          <View style={[styles.historyHeader, { borderBottomColor:TH.border, backgroundColor:`${P}08` }]}>
+                            <Text style={[styles.dateText, { fontSize:FONT_BODY(), color:TH.text }]}>{date}</Text>
+                            <Text style={{ fontSize:FONT_BODY(), color:P, fontWeight:'700' }}>{dayCal} kcal</Text>
                           </View>
                           {entries.map((f, i) => (
-                            <View key={f.id} style={{
-                              flexDirection:'row', justifyContent:'space-between', alignItems:'center',
-                              paddingVertical:8, paddingHorizontal:14,
-                              borderTopWidth: i > 0 ? 1 : 0, borderTopColor:TH.border,
-                            }}>
-                              <View style={{ flex:1 }}>
-                                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{f.name}</Text>
-                                {f.note ? <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginLeft:8 }}>{f.note}</Text> : null}
+                            <View key={f.id} style={[styles.historyEntryItem, { borderTopWidth: i > 0 ? 1 : 0, borderTopColor:TH.border }]}>
+                              <View style={styles.itemNameCol}>
+                                <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>{f.name}</Text>
+                                {f.note ? <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginLeft:8 }}>{f.note}</Text> : null}
                               </View>
-                              <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                                <Text style={{ fontWeight:'700', color:P, fontSize:FONT_BODY }}>{f.calories ?? 0} kcal</Text>
-                                <TouchableOpacity onPress={() => confirmDelete(f.id)} style={{ paddingLeft:8 }}>
+                              <View style={styles.calorieRow}>
+                                <Text style={{ fontWeight:'700', color:P, fontSize:FONT_BODY() }}>{f.calories ?? 0} kcal</Text>
+                                <TouchableOpacity onPress={() => confirmDelete(f.id)} style={styles.deleteButton}>
                                   <X size={18} color="rgba(255,255,255,.7)" />
                                 </TouchableOpacity>
                               </View>
@@ -163,3 +159,31 @@ export default function FoodLogPage() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollContent: { padding: 16, paddingBottom: 40 },
+  todayCard: { alignItems: 'center', paddingVertical: 20 },
+  todayRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
+  remainingText: { marginTop: 6 },
+  emptyText: { textAlign: 'center', padding: 24 },
+  todayItem: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, paddingHorizontal: 12 },
+  itemNameCol: { flex: 1 },
+  boldText: { fontWeight: '700' },
+  addButton: { borderRadius: 12, padding: 14, alignItems: 'center', marginTop: 12 },
+  addButtonText: { color: '#fff', fontWeight: '700' },
+  historySection: { marginTop: 24 },
+  historyToggleButton: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  historyToggleView: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  historyStatsRow: { flexDirection: 'row', borderRadius: 14, paddingVertical: 14, marginBottom: 16 },
+  statItem: { flex: 1, alignItems: 'center' },
+  timelineContainer: { position: 'relative', paddingLeft: 20 },
+  timelineLine: { position: 'absolute', left: 6, top: 6, bottom: 6, width: 2, borderRadius: 1 },
+  timelineEntry: { position: 'relative', marginBottom: 16 },
+  timelineDot: { position: 'absolute', left: -17, top: 14, width: 10, height: 10, borderRadius: 5, borderWidth: 2 },
+  historyCard: { borderRadius: 12, overflow: 'hidden' },
+  historyHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, borderBottomWidth: 1 },
+  dateText: { fontWeight: '600' },
+  historyEntryItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, paddingHorizontal: 14 },
+  calorieRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  deleteButton: { paddingLeft: 8 },
+});

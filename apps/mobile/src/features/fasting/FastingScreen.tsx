@@ -203,7 +203,7 @@ export default function FastingScreen() {
           >
             {/* Title row */}
             <View style={styles.heroTitleRow}>
-              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('fasting')}</Text>
+              <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('fasting')}</Text>
               <TouchableOpacity onPress={() => nav.navigate('FastHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Text style={styles.heroLinkText}>{T('fastingHistory')}</Text>
                 <ChevronRight size={16} color="rgba(255,255,255,.8)" />
@@ -212,19 +212,19 @@ export default function FastingScreen() {
             {/* Stats 3 columns */}
             <View style={styles.heroStatsRow}>
               <View style={styles.heroStatCol}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{(fastingHistory ?? []).filter(f => !f.deleted).length}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: '#fff' }}>{(fastingHistory ?? []).filter(f => !f.deleted).length}</Text>
                 <Text style={styles.heroStatLabel}>{T('fastTimes')}</Text>
                 <Text style={styles.heroStatSub}>{T('fastTotal')}</Text>
               </View>
               <View style={styles.heroDivider} />
               <View style={styles.heroStatCol}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{totalFastHours}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: '#fff' }}>{totalFastHours}</Text>
                 <Text style={styles.heroStatLabel}>{T('fastHours')}</Text>
                 <Text style={styles.heroStatSub}>{T('fastTotalHours')}</Text>
               </View>
               <View style={styles.heroDivider} />
               <View style={styles.heroStatCol}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{currentFastingStreak}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: '#fff' }}>{currentFastingStreak}</Text>
                 <Text style={styles.heroStatLabel}>{T('days')}</Text>
                 <Text style={styles.heroStatSub}>{T('fastStreak')}</Text>
               </View>
@@ -290,7 +290,7 @@ export default function FastingScreen() {
                 onPress={() => startFasting(8)}
                 style={{ backgroundColor:TH.card, borderRadius:12, padding:15, alignItems:'center', borderWidth:1, borderColor:P }}
               >
-                <Text style={{ color:P, fontWeight:'700', fontSize:FONT_BUTTON }}>{T('quickStart')}</Text>
+                <Text style={{ color:P, fontWeight:'700', fontSize:FONT_BUTTON() }}>{T('quickStart')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -300,12 +300,12 @@ export default function FastingScreen() {
         <Card>
           <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
             <AlertTriangle size={18} color={COLORS.YELLOW} />
-            <Text style={{ fontWeight:'700', fontSize:FONT_BODY, color:COLORS.YELLOW }}>{T('healthWarning')}</Text>
+            <Text style={{ fontWeight:'700', fontSize:FONT_BODY(), color:COLORS.YELLOW }}>{T('healthWarning')}</Text>
           </View>
           {[T('fastTips'), T('fastTip2'), T('fastTip3'), T('fastTip4')].map((tip, i) => (
             <View key={i} style={{ flexDirection:'row', gap:8, marginBottom:6 }}>
-              <Text style={{ color:TH.sub, fontSize:FONT_BODY }}>•</Text>
-              <Text style={{ fontSize:FONT_BODY, color:TH.sub, lineHeight:22 }}>{tip}</Text>
+              <Text style={{ color:TH.sub, fontSize:FONT_BODY() }}>•</Text>
+              <Text style={{ fontSize:FONT_BODY(), color:TH.sub, lineHeight:22 }}>{tip}</Text>
             </View>
           ))}
         </Card>
@@ -315,7 +315,7 @@ export default function FastingScreen() {
       <Modal visible={showDur} transparent animationType="fade">
         <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.75)', justifyContent:'center', padding:24 }}>
           <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24 }}>
-            <Text style={{ fontWeight:'700', fontSize:FONT_TITLE, textAlign:'center', marginBottom:20, color:TH.text }}>{T('durationSelect')}</Text>
+            <Text style={{ fontWeight:'700', fontSize:FONT_TITLE(), textAlign:'center', marginBottom:20, color:TH.text }}>{T('durationSelect')}</Text>
             <View style={{ flexDirection:'row', flexWrap:'wrap', gap:10, justifyContent:'center', marginBottom:20 }}>
               {[8,10,12,14,16,18,20,24,36,48,60,72].map(d => (
                 <TouchableOpacity key={d} onPress={() => setTmpDur(d)}
@@ -323,16 +323,16 @@ export default function FastingScreen() {
                     width:72, paddingVertical:12, borderRadius:12, alignItems:'center',
                     backgroundColor: tmpDur===d ? P : TH.card,
                   }}>
-                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: tmpDur===d ? '#fff' : TH.text }}>{d}h</Text>
+                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON(), color: tmpDur===d ? '#fff' : TH.text }}>{d}h</Text>
                 </TouchableOpacity>
               ))}
             </View>
             {/* 可选感悟输入 */}
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('globalPulse.insightLabel')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('globalPulse.insightLabel')}</Text>
             <TextInput
               style={{
                 backgroundColor: TH.card, borderRadius: 12, padding: 10,
-                marginBottom: 16, color: TH.text, fontSize: FONT_BODY,
+                marginBottom: 16, color: TH.text, fontSize: FONT_BODY(),
                 minHeight: 40, maxHeight: 80, textAlignVertical: 'top',
               }}
               placeholder={T('globalPulse.insightPlaceholder')}
@@ -345,8 +345,8 @@ export default function FastingScreen() {
             <View style={{ backgroundColor:'rgba(255,248,200,.08)', borderRadius:12, padding:12, marginBottom:16, flexDirection:'row', gap:8 }}>
               <AlertTriangle size={18} color={COLORS.YELLOW} />
               <View>
-                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:'#FCD34D', marginBottom:4 }}>{T('warmReminder')}</Text>
-                <Text style={{ fontSize:FONT_BODY, color:TH.sub }}>{T('bodyWarning')}</Text>
+                <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:'#FCD34D', marginBottom:4 }}>{T('warmReminder')}</Text>
+                <Text style={{ fontSize:FONT_BODY(), color:TH.sub }}>{T('bodyWarning')}</Text>
               </View>
             </View>
             <TouchableOpacity onPress={() => setAgreed(v => !v)}
@@ -359,7 +359,7 @@ export default function FastingScreen() {
               }}>
                 {agreed && <Check size={16} color="#fff" />}
               </View>
-              <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{T('understand')}</Text>
+              <Text style={{ fontSize:FONT_BODY(), color:TH.text }}>{T('understand')}</Text>
             </TouchableOpacity>
             <View style={{ flexDirection:'row', gap:10 }}>
               <OutlineButton label={T('cancel')} onPress={() => setShowDur(false)} style={{ flex:1 }} />
@@ -368,7 +368,7 @@ export default function FastingScreen() {
                 style={{ flex:1, borderRadius:12, padding:15, alignItems:'center', backgroundColor: P, opacity: agreed ? 1 : 0.5 }}
                 disabled={!agreed}
               >
-                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>{T('start')}</Text>
+                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON() }}>{T('start')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -379,11 +379,11 @@ export default function FastingScreen() {
       <Modal visible={showNoteModal} transparent animationType="fade">
         <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.75)', justifyContent:'center', padding:24 }}>
           <View style={{ backgroundColor:TH.cardSolid, borderRadius:20, padding:24 }}>
-            <Text style={{ fontSize:FONT_TITLE, fontWeight:'700', color:TH.text, textAlign:'center', marginBottom:4 }}>禁食完成 ✨</Text>
-            <Text style={{ fontSize:FONT_BODY, color:TH.sub, textAlign:'center', marginBottom:20 }}>{Math.floor(elapsed / 3600)}h {Math.floor((elapsed % 3600) / 60)}m</Text>
-            <Text style={{ fontSize:FONT_BODY, color:TH.text, fontWeight:'600', marginBottom:8 }}>想记录点什么吗？(可选)</Text>
+            <Text style={{ fontSize:FONT_TITLE(), fontWeight:'700', color:TH.text, textAlign:'center', marginBottom:4 }}>禁食完成 ✨</Text>
+            <Text style={{ fontSize:FONT_BODY(), color:TH.sub, textAlign:'center', marginBottom:20 }}>{Math.floor(elapsed / 3600)}h {Math.floor((elapsed % 3600) / 60)}m</Text>
+            <Text style={{ fontSize:FONT_BODY(), color:TH.text, fontWeight:'600', marginBottom:8 }}>想记录点什么吗？(可选)</Text>
             <TextInput
-              style={{ backgroundColor:TH.card, borderRadius:12, padding:12, color:TH.text, fontSize:FONT_BODY, minHeight:80, maxHeight:120, textAlignVertical:'top', marginBottom:20 }}
+              style={{ backgroundColor:TH.card, borderRadius:12, padding:12, color:TH.text, fontSize:FONT_BODY(), minHeight:80, maxHeight:120, textAlignVertical:'top', marginBottom:20 }}
               multiline maxLength={500} value={noteText} onChangeText={setNoteText}
               placeholder="写下此刻的感受..." placeholderTextColor={TH.sub}
             />
@@ -392,13 +392,13 @@ export default function FastingScreen() {
                 onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: (userProfile?.gender ?? 'male') as 'male' | 'female', age: userProfile?.age ?? 30 }); setShowNoteModal(false); }}
                 style={{ flex:1, padding:14, borderRadius:12, borderWidth:1, borderColor:TH.border, alignItems:'center' }}
               >
-                <Text style={{ color:TH.sub, fontWeight:'600', fontSize:FONT_BODY }}>跳过</Text>
+                <Text style={{ color:TH.sub, fontWeight:'600', fontSize:FONT_BODY() }}>跳过</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => { stopFasting({ weight: userProfile?.weight ?? 70, gender: (userProfile?.gender ?? 'male') as 'male' | 'female', age: userProfile?.age ?? 30, note: noteText.trim() || undefined }); setShowNoteModal(false); }}
                 style={{ flex:1, padding:14, borderRadius:12, backgroundColor:P, alignItems:'center' }}
               >
-                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BODY }}>完成</Text>
+                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BODY() }}>完成</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -412,18 +412,18 @@ const styles = StyleSheet.create({
   heroOuter: { borderRadius: 20, overflow: 'hidden', marginBottom: 16 },
   heroPadding: { padding: 20 },
   heroTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  heroLinkText: { color: 'rgba(255,255,255,.8)', fontSize: FONT_SUB },
+  heroLinkText: { color: 'rgba(255,255,255,.8)', fontSize: FONT_SUB() },
   heroStatsRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
   heroStatCol: { flex: 1, alignItems: 'center' },
-  heroStatLabel: { color: 'rgba(255,255,255,.7)', fontSize: FONT_SUB },
-  heroStatSub: { color: 'rgba(255,255,255,.5)', fontSize: FONT_SUB },
+  heroStatLabel: { color: 'rgba(255,255,255,.7)', fontSize: FONT_SUB() },
+  heroStatSub: { color: 'rgba(255,255,255,.5)', fontSize: FONT_SUB() },
   heroDivider: { width: 1, height: 32, backgroundColor: 'rgba(255,255,255,.2)' },
   heroKcalRow: { flexDirection: 'row', gap: 16, marginBottom: 12 },
   heroKcalCol: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  heroKcalValue: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY },
-  heroKcalSub: { color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB },
+  heroKcalValue: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY() },
+  heroKcalSub: { color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB() },
   heroGlobalRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8 },
-  heroGlobalText: { color: 'rgba(255,255,255,.8)', fontSize: FONT_BODY, flex: 1 },
+  heroGlobalText: { color: 'rgba(255,255,255,.8)', fontSize: FONT_BODY(), flex: 1 },
   mainCardInner: { padding: 20, gap: 16 },
   ringContainer: { alignItems: 'center', justifyContent: 'center', width: 180, height: 180, alignSelf: 'center', marginBottom: 16 },
   ringBase: { width: 180, height: 180, borderRadius: 90, borderWidth: 10 },

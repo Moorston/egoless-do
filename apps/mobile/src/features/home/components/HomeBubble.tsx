@@ -75,7 +75,7 @@ const HomeBubble = memo(function HomeBubble({ visible, onTap }: HomeBubbleProps)
         }}
       >
         <Calendar size={16} color="#fff" />
-        <Text style={{ color: '#fff', fontWeight: '600', fontSize: FONT_SMALL }}>{T('dateBarToday')}</Text>
+        <Text style={{ color: '#fff', fontWeight: '600', fontSize: FONT_SMALL() }}>{T('dateBarToday')}</Text>
       </View>
     </RNAnimated.View>
   );

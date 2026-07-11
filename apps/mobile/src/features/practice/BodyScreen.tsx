@@ -51,7 +51,7 @@ export default function BodyScreen() {
     return (
       <View style={{ flex: 1, backgroundColor: TH.bg }}>
         <SimpleHeader routeName="Body" />
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('bodySubtitle')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('bodySubtitle')}</Text>
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
           <BodyFlow
             TH={TH}
@@ -71,7 +71,7 @@ export default function BodyScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Body" />
-      <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('bodySubtitle')}</Text>
+      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('bodySubtitle')}</Text>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
         {/* Today's plan — most important info for the user */}
         <BodyTodayPlanCard

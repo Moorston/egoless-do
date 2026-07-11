@@ -29,15 +29,15 @@ function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
       <TouchableOpacity onPress={onToggle} activeOpacity={0.7}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>
               {dedication.periodLabel}
             </Text>
             <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
-              <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6' }}>
+              <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6' }}>
                 {T('vowDedDays')}: {dedication.practiceDays}/{dedication.totalDays}
               </Text>
               {habitTotal > 0 && (
-                <Text style={{ fontSize: FONT_BADGE, color: '#10B981' }}>
+                <Text style={{ fontSize: FONT_BADGE(), color: '#10B981' }}>
                   {T('vowProgressHabitDone')}: {habitDone}/{habitTotal}
                 </Text>
               )}
@@ -57,13 +57,13 @@ function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
           {/* Habit stats */}
           {dedication.habitStats.length > 0 && (
             <View style={{ marginBottom: 12 }}>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 6 }}>
+              <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: TH.text, marginBottom: 6 }}>
                 {T('vowProgressHabitDone')}
               </Text>
               {dedication.habitStats.map(h => (
                 <View key={h.habitId} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{h.name}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: '#8B5CF6', fontWeight: '600' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{h.name}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: '#8B5CF6', fontWeight: '600' }}>
                     {h.completed}/{h.total}
                   </Text>
                 </View>
@@ -74,13 +74,13 @@ function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
           {/* Plan progress */}
           {dedication.planProgress && dedication.planProgress.length > 0 && (
             <View style={{ marginBottom: 12 }}>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 6 }}>
+              <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: TH.text, marginBottom: 6 }}>
                 {T('vowProgressPlanDone')}
               </Text>
               {dedication.planProgress.map(p => (
                 <View key={p.planId} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{p.name}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: '#10B981', fontWeight: '600' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{p.name}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: '#10B981', fontWeight: '600' }}>
                     +{p.progressDelta}%
                   </Text>
                 </View>
@@ -91,13 +91,13 @@ function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
           {/* Vision progress */}
           {dedication.visionProgress && dedication.visionProgress.length > 0 && (
             <View style={{ marginBottom: 12 }}>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 6 }}>
+              <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: TH.text, marginBottom: 6 }}>
                 {T('vowProgress')}
               </Text>
               {dedication.visionProgress.map(v => (
                 <View key={v.visionId} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{v.visionId}</Text>
-                  <Text style={{ fontSize: FONT_BODY, color: '#F59E0B', fontWeight: '600' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{v.visionId}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: '#F59E0B', fontWeight: '600' }}>
                     {v.before}% → {v.after}%
                   </Text>
                 </View>
@@ -108,10 +108,10 @@ function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
           {/* Insight */}
           {dedication.insight ? (
             <View style={{ marginBottom: 8 }}>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 4 }}>
+              <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: TH.text, marginBottom: 4 }}>
                 {T('vowDedInsight')}
               </Text>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 20 }}>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text, lineHeight: 20 }}>
                 {dedication.insight}
               </Text>
             </View>
@@ -120,10 +120,10 @@ function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
           {/* Adjustment */}
           {dedication.adjustment ? (
             <View>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 4 }}>
+              <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: TH.text, marginBottom: 4 }}>
                 {T('vowDedAdjustment')}
               </Text>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 20 }}>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.text, lineHeight: 20 }}>
                 {dedication.adjustment}
               </Text>
             </View>

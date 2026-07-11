@@ -869,24 +869,24 @@ const styles = StyleSheet.create({
   progressFillItem: { height: 4, borderRadius: 2 },
   heatmapToggleRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8 },
   itemHeatmapContainer: { marginTop: 8 },
-  textFrequency: { fontSize: FONT_BADGE, marginTop: 4 },
+  textFrequency: { fontSize: FONT_BADGE(), marginTop: 4 },
 
   // Plan progress bar
   planProgressTrack: { height: 6, borderRadius: 3, overflow: 'hidden' },
   planProgressFill: { height: 6, borderRadius: 3 },
 
   // Slogan
-  textSlogan: { fontSize: FONT_BODY, fontStyle: 'italic', marginBottom: 12, lineHeight: 22 },
+  textSlogan: { fontSize: FONT_BODY(), fontStyle: 'italic', marginBottom: 12, lineHeight: 22 },
 
   // Goal
-  textGoal: { fontSize: FONT_BODY, lineHeight: 22 },
+  textGoal: { fontSize: FONT_BODY(), lineHeight: 22 },
 
   // No items
-  textNoItems: { fontSize: FONT_SUB, textAlign: 'center', padding: 12 },
+  textNoItems: { fontSize: FONT_SUB(), textAlign: 'center', padding: 12 },
 
   // Related items
   relatedItemCard: { borderWidth: 1, borderRadius: 10, padding: 12 },
-  textMoreLink: { fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 4 },
+  textMoreLink: { fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 4 },
 
   // Relation map
   relationMapButton: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16, borderRadius: 12, borderWidth: 1, marginBottom: 12 },
@@ -894,9 +894,9 @@ const styles = StyleSheet.create({
   // Today stats
   todayStatsCard: { alignItems: 'center', paddingVertical: 20 },
   todayStatsRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
-  textBodyDimMb8: { fontSize: FONT_BODY, marginBottom: 8 },
-  textStatValue: { fontSize: FONT_STAT_SECTION, fontWeight: '800' },
-  textEmptyCentered: { fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 },
+  textBodyDimMb8: { fontSize: FONT_BODY(), marginBottom: 8 },
+  textStatValue: { fontSize: FONT_STAT_SECTION(), fontWeight: '800' },
+  textEmptyCentered: { fontSize: FONT_EMPTY(), textAlign: 'center', padding: 24 },
 
   // Todo items
   groupHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 },
@@ -908,7 +908,7 @@ const styles = StyleSheet.create({
   delayedBadge: { backgroundColor: `${COLORS.ORANGE}20`, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4 },
   delayedBadgeText: { fontSize: 9, color: COLORS.ORANGE, fontWeight: '600' },
   todoContentCol: { flex: 1, minWidth: 0 },
-  textFrequencyTiny: { fontSize: FONT_TINY, marginTop: 1 },
+  textFrequencyTiny: { fontSize: FONT_TINY(), marginTop: 1 },
 
   // Custom todos
   customTodoHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 },
@@ -918,7 +918,7 @@ const styles = StyleSheet.create({
 
   // Add todo
   addTodoContainer: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12 },
-  addTodoInput: { flex: 1, height: 36, borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, fontSize: FONT_SUB },
+  addTodoInput: { flex: 1, height: 36, borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, fontSize: FONT_SUB() },
   recurringButton: { padding: 8, borderRadius: 8, borderWidth: 1 },
   addButton: { padding: 8, borderRadius: 8 },
 
@@ -929,12 +929,12 @@ const styles = StyleSheet.create({
   historySection: { marginTop: 24 },
   historyHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   historyTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  textHistoryTitle: { fontWeight: '700', fontSize: FONT_TITLE },
+  textHistoryTitle: { fontWeight: '700', fontSize: FONT_TITLE() },
   historySummaryCard: { flexDirection: 'row', borderWidth: 1, borderRadius: 14, paddingVertical: 14, marginBottom: 16 },
   historyStatItem: { flex: 1, alignItems: 'center' },
-  textHistoryStatValue: { fontSize: FONT_STAT_CARD, fontWeight: '800' },
-  textHistoryStatLabel: { fontSize: FONT_SUB, marginTop: 2 },
-  textNoHistory: { fontSize: FONT_EMPTY, textAlign: 'center', padding: 24 },
+  textHistoryStatValue: { fontSize: FONT_STAT_CARD(), fontWeight: '800' },
+  textHistoryStatLabel: { fontSize: FONT_SUB(), marginTop: 2 },
+  textNoHistory: { fontSize: FONT_EMPTY(), textAlign: 'center', padding: 24 },
   timelineContainer: { position: 'relative', paddingLeft: 20 },
   timelineLine: { position: 'absolute', left: 6, top: 6, bottom: 6, width: 2, borderRadius: 1 },
   timelineItem: { position: 'relative', marginBottom: 16 },
@@ -942,11 +942,11 @@ const styles = StyleSheet.create({
   historyItemCard: { borderWidth: 1, borderRadius: 12, overflow: 'hidden' },
   historyItemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: undefined },
   historyItemTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  textBodyDate: { fontSize: FONT_BODY, fontWeight: '600' },
-  textBodyDoneCount: { fontSize: FONT_BODY, fontWeight: '700' },
+  textBodyDate: { fontSize: FONT_BODY(), fontWeight: '600' },
+  textBodyDoneCount: { fontSize: FONT_BODY(), fontWeight: '700' },
   historyItemRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, paddingHorizontal: 14 },
   historyCheckbox: { width: 18, height: 18, borderRadius: 4, alignItems: 'center', justifyContent: 'center' },
-  historyItemName: { fontSize: FONT_BODY, flex: 1 },
+  historyItemName: { fontSize: FONT_BODY(), flex: 1 },
   customTodoBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
   customTodoBadgeText: { fontSize: 10, fontWeight: '500' },
 
@@ -958,19 +958,19 @@ const styles = StyleSheet.create({
   actionButtonDanger: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, borderRadius: 12, backgroundColor: `${COLORS.RED}15`, borderWidth: 1 },
 
   // Shared text styles
-  textBodySemiBold: { fontSize: FONT_BODY, fontWeight: '600', flex: 1 },
-  textBodyBold: { fontSize: FONT_BODY, fontWeight: '700' },
-  textBodyMedium: { fontSize: FONT_BODY, fontWeight: '500' },
-  textBodyDim: { fontSize: FONT_BODY },
-  textSubDim: { fontSize: FONT_SUB },
-  textSubDimMb6: { fontSize: FONT_SUB, marginBottom: 6 },
-  textSubDimMt4: { fontSize: FONT_SUB, marginTop: 4 },
-  textSubBold: { fontSize: FONT_SUB, fontWeight: '600' },
-  textSubSemiBold: { fontSize: FONT_SUB, fontWeight: '600' },
-  textBadgeDim: { fontSize: FONT_BADGE },
-  textBadgeDimMt2: { fontSize: FONT_BADGE, marginTop: 2 },
-  textBadgePrimary: { fontSize: FONT_BADGE },
-  textTabLabel: { fontSize: FONT_SUB },
-  textActionLabel: { fontSize: FONT_BODY, fontWeight: '600' },
-  textActionLabelWhite: { fontSize: FONT_BODY, fontWeight: '600', color: '#fff' },
+  textBodySemiBold: { fontSize: FONT_BODY(), fontWeight: '600', flex: 1 },
+  textBodyBold: { fontSize: FONT_BODY(), fontWeight: '700' },
+  textBodyMedium: { fontSize: FONT_BODY(), fontWeight: '500' },
+  textBodyDim: { fontSize: FONT_BODY() },
+  textSubDim: { fontSize: FONT_SUB() },
+  textSubDimMb6: { fontSize: FONT_SUB(), marginBottom: 6 },
+  textSubDimMt4: { fontSize: FONT_SUB(), marginTop: 4 },
+  textSubBold: { fontSize: FONT_SUB(), fontWeight: '600' },
+  textSubSemiBold: { fontSize: FONT_SUB(), fontWeight: '600' },
+  textBadgeDim: { fontSize: FONT_BADGE() },
+  textBadgeDimMt2: { fontSize: FONT_BADGE(), marginTop: 2 },
+  textBadgePrimary: { fontSize: FONT_BADGE() },
+  textTabLabel: { fontSize: FONT_SUB() },
+  textActionLabel: { fontSize: FONT_BODY(), fontWeight: '600' },
+  textActionLabelWhite: { fontSize: FONT_BODY(), fontWeight: '600', color: '#fff' },
 });

@@ -35,19 +35,19 @@ export default function PlanDetailScreen() {
         <TouchableOpacity onPress={() => nav.goBack()}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, flex: 1 }} numberOfLines={1}>
+        <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text, flex: 1 }} numberOfLines={1}>
           {plan?.name ?? T('planDetail')}
         </Text>
         {delayed && (
           <View style={{ backgroundColor: `${COLORS.ORANGE}20`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
-            <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: COLORS.ORANGE }}>{T('planStatusDelayed')}</Text>
+            <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: COLORS.ORANGE }}>{T('planStatusDelayed')}</Text>
           </View>
         )}
         {plan && (() => {
           const statusColor = PLAN_STATUS_COLORS[plan.status] ?? COLORS.GREEN;
           return (
             <View style={{ backgroundColor: `${statusColor}20`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: statusColor }}>
+              <Text style={{ fontSize: FONT_BADGE(), fontWeight: '600', color: statusColor }}>
                 {T(statusToI18nKey(plan.status))}
               </Text>
             </View>

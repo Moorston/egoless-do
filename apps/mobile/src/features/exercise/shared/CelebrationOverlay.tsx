@@ -31,7 +31,7 @@ export default function CelebrationOverlay({ showCelebration, celebrateAnim, mil
           transform: [{ translateY: milestoneAnim.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }],
         }}>
           <View style={{ backgroundColor: 'rgba(0,0,0,.7)', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 20 }}>
-            <Text style={{ fontSize: FONT_BODY, color: '#fff', fontWeight: '700' }}>{milestoneText}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: '#fff', fontWeight: '700' }}>{milestoneText}</Text>
           </View>
         </Animated.View>
       )}

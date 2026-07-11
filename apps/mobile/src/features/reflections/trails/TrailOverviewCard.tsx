@@ -57,11 +57,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   text: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 18,
   },
   moodText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginTop: 2,
   },
 });

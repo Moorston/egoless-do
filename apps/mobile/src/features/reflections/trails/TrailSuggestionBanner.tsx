@@ -104,15 +104,15 @@ export default function TrailSuggestionBanner() {
       </View>
 
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.text }}>
+        <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text }}>
           {T('trailSuggestionTitle')}
         </Text>
-        <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginTop: 2 }}>
+        <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 2 }}>
           💡 "{topRec.name}" · {topRec.reflectionIds.length}{T('quickTrailReflections')}
         </Text>
       </View>
 
-      <Text style={{ color: TH.primary, fontSize: FONT_TINY, fontWeight: '600' }}>
+      <Text style={{ color: TH.primary, fontSize: FONT_TINY(), fontWeight: '600' }}>
         {T('trailSuggestionAction')}
       </Text>
 

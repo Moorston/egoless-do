@@ -104,7 +104,7 @@ export function PlanItemForm({
   return (
     <>
       {/* 任务名称 */}
-      <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>
+      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>
         任务名称 *
       </Text>
       <TextInput
@@ -116,7 +116,7 @@ export function PlanItemForm({
         style={{
           borderWidth: 1, borderColor: errors.name ? '#EF4444' : TH.border,
           borderRadius: 8, padding: 10, marginBottom: 12,
-          color: TH.text, backgroundColor: TH.card, fontSize: FONT_BODY,
+          color: TH.text, backgroundColor: TH.card, fontSize: FONT_BODY(),
         }}
       />
       {errors.name && (
@@ -128,7 +128,7 @@ export function PlanItemForm({
       {/* 任务目标 */}
       {showTargetMetric && (
         <>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>
             任务目标 *
           </Text>
           <TextInput
@@ -139,7 +139,7 @@ export function PlanItemForm({
             style={{
               borderWidth: 1, borderColor: errors.targetMetric ? '#EF4444' : TH.border,
               borderRadius: 8, padding: 10, marginBottom: 12,
-              color: TH.text, backgroundColor: TH.card, fontSize: FONT_BODY,
+              color: TH.text, backgroundColor: TH.card, fontSize: FONT_BODY(),
             }}
           />
           {errors.targetMetric && (
@@ -151,7 +151,7 @@ export function PlanItemForm({
       )}
 
       {/* 任务描述 */}
-      <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>任务描述</Text>
+      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>任务描述</Text>
       <TextInput
         value={description}
         onChangeText={handleDescChange}
@@ -162,14 +162,14 @@ export function PlanItemForm({
         style={{
           borderWidth: 1, borderColor: TH.border, borderRadius: 8, padding: 10,
           marginBottom: 12, color: TH.text, backgroundColor: TH.card,
-          fontSize: FONT_BODY, minHeight: 60, textAlignVertical: 'top',
+          fontSize: FONT_BODY(), minHeight: 60, textAlignVertical: 'top',
         }}
       />
 
       {/* 日期 */}
       <View style={styles.dateRow}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>开始日期</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>开始日期</Text>
           <TouchableOpacity
             onPress={() => onDatePress?.('start')}
             style={{
@@ -177,11 +177,11 @@ export function PlanItemForm({
               backgroundColor: TH.card,
             }}
           >
-            <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{startDate}</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{startDate}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>结束日期</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>结束日期</Text>
           <TouchableOpacity
             onPress={() => onDatePress?.('end')}
             style={{
@@ -189,7 +189,7 @@ export function PlanItemForm({
               backgroundColor: TH.card,
             }}
           >
-            <Text style={{ color: TH.text, fontSize: FONT_BODY }}>{endDate}</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{endDate}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -202,7 +202,7 @@ export function PlanItemForm({
       {/* 打卡频率 */}
       {showFrequency && (
         <>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>打卡频率</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>打卡频率</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.frequencyScrollView} contentContainerStyle={styles.frequencyScrollViewContent}>
             {FREQUENCY_OPTIONS.map(opt => {
               const active = (frequency.mode ?? 'daily') === opt.mode;
@@ -220,7 +220,7 @@ export function PlanItemForm({
                     borderWidth: 1, borderColor: active ? P : TH.border,
                   }}
                 >
-                  <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL, fontWeight: active ? '600' : '400' }}>
+                  <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL(), fontWeight: active ? '600' : '400' }}>
                     {FREQ_MODE_LABELS[opt.mode] ?? opt.mode}
                   </Text>
                 </TouchableOpacity>
@@ -231,7 +231,7 @@ export function PlanItemForm({
           {/* 每N天 */}
           {frequency.mode === 'interval' && (
             <View style={styles.frequencyRow}>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>每</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>每</Text>
               <TextInput
                 value={draftInputs.interval ?? String(frequency.every ?? '')}
                 onChangeText={v => {
@@ -246,14 +246,14 @@ export function PlanItemForm({
                 keyboardType="number-pad"
                 style={[styles.frequencyInput, { borderColor: TH.border, color: TH.text, backgroundColor: TH.card }]}
               />
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>天</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>天</Text>
             </View>
           )}
 
           {/* 每周N次 */}
           {frequency.mode === 'weekly' && (
             <View style={styles.frequencyRow}>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>每周</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>每周</Text>
               <TextInput
                 value={draftInputs.weekly ?? String(frequency.target ?? '')}
                 onChangeText={v => {
@@ -268,7 +268,7 @@ export function PlanItemForm({
                 keyboardType="number-pad"
                 style={[styles.frequencyInput, { borderColor: TH.border, color: TH.text, backgroundColor: TH.card }]}
               />
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>次</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>次</Text>
             </View>
           )}
 
@@ -289,7 +289,7 @@ export function PlanItemForm({
                     }}
                     style={[styles.dayCircle, { backgroundColor: active ? P : TH.card, borderColor: active ? P : TH.border }]}
                   >
-                    <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL, fontWeight: active ? '700' : '400' }}>{label}</Text>
+                    <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL(), fontWeight: active ? '700' : '400' }}>{label}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -299,7 +299,7 @@ export function PlanItemForm({
           {/* 每月N次 */}
           {frequency.mode === 'monthly' && (
             <View style={styles.frequencyRow}>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>每月</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>每月</Text>
               <TextInput
                 value={draftInputs.monthly ?? String(frequency.target ?? '')}
                 onChangeText={v => {
@@ -314,7 +314,7 @@ export function PlanItemForm({
                 keyboardType="number-pad"
                 style={[styles.frequencyInput, { borderColor: TH.border, color: TH.text, backgroundColor: TH.card }]}
               />
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>次</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>次</Text>
             </View>
           )}
 
@@ -334,7 +334,7 @@ export function PlanItemForm({
                     }}
                     style={[styles.dayCircle, { backgroundColor: active ? P : TH.card, borderColor: active ? P : TH.border }]}
                   >
-                    <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL, fontWeight: active ? '700' : '400' }}>{d}</Text>
+                    <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL(), fontWeight: active ? '700' : '400' }}>{d}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -344,7 +344,7 @@ export function PlanItemForm({
       )}
 
       {/* 优先级 */}
-      <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>优先级</Text>
+      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6, fontWeight: '600' }}>优先级</Text>
       <View style={styles.priorityRow}>
         {PRIORITY_OPTIONS.map(p => (
           <TouchableOpacity
@@ -358,7 +358,7 @@ export function PlanItemForm({
             <Text style={{
               color: priority === p.value ? p.color : TH.text,
               fontWeight: priority === p.value ? '600' : '400',
-              fontSize: FONT_SMALL,
+              fontSize: FONT_SMALL(),
             }}>
               {p.label}
             </Text>
@@ -372,7 +372,7 @@ export function PlanItemForm({
 const styles = StyleSheet.create({
   errorText: {
     color: '#EF4444',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginTop: -8,
     marginBottom: 12,
   },
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 6,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   frequencyRow: {
     flexDirection: 'row',

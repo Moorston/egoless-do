@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontWeight: '700',
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
   },
   controlsSection: {
     flexGrow: 0,
@@ -479,13 +479,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   manualAddText: {
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
     fontWeight: '600',
   },
   searchInput: {
     borderRadius: 12,
     padding: 12,
-    fontSize: FONT_LABEL,
+    fontSize: FONT_LABEL(),
     borderWidth: 1,
   },
   tabsScroll: {
@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   tabText: {
-    fontSize: FONT_BADGE,
+    fontSize: FONT_BADGE(),
   },
   foodListScroll: {
     flex: 1,
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   wuxingSectionTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     marginBottom: 8,
   },
@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   wuxingItemName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   wuxingTagRow: {
     flexDirection: 'row',
@@ -556,19 +556,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   presetName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   presetUnit: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   presetCal: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   emptyText: {
     textAlign: 'center',
     paddingVertical: 32,
-    fontSize: FONT_EMPTY,
+    fontSize: FONT_EMPTY(),
   },
   sectionScroll: {
     flex: 1,
@@ -584,12 +584,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   editFoodName: {
-    fontSize: FONT_BACK,
+    fontSize: FONT_BACK(),
     fontWeight: '700',
     marginBottom: 4,
   },
   editFoodUnit: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   wuxingEditRow: {
     flexDirection: 'row',
@@ -603,18 +603,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   wuxingEditBadgeText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
   },
   wuxingEditText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   wuxingEditEffect: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginTop: 4,
   },
   portionLabel: {
-    fontSize: FONT_LABEL,
+    fontSize: FONT_LABEL(),
     marginBottom: 8,
   },
   portionRow: {
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   portionText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   totalCalRow: {
     flexDirection: 'row',
@@ -645,15 +645,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   totalCalLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   totalCalValue: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '800',
     color: COLORS.ORANGE,
   },
   totalCalUnit: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '400',
   },
   motivationRow: {
@@ -669,13 +669,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   motivationChipText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
   },
   noteInput: {
     borderRadius: 12,
     padding: 12,
-    fontSize: FONT_LABEL,
+    fontSize: FONT_LABEL(),
     borderWidth: 1,
     marginBottom: 16,
   },
@@ -688,7 +688,7 @@ const styles = StyleSheet.create({
   confirmButtonText: {
     color: '#fff',
     fontWeight: '700',
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
   },
   buttonRow: {
     flexDirection: 'row',
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryButtonText: {
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
   },
   mb8: {
     marginBottom: 8,
@@ -722,7 +722,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   backButtonText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   cancelButton: {
     padding: 14,
@@ -732,7 +732,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   cancelButtonText: {
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
   },
   toast: {
     position: 'absolute',
@@ -745,6 +745,6 @@ const styles = StyleSheet.create({
   },
   toastText: {
     color: '#fff',
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
 });

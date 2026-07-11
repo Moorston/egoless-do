@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   scrollContent: {
@@ -232,12 +232,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   guidedHighlightLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
     marginBottom: 6,
   },
   guidedHighlightText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     lineHeight: 24,
   },
@@ -248,11 +248,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 200,
   },
   charCount: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     textAlign: 'right',
     marginTop: 4,
   },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     padding: 10,
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   tagsRow: {
     flexDirection: 'row',
@@ -277,14 +277,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   tagPillText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   moodSection: {
     marginBottom: 16,
   },
   moodLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 8,
   },
   moodRow: {
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   moodText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   actions: {
     flexDirection: 'row',

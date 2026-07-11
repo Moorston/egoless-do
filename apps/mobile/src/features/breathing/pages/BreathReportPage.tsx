@@ -134,7 +134,7 @@ export default function BreathReportPage(props: Props) {
               borderRadius: 10,
               padding: 12,
               color: TH.text,
-              fontSize: FONT_BODY,
+              fontSize: FONT_BODY(),
               borderWidth: 1,
               borderColor: TH.border,
               textAlignVertical: 'top',

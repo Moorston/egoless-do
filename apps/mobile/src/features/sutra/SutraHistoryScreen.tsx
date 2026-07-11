@@ -122,10 +122,10 @@ export default function SutraHistoryScreen() {
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
           <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraHistory')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraHistory')}</Text>
         <View style={styles.alignRight}>
           <Text style={styles.goldStatText}>{stats.totalCount.toLocaleString()}</Text>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>累计</Text>
         </View>
       </View>
 
@@ -135,22 +135,22 @@ export default function SutraHistoryScreen() {
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Text style={styles.goldStatText}>{stats.totalCount.toLocaleString()}</Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计颗数</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>累计颗数</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.greenStatText}>{formatTime(stats.totalSec)}</Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计时长</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>累计时长</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.orangeStatText}>🔥 {stats.streak}</Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>连续</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>连续</Text>
             </View>
           </View>
         </View>
 
         {/* Calendar heatmap this month */}
         <View style={[styles.calendarSection, { borderColor: TH.primary + '20' }]}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>
             {monthYear}年{monthIdx + 1}月
           </Text>
           <View style={styles.weekRow}>
@@ -183,12 +183,12 @@ export default function SutraHistoryScreen() {
         {/* Distribution */}
         {distribution.length > 0 && (
           <View style={[styles.cardSection, { backgroundColor: TH.card, borderColor: TH.border }]}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>经文分布</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>经文分布</Text>
             {distribution.map(({ sutra, total, pct }) => (
               <View key={sutra.id} style={styles.distributionItem}>
                 <View style={styles.distributionHeader}>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{sutra.name}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{pct}%</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.text }}>{sutra.name}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{pct}%</Text>
                 </View>
                 <View style={[styles.barTrack, { backgroundColor: TH.primary + '15' }]}>
                   <View style={[styles.barFill, { width: `${pct}%` }]} />
@@ -201,9 +201,9 @@ export default function SutraHistoryScreen() {
 
         {/* History list */}
         <View style={[styles.cardSection, { backgroundColor: TH.card, borderColor: TH.border }]}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('sutraHistory')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('sutraHistory')}</Text>
           {allSessions.length === 0 ? (
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>{T('sutraNoRecords')}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 16 }}>{T('sutraNoRecords')}</Text>
           ) : allSessions.slice(0, 30).map(s => {
             const sutra = sutraMap[s.mantraId];
             const d = new Date(s.startedAt);
@@ -211,8 +211,8 @@ export default function SutraHistoryScreen() {
             return (
               <View key={s.id} style={[styles.sessionItem, { borderBottomColor: TH.border }]}>
                 <View style={styles.sessionRow}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600' }}>{sutra?.name ?? '未知'}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{dateStr}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{sutra?.name ?? '未知'}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{dateStr}</Text>
                 </View>
                 <View style={styles.sessionMeta}>
                   <Text style={[styles.textSize10, { color: TH.sub }]}>{s.count}颗 · {s.rounds}遍</Text>
@@ -243,9 +243,9 @@ const styles = StyleSheet.create({
   // Stats row
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center' },
-  goldStatText: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' },
-  greenStatText: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#10B981' },
-  orangeStatText: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#F59E0B' },
+  goldStatText: { fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#D4A574' },
+  greenStatText: { fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#10B981' },
+  orangeStatText: { fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#F59E0B' },
 
   // Calendar heatmap
   weekRow: { flexDirection: 'row', marginBottom: 4 },

@@ -104,14 +104,14 @@ export function CreatePlanFromTrailModal({
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,.7)' }}>
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 24, paddingTop: 24, paddingBottom: 40, maxHeight: '90%' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text }}>{T('trailPlanTitle')}</Text>
+            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text }}>{T('trailPlanTitle')}</Text>
             <TouchableOpacity onPress={handleClose}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
           </View>
 
           {activePlan && (
-            <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.sub, marginBottom: 16 }}>
+            <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.sub, marginBottom: 16 }}>
               {T('planGoal')}: {activePlan.name}（{activePlan.startDate} ~ {activePlan.endDate}）
             </Text>
           )}
@@ -120,7 +120,7 @@ export function CreatePlanFromTrailModal({
             {/* AI 建议 */}
             {suggestions.length > 0 && (
               <View style={{ marginBottom: 16 }}>
-                <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.sub, marginBottom: 8 }}>
+                <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>
                   💡 {T('trailPlanAISuggestions')}
                 </Text>
                 {suggestions.map((s, i) => (
@@ -133,7 +133,7 @@ export function CreatePlanFromTrailModal({
                     }}
                     onPress={() => handleToggleSuggestion(i)}
                   >
-                    <Text style={{ fontSize: FONT_SMALL, lineHeight: 18, color: TH.text }}>
+                    <Text style={{ fontSize: FONT_SMALL(), lineHeight: 18, color: TH.text }}>
                       {selectedSuggestions.includes(i) ? '✓ ' : '○ '}{s}
                     </Text>
                   </TouchableOpacity>
@@ -143,7 +143,7 @@ export function CreatePlanFromTrailModal({
                     style={{ paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, alignItems: 'center', marginTop: 8, backgroundColor: P }}
                     onPress={handleApplySelected}
                   >
-                    <Text style={{ color: '#fff', fontSize: FONT_SMALL, fontWeight: '600' }}>{T('trailPlanApplySelected')}</Text>
+                    <Text style={{ color: '#fff', fontSize: FONT_SMALL(), fontWeight: '600' }}>{T('trailPlanApplySelected')}</Text>
                   </TouchableOpacity>
                 )}
               </View>

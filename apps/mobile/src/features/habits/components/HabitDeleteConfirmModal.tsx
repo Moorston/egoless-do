@@ -24,10 +24,10 @@ export default function HabitDeleteConfirmModal({ visible, onConfirm, onClose }:
           padding: 24, alignItems: 'center',
         }}>
           <Trash2 size={40} color={COLORS.RED} style={{ marginBottom: 12 }} />
-          <Text style={{ fontWeight: '700', fontSize: FONT_BODY, color: TH.text, marginBottom: 8 }}>
+          <Text style={{ fontWeight: '700', fontSize: FONT_BODY(), color: TH.text, marginBottom: 8 }}>
             {T('habitConfirmDelete')}
           </Text>
-          <Text style={{ color: TH.sub, fontSize: FONT_BODY, textAlign: 'center', marginBottom: 20 }}>
+          <Text style={{ color: TH.sub, fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 20 }}>
             {T('habitConfirmDeleteDesc')}
           </Text>
           <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>

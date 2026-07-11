@@ -32,7 +32,7 @@ export default function HabitStatusReasonModal({
           borderTopLeftRadius: 24, borderTopRightRadius: 24,
           paddingHorizontal: 24, paddingBottom: 40, paddingTop: 20,
         }}>
-          <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_BODY, marginBottom: 12 }}>
+          <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_BODY(), marginBottom: 12 }}>
             {status === 'paused' ? T('habitPauseReason') : T('habitAbandonReason')}
           </Text>
           <ThemedInput

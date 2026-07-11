@@ -35,8 +35,8 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
       <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
         <View style={{ backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, alignItems: 'center' }}>
           <Text style={{ fontSize: 36, marginBottom: 8 }}>😴</Text>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 4 }}>{T('bodyTodayPlanRest')}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{dayLabel}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 4 }}>{T('bodyTodayPlanRest')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{dayLabel}</Text>
         </View>
       </View>
     );
@@ -50,9 +50,9 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
         <View style={{ backgroundColor: '#f59e0b', paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Text style={{ fontSize: 14 }}>📋</Text>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
           </View>
-          <Text style={{ fontSize: FONT_BADGE, color: 'rgba(255,255,255,.85)' }}>{dayLabel}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: 'rgba(255,255,255,.85)' }}>{dayLabel}</Text>
         </View>
 
         {/* Body */}
@@ -62,11 +62,11 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
               <Text style={{ fontSize: 26 }}>{display.icon}</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{display.label}</Text>
+              <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>{display.label}</Text>
               {todayPlan?.note ? (
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{todayPlan.note}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }} numberOfLines={1}>{todayPlan.note}</Text>
               ) : (
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 2 }}>{T('bodyToday')}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>{T('bodyToday')}</Text>
               )}
             </View>
           </View>
@@ -74,7 +74,7 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
           <TouchableOpacity onPress={onStart} activeOpacity={0.85}
             style={{ backgroundColor: '#f59e0b', borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
             <Play size={20} color="#fff" />
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('bodyStartToday')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('bodyStartToday')}</Text>
           </TouchableOpacity>
         </View>
       </View>

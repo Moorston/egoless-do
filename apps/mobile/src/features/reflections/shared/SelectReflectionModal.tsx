@@ -108,12 +108,12 @@ export function SelectReflectionModal({
           {/* Batch actions */}
           <View style={[styles.batchActions, { borderBottomColor: TH.border }]}>
             <TouchableOpacity onPress={handleSelectAll} style={[styles.batchBtn, { backgroundColor: `${P}15` }]}>
-              <Text style={{ color: P, fontSize: FONT_SMALL, fontWeight: '600' }}>全选</Text>
+              <Text style={{ color: P, fontSize: FONT_SMALL(), fontWeight: '600' }}>全选</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleDeselectAll} style={[styles.batchBtn, { backgroundColor: `${TH.sub}15` }]}>
-              <Text style={{ color: TH.sub, fontSize: FONT_SMALL, fontWeight: '600' }}>取消全选</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), fontWeight: '600' }}>取消全选</Text>
             </TouchableOpacity>
-            <Text style={{ color: TH.sub, fontSize: FONT_SMALL, marginLeft: 'auto' }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), marginLeft: 'auto' }}>
               已选 {selectedIds.size} 项
             </Text>
           </View>
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   searchBar: {
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     padding: 0,
   },
   batchActions: {
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     paddingVertical: 48,
   },
   emptyText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   reflectionItem: {
     flexDirection: 'row',
@@ -267,13 +267,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   reflectionDate: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   reflectionMood: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   reflectionText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   tagRow: {
     flexDirection: 'row',

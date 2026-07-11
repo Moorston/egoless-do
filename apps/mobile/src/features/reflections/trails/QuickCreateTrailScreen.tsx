@@ -360,7 +360,7 @@ export default function QuickCreateTrailScreen() {
                         { backgroundColor: timeRange === opt.key ? `${TH.primary}15` : 'transparent' },
                       ]}
                     >
-                      <Text style={{ fontSize: FONT_SMALL, color: timeRange === opt.key ? TH.primary : TH.text }}>
+                      <Text style={{ fontSize: FONT_SMALL(), color: timeRange === opt.key ? TH.primary : TH.text }}>
                         {T(opt.labelKey)}
                       </Text>
                     </TouchableOpacity>
@@ -519,7 +519,7 @@ export default function QuickCreateTrailScreen() {
           {(selectedTags.length > 0 || selectedMoods.length > 0 || timeRange !== 'month') && (
             <View style={styles.resetFiltersRow}>
               <TouchableOpacity onPress={resetFilters}>
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>{T('quickTrailResetFilters')}</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('quickTrailResetFilters')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -743,9 +743,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
   },
-  title: { fontSize: FONT_TITLE, fontWeight: '700' },
+  title: { fontSize: FONT_TITLE(), fontWeight: '700' },
   createBtnSmall: { borderRadius: 8, paddingHorizontal: 12, paddingVertical: 6 },
-  createBtnSmallText: { color: '#fff', fontSize: FONT_SMALL, fontWeight: '700' },
+  createBtnSmallText: { color: '#fff', fontSize: FONT_SMALL(), fontWeight: '700' },
   scrollContent: { paddingBottom: 32 },
   backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 10 },
   inputSection: { paddingHorizontal: 16, paddingTop: 12 },
@@ -758,7 +758,7 @@ const styles = StyleSheet.create({
     minHeight: 100,
   },
   textInput: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     padding: 0,
     minHeight: 60,
     maxHeight: 140,
@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   aiSearchBtnText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     color: '#8B5CF6',
     fontWeight: '600',
   },
@@ -873,8 +873,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   createBtnLarge: { borderRadius: 10, paddingHorizontal: 16, paddingVertical: 8 },
-  createBtnLargeText: { color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' },
-  assignedNotice: { fontSize: FONT_TINY, marginTop: 4 },
+  createBtnLargeText: { color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '700' },
+  assignedNotice: { fontSize: FONT_TINY(), marginTop: 4 },
   trailNameRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -884,14 +884,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 8,
   },
-  trailNameInput: { flex: 1, fontSize: FONT_SMALL, padding: 0 },
+  trailNameInput: { flex: 1, fontSize: FONT_SMALL(), padding: 0 },
   previewSection: { paddingHorizontal: 16, marginTop: 16 },
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  bodyBold: { fontSize: FONT_BODY, fontWeight: '600' },
+  bodyBold: { fontSize: FONT_BODY(), fontWeight: '600' },
   addMoreBtn: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   previewCard: {
     flexDirection: 'row',
@@ -903,18 +903,18 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   previewMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  previewMoodIcon: { fontSize: FONT_SMALL },
+  previewMoodIcon: { fontSize: FONT_SMALL() },
   previewTag: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
   },
-  previewContent: { fontSize: FONT_BODY, marginTop: 4, lineHeight: 20 },
+  previewContent: { fontSize: FONT_BODY(), marginTop: 4, lineHeight: 20 },
   removeBtn: { padding: 4, marginTop: 2 },
   insightPanelWrapper: { marginTop: 8 },
   searchHistorySection: { paddingHorizontal: 16, marginTop: 12 },
-  searchHistoryLabel: { fontSize: FONT_TINY, marginBottom: 8 },
+  searchHistoryLabel: { fontSize: FONT_TINY(), marginBottom: 8 },
   searchHistoryTags: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   searchHistoryTag: {
     paddingHorizontal: 12,
@@ -933,8 +933,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginBottom: 12,
   },
-  aiDegradedIcon: { fontSize: FONT_TINY },
-  aiDegradedText: { fontSize: FONT_TINY, color: '#92400E' },
+  aiDegradedIcon: { fontSize: FONT_TINY() },
+  aiDegradedText: { fontSize: FONT_TINY(), color: '#92400E' },
   bulkActionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -944,8 +944,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   bulkActionsLeft: { flexDirection: 'row', gap: 14 },
-  smallText: { fontSize: FONT_SMALL },
-  smallTextPrimary: { fontSize: FONT_SMALL, fontWeight: '500' },
+  smallText: { fontSize: FONT_SMALL() },
+  smallTextPrimary: { fontSize: FONT_SMALL(), fontWeight: '500' },
   loadMoreBtn: {
     alignItems: 'center',
     paddingVertical: 12,
@@ -954,7 +954,7 @@ const styles = StyleSheet.create({
   },
   noResultsContainer: { alignItems: 'center', paddingVertical: 32 },
   noResultsEmoji: { fontSize: 32, marginBottom: 8 },
-  noResultsText: { fontSize: FONT_BODY, marginBottom: 4 },
+  noResultsText: { fontSize: FONT_BODY(), marginBottom: 4 },
   noResultsResetBtn: { marginTop: 12 },
   // ── Empty state ──
   emptyCenter: {
@@ -964,10 +964,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   emptyEmoji: { fontSize: 48, marginBottom: 16 },
-  emptyMessage: { fontSize: FONT_BODY, textAlign: 'center', marginBottom: 8 },
-  emptySubtext: { fontSize: FONT_SMALL, textAlign: 'center', lineHeight: 20 },
+  emptyMessage: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 8 },
+  emptySubtext: { fontSize: FONT_SMALL(), textAlign: 'center', lineHeight: 20 },
   emptyGoRecordBtn: { borderRadius: 12, paddingVertical: 12, paddingHorizontal: 24, marginTop: 20 },
-  emptyGoRecordText: { color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' },
+  emptyGoRecordText: { color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' },
   skipBtn: { marginTop: 16, paddingVertical: 8 },
 });
 

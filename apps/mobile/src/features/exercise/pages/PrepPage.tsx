@@ -65,7 +65,7 @@ export default function PrepPage(props: ExercisePageProps) {
           {(['free', 'target'] as const).map(m => (
             <TouchableOpacity key={m} onPress={() => setMode(m)}
               style={mode === m ? styles.modeOptionActive : styles.modeOptionInactive}>
-              <Text style={{ color: '#fff', fontWeight: mode === m ? '700' : '400', fontSize: FONT_BODY }}>
+              <Text style={{ color: '#fff', fontWeight: mode === m ? '700' : '400', fontSize: FONT_BODY() }}>
                 {modeLabels[m]}
               </Text>
             </TouchableOpacity>
@@ -79,7 +79,7 @@ export default function PrepPage(props: ExercisePageProps) {
               {availableTargetTypes.map(t => (
                 <TouchableOpacity key={t} onPress={() => { setTargetType(t); setTargetValue(presets[t]?.[0]?.value ?? 0); setShowCustomInput(false); setCustomInputValue(''); }}
                   style={targetType === t ? styles.targetTypePillActive : styles.targetTypePillInactive}>
-                  <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: targetType === t ? '700' : '400' }}>
+                  <Text style={{ color: '#fff', fontSize: FONT_SUB(), fontWeight: targetType === t ? '700' : '400' }}>
                     {targetTypeLabels[t] ?? t}
                   </Text>
                 </TouchableOpacity>
@@ -89,7 +89,7 @@ export default function PrepPage(props: ExercisePageProps) {
               {(presets[targetType as keyof typeof presets] ?? []).map((p: { label: string; value: number }) => (
                 <TouchableOpacity key={p.label} onPress={() => { setTargetValue(p.value); setShowCustomInput(false); setCustomInputValue(''); setCustomTargetValue(v => { const n = { ...v }; delete n[targetType]; return n; }); }}
                   style={targetValue === p.value ? styles.presetPillActive : styles.presetPillInactive}>
-                  <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: targetValue === p.value ? '700' : '400' }}>{p.label}</Text>
+                  <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: targetValue === p.value ? '700' : '400' }}>{p.label}</Text>
                 </TouchableOpacity>
               ))}
               {(targetType === 'time' || targetType === 'calories') && (() => {
@@ -110,7 +110,7 @@ export default function PrepPage(props: ExercisePageProps) {
                     }
                   }}
                     style={customActive || showCustomInput ? styles.presetPillActive : styles.presetPillInactive}>
-                    <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: customActive || showCustomInput ? '700' : '400' }}>{customLabel}</Text>
+                    <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: customActive || showCustomInput ? '700' : '400' }}>{customLabel}</Text>
                   </TouchableOpacity>
                 );
               })()}
@@ -208,7 +208,7 @@ export default function PrepPage(props: ExercisePageProps) {
 
         <TouchableOpacity onPress={handleGo}
           style={styles.goButton}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: bg, letterSpacing: 4 }}>GO</Text>
+          <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '900', color: bg, letterSpacing: 4 }}>GO</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerTitle: {
-    fontSize: FONT_BACK,
+    fontSize: FONT_BACK(),
     fontWeight: '700',
     color: '#fff',
   },
@@ -308,11 +308,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,.15)',
     paddingHorizontal: 14,
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   customUnitLabel: {
     color: 'rgba(255,255,255,.7)',
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   customConfirmBtn: {
     height: 44,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
   },
   customConfirmText: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
   },
   breathToggle: {
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   },
   breathToggleLabel: {
     color: 'rgba(255,255,255,.9)',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   switchTrack: {
     width: 44,
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   },
   softTargetText: {
     color: 'rgba(255,255,255,.8)',
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   lastWorkoutCard: {
     marginTop: 12,
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   },
   lastWorkoutText: {
     color: 'rgba(255,255,255,.8)',
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   goSection: {
     flex: 1,
@@ -402,12 +402,12 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   circleValue: {
-    fontSize: FONT_HERO,
+    fontSize: FONT_HERO(),
     fontWeight: '900',
     color: '#fff',
   },
   circleUnit: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     color: 'rgba(255,255,255,.8)',
     marginTop: 4,
   },

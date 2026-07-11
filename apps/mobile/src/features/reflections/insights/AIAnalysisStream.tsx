@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '700',
     color: '#8B5CF6',
   },
@@ -296,16 +296,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   messageText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 20,
   },
   messageDetail: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginTop: 4,
     lineHeight: 16,
   },
   cursor: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '700',
   },
   typingRow: {

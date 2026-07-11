@@ -113,9 +113,9 @@ export default function ForgotPasswordScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={{ paddingHorizontal: 24 }}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', textAlign: 'center', marginBottom: 4, color: TH.text }}>心流纪</Text>
-          <Text style={{ fontSize: FONT_SUB, color: TH.primary, textAlign: 'center', marginBottom: 8, letterSpacing: 1 }}>Egoless Do</Text>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center', marginBottom: 32 }}>
+          <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', textAlign: 'center', marginBottom: 4, color: TH.text }}>心流纪</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.primary, textAlign: 'center', marginBottom: 8, letterSpacing: 1 }}>Egoless Do</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, textAlign: 'center', marginBottom: 32 }}>
             {step === 1 ? T('authVerifyEmail') : T('authSetNewPassword')}
           </Text>
 
@@ -150,7 +150,7 @@ export default function ForgotPasswordScreen() {
                       justifyContent: 'center', alignItems: 'center', opacity: sending || cooldown > 0 ? 0.6 : 1,
                     }}
                   >
-                    <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: '600' }}>
+                    <Text style={{ color: '#fff', fontSize: FONT_SUB(), fontWeight: '600' }}>
                       {cooldown > 0 ? `${cooldown}s` : sending ? T('authSending') : T('authSendCode')}
                     </Text>
                   </TouchableOpacity>
@@ -177,12 +177,12 @@ export default function ForgotPasswordScreen() {
           </Card>
 
           {error !== '' && (
-            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR, textAlign: 'center', marginBottom: 12 }}>
+            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR(), textAlign: 'center', marginBottom: 12 }}>
               {error}
             </Text>
           )}
           {success !== '' && (
-            <Text style={{ color: '#10b981', fontSize: FONT_SUB, textAlign: 'center', marginBottom: 12 }}>
+            <Text style={{ color: '#10b981', fontSize: FONT_SUB(), textAlign: 'center', marginBottom: 12 }}>
               {success}
             </Text>
           )}
@@ -194,7 +194,7 @@ export default function ForgotPasswordScreen() {
           />
 
           <TouchableOpacity onPress={() => nav.navigate('Login')} activeOpacity={0.7}>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center' }}>
               <Text style={{ color: TH.primary }}>{T('authBackToLogin')}</Text>
             </Text>
           </TouchableOpacity>

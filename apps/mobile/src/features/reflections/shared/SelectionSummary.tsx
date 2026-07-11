@@ -19,7 +19,7 @@ export default function SelectionSummary({ count, moods, startDate, endDate }: P
 
   return (
     <View>
-      <Text style={{ fontSize: FONT_SMALL, color: TH.text, fontWeight: '600' }}>
+      <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>
         {T('quickTrailSelected').replace('{n}', String(count))}
       </Text>
 
@@ -27,20 +27,20 @@ export default function SelectionSummary({ count, moods, startDate, endDate }: P
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4, gap: 4 }}>
           {moods.slice(0, 6).map((mood, i) => (
             <React.Fragment key={i}>
-              <Text style={{ fontSize: FONT_SMALL }}>{getMoodIcon(mood)}</Text>
+              <Text style={{ fontSize: FONT_SMALL() }}>{getMoodIcon(mood)}</Text>
               {i < Math.min(moods.length, 6) - 1 && (
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>→</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>→</Text>
               )}
             </React.Fragment>
           ))}
           {moods.length > 6 && (
-            <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>...</Text>
+            <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>...</Text>
           )}
         </View>
       )}
 
       {startDate != null && endDate != null && (
-        <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginTop: 2 }}>
+        <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 2 }}>
           {formatDateShort(startDate)} ─── {formatDateShort(endDate)}
         </Text>
       )}

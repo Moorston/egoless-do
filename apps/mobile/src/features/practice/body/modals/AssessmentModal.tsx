@@ -27,26 +27,26 @@ export default function AssessmentModal({ visible, TH, T, profile, onClose, onSa
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '85%' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('bodySelfAssessment')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodySelfAssessment')}</Text>
             <TouchableOpacity onPress={onClose}><X size={24} color={TH.sub} /></TouchableOpacity>
           </View>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('bodySelfAssessmentHint')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('bodySelfAssessmentHint')}</Text>
           <TextInput
-            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 100, maxHeight: 150, textAlignVertical: 'top', marginBottom: 8 }}
+            style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), minHeight: 100, maxHeight: 150, textAlignVertical: 'top', marginBottom: 8 }}
             multiline maxLength={500} value={text} onChangeText={setText}
             placeholder={T('bodySelfAssessmentInputPlaceholder')} placeholderTextColor={TH.sub}
           />
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, textAlign: 'right', marginBottom: 16 }}>{text.length}/500</Text>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'right', marginBottom: 16 }}>{text.length}/500</Text>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel')}</Text>
           <ScrollView style={{ maxHeight: 200 }}>
             {BODY_TAGS_PRESET.map(group => (
               <View key={group.category} style={{ marginBottom: 12 }}>
-                <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6 }}>{group.category}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6 }}>{group.category}</Text>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {group.tags.map(tag => (
                     <TouchableOpacity key={tag} onPress={() => toggleTag(tag)}
                       style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, borderWidth: 1, borderColor: tags.includes(tag) ? '#10b981' : TH.border, backgroundColor: tags.includes(tag) ? '#10b98115' : 'transparent' }}>
-                      <Text style={{ fontSize: FONT_BADGE, color: tags.includes(tag) ? '#10b981' : TH.text }}>{tag}</Text>
+                      <Text style={{ fontSize: FONT_BADGE(), color: tags.includes(tag) ? '#10b981' : TH.text }}>{tag}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>

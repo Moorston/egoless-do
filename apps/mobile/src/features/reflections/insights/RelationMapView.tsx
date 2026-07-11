@@ -421,8 +421,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   contextIcon: { fontSize: 18 },
-  contextLabel: { fontSize: FONT_BODY, fontWeight: '600', flex: 1 },
-  contextType: { fontSize: FONT_SMALL },
+  contextLabel: { fontSize: FONT_BODY(), fontWeight: '600', flex: 1 },
+  contextType: { fontSize: FONT_SMALL() },
   graphContainer: {
     flex: 1,
     position: 'relative',

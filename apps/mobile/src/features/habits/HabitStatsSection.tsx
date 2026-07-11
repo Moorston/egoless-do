@@ -35,13 +35,13 @@ export default function HabitStatsSection({ checkedDates }: Props) {
 
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>
+      <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 12 }}>
         {T('habitStats') ?? '习惯统计'}
       </Text>
 
       {/* Completion Rate Chart */}
       <View style={{ backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border, padding: 16, marginBottom: 12 }}>
-        <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+        <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>
           {T('habitWeeklyCompletion') ?? '每周完成率'}
         </Text>
         <LineChart
@@ -58,7 +58,7 @@ export default function HabitStatsSection({ checkedDates }: Props) {
 
       {/* Weekly Streak Chart */}
       <View style={{ backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border, padding: 16 }}>
-        <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+        <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>
           {T('habitWeeklyStreak') ?? '每周最长连续天数'}
         </Text>
         <BarChart

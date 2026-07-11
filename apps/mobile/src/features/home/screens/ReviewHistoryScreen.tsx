@@ -54,10 +54,10 @@ export default function ReviewHistoryScreen() {
       {/* 月份标题 */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 }}>
         <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: TH.primary }} />
-        <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>
+        <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>
           {formatMonth(monthKey)}
         </Text>
-        <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>
+        <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>
           {items.length} {activeTab === 'week' ? '周' : '月'}
         </Text>
       </View>
@@ -76,7 +76,7 @@ export default function ReviewHistoryScreen() {
         >
           {/* 日期范围 */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
               {formatWeekRange(review)}
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -86,7 +86,7 @@ export default function ReviewHistoryScreen() {
                 <TrendingDown size={14} color={COLORS.RED} />
               ) : null}
               <Text style={{
-                fontSize: FONT_SUB,
+                fontSize: FONT_SUB(),
                 color: review.comparison.completionRateDiff > 0 ? COLORS.GREEN :
                        review.comparison.completionRateDiff < 0 ? COLORS.RED : TH.sub,
               }}>
@@ -98,14 +98,14 @@ export default function ReviewHistoryScreen() {
           {/* 核心指标 */}
           <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('reviewCompletionRate')}:</Text>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.primary }}>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('reviewCompletionRate')}:</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>
                 {review.completionRate}%
               </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('reviewStreakDays')}:</Text>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('reviewStreakDays')}:</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {review.streakDays}{T('days')}
               </Text>
             </View>
@@ -113,7 +113,7 @@ export default function ReviewHistoryScreen() {
 
           {/* AI总结预览 */}
           {review.aiSummary && (
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }} numberOfLines={2}>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }} numberOfLines={2}>
               {review.aiSummary}
             </Text>
           )}
@@ -126,7 +126,7 @@ export default function ReviewHistoryScreen() {
 
   const ListEmptyComponent = useMemo(() => (
     <View style={{ alignItems: 'center', marginTop: 60 }}>
-      <Text style={{ fontSize: FONT_EMPTY, color: TH.sub }}>
+      <Text style={{ fontSize: FONT_EMPTY(), color: TH.sub }}>
         {T('reviewNoHistory')}
       </Text>
     </View>
@@ -139,7 +139,7 @@ export default function ReviewHistoryScreen() {
         <TouchableOpacity onPress={() => nav.goBack()}>
           <ChevronLeft size={24} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE, marginLeft: 12 }}>
+        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>
           {T('reviewHistoryTitle')}
         </Text>
       </View>
@@ -159,7 +159,7 @@ export default function ReviewHistoryScreen() {
               }}
             >
               <Text style={{
-                textAlign: 'center', fontSize: FONT_BODY, fontWeight: active ? '600' : '400',
+                textAlign: 'center', fontSize: FONT_BODY(), fontWeight: active ? '600' : '400',
                 color: active ? TH.primary : TH.sub,
               }}>
                 {tab === 'week' ? T('reviewWeek') : T('reviewMonth')}

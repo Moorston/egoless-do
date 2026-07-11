@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   buttonText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
   },
 });

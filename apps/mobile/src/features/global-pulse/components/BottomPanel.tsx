@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   myCardTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     marginBottom: 10,
   },
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   myStatValue: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
   },
   myStatLabel: {

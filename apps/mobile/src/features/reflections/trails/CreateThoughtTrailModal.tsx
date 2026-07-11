@@ -160,7 +160,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                 onPress={() => setShowSelector(true)}
                 style={[styles.selectButton, { borderColor: P }]}
               >
-                <Text style={{ color: P, fontSize: FONT_BODY }}>
+                <Text style={{ color: P, fontSize: FONT_BODY() }}>
                   {T('thoughtTrailSelectReflection')} ({selectedIds.size})
                 </Text>
               </TouchableOpacity>
@@ -191,12 +191,12 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
               {/* Batch select/deselect buttons */}
               <View style={[styles.batchActions, { borderBottomColor: TH.border }]}>
                 <TouchableOpacity onPress={handleSelectAll} style={[styles.batchBtn, { backgroundColor: `${P}15` }]}>
-                  <Text style={{ color: P, fontSize: FONT_SMALL, fontWeight: '600' }}>全选</Text>
+                  <Text style={{ color: P, fontSize: FONT_SMALL(), fontWeight: '600' }}>全选</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDeselectAll} style={[styles.batchBtn, { backgroundColor: `${TH.sub}15` }]}>
-                  <Text style={{ color: TH.sub, fontSize: FONT_SMALL, fontWeight: '600' }}>取消全选</Text>
+                  <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), fontWeight: '600' }}>取消全选</Text>
                 </TouchableOpacity>
-                <Text style={{ color: TH.sub, fontSize: FONT_SMALL, marginLeft: 'auto' }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), marginLeft: 'auto' }}>
                   已选 {selectedIds.size} 项
                 </Text>
               </View>
@@ -273,7 +273,7 @@ export default function CreateThoughtTrailModal({ visible, onClose, initialRefle
                   onPress={() => setShowSelector(false)}
                   style={[styles.selectorBackBtn, { backgroundColor: P }]}
                 >
-                  <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '600' }}>
+                  <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>
                     {T('commonBack')} ({selectedIds.size})
                   </Text>
                 </TouchableOpacity>
@@ -325,21 +325,21 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   form: {
     paddingHorizontal: 20,
   },
   label: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 16,
   },
   textArea: {
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     padding: 0,
   },
   batchActions: {
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     paddingVertical: 48,
   },
   emptyText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   reflectionItem: {
     flexDirection: 'row',
@@ -417,10 +417,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   reflectionDate: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   reflectionMood: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   trailBadge: {
     paddingHorizontal: 6,
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   reflectionText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   tagRow: {
     flexDirection: 'row',

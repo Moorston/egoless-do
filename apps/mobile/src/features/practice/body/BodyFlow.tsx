@@ -81,7 +81,7 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
     <View style={{ marginTop: 12 }}>
       {groups.map(group => (
         <View key={group.label} style={{ marginBottom: 12 }}>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{group.label}</Text>
+          <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{group.label}</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
             {group.items.map(item => (
               <TouchableOpacity key={item.key} onPress={() => onSelect(item.key)}
@@ -91,7 +91,7 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
                   borderWidth: 1, borderColor: TH.border, backgroundColor: TH.card,
                 }}>
                 <Text style={{ fontSize: 16 }}>{item.icon}</Text>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{item.label}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{item.label}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -183,18 +183,18 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
         <Card>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <Activity size={22} color="#f59e0b" />
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('bodyFlowPractice')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyFlowPractice')}</Text>
           </View>
           {practiceCompleted ? (
             <View style={{ alignItems: 'center', paddingVertical: 12 }}>
               <CheckCircle2 size={48} color="#10b981" />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowPracticeDone')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowPracticeDone')}</Text>
             </View>
           ) : hasTodayPlan ? (
             <>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                 <Text style={{ fontSize: 28 }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as { icon: string }).icon : '🏋️'}</Text>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                   {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as { i18nKey: string }).i18nKey) : todayPlan?.part ?? ''}
                 </Text>
               </View>
@@ -210,9 +210,9 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
           ) : (
             <>
               {isTodayRestDay && (
-                <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 12 }}>{T('bodyTodayPlanRest')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 12 }}>{T('bodyTodayPlanRest')}</Text>
               )}
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('bodyFlowChooseExercise')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('bodyFlowChooseExercise')}</Text>
               <ExercisePicker TH={TH} T={T} onSelect={(key) => { setSelectedSportKey(key); navigateToSport(key); }} />
             </>
           )}
@@ -238,8 +238,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
         <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
           <LinearGradient colors={['#06b6d4', '#0891b2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
             <Wind size={40} color="#fff" />
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff', marginTop: 12, marginBottom: 4 }}>{T('bodyFlowBreathing')}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)' }}>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff', marginTop: 12, marginBottom: 4 }}>{T('bodyFlowBreathing')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.8)' }}>
               {breathingCompleted
                 ? `${T('bodyFlowBreathingTime')}: ${Math.floor(breathingDurationMs / 60000)}${T('bodyMin') || '分钟'}`
                 : T('bodyFlowBreathingHint')}
@@ -250,12 +250,12 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
           <Card>
             <View style={{ alignItems: 'center', paddingVertical: 8 }}>
               <CheckCircle2 size={40} color="#10b981" />
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowBreathingDone')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10b981', marginTop: 8 }}>{T('bodyFlowBreathingDone')}</Text>
             </View>
           </Card>
         ) : (
           <Card>
-            <Text style={{ fontSize: FONT_BODY, color: TH.text, textAlign: 'center', lineHeight: 22 }}>{T('bodyFlowBreathingDesc')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, textAlign: 'center', lineHeight: 22 }}>{T('bodyFlowBreathingDesc')}</Text>
           </Card>
         )}
         <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -282,8 +282,8 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
       <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
         <LinearGradient colors={['#8b5cf6', '#7c3aed']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
           <Text style={{ fontSize: 40, marginBottom: 8 }}>🧠</Text>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff', marginTop: 4 }}>{T('bodyFlowAwareness')}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{T('bodyFlowAwarenessHint')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff', marginTop: 4 }}>{T('bodyFlowAwareness')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{T('bodyFlowAwarenessHint')}</Text>
         </LinearGradient>
       </View>
       <Card style={{ borderWidth: 0 }}>

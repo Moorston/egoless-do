@@ -35,7 +35,7 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
       <View style={{ padding: 14, paddingLeft: 18 }}>
         {/* Title row */}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, flex: 1 }}>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, flex: 1 }}>
             💡 "{rec.name}"
           </Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -44,7 +44,7 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
                 backgroundColor: '#8B5CF620', borderRadius: 4,
                 paddingHorizontal: 6, paddingVertical: 2,
               }}>
-                <Text style={{ fontSize: FONT_TINY, color: '#8B5CF6' }}>AI</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: '#8B5CF6' }}>AI</Text>
               </View>
             )}
           </View>
@@ -54,40 +54,40 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, gap: 4 }}>
           {rec.moods.map((mood, i) => (
             <React.Fragment key={i}>
-              <Text style={{ fontSize: FONT_SMALL }}>{getMoodIcon(mood)}</Text>
+              <Text style={{ fontSize: FONT_SMALL() }}>{getMoodIcon(mood)}</Text>
               {i < rec.moods.length - 1 && (
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>→</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>→</Text>
               )}
             </React.Fragment>
           ))}
         </View>
 
         {/* Date range */}
-        <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 4 }}>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 4 }}>
           {formatDateShort(rec.startDate)}─{formatDateShort(rec.endDate)}
         </Text>
 
         {/* Stats row */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 8 }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
             {rec.reflectionIds.length}{T('quickTrailReflections')}
           </Text>
           {rec.primaryTag ? (
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
               #{rec.primaryTag}
             </Text>
           ) : null}
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
             {rec.spanDays}{T('days') || '天'}
           </Text>
-          <Text style={{ fontSize: FONT_SMALL, color: trendColor(rec.trend) }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: trendColor(rec.trend) }}>
             {trendArrow(rec.trend)} {trendLabel(rec.trend, T)}
           </Text>
         </View>
 
         {/* Narrative */}
         <Text style={{
-          fontSize: FONT_SMALL, color: TH.sub, marginTop: 6,
+          fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6,
           fontStyle: 'italic', lineHeight: 18,
         }}>
           "{rec.narrative}"
@@ -95,7 +95,7 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
 
         {/* Assigned notice */}
         {rec.assignedCount > 0 && (
-          <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginTop: 4 }}>
+          <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 4 }}>
             {T('quickTrailAssignedNotice').replace('{n}', String(rec.assignedCount))}
           </Text>
         )}
@@ -107,12 +107,12 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
             padding: 10, marginTop: 12,
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-              <Text style={{ fontSize: FONT_SMALL }}>🤖</Text>
-              <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.primary }}>
+              <Text style={{ fontSize: FONT_SMALL() }}>🤖</Text>
+              <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.primary }}>
                 推荐理由
               </Text>
             </View>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.text, lineHeight: 18 }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.text, lineHeight: 18 }}>
               {rec.reason}
             </Text>
           </View>
@@ -132,7 +132,7 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
             }}
           >
             <Zap size={14} color="#fff" />
-            <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '700' }}>
+            <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '700' }}>
               一键创建
             </Text>
           </TouchableOpacity>
@@ -146,7 +146,7 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
               borderWidth: 1, borderColor: TH.primary,
             }}
           >
-            <Text style={{ fontSize: FONT_SMALL, color: TH.primary, fontWeight: '500' }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.primary, fontWeight: '500' }}>
               自定义
             </Text>
             <ChevronRight size={14} color={TH.primary} />
@@ -162,7 +162,7 @@ function RecommendCard({ rec, onOneClickCreate, onCustomCreate, onNotInterested 
             }}
           >
             <ThumbsDown size={14} color={TH.sub} />
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
               不感兴趣
             </Text>
           </TouchableOpacity>

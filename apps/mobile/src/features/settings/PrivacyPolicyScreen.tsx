@@ -14,8 +14,8 @@ export default function PrivacyPolicyScreen() {
 
   const Section = ({ title, body }: { title: string; body: string }) => (
     <View style={{ marginBottom: 20 }}>
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: P, marginBottom: 8 }}>{title}</Text>
-      <Text style={{ fontSize: FONT_BODY, color: TH.sub, lineHeight: 24 }}>{body}</Text>
+      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: P, marginBottom: 8 }}>{title}</Text>
+      <Text style={{ fontSize: FONT_BODY(), color: TH.sub, lineHeight: 24 }}>{body}</Text>
     </View>
   );
 
@@ -26,7 +26,7 @@ export default function PrivacyPolicyScreen() {
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
         <Card style={{ padding: 16 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 20 }}>{T('privacyLastUpdated')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 20 }}>{T('privacyLastUpdated')}</Text>
           <Section title={T('privacyIntroTitle')} body={T('privacyIntro')} />
           <Section title={T('privacyCollectTitle')} body={T('privacyCollect')} />
           <Section title={T('privacyStorageTitle')} body={T('privacyStorage')} />

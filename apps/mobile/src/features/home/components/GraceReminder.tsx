@@ -24,10 +24,10 @@ export default function GraceReminder({ onPress }: Props) {
       <View style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 10, backgroundColor: warnBg, borderRadius: 14 }}>
         <Shield size={20} color={cardTextColor(TH.bg)} />
         <View style={{ flex: 1 }}>
-          <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY }}>{T('graceRemindTitle')}</Text>
-          <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>{T('graceRemindDesc')}</Text>
+          <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY() }}>{T('graceRemindTitle')}</Text>
+          <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB(), marginTop: 2 }}>{T('graceRemindDesc')}</Text>
         </View>
-        <Text style={{ color: cardTextColor(TH.bg), fontSize: FONT_SUB }}>→</Text>
+        <Text style={{ color: cardTextColor(TH.bg), fontSize: FONT_SUB() }}>→</Text>
       </View>
     </TouchableOpacity>
   );

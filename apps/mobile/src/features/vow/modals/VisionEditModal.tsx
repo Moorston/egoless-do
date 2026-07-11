@@ -45,7 +45,7 @@ function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: 
         <TouchableOpacity onPress={() => { if (month === 0) { setYear(y => y - 1); setMonth(11); } else setMonth(m => m - 1); }}>
           <ChevronLeft size={18} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{monthLabel}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{monthLabel}</Text>
         <TouchableOpacity onPress={() => { if (month === 11) { setYear(y => y + 1); setMonth(0); } else setMonth(m => m + 1); }}>
           <ChevronRight size={18} color={TH.text} />
         </TouchableOpacity>
@@ -54,7 +54,7 @@ function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: 
       <View style={styles.weekdayHeader}>
         {['一', '二', '三', '四', '五', '六', '日'].map(w => (
           <View key={w} style={styles.weekdayCell}>
-            <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>{w}</Text>
+            <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{w}</Text>
           </View>
         ))}
       </View>
@@ -75,7 +75,7 @@ function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: 
                 }]}
               >
                 <Text style={{
-                  fontSize: FONT_SUB, fontWeight: selected ? '700' : isToday ? '600' : '400',
+                  fontSize: FONT_SUB(), fontWeight: selected ? '700' : isToday ? '600' : '400',
                   color: selected ? '#fff' : isToday ? '#8B5CF6' : TH.text,
                 }}>
                   {d}
@@ -192,7 +192,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
         <View style={[styles.modalContent, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
           <View style={styles.headerRow}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>
               {vision ? T('vowEdit') : T('vowCreate')}
             </Text>
             <TouchableOpacity onPress={onClose}>
@@ -202,7 +202,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Text input */}
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('vowText')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('vowText')}</Text>
             <TextInput
               value={text}
               onChangeText={setText}
@@ -212,7 +212,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
               maxLength={500}
               style={{
                 backgroundColor: TH.card, borderRadius: 12, padding: 12,
-                color: TH.text, fontSize: FONT_BODY,
+                color: TH.text, fontSize: FONT_BODY(),
                 minHeight: 80, textAlignVertical: 'top',
                 borderWidth: 1, borderColor: TH.border, marginBottom: 16,
               }}
@@ -221,7 +221,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
             {/* Date range (for long/short only) */}
             {type !== 'lifetime' && (
               <View style={styles.pillsSection}>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
 
                 {/* Quick time frame pills */}
                 {availableTimeFrames.length > 0 && (
@@ -237,7 +237,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                             borderColor: active ? '#8B5CF6' : TH.border,
                           }]}
                         >
-                          <Text style={{ fontSize: FONT_BADGE, color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
+                          <Text style={{ fontSize: FONT_BADGE(), color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
                             {T(tf.labelKey)}
                           </Text>
                         </TouchableOpacity>
@@ -256,9 +256,9 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                 >
                   <View style={styles.dateRowIcon}>
                     <Calendar size={14} color={TH.sub} />
-                    <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowStartDate')}</Text>
+                    <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowStartDate')}</Text>
                   </View>
-                  <Text style={{ fontSize: FONT_BODY, color: startDate ? TH.text : TH.sub, fontWeight: startDate ? '500' : '400' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: startDate ? TH.text : TH.sub, fontWeight: startDate ? '500' : '400' }}>
                     {startDate || 'YYYY-MM-DD'}
                   </Text>
                 </TouchableOpacity>
@@ -277,9 +277,9 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                 >
                   <View style={styles.dateRowIcon}>
                     <Calendar size={14} color={TH.sub} />
-                    <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowEndDate')}</Text>
+                    <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowEndDate')}</Text>
                   </View>
-                  <Text style={{ fontSize: FONT_BODY, color: deadline ? TH.text : TH.sub, fontWeight: deadline ? '500' : '400' }}>
+                  <Text style={{ fontSize: FONT_BODY(), color: deadline ? TH.text : TH.sub, fontWeight: deadline ? '500' : '400' }}>
                     {deadline || 'YYYY-MM-DD'}
                   </Text>
                 </TouchableOpacity>
@@ -293,9 +293,9 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
             {/* Link habits */}
             <View style={styles.pillsSection}>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowLinkHabit')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowLinkHabit')}</Text>
               {filteredHabits.length === 0 ? (
-                <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('vowNoLink')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('vowNoLink')}</Text>
               ) : (
                 <View style={styles.pillsLeft}>
                   {filteredHabits.map((h: Habit) => {
@@ -310,7 +310,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                         }]}
                       >
                         {active ? <Link size={12} color="#10B981" /> : <Unlink size={12} color={TH.sub} />}
-                        <Text style={{ fontSize: FONT_BADGE, color: active ? '#10B981' : TH.sub }}>
+                        <Text style={{ fontSize: FONT_BADGE(), color: active ? '#10B981' : TH.sub }}>
                           {h.name}
                         </Text>
                       </TouchableOpacity>
@@ -322,9 +322,9 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
             {/* Link plans */}
             <View style={styles.plansSection}>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowLinkPlan')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowLinkPlan')}</Text>
               {filteredPlans.length === 0 ? (
-                <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('vowNoLink')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('vowNoLink')}</Text>
               ) : (
                 <View style={styles.pillsLeft}>
                   {filteredPlans.map((p: Plan) => {
@@ -339,7 +339,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                         }]}
                       >
                         {active ? <Link size={12} color="#F59E0B" /> : <Unlink size={12} color={TH.sub} />}
-                        <Text style={{ fontSize: FONT_BADGE, color: active ? '#F59E0B' : TH.sub }}>
+                        <Text style={{ fontSize: FONT_BADGE(), color: active ? '#F59E0B' : TH.sub }}>
                           {p.name}
                         </Text>
                       </TouchableOpacity>
@@ -356,7 +356,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
               onPress={onClose}
               style={styles.cancelBtn}
             >
-              <Text style={{ color: TH.sub, fontSize: FONT_BODY, fontWeight: '600' }}>{T('vowCancel')}</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_BODY(), fontWeight: '600' }}>{T('vowCancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
@@ -367,7 +367,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                 alignItems: 'center',
               }}
             >
-              <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '700' }}>
+              <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '700' }}>
                 {vision ? T('vowSave') : T('vowCreate')}
               </Text>
             </TouchableOpacity>

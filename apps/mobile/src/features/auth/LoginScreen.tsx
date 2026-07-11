@@ -100,7 +100,7 @@ export default function LoginScreen() {
               style={{ marginBottom: emailError ? 4 : 12, ...(emailError ? { borderColor: '#ef4444' } : {}) }}
             />
             {emailError ? (
-              <Text style={{ color: '#ef4444', fontSize: FONT_ERROR, marginBottom: 12 }}>{emailError}</Text>
+              <Text style={{ color: '#ef4444', fontSize: FONT_ERROR(), marginBottom: 12 }}>{emailError}</Text>
             ) : null}
             <ThemedInput
               value={password}
@@ -112,7 +112,7 @@ export default function LoginScreen() {
           </Card>
 
           {error !== '' && (
-            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR, textAlign: 'center', marginBottom: 12 }}>
+            <Text style={{ color: '#ff6b6b', fontSize: FONT_ERROR(), textAlign: 'center', marginBottom: 12 }}>
               {error}
             </Text>
           )}
@@ -124,13 +124,13 @@ export default function LoginScreen() {
           />
 
           <TouchableOpacity onPress={() => nav.navigate('Register')} activeOpacity={0.7}>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', marginBottom: 12 }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', marginBottom: 12 }}>
               {T('authNoAccount')}<Text style={{ color: TH.primary }}>{T('authGoRegister')}</Text>
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => nav.navigate('ForgotPassword')} activeOpacity={0.7}>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center' }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center' }}>
               <Text style={{ color: TH.primary }}>{T('authForgotPassword')}</Text>
             </Text>
           </TouchableOpacity>

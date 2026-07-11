@@ -301,16 +301,16 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   stepTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   stepDescription: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 24,
     lineHeight: 22,
   },
   question: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 16,
   },
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   moodLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 8,
   },
   moodRow: {
@@ -348,14 +348,14 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   moodOptionLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '500',
   },
   textInput: {
     borderWidth: 1,
     borderRadius: 12,
     padding: 16,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 120,
     textAlignVertical: 'top',
   },
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   actionButtonText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
 });

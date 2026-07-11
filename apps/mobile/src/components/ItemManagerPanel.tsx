@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontWeight: '700',
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
   },
   backButton: {
     flexDirection: 'row',
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   backText: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
   },
   inputContainer: {
     flexDirection: 'row',
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 10,
     borderWidth: 1,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 44,
   },
   addButton: {
@@ -321,11 +321,11 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#fff',
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
     fontWeight: '600',
   },
   errorText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginBottom: 12,
   },
   sortToggle: {
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   sortText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   list: {
     flex: 1,
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   itemName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     flex: 1,
   },
   freqBadge: {
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     borderWidth: 1,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 44,
   },
   editButton: {
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   bottomBackText: {
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
     fontWeight: '600',
   },
 });

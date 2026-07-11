@@ -26,8 +26,8 @@ export default function DelayedReminder({ plan, onGoToPlan, onDismiss }: Props) 
       <View style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 10, backgroundColor: cardAccent(COLORS.RED, TH.bg, 0.45), borderRadius: 14 }}>
         <AlertTriangle size={20} color={cardTextColor(TH.bg)} />
         <View style={{ flex: 1 }}>
-          <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY }}>{T('planDelayedNotify')}</Text>
-          <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB, marginTop: 2 }}>
+          <Text style={{ color: cardTextColor(TH.bg), fontWeight: '700', fontSize: FONT_BODY() }}>{T('planDelayedNotify')}</Text>
+          <Text style={{ color: cardTextColor(TH.bg), opacity: 0.8, fontSize: FONT_SUB(), marginTop: 2 }}>
             {T('planDelayed')}: {plan?.name ?? ''}
           </Text>
         </View>

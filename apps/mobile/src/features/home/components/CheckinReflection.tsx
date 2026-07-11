@@ -110,18 +110,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 4,
   },
   subtitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     textAlign: 'center',
     marginBottom: 20,
   },
   label: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 12,
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   moodLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   inputSection: {
     marginBottom: 16,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     minHeight: 80,
     textAlignVertical: 'top',
   },
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   skipText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   saveButton: {
     flex: 2,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     color: '#fff',
   },

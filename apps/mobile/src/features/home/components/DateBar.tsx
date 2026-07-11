@@ -31,7 +31,7 @@ export default function DateBar({ viewDate, onNavigate }: Props) {
       >
         <ChevronLeft size={20} color={TH.text} />
       </TouchableOpacity>
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+      <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
         {formatDateBar(viewDate, isToday, T)}
       </Text>
       <TouchableOpacity

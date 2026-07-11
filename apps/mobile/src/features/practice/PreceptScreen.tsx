@@ -162,7 +162,7 @@ export default function PreceptScreen() {
           {isChecked ? (
             <View style={[styles.doneTag, { backgroundColor: '#10B98120' }]}>
               <Check size={14} color="#10B981" />
-              <Text style={{ color: '#10B981', fontSize: FONT_BODY, fontWeight: '600' }}> 今日已持戒</Text>
+              <Text style={{ color: '#10B981', fontSize: FONT_BODY(), fontWeight: '600' }}> 今日已持戒</Text>
             </View>
           ) : (
             <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -225,7 +225,7 @@ export default function PreceptScreen() {
                 style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#10B98115', borderWidth: 1, borderColor: '#10B98130' }}
               >
                 <Check size={16} color="#10B981" />
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10B981' }}>{T('preceptBatchDone')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#10B981' }}>{T('preceptBatchDone')}</Text>
               </TouchableOpacity>
             )}
             {someChecked && (
@@ -234,7 +234,7 @@ export default function PreceptScreen() {
                 style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: 10, backgroundColor: '#EF444415', borderWidth: 1, borderColor: '#EF444430' }}
               >
                 <X size={16} color="#EF4444" />
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>{T('preceptBatchUndo')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#EF4444' }}>{T('preceptBatchUndo')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -282,7 +282,7 @@ export default function PreceptScreen() {
                   {isChecked ? (
                     <View style={[styles.doneTag, { backgroundColor: '#10B98120' }]}>
                       <Check size={14} color="#10B981" />
-                      <Text style={{ color: '#10B981', fontSize: FONT_BODY, fontWeight: '600' }}> 今日已持戒</Text>
+                      <Text style={{ color: '#10B981', fontSize: FONT_BODY(), fontWeight: '600' }}> 今日已持戒</Text>
                     </View>
                   ) : (
                     <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -347,7 +347,7 @@ export default function PreceptScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Precept" />
-      <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('preceptSubtitle')}</Text>
+      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('preceptSubtitle')}</Text>
       <FlatList
         data={avoidHabits}
         renderItem={renderPreceptItem}
@@ -379,7 +379,7 @@ export default function PreceptScreen() {
                   }]}
                   onPress={() => setViolateTrigger(violateTrigger === t ? '' : t)}
                 >
-                  <Text style={{ color: violateTrigger === t ? '#fff' : TH.primary, fontSize: FONT_BODY, fontWeight: '600' }}>{t}</Text>
+                  <Text style={{ color: violateTrigger === t ? '#fff' : TH.primary, fontSize: FONT_BODY(), fontWeight: '600' }}>{t}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -441,7 +441,7 @@ export default function PreceptScreen() {
                     onPress={() => !exists && handleAddPrecept(p)}
                     disabled={exists}
                   >
-                    <Text style={{ color: exists ? TH.sub : '#EF4444', fontSize: FONT_BODY }}>{p.name}</Text>
+                    <Text style={{ color: exists ? TH.sub : '#EF4444', fontSize: FONT_BODY() }}>{p.name}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -463,7 +463,7 @@ export default function PreceptScreen() {
                     onPress={() => !exists && handleAddPrecept(p)}
                     disabled={exists}
                   >
-                    <Text style={{ color: exists ? TH.sub : '#10B981', fontSize: FONT_BODY }}>{p.name}</Text>
+                    <Text style={{ color: exists ? TH.sub : '#10B981', fontSize: FONT_BODY() }}>{p.name}</Text>
                   </TouchableOpacity>
                 );
               })}
@@ -481,7 +481,7 @@ export default function PreceptScreen() {
                   }]}
                   onPress={() => setCustomType(t)}
                 >
-                  <Text style={{ color: customType === t ? '#fff' : TH.primary, fontSize: FONT_BODY, fontWeight: '600' }}>
+                  <Text style={{ color: customType === t ? '#fff' : TH.primary, fontSize: FONT_BODY(), fontWeight: '600' }}>
                     {t === 'avoid' ? T('preceptTypeAvoid') : T('preceptTypePractice')}
                   </Text>
                 </TouchableOpacity>
@@ -531,19 +531,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4,
   },
   statsTitle: {
-    fontSize: FONT_TITLE, fontWeight: '700',
+    fontSize: FONT_TITLE(), fontWeight: '700',
   },
   quoteText: {
-    fontSize: FONT_SUB, marginBottom: 12, fontStyle: 'italic',
+    fontSize: FONT_SUB(), marginBottom: 12, fontStyle: 'italic',
   },
   statsRow: {
     flexDirection: 'row', justifyContent: 'space-around',
   },
   statItem: { alignItems: 'center', gap: 2 },
-  statValue: { fontSize: FONT_STAT_CARD, fontWeight: '800' },
+  statValue: { fontSize: FONT_STAT_CARD(), fontWeight: '800' },
   statLabel: { fontSize: 11 },
   section: { marginBottom: 16 },
-  sectionTitle: { fontSize: FONT_SUB, fontWeight: '700', marginBottom: 10 },
+  sectionTitle: { fontSize: FONT_SUB(), fontWeight: '700', marginBottom: 10 },
   preceptCard: {
     borderRadius: 14, borderWidth: 1, padding: 14, marginBottom: 10,
   },
@@ -551,10 +551,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10,
   },
   preceptIcon: { fontSize: 20 },
-  preceptName: { fontSize: FONT_BODY, fontWeight: '700' },
+  preceptName: { fontSize: FONT_BODY(), fontWeight: '700' },
   preceptGoal: { fontSize: 12, marginTop: 2 },
   streakBadge: { alignItems: 'center' },
-  streakText: { fontSize: FONT_BODY, fontWeight: '600' },
+  streakText: { fontSize: FONT_BODY(), fontWeight: '600' },
   preceptActions: { flexDirection: 'row', justifyContent: 'flex-end' },
   doneTag: {
     flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12,
@@ -562,31 +562,31 @@ const styles = StyleSheet.create({
   actionBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 12,
   },
-  actionBtnText: { color: '#fff', fontSize: FONT_BODY, fontWeight: '600' },
+  actionBtnText: { color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' },
   emptyCard: {
     borderRadius: 16, borderWidth: 1, padding: 40, alignItems: 'center', gap: 12, marginBottom: 16,
   },
-  emptyText: { fontSize: FONT_BODY },
+  emptyText: { fontSize: FONT_BODY() },
   actionRow: { flexDirection: 'row', gap: 12, marginBottom: 16 },
   bottomBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
     padding: 14, borderRadius: 14, borderWidth: 1,
   },
-  bottomBtnText: { fontSize: FONT_BODY, fontWeight: '600' },
+  bottomBtnText: { fontSize: FONT_BODY(), fontWeight: '600' },
   insightRow: {
     borderLeftWidth: 3, paddingLeft: 12, paddingVertical: 8, marginBottom: 8,
   },
   insightDate: { fontSize: 12, marginBottom: 2 },
-  insightContent: { fontSize: FONT_BODY },
+  insightContent: { fontSize: FONT_BODY() },
   // Modal styles
   modalContainer: { flex: 1 },
   modalHeader: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingBottom: 0,
   },
-  modalTitle: { fontSize: FONT_TITLE, fontWeight: '700' },
-  modalLabel: { fontSize: FONT_BODY, fontWeight: '600', marginBottom: 10 },
+  modalTitle: { fontSize: FONT_TITLE(), fontWeight: '700' },
+  modalLabel: { fontSize: FONT_BODY(), fontWeight: '600', marginBottom: 10 },
   modalInput: {
-    borderRadius: 12, borderWidth: 1, padding: 14, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', marginBottom: 12,
+    borderRadius: 12, borderWidth: 1, padding: 14, fontSize: FONT_BODY(), minHeight: 80, textAlignVertical: 'top', marginBottom: 12,
   },
   triggerRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   triggerChip: {
@@ -595,9 +595,9 @@ const styles = StyleSheet.create({
   typeChip: {
     paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, borderWidth: 1,
   },
-  quoteModal: { fontSize: FONT_SUB, fontStyle: 'italic', textAlign: 'center', marginTop: 8 },
+  quoteModal: { fontSize: FONT_SUB(), fontStyle: 'italic', textAlign: 'center', marginTop: 8 },
   saveBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 16, borderRadius: 14,
   },
-  saveBtnText: { color: '#fff', fontSize: FONT_BODY, fontWeight: '700' },
+  saveBtnText: { color: '#fff', fontSize: FONT_BODY(), fontWeight: '700' },
 });

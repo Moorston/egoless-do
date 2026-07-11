@@ -31,8 +31,8 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
   const renderSlider = (label: string, value: number, onChange: (v: number) => void, lowLabel: string, highLabel: string, color: string) => (
     <View style={{ marginBottom: 16 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{label}</Text>
-        <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color }}>{value}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{label}</Text>
+        <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>{value}</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 6 }}>
         {[1, 2, 3, 4, 5].map(v => (
@@ -42,13 +42,13 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
               backgroundColor: v === value ? color : TH.card,
               borderWidth: v === value ? 0 : 1, borderColor: TH.border,
             }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: v === value ? '700' : '400', color: v === value ? '#fff' : TH.text }}>{v}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: v === value ? '700' : '400', color: v === value ? '#fff' : TH.text }}>{v}</Text>
           </TouchableOpacity>
         ))}
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
-        <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{lowLabel}</Text>
-        <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{highLabel}</Text>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{lowLabel}</Text>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{highLabel}</Text>
       </View>
     </View>
   );
@@ -57,8 +57,8 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
     <View>
       {plan && (
         <View style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyFlowPractice')}</Text>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginTop: 4 }}>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyFlowPractice')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginTop: 4 }}>
             {plan.part} {plan.note ? `— ${plan.note}` : ''}
           </Text>
         </View>
@@ -69,7 +69,7 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
       {renderSlider(T('bodyComfort') || '舒适', comfort, setComfort, '不适', '舒适', '#10b981')}
       {renderSlider(T('bodySleepQuality') || '睡眠', sleepQuality, setSleepQuality, '差', '好', '#3b82f6')}
 
-      <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel') || '标签'}</Text>
+      <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel') || '标签'}</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
         {allTags.map(tag => (
           <TagPill key={tag} label={tag} active={selectedTags.includes(tag)}
@@ -80,7 +80,7 @@ function BodyCheckinInline({ TH, T, plan, onSave, onSkip }: Props) {
       </View>
 
       <TextInput
-        style={{ backgroundColor: TH.card, borderRadius: 10, padding: 12, color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border, minHeight: 60, marginBottom: 16, textAlignVertical: 'top' }}
+        style={{ backgroundColor: TH.card, borderRadius: 10, padding: 12, color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border, minHeight: 60, marginBottom: 16, textAlignVertical: 'top' }}
         placeholder={T('bodyCheckinNotePlaceholder') || '补充说明...'}
         placeholderTextColor={TH.sub}
         multiline maxLength={500}

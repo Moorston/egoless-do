@@ -2,7 +2,7 @@ import { COLORS, FONT_HERO, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BO
 import { LinearGradient } from 'expo-linear-gradient';
 import { Minus, Plus, Pause } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
@@ -11,6 +11,13 @@ import ExerciseTopBar from '../shared/ExerciseTopBar';
 import RestOverlay from '../shared/RestOverlay';
 
 import type { ExerciseLayoutProps } from './types';
+
+/* Resolve font constants once at module level for StyleSheet */
+const FONT_SUB_SIZE = FONT_SUB();
+const FONT_HERO_SIZE = FONT_HERO();
+const FONT_BODY_SIZE = FONT_BODY();
+const FONT_STAT_SECTION_SIZE = FONT_STAT_SECTION();
+const FONT_STAT_CARD_SIZE = FONT_STAT_CARD();
 
 export default function StrengthActive(props: ExerciseLayoutProps) {
   const {
@@ -30,7 +37,7 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
   const lastSetReps = sets.length > 0 ? sets[sets.length - 1].reps : null;
 
   return (
-    <LinearGradient colors={['#2e1a1a', '#1f0f0f', '#150a0a']} style={{ flex: 1 }}>
+    <LinearGradient colors={['#2e1a1a', '#1f0f0f', '#150a0a']} style={s.root}>
       {/* Rest */}
       {isResting && restMode === 'inline' ? (
         <EmbeddedRest restSec={restSec} onSkip={skipRest} T={T} />
@@ -50,14 +57,14 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
         selectedSound={selectedSound} showSoundPicker={showSoundPicker}
         onToggleSoundPicker={onToggleSoundPicker} onSelectSound={onSelectSound}
         rightSlot={
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>
+          <Text style={s.setLabel}>
             {T('exerciseSet').replace('{n}', String(currentSet))} · {sets.reduce((s, set) => s + set.reps, 0)} {T('exerciseReps')}
           </Text>
         }
       />
 
       {/* Music bar — meditation style */}
-      <View style={{ paddingHorizontal: 16 }}>
+      <View style={s.musicBarWrap}>
         <MeditationMusicBar
           track={musicTrack} isActive isPlaying={musicIsPlaying} primaryColor={COLORS.ORANGE}
           loop={musicLoop} onPress={onMusicPressTrackName} onTogglePlay={onMusicTogglePlay} onToggleLoop={onMusicToggleLoop}
@@ -65,26 +72,26 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
       </View>
 
       {/* Zone 2: Main interaction */}
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 28 }}>
+      <View style={s.interactionZone}>
         {/* +5 quick button */}
         <TouchableOpacity onPress={() => setCurrentSetReps(r => r + 5)}
-          style={{ marginBottom: 8, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.1)' }}>
-          <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>+5</Text>
+          style={s.quickPlusBtn}>
+          <Text style={s.quickPlusLabel}>+5</Text>
         </TouchableOpacity>
 
         {/* Main number + controls */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+        <View style={s.controlsRow}>
           <Animated.View style={{ transform: [{ scale: minusRippleAnim }] }}>
             <TouchableOpacity
               onPressIn={() => startLongPress(-1)}
               onPressOut={() => stopLongPress(-1)}
-              style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,.15)', alignItems: 'center', justifyContent: 'center' }}>
+              style={s.minusBtn}>
               <Minus size={24} color="#fff" />
             </TouchableOpacity>
           </Animated.View>
 
           <Animated.View style={{ transform: [{ scale: bounceAnim }] }}>
-            <Text style={{ fontSize: FONT_HERO + 8, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'], minWidth: 80, textAlign: 'center' }}>
+            <Text style={s.mainReps}>
               {currentSetReps}
             </Text>
           </Animated.View>
@@ -93,38 +100,38 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
             <TouchableOpacity
               onPressIn={() => startLongPress(1)}
               onPressOut={() => stopLongPress(1)}
-              style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: COLORS.GREEN, alignItems: 'center', justifyContent: 'center' }}>
+              style={s.plusBtn}>
               <Plus size={32} color="#fff" />
             </TouchableOpacity>
           </Animated.View>
         </View>
 
-        <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.65)', marginTop: 6 }}>{T('exerciseReps')}</Text>
+        <Text style={s.repsLabel}>{T('exerciseReps')}</Text>
 
         {/* Complete set button */}
         {currentSetReps > 0 && (
           <TouchableOpacity onPress={handleCompleteSet}
-            style={{ marginTop: 20, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 24, backgroundColor: `${COLORS.GREEN}30`, borderWidth: 1, borderColor: COLORS.GREEN }}>
-            <Text style={{ color: COLORS.GREEN, fontSize: FONT_BODY, fontWeight: '700' }}>{T('exerciseSetComplete')}</Text>
+            style={s.completeSetBtn}>
+            <Text style={s.completeSetLabel}>{T('exerciseSetComplete')}</Text>
           </TouchableOpacity>
         )}
 
         {/* Set history cards */}
         {sets.length > 0 && (
-          <View style={{ flexDirection: 'row', marginTop: 20, gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <View style={s.setHistoryRow}>
             {sets.slice(-3).map((s, i) => {
               const idx = sets.length - 3 + i;
               return (
-                <View key={idx} style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.08)' }}>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' }}>
+                <View key={idx} style={s.setHistoryCard}>
+                  <Text style={s.setHistoryText}>
                     {T('exerciseSet').replace('{n}', String(idx + 1))}: {s.reps}
                   </Text>
                 </View>
               );
             })}
             {sets.length > 3 && (
-              <View style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' }}>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)' }}>+{sets.length - 3}</Text>
+              <View style={s.setHistoryOverflowCard}>
+                <Text style={s.setHistoryOverflowText}>+{sets.length - 3}</Text>
               </View>
             )}
           </View>
@@ -132,11 +139,11 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
 
         {/* Target progress */}
         {mode === 'target' && (
-          <View style={{ marginTop: 20, width: '100%', paddingHorizontal: 20 }}>
-            <View style={{ height: 6, backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
+          <View style={s.targetSection}>
+            <View style={s.progressTrack}>
               <Animated.View style={{ height: 6, width: `${Math.min(targetProgress * 100, 100)}%`, backgroundColor: COLORS.GREEN, borderRadius: 3, opacity: pulseAnim }} />
             </View>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' }}>
+            <Text style={s.targetProgressText}>
               {targetType === 'reps' ? `${totalReps} / ${targetValue} ${T('exerciseReps')}` : `${Math.round(targetProgress * 100)}%`}
             </Text>
           </View>
@@ -144,11 +151,11 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
 
         {/* Soft target (free mode) */}
         {mode === 'free' && softTarget && (
-          <View style={{ marginTop: 20, width: '100%', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: FONT_SUB, color: softTargetReached ? COLORS.GREEN : 'rgba(255,255,255,.35)', textAlign: 'center', marginBottom: 4 }}>
+          <View style={s.targetSection}>
+            <Text style={{ fontSize: FONT_SUB_SIZE, color: softTargetReached ? COLORS.GREEN : 'rgba(255,255,255,.35)', textAlign: 'center', marginBottom: 4 }}>
               {softTargetReached ? T('exerciseTargetReached') : softTargetLabel}
             </Text>
-            <View style={{ height: 4, backgroundColor: 'rgba(255,255,255,.08)', borderRadius: 2, overflow: 'hidden' }}>
+            <View style={s.softProgressTrack}>
               <View style={{ height: 4, width: `${softTargetProgress * 100}%`, backgroundColor: softTargetReached ? COLORS.GREEN : 'rgba(255,255,255,.2)', borderRadius: 2 }} />
             </View>
           </View>
@@ -156,12 +163,12 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
       </View>
 
       {/* Zone 3: Bottom bar — duration + pause + calories */}
-      <View style={{ paddingBottom: 48, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <View style={{ alignItems: 'center', flex: 1 }}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>
+      <View style={s.bottomBar}>
+        <View style={s.bottomStat}>
+          <Text style={s.durationValue}>
             {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}
           </Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
+          <Text style={s.durationLabel}>{T('exerciseDuration')}</Text>
         </View>
 
         <Animated.View style={{ transform: [{ scale: pauseHoldAnim }] }}>
@@ -169,16 +176,57 @@ export default function StrengthActive(props: ExerciseLayoutProps) {
             onPress={handlePause}
             onPressIn={onPressInPauseLong}
             onPressOut={onPressOutPauseLong}
-            style={{ width: 88, height: 88, borderRadius: 44, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+            style={s.pauseBtn}>
             <Pause size={36} color="#333" />
           </TouchableOpacity>
         </Animated.View>
 
-        <View style={{ alignItems: 'center', flex: 1 }}>
-          <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: COLORS.ORANGE }}>{calories}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>kcal</Text>
+        <View style={s.bottomStat}>
+          <Text style={s.caloriesValue}>{calories}</Text>
+          <Text style={s.caloriesLabel}>kcal</Text>
         </View>
       </View>
     </LinearGradient>
   );
 }
+
+const s = StyleSheet.create({
+  /* Containers */
+  root: { flex: 1 },
+  musicBarWrap: { paddingHorizontal: 16 },
+  interactionZone: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 28 },
+  controlsRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  setHistoryRow: { flexDirection: 'row', marginTop: 20, gap: 8, flexWrap: 'wrap', justifyContent: 'center' },
+  targetSection: { marginTop: 20, width: '100%', paddingHorizontal: 20 },
+  bottomBar: { paddingBottom: 48, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  bottomStat: { alignItems: 'center', flex: 1 },
+
+  /* Text */
+  setLabel: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.5)' },
+  quickPlusLabel: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY_SIZE },
+  mainReps: { fontSize: FONT_HERO_SIZE + 8, fontWeight: '900', color: '#fff', fontVariant: ['tabular-nums'], minWidth: 80, textAlign: 'center' },
+  repsLabel: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.65)', marginTop: 6 },
+  completeSetLabel: { color: COLORS.GREEN, fontSize: FONT_BODY_SIZE, fontWeight: '700' },
+  setHistoryText: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.5)' },
+  setHistoryOverflowText: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.7)' },
+  targetProgressText: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' },
+  durationValue: { fontSize: FONT_STAT_SECTION_SIZE, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] },
+  durationLabel: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.7)', marginTop: 2 },
+  caloriesValue: { fontSize: FONT_STAT_CARD_SIZE, fontWeight: '700', color: COLORS.ORANGE },
+  caloriesLabel: { fontSize: FONT_SUB_SIZE, color: 'rgba(255,255,255,.7)', marginTop: 2 },
+
+  /* Buttons */
+  quickPlusBtn: { marginBottom: 8, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 16, backgroundColor: 'rgba(255,255,255,.1)' },
+  minusBtn: { width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,.15)', alignItems: 'center', justifyContent: 'center' },
+  plusBtn: { width: 72, height: 72, borderRadius: 36, backgroundColor: COLORS.GREEN, alignItems: 'center', justifyContent: 'center' },
+  completeSetBtn: { marginTop: 20, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 24, backgroundColor: `${COLORS.GREEN}30`, borderWidth: 1, borderColor: COLORS.GREEN },
+  pauseBtn: { width: 88, height: 88, borderRadius: 44, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
+
+  /* Cards */
+  setHistoryCard: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.08)' },
+  setHistoryOverflowCard: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' },
+
+  /* Progress */
+  progressTrack: { height: 6, backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' },
+  softProgressTrack: { height: 4, backgroundColor: 'rgba(255,255,255,.08)', borderRadius: 2, overflow: 'hidden' },
+});

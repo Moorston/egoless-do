@@ -30,8 +30,8 @@ export default React.memo(function CategoryCard({ icon, name, count, gradient, o
       >
         <IconComp size={32} color="rgba(255,255,255,.85)" />
         <View>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>{name}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{name}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 2 }}>
             {T('musicTrackCount').replace('{n}', String(count))}
           </Text>
         </View>

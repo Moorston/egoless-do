@@ -456,7 +456,7 @@ export default function ReflectionStatsScreen() {
                 <Text
                   style={{
                     color: isActive ? P : TH.sub,
-                    fontSize: FONT_SMALL,
+                    fontSize: FONT_SMALL(),
                     fontWeight: isActive ? '600' : '400',
                   }}
                 >
@@ -519,11 +519,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   overviewValue: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
   },
   overviewLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginTop: 4,
   },
   tabsContainer: {
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   sectionTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     marginBottom: 12,
   },
@@ -601,7 +601,7 @@ const styles = StyleSheet.create({
     width: 28,
   },
   moodName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     width: 56,
   },
   moodBarContainer: {
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   moodCount: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     width: 30,
     textAlign: 'right',
   },
@@ -628,7 +628,7 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
     padding: 32,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   rankingItem: {
     flexDirection: 'row',
@@ -637,13 +637,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   rankingIndex: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
     width: 24,
     textAlign: 'center',
   },
   rankingTag: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     width: 80,
   },
   rankingBarContainer: {
@@ -658,7 +658,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   rankingCount: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     width: 30,
     textAlign: 'right',
   },
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   },
   shareButtonText: {
     color: '#fff',
-    fontSize: FONT_BUTTON,
+    fontSize: FONT_BUTTON(),
     fontWeight: '600',
   },
 });

@@ -74,7 +74,7 @@ export default function MusicCategoryScreen() {
         <TouchableOpacity onPress={() => nav.goBack()}>
           <ArrowLeft size={22} color={TH.text} />
         </TouchableOpacity>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>
           {meta ? T(meta.nameKey) : category}
         </Text>
       </View>
@@ -87,7 +87,7 @@ export default function MusicCategoryScreen() {
           ) : (
             <Music size={48} color={TH.border} />
           )}
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
             {category === 'favorites' ? T('musicEmptyFavorites') : T('musicNoTracks')}
           </Text>
         </View>

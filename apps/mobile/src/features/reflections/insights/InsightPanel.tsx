@@ -46,14 +46,14 @@ export default function InsightPanel({
     return (
       <View style={{ alignItems: 'center', paddingVertical: 32 }}>
         <Text style={{ fontSize: 32, marginBottom: 8 }}>📝</Text>
-        <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>
+        <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
           {T('insightProfileEmpty')}
         </Text>
         <TouchableOpacity
           onPress={onGoRecord}
           style={{ backgroundColor: TH.primary, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 20, marginTop: 12 }}
         >
-          <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('insightProfileGoRecord')}</Text>
+          <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('insightProfileGoRecord')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -73,14 +73,14 @@ export default function InsightPanel({
     <View>
       {/* Stats */}
       <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
           {T('insightProfileStats').replace('{days}', String(spanDays)).replace('{count}', String(localInsights.totalCount))}
         </Text>
-        <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>
           {rangeStart} ─ {rangeEnd}
         </Text>
         {localInsights.streakDays > 0 && (
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginTop: 2 }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>
             {T('insightProfileStreak').replace('{days}', String(localInsights.streakDays))}
           </Text>
         )}
@@ -89,7 +89,7 @@ export default function InsightPanel({
       {/* Hot Tags */}
       {localInsights.hotTags.length > 0 && (
         <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-          <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.sub, marginBottom: 8 }}>
+          <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>
             {T('insightProfileHotTags')}
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -104,9 +104,9 @@ export default function InsightPanel({
                   marginRight: 8, marginBottom: 8,
                 }}
               >
-                <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.text }}>{tag.tag}</Text>
-                <Text style={{ fontSize: FONT_TINY, color: trendColor(tag.trend), marginLeft: 4 }}>{trendIcon(tag.trend)}</Text>
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginLeft: 4 }}>{tag.count}次</Text>
+                <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text }}>{tag.tag}</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: trendColor(tag.trend), marginLeft: 4 }}>{trendIcon(tag.trend)}</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{tag.count}次</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -116,7 +116,7 @@ export default function InsightPanel({
       {/* Mood Distribution */}
       {localInsights.moodDistribution.length > 0 && (
         <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-          <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.sub, marginBottom: 8 }}>
+          <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>
             {T('insightProfileMoodDist')}
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -131,10 +131,10 @@ export default function InsightPanel({
                   marginRight: 8, marginBottom: 8,
                 }}
               >
-                <Text style={{ fontSize: FONT_SMALL }}>{entry.icon}</Text>
-                <Text style={{ fontSize: FONT_SMALL, fontWeight: '600', color: TH.text, marginLeft: 4 }}>{entry.mood}</Text>
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginLeft: 4 }}>{entry.percentage}%</Text>
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginLeft: 4 }}>{entry.count}次</Text>
+                <Text style={{ fontSize: FONT_SMALL() }}>{entry.icon}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: TH.text, marginLeft: 4 }}>{entry.mood}</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{entry.percentage}%</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginLeft: 4 }}>{entry.count}次</Text>
               </TouchableOpacity>
             ))}
           </View>

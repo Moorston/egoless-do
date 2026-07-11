@@ -235,7 +235,7 @@ export default function ProfileScreen() {
                   placeholderTextColor={TH.sub}
                   style={{
                     flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 12,
-                    color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                    color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
                   }}
                 />
                 <TouchableOpacity accessibilityLabel={T('commonSave')} onPress={saveNickname} style={{ padding: 8 }}>
@@ -247,12 +247,12 @@ export default function ProfileScreen() {
               </View>
             ) : (
               <TouchableOpacity accessibilityLabel={'编辑昵称'} onPress={() => setEditingNickname(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{displayName}</Text>
+                <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE() }}>{displayName}</Text>
                 <Pencil size={14} color={TH.sub} />
               </TouchableOpacity>
             )}
 
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
               {auth.user?.email ?? ''}
             </Text>
           </View>
@@ -260,14 +260,14 @@ export default function ProfileScreen() {
 
         {/* Body data */}
         <Card style={{ marginBottom: 12 }}>
-          <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12 }}>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB(), fontWeight: '600', marginBottom: 12 }}>
             {T('profileBodyData')}
           </Text>
 
           {/* Weight */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
             <Scale size={18} color={P} />
-            <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileWeight')}</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileWeight')}</Text>
             <TextInput
               value={editWeight}
               onChangeText={debouncedSaveWeight}
@@ -276,7 +276,7 @@ export default function ProfileScreen() {
               keyboardType="numeric"
               style={{
                 flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
-                color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
                 textAlign: 'center',
               }}
             />
@@ -292,14 +292,14 @@ export default function ProfileScreen() {
                 backgroundColor: `${P}20`, borderRadius: 10,
               }}
             >
-              <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{weightUnit}</Text>
+              <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{weightUnit}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Height */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
             <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: 16, color: P }}>📏</Text></View>
-            <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileHeight')}</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileHeight')}</Text>
             <TextInput
               value={editHeight}
               onChangeText={debouncedSaveHeight}
@@ -308,17 +308,17 @@ export default function ProfileScreen() {
               keyboardType="numeric"
               style={{
                 flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
-                color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
                 textAlign: 'center',
               }}
             />
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, width: 30, textAlign: 'left' }}>cm</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB(), width: 30, textAlign: 'left' }}>cm</Text>
           </View>
 
           {/* Gender */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
             <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: 16, color: P }}>⚤</Text></View>
-            <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileGender')}</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileGender')}</Text>
             <TouchableOpacity
               accessibilityLabel={T('profileGender')}
               onPress={() => Alert.alert(T('profileGender'), '', [
@@ -334,7 +334,7 @@ export default function ProfileScreen() {
                 paddingHorizontal: 12,
               }}
             >
-              <Text style={{ color: editGender ? TH.text : TH.sub, fontSize: FONT_BODY }}>
+              <Text style={{ color: editGender ? TH.text : TH.sub, fontSize: FONT_BODY() }}>
                 {editGender ? T(`profileGender${editGender.charAt(0).toUpperCase() + editGender.slice(1)}`) : '—'}
               </Text>
               <ChevronRight size={16} color={TH.sub} />
@@ -344,24 +344,24 @@ export default function ProfileScreen() {
           {/* Water goal */}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Droplets size={18} color="#3B82F6" />
-            <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileWaterGoal')}</Text>
+            <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileWaterGoal')}</Text>
             <TextInput
               value={editWaterGoal}
               onChangeText={debouncedSaveWaterGoal}
               keyboardType="numeric"
               style={{
                 flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
-                color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
                 textAlign: 'center',
               }}
             />
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB, width: 30 }}>ml</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB(), width: 30 }}>ml</Text>
           </View>
         </Card>
 
         {/* Journey */}
         <Card style={{ marginBottom: 12 }}>
-          <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '600', marginBottom: 12 }}>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB(), fontWeight: '600', marginBottom: 12 }}>
             {T('profileJourney')}
           </Text>
           {/* Motto */}
@@ -375,7 +375,7 @@ export default function ProfileScreen() {
                 placeholderTextColor={TH.sub}
                 style={{
                   flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
-                  color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
+                  color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
                   fontStyle: 'italic',
                 }}
               />
@@ -389,7 +389,7 @@ export default function ProfileScreen() {
           ) : (
             <TouchableOpacity accessibilityLabel={'编辑座右铭'} onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
               <Quote size={16} color={P} />
-              <Text style={{ color: userProfile.motto ? TH.text : TH.sub, fontSize: FONT_BODY, fontStyle: 'italic', flex: 1 }}>
+              <Text style={{ color: userProfile.motto ? TH.text : TH.sub, fontSize: FONT_BODY(), fontStyle: 'italic', flex: 1 }}>
                 {userProfile.motto || T('profileMottoPlaceholder')}
               </Text>
               <Pencil size={12} color={TH.sub} />
@@ -412,15 +412,15 @@ export default function ProfileScreen() {
           ].map((s, i, arr) => (
             <View key={i} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
               {s.icon}
-              <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1, marginLeft: 10 }}>{s.label}</Text>
-              <Text style={{ color: P, fontSize: FONT_BODY, fontWeight: '600' }}>{s.value}</Text>
+              <Text style={{ color: TH.text, fontSize: FONT_BODY(), flex: 1, marginLeft: 10 }}>{s.label}</Text>
+              <Text style={{ color: P, fontSize: FONT_BODY(), fontWeight: '600' }}>{s.value}</Text>
             </View>
           ))}
         </Card>
 
         {/* Account */}
         <Card style={{ marginBottom: 12 }}>
-          <Text style={{ color: TH.sub, fontSize: FONT_SUB, fontWeight: '600', marginBottom: 8 }}>
+          <Text style={{ color: TH.sub, fontSize: FONT_SUB(), fontWeight: '600', marginBottom: 8 }}>
             {T('profileAccount')}
           </Text>
           <TouchableOpacity
@@ -454,7 +454,7 @@ export default function ProfileScreen() {
               ? <ActivityIndicator size="small" color={TH.sub} style={{ marginRight: 12 }} />
               : <Database size={18} color="#F59E0B" style={{ marginRight: 12 }} />
             }
-            <Text style={{ color: clearing ? TH.sub : '#F59E0B', fontSize: FONT_BODY, flex: 1 }}>
+            <Text style={{ color: clearing ? TH.sub : '#F59E0B', fontSize: FONT_BODY(), flex: 1 }}>
               {clearing ? T('clearDataLoading') : T('settingsClearData')}
             </Text>
           </TouchableOpacity>
@@ -465,7 +465,7 @@ export default function ProfileScreen() {
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
           >
             <LogOut size={18} color="#EF4444" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#EF4444', fontSize: FONT_BODY, flex: 1 }}>{T('settingsLogout')}</Text>
+            <Text style={{ color: '#EF4444', fontSize: FONT_BODY(), flex: 1 }}>{T('settingsLogout')}</Text>
           </TouchableOpacity>
         </Card>
       </ScrollView>

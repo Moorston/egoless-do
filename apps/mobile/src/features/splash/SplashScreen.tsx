@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: FONT_HERO,
+    fontSize: FONT_HERO(),
     fontWeight: '800',
     color: '#7C3AED',
     letterSpacing: 8,
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 20,
   },
   subtitle: {
-    fontSize: FONT_CLOSE,
+    fontSize: FONT_CLOSE(),
     color: 'rgba(124, 58, 237, 0.9)',
     letterSpacing: 10,
     marginTop: 18,
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
   },
   tagline: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     color: 'rgba(124, 58, 237, 0.65)',
     letterSpacing: 6,
     marginTop: 24,

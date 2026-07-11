@@ -498,7 +498,7 @@ export default function MindTrailScreen() {
                   backgroundColor: '#8B5CF620', borderRadius: 4,
                   paddingHorizontal: 6, paddingVertical: 2,
                 }}>
-                  <Text style={{ fontSize: FONT_TINY, color: '#8B5CF6' }}>AI</Text>
+                  <Text style={{ fontSize: FONT_TINY(), color: '#8B5CF6' }}>AI</Text>
                 </View>
                 <Text style={[styles.trailName, { color: TH.text, marginBottom: 0 }]}>{item.trail.name}</Text>
               </View>
@@ -528,10 +528,10 @@ export default function MindTrailScreen() {
               推荐思维脉络
             </Text>
             {isLoadingRecs && (
-              <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>加载中...</Text>
+              <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>加载中...</Text>
             )}
             {isAILoading && !isLoadingRecs && (
-              <Text style={{ fontSize: FONT_TINY, color: TH.primary }}>AI 推荐加载中...</Text>
+              <Text style={{ fontSize: FONT_TINY(), color: TH.primary }}>AI 推荐加载中...</Text>
             )}
           </View>
         );
@@ -554,7 +554,7 @@ export default function MindTrailScreen() {
             }}
           >
             <RefreshCw size={14} color={TH.primary} />
-            <Text style={{ fontSize: FONT_SMALL, color: TH.primary }}>换一批</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.primary }}>换一批</Text>
           </TouchableOpacity>
         );
       case 'rec-empty':
@@ -702,7 +702,7 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
   },
   emptyText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   trailCard: {
     padding: 16,
@@ -717,16 +717,16 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   trailName: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 4,
   },
   trailInfo: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 4,
   },
   moodChanges: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   queryPanel: {
     paddingHorizontal: 16,
@@ -751,7 +751,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     paddingVertical: 4,
   },
   sendBtn: {
@@ -772,7 +772,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   manualBtnText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
 });

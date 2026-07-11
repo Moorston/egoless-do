@@ -116,7 +116,7 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
       <View style={styles.headerRow}>
         <View style={styles.headerLeftGroup}>
           <Calendar size={18} color="#f59e0b" />
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('bodyPlan')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyPlan')}</Text>
         </View>
         <TouchableOpacity onPress={onEdit} style={styles.editButton}>
           <Text style={styles.editButtonText}>{activePlans.length > 0 ? T('bodyPlanEdit') : T('bodyGoalSet')}</Text>
@@ -125,9 +125,9 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
 
       {activePlans.length === 0 ? (
         <View style={styles.emptyStateContainer}>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 6 }}>{T('bodyPlanNotSet')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 6 }}>{T('bodyPlanNotSet')}</Text>
           <TouchableOpacity onPress={onEdit} style={styles.setPlanButton}>
-            <Text style={{ fontSize: FONT_BADGE, color: '#f59e0b', fontWeight: '600' }}>{T('bodySetPlan')}</Text>
+            <Text style={{ fontSize: FONT_BADGE(), color: '#f59e0b', fontWeight: '600' }}>{T('bodySetPlan')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -144,7 +144,7 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
               return (
                 <View key={day.dow} style={{ flex: 1, alignItems: 'center' }}>
                   {/* Day-of-week label */}
-                  <Text style={{ fontSize: FONT_SMALL, color: day.isToday ? '#f59e0b' : TH.sub, fontWeight: day.isToday ? '700' : '400', marginBottom: 4 }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: day.isToday ? '#f59e0b' : TH.sub, fontWeight: day.isToday ? '700' : '400', marginBottom: 4 }}>
                     {day.dayName}
                   </Text>
 
@@ -186,13 +186,13 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
                   )}
 
                   {/* Date */}
-                  <Text style={{ fontSize: FONT_SMALL, color: dayTextColor, fontWeight: day.isToday ? '700' : '400' }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: dayTextColor, fontWeight: day.isToday ? '700' : '400' }}>
                     {day.date.slice(5).replace('-', '/')}
                   </Text>
 
                   {/* Kcal */}
                   {day.matched ? (
-                    <Text style={{ fontSize: FONT_SMALL, color: '#10b981', marginTop: 2 }}>{day.kcal}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', marginTop: 2 }}>{day.kcal}</Text>
                   ) : null}
                 </View>
               );
@@ -203,27 +203,27 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, paddingTop: 10, borderTopWidth: 1, borderTopColor: TH.border }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#f59e0b' }} />
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('bodyToday')}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyToday')}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#10b981' }} />
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('bodyDayCompleted')}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyDayCompleted')}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <Text style={{ fontSize: 12 }}>😴</Text>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('bodyDayRest')}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyDayRest')}</Text>
             </View>
           </View>
 
           {/* Stats row */}
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#f59e0b' }}>{completedDays}/{totalPlanned}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyCompletedDays')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{completedDays}/{totalPlanned}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyCompletedDays')}</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#f59e0b' }}>{totalKcal}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyKcal')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{totalKcal}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyKcal')}</Text>
             </View>
           </View>
         </>

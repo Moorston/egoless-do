@@ -60,7 +60,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
               transform: [{ scale: breathAnim.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1.2] }) }],
               opacity: breathAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 1] }),
             }}>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#fff' }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>
                 {breathPhase === 'inhale' ? '吸气...' : breathPhase === 'hold' ? '屏住...' : '呼气...'}
               </Text>
             </Animated.View>
@@ -72,8 +72,8 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
           </View>
         ) : (
           <>
-            <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.65)', marginTop: 6 }}>min</Text>
+            <Text style={{ fontSize: FONT_HERO(), fontWeight: '900', color: '#fff' }}>{Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.65)', marginTop: 6 }}>min</Text>
           </>
         )}
 
@@ -83,7 +83,7 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
             <View style={{ height: 6, backgroundColor: 'rgba(255,255,255,.1)', borderRadius: 3, overflow: 'hidden' }}>
               <View style={{ height: 6, width: `${Math.min(targetProgress * 100, 100)}%`, backgroundColor: COLORS.GREEN, borderRadius: 3 }} />
             </View>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 4, textAlign: 'center' }}>
               {Math.round(targetProgress * 100)}%
             </Text>
           </View>
@@ -93,10 +93,10 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
       {/* Zone 3: Bottom — minimal 2 buttons */}
       <View style={{ paddingBottom: 48, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <View style={{ alignItems: 'center', flex: 1 }}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>
+          <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#fff', fontVariant: ['tabular-nums'] }}>
             {Math.floor(sec / 60)}:{String(sec % 60).padStart(2, '0')}
           </Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseDuration')}</Text>
         </View>
 
         <Animated.View style={{ transform: [{ scale: pauseHoldAnim }] }}>
@@ -110,8 +110,8 @@ export default function MeditativeActive(props: ExerciseLayoutProps) {
         </Animated.View>
 
         <View style={{ alignItems: 'center', flex: 1 }}>
-          <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '700', color: COLORS.ORANGE }}>{calories}</Text>
-          <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>kcal</Text>
+          <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: COLORS.ORANGE }}>{calories}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.7)', marginTop: 2 }}>kcal</Text>
         </View>
       </View>
     </LinearGradient>

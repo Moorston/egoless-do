@@ -37,14 +37,14 @@ export default function PlanTodoList({
     <>
       {/* Plan items */}
       {!hasItems ? (
-        <Text style={{ fontSize: FONT_EMPTY, color: TH.sub, textAlign: 'center', padding: 24 }}>{T('planNoItems')}</Text>
+        <Text style={{ fontSize: FONT_EMPTY(), color: TH.sub, textAlign: 'center', padding: 24 }}>{T('planNoItems')}</Text>
       ) : (
         <>
           {/* Plan items group header */}
           {todayItems.length > 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12 }}>
               <ClipboardList size={14} color={P} />
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T('planTodoList')} ({todayItems.length})</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T('planTodoList')} ({todayItems.length})</Text>
             </View>
           )}
           {todayItems.map((item, i, arr) => {
@@ -74,12 +74,12 @@ export default function PlanTodoList({
                   </View>
                 )}
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '500', color: TH.text }}>{item.name}</Text>
-                  <Text style={{ fontSize: FONT_TINY, color: P, marginTop: 1 }}>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '500', color: TH.text }}>{item.name}</Text>
+                  <Text style={{ fontSize: FONT_TINY(), color: P, marginTop: 1 }}>
                     {getFrequencySummary(item.frequency ?? { mode: 'daily' }, T, checkins, today, item.id)}
                   </Text>
                   {item.description ? (
-                    <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }} numberOfLines={1}>{item.description}</Text>
+                    <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, marginTop: 2 }} numberOfLines={1}>{item.description}</Text>
                   ) : null}
                 </View>
                 <LinkBadge link={item.link} T={T} P={P} />
@@ -91,7 +91,7 @@ export default function PlanTodoList({
           {dailyCustomTodos.length > 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 8, paddingHorizontal: 12, borderTopWidth: todayItems.length > 0 ? 1 : 0, borderTopColor: TH.border }}>
               <Pencil size={14} color={P} />
-              <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T('planDailyCustomTodos')} ({dailyCustomTodos.length})</Text>
             </View>
           )}
           {/* Custom todos */}
@@ -107,7 +107,7 @@ export default function PlanTodoList({
                 </View>
               </TouchableOpacity>
               <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '500', color: TH.text }}>{todo.name}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '500', color: TH.text }}>{todo.name}</Text>
                 {todo.recurring && <Repeat size={12} color={P} />}
               </View>
               <TouchableOpacity
@@ -132,7 +132,7 @@ export default function PlanTodoList({
         <TextInput
           placeholder={T('planAddCustomTodoPlaceholder')}
           placeholderTextColor={TH.sub}
-          style={{ flex: 1, borderWidth: 1, borderColor: TH.border, borderRadius: 8, padding: 10, fontSize: FONT_BODY, color: TH.text, backgroundColor: TH.bg }}
+          style={{ flex: 1, borderWidth: 1, borderColor: TH.border, borderRadius: 8, padding: 10, fontSize: FONT_BODY(), color: TH.text, backgroundColor: TH.bg }}
           value={newTodoText}
           onChangeText={onChangeNewTodoText}
           onSubmitEditing={onAddTodo}

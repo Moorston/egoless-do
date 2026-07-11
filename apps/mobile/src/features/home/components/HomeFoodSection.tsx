@@ -68,12 +68,12 @@ const HomeFoodSection = memo(function HomeFoodSection({
         <View style={styles.cardHeaderRow}>
           <View style={styles.iconLabelRow}>
             <Utensils size={16} color={P} />
-            <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todayFood')}</Text>
+            <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY() }}>{T('todayFood')}</Text>
           </View>
           <View style={styles.iconLabelRow}>
             {isToday ? (
               <>
-                <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+                <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
                   <Text style={{ fontWeight: '600', color: P }}>{totalCal}</Text> / {calGoal} kcal
                 </Text>
                 <TouchableOpacity onPress={() => { setCgi(String(calGoal)); setShowCG(true); }}>
@@ -81,7 +81,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
                 </TouchableOpacity>
               </>
             ) : (
-              <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+              <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
                 <Text style={{ fontWeight: '600', color: P }}>{totalCal}</Text> kcal
               </Text>
             )}
@@ -92,13 +92,13 @@ const HomeFoodSection = memo(function HomeFoodSection({
         {/* Recent Foods (today only) */}
         {isToday && recentFoods.length > 0 && (
           <View style={styles.sectionSpacing}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('recentFoods')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('recentFoods')}</Text>
             <View style={styles.recentFoodRow}>
               {recentFoods.map(f => (
                 <TouchableOpacity key={f.name} onPress={() => { setPortionFood(f); setPortion(1); }}
                   style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
-                  <Text style={{ color: TH.text, fontSize: FONT_SUB, textAlign: 'center' }} numberOfLines={1}>{f.name}</Text>
-                  <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600' }}>{f.calories}kcal</Text>
+                  <Text style={{ color: TH.text, fontSize: FONT_SUB(), textAlign: 'center' }} numberOfLines={1}>{f.name}</Text>
+                  <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{f.calories}kcal</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -108,11 +108,11 @@ const HomeFoodSection = memo(function HomeFoodSection({
         {/* Food List */}
         {todayFoods.length > 0 && (
           <View style={styles.sectionSpacing}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('todayFood')} ({todayFoodTotal})</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('todayFood')} ({todayFoodTotal})</Text>
             {todayFoods.map(f => (
               <View key={f.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                <Text style={{ color: TH.text, fontSize: FONT_BODY, flex: 1 }} numberOfLines={1}>{f.name}</Text>
-                <Text style={{ color: P, fontSize: FONT_SUB, fontWeight: '600', marginRight: 8 }}>{f.calories} kcal</Text>
+                <Text style={{ color: TH.text, fontSize: FONT_BODY(), flex: 1 }} numberOfLines={1}>{f.name}</Text>
+                <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600', marginRight: 8 }}>{f.calories} kcal</Text>
                 {isToday && (
                   <TouchableOpacity onPress={() => onDeleteFood(f.id)}>
                     <X size={16} color={TH.sub} />
@@ -127,7 +127,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
         {isToday && (
           <TouchableOpacity onPress={() => setShowFood(true)}
             style={{ marginTop: 10, borderRadius: 10, padding: 11, alignItems: 'center', borderWidth: 1.5, borderColor: P }}>
-            <Text style={{ color: P, fontWeight: '600', fontSize: FONT_BUTTON }}>{T('addFoodBtn')}</Text>
+            <Text style={{ color: P, fontWeight: '600', fontSize: FONT_BUTTON() }}>{T('addFoodBtn')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -140,8 +140,8 @@ const HomeFoodSection = memo(function HomeFoodSection({
       <Modal visible={!!portionFood} transparent animationType="fade" onRequestClose={() => setPortionFood(null)}>
         <View style={styles.modalOverlay}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, marginBottom: 4 }}>{portionFood?.name}</Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_BODY, marginBottom: 16 }}>{T('foodPerUnit')} {portionFood?.calories} kcal</Text>
+            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text, marginBottom: 4 }}>{portionFood?.name}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_BODY(), marginBottom: 16 }}>{T('foodPerUnit')} {portionFood?.calories} kcal</Text>
             <View style={styles.portionButtonRow}>
               {[0.5, 1, 1.5, 2].map(p => (
                 <TouchableOpacity key={p} onPress={() => setPortion(p)}
@@ -150,22 +150,22 @@ const HomeFoodSection = memo(function HomeFoodSection({
                     backgroundColor: portion === p ? P : TH.card,
                     borderWidth: portion === p ? 0 : 1, borderColor: TH.border,
                   }}>
-                  <Text style={{ color: portion === p ? '#fff' : TH.text, fontWeight: portion === p ? '700' : '400', fontSize: FONT_BODY }}>
+                  <Text style={{ color: portion === p ? '#fff' : TH.text, fontWeight: portion === p ? '700' : '400', fontSize: FONT_BODY() }}>
                     {p}份
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
             <View style={styles.totalRow}>
-              <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('foodTotalCal')}</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('foodTotalCal')}</Text>
               <Text style={{ fontSize: 26, fontWeight: '800', color: COLORS.ORANGE }}>
-                {Math.round((portionFood?.calories ?? 0) * portion)} <Text style={{ fontSize: FONT_SUB, fontWeight: '400', color: TH.sub }}>kcal</Text>
+                {Math.round((portionFood?.calories ?? 0) * portion)} <Text style={{ fontSize: FONT_SUB(), fontWeight: '400', color: TH.sub }}>kcal</Text>
               </Text>
             </View>
             <View style={styles.modalButtonRow}>
               <TouchableOpacity onPress={() => setPortionFood(null)}
                 style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => {
                 if (portionFood) {
@@ -175,7 +175,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
                 }
               }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY }}>{T('confirm')}</Text>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>{T('confirm')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -186,12 +186,12 @@ const HomeFoodSection = memo(function HomeFoodSection({
       <Modal visible={showCG} transparent animationType="fade" onRequestClose={() => setShowCG(false)}>
         <View style={styles.modalOverlay}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, alignItems: 'center' }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, marginBottom: 6, color: TH.text }}>{T('calGoalSetting')}</Text>
-            <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>{T('calGoalHint')}</Text>
+            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), marginBottom: 6, color: TH.text }}>{T('calGoalSetting')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginBottom: 16 }}>{T('calGoalHint')}</Text>
             <TextInput
               value={cgi} onChangeText={setCgi} keyboardType="numeric"
               style={{
-                width: '100%', fontSize: FONT_STAT_CARD, fontWeight: '700', textAlign: 'center',
+                width: '100%', fontSize: FONT_STAT_CARD(), fontWeight: '700', textAlign: 'center',
                 backgroundColor: TH.card, borderWidth: 2, borderColor: COLORS.BLUE,
                 borderRadius: 12, padding: 14, color: TH.text, marginBottom: 20,
               }}
@@ -199,12 +199,12 @@ const HomeFoodSection = memo(function HomeFoodSection({
             <View style={styles.calGoalButtonRow}>
               <TouchableOpacity onPress={() => setShowCG(false)}
                 style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
+                <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => { onSetCalGoal(Math.max(500, Math.min(10000, +cgi || 2000))); setShowCG(false); }}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('save')}</Text>
+                <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('save')}</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -35,7 +35,7 @@ export default function HabitActionMenu({
         borderRadius: 12, backgroundColor: bg, alignItems: 'center',
       }}
     >
-      <Text style={{ color, fontSize: FONT_BUTTON, fontWeight: '600' }}>{label}</Text>
+      <Text style={{ color, fontSize: FONT_BUTTON(), fontWeight: '600' }}>{label}</Text>
     </TouchableOpacity>
   );
 

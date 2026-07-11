@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   title: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   headerRight: {
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   preview: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     flex: 1,
     textAlign: 'right',
   },
@@ -426,22 +426,22 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   loadingText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginTop: 12,
     textAlign: 'center',
   },
   sectionLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
     marginTop: 8,
     marginBottom: 4,
   },
   contentText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 20,
   },
   bulletText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 20,
     marginLeft: 4,
   },
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   progressText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   perspectiveItem: {
     paddingVertical: 10,
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
   },
   perspectiveText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 20,
   },
   staleRow: {
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
     borderTopColor: 'rgba(245,158,11,0.3)',
   },
   staleText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   footerRow: {
@@ -496,11 +496,11 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   actionText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   timeText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   writeButton: {
     paddingVertical: 8,
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   },
   writeButtonText: {
     color: '#fff',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   generateButton: {
@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   },
   generateButtonText: {
     color: '#fff',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
 });

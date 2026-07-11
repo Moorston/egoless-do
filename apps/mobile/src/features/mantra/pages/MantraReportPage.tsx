@@ -3,7 +3,7 @@
 
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, DEDICATION_TEMPLATES } from '@egoless-do/core';
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT, PrimaryButton, OutlineButton } from '../../../components/UI';
@@ -61,6 +61,41 @@ interface Props {
  * @param props - {@link Props}
  * @returns A full-screen safe-area view with the session report and dedication modal.
  */
+// ─── Styles ──────────────────────────────────────────────────────────
+const S = StyleSheet.create({
+  safeArea: { flex: 1 },
+  headerRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 },
+  backButton: { marginRight: 12 },
+  backArrow: { fontSize: 24 },
+  headerTitle: { fontWeight: '800', flex: 1 },
+  scrollContent: { paddingHorizontal: 16, paddingBottom: 40 },
+  summaryCardOuter: { borderRadius: 20, overflow: 'hidden', marginBottom: 16 },
+  summaryCardInner: { backgroundColor: '#FBBF24', padding: 24, alignItems: 'center' },
+  wheelIcon: { fontSize: 48 },
+  mantraName: { fontWeight: '800', color: '#fff', marginTop: 8 },
+  countText: { fontSize: 36, fontWeight: '800', color: '#fff', marginTop: 8 },
+  durationText: { color: 'rgba(255,255,255,.8)', marginTop: 4 },
+  statsCard: { borderRadius: 16, padding: 16, marginBottom: 16 },
+  statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  statColumn: { alignItems: 'center' },
+  statNumber: { fontWeight: '800', color: '#FBBF24' },
+  statNumberAmber: { fontWeight: '800', color: '#F59E0B' },
+  statNumberGreen: { fontWeight: '800', color: '#10B981' },
+  statLabel: {},
+  dedicationButton: { borderRadius: 16, padding: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  dedicationIcon: { fontSize: 24 },
+  dedicationTextBox: { flex: 1 },
+  dedicationTitle: { fontWeight: '600' },
+  dedicationHint: {},
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' },
+  modalContent: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '80%' },
+  modalTitle: { fontWeight: '700', marginBottom: 16 },
+  templateScroll: { maxHeight: 200, marginBottom: 12 },
+  templateButton: { padding: 12, borderRadius: 8, marginBottom: 6, borderWidth: 1 },
+  templateText: {},
+  dedicationInput: { borderRadius: 12, padding: 12, minHeight: 80, textAlignVertical: 'top', marginBottom: 12 },
+  modalButtonRow: { flexDirection: 'row', gap: 10 },
+});
 export default function MantraReportPage(props: Props) {
   const {
     mantraName, count, elapsed, totalAfter, streak, formatTime,
@@ -73,53 +108,53 @@ export default function MantraReportPage(props: Props) {
   const durationSec = Math.floor(elapsed / 1000);
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
-        <TouchableOpacity onPress={onReset} style={{ marginRight: 12 }}>
-          <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+    <SafeAreaView edges={['top', 'bottom']} style={[S.safeArea, { backgroundColor: TH.bg }]}>
+      <View style={S.headerRow}>
+        <TouchableOpacity onPress={onReset} style={S.backButton}>
+          <Text style={[S.backArrow, { color: TH.text }]}>←</Text>
         </TouchableOpacity>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('mantraSessionComplete')}</Text>
+        <Text style={[S.headerTitle, { fontSize: FONT_TITLE(), color: TH.text }]}>{T('mantraSessionComplete')}</Text>
       </View>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={S.scrollContent}>
         {/* Summary Card */}
-        <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
-          <View style={{ backgroundColor: '#FBBF24', padding: 24, alignItems: 'center' }}>
-            <Text style={{ fontSize: 48 }}>☸</Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: '#fff', marginTop: 8 }}>{mantraName}</Text>
-            <Text style={{ fontSize: 36, fontWeight: '800', color: '#fff', marginTop: 8 }}>
+        <View style={S.summaryCardOuter}>
+          <View style={S.summaryCardInner}>
+            <Text style={S.wheelIcon}>☸</Text>
+            <Text style={[S.mantraName, { fontSize: FONT_TITLE() }]}>{mantraName}</Text>
+            <Text style={S.countText}>
               {count.toLocaleString()} {T('mantraCount')} · {rounds} {T('mantraRounds')}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>
+            <Text style={[S.durationText, { fontSize: FONT_SUB() }]}>
               {formatTime(elapsed)}
             </Text>
           </View>
         </View>
 
         {/* Stats */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#FBBF24' }}>{totalAfter.toLocaleString()}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('mantraCumulative')}</Text>
+        <View style={[S.statsCard, { backgroundColor: TH.card }]}>
+          <View style={S.statsRow}>
+            <View style={S.statColumn}>
+              <Text style={[S.statNumber, { fontSize: FONT_STAT_SECTION() }]}>{totalAfter.toLocaleString()}</Text>
+              <Text style={[S.statLabel, { fontSize: FONT_SUB(), color: TH.sub }]}>{T('mantraCumulative')}</Text>
             </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#F59E0B' }}>🔥 {streak}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('mantraStreak')}</Text>
+            <View style={S.statColumn}>
+              <Text style={[S.statNumberAmber, { fontSize: FONT_STAT_SECTION() }]}>🔥 {streak}</Text>
+              <Text style={[S.statLabel, { fontSize: FONT_SUB(), color: TH.sub }]}>{T('mantraStreak')}</Text>
             </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#10B981' }}>{durationSec > 60 ? `${Math.floor(durationSec / 60)}m` : `${durationSec}s`}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('mantraSessionDuration')}</Text>
+            <View style={S.statColumn}>
+              <Text style={[S.statNumberGreen, { fontSize: FONT_STAT_SECTION() }]}>{durationSec > 60 ? `${Math.floor(durationSec / 60)}m` : `${durationSec}s`}</Text>
+              <Text style={[S.statLabel, { fontSize: FONT_SUB(), color: TH.sub }]}>{T('mantraSessionDuration')}</Text>
             </View>
           </View>
         </View>
 
         {/* Dedication */}
         <TouchableOpacity onPress={() => setShowDedication(true)}
-          style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <Text style={{ fontSize: 24 }}>🙏</Text>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('mantraDedication')}</Text>
-            <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T('mantraDedicationHint')}</Text>
+          style={[S.dedicationButton, { backgroundColor: TH.card }]}>
+          <Text style={S.dedicationIcon}>🙏</Text>
+          <View style={S.dedicationTextBox}>
+            <Text style={[S.dedicationTitle, { fontSize: FONT_BODY(), color: TH.text }]}>{T('mantraDedication')}</Text>
+            <Text style={[S.dedicationHint, { fontSize: FONT_SMALL(), color: TH.sub }]}>{T('mantraDedicationHint')}</Text>
           </View>
         </TouchableOpacity>
 
@@ -128,23 +163,23 @@ export default function MantraReportPage(props: Props) {
 
       {/* Dedication Modal */}
       <Modal visible={showDedication} transparent animationType="slide">
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
-          <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '80%' }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text, marginBottom: 16 }}>{T('mantraDedication')}</Text>
-            <ScrollView style={{ maxHeight: 200, marginBottom: 12 }}>
+        <View style={S.modalOverlay}>
+          <View style={[S.modalContent, { backgroundColor: TH.cardSolid }]}>
+            <Text style={[S.modalTitle, { fontSize: FONT_TITLE(), color: TH.text }]}>{T('mantraDedication')}</Text>
+            <ScrollView style={S.templateScroll}>
               {DEDICATION_TEMPLATES.map((tmpl, i) => (
                 <TouchableOpacity key={i} onPress={() => setDedicationText(tmpl)}
-                  style={{ padding: 12, borderRadius: 8, backgroundColor: dedicationText === tmpl ? '#FBBF2415' : TH.card, marginBottom: 6, borderWidth: 1, borderColor: dedicationText === tmpl ? '#FBBF24' : TH.border }}>
-                  <Text style={{ fontSize: FONT_SMALL, color: dedicationText === tmpl ? '#FBBF24' : TH.text }}>{tmpl}</Text>
+                  style={[S.templateButton, { backgroundColor: dedicationText === tmpl ? '#FBBF2415' : TH.card, borderColor: dedicationText === tmpl ? '#FBBF24' : TH.border }]}>
+                  <Text style={[S.templateText, { fontSize: FONT_SMALL(), color: dedicationText === tmpl ? '#FBBF24' : TH.text }]}>{tmpl}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
             <TextInput
-              style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, minHeight: 80, textAlignVertical: 'top', marginBottom: 12 }}
+              style={[S.dedicationInput, { backgroundColor: TH.card, color: TH.text, fontSize: FONT_BODY() }]}
               multiline maxLength={500} value={dedicationText} onChangeText={setDedicationText}
               placeholder={T('mantraDedicationPlaceholder')} placeholderTextColor={TH.sub}
             />
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={S.modalButtonRow}>
               <OutlineButton label={T('mantraCancel') || T('cancel')} onPress={() => setShowDedication(false)} style={{ flex: 1 }} />
               <PrimaryButton label={T('mantraFinish')} onPress={() => setShowDedication(false)} color="#FBBF24" style={{ flex: 1 }} />
             </View>

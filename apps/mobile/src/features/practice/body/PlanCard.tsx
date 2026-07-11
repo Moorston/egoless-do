@@ -40,14 +40,14 @@ export default function PlanCard({ TH, T, plans, onEdit, onPressSport }: Props) 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <Dumbbell size={18} color="#f59e0b" />
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('bodyPlan')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyPlan')}</Text>
         </View>
         <TouchableOpacity onPress={onEdit} style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 8, backgroundColor: '#f59e0b15' }}>
-          <Text style={{ fontSize: FONT_BADGE, color: '#f59e0b' }}>{activePlans.length > 0 ? T('bodyPlanEdit') : T('bodyGoalSet')}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: '#f59e0b' }}>{activePlans.length > 0 ? T('bodyPlanEdit') : T('bodyGoalSet')}</Text>
         </TouchableOpacity>
       </View>
       {activePlans.length === 0 ? (
-        <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', paddingVertical: 16 }}>{T('bodyPlanNotSet')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', paddingVertical: 16 }}>{T('bodyPlanNotSet')}</Text>
       ) : (
         <View>
           {WEEKDAY_KEYS.map((dayKey, idx) => {
@@ -57,17 +57,17 @@ export default function PlanCard({ TH, T, plans, onEdit, onPressSport }: Props) 
             const resolved = resolvePartLabel(dayPlan.part, T);
             return (
               <View key={idx} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: idx < 6 ? 1 : 0, borderBottomColor: TH.border }}>
-                <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, width: 40 }}>{dayName}</Text>
-                <Text style={{ fontSize: FONT_BODY, color: resolved.isRest ? TH.sub : TH.text, flex: 1 }}>
+                <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, width: 40 }}>{dayName}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: resolved.isRest ? TH.sub : TH.text, flex: 1 }}>
                   {resolved.icon ? `${resolved.icon} ` : ''}{resolved.label}
                 </Text>
                 {dayPlan.sportKey && !resolved.isRest ? (
                   <TouchableOpacity onPress={() => onPressSport(dayPlan.sportKey!)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <Text style={{ fontSize: FONT_BADGE, color: '#f59e0b' }}>{dayPlan.sportKey}</Text>
+                    <Text style={{ fontSize: FONT_BADGE(), color: '#f59e0b' }}>{dayPlan.sportKey}</Text>
                     <ChevronRight size={14} color="#f59e0b" />
                   </TouchableOpacity>
                 ) : null}
-                {dayPlan.note ? <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginLeft: 8 }} numberOfLines={1}>{dayPlan.note}</Text> : null}
+                {dayPlan.note ? <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginLeft: 8 }} numberOfLines={1}>{dayPlan.note}</Text> : null}
               </View>
             );
           })}

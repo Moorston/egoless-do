@@ -20,8 +20,8 @@ export default function ReportPage(props: ExercisePageProps) {
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ paddingTop: 56, paddingHorizontal: 20, paddingBottom: 16, backgroundColor: TH.cardSolid }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('exerciseReport')}</Text>
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{sportName} · {formatDate(new Date(), language)}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('exerciseReport')}</Text>
+        <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>{sportName} · {formatDate(new Date(), language)}</Text>
       </View>
 
       {/* Map snapshot (GPS) */}
@@ -47,8 +47,8 @@ export default function ReportPage(props: ExercisePageProps) {
           { label: T('exerciseTotalCal'), value: `${calories} kcal` },
         ].map(d => (
           <View key={d.label} style={{ width: '47%', backgroundColor: TH.cardSolid, borderRadius: 12, padding: 16 }}>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{d.label}</Text>
-            <Text style={{ fontSize: FONT_CLOSE, fontWeight: '800', color: TH.text, marginTop: 4 }}>{d.value}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{d.label}</Text>
+            <Text style={{ fontSize: FONT_CLOSE(), fontWeight: '800', color: TH.text, marginTop: 4 }}>{d.value}</Text>
           </View>
         ))}
       </View>
@@ -56,12 +56,12 @@ export default function ReportPage(props: ExercisePageProps) {
       {/* Sets breakdown */}
       {sets.length > 0 && (
         <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('exerciseSets')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('exerciseSets')}</Text>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 12, padding: 12 }}>
             {sets.map((s, i) => (
               <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < sets.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{s.reps} {T('exerciseReps')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('exerciseSet').replace('{n}', String(i + 1))}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{s.reps} {T('exerciseReps')}</Text>
               </View>
             ))}
           </View>
@@ -71,15 +71,15 @@ export default function ReportPage(props: ExercisePageProps) {
       {/* Segment paces */}
       {segmentPaces.length > 0 && (
         <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('exerciseSegmentPace')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('exerciseSegmentPace')}</Text>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 12, padding: 12 }}>
             {segmentPaces.map((p, i) => {
               const isBest = p === bestPace;
               const paceColor = isBest ? COLORS.GREEN : p < 300 ? COLORS.BLUE : p < 360 ? COLORS.YELLOW : COLORS.RED;
               return (
                 <View key={i} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: i < segmentPaces.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{i + 1} km</Text>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: paceColor }}>{formatPace(p)}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{i + 1} km</Text>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: paceColor }}>{formatPace(p)}</Text>
                 </View>
               );
             })}
@@ -91,7 +91,7 @@ export default function ReportPage(props: ExercisePageProps) {
       <View style={{ padding: 16 }}>
         <TouchableOpacity onPress={handleSave}
           style={{ height: 56, borderRadius: 28, backgroundColor: COLORS.GREEN, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('exerciseSave')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('exerciseSave')}</Text>
         </TouchableOpacity>
       </View>
     </View>

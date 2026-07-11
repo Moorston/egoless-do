@@ -60,7 +60,7 @@ export function PrimaryButton({
       }, style]}
     >
       {icon}
-      <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{label}</Text>
+      <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -81,7 +81,7 @@ export function OutlineButton({
         alignItems: 'center',
       }, style]}
     >
-      <Text style={{ color: c, fontWeight: '600', fontSize: FONT_BUTTON }}>{label}</Text>
+      <Text style={{ color: c, fontWeight: '600', fontSize: FONT_BUTTON() }}>{label}</Text>
     </TouchableOpacity>
   );
 }
@@ -147,10 +147,10 @@ export function RowItem({
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
-        {icon && (typeof icon === 'string' ? <Text style={{ fontSize: FONT_BACK }}>{icon}</Text> : icon)}
+        {icon && (typeof icon === 'string' ? <Text style={{ fontSize: FONT_BACK() }}>{icon}</Text> : icon)}
         <View>
-          <Text style={{ color: TH.text, fontSize: FONT_LABEL }}>{label}</Text>
-          {sub && <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 2 }}>{sub}</Text>}
+          <Text style={{ color: TH.text, fontSize: FONT_LABEL() }}>{label}</Text>
+          {sub && <Text style={{ color: TH.sub, fontSize: FONT_SUB(), marginTop: 2 }}>{sub}</Text>}
         </View>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -187,8 +187,8 @@ export function ScreenHeader({
           </TouchableOpacity>
         )}
         <View>
-          <Text style={{ color: TH.text, fontWeight: '800', fontSize: FONT_STAT_CARD }}>{title}</Text>
-          {subtitle && <Text style={{ color: TH.sub, fontSize: FONT_SUB, marginTop: 2 }}>{subtitle}</Text>}
+          <Text style={{ color: TH.text, fontWeight: '800', fontSize: FONT_STAT_CARD() }}>{title}</Text>
+          {subtitle && <Text style={{ color: TH.sub, fontSize: FONT_SUB(), marginTop: 2 }}>{subtitle}</Text>}
         </View>
       </View>
       {right}
@@ -225,7 +225,7 @@ export function ThemedInput({
         backgroundColor: TH.card,
         borderWidth: 1, borderColor: TH.border,
         borderRadius: 10, padding: 12,
-        color: TH.text, fontSize: FONT_LABEL,
+        color: TH.text, fontSize: FONT_LABEL(),
         textAlignVertical: multiline ? 'top' : 'center',
       }, style]}
     />
@@ -282,7 +282,7 @@ export const TagPill = React.memo(function TagPill({
       }}
     >
       <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
-        <Text style={{ color: active ? activeText : TH.sub, fontSize: FONT_BODY, ...textStyle }}>{label}</Text>
+        <Text style={{ color: active ? activeText : TH.sub, fontSize: FONT_BODY(), ...textStyle }}>{label}</Text>
         {count !== undefined && count > 0 && (
           <View style={{ backgroundColor: active ? 'rgba(255,255,255,.3)' : `${c}20`, paddingHorizontal:5, paddingVertical:1, borderRadius:8 }}>
             <Text style={{ color: active ? activeText : c, fontSize:10, fontWeight:'600' }}>{count}</Text>
@@ -324,7 +324,7 @@ export function ProgressBar({ pct, color, colors, height = 6 }: {
 export function BigTimer({ text, color }: { text: string; color: string }) {
   return (
     <Text style={{
-      fontSize: FONT_HERO, fontWeight: '800', color,
+      fontSize: FONT_HERO(), fontWeight: '800', color,
       fontVariant: ['tabular-nums'], textAlign: 'center',
       letterSpacing: -1,
     }}>

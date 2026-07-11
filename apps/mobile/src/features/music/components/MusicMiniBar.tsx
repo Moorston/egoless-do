@@ -45,7 +45,7 @@ export default function MusicMiniBar({ currentTrack, isPlaying, loop, onTogglePl
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
         <Music size={14} color={primaryColor} />
         <TouchableOpacity onPress={onPressTrackName} style={{ flex: 1 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub }} numberOfLines={1}>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }} numberOfLines={1}>
             {currentTrack.name}
           </Text>
         </TouchableOpacity>

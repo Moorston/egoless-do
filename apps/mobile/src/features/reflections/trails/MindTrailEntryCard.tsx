@@ -101,15 +101,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 4,
   },
   description: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   action: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
     marginLeft: 8,
   },

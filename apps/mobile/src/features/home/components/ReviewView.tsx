@@ -592,13 +592,13 @@ const createStyles = (TH: ReturnType<typeof useTheme>) => StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border,
   },
-  reasonCount: { fontSize: FONT_BODY, fontWeight: '600', color: TH.primary },
-  incompleteItemCount: { fontSize: FONT_BODY, ...staticStyles.redBold },
+  reasonCount: { fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary },
+  incompleteItemCount: { fontSize: FONT_BODY(), ...staticStyles.redBold },
 
   // Habit item
   habitContainer: { paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border },
   habitHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  habitProgressPercent: { fontSize: FONT_BODY, color: TH.primary, fontWeight: '600' },
+  habitProgressPercent: { fontSize: FONT_BODY(), color: TH.primary, fontWeight: '600' },
   progressBarTrack: { height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' },
   progressBarFill: { height: 6, backgroundColor: TH.primary, borderRadius: 3 },
   habitMetaRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
@@ -608,7 +608,7 @@ const createStyles = (TH: ReturnType<typeof useTheme>) => StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: TH.border,
   },
-  historySub: { fontSize: FONT_SUB, color: TH.sub, marginTop: 2 },
+  historySub: { fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 },
   historyRight: { flexDirection: 'row', alignItems: 'center', gap: 4 },
 
   // Core metrics
@@ -618,10 +618,10 @@ const createStyles = (TH: ReturnType<typeof useTheme>) => StyleSheet.create({
     alignItems: 'center', borderWidth: 1, borderColor: TH.border,
   },
   metricValue: { fontSize: 28, fontWeight: '700', color: TH.primary },
-  metricLabel: { fontSize: FONT_BODY, color: TH.text, marginTop: 4 },
-  metricSubLabel: { fontSize: FONT_SUB, color: TH.sub, marginTop: 2 },
+  metricLabel: { fontSize: FONT_BODY(), color: TH.text, marginTop: 4 },
+  metricSubLabel: { fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 },
   trendRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  trendText: { fontSize: FONT_SUB, marginLeft: 4 },
+  trendText: { fontSize: FONT_SUB(), marginLeft: 4 },
 
   // Section card (shared)
   sectionCard: {
@@ -630,29 +630,29 @@ const createStyles = (TH: ReturnType<typeof useTheme>) => StyleSheet.create({
   },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   sectionHeaderInline: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  sectionTitle: { fontSize: FONT_BODY, fontWeight: '600', color: TH.text },
-  sectionSubtitle: { fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 },
-  incompleteItemsHeader: { fontSize: FONT_SUB, color: TH.sub, marginTop: 12, marginBottom: 8 },
+  sectionTitle: { fontSize: FONT_BODY(), fontWeight: '600', color: TH.text },
+  sectionSubtitle: { fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 },
+  incompleteItemsHeader: { fontSize: FONT_SUB(), color: TH.sub, marginTop: 12, marginBottom: 8 },
 
   // Text
-  bodyText: { fontSize: FONT_BODY, color: TH.text },
-  bodyTextFlex: { fontSize: FONT_BODY, color: TH.text, flex: 1 },
-  subText: { fontSize: FONT_SUB, color: TH.sub },
+  bodyText: { fontSize: FONT_BODY(), color: TH.text },
+  bodyTextFlex: { fontSize: FONT_BODY(), color: TH.text, flex: 1 },
+  subText: { fontSize: FONT_SUB(), color: TH.sub },
 
   // Plan progress
   planContainer: {},
   planHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
-  planName: { flex: 1, fontSize: FONT_BODY, fontWeight: '600', color: TH.text },
+  planName: { flex: 1, fontSize: FONT_BODY(), fontWeight: '600', color: TH.text },
   planProgressTrack: { width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' },
   planProgressFill: { height: 4, borderRadius: 2 },
-  planProgressPercent: { fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' },
+  planProgressPercent: { fontSize: FONT_SUB(), color: TH.sub, width: 36, textAlign: 'right' },
   taskItemsContainer: { marginLeft: 8 },
   taskItemRow: { flexDirection: 'row' },
   timelineColumn: { width: 20, alignItems: 'center' },
   timelineConnector: { position: 'absolute', top: 0, width: 1, backgroundColor: TH.border },
   timelineDot: { width: 8, height: 8, borderRadius: 4, marginTop: 8, zIndex: 1 },
   taskContentRow: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
-  timelineTaskName: { flex: 1, fontSize: FONT_SUB },
+  timelineTaskName: { flex: 1, fontSize: FONT_SUB() },
   timelineTaskDone: { color: TH.sub, textDecorationLine: 'line-through' },
   timelineTaskActive: { color: TH.text, textDecorationLine: 'none' },
   timelineProgressTrack: { width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' },
@@ -665,29 +665,29 @@ const createStyles = (TH: ReturnType<typeof useTheme>) => StyleSheet.create({
   },
   healthMetricHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
   healthMetricIcon: { fontSize: 16 },
-  healthMetricValue: { fontSize: FONT_TITLE, fontWeight: '700', color: TH.text },
+  healthMetricValue: { fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text },
 
   // AI analysis
   aiBulbIcon: { fontSize: 18 },
-  aiSummaryText: { fontSize: FONT_BODY, color: TH.text, lineHeight: 24, marginBottom: 12 },
+  aiSummaryText: { fontSize: FONT_BODY(), color: TH.text, lineHeight: 24, marginBottom: 12 },
   highlightSection: { marginBottom: 12 },
-  highlightTitle: { fontSize: FONT_SUB, ...staticStyles.greenBold, marginBottom: 6 },
+  highlightTitle: { fontSize: FONT_SUB(), ...staticStyles.greenBold, marginBottom: 6 },
   listItemRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 },
-  highlightBullet: { fontSize: FONT_BODY, ...staticStyles.greenBold, marginRight: 6 },
-  improvementTitle: { fontSize: FONT_SUB, color: '#F59E0B', fontWeight: '600', marginBottom: 6 },
-  improvementBullet: { fontSize: FONT_BODY, color: '#F59E0B', marginRight: 6 },
+  highlightBullet: { fontSize: FONT_BODY(), ...staticStyles.greenBold, marginRight: 6 },
+  improvementTitle: { fontSize: FONT_SUB(), color: '#F59E0B', fontWeight: '600', marginBottom: 6 },
+  improvementBullet: { fontSize: FONT_BODY(), color: '#F59E0B', marginRight: 6 },
 
   // History entry
   historyHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-  viewAllLink: { fontSize: FONT_SUB, color: TH.primary },
+  viewAllLink: { fontSize: FONT_SUB(), color: TH.primary },
 
   // Empty state
   emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40 },
-  emptyStateText: { fontSize: FONT_BODY, color: TH.sub, marginTop: 12 },
+  emptyStateText: { fontSize: FONT_BODY(), color: TH.sub, marginTop: 12 },
   emptyStateSpinner: { marginTop: 0 },
 
   // Review title section
   reviewTitleSection: { marginBottom: 16 },
-  reviewTitle: { fontSize: FONT_TITLE, fontWeight: '700', color: TH.text },
-  reviewDateRange: { fontSize: FONT_SUB, color: TH.sub, marginTop: 4 },
+  reviewTitle: { fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text },
+  reviewDateRange: { fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 },
 });

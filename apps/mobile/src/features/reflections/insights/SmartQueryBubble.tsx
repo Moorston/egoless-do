@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   label: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '600',
   },
   questionText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 20,
     marginBottom: 10,
   },
@@ -146,12 +146,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   optionLabel: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '700',
     width: 18,
   },
   optionText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     flex: 1,
   },
   actionRow: {
@@ -160,10 +160,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   freeInputLink: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
   },
   skipLink: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
   },
   freeInputRow: {
     flexDirection: 'row',
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   freeInput: {
     flex: 1,
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     paddingVertical: 6,
     padding: 0,
   },
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   sendBtnText: {
     color: '#fff',
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '600',
   },
 });

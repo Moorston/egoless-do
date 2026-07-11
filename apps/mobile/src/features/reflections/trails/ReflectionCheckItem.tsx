@@ -41,13 +41,13 @@ export default React.memo(function ReflectionCheckItem({ ref, isSelected, onTogg
       {/* Content */}
       <View style={{ flex: 1 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
             {formatDateShort(ref.timestamp)}
           </Text>
-          <Text style={{ fontSize: FONT_SMALL }}>{getMoodIcon(ref.mood)}</Text>
+          <Text style={{ fontSize: FONT_SMALL() }}>{getMoodIcon(ref.mood)}</Text>
           {ref.tags.slice(0, 2).map(tag => (
             <Text key={tag} style={{
-              fontSize: FONT_TINY, color: TH.primary,
+              fontSize: FONT_TINY(), color: TH.primary,
               backgroundColor: `${TH.primary}15`,
               paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8,
             }}>
@@ -56,13 +56,13 @@ export default React.memo(function ReflectionCheckItem({ ref, isSelected, onTogg
           ))}
         </View>
         <Text style={{
-          fontSize: FONT_BODY, color: TH.text, marginTop: 4,
+          fontSize: FONT_BODY(), color: TH.text, marginTop: 4,
           lineHeight: 20,
         }} numberOfLines={2}>
           {ref.content}
         </Text>
         {ref.thoughtTrailIds && ref.thoughtTrailIds.length > 0 && (
-          <Text style={{ fontSize: FONT_TINY, color: TH.sub, marginTop: 4 }}>
+          <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 4 }}>
             📎 {T('quickTrailAssignedNotice').replace('{n}', String(ref.thoughtTrailIds.length))}
           </Text>
         )}

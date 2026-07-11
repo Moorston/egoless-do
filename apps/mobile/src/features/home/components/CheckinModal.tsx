@@ -233,7 +233,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
         <Checkbox on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} accessibilityLabel={`${done ? '取消' : '完成'} ${item.name}`} />
         <View style={{ flex:1, marginLeft:8 }}>
           <Text style={{
-            fontSize:FONT_BODY, color: done ? TH.sub : TH.text,
+            fontSize:FONT_BODY(), color: done ? TH.sub : TH.text,
             textDecorationLine: done ? 'line-through' : 'none',
           }} numberOfLines={1}>{item.name}</Text>
         </View>
@@ -253,7 +253,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     }}>
       <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id, targetDate)} accessibilityLabel={`${todo.done ? '取消' : '完成'} ${todo.name}`} />
       <Text style={{
-        flex:1, marginLeft:8, fontSize:FONT_BODY,
+        flex:1, marginLeft:8, fontSize:FONT_BODY(),
         color: todo.done ? TH.sub : TH.text,
         textDecorationLine: todo.done ? 'line-through' : 'none',
       }}>{todo.name}</Text>
@@ -267,8 +267,8 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     }}>
       <Checkbox on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins(c => ({ ...c, [h.id]:!c[h.id] }))} accessibilityLabel={`${habitCheckins[h.id] ? '取消' : '打卡'} ${h.name}`} />
       <View style={{ flex:1, marginLeft:8 }}>
-        <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{h.name}</Text>
-        <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{h.streak} {T('checkinStreak')}</Text>
+        <Text style={{ fontSize:FONT_BODY(), color:TH.text }}>{h.name}</Text>
+        <Text style={{ fontSize:FONT_SUB(), color:TH.sub }}>{h.streak} {T('checkinStreak')}</Text>
       </View>
     </View>
   ), [habitCheckins, setHabitCheckins, TH, T]);
@@ -299,7 +299,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
         <View style={[styles.modalBody, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
           <View style={styles.headerRow}>
-            <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>
+            <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE() }}>
               {isGraceMode ? T('graceCheckinTitle') : T('checkinTitle')}
             </Text>
             <TouchableOpacity onPress={onClose} accessibilityLabel={T('commonClose')}>
@@ -315,7 +315,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               backgroundColor: `${COLORS.ORANGE}15`, borderWidth: 1, borderColor: `${COLORS.ORANGE}30`,
             }}>
               <Shield size={16} color={COLORS.ORANGE} />
-              <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE, flex: 1 }}>
+              <Text style={{ fontSize: FONT_SUB(), color: COLORS.ORANGE, flex: 1 }}>
                 {T('graceCheckinHint')} · {targetDate}
               </Text>
             </View>
@@ -355,7 +355,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             <View style={[styles.cardBase, { backgroundColor:TH.card }]}>
               <View style={styles.sectionHeader}>
                 <ClipboardList size={18} color={P} />
-                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{isGraceMode ? `${targetDate} ${T('graceTitle')}` : `${T('checkinPractice')} & ${T('planTodoList')}`}</Text>
+                <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>{isGraceMode ? `${targetDate} ${T('graceTitle')}` : `${T('checkinPractice')} & ${T('planTodoList')}`}</Text>
               </View>
 
               {/* Practices */}
@@ -376,7 +376,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                         backgroundColor: practices[key] ? `${P}15` : 'transparent',
                       }}>
                       {icon}
-                      <Text style={{ color: practices[key] ? P : TH.text, fontSize:FONT_BODY }}>{label}</Text>
+                      <Text style={{ color: practices[key] ? P : TH.text, fontSize:FONT_BODY() }}>{label}</Text>
                       {practices[key] && <Check size={14} color={P} />}
                     </TouchableOpacity>
                   ))}
@@ -386,7 +386,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               {/* Plan items */}
               {todayPlanItems.length > 0 && (
                 <View style={{ marginBottom:12 }}>
-                  <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('planTodoList')}</Text>
+                  <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginBottom:8 }}>{T('planTodoList')}</Text>
                   <FlatList
                     data={todayPlanItems}
                     keyExtractor={(item) => item.id}
@@ -400,7 +400,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               {/* Custom todos */}
               {dailyCustomTodos.length > 0 && (
                 <View style={{ marginBottom:12 }}>
-                  <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('planDailyCustomTodos')}</Text>
+                  <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginBottom:8 }}>{T('planDailyCustomTodos')}</Text>
                   <FlatList
                     data={dailyCustomTodos}
                     keyExtractor={(item) => item.id}
@@ -414,7 +414,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               {/* Habits */}
               {(store.habits ?? []).filter(h => !h.deleted && h.status==='inProgress').length > 0 && (
                 <View>
-                  <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('checkinHabitCheck')}</Text>
+                  <Text style={{ fontSize:FONT_SUB(), color:TH.sub, marginBottom:8 }}>{T('checkinHabitCheck')}</Text>
                   <FlatList
                     data={(store.habits ?? []).filter(h => !h.deleted && h.status==='inProgress')}
                     keyExtractor={(item) => item.id}
@@ -435,7 +435,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                     ? '#C53364'
                     : P,
               }}>
-                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>
+                <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON() }}>
                   {localDone === true ? T('checkinSubmit') : localDone === false ? T('checkinSave') : T('checkinSelectStatus')}
                 </Text>
               </TouchableOpacity>
@@ -446,7 +446,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
               <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
                 <Scale size={18} color={P} />
-                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>
+                <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>
                   {isGraceMode ? T('checkinWeight') : `${T('checkinWeight')} / ${T('checkinWater')} / ${T('checkinFood')}`}
                 </Text>
               </View>
@@ -455,7 +455,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth: isGraceMode ? 0 : 1, borderBottomColor:TH.border }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
                   <Scale size={16} color={P} />
-                  <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{T('checkinWeight')}</Text>
+                  <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinWeight')}</Text>
                 </View>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
                   <TextInput
@@ -465,9 +465,9 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                     placeholderTextColor={TH.sub}
                     keyboardType="numeric"
                     accessibilityLabel={T('checkinWeight')}
-                    style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, backgroundColor:TH.cardSolid }}
+                    style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.cardSolid }}
                   />
-                  <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{store.weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
+                  <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>{store.weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
                 </View>
               </View>
 
@@ -476,7 +476,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingVertical:10, borderBottomWidth:1, borderBottomColor:TH.border }}>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
                     <Droplets size={16} color={P} />
-                    <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{T('checkinWater')}</Text>
+                    <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinWater')}</Text>
                   </View>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
                     <TextInput
@@ -486,13 +486,13 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                       placeholderTextColor={TH.sub}
                       keyboardType="numeric"
                       accessibilityLabel={T('checkinWater')}
-                      style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, backgroundColor:TH.cardSolid }}
+                      style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY(), backgroundColor:TH.cardSolid }}
                     />
-                    <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>ml</Text>
+                    <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>ml</Text>
                     <TouchableOpacity onPress={() => setWaterMl(w => w + 250)}
                       accessibilityLabel="增加250毫升水"
                       style={{ paddingVertical:4, paddingHorizontal:8, borderRadius:6, backgroundColor:`${P}20` }}>
-                      <Text style={{ color:P, fontSize:FONT_SUB, fontWeight:'600' }}>+250</Text>
+                      <Text style={{ color:P, fontSize:FONT_SUB(), fontWeight:'600' }}>+250</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -504,15 +504,15 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'space-between' }}>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
                     <Utensils size={16} color={P} />
-                    <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{T('checkinFood')}</Text>
+                    <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{T('checkinFood')}</Text>
                   </View>
                   <View style={{ flexDirection:'row', alignItems:'center', gap:8 }}>
-                    <Text style={{ fontSize:FONT_TITLE, fontWeight:'600', color:P }}>{totalCal}</Text>
-                    <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>kcal</Text>
+                    <Text style={{ fontSize:FONT_TITLE(), fontWeight:'600', color:P }}>{totalCal}</Text>
+                    <Text style={{ color:TH.sub, fontSize:FONT_SUB() }}>kcal</Text>
                     <TouchableOpacity onPress={() => setShowFoodAdd(!showFoodAdd)}
                       accessibilityLabel="添加食物"
                       style={{ width:24, height:24, borderRadius:12, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
-                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON }}>+</Text>
+                      <Text style={{ color:'#fff', fontSize:FONT_BUTTON() }}>+</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -526,12 +526,12 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                       <TouchableOpacity onPress={() => { if (foodName.trim()) { store.addFood({ name: foodName, calories: +foodCal || 0, note: foodNote, timestamp: Date.now() }); setFoodName(''); setFoodCal(''); setFoodNote(''); setShowFoodAdd(false); } }}
                         accessibilityLabel={T('confirm')}
                         style={{ flex:1, padding:8, borderRadius:8, backgroundColor:P, alignItems:'center' }}>
-                        <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON }}>{T('confirm')}</Text>
+                        <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON() }}>{T('confirm')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
                         accessibilityLabel={T('commonCancel')}
                         style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor:TH.border, alignItems:'center' }}>
-                        <Text style={{ color:TH.sub, fontSize:FONT_BUTTON }}>{T('commonCancel')}</Text>
+                        <Text style={{ color:TH.sub, fontSize:FONT_BUTTON() }}>{T('commonCancel')}</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -544,7 +544,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
               <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:10 }}>
                 <Sparkles size={18} color={P} />
-                <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{T('checkinNote')}</Text>
+                <Text style={{ fontWeight:'600', fontSize:FONT_BODY(), color:TH.text }}>{T('checkinNote')}</Text>
               </View>
               <ThemedInput value={note} onChangeText={setNote} placeholder={T('checkinNotePlaceholder')} accessibilityLabel={T('checkinNote')} multiline numberOfLines={3} />
             </View>
@@ -557,7 +557,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               }}>
                 <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
                   <Check size={18} color="#fff" />
-                  <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>
+                  <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON() }}>
                     {T('graceCheckinSubmit')}
                   </Text>
                 </View>
@@ -569,7 +569,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               paddingVertical:14, borderRadius:12, alignItems:'center',
               borderWidth:1, borderColor:TH.border, marginBottom:20,
             }}>
-              <Text style={{ color:TH.sub, fontSize:FONT_BUTTON }}>{T('commonCancel')}</Text>
+              <Text style={{ color:TH.sub, fontSize:FONT_BUTTON() }}>{T('commonCancel')}</Text>
             </TouchableOpacity>
 
           </ScrollView>
@@ -582,14 +582,14 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding: 24 }} keyboardShouldPersistTaps="handled">
               <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
-              <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, marginBottom: 12 }}>{T('incompleteReasonTitle')}</Text>
+              <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text, marginBottom: 12 }}>{T('incompleteReasonTitle')}</Text>
 
               {/* Incomplete items list */}
               <View style={{ marginBottom: 16 }}>
                 {incompleteItems.map((item, i) => (
                   <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
                     <X size={16} color="#C53364" style={{ marginRight: 8 }} />
-                    <Text style={{ fontSize: FONT_TITLE, color: TH.sub }}>{item.name}</Text>
+                    <Text style={{ fontSize: FONT_TITLE(), color: TH.sub }}>{item.name}</Text>
                   </View>
                 ))}
               </View>
@@ -607,7 +607,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                         borderWidth: 1.5, borderColor: selected ? P : TH.border,
                         backgroundColor: selected ? `${P}15` : 'transparent',
                       }}>
-                      <Text style={{ fontSize: FONT_BODY, color: selected ? P : TH.text }}>
+                      <Text style={{ fontSize: FONT_BODY(), color: selected ? P : TH.text }}>
                         {r.icon} {T(labelKey)}
                       </Text>
                     </TouchableOpacity>
@@ -616,7 +616,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               </View>
 
               {/* Additional note */}
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}><Text style={{ color: '#EF4444' }}>*</Text> {T('incompleteReasonNote')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}><Text style={{ color: '#EF4444' }}>*</Text> {T('incompleteReasonNote')}</Text>
               <TextInput
                 value={reasonNote} onChangeText={setReasonNote}
                 placeholder={T('incompleteReasonNotePlaceholder')}
@@ -625,7 +625,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 accessibilityLabel={T('incompleteReasonNote')}
                 style={{
                   width: '100%', minHeight: 60, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border,
-                  borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, marginBottom: 20,
+                  borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY(), marginBottom: 20,
                   textAlignVertical: 'top',
                 }}
               />
@@ -635,12 +635,12 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 <TouchableOpacity onPress={() => { setShowReasonModal(false); setLocalDone(null); }}
                   accessibilityLabel={T('incompleteReasonBack')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                  <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>{T('incompleteReasonBack')}</Text>
+                  <Text style={{ color: TH.sub, fontSize: FONT_BUTTON() }}>{T('incompleteReasonBack')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={confirmDoneWithReason} disabled={!selectedReason || !reasonNote.trim()}
                   accessibilityLabel={T('incompleteReasonConfirm')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: selectedReason && reasonNote.trim() ? P : TH.border, alignItems: 'center' }}>
-                  <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('incompleteReasonConfirm')}</Text>
+                  <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('incompleteReasonConfirm')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -677,13 +677,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingBottom: 40, maxHeight: '92%',
   },
   cardBase: { borderRadius: 16, padding: 14, marginBottom: 12 },
-  subLabel: { fontSize: FONT_SUB, marginBottom: 8 },
-  subText: { fontSize: FONT_SUB },
-  subBold: { fontSize: FONT_SUB, fontWeight: '600' },
-  bodyText: { fontSize: FONT_BODY },
-  bodyColor: { fontSize: FONT_BODY }, // alias for bodyText with color override
-  whiteButtonText: { color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON },
-  buttonTextBold: { fontWeight: '700', fontSize: FONT_BUTTON },
+  subLabel: { fontSize: FONT_SUB(), marginBottom: 8 },
+  subText: { fontSize: FONT_SUB() },
+  subBold: { fontSize: FONT_SUB(), fontWeight: '600' },
+  bodyText: { fontSize: FONT_BODY() },
+  bodyColor: { fontSize: FONT_BODY() }, // alias for bodyText with color override
+  whiteButtonText: { color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() },
+  buttonTextBold: { fontWeight: '700', fontSize: FONT_BUTTON() },
   statusBtnBase: {
     flex: 1, paddingVertical: 14, borderRadius: 12,
     alignItems: 'center', borderWidth: 2,
@@ -693,8 +693,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14, borderRadius: 12, alignItems: 'center',
     borderWidth: 1, marginBottom: 20,
   },
-  cancelButtonText: { fontSize: FONT_BUTTON },
-  titleText: { fontSize: FONT_TITLE },
+  cancelButtonText: { fontSize: FONT_BUTTON() },
+  titleText: { fontSize: FONT_TITLE() },
   checkItemBase: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: 8,
     paddingHorizontal: 4, borderRadius: 8, marginBottom: 4,
@@ -708,10 +708,10 @@ const styles = StyleSheet.create({
   foodAddCircle: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   foodNameInput: { flex: 2, padding: 7 },
   foodCalInput: { flex: 1, padding: 7 },
-  labelWithMb8: { fontSize: FONT_SUB, marginBottom: 8 },
+  labelWithMb8: { fontSize: FONT_SUB(), marginBottom: 8 },
   numberInput: {
     width: 60, textAlign: 'center', borderWidth: 1, borderRadius: 8,
-    paddingVertical: 6, fontWeight: '600', fontSize: FONT_BODY,
+    paddingVertical: 6, fontWeight: '600', fontSize: FONT_BODY(),
   },
   reasonBtnBase: { flex: 1, padding: 14, borderRadius: 12, alignItems: 'center' },
   reasonBackBtnBase: {
@@ -733,8 +733,8 @@ function RowItem({ label, icon, right, last }: { label:string; icon:React.ReactN
       borderBottomWidth: last ? 0 : 1, borderBottomColor: TH.border,
     }}>
       <View style={{ flexDirection:'row', alignItems:'center', gap:10 }}>
-        {typeof icon === 'string' ? <Text style={{ fontSize:FONT_TITLE }}>{icon}</Text> : icon}
-        <Text style={{ color:TH.text, fontSize:FONT_BODY }}>{label}</Text>
+        {typeof icon === 'string' ? <Text style={{ fontSize:FONT_TITLE() }}>{icon}</Text> : icon}
+        <Text style={{ color:TH.text, fontSize:FONT_BODY() }}>{label}</Text>
       </View>
       {right}
     </View>

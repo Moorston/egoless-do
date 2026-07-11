@@ -131,11 +131,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '500',
   },
   sub: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginTop: 2,
   },
   bar: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   barName: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     flex: 1,
   },
 });

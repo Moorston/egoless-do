@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   strategyCard: {
@@ -267,30 +267,30 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   strategyTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     flex: 1,
   },
   strategyDescription: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 20,
     marginBottom: 8,
   },
   strategyDate: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
   },
   emptyContainer: {
     alignItems: 'center',
     paddingVertical: 48,
   },
   emptyTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginTop: 16,
     marginBottom: 8,
   },
   emptyText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
     paddingHorizontal: 40,
   },
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   tipsText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     flex: 1,
     lineHeight: 20,
   },
@@ -324,18 +324,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   inputLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     marginBottom: 16,
   },
   textArea: {

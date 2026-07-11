@@ -35,7 +35,7 @@ export default function HabitCalendarModal({
             flexDirection: 'row', justifyContent: 'space-between',
             alignItems: 'center', marginBottom: 16,
           }}>
-            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text }}>
+            <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text }}>
               {T('habitCalendar')} — {habitName}
             </Text>
             <TouchableOpacity onPress={onClose}>

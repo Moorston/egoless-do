@@ -27,17 +27,17 @@ export default function ProgressOverview({ TH, T, thisWeekPracticeDays, thisMont
         end={{ x: 1, y: 1 }}
         style={{ padding: 20 }}
       >
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff', marginBottom: 16 }}>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff', marginBottom: 16 }}>
           {T('vowProgressWeekly')}
         </Text>
 
         {/* Week progress bar */}
         <View style={{ marginBottom: 16 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,0.8)' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.8)' }}>
               {T('vowProgressDays')}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: '#fff', fontWeight: '700' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: '#fff', fontWeight: '700' }}>
               {thisWeekPracticeDays}/7
             </Text>
           </View>
@@ -53,28 +53,28 @@ export default function ProgressOverview({ TH, T, thisWeekPracticeDays, thisMont
         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
           <View style={{ alignItems: 'center' }}>
             <Calendar size={18} color="rgba(255,255,255,0.8)" />
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff', marginTop: 4 }}>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff', marginTop: 4 }}>
               {thisWeekPracticeDays}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,0.7)' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.7)' }}>
               {T('vowProgressWeekly')}
             </Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <TrendingUp size={18} color="rgba(255,255,255,0.8)" />
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff', marginTop: 4 }}>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff', marginTop: 4 }}>
               {thisMonthPracticeDays}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,0.7)' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.7)' }}>
               {T('vowProgressMonth')}
             </Text>
           </View>
           <View style={{ alignItems: 'center' }}>
             <Flame size={18} color="rgba(255,255,255,0.8)" />
-            <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: '#fff', marginTop: 4 }}>
+            <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff', marginTop: 4 }}>
               {longestStreak}
             </Text>
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,0.7)' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,0.7)' }}>
               {T('vowProgressStreak')}
             </Text>
           </View>

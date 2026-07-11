@@ -75,9 +75,9 @@ export default function BreathingScreen() {
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Breathing" />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
-        <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>{T('breathingSubtitle')}</Text>
+        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>{T('breathingSubtitle')}</Text>
         <TouchableOpacity onPress={() => nav.navigate('BreathHistory' as never)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 }}>
-          <Text style={{ fontSize: FONT_SUB, color: TH.primary }}>{T('breathingHistory')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.primary }}>{T('breathingHistory')}</Text>
           <ChevronRight size={14} color={TH.primary} />
         </TouchableOpacity>
       </View>
@@ -139,13 +139,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   presetHeader: { marginBottom: 8 },
-  presetName: { fontSize: FONT_TITLE, fontWeight: '700' },
-  presetEn: { fontSize: FONT_SUB, marginTop: 2 },
-  presetRatio: { fontSize: FONT_SUB, marginTop: 4 },
+  presetName: { fontSize: FONT_TITLE(), fontWeight: '700' },
+  presetEn: { fontSize: FONT_SUB(), marginTop: 2 },
+  presetRatio: { fontSize: FONT_SUB(), marginTop: 4 },
   styleToggle: { flexDirection: 'row', gap: 8, marginBottom: 8 },
   styleBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
-  styleBtnText: { fontSize: FONT_SUB, fontWeight: '500' },
-  presetDesc: { fontSize: FONT_BODY, lineHeight: 20, marginBottom: 12 },
+  styleBtnText: { fontSize: FONT_SUB(), fontWeight: '500' },
+  presetDesc: { fontSize: FONT_BODY(), lineHeight: 20, marginBottom: 12 },
   presetFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  presetCycles: { fontSize: FONT_SUB },
+  presetCycles: { fontSize: FONT_SUB() },
 });

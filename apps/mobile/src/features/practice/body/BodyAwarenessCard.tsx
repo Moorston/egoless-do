@@ -30,16 +30,16 @@ export default function BodyAwarenessCard({ TH, T, checkins, onRecordPress }: Pr
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <Activity size={18} color="#f59e0b" />
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('bodyAwareness')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyAwareness')}</Text>
         </View>
         <TouchableOpacity onPress={onRecordPress} style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 8, backgroundColor: '#f59e0b15' }}>
-          <Text style={{ fontSize: FONT_BADGE, color: '#f59e0b' }}>{T('bodyFlowAwareness')}</Text>
+          <Text style={{ fontSize: FONT_BADGE(), color: '#f59e0b' }}>{T('bodyFlowAwareness')}</Text>
         </TouchableOpacity>
       </View>
 
       {!latest ? (
         <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>{T('bodyAwarenessNoData')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('bodyAwarenessNoData')}</Text>
         </View>
       ) : (
         <>
@@ -50,9 +50,9 @@ export default function BodyAwarenessCard({ TH, T, checkins, onRecordPress }: Pr
               return (
                 <View key={dim.key} style={{ alignItems: 'center', flex: 1 }}>
                   <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: dim.color + '20', justifyContent: 'center', alignItems: 'center', marginBottom: 4 }}>
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: dim.color }}>{value}</Text>
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: dim.color }}>{value}</Text>
                   </View>
-                  <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{T(dim.labelKey)}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T(dim.labelKey)}</Text>
                 </View>
               );
             })}
@@ -63,7 +63,7 @@ export default function BodyAwarenessCard({ TH, T, checkins, onRecordPress }: Pr
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
               {latest.tags.map(tag => (
                 <View key={tag} style={{ backgroundColor: '#f59e0b15', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 }}>
-                  <Text style={{ fontSize: FONT_SMALL, color: '#f59e0b' }}>#{tag}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b' }}>#{tag}</Text>
                 </View>
               ))}
             </View>
@@ -72,7 +72,7 @@ export default function BodyAwarenessCard({ TH, T, checkins, onRecordPress }: Pr
           {/* 7-day mini trend - simple bar chart */}
           {last7.length > 1 && (
             <View>
-              <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 8 }}>{T('bodyAwareness')} 7d</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 8 }}>{T('bodyAwareness')} 7d</Text>
               <View style={{ flexDirection: 'row', height: 60, alignItems: 'flex-end', gap: 2 }}>
                 {last7.map((c, idx) => (
                   <View key={c.id} style={{ flex: 1, alignItems: 'center' }}>

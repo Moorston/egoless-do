@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   dateLabel: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginTop: 4,
     fontWeight: '500',
   },
   timeLabel: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginTop: 1,
   },
   line: {
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   content: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     lineHeight: 26,
     marginBottom: 8,
   },
@@ -172,11 +172,11 @@ const styles = StyleSheet.create({
   },
   tagText: {
     color: 'rgba(255,255,255,.9)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   moodText: {
     color: 'rgba(255,255,255,.7)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   linkContainer: {
     flexDirection: 'row',
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   linkLabel: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     fontWeight: '500',
   },
 });

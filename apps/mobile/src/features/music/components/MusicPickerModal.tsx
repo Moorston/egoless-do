@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   title: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   list: {
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   groupLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   noMusicText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     flex: 1,
   },
   checkDot: {

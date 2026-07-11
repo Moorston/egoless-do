@@ -163,9 +163,9 @@ export default function StatsScreen() {
         <View key={i} style={{ width: columns === 2 ? '48%' : '31%', borderRadius: 14, padding: 16, alignItems: 'center', gap: 6, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
           {s.icon && <s.icon size={22} color={P} />}
           <Text style={{ fontWeight: '700', color: P, fontSize: 24, textAlign: 'center' }}>
-            {s.value}<Text style={{ fontSize: FONT_SUB, fontWeight: '400', color: TH.sub }}> {s.unit}</Text>
+            {s.value}<Text style={{ fontSize: FONT_SUB(), fontWeight: '400', color: TH.sub }}> {s.unit}</Text>
           </Text>
-          <Text style={{ fontSize: FONT_SUB, color: TH.sub, textAlign: 'center' }}>{s.label}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, textAlign: 'center' }}>{s.label}</Text>
         </View>
       ))}
     </View>
@@ -180,7 +180,7 @@ export default function StatsScreen() {
           return (
             <TouchableOpacity key={key} onPress={() => setActiveChart(key)}
               style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: active ? `${P}18` : 'transparent' }}>
-              <Text style={{ fontSize: FONT_SUB, color: active ? P : TH.sub, fontWeight: active ? '600' : '400' }}>{labels[key]}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: active ? P : TH.sub, fontWeight: active ? '600' : '400' }}>{labels[key]}</Text>
             </TouchableOpacity>
           );
         })}
@@ -189,28 +189,28 @@ export default function StatsScreen() {
         <BarChart data={caloriesData.map(d => d.value)} labels={caloriesData.map(d => d.label)} width={CHART_W} height={150} color="#F59E0B" />
       )}
       {activeChart === 'calories' && !caloriesData.some(d => d.value > 0) && (
-        <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
+        <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
       {activeChart === 'water' && waterData.some(d => d.value > 0) && (
         <BarChart data={waterData.map(d => d.value)} labels={waterData.map(d => d.label)} width={CHART_W} height={150} color="#3B82F6" />
       )}
       {activeChart === 'water' && !waterData.some(d => d.value > 0) && (
-        <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
+        <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
       {activeChart === 'weight' && weightData.length >= 2 && (
         <LineChart data={weightData.map(d => d.value)} labels={weightData.map(d => d.date)} width={CHART_W} height={160} color="#E91E63" showArea suffix={T('statsKg')} />
       )}
       {activeChart === 'weight' && weightData.length < 2 && (
-        <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
+        <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
       {activeChart === 'exercise' && exerciseTrendData.some(d => d.value > 0) && (
         <LineChart data={exerciseTrendData.map(d => d.value)} labels={exerciseTrendData.map(d => d.label)} width={CHART_W} height={160} color="#3B82F6" showArea suffix="km" />
       )}
       {activeChart === 'exercise' && !exerciseTrendData.some(d => d.value > 0) && (
-        <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
+        <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
       {activeChart === 'calories' && !caloriesData.some(d => d.value > 0) && (
-        <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
+        <Text style={{ color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', paddingVertical: 40 }}>{T('statsNoData')}</Text>
       )}
     </Card>
   );
@@ -220,22 +220,22 @@ export default function StatsScreen() {
     if (!habits.length) return null;
     return (
       <Card style={{ marginBottom: 12 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 10 }}>{T('statsHabitProgress')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 10 }}>{T('statsHabitProgress')}</Text>
         {habits.map(h => {
           const pct = h.targetDays > 0 ? Math.min(Math.round(h.doneDays / h.targetDays * 100), 100) : 0;
           return (
             <View key={h.id} style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Flame size={16} color={COLORS.ORANGE} />
-                <Text style={{ flex: 1, fontSize: FONT_BODY, color: TH.text }} numberOfLines={1}>{h.name}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: COLORS.ORANGE, fontWeight: '600' }}>{h.streak}{T('days')}</Text>
+                <Text style={{ flex: 1, fontSize: FONT_BODY(), color: TH.text }} numberOfLines={1}>{h.name}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: COLORS.ORANGE, fontWeight: '600' }}>{h.streak}{T('days')}</Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6 }}>
                 <View style={{ flex: 1, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
                   <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${pct}%` }} />
                 </View>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{h.doneDays}/{h.targetDays}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{h.doneDays}/{h.targetDays}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
               </View>
             </View>
           );
@@ -248,7 +248,7 @@ export default function StatsScreen() {
     if (!activePlans.length) return null;
     return (
       <Card style={{ marginBottom: 12 }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 10 }}>{T('statsPlanList')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 10 }}>{T('statsPlanList')}</Text>
         {activePlans.map(p => {
           const items = planItems.filter(i => i.planId === p.id);
           const done = items.filter(i => i.status === 'completed').length;
@@ -258,12 +258,12 @@ export default function StatsScreen() {
               {/* Plan header */}
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
                 <ClipboardList size={16} color={P} />
-                <Text style={{ flex: 1, fontSize: FONT_BODY, fontWeight: '600', color: TH.text }} numberOfLines={1}>{p.name}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{done}/{items.length}</Text>
+                <Text style={{ flex: 1, fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }} numberOfLines={1}>{p.name}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{done}/{items.length}</Text>
                 <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
                   <View style={{ height: 4, backgroundColor: P, borderRadius: 2, width: `${pct}%` }} />
                 </View>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, width: 36, textAlign: 'right' }}>{pct}%</Text>
               </View>
               {/* Tree items */}
               {items.length > 0 && (
@@ -282,13 +282,13 @@ export default function StatsScreen() {
                         </View>
                         {/* Content - same layout as plan header */}
                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 }}>
-                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>·</Text>
-                          <Text style={{ flex: 1, fontSize: FONT_SUB, color: item.status === 'completed' ? TH.sub : TH.text, textDecorationLine: item.status === 'completed' ? 'line-through' : 'none' }} numberOfLines={1}>{item.name}</Text>
-                          <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{checkedDays}/{expectedDays}</Text>
+                          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>·</Text>
+                          <Text style={{ flex: 1, fontSize: FONT_SUB(), color: item.status === 'completed' ? TH.sub : TH.text, textDecorationLine: item.status === 'completed' ? 'line-through' : 'none' }} numberOfLines={1}>{item.name}</Text>
+                          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{checkedDays}/{expectedDays}</Text>
                           <View style={{ width: 60, height: 4, backgroundColor: TH.border, borderRadius: 2, overflow: 'hidden' }}>
                             <View style={{ height: 4, backgroundColor: item.status === 'completed' ? P : COLORS.GREEN, borderRadius: 2, width: `${itemPct}%` }} />
                           </View>
-                          <Text style={{ fontSize: FONT_SUB, color: TH.sub, width: 36, textAlign: 'right' }}>{itemPct}%</Text>
+                          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, width: 36, textAlign: 'right' }}>{itemPct}%</Text>
                         </View>
                       </View>
                     );
@@ -306,7 +306,7 @@ export default function StatsScreen() {
     <Card style={{ marginBottom: 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
         <CalendarDays size={15} color={TH.text} />
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('statsCheckinHeatmap')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{T('statsCheckinHeatmap')}</Text>
       </View>
       <CalendarGrid history={(rawCheckinHistory ?? []).filter(c => !c.deleted)}
         primaryColor={P} textColor={TH.text} subColor={TH.sub} borderColor={TH.border}
@@ -348,15 +348,15 @@ export default function StatsScreen() {
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, padding: 12, backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border }}>
                 <Flame size={16} color={COLORS.ORANGE} />
                 <View>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{fastKcal} kcal</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('fastKcalSaved')}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{fastKcal} kcal</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('fastKcalSaved')}</Text>
                 </View>
               </View>
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, padding: 12, backgroundColor: TH.card, borderRadius: 12, borderWidth: 1, borderColor: TH.border }}>
                 <TrendingUp size={16} color="#E91E63" />
                 <View>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{(fastKcal / 7700).toFixed(2)} {T('fastKg')}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('fastWeightLoss')}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{(fastKcal / 7700).toFixed(2)} {T('fastKg')}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('fastWeightLoss')}</Text>
                 </View>
               </View>
             </View>
@@ -382,7 +382,7 @@ export default function StatsScreen() {
             ])}
             {exerciseTrendData.some(d => d.value > 0) && (
               <Card>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('statsExerciseTrend')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 12 }}>{T('statsExerciseTrend')}</Text>
                 <LineChart data={exerciseTrendData.map(d => d.value)} labels={exerciseTrendData.map(d => d.label)} width={CHART_W} height={160} color="#3B82F6" showArea suffix="km" />
               </Card>
             )}
@@ -437,7 +437,7 @@ export default function StatsScreen() {
             return (
               <TouchableOpacity key={key} onPress={() => setActiveTab(key)}
                 style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: active ? P : TH.card, borderWidth: 1, borderColor: active ? P : TH.border }}>
-                <Text style={{ fontSize: FONT_BODY, color: active ? '#fff' : TH.text, fontWeight: active ? '600' : '400' }}>{T(TAB_I18N[key])}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: active ? '#fff' : TH.text, fontWeight: active ? '600' : '400' }}>{T(TAB_I18N[key])}</Text>
               </TouchableOpacity>
             );
           })}

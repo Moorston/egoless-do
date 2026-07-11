@@ -192,7 +192,7 @@ export default function GiveScreen() {
                   onPress={() => setGiveType(gt.type)}
                 >
                   <Text style={styles.typeChipIcon}>{gt.icon}</Text>
-                  <Text style={{ color: giveType === gt.type ? '#fff' : gt.color, fontSize: FONT_BODY, fontWeight: '600' }}>
+                  <Text style={{ color: giveType === gt.type ? '#fff' : gt.color, fontSize: FONT_BODY(), fontWeight: '600' }}>
                     {T(`give${gt.type.charAt(0).toUpperCase() + gt.type.slice(1)}`) || gt.type}
                   </Text>
                 </TouchableOpacity>
@@ -266,45 +266,45 @@ export default function GiveScreen() {
 const styles = StyleSheet.create({
   statsCard: { borderRadius: 16, borderWidth: 1, padding: 16, marginBottom: 16 },
   statsHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
-  statsTitle: { fontSize: FONT_TITLE, fontWeight: '700' },
-  quoteText: { fontSize: FONT_SUB, marginBottom: 12, fontStyle: 'italic' },
+  statsTitle: { fontSize: FONT_TITLE(), fontWeight: '700' },
+  quoteText: { fontSize: FONT_SUB(), marginBottom: 12, fontStyle: 'italic' },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 12 },
   statItem: { alignItems: 'center', gap: 2 },
-  statValue: { fontSize: FONT_STAT_CARD, fontWeight: '800' },
+  statValue: { fontSize: FONT_STAT_CARD(), fontWeight: '800' },
   statLabel: { fontSize: 11 },
   typeRow: { flexDirection: 'row', justifyContent: 'space-around' },
   typeItem: { alignItems: 'center', gap: 4 },
   typeIcon: { fontSize: 20 },
-  typeCount: { fontSize: FONT_BODY, fontWeight: '700' },
+  typeCount: { fontSize: FONT_BODY(), fontWeight: '700' },
   typeLabel: { fontSize: 11 },
   recordBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     padding: 16, borderRadius: 14, marginBottom: 16,
   },
-  recordBtnText: { color: '#fff', fontSize: FONT_BODY, fontWeight: '700' },
+  recordBtnText: { color: '#fff', fontSize: FONT_BODY(), fontWeight: '700' },
   section: { marginBottom: 16 },
-  sectionTitle: { fontSize: FONT_SUB, fontWeight: '700', marginBottom: 10 },
+  sectionTitle: { fontSize: FONT_SUB(), fontWeight: '700', marginBottom: 10 },
   recentRow: { borderLeftWidth: 3, paddingLeft: 12, paddingVertical: 8, marginBottom: 8 },
   recentHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
   recentDate: { fontSize: 12 },
   recentIcon: { fontSize: 14 },
   anonTag: { fontSize: 14 },
-  recentContent: { fontSize: FONT_BODY, marginBottom: 2 },
+  recentContent: { fontSize: FONT_BODY(), marginBottom: 2 },
   recentMotivation: { fontSize: 12, fontStyle: 'italic' },
   historyBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     borderRadius: 14, borderWidth: 1, padding: 14,
   },
-  historyBtnText: { fontSize: FONT_BODY, fontWeight: '600' },
+  historyBtnText: { fontSize: FONT_BODY(), fontWeight: '600' },
   // Modal
   modalContainer: { flex: 1 },
   modalHeader: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, paddingBottom: 0,
   },
-  modalTitle: { fontSize: FONT_TITLE, fontWeight: '700' },
-  modalLabel: { fontSize: FONT_BODY, fontWeight: '600', marginBottom: 8, marginTop: 12 },
+  modalTitle: { fontSize: FONT_TITLE(), fontWeight: '700' },
+  modalLabel: { fontSize: FONT_BODY(), fontWeight: '600', marginBottom: 8, marginTop: 12 },
   modalInput: {
-    borderRadius: 12, borderWidth: 1, padding: 14, fontSize: FONT_BODY,
+    borderRadius: 12, borderWidth: 1, padding: 14, fontSize: FONT_BODY(),
     minHeight: 60, textAlignVertical: 'top',
   },
   typeSelectRow: { flexDirection: 'row', gap: 10 },
@@ -318,10 +318,10 @@ const styles = StyleSheet.create({
     width: 22, height: 22, borderRadius: 6, borderWidth: 2,
     alignItems: 'center', justifyContent: 'center',
   },
-  anonLabel: { fontSize: FONT_BODY, fontWeight: '600' },
+  anonLabel: { fontSize: FONT_BODY(), fontWeight: '600' },
   anonHint: { fontSize: 12, marginTop: 4, marginLeft: 32, fontStyle: 'italic' },
   saveBtn: {
     alignItems: 'center', justifyContent: 'center', padding: 16, borderRadius: 14, marginTop: 24,
   },
-  saveBtnText: { color: '#fff', fontSize: FONT_BODY, fontWeight: '700' },
+  saveBtnText: { color: '#fff', fontSize: FONT_BODY(), fontWeight: '700' },
 });

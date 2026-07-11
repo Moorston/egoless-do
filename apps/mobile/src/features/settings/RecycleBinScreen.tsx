@@ -90,7 +90,7 @@ export default function RecycleBinScreen() {
         {recycleBin.length === 0 ? (
           <View style={{ alignItems: 'center', marginTop: 80 }}>
             <Trash2 size={48} color={TH.sub} />
-            <Text style={{ color: TH.sub, fontSize: FONT_EMPTY, marginTop: 16 }}>{T('recycleBinEmpty')}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_EMPTY(), marginTop: 16 }}>{T('recycleBinEmpty')}</Text>
           </View>
         ) : (
           <>
@@ -110,12 +110,12 @@ export default function RecycleBinScreen() {
                       <Icon size={20} color={color} />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }} numberOfLines={1}>
+                      <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY() }} numberOfLines={1}>
                         {getItemName(item)}
                       </Text>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
                         <Clock size={12} color={TH.sub} />
-                        <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
+                        <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
                           {T('recycleBinDaysLeft').replace('{days}', String(daysLeft))}
                         </Text>
                       </View>
@@ -155,14 +155,14 @@ export default function RecycleBinScreen() {
               }}
             >
               <Trash2 size={16} color={COLORS.RED} />
-              <Text style={{ color: COLORS.RED, fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('recycleBinEmptyAll')}</Text>
+              <Text style={{ color: COLORS.RED, fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('recycleBinEmptyAll')}</Text>
             </TouchableOpacity>
           </>
         )}
 
         {/* Auto-delete hint */}
         <Text style={{
-          color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', marginTop: 24,
+          color: TH.sub, fontSize: FONT_SUB(), textAlign: 'center', marginTop: 24,
         }}>
           {T('recycleBinAutoDelete')}
         </Text>

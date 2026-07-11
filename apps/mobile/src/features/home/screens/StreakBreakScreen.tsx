@@ -67,24 +67,24 @@ export default function StreakBreakScreen() {
             {recovery.state === 'active' && (
               <>
                 <Flame size={40} color={P} style={styles.iconMargin} />
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: P, marginBottom: 4 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: P, marginBottom: 4 }}>
                   {T('streakBreakActiveStreak').replace('{n}', String(currentStreak))}
                 </Text>
                 {(recovery.daysSinceLastBreak ?? 0) > 0 && (
-                  <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>
+                  <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>
                     {T('streakBreakDaysSince').replace('{n}', String(recovery.daysSinceLastBreak))}
                   </Text>
                 )}
-                <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{T('streakBreakGettingStronger')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('streakBreakGettingStronger')}</Text>
               </>
             )}
             {recovery.state === 'just_broke' && (
               <>
                 <Heart size={40} color={COLORS.ORANGE} style={styles.iconMargin} />
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: TH.text, marginBottom: 4 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: TH.text, marginBottom: 4 }}>
                   {T('streakBreakRestart')}
                 </Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>
                   {T('streakBreakPrevStreak').replace('{n}', String(recovery.previousStreak ?? 0))}，{T('streakBreakCanBeLonger')}
                 </Text>
                 <Pressable onPress={handleCheckin} style={{
@@ -100,10 +100,10 @@ export default function StreakBreakScreen() {
             {recovery.state === 'at_risk' && (
               <>
                 <Clock size={40} color={COLORS.ORANGE} style={styles.iconMargin} />
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: TH.text, marginBottom: 4 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: TH.text, marginBottom: 4 }}>
                   {T('streakBreakDontForget')}
                 </Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>
                   {T('streakBreakActiveStreak').replace('{n}', String(currentStreak))}，{T('streakBreakGettingStronger')}
                 </Text>
                 <Pressable onPress={handleCheckin} style={{
@@ -119,10 +119,10 @@ export default function StreakBreakScreen() {
             {recovery.state === 'long_absence' && (
               <>
                 <Sprout size={40} color={COLORS.GREEN} style={styles.iconMargin} />
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: TH.text, marginBottom: 4 }}>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: TH.text, marginBottom: 4 }}>
                   {T('streakBreakNeverTooLate')}
                 </Text>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>
                   {T('streakBreakDaysSince').replace('{n}', String(recovery.daysSinceLastCheckin ?? 0))}
                 </Text>
                 <Pressable onPress={handleCheckin} style={{
@@ -141,29 +141,29 @@ export default function StreakBreakScreen() {
         {/* Insight Card — hidden when breaks < 3 */}
         {insight.totalBreaks >= 3 && (
           <Card>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text, marginBottom: 14 }}>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 14 }}>
               {T('streakBreakInsight')}
             </Text>
 
             {/* Weekday distribution */}
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('streakBreakHighDay')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('streakBreakHighDay')}</Text>
             <MiniBarChart values={insight.weekdayDist} labels={weekdayLabels} color={P} th={TH} />
 
             {/* Stats row */}
             <View style={styles.statsRow}>
               <View style={styles.alignCenter}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: P }}>{insight.avgStreak}</Text>
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>{T('streakBreakAvgStreak')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: P }}>{insight.avgStreak}</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('streakBreakAvgStreak')}</Text>
               </View>
               <View style={{ width: 1, backgroundColor: TH.border }} />
               <View style={styles.alignCenter}>
-                <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: P }}>{insight.avgRecoveryDays}</Text>
-                <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>{T('streakBreakAvgRecovery')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: P }}>{insight.avgRecoveryDays}</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{T('streakBreakAvgRecovery')}</Text>
               </View>
             </View>
 
             {/* Monthly trend */}
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('streakBreakTrend')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('streakBreakTrend')}</Text>
             <MiniBarChart values={insight.monthlyTrend.map(t => t.count)} labels={monthLabels} color={P} th={TH} />
           </Card>
         )}
@@ -175,12 +175,12 @@ export default function StreakBreakScreen() {
         }}>
           <View style={styles.flexCenter}>
             <Text style={styles.redBreakCount}>{breaks.length}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{T('streakBreakTotal')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>{T('streakBreakTotal')}</Text>
           </View>
           <View style={{ width: 1, backgroundColor: TH.border }} />
           <View style={styles.flexCenter}>
             <Text style={styles.greenStat}>{longestStreak}</Text>
-            <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>{T('days')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>{T('days')}</Text>
           </View>
         </View>
 
@@ -188,7 +188,7 @@ export default function StreakBreakScreen() {
           <Card>
             <View style={styles.emptyCardCenter}>
               <PartyPopper size={32} color={COLORS.GREEN} style={styles.emptyIconMargin} />
-              <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('streakBreakEmpty')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('streakBreakEmpty')}</Text>
             </View>
           </Card>
         ) : (
@@ -198,7 +198,7 @@ export default function StreakBreakScreen() {
               <Card key={`break-${b.breakDate}-${index}`}>
                 <View style={styles.breakCardHeader}>
                   <View style={styles.breakCardRow}>
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{b.breakDate}</Text>
+                    <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{b.breakDate}</Text>
                     {hypothetical?.available && (
                       <View style={styles.orangeTag}>
                         <Shield size={12} color={COLORS.ORANGE} />
@@ -222,7 +222,7 @@ export default function StreakBreakScreen() {
           <Card>
             {encouragement.map((msg, i) => (
               <Text key={i} style={{
-                fontSize: FONT_BODY, color: i === 0 ? TH.text : TH.sub,
+                fontSize: FONT_BODY(), color: i === 0 ? TH.text : TH.sub,
                 fontWeight: i === 0 ? '600' : '400',
                 lineHeight: 24,
               }}>
@@ -266,19 +266,19 @@ const styles = StyleSheet.create({
   scrollContent: { padding: 16, paddingBottom: 40 },
   recoveryCenter: { alignItems: 'center', paddingVertical: 4 },
   iconMargin: { marginBottom: 10 },
-  buttonText: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY },
+  buttonText: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY() },
   statsRow: { flexDirection: 'row', marginVertical: 14, justifyContent: 'center', gap: 16 },
   alignCenter: { alignItems: 'center' },
   flexCenter: { flex: 1, alignItems: 'center' },
-  redBreakCount: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#EF4444' },
-  greenStat: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: COLORS.GREEN },
+  redBreakCount: { fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: '#EF4444' },
+  greenStat: { fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: COLORS.GREEN },
   emptyCardCenter: { alignItems: 'center', paddingVertical: 24 },
   emptyIconMargin: { marginBottom: 8 },
   breakCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   breakCardRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 },
   orangeTag: { backgroundColor: `${COLORS.ORANGE}15`, borderColor: `${COLORS.ORANGE}40`, borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, flexDirection: 'row', alignItems: 'center', gap: 4 },
-  orangeTagText: { fontSize: FONT_TINY, color: COLORS.ORANGE, fontWeight: '600' },
+  orangeTagText: { fontSize: FONT_TINY(), color: COLORS.ORANGE, fontWeight: '600' },
   lostBadge: { backgroundColor: '#EF444420', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 3 },
-  lostBadgeText: { color: '#EF4444', fontSize: FONT_BADGE, fontWeight: '600' },
+  lostBadgeText: { color: '#EF4444', fontSize: FONT_BADGE(), fontWeight: '600' },
   chartColumn: { flex: 1, alignItems: 'center', gap: 2 },
 });

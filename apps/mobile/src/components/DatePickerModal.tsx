@@ -105,7 +105,7 @@ export default function DatePickerModal({ visible, value, onConfirm, onClose, mi
             <TouchableOpacity onPress={prevMonth} style={{ padding: 8 }}>
               <ChevronLeft size={20} color={TH.text} />
             </TouchableOpacity>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{year}年 {MONTH_NAMES[month]}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{year}年 {MONTH_NAMES[month]}</Text>
             <TouchableOpacity onPress={nextMonth} style={{ padding: 8 }}>
               <ChevronRight size={20} color={TH.text} />
             </TouchableOpacity>
@@ -115,7 +115,7 @@ export default function DatePickerModal({ visible, value, onConfirm, onClose, mi
           <View style={{ flexDirection: 'row', marginBottom: 8 }}>
             {WEEK_LABELS.map(label => (
               <View key={label} style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{label}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{label}</Text>
               </View>
             ))}
           </View>
@@ -142,7 +142,7 @@ export default function DatePickerModal({ visible, value, onConfirm, onClose, mi
                     backgroundColor: isSelected ? P : 'transparent',
                   }}>
                   <Text style={{
-                    fontSize: FONT_BODY, fontWeight: isSelected ? '700' : '400',
+                    fontSize: FONT_BODY(), fontWeight: isSelected ? '700' : '400',
                     color: isSelected ? '#fff' : isToday ? P : TH.text,
                   }}>{d}</Text>
                   </View>
@@ -155,11 +155,11 @@ export default function DatePickerModal({ visible, value, onConfirm, onClose, mi
           <View style={{ flexDirection: 'row', gap: 10, marginTop: 16 }}>
             <TouchableOpacity onPress={onClose}
               style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-              <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>取消</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_BUTTON() }}>取消</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleConfirm}
               style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>确定</Text>
+              <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>确定</Text>
             </TouchableOpacity>
           </View>
         </View>

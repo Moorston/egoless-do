@@ -90,7 +90,7 @@ export default function PlanEditModal({ visible, TH, T, plans, onClose, onSave }
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'flex-end' }}>
         <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '85%' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>{T('bodyPlanTitle')}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyPlanTitle')}</Text>
             <TouchableOpacity onPress={onClose}><X size={24} color={TH.sub} /></TouchableOpacity>
           </View>
           <ScrollView>
@@ -98,22 +98,22 @@ export default function PlanEditModal({ visible, TH, T, plans, onClose, onSave }
               const selectedKey = getSelectedKey(plan);
               return (
                 <View key={idx} style={{ marginBottom: 20 }}>
-                  <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T(WEEKDAY_KEYS[idx])}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T(WEEKDAY_KEYS[idx])}</Text>
                   {groupedCategories.map(group => (
                     <View key={group.label} style={{ marginBottom: 8 }}>
-                      <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6 }}>{group.label}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 6 }}>{group.label}</Text>
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
                         {group.items.map(item => (
                           <TouchableOpacity key={item.key} onPress={() => updatePlan(idx, item.key)}
                             style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, borderWidth: 1, borderColor: selectedKey === item.key ? '#f59e0b' : TH.border, backgroundColor: selectedKey === item.key ? '#f59e0b15' : 'transparent' }}>
-                            <Text style={{ fontSize: FONT_SMALL }}>{item.icon}</Text>
-                            <Text style={{ fontSize: FONT_SMALL, color: selectedKey === item.key ? '#f59e0b' : TH.text }}>{item.label}</Text>
+                            <Text style={{ fontSize: FONT_SMALL() }}>{item.icon}</Text>
+                            <Text style={{ fontSize: FONT_SMALL(), color: selectedKey === item.key ? '#f59e0b' : TH.text }}>{item.label}</Text>
                           </TouchableOpacity>
                         ))}
                       </View>
                     </View>
                   ))}
-                  <TextInput style={{ backgroundColor: TH.card, borderRadius: 8, padding: 10, color: TH.text, fontSize: FONT_BODY, marginTop: 4 }} value={plan.note ?? ''} onChangeText={v => updateNote(idx, v)} placeholder={T('bodyPlanNote')} placeholderTextColor={TH.sub} />
+                  <TextInput style={{ backgroundColor: TH.card, borderRadius: 8, padding: 10, color: TH.text, fontSize: FONT_BODY(), marginTop: 4 }} value={plan.note ?? ''} onChangeText={v => updateNote(idx, v)} placeholder={T('bodyPlanNote')} placeholderTextColor={TH.sub} />
                 </View>
               );
             })}

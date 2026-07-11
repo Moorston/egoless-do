@@ -81,7 +81,7 @@ export default function MantraActivePage(props: Props) {
       {/* Exit button */}
       <TouchableOpacity onPress={onExit}
         style={{ position: 'absolute', top: 16, right: 16, zIndex: 10, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, backgroundColor: `${TH.card}CC` }}>
-        <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#EF4444' }}>✕ {T('chantingExit')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#EF4444' }}>✕ {T('chantingExit')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -89,7 +89,7 @@ export default function MantraActivePage(props: Props) {
         activeOpacity={1}
         onPress={onTap}
       >
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 4 }}>{mantraName}</Text>
+        <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 4 }}>{mantraName}</Text>
         {mantraPronunciation && (
           <Text style={{ fontSize: 12, color: '#F59E0B', marginBottom: 4 }}>{mantraPronunciation}</Text>
         )}
@@ -105,11 +105,11 @@ export default function MantraActivePage(props: Props) {
           centerLabel={`${T('mantraRounds')}: ${Math.floor(count / BEAD_COUNT)}`}
         />
 
-        <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 16 }}>
+        <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 16 }}>
           {formatTime(elapsed)} · {T('mantraTarget')}: {targetRounds} {T('mantraRounds')}
         </Text>
 
-        <Text style={{ fontSize: FONT_SMALL, color: `${TH.sub}80`, marginTop: 8 }}>
+        <Text style={{ fontSize: FONT_SMALL(), color: `${TH.sub}80`, marginTop: 8 }}>
           {T('mantraTapAnywhere')}
         </Text>
       </TouchableOpacity>
@@ -118,12 +118,12 @@ export default function MantraActivePage(props: Props) {
       <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 32, paddingBottom: 20 }}>
         <TouchableOpacity onPress={onUndo}
           style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: TH.card }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>← {T('mantraBack')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>← {T('mantraBack')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={onToggleAudio}
           style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: isPlaying ? '#F59E0B' : TH.card }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: isPlaying ? '#fff' : TH.text }}>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: isPlaying ? '#fff' : TH.text }}>
             {isPlaying ? '🔊' : '🔇'}
           </Text>
         </TouchableOpacity>
@@ -131,18 +131,18 @@ export default function MantraActivePage(props: Props) {
         {isPaused ? (
           <TouchableOpacity onPress={onTogglePause}
             style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: '#10B981' }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('mantraResume')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#fff' }}>{T('mantraResume')}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity onPress={onTogglePause}
             style={{ paddingVertical: 12, paddingHorizontal: 20, borderRadius: 12, backgroundColor: TH.card }}>
-            <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>{T('mantraPause')}</Text>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{T('mantraPause')}</Text>
           </TouchableOpacity>
         )}
 
         <TouchableOpacity onPress={onEndSession}
           style={{ paddingVertical: 12, paddingHorizontal: 24, borderRadius: 12, backgroundColor: '#EF4444' }}>
-          <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#fff' }}>{T('mantraStop')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#fff' }}>{T('mantraStop')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

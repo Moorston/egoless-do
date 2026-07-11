@@ -123,12 +123,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   dateLabel: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginTop: 4,
     fontWeight: '500',
   },
   timeLabel: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginTop: 1,
   },
   line: {
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   sourceBadge: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   removeBtn: {
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   guidedText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     lineHeight: 18,
     fontStyle: 'italic',
   },
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   content: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     lineHeight: 26,
     marginBottom: 8,
   },
@@ -185,9 +185,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   tagText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   moodText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
 });

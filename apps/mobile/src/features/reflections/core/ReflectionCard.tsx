@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     color: 'rgba(255,255,255,.7)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   badges: {
     flexDirection: 'row',
@@ -203,13 +203,13 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   badgeText: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     color: '#fff',
     fontWeight: '500',
   },
   contentText: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     lineHeight: 26,
     marginBottom: 8,
   },
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: 'rgba(255,255,255,.7)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     textDecorationLine: 'underline',
     flex: 1,
   },
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   },
   tagText: {
     color: 'rgba(255,255,255,.9)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   moodPill: {
     backgroundColor: 'rgba(255,255,255,.15)',
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   },
   moodText: {
     color: 'rgba(255,255,255,.8)',
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
 });
 

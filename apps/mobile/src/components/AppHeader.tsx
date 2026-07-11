@@ -135,30 +135,30 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   brand: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     letterSpacing: 3,
     textTransform: 'uppercase',
     fontWeight: '500',
   },
   appName: {
     fontWeight: '700',
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     marginTop: 2,
   },
   streakBox: {
     alignItems: 'flex-end',
   },
   streakLabel: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
   streakValue: {
     fontWeight: '800',
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     lineHeight: 42,
     color: '#EA6060',
   },
   streakUnit: {
-    fontSize: FONT_LABEL,
+    fontSize: FONT_LABEL(),
   },
   tabsContainer: {
     paddingHorizontal: 12,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tabText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '500',
   },
   tabTextActive: {
@@ -186,6 +186,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   dateText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
 });

@@ -35,9 +35,9 @@ export default function WeeklyExecCard({ TH, T, plans, exerciseLog }: Props) {
 
   return (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
-      <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{'📊 ' + T('bodyExec')}</Text>
+      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, marginBottom: 12 }}>{'📊 ' + T('bodyExec')}</Text>
       {activePlans.length === 0 ? (
-        <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', paddingVertical: 8 }}>{T('bodyExecNotSet')}</Text>
+        <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', paddingVertical: 8 }}>{T('bodyExecNotSet')}</Text>
       ) : (
         <View>
           {WEEKDAY_KEYS.map((dayKey, idx) => {
@@ -62,28 +62,28 @@ export default function WeeklyExecCard({ TH, T, plans, exerciseLog }: Props) {
             const dayName = T(dayKey);
             return (
               <View key={idx} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 6 }}>
-                <Text style={{ fontSize: FONT_SUB, color: isPast ? TH.text : TH.sub, width: 40 }}>{dayName}</Text>
-                <Text style={{ fontSize: FONT_BODY, color: isRest ? TH.sub : TH.text, flex: 1 }}>{dayPlan.part}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: isPast ? TH.text : TH.sub, width: 40 }}>{dayName}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: isRest ? TH.sub : TH.text, flex: 1 }}>{dayPlan.part}</Text>
                 {isRest ? (
-                  <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('bodyDayRest')}</Text>
+                  <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('bodyDayRest')}</Text>
                 ) : isPast ? (
                   matched ? (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                       <Check size={14} color="#10b981" />
-                      <Text style={{ fontSize: FONT_BADGE, color: '#10b981' }}>{T('bodyDayComplete')}</Text>
+                      <Text style={{ fontSize: FONT_BADGE(), color: '#10b981' }}>{T('bodyDayComplete')}</Text>
                     </View>
                   ) : (
-                    <Text style={{ fontSize: FONT_BADGE, color: '#ef4444' }}>{T('bodyDayIncomplete')}</Text>
+                    <Text style={{ fontSize: FONT_BADGE(), color: '#ef4444' }}>{T('bodyDayIncomplete')}</Text>
                   )
                 ) : (
-                  <Text style={{ fontSize: FONT_BADGE, color: TH.sub }}>{T('bodyDayPending')}</Text>
+                  <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('bodyDayPending')}</Text>
                 )}
               </View>
             );
           })}
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
-            <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#f59e0b' }}>{completedDays}/{totalPlanned}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyCompletedDays')}</Text></View>
-            <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#f59e0b' }}>{totalKcal}</Text><Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('bodyKcal')}</Text></View>
+            <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{completedDays}/{totalPlanned}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyCompletedDays')}</Text></View>
+            <View style={{ alignItems: 'center' }}><Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{totalKcal}</Text><Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyKcal')}</Text></View>
           </View>
         </View>
       )}

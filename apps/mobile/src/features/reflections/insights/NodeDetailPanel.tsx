@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   detailDot: { width: 10, height: 10, borderRadius: 5 },
-  detailType: { fontSize: FONT_SMALL },
-  detailLabel: { fontSize: FONT_BODY, fontWeight: '600', marginBottom: 12 },
+  detailType: { fontSize: FONT_SMALL() },
+  detailLabel: { fontSize: FONT_BODY(), fontWeight: '600', marginBottom: 12 },
   detailButton: { paddingVertical: 8, borderRadius: 8, alignItems: 'center' },
-  detailButtonText: { color: '#fff', fontSize: FONT_SMALL, fontWeight: '600' },
+  detailButtonText: { color: '#fff', fontSize: FONT_SMALL(), fontWeight: '600' },
 });

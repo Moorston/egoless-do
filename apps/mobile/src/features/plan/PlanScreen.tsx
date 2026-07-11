@@ -36,12 +36,12 @@ export default function PlanScreen() {
         <SimpleHeader routeName="Plan" />
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32, alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
           <ClipboardList size={48} color={TH.sub} style={{ marginBottom: 16 }} />
-          <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 20, textAlign: 'center' }}>{T('planEmpty')}</Text>
+          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginBottom: 20, textAlign: 'center' }}>{T('planEmpty')}</Text>
           <TouchableOpacity
             onPress={() => nav.navigate('PlanCreate')}
             style={{ backgroundColor: P, borderRadius: 12, paddingHorizontal: 28, paddingVertical: 12 }}
           >
-            <Text style={{ color: '#fff', fontSize: FONT_BUTTON, fontWeight: '600' }}>{T('planCreateBtn')}</Text>
+            <Text style={{ color: '#fff', fontSize: FONT_BUTTON(), fontWeight: '600' }}>{T('planCreateBtn')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>

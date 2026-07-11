@@ -42,8 +42,8 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
           }}>
             {/* Header */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-              <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, flex: 1 }}>{T('planTodoList')}</Text>
-              <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{today}</Text>
+              <Text style={{ fontWeight: '700', fontSize: FONT_TITLE(), color: TH.text, flex: 1 }}>{T('planTodoList')}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{today}</Text>
               <TouchableOpacity onPress={onClose} style={{ marginLeft: 12 }}>
                 <X size={20} color={TH.sub} />
               </TouchableOpacity>
@@ -52,7 +52,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
             {todayItems.length === 0 ? (
               <View style={{ alignItems: 'center', padding: 32 }}>
                 <CheckCircle2 size={32} color={COLORS.GREEN} style={{ marginBottom: 8 }} />
-                <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('planNoTodayTodos')}</Text>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('planNoTodayTodos')}</Text>
               </View>
             ) : (
               <ScrollView>
@@ -88,12 +88,12 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
                       {/* Content */}
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{
-                          fontSize: FONT_BODY, fontWeight: '500',
+                          fontSize: FONT_BODY(), fontWeight: '500',
                           color: done ? TH.sub : TH.text,
                           textDecorationLine: done ? 'line-through' : 'none',
                         }}>{item.name}</Text>
                         {item.description ? (
-                          <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginTop: 2 }} numberOfLines={1}>
+                          <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, marginTop: 2 }} numberOfLines={1}>
                             {item.description}
                           </Text>
                         ) : null}
@@ -102,7 +102,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
                       {/* Link badge */}
                       {!isManual && (
                         <View style={{ backgroundColor: `${P}15`, paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 }}>
-                          <Text style={{ fontSize: FONT_BADGE, color: P }}>
+                          <Text style={{ fontSize: FONT_BADGE(), color: P }}>
                             {T(`planLink${item.link.charAt(0).toUpperCase() + item.link.slice(1)}`)}
                           </Text>
                         </View>
@@ -110,7 +110,7 @@ export default function PlanTodoListModal({ onClose }: { onClose: () => void }) 
                     </TouchableOpacity>
                   );
                 })}
-                <Text style={{ textAlign: 'center', fontSize: FONT_SUB, color: TH.sub, marginTop: 8 }}>
+                <Text style={{ textAlign: 'center', fontSize: FONT_SUB(), color: TH.sub, marginTop: 8 }}>
                   {stats.planItemsDone}/{stats.planItemsTotal} {T('planProgress')}
                 </Text>
               </ScrollView>

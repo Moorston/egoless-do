@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   currentReflection: {
@@ -206,14 +206,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 4,
   },
   content: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   sectionTitle: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 8,
   },
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   typeLabel: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   reflectionList: {
@@ -253,17 +253,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   reflectionDate: {
-    fontSize: FONT_TINY,
+    fontSize: FONT_TINY(),
     marginBottom: 2,
   },
   reflectionText: {
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
   },
   noteInput: {
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    fontSize: FONT_SMALL,
+    fontSize: FONT_SMALL(),
     marginBottom: 16,
   },
   actions: {

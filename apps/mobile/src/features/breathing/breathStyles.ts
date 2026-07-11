@@ -25,11 +25,11 @@ export const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   prepTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   prepSubtitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginBottom: 16,
   },
   infoCard: {
@@ -39,12 +39,12 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   infoTitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     marginBottom: 8,
   },
   infoBody: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     lineHeight: 22,
   },
   phaseRow: {
@@ -79,7 +79,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   distressValue: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
     textAlign: 'center',
   },
@@ -108,7 +108,7 @@ export const styles = StyleSheet.create({
   },
   startBtnText: {
     color: '#fff',
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '700',
   },
 
@@ -118,11 +118,11 @@ export const styles = StyleSheet.create({
     padding: 16,
   },
   activeTitle: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   activeSubtitle: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginTop: 2,
   },
   activeCenter: {
@@ -139,20 +139,20 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   phaseText: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   phaseCountdown: {
-    fontSize: FONT_STAT_SECTION,
+    fontSize: FONT_STAT_SECTION(),
     fontWeight: '900',
     marginTop: 4,
   },
   cycleText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginTop: 16,
   },
   timeText: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
     marginTop: 4,
   },
   activeContainer: {
@@ -198,13 +198,13 @@ export const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   holdHint: {
-    fontSize: FONT_SUB,
+    fontSize: FONT_SUB(),
   },
 
   // Report
   // unused — reportTitle is defined but never referenced by any component
   reportTitle: {
-    fontSize: FONT_STAT_CARD,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
     textAlign: 'center',
     marginBottom: 24,
@@ -215,7 +215,7 @@ export const styles = StyleSheet.create({
     padding: 16,
   },
   reportName: {
-    fontSize: FONT_TITLE,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     marginBottom: 12,
   },
@@ -225,10 +225,10 @@ export const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   reportLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
   },
   reportValue: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   audioToggleRow: {
@@ -237,7 +237,7 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   audioToggleLabel: {
-    fontSize: FONT_BODY,
+    fontSize: FONT_BODY(),
     flex: 1,
   },
   toggleBtn: {
