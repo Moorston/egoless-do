@@ -522,7 +522,7 @@ export default function MindScreen() {
               <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('mindForgeStep2')}: {forgeProbability}/10</Text>
               <View style={{ flexDirection: 'row', gap: 4, marginBottom: 16 }}>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
-                  <TouchableOpacity key={n} onPress={() => setForgeProbability(n)} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= forgeProbability ? '#EF4444' : TH.card, borderWidth: n <= forgeProbability ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
+                  <TouchableOpacity key={n} onPress={() => setForgeProbability(n)} hitSlop={{ top: 6, bottom: 6 }} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= forgeProbability ? '#EF4444' : TH.card, borderWidth: n <= forgeProbability ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{ fontSize: 10, color: n <= forgeProbability ? '#fff' : TH.sub }}>{n}</Text>
                   </TouchableOpacity>
                 ))}
@@ -530,7 +530,7 @@ export default function MindScreen() {
               <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('mindForgeStep3')}: {forgeCoping}/10</Text>
               <View style={{ flexDirection: 'row', gap: 4, marginBottom: 16 }}>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
-                  <TouchableOpacity key={n} onPress={() => setForgeCoping(n)} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= forgeCoping ? '#10B981' : TH.card, borderWidth: n <= forgeCoping ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
+                  <TouchableOpacity key={n} onPress={() => setForgeCoping(n)} hitSlop={{ top: 6, bottom: 6 }} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= forgeCoping ? '#10B981' : TH.card, borderWidth: n <= forgeCoping ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={{ fontSize: 10, color: n <= forgeCoping ? '#fff' : TH.sub }}>{n}</Text>
                   </TouchableOpacity>
                 ))}
@@ -564,7 +564,7 @@ export default function MindScreen() {
             <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', marginBottom: 6 }}>{T('mindCourageFearBefore')}: {courageFearBefore}/10</Text>
             <View style={{ flexDirection: 'row', gap: 4, marginBottom: 16 }}>
               {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
-                <TouchableOpacity key={n} onPress={() => setCourageFearBefore(n)} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= courageFearBefore ? '#EF4444' : TH.card, borderWidth: n <= courageFearBefore ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity key={n} onPress={() => setCourageFearBefore(n)} hitSlop={{ top: 6, bottom: 6 }} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= courageFearBefore ? '#EF4444' : TH.card, borderWidth: n <= courageFearBefore ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={{ fontSize: 10, color: n <= courageFearBefore ? '#fff' : TH.sub }}>{n}</Text>
                 </TouchableOpacity>
               ))}

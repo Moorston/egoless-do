@@ -137,7 +137,7 @@ export default function PlanTodoList({
           onSubmitEditing={onAddTodo}
           returnKeyType="done"
         />
-        <TouchableOpacity onPress={onAddTodo} disabled={!newTodoText.trim()} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: newTodoText.trim() ? P : TH.border, alignItems: 'center', justifyContent: 'center' }}>
+        <TouchableOpacity onPress={onAddTodo} disabled={!newTodoText.trim()} hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: newTodoText.trim() ? P : TH.border, alignItems: 'center', justifyContent: 'center' }}>
           <Plus size={18} color="#fff" />
         </TouchableOpacity>
       </View>
