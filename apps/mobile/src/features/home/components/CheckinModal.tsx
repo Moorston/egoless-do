@@ -294,18 +294,11 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     <Modal visible animationType="slide" transparent>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex:1, justifyContent:'flex-end' }}
+        style={[styles.flex1End]}
       >
-        <View style={{
-          backgroundColor: TH.cardSolid, borderTopLeftRadius:24,
-          borderTopRightRadius:24, paddingHorizontal:16,
-          paddingBottom:40, maxHeight:'92%',
-        }}>
+        <View style={[styles.modalBody, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
-          <View style={{
-            flexDirection:'row', justifyContent:'space-between',
-            alignItems:'center', paddingTop:20, paddingBottom:8,
-          }}>
+          <View style={styles.headerRow}>
             <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>
               {isGraceMode ? T('graceCheckinTitle') : T('checkinTitle')}
             </Text>
@@ -332,45 +325,41 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
 
             {/* Status buttons - TOP (hidden in grace mode) */}
             {!isGraceMode && (
-            <View style={{ flexDirection:'row', gap:10, marginBottom:16 }}>
+            <View style={styles.rowGap10}>
               <TouchableOpacity onPress={() => setLocalDone(false)}
-                style={{
-                  flex:1, paddingVertical:14, borderRadius:12, alignItems:'center',
-                  borderWidth:2,
+                style={[styles.statusBtnBase, {
                   borderColor: localDone===false ? '#C53364' : TH.border,
                   backgroundColor: localDone===false ? 'rgba(197,51,100,0.1)' : 'transparent',
-                }}>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                }]}>
+                <View style={styles.rowCenterGap4}>
                   <X size={18} color={localDone===false ? '#C53364' : TH.sub} />
-                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===false ? '#C53364' : TH.sub }}>{T('checkinNotDone')}</Text>
+                  <Text style={[styles.buttonTextBold, { color: localDone===false ? '#C53364' : TH.sub }]}>{T('checkinNotDone')}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDone}
-                style={{
-                  flex:1, paddingVertical:14, borderRadius:12, alignItems:'center',
-                  borderWidth:2,
+                style={[styles.statusBtnBase, {
                   borderColor: localDone===true ? '#17EAD9' : TH.border,
                   backgroundColor: localDone===true ? 'rgba(23,234,217,0.1)' : 'transparent',
-                }}>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                }]}>
+                <View style={styles.rowCenterGap4}>
                   <Check size={18} color={localDone===true ? '#17EAD9' : TH.sub} />
-                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===true ? '#17EAD9' : TH.sub }}>{T('checkinDone')}</Text>
+                  <Text style={[styles.buttonTextBold, { color: localDone===true ? '#17EAD9' : TH.sub }]}>{T('checkinDone')}</Text>
                 </View>
               </TouchableOpacity>
             </View>
             )}
 
             {/* Tasks section - merged card */}
-            <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
+            <View style={[styles.cardBase, { backgroundColor:TH.card }]}>
+              <View style={styles.sectionHeader}>
                 <ClipboardList size={18} color={P} />
                 <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{isGraceMode ? `${targetDate} ${T('graceTitle')}` : `${T('checkinPractice')} & ${T('planTodoList')}`}</Text>
               </View>
 
               {/* Practices */}
               <View style={{ marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('checkinPractice')}</Text>
-                <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8 }}>
+                <Text style={[styles.subLabel, { color:TH.sub }]}>{T('checkinPractice')}</Text>
+                <View style={styles.rowWrapGap8}>
                   {([
                     { key:'sit' as const,   icon:<Moon size={16} color={P} />, label:T('checkinSit') },
                     { key:'stand' as const, icon:<Sunrise size={16} color={P} />, label:T('checkinStand') },

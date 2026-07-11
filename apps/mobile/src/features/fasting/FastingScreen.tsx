@@ -179,6 +179,15 @@ export default function FastingScreen() {
     }
   }, []);
 
+  const ringProgressStyle = [styles.ringBase, {
+    borderColor: P, position:'absolute' as const,
+    borderTopColor: pct >= 0.25 ? P : TH.border,
+    borderRightColor: pct >= 0.5 ? P : TH.border,
+    borderBottomColor: pct >= 0.75 ? P : TH.border,
+    borderLeftColor: pct >= 1 ? P : TH.border,
+    transform: [{ rotate: '-90deg' }],
+  }];
+
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Fasting" />
@@ -261,14 +270,7 @@ export default function FastingScreen() {
               {/* SVG Ring Progress */}
               <View style={styles.ringContainer}>
                 <View style={[styles.ringBase, { borderColor: TH.border }]} />
-                <View style={[styles.ringBase, {
-                  borderColor: P, position:'absolute',
-                  borderTopColor: pct >= 0.25 ? P : TH.border,
-                  borderRightColor: pct >= 0.5 ? P : TH.border,
-                  borderBottomColor: pct >= 0.75 ? P : TH.border,
-                  borderLeftColor: pct >= 1 ? P : TH.border,
-                  transform: [{ rotate: '-90deg' }],
-                }} />
+                <View style={ringProgressStyle} />
                 <View style={{ alignItems:'center' }}>
                 <Text style={{ fontSize:26, fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
                 <Text style={{ fontSize:16, color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize:22 }}>{activeFasting?.targetHours}h</Text></Text>

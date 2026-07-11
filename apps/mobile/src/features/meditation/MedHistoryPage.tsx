@@ -153,7 +153,7 @@ export function MedCalendarScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={styles.listContentContainer}>
         <ScreenHeader title="冥想日历" onBack={() => nav.goBack()} />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <TouchableOpacity onPress={prevMonth}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
@@ -402,7 +402,7 @@ export default function MedHistoryPage() {
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
         ListHeaderComponent={ListHeader}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        contentContainerStyle={styles.listContentContainer}
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       />
@@ -410,3 +410,60 @@ export default function MedHistoryPage() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  // ── StatsCard ──
+  gradientPadding: { padding: 20 },
+  heroTitle: { fontSize: FONT_TITLE, fontWeight: '700', color: '#fff', marginBottom: 16 },
+  heroStatsRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  heroStatCol: { alignItems: 'center', flex: 1 },
+  heroStatValue: { fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' },
+  heroStatLabel: { fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 },
+  heroKcalRow: { flexDirection: 'row', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)' },
+  flex1: { flex: 1 },
+  heroKcalValue: { fontSize: FONT_BODY, fontWeight: '700', color: '#fff' },
+  heroSub: { fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)' },
+  statsOuter: { marginBottom: 12, borderRadius: 20, overflow: 'hidden' },
+  // ── Heatmap & Calendar ──
+  heatmapWeekdaysRow: { flexDirection: 'row', marginBottom: 6 },
+  heatmapGrid: { flexDirection: 'row', flexWrap: 'wrap' },
+  heatmapCell: { aspectRatio: 1, padding: 2 },
+  calendarCell: { aspectRatio: 1, padding: 3 },
+  heatmapHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  weekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_BADGE },
+  calendarWeekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_SUB, fontWeight: '600' },
+  calendarDayFontSize: { fontSize: 14 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  calendarBtnPadding: { padding: 8 },
+  calendarStatsRow: { flexDirection: 'row', justifyContent: 'space-around', borderRadius: 12, padding: 16 },
+  alignCenter: { alignItems: 'center' },
+  // ── Month header & Entry ──
+  monthHeaderRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, marginLeft: 4 },
+  timelineDot: { width: 10, height: 10, borderRadius: 5 },
+  entryRow: { flexDirection: 'row', marginLeft: 4 },
+  timelineCol: { alignItems: 'center', width: 24 },
+  timelineLine: { width: 2, flex: 1 },
+  entryInfoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  // ── Empty state ──
+  emptyEmoji: { fontSize: 64, marginBottom: 16 },
+  emptyTitle: { fontSize: FONT_TITLE, fontWeight: '700', marginBottom: 8 },
+  emptyDesc: { fontSize: FONT_BODY, textAlign: 'center', marginBottom: 8 },
+  emptySubDesc: { fontSize: FONT_BODY, textAlign: 'center', marginBottom: 24 },
+  emptyCtaBtn: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 },
+  whiteBodyBold: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY },
+  listContentContainer: { paddingHorizontal: 16, paddingBottom: 40 },
+  emptyPagePad: { paddingHorizontal: 16 },
+  emptyCenter: { alignItems: 'center', marginTop: 80 },
+  // ── Detail Modal ──
+  detailOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,.75)', justifyContent: 'center', padding: 24 },
+  detailInner: { borderRadius: 20, padding: 24 },
+  subBold: { fontSize: FONT_SUB, fontWeight: '600' },
+  deleteText: { fontSize: FONT_BODY, color: '#ef4444' },
+  deleteBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12 },
+  detailDuration: { fontSize: 32, fontWeight: '900', textAlign: 'center', marginBottom: 4 },
+  detailDurationLabel: { fontSize: FONT_BODY, textAlign: 'center', marginBottom: 16 },
+  detailTrackRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
+  detailSection: { marginBottom: 16 },
+  detailNoteHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  badgeFont: { fontSize: FONT_BADGE },
+});
