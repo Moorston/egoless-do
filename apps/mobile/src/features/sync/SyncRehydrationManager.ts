@@ -35,6 +35,30 @@ export class SyncRehydrationManager {
     }
   }
 
+  /** Query a single entity from SQLite (extracted for batched parallel rehydration) */
+  private async queryEntity(
+    db: Awaited<ReturnType<typeof openDatabase>>,
+    entity: string,
+    REHYDRATE_MAP: Record<string, { table: string; query: string; mapper: (r: Record<string, unknown>) => unknown; storeKey: string }>,
+  ): Promise<{ entity: string; data?: unknown[]; rows?: Record<string, unknown>[]; config?: NonNullable<typeof REHYDRATE_MAP[string]>; storeKey?: string } | null> {
+    try {
+      if (entity === 'food') {
+        const rows = await dbGetAllFoodEntries(db) as unknown as Record<string, unknown>[];
+        const sorted = rows.length
+          ? rows.sort((a, b) => ((b as Record<string, unknown>).timestamp as number) - ((a as Record<string, unknown>).timestamp as number))
+          : [];
+        return { entity, data: sorted, storeKey: 'foodLog' };
+      }
+      const config = REHYDRATE_MAP[entity];
+      if (!config) return null;
+      const rows = await db.getAllAsync<Record<string, unknown>>(config.query);
+      return { entity, rows, config };
+    } catch (e) {
+      log.error(e, { phase: 'rehydrateFromDb', entity });
+      return null;
+    }
+  }
+
   /** Rehydrate entities from SQLite into a store patch */
   async rehydrateFromDb(entities?: string[]): Promise<Record<string, unknown>> {
     const db = await openDatabase();
@@ -83,29 +107,15 @@ export class SyncRehydrationManager {
     const targets = entities ?? Object.keys(REHYDRATE_MAP);
     log.debug(`[rehydrateFromDb] Rehydrating ${targets.length} entities: ${targets.join(', ')}`);
 
-    // Parallel rehydration — all entity queries are independent
-    // Note: ~35 entities queried simultaneously; avoid adding more entities that could
-    // increase peak memory usage on low-end devices
-    const results = await Promise.all(targets.map(async (entity) => {
-      try {
-        if (entity === 'food') {
-          const rows = await dbGetAllFoodEntries(db) as unknown as Record<string, unknown>[];
-          const sorted = rows.length
-            ? rows.sort((a, b) => ((b as Record<string, unknown>).timestamp as number) - ((a as Record<string, unknown>).timestamp as number))
-            : [];
-          log.debug(`[rehydrateFromDb] ${entity}: ${rows.length} rows`);
-          return { entity, data: sorted, storeKey: 'foodLog' };
-        }
-        const config = REHYDRATE_MAP[entity];
-        if (!config) return null;
-        const rows = await db.getAllAsync<Record<string, unknown>>(config.query);
-        log.debug(`[rehydrateFromDb] ${entity}: ${rows.length} rows from ${config.table}`);
-        return { entity, rows, config };
-      } catch (e) {
-        log.error(e, { phase: 'rehydrateFromDb', entity });
-        return null;
-      }
-    }));
+    // Batched parallel rehydration — process in groups of 8 to reduce peak memory
+    // and SQLite contention on low-end devices (39 entities → 5 batches of ~8)
+    const BATCH_SIZE = 8;
+    const results: Array<Awaited<ReturnType<typeof this.queryEntity>> | null> = [];
+    for (let i = 0; i < targets.length; i += BATCH_SIZE) {
+      const batch = targets.slice(i, i + BATCH_SIZE);
+      const batchResults = await Promise.all(batch.map((entity) => this.queryEntity(db, entity, REHYDRATE_MAP)));
+      results.push(...batchResults);
+    }
 
     // Merge results into patch
     for (const result of results) {
