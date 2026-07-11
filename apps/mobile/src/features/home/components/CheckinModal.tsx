@@ -230,7 +230,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
         backgroundColor: done ? `${P}10` : 'transparent',
         marginBottom:4,
       }}>
-        <Checkbox on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} />
+        <Checkbox on={done} onChange={() => setPlanToggles(prev => ({ ...prev, [item.id]: !done }))} accessibilityLabel={`${done ? '取消' : '完成'} ${item.name}`} />
         <View style={{ flex:1, marginLeft:8 }}>
           <Text style={{
             fontSize:FONT_BODY, color: done ? TH.sub : TH.text,
@@ -251,7 +251,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       backgroundColor: todo.done ? `${P}10` : 'transparent',
       marginBottom:4,
     }}>
-      <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id, targetDate)} />
+      <Checkbox on={todo.done} onChange={() => store.toggleDailyCustomTodo(todo.id, targetDate)} accessibilityLabel={`${todo.done ? '取消' : '完成'} ${todo.name}`} />
       <Text style={{
         flex:1, marginLeft:8, fontSize:FONT_BODY,
         color: todo.done ? TH.sub : TH.text,
@@ -265,7 +265,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       flexDirection:'row', alignItems:'center', paddingVertical:8,
       paddingHorizontal:4, borderRadius:8, marginBottom:4,
     }}>
-      <Checkbox on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins(c => ({ ...c, [h.id]:!c[h.id] }))} />
+      <Checkbox on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins(c => ({ ...c, [h.id]:!c[h.id] }))} accessibilityLabel={`${habitCheckins[h.id] ? '取消' : '打卡'} ${h.name}`} />
       <View style={{ flex:1, marginLeft:8 }}>
         <Text style={{ fontSize:FONT_BODY, color:TH.text }}>{h.name}</Text>
         <Text style={{ fontSize:FONT_SUB, color:TH.sub }}>{h.streak} {T('checkinStreak')}</Text>
@@ -302,7 +302,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>
               {isGraceMode ? T('graceCheckinTitle') : T('checkinTitle')}
             </Text>
-            <TouchableOpacity onPress={onClose}>
+            <TouchableOpacity onPress={onClose} accessibilityLabel={T('commonClose')}>
               <X size={24} color={TH.sub} />
             </TouchableOpacity>
           </View>
@@ -327,6 +327,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             {!isGraceMode && (
             <View style={styles.rowGap10}>
               <TouchableOpacity onPress={() => setLocalDone(false)}
+                accessibilityLabel={T('checkinNotDone')}
                 style={[styles.statusBtnBase, {
                   borderColor: localDone===false ? '#C53364' : TH.border,
                   backgroundColor: localDone===false ? 'rgba(197,51,100,0.1)' : 'transparent',
@@ -337,6 +338,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDone}
+                accessibilityLabel={T('checkinDone')}
                 style={[styles.statusBtnBase, {
                   borderColor: localDone===true ? '#17EAD9' : TH.border,
                   backgroundColor: localDone===true ? 'rgba(23,234,217,0.1)' : 'transparent',
@@ -366,6 +368,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                     { key:'chant' as const, icon:<Brain size={16} color={P} />, label:T('checkinSutra') },
                   ]).map(({ key, icon, label }) => (
                     <TouchableOpacity key={key} onPress={() => setPractices(p => ({ ...p, [key]:!p[key] }))}
+                      accessibilityLabel={label}
                       style={{
                         flexDirection:'row', alignItems:'center', gap:6, paddingVertical:8, paddingHorizontal:12,
                         borderRadius:10, borderWidth:1,
@@ -424,7 +427,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
 
               {/* Submit button - inside tasks card (hidden in grace mode, moved to bottom) */}
               {!isGraceMode && (
-              <TouchableOpacity onPress={() => submit()} style={{
+              <TouchableOpacity onPress={() => submit()} accessibilityLabel={T('checkinSubmit')} style={{
                 marginTop:12, paddingVertical:14, borderRadius:12, alignItems:'center',
                 backgroundColor: localDone === true
                   ? '#17EAD9'
@@ -461,6 +464,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                     placeholder="..."
                     placeholderTextColor={TH.sub}
                     keyboardType="numeric"
+                    accessibilityLabel={T('checkinWeight')}
                     style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, backgroundColor:TH.cardSolid }}
                   />
                   <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>{store.weightUnit === 'kg' ? T('checkinKg') : T('checkinLb')}</Text>
@@ -481,10 +485,12 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                       placeholder="0"
                       placeholderTextColor={TH.sub}
                       keyboardType="numeric"
+                      accessibilityLabel={T('checkinWater')}
                       style={{ width:60, textAlign:'center', borderWidth:1, borderColor:TH.border, borderRadius:8, paddingVertical:6, color:TH.text, fontWeight:'600', fontSize:FONT_BODY, backgroundColor:TH.cardSolid }}
                     />
                     <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>ml</Text>
                     <TouchableOpacity onPress={() => setWaterMl(w => w + 250)}
+                      accessibilityLabel="增加250毫升水"
                       style={{ paddingVertical:4, paddingHorizontal:8, borderRadius:6, backgroundColor:`${P}20` }}>
                       <Text style={{ color:P, fontSize:FONT_SUB, fontWeight:'600' }}>+250</Text>
                     </TouchableOpacity>
@@ -504,6 +510,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                     <Text style={{ fontSize:FONT_TITLE, fontWeight:'600', color:P }}>{totalCal}</Text>
                     <Text style={{ color:TH.sub, fontSize:FONT_SUB }}>kcal</Text>
                     <TouchableOpacity onPress={() => setShowFoodAdd(!showFoodAdd)}
+                      accessibilityLabel="添加食物"
                       style={{ width:24, height:24, borderRadius:12, backgroundColor:P, alignItems:'center', justifyContent:'center' }}>
                       <Text style={{ color:'#fff', fontSize:FONT_BUTTON }}>+</Text>
                     </TouchableOpacity>
@@ -512,15 +519,17 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 {showFoodAdd && (
                   <View style={{ marginTop:10, padding:10, backgroundColor:TH.cardSolid, borderRadius:10, borderWidth:1, borderColor:TH.border }}>
                     <View style={{ flexDirection:'row', gap:8, marginBottom:8 }}>
-                      <ThemedInput value={foodName} onChangeText={setFoodName} placeholder={T('foodName')} style={{ flex:2, padding:7 }} />
-                      <ThemedInput value={foodCal} onChangeText={setFoodCal} placeholder={T('calories2')} keyboardType="numeric" style={{ flex:1, padding:7 }} />
+                      <ThemedInput value={foodName} onChangeText={setFoodName} placeholder={T('foodName')} accessibilityLabel={T('foodName')} style={{ flex:2, padding:7 }} />
+                      <ThemedInput value={foodCal} onChangeText={setFoodCal} placeholder={T('calories2')} keyboardType="numeric" accessibilityLabel={T('calories2')} style={{ flex:1, padding:7 }} />
                     </View>
                     <View style={{ flexDirection:'row', gap:8 }}>
                       <TouchableOpacity onPress={() => { if (foodName.trim()) { store.addFood({ name: foodName, calories: +foodCal || 0, note: foodNote, timestamp: Date.now() }); setFoodName(''); setFoodCal(''); setFoodNote(''); setShowFoodAdd(false); } }}
+                        accessibilityLabel={T('confirm')}
                         style={{ flex:1, padding:8, borderRadius:8, backgroundColor:P, alignItems:'center' }}>
                         <Text style={{ color:'#fff', fontWeight:'600', fontSize:FONT_BUTTON }}>{T('confirm')}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => { setShowFoodAdd(false); setFoodName(''); setFoodCal(''); }}
+                        accessibilityLabel={T('commonCancel')}
                         style={{ paddingVertical:8, paddingHorizontal:12, borderRadius:8, borderWidth:1, borderColor:TH.border, alignItems:'center' }}>
                         <Text style={{ color:TH.sub, fontSize:FONT_BUTTON }}>{T('commonCancel')}</Text>
                       </TouchableOpacity>
@@ -537,12 +546,12 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 <Sparkles size={18} color={P} />
                 <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{T('checkinNote')}</Text>
               </View>
-              <ThemedInput value={note} onChangeText={setNote} placeholder={T('checkinNotePlaceholder')} multiline numberOfLines={3} />
+              <ThemedInput value={note} onChangeText={setNote} placeholder={T('checkinNotePlaceholder')} accessibilityLabel={T('checkinNote')} multiline numberOfLines={3} />
             </View>
 
             {/* Grace mode: submit button at bottom */}
             {isGraceMode && (
-              <TouchableOpacity onPress={handleDone} style={{
+              <TouchableOpacity onPress={handleDone} accessibilityLabel={T('graceCheckinSubmit')} style={{
                 paddingVertical:14, borderRadius:12, alignItems:'center',
                 backgroundColor: '#17EAD9', marginBottom:10,
               }}>
@@ -556,7 +565,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             )}
 
             {/* Cancel button */}
-            <TouchableOpacity onPress={onClose} style={{
+            <TouchableOpacity onPress={onClose} accessibilityLabel={T('commonCancel')} style={{
               paddingVertical:14, borderRadius:12, alignItems:'center',
               borderWidth:1, borderColor:TH.border, marginBottom:20,
             }}>
@@ -592,6 +601,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                   const selected = selectedReason === r.code;
                   return (
                     <TouchableOpacity key={r.code} onPress={() => setSelectedReason(r.code)}
+                      accessibilityLabel={`${r.icon} ${T(labelKey)}`}
                       style={{
                         paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12,
                         borderWidth: 1.5, borderColor: selected ? P : TH.border,
@@ -612,6 +622,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
                 placeholder={T('incompleteReasonNotePlaceholder')}
                 placeholderTextColor={TH.sub}
                 multiline
+                accessibilityLabel={T('incompleteReasonNote')}
                 style={{
                   width: '100%', minHeight: 60, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border,
                   borderRadius: 12, padding: 12, color: TH.text, fontSize: FONT_BODY, marginBottom: 20,
@@ -622,10 +633,12 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
               {/* Buttons */}
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <TouchableOpacity onPress={() => { setShowReasonModal(false); setLocalDone(null); }}
+                  accessibilityLabel={T('incompleteReasonBack')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                   <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>{T('incompleteReasonBack')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={confirmDoneWithReason} disabled={!selectedReason || !reasonNote.trim()}
+                  accessibilityLabel={T('incompleteReasonConfirm')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: selectedReason && reasonNote.trim() ? P : TH.border, alignItems: 'center' }}>
                   <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON }}>{T('incompleteReasonConfirm')}</Text>
                 </TouchableOpacity>

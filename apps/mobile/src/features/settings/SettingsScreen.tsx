@@ -142,7 +142,7 @@ export default function SettingsScreen() {
         {
           label: T('settingsRemindTime'), icon: <Clock size={20} color={P} />,
           right: (
-            <TouchableOpacity onPress={() => { setTimeEdit(remindTime); setShowTimePicker(true); }}>
+            <TouchableOpacity accessibilityLabel={T('settingsRemindTime')} onPress={() => { setTimeEdit(remindTime); setShowTimePicker(true); }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{remindTime} {T('commonEdit')}</Text>
                 <ChevronRight size={14} color={TH.sub} />
@@ -215,7 +215,7 @@ export default function SettingsScreen() {
         {
           label: T('settingsTheme'), icon: <Palette size={20} color={P} />,
           right: (
-            <TouchableOpacity onPress={() => setShowTheme(true)}>
+            <TouchableOpacity accessibilityLabel={T('settingsSelectTheme')} onPress={() => setShowTheme(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>{THEMES[theme].name}</Text>
                 <ChevronRight size={14} color={TH.sub} />
@@ -226,7 +226,7 @@ export default function SettingsScreen() {
         {
           label: T('settingsLanguage'), icon: <Globe size={20} color={P} />,
           right: (
-            <TouchableOpacity onPress={() => setShowLang(true)}>
+            <TouchableOpacity accessibilityLabel={T('settingsSelectLang')} onPress={() => setShowLang(true)}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
                   {LANG_LIST.find(l => l.code === language)?.flag ?? '🇨🇳'}{' '}
@@ -308,7 +308,7 @@ export default function SettingsScreen() {
           label: T('settingsManualSync'),
           icon: <RefreshCw size={20} color={P} />,
           right: (
-            <TouchableOpacity onPress={triggerSync} disabled={syncing || !online}>
+            <TouchableOpacity accessibilityLabel={T('settingsManualSync')} onPress={triggerSync} disabled={syncing || !online}>
               <Text style={{ color: P, fontSize: FONT_SUB }}>
                 {syncing ? T('settingsSyncing') : T('settingsSyncNow')}
               </Text>
@@ -392,7 +392,7 @@ export default function SettingsScreen() {
 
         {/* Profile card */}
         <Card style={{ marginBottom: 8 }}>
-          <TouchableOpacity onPress={() => auth.isSignedIn && nav.navigate('Profile')}>
+          <TouchableOpacity accessibilityLabel={T('profileAccount')} onPress={() => auth.isSignedIn && nav.navigate('Profile')}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
               <View style={{
                 width: 56, height: 56, borderRadius: 28,
@@ -425,6 +425,7 @@ export default function SettingsScreen() {
                 </View>
               ) : (
                 <TouchableOpacity
+                  accessibilityLabel={T('settingsLogin')}
                   onPress={() => nav.navigate('Login')}
                   style={{
                     paddingHorizontal: 16, paddingVertical: 8,
@@ -436,6 +437,7 @@ export default function SettingsScreen() {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
+            accessibilityLabel={T('musicTitle')}
             onPress={() => nav.navigate('Music')}
             style={{
               flexDirection: 'row', alignItems: 'center', gap: 12,
@@ -510,7 +512,7 @@ export default function SettingsScreen() {
           }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
               <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{T('settingsSelectTheme')}</Text>
-              <TouchableOpacity onPress={() => setShowTheme(false)}>
+              <TouchableOpacity accessibilityLabel={T('commonClose')} onPress={() => setShowTheme(false)}>
                 <X size={26} color={TH.sub} />
               </TouchableOpacity>
             </View>
@@ -520,6 +522,7 @@ export default function SettingsScreen() {
                 return (
                   <TouchableOpacity
                     key={key}
+                    accessibilityLabel={th.name}
                     onPress={() => { setTheme(key); setShowTheme(false); }}
                     style={{
                       width: '30%', borderRadius: 14, overflow: 'hidden',
@@ -552,13 +555,14 @@ export default function SettingsScreen() {
           }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
               <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{T('settingsSelectLang')}</Text>
-              <TouchableOpacity onPress={() => setShowLang(false)}>
+              <TouchableOpacity accessibilityLabel={T('commonClose')} onPress={() => setShowLang(false)}>
                 <X size={26} color={TH.sub} />
               </TouchableOpacity>
             </View>
             {LANG_LIST.map(l => (
               <TouchableOpacity
                 key={l.code}
+                accessibilityLabel={l.name}
                 onPress={() => { setLanguage(l.code); setShowLang(false); }}
                 style={{
                   flexDirection: 'row', alignItems: 'center',

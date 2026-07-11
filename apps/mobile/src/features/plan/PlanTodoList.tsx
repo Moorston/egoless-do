@@ -58,7 +58,7 @@ export default function PlanTodoList({
                 borderBottomWidth: i < arr.length - 1 || dailyCustomTodos.length > 0 ? 1 : 0,
                 borderBottomColor: TH.border, opacity: autoChecked ? 0.7 : 1,
               }}>
-                <TouchableOpacity onPress={() => onToggleItem(item.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity onPress={() => onToggleItem(item.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} accessibilityLabel={done ? `${item.name} 取消完成` : `${item.name} 完成`}>
                   <View style={{ width: 22, height: 22, borderRadius: 6, borderWidth: 2, borderColor: done ? P : TH.border, alignItems: 'center', justifyContent: 'center', backgroundColor: done ? P : 'transparent' }}>
                     {done && <Check size={14} color="#fff" />}
                   </View>
@@ -101,7 +101,7 @@ export default function PlanTodoList({
               paddingVertical: 10, paddingHorizontal: 12,
               borderBottomWidth: i < arr.length - 1 ? 1 : 0, borderBottomColor: TH.border,
             }}>
-              <TouchableOpacity onPress={() => onToggleTodo(todo.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
+              <TouchableOpacity onPress={() => onToggleTodo(todo.id)} style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }} accessibilityLabel={todo.done ? `${todo.name} 取消完成` : `${todo.name} 完成`}>
                 <View style={{ width: 22, height: 22, borderRadius: 6, borderWidth: 2, borderColor: todo.done ? P : TH.border, alignItems: 'center', justifyContent: 'center', backgroundColor: todo.done ? P : 'transparent' }}>
                   {todo.done && <Check size={14} color="#fff" />}
                 </View>
@@ -118,6 +118,7 @@ export default function PlanTodoList({
                   ]);
                 }}
                 style={{ padding: 4 }}
+                accessibilityLabel={`${T('planDeleteCustomTodo')} ${todo.name}`}
               >
                 <Trash2 size={16} color={COLORS.RED} />
               </TouchableOpacity>
@@ -137,7 +138,7 @@ export default function PlanTodoList({
           onSubmitEditing={onAddTodo}
           returnKeyType="done"
         />
-        <TouchableOpacity onPress={onAddTodo} disabled={!newTodoText.trim()} hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: newTodoText.trim() ? P : TH.border, alignItems: 'center', justifyContent: 'center' }}>
+        <TouchableOpacity onPress={onAddTodo} disabled={!newTodoText.trim()} hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: newTodoText.trim() ? P : TH.border, alignItems: 'center', justifyContent: 'center' }} accessibilityLabel={T('planAddCustomTodoPlaceholder')}>
           <Plus size={18} color="#fff" />
         </TouchableOpacity>
       </View>

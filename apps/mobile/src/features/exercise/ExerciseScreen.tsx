@@ -106,7 +106,7 @@ export default function ExerciseScreen() {
           >
             <View style={styles.heroTitleRow}>
               <Text style={styles.heroTitle}>{T('exercise')}</Text>
-              <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory')} style={styles.heroHistoryBtn}>
+              <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory')} style={styles.heroHistoryBtn} accessibilityLabel={T('exerciseHistory')}>
                 <Text style={styles.heroHistoryText}>{T('exerciseHistory')}</Text>
                 <ChevronRight size={16} color="rgba(255,255,255,.8)" />
               </TouchableOpacity>
@@ -143,7 +143,7 @@ export default function ExerciseScreen() {
               <Text style={styles.noActivityText}>{T('exerciseNoActivity')}</Text>
             )}
             <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('exerciseGlobal')}`, type: 'exercise' })}
-              style={styles.globalMapButton}>
+              style={styles.globalMapButton} accessibilityLabel={`${T('linkWorld')} — ${T('exerciseGlobal')}`}>
               <Globe size={18} color="rgba(255,255,255,.8)" />
               <Text style={styles.globalMapText}>{T('linkWorld')} — {T('exerciseGlobal')}</Text>
               <ChevronRight size={16} color="rgba(255,255,255,.8)" />
@@ -158,7 +158,7 @@ export default function ExerciseScreen() {
             {quickSports.map(s => (
               <TouchableOpacity key={s.key}
                 onPress={() => s.more ? setShowOther(true) : startSport({ key: s.key, icon: s.icon, color: s.colors[0], gps: s.gps })}
-                style={styles.quickSportCard}>
+                style={styles.quickSportCard} accessibilityLabel={s.label}>
                 <LinearGradient
                   colors={s.colors}
                   start={{ x: 0, y: 0 }}
@@ -188,6 +188,7 @@ export default function ExerciseScreen() {
               {recentSports.map((s, i) => (
                 <TouchableOpacity key={s.key}
                   onPress={() => startSport(s)}
+                  accessibilityLabel={s.key}
                   style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12, borderBottomWidth: i < recentSports.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
                   <Text style={styles.sportIcon}>{s.icon}</Text>
                   <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{s.key}</Text>
@@ -210,6 +211,7 @@ export default function ExerciseScreen() {
             {mySports.map((s, i) => (
               <TouchableOpacity key={s.key}
                 onPress={() => startSport(s)}
+                accessibilityLabel={s.key}
                 style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12, borderBottomWidth: i < mySports.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
                 <Text style={styles.sportIcon}>{s.icon}</Text>
                 <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{s.key}</Text>
@@ -236,6 +238,7 @@ export default function ExerciseScreen() {
             <View style={styles.modalHeaderRow}>
               <Text style={{ fontWeight: '700', fontSize: FONT_BACK, color: TH.text }}>{T('exerciseCategory')}</Text>
               <TouchableOpacity onPress={() => setShowOther(false)}
+                accessibilityLabel="关闭"
                 style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: TH.card, alignItems: 'center', justifyContent: 'center' }}>
                 <X size={18} color={TH.text} />
               </TouchableOpacity>
@@ -257,7 +260,7 @@ export default function ExerciseScreen() {
                 style={styles.searchInput}
               />
               {searchQuery.length > 0 && (
-                <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <TouchableOpacity onPress={() => setSearchQuery('')} accessibilityLabel="清除搜索">
                   <X size={16} color={TH.sub} />
                 </TouchableOpacity>
               )}
@@ -271,6 +274,7 @@ export default function ExerciseScreen() {
                     {g.items.map(s => (
                       <TouchableOpacity key={s.key}
                         onPress={() => { startSport(s); setShowOther(false); }}
+                        accessibilityLabel={s.key}
                         style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: TH.border }}>
                         <View style={styles.modalSportRowLeft}>
                           <Text style={styles.sportIcon}>{s.icon}</Text>

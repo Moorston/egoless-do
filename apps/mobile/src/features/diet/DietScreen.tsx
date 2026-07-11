@@ -142,6 +142,7 @@ export default function DietScreen() {
 
         <TouchableOpacity
           onPress={() => setShowAddFood(true)}
+          accessibilityLabel={T('addFoodBtn') || '+ 添加食物'}
           style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: TH.primary, borderRadius: 14, padding: 14, marginBottom: 12 }}>
           <Plus size={20} color="#fff" />
           <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '700' }}>{T('addFoodBtn') || '+ 添加食物'}</Text>
@@ -265,6 +266,7 @@ export default function DietScreen() {
             return (
               <View key={cat} style={{ marginBottom: 8 }}>
                 <TouchableOpacity onPress={() => toggleCategory(cat)}
+                  accessibilityLabel={`${isExpanded ? '收起' : '展开'}${T(`dietCategory${cat.charAt(0).toUpperCase() + cat.slice(1)}`)}分类`}
                   style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 }}>
                   <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>
                     {isExpanded ? '▼' : '▶'} {T(`dietCategory${cat.charAt(0).toUpperCase() + cat.slice(1)}`)} ({items.length})
@@ -321,6 +323,7 @@ export default function DietScreen() {
             { key: '90d' as const, label: T('dietTimeRange90') || '90天' },
           ].map(r => (
             <TouchableOpacity key={r.key} onPress={() => setTimeRange(r.key)}
+              accessibilityLabel={`选择${r.label}时间范围`}
               style={{ flex: 1, paddingVertical: 8, borderRadius: 12, alignItems: 'center',
                 backgroundColor: timeRange === r.key ? TH.primary : TH.card,
                 borderWidth: timeRange === r.key ? 0 : 1, borderColor: TH.border }}>
@@ -413,6 +416,7 @@ export default function DietScreen() {
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginTop: 4 }}>目标: {activeFasting?.targetHours}h</Text>
               <TouchableOpacity
                 onPress={() => stopFasting?.()}
+                accessibilityLabel={T('stopFasting') || '停止禁食'}
                 style={{ marginTop: 12, paddingHorizontal: 24, paddingVertical: 10, borderRadius: 12, backgroundColor: '#EF4444' }}>
                 <Text style={[dietStyles.whiteBold, { color: '#fff' }]}>{T('stopFasting') || '停止禁食'}</Text>
               </TouchableOpacity>
@@ -425,6 +429,7 @@ export default function DietScreen() {
                 {[8, 12, 16, 20].map(h => (
                   <TouchableOpacity key={h}
                     onPress={() => startFasting?.(h)}
+                    accessibilityLabel={`开始${h}小时禁食`}
                     style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 12, backgroundColor: TH.primary }}>
                     <Text style={[dietStyles.whiteBold, { color: '#fff' }]}>{h}h</Text>
                   </TouchableOpacity>
@@ -496,6 +501,7 @@ export default function DietScreen() {
           const isActive = activeTab === tab.key;
           return (
             <TouchableOpacity key={tab.key} onPress={() => setActiveTab(tab.key)}
+              accessibilityLabel={T(tab.labelKey)}
               style={{
                 flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4,
                 paddingVertical: 10, borderRadius: 12,

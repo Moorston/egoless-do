@@ -108,10 +108,11 @@ export function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) 
 }
 
 // ── Checkbox ──────────────────────────────────────────────────────
-export function Checkbox({ on, onChange }: { on: boolean; onChange: () => void }) {
+export function Checkbox({ on, onChange, ...rest }: { on: boolean; onChange: () => void; accessibilityLabel?: string }) {
   const TH = useTheme();
   return (
     <TouchableOpacity onPress={onChange} activeOpacity={0.7}
+      accessibilityLabel={rest.accessibilityLabel}
       style={{
         width: 22, height: 22, borderRadius: 6,
         borderWidth: 2,

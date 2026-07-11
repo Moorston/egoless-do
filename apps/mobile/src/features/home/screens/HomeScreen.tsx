@@ -359,7 +359,7 @@ export default function HomeScreen() {
             ? <Check size={18} color={COLORS.GREEN} />
             : <X size={18} color={TH.sub} />
         ) : (
-          <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} />
+          <Checkbox on={habitDone} onChange={() => toggleHabit(h.id)} accessibilityLabel={`${h.name} ${habitDone ? T('done') : T('notDone')}`} />
         )}
       </View>
     );
@@ -541,6 +541,7 @@ export default function HomeScreen() {
                     )}
                     <TouchableOpacity
                       onPress={toggleWeightUnit}
+                      accessibilityLabel={weightUnit === 'kg' ? '切换为磅' : '切换为千克'}
                       style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, backgroundColor: `${P}20` }}
                     >
                       <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB }}>{weightUnit === 'kg' ? 'kg' : 'lb'}</Text>
@@ -582,7 +583,7 @@ export default function HomeScreen() {
                         <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
                           <Text style={{ fontWeight: '600', color: P }}>{waterMl}</Text> / {waterGoal} ml
                         </Text>
-                        <TouchableOpacity onPress={openWaterGoal}>
+                        <TouchableOpacity onPress={openWaterGoal} accessibilityLabel="编辑饮水目标">
                           <Pencil size={14} color={TH.sub} />
                         </TouchableOpacity>
                       </>
@@ -599,6 +600,7 @@ export default function HomeScreen() {
                     <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
                       {[200, 250, 350, 500].map(ml => (
                         <TouchableOpacity key={ml} onPress={() => addWaterCb(ml)}
+                          accessibilityLabel={`添加${ml}毫升水`}
                           style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
                           <Text style={{ color: P, fontWeight: '600', fontSize: FONT_SUB }}>{ml}ml</Text>
                         </TouchableOpacity>
@@ -652,6 +654,7 @@ export default function HomeScreen() {
                 isLocked ? (
                   <TouchableOpacity
                     onPress={handleEdit}
+                    accessibilityLabel={T('checkinModify')}
                     style={{ backgroundColor: P, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 12 }}
                   >
                     <View style={styles.flexRowGap6}>
@@ -661,6 +664,7 @@ export default function HomeScreen() {
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity onPress={handleSetDone}
+                    accessibilityLabel={T('checkinSubmit')}
                     style={{ backgroundColor: TH.accent, borderRadius: 12, padding: 14, alignItems: 'center', marginBottom: 12 }}>
                     <View style={styles.flexRowGap6}>
                       <Check size={18} color="#fff" />
@@ -701,11 +705,13 @@ export default function HomeScreen() {
             />
             <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>
               <TouchableOpacity onPress={closeWaterGoalModal}
+                accessibilityLabel={T('cancel')}
                 style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={saveWaterGoal}
+                accessibilityLabel={T('save')}
                 style={{ flex: 1, padding: 12, borderRadius: 12, backgroundColor: P, alignItems: 'center' }}>
                 <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('save')}</Text>
               </TouchableOpacity>
@@ -739,6 +745,7 @@ export default function HomeScreen() {
                   const selected = selectedReason === r.code;
                   return (
                     <TouchableOpacity key={r.code} onPress={() => setSelectedReason(r.code)}
+                      accessibilityLabel={`${r.icon} ${T(labelKey)}`}
                       style={{
                         paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12,
                         borderWidth: 1.5, borderColor: selected ? P : TH.border,
@@ -769,10 +776,12 @@ export default function HomeScreen() {
               {/* Buttons */}
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <TouchableOpacity onPress={closeReasonModal}
+                  accessibilityLabel={T('incompleteReasonBack')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                   <Text style={{ color: TH.sub, fontSize: FONT_BUTTON }}>{T('incompleteReasonBack')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={confirmDoneWithReason} disabled={!selectedReason || !reasonNote.trim()}
+                  accessibilityLabel={T('incompleteReasonConfirm')}
                   style={{ flex: 1, padding: 14, borderRadius: 12, backgroundColor: selectedReason && reasonNote.trim() ? P : TH.border, alignItems: 'center' }}>
                   <Text style={[styles.whiteTextBold, { fontSize: FONT_BUTTON }]}>{T('incompleteReasonConfirm')}</Text>
                 </TouchableOpacity>

@@ -223,6 +223,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
         <TouchableOpacity
           onPress={() => toggleHeatmap(item.id)}
           style={styles.heatmapToggleRow}
+          accessibilityLabel={expandedHeatmaps.has(item.id) ? T('planHideHeatmap') : T('planShowHeatmap')}
         >
           <BarChart2 size={14} color={P} />
           <Text style={[styles.textBadgePrimary, { color: P }]}>
@@ -346,6 +347,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                 key={t}
                 onPress={() => setTab(t)}
                 style={[styles.tabButton, { backgroundColor: active ? P : TH.card }]}
+                accessibilityLabel={t === 'detail' ? T('planDetail') : T('planTodoList')}
               >
                 <Text style={[styles.textTabLabel, { fontWeight: active ? '700' : '500', color: active ? '#fff' : TH.sub }]}>
                   {t === 'detail' ? T('planDetail') : T('planTodoList')}
@@ -437,6 +439,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                 onPress={() => setShowRelated(v => !v)}
                 activeOpacity={0.7}
                 style={styles.relatedToggleRow}
+                accessibilityLabel={showRelated ? '收起关联内容' : '展开关联内容'}
               >
                 <View style={styles.flex1}>
                   <View style={styles.sectionHeaderRowMb8}>
@@ -476,6 +479,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       key={r.id}
                       onPress={() => nav.navigate('ReflectionDetail', { reflectionId: r.id })}
                       style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border }]}
+                      accessibilityLabel={`查看关联感悟: ${r.content?.substring(0, 20) ?? ''}`}
                     >
                       <Text style={[styles.textBodyDim, { color: TH.text }]} numberOfLines={2}>{r.content}</Text>
                       <Text style={[styles.textSubDimMt4, { color: TH.sub }]}>
@@ -490,6 +494,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       key={trail.id}
                       onPress={() => nav.navigate('ThoughtTrailDetail', { trailId: trail.id })}
                       style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border }]}
+                      accessibilityLabel={`查看关联脉络: ${trail.name}`}
                     >
                       <Text style={[styles.textBodySemiBold, { color: TH.text }]}>{trail.name}</Text>
                       <Text style={[styles.textSubDimMt4, { color: TH.sub }]}>
@@ -500,7 +505,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
 
                   {/* Show "more" hint if reflections were truncated */}
                   {relatedReflections.total > 3 && (
-                    <TouchableOpacity onPress={() => nav.navigate('MindTrail')}>
+                    <TouchableOpacity onPress={() => nav.navigate('MindTrail')} accessibilityLabel={`查看更多关联感悟 (+${relatedReflections.total - 3})`}>
                       <Text style={[styles.textMoreLink, { color: TH.sub }]}>
                         +{relatedReflections.total - 3}
                       </Text>
@@ -515,6 +520,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
           <TouchableOpacity
             onPress={() => nav.navigate('RelationMap', { context: { type: 'plan', id: planId } })}
             style={[styles.relationMapButton, { backgroundColor: TH.card, borderColor: TH.border }]}
+            accessibilityLabel={T('planRelationMap')}
           >
             <Link size={18} color={P} />
             <View style={styles.flex1}>
@@ -529,6 +535,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             <TouchableOpacity
               onPress={() => setShowHeatmap(v => !v)}
               style={styles.heatmapHeaderRow}
+              accessibilityLabel={showHeatmap ? '收起热力图' : '展开热力图'}
             >
               <View style={styles.sectionHeaderRow}>
                 <BarChart2 size={18} color={P} />
@@ -582,7 +589,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                           key={item.id}
                           style={[styles.todoItemRow, { borderBottomColor: TH.border, borderBottomWidth: i < arr.length - 1 || dailyCustomTodos.length > 0 ? 1 : 0, opacity: autoChecked ? 0.7 : 1 }]}
                         >
-                          <TouchableOpacity onPress={() => toggleItem(item.id)} style={styles.checkboxTouchTarget}>
+                          <TouchableOpacity onPress={() => toggleItem(item.id)} style={styles.checkboxTouchTarget} accessibilityLabel={done ? `${item.name} 取消完成` : `${item.name} 完成`}>
                             <View style={[styles.checkbox, { borderColor: done ? P : TH.border, backgroundColor: done ? P : 'transparent' }]}>
                               {done && <Check size={14} color="#fff" />}
                             </View>
@@ -624,7 +631,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                         key={todo.id}
                         style={[styles.customTodoRow, { borderBottomColor: TH.border, borderBottomWidth: i < arr.length - 1 ? 1 : 0 }]}
                       >
-                        <TouchableOpacity onPress={() => toggleCustomTodo(todo.id)} style={styles.checkboxTouchTarget}>
+                        <TouchableOpacity onPress={() => toggleCustomTodo(todo.id)} style={styles.checkboxTouchTarget} accessibilityLabel={todo.done ? `${todo.name} 取消完成` : `${todo.name} 完成`}>
                           <View style={[styles.checkbox, { borderColor: todo.done ? P : TH.border, backgroundColor: todo.done ? P : 'transparent' }]}>
                             {todo.done && <Check size={14} color="#fff" />}
                           </View>
@@ -641,6 +648,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                             ]);
                           }}
                           style={styles.deleteTodoTouchTarget}
+                          accessibilityLabel={`${T('planDeleteCustomTodo')} ${todo.name}`}
                         >
                           <Trash2 size={16} color={COLORS.RED} />
                         </TouchableOpacity>
@@ -663,12 +671,14 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                     <TouchableOpacity
                       onPress={() => setNewTodoRecurring(!newTodoRecurring)}
                       style={[styles.recurringButton, { borderColor: newTodoRecurring ? P : TH.border, backgroundColor: newTodoRecurring ? `${P}15` : 'transparent' }]}
+                      accessibilityLabel={newTodoRecurring ? '取消重复' : '设为重复'}
                     >
                       <Repeat size={16} color={newTodoRecurring ? P : TH.sub} />
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={addCustomTodo}
                       style={[styles.addButton, { backgroundColor: P }]}
+                      accessibilityLabel={T('planAddCustomTodoPlaceholder')}
                     >
                       <Plus size={16} color="#fff" />
                     </TouchableOpacity>
@@ -685,7 +695,9 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
           {/* History section */}
           <View style={styles.historySection}>
             <TouchableOpacity onPress={() => setShowHistory(v => !v)}
-              style={[styles.historyHeader, { marginBottom: showHistory ? 12 : 0 }]}>
+              style={[styles.historyHeader, { marginBottom: showHistory ? 12 : 0 }]}
+              accessibilityLabel={showHistory ? '收起历史记录' : '展开历史记录'}
+            >
               <View style={styles.historyTitleRow}>
                 <Text style={[styles.textHistoryTitle, { color: TH.text }]}>{T('planTodoHistory')}</Text>
                 {showHistory ? <ChevronDown size={18} color={TH.text} /> : <ChevronRight size={18} color={TH.text} />}
@@ -725,6 +737,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                             <TouchableOpacity
                               onPress={() => toggleDateExpand(group.date)}
                               style={[styles.historyItemHeader, { borderBottomColor: TH.border, borderBottomWidth: isExpanded ? 1 : 0 }]}
+                              accessibilityLabel={isExpanded ? `收起 ${group.date}` : `展开 ${group.date}`}
                             >
                               <View style={styles.historyItemTitleRow}>
                                 {isExpanded ? <ChevronDown size={16} color={TH.text} /> : <ChevronRight size={16} color={TH.text} />}
@@ -763,42 +776,54 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
         <View style={styles.actionsContainer}>
           {editable && (
             <TouchableOpacity onPress={() => nav.navigate('PlanCreate', { planId: plan.id })}
-              style={[styles.actionButtonOutline, { backgroundColor: TH.card, borderColor: TH.border }]}>
+              style={[styles.actionButtonOutline, { backgroundColor: TH.card, borderColor: TH.border }]}
+              accessibilityLabel={T('commonEdit')}
+            >
               <Pencil size={16} color={TH.text} />
               <Text style={[styles.textActionLabel, { color: TH.text }]}>{T('commonEdit')}</Text>
             </TouchableOpacity>
           )}
           {pausable && (
             <TouchableOpacity onPress={handlePause}
-              style={[styles.actionButtonFill, { backgroundColor: COLORS.YELLOW }]}>
+              style={[styles.actionButtonFill, { backgroundColor: COLORS.YELLOW }]}
+              accessibilityLabel={T('planPause')}
+            >
               <Pause size={16} color="#fff" />
               <Text style={styles.textActionLabelWhite}>{T('planPause')}</Text>
             </TouchableOpacity>
           )}
           {resumable && (
             <TouchableOpacity onPress={handleResume}
-              style={[styles.actionButtonFill, { backgroundColor: COLORS.GREEN }]}>
+              style={[styles.actionButtonFill, { backgroundColor: COLORS.GREEN }]}
+              accessibilityLabel={T('planResume')}
+            >
               <Play size={16} color="#fff" />
               <Text style={styles.textActionLabelWhite}>{T('planResume')}</Text>
             </TouchableOpacity>
           )}
           {cancellable && (
             <TouchableOpacity onPress={handleCancel}
-              style={[styles.actionButtonDanger, { borderColor: `${COLORS.RED}30` }]}>
+              style={[styles.actionButtonDanger, { borderColor: `${COLORS.RED}30` }]}
+              accessibilityLabel={T('planCancelPlan')}
+            >
               <XCircle size={16} color={COLORS.RED} />
               <Text style={[styles.textActionLabel, { color: COLORS.RED }]}>{T('planCancelPlan')}</Text>
             </TouchableOpacity>
           )}
           {completable && (
             <TouchableOpacity onPress={handleComplete}
-              style={[styles.actionButtonFill, { backgroundColor: P }]}>
+              style={[styles.actionButtonFill, { backgroundColor: P }]}
+              accessibilityLabel={T('planComplete')}
+            >
               <CircleCheck size={16} color="#fff" />
               <Text style={styles.textActionLabelWhite}>{T('planComplete')}</Text>
             </TouchableOpacity>
           )}
           {deletable && (
             <TouchableOpacity onPress={handleDelete}
-              style={[styles.actionButtonDanger, { borderColor: `${COLORS.RED}30` }]}>
+              style={[styles.actionButtonDanger, { borderColor: `${COLORS.RED}30` }]}
+              accessibilityLabel={T('planDelete')}
+            >
               <Trash2 size={16} color={COLORS.RED} />
               <Text style={[styles.textActionLabel, { color: COLORS.RED }]}>{T('planDelete')}</Text>
             </TouchableOpacity>

@@ -200,7 +200,7 @@ export default function ProfileScreen() {
         {/* Avatar + Name */}
         <Card style={{ marginBottom: 12 }}>
           <View style={{ alignItems: 'center', gap: 12 }}>
-            <TouchableOpacity onPress={pickAvatar} onLongPress={avatarUri ? removeAvatar : undefined}>
+            <TouchableOpacity accessibilityLabel={'更换头像'} onPress={pickAvatar} onLongPress={avatarUri ? removeAvatar : undefined}>
               <View style={{
                 width: 80, height: 80, borderRadius: 40,
                 backgroundColor: `${P}30`,
@@ -238,15 +238,15 @@ export default function ProfileScreen() {
                     color: TH.text, fontSize: FONT_BODY, borderWidth: 1, borderColor: TH.border,
                   }}
                 />
-                <TouchableOpacity onPress={saveNickname} style={{ padding: 8 }}>
+                <TouchableOpacity accessibilityLabel={T('commonSave')} onPress={saveNickname} style={{ padding: 8 }}>
                   <Check size={22} color={COLORS.GREEN} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { setEditingNickname(false); setEditNickname(userProfile.nickname ?? ''); }} style={{ padding: 8 }}>
+                <TouchableOpacity accessibilityLabel={T('commonCancel')} onPress={() => { setEditingNickname(false); setEditNickname(userProfile.nickname ?? ''); }} style={{ padding: 8 }}>
                   <X size={22} color={TH.sub} />
                 </TouchableOpacity>
               </View>
             ) : (
-              <TouchableOpacity onPress={() => setEditingNickname(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <TouchableOpacity accessibilityLabel={'编辑昵称'} onPress={() => setEditingNickname(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE }}>{displayName}</Text>
                 <Pencil size={14} color={TH.sub} />
               </TouchableOpacity>
@@ -281,6 +281,7 @@ export default function ProfileScreen() {
               }}
             />
             <TouchableOpacity
+              accessibilityLabel={T('settingsSelectWeightUnit')}
               onPress={() => Alert.alert(T('settingsWeightUnit'), '', [
                 { text: T('weightUnitKg'), onPress: () => setWeightUnit('kg') },
                 { text: T('weightUnitLb'), onPress: () => setWeightUnit('lb') },
@@ -319,6 +320,7 @@ export default function ProfileScreen() {
             <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: 16, color: P }}>⚤</Text></View>
             <Text style={{ color: TH.text, fontSize: FONT_BODY, width: 60 }}>{T('profileGender')}</Text>
             <TouchableOpacity
+              accessibilityLabel={T('profileGender')}
               onPress={() => Alert.alert(T('profileGender'), '', [
                 { text: T('profileGenderPrivate'), onPress: () => handleGenderChange('private') },
                 { text: T('profileGenderMale'), onPress: () => handleGenderChange('male') },
@@ -377,15 +379,15 @@ export default function ProfileScreen() {
                   fontStyle: 'italic',
                 }}
               />
-              <TouchableOpacity onPress={saveMotto} style={{ padding: 6 }}>
+              <TouchableOpacity accessibilityLabel={T('commonSave')} onPress={saveMotto} style={{ padding: 6 }}>
                 <Check size={20} color={COLORS.GREEN} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { setEditingMotto(false); setEditMotto(userProfile.motto ?? ''); }} style={{ padding: 6 }}>
+              <TouchableOpacity accessibilityLabel={T('commonCancel')} onPress={() => { setEditingMotto(false); setEditMotto(userProfile.motto ?? ''); }} style={{ padding: 6 }}>
                 <X size={20} color={TH.sub} />
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <TouchableOpacity accessibilityLabel={'编辑座右铭'} onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
               <Quote size={16} color={P} />
               <Text style={{ color: userProfile.motto ? TH.text : TH.sub, fontSize: FONT_BODY, fontStyle: 'italic', flex: 1 }}>
                 {userProfile.motto || T('profileMottoPlaceholder')}
@@ -422,6 +424,7 @@ export default function ProfileScreen() {
             {T('profileAccount')}
           </Text>
           <TouchableOpacity
+            accessibilityLabel={T('settingsClearData')}
             disabled={clearing}
             onPress={() => {
               Alert.alert(
@@ -457,6 +460,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
           <View style={{ height: 1, backgroundColor: TH.border }} />
           <TouchableOpacity
+            accessibilityLabel={T('settingsLogout')}
             onPress={async () => { await useAppStore.getState().logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
           >
