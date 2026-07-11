@@ -38,6 +38,11 @@ export async function registerExpoPushToken(token: string): Promise<void> {
     }
     registerPushToken(token, Platform.OS as 'ios' | 'android', async () => tokenData.data);
   } catch (err) {
-    log.error(err, { message: 'Failed to register push token' });
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes('未登录') || msg.includes('401') || msg.includes('auth')) {
+      log.info('Push token deferred — will retry after auth refresh');
+    } else {
+      log.error(err, { message: 'Failed to register push token' });
+    }
   }
 }

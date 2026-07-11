@@ -4,7 +4,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { Image } from 'expo-image';
 import {
   BarChart3, CalendarDays, Utensils, Shield, HeartCrack,
-  Heart, RefreshCw, Hand, PersonStanding, Trash2,
+  Heart, RefreshCw, RotateCcw, Hand, PersonStanding, Trash2,
   Check, X, ChevronRight, Bell, Clock, Globe, Palette,
   Cloud, CloudUpload, History, Info, Lock, ClipboardList,
   Music, Binary, Brain, Dumbbell, Timer,
@@ -314,6 +314,38 @@ export default function SettingsScreen() {
               </Text>
             </TouchableOpacity>
           ),
+        },
+        {
+          label: T('settingsResetData') || '重置本地数据并全量同步',
+          icon: <RotateCcw size={20} color={COLORS.RED} />,
+          sub: T('settingsResetDataDesc') || '清除本地缓存，从服务器重新拉取',
+          onPress: () => {
+            Alert.alert(
+              T('settingsResetConfirmTitle') || '确认重置',
+              T('settingsResetConfirmMsg') || '将清除本地所有缓存数据并从服务器重新同步。已登录状态不会丢失。',
+              [
+                { text: T('cancel') || '取消', style: 'cancel' },
+                {
+                  text: T('confirm') || '确认',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      setSyncing(true);
+                      const { forceFullSync: ffs } = await import('../sync/SyncService');
+                      await ffs();
+                      setLastSyncAt(Date.now());
+                      Alert.alert(T('settingsResetDone') || '重置完成', T('settingsResetDoneMsg') || '数据已重新同步');
+                    } catch (e) {
+                      log.error(e, { phase: 'forceFullSync' });
+                      Alert.alert(T('error') || '错误', String(e));
+                    } finally {
+                      setSyncing(false);
+                    }
+                  },
+                },
+              ],
+            );
+          },
           last: true,
         },
       ],

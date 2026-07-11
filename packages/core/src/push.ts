@@ -64,14 +64,20 @@ export async function registerPushToken(
   authToken: string,
   platform: PushPlatform,
   getToken: () => Promise<string | null>
-): Promise<void> {
+): Promise<'ok' | 'auth_error' | 'skipped'> {
   try {
     const pushToken = await getToken();
-    if (pushToken) {
-      await apiRegisterPushToken(authToken, platform, pushToken);
-      log.info('Token registered for', platform);
-    }
+    if (!pushToken) return 'skipped';
+    await apiRegisterPushToken(authToken, platform, pushToken);
+    log.info('Token registered for', platform);
+    return 'ok';
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes('未登录') || msg.includes('401') || msg.includes('auth')) {
+      log.info('Push token registration deferred — auth not ready');
+      throw err;
+    }
     log.error(err, { message: 'Failed to register token' });
+    throw err;
   }
 }

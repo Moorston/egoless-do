@@ -308,7 +308,20 @@ export class SyncApplyService {
               toUpsert[i].vals
             );
           } catch (e) {
-            log.error(e, { entity, id: toUpsert[i].id, phase: 'batch-insert-fallback' });
+            const msg = e instanceof Error ? e.message : String(e);
+            if (msg.includes('UNIQUE constraint')) {
+              // Race condition: row appeared between UPDATE and INSERT — retry UPDATE
+              try {
+                await db.runAsync(
+                  `UPDATE ${table} SET ${setClause},deleted=0,synced=1 WHERE ${pk}=?`,
+                  [...toUpsert[i].vals, toUpsert[i].id]
+                );
+              } catch (retryErr) {
+                log.warn(`Retry UPDATE after UNIQUE failed for ${entity}:${toUpsert[i].id}`);
+              }
+            } else {
+              log.error(e, { entity, id: toUpsert[i].id, phase: 'batch-insert-fallback' });
+            }
           }
         }
         applied.push(toUpsert[i].original);

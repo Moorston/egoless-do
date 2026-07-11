@@ -133,22 +133,22 @@ export async function initApp(): Promise<void> {
     // ── Step 3b: Clean up ghost entries (atomically inside setState to avoid race with realtime) ──
     try {
       const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
-        ['foodLog', 'food', f => !f.name],
-        ['exerciseLog', 'exercise', f => !f.sportKey],
-        ['plans', 'plan', f => !f.name],
-        ['medHistory', 'meditation', f => !f.date],
-        ['sleepHistory', 'sleep', f => !f.date],
-        ['breathHistory', 'breath', f => !f.date],
-        ['sessions', 'zhiguanSession', f => !f.startTs && !f.status],
-        ['mantraSessions', 'mantraSession', f => !f.mantraId && !f.date],
-        ['mantraDefs', 'mantraDef', f => !f.name],
-        ['visions', 'vision', f => !f.text && !f.type],
-        ['dedications', 'dedication', f => !f.date && !f.periodLabel],
-        ['fearEntries', 'fearEntry', f => !f.content && !f.date],
-        ['courageEntries', 'courageEntry', f => !f.action && !f.date],
-        ['giveHistory', 'give', f => !f.content],
-        ['motivationLog', 'motivationEntry', f => !f.foodId],
-        ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date],
+        ['foodLog', 'food', f => f.name == null && f.calories == null && f.timestamp == null],
+        ['exerciseLog', 'exercise', f => f.sportKey == null && f.date == null],
+        ['plans', 'plan', f => f.name == null && f.startDate == null],
+        ['medHistory', 'meditation', f => f.date == null && f.durationSec == null],
+        ['sleepHistory', 'sleep', f => f.date == null && f.startTs == null],
+        ['breathHistory', 'breath', f => f.date == null && f.durationSec == null],
+        ['sessions', 'zhiguanSession', f => f.startTs == null && f.status == null],
+        ['mantraSessions', 'mantraSession', f => f.mantraId == null && f.date == null],
+        ['mantraDefs', 'mantraDef', f => f.name == null && f.subtitle == null],
+        ['visions', 'vision', f => f.text == null && f.type == null],
+        ['dedications', 'dedication', f => f.date == null && f.periodLabel == null],
+        ['fearEntries', 'fearEntry', f => f.content == null && f.date == null],
+        ['courageEntries', 'courageEntry', f => f.action == null && f.date == null],
+        ['giveHistory', 'give', f => f.content == null && f.date == null],
+        ['motivationLog', 'motivationEntry', f => f.foodId == null && f.motivation == null],
+        ['readingSessions', 'sutraReading', f => f.mantraId == null && f.date == null],
       ];
       const toDelete: Array<{ entity: string; id: string }> = [];
       // Step 1: Pure computation — find ghosts from current store state (outside setState)
@@ -221,6 +221,16 @@ export async function initApp(): Promise<void> {
       }
     } catch (err) {
       log.error(err, { message: 'SecureStore load failed — user may appear logged out despite valid tokens' });
+    }
+
+    // Guard: if user appears signed in but has no token (SecureStore empty/corrupt),
+    // clear signed-in state to prevent stuck "no token" state on next sync.
+    {
+      const auth = store().auth;
+      if (auth.isSignedIn && !auth.token) {
+        log.warn('isSignedIn=true but no token — clearing auth state');
+        setState({ auth: { ...auth, isSignedIn: false, isLoading: false } } as PartialMobileStore);
+      }
     }
 
     // ── Step 5: Wire auth token changes → SecureStore + Sentry user ─

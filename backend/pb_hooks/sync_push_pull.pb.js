@@ -156,18 +156,12 @@ routerAdd("POST", "/api/sync/pull", function(e) {
         var totalCount = 0;
         if (page > 0 && pageSize > 0) {
           // Paginated mode for phased initial sync
-          // Use raw SQL COUNT to avoid loading all records into memory
+          // Use findRecordsByFilter for reliable count (raw SQL has PB version compat issues)
           try {
-            // PocketBase stores per-user data; the filter is always user_id based
-            // Build a COUNT query against the underlying table
-            var countResult = $app.db().newQuery(
-              "SELECT COUNT(*) as total FROM " + coll + " WHERE user_id = {:userId}"
-            ).bind({ userId: userId }).one();
-            totalCount = countResult ? (countResult.total || 0) : 0;
-          } catch (countErr) {
-            // Fallback: load all records for count (same as before) — capped to prevent OOM
             var countRecs = $app.findRecordsByFilter(coll, f, "", 10000);
             totalCount = countRecs ? countRecs.length : 0;
+          } catch (countErr) {
+            totalCount = 0;
           }
           var offset = (page - 1) * pageSize;
           var batch = safeFindRecords($app, coll, f, pageSize, offset);

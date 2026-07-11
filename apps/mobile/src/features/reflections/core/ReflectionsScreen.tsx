@@ -9,7 +9,7 @@ import {
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, Modal,
-  KeyboardAvoidingView, Platform, Linking, Alert,
+  KeyboardAvoidingView, Platform, Linking, Alert, StyleSheet,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -381,12 +381,12 @@ export default function ReflectionsScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex:1, backgroundColor:TH.bg }}>
       <SimpleHeader routeName="Reflections" />
-      <ScrollView contentContainerStyle={{ padding:16, paddingBottom:100 }}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         <ScreenHeader title={T('reflTitle')} compact
           right={
             <TouchableOpacity onPress={() => setShowNew(true)}
               style={{ backgroundColor:P, paddingHorizontal:16, paddingVertical:8, borderRadius:20 }}>
-              <Text style={{ color:'#fff', fontWeight:'700', fontSize:FONT_BUTTON }}>{T('reflNew')}</Text>
+              <Text style={styles.newButtonText}>{T('reflNew')}</Text>
             </TouchableOpacity>
           }
         />
@@ -472,39 +472,39 @@ export default function ReflectionsScreen() {
                         style={{ padding:14 }}
                       >
                         <View style={{ flexDirection:'row', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
-                          <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL }}>
+                          <Text style={styles.reflTime}>
                             {formatTime(new Date(r.timestamp ?? 0), language, { hour:'2-digit', minute:'2-digit' })}
                           </Text>
                           <View style={{ flexDirection:'row', alignItems:'center', gap:6 }}>
                             {linkedPlanItem && (
                               <TouchableOpacity
                                 onPress={() => handleNavigateToPlan(linkedPlanItem.planId)}
-                                style={{ flexDirection:'row', alignItems:'center', gap:3, paddingHorizontal:6, paddingVertical:2, borderRadius:6, backgroundColor:'rgba(255,255,255,.2)' }}
+                                style={styles.linkedPlanBadge}
                               >
                                 <ExternalLink size={10} color="#fff" />
-                                <Text style={{ fontSize:FONT_TINY, color:'#fff', fontWeight:'500' }}>{linkedPlanItem.name.slice(0, 6)}</Text>
+                                <Text style={styles.linkedPlanText}>{linkedPlanItem.name.slice(0, 6)}</Text>
                               </TouchableOpacity>
                             )}
                           </View>
                         </View>
 
                         {filters.search.trim() ? (
-                          <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:26, marginBottom:8 }}>
+                          <Text style={styles.reflContent}>
                             {highlightSearchMatch(displayContent, filters.search).map((seg, i) => (
                               seg.highlight
-                                ? <Text key={i} style={{ backgroundColor:'rgba(255,255,0,.3)', color:'#fff' }}>{seg.text}</Text>
+                                ? <Text key={i} style={styles.searchHighlight}>{seg.text}</Text>
                                 : <Text key={i}>{seg.text}</Text>
                             ))}
                           </Text>
                         ) : (
-                          <Text style={{ color:'#fff', fontSize:FONT_BODY, lineHeight:26, marginBottom:8 }}>{displayContent}</Text>
+                          <Text style={styles.reflContent}>{displayContent}</Text>
                         )}
 
                         {r.link && (
                           <TouchableOpacity onPress={() => r.link && Linking.openURL(r.link).catch((e) => log.error(e))} style={{ marginBottom:8 }}>
                             <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
                               <Link size={12} color="rgba(255,255,255,.7)" />
-                              <Text style={{ color:'rgba(255,255,255,.7)', fontSize:FONT_SMALL, textDecorationLine:'underline' }} numberOfLines={1}>{r.link}</Text>
+                              <Text style={styles.reflLinkText} numberOfLines={1}>{r.link}</Text>
                             </View>
                           </TouchableOpacity>
                         )}
@@ -514,7 +514,7 @@ export default function ReflectionsScreen() {
                             {(r.tags ?? []).map(tag => {
                               const category = REFLECTION_CATEGORIES.find(c => `#${c.label}` === tag);
                               return (
-                                <Text key={tag} style={{ color:'rgba(255,255,255,.9)', fontSize:FONT_SMALL }}>
+                                <Text key={tag} style={styles.tagText}>
                                   {category ? `${category.icon} ` : ''}{tag}
                                 </Text>
                               );
@@ -810,3 +810,54 @@ export default function ReflectionsScreen() {
   );
 }
 
+const styles = StyleSheet.create({
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  newButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: FONT_BUTTON,
+  },
+  reflTime: {
+    color: 'rgba(255,255,255,.7)',
+    fontSize: FONT_SMALL,
+  },
+  linkedPlanBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,.2)',
+  },
+  linkedPlanText: {
+    color: '#fff',
+    fontSize: FONT_TINY,
+  },
+  reflContent: {
+    color: '#fff',
+    fontSize: FONT_BODY,
+    lineHeight: 22,
+    marginBottom: 8,
+  },
+  searchHighlight: {
+    backgroundColor: 'rgba(255,255,0,.4)',
+    color: '#fff',
+  },
+  reflLinkText: {
+    color: 'rgba(255,255,255,.7)',
+    fontSize: FONT_SMALL,
+    textDecorationLine: 'underline',
+  },
+  tagText: {
+    color: 'rgba(255,255,255,.8)',
+    fontSize: FONT_SMALL,
+    backgroundColor: 'rgba(255,255,255,.15)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+});

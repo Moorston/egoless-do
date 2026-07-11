@@ -42,12 +42,13 @@ const devHost = hostUri?.split(':')[0] ?? 'localhost';
 const DEV_API = `http://${devHost}:3000`;
 const apiBase = __DEV__ ? DEV_API : API_URL;
 setApiBase(apiBase);
-setPushApiBase(apiBase);
 
 // PocketBase URL for sync endpoints (separate from auth API)
 // NOTE: HTTP (not HTTPS) is intentional for local development. Production URLs MUST use HTTPS.
 const DEV_PB = `http://${devHost}:8090`;
-setSyncApiBase(__DEV__ ? DEV_PB : PB_URL);
+const pbBase = __DEV__ ? DEV_PB : PB_URL;
+setSyncApiBase(pbBase);
+setPushApiBase(pbBase);  // Push token endpoint is on PocketBase, not API server
 
 const adapter = mobileStorageAdapter;
 
