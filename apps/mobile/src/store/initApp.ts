@@ -133,22 +133,22 @@ export async function initApp(): Promise<void> {
     // ── Step 3b: Clean up ghost entries (atomically inside setState to avoid race with realtime) ──
     try {
       const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
-        ['foodLog', 'food', f => !f.name],
-        ['exerciseLog', 'exercise', f => !f.sportKey],
-        ['plans', 'plan', f => !f.name],
-        ['medHistory', 'meditation', f => !f.date],
-        ['sleepHistory', 'sleep', f => !f.date],
-        ['breathHistory', 'breath', f => !f.date],
+        ['foodLog', 'food', f => !f.name && !f.calories && !f.timestamp],
+        ['exerciseLog', 'exercise', f => !f.sportKey && !f.date],
+        ['plans', 'plan', f => !f.name && !f.goal && !f.startDate],
+        ['medHistory', 'meditation', f => !f.date && !f.durationSec],
+        ['sleepHistory', 'sleep', f => !f.date && !f.startTs],
+        ['breathHistory', 'breath', f => !f.date && !f.durationSec],
         ['sessions', 'zhiguanSession', f => !f.startTs && !f.status],
-        ['mantraSessions', 'mantraSession', f => !f.mantraId && !f.date],
-        ['mantraDefs', 'mantraDef', f => !f.name],
-        ['visions', 'vision', f => !f.text && !f.type],
-        ['dedications', 'dedication', f => !f.date && !f.periodLabel],
-        ['fearEntries', 'fearEntry', f => !f.content && !f.date],
-        ['courageEntries', 'courageEntry', f => !f.action && !f.date],
-        ['giveHistory', 'give', f => !f.content],
-        ['motivationLog', 'motivationEntry', f => !f.foodId],
-        ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date],
+        ['mantraSessions', 'mantraSession', f => !f.mantraId && !f.date && !f.count],
+        ['mantraDefs', 'mantraDef', f => !f.name && !f.subtitle],
+        ['visions', 'vision', f => !f.text && !f.type && !f.title],
+        ['dedications', 'dedication', f => !f.date && !f.periodLabel && !f.text],
+        ['fearEntries', 'fearEntry', f => !f.content && !f.date && !f.title],
+        ['courageEntries', 'courageEntry', f => !f.action && !f.date && !f.title],
+        ['giveHistory', 'give', f => !f.content && !f.date],
+        ['motivationLog', 'motivationEntry', f => !f.foodId && !f.motivation],
+        ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date && !f.title],
       ];
       const toDelete: Array<{ entity: string; id: string }> = [];
       // Step 1: Pure computation — find ghosts from current store state (outside setState)
