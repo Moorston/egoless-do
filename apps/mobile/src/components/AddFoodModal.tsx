@@ -1,4 +1,4 @@
-import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr } from '@egoless-do/core';
+import { COLORS, FOOD_PRESETS, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_TITLE, FONT_BUTTON, FONT_LABEL, FONT_BADGE, FONT_BODY, FONT_SUB, FONT_EMPTY, FONT_STAT_SECTION, FONT_BACK, dateStr , FONT_SMALL } from '@egoless-do/core';
 import type { WuxingElement, FlavorType, FoodWuxingItem } from '@egoless-do/core';
 import {
   Star, ChevronLeft, X, Search,
@@ -542,11 +542,11 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   wuxingBadgeText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   wuxingNatureText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
   },
   presetRow: {
     flexDirection: 'row',

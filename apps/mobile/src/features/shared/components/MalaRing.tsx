@@ -14,6 +14,7 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import { FONT_SMALL } from '@egoless-do/core';
 
 const DEFAULT_BEAD_COUNT = 108;
 const DEFAULT_SIZE = 280;
@@ -146,16 +147,16 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   centerCount: {
-    fontSize: 44,
+    fontSize: scaleFontSize(44)(),
     fontWeight: '800',
     textAlign: 'center',
   },
   centerSub: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     marginTop: 2,
   },
   centerLabel: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     marginTop: 4,
   },
 });

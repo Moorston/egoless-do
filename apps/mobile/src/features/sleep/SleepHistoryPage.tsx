@@ -1,5 +1,5 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, type Theme , SleepEntry } from '@egoless-do/core';
-import { formatSleepDuration } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, type Theme , SleepEntry , FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
+import { formatSleepDuration , FONT_SMALL } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, ChevronRight, Moon, Trash2, X, Heart } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
@@ -235,7 +235,7 @@ function DetailModal({ entry, TH, T: _T, onClose, onDelete }: { entry: SleepEntr
                 <Text style={styles.detailTimeValue}>{formatTime(entry.bedtimeAt)}</Text>
               </View>
               <View style={styles.detailTimeItem}>
-                <Text style={{ fontSize: 16 }}>☀</Text>
+                <Text style={{ fontSize: FONT_LABEL() }}>☀</Text>
                 <Text style={styles.detailTimeLabel}>起床</Text>
                 <Text style={styles.detailTimeValue}>{formatTime(entry.wakeAt)}</Text>
               </View>
@@ -617,7 +617,7 @@ function mkStyles(TH: Theme) {
       justifyContent: 'center',
     },
     heatmapCellText: {
-      fontSize: 10,
+      fontSize: FONT_SMALL(),
     },
     heatmapDayText: {
       fontSize: FONT_SUB(),
@@ -657,7 +657,7 @@ function mkStyles(TH: Theme) {
       color: TH.sub,
     },
     detailDuration: {
-      fontSize: 32,
+      fontSize: scaleFontSize(32)(),
       fontWeight: '900',
       color: TH.primary,
       textAlign: 'center',
@@ -794,7 +794,7 @@ function mkStyles(TH: Theme) {
       marginTop: 80,
     },
     emptyIcon: {
-      fontSize: 64,
+      fontSize: scaleFontSize(64)(),
       marginBottom: 16,
     },
     emptyTitle: {
@@ -928,7 +928,7 @@ function mkStyles(TH: Theme) {
       borderRadius: 6,
     },
     practiceTagText: {
-      fontSize: 11,
+      fontSize: FONT_SMALL(),
       color: TH.primary,
     },
     notePreview: {

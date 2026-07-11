@@ -1,4 +1,4 @@
-import { COLORS, FONT_STAT_SECTION, FONT_SUB } from '@egoless-do/core';
+import { COLORS, FONT_STAT_SECTION, FONT_SUB , FONT_SMALL } from '@egoless-do/core';
 import type { Plan, PlanStatus } from '@egoless-do/core';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, AppState } from 'react-native';
@@ -165,7 +165,7 @@ export default function PlanCountdown({ plan }: Props) {
             <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
               {formatNumber(time.days)}
             </Text>
-            <Text style={{ fontSize: 10, color: TH.sub }}>{T('planDays')}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('planDays')}</Text>
           </View>
         )}
         {time.days > 0 && (
@@ -175,21 +175,21 @@ export default function PlanCountdown({ plan }: Props) {
           <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
             {formatNumber(time.hours)}
           </Text>
-          <Text style={{ fontSize: 10, color: TH.sub }}>{T('planHours')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('planHours')}</Text>
         </View>
         <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
         <View style={{ alignItems: 'center' }}>
           <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
             {formatNumber(time.minutes)}
           </Text>
-          <Text style={{ fontSize: 10, color: TH.sub }}>{T('planMinutes')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('planMinutes')}</Text>
         </View>
         <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color, marginHorizontal: 2 }}>:</Text>
         <View style={{ alignItems: 'center' }}>
           <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color }}>
             {formatNumber(time.seconds)}
           </Text>
-          <Text style={{ fontSize: 10, color: TH.sub }}>{T('planSeconds')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('planSeconds')}</Text>
         </View>
       </View>
     </View>

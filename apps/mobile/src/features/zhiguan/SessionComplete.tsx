@@ -1,9 +1,7 @@
 // ─── SessionComplete 禅修结束卡片 ────────────────────────────────
 // 显示时长/日期 + 笔记 + 八触记录 + 禅定阶段 + 回向 + 完成/放弃
-import {
-  EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS, EMPTY_EIGHT_TACTILE,
-  SAM_STAGE_LABEL_KEYS,
-} from '@egoless-do/core';
+import {EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS, EMPTY_EIGHT_TACTILE,
+  SAM_STAGE_LABEL_KEYS, FONT_SUB, FONT_CARD_TITLE, FONT_STAT_CARD, FONT_BODY, FONT_SMALL, FONT_LABEL} from '@egoless-do/core';
 import type { EightTactile, EightTactileKey, SamStage } from '@egoless-do/core';
 import React, { useState } from 'react';
 import { View, Text, Pressable, TextInput, ScrollView, StyleSheet } from 'react-native';
@@ -159,26 +157,26 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FAF7F2' },
   content: { padding: 20 },
   header: { alignItems: 'center', marginBottom: 24 },
-  title: { fontSize: 24, fontWeight: '700', color: '#4A3F35' },
+  title: { fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#4A3F35' },
   durationCard: { alignItems: 'center', backgroundColor: '#F5EFE6', borderRadius: 16, padding: 24, marginBottom: 16 },
-  durationValue: { fontSize: 64, fontWeight: '300', color: '#C9A96E' },
-  durationUnit: { fontSize: 16, color: '#8B7355', marginTop: 4 },
-  durationSeconds: { fontSize: 14, color: '#8B7355', marginTop: 2 },
-  dateText: { fontSize: 13, color: '#8B7355', textAlign: 'center', marginBottom: 24 },
+  durationValue: { fontSize: scaleFontSize(64)(), fontWeight: '300', color: '#C9A96E' },
+  durationUnit: { fontSize: FONT_LABEL(), color: '#8B7355', marginTop: 4 },
+  durationSeconds: { fontSize: FONT_SUB(), color: '#8B7355', marginTop: 2 },
+  dateText: { fontSize: FONT_SUB(), color: '#8B7355', textAlign: 'center', marginBottom: 24 },
   section: { marginBottom: 20 },
-  sectionTitle: { fontSize: 15, fontWeight: '600', color: '#4A3F35', marginBottom: 6 },
-  sectionHint: { fontSize: 12, color: '#8B7355', marginBottom: 10 },
+  sectionTitle: { fontSize: FONT_BODY(), fontWeight: '600', color: '#4A3F35', marginBottom: 6 },
+  sectionHint: { fontSize: FONT_SMALL(), color: '#8B7355', marginBottom: 10 },
   chipGroup: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: '#F5EFE6', borderWidth: 1, borderColor: '#E5DDD0' },
   chipActive: { backgroundColor: '#C9A96E', borderColor: '#C9A96E' },
-  chipText: { fontSize: 13, color: '#4A3F35' },
+  chipText: { fontSize: FONT_SUB(), color: '#4A3F35' },
   chipTextActive: { color: '#1A1A1F', fontWeight: '600' },
-  textInput: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14, fontSize: 15, color: '#4A3F35', minHeight: 80, textAlignVertical: 'top' },
+  textInput: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14, fontSize: FONT_BODY(), color: '#4A3F35', minHeight: 80, textAlignVertical: 'top' },
   dedicationCard: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14 },
-  dedicationText: { fontSize: 14, color: '#4A3F35', lineHeight: 22 },
+  dedicationText: { fontSize: FONT_SUB(), color: '#4A3F35', lineHeight: 22 },
   actions: { gap: 12, marginTop: 20 },
   saveButton: { backgroundColor: '#C9A96E', paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
-  saveButtonText: { fontSize: 17, fontWeight: '600', color: '#1A1A1F' },
+  saveButtonText: { fontSize: FONT_CARD_TITLE(), fontWeight: '600', color: '#1A1A1F' },
   abandonButton: { paddingVertical: 14, alignItems: 'center' },
-  abandonButtonText: { fontSize: 15, color: '#8B7355' },
+  abandonButtonText: { fontSize: FONT_BODY(), color: '#8B7355' },
 });

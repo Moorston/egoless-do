@@ -3,7 +3,7 @@
  * 绿色脉冲动画圆点 + 昵称 + 城市 + 活动时长
  */
 
-import { ActiveSession } from '@egoless-do/core';
+import {ActiveSession , FONT_LABEL, FONT_TINY, FONT_SMALL} from '@egoless-do/core';
 import React, { useEffect, useRef, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 
@@ -130,10 +130,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   dotText: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
   },
   name: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
     color: '#fff',
     backgroundColor: 'rgba(16, 185, 129, 0.85)',
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 9,
+    fontSize: FONT_TINY(),
     color: '#fff',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 3,

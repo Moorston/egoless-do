@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL , getMoodIcon } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL , getMoodIcon , FONT_STAT_CARD } from '@egoless-do/core';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   moodEmoji: {
-    fontSize: 24,
+    fontSize: FONT_STAT_CARD(),
   },
   moodLabel: {
     fontSize: FONT_SMALL(),

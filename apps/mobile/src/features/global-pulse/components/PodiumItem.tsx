@@ -3,7 +3,7 @@
  * 显示前3名详细信息
  */
 
-import { LeaderboardEntry } from '@egoless-do/core';
+import {LeaderboardEntry , FONT_SMALL, FONT_TINY, FONT_BACK} from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, type ViewStyle } from 'react-native';
 
@@ -86,11 +86,11 @@ export const PodiumItem: React.FC<PodiumItemProps> = React.memo(({
 
 const styles = StyleSheet.create({
   medal: {
-    fontSize: 32,
+    fontSize: scaleFontSize(32)(),
     marginBottom: 4,
   },
   name: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
     marginBottom: 2,
     textAlign: 'center',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   city: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     marginBottom: 4,
     textAlign: 'center',
   },
@@ -112,14 +112,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statValue: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
     fontWeight: 'bold',
   },
   statLabel: {
-    fontSize: 9,
+    fontSize: FONT_TINY(),
   },
   startDate: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
   },
 });
 

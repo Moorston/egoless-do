@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     flex: 1,
     textAlign: 'center',

@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   tagText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
   },
   footer: {
     flexDirection: 'row',

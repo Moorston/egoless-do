@@ -1,4 +1,4 @@
-import { FONT_SMALL } from '@egoless-do/core';
+import { FONT_SMALL , FONT_LABEL } from '@egoless-do/core';
 import type { TimelineItem , MindReflection, TrailNote, LinkType } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   emptyIcon: {
-    fontSize: 40,
+    fontSize: scaleFontSize(40)(),
     marginBottom: 12,
   },
   emptyTitle: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
     marginBottom: 8,
   },

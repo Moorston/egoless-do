@@ -1,4 +1,4 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE , FONT_STAT_SECTION } from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { 
@@ -72,7 +72,7 @@ export default function ReviewDetailScreen() {
             flex: 1, backgroundColor: TH.card, borderRadius: 14, padding: 16,
             alignItems: 'center', borderWidth: 1, borderColor: TH.border,
           }}>
-            <Text style={{ fontSize: 28, fontWeight: '700', color: TH.primary }}>
+            <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: TH.primary }}>
               {review.completionRate}%
             </Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>
@@ -86,7 +86,7 @@ export default function ReviewDetailScreen() {
             flex: 1, backgroundColor: TH.card, borderRadius: 14, padding: 16,
             alignItems: 'center', borderWidth: 1, borderColor: TH.border,
           }}>
-            <Text style={{ fontSize: 28, fontWeight: '700', color: TH.primary }}>
+            <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: TH.primary }}>
               {review.streakDays}
             </Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>
@@ -107,7 +107,7 @@ export default function ReviewDetailScreen() {
                 <TrendingDown size={16} color={COLORS.RED} />
               ) : null}
               <Text style={{ 
-                fontSize: 28, fontWeight: '700', 
+                fontSize: FONT_STAT_SECTION(), fontWeight: '700', 
                 color: review.comparison.completionRateDiff > 0 ? COLORS.GREEN : 
                        review.comparison.completionRateDiff < 0 ? COLORS.RED : TH.text 
               }}>
@@ -295,7 +295,7 @@ export default function ReviewDetailScreen() {
             borderWidth: 1, borderColor: TH.border, marginBottom: 16,
           }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <Text style={{ fontSize: 18 }}>💡</Text>
+              <Text style={{ fontSize: FONT_TITLE() }}>💡</Text>
               <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                 {T('reviewAIAnalysis')}
               </Text>

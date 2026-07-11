@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
+import { FONT_BACK, FONT_LABEL, FONT_SUB } from '@egoless-do/core';
 import { optOut, optIn, deleteGlobalData } from '../services/globalPulseApi';
 import { getUserHash } from '../services/userHash';
 
@@ -60,7 +61,7 @@ export const PrivacyControl: React.FC<PrivacyControlProps> = ({
   const savePref = async (show: boolean) => {
     try {
       await AsyncStorage.setItem(PREFERENCES_KEY, JSON.stringify({ show_on_global_map: show }));
-    } catch (e) { log.warn(e, { context: 'PrivacyControl savePref' }); }
+    } catch (e) { console.warn(e, 'PrivacyControl savePref'); }
   };
 
   // 处理开关切换
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
     margin: 16,
   },
   title: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
     fontWeight: '600',
     marginBottom: 20,
   },
@@ -200,12 +201,12 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   settingLabel: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '500',
     marginBottom: 4,
   },
   settingDescription: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     lineHeight: 18,
   },
   privacyInfo: {
@@ -218,11 +219,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   privacyIcon: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
   },
   privacyText: {
     flex: 1,
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     lineHeight: 20,
   },
   deleteButton: {
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: '#EF4444',
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
   },
 });

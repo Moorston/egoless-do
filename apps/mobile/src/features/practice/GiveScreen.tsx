@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD , FONT_SMALL, FONT_BACK} from '@egoless-do/core';
 import type { GiveType } from '@egoless-do/core';
 import { HandHeart, Plus, BarChart3, Check, X } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
@@ -271,12 +271,12 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 12 },
   statItem: { alignItems: 'center', gap: 2 },
   statValue: { fontSize: FONT_STAT_CARD(), fontWeight: '800' },
-  statLabel: { fontSize: 11 },
+  statLabel: { fontSize: FONT_SMALL() },
   typeRow: { flexDirection: 'row', justifyContent: 'space-around' },
   typeItem: { alignItems: 'center', gap: 4 },
-  typeIcon: { fontSize: 20 },
+  typeIcon: { fontSize: FONT_BACK() },
   typeCount: { fontSize: FONT_BODY(), fontWeight: '700' },
-  typeLabel: { fontSize: 11 },
+  typeLabel: { fontSize: FONT_SMALL() },
   recordBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     padding: 16, borderRadius: 14, marginBottom: 16,
@@ -286,11 +286,11 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: FONT_SUB(), fontWeight: '700', marginBottom: 10 },
   recentRow: { borderLeftWidth: 3, paddingLeft: 12, paddingVertical: 8, marginBottom: 8 },
   recentHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
-  recentDate: { fontSize: 12 },
-  recentIcon: { fontSize: 14 },
-  anonTag: { fontSize: 14 },
+  recentDate: { fontSize: FONT_SMALL() },
+  recentIcon: { fontSize: FONT_SUB() },
+  anonTag: { fontSize: FONT_SUB() },
   recentContent: { fontSize: FONT_BODY(), marginBottom: 2 },
-  recentMotivation: { fontSize: 12, fontStyle: 'italic' },
+  recentMotivation: { fontSize: FONT_SMALL(), fontStyle: 'italic' },
   historyBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     borderRadius: 14, borderWidth: 1, padding: 14,
@@ -312,14 +312,14 @@ const styles = StyleSheet.create({
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
     paddingVertical: 12, borderRadius: 14, borderWidth: 1,
   },
-  typeChipIcon: { fontSize: 18 },
+  typeChipIcon: { fontSize: FONT_TITLE() },
   anonRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 16 },
   checkbox: {
     width: 22, height: 22, borderRadius: 6, borderWidth: 2,
     alignItems: 'center', justifyContent: 'center',
   },
   anonLabel: { fontSize: FONT_BODY(), fontWeight: '600' },
-  anonHint: { fontSize: 12, marginTop: 4, marginLeft: 32, fontStyle: 'italic' },
+  anonHint: { fontSize: FONT_SMALL(), marginTop: 4, marginLeft: 32, fontStyle: 'italic' },
   saveBtn: {
     alignItems: 'center', justifyContent: 'center', padding: 16, borderRadius: 14, marginTop: 24,
   },

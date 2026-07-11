@@ -1,7 +1,7 @@
 // ─── SleepReportPage — Session report UI ─────────────────────────
 // Shows barrier stats, gratitude count, practice log, streak.
 
-import { formatSleepDuration } from '@egoless-do/core';
+import { formatSleepDuration , FONT_LABEL } from '@egoless-do/core';
 import { X, Clock, Moon, Star, Heart, Wind } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -130,7 +130,7 @@ export default function SleepReportPage(props: Props) {
           )}
           {sleepStreak > 0 && (
             <View style={styles.reportRow}>
-              <Text style={{ fontSize: 16 }}>🔥</Text>
+              <Text style={{ fontSize: FONT_LABEL() }}>🔥</Text>
               <Text style={[styles.reportLabel, { color: TH.sub }]}>连续天数</Text>
               <Text style={[styles.reportValue, { color: '#EF4444' }]}>{sleepStreak} 天</Text>
             </View>

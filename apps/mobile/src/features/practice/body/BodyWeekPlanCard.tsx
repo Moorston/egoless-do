@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, dateStr, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme, type ExerciseEntry } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, dateStr, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme, type ExerciseEntry , FONT_LABEL } from '@egoless-do/core';
 import { Calendar, Check, Circle } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -161,16 +161,16 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
                     {day.matched ? (
                       <Check size={20} color="#fff" />
                     ) : day.resolved?.isRest ? (
-                      <Text style={{ fontSize: 16 }}>😴</Text>
+                      <Text style={{ fontSize: FONT_LABEL() }}>😴</Text>
                     ) : day.hasPlan && !day.isPast ? (
                       // Future planned day
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ fontSize: 16, opacity: 0.7 }}>{day.resolved?.icon}</Text>
+                        <Text style={{ fontSize: FONT_LABEL(), opacity: 0.7 }}>{day.resolved?.icon}</Text>
                       </View>
                     ) : day.hasPlan && day.isPast ? (
                       // Past planned but missed
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ fontSize: 14, opacity: 0.5 }}>✗</Text>
+                        <Text style={{ fontSize: FONT_SUB(), opacity: 0.5 }}>✗</Text>
                       </View>
                     ) : (
                       // No plan
@@ -180,7 +180,7 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
 
                   {/* Icon row */}
                   {day.hasPlan && !day.resolved?.isRest && (
-                    <Text style={{ fontSize: 12, marginBottom: 2, opacity: day.isPast && !day.matched ? 0.5 : 1 }}>
+                    <Text style={{ fontSize: FONT_SMALL(), marginBottom: 2, opacity: day.isPast && !day.matched ? 0.5 : 1 }}>
                       {day.resolved?.icon}
                     </Text>
                   )}
@@ -210,7 +210,7 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyDayCompleted')}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ fontSize: 12 }}>😴</Text>
+              <Text style={{ fontSize: FONT_SMALL() }}>😴</Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyDayRest')}</Text>
             </View>
           </View>

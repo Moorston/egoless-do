@@ -1,4 +1,4 @@
-import type { PlanItemPriority, UnifiedPlanItemForm, CheckinFrequency } from '@egoless-do/core';
+import type {PlanItemPriority, UnifiedPlanItemForm, CheckinFrequency, FONT_BODY, FONT_SMALL} from '@egoless-do/core';
 import { FONT_SMALL, FONT_BODY, dateStr , FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 import React, { useState, useCallback, useEffect } from 'react';
 import {

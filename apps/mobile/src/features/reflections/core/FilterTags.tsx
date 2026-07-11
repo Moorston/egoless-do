@@ -1,4 +1,4 @@
-import { FONT_TINY } from '@egoless-do/core';
+import { FONT_TINY , FONT_SUB } from '@egoless-do/core';
 import type { SmartQueryFilters } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React from 'react';
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   addText: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     marginTop: -1,
   },

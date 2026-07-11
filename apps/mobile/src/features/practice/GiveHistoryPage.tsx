@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr , FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
@@ -94,14 +94,14 @@ export default function GiveHistoryPage() {
     return (
       <View style={{ borderLeftWidth: 3, borderLeftColor: config.color, paddingLeft: 12, paddingVertical: 8, marginBottom: 8 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-          <Text style={{ fontSize: 12, color: TH.sub }}>{d.getMonth() + 1}/{d.getDate()}</Text>
-          <Text style={{ fontSize: 14 }}>{config.icon}</Text>
-          {item.anonymous && <Text style={{ fontSize: 14 }}>🤐</Text>}
-          {item.amount && <Text style={{ fontSize: 12, color: '#F59E0B' }}>¥{item.amount}</Text>}
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d.getMonth() + 1}/{d.getDate()}</Text>
+          <Text style={{ fontSize: FONT_SUB() }}>{config.icon}</Text>
+          {item.anonymous && <Text style={{ fontSize: FONT_SUB() }}>🤐</Text>}
+          {item.amount && <Text style={{ fontSize: FONT_SMALL(), color: '#F59E0B' }}>¥{item.amount}</Text>}
         </View>
         <Text style={{ fontSize: FONT_BODY(), color: TH.text }} numberOfLines={2}>{item.content}</Text>
         {item.motivation && (
-          <Text style={{ fontSize: 12, color: TH.sub, fontStyle: 'italic', marginTop: 2 }}>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, fontStyle: 'italic', marginTop: 2 }}>
             心念：{item.motivation}
           </Text>
         )}
@@ -121,7 +121,7 @@ export default function GiveHistoryPage() {
           ].map((s, i) => (
             <View key={i} style={{ alignItems: 'center', gap: 2 }}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{s.value}</Text>
-              <Text style={{ fontSize: 11, color: TH.sub }}>{s.label}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{s.label}</Text>
             </View>
           ))}
         </View>
@@ -143,7 +143,7 @@ export default function GiveHistoryPage() {
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           {['一', '二', '三', '四', '五', '六', '日'].map(d => (
             <View key={d} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 4 }}>
-              <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d}</Text>
             </View>
           ))}
           {heatmapDays.map((day, i) => (
@@ -153,7 +153,7 @@ export default function GiveHistoryPage() {
                   width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center',
                   backgroundColor: day.hasRecord ? '#F59E0B' : day.isToday ? `${TH.primary}30` : 'transparent',
                 }}>
-                  <Text style={{ fontSize: 12, color: day.hasRecord ? '#fff' : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: day.hasRecord ? '#fff' : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
                     {parseInt(day.date.split('-')[2])}
                   </Text>
                 </View>
@@ -171,7 +171,7 @@ export default function GiveHistoryPage() {
           const percent = stats.typePercent[type as keyof typeof stats.typePercent] || 0;
           return (
             <View key={type} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-              <Text style={{ fontSize: 16, marginRight: 8 }}>{config.icon}</Text>
+              <Text style={{ fontSize: FONT_LABEL(), marginRight: 8 }}>{config.icon}</Text>
               <Text style={{ width: 60, fontSize: FONT_BODY(), color: TH.text }}>{T(config.labelKey) || type}</Text>
               <View style={{ flex: 1, height: 8, backgroundColor: `${config.color}20`, borderRadius: 4, overflow: 'hidden' }}>
                 <View style={{ width: `${percent}%`, height: '100%', backgroundColor: config.color, borderRadius: 4 }} />

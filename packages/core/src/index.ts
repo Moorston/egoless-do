@@ -12,7 +12,13 @@ export * from './push';
 export * from './dailyReset';
 export * from './business';
 export * from './sync';
-export * from './typography';
+export {
+  configureFontScale, scaleFontSize,
+  FONT_TITLE, FONT_BODY, FONT_BUTTON, FONT_EMPTY, FONT_LABEL,
+  FONT_CARD_TITLE, FONT_SUB, FONT_BADGE, FONT_ERROR, FONT_BACK,
+  FONT_CLOSE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_HERO,
+  FONT_CHART_AXIS, FONT_CHART_TOOLTIP, FONT_SMALL, FONT_TINY,
+} from './typography';
 export * from './ai';
 export * from './data';
 export * from './logger';

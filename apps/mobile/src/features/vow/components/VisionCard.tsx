@@ -1,5 +1,5 @@
-import type { Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme } from '@egoless-do/core';
-import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
+import type {Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme, FONT_BADGE, FONT_SUB, FONT_BODY, FONT_SMALL} from '@egoless-do/core';
+import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr , FONT_SMALL } from '@egoless-do/core';
 import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -110,14 +110,14 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                     paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
                   }}
                 >
-                  <Text style={{ fontSize: 11, color: TH.sub }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
                     {timeFrameLabel ?? T('vowTimeRange')}
                   </Text>
                   <ChevronDown size={10} color={TH.sub} />
                 </TouchableOpacity>
               ) : timeFrameLabel ? (
                 <Text style={{
-                  fontSize: 11, color: TH.sub,
+                  fontSize: FONT_SMALL(), color: TH.sub,
                   backgroundColor: `${TH.border}60`,
                   paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
                 }}>
@@ -181,14 +181,14 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
         <View style={styles.planTaskRow}>
           {planTotal > 0 && (
             <View style={styles.progressItem}>
-              <Text style={{ fontSize: 13 }}>📋</Text>
+              <Text style={{ fontSize: FONT_SUB() }}>📋</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowPlanProgress')}</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.text, fontWeight: '600' }}>{planDone}/{planTotal}</Text>
             </View>
           )}
           {taskTotal > 0 && (
             <View style={styles.progressItem}>
-              <Text style={{ fontSize: 13 }}>✅</Text>
+              <Text style={{ fontSize: FONT_SUB() }}>✅</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowTaskProgress')}</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.text, fontWeight: '600' }}>{taskDone}/{taskTotal}</Text>
             </View>
@@ -278,7 +278,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                           <View style={styles.planItemRow}>
                             <Text style={styles.statusIcon}>{st.icon}</Text>
                             <Text style={{ fontSize: FONT_SUB(), color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
-                            <Text style={{ fontSize: 10, color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status]) ?? ''}</Text>
+                            <Text style={{ fontSize: FONT_SMALL(), color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status]) ?? ''}</Text>
                           </View>
                           {item.status !== 'not_started' && item.status !== 'cancelled' && (
                             <View style={{ marginLeft: 22, height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2, overflow: 'hidden' }}>
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   statusIcon: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
   },
   progressBarFill: {
     height: 4,

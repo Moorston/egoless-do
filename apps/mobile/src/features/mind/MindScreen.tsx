@@ -1,12 +1,12 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, {useState, useMemo, useCallback, FONT_BACK, FONT_TINY} from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore, type MobileStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr , FONT_SMALL } from '@egoless-do/core';
 import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType, CourageEntry, FearAchievement } from '@egoless-do/core';
-import { FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS } from '@egoless-do/core';
+import { FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS , scaleFontSize } from '@egoless-do/core';
 import { useTabNavigation } from '../../navigation/hooks';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { Shield, Zap, Lightbulb, Plus, ChevronRight, X, Check } from 'lucide-react-native';
@@ -143,16 +143,16 @@ export default function MindScreen() {
         <Text style={{ color: TH.text, fontSize: FONT_BODY(), fontWeight: '600', flex: 1 }} numberOfLines={1}>{f.content}</Text>
         {f.fearIndex !== undefined && (
           <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8, backgroundColor: f.fearIndex < 15 ? '#10B98120' : f.fearIndex < 35 ? '#F59E0B20' : '#EF444420' }}>
-            <Text style={{ fontSize: 11, fontWeight: '700', color: f.fearIndex < 15 ? '#10B981' : f.fearIndex < 35 ? '#F59E0B' : '#EF4444' }}>{T('mindFearIndex')} {f.fearIndex}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), fontWeight: '700', color: f.fearIndex < 15 ? '#10B981' : f.fearIndex < 35 ? '#F59E0B' : '#EF4444' }}>{T('mindFearIndex')} {f.fearIndex}</Text>
           </View>
         )}
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
-        <Text style={{ fontSize: 10, color: TH.sub }}>{f.trigger}</Text>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{f.trigger}</Text>
         <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, backgroundColor: `${clsColor}15` }}>
-          <Text style={{ fontSize: 10, color: clsColor }}>{T(clsLabel)}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: clsColor }}>{T(clsLabel)}</Text>
         </View>
-        <Text style={{ fontSize: 10, color: TH.sub }}>{f.occurrenceCount}次</Text>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{f.occurrenceCount}次</Text>
       </View>
     </TouchableOpacity>
     );
@@ -173,7 +173,7 @@ export default function MindScreen() {
           ].map((s, i) => (
             <View key={i} style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: TH.border }}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: s.color }}>{s.value}</Text>
-              <Text style={{ fontSize: 10, color: TH.sub, marginTop: 2 }}>{s.label}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{s.label}</Text>
             </View>
           ))}
         </View>
@@ -198,7 +198,7 @@ export default function MindScreen() {
                   backgroundColor: `rgba(239,68,68,${0.3 + intensity * 0.7})`,
                   alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <Text style={{ fontSize: 9, color: '#fff', fontWeight: '700' }}>{count as number}</Text>
+                  <Text style={{ fontSize: FONT_TINY(), color: '#fff', fontWeight: '700' }}>{count as number}</Text>
                 </View>
               );
             })}
@@ -237,10 +237,10 @@ export default function MindScreen() {
     <View style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
       <Text style={{ color: TH.text, fontSize: FONT_BODY() }}>{c.action}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
-        <Text style={{ fontSize: 10, color: TH.sub }}>{c.date}</Text>
-        <Text style={{ fontSize: 10, color: '#EF4444' }}>恐惧值 {c.fearBefore}</Text>
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{c.date}</Text>
+        <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>恐惧值 {c.fearBefore}</Text>
         {c.feelingTags.map((tag: FeelingTag) => (
-          <Text key={tag} style={{ fontSize: 10, color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{T(FEELING_LABELS[tag] ?? tag)}</Text>
+          <Text key={tag} style={{ fontSize: FONT_SMALL(), color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{T(FEELING_LABELS[tag] ?? tag)}</Text>
         ))}
       </View>
     </View>
@@ -249,10 +249,10 @@ export default function MindScreen() {
   const renderInsightItem = useCallback(({ item: insight, index: i }: { item: { titleKey: string; metric?: string; description: string }; index: number }) => (
     <View style={{ paddingVertical: 10, borderBottomWidth: i < insights.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-        <Text style={{ fontSize: 14 }}>💡</Text>
+        <Text style={{ fontSize: FONT_SUB() }}>💡</Text>
         <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>{T(insight.titleKey)}</Text>
         {insight.metric && (
-          <Text style={{ fontSize: 10, color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{insight.metric}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#10B981', backgroundColor: '#10B98115', paddingHorizontal: 4, paddingVertical: 1, borderRadius: 3 }}>{insight.metric}</Text>
         )}
       </View>
       <Text style={{ fontSize: FONT_SUB(), color: TH.sub, lineHeight: 18, marginLeft: 20 }}>{insight.description}</Text>
@@ -271,7 +271,7 @@ export default function MindScreen() {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_BODY(), color: TH.text }}>{T('mindCourageLog')}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ fontSize: 14 }}>🔥</Text>
+              <Text style={{ fontSize: FONT_SUB() }}>🔥</Text>
               <Text style={{ fontSize: FONT_BODY(), fontWeight: '800', color: '#F59E0B' }}>{streak}</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('mindCourageStreak')}</Text>
             </View>
@@ -297,7 +297,7 @@ export default function MindScreen() {
                 );
               })}
             </View>
-            <Text style={{ fontSize: 10, color: TH.sub, textAlign: 'center', marginTop: 4 }}>恐惧值趋势 (低=好)</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 4 }}>恐惧值趋势 (低=好)</Text>
           </View>
         )}
 
@@ -326,10 +326,10 @@ export default function MindScreen() {
                   borderRadius: 12, padding: 12, borderWidth: 1,
                   borderColor: unlocked ? TH.primary : TH.border, opacity: unlocked ? 1 : 0.5,
                 }}>
-                  <Text style={{ fontSize: 20, marginBottom: 4 }}>{def.icon}</Text>
+                  <Text style={{ fontSize: FONT_BACK(), marginBottom: 4 }}>{def.icon}</Text>
                   <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: unlocked ? TH.text : TH.sub }}>{T(def.labelKey)}</Text>
-                  <Text style={{ fontSize: 10, color: TH.sub, marginTop: 2 }}>{T(def.descKey)}</Text>
-                  {unlocked && <Text style={{ fontSize: 10, color: '#10B981', marginTop: 4 }}>✓ 已解锁</Text>}
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{T(def.descKey)}</Text>
+                  {unlocked && <Text style={{ fontSize: FONT_SMALL(), color: '#10B981', marginTop: 4 }}>✓ 已解锁</Text>}
                 </View>
               );
             })}
@@ -362,7 +362,7 @@ export default function MindScreen() {
               {peakHours.map((h) => (
                 <View key={h.hour} style={{ flex: 1, alignItems: 'center', backgroundColor: `${TH.primary}10`, borderRadius: 8, padding: 8 }}>
                   <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.primary }}>{h.hour}:00</Text>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{h.count}次</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{h.count}次</Text>
                 </View>
               ))}
             </View>
@@ -523,7 +523,7 @@ export default function MindScreen() {
               <View style={{ flexDirection: 'row', gap: 4, marginBottom: 16 }}>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
                   <TouchableOpacity key={n} onPress={() => setForgeProbability(n)} hitSlop={{ top: 6, bottom: 6 }} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= forgeProbability ? '#EF4444' : TH.card, borderWidth: n <= forgeProbability ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontSize: 10, color: n <= forgeProbability ? '#fff' : TH.sub }}>{n}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: n <= forgeProbability ? '#fff' : TH.sub }}>{n}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -531,14 +531,14 @@ export default function MindScreen() {
               <View style={{ flexDirection: 'row', gap: 4, marginBottom: 16 }}>
                 {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
                   <TouchableOpacity key={n} onPress={() => setForgeCoping(n)} hitSlop={{ top: 6, bottom: 6 }} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= forgeCoping ? '#10B981' : TH.card, borderWidth: n <= forgeCoping ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text style={{ fontSize: 10, color: n <= forgeCoping ? '#fff' : TH.sub }}>{n}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: n <= forgeCoping ? '#fff' : TH.sub }}>{n}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
               {/* 恐惧实质指数 */}
               <View style={{ backgroundColor: '#8B5CF615', borderRadius: 12, padding: 16, alignItems: 'center', marginBottom: 16, borderWidth: 1, borderColor: '#8B5CF630' }}>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('mindFearIndex')}</Text>
-                <Text style={{ fontSize: 32, fontWeight: '900', color: '#8B5CF6' }}>{forgeProbability * (10 - forgeCoping)}</Text>
+                <Text style={{ fontSize: scaleFontSize(32)(), fontWeight: '900', color: '#8B5CF6' }}>{forgeProbability * (10 - forgeCoping)}</Text>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>概率{forgeProbability} × (10-应对力{forgeCoping})</Text>
               </View>
               <TouchableOpacity onPress={handleSaveForge}
@@ -565,7 +565,7 @@ export default function MindScreen() {
             <View style={{ flexDirection: 'row', gap: 4, marginBottom: 16 }}>
               {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
                 <TouchableOpacity key={n} onPress={() => setCourageFearBefore(n)} hitSlop={{ top: 6, bottom: 6 }} style={{ flex: 1, height: 32, borderRadius: 6, backgroundColor: n <= courageFearBefore ? '#EF4444' : TH.card, borderWidth: n <= courageFearBefore ? 0 : 1, borderColor: TH.border, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ fontSize: 10, color: n <= courageFearBefore ? '#fff' : TH.sub }}>{n}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: n <= courageFearBefore ? '#fff' : TH.sub }}>{n}</Text>
                 </TouchableOpacity>
               ))}
             </View>

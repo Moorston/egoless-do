@@ -12,7 +12,7 @@
  * Styles are grouped by section with inline comments for quick navigation.
  */
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION , FONT_SMALL } from '@egoless-do/core';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -65,11 +65,11 @@ export const styles = StyleSheet.create({
   },
   phaseBarText: {
     color: '#fff',
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     fontWeight: '700',
   },
   phaseLabel: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
   },
 
   // Distress
@@ -95,7 +95,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   distressBtnText: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   startBtn: {

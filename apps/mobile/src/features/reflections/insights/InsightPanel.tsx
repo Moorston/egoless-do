@@ -1,7 +1,6 @@
 import {
   FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON, MS_PER_DAY, activeOnly,
-  computeLocalInsights, formatDateShort,
-} from '@egoless-do/core';
+  computeLocalInsights, formatDateShort, scaleFontSize } from '@egoless-do/core';
 import type { HotTag, MindReflection } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -45,7 +44,7 @@ export default function InsightPanel({
   if (filtered.length < 3) {
     return (
       <View style={{ alignItems: 'center', paddingVertical: 32 }}>
-        <Text style={{ fontSize: 32, marginBottom: 8 }}>📝</Text>
+        <Text style={{ fontSize: scaleFontSize(32)(), marginBottom: 8 }}>📝</Text>
         <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
           {T('insightProfileEmpty')}
         </Text>

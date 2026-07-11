@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly } from '@egoless-do/core';
+import {FONT_BODY, FONT_SMALL, FONT_TINY, MOOD_DISPLAY, HABIT_LINK_COLORS, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -142,7 +142,7 @@ export default function HabitDetailScreen() {
               onPress={() => setShowAlarmPicker(true)}
               style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 10, backgroundColor: `${P}10` }}
             >
-              <Text style={{ fontSize: 24, fontWeight: '700', color: P }}>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: P }}>
                 {String(habit.alarmHour).padStart(2, '0')}:{String(habit.alarmMinute).padStart(2, '0')}
               </Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('habitTapToModify')}</Text>
@@ -254,7 +254,7 @@ export default function HabitDetailScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 12 },
   backButton: { width: 40, height: 40, justifyContent: 'center', alignItems: 'center' },
-  headerTitle: { fontSize: 18, fontWeight: '700', flex: 1, textAlign: 'center' },
+  headerTitle: { fontSize: FONT_TITLE(), fontWeight: '700', flex: 1, textAlign: 'center' },
   errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   errorText: { fontSize: FONT_BODY() },
   statusBadge: { alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   statsContainer: { padding: 16, borderRadius: 12, borderWidth: 1, marginBottom: 12 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 16 },
   statItem: { alignItems: 'center' },
-  statNumber: { fontSize: 24, fontWeight: '700' },
+  statNumber: { fontSize: FONT_STAT_CARD(), fontWeight: '700' },
   statLabel: { fontSize: FONT_SMALL(), marginTop: 4 },
   progressContainer: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   progressText: { fontSize: FONT_SMALL(), fontWeight: '600', minWidth: 40, textAlign: 'right' },

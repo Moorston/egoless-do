@@ -1,4 +1,4 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_EMPTY, FONT_BACK, parseCheckinNote , FONT_SMALL } from '@egoless-do/core';
 import { usePagination } from '../../../hooks/usePagination';
 import { Shield } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
   // --- Tags ---
   tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 },
   tagItem: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6 },
-  tagIcon: { fontSize: 10 },
-  tagText: { fontSize: 10 },
+  tagIcon: { fontSize: FONT_SMALL() },
+  tagText: { fontSize: FONT_SMALL() },
 
   // --- Streak row ---
   streakRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6 },

@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, type Theme } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, type Theme , scaleFontSize } from '@egoless-do/core';
 import { Check } from 'lucide-react-native';
 import React from 'react';
 import { View, Text } from 'react-native';
@@ -79,7 +79,7 @@ export default function ProgressTab({ TH, T, progress }: Props) {
           borderColor: TH.border,
           alignItems: 'center',
         }}>
-          <Text style={{ fontSize: 32, marginBottom: 8 }}>🧘</Text>
+          <Text style={{ fontSize: scaleFontSize(32)(), marginBottom: 8 }}>🧘</Text>
           <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
             {T('vowProgressToday')} - {T('noHistory')}
           </Text>

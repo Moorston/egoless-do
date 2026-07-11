@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_BODY } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY , FONT_TITLE } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   buttonIcon: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
   },
   buttonText: {
     fontSize: FONT_SMALL(),

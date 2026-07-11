@@ -1,4 +1,4 @@
-import type { TrailOverview } from '@egoless-do/core';
+import type {TrailOverview, FONT_SMALL} from '@egoless-do/core';
 import { FONT_SMALL , getMoodIcon } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';

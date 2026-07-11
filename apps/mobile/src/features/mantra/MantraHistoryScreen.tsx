@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL , scaleFontSize, FONT_STAT_CARD} from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
@@ -176,15 +176,15 @@ export default function MantraHistoryScreen() {
             <View style={styles.sessionStatsContainer}>
               <View>
                 <Text style={styles.countNumber}>{s.count.toLocaleString()}</Text>
-                <Text style={{ fontSize: 10, color: TH.sub }}>次数</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>次数</Text>
               </View>
               <View>
                 <Text style={styles.roundsNumber}>{s.rounds}</Text>
-                <Text style={{ fontSize: 10, color: TH.sub }}>遍</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>遍</Text>
               </View>
               <View>
                 <Text style={styles.targetNumber}>{s.targetRounds}</Text>
-                <Text style={{ fontSize: 10, color: TH.sub }}>目标</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>目标</Text>
               </View>
             </View>
           </View>
@@ -231,13 +231,13 @@ export default function MantraHistoryScreen() {
       <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}20`, padding: 16, marginBottom: 16 }}>
         <View style={styles.heatmapHeaderRow}>
           <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)} style={styles.monthNavButton}>
-            <Text style={{ fontSize: 18, color: TH.sub }}>‹</Text>
+            <Text style={{ fontSize: FONT_TITLE(), color: TH.sub }}>‹</Text>
           </TouchableOpacity>
           <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
             {monthYear}年{monthIdx + 1}月
           </Text>
           <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))} style={styles.monthNavButton}>
-            <Text style={{ fontSize: 18, color: TH.sub }}>›</Text>
+            <Text style={{ fontSize: FONT_TITLE(), color: TH.sub }}>›</Text>
           </TouchableOpacity>
         </View>
 
@@ -245,7 +245,7 @@ export default function MantraHistoryScreen() {
         <View style={styles.weekdayRow}>
           {weekdayLabels.map(d => (
             <View key={d} style={styles.weekdayCell}>
-              <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d}</Text>
             </View>
           ))}
         </View>
@@ -265,7 +265,7 @@ export default function MantraHistoryScreen() {
                   alignItems: 'center', justifyContent: 'center',
                   opacity: day.isFuture ? 0.3 : 1,
                 }}>
-                  <Text style={{ fontSize: 12, color: day.isFuture ? `${TH.sub}60` : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: day.isFuture ? `${TH.sub}60` : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
                     {parseInt(day.date.split('-')[2])}
                   </Text>
                 </View>
@@ -289,7 +289,7 @@ export default function MantraHistoryScreen() {
       {/* 顶部 */}
       <View style={styles.topBarRow}>
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
-          <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+          <Text style={{ fontSize: FONT_STAT_CARD(), color: TH.text }}>←</Text>
         </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>
@@ -349,17 +349,17 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   countNumber: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '800',
     color: '#FBBF24',
   },
   roundsNumber: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '800',
     color: '#10B981',
   },
   targetNumber: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '800',
     color: '#F59E0B',
   },
@@ -371,22 +371,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalCountNumber: {
-    fontSize: 22,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
     color: '#FBBF24',
   },
   totalTimeNumber: {
-    fontSize: 22,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
     color: '#10B981',
   },
   streakNumber: {
-    fontSize: 22,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
     color: '#F59E0B',
   },
   averageNumber: {
-    fontSize: 22,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '800',
     color: '#6366F1',
   },
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     padding: 40,
   },
   emptyStateEmoji: {
-    fontSize: 40,
+    fontSize: scaleFontSize(40)(),
     marginBottom: 8,
   },
   topBarRow: {

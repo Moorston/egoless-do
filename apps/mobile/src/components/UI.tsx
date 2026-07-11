@@ -1,5 +1,5 @@
 // ─── Shared UI primitives ─────────────────────────────────────────
-import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO } from '@egoless-do/core';
+import { THEMES, COLORS, t, FONT_BUTTON, FONT_BACK, FONT_LABEL, FONT_SUB, FONT_STAT_CARD, FONT_BODY, FONT_HERO , FONT_SMALL } from '@egoless-do/core';
 import type { I18nKey } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, Check } from 'lucide-react-native';
@@ -285,7 +285,7 @@ export const TagPill = React.memo(function TagPill({
         <Text style={{ color: active ? activeText : TH.sub, fontSize: FONT_BODY(), ...textStyle }}>{label}</Text>
         {count !== undefined && count > 0 && (
           <View style={{ backgroundColor: active ? 'rgba(255,255,255,.3)' : `${c}20`, paddingHorizontal:5, paddingVertical:1, borderRadius:8 }}>
-            <Text style={{ color: active ? activeText : c, fontSize:10, fontWeight:'600' }}>{count}</Text>
+            <Text style={{ color: active ? activeText : c, fontSize: FONT_SMALL(), fontWeight:'600' }}>{count}</Text>
           </View>
         )}
       </View>

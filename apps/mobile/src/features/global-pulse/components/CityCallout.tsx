@@ -2,7 +2,7 @@
  * 带城市信息的 Callout 内容组件
  */
 
-import { GlobalCheckin } from '@egoless-do/core';
+import {GlobalCheckin , FONT_BODY, FONT_SUB} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   name: {
-    fontSize: 15,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     marginBottom: 6,
   },
@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   city: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     marginBottom: 6,
   },
   info: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     lineHeight: 18,
   },
 });

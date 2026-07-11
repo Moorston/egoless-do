@@ -1,7 +1,7 @@
 // ─── SleepEngine — Sleep ritual page state machine ───────────────
 // Routes between home/barrier/gratitude/report pages using hooks.
 
-import { dateStr , getCurrentPeriod, getNextSleepPeriod, formatSleepDuration, BODY_CLOCK } from '@egoless-do/core';
+import { dateStr , getCurrentPeriod, getNextSleepPeriod, formatSleepDuration, BODY_CLOCK , FONT_TITLE } from '@egoless-do/core';
 import { Moon, Sun, Clock, Heart, ChevronRight, BarChart3 } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
@@ -313,7 +313,7 @@ export default function SleepEngine() {
             <View style={styles.barrierCenter}>
               <Moon size={60} color="#8B5CF6" />
               <Text style={[styles.barrierTime, { marginTop: 24 }]}>现在是 {sleepGoal.targetBedtime}</Text>
-              <Text style={[styles.barrierLabel, { fontSize: 18, marginTop: 8 }]}>该入睡了 🌙</Text>
+              <Text style={[styles.barrierLabel, { fontSize: FONT_TITLE(), marginTop: 8 }]}>该入睡了 🌙</Text>
               <Text style={[styles.barrierAwayText, { color: 'rgba(255,255,255,0.7)', marginTop: 8 }]}>
                 1 分钟无操作将自动记录入睡
               </Text>

@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_TINY, FONT_BODY } from '@egoless-do/core';
+import { FONT_SMALL, FONT_TINY, FONT_BODY , FONT_SUB } from '@egoless-do/core';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, Animated, StyleSheet, Easing } from 'react-native';
 
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   messageIcon: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     marginTop: 2,
   },
   messageContent: {

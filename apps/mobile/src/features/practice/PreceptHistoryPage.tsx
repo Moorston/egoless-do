@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak , isPreceptHabit, getPreceptDisplayName, getPreceptType, PRECEPT_PREFIX_AVOID } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, computeStreak , isPreceptHabit, getPreceptDisplayName, getPreceptType, PRECEPT_PREFIX_AVOID , FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
 import type { Habit } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight, Shield, X, Trash2 } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
@@ -105,7 +105,7 @@ export default function PreceptHistoryPage() {
             ].map((s, i) => (
               <View key={i} style={{ alignItems: 'center', gap: 2 }}>
                 <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: i === 3 ? '#EF4444' : TH.text }}>{s.value}</Text>
-                <Text style={{ fontSize: 11, color: TH.sub }}>{s.label}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{s.label}</Text>
               </View>
             ))}
           </View>
@@ -127,7 +127,7 @@ export default function PreceptHistoryPage() {
           <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
             {['一', '二', '三', '四', '五', '六', '日'].map(d => (
               <View key={d} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 4 }}>
-                <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d}</Text>
               </View>
             ))}
             {heatmapDays.map((day, i) => (
@@ -137,7 +137,7 @@ export default function PreceptHistoryPage() {
                     width: 28, height: 28, borderRadius: 14, alignItems: 'center', justifyContent: 'center',
                     backgroundColor: day.hasRecord ? '#F59E0B' : day.isToday ? `${TH.primary}30` : 'transparent',
                   }}>
-                    <Text style={{ fontSize: 12, color: day.hasRecord ? '#fff' : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
+                    <Text style={{ fontSize: FONT_SMALL(), color: day.hasRecord ? '#fff' : TH.text, fontWeight: day.isToday ? '700' : '400' }}>
                       {parseInt(day.date.split('-')[2])}
                     </Text>
                   </View>
@@ -159,11 +159,11 @@ export default function PreceptHistoryPage() {
               const violations = violationReflections.filter(r => r.content.startsWith(name));
               return (
                 <View key={h.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: `${TH.border}20` }}>
-                  <Text style={{ fontSize: 16, marginRight: 8 }}>{isAvoid ? '🚫' : '✨'}</Text>
+                  <Text style={{ fontSize: FONT_LABEL(), marginRight: 8 }}>{isAvoid ? '🚫' : '✨'}</Text>
                   <Text style={{ flex: 1, fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{name}</Text>
-                  <Text style={{ fontSize: 12, color: TH.sub, marginRight: 8 }}>{h.doneDays}天 🔥{h.streak}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginRight: 8 }}>{h.doneDays}天 🔥{h.streak}</Text>
                   {violations.length > 0 && (
-                    <Text style={{ fontSize: 12, color: '#EF4444' }}>违{violations.length}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>违{violations.length}</Text>
                   )}
                 </View>
               );
@@ -182,8 +182,8 @@ export default function PreceptHistoryPage() {
               return (
                 <View key={r.id} style={{ borderLeftWidth: 3, borderLeftColor: '#F59E0B', paddingLeft: 12, paddingVertical: 8, marginBottom: 8 }}>
                   <View style={{ flexDirection: 'row', gap: 8, marginBottom: 2 }}>
-                    <Text style={{ fontSize: 12, color: TH.sub }}>{dateLabel}</Text>
-                    {triggerTag && <Text style={{ fontSize: 12, color: '#F59E0B' }}>#{triggerTag}</Text>}
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{dateLabel}</Text>
+                    {triggerTag && <Text style={{ fontSize: FONT_SMALL(), color: '#F59E0B' }}>#{triggerTag}</Text>}
                   </View>
                   <Text style={{ fontSize: FONT_BODY(), color: TH.text }} numberOfLines={2}>{r.content}</Text>
                 </View>

@@ -1,7 +1,5 @@
-import {
-  FONT_TITLE, FONT_BODY, FONT_SUB, ALL_SPORTS, EXERCISE_CATEGORIES,
-  type BodyPlan, type BodyCheckin, type Theme, type BodySlice,
-} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, ALL_SPORTS, EXERCISE_CATEGORIES,
+  type BodyPlan, type BodyCheckin, type Theme, type BodySlice, FONT_LABEL, FONT_STAT_SECTION} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
@@ -51,7 +49,7 @@ function StepIndicator({ current, TH }: { current: FlowStep; TH: Theme }) {
               backgroundColor: active ? step.color : done ? '#10b981' : TH.card,
               borderWidth: active || done ? 0 : 1, borderColor: TH.border,
             }}>
-              <Text style={{ fontSize: 14 }}>{done ? '✓' : STEP_ICONS[step.key]}</Text>
+              <Text style={{ fontSize: FONT_SUB() }}>{done ? '✓' : STEP_ICONS[step.key]}</Text>
             </View>
             {idx < STEPS.length - 1 && (
               <View style={{ width: 24, height: 2, backgroundColor: done ? '#10b981' : TH.border }} />
@@ -90,7 +88,7 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
                   paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12,
                   borderWidth: 1, borderColor: TH.border, backgroundColor: TH.card,
                 }}>
-                <Text style={{ fontSize: 16 }}>{item.icon}</Text>
+                <Text style={{ fontSize: FONT_LABEL() }}>{item.icon}</Text>
                 <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{item.label}</Text>
               </TouchableOpacity>
             ))}
@@ -193,7 +191,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
           ) : hasTodayPlan ? (
             <>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                <Text style={{ fontSize: 28 }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as { icon: string }).icon : '🏋️'}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION() }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as { icon: string }).icon : '🏋️'}</Text>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
                   {sportInfo && 'i18nKey' in sportInfo ? T((sportInfo as { i18nKey: string }).i18nKey) : todayPlan?.part ?? ''}
                 </Text>
@@ -281,7 +279,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
       <StepIndicator current="checkin" TH={TH} />
       <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
         <LinearGradient colors={['#8b5cf6', '#7c3aed']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
-          <Text style={{ fontSize: 40, marginBottom: 8 }}>🧠</Text>
+          <Text style={{ fontSize: scaleFontSize(40)(), marginBottom: 8 }}>🧠</Text>
           <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff', marginTop: 4 }}>{T('bodyFlowAwareness')}</Text>
           <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{T('bodyFlowAwarenessHint')}</Text>
         </LinearGradient>

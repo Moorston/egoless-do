@@ -3,7 +3,7 @@
  * 显示详细信息：类型、城市、连续天数、累计天数、开始日期
  */
 
-import { LeaderboardEntry } from '@egoless-do/core';
+import {LeaderboardEntry , FONT_SUB, FONT_TITLE, FONT_SMALL} from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   rank: {
     width: 32,
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: 'bold',
     textAlign: 'center',
     paddingTop: 4,
@@ -134,10 +134,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   typeIcon: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
   },
   name: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
   },
   typeBadge: {
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   typeBadgeText: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   cityLoader: {
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   city: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     marginBottom: 6,
   },
   detailRow: {
@@ -167,10 +167,10 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   detailLabel: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
   },
   detailValue: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
   },
 });

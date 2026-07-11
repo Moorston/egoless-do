@@ -1,4 +1,4 @@
-import { dateStr, WUXING_ELEMENT_CONFIG } from '@egoless-do/core';
+import {dateStr, WUXING_ELEMENT_CONFIG , FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
 import type { WuxingElement } from '@egoless-do/core';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
@@ -75,7 +75,7 @@ export default function WuxingCalendar({ dayElementMap, dayIntensityMap = {}, on
         <TouchableOpacity onPress={handlePrev} style={{ padding: 4 }}>
           <ChevronLeft size={20} color="#888" />
         </TouchableOpacity>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>
+        <Text style={{ fontSize: FONT_LABEL(), fontWeight: '700', color: '#fff' }}>
           {year}年{month + 1}月
         </Text>
         <TouchableOpacity onPress={handleNext} style={{ padding: 4 }}>
@@ -87,7 +87,7 @@ export default function WuxingCalendar({ dayElementMap, dayIntensityMap = {}, on
       <View style={{ flexDirection: 'row', marginBottom: 4 }}>
         {WEEKDAYS.map(d => (
           <View key={d} style={{ width: '14.28%', alignItems: 'center' }}>
-            <Text style={{ fontSize: 10, color: '#888' }}>{d}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: '#888' }}>{d}</Text>
           </View>
         ))}
       </View>
@@ -108,7 +108,7 @@ export default function WuxingCalendar({ dayElementMap, dayIntensityMap = {}, on
                 alignItems: 'center', justifyContent: 'center',
               }}>
                 <Text style={{
-                  fontSize: 12,
+                  fontSize: FONT_SMALL(),
                   color: day.element ? '#fff' : day.isFuture ? '#555' : '#aaa',
                   fontWeight: day.isToday ? '700' : '400',
                 }}>
@@ -127,7 +127,7 @@ export default function WuxingCalendar({ dayElementMap, dayIntensityMap = {}, on
         {(['wood', 'fire', 'earth', 'metal', 'water'] as WuxingElement[]).map(e => (
           <View key={e} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: ELEMENT_COLORS[e] }} />
-            <Text style={{ fontSize: 10, color: '#aaa' }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: '#aaa' }}>
               {WUXING_ELEMENT_CONFIG[e]?.label ?? e}
             </Text>
           </View>

@@ -1,4 +1,4 @@
-import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_TITLE, FONT_STAT_CARD, FONT_LABEL } from '@egoless-do/core';
+import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_TITLE, FONT_STAT_CARD, FONT_LABEL , FONT_STAT_SECTION } from '@egoless-do/core';
 import { Utensils, Pencil, X } from 'lucide-react-native';
 import React, { useState, useMemo, memo } from 'react';
 import {
@@ -158,7 +158,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
             </View>
             <View style={styles.totalRow}>
               <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('foodTotalCal')}</Text>
-              <Text style={{ fontSize: 26, fontWeight: '800', color: COLORS.ORANGE }}>
+              <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: COLORS.ORANGE }}>
                 {Math.round((portionFood?.calories ?? 0) * portion)} <Text style={{ fontSize: FONT_SUB(), fontWeight: '400', color: TH.sub }}>kcal</Text>
               </Text>
             </View>

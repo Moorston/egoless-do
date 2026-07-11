@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, FlatList, Alert, TextInput, KeyboardAvoidingView, Platform, AppState, StyleSheet } from 'react-native';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 import { useRootNavigation } from '../../navigation/hooks';
-import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, getFrequencySummary, MS_PER_DAY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress } from '@egoless-do/core';
+import { COLORS, getPlanItems, PRIORITY_OPTIONS, canDeletePlan, canEditPlan, statusToI18nKey, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_TINY, getFrequencySummary, MS_PER_DAY, createDateChangeDetector, countItemDoneDays, computeItemProgress, computePlanProgress , FONT_SMALL } from '@egoless-do/core';
 import type { PlanItem, PlanItemCheckin, PlanItemStatus } from '@egoless-do/core';
 import { useDailyTodo } from './useDailyTodo';
 import { Card, useTheme, useT } from '../../components/UI';
@@ -904,9 +904,9 @@ const styles = StyleSheet.create({
   checkboxTouchTarget: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   checkbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   autoCheckedBadge: { backgroundColor: `${COLORS.GREEN}20`, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4 },
-  autoCheckedBadgeText: { fontSize: 9, color: COLORS.GREEN, fontWeight: '600' },
+  autoCheckedBadgeText: { fontSize: FONT_TINY(), color: COLORS.GREEN, fontWeight: '600' },
   delayedBadge: { backgroundColor: `${COLORS.ORANGE}20`, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4 },
-  delayedBadgeText: { fontSize: 9, color: COLORS.ORANGE, fontWeight: '600' },
+  delayedBadgeText: { fontSize: FONT_TINY(), color: COLORS.ORANGE, fontWeight: '600' },
   todoContentCol: { flex: 1, minWidth: 0 },
   textFrequencyTiny: { fontSize: FONT_TINY(), marginTop: 1 },
 
@@ -948,7 +948,7 @@ const styles = StyleSheet.create({
   historyCheckbox: { width: 18, height: 18, borderRadius: 4, alignItems: 'center', justifyContent: 'center' },
   historyItemName: { fontSize: FONT_BODY(), flex: 1 },
   customTodoBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  customTodoBadgeText: { fontSize: 10, fontWeight: '500' },
+  customTodoBadgeText: { fontSize: FONT_SMALL(), fontWeight: '500' },
 
   // Action buttons
   actionsContainer: { gap: 8, marginTop: 24 },

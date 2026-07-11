@@ -67,21 +67,21 @@ export function scaleFontSize(size: number): number {
 // These are backward-compatible: `fontSize: FONT_TITLE` still works.
 // The getter returns a scaled number on each access.
 
-export function FONT_TITLE(): number { return Math.round(BASE.FONT_TITLE * _fontScale); }
-export function FONT_BODY(): number { return Math.round(BASE.FONT_BODY * _fontScale); }
-export function FONT_BUTTON(): number { return Math.round(BASE.FONT_BUTTON * _fontScale); }
-export function FONT_EMPTY(): number { return Math.round(BASE.FONT_EMPTY * _fontScale); }
-export function FONT_LABEL(): number { return Math.round(BASE.FONT_LABEL * _fontScale); }
-export function FONT_CARD_TITLE(): number { return Math.round(BASE.FONT_CARD_TITLE * _fontScale); }
-export function FONT_SUB(): number { return Math.round(BASE.FONT_SUB * _fontScale); }
-export function FONT_BADGE(): number { return Math.round(BASE.FONT_BADGE * _fontScale); }
-export function FONT_ERROR(): number { return Math.round(BASE.FONT_ERROR * _fontScale); }
-export function FONT_BACK(): number { return Math.round(BASE.FONT_BACK * _fontScale); }
-export function FONT_CLOSE(): number { return Math.round(BASE.FONT_CLOSE * _fontScale); }
-export function FONT_STAT_CARD(): number { return Math.round(BASE.FONT_STAT_CARD * _fontScale); }
-export function FONT_STAT_SECTION(): number { return Math.round(BASE.FONT_STAT_SECTION * _fontScale); }
-export function FONT_HERO(): number { return Math.round(BASE.FONT_HERO * _fontScale); }
-export function FONT_CHART_AXIS(): number { return Math.round(BASE.FONT_CHART_AXIS * _fontScale); }
-export function FONT_CHART_TOOLTIP(): number { return Math.round(BASE.FONT_CHART_TOOLTIP * _fontScale); }
-export function FONT_SMALL(): number { return Math.round(BASE.FONT_SMALL * _fontScale); }
-export function FONT_TINY(): number { return Math.round(BASE.FONT_TINY * _fontScale); }
+export const FONT_TITLE = () => Math.round(BASE.FONT_TITLE * _fontScale);
+export const FONT_BODY = () => Math.round(BASE.FONT_BODY * _fontScale);
+export const FONT_BUTTON = () => Math.round(BASE.FONT_BUTTON * _fontScale);
+export const FONT_EMPTY = () => Math.round(BASE.FONT_EMPTY * _fontScale);
+export const FONT_LABEL = () => Math.round(BASE.FONT_LABEL * _fontScale);
+export const FONT_CARD_TITLE = () => Math.round(BASE.FONT_CARD_TITLE * _fontScale);
+export const FONT_SUB = () => Math.round(BASE.FONT_SUB * _fontScale);
+export const FONT_BADGE = () => Math.round(BASE.FONT_BADGE * _fontScale);
+export const FONT_ERROR = () => Math.round(BASE.FONT_ERROR * _fontScale);
+export const FONT_BACK = () => Math.round(BASE.FONT_BACK * _fontScale);
+export const FONT_CLOSE = () => Math.round(BASE.FONT_CLOSE * _fontScale);
+export const FONT_STAT_CARD = () => Math.round(BASE.FONT_STAT_CARD * _fontScale);
+export const FONT_STAT_SECTION = () => Math.round(BASE.FONT_STAT_SECTION * _fontScale);
+export const FONT_HERO = () => Math.round(BASE.FONT_HERO * _fontScale);
+export const FONT_CHART_AXIS = () => Math.round(BASE.FONT_CHART_AXIS * _fontScale);
+export const FONT_CHART_TOOLTIP = () => Math.round(BASE.FONT_CHART_TOOLTIP * _fontScale);
+export const FONT_SMALL = () => Math.round(BASE.FONT_SMALL * _fontScale);
+export const FONT_TINY = () => Math.round(BASE.FONT_TINY * _fontScale);

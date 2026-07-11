@@ -1,7 +1,7 @@
 // ─── ZhiguanScreen 止观页主控 ──────────────────────────────────
 // 三层渐进式架构：idle → practicing → complete
 // 使用 store 的 draft → startSession → completeSession 生命周期
-import { BREATH_PATTERNS, DEFAULT_RADAR, EMPTY_EIGHT_TACTILE, notifyBreath, initialRoundState } from '@egoless-do/core';
+import {BREATH_PATTERNS, DEFAULT_RADAR, EMPTY_EIGHT_TACTILE, notifyBreath, initialRoundState , FONT_SUB, FONT_TITLE, FONT_STAT_SECTION, FONT_STAT_CARD, FONT_HERO} from '@egoless-do/core';
 import type { BreathPattern, ZhiguanMethod, FiveHindranceRadar, EightTactile, SamStage, CountingRoundState } from '@egoless-do/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
@@ -335,10 +335,10 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   idleContainer: { flex: 1, justifyContent: 'space-between', padding: 20 },
   header: { alignItems: 'center', marginTop: 20 },
-  title: { fontSize: 28, fontWeight: '700', color: '#4A3F35' },
-  subtitle: { fontSize: 14, color: '#8B7355', marginTop: 4 },
+  title: { fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: '#4A3F35' },
+  subtitle: { fontSize: FONT_SUB(), color: '#8B7355', marginTop: 4 },
   centerContent: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  targetHint: { fontSize: 13, color: '#8B7355', marginTop: 16 },
+  targetHint: { fontSize: FONT_SUB(), color: '#8B7355', marginTop: 16 },
   bottomActions: { alignItems: 'center', marginBottom: 20 },
   startButton: {
     backgroundColor: '#C9A96E',
@@ -346,15 +346,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 48,
     borderRadius: 30,
   },
-  startButtonText: { fontSize: 18, fontWeight: '600', color: '#1A1A1F' },
+  startButtonText: { fontSize: FONT_TITLE(), fontWeight: '600', color: '#1A1A1F' },
   secondaryActions: { flexDirection: 'row', marginTop: 20, gap: 24 },
   iconButton: { padding: 12 },
-  iconButtonText: { fontSize: 24 },
+  iconButtonText: { fontSize: FONT_STAT_CARD() },
   practiceContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  timer: { fontSize: 48, fontWeight: '300', color: '#C9A96E', marginBottom: 40 },
+  timer: { fontSize: FONT_HERO(), fontWeight: '300', color: '#C9A96E', marginBottom: 40 },
   ringContainer: { marginBottom: 20 },
   vipassanaToggle: { paddingVertical: 8, paddingHorizontal: 16, marginBottom: 20 },
-  vipassanaToggleText: { fontSize: 13, color: '#8B7355' },
+  vipassanaToggleText: { fontSize: FONT_SUB(), color: '#8B7355' },
   stopButton: {
     paddingVertical: 14,
     paddingHorizontal: 32,
@@ -362,5 +362,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(139, 115, 85, 0.3)',
   },
   stopButtonActive: { backgroundColor: 'rgba(220, 38, 38, 0.5)' },
-  stopButtonText: { fontSize: 14, color: '#F5EFE6' },
+  stopButtonText: { fontSize: FONT_SUB(), color: '#F5EFE6' },
 });

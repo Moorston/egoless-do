@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme , scaleFontSize, FONT_STAT_SECTION} from '@egoless-do/core';
 import { Play } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -34,7 +34,7 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
     return (
       <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
         <View style={{ backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, alignItems: 'center' }}>
-          <Text style={{ fontSize: 36, marginBottom: 8 }}>😴</Text>
+          <Text style={{ fontSize: scaleFontSize(36)(), marginBottom: 8 }}>😴</Text>
           <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 4 }}>{T('bodyTodayPlanRest')}</Text>
           <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{dayLabel}</Text>
         </View>
@@ -49,7 +49,7 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
         {/* Header stripe */}
         <View style={{ backgroundColor: '#f59e0b', paddingHorizontal: 16, paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Text style={{ fontSize: 14 }}>📋</Text>
+            <Text style={{ fontSize: FONT_SUB() }}>📋</Text>
             <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
           </View>
           <Text style={{ fontSize: FONT_BADGE(), color: 'rgba(255,255,255,.85)' }}>{dayLabel}</Text>
@@ -59,7 +59,7 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
         <View style={{ padding: 16 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 12 }}>
             <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: '#f59e0b20', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 26 }}>{display.icon}</Text>
+              <Text style={{ fontSize: FONT_STAT_SECTION() }}>{display.icon}</Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>{display.label}</Text>

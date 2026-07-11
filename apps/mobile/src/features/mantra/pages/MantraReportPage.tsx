@@ -1,7 +1,7 @@
 // ─── MantraReportPage — Session completion report + dedication modal ──
 // Shows stats, dedication button, and finish action.
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, DEDICATION_TEMPLATES } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, DEDICATION_TEMPLATES , scaleFontSize, FONT_STAT_CARD, FONT_HERO} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -66,14 +66,14 @@ const S = StyleSheet.create({
   safeArea: { flex: 1 },
   headerRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 },
   backButton: { marginRight: 12 },
-  backArrow: { fontSize: 24 },
+  backArrow: { fontSize: FONT_STAT_CARD() },
   headerTitle: { fontWeight: '800', flex: 1 },
   scrollContent: { paddingHorizontal: 16, paddingBottom: 40 },
   summaryCardOuter: { borderRadius: 20, overflow: 'hidden', marginBottom: 16 },
   summaryCardInner: { backgroundColor: '#FBBF24', padding: 24, alignItems: 'center' },
-  wheelIcon: { fontSize: 48 },
+  wheelIcon: { fontSize: FONT_HERO() },
   mantraName: { fontWeight: '800', color: '#fff', marginTop: 8 },
-  countText: { fontSize: 36, fontWeight: '800', color: '#fff', marginTop: 8 },
+  countText: { fontSize: scaleFontSize(36)(), fontWeight: '800', color: '#fff', marginTop: 8 },
   durationText: { color: 'rgba(255,255,255,.8)', marginTop: 4 },
   statsCard: { borderRadius: 16, padding: 16, marginBottom: 16 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
@@ -83,7 +83,7 @@ const S = StyleSheet.create({
   statNumberGreen: { fontWeight: '800', color: '#10B981' },
   statLabel: {},
   dedicationButton: { borderRadius: 16, padding: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center', gap: 10 },
-  dedicationIcon: { fontSize: 24 },
+  dedicationIcon: { fontSize: FONT_STAT_CARD() },
   dedicationTextBox: { flex: 1 },
   dedicationTitle: { fontWeight: '600' },
   dedicationHint: {},

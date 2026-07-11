@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme , DedicationSettings, Dedication } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme , DedicationSettings, Dedication , FONT_SMALL } from '@egoless-do/core';
 import { Settings, PenLine, History } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -117,7 +117,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
             backgroundColor: 'rgba(255,255,255,0.2)',
             paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8,
           }}>
-            <Text style={{ fontSize: 11, color: '#fff', fontWeight: '600' }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>
               {T('vowDedNoWrite')}
             </Text>
           </View>
@@ -141,7 +141,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
           backgroundColor: TH.card, borderRadius: 16, padding: 24,
           alignItems: 'center', borderWidth: 1, borderColor: TH.border,
         }}>
-          <Text style={{ fontSize: 32, marginBottom: 8 }}>📝</Text>
+          <Text style={{ fontSize: scaleFontSize(32)(), marginBottom: 8 }}>📝</Text>
           <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
             {T('vowDedNoWrite')}
           </Text>

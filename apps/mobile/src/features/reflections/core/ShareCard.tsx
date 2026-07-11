@@ -1,4 +1,4 @@
-import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL, formatDate } from '@egoless-do/core';
+import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL, formatDate , FONT_HERO } from '@egoless-do/core';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { X, Download, Share2 } from 'lucide-react-native';
@@ -104,7 +104,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
 
               <View style={{ padding: 28 }}>
                 {/* Quote mark */}
-                <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: 48, lineHeight: 52, marginBottom: -8 }}>「</Text>
+                <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: FONT_HERO(), lineHeight: 52, marginBottom: -8 }}>「</Text>
 
                 {/* Content */}
                 <Text style={{ color: '#fff', fontSize: FONT_BODY() + 2, lineHeight: 28, marginBottom: 8, fontWeight: '500' }}>
@@ -112,7 +112,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
                 </Text>
 
                 {/* Closing quote */}
-                <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: 48, lineHeight: 52, marginTop: -16, marginBottom: 12, textAlign: 'right' }}>」</Text>
+                <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: FONT_HERO(), lineHeight: 52, marginTop: -16, marginBottom: 12, textAlign: 'right' }}>」</Text>
 
                 {/* Tags + Mood */}
                 {(reflection.tags.length > 0 || reflection.mood) && (
@@ -133,7 +133,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
                 {/* Footer */}
                 <View style={{ borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)', paddingTop: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>📅 {timeStr}</Text>
-                  <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: 10 }}>❤️ 心流纪 · Egoless Do</Text>
+                  <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL() }}>❤️ 心流纪 · Egoless Do</Text>
                 </View>
               </View>
             </View>

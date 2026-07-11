@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL, dateStr } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_BUTTON, FONT_LABEL, dateStr , FONT_TITLE } from '@egoless-do/core';
 import { X, Link, ListChecks, Calendar } from 'lucide-react-native';
 import React, { useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   title: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   content: {

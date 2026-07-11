@@ -7,6 +7,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { useT } from '../../../components/UI';
+import { FONT_LABEL, FONT_SUB } from '@egoless-do/core';
 
 export const OfflineBanner: React.FC = () => {
   const t = useT();
@@ -36,12 +37,12 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   icon: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     marginRight: 8,
   },
   text: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '500',
   },
 });

@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, dateStr } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, dateStr , FONT_HERO } from '@egoless-do/core';
 import type { Vision, VisionType, VisionStatus, VisionTimeFrame, Theme, Plan, PlanItem } from '@egoless-do/core';
 import { Flag, Target, Plus, X, Star } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
@@ -284,7 +284,7 @@ export default function VowScreen() {
 
         {grouped.length === 0 ? (
           <View style={{ alignItems: 'center', marginTop: 60 }}>
-            <Text style={{ fontSize: 48, marginBottom: 12 }}>🎯</Text>
+            <Text style={{ fontSize: FONT_HERO(), marginBottom: 12 }}>🎯</Text>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('vowNoVision')}</Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 24 }}>{T('vowLifetimeHint')}</Text>
             <TouchableOpacity onPress={handleAdd} style={{ backgroundColor: TH.primary, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}>

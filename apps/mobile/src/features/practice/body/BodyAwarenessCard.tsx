@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, type BodyCheckin, type Theme } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, type BodyCheckin, type Theme , FONT_TINY } from '@egoless-do/core';
 import { Activity } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
@@ -85,7 +85,7 @@ export default function BodyAwarenessCard({ TH, T, checkins, onRecordPress }: Pr
                         }} />
                       ))}
                     </View>
-                    <Text style={{ fontSize: 9, color: TH.sub, marginTop: 2 }}>
+                    <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 2 }}>
                       {c.date.slice(5)}
                     </Text>
                   </View>
@@ -96,7 +96,7 @@ export default function BodyAwarenessCard({ TH, T, checkins, onRecordPress }: Pr
                 {DIMENSIONS.map(dim => (
                   <View key={dim.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: dim.color }} />
-                    <Text style={{ fontSize: 10, color: TH.sub }}>{T(dim.labelKey)}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T(dim.labelKey)}</Text>
                   </View>
                 ))}
               </View>

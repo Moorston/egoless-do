@@ -1,4 +1,4 @@
-import { COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB, activeOnly } from '@egoless-do/core';
+import {COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -162,7 +162,7 @@ export default function StatsScreen() {
       {items.map((s, i) => (
         <View key={i} style={{ width: columns === 2 ? '48%' : '31%', borderRadius: 14, padding: 16, alignItems: 'center', gap: 6, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
           {s.icon && <s.icon size={22} color={P} />}
-          <Text style={{ fontWeight: '700', color: P, fontSize: 24, textAlign: 'center' }}>
+          <Text style={{ fontWeight: '700', color: P, fontSize: FONT_STAT_CARD(), textAlign: 'center' }}>
             {s.value}<Text style={{ fontSize: FONT_SUB(), fontWeight: '400', color: TH.sub }}> {s.unit}</Text>
           </Text>
           <Text style={{ fontSize: FONT_SUB(), color: TH.sub, textAlign: 'center' }}>{s.label}</Text>
@@ -424,7 +424,7 @@ export default function StatsScreen() {
         {/* Back button + title */}
         <TouchableOpacity onPress={() => nav.goBack()} style={{ marginBottom: 12, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start' }}>
           <ChevronLeft size={28} color={TH.text} />
-          <Text style={{ fontSize: 18, fontWeight: '600', color: TH.text, marginLeft: 4 }}>{T('statsTitle')}</Text>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '600', color: TH.text, marginLeft: 4 }}>{T('statsTitle')}</Text>
         </TouchableOpacity>
 
         {/* Calendar heatmap */}

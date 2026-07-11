@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   moodEmoji: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
   },
   moodText: {
     fontSize: FONT_SMALL(),

@@ -3,7 +3,7 @@
  * 显示：昵称、活动图标、时长、城市、目标、感悟
  */
 
-import { ActiveSession } from '@egoless-do/core';
+import {ActiveSession , FONT_SUB, FONT_SMALL, FONT_BACK} from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   typeIcon: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
   },
   onlineDot: {
     position: 'absolute',
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   name: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     flex: 1,
   },
@@ -177,16 +177,16 @@ const styles = StyleSheet.create({
   },
   meBadgeText: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   duration: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
   },
   city: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     marginBottom: 4,
   },
   lineRow: {
@@ -196,11 +196,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   lineLabel: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   lineValue: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     flex: 1,
   },
 });

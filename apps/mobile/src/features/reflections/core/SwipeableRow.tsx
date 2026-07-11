@@ -1,6 +1,7 @@
 import { Trash2 } from 'lucide-react-native';
 import React, { useRef, useCallback } from 'react';
 import { Animated, PanResponder, TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { FONT_SMALL } from '@egoless-do/core';
 
 interface SwipeableRowProps {
   children: React.ReactNode;
@@ -99,6 +100,6 @@ const styles = StyleSheet.create({
   deleteText: {
     color: '#fff',
     fontWeight: '500',
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
   },
 });

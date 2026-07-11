@@ -1,4 +1,4 @@
-import { GlobalCheckin, LeaderboardEntry, ActiveSession , aggregateMarkers } from '@egoless-do/core';
+import {GlobalCheckin, LeaderboardEntry, ActiveSession , aggregateMarkers , FONT_SUB, FONT_TITLE, FONT_BACK, FONT_STAT_CARD, FONT_BODY, FONT_SMALL, FONT_LABEL} from '@egoless-do/core';
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react';
 import {
   View,
@@ -390,10 +390,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerButtonText: {
-    fontSize: 22,
+    fontSize: FONT_STAT_CARD(),
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '600',
   },
   centered: {
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(0,0,0,0.05)',
   },
   leaderboardTitle: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
   },
   refreshSmall: {
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   refreshSmallText: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
   },
   statsBar: {
     position: 'absolute',
@@ -446,12 +446,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statsItem: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     color: '#fff',
     fontWeight: '500',
   },
   statsDot: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     color: '#fff',
     opacity: 0.5,
   },
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   attributionText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     color: '#666',
   },
   toolbar: {
@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   toolbarButtonText: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
   },
   clusterContainer: {
     width: 44,
@@ -506,16 +506,16 @@ const styles = StyleSheet.create({
   },
   clusterText: {
     color: '#fff',
-    fontSize: 15,
+    fontSize: FONT_BODY(),
     fontWeight: 'bold',
   },
   loadingText: {
     marginTop: 16,
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '500',
   },
   errorText: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     textAlign: 'center',
     marginBottom: 24,
     paddingHorizontal: 40,
@@ -533,14 +533,14 @@ const styles = StyleSheet.create({
   },
   retryButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
   },
   markerWrapper: {
     alignItems: 'center',
   },
   markerLabel: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
     color: '#fff',
     backgroundColor: 'rgba(0,0,0,0.6)',
@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
   myMarkerText: {
     color: '#fff',
     fontWeight: '900',
-    fontSize: 14,
+    fontSize: FONT_SUB(),
   },
 });
 

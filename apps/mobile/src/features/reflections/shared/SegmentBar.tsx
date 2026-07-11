@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme } from '../../../components/UI';
+import { FONT_SUB } from '@egoless-do/core';
 
 interface SegmentBarProps {
   segments: string[];
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   segmentText: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     fontWeight: '500',
   },
   segmentTextActive: {

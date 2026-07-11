@@ -1,14 +1,13 @@
 // ─── ZhiguanHistoryScreen 止观履历页 ────────────────────────────
 // 履历卡 + 月度热力图 + 历史列表 + 详情卡片 + JSON 导出
-import type { ZhiguanSession } from '@egoless-do/core';
+import type {ZhiguanSession, FONT_STAT_SECTION, FONT_STAT_CARD, FONT_BACK, FONT_SUB, FONT_HERO, FONT_SMALL, FONT_TITLE, FONT_LABEL} from '@egoless-do/core';
 import {
   computeZhiguanStats,
   FIVE_HINDRANCE_KEYS, FIVE_HINDRANCE_LABEL_KEYS,
   EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS,
   SAM_STAGE_LABEL_KEYS,
   ZHIGUAN_METHOD_DEFS,
-  dateStr as toLocalDateStr,
-} from '@egoless-do/core';
+  dateStr as toLocalDateStr, FONT_SUB, FONT_TITLE } from '@egoless-do/core';
 import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Share, Modal } from 'react-native';
 
@@ -184,8 +183,8 @@ export default function ZhiguanHistoryScreen() {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: '#E5DDD0' }}>
-      <Text style={{ fontSize: 14, color: '#8B7355' }}>{label}</Text>
-      <Text style={{ fontSize: 14, color: '#4A3F35', fontWeight: '500' }}>{value}</Text>
+      <Text style={{ fontSize: FONT_SUB(), color: '#8B7355' }}>{label}</Text>
+      <Text style={{ fontSize: FONT_SUB(), color: '#4A3F35', fontWeight: '500' }}>{value}</Text>
     </View>
   );
 }
@@ -214,7 +213,7 @@ function HeatmapBlock({ sessions, year, month }: { sessions: ZhiguanSession[]; y
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FAF7F2', padding: 16, gap: 12 },
   header: { paddingVertical: 8 },
-  title: { fontSize: 24, fontWeight: '700', color: '#4A3F35' },
+  title: { fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#4A3F35' },
   statsCard: {
     backgroundColor: 'rgba(139, 115, 85, 0.1)',
     borderRadius: 16,
@@ -223,8 +222,8 @@ const styles = StyleSheet.create({
   },
   statRow: { flexDirection: 'row', justifyContent: 'space-around' },
   statItem: { alignItems: 'center', flex: 1 },
-  statValue: { fontSize: 28, fontWeight: '700', color: '#C9A96E' },
-  statLabel: { fontSize: 11, color: '#8B7355', marginTop: 4 },
+  statValue: { fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: '#C9A96E' },
+  statLabel: { fontSize: FONT_SMALL(), color: '#8B7355', marginTop: 4 },
   heatmap: { backgroundColor: 'rgba(139, 115, 85, 0.1)', borderRadius: 16, padding: 14 },
   heatCell: { width: 8, height: 8, borderRadius: 2 },
   list: { gap: 8 },
@@ -235,26 +234,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  dateLabel: { fontSize: 14, fontWeight: '600', color: '#4A3F35' },
-  subLabel: { fontSize: 12, color: '#8B7355', marginTop: 2 },
+  dateLabel: { fontSize: FONT_SUB(), fontWeight: '600', color: '#4A3F35' },
+  subLabel: { fontSize: FONT_SMALL(), color: '#8B7355', marginTop: 2 },
   delBtn: { padding: 6 },
-  delText: { fontSize: 16, color: '#8B7355' },
+  delText: { fontSize: FONT_LABEL(), color: '#8B7355' },
   empty: { alignItems: 'center', paddingTop: 80, gap: 12 },
-  emptyIcon: { fontSize: 48 },
-  emptyTitle: { fontSize: 18, fontWeight: '600', color: '#4A3F35' },
-  emptyDesc: { fontSize: 13, color: '#8B7355', textAlign: 'center', paddingHorizontal: 32 },
+  emptyIcon: { fontSize: FONT_HERO() },
+  emptyTitle: { fontSize: FONT_TITLE(), fontWeight: '600', color: '#4A3F35' },
+  emptyDesc: { fontSize: FONT_SUB(), color: '#8B7355', textAlign: 'center', paddingHorizontal: 32 },
   exportBtn: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, backgroundColor: 'rgba(139, 115, 85, 0.15)' },
-  exportText: { fontSize: 13, color: '#C9A96E', fontWeight: '600' },
+  exportText: { fontSize: FONT_SUB(), color: '#C9A96E', fontWeight: '600' },
   detailOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   detailCard: { backgroundColor: '#FAF7F2', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '80%', padding: 20 },
   handle: { width: 40, height: 4, backgroundColor: '#D1C7B7', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
-  detailTitle: { fontSize: 20, fontWeight: '700', color: '#4A3F35', marginBottom: 16 },
+  detailTitle: { fontSize: FONT_BACK(), fontWeight: '700', color: '#4A3F35', marginBottom: 16 },
   detailSection: { marginTop: 12 },
-  detailSectionLabel: { fontSize: 13, fontWeight: '600', color: '#8B7355', marginBottom: 4 },
-  detailSectionText: { fontSize: 14, color: '#4A3F35', lineHeight: 20 },
+  detailSectionLabel: { fontSize: FONT_SUB(), fontWeight: '600', color: '#8B7355', marginBottom: 4 },
+  detailSectionText: { fontSize: FONT_SUB(), color: '#4A3F35', lineHeight: 20 },
   detailActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 24, gap: 12 },
   detailDeleteBtn: { paddingVertical: 12, paddingHorizontal: 20, borderRadius: 8, backgroundColor: '#FEE2E2' },
-  detailDeleteText: { fontSize: 14, color: '#EF4444', fontWeight: '600' },
+  detailDeleteText: { fontSize: FONT_SUB(), color: '#EF4444', fontWeight: '600' },
   detailCloseBtn: { paddingVertical: 12, paddingHorizontal: 20 },
-  detailCloseText: { fontSize: 14, color: '#8B7355' },
+  detailCloseText: { fontSize: FONT_SUB(), color: '#8B7355' },
 });

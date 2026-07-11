@@ -4,7 +4,7 @@
  * 直接使用已加载的 checkin 数据，无需额外 API 请求
  */
 
-import { GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType } from '@egoless-do/core';
+import {GlobalCheckin, LeaderboardEntry, LeaderboardSort, CheckinType , FONT_SUB, FONT_STAT_CARD, FONT_BACK} from '@egoless-do/core';
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -197,10 +197,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButtonText: {
-    fontSize: 24,
+    fontSize: FONT_STAT_CARD(),
   },
   title: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
     fontWeight: '600',
   },
   placeholder: {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sortButtonText: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '500',
   },
   podiumContainer: {

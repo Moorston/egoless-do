@@ -1,7 +1,7 @@
 // ─── MantraSelectPage — Mantra selection and preset management ───
 // Extracted from MantraEngine.tsx for modularity.
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, PRESET_SUTRAS } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION, PRESET_SUTRAS , scaleFontSize, FONT_BACK} from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
 import type { NavigationProp } from '@react-navigation/native';
 import React, { useMemo, useCallback } from 'react';
@@ -295,7 +295,7 @@ const s = StyleSheet.create({
     marginBottom: 12,
   },
   emptyIcon: {
-    fontSize: 40,
+    fontSize: scaleFontSize(40)(),
     marginBottom: 8,
   },
   footerContainer: {
@@ -316,11 +316,11 @@ const s = StyleSheet.create({
     borderRadius: 4,
   },
   categoryBadgeText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   addIcon: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
   },
   listContent: {
     paddingHorizontal: 16,

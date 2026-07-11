@@ -1,5 +1,6 @@
 // ─── Kick Out Modal ──────────────────────────────────────────────────
 // Shown when the current device is kicked out by a new login on another device.
+import {FONT_TITLE, FONT_SUB, FONT_LABEL} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -70,13 +71,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     marginBottom: 12,
     textAlign: 'center',
   },
   message: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     lineHeight: 20,
     textAlign: 'center',
     marginBottom: 24,
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
   primaryButton: {},
   primaryButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
   },
   secondaryButton: {
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   secondaryButtonText: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '500',
   },
 });

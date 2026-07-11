@@ -1,6 +1,6 @@
 // ─── VipassanaPanel 四念处指引面板 ─────────────────────────────────
 // 滑入式面板，显示当前念处（身/受/心/法）的观照指引
-import { VIPASSANA_GUIDES } from '@egoless-do/core';
+import {VIPASSANA_GUIDES , FONT_SUB, FONT_TITLE, FONT_BODY, FONT_SMALL} from '@egoless-do/core';
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Modal, ScrollView } from 'react-native';
 
@@ -68,17 +68,17 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'flex-end' },
   panel: { backgroundColor: '#1A1A1F', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '70%', padding: 20 },
   handle: { width: 40, height: 4, backgroundColor: '#444', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
-  title: { fontSize: 18, fontWeight: '700', color: '#F5EFE6', marginBottom: 16, textAlign: 'center' },
+  title: { fontSize: FONT_TITLE(), fontWeight: '700', color: '#F5EFE6', marginBottom: 16, textAlign: 'center' },
   tabs: { flexDirection: 'row', gap: 8, marginBottom: 16 },
   tab: { flex: 1, alignItems: 'center', paddingVertical: 10, borderRadius: 10, backgroundColor: '#2A2A30' },
   tabActive: { backgroundColor: '#C9A96E' },
-  tabIcon: { fontSize: 18, marginBottom: 4 },
-  tabText: { fontSize: 12, color: '#8B7355' },
+  tabIcon: { fontSize: FONT_TITLE(), marginBottom: 4 },
+  tabText: { fontSize: FONT_SMALL(), color: '#8B7355' },
   tabTextActive: { color: '#1A1A1F', fontWeight: '600' },
   content: { marginBottom: 16 },
   lineRow: { flexDirection: 'row', marginBottom: 12, gap: 8 },
-  lineNum: { fontSize: 14, color: '#C9A96E', fontWeight: '600', width: 20 },
-  lineText: { fontSize: 14, color: '#D1C7B7', lineHeight: 22, flex: 1 },
+  lineNum: { fontSize: FONT_SUB(), color: '#C9A96E', fontWeight: '600', width: 20 },
+  lineText: { fontSize: FONT_SUB(), color: '#D1C7B7', lineHeight: 22, flex: 1 },
   closeButton: { paddingVertical: 12, alignItems: 'center' },
-  closeButtonText: { fontSize: 15, color: '#8B7355' },
+  closeButtonText: { fontSize: FONT_BODY(), color: '#8B7355' },
 });

@@ -1,8 +1,7 @@
 import {
   SleepEntry, SleepQuality, WorkState,
   BODY_STATE_PRESETS, MIND_STATE_PRESETS, formatSleepDuration,
-  FONT_TITLE, FONT_BODY, FONT_SUB,
-} from '@egoless-do/core';
+  FONT_TITLE, FONT_BODY, FONT_SUB, FONT_LABEL } from '@egoless-do/core';
 import { X, Star, Moon, Sun } from 'lucide-react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import {
@@ -221,7 +220,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 3. Work State (single-select) ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: 16 }}>💼</Text>} text={T('sleepWorkState') || '工作状态'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>💼</Text>} text={T('sleepWorkState') || '工作状态'} />
               <View style={s.chipRow}>
                 {WORK_STATES.map(({ key, labelKey }) => {
                   const selected = workState === key;
@@ -248,7 +247,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 4. Body State (multi-select) ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: 16 }}>🏃</Text>} text={T('sleepBodyState') || '身体状态'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🏃</Text>} text={T('sleepBodyState') || '身体状态'} />
               <View style={s.chipRow}>
                 {BODY_STATE_PRESETS.map(tag => {
                   const selected = bodyState.includes(tag);
@@ -304,7 +303,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 5. Mind State (multi-select) ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: 16 }}>🧠</Text>} text={T('sleepMindState') || '心理状态'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>🧠</Text>} text={T('sleepMindState') || '心理状态'} />
               <View style={s.chipRow}>
                 {MIND_STATE_PRESETS.map(tag => {
                   const selected = mindState.includes(tag);
@@ -359,7 +358,7 @@ export default function DiaryModal({ visible, onClose }: Props) {
 
             {/* ── 6. Note ── */}
             <View style={[s.card, { borderColor: `${P}30` }]}>
-              <SectionLabel icon={<Text style={{ fontSize: 16 }}>📝</Text>} text={T('sleepNote') || '今日感悟'} />
+              <SectionLabel icon={<Text style={{ fontSize: FONT_LABEL() }}>📝</Text>} text={T('sleepNote') || '今日感悟'} />
               <TextInput
                 value={note}
                 onChangeText={setNote}

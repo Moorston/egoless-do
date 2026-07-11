@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION , FONT_STAT_CARD } from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
@@ -120,7 +120,7 @@ export default function SutraHistoryScreen() {
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={styles.headerRow}>
         <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
-          <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+          <Text style={{ fontSize: FONT_STAT_CARD(), color: TH.text }}>←</Text>
         </TouchableOpacity>
         <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraHistory')}</Text>
         <View style={styles.alignRight}>
@@ -156,7 +156,7 @@ export default function SutraHistoryScreen() {
           <View style={styles.weekRow}>
             {WEEKDAY_LABELS.map(d => (
               <View key={d} style={styles.weekDayCell}>
-                <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{d}</Text>
               </View>
             ))}
           </View>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   sessionMeta: { flexDirection: 'row', gap: 12, marginTop: 4 },
 
   // Shared text styles
-  textSize12: { fontSize: 12 },
-  textSize10: { fontSize: 10 },
-  textDedication: { fontSize: 10, color: '#D4A574' },
+  textSize12: { fontSize: FONT_SMALL() },
+  textSize10: { fontSize: FONT_SMALL() },
+  textDedication: { fontSize: FONT_SMALL(), color: '#D4A574' },
 });

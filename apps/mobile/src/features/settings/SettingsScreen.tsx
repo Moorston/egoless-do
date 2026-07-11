@@ -1,4 +1,4 @@
-import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger, formatDate } from '@egoless-do/core';
+import { THEMES, LANG_LIST, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_CLOSE, createLogger, formatDate , FONT_STAT_CARD } from '@egoless-do/core';
 import type { ThemeName } from '@egoless-do/core';
 import NetInfo from '@react-native-community/netinfo';
 import { Image } from 'expo-image';
@@ -403,7 +403,7 @@ export default function SettingsScreen() {
                 {userProfile.avatar ? (
                   <Image source={{ uri: userProfile.avatar }} style={{ width: 56, height: 56, borderRadius: 28 }} contentFit="cover" />
                 ) : (
-                  <Text style={{ fontSize: 22, fontWeight: '700', color: P }}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '700', color: P }}>
                     {(userProfile.nickname ?? auth.user?.name ?? '?').charAt(0).toUpperCase()}
                   </Text>
                 )}

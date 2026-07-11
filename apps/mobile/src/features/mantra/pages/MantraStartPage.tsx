@@ -1,7 +1,7 @@
 // ─── MantraStartPage — Pre-session screen with mantra info and audio ───
 // Shows mantra details, audio download/preview, loop option, and begin button.
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL , FONT_STAT_CARD, FONT_BACK} from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
@@ -72,7 +72,7 @@ export default function MantraStartPage(props: Props) {
       {/* Back button */}
       <TouchableOpacity onPress={onBack}
         style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
-        <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
+        <Text style={{ fontSize: FONT_STAT_CARD(), color: TH.text }}>←</Text>
         <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginLeft: 8 }}>{T('chantingBack')}</Text>
       </TouchableOpacity>
 
@@ -103,7 +103,7 @@ export default function MantraStartPage(props: Props) {
             ) : (
               <TouchableOpacity onPress={audioCached ? onPreviewAudio : onDownloadAudio}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 24, borderRadius: 14, backgroundColor: `${TH.primary}15`, borderWidth: 1, borderColor: `${TH.primary}30` }}>
-                <Text style={{ fontSize: 20 }}>{isPlaying ? '🔊' : audioCached ? '▶️' : '⬇️'}</Text>
+                <Text style={{ fontSize: FONT_BACK() }}>{isPlaying ? '🔊' : audioCached ? '▶️' : '⬇️'}</Text>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>
                   {isPlaying ? T('chantingListening') : audioCached ? T('chantingListening') : T('chantingDownloadAudio')}
                 </Text>
@@ -114,7 +114,7 @@ export default function MantraStartPage(props: Props) {
               <TouchableOpacity onPress={() => setAudioLoop(!audioLoop)}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 }}>
                 <View style={{ width: 20, height: 20, borderRadius: 4, borderWidth: 2, borderColor: TH.primary, backgroundColor: audioLoop ? TH.primary : 'transparent', alignItems: 'center', justifyContent: 'center' }}>
-                  {audioLoop && <Text style={{ fontSize: 12, color: '#fff' }}>✓</Text>}
+                  {audioLoop && <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>✓</Text>}
                 </View>
                 <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{T('chantingLoopAudio')}</Text>
               </TouchableOpacity>

@@ -65,12 +65,12 @@ export default function PlanTodoList({
                 </TouchableOpacity>
                 {autoChecked && (
                   <View style={{ backgroundColor: `${COLORS.GREEN}20`, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4 }}>
-                    <Text style={{ fontSize: 9, color: COLORS.GREEN, fontWeight: '600' }}>{T('planAutoChecked')}</Text>
+                    <Text style={{ fontSize: FONT_TINY(), color: COLORS.GREEN, fontWeight: '600' }}>{T('planAutoChecked')}</Text>
                   </View>
                 )}
                 {item.status === 'delayed' && !done && (
                   <View style={{ backgroundColor: `${COLORS.ORANGE}20`, paddingHorizontal: 4, paddingVertical: 1, borderRadius: 4 }}>
-                    <Text style={{ fontSize: 9, color: COLORS.ORANGE, fontWeight: '600' }}>{T('planStatusDelayed')}</Text>
+                    <Text style={{ fontSize: FONT_TINY(), color: COLORS.ORANGE, fontWeight: '600' }}>{T('planStatusDelayed')}</Text>
                   </View>
                 )}
                 <View style={{ flex: 1, minWidth: 0 }}>

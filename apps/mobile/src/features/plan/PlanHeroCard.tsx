@@ -1,4 +1,4 @@
-import { COLORS } from '@egoless-do/core';
+import {COLORS , FONT_SMALL, FONT_SUB, FONT_BACK} from '@egoless-do/core';
 import type { Plan, PlanStatus } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Target, Play, Pause, XCircle, Circle, CircleCheck, Plus, ListChecks, Route } from 'lucide-react-native';
@@ -67,14 +67,14 @@ function PlanHeroCard({
           <Target size={24} color="#fff" />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 20, fontWeight: '700', color: TH.text }}>{plan.name}</Text>
+          <Text style={{ fontSize: FONT_BACK(), fontWeight: '700', color: TH.text }}>{plan.name}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
               {getStatusIcon(plan.status as PlanStatus, P)}
-              <Text style={{ fontSize: 13, color: getStatusColor(plan.status as PlanStatus, P) }}>{T(`planStatus${plan.status?.charAt(0).toUpperCase()}${plan.status?.slice(1)}`)}</Text>
+              <Text style={{ fontSize: FONT_SUB(), color: getStatusColor(plan.status as PlanStatus, P) }}>{T(`planStatus${plan.status?.charAt(0).toUpperCase()}${plan.status?.slice(1)}`)}</Text>
             </View>
             {plan.goal ? (
-              <Text style={{ fontSize: 12, color: TH.sub }} numberOfLines={1}> · {plan.goal}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }} numberOfLines={1}> · {plan.goal}</Text>
             ) : null}
           </View>
         </View>
@@ -83,8 +83,8 @@ function PlanHeroCard({
       {/* Progress bar */}
       <View style={{ marginTop: 16 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-          <Text style={{ fontSize: 13, color: TH.sub }}>{T('planTodayProgress')}</Text>
-          <Text style={{ fontSize: 13, color: P, fontWeight: '600' }}>{progressPct}%</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('planTodayProgress')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: P, fontWeight: '600' }}>{progressPct}%</Text>
         </View>
         <View style={{ height: 8, backgroundColor: `${P}20`, borderRadius: 4, overflow: 'hidden' }}>
           <View style={{ width: `${progressPct}%`, height: '100%', backgroundColor: P, borderRadius: 4 }} />
@@ -98,28 +98,28 @@ function PlanHeroCard({
           style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, backgroundColor: `${P}20` }}
         >
           {getStatusIcon(plan.status as PlanStatus, P)}
-          <Text style={{ fontSize: 12, color: P }}>{T('planChangeStatus')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: P }}>{T('planChangeStatus')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onAddItem}
           style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, backgroundColor: `${P}20` }}
         >
           <Plus size={14} color={P} />
-          <Text style={{ fontSize: 12, color: P }}>{T('planAddItem')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: P }}>{T('planAddItem')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onViewTimeline}
           style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, backgroundColor: `${P}20` }}
         >
           <ListChecks size={14} color={P} />
-          <Text style={{ fontSize: 12, color: P }}>{T('planViewTimeline')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: P }}>{T('planViewTimeline')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onViewRelation}
           style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, backgroundColor: `${P}20` }}
         >
           <Route size={14} color={P} />
-          <Text style={{ fontSize: 12, color: P }}>{T('planViewRelation')}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: P }}>{T('planViewRelation')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -133,7 +133,7 @@ function PlanHeroCard({
               style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, backgroundColor: plan.status === s ? P : `${P}10` }}
             >
               {getStatusIcon(s, P)}
-              <Text style={{ fontSize: 12, color: plan.status === s ? '#fff' : P }}>{T(`planStatus${s.charAt(0).toUpperCase()}${s.slice(1)}`)}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: plan.status === s ? '#fff' : P }}>{T(`planStatus${s.charAt(0).toUpperCase()}${s.slice(1)}`)}</Text>
             </TouchableOpacity>
           ))}
         </View>

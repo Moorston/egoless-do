@@ -1,4 +1,4 @@
-import { estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY, createLogger } from '@egoless-do/core';
+import {estimateFastingKcal, dateStr, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_STAT_SECTION, MS_PER_DAY, createLogger, FONT_LABEL, FONT_STAT_CARD} from '@egoless-do/core';
 import { useAudioPlayer } from 'expo-audio';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -272,14 +272,14 @@ export default function FastingScreen() {
                 <View style={[styles.ringBase, { borderColor: TH.border }]} />
                 <View style={ringProgressStyle} />
                 <View style={{ alignItems:'center' }}>
-                <Text style={{ fontSize:26, fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
-                <Text style={{ fontSize:16, color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize:22 }}>{activeFasting?.targetHours}h</Text></Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight:'800', color:P }}>{Math.floor(elapsed / 3600)}:{String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}</Text>
+                <Text style={{ fontSize: FONT_LABEL(), color:TH.sub }}>{T('fastTarget')} <Text style={{ fontSize: FONT_STAT_CARD() }}>{activeFasting?.targetHours}h</Text></Text>
                 </View>
               </View>
               <View style={{ flexDirection:'row', alignItems:'center', gap:4, marginBottom:16 }}>
-                <Text style={{ color:TH.sub, fontSize:16 }}>{T('fastActive')}</Text>
+                <Text style={{ color:TH.sub, fontSize: FONT_LABEL() }}>{T('fastActive')}</Text>
                 <Flame size={16} color={COLORS.ORANGE} />
-                <Text style={{ color:TH.sub, fontSize:22 }}>{Math.round(pct * 100)}%</Text>
+                <Text style={{ color:TH.sub, fontSize: FONT_STAT_CARD() }}>{Math.round(pct * 100)}%</Text>
               </View>
               <PrimaryButton label={T('stopFasting')} onPress={() => { setNoteText(''); setInsight(''); setShowNoteModal(true); }} color={COLORS.RED} style={{ width:'100%' }} icon={<StopCircle size={20} color="#fff" />} />
             </>

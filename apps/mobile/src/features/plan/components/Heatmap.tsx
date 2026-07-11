@@ -1,4 +1,4 @@
-import { COLORS, dateStr, FONT_SUB, activeOnly } from '@egoless-do/core';
+import { COLORS, dateStr, FONT_SUB, activeOnly , FONT_SMALL } from '@egoless-do/core';
 import type { Plan, PlanItem, PlanItemCheckin, Theme } from '@egoless-do/core';
 import React, { useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
@@ -71,7 +71,7 @@ export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, 
           <View style={{ flexDirection: 'row', marginBottom: 4 }}>
             {weekLabels.map((label, i) => (
               <View key={i} style={{ width: cellSize }}>
-                <Text style={{ fontSize: 10, color: TH.sub, textAlign: 'center' }}>{label}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center' }}>{label}</Text>
               </View>
             ))}
           </View>
@@ -89,7 +89,7 @@ export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, 
                           flex: 1, borderRadius: 6, alignItems: 'center', justifyContent: 'center',
                           backgroundColor: rate < 0 ? 'transparent' : rate >= 0.8 ? COLORS.GREEN : rate >= 0.5 ? COLORS.YELLOW : rate > 0 ? COLORS.RED : `${TH.border}60`,
                         }}>
-                          <Text style={{ fontSize: 12, fontWeight: '500', color: rate >= 0.5 ? '#fff' : TH.text }}>{dayNum}</Text>
+                          <Text style={{ fontSize: FONT_SMALL(), fontWeight: '500', color: rate >= 0.5 ? '#fff' : TH.text }}>{dayNum}</Text>
                         </View>
                       ) : null}
                     </View>
@@ -100,11 +100,11 @@ export const Heatmap = React.memo(function Heatmap({ checkins, items, plan, TH, 
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8 }}>
-            <Text style={{ fontSize: 10, color: TH.sub }}>{T('heatmapLess')}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('heatmapLess')}</Text>
             {[`${TH.border}60`, COLORS.RED, COLORS.YELLOW, COLORS.GREEN].map((c, i) => (
               <View key={i} style={{ width: 14, height: 14, borderRadius: 4, backgroundColor: c }} />
             ))}
-            <Text style={{ fontSize: 10, color: TH.sub }}>{T('heatmapMore')}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('heatmapMore')}</Text>
           </View>
 
           <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 8, textAlign: 'center' }}>

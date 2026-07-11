@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   trailBadgeText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   reflectionText: {
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   tagText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
   },
   selectorFooter: {
     paddingHorizontal: 20,

@@ -2,6 +2,7 @@
 // Lightweight banner shown during Phase 2/3 background sync.
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 
 import { getState, openDatabase } from '../db/schema';
 import { getAllSyncProgress } from '../db/syncQueue';
@@ -52,7 +53,7 @@ export function SyncBanner({ onDismiss }: SyncBannerProps) {
       <Text style={[styles.text, { color: TH.sub }]}>同步中... {doneCount}/19 项已完成</Text>
       {onDismiss && (
         <TouchableOpacity onPress={() => { setVisible(false); onDismiss(); }} style={{ marginLeft: 8 }}>
-          <Text style={{ color: TH.sub, fontSize: 12 }}>✕</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_SMALL() }}>✕</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -69,6 +70,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   text: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
   },
 });

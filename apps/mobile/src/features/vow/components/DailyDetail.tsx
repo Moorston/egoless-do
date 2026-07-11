@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme , FONT_SMALL } from '@egoless-do/core';
 import { Check } from 'lucide-react-native';
 import React from 'react';
 import { View, Text } from 'react-native';
@@ -92,7 +92,7 @@ export default function DailyDetail({ TH, T, dailyData }: Props) {
                 paddingHorizontal: 8, paddingVertical: 2,
                 borderRadius: 8,
               }}>
-                <Text style={{ fontSize: 11, color: '#8B5CF6', fontWeight: '600' }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#8B5CF6', fontWeight: '600' }}>
                   {totalItems}
                 </Text>
               </View>

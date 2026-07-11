@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon , FONT_STAT_CARD, FONT_BACK} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ArrowLeft, Brain, TrendingUp, Calendar, Lightbulb } from 'lucide-react-native';
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   statsContainer: {
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: 24,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '700',
   },
   statLabel: {
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   moodEmoji: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
     marginRight: 10,
   },
   moodInfo: {

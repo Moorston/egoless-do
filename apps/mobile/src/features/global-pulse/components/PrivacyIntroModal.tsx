@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
+import { FONT_BACK, FONT_BODY, FONT_CARD_TITLE, FONT_LABEL, FONT_STAT_CARD, FONT_SUB } from '@egoless-do/core';
 
 interface PrivacyIntroModalProps {
   isVisible: boolean;
@@ -136,10 +137,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   icon: {
-    fontSize: 40,
+    fontSize: scaleFontSize(40)(),
   },
   title: {
-    fontSize: 22,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 20,
@@ -155,11 +156,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   featureIcon: {
-    fontSize: 24,
+    fontSize: FONT_STAT_CARD(),
   },
   featureText: {
     flex: 1,
-    fontSize: 15,
+    fontSize: FONT_BODY(),
     lineHeight: 22,
   },
   privacyCommitment: {
@@ -171,11 +172,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   privacyIcon: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
   },
   privacyText: {
     flex: 1,
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     lineHeight: 20,
   },
   buttonContainer: {
@@ -192,14 +193,14 @@ const styles = StyleSheet.create({
   },
   acceptButtonText: {
     color: '#fff',
-    fontSize: 17,
+    fontSize: FONT_CARD_TITLE(),
     fontWeight: '600',
   },
   declineButton: {
     borderWidth: 1,
   },
   declineButtonText: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '500',
   },
 });

@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon, formatDate, formatTime } from '@egoless-do/core';
+import { FONT_SMALL, FONT_BODY, FONT_TINY , getMoodIcon, formatDate, formatTime , FONT_TITLE } from '@egoless-do/core';
 import type { TrailNote } from '@egoless-do/core';
 import { Pencil, Trash2 } from 'lucide-react-native';
 import React, { useState } from 'react';
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   moodIcon: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     marginLeft: 8,
   },
 });

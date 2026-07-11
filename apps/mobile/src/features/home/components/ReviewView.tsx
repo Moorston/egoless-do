@@ -1,4 +1,4 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, countItemDoneDays, computeItemProgress, createLogger, dateStr } from '@egoless-do/core';
+import {COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, computePlanProgress, countItemDoneDays, computeItemProgress, createLogger, dateStr , FONT_LABEL, FONT_STAT_SECTION} from '@egoless-do/core';
 import type { CheckinReview } from '@egoless-do/core';
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, RefreshControl, FlatList, StyleSheet } from 'react-native';
@@ -617,7 +617,7 @@ const createStyles = (TH: ReturnType<typeof useTheme>) => StyleSheet.create({
     flex: 1, backgroundColor: TH.card, borderRadius: 14, padding: 16,
     alignItems: 'center', borderWidth: 1, borderColor: TH.border,
   },
-  metricValue: { fontSize: 28, fontWeight: '700', color: TH.primary },
+  metricValue: { fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: TH.primary },
   metricLabel: { fontSize: FONT_BODY(), color: TH.text, marginTop: 4 },
   metricSubLabel: { fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 },
   trendRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
@@ -664,11 +664,11 @@ const createStyles = (TH: ReturnType<typeof useTheme>) => StyleSheet.create({
     borderWidth: 1, borderColor: TH.border,
   },
   healthMetricHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
-  healthMetricIcon: { fontSize: 16 },
+  healthMetricIcon: { fontSize: FONT_LABEL() },
   healthMetricValue: { fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text },
 
   // AI analysis
-  aiBulbIcon: { fontSize: 18 },
+  aiBulbIcon: { fontSize: FONT_TITLE() },
   aiSummaryText: { fontSize: FONT_BODY(), color: TH.text, lineHeight: 24, marginBottom: 12 },
   highlightSection: { marginBottom: 12 },
   highlightTitle: { fontSize: FONT_SUB(), ...staticStyles.greenBold, marginBottom: 6 },

@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, type WeightRecord, type Theme } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, type WeightRecord, type Theme , FONT_TINY } from '@egoless-do/core';
 import { TrendingDown, TrendingUp, Minus } from 'lucide-react-native';
 import React from 'react';
 import { View, Text } from 'react-native';
@@ -73,7 +73,7 @@ export default function WeightTrendChart({ TH, T, weightRecords }: Props) {
                 borderRadius: 2,
               }} />
               {idx % 5 === 0 && (
-                <Text style={{ fontSize: 8, color: TH.sub, marginTop: 2 }}>{r.date.slice(5)}</Text>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 2 }}>{r.date.slice(5)}</Text>
               )}
             </View>
           );

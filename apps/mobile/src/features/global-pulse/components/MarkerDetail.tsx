@@ -3,7 +3,7 @@
  * 支持打卡记录和实时活跃会话
  */
 
-import { GlobalCheckin, ActiveSession } from '@egoless-do/core';
+import {GlobalCheckin, ActiveSession , FONT_SUB, FONT_TITLE, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL} from '@egoless-do/core';
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
@@ -191,7 +191,7 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
 
               <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
                 <Text style={styles.statIcon}>🗓️</Text>
-                <Text style={[styles.statValue, { color: theme.text, fontSize: 12 }]}>
+                <Text style={[styles.statValue, { color: theme.text, fontSize: FONT_SMALL() }]}>
                   {formatDate(checkin.created_at)}
                 </Text>
                 <Text style={[styles.statLabel, { color: theme.sub }]}>
@@ -238,10 +238,10 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   typeIcon: {
-    fontSize: 32,
+    fontSize: scaleFontSize(32)(),
   },
   anonymousId: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '600',
   },
   typeBadge: {
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   },
   typeBadgeText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
   closeButton: {
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeButtonText: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
   },
   statsContainer: {
     flexDirection: 'row',
@@ -277,16 +277,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   statIcon: {
-    fontSize: 24,
+    fontSize: FONT_STAT_CARD(),
     marginBottom: 8,
   },
   statValue: {
-    fontSize: 24,
+    fontSize: FONT_STAT_CARD(),
     fontWeight: 'bold',
     marginBottom: 4,
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
   },
   activeStatusRow: {
@@ -305,12 +305,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#10B981',
   },
   activeStatusText: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
     flex: 1,
   },
   durationText: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '700',
     fontVariant: ['tabular-nums'],
   },
@@ -322,16 +322,16 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   infoIcon: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     marginTop: 1,
   },
   infoLabel: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     fontWeight: '500',
     minWidth: 36,
   },
   infoValue: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     flex: 1,
   },
   locationContainer: {
@@ -342,10 +342,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   locationIcon: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
   },
   locationText: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '500',
   },
   privacyNote: {
@@ -357,11 +357,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   privacyIcon: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
   },
   privacyText: {
     flex: 1,
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     lineHeight: 18,
   },
 });

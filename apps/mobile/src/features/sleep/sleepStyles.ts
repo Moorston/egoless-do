@@ -11,7 +11,7 @@
 // from @egoless-do/core so typography stays consistent with the rest
 // of the app.
 
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION , FONT_SMALL } from '@egoless-do/core';
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   clockDotLabel: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '700',
   },
   clockNext: {
@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
     gap: 4,
   },
   goalLabel: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
   },
   goalValue: {
     fontSize: FONT_STAT_CARD(),
@@ -204,20 +204,20 @@ export const styles = StyleSheet.create({
     width: 50,
   },
   recentTag: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
   },
   recentValue: {
     fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   recentStars: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
   },
   recentGratitude: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
   },
   recentPractice: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
   },
 
   // History button

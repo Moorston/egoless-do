@@ -1,7 +1,7 @@
 // ─── BreathingScreen — Lightweight entry point ──────────────────
 // Shows the preset selection page immediately (zero native module deps).
 // Lazy-loads BreathingEngine when user starts a session.
-import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey , FONT_STAT_SECTION } from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ChevronRight } from 'lucide-react-native';
@@ -25,8 +25,8 @@ const BreathingEngine = lazy(() => import('./BreathingEngine'));
 function EngineFallback({ TH }: { TH: Theme }) {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: TH.bg }}>
-      <Text style={{ fontSize: 28, marginBottom: 8 }}>🪷</Text>
-      <Text style={{ fontSize: 13, color: TH.sub }}>...</Text>
+      <Text style={{ fontSize: FONT_STAT_SECTION(), marginBottom: 8 }}>🪷</Text>
+      <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>...</Text>
     </View>
   );
 }

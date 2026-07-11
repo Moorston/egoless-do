@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, dateStr, COLORS, type Theme , FastingSession } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, dateStr, COLORS, type Theme , FastingSession , FONT_SMALL, FONT_STAT_CARD} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, Flame, X, Trash2 } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
@@ -115,7 +115,7 @@ function Heatmap({ entries, TH, onPress }: { entries: FastingSession[]; TH: Them
           return (
             <View key={d} style={styles.heatmapCell}>
               <View style={{ flex: 1, borderRadius: 4, backgroundColor: has ? '#8446FF' : `${TH.border}80`, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 10, color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
               </View>
             </View>
           );
@@ -151,9 +151,9 @@ export function FastCalendarScreen() {
       <ScrollView contentContainerStyle={styles.calendarContent}>
         <ScreenHeader title="禁食日历" onBack={() => nav.goBack()} />
         <View style={styles.calendarMonthRow}>
-          <TouchableOpacity onPress={prevMonth}><Text style={{ fontSize: 24, color: TH.text }}>{'‹'}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={prevMonth}><Text style={{ fontSize: FONT_STAT_CARD(), color: TH.text }}>{'‹'}</Text></TouchableOpacity>
           <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{formatMonth(ym)}</Text>
-          <TouchableOpacity onPress={nextMonth}><Text style={{ fontSize: 24, color: TH.text }}>{'›'}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={nextMonth}><Text style={{ fontSize: FONT_STAT_CARD(), color: TH.text }}>{'›'}</Text></TouchableOpacity>
         </View>
         <View style={styles.calendarWeekdayRow}>
           {WEEKDAYS.map(w => <Text key={w} style={{ flex: 1, textAlign: 'center', fontSize: FONT_SUB(), color: TH.sub, fontWeight: '600' }}>{w}</Text>)}
@@ -166,7 +166,7 @@ export function FastCalendarScreen() {
             return (
               <View key={d} style={styles.calendarCell}>
                 <View style={{ flex: 1, borderRadius: 8, backgroundColor: has ? '#8446FF' : `${TH.border}60`, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ fontSize: 14, color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
                 </View>
               </View>
             );
@@ -368,7 +368,7 @@ export default function FastHistoryPage() {
         <View style={{ paddingHorizontal: 16 }}>
           {ListHeader}
           <View style={{ alignItems: 'center', marginTop: 80 }}>
-            <Text style={{ fontSize: 64, marginBottom: 16 }}>🕐</Text>
+            <Text style={{ fontSize: scaleFontSize(64)(), marginBottom: 16 }}>🕐</Text>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>

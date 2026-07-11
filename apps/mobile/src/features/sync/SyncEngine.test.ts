@@ -136,6 +136,7 @@ const {
     mockAppStore: {
       _auth: { token: null as string | null, refreshToken: null as string | null, user: null as { id: string } | null },
       getState: vi.fn(() => mockAppStore),
+      setState: vi.fn(),
       refreshAuth: vi.fn().mockResolvedValue(undefined),
       logout: vi.fn(),
       get auth() { return mockAppStore._auth; },
@@ -177,6 +178,7 @@ vi.mock('../../store/useAppStore', () => ({
 vi.mock('./SyncApplyService', () => ({
   SyncApplyService: vi.fn().mockImplementation(() => mockApplyService),
   ENTITY_CONFIG: { habit: { table: 'habits', pk: 'id' } },
+  ENTITY_STORE_KEY: { habit: 'habits' },
 }));
 
 vi.mock('./SyncRealtimeController', () => ({
@@ -209,6 +211,7 @@ vi.mock('@egoless-do/core', () => ({
   ApiError: mockApiError,
   KickedOutError: mockKickedOutError,
   ALL_ENTITY_TABLES: ['habits'],
+  SCHEMAS: { habit: { sqlite: { table: 'habits' }, pocketbase: { collection: 'habits' } } },
 }));
 
 // Dynamic import mocks

@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   linkIcon: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
   },
   linkLabel: {
     fontSize: FONT_TINY(),

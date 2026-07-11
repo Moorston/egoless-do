@@ -1,10 +1,9 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, formatDate } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, dateStr, formatDate , FONT_SMALL, FONT_BACK} from '@egoless-do/core';
 import {
   PRECEPT_AVOID_PRESETS, PRACTICE_PRESETS, VIOLATION_TRIGGERS,
   PRECEPT_PREFIX_AVOID, PRECEPT_PREFIX_PRACTICE,
   isPreceptHabit, getPreceptDisplayName, getPreceptType,
-  type PreceptPreset,
-} from '@egoless-do/core';
+  type PreceptPreset, FONT_SMALL } from '@egoless-do/core';
 import { Shield, Check, X, Plus, BarChart3, AlertTriangle } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';
@@ -541,7 +540,7 @@ const styles = StyleSheet.create({
   },
   statItem: { alignItems: 'center', gap: 2 },
   statValue: { fontSize: FONT_STAT_CARD(), fontWeight: '800' },
-  statLabel: { fontSize: 11 },
+  statLabel: { fontSize: FONT_SMALL() },
   section: { marginBottom: 16 },
   sectionTitle: { fontSize: FONT_SUB(), fontWeight: '700', marginBottom: 10 },
   preceptCard: {
@@ -550,9 +549,9 @@ const styles = StyleSheet.create({
   preceptHeader: {
     flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10,
   },
-  preceptIcon: { fontSize: 20 },
+  preceptIcon: { fontSize: FONT_BACK() },
   preceptName: { fontSize: FONT_BODY(), fontWeight: '700' },
-  preceptGoal: { fontSize: 12, marginTop: 2 },
+  preceptGoal: { fontSize: FONT_SMALL(), marginTop: 2 },
   streakBadge: { alignItems: 'center' },
   streakText: { fontSize: FONT_BODY(), fontWeight: '600' },
   preceptActions: { flexDirection: 'row', justifyContent: 'flex-end' },
@@ -576,7 +575,7 @@ const styles = StyleSheet.create({
   insightRow: {
     borderLeftWidth: 3, paddingLeft: 12, paddingVertical: 8, marginBottom: 8,
   },
-  insightDate: { fontSize: 12, marginBottom: 2 },
+  insightDate: { fontSize: FONT_SMALL(), marginBottom: 2 },
   insightContent: { fontSize: FONT_BODY() },
   // Modal styles
   modalContainer: { flex: 1 },

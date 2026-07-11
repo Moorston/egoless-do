@@ -1,8 +1,8 @@
 // ─── BreathingEngine — rAF-driven breathing exercise controller ──
 // State machine + rAF loop + hooks; delegates UI to page components.
 
-import type { BreathingPreset } from '@egoless-do/core';
-import { FONT_BODY, createLogger, fmtMS, dateStr , cycleDuration } from '@egoless-do/core';
+import type {BreathingPreset, FONT_TITLE} from '@egoless-do/core';
+import { FONT_BODY, createLogger, fmtMS, dateStr , cycleDuration , FONT_TITLE } from '@egoless-do/core';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, Animated, Easing, AppState, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -410,12 +410,12 @@ export default function BreathingEngine({ initialPreset, onBack }: Props) {
       <SafeAreaView style={[styles.activeContainer, { backgroundColor: '#0a0a1a' }]}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Animated.Text style={{
-            fontSize: 120, fontWeight: '900', color: '#fff', opacity: countdownAnim,
+            fontSize: scaleFontSize(120)(), fontWeight: '900', color: '#fff', opacity: countdownAnim,
             transform: [{ scale: countdownAnim.interpolate({ inputRange: [0, 1], outputRange: [0.3, 1] }) }],
           }}>
             {countdownNum}
           </Animated.Text>
-          <Text style={{ fontSize: 18, fontWeight: '600', color: 'rgba(255,255,255,0.6)', marginTop: 16 }}>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '600', color: 'rgba(255,255,255,0.6)', marginTop: 16 }}>
             {countdownNum === 3 ? T('breathReady') : countdownNum === 2 ? T('breathAdjust') : T('breathBegin')}
           </Text>
         </View>

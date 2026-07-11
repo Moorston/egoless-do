@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL , FONT_LABEL } from '@egoless-do/core';
 import type { TrailNote } from '@egoless-do/core';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -386,12 +386,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
   },
   headerTitleInput: {
     flex: 1,
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
     textAlign: 'center',
     marginHorizontal: 8,

@@ -1,4 +1,4 @@
-import { WUXING_ELEMENT_CONFIG } from '@egoless-do/core';
+import { WUXING_ELEMENT_CONFIG , FONT_SMALL } from '@egoless-do/core';
 import type { WuxingElement } from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text } from 'react-native';
@@ -152,10 +152,10 @@ export default function WuxingRadarChart({ stats, size = 240, colors = DEFAULT_C
       <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%', marginTop: 12 }}>
         {ELEMENTS.map(e => (
           <View key={e} style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 12, fontWeight: '700', color: colors[e] }}>
+            <Text style={{ fontSize: FONT_SMALL(), fontWeight: '700', color: colors[e] }}>
               {stats[e] ?? 0}%
             </Text>
-            <Text style={{ fontSize: 10, color: '#888' }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: '#888' }}>
               {WUXING_ELEMENT_CONFIG[e]?.label ?? e}
             </Text>
           </View>

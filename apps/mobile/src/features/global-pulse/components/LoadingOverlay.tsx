@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
+import { FONT_LABEL } from '@egoless-do/core';
 
 interface LoadingOverlayProps {
   isLoading: boolean;
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   loadingText: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '500',
   },
   skeletonContainer: {

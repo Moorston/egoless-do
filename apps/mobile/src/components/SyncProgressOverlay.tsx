@@ -1,5 +1,6 @@
 // ─── Sync Progress Overlay ─────────────────────────────────────────
 // Shown during Phase 1 initial sync with per-entity progress.
+import {FONT_TITLE, FONT_SUB, FONT_SMALL} from '@egoless-do/core';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Modal, StyleSheet, ActivityIndicator } from 'react-native';
 
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   title: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
     marginBottom: 16,
     textAlign: 'center',
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   pct: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     textAlign: 'right',
     marginBottom: 16,
   },
@@ -116,12 +117,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   entityIcon: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     width: 20,
     textAlign: 'center',
   },
   entityName: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     marginLeft: 8,
     flex: 1,
   },

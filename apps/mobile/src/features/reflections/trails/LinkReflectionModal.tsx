@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   typeIcon: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
   },
   typeLabel: {
     fontSize: FONT_SMALL(),

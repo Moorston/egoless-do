@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BUTTON, COLORS, dateStr } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_BUTTON, COLORS, dateStr , FONT_BACK, FONT_TINY} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Share2, TrendingUp, Grid3x3, Heart, Tag, ListChecks } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
@@ -502,7 +502,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   overviewContainer: {
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   barValue: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
     marginBottom: 4,
   },
@@ -576,7 +576,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   barLabel: {
-    fontSize: 9,
+    fontSize: FONT_TINY(),
     marginTop: 4,
   },
   legend: {
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   legendText: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
   },
   moodList: {
     gap: 12,
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   moodIcon: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
     width: 28,
   },
   moodName: {

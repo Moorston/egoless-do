@@ -1,6 +1,6 @@
 // ─── CountingRound 计数环 ────────────────────────────────────────
 // 10 珠圆环，每呼吸一次点亮一颗，满轮次归零
-import type { CountingRoundState } from '@egoless-do/core';
+import type {CountingRoundState, FONT_SMALL, FONT_STAT_CARD} from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  roundNum: { fontSize: 24, fontWeight: '700', color: '#C9A96E' },
-  roundLabel: { fontSize: 11, color: '#8B7355', marginTop: 2 },
+  roundNum: { fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#C9A96E' },
+  roundLabel: { fontSize: FONT_SMALL(), color: '#8B7355', marginTop: 2 },
   statsRow: { marginTop: 8 },
-  statText: { fontSize: 12, color: '#8B7355' },
+  statText: { fontSize: FONT_SMALL(), color: '#8B7355' },
 });

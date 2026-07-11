@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SMALL, FONT_EMPTY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_EMPTY , FONT_HERO } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   icon: {
-    fontSize: 48,
+    fontSize: FONT_HERO(),
     marginBottom: 12,
   },
   title: {

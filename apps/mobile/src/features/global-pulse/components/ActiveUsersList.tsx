@@ -3,7 +3,7 @@
  * 按类型分组显示，每组标题（图标 + 类型名 + 人数），当前用户置顶
  */
 
-import { ActiveSession, CheckinType } from '@egoless-do/core';
+import {ActiveSession, CheckinType , FONT_SUB, FONT_TITLE, FONT_BODY, FONT_SMALL} from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, SectionList } from 'react-native';
 
@@ -115,10 +115,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   sectionIcon: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
   },
   sectionTitle: {
-    fontSize: 15,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
     flex: 1,
   },
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   countText: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   listContent: {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
   },
 });
 

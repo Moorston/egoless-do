@@ -33,4 +33,11 @@ config.resolver.blockList = [
   /packages\/core\/\.turbo\/.*/,
 ];
 
+// Force Metro to resolve @egoless-do/core from source (not dist)
+const CORE_SRC = path.resolve(__dirname, '../../packages/core/src');
+config.resolver.extraNodeModules = {
+  ...(config.resolver.extraNodeModules || {}),
+  '@egoless-do/core': CORE_SRC,
+};
+
 module.exports = config;

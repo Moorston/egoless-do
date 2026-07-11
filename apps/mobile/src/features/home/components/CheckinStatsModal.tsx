@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote, MS_PER_WEEK } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_TITLE, computeLongestStreak, INCOMPLETE_REASONS, parseCheckinNote, MS_PER_WEEK , FONT_STAT_SECTION } from '@egoless-do/core';
 import type { CheckinEntry } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useMemo } from 'react';
@@ -128,7 +128,7 @@ export default function CheckinStatsModal({ visible, onClose }: CheckinStatsModa
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: reasonDistribution.length > 0 ? 16 : 0 }}>
               {stats.map((stat, i) => (
                 <View key={i} style={{ backgroundColor: TH.card, borderRadius: 14, padding: 12, width: '48%', borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
-                  <Text style={{ fontSize: 26, fontWeight: '700', color: P }}>{stat.value}</Text>
+                  <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: P }}>{stat.value}</Text>
                   <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{stat.label}</Text>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2, textAlign: 'center' }}>{stat.sub}</Text>
                 </View>

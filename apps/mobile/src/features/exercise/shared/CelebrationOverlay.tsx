@@ -1,4 +1,4 @@
-import { COLORS, FONT_BODY } from '@egoless-do/core';
+import { COLORS, FONT_BODY , scaleFontSize } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, Animated } from 'react-native';
 
@@ -15,7 +15,7 @@ export default function CelebrationOverlay({ showCelebration, celebrateAnim, mil
       {showCelebration && (
         <Animated.View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', zIndex: 15, pointerEvents: 'none' }}>
           <Animated.Text style={{
-            fontSize: 64, fontWeight: '900', color: COLORS.GREEN,
+            fontSize: scaleFontSize(64)(), fontWeight: '900', color: COLORS.GREEN,
             transform: [{ scale: celebrateAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 1.2] }) }],
             opacity: celebrateAnim,
           }}>

@@ -1,7 +1,6 @@
 import {
   COLORS, FONT_TITLE, FONT_BODY, FONT_SUB,
-  createLogger,
-} from '@egoless-do/core';
+  createLogger, FONT_LABEL } from '@egoless-do/core';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -210,7 +209,7 @@ export default function ProfileScreen() {
                 {avatarUri ? (
                   <Image source={{ uri: avatarUri }} style={{ width: 80, height: 80, borderRadius: 40 }} contentFit="cover" />
                 ) : (
-                  <Text style={{ fontSize: 32, fontWeight: '700', color: P }}>
+                  <Text style={{ fontSize: scaleFontSize(32)(), fontWeight: '700', color: P }}>
                     {displayName.charAt(0).toUpperCase()}
                   </Text>
                 )}
@@ -298,7 +297,7 @@ export default function ProfileScreen() {
 
           {/* Height */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
-            <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: 16, color: P }}>📏</Text></View>
+            <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: FONT_LABEL(), color: P }}>📏</Text></View>
             <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileHeight')}</Text>
             <TextInput
               value={editHeight}
@@ -317,7 +316,7 @@ export default function ProfileScreen() {
 
           {/* Gender */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
-            <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: 16, color: P }}>⚤</Text></View>
+            <View style={{ width: 18, alignItems: 'center' }}><Text style={{ fontSize: FONT_LABEL(), color: P }}>⚤</Text></View>
             <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileGender')}</Text>
             <TouchableOpacity
               accessibilityLabel={T('profileGender')}

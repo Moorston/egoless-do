@@ -1,6 +1,5 @@
 import {
-  COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON,
-} from '@egoless-do/core';
+  COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL } from '@egoless-do/core';
 import {
   ChevronLeft, Check, X, Pencil, Trash2, Eye, EyeOff,
 } from 'lucide-react-native';
@@ -377,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   freqText: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   actionButton: {

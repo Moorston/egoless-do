@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, {useState, useMemo, useCallback} from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, FlatList } from 'react-native';
 import { useShallowStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
@@ -6,7 +6,7 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import AddFoodModal from '../../components/AddFoodModal';
 import WuxingRadarChart from './WuxingRadarChart';
 import WuxingCalendar from './WuxingCalendar';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS , FONT_SMALL } from '@egoless-do/core';
 import type { WuxingElement, FlavorType } from '@egoless-do/core';
 import { Utensils, Compass, TrendingUp, Timer, Plus, Search } from 'lucide-react-native';
 
@@ -99,7 +99,7 @@ export default function DietScreen() {
               {wuxing && (
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
                   <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[wuxing.primaryElement]}20` }}>
-                    <Text style={{ fontSize: 10, color: ELEMENT_COLORS[wuxing.primaryElement], fontWeight: '600' }}>
+                    <Text style={{ fontSize: FONT_SMALL(), color: ELEMENT_COLORS[wuxing.primaryElement], fontWeight: '600' }}>
                       {FLAVOR_LABELS[wuxing.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[wuxing.primaryElement]?.label}
                     </Text>
                   </View>
@@ -110,7 +110,7 @@ export default function DietScreen() {
             <Text style={{ color: TH.primary, fontSize: FONT_SUB(), fontWeight: '600' }}>{f.calories} kcal</Text>
           </View>
           {motivationDef && (
-            <Text style={{ fontSize: 11, color: TH.sub, marginTop: 4, marginLeft: 2 }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 4, marginLeft: 2 }}>
               {motivationDef.emoji} {T(`dietMotivation${motivationDef.key.charAt(0).toUpperCase() + motivationDef.key.slice(1)}`) || motivationDef.label}
             </Text>
           )}
@@ -172,7 +172,7 @@ export default function DietScreen() {
               return (
                 <View key={e} style={{ alignItems: 'center' }}>
                   <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: `${ELEMENT_COLORS[e]}20`, alignItems: 'center', justifyContent: 'center', marginBottom: 4 }}>
-                    <Text style={{ fontSize: 18, fontWeight: '800', color: ELEMENT_COLORS[e] }}>{pct}</Text>
+                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: ELEMENT_COLORS[e] }}>{pct}</Text>
                   </View>
                   <Text style={[dietStyles.subText, { color: TH.sub }]}>{WUXING_ELEMENT_CONFIG[e]?.label ?? e}</Text>
                 </View>
@@ -241,14 +241,14 @@ export default function DietScreen() {
                     <Text style={[dietStyles.subText, { color: TH.text }]}>{item.name}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 }}>
                       <View style={{ paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6, backgroundColor: `${ELEMENT_COLORS[item.primaryElement]}20` }}>
-                        <Text style={{ fontSize: 10, color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
+                        <Text style={{ fontSize: FONT_SMALL(), color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
                           {FLAVOR_LABELS[item.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[item.primaryElement]?.label}
                         </Text>
                       </View>
                       <Text style={[dietStyles.tinyText, { color: TH.sub }]}>{item.nature === 'hot' ? '热' : item.nature === 'warm' ? '温' : item.nature === 'cool' ? '凉' : item.nature === 'cold' ? '寒' : '平'}</Text>
                     </View>
                   </View>
-                  <Text style={{ fontSize: 11, color: TH.sub }}>{item.effect}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{item.effect}</Text>
                 </View>
               ))}
             </View>
@@ -276,7 +276,7 @@ export default function DietScreen() {
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, paddingBottom: 8 }}>
                     {items.map(item => (
                       <View key={item.foodKey} style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, backgroundColor: `${ELEMENT_COLORS[item.primaryElement]}15`, borderWidth: 1, borderColor: `${ELEMENT_COLORS[item.primaryElement]}30` }}>
-                        <Text style={{ fontSize: 11, color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
+                        <Text style={{ fontSize: FONT_SMALL(), color: ELEMENT_COLORS[item.primaryElement], fontWeight: '600' }}>
                           {item.name} {FLAVOR_LABELS[item.primaryFlavor]}·{WUXING_ELEMENT_CONFIG[item.primaryElement]?.label}
                         </Text>
                       </View>
@@ -349,11 +349,11 @@ export default function DietScreen() {
               {/* 生理 vs 情绪 */}
               <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
                 <View style={{ flex: 1, backgroundColor: '#10B98115', borderRadius: 12, padding: 12, alignItems: 'center' }}>
-                  <Text style={{ fontSize: 24, fontWeight: '800', color: '#10B981' }}>{motivationStats.physical}%</Text>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#10B981' }}>{motivationStats.physical}%</Text>
                   <Text style={[dietStyles.subText, { color: TH.sub }]}>{T('dietMotivationPhysical')}</Text>
                 </View>
                 <View style={{ flex: 1, backgroundColor: '#EF444415', borderRadius: 12, padding: 12, alignItems: 'center' }}>
-                  <Text style={{ fontSize: 24, fontWeight: '800', color: '#EF4444' }}>{motivationStats.emotional}%</Text>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#EF4444' }}>{motivationStats.emotional}%</Text>
                   <Text style={[dietStyles.subText, { color: TH.sub }]}>{T('dietMotivationEmotional')}</Text>
                 </View>
               </View>
@@ -380,17 +380,17 @@ export default function DietScreen() {
             sensitiveDays.slice(0, 10).map(day => (
               <View key={day.date} style={dietStyles.row}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                  <Text style={{ fontSize: 14 }}>🟡</Text>
+                  <Text style={{ fontSize: FONT_SUB() }}>🟡</Text>
                   <Text style={{ fontWeight: '600', fontSize: FONT_SUB(), color: TH.text }}>{day.date}</Text>
                   {day.moods.map(m => (
-                    <Text key={m} style={{ fontSize: 10, color: COLORS.YELLOW, backgroundColor: `${COLORS.YELLOW}15`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>{m}</Text>
+                    <Text key={m} style={{ fontSize: FONT_SMALL(), color: COLORS.YELLOW, backgroundColor: `${COLORS.YELLOW}15`, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>{m}</Text>
                   ))}
                 </View>
                 {day.reflectionContent && (
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginLeft: 20 }} numberOfLines={1}>{day.reflectionContent}</Text>
                 )}
                 {day.emotionalEatingCount > 0 && (
-                  <Text style={{ fontSize: 10, color: '#EF4444', marginLeft: 20, marginTop: 2 }}>情绪进食 {day.emotionalEatingCount} 次</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444', marginLeft: 20, marginTop: 2 }}>情绪进食 {day.emotionalEatingCount} 次</Text>
                 )}
               </View>
             ))
@@ -412,7 +412,7 @@ export default function DietScreen() {
           <Text style={[dietStyles.sectionTitleSm, { color: TH.text }]}>{T('dietFastingSync')}</Text>
           {isActive ? (
             <View style={dietStyles.centerPad}>
-              <Text style={{ fontSize: 20, fontWeight: '800', color: TH.primary }}>禁食进行中</Text>
+              <Text style={{ fontSize: FONT_BACK(), fontWeight: '800', color: TH.primary }}>禁食进行中</Text>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>目标: {activeFasting?.targetHours}h</Text>
               <TouchableOpacity
                 onPress={() => stopFasting?.()}
@@ -424,7 +424,7 @@ export default function DietScreen() {
           ) : (
             <View style={dietStyles.centerPad}>
               <Text style={{ color: TH.sub, fontSize: FONT_SUB(), marginBottom: 12 }}>当前无活跃禁食</Text>
-              <Text style={{ color: TH.sub, fontSize: 11, marginBottom: 8 }}>选择目标时长：</Text>
+              <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), marginBottom: 8 }}>选择目标时长：</Text>
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 {[8, 12, 16, 20].map(h => (
                   <TouchableOpacity key={h}
@@ -472,7 +472,7 @@ export default function DietScreen() {
                       {afterMeal.map(m => {
                         const w = lookupWuxing(m.name);
                         return (
-                          <Text key={m.id} style={{ fontSize: 10, color: w ? ELEMENT_COLORS[w.primaryElement] : TH.sub }}>
+                          <Text key={m.id} style={{ fontSize: FONT_SMALL(), color: w ? ELEMENT_COLORS[w.primaryElement] : TH.sub }}>
                             {m.name}{w ? `(${FLAVOR_LABELS[w.primaryFlavor]}·${WUXING_ELEMENT_CONFIG[w.primaryElement]?.label})` : ''}
                           </Text>
                         );
@@ -538,7 +538,7 @@ const dietStyles = {
   sectionTitleSm: { fontWeight: '700' as const, fontSize: FONT_BODY(), marginBottom: 8 },
   subText: { fontSize: FONT_SUB() },
   subTextLineHeight: { fontSize: FONT_SUB(), lineHeight: 20 },
-  tinyText: { fontSize: 10 },
+  tinyText: { fontSize: FONT_SMALL() },
   emptyText: { textAlign: 'center' as const, paddingVertical: 16 },
   row: { paddingVertical: 10, borderBottomWidth: 1 },
   centerPad: { alignItems: 'center' as const, paddingVertical: 12 },

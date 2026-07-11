@@ -3,7 +3,7 @@
  * TabBar（实时脉动 / 排行榜 / 我的）+ 内容切换
  */
 
-import { FONT_SUB, FONT_STAT_CARD, dateStr , ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType } from '@egoless-do/core';
+import {FONT_SUB, FONT_STAT_CARD, dateStr , ActiveSession, GlobalCheckin, LeaderboardEntry, CheckinType , FONT_SMALL, FONT_BACK} from '@egoless-do/core';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
@@ -194,7 +194,7 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
                       <Text style={[styles.todayLabel, { color: done ? theme.primary : theme.sub }]}>
                         {labels[tp]}
                       </Text>
-                      <Text style={{ color: done ? theme.primary : theme.sub, fontSize: 12 }}>
+                      <Text style={{ color: done ? theme.primary : theme.sub, fontSize: FONT_SMALL() }}>
                         {done ? '✓' : '—'}
                       </Text>
                     </View>
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   tabText: {
-    fontSize: 14,
+    fontSize: FONT_SUB(),
     fontWeight: '600',
   },
   tabBadge: {
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabBadgeText: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     fontWeight: '600',
   },
   content: {
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   myStatLabel: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
   },
   todayRow: {
     flexDirection: 'row',
@@ -286,10 +286,10 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   todayIcon: {
-    fontSize: 20,
+    fontSize: FONT_BACK(),
   },
   todayLabel: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
 });

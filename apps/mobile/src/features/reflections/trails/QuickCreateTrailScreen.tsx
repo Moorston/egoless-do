@@ -1,7 +1,5 @@
-import {
-  FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON,
-  getMoodIcon, generateTrailName, formatDateShort,
-} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SMALL, FONT_TINY, FONT_BUTTON,
+  getMoodIcon, generateTrailName, formatDateShort, scaleFontSize, FONT_HERO} from '@egoless-do/core';
 import type { MindReflection } from '@egoless-do/core';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -953,7 +951,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   noResultsContainer: { alignItems: 'center', paddingVertical: 32 },
-  noResultsEmoji: { fontSize: 32, marginBottom: 8 },
+  noResultsEmoji: { fontSize: scaleFontSize(32)(), marginBottom: 8 },
   noResultsText: { fontSize: FONT_BODY(), marginBottom: 4 },
   noResultsResetBtn: { marginTop: 12 },
   // ── Empty state ──
@@ -963,7 +961,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 32,
   },
-  emptyEmoji: { fontSize: 48, marginBottom: 16 },
+  emptyEmoji: { fontSize: FONT_HERO(), marginBottom: 16 },
   emptyMessage: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 8 },
   emptySubtext: { fontSize: FONT_SMALL(), textAlign: 'center', lineHeight: 20 },
   emptyGoRecordBtn: { borderRadius: 12, paddingVertical: 12, paddingHorizontal: 24, marginTop: 20 },

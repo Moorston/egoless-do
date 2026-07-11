@@ -91,7 +91,7 @@ export default function MantraActivePage(props: Props) {
       >
         <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 4 }}>{mantraName}</Text>
         {mantraPronunciation && (
-          <Text style={{ fontSize: 12, color: '#F59E0B', marginBottom: 4 }}>{mantraPronunciation}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#F59E0B', marginBottom: 4 }}>{mantraPronunciation}</Text>
         )}
 
         <MalaRing

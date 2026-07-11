@@ -2,8 +2,7 @@ import {
   COLORS,
   detectStreakBreaks, computeLongestStreak, computeCurrentStreak,
   computeBreakInsights, computeHypotheticalStreak, generateEncouragement, getRecoveryData,
-  FONT_STAT_SECTION, FONT_SUB, FONT_BODY, FONT_BADGE, FONT_TINY,
-} from '@egoless-do/core';
+  FONT_STAT_SECTION, FONT_SUB, FONT_BODY, FONT_BADGE, FONT_TINY, FONT_SMALL } from '@egoless-do/core';
 import { PartyPopper, ArrowRight, Flame, Heart, Clock, Sprout, Shield } from 'lucide-react-native';
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
@@ -255,7 +254,7 @@ function MiniBarChart({ values, labels, color, th }: {
             borderRadius: 3,
             minHeight: v > 0 ? 2 : 0,
           }} />
-          <Text style={{ fontSize: 10, color: th.sub }}>{labels[i]}</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: th.sub }}>{labels[i]}</Text>
         </View>
       ))}
     </View>

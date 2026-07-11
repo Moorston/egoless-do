@@ -1,7 +1,7 @@
 // ─── BreathReportPage — Post-session report + reflection UI ───────
 // Shows session summary, distress assessment, reflection input, save button.
 
-import { FONT_BODY, createLogger, fmtMS } from '@egoless-do/core';
+import { FONT_BODY, createLogger, fmtMS , FONT_SMALL } from '@egoless-do/core';
 import type { BreathingPreset } from '@egoless-do/core';
 import { X, Check } from 'lucide-react-native';
 import React from 'react';
@@ -140,7 +140,7 @@ export default function BreathReportPage(props: Props) {
               textAlignVertical: 'top',
             }}
           />
-          <Text style={{ color: TH.sub, fontSize: 11, marginTop: 4 }}>{T('breathSaveTagHint')}</Text>
+          <Text style={{ color: TH.sub, fontSize: FONT_SMALL(), marginTop: 4 }}>{T('breathSaveTagHint')}</Text>
         </View>
 
         {/* Save button */}

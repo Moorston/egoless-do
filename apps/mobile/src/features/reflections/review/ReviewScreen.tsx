@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_TINY, MS_PER_WEEK , getMoodIcon , scaleFontSize, FONT_STAT_CARD} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, ChevronRight, Check, Calendar, Heart, Lightbulb } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   progressContainer: {
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   moodEmoji: {
-    fontSize: 24,
+    fontSize: FONT_STAT_CARD(),
   },
   moodOptions: {
     flexDirection: 'row',
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   moodOptionEmoji: {
-    fontSize: 32,
+    fontSize: scaleFontSize(32)(),
   },
   moodOptionLabel: {
     fontSize: FONT_BODY(),

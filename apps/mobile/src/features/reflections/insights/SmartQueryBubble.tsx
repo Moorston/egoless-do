@@ -1,4 +1,4 @@
-import { FONT_SMALL, FONT_TINY } from '@egoless-do/core';
+import { FONT_SMALL, FONT_TINY , FONT_LABEL } from '@egoless-do/core';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   avatar: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
   },
   label: {
     fontSize: FONT_TINY(),

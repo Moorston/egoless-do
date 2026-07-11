@@ -1,6 +1,6 @@
 // ─── ZhiguanSettingsSheet 止观设置弹窗 ──────────────────────────
 // 底部弹出 Sheet：呼吸节奏 / 目标时长 / 背景音 / 修行法 / 发愿
-import { ZHIGUAN_METHOD_DEFS, FIVE_HINDRANCE_KEYS, FIVE_HINDRANCE_LABEL_KEYS, SANKALPA_TEMPLATES } from '@egoless-do/core';
+import {ZHIGUAN_METHOD_DEFS, FIVE_HINDRANCE_KEYS, FIVE_HINDRANCE_LABEL_KEYS, SANKALPA_TEMPLATES , FONT_SUB, FONT_BODY, FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
 import type { ZhiguanMethod, FiveHindranceRadar } from '@egoless-do/core';
 import React, { useState } from 'react';
 import { View, Text, Pressable, TextInput, ScrollView, StyleSheet, Modal } from 'react-native';
@@ -127,15 +127,15 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
 
             {/* Five Hindrance Sliders */}
             <Text style={styles.sectionTitle}>{T('zhiguanFiveHindrancesTitle')}</Text>
-            <Text style={{ fontSize: 12, color: '#8B7355', marginBottom: 8 }}>{T('zhiguanFiveHindrancesHint')}</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: '#8B7355', marginBottom: 8 }}>{T('zhiguanFiveHindrancesHint')}</Text>
             {FIVE_HINDRANCE_KEYS.map((key, idx) => (
               <View key={key} style={{ marginBottom: 12 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <Text style={{ fontSize: 14, color: '#4A3F35' }}>{T(FIVE_HINDRANCE_LABEL_KEYS[key])}</Text>
-                  <Text style={{ fontSize: 14, color: '#C9A96E', fontWeight: '600' }}>{localSettings.fiveHindrances[key]}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: '#4A3F35' }}>{T(FIVE_HINDRANCE_LABEL_KEYS[key])}</Text>
+                  <Text style={{ fontSize: FONT_SUB(), color: '#C9A96E', fontWeight: '600' }}>{localSettings.fiveHindrances[key]}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Text style={{ fontSize: 11, color: '#8B7355' }}>{T('zhiguanHindranceNone')}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#8B7355' }}>{T('zhiguanHindranceNone')}</Text>
                   <View style={{ flex: 1 }}>
                     <View style={{ flexDirection: 'row', gap: 2 }}>
                       {Array.from({ length: 11 }, (_, i) => (
@@ -153,7 +153,7 @@ export default function ZhiguanSettingsSheet({ settings, onSave, onClose }: Prop
                       ))}
                     </View>
                   </View>
-                  <Text style={{ fontSize: 11, color: '#8B7355' }}>{T('zhiguanHindranceSevere')}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#8B7355' }}>{T('zhiguanHindranceSevere')}</Text>
                 </View>
               </View>
             ))}
@@ -203,21 +203,21 @@ const styles = StyleSheet.create({
   sheet: { backgroundColor: '#FAF7F2', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '80%' },
   handle: { width: 40, height: 4, backgroundColor: '#D1C7B7', borderRadius: 2, alignSelf: 'center', marginTop: 12 },
   content: { padding: 20 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', color: '#4A3F35', marginTop: 20, marginBottom: 12 },
+  sectionTitle: { fontSize: FONT_LABEL(), fontWeight: '600', color: '#4A3F35', marginTop: 20, marginBottom: 12 },
   optionGroup: { gap: 8 },
   option: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, backgroundColor: '#F5EFE6', borderRadius: 10 },
   optionActive: { backgroundColor: '#C9A96E' },
-  optionText: { fontSize: 15, color: '#4A3F35' },
+  optionText: { fontSize: FONT_BODY(), color: '#4A3F35' },
   optionTextActive: { color: '#1A1A1F', fontWeight: '600' },
-  optionValue: { fontSize: 13, color: '#8B7355' },
-  textInput: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14, fontSize: 15, color: '#4A3F35', minHeight: 80, textAlignVertical: 'top' },
+  optionValue: { fontSize: FONT_SUB(), color: '#8B7355' },
+  textInput: { backgroundColor: '#F5EFE6', borderRadius: 10, padding: 14, fontSize: FONT_BODY(), color: '#4A3F35', minHeight: 80, textAlignVertical: 'top' },
   chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: '#F5EFE6', borderWidth: 1, borderColor: '#E5DDD0' },
   chipActive: { backgroundColor: '#C9A96E', borderColor: '#C9A96E' },
-  chipText: { fontSize: 13, color: '#4A3F35' },
+  chipText: { fontSize: FONT_SUB(), color: '#4A3F35' },
   chipTextActive: { color: '#1A1A1F', fontWeight: '600' },
   footer: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, padding: 20, borderTopWidth: 1, borderTopColor: '#E5DDD0' },
   cancelButton: { paddingVertical: 12, paddingHorizontal: 20 },
-  cancelButtonText: { fontSize: 15, color: '#8B7355' },
+  cancelButtonText: { fontSize: FONT_BODY(), color: '#8B7355' },
   saveButton: { backgroundColor: '#C9A96E', paddingVertical: 12, paddingHorizontal: 24, borderRadius: 8 },
-  saveButtonText: { fontSize: 15, fontWeight: '600', color: '#1A1A1F' },
+  saveButtonText: { fontSize: FONT_BODY(), fontWeight: '600', color: '#1A1A1F' },
 });

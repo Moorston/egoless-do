@@ -1,3 +1,4 @@
+import {FONT_TITLE, FONT_TINY, FONT_BODY, FONT_SMALL, FONT_LABEL} from '@egoless-do/core';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
@@ -13,9 +14,7 @@ import { FONT_BODY, FONT_SMALL, FONT_TINY, createLogger, MS_PER_DAY,
   getTrailStats, getMoodIcon,
   computeRecommendations, applyUserPreferences, buildIgnoredPattern, mergeAndRank,
   isAIRecommendAvailable, parseSmartQuery, matchReflectionsToTopic, matchByKeyword, computeCandidatePool,
-  recommendTrailsViaAI } from '@egoless-do/core';
-
-
+  recommendTrailsViaAI , FONT_LABEL } from '@egoless-do/core';
 import type { TrailRecommendation, SmartQueryResult, TrailFilters, MindReflection, ThoughtTrail } from '@egoless-do/core';
 
 const log = createLogger('Reflections');
@@ -677,7 +676,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   tabContent: {
@@ -694,7 +693,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: FONT_LABEL(),
     fontWeight: '600',
   },
   emptyContainer: {

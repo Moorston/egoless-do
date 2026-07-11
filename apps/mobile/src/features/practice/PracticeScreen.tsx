@@ -1,4 +1,4 @@
-import { FONT_SUB, FONT_STAT_CARD, dateStr , isPreceptHabit } from '@egoless-do/core';
+import {FONT_SUB, FONT_STAT_CARD, dateStr , isPreceptHabit , FONT_SMALL, FONT_CARD_TITLE} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   Wind, Dumbbell, Moon, Salad,
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mottoText: {
-    fontSize: 17,
+    fontSize: FONT_CARD_TITLE(),
     fontWeight: '700',
     color: '#fff',
     letterSpacing: 1,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   visionText: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     fontWeight: '400',
     color: 'rgba(255,255,255,0.7)',
     textAlign: 'center',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   summaryUnit: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
   },
   groupSection: {
     marginBottom: 16,
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cardDesc: {
-    fontSize: 10,
+    fontSize: FONT_SMALL(),
     textAlign: 'center',
   },
 });

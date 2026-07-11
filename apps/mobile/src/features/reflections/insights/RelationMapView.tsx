@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL , FONT_TITLE } from '@egoless-do/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ArrowLeft, ZoomIn, ZoomOut } from 'lucide-react-native';
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_TITLE(),
     fontWeight: '700',
   },
   contextInfo: {
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
-  contextIcon: { fontSize: 18 },
+  contextIcon: { fontSize: FONT_TITLE() },
   contextLabel: { fontSize: FONT_BODY(), fontWeight: '600', flex: 1 },
   contextType: { fontSize: FONT_SMALL() },
   graphContainer: {

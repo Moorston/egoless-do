@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
 import { useSyncStore } from '../store/syncStore';
+import { FONT_BODY, FONT_SMALL, FONT_SUB } from '@egoless-do/core';
 
 import { useTheme } from './UI';
 
@@ -59,11 +60,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   title: {
-    fontSize: 15,
+    fontSize: FONT_BODY(),
     fontWeight: '600',
   },
   clearBtn: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
   },
   list: {
     maxHeight: 200,
@@ -81,11 +82,11 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   entity: {
-    fontSize: 13,
+    fontSize: FONT_SUB(),
     fontWeight: '500',
   },
   entityId: {
-    fontSize: 11,
+    fontSize: FONT_SMALL(),
     marginTop: 2,
   },
   actions: {
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   actionText: {
-    fontSize: 12,
+    fontSize: FONT_SMALL(),
     fontWeight: '500',
   },
 });

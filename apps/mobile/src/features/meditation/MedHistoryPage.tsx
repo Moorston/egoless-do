@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme , MedHistoryEntry } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme , MedHistoryEntry , FONT_SMALL } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, ChevronLeft, ChevronRight, Music, Trash2, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';
@@ -118,7 +118,7 @@ function Heatmap({ entries, TH, onPress }: { entries: MedHistoryEntry[]; TH: The
           return (
             <View key={d} style={[styles.heatmapCell, { width: `${100 / 7}%` }]}>
               <View style={{ flex: 1, borderRadius: 4, backgroundColor: has ? TH.primary : `${TH.border}80`, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 10, color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: has ? '#fff' : TH.sub, fontWeight: has ? '700' : '400' }}>{d}</Text>
               </View>
             </View>
           );
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
   heatmapHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   weekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_BADGE() },
   calendarWeekdayText: { flex: 1, textAlign: 'center', fontSize: FONT_SUB(), fontWeight: '600' },
-  calendarDayFontSize: { fontSize: 14 },
+  calendarDayFontSize: { fontSize: FONT_SUB() },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   calendarBtnPadding: { padding: 8 },
   calendarStatsRow: { flexDirection: 'row', justifyContent: 'space-around', borderRadius: 12, padding: 16 },
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   timelineLine: { width: 2, flex: 1 },
   entryInfoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   // ── Empty state ──
-  emptyEmoji: { fontSize: 64, marginBottom: 16 },
+  emptyEmoji: { fontSize: scaleFontSize(64)(), marginBottom: 16 },
   emptyTitle: { fontSize: FONT_TITLE(), fontWeight: '700', marginBottom: 8 },
   emptyDesc: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 8 },
   emptySubDesc: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 24 },
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   subBold: { fontSize: FONT_SUB(), fontWeight: '600' },
   deleteText: { fontSize: FONT_BODY(), color: '#ef4444' },
   deleteBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12 },
-  detailDuration: { fontSize: 32, fontWeight: '900', textAlign: 'center', marginBottom: 4 },
+  detailDuration: { fontSize: scaleFontSize(32)(), fontWeight: '900', textAlign: 'center', marginBottom: 4 },
   detailDurationLabel: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 16 },
   detailTrackRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   detailSection: { marginBottom: 16 },

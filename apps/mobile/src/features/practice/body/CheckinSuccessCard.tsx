@@ -1,7 +1,6 @@
 import {
   FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_SMALL, FONT_STAT_SECTION,
-  type BodyCheckin, type Theme,
-} from '@egoless-do/core';
+  type BodyCheckin, type Theme, FONT_STAT_CARD } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckCircle2 } from 'lucide-react-native';
 import React from 'react';
@@ -59,21 +58,21 @@ function CheckinSuccessCard({ TH, T, awarenessData, practiceCompleted, breathing
           borderBottomWidth: hasData ? 1 : 0, borderBottomColor: TH.border,
         }}>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, marginBottom: 4 }}>{practiceCompleted ? '✅' : '⏭️'}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), marginBottom: 4 }}>{practiceCompleted ? '✅' : '⏭️'}</Text>
             <Text style={{ fontSize: FONT_BADGE(), color: practiceCompleted ? '#10b981' : TH.sub }}>
               {practiceCompleted ? T('bodyFlowDone') : T('bodyFlowSkipped')}
             </Text>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{T('bodyFlowPractice')}</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, marginBottom: 4 }}>{breathingCompleted ? '✅' : '⏭️'}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), marginBottom: 4 }}>{breathingCompleted ? '✅' : '⏭️'}</Text>
             <Text style={{ fontSize: FONT_BADGE(), color: breathingCompleted ? '#10b981' : TH.sub }}>
               {breathingCompleted ? `${Math.floor(breathingDurationMs / 60000)}${T('bodyMin')}` : T('bodyFlowSkipped')}
             </Text>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{T('bodyFlowBreathing')}</Text>
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, marginBottom: 4 }}>{hasData ? '✅' : '⏭️'}</Text>
+            <Text style={{ fontSize: FONT_STAT_CARD(), marginBottom: 4 }}>{hasData ? '✅' : '⏭️'}</Text>
             <Text style={{ fontSize: FONT_BADGE(), color: hasData ? '#10b981' : TH.sub }}>
               {hasData ? T('bodyFlowRecorded') : T('bodyFlowSkipped')}
             </Text>
