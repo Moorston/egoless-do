@@ -9,7 +9,7 @@ import {
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View, Text, Modal, ScrollView, FlatList, TouchableOpacity, TextInput,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform, StyleSheet,
 } from 'react-native';
 
 import { useTheme, useT, Checkbox, ThemedInput, PrimaryButton, OutlineButton } from '../../../components/UI';
@@ -279,7 +279,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
       <Modal visible animationType="slide" transparent>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1, justifyContent: 'flex-end' }}
+          style={styles.flex1End}
         >
           <CheckinReflection
             onSave={handleReflectionSave}
@@ -294,18 +294,11 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     <Modal visible animationType="slide" transparent>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex:1, justifyContent:'flex-end' }}
+        style={[styles.flex1End]}
       >
-        <View style={{
-          backgroundColor: TH.cardSolid, borderTopLeftRadius:24,
-          borderTopRightRadius:24, paddingHorizontal:16,
-          paddingBottom:40, maxHeight:'92%',
-        }}>
+        <View style={[styles.modalBody, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
-          <View style={{
-            flexDirection:'row', justifyContent:'space-between',
-            alignItems:'center', paddingTop:20, paddingBottom:8,
-          }}>
+          <View style={styles.headerRow}>
             <Text style={{ color:TH.text, fontWeight:'700', fontSize:FONT_TITLE }}>
               {isGraceMode ? T('graceCheckinTitle') : T('checkinTitle')}
             </Text>
@@ -332,45 +325,41 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
 
             {/* Status buttons - TOP (hidden in grace mode) */}
             {!isGraceMode && (
-            <View style={{ flexDirection:'row', gap:10, marginBottom:16 }}>
+            <View style={styles.rowGap10}>
               <TouchableOpacity onPress={() => setLocalDone(false)}
-                style={{
-                  flex:1, paddingVertical:14, borderRadius:12, alignItems:'center',
-                  borderWidth:2,
+                style={[styles.statusBtnBase, {
                   borderColor: localDone===false ? '#C53364' : TH.border,
                   backgroundColor: localDone===false ? 'rgba(197,51,100,0.1)' : 'transparent',
-                }}>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                }]}>
+                <View style={styles.rowCenterGap4}>
                   <X size={18} color={localDone===false ? '#C53364' : TH.sub} />
-                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===false ? '#C53364' : TH.sub }}>{T('checkinNotDone')}</Text>
+                  <Text style={[styles.buttonTextBold, { color: localDone===false ? '#C53364' : TH.sub }]}>{T('checkinNotDone')}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDone}
-                style={{
-                  flex:1, paddingVertical:14, borderRadius:12, alignItems:'center',
-                  borderWidth:2,
+                style={[styles.statusBtnBase, {
                   borderColor: localDone===true ? '#17EAD9' : TH.border,
                   backgroundColor: localDone===true ? 'rgba(23,234,217,0.1)' : 'transparent',
-                }}>
-                <View style={{ flexDirection:'row', alignItems:'center', gap:4 }}>
+                }]}>
+                <View style={styles.rowCenterGap4}>
                   <Check size={18} color={localDone===true ? '#17EAD9' : TH.sub} />
-                  <Text style={{ fontWeight:'700', fontSize:FONT_BUTTON, color: localDone===true ? '#17EAD9' : TH.sub }}>{T('checkinDone')}</Text>
+                  <Text style={[styles.buttonTextBold, { color: localDone===true ? '#17EAD9' : TH.sub }]}>{T('checkinDone')}</Text>
                 </View>
               </TouchableOpacity>
             </View>
             )}
 
             {/* Tasks section - merged card */}
-            <View style={{ backgroundColor:TH.card, borderRadius:16, padding:14, marginBottom:12 }}>
-              <View style={{ flexDirection:'row', alignItems:'center', gap:8, marginBottom:14 }}>
+            <View style={[styles.cardBase, { backgroundColor:TH.card }]}>
+              <View style={styles.sectionHeader}>
                 <ClipboardList size={18} color={P} />
                 <Text style={{ fontWeight:'600', fontSize:FONT_BODY, color:TH.text }}>{isGraceMode ? `${targetDate} ${T('graceTitle')}` : `${T('checkinPractice')} & ${T('planTodoList')}`}</Text>
               </View>
 
               {/* Practices */}
               <View style={{ marginBottom:12 }}>
-                <Text style={{ fontSize:FONT_SUB, color:TH.sub, marginBottom:8 }}>{T('checkinPractice')}</Text>
-                <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8 }}>
+                <Text style={[styles.subLabel, { color:TH.sub }]}>{T('checkinPractice')}</Text>
+                <View style={styles.rowWrapGap8}>
                   {([
                     { key:'sit' as const,   icon:<Moon size={16} color={P} />, label:T('checkinSit') },
                     { key:'stand' as const, icon:<Sunrise size={16} color={P} />, label:T('checkinStand') },
@@ -649,6 +638,78 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  rowCenterGap4: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  rowCenterGap6: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  rowCenterGap8: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  rowCenterGap10: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  rowSpaceBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  rowCenter: { flexDirection: 'row', alignItems: 'center' },
+  rowWrapGap8: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  rowGap8: { flexDirection: 'row', gap: 8 },
+  rowGap10: { flexDirection: 'row', gap: 10 },
+  rowGap8Mb8: { flexDirection: 'row', gap: 8, marginBottom: 8 },
+  headerRow: {
+    flexDirection: 'row', justifyContent: 'space-between',
+    alignItems: 'center', paddingTop: 20, paddingBottom: 8,
+  },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 14 },
+  noteHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 },
+  flex1MarginLeft8: { flex: 1, marginLeft: 8 },
+  ml4: { marginLeft: 4 },
+  flex1End: { flex: 1, justifyContent: 'flex-end' },
+  modalBody: {
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    paddingHorizontal: 16, paddingBottom: 40, maxHeight: '92%',
+  },
+  cardBase: { borderRadius: 16, padding: 14, marginBottom: 12 },
+  subLabel: { fontSize: FONT_SUB, marginBottom: 8 },
+  subText: { fontSize: FONT_SUB },
+  subBold: { fontSize: FONT_SUB, fontWeight: '600' },
+  bodyText: { fontSize: FONT_BODY },
+  bodyColor: { fontSize: FONT_BODY }, // alias for bodyText with color override
+  whiteButtonText: { color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON },
+  buttonTextBold: { fontWeight: '700', fontSize: FONT_BUTTON },
+  statusBtnBase: {
+    flex: 1, paddingVertical: 14, borderRadius: 12,
+    alignItems: 'center', borderWidth: 2,
+  },
+  submitBtnBase: { paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
+  cancelBtnBase: {
+    paddingVertical: 14, borderRadius: 12, alignItems: 'center',
+    borderWidth: 1, marginBottom: 20,
+  },
+  cancelButtonText: { fontSize: FONT_BUTTON },
+  titleText: { fontSize: FONT_TITLE },
+  checkItemBase: {
+    flexDirection: 'row', alignItems: 'center', paddingVertical: 8,
+    paddingHorizontal: 4, borderRadius: 8, marginBottom: 4,
+  },
+  waterPlusBtn: { paddingVertical: 4, paddingHorizontal: 8, borderRadius: 6 },
+  foodCancelBtn: {
+    paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8,
+    borderWidth: 1, alignItems: 'center',
+  },
+  foodConfirmBtnBase: { flex: 1, padding: 8, borderRadius: 8, alignItems: 'center' },
+  foodAddCircle: { width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  foodNameInput: { flex: 2, padding: 7 },
+  foodCalInput: { flex: 1, padding: 7 },
+  labelWithMb8: { fontSize: FONT_SUB, marginBottom: 8 },
+  numberInput: {
+    width: 60, textAlign: 'center', borderWidth: 1, borderRadius: 8,
+    paddingVertical: 6, fontWeight: '600', fontSize: FONT_BODY,
+  },
+  reasonBtnBase: { flex: 1, padding: 14, borderRadius: 12, alignItems: 'center' },
+  reasonBackBtnBase: {
+    flex: 1, padding: 14, borderRadius: 12, borderWidth: 1, alignItems: 'center',
+  },
+  reasonNoteInput: {
+    width: '100%', minHeight: 60, borderWidth: 1, borderRadius: 12,
+    padding: 12, marginBottom: 20, textAlignVertical: 'top',
+  },
+  reasonOptionBtn: { paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, borderWidth: 1.5 },
+});
 
 function RowItem({ label, icon, right, last }: { label:string; icon:React.ReactNode; right:React.ReactNode; last?:boolean }) {
   const TH = useTheme();

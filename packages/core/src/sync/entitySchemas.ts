@@ -45,17 +45,23 @@ export interface EntitySchema {
 // ── Helpers ─────────────────────────────────────────────────────
 
 function bool(v: unknown): number { return v ? 1 : 0; }
-/** Parse byte array (char codes from PocketBase) to string */
+/** Parse byte array (UTF-8 bytes from PocketBase) to string */
 function parseBytes(v: unknown): string | null {
   if (!Array.isArray(v) || v.length === 0) return null;
   // Only treat as byte array if ALL elements are numbers (char codes)
   // This prevents misidentifying JSON arrays like ["2026-01-01"] as byte arrays
-  if (!v.every(e => typeof e === 'number' && e >= 0 && e <= 65535)) return null;
+  if (!v.every(e => typeof e === 'number' && e >= 0 && e <= 255)) return null;
   try {
-    // Use loop to avoid stack overflow with large arrays (>65000 elements)
+    // Decode UTF-8 byte array (handles Chinese/multi-byte characters)
     let result = '';
-    for (let i = 0; i < v.length; i++) {
-      result += String.fromCharCode(v[i] as number);
+    let i = 0;
+    while (i < v.length) {
+      const b = v[i] as number;
+      if (b < 0x80) { result += String.fromCharCode(b); i++; }
+      else if ((b & 0xE0) === 0xC0) { result += String.fromCharCode(((b & 0x1F) << 6) | ((v[i+1] as number) & 0x3F)); i += 2; }
+      else if ((b & 0xF0) === 0xE0) { result += String.fromCharCode(((b & 0x0F) << 12) | (((v[i+1] as number) & 0x3F) << 6) | ((v[i+2] as number) & 0x3F)); i += 3; }
+      else if ((b & 0xF8) === 0xF0) { const cp = ((b & 0x07) << 18) | (((v[i+1] as number) & 0x3F) << 12) | (((v[i+2] as number) & 0x3F) << 6) | ((v[i+3] as number) & 0x3F); result += String.fromCodePoint(cp); i += 4; }
+      else { result += String.fromCharCode(b); i++; }
     }
     return result;
   } catch { return null; }

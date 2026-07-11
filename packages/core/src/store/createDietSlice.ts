@@ -30,7 +30,8 @@ export function createDietSlice(
   const _cache = new Map<string, { sig: string; value: unknown }>();
   function memoStat<T>(method: string, date: string, get: () => { foodLog?: unknown[] }, compute: () => T): T {
     const fl = get().foodLog ?? [];
-    const sig = `${fl.length}:${(fl[0] as { id?: string })?.id ?? ''}`;
+    const activeCount = (fl as Array<{ deleted?: boolean }>).filter(f => !f.deleted).length;
+    const sig = `${fl.length}:${activeCount}:${(fl[0] as { id?: string })?.id ?? ''}`;
     const key = `${method}:${date}`;
     const hit = _cache.get(key);
     if (hit && hit.sig === sig) return hit.value as T;

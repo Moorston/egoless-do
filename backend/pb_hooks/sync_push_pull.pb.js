@@ -10,6 +10,8 @@ routerAdd("POST", "/api/sync/push", function(e) {
     var idRe = /^[a-zA-Z0-9_\-]{1,128}$/;
     function isValidId(v) { return uuidRe.test(v) || idRe.test(v); }
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
+    function decodeUtf8Bytes(arr) { var s="",i=0; while(i<arr.length){var b=arr[i]; if(b<0x80){s+=String.fromCharCode(b);i++;} else if((b&0xE0)===0xC0){s+=String.fromCharCode(((b&0x1F)<<6)|(arr[i+1]&0x3F));i+=2;} else if((b&0xF0)===0xE0){s+=String.fromCharCode(((b&0x0F)<<12)|((arr[i+1]&0x3F)<<6)|(arr[i+2]&0x3F));i+=3;} else if((b&0xF8)===0xF0){var cp=((b&0x07)<<18)|((arr[i+1]&0x3F)<<12)|((arr[i+2]&0x3F)<<6)|(arr[i+3]&0x3F);s+=String.fromCodePoint(cp);i+=4;} else{s+=String.fromCharCode(b);i++;}} return s; }
+    function parseDataField(d) { if(d&&typeof d==="object"&&!Array.isArray(d))return d; if(typeof d==="string"){try{return JSON.parse(d);}catch(e){return null;}} if(Array.isArray(d)&&d.length>0&&typeof d[0]==="number"){try{return JSON.parse(decodeUtf8Bytes(d));}catch(e){return null;}} return null; }
 
     var info = e.requestInfo();
     var userId = info.auth ? info.auth.id : null;
@@ -34,10 +36,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
           var delRecs = $app.findRecordsByFilter(coll, delFilter, "", 10);
           for (var dj = 0; dj < delRecs.length; dj++) {
             var curData = delRecs[dj].get("data");
-            var curObj = {};
-            if (Array.isArray(curData)) { try { curObj = JSON.parse(String.fromCharCode.apply(null, curData)); } catch(pe) {} }
-            else if (typeof curData === "string") { try { curObj = JSON.parse(curData); } catch(pe) {} }
-            else if (curData && typeof curData === "object") { for (var ck in curData) curObj[ck] = curData[ck]; }
+            var curObj = parseDataField(curData) || {};
             curObj.deleted = true; curObj.updatedAt = Date.now();
             delRecs[dj].set("data", JSON.stringify(curObj));
             delRecs[dj].set("deleted", true);
@@ -50,10 +49,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
           var rec = upRecs.length > 0 ? upRecs[0] : null;
           if (rec) {
             var rawD = rec.get("data");
-            var existD = {};
-            if (Array.isArray(rawD)) { try { existD = JSON.parse(String.fromCharCode.apply(null, rawD)); } catch(pe) {} }
-            else if (typeof rawD === "string") { try { existD = JSON.parse(rawD); } catch(pe) {} }
-            else if (rawD && typeof rawD === "object") { for (var ek in rawD) existD[ek] = rawD[ek]; }
+            var existD = parseDataField(rawD) || {};
             // If server record is already deleted, reject upsert — deletion takes priority
             if (existD.deleted === true && !(payload && payload.deleted === true)) {
               rejected.push({ entity: entity, entityId: entityId, error: "deleted", serverData: existD });
@@ -67,9 +63,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
           if (!rec) { var colObj = $app.findCollectionByNameOrId(coll); rec = new Record(colObj); rec.set(idField, entityId); rec.set("user_id", userId); }
           var existObj = {};
           var rawE = rec.get("data");
-          if (Array.isArray(rawE)) { try { existObj = JSON.parse(String.fromCharCode.apply(null, rawE)); } catch(pe) {} }
-          else if (typeof rawE === "string") { try { existObj = JSON.parse(rawE); } catch(pe) {} }
-          else if (rawE && typeof rawE === "object") { for (var mk in rawE) existObj[mk] = rawE[mk]; }
+          existObj = parseDataField(rawE) || {};
           if (Object.keys(existObj).length > 500) { existObj = {}; }
           var changedFields = payload._changedFields;
           delete payload._changedFields;
@@ -120,6 +114,8 @@ routerAdd("POST", "/api/sync/pull", function(e) {
     var ENTITY_ID_FIELD_MAP = {habit:"habit_id",reflection:"reflection_id",fasting:"session_id",food:"food_id",checkin:"date",meditation:"date",profile:"profile_id",exercise:"exercise_id",plan:"plan_id",planItem:"plan_item_id",planItemCheckin:"checkin_id",dailyCustomTodo:"todo_id",dailyTodoHistory:"history_id",grace:"date",thoughtTrail:"trail_id",trailNote:"note_id",reflectionLink:"link_id",aiConfig:"config_id",checkinReview:"review_id",motivationEntry:"motivation_id",customWuxing:"wuxing_id",fearEntry:"fear_id",courageEntry:"courage_id",fearAchievement:"achievement_id",sutraReading:"reading_id",sleep:"sleep_id",give:"give_id",bodyGoal:"goal_id",bodyPlan:"plan_id",weightRecord:"weight_id",bodyCheckin:"checkin_id",vision:"vision_id",visionPractice:"practice_id",dedication:"dedication_id",mantraDef:"mantra_id",mantraSession:"session_id",zhiguanSession:"zhiguan_id",breath:"breath_id"};
     var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
+    function decodeUtf8Bytes(arr) { var s="",i=0; while(i<arr.length){var b=arr[i]; if(b<0x80){s+=String.fromCharCode(b);i++;} else if((b&0xE0)===0xC0){s+=String.fromCharCode(((b&0x1F)<<6)|(arr[i+1]&0x3F));i+=2;} else if((b&0xF0)===0xE0){s+=String.fromCharCode(((b&0x0F)<<12)|((arr[i+1]&0x3F)<<6)|(arr[i+2]&0x3F));i+=3;} else if((b&0xF8)===0xF0){var cp=((b&0x07)<<18)|((arr[i+1]&0x3F)<<12)|((arr[i+2]&0x3F)<<6)|(arr[i+3]&0x3F);s+=String.fromCodePoint(cp);i+=4;} else{s+=String.fromCharCode(b);i++;}} return s; }
+    function parseDataField(d) { if(d&&typeof d==="object"&&!Array.isArray(d))return d; if(typeof d==="string"){try{return JSON.parse(d);}catch(e){return null;}} if(Array.isArray(d)&&d.length>0&&typeof d[0]==="number"){try{return JSON.parse(decodeUtf8Bytes(d));}catch(e){return null;}} return null; }
     function safeFindRecords(app, coll, filter, limit, offset) {
       try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
         try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
@@ -156,18 +152,12 @@ routerAdd("POST", "/api/sync/pull", function(e) {
         var totalCount = 0;
         if (page > 0 && pageSize > 0) {
           // Paginated mode for phased initial sync
-          // Use raw SQL COUNT to avoid loading all records into memory
+          // Use findRecordsByFilter for reliable count (raw SQL has PB version compat issues)
           try {
-            // PocketBase stores per-user data; the filter is always user_id based
-            // Build a COUNT query against the underlying table
-            var countResult = $app.db().newQuery(
-              "SELECT COUNT(*) as total FROM " + coll + " WHERE user_id = {:userId}"
-            ).bind({ userId: userId }).one();
-            totalCount = countResult ? (countResult.total || 0) : 0;
-          } catch (countErr) {
-            // Fallback: load all records for count (same as before) — capped to prevent OOM
             var countRecs = $app.findRecordsByFilter(coll, f, "", 10000);
             totalCount = countRecs ? countRecs.length : 0;
+          } catch (countErr) {
+            totalCount = 0;
           }
           var offset = (page - 1) * pageSize;
           var batch = safeFindRecords($app, coll, f, pageSize, offset);
@@ -190,9 +180,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
         for (var ri = 0; ri < allRecs.length; ri++) {
           try {
             var exported = allRecs[ri].publicExport();
-            var dd = exported.data;
-            if (Array.isArray(dd)) { try { dd = JSON.parse(String.fromCharCode.apply(null, dd)); } catch(pe) { dd = null; } }
-            if (typeof dd === "string") { try { dd = JSON.parse(dd); } catch(pe) { dd = null; } }
+            var dd = parseDataField(exported.data);
             if (dd && typeof dd === "object") {
               for (var dk in dd) { if (dk === "id" || dk === "created" || dk === "updated" || dk === "user_id") continue; exported[dk] = dd[dk]; }
               if (dd.id !== undefined) exported.id = dd.id;

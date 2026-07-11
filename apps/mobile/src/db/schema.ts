@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS mind_reflections (
   link            TEXT,
   linked_habit_id TEXT,
   linked_plan_id  TEXT,
+  linked_plan_item_id TEXT,
   is_pinned       INTEGER NOT NULL DEFAULT 0,
   is_published    INTEGER NOT NULL DEFAULT 0,
   updated_at      INTEGER,
@@ -520,6 +521,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
 
   await tryAddCol('habits', 'synced', 'INTEGER NOT NULL DEFAULT 0');
   await tryAddCol('mind_reflections', 'linked_plan_id', 'TEXT');
+  await tryAddCol('mind_reflections', 'linked_plan_item_id', 'TEXT');
   await tryAddCol('food_entries', 'synced', 'INTEGER NOT NULL DEFAULT 0');
   await tryAddCol('checkin_records', 'timestamp', 'INTEGER');
   await tryAddCol('checkin_records', 'weight', 'REAL');

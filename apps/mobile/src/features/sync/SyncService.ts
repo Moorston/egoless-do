@@ -44,6 +44,7 @@ export function isRealtimeConnected(): boolean { return _engine.isRealtimeConnec
 // Reset
 export function softResetSyncState() { return _engine.softReset(); }
 export function resetSyncState() { return _engine.hardReset('CONFIRM_HARD_RESET'); }
+export function forceFullSync() { return _engine.forceFullSync(); }
 
 // Rehydrate
 export function rehydrateFromDb(entities?: string[]): Promise<Record<string, unknown>> { return _engine.rehydrateFromDb(entities); }

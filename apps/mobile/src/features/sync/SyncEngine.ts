@@ -805,9 +805,37 @@ export class SyncEngine {
   async push(): Promise<void> { /* push-only not yet needed */ return this.runSync(); }
   async pull(): Promise<void> { /* pull-only not yet needed */ return this.runSync(); }
   async forceFullSync(): Promise<void> {
+    const { SCHEMAS } = await import('@egoless-do/core');
+    const { openDatabase, withDbLock, setState: setDbState } = await import('../../db/schema');
+    const { ENTITY_STORE_KEY } = await import('./SyncApplyService');
+    try {
+      const db = await openDatabase();
+      await withDbLock(async () => {
+        const tables = new Set(Object.values(SCHEMAS).map(s => s.sqlite.table));
+        // Clear all entity tables but preserve app_state/settings
+        for (const table of tables) {
+          await db.runAsync(`DELETE FROM ${table}`).catch(() => {});
+        }
+        // Also clear sync queue to avoid pushing stale ghost deletions
+        await db.runAsync('DELETE FROM sync_queue').catch(() => {});
+        // Mark initial sync as done so overlay doesn't show
+        await setDbState(db, 'initialSyncDone', 'true');
+      });
+      log.info('Cleared all entity tables for full sync');
+    } catch (e) {
+      log.warn('Failed to clear tables (non-fatal):', e);
+    }
+    // Reset sync timestamp and force pull
     this._timestampManager.resetLastSyncAt();
     await this._timestampManager.saveLastSyncAt(0);
     this._forcePull = true;
+    // Clear store entity data
+    const { useAppStore } = await import('../../store/useAppStore');
+    const emptyPatch: Record<string, unknown[]> = {};
+    for (const storeKey of Object.values(ENTITY_STORE_KEY)) {
+      emptyPatch[storeKey] = [];
+    }
+    useAppStore.setState(emptyPatch as Parameters<typeof useAppStore.setState>[0]);
     return this.runSync();
   }
 

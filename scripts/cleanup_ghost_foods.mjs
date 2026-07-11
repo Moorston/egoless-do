@@ -14,12 +14,26 @@ if (!ADMIN_EMAIL || !ADMIN_PASS) {
   process.exit(1);
 }
 
+/** Decode UTF-8 byte array to string */
+function decodeUtf8(arr) {
+  let s = '', i = 0;
+  while (i < arr.length) {
+    const b = arr[i];
+    if (b < 0x80) { s += String.fromCharCode(b); i++; }
+    else if ((b & 0xE0) === 0xC0) { s += String.fromCharCode(((b & 0x1F) << 6) | (arr[i+1] & 0x3F)); i += 2; }
+    else if ((b & 0xF0) === 0xE0) { s += String.fromCharCode(((b & 0x0F) << 12) | ((arr[i+1] & 0x3F) << 6) | (arr[i+2] & 0x3F)); i += 3; }
+    else if ((b & 0xF8) === 0xF0) { const cp = ((b & 0x07) << 18) | ((arr[i+1] & 0x3F) << 12) | ((arr[i+2] & 0x3F) << 6) | (arr[i+3] & 0x3F); s += String.fromCodePoint(cp); i += 4; }
+    else { s += String.fromCharCode(b); i++; }
+  }
+  return s;
+}
+
 /** Parse data field: may be object, JSON string, or byte array */
 function parseData(data) {
   if (data && typeof data === 'object' && !Array.isArray(data)) return data;
   if (typeof data === 'string') { try { return JSON.parse(data); } catch { return null; } }
   if (Array.isArray(data)) {
-    try { return JSON.parse(String.fromCharCode(...data)); } catch { return null; }
+    try { return JSON.parse(decodeUtf8(data)); } catch { return null; }
   }
   return null;
 }

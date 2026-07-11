@@ -6,7 +6,7 @@ import {
   Globe, X, Search,
 } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
@@ -94,86 +94,86 @@ export default function ExerciseScreen() {
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Exercise" />
-      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
 
         {/* ── Hero Banner ── */}
-        <View style={{ marginHorizontal: 16, marginTop: 12, borderRadius: 20, overflow: 'hidden' }}>
+        <View style={styles.heroBannerOuter}>
           <LinearGradient
             colors={['#7117EA', '#EA6060']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={{ padding: 20 }}
+            style={styles.heroBannerInner}
           >
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('exercise')}</Text>
-              <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600' }}>{T('exerciseHistory')}</Text>
+            <View style={styles.heroTitleRow}>
+              <Text style={styles.heroTitle}>{T('exercise')}</Text>
+              <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory')} style={styles.heroHistoryBtn}>
+                <Text style={styles.heroHistoryText}>{T('exerciseHistory')}</Text>
                 <ChevronRight size={16} color="rgba(255,255,255,.8)" />
               </TouchableOpacity>
             </View>
             {weeklyStats.weekCount > 0 ? (
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <View style={{ alignItems: 'center', flex: 1 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{weeklyStats.weekKm.toFixed(1)}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>km</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseWeeklyKm')}</Text>
+              <View style={styles.statsRow}>
+                <View style={styles.statColumn}>
+                  <Text style={styles.statValue}>{weeklyStats.weekKm.toFixed(1)}</Text>
+                  <Text style={styles.statSub}>km</Text>
+                  <Text style={styles.statLabel}>{T('exerciseWeeklyKm')}</Text>
                 </View>
-                <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-                <View style={{ alignItems: 'center', flex: 1 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{weeklyStats.weekCount}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseWorkouts')}</Text>
+                <View style={styles.divider} />
+                <View style={styles.statColumn}>
+                  <Text style={styles.statValue}>{weeklyStats.weekCount}</Text>
+                  <Text style={styles.statSub}>{T('fastTimes')}</Text>
+                  <Text style={styles.statLabel}>{T('exerciseWorkouts')}</Text>
                 </View>
-                <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-                <View style={{ alignItems: 'center', flex: 1 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{Math.round(weeklyStats.weekDuration / 60)}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('exerciseMin')}</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseWeekTime')}</Text>
+                <View style={styles.divider} />
+                <View style={styles.statColumn}>
+                  <Text style={styles.statValue}>{Math.round(weeklyStats.weekDuration / 60)}</Text>
+                  <Text style={styles.statSub}>{T('exerciseMin')}</Text>
+                  <Text style={styles.statLabel}>{T('exerciseWeekTime')}</Text>
                 </View>
-                <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-                <View style={{ alignItems: 'center', flex: 1 }}>
-                  <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>
+                <View style={styles.divider} />
+                <View style={styles.statColumn}>
+                  <Text style={styles.statValue}>
                     {weeklyStats.bestPace > 0 ? formatPace(weeklyStats.bestPace) : '--:--'}
                   </Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>/km</Text>
-                  <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('exerciseBestPace')}</Text>
+                  <Text style={styles.statSub}>/km</Text>
+                  <Text style={styles.statLabel}>{T('exerciseBestPace')}</Text>
                 </View>
               </View>
             ) : (
-              <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', lineHeight: 22 }}>{T('exerciseNoActivity')}</Text>
+              <Text style={styles.noActivityText}>{T('exerciseNoActivity')}</Text>
             )}
             <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🌍', title: `${T('linkWorld')} — ${T('exerciseGlobal')}`, type: 'exercise' })}
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.2)' }}>
+              style={styles.globalMapButton}>
               <Globe size={18} color="rgba(255,255,255,.8)" />
-              <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600', flex: 1 }}>{T('linkWorld')} — {T('exerciseGlobal')}</Text>
+              <Text style={styles.globalMapText}>{T('linkWorld')} — {T('exerciseGlobal')}</Text>
               <ChevronRight size={16} color="rgba(255,255,255,.8)" />
             </TouchableOpacity>
           </LinearGradient>
         </View>
 
         {/* ── Quick Start Grid ── */}
-        <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+        <View style={styles.quickStartSection}>
           <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseQuickStart')}</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+          <View style={styles.quickStartGrid}>
             {quickSports.map(s => (
               <TouchableOpacity key={s.key}
                 onPress={() => s.more ? setShowOther(true) : startSport({ key: s.key, icon: s.icon, color: s.colors[0], gps: s.gps })}
-                style={{ width: '47%', borderRadius: 16, overflow: 'hidden', minHeight: 100 }}>
+                style={styles.quickSportCard}>
                 <LinearGradient
                   colors={s.colors}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={{ padding: 16, minHeight: 100, justifyContent: 'space-between' }}
+                  style={styles.quickSportGradient}
                 >
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <View style={styles.quickSportTopRow}>
                     <s.Icon size={36} color="#fff" />
                     {s.gps && (
-                      <View style={{ backgroundColor: 'rgba(255,255,255,.25)', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
-                        <Text style={{ fontSize: FONT_BADGE, color: '#fff', fontWeight: '600' }}>{T('exerciseGpsTag')}</Text>
+                      <View style={styles.gpsPill}>
+                        <Text style={styles.gpsPillText}>{T('exerciseGpsTag')}</Text>
                       </View>
                     )}
                   </View>
-                  <Text style={{ fontSize: FONT_BUTTON, fontWeight: '700', color: '#fff', marginTop: 8 }}>{s.label}</Text>
+                  <Text style={styles.quickSportLabel}>{s.label}</Text>
                 </LinearGradient>
               </TouchableOpacity>
             ))}
@@ -182,14 +182,14 @@ export default function ExerciseScreen() {
 
         {/* ── Recent Sports ── */}
         {recentSports.length > 0 && (
-          <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+          <View style={styles.sectionContainer}>
             <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{T('exerciseRecentActivity')}</Text>
             <View style={{ backgroundColor: TH.card, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: TH.border }}>
               {recentSports.map((s, i) => (
                 <TouchableOpacity key={s.key}
                   onPress={() => startSport(s)}
                   style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12, borderBottomWidth: i < recentSports.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                  <Text style={{ fontSize: FONT_CLOSE, width: 36, textAlign: 'center' }}>{s.icon}</Text>
+                  <Text style={styles.sportIcon}>{s.icon}</Text>
                   <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{s.key}</Text>
                   {s.gps && (
                     <View style={{ backgroundColor: `${P}20`, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}>
@@ -204,14 +204,14 @@ export default function ExerciseScreen() {
         )}
 
         {/* ── My Sports ── */}
-        <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+        <View style={styles.sectionContainerMarginTop}>
           <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>{SPORT_GROUPS[0]?.group ?? '我的运动'}</Text>
           <View style={{ backgroundColor: TH.card, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: TH.border }}>
             {mySports.map((s, i) => (
               <TouchableOpacity key={s.key}
                 onPress={() => startSport(s)}
                 style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12, borderBottomWidth: i < mySports.length - 1 ? 1 : 0, borderBottomColor: TH.border }}>
-                <Text style={{ fontSize: FONT_CLOSE, width: 36, textAlign: 'center' }}>{s.icon}</Text>
+                <Text style={styles.sportIcon}>{s.icon}</Text>
                 <Text style={{ fontSize: FONT_BODY, color: TH.text, flex: 1 }}>{s.key}</Text>
                 {s.gps && (
                   <View style={{ backgroundColor: `${P}20`, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}>
@@ -229,11 +229,11 @@ export default function ExerciseScreen() {
       <Modal visible={showOther} transparent animationType="slide">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.7)', justifyContent: 'flex-end' }}
+          style={styles.modalOverlay}
         >
           <View style={{ backgroundColor: TH.cardSolid, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, height: '88%' }}>
             <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: TH.border, alignSelf: 'center', marginBottom: 16 }} />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <View style={styles.modalHeaderRow}>
               <Text style={{ fontWeight: '700', fontSize: FONT_BACK, color: TH.text }}>{T('exerciseCategory')}</Text>
               <TouchableOpacity onPress={() => setShowOther(false)}
                 style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: TH.card, alignItems: 'center', justifyContent: 'center' }}>
@@ -254,7 +254,7 @@ export default function ExerciseScreen() {
                 onChangeText={setSearchQuery}
                 placeholder={T('exerciseSearchPlaceholder') ?? '搜索运动...'}
                 placeholderTextColor={TH.sub}
-                style={{ flex: 1, paddingVertical: 12, paddingHorizontal: 8, color: TH.text, fontSize: FONT_BODY }}
+                style={styles.searchInput}
               />
               {searchQuery.length > 0 && (
                 <TouchableOpacity onPress={() => setSearchQuery('')}>
@@ -272,8 +272,8 @@ export default function ExerciseScreen() {
                       <TouchableOpacity key={s.key}
                         onPress={() => { startSport(s); setShowOther(false); }}
                         style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 13, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                          <Text style={{ fontSize: FONT_CLOSE, width: 36, textAlign: 'center' }}>{s.icon}</Text>
+                        <View style={styles.modalSportRowLeft}>
+                          <Text style={styles.sportIcon}>{s.icon}</Text>
                           <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{s.key}</Text>
                         </View>
                         {s.gps && (
@@ -286,7 +286,7 @@ export default function ExerciseScreen() {
                   </View>
                 ))
               ) : (
-                <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+                <View style={styles.emptySearchState}>
                   <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('exerciseNoResults') ?? '未找到匹配的运动'}</Text>
                 </View>
               )}
@@ -297,3 +297,167 @@ export default function ExerciseScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollContent: {
+    paddingBottom: 40,
+  },
+  heroBannerOuter: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  heroBannerInner: {
+    padding: 20,
+  },
+  heroTitleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  heroTitle: {
+    fontSize: FONT_TITLE,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  heroHistoryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  heroHistoryText: {
+    fontSize: FONT_BODY,
+    color: 'rgba(255,255,255,.8)',
+    fontWeight: '600',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  statColumn: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statValue: {
+    fontSize: FONT_STAT_SECTION,
+    fontWeight: '900',
+    color: '#fff',
+  },
+  statSub: {
+    fontSize: FONT_SUB,
+    color: 'rgba(255,255,255,.7)',
+    marginTop: 2,
+  },
+  statLabel: {
+    fontSize: FONT_SUB,
+    color: 'rgba(255,255,255,.5)',
+    marginTop: 2,
+  },
+  divider: {
+    width: 1,
+    backgroundColor: 'rgba(255,255,255,.2)',
+    marginVertical: 4,
+  },
+  noActivityText: {
+    fontSize: FONT_BODY,
+    color: 'rgba(255,255,255,.8)',
+    lineHeight: 22,
+  },
+  globalMapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,.2)',
+  },
+  globalMapText: {
+    fontSize: FONT_BODY,
+    color: 'rgba(255,255,255,.8)',
+    fontWeight: '600',
+    flex: 1,
+  },
+  quickStartSection: {
+    paddingHorizontal: 16,
+    marginTop: 20,
+  },
+  quickStartGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  quickSportCard: {
+    width: '47%',
+    borderRadius: 16,
+    overflow: 'hidden',
+    minHeight: 100,
+  },
+  quickSportGradient: {
+    padding: 16,
+    minHeight: 100,
+    justifyContent: 'space-between',
+  },
+  quickSportTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  gpsPill: {
+    backgroundColor: 'rgba(255,255,255,.25)',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  gpsPillText: {
+    fontSize: FONT_BADGE,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  quickSportLabel: {
+    fontSize: FONT_BUTTON,
+    fontWeight: '700',
+    color: '#fff',
+    marginTop: 8,
+  },
+  sectionContainer: {
+    paddingHorizontal: 16,
+    marginTop: 16,
+  },
+  sectionContainerMarginTop: {
+    paddingHorizontal: 16,
+    marginTop: 20,
+  },
+  sportIcon: {
+    fontSize: FONT_CLOSE,
+    width: 36,
+    textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,.7)',
+    justifyContent: 'flex-end',
+  },
+  modalHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+  },
+  modalSportRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  emptySearchState: {
+    paddingVertical: 40,
+    alignItems: 'center',
+  },
+});
