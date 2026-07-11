@@ -223,6 +223,16 @@ export async function initApp(): Promise<void> {
       log.error(err, { message: 'SecureStore load failed — user may appear logged out despite valid tokens' });
     }
 
+    // Guard: if user appears signed in but has no token (SecureStore empty/corrupt),
+    // clear signed-in state to prevent stuck "no token" state on next sync.
+    {
+      const auth = store().auth;
+      if (auth.isSignedIn && !auth.token) {
+        log.warn('isSignedIn=true but no token — clearing auth state');
+        setState({ auth: { ...auth, isSignedIn: false, isLoading: false } } as PartialMobileStore);
+      }
+    }
+
     // ── Step 5: Wire auth token changes → SecureStore + Sentry user ─
     // Store unsubscribe handle for testability (subscription is permanent in production).
     const _unsubscribeAuth = useAppStore.subscribe((state: MobileStore, prevState: MobileStore) => {
