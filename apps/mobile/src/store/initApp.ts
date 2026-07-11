@@ -133,22 +133,22 @@ export async function initApp(): Promise<void> {
     // ── Step 3b: Clean up ghost entries (atomically inside setState to avoid race with realtime) ──
     try {
       const GHOST_CHECKS: Array<[string, string, (item: Record<string, unknown>) => boolean]> = [
-        ['foodLog', 'food', f => !f.name && !f.calories && !f.timestamp],
-        ['exerciseLog', 'exercise', f => !f.sportKey && !f.date],
-        ['plans', 'plan', f => !f.name && !f.goal && !f.startDate],
-        ['medHistory', 'meditation', f => !f.date && !f.durationSec],
-        ['sleepHistory', 'sleep', f => !f.date && !f.startTs],
-        ['breathHistory', 'breath', f => !f.date && !f.durationSec],
-        ['sessions', 'zhiguanSession', f => !f.startTs && !f.status],
-        ['mantraSessions', 'mantraSession', f => !f.mantraId && !f.date && !f.count],
-        ['mantraDefs', 'mantraDef', f => !f.name && !f.subtitle],
-        ['visions', 'vision', f => !f.text && !f.type && !f.title],
-        ['dedications', 'dedication', f => !f.date && !f.periodLabel && !f.text],
-        ['fearEntries', 'fearEntry', f => !f.content && !f.date && !f.title],
-        ['courageEntries', 'courageEntry', f => !f.action && !f.date && !f.title],
-        ['giveHistory', 'give', f => !f.content && !f.date],
-        ['motivationLog', 'motivationEntry', f => !f.foodId && !f.motivation],
-        ['readingSessions', 'sutraReading', f => !f.mantraId && !f.date && !f.title],
+        ['foodLog', 'food', f => f.name == null && f.calories == null && f.timestamp == null],
+        ['exerciseLog', 'exercise', f => f.sportKey == null && f.date == null],
+        ['plans', 'plan', f => f.name == null && f.startDate == null],
+        ['medHistory', 'meditation', f => f.date == null && f.durationSec == null],
+        ['sleepHistory', 'sleep', f => f.date == null && f.startTs == null],
+        ['breathHistory', 'breath', f => f.date == null && f.durationSec == null],
+        ['sessions', 'zhiguanSession', f => f.startTs == null && f.status == null],
+        ['mantraSessions', 'mantraSession', f => f.mantraId == null && f.date == null],
+        ['mantraDefs', 'mantraDef', f => f.name == null && f.subtitle == null],
+        ['visions', 'vision', f => f.text == null && f.type == null],
+        ['dedications', 'dedication', f => f.date == null && f.periodLabel == null],
+        ['fearEntries', 'fearEntry', f => f.content == null && f.date == null],
+        ['courageEntries', 'courageEntry', f => f.action == null && f.date == null],
+        ['giveHistory', 'give', f => f.content == null && f.date == null],
+        ['motivationLog', 'motivationEntry', f => f.foodId == null && f.motivation == null],
+        ['readingSessions', 'sutraReading', f => f.mantraId == null && f.date == null],
       ];
       const toDelete: Array<{ entity: string; id: string }> = [];
       // Step 1: Pure computation — find ghosts from current store state (outside setState)
