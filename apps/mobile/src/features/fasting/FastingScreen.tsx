@@ -407,3 +407,24 @@ export default function FastingScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  heroOuter: { borderRadius: 20, overflow: 'hidden', marginBottom: 16 },
+  heroPadding: { padding: 20 },
+  heroTitleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  heroLinkText: { color: 'rgba(255,255,255,.8)', fontSize: FONT_SUB },
+  heroStatsRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
+  heroStatCol: { flex: 1, alignItems: 'center' },
+  heroStatLabel: { color: 'rgba(255,255,255,.7)', fontSize: FONT_SUB },
+  heroStatSub: { color: 'rgba(255,255,255,.5)', fontSize: FONT_SUB },
+  heroDivider: { width: 1, height: 32, backgroundColor: 'rgba(255,255,255,.2)' },
+  heroKcalRow: { flexDirection: 'row', gap: 16, marginBottom: 12 },
+  heroKcalCol: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  heroKcalValue: { color: '#fff', fontWeight: '700', fontSize: FONT_BODY },
+  heroKcalSub: { color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB },
+  heroGlobalRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8 },
+  heroGlobalText: { color: 'rgba(255,255,255,.8)', fontSize: FONT_BODY, flex: 1 },
+  mainCardInner: { padding: 20, gap: 16 },
+  ringContainer: { alignItems: 'center', justifyContent: 'center', width: 180, height: 180, alignSelf: 'center', marginBottom: 16 },
+  ringBase: { width: 180, height: 180, borderRadius: 90, borderWidth: 10 },
+});

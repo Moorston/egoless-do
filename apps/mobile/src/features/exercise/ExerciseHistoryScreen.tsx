@@ -339,3 +339,83 @@ export default function ExerciseHistoryScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  detailContainer: {
+    borderTopWidth: 1,
+    paddingTop: 12,
+    marginTop: 10,
+  },
+  mapContainer: {
+    height: 180,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 12,
+  },
+  flex1: {
+    flex: 1,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  statCardBase: {
+    flex: 1,
+    minWidth: 90,
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+  },
+  subFont: {
+    fontSize: FONT_SUB,
+  },
+  statValue: {
+    fontSize: FONT_STAT_CARD,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  mt4: {
+    marginTop: 12,
+  },
+  sectionTitle: {
+    fontSize: FONT_SUB,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  setDataCard: {
+    borderRadius: 10,
+    padding: 10,
+  },
+  setRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 6,
+  },
+  subBold: {
+    fontSize: FONT_SUB,
+    fontWeight: '600',
+  },
+  filterBtnBase: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  badgeFont: {
+    fontSize: FONT_BADGE,
+  },
+  statCardsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 14,
+  },
+  statCardInner: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  statCardValue: {
+    fontSize: FONT_STAT_CARD,
+    fontWeight: '800',
+  },
+});

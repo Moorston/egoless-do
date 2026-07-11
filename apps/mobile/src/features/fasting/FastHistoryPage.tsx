@@ -396,3 +396,237 @@ export default function FastHistoryPage() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  statsCardOuter: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  statsCardGradient: {
+    padding: 20,
+    borderRadius: 20,
+  },
+  statsTitle: {
+    fontSize: FONT_SUB,
+    fontWeight: '700',
+    color: 'rgba(255,255,255,.9)',
+    marginBottom: 12,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 16,
+  },
+  statsItem: {
+    alignItems: 'center',
+  },
+  statsValue: {
+    fontSize: FONT_STAT_SECTION,
+    fontWeight: '800',
+    color: '#fff',
+  },
+  statsLabel: {
+    fontSize: FONT_BADGE,
+    color: 'rgba(255,255,255,.7)',
+    marginTop: 2,
+  },
+  statsLayout: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  statsLayoutCol: {
+    alignItems: 'center',
+  },
+  statsLayoutValue: {
+    fontSize: FONT_SUB,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  statsLayoutLabel: {
+    fontSize: FONT_BADGE,
+    color: 'rgba(255,255,255,.7)',
+    marginTop: 2,
+  },
+  heatmapHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  heatmapWeekdayRow: {
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+  heatmapCellsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  heatmapCell: {
+    width: '14.28%' as unknown as number,
+    aspectRatio: 1,
+    padding: 2,
+  },
+  calendarContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  calendarMonthRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  calendarWeekdayRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  calendarCellsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  calendarCell: {
+    width: '14.28%' as unknown as number,
+    aspectRatio: 1,
+    padding: 3,
+  },
+  calendarStatItem: {
+    alignItems: 'center',
+  },
+  calendarStatValue: {
+    fontSize: FONT_STAT_SECTION,
+    fontWeight: '800',
+    color: '#8446FF',
+  },
+  monthHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+    marginLeft: 4,
+  },
+  monthHeaderDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#8446FF',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,.75)',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  modalHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  modalDuration: {
+    fontSize: FONT_STAT_SECTION,
+    fontWeight: '800',
+    color: '#8446FF',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  modalCalRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 12,
+    gap: 16,
+  },
+  modalCalItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  noteContainer: {
+    backgroundColor: 'rgba(132,70,255,.08)',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 16,
+  },
+  noteHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  noteButtonRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 10,
+  },
+  noteSaveBtn: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#8446FF',
+    alignItems: 'center',
+  },
+  deleteBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ef4444',
+  },
+  deleteBtnText: {
+    fontSize: FONT_BODY,
+    color: '#ef4444',
+    fontWeight: '600',
+  },
+  entryRow: {
+    flexDirection: 'row',
+    marginLeft: 4,
+  },
+  entryLineCol: {
+    alignItems: 'center',
+    width: 24,
+  },
+  entryDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#8446FF',
+    zIndex: 1,
+  },
+  entryLine: {
+    width: 2,
+    flex: 1,
+    backgroundColor: '#8446FF30',
+  },
+  entryHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  durationBadge: {
+    backgroundColor: '#8446FF15',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  durationBadgeText: {
+    color: '#8446FF',
+    fontWeight: '700',
+    fontSize: FONT_SUB,
+  },
+  targetRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
+  entryKcalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 4,
+  },
+});

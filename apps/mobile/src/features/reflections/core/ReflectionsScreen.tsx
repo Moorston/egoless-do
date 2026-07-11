@@ -810,3 +810,54 @@ export default function ReflectionsScreen() {
   );
 }
 
+const styles = StyleSheet.create({
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  newButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: FONT_BUTTON,
+  },
+  reflTime: {
+    color: 'rgba(255,255,255,.7)',
+    fontSize: FONT_SMALL,
+  },
+  linkedPlanBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,.2)',
+  },
+  linkedPlanText: {
+    color: '#fff',
+    fontSize: FONT_TINY,
+  },
+  reflContent: {
+    color: '#fff',
+    fontSize: FONT_BODY,
+    lineHeight: 22,
+    marginBottom: 8,
+  },
+  searchHighlight: {
+    backgroundColor: 'rgba(255,255,0,.4)',
+    color: '#fff',
+  },
+  reflLinkText: {
+    color: 'rgba(255,255,255,.7)',
+    fontSize: FONT_SMALL,
+    textDecorationLine: 'underline',
+  },
+  tagText: {
+    color: 'rgba(255,255,255,.8)',
+    fontSize: FONT_SMALL,
+    backgroundColor: 'rgba(255,255,255,.15)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+});
