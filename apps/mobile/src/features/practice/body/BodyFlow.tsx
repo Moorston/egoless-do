@@ -5,7 +5,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 
 import { PrimaryButton, OutlineButton, Card } from '../../../components/UI';
 

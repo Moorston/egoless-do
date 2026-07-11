@@ -2,7 +2,7 @@ import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRA
 import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan, VisionPractice } from '@egoless-do/core';
 import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar } from 'lucide-react-native';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
@@ -39,7 +39,7 @@ function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: 
   };
 
   return (
-    <View style={{ backgroundColor: TH.card, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
+    <View style={[styles.monthPicker, { backgroundColor: TH.card, borderColor: TH.border }]}>
       {/* Month nav */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <TouchableOpacity onPress={() => { if (month === 0) { setYear(y => y - 1); setMonth(11); } else setMonth(m => m - 1); }}>
@@ -51,18 +51,18 @@ function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: 
         </TouchableOpacity>
       </View>
       {/* Weekday header */}
-      <View style={{ flexDirection: 'row', marginBottom: 4 }}>
+      <View style={styles.weekdayHeader}>
         {['一', '二', '三', '四', '五', '六', '日'].map(w => (
-          <View key={w} style={{ flex: 1, alignItems: 'center' }}>
+          <View key={w} style={styles.weekdayCell}>
             <Text style={{ fontSize: FONT_TINY, color: TH.sub }}>{w}</Text>
           </View>
         ))}
       </View>
       {/* Day grid */}
       {weeks.map((wk, ri) => (
-        <View key={ri} style={{ flexDirection: 'row' }}>
+        <View key={ri} style={styles.dayRow}>
           {wk.map((d, ci) => {
-            if (d === null) return <View key={ci} style={{ flex: 1, height: 32 }} />;
+            if (d === null) return <View key={ci} style={styles.emptyDay} />;
             const ds = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
             const selected = ds === value;
             const isToday = ds === today;
@@ -70,11 +70,9 @@ function MonthPicker({ value, onChange, TH, T }: { value: string; onChange: (d: 
               <TouchableOpacity
                 key={ci}
                 onPress={() => selectDay(d)}
-                style={{
-                  flex: 1, height: 32, alignItems: 'center', justifyContent: 'center',
-                  borderRadius: 6,
+                style={[styles.dayCell, {
                   backgroundColor: selected ? '#8B5CF6' : 'transparent',
-                }}
+                }]}
               >
                 <Text style={{
                   fontSize: FONT_SUB, fontWeight: selected ? '700' : isToday ? '600' : '400',
@@ -190,17 +188,10 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View style={{
-        flex: 1, backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'flex-end',
-      }}>
-        <View style={{
-          backgroundColor: TH.cardSolid,
-          borderTopLeftRadius: 24, borderTopRightRadius: 24,
-          padding: 24, maxHeight: '85%',
-        }}>
+      <View style={[styles.overlay, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>
+        <View style={[styles.modalContent, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <View style={styles.headerRow}>
             <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: TH.text }}>
               {vision ? T('vowEdit') : T('vowCreate')}
             </Text>
@@ -229,23 +220,22 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
             {/* Date range (for long/short only) */}
             {type !== 'lifetime' && (
-              <View style={{ marginBottom: 16 }}>
+              <View style={styles.pillsSection}>
                 <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
 
                 {/* Quick time frame pills */}
                 {availableTimeFrames.length > 0 && (
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+                  <View style={styles.pillsContainer}>
                     {availableTimeFrames.map(tf => {
                       const active = timeFrame === tf.key;
                       return (
                         <TouchableOpacity
                           key={tf.key}
                           onPress={() => handleTimeFrameSelect(tf.key)}
-                          style={{
-                            paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8,
+                          style={[styles.pillBtn, {
                             backgroundColor: active ? '#8B5CF620' : TH.card,
-                            borderWidth: 1, borderColor: active ? '#8B5CF6' : TH.border,
-                          }}
+                            borderColor: active ? '#8B5CF6' : TH.border,
+                          }]}
                         >
                           <Text style={{ fontSize: FONT_BADGE, color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
                             {T(tf.labelKey)}
@@ -259,14 +249,11 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                 {/* Start date */}
                 <TouchableOpacity
                   onPress={() => { setShowStartPicker(v => !v); setShowEndPicker(false); }}
-                  style={{
-                    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                    backgroundColor: TH.card, borderRadius: 10, padding: 12,
-                    borderWidth: 1, borderColor: showStartPicker ? '#8B5CF6' : TH.border,
-                    marginBottom: 8,
-                  }}
+                  style={[styles.dateRow, {
+                    borderColor: showStartPicker ? '#8B5CF6' : TH.border,
+                  }]}
                 >
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={styles.dateRowIcon}>
                     <Calendar size={14} color={TH.sub} />
                     <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowStartDate')}</Text>
                   </View>
@@ -281,14 +268,12 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                 {/* End date / Deadline */}
                 <TouchableOpacity
                   onPress={() => { setShowEndPicker(v => !v); setShowStartPicker(false); }}
-                  style={{
-                    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                    backgroundColor: TH.card, borderRadius: 10, padding: 12,
-                    borderWidth: 1, borderColor: showEndPicker ? '#8B5CF6' : TH.border,
+                  style={[styles.dateRow, {
+                    borderColor: showEndPicker ? '#8B5CF6' : TH.border,
                     marginTop: showStartPicker ? 8 : 0,
-                  }}
+                  }]}
                 >
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <View style={styles.dateRowIcon}>
                     <Calendar size={14} color={TH.sub} />
                     <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowEndDate')}</Text>
                   </View>
@@ -305,24 +290,22 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
             )}
 
             {/* Link habits */}
-            <View style={{ marginBottom: 16 }}>
+            <View style={styles.pillsSection}>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowLinkHabit')}</Text>
               {filteredHabits.length === 0 ? (
                 <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('vowNoLink')}</Text>
               ) : (
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                <View style={styles.pillsLeft}>
                   {filteredHabits.map((h: Habit) => {
                     const active = linkedHabits.includes(h.id);
                     return (
                       <TouchableOpacity
                         key={h.id}
                         onPress={() => toggleHabit(h.id)}
-                        style={{
-                          flexDirection: 'row', alignItems: 'center', gap: 4,
-                          paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8,
+                        style={[styles.pillIconBtn, {
                           backgroundColor: active ? '#10B98120' : TH.card,
-                          borderWidth: 1, borderColor: active ? '#10B981' : TH.border,
-                        }}
+                          borderColor: active ? '#10B981' : TH.border,
+                        }]}
                       >
                         {active ? <Link size={12} color="#10B981" /> : <Unlink size={12} color={TH.sub} />}
                         <Text style={{ fontSize: FONT_BADGE, color: active ? '#10B981' : TH.sub }}>
@@ -341,19 +324,17 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
               {filteredPlans.length === 0 ? (
                 <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('vowNoLink')}</Text>
               ) : (
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+                <View style={styles.pillsLeft}>
                   {filteredPlans.map((p: Plan) => {
                     const active = linkedPlans.includes(p.id);
                     return (
                       <TouchableOpacity
                         key={p.id}
                         onPress={() => togglePlan(p.id)}
-                        style={{
-                          flexDirection: 'row', alignItems: 'center', gap: 4,
-                          paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8,
+                        style={[styles.pillIconBtn, {
                           backgroundColor: active ? '#F59E0B20' : TH.card,
-                          borderWidth: 1, borderColor: active ? '#F59E0B' : TH.border,
-                        }}
+                          borderColor: active ? '#F59E0B' : TH.border,
+                        }]}
                       >
                         {active ? <Link size={12} color="#F59E0B" /> : <Unlink size={12} color={TH.sub} />}
                         <Text style={{ fontSize: FONT_BADGE, color: active ? '#F59E0B' : TH.sub }}>

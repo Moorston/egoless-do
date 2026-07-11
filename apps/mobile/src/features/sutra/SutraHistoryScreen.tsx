@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_SECTION } from '@egoless-do/core';
 import type { MantraDef } from '@egoless-do/core';
 import React, { useMemo } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
@@ -118,64 +118,63 @@ export default function SutraHistoryScreen() {
 
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
-        <TouchableOpacity onPress={() => nav.goBack()} style={{ marginRight: 12 }}>
+      <View style={styles.headerRow}>
+        <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
           <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
         </TouchableOpacity>
         <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text, flex: 1 }}>{T('sutraHistory')}</Text>
-        <View style={{ alignItems: 'flex-end' }}>
-          <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' }}>{stats.totalCount.toLocaleString()}</Text>
+        <View style={styles.alignRight}>
+          <Text style={styles.goldStatText}>{stats.totalCount.toLocaleString()}</Text>
           <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计</Text>
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Stats card */}
-        <View style={{ borderRadius: 16, borderWidth: 1, borderColor: TH.primary + '30', padding: 16, marginBottom: 16 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' }}>{stats.totalCount.toLocaleString()}</Text>
+        <View style={[styles.statsCard, { borderColor: TH.primary + '30' }]}>
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Text style={styles.goldStatText}>{stats.totalCount.toLocaleString()}</Text>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计颗数</Text>
             </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#10B981' }}>{formatTime(stats.totalSec)}</Text>
+            <View style={styles.statItem}>
+              <Text style={styles.greenStatText}>{formatTime(stats.totalSec)}</Text>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计时长</Text>
             </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#F59E0B' }}>🔥 {stats.streak}</Text>
+            <View style={styles.statItem}>
+              <Text style={styles.orangeStatText}>🔥 {stats.streak}</Text>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>连续</Text>
             </View>
           </View>
         </View>
 
         {/* Calendar heatmap this month */}
-        <View style={{ borderRadius: 16, borderWidth: 1, borderColor: TH.primary + '20', padding: 16, marginBottom: 16 }}>
+        <View style={[styles.calendarSection, { borderColor: TH.primary + '20' }]}>
           <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 12 }}>
             {monthYear}年{monthIdx + 1}月
           </Text>
-          <View style={{ flexDirection: 'row', marginBottom: 4 }}>
+          <View style={styles.weekRow}>
             {WEEKDAY_LABELS.map(d => (
-              <View key={d} style={{ width: '14.28%', alignItems: 'center' }}>
+              <View key={d} style={styles.weekDayCell}>
                 <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
               </View>
             ))}
           </View>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          <View style={styles.heatmapWrap}>
             {heatmapData.map((day, i) => (
-              <View key={i} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 2, minHeight: 32 }}>
+              <View key={i} style={styles.dayCell}>
                 {day.date ? (
                   <View style={{
-                    width: 30, height: 30, borderRadius: 15,
+                    ...styles.dayCircle,
                     backgroundColor: day.count > 0 ? 'rgba(212, 165, 116, ' + day.intensity + ')' : day.isToday ? TH.primary + '20' : 'transparent',
                     borderWidth: day.isToday ? 2 : 0,
                     borderColor: day.isToday ? TH.primary : 'transparent',
-                    alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <Text style={{ fontSize: 12, color: TH.text, fontWeight: day.isToday ? '700' : '400' }}>
+                    <Text style={[styles.textSize12, { color: TH.text, fontWeight: day.isToday ? '700' : '400' }]}>
                       {Number(day.date.split('-')[2])}
                     </Text>
                   </View>
-                ) : <View style={{ width: 30, height: 30 }} />}
+                ) : <View style={styles.emptyDay} />}
               </View>
             ))}
           </View>
@@ -183,25 +182,25 @@ export default function SutraHistoryScreen() {
 
         {/* Distribution */}
         {distribution.length > 0 && (
-          <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
+          <View style={[styles.cardSection, { backgroundColor: TH.card, borderColor: TH.border }]}>
             <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>经文分布</Text>
             {distribution.map(({ sutra, total, pct }) => (
-              <View key={sutra.id} style={{ marginBottom: 8 }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+              <View key={sutra.id} style={styles.distributionItem}>
+                <View style={styles.distributionHeader}>
                   <Text style={{ fontSize: FONT_SUB, color: TH.text }}>{sutra.name}</Text>
                   <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{pct}%</Text>
                 </View>
-                <View style={{ height: 8, backgroundColor: TH.primary + '15', borderRadius: 4, overflow: 'hidden' }}>
-                  <View style={{ width: `${pct}%`, height: '100%', backgroundColor: '#D4A574', borderRadius: 4 }} />
+                <View style={[styles.barTrack, { backgroundColor: TH.primary + '15' }]}>
+                  <View style={[styles.barFill, { width: `${pct}%` }]} />
                 </View>
-                <Text style={{ fontSize: 10, color: TH.sub, marginTop: 2 }}>{total.toLocaleString()} 颗 ({pct}%)</Text>
+                <Text style={[styles.textSize10, { color: TH.sub, marginTop: 2 }]}>{total.toLocaleString()} 颗 ({pct}%)</Text>
               </View>
             ))}
           </View>
         )}
 
         {/* History list */}
-        <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, borderWidth: 1, borderColor: TH.border }}>
+        <View style={[styles.cardSection, { backgroundColor: TH.card, borderColor: TH.border }]}>
           <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>{T('sutraHistory')}</Text>
           {allSessions.length === 0 ? (
             <Text style={{ color: TH.sub, fontSize: FONT_SUB, textAlign: 'center', paddingVertical: 16 }}>{T('sutraNoRecords')}</Text>
@@ -210,15 +209,15 @@ export default function SutraHistoryScreen() {
             const d = new Date(s.startedAt);
             const dateStr = (d.getMonth() + 1) + '/' + d.getDate();
             return (
-              <View key={s.id} style={{ paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View key={s.id} style={[styles.sessionItem, { borderBottomColor: TH.border }]}>
+                <View style={styles.sessionRow}>
                   <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600' }}>{sutra?.name ?? '未知'}</Text>
                   <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{dateStr}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{s.count}颗 · {s.rounds}遍</Text>
-                  <Text style={{ fontSize: 10, color: TH.sub }}>{formatShortTime(s.durationSec)}</Text>
-                  {s.dedication ? <Text style={{ fontSize: 10, color: '#D4A574' }}>回向</Text> : null}
+                <View style={styles.sessionMeta}>
+                  <Text style={[styles.textSize10, { color: TH.sub }]}>{s.count}颗 · {s.rounds}遍</Text>
+                  <Text style={[styles.textSize10, { color: TH.sub }]}>{formatShortTime(s.durationSec)}</Text>
+                  {s.dedication ? <Text style={styles.textDedication}>回向</Text> : null}
                 </View>
               </View>
             );
@@ -228,3 +227,47 @@ export default function SutraHistoryScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  // Layout
+  headerRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 },
+  backButton: { marginRight: 12 },
+  alignRight: { alignItems: 'flex-end' },
+  scrollContent: { paddingHorizontal: 16, paddingBottom: 40 },
+
+  // Card sections
+  statsCard: { borderRadius: 16, borderWidth: 1, padding: 16, marginBottom: 16 },
+  calendarSection: { borderRadius: 16, borderWidth: 1, padding: 16, marginBottom: 16 },
+  cardSection: { borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1 },
+
+  // Stats row
+  statsRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  statItem: { alignItems: 'center' },
+  goldStatText: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#D4A574' },
+  greenStatText: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#10B981' },
+  orangeStatText: { fontSize: FONT_STAT_SECTION, fontWeight: '800', color: '#F59E0B' },
+
+  // Calendar heatmap
+  weekRow: { flexDirection: 'row', marginBottom: 4 },
+  weekDayCell: { width: '14.28%', alignItems: 'center' },
+  heatmapWrap: { flexDirection: 'row', flexWrap: 'wrap' },
+  dayCell: { width: '14.28%', alignItems: 'center', paddingVertical: 2, minHeight: 32 },
+  dayCircle: { width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
+  emptyDay: { width: 30, height: 30 },
+
+  // Distribution
+  distributionItem: { marginBottom: 8 },
+  distributionHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
+  barTrack: { height: 8, borderRadius: 4, overflow: 'hidden' },
+  barFill: { height: '100%', backgroundColor: '#D4A574', borderRadius: 4 },
+
+  // Session items
+  sessionItem: { paddingVertical: 8, borderBottomWidth: 1 },
+  sessionRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  sessionMeta: { flexDirection: 'row', gap: 12, marginTop: 4 },
+
+  // Shared text styles
+  textSize12: { fontSize: 12 },
+  textSize10: { fontSize: 10 },
+  textDedication: { fontSize: 10, color: '#D4A574' },
+});

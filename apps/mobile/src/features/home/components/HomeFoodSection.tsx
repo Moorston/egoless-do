@@ -2,7 +2,7 @@ import { COLORS, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_TITLE, FONT_STAT_CARD, F
 import { Utensils, Pencil, X } from 'lucide-react-native';
 import React, { useState, useMemo, memo } from 'react';
 import {
-  View, Text, TouchableOpacity, Modal, TextInput,
+  View, Text, TouchableOpacity, Modal, TextInput, StyleSheet,
 } from 'react-native';
 
 import AddFoodModal from '../../../components/AddFoodModal';
@@ -65,12 +65,12 @@ const HomeFoodSection = memo(function HomeFoodSection({
     <>
       {/* ── Food card ── */}
       <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={styles.cardHeaderRow}>
+          <View style={styles.iconLabelRow}>
             <Utensils size={16} color={P} />
             <Text style={{ color: TH.text, fontWeight: '600', fontSize: FONT_BODY }}>{T('todayFood')}</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <View style={styles.iconLabelRow}>
             {isToday ? (
               <>
                 <Text style={{ color: TH.sub, fontSize: FONT_SUB }}>
@@ -91,9 +91,9 @@ const HomeFoodSection = memo(function HomeFoodSection({
 
         {/* Recent Foods (today only) */}
         {isToday && recentFoods.length > 0 && (
-          <View style={{ marginTop: 10 }}>
+          <View style={styles.sectionSpacing}>
             <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('recentFoods')}</Text>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
+            <View style={styles.recentFoodRow}>
               {recentFoods.map(f => (
                 <TouchableOpacity key={f.name} onPress={() => { setPortionFood(f); setPortion(1); }}
                   style={{ flex: 1, borderRadius: 10, padding: 10, alignItems: 'center', backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
@@ -107,7 +107,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
 
         {/* Food List */}
         {todayFoods.length > 0 && (
-          <View style={{ marginTop: 10 }}>
+          <View style={styles.sectionSpacing}>
             <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 6 }}>{T('todayFood')} ({todayFoodTotal})</Text>
             {todayFoods.map(f => (
               <View key={f.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: TH.border }}>
@@ -138,11 +138,11 @@ const HomeFoodSection = memo(function HomeFoodSection({
 
       {/* Portion Selector Modal (for recent foods) */}
       <Modal visible={!!portionFood} transparent animationType="fade" onRequestClose={() => setPortionFood(null)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)', justifyContent: 'center', padding: 24 }}>
+        <View style={styles.modalOverlay}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24 }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, color: TH.text, marginBottom: 4 }}>{portionFood?.name}</Text>
             <Text style={{ color: TH.sub, fontSize: FONT_BODY, marginBottom: 16 }}>{T('foodPerUnit')} {portionFood?.calories} kcal</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 16 }}>
+            <View style={styles.portionButtonRow}>
               {[0.5, 1, 1.5, 2].map(p => (
                 <TouchableOpacity key={p} onPress={() => setPortion(p)}
                   style={{
@@ -156,13 +156,13 @@ const HomeFoodSection = memo(function HomeFoodSection({
                 </TouchableOpacity>
               ))}
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
+            <View style={styles.totalRow}>
               <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('foodTotalCal')}</Text>
               <Text style={{ fontSize: 26, fontWeight: '800', color: COLORS.ORANGE }}>
                 {Math.round((portionFood?.calories ?? 0) * portion)} <Text style={{ fontSize: FONT_SUB, fontWeight: '400', color: TH.sub }}>kcal</Text>
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={styles.modalButtonRow}>
               <TouchableOpacity onPress={() => setPortionFood(null)}
                 style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
@@ -184,7 +184,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
 
       {/* Calorie Goal Modal */}
       <Modal visible={showCG} transparent animationType="fade" onRequestClose={() => setShowCG(false)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.65)', justifyContent: 'center', padding: 24 }}>
+        <View style={styles.modalOverlay}>
           <View style={{ backgroundColor: TH.cardSolid, borderRadius: 20, padding: 24, alignItems: 'center' }}>
             <Text style={{ fontWeight: '700', fontSize: FONT_TITLE, marginBottom: 6, color: TH.text }}>{T('calGoalSetting')}</Text>
             <Text style={{ fontSize: FONT_BODY, color: TH.sub, marginBottom: 16 }}>{T('calGoalHint')}</Text>
@@ -196,7 +196,7 @@ const HomeFoodSection = memo(function HomeFoodSection({
                 borderRadius: 12, padding: 14, color: TH.text, marginBottom: 20,
               }}
             />
-            <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>
+            <View style={styles.calGoalButtonRow}>
               <TouchableOpacity onPress={() => setShowCG(false)}
                 style={{ flex: 1, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center' }}>
                 <Text style={{ color: TH.sub, fontSize: FONT_BODY }}>{T('cancel')}</Text>
@@ -212,6 +212,53 @@ const HomeFoodSection = memo(function HomeFoodSection({
       </Modal>
     </>
   );
+});
+
+const styles = StyleSheet.create({
+  cardHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  iconLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  sectionSpacing: {
+    marginTop: 10,
+  },
+  recentFoodRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,.65)',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  portionButtonRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 16,
+  },
+  modalButtonRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  calGoalButtonRow: {
+    flexDirection: 'row',
+    gap: 10,
+    width: '100%',
+  },
 });
 
 export default HomeFoodSection;
