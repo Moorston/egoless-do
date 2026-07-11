@@ -279,7 +279,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
       <StepIndicator current="checkin" TH={TH} />
       <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
         <LinearGradient colors={['#8b5cf6', '#7c3aed']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
-          <Text style={{ fontSize: scaleFontSize(40)(), marginBottom: 8 }}>🧠</Text>
+          <Text style={{ fontSize: scaleFontSize(40), marginBottom: 8 }}>🧠</Text>
           <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff', marginTop: 4 }}>{T('bodyFlowAwareness')}</Text>
           <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{T('bodyFlowAwarenessHint')}</Text>
         </LinearGradient>

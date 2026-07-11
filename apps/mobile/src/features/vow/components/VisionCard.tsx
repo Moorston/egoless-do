@@ -1,4 +1,4 @@
-import type {Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme, FONT_BADGE, FONT_SUB, FONT_BODY, FONT_SMALL} from '@egoless-do/core';
+import type {Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme} from '@egoless-do/core';
 import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr , FONT_SMALL } from '@egoless-do/core';
 import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';

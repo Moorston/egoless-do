@@ -86,7 +86,7 @@ export const PodiumItem: React.FC<PodiumItemProps> = React.memo(({
 
 const styles = StyleSheet.create({
   medal: {
-    fontSize: scaleFontSize(32)(),
+    fontSize: scaleFontSize(32),
     marginBottom: 4,
   },
   name: {

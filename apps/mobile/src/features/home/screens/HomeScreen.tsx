@@ -202,19 +202,27 @@ export default function HomeScreen() {
       .filter(h => !h.deleted && h.status === 'inProgress' && h.checkedDates?.includes(viewDate))
       .map(h => h.name);
     if (checkedHabits.length) noteData.habits = checkedHabits;
-    // 每日自定义待办
-    const doneCustomTodos = dailyCustomTodosMemo
+    // 每日自定义待办 — read directly from store to avoid stale closure
+    const currentPlan = getActivePlan(s.plans ?? []);
+    const freshCustomTodos = currentPlan
+      ? getTodayCustomTodos(s.dailyCustomTodos ?? [], currentPlan.id, viewDate)
+      : [];
+    const doneCustomTodos = freshCustomTodos
       .filter(t => t.done)
       .map(t => t.name);
     if (doneCustomTodos.length) noteData.customs = doneCustomTodos;
-    // 计划事项
-    const donePlanItems = todayPlanItems
-      .filter(item => planCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done))
+    // 计划事项 — read directly from store to avoid stale closure
+    const freshPlanCheckins = (s.planItemCheckins ?? []).filter(c => !c.deleted);
+    const freshTodayPlanItems = currentPlan
+      ? getTodayItems(s.planItems ?? [], currentPlan, viewDate, freshPlanCheckins)
+      : [];
+    const donePlanItems = freshTodayPlanItems
+      .filter(item => freshPlanCheckins.some(c => c.planItemId === item.id && c.date === viewDate && c.done))
       .map(item => item.name);
     if (donePlanItems.length) noteData.planItems = donePlanItems;
     if (totalCal > 0) noteData.food = totalCal;
     return JSON.stringify(noteData);
-  }, [note, totalCal, viewDate, dailyCustomTodosMemo, todayPlanItems, planCheckins]);
+  }, [note, totalCal, viewDate]);
 
   // ── Real-time save ──
   // ═══════════════════════════════════════════════════════════════
@@ -402,7 +410,7 @@ export default function HomeScreen() {
   // ── Grace reminder ──
   const yStr = yesterday();
   const yesterdayRecord = useMemo(() => (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === yStr), [checkinHistory, yStr]);
-  const dayBeforeYesterdayStr = useMemo(() => { const d = new Date(); d.setDate(d.getDate() - 2); return dateStr(d); }, [checkinHistory]);
+  const dayBeforeYesterdayStr = useMemo(() => { const d = new Date(); d.setDate(d.getDate() - 2); return dateStr(d); }, []);
   const dayBeforeYesterdayRecord = useMemo(() => (checkinHistory ?? []).find((h: CheckinEntry) => !h.deleted && h.date === dayBeforeYesterdayStr), [checkinHistory, dayBeforeYesterdayStr]);
   const showGrace = isToday && yesterdayRecord?.done !== true && dayBeforeYesterdayRecord?.done === true;
   const currentMonth = dateStr().slice(0, 7);

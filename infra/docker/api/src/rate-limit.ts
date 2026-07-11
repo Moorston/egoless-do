@@ -216,11 +216,16 @@ export async function cleanupExpiredRateLimits(): Promise<void> {
     });
     if (totalItems > 0) {
       for (let page = 1; page <= Math.ceil(totalItems / 100); page++) {
-        const list = await pb.collection(RATE_LIMIT_COLLECTION).getList(page, 100, {
-          filter: `expires_at < ${Date.now()}`,
-        });
-        for (const item of list.items) {
-          await pb.collection(RATE_LIMIT_COLLECTION).delete(item.id);
+        try {
+          const list = await pb.collection(RATE_LIMIT_COLLECTION).getList(page, 100, {
+            filter: `expires_at < ${Date.now()}`,
+          });
+          for (const item of list.items) {
+            await pb.collection(RATE_LIMIT_COLLECTION).delete(item.id);
+          }
+        } catch {
+          // Skip 404 or race-condition pages silently — another instance may have
+          // already deleted these records during concurrent cleanup.
         }
       }
     }

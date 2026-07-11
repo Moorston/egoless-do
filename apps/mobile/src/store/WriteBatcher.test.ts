@@ -238,7 +238,7 @@ describe('WriteBatcher', () => {
     await batcher.flushNow();
 
     expect(batcher.pendingCount).toBe(2);
-    expect(onFlushed).toHaveBeenCalled(); // called even on fallback
+    expect(onFlushed).not.toHaveBeenCalled(); // skip sync when fallback writes fail
 
     // Advance past the 5-second retry timer
     vi.advanceTimersByTime(5000);

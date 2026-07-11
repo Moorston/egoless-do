@@ -141,7 +141,7 @@ export default function DedicationTab({ TH, T, onNavigateToWrite }: Props) {
           backgroundColor: TH.card, borderRadius: 16, padding: 24,
           alignItems: 'center', borderWidth: 1, borderColor: TH.border,
         }}>
-          <Text style={{ fontSize: scaleFontSize(32)(), marginBottom: 8 }}>📝</Text>
+          <Text style={{ fontSize: scaleFontSize(32), marginBottom: 8 }}>📝</Text>
           <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
             {T('vowDedNoWrite')}
           </Text>

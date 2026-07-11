@@ -1,13 +1,13 @@
 // ─── ZhiguanHistoryScreen 止观履历页 ────────────────────────────
 // 履历卡 + 月度热力图 + 历史列表 + 详情卡片 + JSON 导出
-import type {ZhiguanSession, FONT_STAT_SECTION, FONT_STAT_CARD, FONT_BACK, FONT_SUB, FONT_HERO, FONT_SMALL, FONT_TITLE, FONT_LABEL} from '@egoless-do/core';
+import type {ZhiguanSession} from '@egoless-do/core';
 import {
   computeZhiguanStats,
   FIVE_HINDRANCE_KEYS, FIVE_HINDRANCE_LABEL_KEYS,
   EIGHT_TACTILE_KEYS, EIGHT_TACTILE_LABEL_KEYS,
   SAM_STAGE_LABEL_KEYS,
   ZHIGUAN_METHOD_DEFS,
-  dateStr as toLocalDateStr, FONT_SUB, FONT_TITLE } from '@egoless-do/core';
+  dateStr as toLocalDateStr, FONT_SUB, FONT_TITLE, FONT_BACK, FONT_HERO, FONT_LABEL, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION } from '@egoless-do/core';
 import React, { useState, useCallback } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Share, Modal } from 'react-native';
 

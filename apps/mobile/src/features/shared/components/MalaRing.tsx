@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   centerCount: {
-    fontSize: scaleFontSize(44)(),
+    fontSize: scaleFontSize(44),
     fontWeight: '800',
     textAlign: 'center',
   },

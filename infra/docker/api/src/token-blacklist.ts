@@ -49,21 +49,28 @@ export async function blacklistToken(token: string, expiresAt: number): Promise<
 export async function cleanupExpiredTokens(): Promise<number> {
   try {
     const pb = await getAdminPb();
-    const expired = await pb.collection(COLLECTION_NAME).getFullList({
-      filter: `expires_at < ${Date.now()}`,
-    });
-
-    if (expired.length === 0) return 0;
-
-    // PocketBase doesn't support bulk delete, but we can batch in pages
+    // Use paginated getList instead of getFullList to avoid OOM with many expired records.
+    // Process in pages of 200 to cap memory usage per batch.
     let deleted = 0;
-    for (const record of expired) {
-      try {
-        await pb.collection(COLLECTION_NAME).delete(record.id);
-        deleted++;
-      } catch (err) {
-        console.warn('[TokenBlacklist] Skipping single record deletion:', errMessage(err));
+    let page = 1;
+    const pageSize = 200;
+    while (true) {
+      const expired = await pb.collection(COLLECTION_NAME).getList(page, pageSize, {
+        filter: `expires_at < ${Date.now()}`,
+      });
+      if (expired.items.length === 0) break;
+
+      for (const record of expired.items) {
+        try {
+          await pb.collection(COLLECTION_NAME).delete(record.id);
+          deleted++;
+        } catch (err) {
+          console.warn('[TokenBlacklist] Skipping single record deletion:', errMessage(err));
+        }
       }
+
+      if (expired.items.length < pageSize) break;
+      page++;
     }
     return deleted;
   } catch (err: unknown) {

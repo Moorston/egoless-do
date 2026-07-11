@@ -223,8 +223,10 @@ export class WriteBatcher {
           }, 5000);
         }
       }
-      // Trigger sync callback even in fallback path (some writes may have succeeded)
-      this._onFlushed?.();
+      // Trigger sync callback only when all fallback writes succeeded
+      if (allFallbacksOk) {
+        this._onFlushed?.();
+      }
     }
   }
 }

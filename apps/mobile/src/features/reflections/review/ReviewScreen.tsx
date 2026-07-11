@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   moodOptionEmoji: {
-    fontSize: scaleFontSize(32)(),
+    fontSize: scaleFontSize(32),
   },
   moodOptionLabel: {
     fontSize: FONT_BODY(),

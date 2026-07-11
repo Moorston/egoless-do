@@ -64,7 +64,7 @@ routerAdd("POST", "/api/sync/push", function(e) {
           var existObj = {};
           var rawE = rec.get("data");
           existObj = parseDataField(rawE) || {};
-          if (Object.keys(existObj).length > 500) { existObj = {}; }
+          if (Object.keys(existObj).length > 500) { console.warn("[sync-push] Truncating large object for " + entity + " " + entityId + ": " + Object.keys(existObj).length + " keys"); existObj = {}; }
           var changedFields = payload._changedFields;
           delete payload._changedFields;
           if (Array.isArray(changedFields) && changedFields.length > 0) {
@@ -156,6 +156,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
           try {
             var countRecs = $app.findRecordsByFilter(coll, f, "", 10000);
             totalCount = countRecs ? countRecs.length : 0;
+            if (countRecs && countRecs.length >= 10000) { console.warn("[sync-pull] Count for " + ent + " may be incomplete: found " + countRecs.length + " records (limited to 10000)"); }
           } catch (countErr) {
             totalCount = 0;
           }

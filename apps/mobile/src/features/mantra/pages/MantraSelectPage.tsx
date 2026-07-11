@@ -295,7 +295,7 @@ const s = StyleSheet.create({
     marginBottom: 12,
   },
   emptyIcon: {
-    fontSize: scaleFontSize(40)(),
+    fontSize: scaleFontSize(40),
     marginBottom: 8,
   },
   footerContainer: {

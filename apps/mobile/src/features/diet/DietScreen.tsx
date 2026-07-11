@@ -6,7 +6,7 @@ import SimpleHeader from '../../navigation/SimpleHeader';
 import AddFoodModal from '../../components/AddFoodModal';
 import WuxingRadarChart from './WuxingRadarChart';
 import WuxingCalendar from './WuxingCalendar';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS , FONT_SMALL } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, COLORS, dateStr, WUXING_MAP, WUXING_ELEMENT_CONFIG, FLAVOR_CONFIG, EATING_MOTIVATIONS, FONT_SMALL, FONT_STAT_CARD, FONT_BACK } from '@egoless-do/core';
 import type { WuxingElement, FlavorType } from '@egoless-do/core';
 import { Utensils, Compass, TrendingUp, Timer, Plus, Search } from 'lucide-react-native';
 

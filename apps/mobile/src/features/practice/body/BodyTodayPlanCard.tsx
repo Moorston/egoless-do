@@ -34,7 +34,7 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
     return (
       <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
         <View style={{ backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border, padding: 20, alignItems: 'center' }}>
-          <Text style={{ fontSize: scaleFontSize(36)(), marginBottom: 8 }}>😴</Text>
+          <Text style={{ fontSize: scaleFontSize(36), marginBottom: 8 }}>😴</Text>
           <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 4 }}>{T('bodyTodayPlanRest')}</Text>
           <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{dayLabel}</Text>
         </View>

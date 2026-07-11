@@ -34,6 +34,7 @@ export class RealtimeAgent {
   private _destroyed = false;
   private _heartbeatTimer: ReturnType<typeof setInterval> | null = null;
   private _onKickedOut: (() => void) | null = null;
+  private _consecutiveHeartbeatFailures = 0;
 
   setChangeHandler(fn: (event: RealtimeChangeEvent) => void) { this._onChange = fn; }
   setStatusHandler(fn: (connected: boolean) => void) { this._onStatus = fn; }

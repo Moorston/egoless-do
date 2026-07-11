@@ -160,9 +160,20 @@ async function recordLoginAttemptLocked(email: string, success: boolean): Promis
 export async function cleanupExpiredLockouts(): Promise<number> {
   try {
     const pb = await getAdminPb();
-    const expired = await pb.collection(COLLECTION_NAME).getFullList({
-      filter: `lockout_until < ${Date.now()} && lockout_until != null`,
-    });
+    // Use `> 0` filter instead of `!= null` — the `!= null` syntax may not work
+    // across all PocketBase versions. Since lockout_until is a positive epoch ms
+    // value when set, `> 0` reliably selects locked-out records.
+    // Wrapped in try/catch because `getFullList` can fail on PB version mismatches.
+    let expired: Array<{ id: string }>;
+    try {
+      expired = await pb.collection(COLLECTION_NAME).getFullList({
+        filter: `lockout_until < ${Date.now()} && lockout_until > 0`,
+      });
+    } catch (filterErr) {
+      // Fallback: if the filter syntax is still unsupported, log and bail
+      console.warn('[AccountLockout] Lockout cleanup filter failed, skipping:', errMessage(filterErr));
+      return 0;
+    }
 
     let cleaned = 0;
     for (const record of expired) {

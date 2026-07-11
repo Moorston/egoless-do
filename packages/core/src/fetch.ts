@@ -39,12 +39,13 @@ export class ConflictError extends Error {
 export async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs?: number): Promise<Response> {
   const controller = new AbortController();
   // If caller provided a signal, abort our controller when caller's signal aborts
+  const onParentAbort = () => controller.abort();
   if (init.signal) {
     if (init.signal.aborted) {
       // Signal already aborted — propagate immediately
       controller.abort();
     } else {
-      init.signal.addEventListener('abort', () => controller.abort(), { once: true });
+      init.signal.addEventListener('abort', onParentAbort, { once: true });
     }
   }
   const timer = setTimeout(() => controller.abort(), timeoutMs ?? REQUEST_TIMEOUT);
@@ -60,6 +61,7 @@ export async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs
     throw new NetworkError('网络连接失败');
   } finally {
     clearTimeout(timer);
+    init.signal?.removeEventListener('abort', onParentAbort);
   }
 }
 

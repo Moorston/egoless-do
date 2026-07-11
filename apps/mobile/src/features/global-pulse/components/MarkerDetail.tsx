@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   typeIcon: {
-    fontSize: scaleFontSize(32)(),
+    fontSize: scaleFontSize(32),
   },
   anonymousId: {
     fontSize: FONT_TITLE(),

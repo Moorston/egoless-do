@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   header: { alignItems: 'center', marginBottom: 24 },
   title: { fontSize: FONT_STAT_CARD(), fontWeight: '700', color: '#4A3F35' },
   durationCard: { alignItems: 'center', backgroundColor: '#F5EFE6', borderRadius: 16, padding: 24, marginBottom: 16 },
-  durationValue: { fontSize: scaleFontSize(64)(), fontWeight: '300', color: '#C9A96E' },
+  durationValue: { fontSize: scaleFontSize(64), fontWeight: '300', color: '#C9A96E' },
   durationUnit: { fontSize: FONT_LABEL(), color: '#8B7355', marginTop: 4 },
   durationSeconds: { fontSize: FONT_SUB(), color: '#8B7355', marginTop: 2 },
   dateText: { fontSize: FONT_SUB(), color: '#8B7355', textAlign: 'center', marginBottom: 24 },

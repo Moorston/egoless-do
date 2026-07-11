@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
   },
   emptyIcon: {
-    fontSize: scaleFontSize(40)(),
+    fontSize: scaleFontSize(40),
     marginBottom: 12,
   },
   emptyTitle: {

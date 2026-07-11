@@ -368,7 +368,7 @@ export default function FastHistoryPage() {
         <View style={{ paddingHorizontal: 16 }}>
           {ListHeader}
           <View style={{ alignItems: 'center', marginTop: 80 }}>
-            <Text style={{ fontSize: scaleFontSize(64)(), marginBottom: 16 }}>🕐</Text>
+            <Text style={{ fontSize: scaleFontSize(64), marginBottom: 16 }}>🕐</Text>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginBottom: 8 }}>还没有禁食记录</Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 8 }}>每一次禁食都是对身体的善待</Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center', marginBottom: 24 }}>从今天开始，尝试一次轻断食</Text>

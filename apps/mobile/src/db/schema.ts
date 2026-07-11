@@ -508,15 +508,12 @@ export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
 
 export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> {
   const tryAddCol = async (table: string, column: string, type: string) => {
-    try {
-      await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
-    } catch (err: unknown) {
-      // Only ignore "duplicate column" errors; re-throw others
-      const msg = String(err instanceof Error ? err.message : err ?? '');
-      if (!msg.includes('duplicate column') && !msg.includes('already exists')) {
-        throw err;
-      }
-    }
+    // Check if column already exists using PRAGMA (robust across SQLite versions)
+    const existing = await db.getFirstAsync<{ name: string }>(
+      `SELECT name FROM pragma_table_info('${table}') WHERE name = '${column}'`
+    );
+    if (existing) return; // Column already exists, skip
+    await db.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
   };
 
   await tryAddCol('habits', 'synced', 'INTEGER NOT NULL DEFAULT 0');
@@ -847,22 +844,29 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   }
 
   // Relax plan_id constraint (server data may have null plan_id for standalone todos)
-  // Wrapped in explicit transaction so DROP+RENAME is atomic
-  try {
-    await db.execAsync('BEGIN TRANSACTION');
-    await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos_new (
-      id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
-      name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
-      todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
-      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
-    )`);
-    await db.execAsync(`INSERT OR IGNORE INTO daily_custom_todos_new SELECT * FROM daily_custom_todos`);
-    await db.execAsync(`DROP TABLE daily_custom_todos`);
-    await db.execAsync(`ALTER TABLE daily_custom_todos_new RENAME TO daily_custom_todos`);
-    await db.execAsync('COMMIT');
-  } catch (e) {
-    try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
-    log.warn('[DB] daily_custom_todos migration transaction failed:', e);
+  // Only run if plan_id still has NOT NULL (migration not yet applied)
+  const planIdCol = await db.getFirstAsync<{ notnull: number }>(
+    "SELECT notnull FROM pragma_table_info('daily_custom_todos') WHERE name = 'plan_id'"
+  );
+  const planIdNotNull = planIdCol?.notnull ?? 1;
+  if (planIdNotNull === 1) {
+    // Wrapped in explicit transaction so DROP+RENAME is atomic
+    try {
+      await db.execAsync('BEGIN TRANSACTION');
+      await db.execAsync(`CREATE TABLE IF NOT EXISTS daily_custom_todos_new (
+        id TEXT PRIMARY KEY, plan_id TEXT, date TEXT NOT NULL,
+        name TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0,
+        todo_order INTEGER NOT NULL DEFAULT 0, recurring INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+      )`);
+      await db.execAsync(`INSERT OR IGNORE INTO daily_custom_todos_new SELECT * FROM daily_custom_todos`);
+      await db.execAsync(`DROP TABLE daily_custom_todos`);
+      await db.execAsync(`ALTER TABLE daily_custom_todos_new RENAME TO daily_custom_todos`);
+      await db.execAsync('COMMIT');
+    } catch (e) {
+      try { await db.execAsync('ROLLBACK'); } catch { /* best effort rollback */ }
+      log.warn('[DB] daily_custom_todos migration transaction failed:', e);
+    }
   }
 
   // Ensure daily_todo_history table exists

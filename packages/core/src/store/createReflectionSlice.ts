@@ -49,8 +49,11 @@ export function createReflectionSlice(
       const reflection = (state.reflections ?? []).find(r => r.id === id && !r.deleted);
       if (!reflection) return;
 
-      // Remove all reflection links involving this reflection
-      state.deleteLinksByReflection(id);
+      // Find links to delete (inline to avoid calling deleteLinksByReflection which does its own set())
+      const linkIdsToDelete = (state.reflectionLinks ?? []).filter(l =>
+        !l.deleted && (l.fromId === id || l.toId === id)
+      ).map(l => l.id);
+      const linksToDelete = (state.reflectionLinks ?? []).filter(l => linkIdsToDelete.includes(l.id));
 
       const affectedPlanItemIds = (state.planItems ?? [])
         .filter(i => !i.deleted && i.reflectionId === id)
@@ -81,6 +84,9 @@ export function createReflectionSlice(
           reflections: deleteReflectionFromList(s.reflections ?? [], id),
           thoughtTrails: newTrails,
           planItems: newPlanItems,
+          reflectionLinks: (s.reflectionLinks ?? []).map(l =>
+            linkIdsToDelete.includes(l.id) ? { ...l, deleted: true, updatedAt: Date.now() } : l
+          ),
           recycleBin: [...(s.recycleBin ?? []), { id, entityType: 'reflection' as const, data: reflection, deletedAt: Date.now() }],
         };
       });
@@ -91,6 +97,9 @@ export function createReflectionSlice(
       }
       for (const item of updatedPlanItems) {
         adapter.persistChange('planItem', item.id, item).catch(e => log.error(e));
+      }
+      if (linksToDelete.length > 0) {
+        adapter.batchDelete(linksToDelete.map(l => ({ entity: 'reflectionLink' as const, id: l.id }))).catch(e => log.error(e));
       }
     },
 

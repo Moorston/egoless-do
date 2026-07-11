@@ -114,7 +114,8 @@ export function createHabitSlice(
         sleepHistory: s.sleepHistory ?? [],
       };
       const next = syncHabitsFromModules(prev, state, today);
-      if (next === prev) return;
+      const changed = next.filter((h, i) => h !== prev[i]);
+      if (changed.length === 0) return;
       set({ habits: next });
       next.forEach((h, i) => {
         if (h !== prev[i]) adapter.persistChange('habit', h.id, h).catch(e => log.error(e));

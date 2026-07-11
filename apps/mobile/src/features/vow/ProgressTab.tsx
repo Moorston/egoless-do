@@ -79,7 +79,7 @@ export default function ProgressTab({ TH, T, progress }: Props) {
           borderColor: TH.border,
           alignItems: 'center',
         }}>
-          <Text style={{ fontSize: scaleFontSize(32)(), marginBottom: 8 }}>🧘</Text>
+          <Text style={{ fontSize: scaleFontSize(32), marginBottom: 8 }}>🧘</Text>
           <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
             {T('vowProgressToday')} - {T('noHistory')}
           </Text>

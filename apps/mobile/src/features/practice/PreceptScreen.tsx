@@ -3,7 +3,7 @@ import {
   PRECEPT_AVOID_PRESETS, PRACTICE_PRESETS, VIOLATION_TRIGGERS,
   PRECEPT_PREFIX_AVOID, PRECEPT_PREFIX_PRACTICE,
   isPreceptHabit, getPreceptDisplayName, getPreceptType,
-  type PreceptPreset, FONT_SMALL } from '@egoless-do/core';
+  type PreceptPreset } from '@egoless-do/core';
 import { Shield, Check, X, Plus, BarChart3, AlertTriangle } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, TextInput, Modal, StyleSheet } from 'react-native';

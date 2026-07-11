@@ -28,6 +28,7 @@ export function createDietSlice(
   // Caches results per (method, date, foodLog length+firstId).
   // Invalidated automatically when foodLog changes.
   const _cache = new Map<string, { sig: string; value: unknown }>();
+  const MAX_CACHE_SIZE = 50;
   function memoStat<T>(method: string, date: string, get: () => { foodLog?: unknown[] }, compute: () => T): T {
     const fl = get().foodLog ?? [];
     const activeCount = (fl as Array<{ deleted?: boolean }>).filter(f => !f.deleted).length;
@@ -36,6 +37,11 @@ export function createDietSlice(
     const hit = _cache.get(key);
     if (hit && hit.sig === sig) return hit.value as T;
     const value = compute();
+    // Evict oldest entry if at capacity
+    if (_cache.size >= MAX_CACHE_SIZE) {
+      const firstKey = _cache.keys().next().value;
+      if (firstKey !== undefined) _cache.delete(firstKey);
+    }
     _cache.set(key, { sig, value });
     return value;
   }

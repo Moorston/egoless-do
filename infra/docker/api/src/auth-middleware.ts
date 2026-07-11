@@ -103,6 +103,10 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
           }
         } catch (epochErr: unknown) {
           const status = (epochErr as Record<string, unknown>)?.status;
+          // 404 is expected for new users who haven't set up a user_profiles record yet.
+          // In this case the token has no stored epoch to compare against, so we allow
+          // the request through. Any other error (500, network, etc.) is treated as a
+          // security failure and the request is rejected.
           if (status !== 404) return null;
         }
       }

@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   timelineLine: { width: 2, flex: 1 },
   entryInfoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   // ── Empty state ──
-  emptyEmoji: { fontSize: scaleFontSize(64)(), marginBottom: 16 },
+  emptyEmoji: { fontSize: scaleFontSize(64), marginBottom: 16 },
   emptyTitle: { fontSize: FONT_TITLE(), fontWeight: '700', marginBottom: 8 },
   emptyDesc: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 8 },
   emptySubDesc: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 24 },
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   subBold: { fontSize: FONT_SUB(), fontWeight: '600' },
   deleteText: { fontSize: FONT_BODY(), color: '#ef4444' },
   deleteBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, padding: 12 },
-  detailDuration: { fontSize: scaleFontSize(32)(), fontWeight: '900', textAlign: 'center', marginBottom: 4 },
+  detailDuration: { fontSize: scaleFontSize(32), fontWeight: '900', textAlign: 'center', marginBottom: 4 },
   detailDurationLabel: { fontSize: FONT_BODY(), textAlign: 'center', marginBottom: 16 },
   detailTrackRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   detailSection: { marginBottom: 16 },

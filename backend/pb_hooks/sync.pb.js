@@ -15,7 +15,11 @@ routerAdd("POST", "/api/sync", function(e) {
     var idRe = /^[a-zA-Z0-9_-]{1,128}$/;
     function isValidId(v) { return typeof v === 'string' && (uuidRe.test(v) || idRe.test(v)); }
     function buildUserFilter(userId, sinceDate) {
-      return "user_id = '" + escapeFilterValue(userId) + "'";
+      var filter = "user_id = '" + escapeFilterValue(userId) + "'";
+      if (sinceDate) {
+        filter += " && updated_at > \"" + escapeFilterValue(sinceDate) + "\"";
+      }
+      return filter;
     }
     function buildFilter(field, value, userId) { return field + " = '" + escapeFilterValue(value) + "' && user_id = '" + escapeFilterValue(userId) + "'"; }
     function safeFindRecords(app, coll, filter, limit, offset) {
@@ -95,7 +99,18 @@ routerAdd("POST", "/api/sync", function(e) {
           var ent = entitiesToPull[ei];
           var entColl = ENTITY_COLL_MAP[ent];
           if (!entColl) continue;
-          var recs = safeFindRecords($app, entColl, buildUserFilter(userId, lastSyncAt > 0 ? sinceDate : null), 500);
+          var allRecs = [];
+          var offset = 0;
+          var BATCH = 500;
+          while (true) {
+            var batch = safeFindRecords($app, entColl, buildUserFilter(userId, lastSyncAt > 0 ? sinceDate : null), BATCH, offset);
+            if (!batch || batch.length === 0) break;
+            for (var bi = 0; bi < batch.length; bi++) allRecs.push(batch[bi]);
+            if (batch.length < BATCH) break;
+            offset += BATCH;
+            if (offset > 50000) break;
+          }
+          var recs = allRecs;
           var payloads = [];
           for (var ri = 0; ri < recs.length; ri++) {
             try {
@@ -126,7 +141,11 @@ routerAdd("GET", "/api/sync", function(e) {
     var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
     function buildUserFilter(userId, sinceDate) {
-      return "user_id = '" + escapeFilterValue(userId) + "'";
+      var filter = "user_id = '" + escapeFilterValue(userId) + "'";
+      if (sinceDate) {
+        filter += " && updated_at > \"" + escapeFilterValue(sinceDate) + "\"";
+      }
+      return filter;
     }
     function safeFindRecords(app, coll, filter, limit, offset) {
       try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
@@ -200,7 +219,11 @@ routerAdd("GET", "/api/sync/check", function(e) {
     var ENTITY_LIST = ["habit","reflection","fasting","food","checkin","exercise","meditation","profile","plan","planItem","planItemCheckin","grace","dailyCustomTodo","dailyTodoHistory","thoughtTrail","trailNote","reflectionLink","aiConfig","checkinReview","motivationEntry","customWuxing","fearEntry","courageEntry","fearAchievement","sutraReading","sleep","give","bodyGoal","bodyPlan","weightRecord","bodyCheckin","vision","visionPractice","dedication","mantraDef","mantraSession","zhiguanSession","breath"];
     function escapeFilterValue(v) { if (typeof v !== 'string') return String(v); return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/'/g, "\\'").replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\0/g, ''); }
     function buildUserFilter(userId, sinceDate) {
-      return "user_id = '" + escapeFilterValue(userId) + "'";
+      var filter = "user_id = '" + escapeFilterValue(userId) + "'";
+      if (sinceDate) {
+        filter += " && updated_at > \"" + escapeFilterValue(sinceDate) + "\"";
+      }
+      return filter;
     }
     function safeFindRecords(app, coll, filter, limit, offset) {
       try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {

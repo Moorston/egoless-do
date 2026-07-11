@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     padding: 40,
   },
   emptyStateEmoji: {
-    fontSize: scaleFontSize(40)(),
+    fontSize: scaleFontSize(40),
     marginBottom: 8,
   },
   topBarRow: {

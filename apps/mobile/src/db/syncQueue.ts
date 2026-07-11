@@ -40,7 +40,7 @@ export async function enqueueChange(
     await withDbLock(async () => {
       const count = await db.getFirstAsync<{ c: number }>('SELECT COUNT(*) as c FROM sync_queue');
       if ((count?.c ?? 0) >= MAX_QUEUE_SIZE) {
-        await db.runAsync('DELETE FROM sync_queue WHERE id = (SELECT id FROM sync_queue ORDER BY created_at ASC LIMIT 1)');
+        await db.runAsync("DELETE FROM sync_queue WHERE id = (SELECT id FROM sync_queue WHERE status != 'syncing' ORDER BY created_at ASC LIMIT 1)");
         log.warn(`Queue full (${MAX_QUEUE_SIZE}), evicted oldest item for ${entity}:${entityId}`);
       }
       await db.runAsync(
@@ -142,7 +142,7 @@ export async function resetAllPendingForRetry(batchSize = 50): Promise<number> {
   const db = await openDatabase();
   const result = await db.runAsync(
     `UPDATE sync_queue SET status = 'pending', next_retry_at = 0
-     WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict')
+     WHERE id IN (SELECT id FROM sync_queue WHERE status IN ('failed', 'conflict', 'syncing')
                   AND retry_count < 10
                   ORDER BY created_at LIMIT ?)`,
     [batchSize],

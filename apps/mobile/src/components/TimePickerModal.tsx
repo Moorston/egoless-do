@@ -119,11 +119,11 @@ export default function TimePickerModal({ visible, value, onConfirm, onClose }: 
 
           {/* Preview */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 16, borderRadius: 16, marginBottom: 24, backgroundColor: `${TH.primary}12` }}>
-            <Text style={{ fontSize: scaleFontSize(42)(), fontWeight: '700', color: TH.primary, letterSpacing: 2 }}>
+            <Text style={{ fontSize: scaleFontSize(42), fontWeight: '700', color: TH.primary, letterSpacing: 2 }}>
               {String(hour).padStart(2, '0')}
             </Text>
-            <Text style={{ fontSize: scaleFontSize(42)(), fontWeight: '300', color: TH.primary, marginHorizontal: 4 }}>:</Text>
-            <Text style={{ fontSize: scaleFontSize(42)(), fontWeight: '700', color: TH.primary, letterSpacing: 2 }}>
+            <Text style={{ fontSize: scaleFontSize(42), fontWeight: '300', color: TH.primary, marginHorizontal: 4 }}>:</Text>
+            <Text style={{ fontSize: scaleFontSize(42), fontWeight: '700', color: TH.primary, letterSpacing: 2 }}>
               {String(minute).padStart(2, '0')}
             </Text>
           </View>

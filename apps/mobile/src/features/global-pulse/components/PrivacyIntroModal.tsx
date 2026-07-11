@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   icon: {
-    fontSize: scaleFontSize(40)(),
+    fontSize: scaleFontSize(40),
   },
   title: {
     fontSize: FONT_STAT_CARD(),

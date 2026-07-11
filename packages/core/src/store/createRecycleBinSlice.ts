@@ -66,7 +66,7 @@ export function createRecycleBinSlice(adapter: StorageAdapter): SliceCreator<Rec
         // Single atomic set: recycle bin + target + plan children
         set((s: FullStore) => ({
           recycleBin: s.recycleBin.filter(r => r.id !== id),
-          [targetKey]: [...((s[targetKey] as RecycleBinItem[]) ?? []).filter(x => x.id !== id), restoredData],
+          [targetKey]: [...((s[targetKey] as Array<{ id: string }>) ?? []).filter(x => x.id !== id), restoredData],
           ...(item.entityType === 'plan' ? {
             planItems: (s.planItems ?? []).map(pi =>
               pi.planId === item.id && pi.deleted ? { ...pi, deleted: false, updatedAt: now } : pi

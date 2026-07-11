@@ -951,7 +951,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   noResultsContainer: { alignItems: 'center', paddingVertical: 32 },
-  noResultsEmoji: { fontSize: scaleFontSize(32)(), marginBottom: 8 },
+  noResultsEmoji: { fontSize: scaleFontSize(32), marginBottom: 8 },
   noResultsText: { fontSize: FONT_BODY(), marginBottom: 4 },
   noResultsResetBtn: { marginTop: 12 },
   // ── Empty state ──

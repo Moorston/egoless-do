@@ -340,7 +340,7 @@ function SutraScreenInner() {
 
   const sutraEmptyState = useMemo(() => (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 24, alignItems: 'center' }}>
-      <Text style={{ fontSize: scaleFontSize(40)(), marginBottom: 8 }}>📿</Text>
+      <Text style={{ fontSize: scaleFontSize(40), marginBottom: 8 }}>📿</Text>
       <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('sutraNoSutras')}</Text>
       <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 4 }}>{T('sutraAddHint')}</Text>
     </View>
@@ -666,7 +666,7 @@ function SutraScreenInner() {
           <View style={{ backgroundColor: '#D4A574', padding: 24, alignItems: 'center' }}>
             <Text style={{ fontSize: FONT_HERO() }}>☸</Text>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff', marginTop: 8 }}>{selectedSutra?.name}</Text>
-            <Text style={{ fontSize: scaleFontSize(36)(), fontWeight: '800', color: '#fff', marginTop: 8 }}>
+            <Text style={{ fontSize: scaleFontSize(36), fontWeight: '800', color: '#fff', marginTop: 8 }}>
               {reportCount.toLocaleString()} 颗 · {reportRounds} 遍
             </Text>
             <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.8)', marginTop: 4 }}>

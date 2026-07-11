@@ -151,11 +151,12 @@ export async function apiResetPassword(email: string, code: string, password: st
 }
 
 // ── Sync: push local changes (pure push, no pull data) ──────────
-export async function apiSyncPush(token: string, _lastSyncAt: number, changes: SyncChange[], userId?: string): Promise<SyncPushResult> {
+export async function apiSyncPush(token: string, _lastSyncAt: number, changes: SyncChange[], userId?: string, signal?: AbortSignal): Promise<SyncPushResult> {
   const res = await fetchWithTimeout(`${getSyncBase()}/api/sync`, {
     method: 'POST',
     headers: { ...buildHeaders(token), ...(userId ? { 'X-User-Id': userId } : {}) },
     body: JSON.stringify({ changes, skipPull: true }),
+    signal,
   }, SYNC_REQUEST_TIMEOUT);
   const result = await handleJsonResponse<{ changes: SyncPushResponseItem[]; rejected: SyncPushResponseItem[]; serverTime: number }>(res);
   return { applied: result.changes, rejected: result.rejected, serverTime: result.serverTime };

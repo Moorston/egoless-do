@@ -1,10 +1,10 @@
-import React, {useState, useMemo, useCallback, FONT_BACK, FONT_TINY} from 'react';
+import React, {useState, useMemo, useCallback} from 'react';
 import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore, type MobileStore } from '../../store/useAppStore';
 import { useTheme, useT } from '../../components/UI';
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr , FONT_SMALL } from '@egoless-do/core';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_STAT_CARD, FONT_STAT_SECTION, COLORS, dateStr, FONT_SMALL, FONT_TINY, FONT_BACK } from '@egoless-do/core';
 import type { FearEntry, FearClassification, FearCategory, BodyRegion, BodyShape, BodyTemp, FeelingTag, AchievementType, CourageEntry, FearAchievement } from '@egoless-do/core';
 import { FEAR_CATEGORY_DEFS, BODY_REGION_DEFS, ACHIEVEMENT_DEFS , scaleFontSize } from '@egoless-do/core';
 import { useTabNavigation } from '../../navigation/hooks';
@@ -538,7 +538,7 @@ export default function MindScreen() {
               {/* 恐惧实质指数 */}
               <View style={{ backgroundColor: '#8B5CF615', borderRadius: 12, padding: 16, alignItems: 'center', marginBottom: 16, borderWidth: 1, borderColor: '#8B5CF630' }}>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('mindFearIndex')}</Text>
-                <Text style={{ fontSize: scaleFontSize(32)(), fontWeight: '900', color: '#8B5CF6' }}>{forgeProbability * (10 - forgeCoping)}</Text>
+                <Text style={{ fontSize: scaleFontSize(32), fontWeight: '900', color: '#8B5CF6' }}>{forgeProbability * (10 - forgeCoping)}</Text>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>概率{forgeProbability} × (10-应对力{forgeCoping})</Text>
               </View>
               <TouchableOpacity onPress={handleSaveForge}

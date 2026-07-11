@@ -261,7 +261,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'cardTheme',       col: 'card_theme',      server: 'cardTheme',     fallback: null },
       { entity: 'link',            col: 'link',            server: 'link',          fallback: null },
       { entity: 'linkedHabitId',   col: 'linked_habit_id', server: 'linkedHabitId', fallback: null, optional: true },
-      { entity: 'linkedPlanItemId', col: 'linked_plan_id', server: 'linkedPlanItemId', fallback: null },
+      { entity: 'linkedPlanItemId', col: 'linked_plan_item_id', server: 'linkedPlanItemId', fallback: null },
       { entity: 'isPinned',        col: 'is_pinned',       server: 'isPinned',      type: 'bool' },
       { entity: 'isPublished',     col: 'is_published',    server: 'isPublished',   type: 'bool' },
       { entity: 'colors',          col: 'colors',          server: 'colors',        type: 'json', fallback: null },

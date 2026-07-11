@@ -22,6 +22,7 @@ export class SyncRealtimeController {
   private _realtimeEventTimes = new Map<string, number[]>();
   private _logoutHandler: (() => void) | null = null;
   private _userIdProvider: (() => string | undefined) | null = null;
+  private _networkRecoveryTimer: ReturnType<typeof setTimeout> | null = null;
   private _runSync: (() => void) | null = null;
   private _applyServerChanges: ((data: Record<string, unknown[]>, deletedIds: Set<string>) => Promise<Record<string, unknown>>) | null = null;
   private _onServerTime: ((serverTime: number) => void) | null = null;
@@ -172,18 +173,25 @@ export class SyncRealtimeController {
     if (this._netInfoUnsubscribe) return;
     this._netInfoUnsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected && state.isInternetReachable) {
-        (async () => {
-          const count = await resetAllPendingForRetry().catch(() => 0);
-          if (count > 0) {
-            log.info(`Network recovered, resetting ${count} items`);
-            this._runSync?.();
-          }
-        })();
+        // Debounce: network flapping can fire rapid connect/disconnect events;
+        // wait 2 seconds of stability before acting to avoid repeated resets.
+        if (this._networkRecoveryTimer) clearTimeout(this._networkRecoveryTimer);
+        this._networkRecoveryTimer = setTimeout(() => {
+          this._networkRecoveryTimer = null;
+          (async () => {
+            const count = await resetAllPendingForRetry().catch(() => 0);
+            if (count > 0) {
+              log.info(`Network recovered, resetting ${count} items`);
+              this._runSync?.();
+            }
+          })();
+        }, 2000);
       }
     });
   }
 
   private stopNetworkRecoveryListener(): void {
+    if (this._networkRecoveryTimer) { clearTimeout(this._networkRecoveryTimer); this._networkRecoveryTimer = null; }
     this._netInfoUnsubscribe?.();
     this._netInfoUnsubscribe = null;
   }

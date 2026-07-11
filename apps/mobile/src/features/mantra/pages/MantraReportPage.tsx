@@ -73,7 +73,7 @@ const S = StyleSheet.create({
   summaryCardInner: { backgroundColor: '#FBBF24', padding: 24, alignItems: 'center' },
   wheelIcon: { fontSize: FONT_HERO() },
   mantraName: { fontWeight: '800', color: '#fff', marginTop: 8 },
-  countText: { fontSize: scaleFontSize(36)(), fontWeight: '800', color: '#fff', marginTop: 8 },
+  countText: { fontSize: scaleFontSize(36), fontWeight: '800', color: '#fff', marginTop: 8 },
   durationText: { color: 'rgba(255,255,255,.8)', marginTop: 4 },
   statsCard: { borderRadius: 16, padding: 16, marginBottom: 16 },
   statsRow: { flexDirection: 'row', justifyContent: 'space-around' },

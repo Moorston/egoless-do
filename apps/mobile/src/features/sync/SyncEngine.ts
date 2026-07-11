@@ -334,7 +334,7 @@ export class SyncEngine {
 
       let pushResult: SyncPushResult;
       try {
-        pushResult = await apiSyncPush(freshToken(), lastSyncAt, changes, userId);
+        pushResult = await apiSyncPush(freshToken(), lastSyncAt, changes, userId, signal);
         log.info(`Push OK: ${changes.length} changes, serverTime=${pushResult.serverTime}, rejected=${pushResult.rejected?.length ?? 0}`);
       } catch (pushErr: unknown) {
         if (this.isKickedOutError(pushErr)) { this.handleKickedOut(); return { pushedAnything, pushedItemCount, pushApplySucceeded, lastPushResult: null }; }
@@ -483,11 +483,13 @@ export class SyncEngine {
           log.warn(pushPullErr, { phase: 'post-push pull' });
         }
       }
+    }
 
-      // Update timestamps
-      if (pushResult.serverTime) {
-        this.updateTimestamps(pushResult.serverTime, generation);
-      }
+    // Update timestamps once after all push batches complete, outside the loop.
+    // This ensures the pull phase can still run even if the signal is aborted after push,
+    // since the pull phase has its own timestamp handling for received data.
+    if (lastPushResult?.serverTime) {
+      this.updateTimestamps(lastPushResult.serverTime, generation);
     }
 
     return { pushedAnything, pushedItemCount, pushApplySucceeded, lastPushResult };
@@ -619,9 +621,6 @@ export class SyncEngine {
     const myGeneration = ++this._syncGeneration;
 
     // ── Token check ────────────────────────────────────────────────────
-    this._syncing = true;
-    this._syncingSince = Date.now();
-
     let token = this._tokenProvider?.();
     if (!token) {
       log.warn('runSync: no token, attempting recovery...');
@@ -651,6 +650,9 @@ export class SyncEngine {
       }
     }
 
+    // Token confirmed available — safe to mark as syncing
+    this._syncing = true;
+    this._syncingSince = Date.now();
     log.info('runSync starting, token present');
     const userId = this._userIdProvider?.() ?? undefined;
     const freshToken = () => this._tokenProvider?.() ?? '';
@@ -730,6 +732,8 @@ export class SyncEngine {
 
   private async purgeDeletedRecords(): Promise<void> {
     try {
+      // Note: openDatabase returns a singleton — safe to call outside withDbLock.
+      // The lock only guards the DB operations below, not the connection retrieval.
       const db = await this._openDatabase();
       await this._withDbLock(async () => {
         for (const table of ALL_ENTITY_TABLES) {
@@ -744,6 +748,8 @@ export class SyncEngine {
 
   private async cleanupCorruptedRecords(): Promise<void> {
     try {
+      // Note: openDatabase returns a singleton — safe to call outside withDbLock.
+      // The lock only guards the DB operations below, not the connection retrieval.
       const db = await this._openDatabase();
       const done = await getState(db, 'corruptionCleanupDone');
       if (done !== 'true') {

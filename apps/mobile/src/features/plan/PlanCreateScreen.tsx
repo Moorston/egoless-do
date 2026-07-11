@@ -721,7 +721,7 @@ export default function PlanCreateScreen() {
               <ScrollView>
                 {activeVisions.length === 0 ? (
                   <View style={{ alignItems: 'center', padding: 24 }}>
-                    <Text style={{ fontSize: scaleFontSize(40)(), marginBottom: 8 }}>🎯</Text>
+                    <Text style={{ fontSize: scaleFontSize(40), marginBottom: 8 }}>🎯</Text>
                     <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>{T('vowNoVision')}</Text>
                   </View>
                 ) : activeVisions.map((v: Vision) => {

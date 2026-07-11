@@ -51,17 +51,15 @@ const BASE = {
  * Call once at app startup with the system font scale (e.g. PixelRatio.getFontScale()).
  * Default is 1 (no scaling). Pass 1 explicitly to disable scaling.
  */
-export function configureFontScale(scale: number): void {
+export const configureFontScale = (scale) => {
   _fontScale = Math.max(0.85, Math.min(scale, 1.5));
-}
+};
 
 /**
  * Scale an arbitrary font size value by the current font scale.
  * Use for raw numeric fontSize values that haven't been migrated to constants yet.
  */
-export function scaleFontSize(size: number): number {
-  return Math.round(size * _fontScale);
-}
+export const scaleFontSize = (size) => Math.round(size * _fontScale);
 
 // ─── Named font size constants (live bindings via getter) ───────
 // These are backward-compatible: `fontSize: FONT_TITLE` still works.

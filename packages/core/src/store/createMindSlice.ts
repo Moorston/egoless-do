@@ -44,8 +44,7 @@ export function createMindSlice(
     // ── 恐惧 CRUD ──
 
     addFearEntry(entry) {
-      // occurrenceCount is computed after construction; cast through unknown satisfies TS
-      const e: FearEntry = { ...entry, id: uid(), updatedAt: Date.now(), deleted: false } as unknown as FearEntry;
+      const e: FearEntry = { ...entry, id: uid(), timestamp: Date.now(), updatedAt: Date.now(), deleted: false };
       // 计算同类恐惧出现次数
       const sameContent = get().fearEntries.filter(
         f => !f.deleted && f.content === e.content

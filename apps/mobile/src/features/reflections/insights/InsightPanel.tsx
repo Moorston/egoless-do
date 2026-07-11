@@ -44,7 +44,7 @@ export default function InsightPanel({
   if (filtered.length < 3) {
     return (
       <View style={{ alignItems: 'center', paddingVertical: 32 }}>
-        <Text style={{ fontSize: scaleFontSize(32)(), marginBottom: 8 }}>📝</Text>
+        <Text style={{ fontSize: scaleFontSize(32), marginBottom: 8 }}>📝</Text>
         <Text style={{ fontSize: FONT_BODY(), color: TH.sub, textAlign: 'center' }}>
           {T('insightProfileEmpty')}
         </Text>

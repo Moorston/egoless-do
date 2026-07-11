@@ -209,7 +209,7 @@ export default function ProfileScreen() {
                 {avatarUri ? (
                   <Image source={{ uri: avatarUri }} style={{ width: 80, height: 80, borderRadius: 40 }} contentFit="cover" />
                 ) : (
-                  <Text style={{ fontSize: scaleFontSize(32)(), fontWeight: '700', color: P }}>
+                  <Text style={{ fontSize: scaleFontSize(32), fontWeight: '700', color: P }}>
                     {displayName.charAt(0).toUpperCase()}
                   </Text>
                 )}
