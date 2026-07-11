@@ -250,6 +250,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                 <TouchableOpacity
                   onPress={() => { setShowStartPicker(v => !v); setShowEndPicker(false); }}
                   style={[styles.dateRow, {
+                    backgroundColor: TH.card,
                     borderColor: showStartPicker ? '#8B5CF6' : TH.border,
                   }]}
                 >
@@ -269,6 +270,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
                 <TouchableOpacity
                   onPress={() => { setShowEndPicker(v => !v); setShowStartPicker(false); }}
                   style={[styles.dateRow, {
+                    backgroundColor: TH.card,
                     borderColor: showEndPicker ? '#8B5CF6' : TH.border,
                     marginTop: showStartPicker ? 8 : 0,
                   }]}
@@ -319,7 +321,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
             </View>
 
             {/* Link plans */}
-            <View style={{ marginBottom: 20 }}>
+            <View style={styles.plansSection}>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub, marginBottom: 8 }}>{T('vowLinkPlan')}</Text>
               {filteredPlans.length === 0 ? (
                 <Text style={{ fontSize: FONT_BODY, color: TH.sub }}>{T('vowNoLink')}</Text>
@@ -349,13 +351,10 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
           </ScrollView>
 
           {/* Buttons */}
-          <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+          <View style={styles.buttonRow}>
             <TouchableOpacity
               onPress={onClose}
-              style={{
-                flex: 1, padding: 14, borderRadius: 12,
-                borderWidth: 1, borderColor: TH.border, alignItems: 'center',
-              }}
+              style={styles.cancelBtn}
             >
               <Text style={{ color: TH.sub, fontSize: FONT_BODY, fontWeight: '600' }}>{T('vowCancel')}</Text>
             </TouchableOpacity>
@@ -378,3 +377,81 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  // ── MonthPicker ──────────────────────────────────────
+  monthPicker: {
+    borderRadius: 12, padding: 12, borderWidth: 1,
+  },
+  weekdayHeader: {
+    flexDirection: 'row', marginBottom: 4,
+  },
+  weekdayCell: {
+    flex: 1, alignItems: 'center',
+  },
+  dayRow: {
+    flexDirection: 'row',
+  },
+  emptyDay: {
+    flex: 1, height: 32,
+  },
+  dayCell: {
+    flex: 1, height: 32, alignItems: 'center', justifyContent: 'center',
+    borderRadius: 6,
+  },
+
+  // ── Modal layout ─────────────────────────────────────
+  overlay: {
+    flex: 1, justifyContent: 'flex-end',
+  },
+  modalContent: {
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    padding: 24, maxHeight: '85%',
+  },
+  headerRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    marginBottom: 20,
+  },
+
+  // ── Date picker rows ─────────────────────────────────
+  dateRow: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    borderRadius: 10, padding: 12, borderWidth: 1,
+    marginBottom: 8,
+  },
+  dateRowIcon: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+  },
+
+  // ── Pills ────────────────────────────────────────────
+  pillsContainer: {
+    flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12,
+  },
+  pillsSection: {
+    marginBottom: 16,
+  },
+  plansSection: {
+    marginBottom: 20,
+  },
+  pillsLeft: {
+    flexDirection: 'row', flexWrap: 'wrap', gap: 6,
+  },
+  pillBtn: {
+    paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8,
+    borderWidth: 1,
+  },
+  pillIconBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8,
+    borderWidth: 1,
+  },
+
+  // ── Buttons ──────────────────────────────────────────
+  buttonRow: {
+    flexDirection: 'row', gap: 8, marginTop: 8,
+  },
+  cancelBtn: {
+    flex: 1, padding: 14, borderRadius: 12,
+    borderWidth: 1, alignItems: 'center',
+  },
+});

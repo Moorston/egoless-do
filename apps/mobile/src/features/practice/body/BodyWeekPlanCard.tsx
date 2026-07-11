@@ -1,7 +1,7 @@
 import { FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, dateStr, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme, type ExerciseEntry } from '@egoless-do/core';
 import { Calendar, Check, Circle } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 function resolveDayBgColor(day: { isToday: boolean; matched: boolean; hasPlan: boolean; isPast: boolean }, border: string): string {
   if (day.isToday) return '#f59e0b';
@@ -113,20 +113,20 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
   return (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16, borderWidth: 1, borderColor: TH.border }}>
       {/* Header */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+      <View style={styles.headerRow}>
+        <View style={styles.headerLeftGroup}>
           <Calendar size={18} color="#f59e0b" />
           <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text }}>{T('bodyPlan')}</Text>
         </View>
-        <TouchableOpacity onPress={onEdit} style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 8, backgroundColor: '#f59e0b15' }}>
-          <Text style={{ fontSize: FONT_BADGE, color: '#f59e0b' }}>{activePlans.length > 0 ? T('bodyPlanEdit') : T('bodyGoalSet')}</Text>
+        <TouchableOpacity onPress={onEdit} style={styles.editButton}>
+          <Text style={styles.editButtonText}>{activePlans.length > 0 ? T('bodyPlanEdit') : T('bodyGoalSet')}</Text>
         </TouchableOpacity>
       </View>
 
       {activePlans.length === 0 ? (
-        <View style={{ paddingVertical: 20, alignItems: 'center' }}>
+        <View style={styles.emptyStateContainer}>
           <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center', marginBottom: 6 }}>{T('bodyPlanNotSet')}</Text>
-          <TouchableOpacity onPress={onEdit} style={{ paddingHorizontal: 14, paddingVertical: 6, borderRadius: 10, backgroundColor: '#f59e0b15' }}>
+          <TouchableOpacity onPress={onEdit} style={styles.setPlanButton}>
             <Text style={{ fontSize: FONT_BADGE, color: '#f59e0b', fontWeight: '600' }}>{T('bodySetPlan')}</Text>
           </TouchableOpacity>
         </View>

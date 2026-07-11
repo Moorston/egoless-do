@@ -3,7 +3,7 @@ import type { DedicationType } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Save, ArrowLeft } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT, ProgressBar } from '../../components/UI';
@@ -59,83 +59,70 @@ export default function DedicationWriteScreen({ onBack }: Props) {
   };
 
   return (
-    <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}>
+    <SafeAreaView edges={['top', 'bottom']} style={[styles.container, { backgroundColor: TH.bg }]}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
-        <View style={{
-          flexDirection: 'row', alignItems: 'center', gap: 12,
-          paddingTop: 8, paddingBottom: 16,
-        }}>
-          <TouchableOpacity onPress={onBack} style={{ padding: 4 }}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onBack} style={styles.backButton}>
             <ArrowLeft size={20} color={TH.text} />
           </TouchableOpacity>
-          <Text style={{ fontSize: FONT_STAT_CARD, fontWeight: '800', color: TH.text }}>
+          <Text style={[styles.headerTitle, { color: TH.text }]}>
             {T('vowDedWrite')}
           </Text>
         </View>
 
         {/* Period info */}
-        <View style={{
-          borderRadius: 16, overflow: 'hidden', marginBottom: 16,
-        }}>
+        <View style={styles.gradientCard}>
           <LinearGradient
             colors={['#7C3AED', '#8B5CF6']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={{ padding: 16 }}
+            style={styles.gradientPadding}
           >
-            <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,0.7)', marginBottom: 4 }}>
+            <Text style={styles.gradientSub}>
               {T('vowDedPeriod')}
             </Text>
-            <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>
+            <Text style={styles.gradientTitle}>
               {periodLabel}
             </Text>
           </LinearGradient>
         </View>
 
         {/* Auto-generated summary */}
-        <View style={{
-          backgroundColor: TH.card, borderRadius: 16, padding: 16,
-          marginBottom: 16, borderWidth: 1, borderColor: TH.border,
-        }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-            <Text style={{ fontSize: FONT_SUB, fontWeight: '700', color: TH.text }}>
+        <View style={[styles.summaryCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
+          <View style={styles.summaryTitleRow}>
+            <Text style={[styles.summaryTitle, { color: TH.text }]}>
               {T('vowDedSummary')}
             </Text>
           </View>
-          <Text style={{ fontSize: FONT_BADGE, color: TH.sub, marginBottom: 12 }}>
+          <Text style={[styles.autoHint, { color: TH.sub }]}>
             {T('vowDedAutoHint')}
           </Text>
 
           {/* Practice days */}
-          <View style={{ marginBottom: 12 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-              <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{T('vowDedDays')}</Text>
-              <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#8B5CF6' }}>
-                {practiceDays}/{totalDays}
-              </Text>
+          <View style={styles.sectionWrapper}>
+            <View style={styles.habitPlanRow}>
+              <Text style={[styles.bodyText, { color: TH.text }]}>{T('vowDedDays')}</Text>
+              <Text style={styles.practiceDays}>{practiceDays}/{totalDays}</Text>
             </View>
             <ProgressBar pct={practicePct} color="#8B5CF6" />
           </View>
 
           {/* Habit stats */}
           {habitStats.length > 0 && (
-            <View style={{ marginBottom: 12 }}>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 6 }}>
+            <View style={styles.sectionWrapper}>
+              <Text style={[styles.sectionTitle, { color: TH.text }]}>
                 {T('vowProgressHabitDone')}
               </Text>
               {habitStats.map(h => (
-                <View key={h.habitId} style={{
-                  flexDirection: 'row', justifyContent: 'space-between',
-                  paddingVertical: 4,
-                }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{h.name}</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10B981' }}>
+                <View key={h.habitId} style={styles.habitPlanRow}>
+                  <Text style={[styles.bodyText, { color: TH.text }]}>{h.name}</Text>
+                  <View style={styles.statCountRow}>
+                    <Text style={styles.completedCount}>
                       {h.completed}/{h.total}
                     </Text>
                     {h.prevCompleted !== undefined && h.completed > h.prevCompleted && (
-                      <Text style={{ fontSize: FONT_BADGE, color: '#F59E0B' }}>
+                      <Text style={styles.prevDelta}>
                         +{h.completed - h.prevCompleted}
                       </Text>
                     )}
@@ -147,17 +134,14 @@ export default function DedicationWriteScreen({ onBack }: Props) {
 
           {/* Plan progress */}
           {planProgress.length > 0 && (
-            <View style={{ marginBottom: 12 }}>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 6 }}>
+            <View style={styles.sectionWrapper}>
+              <Text style={[styles.sectionTitle, { color: TH.text }]}>
                 {T('vowProgressPlanDone')}
               </Text>
               {planProgress.map(p => (
-                <View key={p.planId} style={{
-                  flexDirection: 'row', justifyContent: 'space-between',
-                  paddingVertical: 4,
-                }}>
-                  <Text style={{ fontSize: FONT_BODY, color: TH.text }}>{p.name}</Text>
-                  <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#10B981' }}>
+                <View key={p.planId} style={styles.habitPlanRow}>
+                  <Text style={[styles.bodyText, { color: TH.text }]}>{p.name}</Text>
+                  <Text style={styles.completedCount}>
                     +{p.progressDelta}%
                   </Text>
                 </View>
@@ -168,20 +152,17 @@ export default function DedicationWriteScreen({ onBack }: Props) {
           {/* Vision progress */}
           {visionProgressData.length > 0 && (
             <View>
-              <Text style={{ fontSize: FONT_BADGE, fontWeight: '600', color: TH.text, marginBottom: 6 }}>
+              <Text style={[styles.sectionTitle, { color: TH.text }]}>
                 {T('vowProgress')}
               </Text>
               {visionProgressData.map(v => {
                 const vision = progress.visionProgress.find(vp => vp.vision.id === v.visionId)?.vision;
                 return (
-                  <View key={v.visionId} style={{
-                    flexDirection: 'row', justifyContent: 'space-between',
-                    paddingVertical: 4,
-                  }}>
-                    <Text style={{ fontSize: FONT_BODY, color: TH.text }} numberOfLines={1}>
+                  <View key={v.visionId} style={styles.habitPlanRow}>
+                    <Text style={[styles.bodyText, { color: TH.text }]} numberOfLines={1}>
                       {vision?.text ?? v.visionId}
                     </Text>
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: '#F59E0B' }}>
+                    <Text style={styles.prevDelta}>
                       {v.before}% → {v.after}%
                     </Text>
                   </View>
@@ -192,8 +173,8 @@ export default function DedicationWriteScreen({ onBack }: Props) {
         </View>
 
         {/* Insight input */}
-        <View style={{ marginBottom: 16 }}>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+        <View style={styles.inputSection}>
+          <Text style={[styles.inputLabel, { color: TH.text }]}>
             {T('vowDedInsight')}
           </Text>
           <TextInput
@@ -203,18 +184,13 @@ export default function DedicationWriteScreen({ onBack }: Props) {
             placeholderTextColor={TH.sub}
             multiline
             maxLength={1000}
-            style={{
-              backgroundColor: TH.card, borderRadius: 12, padding: 14,
-              color: TH.text, fontSize: FONT_BODY,
-              minHeight: 100, textAlignVertical: 'top',
-              borderWidth: 1, borderColor: TH.border,
-            }}
+            style={[styles.insightInput, { backgroundColor: TH.card, color: TH.text, borderColor: TH.border }]}
           />
         </View>
 
         {/* Adjustment input */}
-        <View style={{ marginBottom: 24 }}>
-          <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text, marginBottom: 8 }}>
+        <View style={styles.adjustmentSection}>
+          <Text style={[styles.inputLabel, { color: TH.text }]}>
             {T('vowDedAdjustment')}
           </Text>
           <TextInput
@@ -224,25 +200,17 @@ export default function DedicationWriteScreen({ onBack }: Props) {
             placeholderTextColor={TH.sub}
             multiline
             maxLength={1000}
-            style={{
-              backgroundColor: TH.card, borderRadius: 12, padding: 14,
-              color: TH.text, fontSize: FONT_BODY,
-              minHeight: 80, textAlignVertical: 'top',
-              borderWidth: 1, borderColor: TH.border,
-            }}
+            style={[styles.adjustmentInput, { backgroundColor: TH.card, color: TH.text, borderColor: TH.border }]}
           />
         </View>
 
         {/* Save button */}
         <TouchableOpacity
           onPress={handleSave}
-          style={{
-            flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-            backgroundColor: '#8B5CF6', borderRadius: 14, padding: 16,
-          }}
+          style={styles.saveButton}
         >
           <Save size={18} color="#fff" />
-          <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '700' }}>
+          <Text style={styles.saveButtonText}>
             {T('vowDedSave')}
           </Text>
         </TouchableOpacity>
@@ -250,3 +218,141 @@ export default function DedicationWriteScreen({ onBack }: Props) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingTop: 8,
+    paddingBottom: 16,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: FONT_STAT_CARD,
+    fontWeight: '800',
+  },
+  gradientCard: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  gradientPadding: {
+    padding: 16,
+  },
+  gradientSub: {
+    fontSize: FONT_SUB,
+    color: 'rgba(255,255,255,0.7)',
+    marginBottom: 4,
+  },
+  gradientTitle: {
+    fontSize: FONT_TITLE,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  summaryCard: {
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+  },
+  summaryTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 12,
+  },
+  summaryTitle: {
+    fontSize: FONT_SUB,
+    fontWeight: '700',
+  },
+  autoHint: {
+    fontSize: FONT_BADGE,
+    marginBottom: 12,
+  },
+  sectionWrapper: {
+    marginBottom: 12,
+  },
+  habitPlanRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 4,
+  },
+  bodyText: {
+    fontSize: FONT_BODY,
+  },
+  practiceDays: {
+    fontSize: FONT_BODY,
+    fontWeight: '700',
+    color: '#8B5CF6',
+  },
+  statCountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  sectionTitle: {
+    fontSize: FONT_BADGE,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
+  completedCount: {
+    fontSize: FONT_BODY,
+    fontWeight: '600',
+    color: '#10B981',
+  },
+  prevDelta: {
+    fontSize: FONT_BADGE,
+    color: '#F59E0B',
+  },
+  inputSection: {
+    marginBottom: 16,
+  },
+  adjustmentSection: {
+    marginBottom: 24,
+  },
+  inputLabel: {
+    fontSize: FONT_SUB,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  insightInput: {
+    borderRadius: 12,
+    padding: 14,
+    fontSize: FONT_BODY,
+    minHeight: 100,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+  },
+  adjustmentInput: {
+    borderRadius: 12,
+    padding: 14,
+    fontSize: FONT_BODY,
+    minHeight: 80,
+    textAlignVertical: 'top',
+    borderWidth: 1,
+  },
+  saveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#8B5CF6',
+    borderRadius: 14,
+    padding: 16,
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: FONT_BODY,
+    fontWeight: '700',
+  },
+});

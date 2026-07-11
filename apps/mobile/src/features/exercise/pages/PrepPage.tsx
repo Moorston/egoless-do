@@ -2,7 +2,7 @@ import { FONT_BACK, FONT_BODY, FONT_SUB, FONT_HERO, FONT_STAT_SECTION, fmt, TARG
 import type { MusicTrack , ExerciseEntry } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
 import MeditationMusicBar from '../../meditation/MeditationMusicBar';
 
@@ -38,19 +38,19 @@ export default function PrepPage(props: ExercisePageProps) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1, backgroundColor: bg }}
+      style={[styles.container, { backgroundColor: bg }]}
     >
       {/* Header */}
-      <View style={{ paddingTop: 56, paddingHorizontal: 20 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: FONT_BACK, fontWeight: '700', color: '#fff' }}>{sportName}</Text>
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <Text style={styles.headerTitle}>{sportName}</Text>
           <TouchableOpacity onPress={onGoBack}>
             <X size={22} color="rgba(255,255,255,.9)" />
           </TouchableOpacity>
         </View>
 
         {/* Music selector — same style as meditation page */}
-        <View style={{ marginTop: 16 }}>
+        <View style={styles.musicBar}>
           <MeditationMusicBar
             track={musicTrack ?? null}
             isActive={false}
@@ -61,10 +61,10 @@ export default function PrepPage(props: ExercisePageProps) {
         </View>
 
         {/* Mode toggle */}
-        <View style={{ flexDirection: 'row', marginTop: 24, backgroundColor: 'rgba(0,0,0,.2)', borderRadius: 12, padding: 3 }}>
+        <View style={styles.modeToggle}>
           {(['free', 'target'] as const).map(m => (
             <TouchableOpacity key={m} onPress={() => setMode(m)}
-              style={{ flex: 1, paddingVertical: 10, borderRadius: 10, backgroundColor: mode === m ? 'rgba(255,255,255,.25)' : 'transparent', alignItems: 'center' }}>
+              style={mode === m ? styles.modeOptionActive : styles.modeOptionInactive}>
               <Text style={{ color: '#fff', fontWeight: mode === m ? '700' : '400', fontSize: FONT_BODY }}>
                 {modeLabels[m]}
               </Text>
@@ -74,21 +74,21 @@ export default function PrepPage(props: ExercisePageProps) {
 
         {/* Target selection */}
         {mode === 'target' && (
-          <View style={{ marginTop: 16 }}>
-            <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+          <View style={styles.targetSection}>
+            <View style={styles.targetTypeRow}>
               {availableTargetTypes.map(t => (
                 <TouchableOpacity key={t} onPress={() => { setTargetType(t); setTargetValue(presets[t]?.[0]?.value ?? 0); setShowCustomInput(false); setCustomInputValue(''); }}
-                  style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: targetType === t ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.1)' }}>
+                  style={targetType === t ? styles.targetTypePillActive : styles.targetTypePillInactive}>
                   <Text style={{ color: '#fff', fontSize: FONT_SUB, fontWeight: targetType === t ? '700' : '400' }}>
                     {targetTypeLabels[t] ?? t}
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
-            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+            <View style={styles.presetRow}>
               {(presets[targetType as keyof typeof presets] ?? []).map((p: { label: string; value: number }) => (
                 <TouchableOpacity key={p.label} onPress={() => { setTargetValue(p.value); setShowCustomInput(false); setCustomInputValue(''); setCustomTargetValue(v => { const n = { ...v }; delete n[targetType]; return n; }); }}
-                  style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10, backgroundColor: targetValue === p.value ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.1)' }}>
+                  style={targetValue === p.value ? styles.presetPillActive : styles.presetPillInactive}>
                   <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: targetValue === p.value ? '700' : '400' }}>{p.label}</Text>
                 </TouchableOpacity>
               ))}
@@ -109,23 +109,23 @@ export default function PrepPage(props: ExercisePageProps) {
                       setShowCustomInput(v => !v);
                     }
                   }}
-                    style={{ paddingHorizontal: 16, paddingVertical: 10, borderRadius: 10, backgroundColor: customActive || showCustomInput ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.1)' }}>
+                    style={customActive || showCustomInput ? styles.presetPillActive : styles.presetPillInactive}>
                     <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: customActive || showCustomInput ? '700' : '400' }}>{customLabel}</Text>
                   </TouchableOpacity>
                 );
               })()}
             </View>
             {showCustomInput && (targetType === 'time' || targetType === 'calories') && (
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 }}>
+              <View style={styles.customInputRow}>
                 <TextInput
                   value={customInputValue}
                   onChangeText={setCustomInputValue}
                   keyboardType="numeric"
                   placeholder={targetType === 'time' ? '30' : '200'}
                   placeholderTextColor="rgba(255,255,255,.7)"
-                  style={{ flex: 1, height: 44, borderRadius: 10, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 14, color: '#fff', fontSize: FONT_BODY }}
+                  style={styles.customInput}
                 />
-                <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SUB }}>
+                <Text style={styles.customUnitLabel}>
                   {targetType === 'time' ? T('exerciseMin') : 'kcal'}
                 </Text>
                 <TouchableOpacity onPress={() => {
@@ -140,8 +140,8 @@ export default function PrepPage(props: ExercisePageProps) {
                   setCustomInputValue('');
                   setShowCustomInput(false);
                 }}
-                  style={{ height: 44, paddingHorizontal: 18, borderRadius: 10, backgroundColor: 'rgba(255,255,255,.25)', alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ color: '#fff', fontSize: FONT_BODY, fontWeight: '700' }}>{T('commonConfirm')}</Text>
+                  style={styles.customConfirmBtn}>
+                  <Text style={styles.customConfirmText}>{T('commonConfirm')}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -151,10 +151,10 @@ export default function PrepPage(props: ExercisePageProps) {
         {/* Breathing guide toggle (meditative sports) */}
         {isMeditative && (
           <TouchableOpacity onPress={() => setBreathGuideEnabled(v => !v)}
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 16, paddingVertical: 10, paddingHorizontal: 14, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.08)' }}>
-            <Text style={{ color: 'rgba(255,255,255,.9)', fontSize: FONT_BODY }}>{T('exerciseBreathGuide')}</Text>
-            <View style={{ width: 44, height: 26, borderRadius: 13, backgroundColor: breathGuideEnabled ? (TH?.accent ?? '#18CEFF') : 'rgba(255,255,255,.2)', padding: 2, justifyContent: 'center' }}>
-              <View style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: '#fff', alignSelf: breathGuideEnabled ? 'flex-end' : 'flex-start' }} />
+            style={styles.breathToggle}>
+            <Text style={styles.breathToggleLabel}>{T('exerciseBreathGuide')}</Text>
+            <View style={[styles.switchTrack, { backgroundColor: breathGuideEnabled ? (TH?.accent ?? '#18CEFF') : 'rgba(255,255,255,.2)' }]}>
+              <View style={breathGuideEnabled ? styles.switchThumbOn : styles.switchThumbOff} />
             </View>
           </TouchableOpacity>
         )}
@@ -165,8 +165,8 @@ export default function PrepPage(props: ExercisePageProps) {
           if (!st) return null;
           const label = st.unit === 'min' ? T('exerciseSoftTargetMin').replace('{n}', String(st.intermediate)) : T('exerciseSoftTargetReps').replace('{n}', String(st.intermediate));
           return (
-            <View style={{ marginTop: 12, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' }}>
-              <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SUB }}>{label}</Text>
+            <View style={styles.softTargetCard}>
+              <Text style={styles.softTargetText}>{label}</Text>
             </View>
           );
         })()}
@@ -176,8 +176,8 @@ export default function PrepPage(props: ExercisePageProps) {
           const lastEntry = exerciseLog?.filter((e: ExerciseEntry) => !e.deleted && e.sportKey === sportName).slice(-1)[0];
           if (!lastEntry) return null;
           return (
-            <View style={{ marginTop: 12, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.05)' }}>
-              <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SUB }}>
+            <View style={styles.lastWorkoutCard}>
+              <Text style={styles.lastWorkoutText}>
                 {T('exerciseLastTime')} {lastEntry.durationSec ? fmt(lastEntry.durationSec) : ''}{lastEntry.reps ? ` · ${lastEntry.reps} ${T('exerciseReps')}` : ''}{lastEntry.calories ? ` · ${lastEntry.calories}kcal` : ''}
               </Text>
             </View>
@@ -186,31 +186,237 @@ export default function PrepPage(props: ExercisePageProps) {
       </View>
 
       {/* Centered circle + GO button */}
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View style={{ width: 180, height: 180, borderRadius: 90, borderWidth: 4, borderColor: 'rgba(255,255,255,.6)', alignItems: 'center', justifyContent: 'center', marginBottom: 40 }}>
+      <View style={styles.goSection}>
+        <View style={styles.circle}>
           {sportType === 'repetition' ? (
             <>
-              <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{T('exerciseReps')}</Text>
+              <Text style={styles.circleValue}>0</Text>
+              <Text style={styles.circleUnit}>{T('exerciseReps')}</Text>
             </>
           ) : sportType === 'timed' ? (
             <>
-              <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0:00</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>{T('exerciseMin')}</Text>
+              <Text style={styles.circleValue}>0:00</Text>
+              <Text style={styles.circleUnit}>{T('exerciseMin')}</Text>
             </>
           ) : (
             <>
-              <Text style={{ fontSize: FONT_HERO, fontWeight: '900', color: '#fff' }}>0.00</Text>
-              <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.8)', marginTop: 4 }}>km</Text>
+              <Text style={styles.circleValue}>0.00</Text>
+              <Text style={styles.circleUnit}>km</Text>
             </>
           )}
         </View>
 
         <TouchableOpacity onPress={handleGo}
-          style={{ height: 64, borderRadius: 32, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', alignSelf: 'stretch' }}>
+          style={styles.goButton}>
           <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: bg, letterSpacing: 4 }}>GO</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    paddingTop: 56,
+    paddingHorizontal: 20,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerTitle: {
+    fontSize: FONT_BACK,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  musicBar: {
+    marginTop: 16,
+  },
+  modeToggle: {
+    flexDirection: 'row',
+    marginTop: 24,
+    backgroundColor: 'rgba(0,0,0,.2)',
+    borderRadius: 12,
+    padding: 3,
+  },
+  modeOptionActive: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,.25)',
+  },
+  modeOptionInactive: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  targetSection: {
+    marginTop: 16,
+  },
+  targetTypeRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+    flexWrap: 'wrap',
+  },
+  targetTypePillActive: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,.7)',
+  },
+  targetTypePillInactive: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,.1)',
+  },
+  presetRow: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  presetPillActive: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,.7)',
+  },
+  presetPillInactive: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,.1)',
+  },
+  customInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+  },
+  customInput: {
+    flex: 1,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,.15)',
+    paddingHorizontal: 14,
+    color: '#fff',
+    fontSize: FONT_BODY,
+  },
+  customUnitLabel: {
+    color: 'rgba(255,255,255,.7)',
+    fontSize: FONT_SUB,
+  },
+  customConfirmBtn: {
+    height: 44,
+    paddingHorizontal: 18,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  customConfirmText: {
+    color: '#fff',
+    fontSize: FONT_BODY,
+    fontWeight: '700',
+  },
+  breathToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,.08)',
+  },
+  breathToggleLabel: {
+    color: 'rgba(255,255,255,.9)',
+    fontSize: FONT_BODY,
+  },
+  switchTrack: {
+    width: 44,
+    height: 26,
+    borderRadius: 13,
+    padding: 2,
+    justifyContent: 'center',
+  },
+  switchThumbOn: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#fff',
+    alignSelf: 'flex-end',
+  },
+  switchThumbOff: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#fff',
+    alignSelf: 'flex-start',
+  },
+  softTargetCard: {
+    marginTop: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,.05)',
+  },
+  softTargetText: {
+    color: 'rgba(255,255,255,.8)',
+    fontSize: FONT_SUB,
+  },
+  lastWorkoutCard: {
+    marginTop: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,.05)',
+  },
+  lastWorkoutText: {
+    color: 'rgba(255,255,255,.8)',
+    fontSize: FONT_SUB,
+  },
+  goSection: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  circle: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 40,
+  },
+  circleValue: {
+    fontSize: FONT_HERO,
+    fontWeight: '900',
+    color: '#fff',
+  },
+  circleUnit: {
+    fontSize: FONT_SUB,
+    color: 'rgba(255,255,255,.8)',
+    marginTop: 4,
+  },
+  goButton: {
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+  },
+});

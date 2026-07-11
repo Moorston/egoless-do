@@ -2,7 +2,7 @@ import type { PlanItemPriority, UnifiedPlanItemForm, CheckinFrequency } from '@e
 import { FONT_SMALL, FONT_BODY, dateStr , FREQUENCY_OPTIONS, createDefaultFrequency } from '@egoless-do/core';
 import React, { useState, useCallback, useEffect } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView,
+  View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet,
 } from 'react-native';
 
 import { useTheme } from '../../../components/UI';
@@ -120,7 +120,7 @@ export function PlanItemForm({
         }}
       />
       {errors.name && (
-        <Text style={{ color: '#EF4444', fontSize: FONT_SMALL, marginTop: -8, marginBottom: 12 }}>
+        <Text style={styles.errorText}>
           {errors.name}
         </Text>
       )}
@@ -143,7 +143,7 @@ export function PlanItemForm({
             }}
           />
           {errors.targetMetric && (
-            <Text style={{ color: '#EF4444', fontSize: FONT_SMALL, marginTop: -8, marginBottom: 12 }}>
+            <Text style={styles.errorText}>
               {errors.targetMetric}
             </Text>
           )}
@@ -167,7 +167,7 @@ export function PlanItemForm({
       />
 
       {/* 日期 */}
-      <View style={{ flexDirection: 'row', gap: 12 }}>
+      <View style={styles.dateRow}>
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>开始日期</Text>
           <TouchableOpacity
@@ -194,7 +194,7 @@ export function PlanItemForm({
         </View>
       </View>
       {errors.date && (
-        <Text style={{ color: '#EF4444', fontSize: FONT_SMALL, marginTop: -8, marginBottom: 12 }}>
+        <Text style={styles.errorText}>
           {errors.date}
         </Text>
       )}
@@ -203,7 +203,7 @@ export function PlanItemForm({
       {showFrequency && (
         <>
           <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>打卡频率</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 8 }} contentContainerStyle={{ gap: 6 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.frequencyScrollView} contentContainerStyle={styles.frequencyScrollViewContent}>
             {FREQUENCY_OPTIONS.map(opt => {
               const active = (frequency.mode ?? 'daily') === opt.mode;
               return (
@@ -230,7 +230,7 @@ export function PlanItemForm({
 
           {/* 每N天 */}
           {frequency.mode === 'interval' && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <View style={styles.frequencyRow}>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>每</Text>
               <TextInput
                 value={draftInputs.interval ?? String(frequency.every ?? '')}
@@ -244,10 +244,7 @@ export function PlanItemForm({
                   }
                 }}
                 keyboardType="number-pad"
-                style={{
-                  width: 60, textAlign: 'center', borderWidth: 1, borderColor: TH.border,
-                  borderRadius: 8, padding: 6, color: TH.text, backgroundColor: TH.card, fontSize: FONT_BODY,
-                }}
+                style={[styles.frequencyInput, { borderColor: TH.border, color: TH.text, backgroundColor: TH.card }]}
               />
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>天</Text>
             </View>
@@ -255,7 +252,7 @@ export function PlanItemForm({
 
           {/* 每周N次 */}
           {frequency.mode === 'weekly' && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <View style={styles.frequencyRow}>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>每周</Text>
               <TextInput
                 value={draftInputs.weekly ?? String(frequency.target ?? '')}
@@ -269,10 +266,7 @@ export function PlanItemForm({
                   }
                 }}
                 keyboardType="number-pad"
-                style={{
-                  width: 60, textAlign: 'center', borderWidth: 1, borderColor: TH.border,
-                  borderRadius: 8, padding: 6, color: TH.text, backgroundColor: TH.card, fontSize: FONT_BODY,
-                }}
+                style={[styles.frequencyInput, { borderColor: TH.border, color: TH.text, backgroundColor: TH.card }]}
               />
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>次</Text>
             </View>
@@ -280,7 +274,7 @@ export function PlanItemForm({
 
           {/* 固定星期 */}
           {frequency.mode === 'weekly_fixed' && (
-            <View style={{ flexDirection: 'row', gap: 6, marginBottom: 12 }}>
+            <View style={styles.weekDayRow}>
               {[0, 1, 2, 3, 4, 5, 6].map(d => {
                 const active = frequency.days.includes(d);
                 const label = ['日', '一', '二', '三', '四', '五', '六'][d];
@@ -293,11 +287,7 @@ export function PlanItemForm({
                       setFrequency(f);
                       emitChange({ frequency: f });
                     }}
-                    style={{
-                      width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center',
-                      backgroundColor: active ? P : TH.card,
-                      borderWidth: 1, borderColor: active ? P : TH.border,
-                    }}
+                    style={[styles.dayCircle, { backgroundColor: active ? P : TH.card, borderColor: active ? P : TH.border }]}
                   >
                     <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL, fontWeight: active ? '700' : '400' }}>{label}</Text>
                   </TouchableOpacity>
@@ -308,7 +298,7 @@ export function PlanItemForm({
 
           {/* 每月N次 */}
           {frequency.mode === 'monthly' && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <View style={styles.frequencyRow}>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>每月</Text>
               <TextInput
                 value={draftInputs.monthly ?? String(frequency.target ?? '')}
@@ -322,10 +312,7 @@ export function PlanItemForm({
                   }
                 }}
                 keyboardType="number-pad"
-                style={{
-                  width: 60, textAlign: 'center', borderWidth: 1, borderColor: TH.border,
-                  borderRadius: 8, padding: 6, color: TH.text, backgroundColor: TH.card, fontSize: FONT_BODY,
-                }}
+                style={[styles.frequencyInput, { borderColor: TH.border, color: TH.text, backgroundColor: TH.card }]}
               />
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>次</Text>
             </View>
@@ -333,7 +320,7 @@ export function PlanItemForm({
 
           {/* 固定日期 */}
           {frequency.mode === 'monthly_fixed' && (
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+            <View style={styles.monthDayGrid}>
               {Array.from({ length: 31 }, (_, i) => i + 1).map(d => {
                 const active = frequency.dates.includes(d);
                 return (
@@ -345,11 +332,7 @@ export function PlanItemForm({
                       setFrequency(f);
                       emitChange({ frequency: f });
                     }}
-                    style={{
-                      width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center',
-                      backgroundColor: active ? P : TH.card,
-                      borderWidth: 1, borderColor: active ? P : TH.border,
-                    }}
+                    style={[styles.dayCircle, { backgroundColor: active ? P : TH.card, borderColor: active ? P : TH.border }]}
                   >
                     <Text style={{ color: active ? '#fff' : TH.sub, fontSize: FONT_SMALL, fontWeight: active ? '700' : '400' }}>{d}</Text>
                   </TouchableOpacity>
@@ -362,17 +345,15 @@ export function PlanItemForm({
 
       {/* 优先级 */}
       <Text style={{ fontSize: FONT_SMALL, color: TH.sub, marginBottom: 6, fontWeight: '600' }}>优先级</Text>
-      <View style={{ flexDirection: 'row', gap: 8, marginBottom: 18 }}>
+      <View style={styles.priorityRow}>
         {PRIORITY_OPTIONS.map(p => (
           <TouchableOpacity
             key={p.value}
             onPress={() => handlePriorityChange(p.value)}
-            style={{
-              flex: 1, paddingVertical: 8, borderRadius: 8, borderWidth: 1,
+            style={[styles.priorityButtonBase, {
               borderColor: priority === p.value ? p.color : TH.border,
               backgroundColor: priority === p.value ? `${p.color}20` : 'transparent',
-              alignItems: 'center',
-            }}
+            }]}
           >
             <Text style={{
               color: priority === p.value ? p.color : TH.text,
@@ -387,3 +368,67 @@ export function PlanItemForm({
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  errorText: {
+    color: '#EF4444',
+    fontSize: FONT_SMALL,
+    marginTop: -8,
+    marginBottom: 12,
+  },
+  dateRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  dayCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+  },
+  frequencyInput: {
+    width: 60,
+    textAlign: 'center',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 6,
+    fontSize: FONT_BODY,
+  },
+  frequencyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  weekDayRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 12,
+  },
+  monthDayGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 12,
+  },
+  frequencyScrollView: {
+    marginBottom: 8,
+  },
+  frequencyScrollViewContent: {
+    gap: 6,
+  },
+  priorityRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 18,
+  },
+  priorityButtonBase: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+});
