@@ -266,48 +266,48 @@ export default function MeditationScreen() {
             style={styles.heroGradient}
           >
             <View style={styles.heroHeader}>
-              <Text style={{ fontSize: FONT_TITLE, fontWeight: '700', color: '#fff' }}>{T('meditation')}</Text>
-              <TouchableOpacity onPress={() => nav.navigate('MedHistory')} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600' }}>{T('meditationHistory')}</Text>
+              <Text style={styles.heroTitle}>{T('meditation')}</Text>
+              <TouchableOpacity onPress={() => nav.navigate('MedHistory')} style={styles.heroHistoryLink}>
+                <Text style={styles.heroHistoryText}>{T('meditationHistory')}</Text>
                 <ChevronRight size={16} color="rgba(255,255,255,.8)" />
               </TouchableOpacity>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{todayMedMin}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('medTitle')}</Text>
+            <View style={styles.heroStatsRow}>
+              <View style={styles.heroStatCol}>
+                <Text style={styles.heroStatNumber}>{todayMedMin}</Text>
+                <Text style={styles.heroStatLabel}>{T('medMinutes')}</Text>
+                <Text style={styles.heroStatSub}>{T('medTitle')}</Text>
               </View>
-              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-              <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{todayMedCount}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('medTodayCount')}</Text>
+              <View style={styles.heroDivider} />
+              <View style={styles.heroStatCol}>
+                <Text style={styles.heroStatNumber}>{todayMedCount}</Text>
+                <Text style={styles.heroStatLabel}>{T('fastTimes')}</Text>
+                <Text style={styles.heroStatSub}>{T('medTodayCount')}</Text>
               </View>
-              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-              <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{totalMedMinutes}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('medMinutes')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('accMed')}</Text>
+              <View style={styles.heroDivider} />
+              <View style={styles.heroStatCol}>
+                <Text style={styles.heroStatNumber}>{totalMedMinutes}</Text>
+                <Text style={styles.heroStatLabel}>{T('medMinutes')}</Text>
+                <Text style={styles.heroStatSub}>{T('accMed')}</Text>
               </View>
-              <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,.2)', marginVertical: 4 }} />
-              <View style={{ alignItems: 'center', flex: 1 }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION, fontWeight: '900', color: '#fff' }}>{totalMedCount}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.7)', marginTop: 2 }}>{T('fastTimes')}</Text>
-                <Text style={{ fontSize: FONT_SUB, color: 'rgba(255,255,255,.5)', marginTop: 2 }}>{T('shareCardSession')}</Text>
+              <View style={styles.heroDivider} />
+              <View style={styles.heroStatCol}>
+                <Text style={styles.heroStatNumber}>{totalMedCount}</Text>
+                <Text style={styles.heroStatLabel}>{T('fastTimes')}</Text>
+                <Text style={styles.heroStatSub}>{T('shareCardSession')}</Text>
               </View>
             </View>
             <TouchableOpacity onPress={() => nav.navigate('GlobalMap', { icon: '🧘', title: `${T('linkWorld')} — ${T('globalMeditators')}`, type: 'meditation' })}
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.2)' }}>
+              style={styles.heroGlobalLink}>
               <Globe size={18} color="rgba(255,255,255,.8)" />
-              <Text style={{ fontSize: FONT_BODY, color: 'rgba(255,255,255,.8)', fontWeight: '600', flex: 1 }}>{T('linkWorld')} — {T('globalMeditators')}</Text>
+              <Text style={styles.heroGlobalText}>{T('linkWorld')} — {T('globalMeditators')}</Text>
               <ChevronRight size={16} color="rgba(255,255,255,.8)" />
             </TouchableOpacity>
           </LinearGradient>
         </View>
 
         {/* Main card */}
-        <Card style={{ paddingVertical:32 }}>
+        <Card style={styles.mainCard}>
           {active ? (
             <View style={{ alignItems:'center' }}>
               {/* 在线人数 + 感悟输入 */}
@@ -338,7 +338,7 @@ export default function MeditationScreen() {
               <MeditationMusicBar track={selectedTrack} isActive={false} isPlaying={false} primaryColor={P} onPress={() => setShowMusicPicker(true)} />
 
               {/* Duration selector */}
-              <View style={{ flexDirection:'row', flexWrap:'wrap', gap:8, marginBottom:16 }}>
+              <View style={styles.durationSelector}>
                 {MEDITATION_DURATIONS_MIN.map(d => (
                   <TagPill key={d} label={`${d}${T('medMinutes')}`} active={durMin===d}
                     onPress={() => { setDurMin(d); setSec(0); setActive(false); }} textActiveColor={TH.sub} />
@@ -353,35 +353,35 @@ export default function MeditationScreen() {
 
       {/* Share Card Modal */}
       <Modal visible={showShare} transparent animationType="fade" onRequestClose={() => setShowShare(false)}>
-        <View style={{ flex:1, backgroundColor:'rgba(0,0,0,.75)', justifyContent:'center', alignItems:'center', padding:24 }}>
-          <ViewShot ref={shareCardRef} options={{ format:'png', quality:1 }} style={{ width:300, borderRadius:20, overflow:'hidden' }}>
-            <View style={{ backgroundColor:'#1a1040', paddingVertical:40, paddingHorizontal:24, alignItems:'center' }}>
-              <Text style={{ color:'#e2d9f3', fontSize:FONT_TITLE, fontWeight:'600', marginBottom:20 }}>{T('shareCardTitle')}</Text>
-              <Binary size={64} color="#e2d9f3" style={{ marginBottom:12 }} />
-              <Text style={{ color:'rgba(255,255,255,0.5)', fontSize:FONT_SUB, marginBottom:20 }}>
+        <View style={styles.shareOverlay}>
+          <ViewShot ref={shareCardRef} options={{ format:'png', quality:1 }} style={styles.shareViewShot}>
+            <View style={styles.shareCard}>
+              <Text style={styles.shareTitle}>{T('shareCardTitle')}</Text>
+              <Binary size={64} color="#e2d9f3" style={styles.shareIcon} />
+              <Text style={styles.shareDate}>
                 {new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' })}
               </Text>
-              <View style={{ width:'100%', height:1, backgroundColor:'rgba(255,255,255,0.15)', marginBottom:28 }} />
-              <View style={{ width:'100%', gap:28, alignItems:'center' }}>
-                <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{totalMedMinutes}</Text>
-                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('accMed')}</Text>
+              <View style={styles.shareDivider} />
+              <View style={styles.shareStatsContainer}>
+                <View style={styles.shareStatCol}>
+                  <Text style={styles.shareStatNumber}>{totalMedMinutes}</Text>
+                  <Text style={styles.shareStatLabel}>{T('accMed')}</Text>
                 </View>
-                <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{todayMedMin}</Text>
-                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('medTitle')}</Text>
+                <View style={styles.shareStatCol}>
+                  <Text style={styles.shareStatNumber}>{todayMedMin}</Text>
+                  <Text style={styles.shareStatLabel}>{T('medTitle')}</Text>
                 </View>
-                <View style={{ alignItems:'center' }}>
-                  <Text style={{ color:'#a78bfa', fontSize:FONT_STAT_SECTION, fontWeight:'800' }}>{totalMedCount}</Text>
-                  <Text style={{ color:'rgba(255,255,255,0.6)', fontSize:FONT_SUB }}>{T('shareCardSession')}</Text>
+                <View style={styles.shareStatCol}>
+                  <Text style={styles.shareStatNumber}>{totalMedCount}</Text>
+                  <Text style={styles.shareStatLabel}>{T('shareCardSession')}</Text>
                 </View>
               </View>
-              <Text style={{ color:'rgba(255,255,255,0.7)', fontSize:FONT_BADGE, marginTop:32 }}>egoless-do.app</Text>
+              <Text style={styles.shareFooter}>egoless-do.app</Text>
             </View>
           </ViewShot>
-          <View style={{ flexDirection:'row', gap:12, marginTop:20, width:300 }}>
-            <OutlineButton label={T('cancel')} onPress={() => setShowShare(false)} style={{ flex:1 }} />
-            <PrimaryButton label={T('shareCardDownload')} onPress={handleShare} color={P} style={{ flex:1 }} />
+          <View style={styles.shareButtonsRow}>
+            <OutlineButton label={T('cancel')} onPress={() => setShowShare(false)} style={styles.shareBtnFlex} />
+            <PrimaryButton label={T('shareCardDownload')} onPress={handleShare} color={P} style={styles.shareBtnFlex} />
           </View>
         </View>
       </Modal>

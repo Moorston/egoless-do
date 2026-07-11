@@ -5,7 +5,7 @@ import {
   Clock, ClipboardList,
  ChevronLeft } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, useTheme, useT } from '../../components/UI';
@@ -158,7 +158,7 @@ export default function StatsScreen() {
 
   // ── Render helpers ──
   const renderStatGrid = (items: { value: string; unit: string; label: string; icon?: React.ComponentType<any> }[], columns = 2) => (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+    <View style={styles.statGridRow}>
       {items.map((s, i) => (
         <View key={i} style={{ width: columns === 2 ? '48%' : '31%', borderRadius: 14, padding: 16, alignItems: 'center', gap: 6, backgroundColor: TH.card, borderWidth: 1, borderColor: TH.border }}>
           {s.icon && <s.icon size={22} color={P} />}
@@ -172,8 +172,8 @@ export default function StatsScreen() {
   );
 
   const renderChartArea = () => (
-    <Card style={{ marginBottom: 12 }}>
-      <View style={{ flexDirection: 'row', gap: 6, marginBottom: 12 }}>
+    <Card style={styles.cardMarginBottom}>
+      <View style={styles.chartTabRow}>
         {CHART_TABS.map(key => {
           const labels: Record<ChartKey, string> = { calories: T('statsDailyCalories'), water: T('waterIntake'), weight: T('statsWeightTrend'), exercise: T('statsExerciseTrend') };
           const active = activeChart === key;

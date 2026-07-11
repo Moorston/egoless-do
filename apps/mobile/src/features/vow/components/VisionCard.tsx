@@ -2,7 +2,7 @@ import type { Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme } f
 import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr } from '@egoless-do/core';
 import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { ProgressBar } from '../../../components/UI';
 
@@ -93,9 +93,9 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
       borderLeftColor: typeColor,
     }}>
       {/* Header */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-        <View style={{ flex: 1, marginRight: 12 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+      <View style={styles.headerRow}>
+        <View style={styles.leftColumn}>
+          <View style={styles.typeBadgeRow}>
             <Icon size={14} color={typeColor} />
             <Text style={{ fontSize: FONT_BADGE, color: typeColor, fontWeight: '600' }}>
               {T(vision.type === 'lifetime' ? 'vowLifetime' : vision.type === 'long' ? 'vowLong' : 'vowShort')}
@@ -128,14 +128,14 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
           </View>
           <Text style={{ fontSize: FONT_BODY, color: TH.text, lineHeight: 22 }}>{vision.text}</Text>
           {dateRange && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
+            <View style={styles.dateRow}>
               <Calendar size={12} color={TH.sub} />
               <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{dateRange}</Text>
             </View>
           )}
           {/* TimeFrame picker dropdown */}
           {showTfPicker && onTimeFrameChange && (
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+            <View style={styles.tfPickerRow}>
               {availableTimeFrames.map(tfKey => {
                 const tf = VISION_TIME_FRAMES.find(f => f.key === tfKey);
                 if (!tf) return null;
@@ -162,14 +162,14 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
             </View>
           )}
         </View>
-        <TouchableOpacity onPress={() => onEdit(vision)} style={{ padding: 6 }}>
+        <TouchableOpacity onPress={() => onEdit(vision)} style={styles.editButton}>
           <Text style={{ fontSize: FONT_BADGE, color: '#8B5CF6', fontWeight: '600' }}>{T('vowEdit')}</Text>
         </TouchableOpacity>
       </View>
 
       {/* Progress bar */}
-      <View style={{ marginBottom: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+      <View style={styles.progressSection}>
+        <View style={styles.progressHeader}>
           <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowProgress')}</Text>
           <Text style={{ fontSize: FONT_SUB, color: '#8B5CF6', fontWeight: '600' }}>{pct}%</Text>
         </View>
@@ -178,16 +178,16 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
 
       {/* Plan & Task progress indicators */}
       {(planTotal > 0 || taskTotal > 0) && (
-        <View style={{ flexDirection: 'row', gap: 16, marginBottom: 12 }}>
+        <View style={styles.planTaskRow}>
           {planTotal > 0 && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <View style={styles.progressItem}>
               <Text style={{ fontSize: 13 }}>📋</Text>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowPlanProgress')}</Text>
               <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{planDone}/{planTotal}</Text>
             </View>
           )}
           {taskTotal > 0 && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <View style={styles.progressItem}>
               <Text style={{ fontSize: 13 }}>✅</Text>
               <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>{T('vowTaskProgress')}</Text>
               <Text style={{ fontSize: FONT_SUB, color: TH.text, fontWeight: '600' }}>{taskDone}/{taskTotal}</Text>
@@ -239,7 +239,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
         <View style={{ marginTop: 4 }}>
           <TouchableOpacity
             onPress={() => setExpanded(prev => !prev)}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 6 }}
+            style={styles.linkedPlansToggle}
           >
             {expanded
               ? <ChevronDown size={14} color={TH.sub} />
@@ -259,7 +259,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                 backgroundColor: TH.bg, borderRadius: 12, padding: 12, marginTop: 6,
                 borderWidth: 1, borderColor: TH.border,
               }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <View style={styles.planItemHeader}>
                   <Text style={{ fontSize: FONT_BODY, color: TH.text, fontWeight: '600', flex: 1 }} numberOfLines={1}>
                     📋 {plan.name}
                   </Text>
@@ -269,20 +269,20 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                 </View>
 
                 {items.length > 0 && (
-                  <View style={{ gap: 6 }}>
+                  <View style={styles.planItemsContainer}>
                     {items.sort((a, b) => a.order - b.order).map(item => {
                       const st = STATUS_ICON[item.status] ?? STATUS_ICON.not_started;
                       const itemPct = item.progress ?? 0;
                       return (
-                        <View key={item.id} style={{ gap: 2 }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                            <Text style={{ fontSize: 12 }}>{st.icon}</Text>
+                        <View key={item.id} style={styles.taskItemRow}>
+                          <View style={styles.planItemRow}>
+                            <Text style={styles.statusIcon}>{st.icon}</Text>
                             <Text style={{ fontSize: FONT_SUB, color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
                             <Text style={{ fontSize: 10, color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status]) ?? ''}</Text>
                           </View>
                           {item.status !== 'not_started' && item.status !== 'cancelled' && (
                             <View style={{ marginLeft: 22, height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2, overflow: 'hidden' }}>
-                              <View style={{ height: 4, width: `${itemPct}%`, backgroundColor: st.color, borderRadius: 2 }} />
+                              <View style={[styles.progressBarFill, { width: `${itemPct}%`, backgroundColor: st.color }]} />
                             </View>
                           )}
                         </View>
@@ -298,5 +298,87 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  leftColumn: {
+    flex: 1,
+    marginRight: 12,
+  },
+  typeBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  dateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  },
+  tfPickerRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 8,
+  },
+  editButton: {
+    padding: 6,
+  },
+  progressSection: {
+    marginBottom: 12,
+  },
+  progressHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  planTaskRow: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 12,
+  },
+  progressItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  linkedPlansToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 6,
+  },
+  planItemHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  planItemsContainer: {
+    gap: 6,
+  },
+  taskItemRow: {
+    gap: 2,
+  },
+  planItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  statusIcon: {
+    fontSize: 12,
+  },
+  progressBarFill: {
+    height: 4,
+    borderRadius: 2,
+  },
+});
 
 export default React.memo(VisionCard);

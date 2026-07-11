@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React, { useMemo, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../components/UI';
@@ -152,7 +152,7 @@ export default function MantraHistoryScreen() {
   const renderItem = useCallback(({ item: group }: { item: [string, typeof sessions] }) => {
     const [monthKey, groupSessions] = group;
     return (
-      <View style={{ marginBottom: 16 }}>
+      <View style={styles.groupContainer}>
         <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: TH.text, marginBottom: 8 }}>
           {parseInt(monthKey.split('-')[0])}年{parseInt(monthKey.split('-')[1])}月
           <Text style={{ fontSize: FONT_SMALL, fontWeight: '400', color: TH.sub }}> · {groupSessions.length}次</Text>
@@ -162,28 +162,28 @@ export default function MantraHistoryScreen() {
             backgroundColor: TH.card, borderRadius: 14, padding: 14, marginBottom: 8,
             borderWidth: 1, borderColor: TH.border,
           }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={styles.sessionCardStatsRow}>
+              <View style={styles.sessionCardDateRow}>
                 {!mantraId && mantraNames[s.mantraId] && (
-                  <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: '#FBBF2420' }}>
-                    <Text style={{ fontSize: FONT_BODY, fontWeight: '700', color: '#D97706' }}>{mantraNames[s.mantraId]}</Text>
+                  <View style={styles.mantraBadge}>
+                    <Text style={styles.mantraBadgeText}>{mantraNames[s.mantraId]}</Text>
                   </View>
                 )}
                 <Text style={{ fontSize: FONT_SUB, fontWeight: '600', color: TH.text }}>{formatDate(s.startedAt)}</Text>
               </View>
               <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>{formatShortTime(s.durationSec)}</Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 20 }}>
+            <View style={styles.sessionStatsContainer}>
               <View>
-                <Text style={{ fontSize: 18, fontWeight: '800', color: '#FBBF24' }}>{s.count.toLocaleString()}</Text>
+                <Text style={styles.countNumber}>{s.count.toLocaleString()}</Text>
                 <Text style={{ fontSize: 10, color: TH.sub }}>次数</Text>
               </View>
               <View>
-                <Text style={{ fontSize: 18, fontWeight: '800', color: '#10B981' }}>{s.rounds}</Text>
+                <Text style={styles.roundsNumber}>{s.rounds}</Text>
                 <Text style={{ fontSize: 10, color: TH.sub }}>遍</Text>
               </View>
               <View>
-                <Text style={{ fontSize: 18, fontWeight: '800', color: '#F59E0B' }}>{s.targetRounds}</Text>
+                <Text style={styles.targetNumber}>{s.targetRounds}</Text>
                 <Text style={{ fontSize: 10, color: TH.sub }}>目标</Text>
               </View>
             </View>
@@ -199,27 +199,27 @@ export default function MantraHistoryScreen() {
     <>
       {/* ── StatsCard ── */}
       <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: '#FBBF24' }}>
+        <View style={styles.statsRow}>
+          <View style={styles.statItemCenter}>
+            <Text style={styles.totalCountNumber}>
               {stats.totalCount.toLocaleString()}
             </Text>
             <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计次数</Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: '#10B981' }}>
+          <View style={styles.statItemCenter}>
+            <Text style={styles.totalTimeNumber}>
               {formatTime(stats.totalSec)}
             </Text>
             <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计时长</Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: '#F59E0B' }}>
+          <View style={styles.statItemCenter}>
+            <Text style={styles.streakNumber}>
               🔥 {stats.streak}
             </Text>
             <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>连续</Text>
           </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: '#6366F1' }}>
+          <View style={styles.statItemCenter}>
+            <Text style={styles.averageNumber}>
               {formatShortTime(stats.avgSec)}
             </Text>
             <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>平均</Text>
@@ -229,31 +229,31 @@ export default function MantraHistoryScreen() {
 
       {/* ── 热力图 ── */}
       <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}20`, padding: 16, marginBottom: 16 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)} style={{ padding: 4 }}>
+        <View style={styles.heatmapHeaderRow}>
+          <TouchableOpacity onPress={() => setMonthOffset(o => o - 1)} style={styles.monthNavButton}>
             <Text style={{ fontSize: 18, color: TH.sub }}>‹</Text>
           </TouchableOpacity>
           <Text style={{ fontSize: FONT_BODY, fontWeight: '600', color: TH.text }}>
             {monthYear}年{monthIdx + 1}月
           </Text>
-          <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))} style={{ padding: 4 }}>
+          <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))} style={styles.monthNavButton}>
             <Text style={{ fontSize: 18, color: TH.sub }}>›</Text>
           </TouchableOpacity>
         </View>
 
         {/* 星期标签 */}
-        <View style={{ flexDirection: 'row', marginBottom: 4 }}>
+        <View style={styles.weekdayRow}>
           {weekdayLabels.map(d => (
-            <View key={d} style={{ width: '14.28%', alignItems: 'center' }}>
+            <View key={d} style={styles.weekdayCell}>
               <Text style={{ fontSize: 10, color: TH.sub }}>{d}</Text>
             </View>
           ))}
         </View>
 
         {/* 日历格 */}
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        <View style={styles.heatmapGrid}>
           {heatmapData.map((day, i) => (
-            <View key={i} style={{ width: '14.28%', alignItems: 'center', paddingVertical: 2, minHeight: 32 }}>
+            <View key={i} style={styles.heatmapDayCell}>
               {day.date ? (
                 <View style={{
                   width: 30, height: 30, borderRadius: 15,
@@ -269,7 +269,7 @@ export default function MantraHistoryScreen() {
                     {parseInt(day.date.split('-')[2])}
                   </Text>
                 </View>
-              ) : <View style={{ width: 30, height: 30 }} />}
+              ) : <View style={styles.emptyCalendarCell} />}
             </View>
           ))}
         </View>
@@ -278,8 +278,8 @@ export default function MantraHistoryScreen() {
   ), [stats.totalCount, stats.totalSec, stats.avgSec, stats.streak, formatTime, formatShortTime, FONT_BODY, FONT_SMALL, TH.primary, TH.text, TH.sub, monthYear, monthIdx, heatmapData, weekdayLabels]);
 
   const ListEmptyComponent = useMemo(() => (
-    <View style={{ alignItems: 'center', padding: 40 }}>
-      <Text style={{ fontSize: 40, marginBottom: 8 }}>📿</Text>
+    <View style={styles.emptyStateContainer}>
+      <Text style={styles.emptyStateEmoji}>📿</Text>
       <Text style={{ fontSize: FONT_BODY, color: TH.sub, textAlign: 'center' }}>暂无持咒记录</Text>
     </View>
   ), [FONT_BODY, TH.sub]);
@@ -287,18 +287,18 @@ export default function MantraHistoryScreen() {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1, backgroundColor: TH.bg }}>
       {/* 顶部 */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>
-        <TouchableOpacity onPress={() => nav.goBack()} style={{ marginRight: 12 }}>
+      <View style={styles.topBarRow}>
+        <TouchableOpacity onPress={() => nav.goBack()} style={styles.backButton}>
           <Text style={{ fontSize: 24, color: TH.text }}>←</Text>
         </TouchableOpacity>
-        <View style={{ flex: 1 }}>
+        <View style={styles.titleContainer}>
           <Text style={{ fontSize: FONT_TITLE, fontWeight: '800', color: TH.text }}>
             {singleMantra?.name ?? '持咒记录'}
           </Text>
           {!singleMantra && <Text style={{ fontSize: FONT_SUB, color: TH.sub }}>全部咒语</Text>}
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
-          <Text style={{ fontSize: 22, fontWeight: '800', color: '#FBBF24' }}>
+        <View style={styles.headerStatsContainer}>
+          <Text style={styles.totalCountNumber}>
             {stats.totalCount.toLocaleString()}
           </Text>
           <Text style={{ fontSize: FONT_SMALL, color: TH.sub }}>累计</Text>
@@ -312,8 +312,141 @@ export default function MantraHistoryScreen() {
         removeClippedSubviews={true}
         ListHeaderComponent={ListHeaderComponent}
         ListEmptyComponent={ListEmptyComponent}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+        contentContainerStyle={styles.contentContainer}
       />
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  groupContainer: {
+    marginBottom: 16,
+  },
+  sessionCardStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  sessionCardDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  mantraBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: '#FBBF2420',
+  },
+  mantraBadgeText: {
+    fontSize: FONT_BODY,
+    fontWeight: '700',
+    color: '#D97706',
+  },
+  sessionStatsContainer: {
+    flexDirection: 'row',
+    gap: 20,
+  },
+  countNumber: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#FBBF24',
+  },
+  roundsNumber: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#10B981',
+  },
+  targetNumber: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#F59E0B',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  statItemCenter: {
+    alignItems: 'center',
+  },
+  totalCountNumber: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FBBF24',
+  },
+  totalTimeNumber: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#10B981',
+  },
+  streakNumber: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#F59E0B',
+  },
+  averageNumber: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#6366F1',
+  },
+  heatmapHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  monthNavButton: {
+    padding: 4,
+  },
+  weekdayRow: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  weekdayCell: {
+    width: '14.28%',
+    alignItems: 'center',
+  },
+  heatmapGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  heatmapDayCell: {
+    width: '14.28%',
+    alignItems: 'center',
+    paddingVertical: 2,
+    minHeight: 32,
+  },
+  emptyCalendarCell: {
+    width: 30,
+    height: 30,
+  },
+  emptyStateContainer: {
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyStateEmoji: {
+    fontSize: 40,
+    marginBottom: 8,
+  },
+  topBarRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  backButton: {
+    marginRight: 12,
+  },
+  titleContainer: {
+    flex: 1,
+  },
+  headerStatsContainer: {
+    alignItems: 'flex-end',
+  },
+  contentContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+});
