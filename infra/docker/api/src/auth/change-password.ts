@@ -2,7 +2,7 @@
 // 已登录用户修改密码：验证旧密码 → 设置新密码 → 注销所有令牌
 import { Hono } from 'hono';
 import { getClientIp, resetRateLimit } from '../rate-limit.js';
-import { verifyAuth, validatePassword, sanitizeError } from '../auth-middleware.js';
+import { validatePassword, sanitizeError } from '../auth-middleware.js';
 import { blacklistToken } from '../token-blacklist.js';
 import { revokeAllUserRefreshTokens } from '../token-refresh-rotation.js';
 import { getPb, getAdminPb } from '../pb.js';
@@ -16,12 +16,26 @@ app.post('/change-password', async (c) => {
   }
 
   try {
-    // 1. 鉴权
-    const authResult = await verifyAuth(c.req.header('authorization') ?? null);
-    if (!authResult) {
+    // 1. 鉴权 — 直接使用 PocketBase authRefresh 验证 token
+    const authHeader = c.req.header('authorization') ?? '';
+    if (!authHeader.startsWith('Bearer ')) {
       return c.json({ error: '未授权访问' }, 401);
     }
-    const userId = authResult.userId;
+    const token = authHeader.slice(7);
+
+    let userId: string;
+    try {
+      const pb = getPb();
+      pb.authStore.save(token, null);
+      await pb.collection('users').authRefresh();
+      if (!pb.authStore.model?.id) {
+        return c.json({ error: '未授权访问' }, 401);
+      }
+      userId = pb.authStore.model.id;
+    } catch (err) {
+      console.error('[change-password] authRefresh failed:', (err as Error)?.message ?? 'unknown');
+      return c.json({ error: '未授权访问' }, 401);
+    }
 
     // 2. 解析请求体
     const { currentPassword, newPassword } = await c.req.json();
@@ -60,9 +74,7 @@ app.post('/change-password', async (c) => {
 
     // 6. 黑名单当前 token
     try {
-      const authHeader = c.req.header('authorization');
-      if (authHeader?.startsWith('Bearer ')) {
-        const token = authHeader.slice(7);
+      if (authHeader.startsWith('Bearer ')) {
         const parts = token.split('.');
         if (parts.length === 3 && parts[1]) {
           const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
