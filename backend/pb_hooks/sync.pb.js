@@ -38,6 +38,27 @@ routerAdd("POST", "/api/sync", function(e) {
     var userId = info.auth ? info.auth.id : null;
     if (!userId) return e.json(401, { code: "UNAUTHORIZED", message: "Unauthorized" });
 
+    // Auto-create missing collections on first sync request
+    try { $app.findCollectionByNameOrId("custom_food_presets"); } catch (e1) {
+      try {
+        var dao = $app.dao();
+        var col = new DynamicModel(dao.collectionQuery().modelDataType());
+        col.set("name", "custom_food_presets");
+        col.set("type", "base");
+        col.set("listRule", "@request.auth.id = user_id");
+        col.set("viewRule", "@request.auth.id = user_id");
+        col.set("createRule", "@request.auth.id = user_id");
+        col.set("updateRule", "@request.auth.id = user_id");
+        col.set("deleteRule", "@request.auth.id = user_id");
+        var f1 = new DynamicModel(dao.fieldQuery().modelDataType()); f1.set("name","user_id"); f1.set("type","text"); f1.set("required",true); col.get("fields").push(f1);
+        var f2 = new DynamicModel(dao.fieldQuery().modelDataType()); f2.set("name","preset_id"); f2.set("type","text"); f2.set("required",true); col.get("fields").push(f2);
+        var f3 = new DynamicModel(dao.fieldQuery().modelDataType()); f3.set("name","data"); f3.set("type","json"); f3.set("required",false); f3.set("maxSize",5000000); col.get("fields").push(f3);
+        var f4 = new DynamicModel(dao.fieldQuery().modelDataType()); f4.set("name","updated_at"); f4.set("type","autodate"); f4.set("onCreate",false); f4.set("onUpdate",false); col.get("fields").push(f4);
+        dao.saveCollection(col);
+        console.log("[Sync] Auto-created missing collection: custom_food_presets");
+      } catch (e2) { console.warn("[Sync] Failed to create custom_food_presets:", e2.message || ""); }
+    }
+
     var rawBody = info.body;
     var body = {};
     if (typeof rawBody === 'string') { try { body = JSON.parse(rawBody); } catch(pb) { body = {}; } }

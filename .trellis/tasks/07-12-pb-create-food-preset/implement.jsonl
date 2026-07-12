@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "架构约束——理解 PB 后端部署和 collection 管理的约束"}
+{"file": ".trellis/spec/core/backend/database-guidelines.md", "reason": "数据库指南——PB schema 定义和迁移规范"}
