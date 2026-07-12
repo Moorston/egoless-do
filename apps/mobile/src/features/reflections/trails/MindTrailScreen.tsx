@@ -13,7 +13,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme, useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeGetItem, safeSetItem } from '../../../utils/safeAsyncStorage';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const log = createLogger('Reflections');
@@ -69,7 +69,7 @@ export default function MindTrailScreen() {
   const ignoredPatternsRef = useRef<string[]>([]);
   const [ignoredVersion, setIgnoredVersion] = useState(0);
   useEffect(() => {
-    AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
+    safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
       if (raw) {
         try { ignoredPatternsRef.current = JSON.parse(raw); } catch { /* corrupted cache — ignore */ }
       }
@@ -237,7 +237,7 @@ export default function MindTrailScreen() {
     // 同时写入 AsyncStorage，确保重启后仍然忽略
     const next = [...new Set([...ignoredPatternsRef.current, pattern])];
     ignoredPatternsRef.current = next;
-    AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
+    safeSetItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
     // 触发 allIgnoredPatterns 重新计算
     setIgnoredVersion(k => k + 1);
     setRecommendations(prev => prev.filter(r => r !== rec));

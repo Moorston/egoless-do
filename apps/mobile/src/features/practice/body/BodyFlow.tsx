@@ -1,5 +1,5 @@
 import {FONT_TITLE, FONT_BODY, FONT_SUB, ALL_SPORTS, EXERCISE_CATEGORIES,
-  type BodyPlan, type BodyCheckin, type Theme, type BodySlice, FONT_LABEL, FONT_STAT_SECTION} from '@egoless-do/core';
+  type BodyPlan, type BodyCheckin, type Theme, type BodySlice, FONT_LABEL, FONT_STAT_SECTION, scaleFontSize} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, ChevronRight, CheckCircle2, Wind, Activity } from 'lucide-react-native';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';

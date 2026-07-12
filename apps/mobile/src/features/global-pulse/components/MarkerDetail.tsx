@@ -3,7 +3,7 @@
  * 支持打卡记录和实时活跃会话
  */
 
-import {GlobalCheckin, ActiveSession , FONT_SUB, FONT_TITLE, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL} from '@egoless-do/core';
+import {GlobalCheckin, ActiveSession , FONT_SUB, FONT_TITLE, FONT_STAT_CARD, FONT_SMALL, FONT_LABEL, scaleFontSize} from '@egoless-do/core';
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,

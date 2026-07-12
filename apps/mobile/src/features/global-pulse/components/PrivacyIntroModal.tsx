@@ -4,16 +4,14 @@
  */
 
 import React from 'react';
-import {
-  View,
+import {View,
   Text,
   StyleSheet,
   Modal,
-  TouchableOpacity
-} from 'react-native';
+  TouchableOpacity} from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { FONT_BACK, FONT_BODY, FONT_CARD_TITLE, FONT_LABEL, FONT_STAT_CARD, FONT_SUB } from '@egoless-do/core';
+import { FONT_BACK, FONT_BODY, FONT_CARD_TITLE, FONT_LABEL, FONT_STAT_CARD, FONT_SUB, scaleFontSize } from '@egoless-do/core';
 
 interface PrivacyIntroModalProps {
   isVisible: boolean;

@@ -3,7 +3,7 @@
 // Lazy-loads BreathingEngine when user starts a session.
 import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey , FONT_STAT_SECTION } from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeGetItem, safeSetItem } from '../../utils/safeAsyncStorage';
 import { ChevronRight } from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
@@ -41,14 +41,14 @@ export default function BreathingScreen() {
 
   // Load saved guide style preference
   useEffect(() => {
-    AsyncStorage.getItem(GUIDE_STYLE_KEY).then(v => {
+    safeGetItem(GUIDE_STYLE_KEY).then(v => {
       if (v === 'scientific' || v === 'spiritual') setGuideStyle(v);
     }).catch((e: unknown) => log.warn('AsyncStorage error', e));
   }, []);
 
   const saveGuideStyle = useCallback((style: GuideStyle) => {
     setGuideStyle(style);
-    AsyncStorage.setItem(GUIDE_STYLE_KEY, style).catch((e: unknown) => log.warn('AsyncStorage error', e));
+    safeSetItem(GUIDE_STYLE_KEY, style).catch((e: unknown) => log.warn('AsyncStorage error', e));
   }, []);
 
   const handleStart = useCallback((preset: BreathingPreset) => {

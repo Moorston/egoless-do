@@ -1,5 +1,5 @@
 import { FONT_SMALL, FONT_TINY, MS_PER_DAY, createLogger , computeCandidatePool, computeRecommendations, buildIgnoredPattern } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeGetItem, safeSetItem } from '../../../utils/safeAsyncStorage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Zap, X } from 'lucide-react-native';
@@ -47,7 +47,7 @@ export default function TrailSuggestionBanner() {
     if (!topRec) { setDismissed(false); return; }
     let mounted = true;
     const pattern = buildIgnoredPattern(topRec);
-    AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
+    safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
       if (!mounted) return;
       if (raw) {
         try {
@@ -67,11 +67,11 @@ export default function TrailSuggestionBanner() {
 
   const handleDismiss = () => {
     const pattern = buildIgnoredPattern(topRec);
-    AsyncStorage.getItem(TRAIL_IGNORED_KEY).then(raw => {
+    safeGetItem(TRAIL_IGNORED_KEY).then(raw => {
       let ignored: string[] = [];
       try { if (raw) ignored = JSON.parse(raw); } catch { /* corrupted cache — ignore */ }
       const next = [...new Set([...ignored, pattern])];
-      AsyncStorage.setItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
+      safeSetItem(TRAIL_IGNORED_KEY, JSON.stringify(next)).catch((e) => log.error(e));
     }).catch((e) => log.error(e));
     setDismissed(true);
   };

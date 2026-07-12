@@ -1,4 +1,4 @@
-import { FONT_SMALL , FONT_LABEL } from '@egoless-do/core';
+import {FONT_SMALL , FONT_LABEL, scaleFontSize} from '@egoless-do/core';
 import type { TimelineItem , MindReflection, TrailNote, LinkType } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';

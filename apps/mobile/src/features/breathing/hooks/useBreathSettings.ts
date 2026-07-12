@@ -3,7 +3,7 @@
 
 import { createLogger } from '@egoless-do/core';
 import type { GuideStyle } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeGetItem, safeSetItem, safeMultiGet } from '../../../utils/safeAsyncStorage';
 import { useState, useEffect, useCallback } from 'react';
 
 const log = createLogger('Breathing');
@@ -42,7 +42,7 @@ export function useBreathSettings() {
    * and updates corresponding state. Logs a warning on failure.
    */
   useEffect(() => {
-    AsyncStorage.multiGet([GUIDE_STYLE_KEY, VOICE_KEY, CUE_KEY]).then(vals => {
+    safeMultiGet([GUIDE_STYLE_KEY, VOICE_KEY, CUE_KEY]).then(vals => {
       vals.forEach(([k, v]) => {
         if (k === GUIDE_STYLE_KEY && (v === 'scientific' || v === 'spiritual')) setGuideStyle(v);
         if (k === VOICE_KEY && v !== null) setVoiceEnabled(v === '1');
@@ -60,7 +60,7 @@ export function useBreathSettings() {
   const toggleVoice = useCallback(() => {
     setVoiceEnabled(v => {
       const next = !v;
-      AsyncStorage.setItem(VOICE_KEY, next ? '1' : '0').catch((e: unknown) => log.warn('AsyncStorage error', e));
+      safeSetItem(VOICE_KEY, next ? '1' : '0').catch((e: unknown) => log.warn('AsyncStorage error', e));
       return next;
     });
   }, []);

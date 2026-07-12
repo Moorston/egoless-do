@@ -1,6 +1,6 @@
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger , highlightSearchMatch , getTrailsByReflection, formatTime } from '@egoless-do/core';
 import type { Habit, MindReflection } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { safeGetItem, safeSetItem } from '../../../utils/safeAsyncStorage';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -156,8 +156,8 @@ export default function ReflectionsScreen() {
   // Load hidden tags/moods from storage on mount
   useEffect(() => {
     Promise.all([
-      AsyncStorage.getItem('hiddenTags'),
-      AsyncStorage.getItem('hiddenMoods'),
+      safeGetItem('hiddenTags'),
+      safeGetItem('hiddenMoods'),
     ]).then(([tagsData, moodsData]) => {
       if (tagsData) {
         try { setHiddenTags(JSON.parse(tagsData)); } catch { /* corrupted cache — ignore */ }
@@ -171,7 +171,7 @@ export default function ReflectionsScreen() {
   const handleToggleHiddenTag = useCallback((tag: string) => {
     setHiddenTags(prev => {
       const next = prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag];
-      AsyncStorage.setItem('hiddenTags', JSON.stringify(next));
+      safeSetItem('hiddenTags', JSON.stringify(next));
       return next;
     });
   }, []);
@@ -179,7 +179,7 @@ export default function ReflectionsScreen() {
   const handleToggleHiddenMood = useCallback((mood: string) => {
     setHiddenMoods(prev => {
       const next = prev.includes(mood) ? prev.filter(m => m !== mood) : [...prev, mood];
-      AsyncStorage.setItem('hiddenMoods', JSON.stringify(next));
+      safeSetItem('hiddenMoods', JSON.stringify(next));
       return next;
     });
   }, []);

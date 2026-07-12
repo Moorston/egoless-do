@@ -3,7 +3,7 @@
  * 显示前3名详细信息
  */
 
-import {LeaderboardEntry , FONT_SMALL, FONT_TINY, FONT_BACK} from '@egoless-do/core';
+import {LeaderboardEntry , FONT_SMALL, FONT_TINY, FONT_BACK, scaleFontSize} from '@egoless-do/core';
 import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, type ViewStyle } from 'react-native';
 

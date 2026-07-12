@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_BADGE, type Theme , DedicationSettings, Dedication , FONT_SMALL } from '@egoless-do/core';
+import {FONT_BODY, FONT_SUB, FONT_BADGE, type Theme , DedicationSettings, Dedication , FONT_SMALL, scaleFontSize} from '@egoless-do/core';
 import { Settings, PenLine, History } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';

@@ -1,4 +1,4 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme , MedHistoryEntry , FONT_SMALL } from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_SECTION, BUILTIN_TRACKS, dateStr, yesterday, type Theme , MedHistoryEntry , FONT_SMALL, scaleFontSize} from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, ChevronLeft, ChevronRight, Music, Trash2, X } from 'lucide-react-native';
 import React, { useMemo, useState, useCallback } from 'react';

@@ -1,6 +1,5 @@
-import {
-  COLORS, FONT_TITLE, FONT_BODY, FONT_SUB,
-  createLogger, FONT_LABEL } from '@egoless-do/core';
+import {COLORS, FONT_TITLE, FONT_BODY, FONT_SUB,
+  createLogger, FONT_LABEL, scaleFontSize} from '@egoless-do/core';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import {

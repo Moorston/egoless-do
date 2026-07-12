@@ -846,7 +846,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   // Relax plan_id constraint (server data may have null plan_id for standalone todos)
   // Only run if plan_id still has NOT NULL (migration not yet applied)
   const planIdCol = await db.getFirstAsync<{ notnull: number }>(
-    "SELECT notnull FROM pragma_table_info('daily_custom_todos') WHERE name = 'plan_id'"
+    'SELECT "notnull" FROM pragma_table_info(\'daily_custom_todos\') WHERE name = \'plan_id\''
   );
   const planIdNotNull = planIdCol?.notnull ?? 1;
   if (planIdNotNull === 1) {

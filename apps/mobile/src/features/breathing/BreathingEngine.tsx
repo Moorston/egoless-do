@@ -2,7 +2,7 @@
 // State machine + rAF loop + hooks; delegates UI to page components.
 
 import type {BreathingPreset} from '@egoless-do/core';
-import { FONT_BODY, createLogger, fmtMS, dateStr , cycleDuration , FONT_TITLE } from '@egoless-do/core';
+import { FONT_BODY, createLogger, fmtMS, dateStr , cycleDuration , FONT_TITLE, scaleFontSize } from '@egoless-do/core';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, Animated, Easing, AppState, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

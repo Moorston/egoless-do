@@ -1,4 +1,4 @@
-import { COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL , LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency , FONT_SMALL } from '@egoless-do/core';
+import {COLORS, isPlanActive, dateStr, validatePlanForm, createNewItem, canEditPlanItem, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_ERROR, FONT_BADGE, FONT_LABEL , LINK_OPTIONS, PRIORITY_OPTIONS, FREQUENCY_OPTIONS, createDefaultFrequency , FONT_SMALL, scaleFontSize} from '@egoless-do/core';
 import type { ItemForm, Vision } from '@egoless-do/core';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ChevronLeft, ChevronDown, ChevronRight, Calendar, X } from 'lucide-react-native';

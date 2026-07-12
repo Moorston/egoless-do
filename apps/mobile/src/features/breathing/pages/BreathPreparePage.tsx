@@ -3,7 +3,6 @@
 
 import { FONT_BODY, createLogger , phaseLabelKey, getDescKey, getTipsKey } from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { X, Volume2, VolumeX } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';

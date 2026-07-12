@@ -1,4 +1,4 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, type Theme , SleepEntry , FONT_LABEL, FONT_SMALL} from '@egoless-do/core';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, dateStr, yesterday, type Theme , SleepEntry , FONT_LABEL, FONT_SMALL, scaleFontSize} from '@egoless-do/core';
 import { formatSleepDuration } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronLeft, ChevronRight, Moon, Trash2, X, Heart } from 'lucide-react-native';
