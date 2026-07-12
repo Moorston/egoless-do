@@ -475,3 +475,37 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 14: 修复 AsyncStorage 原生模块错误 + expo-notifications 废弃警告
+
+**Date**: 2026-07-12
+**Task**: 修复 AsyncStorage 原生模块错误 + expo-notifications 废弃警告
+**Branch**: `master`
+
+### Summary
+
+1. 音乐存储从 @react-native-async-storage/async-storage 迁移到 expo-file-system（JSON文件读写），解决 Native module is null 错误 2. 替换 shouldShowAlert 为 shouldShowBanner/shouldShowList 3. change-password 改用直接 PocketBase authRefresh 鉴权，绕过 verifyAuth 的额外检查
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0e281d1` | (see git log) |
+| `9d4db5b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
