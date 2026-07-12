@@ -440,3 +440,38 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 13: ProfileScreen 修改密码按钮/弹窗改善 + verifyAuth 容错
+
+**Date**: 2026-07-12
+**Task**: ProfileScreen 修改密码按钮/弹窗改善 + verifyAuth 容错
+**Branch**: `master`
+
+### Summary
+
+1. 修改密码按钮移至清除数据上方，Lock 图标 2. 弹窗增加 KeyboardAvoidingView + ScrollView 防止输入法遮挡 3. verifyAuth 密码变更检查容错：catch 不再直接返回 null，改为 log 后放行 + 增加各步骤失败日志
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e4891c1` | (see git log) |
+| `e6c3939` | (see git log) |
+| `1e9636a` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
