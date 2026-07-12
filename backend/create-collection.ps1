@@ -39,10 +39,16 @@ function Invoke-PbApi {
 # ── Step 1: Authenticate ────────────────────────────────────────────
 Write-Host "`nAuthenticating..." -ForegroundColor Yellow
 $auth = Invoke-PbApi -Method POST -Path "/api/admins/auth-with-password" -Body @{ identity = $AdminEmail; password = $AdminPassword }
-if (-not $auth -or -not $auth.token) {
-    Write-Error "Authentication failed. Check credentials."
+if (-not $auth) {
+    Write-Host "`n  ⚠  API returned 404 — 管理员账号尚未创建。" -ForegroundColor Yellow
+    Write-Host "  请先在 Admin UI 创建管理员:" -ForegroundColor Yellow
+    Write-Host "    1. 打开 ${PbUrl}/_/" -ForegroundColor White
+    Write-Host "    2. 创建第一个管理员账号（邮箱 + 密码）" -ForegroundColor White
+    Write-Host "    3. 登录后在 Settings → Collections 中创建 custom_food_presets" -ForegroundColor White
+    Write-Host "    4. 或创建管理员后重新运行此脚本`n" -ForegroundColor White
     exit 1
 }
+if (-not $auth.token) { Write-Error "Authentication failed. Check credentials."; exit 1 }
 $Headers["Authorization"] = "Bearer $($auth.token)"
 Write-Host "  Authenticated as: $AdminEmail" -ForegroundColor Green
 
