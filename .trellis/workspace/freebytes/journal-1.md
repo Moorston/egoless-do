@@ -373,3 +373,37 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 11: 继续 ProfileScreen 增强任务并归档
+
+**Date**: 2026-07-12
+**Task**: 继续 ProfileScreen 增强任务并归档
+**Branch**: `master`
+
+### Summary
+
+继续上一轮任务：修复修改密码按钮位置（移至账号卡片）+ 修复体重/身高/饮水目标数据丢失（去掉800ms防抖）+ 任务归档完成。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1921c41` | (see git log) |
+| `4f1d82f` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
