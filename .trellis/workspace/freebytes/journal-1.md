@@ -173,3 +173,37 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: customFoodPresets 持久化 + PB 同步
+
+**Date**: 2026-07-12
+**Task**: customFoodPresets 持久化 + PB 同步
+**Branch**: `master`
+
+### Summary
+
+将 AddFoodModal '我的' tab 的 customFoodPresets 从仅内存状态提升为完整持久化实体：扩展 CustomFoodPreset 类型（+updatedAt/deleted），注册 foodPreset 实体 Schema 到 entitySchemas/SYNC_ENTITIES/SyncDataMap，更新 createDietSlice 使用 adapter.persistChange() + onSync?.()，创建 SQLite custom_food_presets 表，配置 PocketBase collection + pb_hooks 映射。测试 1697 通过，0 回归。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `766776d` | (see git log) |
+| `c5afcd9` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

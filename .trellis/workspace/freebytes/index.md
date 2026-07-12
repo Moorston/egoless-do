@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 4
+- **Total Sessions**: 5
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~175 | Active |
+| `journal-1.md` | ~209 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 5 | 2026-07-12 | customFoodPresets 持久化 + PB 同步 | `766776d`, `c5afcd9` | `master` |
 | 4 | 2026-07-12 | 归档三个 P2 审计任务（platform/accessibility/perf） | `0b816bb`, `ad3b535` | `master` |
 | 3 | 2026-07-09 | 修复第二轮审计 36 项问题 | `04215d9` | `master` |
 | 2 | 2026-07-05 | Engine class refactoring + bug fixes + ESLint hardening | `6310295`, `714f03d`, `e38c972` | `master` |
