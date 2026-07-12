@@ -407,3 +407,36 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 12: ProfileScreen any 类型修复 + 密码模态框键盘优化
+
+**Date**: 2026-07-12
+**Task**: ProfileScreen any 类型修复 + 密码模态框键盘优化
+**Branch**: `master`
+
+### Summary
+
+消除 ProfileScreen 中 any 类型 lint 警告(46→0)，密码修改模态框增加 KeyboardAvoidingView/ScrollView 键盘适配和 returnKeyType 键盘流优化
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d17524b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
