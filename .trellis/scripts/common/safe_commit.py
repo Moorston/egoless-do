@@ -199,6 +199,14 @@ def safe_archive_paths_to_add(
     return paths
 
 
+def _stderr_indicates_ignored(stderr: str) -> bool:
+    """git add error indicates the path is excluded by .gitignore."""
+    if not stderr:
+        return False
+    lowered = stderr.lower()
+    return "ignored by" in lowered
+
+
 def safe_git_add(
     paths: list[str], repo_root: Path
 ) -> tuple[bool, bool, str]:

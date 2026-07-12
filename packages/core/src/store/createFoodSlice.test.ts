@@ -206,8 +206,9 @@ describe('createFoodSlice', () => {
 
       slice.removeCustomFoodPreset(targetId);
 
-      expect(store.state().customFoodPresets).toHaveLength(1);
-      expect(store.state().customFoodPresets[0].name).toBe('米饭');
+      expect(store.state().customFoodPresets).toHaveLength(2);
+      expect(store.state().customFoodPresets.filter(p => !p.deleted)).toHaveLength(1);
+      expect(store.state().customFoodPresets.filter(p => !p.deleted)[0].name).toBe('米饭');
     });
 
     it('does nothing when id does not match', () => {

@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "架构约束——理解实体注册、数据写入流的约束和禁止模式"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "全局代码规范——实体类型设计和 Store 操作规范"}
+{"file": ".trellis/spec/mobile/frontend/state-management.md", "reason": "状态管理——Zustand slice + StorageAdapter 模式参考"}
+{"file": ".trellis/spec/mobile/frontend/quality-guidelines.md", "reason": "移动端质量指南——数据持久化和同步质量标准"}
+{"file": ".trellis/spec/core/frontend/directory-structure.md", "reason": "Core 包目录结构——确定实体 schema 和类型文件位置"}
+{"file": ".trellis/spec/core/frontend/state-management.md", "reason": "Core 状态管理——Slice factory 模式和 StorageAdapter 接口"}
