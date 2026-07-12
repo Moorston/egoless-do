@@ -1,5 +1,5 @@
 import {COLORS, FONT_TITLE, FONT_BODY, FONT_SUB,
-  createLogger, FONT_LABEL, scaleFontSize} from '@egoless-do/core';
+  createLogger, FONT_LABEL, scaleFontSize, apiChangePassword, validatePassword} from '@egoless-do/core';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -9,7 +9,7 @@ import {
 } from 'lucide-react-native';
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform,
+  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -55,6 +55,12 @@ export default function ProfileScreen() {
   const [editGender, setEditGender] = useState<'male' | 'female' | 'private'>(userProfile.gender ?? 'private');
   const [editWaterGoal, setEditWaterGoal] = useState(String(waterGoal));
   const [clearing, setClearing] = useState(false);
+  const [pwdModalVisible, setPwdModalVisible] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [pwdChanging, setPwdChanging] = useState(false);
+  const [pwdError, setPwdError] = useState('');
   const weightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const heightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -186,6 +192,35 @@ export default function ProfileScreen() {
     }, 800);
   }, []);
 
+  const handleChangePassword = useCallback(async () => {
+    setPwdError('');
+    if (!currentPassword) { setPwdError(T('profilePwdCurrentRequired')); return; }
+    if (!newPassword) { setPwdError(T('profilePwdNewRequired')); return; }
+    const validationError = validatePassword(newPassword);
+    if (validationError) { setPwdError(validationError); return; }
+    if (newPassword !== confirmPassword) { setPwdError(T('profilePwdNotMatch')); return; }
+    setPwdChanging(true);
+    try {
+      const token = useAppStore.getState().auth.token;
+      if (!token) { setPwdError(T('profilePwdAuthError')); setPwdChanging(false); return; }
+      await apiChangePassword(token, currentPassword, newPassword);
+      setPwdModalVisible(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      Alert.alert(
+        T('commonSuccess'),
+        T('profilePwdChanged'),
+        [{ text: T('commonOk'), onPress: () => { nav.reset({ index: 0, routes: [{ name: 'Login' }] }); } }],
+      );
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : T('profilePwdChangeFailed');
+      setPwdError(msg);
+    } finally {
+      setPwdChanging(false);
+    }
+  }, [currentPassword, newPassword, confirmPassword, T, nav]);
+
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Profile" />
@@ -253,6 +288,51 @@ export default function ProfileScreen() {
             <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>
               {auth.user?.email ?? ''}
             </Text>
+
+            {/* Motto — in user card */}
+            {editingMotto ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, width: '100%' }}>
+                <TextInput
+                  value={editMotto}
+                  onChangeText={setEditMotto}
+                  placeholder={T('profileMottoPlaceholder')}
+                  placeholderTextColor={TH.sub}
+                  style={{
+                    flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
+                    color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
+                    fontStyle: 'italic',
+                  }}
+                />
+                <TouchableOpacity accessibilityLabel={T('commonSave')} onPress={saveMotto} style={{ padding: 6 }}>
+                  <Check size={20} color={COLORS.GREEN} />
+                </TouchableOpacity>
+                <TouchableOpacity accessibilityLabel={T('commonCancel')} onPress={() => { setEditingMotto(false); setEditMotto(userProfile.motto ?? ''); }} style={{ padding: 6 }}>
+                  <X size={20} color={TH.sub} />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <TouchableOpacity accessibilityLabel={'编辑座右铭'} onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                <Quote size={14} color={P} />
+                <Text style={{ color: userProfile.motto ? TH.text : TH.sub, fontSize: FONT_SUB(), fontStyle: 'italic', flex: 1 }}>
+                  {userProfile.motto || T('profileMottoPlaceholder')}
+                </Text>
+                <Pencil size={10} color={TH.sub} />
+              </TouchableOpacity>
+            )}
+
+            {/* Change password button */}
+            <TouchableOpacity
+              accessibilityLabel={T('profileChangePassword')}
+              onPress={() => setPwdModalVisible(true)}
+              style={{
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
+                marginTop: 12, paddingVertical: 10, borderRadius: 10,
+                backgroundColor: `${P}15`,
+              }}
+            >
+              <LogOut size={14} color={P} style={{ transform: [{ rotate: '180deg' }] }} />
+              <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('profileChangePassword')}</Text>
+            </TouchableOpacity>
           </View>
         </Card>
 
@@ -362,37 +442,6 @@ export default function ProfileScreen() {
           <Text style={{ color: TH.sub, fontSize: FONT_SUB(), fontWeight: '600', marginBottom: 12 }}>
             {T('profileJourney')}
           </Text>
-          {/* Motto */}
-          {editingMotto ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-              <Quote size={16} color={P} />
-              <TextInput
-                value={editMotto}
-                onChangeText={setEditMotto}
-                placeholder={T('profileMottoPlaceholder')}
-                placeholderTextColor={TH.sub}
-                style={{
-                  flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
-                  color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
-                  fontStyle: 'italic',
-                }}
-              />
-              <TouchableOpacity accessibilityLabel={T('commonSave')} onPress={saveMotto} style={{ padding: 6 }}>
-                <Check size={20} color={COLORS.GREEN} />
-              </TouchableOpacity>
-              <TouchableOpacity accessibilityLabel={T('commonCancel')} onPress={() => { setEditingMotto(false); setEditMotto(userProfile.motto ?? ''); }} style={{ padding: 6 }}>
-                <X size={20} color={TH.sub} />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity accessibilityLabel={'编辑座右铭'} onPress={() => setEditingMotto(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-              <Quote size={16} color={P} />
-              <Text style={{ color: userProfile.motto ? TH.text : TH.sub, fontSize: FONT_BODY(), fontStyle: 'italic', flex: 1 }}>
-                {userProfile.motto || T('profileMottoPlaceholder')}
-              </Text>
-              <Pencil size={12} color={TH.sub} />
-            </TouchableOpacity>
-          )}
           <View style={{ height: 1, backgroundColor: TH.border, marginBottom: 12 }} />
           {/* Stats rows */}
           {[
@@ -468,6 +517,94 @@ export default function ProfileScreen() {
         </Card>
       </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Password Change Modal */}
+      <Modal visible={pwdModalVisible} transparent animationType="fade" onRequestClose={() => setPwdModalVisible(false)}>
+        <View style={{
+          flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center',
+          padding: 24,
+        }}>
+          <View style={{
+            backgroundColor: TH.card, borderRadius: 16, padding: 24,
+            shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 12,
+            elevation: 8,
+          }}>
+            <Text style={{ color: TH.text, fontSize: FONT_TITLE(), fontWeight: '700', marginBottom: 20, textAlign: 'center' }}>
+              {T('profileChangePassword')}
+            </Text>
+
+            <TextInput
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+              placeholder={T('profilePwdCurrent')}
+              placeholderTextColor={TH.sub}
+              secureTextEntry
+              style={{
+                backgroundColor: TH.bg, borderRadius: 10, padding: 14, marginBottom: 12,
+                color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
+              }}
+            />
+
+            <TextInput
+              value={newPassword}
+              onChangeText={setNewPassword}
+              placeholder={T('profilePwdNew')}
+              placeholderTextColor={TH.sub}
+              secureTextEntry
+              style={{
+                backgroundColor: TH.bg, borderRadius: 10, padding: 14, marginBottom: 12,
+                color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
+              }}
+            />
+
+            <TextInput
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder={T('profilePwdConfirm')}
+              placeholderTextColor={TH.sub}
+              secureTextEntry
+              style={{
+                backgroundColor: TH.bg, borderRadius: 10, padding: 14, marginBottom: 12,
+                color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
+              }}
+            />
+
+            {pwdError ? (
+              <Text style={{ color: '#EF4444', fontSize: FONT_SUB(), marginBottom: 12, textAlign: 'center' }}>{pwdError}</Text>
+            ) : null}
+
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <TouchableOpacity
+                accessibilityLabel={T('commonCancel')}
+                onPress={() => { setPwdModalVisible(false); setPwdError(''); setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); }}
+                disabled={pwdChanging}
+                style={{
+                  flex: 1, paddingVertical: 14, borderRadius: 10,
+                  backgroundColor: TH.bg, alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: TH.text, fontSize: FONT_BODY(), fontWeight: '600' }}>{T('commonCancel')}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                accessibilityLabel={T('profilePwdSubmit')}
+                onPress={handleChangePassword}
+                disabled={pwdChanging}
+                style={{
+                  flex: 1, paddingVertical: 14, borderRadius: 10,
+                  backgroundColor: P, alignItems: 'center',
+                  opacity: pwdChanging ? 0.6 : 1,
+                }}
+              >
+                {pwdChanging
+                  ? <ActivityIndicator size="small" color="#fff" />
+                  : <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('profilePwdSubmit')}</Text>
+                }
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

@@ -136,7 +136,7 @@ export async function apiLogout(token: string, refreshToken: string): Promise<vo
   });
   if (!res.ok) {
     const text = await res.text();
-    log.error(`Logout failed: ${res.status}`, text);
+    log.error(`Logout failed: ${res.status}`, { response: text });
   }
 }
 
@@ -146,6 +146,16 @@ export async function apiResetPassword(email: string, code: string, password: st
     method: 'POST',
     headers: buildHeaders(),
     body: JSON.stringify({ email, code, password }),
+  });
+  return handleJsonResponse<{ ok: boolean; message: string }>(res);
+}
+
+// ── Change password (authenticated) ────────────────────────────────
+export async function apiChangePassword(token: string, currentPassword: string, newPassword: string): Promise<{ ok: boolean; message: string }> {
+  const res = await fetchWithTimeout(`${apiBase}/api/auth/change-password`, {
+    method: 'POST',
+    headers: buildHeaders(token),
+    body: JSON.stringify({ currentPassword, newPassword }),
   });
   return handleJsonResponse<{ ok: boolean; message: string }>(res);
 }

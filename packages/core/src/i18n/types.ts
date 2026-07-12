@@ -262,6 +262,10 @@ export interface I18nKeys {
   profileStats: string; profileBodyData: string; profileWeight: string; profileHeight: string; profileGender: string;   profileGenderMale: string; profileGenderFemale: string; profileGenderPrivate: string; profileWaterGoal: string; profileAccount: string;
   profileJourney: string; profileMotto: string; profileMottoPlaceholder: string; profileJoinedDays: string; profileLongestStreak: string; profileTotalExercise: string; profileTotalFasting: string;
   profilePermDenied: string; profilePermDeniedMsg: string;
+  profileChangePassword: string; profilePwdCurrent: string; profilePwdNew: string; profilePwdConfirm: string;
+  profilePwdCurrentRequired: string; profilePwdNewRequired: string;
+  profilePwdNotMatch: string; profilePwdAuthError: string;
+  profilePwdChanged: string; profilePwdChangeFailed: string; profilePwdSubmit: string;
   shareCardShare: string; shareCardSave: string; shareCardLoading: string;
   shareCardSaved: string; shareCardSavedMsg: string;
   shareCardError: string; shareCardErrorMsg: string; shareCardSaveErrorMsg: string;
