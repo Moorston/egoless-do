@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "检查后端 API 架构约束，确保 change-password 端点符合层间边界和依赖方向"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "检查前端代码规范，确保 UI 实现符合全局代码标准"}

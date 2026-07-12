@@ -339,3 +339,37 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 10: 修复 ProfileScreen 数据持久化和按钮位置
+
+**Date**: 2026-07-12
+**Task**: 修复 ProfileScreen 数据持久化和按钮位置
+**Branch**: `master`
+
+### Summary
+
+1. 移动修改密码按钮到账号卡片 2. 去掉体重/身高/饮水目标的800ms防抖，改为立即保存，利用WriteBatcher内置100ms防抖，解决APP后台时数据丢失 3. 数据持久化代码审计：avatar/weight/height的代码链路正确，如仍有问题需查同步日志
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1921c41` | (see git log) |
+| `4f1d82f` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
