@@ -327,6 +327,7 @@ export interface SyncDataMap {
   fearAchievement: FearAchievement;
   sutraReading: SutraReadingSession;
   zhiguanSession: ZhiguanSession;
+  foodPreset: CustomFoodPreset;
 }
 
 /** Type-safe storage adapter */

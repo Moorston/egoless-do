@@ -74,20 +74,21 @@ export function createDietSlice(
     setCalGoal(n: number) { set({ calGoal: Math.max(100, n) }); onSettingsPersist?.(); },
 
     addCustomFoodPreset(name: string, calories: number, note?: string) {
+      const id = uid();
+      const preset: CustomFoodPreset = { id, name, calories, note, updatedAt: Date.now(), deleted: false };
       set(s => ({
-        customFoodPresets: [
-          { id: uid(), name, calories, note },
-          ...(s.customFoodPresets ?? []),
-        ],
+        customFoodPresets: [preset, ...(s.customFoodPresets ?? [])],
       }));
-      onSettingsPersist?.();
+      adapter.persistChange('foodPreset', id, preset).catch(e => log.error(e));
+      onSync?.();
     },
 
     removeCustomFoodPreset(id: string) {
       set(s => ({
-        customFoodPresets: (s.customFoodPresets ?? []).filter(p => p.id !== id),
+        customFoodPresets: (s.customFoodPresets ?? []).map(p => p.id === id ? { ...p, deleted: true } : p),
       }));
-      onSettingsPersist?.();
+      adapter.markDeleted('foodPreset', id).catch(e => log.error(e));
+      onSync?.();
     },
 
     motivationLog: [],

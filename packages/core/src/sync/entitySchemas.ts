@@ -1152,6 +1152,19 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'deleted',         col: 'deleted',             type: 'bool' },
     ],
   },
+
+  foodPreset: {
+    sqlite: { table: 'custom_food_presets', pk: 'id' },
+    pocketbase: { collection: 'custom_food_presets', serverIdField: 'preset_id' },
+    fields: [
+      { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
+      { entity: 'name',      col: 'name',       server: 'name',      fallback: '' },
+      { entity: 'calories',  col: 'calories',   server: 'calories',  type: 'num', fallback: 0 },
+      { entity: 'note',      col: 'note',       server: 'note',      fallback: '', optional: true },
+      { entity: 'updatedAt', col: 'updated_at', server: 'updatedAt', fallback: () => Date.now() },
+      { entity: 'deleted',   col: 'deleted',    type: 'bool' },
+    ],
+  },
 };
 
 // ── Derived exports (replace standalone declarations) ───────────
