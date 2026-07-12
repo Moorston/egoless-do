@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 6
+- **Total Sessions**: 7
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~242 | Active |
+| `journal-1.md` | ~275 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 7 | 2026-07-12 | PB 创建 custom_food_presets collection | `7ccadc6` | `master` |
 | 6 | 2026-07-12 | PB 同步 GoError 排查修复 | `99e0d63` | `master` |
 | 5 | 2026-07-12 | customFoodPresets 持久化 + PB 同步 | `766776d`, `c5afcd9` | `master` |
 | 4 | 2026-07-12 | 归档三个 P2 审计任务（platform/accessibility/perf） | `0b816bb`, `ad3b535` | `master` |

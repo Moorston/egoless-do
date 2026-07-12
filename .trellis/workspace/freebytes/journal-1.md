@@ -240,3 +240,36 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 7: PB 创建 custom_food_presets collection
+
+**Date**: 2026-07-12
+**Task**: PB 创建 custom_food_presets collection
+**Branch**: `master`
+
+### Summary
+
+在 PocketBase 实例中创建 custom_food_presets 集合：新建 init.pb.js 在 PB 启动时自动检查并创建缺失 collection（DynamicModel API），sync.pb.js handler 添加双重保障，新建 create-collection.ps1 备用脚本支持通过 Admin API 手动创建。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `7ccadc6` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
