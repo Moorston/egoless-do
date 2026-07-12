@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "验证 PB hooks 改动不违反架构约束"}
+{"file": ".trellis/spec/governance/GLOBAL-CODE-STANDARDS.md", "reason": "验证错误日志格式符合代码规范"}

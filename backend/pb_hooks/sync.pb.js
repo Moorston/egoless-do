@@ -26,7 +26,7 @@ routerAdd("POST", "/api/sync", function(e) {
       try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
         try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
           try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
-            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+            try { return app.findRecordsByFilter(coll, filter, "", limit, offset || 0); } catch (e4) { return []; }
           }
         }
       }
@@ -120,7 +120,7 @@ routerAdd("POST", "/api/sync", function(e) {
             } catch (recErr) { console.warn("[sync] pull record error for " + ent + ": " + (recErr.message || String(recErr))); }
           }
           if (payloads.length > 0) serverData[ent] = payloads;
-        } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.name || "SyncError"); }
+        } catch (qErr) { console.error("[sync] pull error for " + ent + ":", qErr.name || "SyncError", qErr.message || ""); }
       }
     }
 
@@ -151,7 +151,7 @@ routerAdd("GET", "/api/sync", function(e) {
       try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
         try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
           try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
-            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+            try { return app.findRecordsByFilter(coll, filter, "", limit, offset || 0); } catch (e4) { return []; }
           }
         }
       }
@@ -200,7 +200,7 @@ routerAdd("GET", "/api/sync", function(e) {
           if (!data._meta) data._meta = {};
           data._meta[ent] = { page: page, pageSize: pageSize, totalItems: totalCount, totalPages: Math.ceil(totalCount / pageSize) };
         }
-      } catch (qErr) { console.error("[sync-get] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.name || "SyncError")); }
+      } catch (qErr) { console.error("[sync-get] entity error for " + (ENTITY_LIST[ei] || '?') + ":", qErr.name || "SyncError", qErr.message || ""); }
     }
 
     return e.json(200, { data: data, serverTime: Date.now() });
@@ -229,7 +229,7 @@ routerAdd("GET", "/api/sync/check", function(e) {
       try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
         try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
           try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
-            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+            try { return app.findRecordsByFilter(coll, filter, "", limit, offset || 0); } catch (e4) { return []; }
           }
         }
       }
@@ -251,7 +251,7 @@ routerAdd("GET", "/api/sync/check", function(e) {
         if (!coll) continue;
         var recs = safeFindRecords($app, coll, buildUserFilter(userId, since > 0 ? sinceDate : null), 1);
         if (recs.length > 0) { changed[ent] = recs.length; totalChanges++; }
-      } catch (qErr) { console.error("[sync-check] entity error for " + (ENTITY_LIST[ei] || '?') + ": " + (qErr.name || "SyncError")); }
+      } catch (qErr) { console.error("[sync-check] entity error for " + (ENTITY_LIST[ei] || '?') + ":", qErr.name || "SyncError", qErr.message || ""); }
     }
 
     return e.json(200, { hasChanges: totalChanges > 0, changed: changed, count: totalChanges, serverTime: Date.now() });

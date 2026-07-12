@@ -120,7 +120,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
       try { return app.findRecordsByFilter(coll, filter, "-created", limit, offset || 0); } catch (e1) {
         try { return app.findRecordsByFilter(coll, filter, "-updated", limit, offset || 0); } catch (e2) {
           try { return app.findRecordsByFilter(coll, filter, "-updated_at", limit, offset || 0); } catch (e3) {
-            return app.findRecordsByFilter(coll, filter, "", limit, offset || 0);
+            try { return app.findRecordsByFilter(coll, filter, "", limit, offset || 0); } catch (e4) { return []; }
           }
         }
       }
@@ -206,7 +206,7 @@ routerAdd("POST", "/api/sync/pull", function(e) {
           if (!data._meta) data._meta = {};
           data._meta[ent] = { total: totalCount };
         }
-      } catch (qErr) { console.error("[sync-pull] entity error for " + (entities[ei] || '?') + ": " + (qErr.name || "SyncError")); }
+      } catch (qErr) { console.error("[sync-pull] entity error for " + (entities[ei] || '?') + ":", qErr.name || "SyncError", qErr.message || ""); }
     }
     return e.json(200, { data: data, serverTime: Date.now() });
   } catch (err) {

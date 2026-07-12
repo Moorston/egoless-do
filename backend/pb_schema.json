@@ -114,7 +114,8 @@
       "fields": [
         { "name": "user_id",    "type": "text", "required": true },
         { "name": "profile_id", "type": "text", "required": true },
-        { "name": "data",       "type": "json", "required": false, "maxSize": 5000000 }
+        { "name": "data",       "type": "json", "required": false, "maxSize": 5000000 },
+        { "name": "updated_at", "type": "autodate", "onCreate": false, "onUpdate": false }
       ],
       "listRule":   "@request.auth.id = user_id",
       "viewRule":   "@request.auth.id = user_id",
@@ -294,7 +295,8 @@
       "fields": [
         { "name": "user_id",   "type": "text", "required": true },
         { "name": "config_id", "type": "text", "required": true },
-        { "name": "data",      "type": "json", "required": false, "maxSize": 5000000 }
+        { "name": "data",      "type": "json", "required": false, "maxSize": 5000000 },
+        { "name": "updated_at", "type": "autodate", "onCreate": false, "onUpdate": false }
       ],
       "listRule":   "@request.auth.id = user_id",
       "viewRule":   "@request.auth.id = user_id",
