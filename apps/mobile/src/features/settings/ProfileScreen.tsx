@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import {
   Pencil, Flame, Target, CalendarDays, Brain, Scale, Droplets,
-  Database, LogOut, ChevronRight, Check, X, Camera,
+  Database, LogOut, ChevronRight, Check, X, Camera, Lock,
   Trophy, Timer, Utensils, Quote, Footprints, ClipboardList, ListChecks,
 } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
 import { useRootNavigation } from '../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../store/useAppStore';
+import { useAppStore, useShallowStore, type MobileStore } from '../../store/useAppStore';
 
 
 
@@ -45,6 +45,10 @@ export default function ProfileScreen() {
     totalMedMinutes: s.totalMedMinutes,
   }));
   const nav = useRootNavigation();
+
+  // Typed helper to avoid ESLint no-unsafe-* warnings on getStore()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+  const getStore = () => useAppStore.getState() as MobileStore;
 
   const [editNickname, setEditNickname] = useState(userProfile.nickname ?? '');
   const [editingNickname, setEditingNickname] = useState(false);
@@ -96,7 +100,8 @@ export default function ProfileScreen() {
 
   const pickAvatar = async () => {
     try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const permResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const status = permResult.status;
       if (status !== 'granted') {
         Alert.alert(T('profilePermDenied'), T('profilePermDeniedMsg'));
         return;
@@ -112,7 +117,7 @@ export default function ProfileScreen() {
         const asset = result.assets[0];
         // Resize to ~200x200 to keep base64 small for sync
         const base64 = `data:image/jpeg;base64,${asset.base64}`;
-        useAppStore.getState().updateUserProfile({ avatar: base64 });
+        getStore().updateUserProfile({ avatar: base64 });
       }
     } catch (e) {
       log.error(e, { message: 'Avatar pick error' });
@@ -120,16 +125,16 @@ export default function ProfileScreen() {
   };
 
   const removeAvatar = () => {
-    useAppStore.getState().updateUserProfile({ avatar: undefined });
+    getStore().updateUserProfile({ avatar: undefined });
   };
 
   const saveNickname = () => {
-    useAppStore.getState().updateUserProfile({ nickname: editNickname.trim() || undefined });
+    getStore().updateUserProfile({ nickname: editNickname.trim() || undefined });
     setEditingNickname(false);
   };
 
   const saveMotto = () => {
-    useAppStore.getState().updateUserProfile({ motto: editMotto.trim() || undefined });
+    getStore().updateUserProfile({ motto: editMotto.trim() || undefined });
     setEditingMotto(false);
   };
 
@@ -137,7 +142,7 @@ export default function ProfileScreen() {
     setEditWeight(val);
     const num = val ? parseFloat(val) : undefined;
     if (num !== undefined && !isNaN(num)) {
-      useAppStore.getState().updateUserProfile({ weight: num });
+      getStore().updateUserProfile({ weight: num });
     }
   }, []);
 
@@ -145,19 +150,19 @@ export default function ProfileScreen() {
     setEditHeight(val);
     const num = val ? parseFloat(val) : undefined;
     if (num !== undefined && !isNaN(num)) {
-      useAppStore.getState().updateUserProfile({ height: num });
+      getStore().updateUserProfile({ height: num });
     }
   }, []);
 
   const handleGenderChange = useCallback((gender: 'male' | 'female' | 'private') => {
     setEditGender(gender);
-    useAppStore.getState().updateUserProfile({ gender });
+    getStore().updateUserProfile({ gender });
   }, []);
 
   const saveWaterGoal = useCallback((val: string) => {
     setEditWaterGoal(val);
     const num = parseInt(val, 10);
-    if (!isNaN(num) && num > 0) useAppStore.getState().setWaterGoal(num);
+    if (!isNaN(num) && num > 0) getStore().setWaterGoal(num);
   }, []);
 
   const handleChangePassword = useCallback(async () => {
@@ -169,7 +174,7 @@ export default function ProfileScreen() {
     if (newPassword !== confirmPassword) { setPwdError(T('profilePwdNotMatch')); return; }
     setPwdChanging(true);
     try {
-      const token = useAppStore.getState().auth.token;
+      const token = getStore().auth.token;
       if (!token) { setPwdError(T('profilePwdAuthError')); setPwdChanging(false); return; }
       await apiChangePassword(token, currentPassword, newPassword);
       setPwdModalVisible(false);
@@ -425,6 +430,15 @@ export default function ProfileScreen() {
             {T('profileAccount')}
           </Text>
           <TouchableOpacity
+            accessibilityLabel={T('profileChangePassword')}
+            onPress={() => setPwdModalVisible(true)}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
+          >
+            <Lock size={18} color={P} style={{ marginRight: 12 }} />
+            <Text style={{ color: P, fontSize: FONT_BODY(), flex: 1 }}>{T('profileChangePassword')}</Text>
+          </TouchableOpacity>
+          <View style={{ height: 1, backgroundColor: TH.border }} />
+          <TouchableOpacity
             accessibilityLabel={T('settingsClearData')}
             disabled={clearing}
             onPress={() => {
@@ -439,7 +453,7 @@ export default function ProfileScreen() {
                     onPress: async () => {
                       setClearing(true);
                       try {
-                        await useAppStore.getState().clearLocalData();
+                        await getStore().clearLocalData();
                       } catch {
                         Alert.alert(T('clearDataPushFail'));
                       }
@@ -462,20 +476,11 @@ export default function ProfileScreen() {
           <View style={{ height: 1, backgroundColor: TH.border }} />
           <TouchableOpacity
             accessibilityLabel={T('settingsLogout')}
-            onPress={async () => { await useAppStore.getState().logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
+            onPress={async () => { await getStore().logout(); nav.reset({ index: 0, routes: [{ name: 'Login' }] }); }}
             style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
           >
             <LogOut size={18} color="#EF4444" style={{ marginRight: 12 }} />
             <Text style={{ color: '#EF4444', fontSize: FONT_BODY(), flex: 1 }}>{T('settingsLogout')}</Text>
-          </TouchableOpacity>
-          <View style={{ height: 1, backgroundColor: TH.border }} />
-          <TouchableOpacity
-            accessibilityLabel={T('profileChangePassword')}
-            onPress={() => setPwdModalVisible(true)}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
-          >
-            <LogOut size={18} color={P} style={{ marginRight: 12, transform: [{ rotate: '180deg' }] }} />
-            <Text style={{ color: P, fontSize: FONT_BODY(), flex: 1 }}>{T('profileChangePassword')}</Text>
           </TouchableOpacity>
         </Card>
       </ScrollView>
