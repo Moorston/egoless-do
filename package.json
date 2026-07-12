@@ -44,7 +44,8 @@
       "postcss": ">=8.5.10"
     },
     "patchedDependencies": {
-      "expo-audio@57.0.0": "patches/expo-audio@57.0.0.patch"
+      "expo-audio@57.0.0": "patches/expo-audio@57.0.0.patch",
+      "expo-image-picker@57.0.2": "patches/expo-image-picker@57.0.2.patch"
     }
   },
   "dependencies": {
