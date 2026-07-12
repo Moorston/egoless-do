@@ -207,3 +207,36 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: PB 同步 GoError 排查修复
+
+**Date**: 2026-07-12
+**Task**: PB 同步 GoError 排查修复
+**Branch**: `master`
+
+### Summary
+
+排查并修复 PocketBase 同步系统持续的 GoError 错误：safeFindRecords 最终 fallback 包入 try-catch（5 处）防止异常传播，改进错误日志输出 qErr.message（4 处）便于定位根因，pb_schema.json 的 user_profiles/ai_configs 添加 updated_at 顶级字段提高排序兼容性。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `99e0d63` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
