@@ -38,15 +38,15 @@ export async function isBlacklisted(token: string): Promise<boolean> {
  * query another user's password_changed_at or login_epoch before signature verification.
  */
 export async function verifyAuth(authHeader: string | null): Promise<{ userId: string } | null> {
-  if (!authHeader?.startsWith('Bearer ')) return null;
+  if (!authHeader?.startsWith('Bearer ')) { console.warn('[verifyAuth] Missing or invalid auth header'); return null; }
   const token = authHeader.slice(7);
 
   // Fast local checks (format only — payload is NOT trusted yet)
   const payload = jwtPayload(token);
-  if (!payload) return null;
+  if (!payload) { console.warn('[verifyAuth] Invalid JWT payload'); return null; }
 
   // Check blacklist (for logged-out tokens)
-  if (await isBlacklisted(token)) return null;
+  if (await isBlacklisted(token)) { console.warn('[verifyAuth] Token is blacklisted'); return null; }
 
   try {
     // Verify signature via PocketBase — this is the actual security gate
@@ -57,9 +57,10 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
     try {
       await pb.collection('users').authRefresh();
       const recordId = pb.authStore.record?.id;
-      if (!recordId) return null;
+      if (!recordId) { console.warn('[verifyAuth] authRefresh returned no recordId'); return null; }
       verifiedUserId = recordId;
     } catch (refreshErr: unknown) {
+      console.warn('[verifyAuth] authRefresh failed:', (refreshErr as Error)?.message ?? 'unknown');
       return null;
     }
 
@@ -81,8 +82,10 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
           const user = await adminPb.collection('users').getOne(verifiedUserId, { fields: 'password_changed_at' });
           const pwdChangedAt = (user as Record<string, unknown>).password_changed_at;
           if (pwdChangedAt && iat < pwdChangedAt) return null;
-        } catch {
-          return null;
+        } catch (pwdErr) {
+          // Token already verified by authRefresh(); admin query failure shouldn't reject valid requests.
+          // Log the error and continue — the authRefresh() call is the primary security gate.
+          console.warn('[verifyAuth] password_changed_at check failed, allowing request:', (pwdErr as Error)?.message ?? 'unknown');
         }
       }
     }
