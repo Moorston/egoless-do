@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/mobile/frontend/directory-structure.md", "reason": "了解 ProfileScreen 在项目中的位置"}
+{"file": ".trellis/spec/governance/ARCHITECTURE-CONSTRAINTS.md", "reason": "检查包依赖方向约束，确认补丁方案是否符合架构规则"}
