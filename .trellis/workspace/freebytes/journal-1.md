@@ -273,3 +273,36 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: 修复 ProfileScreen 因 createPermissionHook 报错崩溃
+
+**Date**: 2026-07-12
+**Task**: 修复 ProfileScreen 因 createPermissionHook 报错崩溃
+**Branch**: `master`
+
+### Summary
+
+定位根因：expo-image-picker@57.0.2 从 'expo' 导入 createPermissionHook，但 Expo SDK 54 已移除该导出。创建 pnpm patch 将导入源改为 expo-modules-core。并发现 expo-location 存在同类问题。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `489e3a4` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
