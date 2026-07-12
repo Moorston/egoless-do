@@ -500,6 +500,16 @@ CREATE TABLE IF NOT EXISTS breath_records (
   synced         INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_breath_records_date ON breath_records(date);
+
+CREATE TABLE IF NOT EXISTS custom_food_presets (
+  id         TEXT PRIMARY KEY,
+  name       TEXT    NOT NULL DEFAULT '',
+  calories   INTEGER NOT NULL DEFAULT 0,
+  note       TEXT    DEFAULT '',
+  updated_at INTEGER,
+  deleted    INTEGER NOT NULL DEFAULT 0,
+  synced     INTEGER NOT NULL DEFAULT 0
+);
 `;
 
 export async function initDatabase(db: SQLite.SQLiteDatabase): Promise<void> {

@@ -30,4 +30,6 @@ export interface CustomFoodPreset {
   name: string;
   calories: number;
   note?: string;
+  updatedAt: number;
+  deleted: boolean;
 }
