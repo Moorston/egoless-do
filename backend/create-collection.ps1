@@ -14,7 +14,7 @@ $ErrorActionPreference = "Stop"
 
 # ── Prompt for credentials if not provided ──────────────────────────
 if (-not $AdminEmail) { $AdminEmail = Read-Host "PB Admin Email" }
-if (-not $AdminPassword) { $AdminPassword = Read-Host -AsSecureString "PB Admin Password"; $Bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($AdminPassword); $AdminPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($Bstr) }
+if (-not $AdminPassword) { $sec = Read-Host "PB Admin Password" -AsSecureString; $b = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec); $AdminPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($b) }
 
 Write-Host "PocketBase Collection Creator" -ForegroundColor Cyan
 Write-Host "  PB URL: $PbUrl" -ForegroundColor Gray
