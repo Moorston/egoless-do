@@ -7,7 +7,7 @@ import {
   Database, LogOut, ChevronRight, Check, X, Camera,
   Trophy, Timer, Utensils, Quote, Footprints, ClipboardList, ListChecks,
 } from 'lucide-react-native';
-import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Modal,
 } from 'react-native';
@@ -61,27 +61,6 @@ export default function ProfileScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [pwdChanging, setPwdChanging] = useState(false);
   const [pwdError, setPwdError] = useState('');
-  const weightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const heightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const weightRef = useRef(editWeight);
-  const heightRef = useRef(editHeight);
-  const waterRef = useRef(editWaterGoal);
-
-  // Flush pending saves on unmount
-  useEffect(() => () => {
-    if (weightTimer.current) { clearTimeout(weightTimer.current); }
-    if (heightTimer.current) { clearTimeout(heightTimer.current); }
-    if (waterTimer.current) { clearTimeout(waterTimer.current); }
-    // Final save with latest values
-    const w = weightRef.current;
-    const wn = w ? parseFloat(w) : undefined;
-    const h = heightRef.current;
-    const hn = h ? parseFloat(h) : undefined;
-    useAppStore.getState().updateUserProfile({ weight: wn && !isNaN(wn) ? wn : undefined, height: hn && !isNaN(hn) ? hn : undefined });
-    const wg = parseInt(waterRef.current, 10);
-    if (!isNaN(wg) && wg > 0) useAppStore.getState().setWaterGoal(wg);
-  }, []);
 
   const weightUnit = useShallowStore(s => s.weightUnit);
   const setWeightUnit = useShallowStore(s => s.setWeightUnit);
@@ -154,26 +133,20 @@ export default function ProfileScreen() {
     setEditingMotto(false);
   };
 
-  const debouncedSaveWeight = useCallback((val: string) => {
+  const saveWeight = useCallback((val: string) => {
     setEditWeight(val);
-    weightRef.current = val;
-    if (weightTimer.current) clearTimeout(weightTimer.current);
-    weightTimer.current = setTimeout(() => {
-      weightTimer.current = null;
-      const num = val ? parseFloat(val) : undefined;
+    const num = val ? parseFloat(val) : undefined;
+    if (num !== undefined && !isNaN(num)) {
       useAppStore.getState().updateUserProfile({ weight: num });
-    }, 800);
+    }
   }, []);
 
-  const debouncedSaveHeight = useCallback((val: string) => {
+  const saveHeight = useCallback((val: string) => {
     setEditHeight(val);
-    heightRef.current = val;
-    if (heightTimer.current) clearTimeout(heightTimer.current);
-    heightTimer.current = setTimeout(() => {
-      heightTimer.current = null;
-      const num = val ? parseFloat(val) : undefined;
+    const num = val ? parseFloat(val) : undefined;
+    if (num !== undefined && !isNaN(num)) {
       useAppStore.getState().updateUserProfile({ height: num });
-    }, 800);
+    }
   }, []);
 
   const handleGenderChange = useCallback((gender: 'male' | 'female' | 'private') => {
@@ -181,15 +154,10 @@ export default function ProfileScreen() {
     useAppStore.getState().updateUserProfile({ gender });
   }, []);
 
-  const debouncedSaveWaterGoal = useCallback((val: string) => {
+  const saveWaterGoal = useCallback((val: string) => {
     setEditWaterGoal(val);
-    waterRef.current = val;
-    if (waterTimer.current) clearTimeout(waterTimer.current);
-    waterTimer.current = setTimeout(() => {
-      waterTimer.current = null;
-      const num = parseInt(val, 10);
-      if (!isNaN(num) && num > 0) useAppStore.getState().setWaterGoal(num);
-    }, 800);
+    const num = parseInt(val, 10);
+    if (!isNaN(num) && num > 0) useAppStore.getState().setWaterGoal(num);
   }, []);
 
   const handleChangePassword = useCallback(async () => {
@@ -319,20 +287,6 @@ export default function ProfileScreen() {
                 <Pencil size={10} color={TH.sub} />
               </TouchableOpacity>
             )}
-
-            {/* Change password button */}
-            <TouchableOpacity
-              accessibilityLabel={T('profileChangePassword')}
-              onPress={() => setPwdModalVisible(true)}
-              style={{
-                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-                marginTop: 12, paddingVertical: 10, borderRadius: 10,
-                backgroundColor: `${P}15`,
-              }}
-            >
-              <LogOut size={14} color={P} style={{ transform: [{ rotate: '180deg' }] }} />
-              <Text style={{ color: P, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('profileChangePassword')}</Text>
-            </TouchableOpacity>
           </View>
         </Card>
 
@@ -348,7 +302,7 @@ export default function ProfileScreen() {
             <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileWeight')}</Text>
             <TextInput
               value={editWeight}
-              onChangeText={debouncedSaveWeight}
+              onChangeText={saveWeight}
               placeholder="—"
               placeholderTextColor={TH.sub}
               keyboardType="numeric"
@@ -380,7 +334,7 @@ export default function ProfileScreen() {
             <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileHeight')}</Text>
             <TextInput
               value={editHeight}
-              onChangeText={debouncedSaveHeight}
+              onChangeText={saveHeight}
               placeholder="—"
               placeholderTextColor={TH.sub}
               keyboardType="numeric"
@@ -425,7 +379,7 @@ export default function ProfileScreen() {
             <Text style={{ color: TH.text, fontSize: FONT_BODY(), width: 60 }}>{T('profileWaterGoal')}</Text>
             <TextInput
               value={editWaterGoal}
-              onChangeText={debouncedSaveWaterGoal}
+              onChangeText={saveWaterGoal}
               keyboardType="numeric"
               style={{
                 flex: 1, backgroundColor: TH.bg, borderRadius: 10, padding: 10,
@@ -513,6 +467,15 @@ export default function ProfileScreen() {
           >
             <LogOut size={18} color="#EF4444" style={{ marginRight: 12 }} />
             <Text style={{ color: '#EF4444', fontSize: FONT_BODY(), flex: 1 }}>{T('settingsLogout')}</Text>
+          </TouchableOpacity>
+          <View style={{ height: 1, backgroundColor: TH.border }} />
+          <TouchableOpacity
+            accessibilityLabel={T('profileChangePassword')}
+            onPress={() => setPwdModalVisible(true)}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
+          >
+            <LogOut size={18} color={P} style={{ marginRight: 12, transform: [{ rotate: '180deg' }] }} />
+            <Text style={{ color: P, fontSize: FONT_BODY(), flex: 1 }}>{T('profileChangePassword')}</Text>
           </TouchableOpacity>
         </Card>
       </ScrollView>
