@@ -100,9 +100,9 @@ export default function ProfileScreen() {
 
   const pickAvatar = async () => {
     try {
-      const permResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      const status = permResult.status;
-      if (status !== 'granted') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const permStatus = (await ImagePicker.requestMediaLibraryPermissionsAsync()).status;
+      if (permStatus !== 'granted') {
         Alert.alert(T('profilePermDenied'), T('profilePermDeniedMsg'));
         return;
       }
@@ -488,10 +488,16 @@ export default function ProfileScreen() {
 
       {/* Password Change Modal */}
       <Modal visible={pwdModalVisible} transparent animationType="fade" onRequestClose={() => setPwdModalVisible(false)}>
+        <KeyboardAvoidingView style={{ flex: 1, justifyContent: 'center' }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={{
           flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center',
           padding: 24,
         }}>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
           <View style={{
             backgroundColor: TH.card, borderRadius: 16, padding: 24,
             shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 12,
@@ -507,6 +513,8 @@ export default function ProfileScreen() {
               placeholder={T('profilePwdCurrent')}
               placeholderTextColor={TH.sub}
               secureTextEntry
+              returnKeyType="next"
+              blurOnSubmit={false}
               style={{
                 backgroundColor: TH.bg, borderRadius: 10, padding: 14, marginBottom: 12,
                 color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
@@ -519,6 +527,8 @@ export default function ProfileScreen() {
               placeholder={T('profilePwdNew')}
               placeholderTextColor={TH.sub}
               secureTextEntry
+              returnKeyType="next"
+              blurOnSubmit={false}
               style={{
                 backgroundColor: TH.bg, borderRadius: 10, padding: 14, marginBottom: 12,
                 color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
@@ -531,6 +541,8 @@ export default function ProfileScreen() {
               placeholder={T('profilePwdConfirm')}
               placeholderTextColor={TH.sub}
               secureTextEntry
+              returnKeyType="done"
+              onSubmitEditing={handleChangePassword}
               style={{
                 backgroundColor: TH.bg, borderRadius: 10, padding: 14, marginBottom: 12,
                 color: TH.text, fontSize: FONT_BODY(), borderWidth: 1, borderColor: TH.border,
