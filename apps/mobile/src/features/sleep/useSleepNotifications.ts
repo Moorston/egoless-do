@@ -19,7 +19,8 @@ function getNotifications(): typeof import('expo-notifications') {
     _handlerConfigured = true;
     _Notifications.setNotificationHandler({
       handleNotification: async () => ({
-        shouldShowAlert: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
       }),

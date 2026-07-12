@@ -1,10 +1,29 @@
-import { BUILTIN_TRACKS, USER_MUSIC_STORAGE_KEY, MUSIC_FAVORITES_KEY, createLogger } from '@egoless-do/core';
+import { BUILTIN_TRACKS, createLogger } from '@egoless-do/core';
 import type { MusicTrack } from '@egoless-do/core';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import { create } from 'zustand';
 
 const log = createLogger('Music');
+
+// ── File-based JSON storage (replaces AsyncStorage) ─────────────────
+const MUSIC_DATA_DIR = `${FileSystem.documentDirectory}music-data/`;
+async function ensureMusicDataDir() {
+  const dirInfo = await FileSystem.getInfoAsync(MUSIC_DATA_DIR);
+  if (!dirInfo.exists) await FileSystem.makeDirectoryAsync(MUSIC_DATA_DIR, { intermediates: true });
+}
+async function writeJsonFile(filename: string, data: unknown): Promise<void> {
+  try {
+    await ensureMusicDataDir();
+    await FileSystem.writeAsStringAsync(`${MUSIC_DATA_DIR}${filename}`, JSON.stringify(data), { encoding: FileSystem.EncodingType.UTF8 });
+  } catch (e) { log.warn(`Failed to write ${filename}:`, (e as Error)?.message); }
+}
+async function readJsonFile<T>(filename: string): Promise<T | null> {
+  try {
+    await ensureMusicDataDir();
+    const raw = await FileSystem.readAsStringAsync(`${MUSIC_DATA_DIR}${filename}`, { encoding: FileSystem.EncodingType.UTF8 });
+    return JSON.parse(raw) as T;
+  } catch { return null; }
+}
 
 // 内置音乐文件映射（require 必须在模块顶层静态声明）
 const BUILTIN_FILES: Record<string, number> = {
@@ -24,7 +43,6 @@ const LIBRARY: MusicTrack[] = BUILTIN_TRACKS.map(t => ({
 }));
 
 const USER_MUSIC_DIR = `${FileSystem.documentDirectory}user-music/`;
-const VOLUME_STORAGE_KEY = 'music_volume';
 
 // Module-level timer ref (non-serializable, not in store)
 let sleepTimerRef: ReturnType<typeof setInterval> | null = null;
@@ -144,7 +162,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   stop: () => set({ currentTrack: null, isPlaying: false, currentTime: 0, duration: 0 }),
   setVolume: (v) => {
     set({ volume: v });
-    AsyncStorage.setItem(VOLUME_STORAGE_KEY, String(v)).catch(() => {});
+    writeJsonFile('volume.json', v);
     _onMusicChange?.();
   },
   toggleLoop: () => set(s => {
@@ -179,7 +197,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
       const updated = [...get().userTracks, track];
       set({ userTracks: updated });
-      await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
+      await writeJsonFile('user_tracks.json', updated);
       _onMusicChange?.();
     } catch (e) {
       log.error(e, { message: '添加用户音乐失败' });
@@ -196,7 +214,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
       }
       const updated = currentTracks.filter(t => t.id !== id);
       set({ userTracks: updated });
-      await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(updated));
+      await writeJsonFile('user_tracks.json', updated);
       _onMusicChange?.();
       // 如果删除的是当前播放曲目，停止播放
       if (get().currentTrack?.id === id) {
@@ -209,9 +227,9 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   loadUserTracks: async () => {
     try {
-      const raw = await AsyncStorage.getItem(USER_MUSIC_STORAGE_KEY);
+      const raw = await readJsonFile<MusicTrack[]>('user_tracks.json');
       if (raw) {
-        const tracks: MusicTrack[] = JSON.parse(raw);
+        const tracks = raw;
         // 验证文件仍存在
         const valid: MusicTrack[] = [];
         for (const t of tracks) {
@@ -228,7 +246,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         }
         set({ userTracks: valid });
         if (valid.length !== tracks.length) {
-          await AsyncStorage.setItem(USER_MUSIC_STORAGE_KEY, JSON.stringify(valid));
+          await writeJsonFile('user_tracks.json', valid);
         }
       }
     } catch (e) { log.error(e, { message: '加载用户音乐失败' }); }
@@ -241,7 +259,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
         ? favorites.filter(fid => fid !== id)
         : [...favorites, id];
       set({ favorites: updated });
-      await AsyncStorage.setItem(MUSIC_FAVORITES_KEY, JSON.stringify(updated));
+      await writeJsonFile('favorites.json', updated);
       _onMusicChange?.();
     } catch (e) {
       log.error(e, { message: '切换收藏失败' });
@@ -250,9 +268,9 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   loadFavorites: async () => {
     try {
-      const raw = await AsyncStorage.getItem(MUSIC_FAVORITES_KEY);
+      const raw = await readJsonFile<string[]>('favorites.json');
       if (raw) {
-        set({ favorites: JSON.parse(raw) });
+        set({ favorites: raw });
       }
     } catch (e) { log.error(e, { message: '加载收藏失败' }); }
   },
@@ -269,11 +287,8 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   loadVolume: async () => {
     try {
-      const raw = await AsyncStorage.getItem(VOLUME_STORAGE_KEY);
-      if (raw) {
-        const v = parseFloat(raw);
-        if (!isNaN(v) && v >= 0 && v <= 1) set({ volume: v });
-      }
+      const raw = await readJsonFile<number>('volume.json');
+      if (raw !== null && typeof raw === 'number' && raw >= 0 && raw <= 1) set({ volume: raw });
     } catch { /* ignore */ }
   },
 
@@ -336,7 +351,7 @@ export const useMusicStore = create<MusicState>((set, get) => ({
 
   setPlayMode: (mode) => {
     set({ playMode: mode, loop: mode === 'repeat-one' });
-    AsyncStorage.setItem('music_play_mode', mode).catch(() => {});
+    writeJsonFile('play_mode.json', mode);
     _onMusicChange?.();
   },
 
