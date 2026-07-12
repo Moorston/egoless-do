@@ -1,5 +1,5 @@
 import { FONT_SMALL, FONT_TINY, MS_PER_DAY, createLogger , computeCandidatePool, computeRecommendations, buildIgnoredPattern } from '@egoless-do/core';
-import { safeGetItem, safeSetItem } from '../../../utils/safeAsyncStorage';
+import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Zap, X } from 'lucide-react-native';

@@ -96,6 +96,8 @@ partialize: s => ({
 }),
 ```
 
+**UI preferences** (guide style, voice toggle, hidden tags/moods) are stored in AsyncStorage. Use `safeAsyncStorage` wrapper (`store/safeAsyncStorage.ts`) for resilience in Expo Go where the native module may be unavailable.
+
 **Auth tokens** are stored separately via `expo-secure-store` (not AsyncStorage, not SQLite). They are wired via `useAppStore.subscribe` — every token change writes to SecureStore.
 
 ---

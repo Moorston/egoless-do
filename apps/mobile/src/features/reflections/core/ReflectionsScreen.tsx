@@ -1,6 +1,6 @@
 import { MIND_COLORS_EXTENDED, TAGS_PRESET, MOODS, COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_TINY, FONT_EMPTY, dateStr, REFLECTION_CATEGORIES, createLogger , highlightSearchMatch , getTrailsByReflection, formatTime } from '@egoless-do/core';
 import type { Habit, MindReflection } from '@egoless-do/core';
-import { safeGetItem, safeSetItem } from '../../../utils/safeAsyncStorage';
+import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {

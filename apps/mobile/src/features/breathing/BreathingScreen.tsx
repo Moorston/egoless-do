@@ -3,7 +3,7 @@
 // Lazy-loads BreathingEngine when user starts a session.
 import { FONT_TITLE, FONT_BODY, FONT_SUB, createLogger, fmtMS , BREATHING_PRESETS, cycleDuration, getDescKey , FONT_STAT_SECTION } from '@egoless-do/core';
 import type { BreathingPreset, GuideStyle } from '@egoless-do/core';
-import { safeGetItem, safeSetItem } from '../../utils/safeAsyncStorage';
+import { safeGetItem, safeSetItem } from '../../store/safeAsyncStorage';
 import { ChevronRight } from 'lucide-react-native';
 import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';

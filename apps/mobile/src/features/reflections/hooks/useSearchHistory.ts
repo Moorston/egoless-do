@@ -1,4 +1,4 @@
-import { safeGetItem, safeSetItem } from '../../../utils/safeAsyncStorage';
+import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useState, useEffect, useCallback } from 'react';
 
 const SEARCH_HISTORY_KEY = 'quickTrailSearchHistory';

@@ -3,7 +3,7 @@
 
 import { createLogger } from '@egoless-do/core';
 import type { GuideStyle } from '@egoless-do/core';
-import { safeGetItem, safeSetItem, safeMultiGet } from '../../../utils/safeAsyncStorage';
+import { safeGetItem, safeSetItem, safeMultiGet } from '../../../store/safeAsyncStorage';
 import { useState, useEffect, useCallback } from 'react';
 
 const log = createLogger('Breathing');

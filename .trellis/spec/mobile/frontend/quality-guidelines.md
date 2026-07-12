@@ -55,6 +55,17 @@ await adapter.persistChange('entity', id, data);
 triggerAutoSync();
 ```
 
+### AsyncStorage Native Module Fallback
+```ts
+// When AsyncStorage native module may be unavailable (Expo Go),
+// use safeAsyncStorage wrapper which falls back to in-memory Map.
+import { safeGetItem, safeSetItem, safeMultiGet } from '../../store/safeAsyncStorage';
+
+await safeGetItem('key');        // → string | null
+await safeSetItem('key', 'val'); // silently falls back to memory
+await safeMultiGet([...keys]);   // → Array<[string, string | null]>
+```
+
 ### Error Logging
 ```tsx
 import { createLogger } from '@egoless-do/core';
@@ -84,6 +95,22 @@ Before reporting a task complete:
 - [ ] New slices/actions route through `adapter.persistChange`
 - [ ] No new `any` types added — use `unknown` + narrowing
 - [ ] Store selection uses `useShallow`
+
+## Common Mistakes
+
+### Missing `scaleFontSize` Import
+当文件中使用 `scaleFontSize()` 时必须从 `@egoless-do/core` 导入。style 迁移批量操作容易遗漏：
+
+```tsx
+// ❌ 错误：使用 scaleFontSize() 但未导入
+fontSize: scaleFontSize(32),
+
+// ✅ 正确：从 @egoless-do/core 导入
+import { FONT_BODY, scaleFontSize } from '@egoless-do/core';
+fontSize: scaleFontSize(32),
+```
+
+> ⚠️ `scaleFontSize` 是运行时函数（非类型），不能用 `import type` 导入。
 
 ---
 

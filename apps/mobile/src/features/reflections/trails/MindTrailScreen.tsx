@@ -13,7 +13,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme, useT } from '../../../components/UI';
 import type { RootStackParamList } from '../../../navigation/types';
 import { ArrowLeft, Plus, Zap, Send, RefreshCw, X, Trash2 } from 'lucide-react-native';
-import { safeGetItem, safeSetItem } from '../../../utils/safeAsyncStorage';
+import { safeGetItem, safeSetItem } from '../../../store/safeAsyncStorage';
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 const log = createLogger('Reflections');
