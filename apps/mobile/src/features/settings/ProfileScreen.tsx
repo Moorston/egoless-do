@@ -583,7 +583,9 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
           </View>
+          </ScrollView>
         </View>
+      </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );
