@@ -1,63 +1,9 @@
-// ─── PocketBase v0.38.2 — Auto-create required collections on load ───
-// Top-level code runs when PB loads this file at startup.
-// $app is available as a global in the PB JS runtime.
-
-try {
-  // Check if custom_food_presets already exists
-  $app.findCollectionByNameOrId("custom_food_presets");
-} catch (notFound) {
-  // Collection doesn't exist — create it
-  try {
-    var REQUIRED_COLLECTIONS = [
-      {
-        name: "custom_food_presets",
-        type: "base",
-        fields: [
-          { name: "user_id",   type: "text", required: true },
-          { name: "preset_id", type: "text", required: true },
-          { name: "data",      type: "json", required: false, maxSize: 5000000 },
-          { name: "updated_at", type: "autodate", onCreate: false, onUpdate: false },
-        ],
-        listRule:   "@request.auth.id = user_id",
-        viewRule:   "@request.auth.id = user_id",
-        createRule: "@request.auth.id = user_id",
-        updateRule: "@request.auth.id = user_id",
-        deleteRule: "@request.auth.id = user_id",
-      },
-    ];
-
-    for (var ci = 0; ci < REQUIRED_COLLECTIONS.length; ci++) {
-      var def = REQUIRED_COLLECTIONS[ci];
-      try {
-        var dao = $app.dao();
-        var col = new DynamicModel(dao.collectionQuery().modelDataType());
-        col.set("name", def.name);
-        col.set("type", def.type);
-        col.set("listRule", def.listRule || null);
-        col.set("viewRule", def.viewRule || null);
-        col.set("createRule", def.createRule || null);
-        col.set("updateRule", def.updateRule || null);
-        col.set("deleteRule", def.deleteRule || null);
-
-        for (var fi = 0; fi < def.fields.length; fi++) {
-          var fdef = def.fields[fi];
-          var field = new DynamicModel(dao.fieldQuery().modelDataType());
-          field.set("name", fdef.name);
-          field.set("type", fdef.type);
-          field.set("required", !!fdef.required);
-          if (fdef.maxSize !== undefined) field.set("maxSize", fdef.maxSize);
-          if (fdef.onCreate !== undefined) field.set("onCreate", fdef.onCreate);
-          if (fdef.onUpdate !== undefined) field.set("onUpdate", fdef.onUpdate);
-          col.get("fields").push(field);
-        }
-
-        dao.saveCollection(col);
-        console.log("[Init] Created collection: " + def.name);
-      } catch (createErr) {
-        console.error("[Init] Failed to create " + def.name + ":", createErr.name || "Error", createErr.message || "");
-      }
-    }
-  } catch (e) {
-    console.error("[Init] Error:", e.name || "Error", e.message || "");
-  }
-}
+// ─── Init placeholder ───
+// PB 0.38.2 JS API 不支持从 hook 创建 collection（DynamicModel 不可用）。
+// 请使用以下方式创建 custom_food_presets collection：
+//
+// 方式 A: 运行 .\backend\create-collection.ps1
+// 方式 B: Admin UI → Collections → New collection → 从 pb_schema.json 复制字段定义
+//
+// 此文件保留空壳避免加载错误，不执行任何操作。
+console.log("[Init] Use create-collection.ps1 or Admin UI to create missing collections.");
