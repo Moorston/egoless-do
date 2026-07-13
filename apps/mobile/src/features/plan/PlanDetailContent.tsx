@@ -447,8 +447,8 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             )}
           </Card>
 
-          {/* Related Reflections & Trails */}
-          {tab === 'detail' && (relatedReflections.total > 0 || relatedTrails.length > 0) && (
+          {/* Related Reflections, Trails & Vision */}
+          {tab === 'detail' && (relatedReflections.total > 0 || relatedTrails.length > 0 || plan?.visionId) && (
             <Card>
               {/* Collapsible header with stats */}
               <TouchableOpacity
@@ -479,6 +479,18 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                         </Text>
                       </View>
                     )}
+                    {plan?.visionId && (() => {
+                      const v = (visions ?? []).find((x: any) => x.id === plan.visionId && !x.deleted);
+                      if (!v) return null;
+                      return (
+                        <View style={styles.inlineRowGap4}>
+                          <Text style={{ fontSize: 14 }}>🎯</Text>
+                          <Text style={[styles.textSubDim, { color: TH.sub }]} numberOfLines={1}>
+                            {v.text}
+                          </Text>
+                        </View>
+                      );
+                    })()}
                   </View>
                 </View>
                 {showRelated
@@ -518,6 +530,20 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       </Text>
                     </TouchableOpacity>
                   ))}
+                  {/* Linked Vision */}
+                  {plan?.visionId && (() => {
+                    const v = (visions ?? []).find((x: any) => x.id === plan.visionId && !x.deleted);
+                    if (!v) return null;
+                    return (
+                      <View style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }]}>
+                        <Text style={{ fontSize: 18 }}>🎯</Text>
+                        <View style={{ flex: 1 }}>
+                          <Text style={[styles.textBodySemiBold, { color: TH.text }]}>{T('planLinkedVision')}</Text>
+                          <Text style={[styles.textDim, { color: TH.sub, marginTop: 2 }]} numberOfLines={2}>{v.text}</Text>
+                        </View>
+                      </View>
+                    );
+                  })()}
 
                   {/* Show "more" hint if reflections were truncated */}
                   {relatedReflections.total > 3 && (

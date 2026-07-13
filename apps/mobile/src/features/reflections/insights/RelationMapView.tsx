@@ -396,6 +396,7 @@ export default function RelationMapView() {
         <NodeDetailPanel
           node={selectedNodeData}
           onNavigate={() => handleNavigateToDetail(selectedNodeData)}
+          linkedVision={selectedPlanVision}
         />
       )}
 
