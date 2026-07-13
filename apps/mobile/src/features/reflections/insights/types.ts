@@ -3,7 +3,7 @@
  */
 
 // ── 节点类型 ──────────────────────────────────────────────────────
-export type NodeType = 'reflection' | 'plan' | 'habit' | 'trail' | 'planItem';
+export type NodeType = 'reflection' | 'plan' | 'habit' | 'trail' | 'planItem' | 'vision';
 
 export interface RelationNode {
   id: string;
@@ -45,7 +45,7 @@ export interface EdgeStyle {
 }
 
 // ── 上下文类型 ────────────────────────────────────────────────────
-export type RelationContextType = 'plan' | 'habit' | 'reflection' | 'trail' | 'planItem';
+export type RelationContextType = 'plan' | 'habit' | 'reflection' | 'trail' | 'planItem' | 'vision';
 
 export interface RelationContext {
   type: RelationContextType;
@@ -80,6 +80,7 @@ export interface GraphBuildInput {
     linkedPlanItemIds?: string[];
   }>;
   habits: Array<{ id: string; name: string; deleted?: boolean }>;
+  visions: Array<{ id: string; text: string; deleted?: boolean }>;
   reflectionLinks: Array<{
     fromId: string;
     toId: string;
@@ -103,6 +104,7 @@ export const NODE_COLORS: Record<NodeType, string> = {
   habit: '#F59E0B',
   trail: '#06B6D4',
   planItem: '#8B5CF6',
+  vision: '#F59E0B',
 };
 
 export const NODE_LABELS: Record<NodeType, string> = {
@@ -111,6 +113,7 @@ export const NODE_LABELS: Record<NodeType, string> = {
   habit: '习惯',
   trail: '思维脉络',
   planItem: '计划任务',
+  vision: '愿景',
 };
 
 export const NODE_ICONS: Record<NodeType, string> = {

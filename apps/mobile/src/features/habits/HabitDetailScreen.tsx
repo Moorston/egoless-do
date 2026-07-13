@@ -99,12 +99,12 @@ export default function HabitDetailScreen() {
           const linkedVision = (visions ?? []).find((v: any) => v.id === habit.visionId && !v.deleted);
           if (!linkedVision) return null;
           return (
-            <View style={[styles.infoCard, { backgroundColor: TH.card, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }]}>
-              <Text style={{ fontSize: 14 }}>🎯</Text>
-              <View style={{ flex: 1 }}>
+            <View style={[styles.infoCard, { backgroundColor: TH.card, borderColor: TH.border }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <Text style={{ fontSize: 16 }}>🎯</Text>
                 <Text style={[styles.infoTitle, { color: TH.text }]}>{T('planLinkedVision')}</Text>
-                <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>{linkedVision.text}</Text>
               </View>
+              <Text style={{ fontSize: FONT_BODY(), color: '#8B5CF6' }}>{linkedVision.text}</Text>
             </View>
           );
         })()}

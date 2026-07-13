@@ -2,7 +2,7 @@ import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRA
 import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan } from '@egoless-do/core';
 import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar, Star, Flag, Target } from 'lucide-react-native';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
@@ -199,7 +199,8 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
   });
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1, justifyContent: 'flex-end' }}>
       <View style={[styles.overlay, { backgroundColor: 'rgba(0,0,0,0.5)' }]}>
         <View style={[styles.modalContent, { backgroundColor: TH.cardSolid }]}>
           {/* Header */}
@@ -212,7 +213,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
             </TouchableOpacity>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             {/* Type selection (create mode only) */}
             {!vision && !initialType && (
               <View style={styles.typeSection}>
@@ -250,6 +251,8 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
               placeholderTextColor={TH.sub}
               multiline
               maxLength={500}
+              blurOnSubmit
+              returnKeyType="done"
               style={{
                 backgroundColor: TH.card, borderRadius: 12, padding: 12,
                 color: TH.text, fontSize: FONT_BODY(),
@@ -360,7 +363,8 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
               )}
             </View>
 
-            {/* Link plans */}
+            {/* Link plans (not for lifetime) */}
+            {effectiveType !== 'lifetime' && (
             <View style={styles.plansSection}>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowLinkPlan')}</Text>
               {filteredPlans.length === 0 ? (
@@ -388,6 +392,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
                 </View>
               )}
             </View>
+            )}
           </ScrollView>
 
           {/* Buttons */}
@@ -414,6 +419,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
           </View>
         </View>
       </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

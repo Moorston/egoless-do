@@ -107,6 +107,9 @@ export default function RelationMapView() {
       case 'trail':
         nav.navigate('ThoughtTrailDetail', { trailId: node.id });
         break;
+      case 'vision':
+        nav.navigate('Vow');
+        break;
       case 'planItem': {
         const pi = (nodes ?? []).find(n => n.id === node.id);
         if (pi && pi.data.planId) nav.navigate('PlanDetail', { planId: pi.data.planId as string });

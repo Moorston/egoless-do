@@ -6,7 +6,7 @@
  */
 
 // ── 节点类型 ──────────────────────────────────────────────────────
-export type NodeType = 'reflection' | 'plan' | 'habit' | 'trail' | 'planItem';
+export type NodeType = 'reflection' | 'plan' | 'habit' | 'trail' | 'planItem' | 'vision';
 
 export interface RelationNode {
   id: string;
@@ -70,6 +70,7 @@ export interface GraphBuildInput {
     linkedPlanItemIds?: string[];
   }>;
   habits: Array<{ id: string; name: string; deleted?: boolean }>;
+  visions: Array<{ id: string; text: string; deleted?: boolean }>;
   reflectionLinks: Array<{
     fromId: string;
     toId: string;

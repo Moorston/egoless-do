@@ -145,19 +145,21 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
             </View>
           )}
         </View>
-        <TouchableOpacity onPress={() => onEdit(vision)} style={styles.editButton}>
-          <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6', fontWeight: '600' }}>{T('vowEdit')}</Text>
+        <TouchableOpacity onPress={() => onEdit(vision)} style={[styles.editButton, { backgroundColor: '#8B5CF620', borderColor: '#8B5CF6' }]}>
+          <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6', fontWeight: '700' }}>{T('vowEdit')}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Progress bar */}
-      <View style={styles.progressSection}>
-        <View style={styles.progressHeader}>
-          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowProgress')}</Text>
-          <Text style={{ fontSize: FONT_SUB(), color: '#8B5CF6', fontWeight: '600' }}>{pct}%</Text>
+      {/* Progress bar — not for lifetime visions */}
+      {vision.type !== 'lifetime' && (
+        <View style={styles.progressSection}>
+          <View style={styles.progressHeader}>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowProgress')}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: '#8B5CF6', fontWeight: '600' }}>{pct}%</Text>
+          </View>
+          <ProgressBar pct={pct} color="#8B5CF6" />
         </View>
-        <ProgressBar pct={pct} color="#8B5CF6" />
-      </View>
+      )}
 
       {/* Plan & Task progress indicators */}
       {(planTotal > 0 || taskTotal > 0) && (
@@ -233,15 +235,28 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                 key={plan.id}
                 onPress={() => onNavigateToPlan?.(plan.id)}
                 activeOpacity={0.7}
-                style={styles.planItemCard}
+                style={[styles.planItemCard, { backgroundColor: TH.card, borderColor: TH.border }]}
               >
                 <View style={styles.planItemHeader}>
                   <Text style={styles.planItemName} numberOfLines={1}>
-                    📋 {plan.name}
+                    <List size={14} color={TH.text} /> {plan.name}
                   </Text>
                   <View style={styles.planItemRight}>
                     <Text style={styles.planItemPct}>{planPct}%</Text>
                     <ChevronRight size={14} color={TH.sub} />
+                  </View>
+                </View>
+
+                {/* Plan progress bar */}
+                <View style={{ marginBottom: 8 }}>
+                  <ProgressBar pct={planPct} color="#8B5CF6" />
+                </View>
+
+                {/* Plan stats: completed/total */}
+                <View style={{ flexDirection: 'row', gap: 12, marginBottom: items.length > 0 ? 8 : 0 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <CheckCircle size={12} color="#10B981" />
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{done}/{items.length}</Text>
                   </View>
                 </View>
 
@@ -334,7 +349,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   editButton: {
-    padding: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
   },
   progressSection: {
     marginBottom: 12,

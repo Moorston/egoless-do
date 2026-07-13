@@ -173,9 +173,9 @@ export default function VowScreen() {
       <SimpleHeader routeName="Vow" />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
         <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text }}>{T('vowTitle')}</Text>
-        <TouchableOpacity onPress={handleAdd} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-          <Plus size={18} color={TH.primary} />
-          <Text style={{ color: TH.primary, fontSize: FONT_SUB(), fontWeight: '600' }}>{T('commonAdd')}</Text>
+        <TouchableOpacity onPress={handleAdd} style={{ backgroundColor: TH.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 10, flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <Plus size={16} color="#fff" />
+          <Text style={{ color: '#fff', fontSize: FONT_SUB(), fontWeight: '700' }}>{T('commonAdd')}</Text>
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>

@@ -20,11 +20,13 @@ const VB_H = 1200;
 const MAX_NODES = 20;
 
 const DEFAULT_COLORS: Record<NodeType, string> = {
+  vision: '#F59E0B',
   reflection: '#3B82F6',
   plan: '#10B981',
   habit: '#F59E0B',
   trail: '#06B6D4',
   planItem: '#8B5CF6',
+  vision: '#F59E0B',
 };
 
 // ── 辅助：安全取数组 ───────────────────────────────────────────────
@@ -440,9 +442,13 @@ export function buildRelationGraph(input: GraphBuildInput): GraphBuildResult {
   switch (input.context.type) {
     case 'plan':
       contextNode = buildPlanGraph(input, nodes, nodeMap, edges);
+      // Link plans to their visions
+      linkPlansToVisions(input, nodes, nodeMap, edges);
       break;
     case 'habit':
       contextNode = buildHabitGraph(input, nodes, nodeMap, edges);
+      // Link habits to their visions
+      linkHabitsToVisions(input, nodes, nodeMap, edges);
       break;
     case 'reflection':
       contextNode = buildReflectionGraph(input, nodes, nodeMap, edges);
@@ -465,4 +471,46 @@ export function buildRelationGraph(input: GraphBuildInput): GraphBuildResult {
   const insights = generateInsights(nodes, edges, input.context.type);
 
   return { nodes, edges, insights, contextNode };
+}
+
+// ── 辅助：关联计划→愿景 ──────────────────────────────────
+function linkPlansToVisions(
+  input: GraphBuildInput,
+  nodes: RelationNode[],
+  nodeMap: Map<string, RelationNode>,
+  edges: RelationEdge[],
+) {
+  for (const plan of safe(input.plans)) {
+    if (!plan.deleted && (plan as any).visionId) {
+      const visionId = (plan as any).visionId as string;
+      const vision = safe(input.visions).find(v => v.id === visionId && !v.deleted);
+      if (vision && !nodeMap.has(vision.id)) {
+        const vNode = makeNode(vision.id, 'vision', vision.text, vision, VB_W / 2, VB_H / 2);
+        nodes.push(vNode);
+        nodeMap.set(vision.id, vNode);
+        addEdge(edges, plan.id, vision.id, 'linked', '关联愿景');
+      }
+    }
+  }
+}
+
+// ── 辅助：关联习惯→愿景 ──────────────────────────────────
+function linkHabitsToVisions(
+  input: GraphBuildInput,
+  nodes: RelationNode[],
+  nodeMap: Map<string, RelationNode>,
+  edges: RelationEdge[],
+) {
+  for (const habit of safe(input.habits)) {
+    if (!habit.deleted && (habit as any).visionId) {
+      const visionId = (habit as any).visionId as string;
+      const vision = safe(input.visions).find(v => v.id === visionId && !v.deleted);
+      if (vision && !nodeMap.has(vision.id)) {
+        const vNode = makeNode(vision.id, 'vision', vision.text, vision, VB_W / 2, VB_H / 2);
+        nodes.push(vNode);
+        nodeMap.set(vision.id, vNode);
+        addEdge(edges, habit.id, vision.id, 'linked', '关联愿景');
+      }
+    }
+  }
 }

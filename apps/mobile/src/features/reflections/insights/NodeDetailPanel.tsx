@@ -12,6 +12,7 @@ const NODE_LABELS: Record<NodeType, string> = {
   habit: '习惯',
   trail: '思维脉络',
   planItem: '计划任务',
+  vision: '愿景',
 };
 
 const NODE_COLORS: Record<NodeType, string> = {
@@ -20,6 +21,7 @@ const NODE_COLORS: Record<NodeType, string> = {
   habit: '#F59E0B',
   trail: '#06B6D4',
   planItem: '#8B5CF6',
+  vision: '#F59E0B',
 };
 
 interface Props {

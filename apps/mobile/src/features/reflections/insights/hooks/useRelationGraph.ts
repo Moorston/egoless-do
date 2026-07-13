@@ -12,6 +12,7 @@ import type { RelationContext, GraphBuildResult } from '../types';
 export function useRelationGraph(context?: RelationContext): GraphBuildResult {
   const storeData = useShallowStore(s => ({
       plans: s.plans,
+      visions: s.visions,
       planItems: s.planItems,
       reflections: s.reflections,
       thoughtTrails: s.thoughtTrails,
@@ -27,6 +28,7 @@ export function useRelationGraph(context?: RelationContext): GraphBuildResult {
     return buildRelationGraph({
       context,
       plans: storeData.plans ?? [],
+      visions: storeData.visions ?? [],
       planItems: storeData.planItems ?? [],
       reflections: storeData.reflections ?? [],
       thoughtTrails: storeData.thoughtTrails ?? [],
