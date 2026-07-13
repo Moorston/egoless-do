@@ -948,3 +948,37 @@ infra/docker/api token-refresh-rotation.ts 第90行重复声明 revokeNonce 导�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 28: 自定义食物预设持久化 + token 7天宽限期
+
+**Date**: 2026-07-14
+**Task**: 自定义食物预设持久化 + token 7天宽限期
+**Branch**: `master`
+
+### Summary
+
+修复customFoodPresets未持久化(缺失rowMapper/RehydrationMap/ApplyMap)；refreshAuth添加7天注销宽限期防止网络波动导致强制退出；foodPreset补全storeKey
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d560723` | (see git log) |
+| `ee6c171` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
