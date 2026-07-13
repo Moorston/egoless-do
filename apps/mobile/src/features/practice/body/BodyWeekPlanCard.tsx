@@ -233,3 +233,37 @@ function BodyWeekPlanCard({ TH, T, plans, exerciseLog, onEdit, onPressSport }: P
 }
 
 export default React.memo(BodyWeekPlanCard);
+
+const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  headerLeftGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  editButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  editButtonText: {
+    fontSize: FONT_BADGE(),
+    color: '#f59e0b',
+    fontWeight: '600',
+  },
+  emptyStateContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  setPlanButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+});
