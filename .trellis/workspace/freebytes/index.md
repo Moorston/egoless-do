@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 26
-- **Last Active**: 2026-07-13
+- **Total Sessions**: 27
+- **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~917 | Active |
+| `journal-1.md` | ~950 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 27 | 2026-07-14 | 修复 foodPreset storeKey 警告 | `04e0e9b` | `master` |
 | 26 | 2026-07-13 | auth 深度修复 | `de7ef51` | `master` |
 | 25 | 2026-07-13 | token-refresh-rotation revokeNonce 重复声明修复 | `139ad7a` | `master` |
 | 24 | 2026-07-13 | SSE 实时连接 token 修复 | `7973876` | `master` |

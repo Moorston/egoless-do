@@ -915,3 +915,36 @@ infra/docker/api token-refresh-rotation.ts 第90行重复声明 revokeNonce 导�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 27: 修复 foodPreset storeKey 警告
+
+**Date**: 2026-07-14
+**Task**: 修复 foodPreset storeKey 警告
+**Branch**: `master`
+
+### Summary
+
+修复 SyncApply 启动时 foodPreset 缺少 storeKey 的警告，添加 storeKey:'customFoodPresets' 到 entitySchema 和 SyncApplyService 映射
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `04e0e9b` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
