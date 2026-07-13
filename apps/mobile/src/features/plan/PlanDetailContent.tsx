@@ -423,7 +423,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             {plan.slogan ? (
               <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
                 <View style={styles.sectionHeaderRow}>
-                  <Text style={{ fontSize: 16 }}>💭</Text>
+                  <Text style={{ fontSize: 16 }}>✨</Text>
                   <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planSlogan')}</Text>
                 </View>
                 <Text style={[styles.textGoal, { color: TH.text, marginTop: 4 }]}>{plan.slogan}</Text>

@@ -1,6 +1,6 @@
 import type {Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme} from '@egoless-do/core';
 import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr , FONT_SMALL, scaleFontSize } from '@egoless-do/core';
-import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
+import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar, CheckCircle, RefreshCw, Pause, Clock, Circle, X, List } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -38,13 +38,13 @@ interface Props {
 
 const TYPE_ICON: Record<string, any> = { lifetime: Star, long: Flag, short: Target };
 
-const STATUS_ICON: Record<PlanItemStatus, { icon: string; color: string }> = {
-  completed: { icon: '✅', color: '#10B981' },
-  in_progress: { icon: '🔄', color: '#3B82F6' },
-  paused: { icon: '⏸', color: '#F59E0B' },
-  delayed: { icon: '⏰', color: '#EF4444' },
-  not_started: { icon: '□', color: '#9CA3AF' },
-  cancelled: { icon: '✕', color: '#9CA3AF' },
+const STATUS_ICON: Record<PlanItemStatus, { icon: React.ComponentType<{ size?: number; color?: string }>; color: string }> = {
+  completed: { icon: CheckCircle, color: '#10B981' },
+  in_progress: { icon: RefreshCw, color: '#3B82F6' },
+  paused: { icon: Pause, color: '#F59E0B' },
+  delayed: { icon: Clock, color: '#EF4444' },
+  not_started: { icon: Circle, color: '#9CA3AF' },
+  cancelled: { icon: X, color: '#9CA3AF' },
 };
 
 const STATUS_I18N: Record<PlanItemStatus, string> = {
@@ -253,7 +253,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                       return (
                         <View key={item.id} style={styles.taskItemRow}>
                           <View style={styles.planItemRow}>
-                            <Text style={styles.statusIcon}>{st.icon}</Text>
+                            {React.createElement(st.icon, { size: 14, color: st.color })}
                             <Text style={{ fontSize: FONT_SUB(), color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
                             <Text style={{ fontSize: FONT_SMALL(), color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status])}</Text>
                           </View>
