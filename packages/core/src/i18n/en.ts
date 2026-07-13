@@ -624,6 +624,7 @@ export const en: I18nKeys = {
   // Common
   commonCancel:'Cancel', commonConfirm:'Confirm', commonClose:'Close', commonDone:'Done', commonOk:'OK',
   planSaveFailedTitle:'Save Failed', planSaveFailedMsg:'An active plan already exists. Complete or cancel it first.',
+  planSaved:'Saved', planSavedMsg:'Plan has been saved', planContinueEdit:'Continue Editing', planBack:'Back',
   commonDelete:'Delete', commonSave:'Save', commonEdit:'Edit', commonAdd:'Add',
   commonBack:'← Back', commonSyncing:'Syncing...', commonConnected:'Connected',
   commonOffline:'Offline',

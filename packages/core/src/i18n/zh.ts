@@ -624,6 +624,7 @@ export const zh: I18nKeys = {
   // Common
   commonCancel:'取消', commonConfirm:'确定', commonClose:'关闭', commonDone:'完成', commonOk:'好的',
   planSaveFailedTitle:'保存失败', planSaveFailedMsg:'当前已有活跃计划，请先完成或作废后再创建',
+  planSaved:'保存成功', planSavedMsg:'计划已保存', planContinueEdit:'继续编辑', planBack:'返回',
   commonDelete:'删除', commonSave:'保存', commonEdit:'编辑', commonAdd:'添加',
   commonBack:'← 返回', commonSyncing:'同步中...', commonConnected:'已连接',
   commonOffline:'离线模式',

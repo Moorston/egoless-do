@@ -176,10 +176,17 @@ export default function PlanCreateScreen() {
           });
         }
       });
+      Alert.alert(T('planSaved'), T('planSavedMsg'), [
+        { text: T('planContinueEdit'), onPress: () => {} },
+        { text: T('planBack'), onPress: () => nav.goBack() },
+      ]);
     } else {
       const newPlanId = addPlan({ name, goal, slogan, startDate, endDate, visionId });
       if (newPlanId) {
-        nav.goBack();
+        Alert.alert(T('planSaved'), T('planSavedMsg'), [
+          { text: T('planContinueEdit'), onPress: () => {} },
+          { text: T('planBack'), onPress: () => nav.goBack() },
+        ]);
       } else {
         // addPlan failed (likely another active plan exists, or validation error)
         Alert.alert(T('planSaveFailedTitle'), T('planSaveFailedMsg'), [{ text: T('ok') }]);

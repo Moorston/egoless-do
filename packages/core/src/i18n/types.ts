@@ -530,6 +530,7 @@ export interface I18nKeys {
   authInvalidEmail: string; authEmailTaken: string;
   commonCancel: string; commonConfirm: string; commonClose: string; commonDone: string; commonOk: string;
   planSaveFailedTitle: string; planSaveFailedMsg: string;
+  planSaved: string; planSavedMsg: string; planContinueEdit: string; planBack: string;
   commonDelete: string; commonSave: string; commonEdit: string; commonAdd: string;
   commonBack: string; commonSyncing: string; commonConnected: string;
   commonOffline: string;
