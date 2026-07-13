@@ -11,7 +11,7 @@ import type {
   Vision, VisionPractice, Dedication, FearEntry, CourageEntry, FearAchievement,
   MantraDef, MantraSession, SutraReadingSession,
   ZhiguanSession,
-  BodyGoal, BodyPlan, WeightRecord, BodyCheckin, GiveEntry,
+  BodyGoal, BodyPlan, WeightRecord, BodyCheckin, GiveEntry, CustomFoodPreset,
 } from '@egoless-do/core';
 import { SCHEMAS, buildRowToEntity } from '@egoless-do/core';
 
@@ -63,6 +63,7 @@ const mappers = {
   sutraReading:    buildRowToEntity<SutraReadingSession>(SCHEMAS.sutraReading),
   breath:          buildRowToEntity<BreathingRecord>((SCHEMAS as Record<string, typeof SCHEMAS.habit>).breath ?? SCHEMAS.zhiguanSession),
   zhiguanSession:  buildRowToEntity<ZhiguanSession>(SCHEMAS.zhiguanSession),
+  foodPreset:      buildRowToEntity<CustomFoodPreset>(SCHEMAS.foodPreset),
 };
 
 // Export individual typed mappers
@@ -102,6 +103,7 @@ export const rowToFearAchievement = mappers.fearAchievement;
 export const rowToMantraDef       = mappers.mantraDef;
 export const rowToMantraSession   = mappers.mantraSession;
 export const rowToSutraReading    = mappers.sutraReading;
+export const rowToFoodPreset      = mappers.foodPreset;
 export const rowToBreath          = mappers.breath;
 export const rowToZhiguanSession  = mappers.zhiguanSession;
 

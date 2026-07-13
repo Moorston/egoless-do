@@ -18,7 +18,7 @@ import {
   rowToVision, rowToVisionPractice, rowToDedication, rowToMantraDef, rowToMantraSession,
   rowToFearEntry, rowToCourageEntry, rowToFearAchievement,
   rowToSutraReading,
-  rowToBreath, rowToZhiguanSession,
+  rowToBreath, rowToZhiguanSession, rowToFoodPreset,
 } from '../../store/rowMappers';
 
 const log = createLogger('Rehydration');
@@ -95,6 +95,7 @@ export class SyncRehydrationManager {
       visionPractice: { table: 'vision_practices', query: 'SELECT * FROM vision_practices WHERE deleted = 0', mapper: rowToVisionPractice, storeKey: 'visionPractices' },
       mantraDef: { table: 'mantra_defs', query: 'SELECT * FROM mantra_defs WHERE deleted = 0', mapper: rowToMantraDef, storeKey: 'mantraDefs' },
       mantraSession: { table: 'mantra_sessions', query: 'SELECT * FROM mantra_sessions WHERE deleted = 0', mapper: rowToMantraSession, storeKey: 'mantraSessions' },
+      foodPreset: { table: 'custom_food_presets', query: 'SELECT * FROM custom_food_presets WHERE deleted = 0', mapper: rowToFoodPreset, storeKey: 'customFoodPresets' },
       dedication: { table: 'dedications', query: 'SELECT * FROM dedications WHERE deleted = 0', mapper: rowToDedication, storeKey: 'dedications' },
       fearEntry: { table: 'fear_entries', query: 'SELECT * FROM fear_entries WHERE deleted = 0', mapper: rowToFearEntry, storeKey: 'fearEntries' },
       courageEntry: { table: 'courage_entries', query: 'SELECT * FROM courage_entries WHERE deleted = 0', mapper: rowToCourageEntry, storeKey: 'courageEntries' },

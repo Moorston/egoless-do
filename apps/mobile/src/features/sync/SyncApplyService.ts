@@ -17,7 +17,7 @@ import {
   rowToVision, rowToVisionPractice, rowToDedication, rowToMantraDef, rowToMantraSession,
   rowToFearEntry, rowToCourageEntry, rowToFearAchievement,
   rowToSutraReading,
-  rowToBreath, rowToZhiguanSession,
+  rowToBreath, rowToZhiguanSession, rowToFoodPreset,
 } from '../../store/rowMappers';
 
 import type { RowMapper } from './orphanRecovery';
@@ -103,6 +103,7 @@ const _rowToEntityMap: Record<string, (row: Record<string, unknown>) => unknown>
   sutraReading: rowToSutraReading,
   fearEntry: rowToFearEntry, courageEntry: rowToCourageEntry, fearAchievement: rowToFearAchievement,
   breath: rowToBreath, zhiguanSession: rowToZhiguanSession,
+  foodPreset: rowToFoodPreset,
 };
 
 // ── Server payload → Row converters ─────────────────────────────────

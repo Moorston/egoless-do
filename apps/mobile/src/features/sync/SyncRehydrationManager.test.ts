@@ -42,6 +42,7 @@ const {
       rowToDedication: identity, rowToMantraDef: identity, rowToMantraSession: identity,
       rowToFearEntry: identity, rowToCourageEntry: identity, rowToFearAchievement: identity,
       rowToSutraReading: identity, rowToBreath: identity, rowToZhiguanSession: identity,
+      rowToFoodPreset: identity,
     };
   };
 

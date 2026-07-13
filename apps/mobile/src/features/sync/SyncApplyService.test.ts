@@ -20,6 +20,7 @@ const { MOCK_SCHEMAS } = vi.hoisted(() => {
     'give', 'motivationEntry', 'customWuxing', 'vision', 'visionPractice',
     'dedication', 'mantraDef', 'mantraSession', 'sutraReading',
     'fearEntry', 'courageEntry', 'fearAchievement', 'breath', 'zhiguanSession',
+    'foodPreset',
   ];
   const schemas: Record<string, { sqlite: { table: string; pk: string } }> = Object.fromEntries(
     keys.map(k => [k, { sqlite: { table: `${k}_table`, pk: 'id' } }]),
@@ -67,6 +68,7 @@ vi.mock('../../store/rowMappers', () => {
     rowToCourageEntry: identity, rowToFearAchievement: identity,
     rowToSutraReading: identity, rowToBreath: identity,
     rowToZhiguanSession: identity,
+    rowToFoodPreset: identity,
   };
 });
 
