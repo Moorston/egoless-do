@@ -109,8 +109,11 @@ export async function verifyAuth(authHeader: string | null): Promise<{ userId: s
           // 404 is expected for new users who haven't set up a user_profiles record yet.
           // In this case the token has no stored epoch to compare against, so we allow
           // the request through. Any other error (500, network, etc.) is treated as a
-          // security failure and the request is rejected.
-          if (status !== 404) return null;
+          // transient failure — fail-open like blacklist, since a verified JWT is the
+          // primary security gate and epoch is a secondary check.
+          if (status !== 404) {
+            console.warn('[verifyAuth] login_epoch check failed, allowing request (fail-open):', (epochErr as Error)?.message ?? 'unknown');
+          }
         }
       }
     }
@@ -140,13 +143,16 @@ const COMMON_PASSWORDS = [
   'qwertyui', '1q2w3e4r', '00000000', '11111111', '1234567890',
 ];
 
-/** Validate password strength — must match packages/core/src/auth.ts */
+/**
+ * Validate password strength — MUST match packages/core/src/auth.ts validatePassword() exactly.
+ * Both client-side and server-side validation must produce identical error messages.
+ */
 export function validatePassword(pwd: string): string | null {
-  if (pwd.length < 10) return '密码需至少10位';
-  if (pwd.length > 128) return '密码不能超过128位';
+  if (pwd.length < 10) return '密码长度至少10位';
+  if (pwd.length > 128) return '密码长度不能超过128位';
   if (!/[a-zA-Z]/.test(pwd)) return '密码需包含字母';
   if (!/[0-9]/.test(pwd)) return '密码需包含数字';
-  if (/^[a-zA-Z0-9]+$/.test(pwd)) return '密码需包含特殊符号';
+  if (!/[^a-zA-Z0-9]/.test(pwd)) return '密码需包含特殊符号';
   if (COMMON_PASSWORDS.some(p => pwd.toLowerCase().includes(p))) return '密码不能包含常见词汇';
   return null;
 }

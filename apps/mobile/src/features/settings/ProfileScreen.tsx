@@ -181,10 +181,12 @@ export default function ProfileScreen() {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      // Clear auth state — server already blacklisted old token and revoked refresh tokens
+      await getStore().logout?.();
       Alert.alert(
         T('commonSuccess'),
         T('profilePwdChanged'),
-        [{ text: T('commonOk'), onPress: () => { nav.reset({ index: 0, routes: [{ name: 'Login' }] }); } }],
+        [{ text: T('commonOk') }],
       );
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : T('profilePwdChangeFailed');
