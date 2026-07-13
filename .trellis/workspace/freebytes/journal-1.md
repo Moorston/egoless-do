@@ -544,3 +544,36 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 16: 愿景关联计划/习惯 + 立愿文案
+
+**Date**: 2026-07-13
+**Task**: 愿景关联计划/习惯 + 立愿文案
+**Branch**: `master`
+
+### Summary
+
+发愿按钮文案改为立愿；Habit类型增加visionId字段和同步schema；PlanDetail/HabitDetail显示关联愿景内容
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a8d4cef` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
