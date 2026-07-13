@@ -411,7 +411,10 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
               if (!linkedVision) return null;
               return (
                 <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
-                  <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planLinkedVision')}：</Text>
+                  <View style={styles.sectionHeaderRow}>
+                    <Text style={{ fontSize: 16 }}>🎯</Text>
+                    <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planLinkedVision')}</Text>
+                  </View>
                   <Text style={[styles.textGoal, { color: '#8B5CF6', marginTop: 4 }]}>{linkedVision.text}</Text>
                 </View>
               );
@@ -419,7 +422,10 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
 
             {plan.slogan ? (
               <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
-                <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planSlogan')}：</Text>
+                <View style={styles.sectionHeaderRow}>
+                  <Text style={{ fontSize: 16 }}>💭</Text>
+                  <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planSlogan')}</Text>
+                </View>
                 <Text style={[styles.textGoal, { color: TH.text, marginTop: 4 }]}>{plan.slogan}</Text>
               </View>
             ) : null}
