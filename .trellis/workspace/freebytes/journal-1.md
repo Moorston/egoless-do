@@ -717,3 +717,36 @@ habits 表增加 vision_id 列（修复 SyncApply no such column 错误）；Pla
 ### Next Steps
 
 - None - task complete
+
+
+## Session 21: 幽灵计划排查 + saving 防重复提交
+
+**Date**: 2026-07-13
+**Task**: 幽灵计划排查 + saving 防重复提交
+**Branch**: `master`
+
+### Summary
+
+排查计划幽灵数据根因（React闭包捕获旧plans值导致双重复提交），添加saving状态+disabled按钮防重复提交
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e3fa81f` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

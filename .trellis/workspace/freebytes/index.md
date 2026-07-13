@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 20
+- **Total Sessions**: 21
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~719 | Active |
+| `journal-1.md` | ~752 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 21 | 2026-07-13 | 幽灵计划排查 + saving 防重复提交 | `e3fa81f` | `master` |
 | 20 | 2026-07-13 | 关系全景图愿景节点 + 习惯详情页愿景标题同行 | `2b5f099` | `master` |
 | 19 | 2026-07-13 | 计划详情页愿景显示 + 保存弹窗 + 样式优化 | `bdbc0b9`, `234da8d`, `5e2a48e`, `f9bcb31`, `9c4c18e`, `699f163`, `1f47b57` | `master` |
 | 18 | 2026-07-13 | habits 表 vision_id + PlanCreateScreen 语法修复 | `b43d260`, `44c0abf` | `master` |
