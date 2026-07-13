@@ -783,3 +783,36 @@ habits 表增加 vision_id 列（修复 SyncApply no such column 错误）；Pla
 ### Next Steps
 
 - None - task complete
+
+
+## Session 23: token 认证体系全面改进
+
+**Date**: 2026-07-13
+**Task**: token 认证体系全面改进
+**Branch**: `master`
+
+### Summary
+
+实现 3 项改进: 1) initApp 启动时 token 过期主动 refreshAuth 2) 黑名单 fail-open 计数器+100次告警+healthz 暴露 3) refresh token 轮换新增 1 秒快速重放防护
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f446c00` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
