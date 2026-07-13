@@ -1,5 +1,5 @@
-import type {Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme} from '@egoless-do/core';
-import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr , FONT_SMALL, scaleFontSize } from '@egoless-do/core';
+import type {Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, PlanItemCheckin, Theme} from '@egoless-do/core';
+import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, FONT_TINY, dateStr , computePlanProgress, computeItemProgress, countItemDoneDays } from '@egoless-do/core';
 import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar, CheckCircle, RefreshCw, Pause, Clock, Circle, X, List } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -33,6 +33,7 @@ interface Props {
   onTimeFrameChange?: (visionId: string, tf: VisionTimeFrame) => void;
   linkedPlans?: Plan[];
   planItems?: PlanItem[];
+  planItemCheckins?: PlanItemCheckin[];
   onNavigateToPlan?: (planId: string) => void;
 }
 
@@ -56,7 +57,7 @@ const STATUS_I18N: Record<PlanItemStatus, string> = {
   cancelled: 'planStatusCancelled',
 };
 
-function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onDelete, onTimeFrameChange, linkedPlans = [], planItems = [], onNavigateToPlan }: Props) {
+function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onDelete, onTimeFrameChange, linkedPlans = [], planItems = [], planItemCheckins = [], onNavigateToPlan }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [showTfPicker, setShowTfPicker] = useState(false);
   const Icon = TYPE_ICON[vision.type] ?? Flag;
@@ -227,8 +228,33 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
 
           {expanded && linkedPlans.map(plan => {
             const items = planItems.filter(i => i.planId === plan.id && !i.deleted);
-            const done = items.filter(i => i.status === 'completed').length;
-            const planPct = items.length > 0 ? Math.round((done / items.length) * 100) : 0;
+            const today = dateStr();
+            // Compute plan-level progress (time-based, matching PlanDetail)
+            const planProgressPct = computePlanProgress(plan);
+            // Compute per-item progress from checkins
+            const itemProgressMap = new Map<string, { doneCount: number; expectedDays: number; progress: number }>();
+            let totalDoneItems = 0;
+            let totalItemsCount = 0;
+            for (const item of items) {
+              const { doneCount, expectedDays } = countItemDoneDays(item, planItemCheckins, today);
+              const progress = computeItemProgress(item, planItemCheckins, today);
+              itemProgressMap.set(item.id, { doneCount, expectedDays, progress });
+              totalDoneItems += doneCount;
+              totalItemsCount += expectedDays || 1;
+            }
+            // Sort items by effective status: delayed → in_progress → not_started → completed
+            const getEffectiveStatus = (item: PlanItem): PlanItemStatus => {
+              if (item.status === 'completed') return 'completed';
+              if ((itemProgressMap.get(item.id)?.progress ?? 0) >= 100) return 'completed';
+              if (item.status === 'in_progress' && item.endDate < today) return 'delayed';
+              return item.status;
+            };
+            const statusOrder: Record<string, number> = { delayed: 0, in_progress: 1, not_started: 2, completed: 3 };
+            const sortedItems = [...items].sort((a, b) => {
+              const sa = statusOrder[getEffectiveStatus(a)] ?? 9;
+              const sb = statusOrder[getEffectiveStatus(b)] ?? 9;
+              return sa - sb || a.order - b.order;
+            });
 
             return (
               <TouchableOpacity
@@ -242,29 +268,38 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                     <List size={14} color={TH.text} /> {plan.name}
                   </Text>
                   <View style={styles.planItemRight}>
-                    <Text style={styles.planItemPct}>{planPct}%</Text>
+                    <Text style={styles.planItemPct}>{planProgressPct}%</Text>
                     <ChevronRight size={14} color={TH.sub} />
                   </View>
                 </View>
 
-                {/* Plan progress bar */}
+                {/* Plan progress bar (time-based, matching PlanDetail) */}
                 <View style={{ marginBottom: 8 }}>
-                  <ProgressBar pct={planPct} color="#8B5CF6" />
-                </View>
-
-                {/* Plan stats: completed/total */}
-                <View style={{ flexDirection: 'row', gap: 12, marginBottom: items.length > 0 ? 8 : 0 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <CheckCircle size={12} color="#10B981" />
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{done}/{items.length}</Text>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('planProgress')}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: '#8B5CF6', fontWeight: '600' }}>{planProgressPct}%</Text>
+                  </View>
+                  <View style={{ height: 6, borderRadius: 3, backgroundColor: TH.border, overflow: 'hidden' }}>
+                    <View style={{ height: 6, borderRadius: 3, width: `${planProgressPct}%`, backgroundColor: '#8B5CF6' }} />
                   </View>
                 </View>
 
+                {/* Plan stats: done/total items */}
                 {items.length > 0 && (
+                  <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                      <CheckCircle size={12} color="#10B981" />
+                      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{totalDoneItems}/{totalItemsCount}</Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Task items with progress bars */}
+                {sortedItems.length > 0 && (
                   <View style={styles.planItemsContainer}>
-                    {items.sort((a, b) => a.order - b.order).map(item => {
-                      const st = STATUS_ICON[item.status] ?? STATUS_ICON.not_started;
-                      const itemPct = item.progress ?? 0;
+                    {sortedItems.map(item => {
+                      const st = STATUS_ICON[getEffectiveStatus(item)] ?? STATUS_ICON.not_started;
+                      const prog = itemProgressMap.get(item.id) ?? { doneCount: 0, expectedDays: 0, progress: 0 };
                       return (
                         <View key={item.id} style={styles.taskItemRow}>
                           <View style={styles.planItemRow}>
@@ -272,11 +307,16 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                             <Text style={{ fontSize: FONT_SUB(), color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
                             <Text style={{ fontSize: FONT_SMALL(), color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status])}</Text>
                           </View>
-                          {item.status !== 'not_started' && item.status !== 'cancelled' && (
-                            <View style={styles.progressBarBg}>
-                              <View style={[styles.progressBarFill, { width: `${itemPct}%`, backgroundColor: st.color }]} />
+                          {/* Task progress bar with done/expected count */}
+                          <View style={{ marginLeft: 22 }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
+                              <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{prog.doneCount}/{prog.expectedDays}</Text>
+                              <Text style={{ fontSize: FONT_TINY(), color: st.color, fontWeight: '500' }}>{prog.progress}%</Text>
                             </View>
-                          )}
+                            <View style={{ height: 4, borderRadius: 2, backgroundColor: TH.border, overflow: 'hidden' }}>
+                              <View style={{ height: 4, borderRadius: 2, width: `${prog.progress}%`, backgroundColor: st.color }} />
+                            </View>
+                          </View>
                         </View>
                       );
                     })}

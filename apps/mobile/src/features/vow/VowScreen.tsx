@@ -19,11 +19,12 @@ export default function VowScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const { plans: plansRaw, planItems: planItemsRaw, visions: visionsRaw, habits: habitsRaw,
+  const { plans: plansRaw, planItems: planItemsRaw, planItemCheckins, visions: visionsRaw, habits: habitsRaw,
     updateVision, addVision, achieveVision, archiveVision, removeVision,
     updatePlan, updateHabit } = useShallowStore(s => ({
     plans: s.plans,
     planItems: s.planItems,
+    planItemCheckins: s.planItemCheckins,
     visions: s.visions,
     habits: s.habits,
     updateVision: s.updateVision,
@@ -269,6 +270,7 @@ export default function VowScreen() {
                     onEdit={handleEdit}
                     linkedPlans={linked}
                     planItems={planItems}
+                    planItemCheckins={planItemCheckins}
                     onNavigateToPlan={handleNavigateToPlan}
                   />
                 );
