@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { G, Circle, Line, Rect, Text as SvgText } from 'react-native-svg';
 
 import { useTheme } from '../../../components/UI';
+import { useShallowStore } from '../../../store/useAppStore';
 import type { RootStackParamList } from '../../../navigation/types';
 
 
@@ -41,6 +42,7 @@ export default function RelationMapView() {
 
   // ── 数据层 ─────────────────────────────────────────────────────
   const { nodes, edges, insights, contextNode } = useRelationGraph(context);
+  const { visions } = useShallowStore(s => ({ visions: s.visions }));
 
   // ── 状态层 ─────────────────────────────────────────────────────
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
@@ -81,6 +83,18 @@ export default function RelationMapView() {
   const handleNodeTap = useCallback((nodeId: string) => {
     setSelectedNode(nodeId === selectedNodeRef.current ? null : nodeId);
   }, []);
+
+  // Resolve linked vision for selected plan node
+  const selectedPlanVision = useMemo(() => {
+    if (!selectedNode) return null;
+    const node = nodes.find(n => n.id === selectedNode);
+    if (node?.type === 'plan') {
+      const planData = node.data as Record<string, unknown> | undefined;
+      const visionId = planData?.visionId as string | undefined;
+      if (visionId) return (visions ?? []).find((v: any) => v.id === visionId && !v.deleted) ?? null;
+    }
+    return null;
+  }, [selectedNode, nodes, visions]);
 
   const handleNavigateToDetail = useCallback((node: RelationNode) => {
     switch (node.type) {

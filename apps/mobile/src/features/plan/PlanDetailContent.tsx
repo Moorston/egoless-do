@@ -21,13 +21,14 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { performDailyReset, plans, planItems, planItemCheckins, reflections, thoughtTrails, canArchivePlan, unlinkAllReflectionsFromPlan, deletePlan, completePlan, resumePlan, pausePlan, cancelPlan } = useShallowStore(s => ({
+  const { performDailyReset, plans, planItems, planItemCheckins, reflections, thoughtTrails, visions, canArchivePlan, unlinkAllReflectionsFromPlan, deletePlan, completePlan, resumePlan, pausePlan, cancelPlan } = useShallowStore(s => ({
     performDailyReset: s.performDailyReset,
     plans: s.plans,
     planItems: s.planItems,
     planItemCheckins: s.planItemCheckins,
     reflections: s.reflections,
     thoughtTrails: s.thoughtTrails,
+    visions: s.visions,
     canArchivePlan: s.canArchivePlan,
     unlinkAllReflectionsFromPlan: s.unlinkAllReflectionsFromPlan,
     deletePlan: s.deletePlan,
@@ -410,6 +411,21 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             </View>
             <Text style={[styles.textGoal, { color: TH.text }]}>{plan.goal}</Text>
           </Card>
+
+          {/* Linked Vision */}
+          {plan.visionId && (() => {
+            const linkedVision = (visions ?? []).find((v: any) => v.id === plan.visionId && !v.deleted);
+            if (!linkedVision) return null;
+            return (
+              <Card>
+                <View style={styles.sectionHeaderRow}>
+                  <Text style={{ fontSize: 16 }}>🎯</Text>
+                  <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planLinkedVision')}</Text>
+                </View>
+                <Text style={[styles.textGoal, { color: TH.text, marginTop: 8 }]}>{linkedVision.text}</Text>
+              </Card>
+            );
+          })()}
 
           {/* Items */}
           <Card>

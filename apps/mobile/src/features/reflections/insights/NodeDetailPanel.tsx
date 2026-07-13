@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SMALL } from '@egoless-do/core';
+import { FONT_BODY, FONT_SMALL, FONT_SUB } from '@egoless-do/core';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -25,9 +25,10 @@ const NODE_COLORS: Record<NodeType, string> = {
 interface Props {
   node: RelationNode | null;
   onNavigate: (node: RelationNode) => void;
+  linkedVision?: { text: string } | null;
 }
 
-export default function NodeDetailPanel({ node, onNavigate }: Props) {
+export default function NodeDetailPanel({ node, onNavigate, linkedVision }: Props) {
   const TH = useTheme();
   const P = TH.primary;
 
@@ -40,6 +41,14 @@ export default function NodeDetailPanel({ node, onNavigate }: Props) {
         <Text style={[styles.detailType, { color: TH.sub }]}>{NODE_LABELS[node.type]}</Text>
       </View>
       <Text style={[styles.detailLabel, { color: TH.text }]} numberOfLines={2}>{node.label}</Text>
+      {linkedVision && (
+        <View style={styles.visionRow}>
+          <Text style={{ fontSize: 12 }}>🎯</Text>
+          <Text style={[styles.visionText, { color: TH.sub }]} numberOfLines={1}>
+            {linkedVision.text}
+          </Text>
+        </View>
+      )}
       <TouchableOpacity onPress={() => onNavigate(node)} style={[styles.detailButton, { backgroundColor: P }]}>
         <Text style={styles.detailButtonText}>查看详情</Text>
       </TouchableOpacity>
@@ -71,6 +80,16 @@ const styles = StyleSheet.create({
   detailDot: { width: 10, height: 10, borderRadius: 5 },
   detailType: { fontSize: FONT_SMALL() },
   detailLabel: { fontSize: FONT_BODY(), fontWeight: '600', marginBottom: 12 },
+  visionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 12,
+  },
+  visionText: {
+    fontSize: FONT_SUB(),
+    flex: 1,
+  },
   detailButton: { paddingVertical: 8, borderRadius: 8, alignItems: 'center' },
   detailButtonText: { color: '#fff', fontSize: FONT_SMALL(), fontWeight: '600' },
 });
