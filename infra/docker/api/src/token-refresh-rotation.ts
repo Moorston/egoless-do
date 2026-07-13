@@ -88,7 +88,6 @@ export async function validateAndRevokeRefreshToken(token: string): Promise<{ va
 
     // Step 2: Revoke immediately, using a crypto-random nonce for race detection
     const revokeNonce = generateNonce();
-    const revokeNonce = generateNonce();
     try {
       await pb.collection(COLLECTION_NAME).update(record.id, {
         is_revoked: true,
