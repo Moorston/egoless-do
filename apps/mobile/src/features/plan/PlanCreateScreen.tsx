@@ -178,7 +178,8 @@ export default function PlanCreateScreen() {
       });
     } else {
       const newPlanId = addPlan({ name, goal, slogan, startDate, endDate, visionId });
-        nav.goBack(); // Only navigate back on success
+      if (newPlanId) {
+        nav.goBack();
       } else {
         // addPlan failed (likely another active plan exists, or validation error)
         Alert.alert(T('planSaveFailedTitle'), T('planSaveFailedMsg'), [{ text: T('ok') }]);
