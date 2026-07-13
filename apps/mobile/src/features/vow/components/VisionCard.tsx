@@ -85,7 +85,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
   }, [vision.startDate, vision.timeFrame, vision.type, deadlineText]);
 
   return (
-    <View style={[styles.card, { borderLeftColor: typeColor }]}>
+    <View style={[styles.card, { borderLeftColor: typeColor, backgroundColor: TH.card }]}>
       {/* Header */}
       <View style={styles.headerRow}>
         <View style={styles.leftColumn}>
@@ -273,7 +273,6 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'transparent',
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -435,4 +434,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(VisionCard);
+export default React.memo(VisionCard, (prev, next) => {
+  return prev.vision.id === next.vision.id
+    && prev.pct === next.pct
+    && prev.planDone === next.planDone
+    && prev.planTotal === next.planTotal
+    && prev.taskDone === next.taskDone
+    && prev.taskTotal === next.taskTotal
+    && prev.linkedPlans?.length === next.linkedPlans?.length;
+});

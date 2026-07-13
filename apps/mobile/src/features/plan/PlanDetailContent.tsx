@@ -485,8 +485,8 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       return (
                         <View style={styles.inlineRowGap4}>
                           <Text style={{ fontSize: 14 }}>🎯</Text>
-                          <Text style={[styles.textSubDim, { color: TH.sub }]} numberOfLines={1}>
-                            {v.text}
+                          <Text style={[styles.textSubDim, { color: TH.sub }]}>
+                            {T('planLinkVision')}
                           </Text>
                         </View>
                       );
@@ -535,13 +535,17 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                     const v = (visions ?? []).find((x: any) => x.id === plan.visionId && !x.deleted);
                     if (!v) return null;
                     return (
-                      <View style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }]}>
+                      <TouchableOpacity
+                        key={plan.visionId}
+                        onPress={() => nav.navigate('Vow')}
+                        style={[styles.relatedItemCard, { backgroundColor: `${TH.card}80`, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }]}
+                      >
                         <Text style={{ fontSize: 18 }}>🎯</Text>
                         <View style={{ flex: 1 }}>
                           <Text style={[styles.textBodySemiBold, { color: TH.text }]}>{T('planLinkedVision')}</Text>
                           <Text style={[styles.textDim, { color: TH.sub, marginTop: 2 }]} numberOfLines={2}>{v.text}</Text>
                         </View>
-                      </View>
+                      </TouchableOpacity>
                     );
                   })()}
 

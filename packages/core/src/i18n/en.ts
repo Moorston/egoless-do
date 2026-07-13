@@ -1064,7 +1064,7 @@ export const en: I18nKeys = {
   vowTitle:'Vow', vowLifetime:'Lifetime Vision', vowLong:'Long-term Vision', vowShort:'Short-term Vision',
   vowPractice:'Practice', vowDedication:'Dedication', vowProgress:'Progress',
   vowAchieved:'Achieved', vowArchived:'Archived', vowActive:'Active',
-  vowEdit:'Edit', vowSave:'Save', vowCreate:'Create', vowCancel:'Cancel',
+  vowEdit:'Edit', vowSave:'Save', vowCreate:'Make a Vow', vowCancel:'Cancel',
   vowAchieve:'Mark Achieved', vowArchive:'Archive', vowDelete:'Delete',
   vowText:'Vision', vowTextPlaceholder:'Describe your vision...',
   vowDeadline:'Deadline', vowTimeFrame:'Time Frame', vowStartDate:'Start Date', vowEndDate:'End Date',

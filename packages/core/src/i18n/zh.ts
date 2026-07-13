@@ -1062,7 +1062,7 @@ export const zh: I18nKeys = {
   vowTitle:'发愿', vowLifetime:'终生愿景', vowLong:'长期愿景', vowShort:'短期愿景',
   vowPractice:'精进', vowDedication:'回向', vowProgress:'进度',
   vowAchieved:'已达成', vowArchived:'已归档', vowActive:'进行中',
-  vowEdit:'编辑', vowSave:'保存', vowCreate:'创建', vowCancel:'取消',
+  vowEdit:'编辑', vowSave:'保存', vowCreate:'立愿', vowCancel:'取消',
   vowAchieve:'标记达成', vowArchive:'归档', vowDelete:'删除',
   vowText:'愿景描述', vowTextPlaceholder:'描述你的愿景...',
   vowDeadline:'截止日期', vowTimeFrame:'时间框架', vowStartDate:'开始日期', vowEndDate:'结束日期',
