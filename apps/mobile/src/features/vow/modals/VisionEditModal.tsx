@@ -1,6 +1,6 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRAMES, dateStr } from '@egoless-do/core';
 import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan, VisionPractice } from '@egoless-do/core';
-import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar } from 'lucide-react-native';
+import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar, Star, Flag, Target } from 'lucide-react-native';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
@@ -9,6 +9,12 @@ import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 const TF_MONTHS: Record<VisionTimeFrame, number> = {
   '3months': 3, '6months': 6, '1year': 12,
   '2years': 24, '3years': 36, '5years': 60, '10years': 120,
+};
+
+const TYPE_CONFIG: Record<VisionType, { icon: React.ComponentType<{ size?: number; color?: string }>; labelKey: string; color: string }> = {
+  lifetime: { icon: Star, labelKey: 'vowLifetime', color: '#F59E0B' },
+  long: { icon: Flag, labelKey: 'vowLong', color: '#8B5CF6' },
+  short: { icon: Target, labelKey: 'vowShort', color: '#10B981' },
 };
 
 // ── Mini month calendar picker ──────────────────────────────────
@@ -94,14 +100,15 @@ interface Props {
   TH: Theme;
   T: (key: string) => string;
   vision?: Vision | null;
-  type: VisionType;
+  type?: VisionType;
   onClose: () => void;
-  onSave: (data: { text: string; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string; linkedHabitIds: string[]; linkedPlanIds: string[] }) => void;
+  onSave: (data: { text: string; type?: VisionType; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string; linkedHabitIds: string[]; linkedPlanIds: string[] }) => void;
 }
 
-export default function VisionEditModal({ visible, TH, T, vision, type, onClose, onSave }: Props) {
+export default function VisionEditModal({ visible, TH, T, vision, type: initialType, onClose, onSave }: Props) {
   const { habits, plans, visionPractices } = useShallowStore(s => ({ habits: s.habits, plans: s.plans, visionPractices: s.visionPractices }));
   const [text, setText] = useState('');
+  const [selectedType, setSelectedType] = useState<VisionType>('short');
   const [timeFrame, setTimeFrame] = useState<VisionTimeFrame | ''>('');
   const [startDate, setStartDate] = useState('');
   const [deadline, setDeadline] = useState('');
@@ -112,6 +119,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
   const filteredHabits = (habits ?? []).filter((h: Habit) => !h.deleted);
   const filteredPlans = (plans ?? []).filter((p: Plan) => !p.deleted);
+  const effectiveType = vision ? vision.type : (initialType ?? selectedType);
 
   useEffect(() => {
     if (visible) {
@@ -168,6 +176,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
     if (!text.trim()) return;
     onSave({
       text: text.trim(),
+      type: vision ? undefined : (initialType ?? selectedType),
       timeFrame: (timeFrame || undefined) as VisionTimeFrame | undefined,
       startDate: startDate || undefined,
       deadline: deadline || undefined,
@@ -181,8 +190,8 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 
   // Time frames relevant to type
   const availableTimeFrames = VISION_TIME_FRAMES.filter(tf => {
-    if (type === 'long') return ['2years', '3years', '5years', '10years'].includes(tf.key);
-    if (type === 'short') return ['3months', '6months', '1year'].includes(tf.key);
+    if (effectiveType === 'long') return ['2years', '3years', '5years', '10years'].includes(tf.key);
+    if (effectiveType === 'short') return ['3months', '6months', '1year'].includes(tf.key);
     return false;
   });
 
@@ -201,6 +210,34 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
+            {/* Type selection (create mode only) */}
+            {!vision && !initialType && (
+              <View style={styles.typeSection}>
+                <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowType')}</Text>
+                <View style={styles.typeRow}>
+                  {(Object.keys(TYPE_CONFIG) as VisionType[]).map(t => {
+                    const cfg = TYPE_CONFIG[t];
+                    const active = selectedType === t;
+                    return (
+                      <TouchableOpacity
+                        key={t}
+                        onPress={() => setSelectedType(t)}
+                        style={[styles.typePillBtn, {
+                          backgroundColor: active ? cfg.color + '20' : TH.card,
+                          borderColor: active ? cfg.color : TH.border,
+                        }]}
+                      >
+                        {React.createElement(cfg.icon, { size: 16, color: active ? cfg.color : TH.sub })}
+                        <Text style={{ fontSize: FONT_BADGE(), color: active ? cfg.color : TH.sub, marginTop: 2, fontWeight: active ? '600' : '400' }}>
+                          {T(cfg.labelKey)}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+
             {/* Text input */}
             <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 6 }}>{T('vowText')}</Text>
             <TextInput
@@ -219,7 +256,7 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
             />
 
             {/* Date range (for long/short only) */}
-            {type !== 'lifetime' && (
+            {effectiveType !== 'lifetime' && (
               <View style={styles.pillsSection}>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('vowTimeRange')}</Text>
 
@@ -379,6 +416,18 @@ export default function VisionEditModal({ visible, TH, T, vision, type, onClose,
 }
 
 const styles = StyleSheet.create({
+  // ── Type selection ────────────────────────────────
+  typeSection: {
+    marginBottom: 16,
+  },
+  typeRow: {
+    flexDirection: 'row', gap: 8,
+  },
+  typePillBtn: {
+    flex: 1, paddingVertical: 10, borderRadius: 10, alignItems: 'center',
+    borderWidth: 1.5,
+  },
+
   // ── MonthPicker ──────────────────────────────────────
   monthPicker: {
     borderRadius: 12, padding: 12, borderWidth: 1,

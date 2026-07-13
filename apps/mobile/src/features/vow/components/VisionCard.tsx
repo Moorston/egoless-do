@@ -1,5 +1,5 @@
 import type {Vision, VisionTimeFrame, Plan, PlanItem, PlanItemStatus, Theme} from '@egoless-do/core';
-import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr , FONT_SMALL } from '@egoless-do/core';
+import { VISION_TIME_FRAMES, SHORT_TIME_FRAMES, LONG_TIME_FRAMES, FONT_BODY, FONT_SUB, FONT_BADGE, dateStr , FONT_SMALL, scaleFontSize } from '@egoless-do/core';
 import { Flag, Target, Star, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -33,6 +33,7 @@ interface Props {
   onTimeFrameChange?: (visionId: string, tf: VisionTimeFrame) => void;
   linkedPlans?: Plan[];
   planItems?: PlanItem[];
+  onNavigateToPlan?: (planId: string) => void;
 }
 
 const TYPE_ICON: Record<string, any> = { lifetime: Star, long: Flag, short: Target };
@@ -55,7 +56,7 @@ const STATUS_I18N: Record<PlanItemStatus, string> = {
   cancelled: 'planStatusCancelled',
 };
 
-function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onTimeFrameChange, linkedPlans = [], planItems = [] }: Props) {
+function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onTimeFrameChange, linkedPlans = [], planItems = [], onNavigateToPlan }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [showTfPicker, setShowTfPicker] = useState(false);
   const Icon = TYPE_ICON[vision.type] ?? Flag;
@@ -84,14 +85,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
   }, [vision.startDate, vision.timeFrame, vision.type, deadlineText]);
 
   return (
-    <View style={{
-      backgroundColor: TH.card,
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 12,
-      borderLeftWidth: 4,
-      borderLeftColor: typeColor,
-    }}>
+    <View style={[styles.card, { borderLeftColor: typeColor }]}>
       {/* Header */}
       <View style={styles.headerRow}>
         <View style={styles.leftColumn}>
@@ -104,11 +98,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
               onTimeFrameChange && vision.status === 'active' ? (
                 <TouchableOpacity
                   onPress={() => setShowTfPicker(prev => !prev)}
-                  style={{
-                    flexDirection: 'row', alignItems: 'center', gap: 4,
-                    backgroundColor: `${TH.border}60`,
-                    paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
-                  }}
+                  style={styles.tfBadge}
                 >
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
                     {timeFrameLabel ?? T('vowTimeRange')}
@@ -116,13 +106,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                   <ChevronDown size={10} color={TH.sub} />
                 </TouchableOpacity>
               ) : timeFrameLabel ? (
-                <Text style={{
-                  fontSize: FONT_SMALL(), color: TH.sub,
-                  backgroundColor: `${TH.border}60`,
-                  paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
-                }}>
-                  {timeFrameLabel}
-                </Text>
+                <Text style={styles.tfLabel}>{timeFrameLabel}</Text>
               ) : null
             )}
           </View>
@@ -147,11 +131,10 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                       onTimeFrameChange(vision.id, tfKey);
                       setShowTfPicker(false);
                     }}
-                    style={{
-                      paddingVertical: 4, paddingHorizontal: 10, borderRadius: 6,
+                    style={[styles.tfChip, {
                       backgroundColor: active ? '#8B5CF620' : TH.card,
-                      borderWidth: 1, borderColor: active ? '#8B5CF6' : TH.border,
-                    }}
+                      borderColor: active ? '#8B5CF6' : TH.border,
+                    }]}
                   >
                     <Text style={{ fontSize: FONT_BADGE(), color: active ? '#8B5CF6' : TH.sub, fontWeight: active ? '600' : '400' }}>
                       {T(tf.labelKey)}
@@ -197,38 +180,24 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
       )}
 
       {/* Actions */}
-      <View style={{ flexDirection: 'row', gap: 8, marginBottom: linkedPlans.length > 0 ? 8 : 0 }}>
+      <View style={styles.actionRow}>
         {vision.status === 'active' && (
           <>
-            <TouchableOpacity
-              onPress={() => onAchieve(vision.id)}
-              style={{
-                flexDirection: 'row', alignItems: 'center', gap: 4,
-                paddingVertical: 4, paddingHorizontal: 10,
-                backgroundColor: '#10B98120', borderRadius: 8,
-              }}
-            >
+            <TouchableOpacity onPress={() => onAchieve(vision.id)} style={styles.achieveBtn}>
               <Text style={{ fontSize: FONT_BADGE(), color: '#10B981', fontWeight: '600' }}>{T('vowAchieve')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => onArchive(vision.id)}
-              style={{
-                flexDirection: 'row', alignItems: 'center', gap: 4,
-                paddingVertical: 4, paddingHorizontal: 10,
-                backgroundColor: `${TH.border}60`, borderRadius: 8,
-              }}
-            >
+            <TouchableOpacity onPress={() => onArchive(vision.id)} style={styles.archiveBtn}>
               <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('vowArchive')}</Text>
             </TouchableOpacity>
           </>
         )}
         {vision.status === 'achieved' && (
-          <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: '#10B98115' }}>
+          <View style={styles.statusBadgeAchieved}>
             <Text style={{ fontSize: FONT_BADGE(), color: '#10B981', fontWeight: '600' }}>{T('vowAchieved')}</Text>
           </View>
         )}
         {vision.status === 'archived' && (
-          <View style={{ paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, backgroundColor: `${TH.border}40` }}>
+          <View style={styles.statusBadgeArchived}>
             <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('vowArchived')}</Text>
           </View>
         )}
@@ -255,17 +224,20 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
             const planPct = items.length > 0 ? Math.round((done / items.length) * 100) : 0;
 
             return (
-              <View key={plan.id} style={{
-                backgroundColor: TH.bg, borderRadius: 12, padding: 12, marginTop: 6,
-                borderWidth: 1, borderColor: TH.border,
-              }}>
+              <TouchableOpacity
+                key={plan.id}
+                onPress={() => onNavigateToPlan?.(plan.id)}
+                activeOpacity={0.7}
+                style={styles.planItemCard}
+              >
                 <View style={styles.planItemHeader}>
-                  <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600', flex: 1 }} numberOfLines={1}>
+                  <Text style={styles.planItemName} numberOfLines={1}>
                     📋 {plan.name}
                   </Text>
-                  <Text style={{ fontSize: FONT_BADGE(), color: '#8B5CF6', fontWeight: '600' }}>
-                    {planPct}%
-                  </Text>
+                  <View style={styles.planItemRight}>
+                    <Text style={styles.planItemPct}>{planPct}%</Text>
+                    <ChevronRight size={14} color={TH.sub} />
+                  </View>
                 </View>
 
                 {items.length > 0 && (
@@ -278,10 +250,10 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                           <View style={styles.planItemRow}>
                             <Text style={styles.statusIcon}>{st.icon}</Text>
                             <Text style={{ fontSize: FONT_SUB(), color: TH.text, flex: 1 }} numberOfLines={1}>{item.name}</Text>
-                            <Text style={{ fontSize: FONT_SMALL(), color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status]) ?? ''}</Text>
+                            <Text style={{ fontSize: FONT_SMALL(), color: st.color, fontWeight: '500' }}>{T(STATUS_I18N[item.status])}</Text>
                           </View>
                           {item.status !== 'not_started' && item.status !== 'cancelled' && (
-                            <View style={{ marginLeft: 22, height: 4, backgroundColor: `${TH.border}60`, borderRadius: 2, overflow: 'hidden' }}>
+                            <View style={styles.progressBarBg}>
                               <View style={[styles.progressBarFill, { width: `${itemPct}%`, backgroundColor: st.color }]} />
                             </View>
                           )}
@@ -290,7 +262,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
                     })}
                   </View>
                 )}
-              </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -300,6 +272,13 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
 }
 
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: 'transparent',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+  },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -316,6 +295,21 @@ const styles = StyleSheet.create({
     gap: 6,
     marginBottom: 4,
   },
+  tfBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  tfLabel: {
+    fontSize: FONT_SMALL(),
+    color: 'transparent',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
   dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -327,6 +321,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 6,
     marginTop: 8,
+  },
+  tfChip: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    borderWidth: 1,
   },
   editButton: {
     padding: 6,
@@ -349,17 +349,65 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
+  actionRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 8,
+  },
+  achieveBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    backgroundColor: '#10B98120',
+    borderRadius: 8,
+  },
+  archiveBtn: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+  },
+  statusBadgeAchieved: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: '#10B98115',
+  },
+  statusBadgeArchived: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
   linkedPlansToggle: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     paddingVertical: 6,
   },
+  planItemCard: {
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 6,
+    borderWidth: 1,
+  },
   planItemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  planItemName: {
+    fontSize: FONT_BODY(),
+    fontWeight: '600',
+    flex: 1,
+  },
+  planItemRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  planItemPct: {
+    fontSize: FONT_BADGE(),
+    color: '#8B5CF6',
+    fontWeight: '600',
   },
   planItemsContainer: {
     gap: 6,
@@ -374,6 +422,12 @@ const styles = StyleSheet.create({
   },
   statusIcon: {
     fontSize: FONT_SMALL(),
+  },
+  progressBarBg: {
+    marginLeft: 22,
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
   },
   progressBarFill: {
     height: 4,
