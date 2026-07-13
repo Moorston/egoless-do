@@ -882,3 +882,36 @@ infra/docker/api token-refresh-rotation.ts 第90行重复声明 revokeNonce 导�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 26: auth 深度修复
+
+**Date**: 2026-07-13
+**Task**: auth 深度修复
+**Branch**: `master`
+
+### Summary
+
+修复 3 项: 1) 密码验证错误消息统一 2) epoch 非404错误 fail-open 3) 密码修改后调用 logout 清除 auth 状态
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `de7ef51` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
