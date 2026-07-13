@@ -611,3 +611,37 @@ Split MantraEngine(624→243), SleepEngine(1001→342), BreathingEngine(940→38
 ### Next Steps
 
 - None - task complete
+
+
+## Session 18: habits 表 vision_id + PlanCreateScreen 语法修复
+
+**Date**: 2026-07-13
+**Task**: habits 表 vision_id + PlanCreateScreen 语法修复
+**Branch**: `master`
+
+### Summary
+
+habits 表增加 vision_id 列（修复 SyncApply no such column 错误）；PlanCreateScreen 补全缺失的 if 条件判断（修复 dangling else 语法错误）
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b43d260` | (see git log) |
+| `44c0abf` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
