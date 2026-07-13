@@ -1078,7 +1078,7 @@ export const en: I18nKeys = {
   vowLinkedPlans:'Linked Plans', vowLinkedPlanExpand:'Show Linked Plans', vowLinkedPlanCollapse:'Hide Linked Plans', vowNoLinkedPlans:'No linked plans',
   vowPlanProgress:'Plans', vowTaskProgress:'Tasks',
   planLinkVision:'Link Vision', planSelectVision:'Select a Vision', planChangeVision:'Change', planUnlinkVision:'Unlink', planLinkedVision:'Linked Vision',
-  vowDedWrite:'Write Dedication', vowDedHistory:'History', vowDedSettings:'Settings',
+  vowDedWrite:'Make a Vow', vowDedHistory:'History', vowDedSettings:'Settings',
   vowEditTitle:'Edit Vision', vowNewTitle:'New Vision', vowType:'Type',
   vowTimeRange:'Time Range', vowContent:'Vision Text', vowContentPlaceholder:'Write your vision...',
   vowDedFrequency:'Frequency', vowDedDay:'Day', vowDedRemind:'Remind At',

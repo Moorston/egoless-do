@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>egoless-do 项目架构分析 · 2026-07-12</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --panel: #f7f8fa;
+    --border: #e3e6eb;
+    --text: #1f2329;
+    --muted: #6b7280;
+    --accent: #3b6ef5;
+    --ok: #1a7f4b;
+    --ok-bg: #e8f6ee;
+    --warn: #9a6700;
+    --warn-bg: #fdf3e0;
+    --bad: #b42318;
+    --bad-bg: #fdeceb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+  header.top { border-bottom: 2px solid var(--border); padding-bottom: 18px; margin-bottom: 8px; }
+  header.top h1 { margin: 0 0 6px; font-size: 26px; }
+  header.top .sub { color: var(--muted); font-size: 14px; }
+  h2 { font-size: 20px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--accent); }
+  h3 { font-size: 16px; margin: 22px 0 8px; }
+  p { margin: 8px 0; }
+  .muted { color: var(--muted); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card .num { font-size: 24px; font-weight: 700; color: var(--accent); }
+  .card .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--panel); font-weight: 600; }
+  tr:nth-child(even) td { background: #fbfcfd; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .t-ok { background: var(--ok-bg); color: var(--ok); }
+  .t-warn { background: var(--warn-bg); color: var(--warn); }
+  .t-bad { background: var(--bad-bg); color: var(--bad); }
+  .diag { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 16px 0; }
+  .diag svg { width: 100%; height: auto; }
+  .finding { border: 1px solid var(--border); border-left-width: 5px; border-radius: 8px; padding: 12px 16px; margin: 12px 0; background: #fff; }
+  .finding.bad { border-left-color: var(--bad); }
+  .finding.warn { border-left-color: var(--warn); }
+  .finding .ft { font-weight: 700; margin-bottom: 4px; }
+  .finding ol, .finding ul { margin: 6px 0 0; padding-left: 20px; }
+  code { background: var(--panel); padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+  .rec { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 4px 16px 12px; margin: 10px 0; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>egoless-do（心流纪）· 项目架构分析</h1>
+  <div class="sub">跨平台正念修行 / 习惯追踪 / 思维记录应用 · 分析日期 2026-07-12 · 数据源：README.md / CLAUDE.md / AGENTS.md（项目宪法）＋ 全量代码扫描</div>
+</header>
+
+<div class="cards">
+  <div class="card"><div class="num">~104k</div><div class="lbl">核心业务 + 移动端源码行数（不含 node_modules）</div></div>
+  <div class="card"><div class="num">32.7k</div><div class="lbl">packages/core 源码行数</div></div>
+  <div class="card"><div class="num">71.7k</div><div class="lbl">apps/mobile 源码行数</div></div>
+  <div class="card"><div class="num">87</div><div class="lbl">测试文件 · 947 用例通过</div></div>
+  <div class="card"><div class="num">19</div><div class="lbl">后端同步实体（PocketBase 集合）</div></div>
+  <div class="card"><div class="num">26</div><div class="lbl">apps/mobile 功能模块</div></div>
+</div>
+
+<h2>一、项目概览</h2>
+<p>egoless-do 是一个以 <strong>离线优先、隐私优先、零月费</strong> 为核心理念的多端应用，帮助用户养成健康饮食、规律冥想、运动等习惯，并捕捉内心感悟（感念脉络 / 思维 Trail）。技术形态为 <strong>Turborepo + pnpm workspace</strong> 单仓多包（monorepo），主力交付形态是 React Native + Expo 移动端，Web PWA 已归档。</p>
+<p>其架构宪法（<code>AGENTS.md</code>）定义了三条不可妥协的底线：<strong>P1</strong> Core 是 Sole Source of Truth；<strong>P2</strong> Apps 是薄壳；<strong>P3</strong> 单向依赖 <code>app → core</code>。下文将逐一核验这些原则在真实代码中的落地程度。</p>
+
+<h2>二、分层架构</h2>
+<p>代码按「壳 / 核 / 后端」三层切分，外加 DevOps 与文档层。整体依赖方向应为单向向下的：</p>
+
+<div class="diag">
+<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, PingFang SC, sans-serif">
+  <!-- Apps layer -->
+  <rect x="20" y="30" width="720" height="90" rx="10" fill="#eef3ff" stroke="#3b6ef5" stroke-width="1.5"/>
+  <text x="40" y="52" font-size="14" font-weight="700" fill="#1f2329">apps/ （壳：UI + 导航 + 平台适配）</text>
+  <rect x="40" y="64" width="150" height="42" rx="6" fill="#fff" stroke="#c7d2fe"/>
+  <text x="50" y="90" font-size="11" fill="#1f2329">mobile/（RN+Expo）</text>
+  <rect x="210" y="64" width="150" height="42" rx="6" fill="#fff" stroke="#c7d2fe"/>
+  <text x="220" y="90" font-size="11" fill="#1f2329">_archive/web-legacy</text>
+  <rect x="380" y="64" width="330" height="42" rx="6" fill="#fff" stroke="#c7d2fe"/>
+  <text x="392" y="84" font-size="11" fill="#1f2329">features/（26 模块）· db/ · store/ · navigation/ · net/</text>
+  <text x="392" y="99" font-size="10" fill="#6b7280">engines 实际位于此层（Sync/Sleep/Breathing）</text>
+
+  <!-- Core layer -->
+  <rect x="20" y="150" width="720" height="90" rx="10" fill="#e9f8ef" stroke="#1a7f4b" stroke-width="1.5"/>
+  <text x="40" y="172" font-size="14" font-weight="700" fill="#1f2329">packages/core/ （核：Sole Source of Truth）</text>
+  <rect x="40" y="184" width="680" height="42" rx="6" fill="#fff" stroke="#a7e3c0"/>
+  <text x="52" y="204" font-size="11" fill="#1f2329">ai · business（纯函数）· store（Zustand slices）· sync（协议）· data · types · constants · utils · i18n · zod</text>
+
+  <!-- Backend layer -->
+  <rect x="20" y="270" width="720" height="70" rx="10" fill="#fdf3e0" stroke="#9a6700" stroke-width="1.5"/>
+  <text x="40" y="292" font-size="14" font-weight="700" fill="#1f2329">backend/ （PocketBase · 唯一数据源）</text>
+  <text x="40" y="314" font-size="11" fill="#1f2329">pb_hooks/（sync.pb.js · auth.pb.js）· pb_migrations/（54）· pb_schema.json（41 集合）</text>
+
+  <!-- arrows: apps -> core -->
+  <defs>
+    <marker id="ah" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#3b6ef5"/>
+    </marker>
+    <marker id="ah2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#9a6700"/>
+    </marker>
+  </defs>
+  <line x1="360" y1="120" x2="360" y2="148" stroke="#3b6ef5" stroke-width="2" marker-end="url(#ah)"/>
+  <text x="372" y="138" font-size="11" fill="#3b6ef5">app → core（单向，已验证）</text>
+  <line x1="360" y1="240" x2="360" y2="268" stroke="#9a6700" stroke-width="2" marker-end="url(#ah2)"/>
+  <text x="372" y="258" font-size="11" fill="#9a6700">SyncService → PocketBase（HTTPS）</text>
+</svg>
+</div>
+
+<h2>三、数据流转</h2>
+<p>统一以本地 SQLite 为持久层，内存态与远程态通过同步引擎桥接：</p>
+<ol>
+  <li><strong>Zustand Store（内存）</strong>：30+ 个 slice，状态扁平挂载，业务状态以 core 的 slice factory 为唯一真源。</li>
+  <li><strong>StorageAdapter → WriteBatcher → SQLite（expo-sqlite）</strong>：<code>persistChange()</code> 实体数据（100ms 防抖批量写入），<code>persistSettings()</code> 直写 <code>app_state</code> 表，<code>transaction()</code> 跨 slice 原子操作，已取消 AsyncStorage 双轨。</li>
+  <li><strong>SyncService → PocketBase（远程）</strong>：定期同步 + SSE 实时推送 + LWW 冲突解决，零数据丢失保证。</li>
+</ol>
+
+<h2>四、同步架构</h2>
+<p>同步协议定义位于 <code>packages/core/src/sync/</code>（<code>entitySchemas.ts</code> 约 1188 行，<code>conflict.ts</code>、<code>merge.ts</code>、<code>entities.ts</code>），服务端 hook 在 <code>backend/pb_hooks/</code>。客户端 <code>SyncEngine</code>（位于 app 层）维护本地 <code>syncQueue</code>，推送按 50/批（最多 10 批）drain，拉取支持按实体分页与字段级增量（<code>changedFields</code>）以缩减负载。</p>
+<p><strong>19 个同步实体</strong>（部分）：<code>habits</code>、<code>reflections</code>、<code>fasting_sessions</code>、<code>food_entries</code>、<code>checkin_records</code>、<code>meditation_history</code>、<code>exercise_entries</code>、<code>plans</code>、<code>plan_items</code>、<code>thought_trails</code>、<code>trail_notes</code>、<code>reflection_links</code>、<code>ai_configs</code> 等。</p>
+<p>冲突规则：LWW（Last-Writer-Wins）——未删除按时间戳大者胜（平局服务端胜），已删除按时间戳大者胜（平局删除方胜）；安全层为 JWT + epoch 踢出 + 输入校验。</p>
+
+<h2>五、宪法符合性评估</h2>
+<table>
+  <thead>
+    <tr><th>宪法原则</th><th>状态</th><th>说明</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>packages/core = Sole Source of Truth（类型 / 常量 / 纯函数）</td>
+      <td><span class="tag t-warn">部分符合</span></td>
+      <td>纯逻辑与类型基本落在 core；但大型 Engine 类实际位于 app 层，P1 精神被削弱</td>
+    </tr>
+    <tr>
+      <td>apps/ = 薄壳</td>
+      <td><span class="tag t-bad">不符合</span></td>
+      <td>移动端（71.7k 行）比 core（32.7k 行）更大，承载大量引擎 / 业务逻辑</td>
+    </tr>
+    <tr>
+      <td>单向依赖 app → core</td>
+      <td><span class="tag t-ok">符合</span></td>
+      <td>已验证 core 无反向 import apps/_archive；纯函数（streak/checkin）从 core 复用，无重复实现</td>
+    </tr>
+    <tr>
+      <td>feature-A → feature-B 组件禁止</td>
+      <td><span class="tag t-bad">违反</span></td>
+      <td>exercise → music / meditation 共 5 处越界 import（见风险清单 #3）</td>
+    </tr>
+    <tr>
+      <td>backend = PocketBase 唯一数据源</td>
+      <td><span class="tag t-ok">符合</span></td>
+      <td>结构正确；但 schema 导出缺 <code>users</code> auth 集合（见 #6）</td>
+    </tr>
+    <tr>
+      <td>同步协议在 core/sync</td>
+      <td><span class="tag t-ok">符合</span></td>
+      <td>协议定义与 server hook 分层正确、单一来源</td>
+    </tr>
+    <tr>
+      <td>宪法文档准确性</td>
+      <td><span class="tag t-bad">不符合</span></td>
+      <td>行数表过期且与自身"重构已完成"段落自相矛盾；<code>_archive</code> 路径写错（见 #1）</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>六、关键风险与技术债</h2>
+
+<div class="finding bad">
+  <div class="ft">#1 宪法文档与真实代码严重脱节（最高优先级）</div>
+  <ul>
+    <li><code>AGENTS.md</code> 中"当前问题文件"表格列出的旧行数（SyncEngine 1284 / SleepEngine 1001 / BreathingEngine 940 / HomeScreen 880 / RelationMapView 871），与其"重构已完成"段落给出的新行数（如 SyncEngine "1284 → 398"）相互矛盾，<strong>且两套数字均不等于真实值</strong>（884 / 342 / 464 / 838 / 450）。</li>
+    <li>宪法把 <code>_archive/</code> 写到了 <code>apps/</code> 下，但磁盘上它在<strong>仓库根目录</strong>，全仓无任何引用指向 <code>apps/_archive</code>。</li>
+    <li>结论：宪法作为"实时规范"已失效，需重新校准或标注为历史快照。</li>
+  </ul>
+</div>
+
+<div class="finding bad">
+  <div class="ft">#2 引擎类在 app 而非 core，P1 形同虚设</div>
+  <ul>
+    <li>被宪法点名的 5 个超大文件全部位于 <code>apps/mobile/</code>：SyncEngine(884)、SleepEngine(342)、BreathingEngine(464)、HomeScreen(838)、RelationMapView(450)。</li>
+    <li>SyncEngine 884 行远超宪法自定的 600 行上限，也高于其声称的"398"。</li>
+    <li>这与"core = Sole Source of Truth"的核心定位冲突，属于已承认但未解决的债务。</li>
+  </ul>
+</div>
+
+<div class="finding bad">
+  <div class="ft">#3 跨 feature 的非法 import（明确违反 §2.2）</div>
+  <ul>
+    <li><code>features/exercise/hooks/useExerciseAudio.ts:6</code> → <code>../../music/services/AudioSessionManager</code>（exercise → music）</li>
+    <li><code>features/exercise/layouts/{EnduranceActive,GpsActive,MeditativeActive,StrengthActive}.tsx:7</code> → <code>../../meditation/MeditationMusicBar</code>（exercise → meditation ×4）</li>
+    <li>应提取至 <code>components/</code> 共享层以消除紧耦合。</li>
+  </ul>
+</div>
+
+<div class="finding warn">
+  <div class="ft">#4 core 大文件测试覆盖不均</div>
+  <ul>
+    <li>core 共 54 个测试文件（整体不错），但多个大体积纯逻辑文件<strong>无测试</strong>：<code>trail-creation.ts</code>(693)、<code>reflectionGraph.ts</code>(468)、<code>reflectionAnalytics.ts</code>(303) 以及 <code>precepts.ts</code>、<code>sleep.ts</code>、<code>zhiguan*.ts</code> 等。</li>
+    <li>最高流量逻辑（Trail 创建、感念图谱）恰是最缺测试的部分，违背宪法 P5「测试先行于复杂逻辑」。</li>
+  </ul>
+</div>
+
+<div class="finding warn">
+  <div class="ft">#5 文件体积红线基本未被强制执行</div>
+  <ul>
+    <li>app 层 14+ 个文件超 600 行宪法软上限，最大为 <code>db/schema.ts</code>(1203)、<code>plan/PlanDetailContent.tsx</code>(976)、<code>reflections/QuickCreateTrailScreen.tsx</code>(972)。</li>
+    <li><code>core/sync/entitySchemas.ts</code>(1188) 为生成/派生单体，正确位于 core，但是合并风险热点。</li>
+  </ul>
+</div>
+
+<div class="finding warn">
+  <div class="ft">#6 PocketBase schema 缺 users 认证集合</div>
+  <ul>
+    <li><code>pb_schema.json</code> 含 41 个 base 集合、0 个 auth 集合；若 <code>users</code> 为意图中的认证源，则导出不完整，或依赖 PocketBase 隐式 superusers——应明确记录。</li>
+  </ul>
+</div>
+
+<div class="finding warn">
+  <div class="ft">#7 导航层绕过集中路由表</div>
+  <ul>
+    <li><code>navigation/index.tsx:24,30</code> 直接 import <code>useSync</code> / <code>isDeviceSyncedBefore</code> 自 <code>../features/sync/...</code>，偏离 §2.2 建议的集中路由表模式。</li>
+  </ul>
+</div>
+
+<h2>七、改进建议（按优先级）</h2>
+<div class="rec">
+  <ol>
+    <li><strong>先修宪法本身</strong>：重新扫描真实行数并同步到 <code>AGENTS.md</code>；修正 <code>_archive</code> 路径；将"当前状态"与"重构完成"两节合并为单一可信来源。可脚本化（如 <code>cloc</code>）每次 PR 自动更新。</li>
+    <li><strong>消除 5 处跨 feature import</strong>：将 <code>MeditationMusicBar</code> 与 <code>AudioSessionManager</code> 提取到 <code>apps/mobile/src/components/</code> 或独立 <code>media</code> 共享模块，从根上满足 §2.2。</li>
+    <li><strong>补齐核心纯逻辑测试</strong>：优先为 <code>trail-creation</code>、<code>reflectionGraph</code>、<code>reflectionAnalytics</code> 写单测，把覆盖率拉到 ≥80%，兑现 P5。</li>
+    <li><strong>收敛超大 app 文件</strong>：按 §4.1 软上限逐项拆分（HomeScreen、db/schema、PlanDetailContent 等），将可测试规则逐步回流到 core。</li>
+    <li><strong>澄清后端认证模型</strong>：确认 <code>users</code> 集合归属并在 schema 或文档中显式标注，避免部署歧义。</li>
+    <li><strong>校准"薄壳"定位</strong>：将 Sync/Sleep/Breathing 等引擎的<em>纯逻辑</em>下沉到 core，app 层仅保留 UI / 动画 / 平台副作用，使 P1/P2 从愿景变为事实。</li>
+  </ol>
+</div>
+
+<h2>八、总体结论</h2>
+<p>架构的<strong>骨架是健康的</strong>：单向依赖 <code>app → core</code> 被严格守住，core 确实集中了类型 / 常量 / 纯函数 / 同步协议，PocketBase 作为唯一数据源的设计自洽。但<strong>宪法文本已严重落后于实现</strong>——它既误置了 <code>_archive</code> 路径、又用过期且自相矛盾的行数表描述现状，同时最大的引擎类仍躺在 app 层，使"core = Sole Source of Truth"更像目标而非现状。</p>
+<p>最值得立刻动手的真实缺陷是 <strong>5 处跨 feature 非法 import</strong> 与 <strong>core 大文件测试缺位</strong>；而<strong>校准宪法文档</strong>是让后续所有重构有据可依的前提。技术债整体可控，不属于需要推倒重来的范畴。</p>
+
+<footer>
+  本报告由代码全量扫描（排除 node_modules / dist / build / .next / .expo / .turbo / pb_data）结合项目文档生成，未修改任何源文件。行数为扫描时近似值，可能随后续提交变动。
+</footer>
+
+</div>
+</body>
+</html>

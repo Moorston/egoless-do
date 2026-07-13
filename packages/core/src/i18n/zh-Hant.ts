@@ -1073,7 +1073,7 @@ export const zhHant: I18nKeys = {
   vowLinkedPlans:'關聯計劃', vowLinkedPlanExpand:'展開關聯計劃', vowLinkedPlanCollapse:'折疊關聯計劃', vowNoLinkedPlans:'暫無關聯計劃',
   vowPlanProgress:'計劃', vowTaskProgress:'任務',
   planLinkVision:'關聯願景', planSelectVision:'選擇願景關聯', planChangeVision:'更換', planUnlinkVision:'解除關聯', planLinkedVision:'已關聯願景',
-  vowDedWrite:'寫回向', vowDedHistory:'回向歷史', vowDedSettings:'回向設定',
+  vowDedWrite:'立願', vowDedHistory:'回向歷史', vowDedSettings:'回向設定',
   vowEditTitle:'編輯願景', vowNewTitle:'新增願景', vowType:'類型',
   vowTimeRange:'時間範圍', vowContent:'願景內容', vowContentPlaceholder:'寫下你的願景...',
   vowDedFrequency:'回向頻率', vowDedDay:'回向日', vowDedRemind:'提醒時間',

@@ -245,6 +245,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'updatedAt',     col: 'updated_at',     server: 'updatedAt',   fallback: () => Date.now() },
       { entity: 'link',          col: 'link',           server: 'link',        fallback: 'none' },
       { entity: 'linkConfig',    col: 'link_config',    server: 'linkConfig',  type: 'json', fallback: null },
+      { entity: 'visionId',      col: 'vision_id',      server: 'visionId',    fallback: '', optional: true },
       { entity: 'deleted',       col: 'deleted',        type: 'bool' },
     ],
   },

@@ -23,7 +23,7 @@ export default function HabitDetailScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { habits, reflections, updateHabit } = useShallowStore(s => ({ habits: s.habits, reflections: s.reflections, updateHabit: s.updateHabit }));
+  const { habits, reflections, visions, updateHabit } = useShallowStore(s => ({ habits: s.habits, reflections: s.reflections, visions: s.visions, updateHabit: s.updateHabit }));
   const nav = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'HabitDetail'>>();
 
@@ -93,6 +93,21 @@ export default function HabitDetailScreen() {
             <Text style={[styles.progressText, { color: TH.sub }]}>{Math.round(pct)}%</Text>
           </View>
         </View>
+
+        {/* Linked Vision */}
+        {habit.visionId && (() => {
+          const linkedVision = (visions ?? []).find((v: any) => v.id === habit.visionId && !v.deleted);
+          if (!linkedVision) return null;
+          return (
+            <View style={[styles.infoCard, { backgroundColor: TH.card, borderColor: TH.border, flexDirection: 'row', alignItems: 'center', gap: 8 }]}>
+              <Text style={{ fontSize: 14 }}>🎯</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.infoTitle, { color: TH.text }]}>{T('planLinkedVision')}</Text>
+                <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>{linkedVision.text}</Text>
+              </View>
+            </View>
+          );
+        })()}
 
         {/* Habit Info */}
         <View style={[styles.infoCard, { backgroundColor: TH.card, borderColor: TH.border }]}>

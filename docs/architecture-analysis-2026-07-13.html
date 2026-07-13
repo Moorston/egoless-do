@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>egoless-do 项目架构重新分析 · 2026-07-13</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --panel: #f7f8fa;
+    --border: #e3e6eb;
+    --text: #1f2329;
+    --muted: #6b7280;
+    --accent: #3b6ef5;
+    --ok: #1a7f4b;
+    --ok-bg: #e8f6ee;
+    --warn: #9a6700;
+    --warn-bg: #fdf3e0;
+    --bad: #b42318;
+    --bad-bg: #fdeceb;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+  header.top { border-bottom: 2px solid var(--border); padding-bottom: 18px; margin-bottom: 8px; }
+  header.top h1 { margin: 0 0 6px; font-size: 26px; }
+  header.top .sub { color: var(--muted); font-size: 14px; }
+  h2 { font-size: 20px; margin: 38px 0 12px; padding-left: 10px; border-left: 4px solid var(--accent); }
+  h3 { font-size: 16px; margin: 22px 0 8px; }
+  p { margin: 8px 0; }
+  .muted { color: var(--muted); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card .num { font-size: 24px; font-weight: 700; color: var(--accent); }
+  .card .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--panel); font-weight: 600; }
+  tr:nth-child(even) td { background: #fbfcfd; }
+  .tag { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .t-ok { background: var(--ok-bg); color: var(--ok); }
+  .t-warn { background: var(--warn-bg); color: var(--warn); }
+  .t-bad { background: var(--bad-bg); color: var(--bad); }
+  .t-info { background: #e8eefc; color: #2351c4; }
+  .finding { border: 1px solid var(--border); border-left-width: 5px; border-radius: 8px; padding: 12px 16px; margin: 12px 0; background: #fff; }
+  .finding.bad { border-left-color: var(--bad); }
+  .finding.warn { border-left-color: var(--warn); }
+  .finding.ok { border-left-color: var(--ok); }
+  .finding .ft { font-weight: 700; margin-bottom: 4px; }
+  .finding ol, .finding ul { margin: 6px 0 0; padding-left: 20px; }
+  code { background: var(--panel); padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+  .rec { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 4px 16px 12px; margin: 10px 0; }
+  .delta-old { text-decoration: line-through; color: var(--muted); }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>egoless-do（心流纪）· 项目架构重新分析</h1>
+  <div class="sub">重新分析日期 2026-07-13 · 对比基线：2026-07-12 首次分析 · 数据源：AGENTS.md（已修订宪法）＋ 全量代码复扫</div>
+</header>
+
+<div class="cards">
+  <div class="card"><div class="num">57</div><div class="lbl">packages/core 测试文件（上次 54）</div></div>
+  <div class="card"><div class="num">9</div><div class="lbl">现存跨 feature 非法 import（4 组件 + 5 store）</div></div>
+  <div class="card"><div class="num">1203</div><div class="lbl">最大文件 db/schema.ts 行数</div></div>
+  <div class="card"><div class="num">19</div><div class="lbl">后端同步实体</div></div>
+  <div class="card"><div class="num">5→0</div><div class="lbl">首批 5 处非法 import 已修复</div></div>
+  <div class="card"><div class="num">4</div><div class="lbl">仍缺测试的 core 大文件</div></div>
+</div>
+
+<h2>一、与上次分析的差异（Delta）</h2>
+<p>距首次分析仅一天，项目宪法（<code>AGENTS.md</code>）已被显著修订，且多项代码级问题已修复。这说明上次的报告直接推动了整改。以下为逐条对比：</p>
+<table>
+  <thead>
+    <tr><th>上次标记的问题</th><th>本次状态</th><th>证据</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>宪法 _archive 路径写错、行数表过期且与自身矛盾（原 #1）</td>
+      <td><span class="tag t-ok">已修复</span></td>
+      <td>AGENTS.md:68 已标注「仓库根目录，非 apps/ 下」；§4.1 行数（884/450 等）与代码一致</td>
+    </tr>
+    <tr>
+      <td>5 处跨 feature 非法 import：exercise→music(+1)、exercise→meditation(×4)（原 #3 子项）</td>
+      <td><span class="tag t-ok">已修复</span></td>
+      <td>复扫 <code>useExerciseAudio.ts</code> 与 4 个 exercise layout 文件，相关 import 已不存在</td>
+    </tr>
+    <tr>
+      <td>core 大文件缺测试：trail-creation / reflectionGraph / reflectionAnalytics 等 7 个（原 #4）</td>
+      <td><span class="tag t-info">部分修复</span></td>
+      <td>上述 3 个已补 <code>.test.ts</code>；仍缺 <code>precepts.ts</code> / <code>sleep.ts</code> / <code>zhiguanConstants.ts</code> / <code>zhiguanMethods.ts</code></td>
+    </tr>
+    <tr>
+      <td>pb_schema.json 缺 users auth 集合（原 #6）</td>
+      <td><span class="tag t-ok">非缺陷</span></td>
+      <td>schema 文件第 2 行注明：auth 集合由 PocketBase 运行时隐式创建，<strong>设计如此</strong>，非遗漏</td>
+    </tr>
+    <tr>
+      <td>引擎类在 app 而非 core（原 #2）、文件红线未执行（原 #5）、导航绕过路由表（原 #7）</td>
+      <td><span class="tag t-warn">仍存在</span></td>
+      <td>宪法现已把这些列为 AR-01 / AR-06 等跟踪项并给出目标值，但代码尚未达标</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>二、当前架构符合性评估（更新版）</h2>
+<table>
+  <thead>
+    <tr><th>宪法原则</th><th>状态</th><th>说明</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>packages/core = Sole Source of Truth</td>
+      <td><span class="tag t-warn">部分符合</span></td>
+      <td>纯逻辑/类型/同步协议在 core；大型引擎仍在 app 层（SyncEngine 884、BreathingEngine 464 等）</td>
+    </tr>
+    <tr>
+      <td>apps/ = 薄壳</td>
+      <td><span class="tag t-bad">不符合</span></td>
+      <td>移动端（≈71.7k 行）仍显著大于 core（≈32.7k 行）</td>
+    </tr>
+    <tr>
+      <td>单向依赖 app → core</td>
+      <td><span class="tag t-ok">符合</span></td>
+      <td>复扫确认 core 无任何反向 import（apps/mobile/_archive）</td>
+    </tr>
+    <tr>
+      <td>feature-A → feature-B 组件禁止（§2.2）</td>
+      <td><span class="tag t-bad">违反</span></td>
+      <td>首批 5 处已修，但<strong>新出现 9 处</strong>（4 组件 + 5 store），且全部指向 <code>features/music</code></td>
+    </tr>
+    <tr>
+      <td>backend = PocketBase 唯一数据源</td>
+      <td><span class="tag t-ok">符合</span></td>
+      <td>结构自洽；auth 集合运行时隐式创建，已文档化</td>
+    </tr>
+    <tr>
+      <td>宪法文档准确性</td>
+      <td><span class="tag t-ok">已校准</span></td>
+      <td>路径与行数表均与代码一致；并新增 AR-01 等跟踪项</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>三、当前仍存在的风险与技术债</h2>
+
+<div class="finding bad">
+  <div class="ft">#A 跨 feature 非法 import 反复出现 —— 根因是 music 被当共享模块用</div>
+  <p>首批 5 处已修复，但复扫又发现 <strong>9 处</strong>，且<strong>全部指向 <code>features/music</code></strong>：</p>
+  <ul>
+    <li><strong>组件级（4 处）</strong>：<code>exercise/SportPage.tsx:24</code> → <code>../music/components/MusicPickerModal</code>；<code>meditation/MeditationScreen.tsx:22</code> → 同上；<code>reflections/core/CreatePlanFromTrailModal.tsx:12</code> → <code>../../plan/components/PlanItemForm</code>；<code>reflections/core/CreatePlanFromReflectionModal.tsx:12</code> → 同上。</li>
+    <li><strong>store/service 级（5 处）</strong>：<code>zhiguan/ZhiguanScreen.tsx:15</code>、<code>exercise/SportPage.tsx:25-26</code>、<code>meditation/MeditationScreen.tsx:24</code>、<code>sync/useSync.ts:14</code> 均 import <code>useMusicStore</code> / <code>audioPlayerRef</code>。</li>
+  </ul>
+  <p><strong>洞察</strong>：这不是偶发违规，而是<em>结构性</em>问题——<code>music</code> 本质是跨 feature 的共享媒体能力，却仍挂在 <code>features/</code> 下。打地鼠式修 import 会无限复发。根本解法是<strong>把 music 提升为共享层</strong>（<code>apps/mobile/src/components/media/</code> 或独立 <code>packages/media</code>），从根上消除这条红线。</p>
+</div>
+
+<div class="finding warn">
+  <div class="ft">#B 仍缺测试的 core 大文件（4 个）</div>
+  <ul>
+    <li><code>packages/core/src/business/precepts.ts</code> — 无 <code>precepts.test.ts</code></li>
+    <li><code>packages/core/src/business/sleep.ts</code> — 无 <code>sleep.test.ts</code></li>
+    <li><code>packages/core/src/business/zhiguanConstants.ts</code> — 无测试</li>
+    <li><code>packages/core/src/business/zhiguanMethods.ts</code> — 无测试</li>
+  </ul>
+  <p>注：trail-creation / reflectionGraph / reflectionAnalytics 三个最高流量文件已补测试（上次 #4 的部分修复）。建议本轮补齐上述 4 个，覆盖率目标 ≥80%，兑现宪法 P5。</p>
+</div>
+
+<div class="finding warn">
+  <div class="ft">#C 超大文件红线仍未执行</div>
+  <ul>
+    <li><code>apps/mobile/src/db/schema.ts</code> — <strong>1203 行</strong>（唯一 >1000）</li>
+    <li><code>plan/PlanDetailContent.tsx</code> 976 · <code>reflections/trails/QuickCreateTrailScreen.tsx</code> 972（均逼近 1000）</li>
+    <li><code>home/screens/HomeScreen.tsx</code> 838 · <code>sync/SyncEngine.ts</code> 884（宪法 AR-01 跟踪中，目标 <600）</li>
+  </ul>
+</div>
+
+<div class="finding warn">
+  <div class="ft">#D 导航层绕过集中路由表（仍存在）</div>
+  <ul>
+    <li><code>apps/mobile/src/navigation/index.tsx:29</code> → <code>import { useSync } from '../features/sync/useSync'</code></li>
+    <li><code>apps/mobile/src/navigation/index.tsx:35</code> → <code>import { isDeviceSyncedBefore } from '../features/sync/SyncService'</code></li>
+  </ul>
+  <p>偏离 §2.2「路由只走集中路由表」的约定，应改为经 <code>navigation/screens.ts</code> 统一导出。</p>
+</div>
+
+<div class="finding ok">
+  <div class="ft">#E 新发现（轻微）：测试文件自身膨胀</div>
+  <ul>
+    <li><code>apps/mobile/src/store/rowMappers.test.ts</code> — <strong>1051 行</strong>，测试文件本身超过 1000 行，多为内联 fixtures，建议拆分。</li>
+  </ul>
+</div>
+
+<h2>四、改进建议（按性价比重新排序）</h2>
+<div class="rec">
+  <ol>
+    <li><strong>【治本】把 music 提升为共享层（解决 #A 反复复发）</strong>：新建 <code>apps/mobile/src/components/media/</code>（或独立 <code>packages/media</code>），迁移 <code>MusicPickerModal</code>、<code>useMusicStore</code>、<code>audioPlayerRef</code>、<code>AudioSessionManager</code>；再全局替换 9 处 import。一次改动即可永久消除这条 §2.2 红线，且能拦住未来复发。</li>
+    <li><strong>补齐 4 个 core 测试缺口（#B）</strong>：precepts / sleep / zhiguanConstants / zhiguanMethods 写单测，兑现 P5。</li>
+    <li><strong>收敛超大文件（#C）</strong>：优先拆 <code>db/schema.ts</code>(1203) 与两个 ~970 行文件；SyncEngine 按 AR-01 续推至 <600。</li>
+    <li><strong>导航去耦合（#D）</strong>：将 <code>useSync</code> / <code>isDeviceSyncedBefore</code> 经路由表导出，移除 index.tsx 对 features 的直引。</li>
+    <li><strong>拆分膨胀测试（#E）</strong>：<code>rowMappers.test.ts</code> 按实体拆分夹具。</li>
+  </ol>
+</div>
+
+<h2>五、结论</h2>
+<p>与一天前相比，项目的<strong>治理状态明显变好</strong>：宪法文档已校准到与代码一致，首批 5 处非法 import 已清除，3 个最高流量 core 纯逻辑文件已补测试。依赖骨架（<code>app → core</code> 单向）始终健康，PocketBase 唯一数据源自洽，auth 集合"缺失"实为设计而非缺陷。</p>
+<p>当前<strong>唯一需要结构性解法而非打补丁</strong>的真实风险，是 <strong>music 被当作共享模块却仍挂在 features/ 下</strong>，导致跨 feature 非法 import 反复出现（5→9）。把它提升为共享层是从根上治理的性价比最高动作。其余（超大文件、导航直引、零星测试缺口）均为已有 AR 跟踪项的渐进式收尾，按 P6「小步重构」持续推进即可，<strong>无需推倒重来</strong>。</p>
+
+<footer>
+  本报告为 2026-07-12 首次分析的更新版，基于修订后的 AGENTS.md 宪法与全量代码复扫（排除 node_modules / dist / build / .next / .expo / .turbo / pb_data）生成，未修改任何源文件。行数为扫描时近似值。
+</footer>
+
+</div>
+</body>
+</html>

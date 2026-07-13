@@ -33,4 +33,6 @@ export interface Habit extends Syncable {
     /** Sleep minimum quality (1-5) */
     minQuality?: number;
   };
+  /** 关联愿景 ID */
+  visionId?: string;
 }

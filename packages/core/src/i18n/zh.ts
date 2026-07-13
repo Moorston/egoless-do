@@ -1076,7 +1076,7 @@ export const zh: I18nKeys = {
   vowLinkedPlans:'关联计划', vowLinkedPlanExpand:'展开关联计划', vowLinkedPlanCollapse:'折叠关联计划', vowNoLinkedPlans:'暂无关联计划',
   vowPlanProgress:'计划', vowTaskProgress:'任务',
   planLinkVision:'关联愿景', planSelectVision:'选择愿景关联', planChangeVision:'更换', planUnlinkVision:'解除关联', planLinkedVision:'已关联愿景',
-  vowDedWrite:'写回向', vowDedHistory:'回向历史', vowDedSettings:'回向设置',
+  vowDedWrite:'立愿', vowDedHistory:'回向历史', vowDedSettings:'回向设置',
   vowEditTitle:'编辑愿景', vowNewTitle:'新增愿景', vowType:'类型',
   vowTimeRange:'时间范围', vowContent:'愿景内容', vowContentPlaceholder:'写下你的愿景...',
   vowDedFrequency:'回向频率', vowDedDay:'回向日', vowDedRemind:'提醒时间',
