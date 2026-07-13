@@ -74,6 +74,7 @@ export default function PlanCreateScreen() {
   const [endDate, setEndDate] = useState(existingPlan?.endDate ?? '');
   const [visionId, setVisionId] = useState<string | undefined>(existingPlan?.visionId);
   const [showVisionPicker, setShowVisionPicker] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [items, setItems] = useState<ItemForm[]>(() => {
     const baseItems = existingItems.map(i => ({
       id: i.id, name: i.name, description: i.description,
@@ -140,8 +141,8 @@ export default function PlanCreateScreen() {
   };
 
   const handleSave = () => {
+    if (saving) return; // Prevent double-click creating duplicates
     if (!validate()) return;
-    // Check if there's already an active plan
     if (!isEdit) {
       const activePlan = (plans ?? []).find(p => !p.deleted && isPlanActive(p.status));
       if (activePlan) {
@@ -176,16 +177,18 @@ export default function PlanCreateScreen() {
           });
         }
       });
+      setSaving(true);
       Alert.alert(T('planSaved'), T('planSavedMsg'), [
-        { text: T('planContinueEdit'), onPress: () => {} },
-        { text: T('planBack'), onPress: () => nav.goBack() },
+        { text: T('planContinueEdit'), onPress: () => setSaving(false) },
+        { text: T('planBack'), onPress: () => { setSaving(false); nav.goBack(); } },
       ]);
     } else {
       const newPlanId = addPlan({ name, goal, slogan, startDate, endDate, visionId });
       if (newPlanId) {
+        setSaving(true);
         Alert.alert(T('planSaved'), T('planSavedMsg'), [
-          { text: T('planContinueEdit'), onPress: () => {} },
-          { text: T('planBack'), onPress: () => nav.goBack() },
+          { text: T('planContinueEdit'), onPress: () => setSaving(false) },
+          { text: T('planBack'), onPress: () => { setSaving(false); nav.goBack(); } },
         ]);
       } else {
         // addPlan failed (likely another active plan exists, or validation error)
