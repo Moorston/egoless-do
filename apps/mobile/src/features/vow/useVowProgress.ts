@@ -1,5 +1,5 @@
 import { dateStr } from '@egoless-do/core';
-import type { Vision, VisionPractice, Dedication, HabitStat, PlanProgress, VisionProgress, Habit, Plan, PlanItem } from '@egoless-do/core';
+import type { Vision, Dedication, HabitStat, PlanProgress, VisionProgress, Habit, Plan, PlanItem } from '@egoless-do/core';
 import { useMemo } from 'react';
 
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
@@ -32,12 +32,11 @@ export interface VowProgressData {
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export function useVowProgress(): VowProgressData {
-  const { habits, plans, planItems, visions, visionPractices } = useShallowStore(s => ({
+  const { habits, plans, planItems, visions } = useShallowStore(s => ({
     habits: s.habits,
     plans: s.plans,
     planItems: s.planItems,
     visions: s.visions,
-    visionPractices: s.visionPractices,
   }));
 
   return useMemo(() => {
@@ -140,33 +139,39 @@ export function useVowProgress(): VowProgressData {
       isToday: d === todayStr,
     }));
 
-    // Vision progress - plans use Plan.visionId, habits use VisionPractice
+    // Vision progress - plans use plan.visionId, habits use habit.visionId
     const activeVisions = (visions ?? []).filter((v: Vision) => !v.deleted && v.status === 'active');
-    const activeVisionPractices = (visionPractices ?? []).filter((vp: VisionPractice) => !vp.deleted);
     const planItemsAll = (planItems ?? []).filter((i: PlanItem) => !i.deleted);
+
+    // Pre-build plan→items map for O(1) lookup
+    const planToItems = new Map<string, PlanItem[]>();
+    for (const pi of planItemsAll) {
+      const existing = planToItems.get(pi.planId);
+      if (existing) existing.push(pi);
+      else planToItems.set(pi.planId, [pi]);
+    }
 
     const visionProgress = activeVisions.map(vision => {
       let totalCompleted = 0;
       let totalExpected = 0;
 
-      // Plans linked via Plan.visionId
+      // Plans linked via direct FK (plan.visionId)
       const linkedPlans = activePlans.filter((p: Plan) => p.visionId === vision.id && !p.deleted);
       for (const plan of linkedPlans) {
-        const items = planItemsAll.filter((i: PlanItem) => i.planId === plan.id);
+        const items = planToItems.get(plan.id) ?? [];
         const done = items.filter((i: PlanItem) => i.status === 'completed').length;
         totalCompleted += done;
         totalExpected += items.length || 1;
       }
 
-      // Habits linked via VisionPractice
-      const linkedHabits = activeVisionPractices.filter(vp => vp.visionId === vision.id && vp.refType === 'habit');
-      for (const vp of linkedHabits) {
-        const habit = activeHabits.find((h: Habit) => h.id === vp.refId);
-        if (habit) {
-          const dates: string[] = habit.checkedDates ?? [];
-          const completed = dates.length;
-          totalCompleted += completed;
-          totalExpected += Math.max(completed, 30);
+      // Habits linked via direct FK (habit.visionId)
+      const linkedHabits = activeHabits.filter((h: Habit) => !h.deleted && h.visionId === vision.id);
+      for (const habit of linkedHabits) {
+        const dates: string[] = habit.checkedDates ?? [];
+        const completed = dates.length;
+        totalCompleted += completed;
+        totalExpected += Math.max(completed, 30);
+      }
         }
       }
 
@@ -230,5 +235,5 @@ export function useVowProgress(): VowProgressData {
         visionProgressData,
       },
     };
-  }, [habits, plans, planItems, visions, visionPractices]);
+  }, [habits, plans, planItems, visions]);
 }

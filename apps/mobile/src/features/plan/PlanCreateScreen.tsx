@@ -44,7 +44,8 @@ export default function PlanCreateScreen() {
   const TH = useTheme();
   const T = useT();
   const P = TH.primary;
-  const { reflections, plans, planItems, visions, habits, addPlan, updatePlan, addPlanItem, updatePlanItem, deletePlanItem } = useShallowStore(s => ({
+  const { reflections, plans, planItems, visions, habits,
+    addPlan, updatePlan, addPlanItem, updatePlanItem, deletePlanItem } = useShallowStore(s => ({
     reflections: s.reflections,
     plans: s.plans,
     planItems: s.planItems,
@@ -177,16 +178,6 @@ export default function PlanCreateScreen() {
       });
     } else {
       const newPlanId = addPlan({ name, goal, slogan, startDate, endDate, visionId });
-      if (newPlanId) {
-        items.forEach((item, idx) => {
-          addPlanItem({
-            planId: newPlanId, name: item.name, description: item.description,
-            startDate: item.startDate, endDate: item.endDate,
-            contentUrl: item.contentUrl, link: item.link, priority: item.priority, targetMetric: item.targetMetric, linkConfig: item.linkConfig,
-            frequency: item.frequency, tags: item.tags,
-            order: idx,
-          });
-        });
         nav.goBack(); // Only navigate back on success
       } else {
         // addPlan failed (likely another active plan exists, or validation error)

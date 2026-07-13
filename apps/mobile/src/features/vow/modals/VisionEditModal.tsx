@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_TINY, VISION_TIME_FRAMES, dateStr } from '@egoless-do/core';
-import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan, VisionPractice } from '@egoless-do/core';
+import type { Vision, VisionType, VisionTimeFrame, Theme, Habit, Plan } from '@egoless-do/core';
 import { X, Link, Unlink, ChevronLeft, ChevronRight, Calendar, Star, Flag, Target } from 'lucide-react-native';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 
 import { useAppStore, useShallowStore } from '../../../store/useAppStore';
@@ -106,7 +106,7 @@ interface Props {
 }
 
 export default function VisionEditModal({ visible, TH, T, vision, type: initialType, onClose, onSave }: Props) {
-  const { habits, plans, visionPractices } = useShallowStore(s => ({ habits: s.habits, plans: s.plans, visionPractices: s.visionPractices }));
+  const { habits, plans } = useShallowStore(s => ({ habits: s.habits, plans: s.plans }));
   const [text, setText] = useState('');
   const [selectedType, setSelectedType] = useState<VisionType>('short');
   const [timeFrame, setTimeFrame] = useState<VisionTimeFrame | ''>('');
@@ -121,8 +121,14 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
   const filteredPlans = (plans ?? []).filter((p: Plan) => !p.deleted);
   const effectiveType = vision ? vision.type : (initialType ?? selectedType);
 
+  // Track modal open state to avoid re-running on sync events
+  const prevVisible = useRef(false);
+
   useEffect(() => {
-    if (visible) {
+    const justOpened = visible && !prevVisible.current;
+    prevVisible.current = visible;
+
+    if (justOpened) {
       if (vision) {
         setText(vision.text);
         setTimeFrame(vision.timeFrame ?? '');
@@ -135,19 +141,16 @@ export default function VisionEditModal({ visible, TH, T, vision, type: initialT
         setDeadline('');
       }
 
-      // Load existing linked practices (habits via VisionPractice, plans via Plan.visionId)
+      // Load existing linked habits (via habit.visionId) and plans (via plan.visionId)
       if (vision) {
-        const existing = (visionPractices ?? []).filter(
-          (vp: VisionPractice) => vp.visionId === vision.id && !vp.deleted && vp.refType === 'habit'
-        );
-        setLinkedHabits(existing.map((vp: VisionPractice) => vp.refId));
+        setLinkedHabits((habits ?? []).filter((h: Habit) => !h.deleted && h.visionId === vision.id).map((h: Habit) => h.id));
         setLinkedPlans((plans ?? []).filter((p: Plan) => !p.deleted && p.visionId === vision.id).map((p: Plan) => p.id));
       } else {
         setLinkedHabits([]);
         setLinkedPlans([]);
       }
     }
-  }, [visible, vision, visionPractices]);
+  }, [visible, vision]);
 
   // When user selects a timeFrame pill, auto-compute deadline from startDate
   const handleTimeFrameSelect = useCallback((tf: VisionTimeFrame) => {

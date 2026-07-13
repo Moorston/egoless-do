@@ -20,7 +20,8 @@ export default function VowScreen() {
   const T = useT();
   const nav = useRootNavigation();
   const { plans: plansRaw, planItems: planItemsRaw, visions: visionsRaw,
-    updateVision, addVision, achieveVision, archiveVision, removeVision } = useShallowStore(s => ({
+    updateVision, addVision, achieveVision, archiveVision, removeVision,
+    updatePlan, updateHabit } = useShallowStore(s => ({
     plans: s.plans,
     planItems: s.planItems,
     visions: s.visions,
@@ -29,6 +30,8 @@ export default function VowScreen() {
     achieveVision: s.achieveVision,
     archiveVision: s.archiveVision,
     removeVision: s.removeVision,
+    updatePlan: s.updatePlan,
+    updateHabit: s.updateHabit,
   }));
 
   const [showModal, setShowModal] = useState(false);
@@ -69,7 +72,14 @@ export default function VowScreen() {
   const handleSave = useCallback((data: { text: string; type?: VisionType; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string; linkedHabitIds: string[]; linkedPlanIds: string[] }) => {
     if (editingVision) {
       updateVision(editingVision.id, { text: data.text, timeFrame: data.timeFrame, startDate: data.startDate, deadline: data.deadline });
-      // Handle linked habits/plans if needed (future enhancement)
+      // Update linked plans via direct FK
+      for (const pid of data.linkedPlanIds) {
+        updatePlan(pid, { visionId: editingVision.id });
+      }
+      // Update linked habits via direct FK
+      for (const hId of data.linkedHabitIds) {
+        updateHabit(hId, { visionId: editingVision.id });
+      }
     } else {
       const visionType = data.type ?? 'short';
       const existing = (visionsRaw ?? []).filter(v => !v.deleted);
@@ -81,17 +91,25 @@ export default function VowScreen() {
         );
         return;
       }
-      addVision({
+      const result = addVision({
         type: visionType,
         text: data.text,
         timeFrame: data.timeFrame,
         startDate: data.startDate ?? dateStr(),
         deadline: data.deadline,
       });
+      if (result) {
+        for (const pid of data.linkedPlanIds) {
+          updatePlan(pid, { visionId: result.id });
+        }
+        for (const hId of data.linkedHabitIds) {
+          updateHabit(hId, { visionId: result.id });
+        }
+      }
     }
     setShowModal(false);
     setEditingVision(null);
-  }, [editingVision, visionsRaw, updateVision, addVision, T]);
+  }, [editingVision, visionsRaw, updateVision, addVision, updatePlan, updateHabit, T]);
 
   const handleAchieve = useCallback((id: string) => {
     Alert.alert(T('vowAchieve'), '', [
@@ -122,6 +140,19 @@ export default function VowScreen() {
     setShowModal(false);
     setEditingVision(null);
   }, []);
+
+  // Pre-index plan items by planId for O(1) lookup per plan
+  const planItemsByPlanId = useMemo(() => {
+    const map = new Map<string, PlanItem[]>();
+    for (const pi of planItems) {
+      if (!pi.deleted) {
+        const existing = map.get(pi.planId);
+        if (existing) existing.push(pi);
+        else map.set(pi.planId, [pi]);
+      }
+    }
+    return map;
+  }, [planItems]);
 
   return (
     <SafeAreaView edges={[]} style={{ flex: 1, backgroundColor: TH.bg }}>
@@ -200,7 +231,7 @@ export default function VowScreen() {
                 let totalItems = 0;
                 if (linked.length > 0) {
                   for (const plan of linked) {
-                    const pi = planItems.filter((i: PlanItem) => i.planId === plan.id && !i.deleted);
+                    const pi = planItemsByPlanId.get(plan.id) ?? [];
                     totalDone += pi.filter((i: PlanItem) => i.status === 'completed').length;
                     totalItems += pi.length;
                   }

@@ -96,7 +96,8 @@ CREATE TABLE IF NOT EXISTS habits (
   abandon_reason TEXT    DEFAULT '',
   updated_at     INTEGER,
   deleted        INTEGER NOT NULL DEFAULT 0,
-  synced         INTEGER NOT NULL DEFAULT 0
+  synced         INTEGER NOT NULL DEFAULT 0,
+  vision_id      TEXT    DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS idx_habits_status ON habits(status, deleted);
 
@@ -740,6 +741,7 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
   await tryAddCol('habits', 'alarm_minute', 'INTEGER NOT NULL DEFAULT 0');
   await tryAddCol('habits', 'link', "TEXT NOT NULL DEFAULT 'none'");
   await tryAddCol('habits', 'link_config', "TEXT");
+  await tryAddCol('habits', 'vision_id', "TEXT DEFAULT ''");
 
   // Add thought_trail_ids to mind_reflections
   await tryAddCol('mind_reflections', 'thought_trail_ids', 'TEXT');
