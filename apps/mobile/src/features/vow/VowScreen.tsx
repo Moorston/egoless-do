@@ -19,12 +19,13 @@ export default function VowScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const { plans: plansRaw, planItems: planItemsRaw, visions: visionsRaw,
+  const { plans: plansRaw, planItems: planItemsRaw, visions: visionsRaw, habits: habitsRaw,
     updateVision, addVision, achieveVision, archiveVision, removeVision,
     updatePlan, updateHabit } = useShallowStore(s => ({
     plans: s.plans,
     planItems: s.planItems,
     visions: s.visions,
+    habits: s.habits,
     updateVision: s.updateVision,
     addVision: s.addVision,
     achieveVision: s.achieveVision,
@@ -40,6 +41,7 @@ export default function VowScreen() {
 
   const plans = plansRaw ?? [];
   const planItems = planItemsRaw ?? [];
+  const habits = habitsRaw ?? [];
 
   const visions = useMemo(() =>
     (visionsRaw ?? []).filter(v => !v.deleted && (filterStatus === 'all' || v.status === filterStatus)),
@@ -72,13 +74,25 @@ export default function VowScreen() {
   const handleSave = useCallback((data: { text: string; type?: VisionType; timeFrame?: VisionTimeFrame; startDate?: string; deadline?: string; linkedHabitIds: string[]; linkedPlanIds: string[] }) => {
     if (editingVision) {
       updateVision(editingVision.id, { text: data.text, timeFrame: data.timeFrame, startDate: data.startDate, deadline: data.deadline });
-      // Update linked plans via direct FK
-      for (const pid of data.linkedPlanIds) {
-        updatePlan(pid, { visionId: editingVision.id });
+      // Sync linked plans: add new, remove unlinked
+      const currentLinkedPlanIds = (plans ?? []).filter(
+        (p: Plan) => p.visionId === editingVision.id
+      ).map((p: Plan) => p.id);
+      for (const pid of currentLinkedPlanIds) {
+        if (!data.linkedPlanIds.includes(pid)) updatePlan(pid, { visionId: undefined });
       }
-      // Update linked habits via direct FK
+      for (const pid of data.linkedPlanIds) {
+        if (!currentLinkedPlanIds.includes(pid)) updatePlan(pid, { visionId: editingVision.id });
+      }
+      // Sync linked habits: add new, remove unlinked
+      const currentLinkedHabitIds = (habits ?? []).filter(
+        (h: any) => h.visionId === editingVision.id
+      ).map((h: any) => h.id);
+      for (const hId of currentLinkedHabitIds) {
+        if (!data.linkedHabitIds.includes(hId)) updateHabit(hId, { visionId: undefined });
+      }
       for (const hId of data.linkedHabitIds) {
-        updateHabit(hId, { visionId: editingVision.id });
+        if (!currentLinkedHabitIds.includes(hId)) updateHabit(hId, { visionId: editingVision.id });
       }
     } else {
       const visionType = data.type ?? 'short';
@@ -109,7 +123,7 @@ export default function VowScreen() {
     }
     setShowModal(false);
     setEditingVision(null);
-  }, [editingVision, visionsRaw, updateVision, addVision, updatePlan, updateHabit, T]);
+  }, [editingVision, visionsRaw, plans, habits, updateVision, addVision, updatePlan, updateHabit, T]);
 
   const handleAchieve = useCallback((id: string) => {
     Alert.alert(T('vowAchieve'), '', [

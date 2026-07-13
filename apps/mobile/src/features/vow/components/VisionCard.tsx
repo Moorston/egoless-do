@@ -56,7 +56,7 @@ const STATUS_I18N: Record<PlanItemStatus, string> = {
   cancelled: 'planStatusCancelled',
 };
 
-function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onTimeFrameChange, linkedPlans = [], planItems = [], onNavigateToPlan }: Props) {
+function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone = 0, taskTotal = 0, onEdit, onAchieve, onArchive, onDelete, onTimeFrameChange, linkedPlans = [], planItems = [], onNavigateToPlan }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [showTfPicker, setShowTfPicker] = useState(false);
   const Icon = TYPE_ICON[vision.type] ?? Flag;
@@ -85,7 +85,7 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
   }, [vision.startDate, vision.timeFrame, vision.type, deadlineText]);
 
   return (
-    <View style={[styles.card, { borderLeftColor: typeColor, backgroundColor: TH.card }]}>
+    <View style={[styles.card, { borderLeftColor: typeColor, backgroundColor: TH.card, borderColor: TH.border }]}>
       {/* Header */}
       <View style={styles.headerRow}>
         <View style={styles.leftColumn}>
@@ -183,22 +183,27 @@ function VisionCard({ vision, TH, T, pct, planDone = 0, planTotal = 0, taskDone 
       <View style={styles.actionRow}>
         {vision.status === 'active' && (
           <>
-            <TouchableOpacity onPress={() => onAchieve(vision.id)} style={styles.achieveBtn}>
-              <Text style={{ fontSize: FONT_BADGE(), color: '#10B981', fontWeight: '600' }}>{T('vowAchieve')}</Text>
+            <TouchableOpacity onPress={() => onAchieve(vision.id)} style={[styles.actionBtn, { backgroundColor: '#10B981', borderColor: '#10B981' }]}>
+              <Text style={{ fontSize: FONT_BADGE(), color: '#fff', fontWeight: '700' }}>{T('vowAchieve')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => onArchive(vision.id)} style={styles.archiveBtn}>
-              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('vowArchive')}</Text>
+            <TouchableOpacity onPress={() => onArchive(vision.id)} style={[styles.actionBtn, { backgroundColor: TH.card, borderColor: TH.border }]}>
+              <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, fontWeight: '600' }}>{T('vowArchive')}</Text>
             </TouchableOpacity>
+            {onDelete && (
+              <TouchableOpacity onPress={() => onDelete(vision.id)} style={[styles.actionBtn, { backgroundColor: TH.card, borderColor: '#EF444440' }]}>
+                <Text style={{ fontSize: FONT_BADGE(), color: '#EF4444', fontWeight: '600' }}>{T('vowDelete')}</Text>
+              </TouchableOpacity>
+            )}
           </>
         )}
         {vision.status === 'achieved' && (
-          <View style={styles.statusBadgeAchieved}>
-            <Text style={{ fontSize: FONT_BADGE(), color: '#10B981', fontWeight: '600' }}>{T('vowAchieved')}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: '#10B98120', borderColor: '#10B981' }]}>
+            <Text style={{ fontSize: FONT_BADGE(), color: '#10B981', fontWeight: '700' }}>{T('vowAchieved')}</Text>
           </View>
         )}
         {vision.status === 'archived' && (
-          <View style={styles.statusBadgeArchived}>
-            <Text style={{ fontSize: FONT_BADGE(), color: TH.sub }}>{T('vowArchived')}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: TH.card, borderColor: TH.border }]}>
+            <Text style={{ fontSize: FONT_BADGE(), color: TH.sub, fontWeight: '600' }}>{T('vowArchived')}</Text>
           </View>
         )}
       </View>
@@ -277,6 +282,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     borderLeftWidth: 4,
+    borderWidth: 1,
   },
   headerRow: {
     flexDirection: 'row',
@@ -353,27 +359,17 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
-  achieveBtn: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    backgroundColor: '#10B98120',
+  actionBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 14,
     borderRadius: 8,
+    borderWidth: 1,
   },
-  archiveBtn: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+  statusBadge: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     borderRadius: 8,
-  },
-  statusBadgeAchieved: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    backgroundColor: '#10B98115',
-  },
-  statusBadgeArchived: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
+    borderWidth: 1,
   },
   linkedPlansToggle: {
     flexDirection: 'row',

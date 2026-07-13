@@ -369,11 +369,6 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
               <StatusLabel status={plan.status} T={T} />
             </View>
 
-            {plan.slogan ? (
-              <Text style={[styles.textSlogan, { color: TH.text }]}>
-                &ldquo;{plan.slogan}&rdquo;
-              </Text>
-            ) : null}
 
             {/* Progress ring + stats */}
             <View style={styles.statsRow}>
@@ -403,29 +398,32 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
             <PlanCountdown plan={plan} />
           </Card>
 
-          {/* Goal */}
+          {/* Goal + Vision (merged) */}
           <Card>
             <View style={styles.sectionHeaderRow}>
               <Target size={18} color={P} />
               <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planGoal')}</Text>
             </View>
             <Text style={[styles.textGoal, { color: TH.text }]}>{plan.goal}</Text>
-          </Card>
 
-          {/* Linked Vision */}
-          {plan.visionId && (() => {
-            const linkedVision = (visions ?? []).find((v: any) => v.id === plan.visionId && !v.deleted);
-            if (!linkedVision) return null;
-            return (
-              <Card>
-                <View style={styles.sectionHeaderRow}>
-                  <Text style={{ fontSize: 16 }}>🎯</Text>
-                  <Text style={[styles.textBodyBold, { color: TH.text }]}>{T('planLinkedVision')}</Text>
+            {plan.visionId && (() => {
+              const linkedVision = (visions ?? []).find((v: any) => v.id === plan.visionId && !v.deleted);
+              if (!linkedVision) return null;
+              return (
+                <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
+                  <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planLinkedVision')}：</Text>
+                  <Text style={[styles.textGoal, { color: '#8B5CF6', marginTop: 4 }]}>{linkedVision.text}</Text>
                 </View>
-                <Text style={[styles.textGoal, { color: TH.text, marginTop: 8 }]}>{linkedVision.text}</Text>
-              </Card>
-            );
-          })()}
+              );
+            })()}
+
+            {plan.slogan ? (
+              <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
+                <Text style={[styles.textSubDim, { color: TH.sub }]}>{T('planSlogan')}：</Text>
+                <Text style={[styles.textGoal, { color: TH.text, marginTop: 4 }]}>{plan.slogan}</Text>
+              </View>
+            ) : null}
+          </Card>
 
           {/* Items */}
           <Card>
