@@ -1157,6 +1157,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
   foodPreset: {
     sqlite: { table: 'custom_food_presets', pk: 'id' },
     pocketbase: { collection: 'custom_food_presets', serverIdField: 'preset_id' },
+    storeKey: 'customFoodPresets',
     fields: [
       { entity: 'id',        col: 'id',         server: 'id',        fallback: null },
       { entity: 'name',      col: 'name',       server: 'name',      fallback: '' },

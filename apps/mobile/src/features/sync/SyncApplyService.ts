@@ -48,6 +48,7 @@ export const ENTITY_STORE_KEY: Record<string, string> = {
   sutraReading: 'readingSessions',
   fearEntry: 'fearEntries', courageEntry: 'courageEntries', fearAchievement: 'achievements',
   breath: 'breathHistory', zhiguanSession: 'sessions',
+  foodPreset: 'customFoodPresets',
 };
 
 // Entities that intentionally have no store key (handled via special logic in applyEntityToTable)
