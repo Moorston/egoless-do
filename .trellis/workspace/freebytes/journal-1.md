@@ -684,3 +684,36 @@ habits 表增加 vision_id 列（修复 SyncApply no such column 错误）；Pla
 ### Next Steps
 
 - None - task complete
+
+
+## Session 20: 关系全景图愿景节点 + 习惯详情页愿景标题同行
+
+**Date**: 2026-07-13
+**Task**: 关系全景图愿景节点 + 习惯详情页愿景标题同行
+**Branch**: `master`
+
+### Summary
+
+关系全景图新增愿景节点类型(NodeType: vision)，自动链接计划/习惯的visionId到愿景节点并连线；HabitDetailScreen已关联愿景卡片icon与标题同行显示
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2b5f099` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
