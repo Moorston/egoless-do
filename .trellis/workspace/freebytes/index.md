@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 24
+- **Total Sessions**: 25
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~851 | Active |
+| `journal-1.md` | ~884 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 25 | 2026-07-13 | token-refresh-rotation revokeNonce 重复声明修复 | `139ad7a` | `master` |
 | 24 | 2026-07-13 | SSE 实时连接 token 修复 | `7973876` | `master` |
 | 23 | 2026-07-13 | token 认证体系全面改进 | `f446c00` | `master` |
 | 22 | 2026-07-13 | token 过期机制分析 + 修复退出登录页 | `9579763` | `master` |

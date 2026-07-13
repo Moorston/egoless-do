@@ -849,3 +849,36 @@ RealtimeAgent 改用 tokenProvider 动态获取 token，SSE 重连和心跳时�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 25: token-refresh-rotation revokeNonce 重复声明修复
+
+**Date**: 2026-07-13
+**Task**: token-refresh-rotation revokeNonce 重复声明修复
+**Branch**: `master`
+
+### Summary
+
+infra/docker/api token-refresh-rotation.ts 第90行重复声明 revokeNonce 导致 esbuild 构建失败，删除重复行
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `139ad7a` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
