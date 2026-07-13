@@ -241,6 +241,15 @@ export default function AppNavigator() {
     }
   }, [isSignedIn]);
 
+  // Navigate to Login when signed out (token expired, kicked out, or manual logout)
+  const prevIsSignedIn = useRef(isSignedIn);
+  useEffect(() => {
+    if (prevIsSignedIn.current && !isSignedIn && navRef.current) {
+      navRef.current.reset({ index: 0, routes: [{ name: 'Login' }] });
+    }
+    prevIsSignedIn.current = isSignedIn;
+  }, [isSignedIn]);
+
   // Handle habit alarm notification tap
   useEffect(() => {
     let sub: { remove?: () => void } | undefined;

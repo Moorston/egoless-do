@@ -171,7 +171,8 @@ export function createAuthSlice(
             // 401/400 etc: don't retry, fall through to check token expiry
             // Second failure or non-retryable error: only clear auth if token is actually expired
             const currentAuth = get().auth;
-            if (currentAuth.refreshToken && currentAuth.expiresAt && currentAuth.expiresAt < Date.now()) {
+            const isExpired = currentAuth.expiresAt > 0 ? currentAuth.expiresAt < Date.now() : true;
+            if (currentAuth.refreshToken && isExpired) {
               log.warn('Token refresh failed after 2 attempts, clearing auth', { context: 'refreshAuth' });
               set({ auth: defaultAuthState });
             }
