@@ -1083,8 +1083,8 @@ export const zh: I18nKeys = {
   vowDedWeekly:'每周', vowDedBiweekly:'每两周', vowDedMonthly:'每月', vowDedCustom:'自定义',
   vowDedInsight:'本周感悟', vowDedInsightPlaceholder:'记录你的修行感悟...',
   vowDedAdjustment:'下周调整', vowDedAdjustmentPlaceholder:'下期想要调整什么...',
-  vowDedSave:'保存回向', vowDedPeriod:'周期', vowDedDays:'精进天数',
-  vowDedNoWrite:'尚未写本期回向', vowDedPrevWeek:'上期', vowDedSummary:'精进回顾',
+  vowDedSave:'保存立愿', vowDedPeriod:'周期', vowDedDays:'精进天数',
+  vowDedNoWrite:'尚未立愿', vowDedPrevWeek:'上期', vowDedSummary:'精进回顾',
   vowDedAutoHint:'以下数据自动生成，不可修改',
   vowAchievedList:'已达成愿景', vowExpandMore:'展开', vowCollapse:'收起',
 

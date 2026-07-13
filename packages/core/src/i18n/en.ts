@@ -1085,8 +1085,8 @@ export const en: I18nKeys = {
   vowDedWeekly:'Weekly', vowDedBiweekly:'Biweekly', vowDedMonthly:'Monthly', vowDedCustom:'Custom',
   vowDedInsight:'Insight', vowDedInsightPlaceholder:'Record your practice insight...',
   vowDedAdjustment:'Next Adjustment', vowDedAdjustmentPlaceholder:'What to adjust next period...',
-  vowDedSave:'Save Dedication', vowDedPeriod:'Period', vowDedDays:'Practice Days',
-  vowDedNoWrite:'Dedication not written yet', vowDedPrevWeek:'Previous', vowDedSummary:'Practice Review',
+  vowDedSave:'Save Vow', vowDedPeriod:'Period', vowDedDays:'Practice Days',
+  vowDedNoWrite:'No vow made yet', vowDedPrevWeek:'Previous', vowDedSummary:'Practice Review',
   vowDedAutoHint:'Data below is auto-generated and cannot be edited',
   vowAchievedList:'Achieved Visions', vowExpandMore:'Expand', vowCollapse:'Collapse',
 

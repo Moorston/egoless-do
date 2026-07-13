@@ -1080,8 +1080,8 @@ export const zhHant: I18nKeys = {
   vowDedWeekly:'每週', vowDedBiweekly:'每兩週', vowDedMonthly:'每月', vowDedCustom:'自訂',
   vowDedInsight:'本週感悟', vowDedInsightPlaceholder:'記錄你的修行感悟...',
   vowDedAdjustment:'下週調整', vowDedAdjustmentPlaceholder:'下期想要調整什麼...',
-  vowDedSave:'儲存回向', vowDedPeriod:'週期', vowDedDays:'精進天數',
-  vowDedNoWrite:'尚未寫本期回向', vowDedPrevWeek:'上期', vowDedSummary:'精進回顧',
+  vowDedSave:'儲存立願', vowDedPeriod:'週期', vowDedDays:'精進天數',
+  vowDedNoWrite:'尚未立願', vowDedPrevWeek:'上期', vowDedSummary:'精進回顧',
   vowDedAutoHint:'以下資料自動產生，不可修改',
   vowAchievedList:'已達成願景', vowExpandMore:'展開', vowCollapse:'收起',
 
