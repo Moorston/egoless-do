@@ -169,11 +169,13 @@ export function createAuthSlice(
               continue;
             }
             // 401/400 etc: don't retry, fall through to check token expiry
-            // Second failure or non-retryable error: only clear auth if token is actually expired
+            // Second failure or non-retryable error: only clear auth if token has been expired
+            // beyond the grace period (7 days). Prevents forced logout from transient network issues.
             const currentAuth = get().auth;
-            const isExpired = currentAuth.expiresAt > 0 ? currentAuth.expiresAt < Date.now() : true;
-            if (currentAuth.refreshToken && isExpired) {
-              log.warn('Token refresh failed after 2 attempts, clearing auth', { context: 'refreshAuth' });
+            const LOGOUT_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
+            const isPastGrace = currentAuth.expiresAt > 0 ? currentAuth.expiresAt + LOGOUT_GRACE_MS < Date.now() : true;
+            if (currentAuth.refreshToken && isPastGrace) {
+              log.warn('Token refresh failed after 2 attempts and past grace period, clearing auth', { context: 'refreshAuth' });
               set({ auth: defaultAuthState });
             }
             // If token is still valid, keep the auth state — network error is transient
