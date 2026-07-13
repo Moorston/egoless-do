@@ -750,3 +750,36 @@ habits 表增加 vision_id 列（修复 SyncApply no such column 错误）；Pla
 ### Next Steps
 
 - None - task complete
+
+
+## Session 22: token 过期机制分析 + 修复退出登录页
+
+**Date**: 2026-07-13
+**Task**: token 过期机制分析 + 修复退出登录页
+**Branch**: `master`
+
+### Summary
+
+分析了 token 认证体系（JWT 7天/refresh 30天/轮换机制/黑名单），发现 token 过期后 createAuthSlice.clearAuth() 没有触发导航回登录页。修复：navigation 增加 isSignedIn 下降沿检测自动 reset 到 Login，同时修复 expiresAt=0 时不清除 auth 的 condition 短路 bug。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9579763` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
