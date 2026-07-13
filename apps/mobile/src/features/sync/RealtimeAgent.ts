@@ -24,7 +24,7 @@ export interface RealtimeChangeEvent {
 export class RealtimeAgent {
   private _es: EventSource | null = null;
   private _pbUrl = '';
-  private _token = '';
+  private _tokenProvider: (() => string) | null = null;
   private _clientId = '';
   private _reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private _reconnectAttempt = 0;
@@ -40,15 +40,27 @@ export class RealtimeAgent {
   setStatusHandler(fn: (connected: boolean) => void) { this._onStatus = fn; }
   setKickedOutHandler(fn: () => void) { this._onKickedOut = fn; }
 
-  connect(pbUrl: string, token: string) {
+  /** Get current token — either the stored value or from the provider */
+  private _getToken(): string {
+    const provided = this._tokenProvider?.();
+    return provided || this._tokenProvider?.() || '';
+  }
+
+  connect(pbUrl: string, token: string, tokenProvider?: () => string) {
     if (this._es) this.disconnect();
     this._destroyed = false;
     this._pbUrl = pbUrl.replace(/\/+$/, '');
     this._token = token;
+    this._tokenProvider = tokenProvider ?? (() => token);
     this._reconnectAttempt = 0;
     this._consecutiveHeartbeatFailures = 0;
     this._open();
     this._startHeartbeat();
+  }
+
+  /** Update the stored token without reconnecting */
+  updateToken(token: string) {
+    this._token = token;
   }
 
   disconnect() {
@@ -65,7 +77,7 @@ export class RealtimeAgent {
     this._stopHeartbeat();
     this._heartbeatTimer = setInterval(() => {
       if (this._destroyed) { this._stopHeartbeat(); return; }
-      if (!this._token || !this._pbUrl) return;
+      if (!this._getToken() || !this._pbUrl) return;
       // Use PB health endpoint (old /api/realtime/ping was removed in PB 0.38.x)
       fetch(`${this._pbUrl}/api/health`).then((res) => {
         if (!res.ok) {
@@ -105,14 +117,20 @@ export class RealtimeAgent {
     this._reconnectAttempt++;
     this._clearReconnect();
     this._reconnectTimer = setTimeout(() => {
-      if (!this._destroyed && this._token) this._open();
+      if (!this._destroyed && this._getToken()) this._open();
     }, delay);
   }
 
   private _open() {
-    if (this._destroyed || !this._token) return;
+    if (this._destroyed) return;
+    const token = this._getToken();
+    if (!token) {
+      log.warn('SSE: no token available, scheduling reconnect');
+      this._scheduleReconnect();
+      return;
+    }
     const es = new EventSource(`${this._pbUrl}/api/realtime`, {
-      headers: { Authorization: `Bearer ${this._token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     this._es = es;
 
@@ -193,6 +211,8 @@ export class RealtimeAgent {
 
   private async _subscribe() {
     if (!this._clientId) return;
+    const token = this._getToken();
+    if (!token) return;
     try {
       const collections = SYNC_ENTITIES
         .map(e => SCHEMAS[e as keyof typeof SCHEMAS]?.pocketbase?.collection)
@@ -202,7 +222,7 @@ export class RealtimeAgent {
       formData.append('subscriptions', JSON.stringify(collections));
       const res = await fetch(`${this._pbUrl}/api/realtime`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${this._token}` },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
       if (!res.ok) { log.warn('Subscription failed:', res.status); this._scheduleReconnect(); }
