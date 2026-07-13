@@ -3,7 +3,7 @@ import type { MusicTrack } from '@egoless-do/core';
 import React from 'react';
 import { View, Text } from 'react-native';
 
-import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import MeditationMusicBar from '../../../components/MeditationMusicBar';
 
 
 interface Props {

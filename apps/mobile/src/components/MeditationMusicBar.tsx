@@ -5,8 +5,8 @@ import { Music, ChevronRight, Waves, CloudRain, Droplets, Bell, Wind, Bird, Dumb
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { useTheme, useT } from '../../components/UI';
-import AnimatedMusicIcon from '../music/components/AnimatedMusicIcon';
+import { useTheme, useT } from './UI';
+import AnimatedMusicIcon from './AnimatedMusicIcon';
 
 const ICON_MAP: Record<string, React.ComponentType<any>> = {
   Waves, CloudRain, Droplets, Bell, Wind, Bird, Music, Dumbbell, Repeat, Repeat1,

@@ -4,7 +4,7 @@ import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
-import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import MeditationMusicBar from '../../../components/MeditationMusicBar';
 
 import type { ExercisePageProps } from './types';
 

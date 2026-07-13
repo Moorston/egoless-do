@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import AnimatedMusicIcon from '../components/AnimatedMusicIcon';
+import AnimatedMusicIcon from '../../../components/AnimatedMusicIcon';
 import CategoryCard from '../components/CategoryCard';
 import ImportMusicButton from '../components/ImportMusicButton';
 import PlayerBar from '../components/PlayerBar';

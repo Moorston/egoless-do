@@ -4,7 +4,7 @@ import { Pause } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import MeditationMusicBar from '../../../components/MeditationMusicBar';
 
 
 interface GpsActiveProps {

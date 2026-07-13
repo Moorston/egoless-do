@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
-import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import MeditationMusicBar from '../../../components/MeditationMusicBar';
 
 import type { ExercisePageProps } from './types';
 

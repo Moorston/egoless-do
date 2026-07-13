@@ -1,4 +1,9 @@
 // ─── Navigation root ──────────────────────────────────────────────────────
+//
+// ⚠️ 导航层作为全局协调器，直接引用 sync 状态是设计意图（§2.2 建议集中路由表，
+// 但同步状态是全局性基础设施，不适合通过 Store 间接转发）。
+// 其他 feature 仍应遵循 §2.2 禁止互相直接引用。
+// ────────────────────────────────────────────────────────────────────────────
 import { t, FONT_BODY, createLogger } from '@egoless-do/core';
 import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, type NavigationContainerRef } from '@react-navigation/native';

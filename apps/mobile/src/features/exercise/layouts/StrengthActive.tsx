@@ -4,7 +4,7 @@ import { Minus, Plus, Pause } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 
-import MeditationMusicBar from '../../meditation/MeditationMusicBar';
+import MeditationMusicBar from '../../../components/MeditationMusicBar';
 import CelebrationOverlay from '../shared/CelebrationOverlay';
 import EmbeddedRest from '../shared/EmbeddedRest';
 import ExerciseTopBar from '../shared/ExerciseTopBar';

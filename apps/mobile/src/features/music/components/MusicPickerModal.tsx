@@ -5,7 +5,7 @@ import React, { useMemo, useCallback } from 'react';
 import { View, Text, Modal, TouchableOpacity, FlatList, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { useTheme, useT } from '../../../components/UI';
-import { audioSessionManager } from '../services/AudioSessionManager';
+import { audioSessionManager } from '../../../services/AudioSessionManager';
 import { useMusicStore } from '../useMusicStore';
 
 import TrackListItem from './TrackListItem';

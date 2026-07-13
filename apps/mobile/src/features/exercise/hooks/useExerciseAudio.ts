@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-import { audioSessionManager } from '../../music/services/AudioSessionManager';
+import { audioSessionManager } from '../../../services/AudioSessionManager';
 
 const SOUND_FILES: Record<string, number> = {
   '海潮': require('../../../../assets/sounds/ocean.mp3'),

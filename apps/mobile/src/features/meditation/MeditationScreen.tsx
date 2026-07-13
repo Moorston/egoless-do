@@ -20,10 +20,10 @@ import { useGoalResolver } from '../global-pulse/hooks/useGoalResolver';
 import { useSessionHeartbeat } from '../global-pulse/hooks/useSessionHeartbeat';
 import { createSession, deleteSession, updateSession } from '../global-pulse/services/activeSessionApi';
 import MusicPickerModal from '../music/components/MusicPickerModal';
-import { audioSessionManager } from '../music/services/AudioSessionManager';
+import { audioSessionManager } from '../../services/AudioSessionManager';
 import { useMusicStore } from '../music/useMusicStore';
 
-import MeditationMusicBar from './MeditationMusicBar';
+import MeditationMusicBar from '../../components/MeditationMusicBar';
 
 // 实时会话
 

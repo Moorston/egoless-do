@@ -7,7 +7,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useTheme, useT } from '../../../components/UI';
 import { useMusicStore } from '../useMusicStore';
 
-import AnimatedMusicIcon from './AnimatedMusicIcon';
+import AnimatedMusicIcon from '../../../components/AnimatedMusicIcon';
 import FavoriteButton from './FavoriteButton';
 import WaveformBar from './WaveformBar';
 

@@ -8,7 +8,7 @@ import { audioPlayerRef } from '../services/audioPlayerRef';
 import { useMusicStore } from '../useMusicStore';
 import type { PlayMode } from '../useMusicStore';
 
-import AnimatedMusicIcon from './AnimatedMusicIcon';
+import AnimatedMusicIcon from '../../../components/AnimatedMusicIcon';
 import WaveformBar from './WaveformBar';
 
 const SLEEP_PRESETS = [15, 30, 45, 60, 90];

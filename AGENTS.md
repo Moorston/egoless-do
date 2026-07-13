@@ -65,8 +65,8 @@ egoless-do/
 │   │       ├── i18n/              #    国际化初始化
 │   │       ├── navigation/        #    路由配置
 │   │       └── theme/             #    主题配置 + useTheme hook
-│   └── _archive/                 # 归档的遗留代码
-    │       └── web-legacy/           # Next.js 15 PWA (archived)
+├── _archive/                      # 归档的遗留代码（仓库根目录，非 apps/ 下）
+│   └── web-legacy/                # Next.js 15 PWA (archived)
 ├── packages/                      # 【核】共享逻辑
 │   ├── core/                      #    全部业务逻辑 & 类型 & 常量
 │   │   ├── ai/                    #    AI 服务 + RAG
@@ -230,11 +230,11 @@ BREAKING CHANGE: TimelineList now requires itemHeight prop
 | Business 纯函数文件 | — | 500 行 | 按领域拆分目录 |
 
 **当前超标文件清单**（详见 §六）：
-- SyncEngine.ts (1284 行) — **最高优先级**
-- SleepEngine.tsx (1001 行)
-- BreathingEngine.tsx (940 行)
-- HomeScreen.tsx (880 行)
-- RelationMapView.tsx (871 行)
+- SyncEngine.ts (884 行) — 从 1284 行缩减中，目标 <600
+- SleepEngine.tsx (342 行) — 已大幅减负
+- BreathingEngine.tsx (464 行)
+- HomeScreen.tsx (838 行)
+- RelationMapView.tsx (450 行) — 已从 871 行拆分完成
 
 ### 4.2 函数复杂度限制
 
@@ -386,7 +386,7 @@ apps/mobile/src/**/*.test.ts            ← UI 交互可选
 ### P0 — 紧急（阻塞后续开发的瓶颈）
 
 #### AR-01: SyncEngine 巨型类拆分 ✅ 已完成
-- **现状**: `SyncEngine.ts` 原 1284 行 → 现 398 行，已拆分为 7 个独立服务
+- **现状**: `SyncEngine.ts` 原 1284 行 → 现 884 行（推进中，目标 600 以下），已拆分为 7 个独立服务
 - **拆分结果**:
   1. ✅ `SyncPushService` — push 逻辑
   2. ✅ `SyncPullService` — pull 逻辑
@@ -461,7 +461,7 @@ apps/mobile/src/**/*.test.ts            ← UI 交互可选
 - **工作量**: 2 天
 
 #### AR-09: Engine 类拆分
-- **现状**: SleepEngine(1001)、BreathingEngine(940)、MantraEngine(624)
+- **现状**: SleepEngine(342)、BreathingEngine(464)、MantraEngine(624)
 - **风险**: 类似 SyncEngine 的问题，维护和测试困难
 - **方案**: 参照 AR-01 方案，按职责拆分为 Timer + Renderer + Audio Controller 等
 - **工作量**: 每例 2-3 天 × 3 = 6-9 天
@@ -488,11 +488,11 @@ apps/mobile/src/**/*.test.ts            ← UI 交互可选
 
 | 文件 | 当前 | Target | 策略 |
 |------|------|--------|------|
-| SyncEngine.ts | 1284 | <600 | 拆 4-5 个 service 类 (§AR-01) |
-| SleepEngine.tsx | 1001 | <600 | 拆 Timer / Alarm / Notification §AR-09 |
-| BreathingEngine.tsx | 940 | <600 | 拆 Timer / Animation / Audio §AR-09 |
-| HomeScreen.tsx | 880 | <600 | 拆分 CheckinCard / AgendaPanel / StatsRow 为独立组件 |
-| RelationMapView.tsx | 871 | <600 | 图算法抽到 core/business/, UI 层只负责渲染 |
+| SyncEngine.ts | 884 | <600 | 已拆 7 个 service，剩余缩减中 (§AR-01) |
+| SleepEngine.tsx | 342 | <600 | 已拆分，Timer/Alarm/Notification 分离 §AR-09 |
+| BreathingEngine.tsx | 464 | <600 | 拆 Timer / Animation / Audio §AR-09 |
+| HomeScreen.tsx | 838 | <600 | 拆分 CheckinCard / AgendaPanel / StatsRow 为独立组件 |
+| RelationMapView.tsx | 450 | <600 | 图算法抽到 core/business/, UI 层只负责渲染 |
 | MindTrailScreen.tsx | 810 | <600 | 拆分 DetailPanel / ActionSheet 组件 |
 | ReflectionsScreen.tsx | 866 | <600 | 拆分 Header / Grid / List 视图为独立组件 |
 
