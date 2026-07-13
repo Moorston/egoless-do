@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 16
+- **Total Sessions**: 17
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~579 | Active |
+| `journal-1.md` | ~613 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 17 | 2026-07-13 | 愿景关联计划/习惯 + 立愿文案 | `a8d4cef`, `a865aba` | `master` |
 | 16 | 2026-07-13 | 愿景关联计划/习惯 + 立愿文案 | `a8d4cef` | `master` |
 | 15 | 2026-07-13 | 架构修复 + 愿景优化 + BodyWeekPlanCard 修复 | `4102176`, `937017c`, `9fe03ca` | `master` |
 | 14 | 2026-07-12 | 修复 AsyncStorage 原生模块错误 + expo-notifications 废弃警告 | `0e281d1`, `9d4db5b` | `master` |
