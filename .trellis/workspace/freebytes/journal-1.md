@@ -645,3 +645,42 @@ habits 表增加 vision_id 列（修复 SyncApply no such column 错误）；Pla
 ### Next Steps
 
 - None - task complete
+
+
+## Session 19: 计划详情页愿景显示 + 保存弹窗 + 样式优化
+
+**Date**: 2026-07-13
+**Task**: 计划详情页愿景显示 + 保存弹窗 + 样式优化
+**Branch**: `master`
+
+### Summary
+
+计划编辑保存弹出成功弹窗(继续编辑/返回)；计划详情/关联内容/关系图增加愿景显示；目标+关联愿景+我的愿景合并卡片，统一标题样式
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `bdbc0b9` | (see git log) |
+| `234da8d` | (see git log) |
+| `5e2a48e` | (see git log) |
+| `f9bcb31` | (see git log) |
+| `9c4c18e` | (see git log) |
+| `699f163` | (see git log) |
+| `1f47b57` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
