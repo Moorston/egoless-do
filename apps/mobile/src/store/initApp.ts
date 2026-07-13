@@ -201,8 +201,9 @@ export async function initApp(): Promise<void> {
               setState({ auth: { ...latestAuth, user } } as PartialMobileStore);
             }
           }).catch(() => {
-            // Token expired or invalid — will be refreshed by refreshAuth() on next sync
-            log.info('SecureStore token expired, will refresh on next sync');
+            // Token expired or invalid — proactively refresh instead of waiting for next sync
+            log.info('SecureStore token expired, proactively refreshing');
+            store().refreshAuth().catch(e => log.error(e, { message: 'Startup token refresh failed' }));
           });
 
           if (!currentAuth.isSignedIn) {

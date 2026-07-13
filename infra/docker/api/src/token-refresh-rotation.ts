@@ -65,6 +65,10 @@ export async function createRefreshToken(userId: string, token: string, expiresA
  * 如果两个并发请求都通过了 find，后到的 re-read 会发现 used_at 不匹配。
  * 注意：PocketBase 不支持原子 UPDATE...RETURNING，仍有微小竞态窗口，
  * 但 post-revoke 验证将窗口从"无限"缩小到"两个 PB 请求之间"。
+ *
+ * 额外防护：检查 created_at，如果 token 创建时间 < 1 秒前（极短生命周期），
+ * 则视为可疑的快速重放攻击，拒绝验证。这防止了在轮换的最后一环之前
+ * 用旧 token 发起并发请求的场景。
  */
 export async function validateAndRevokeRefreshToken(token: string): Promise<{ valid: boolean; userId?: string }> {
   try {
@@ -74,7 +78,16 @@ export async function validateAndRevokeRefreshToken(token: string): Promise<{ va
       `token = "${escapeFilter(token)}" && is_revoked = false && expires_at > ${Date.now()}`
     );
 
+    // Step 1b: Rapid-reuse guard — reject if created within the last second
+    // Prevents race where multiple requests grab the same token before revocation
+    const createdAt = typeof record.created_at === 'number' ? record.created_at : 0;
+    if (createdAt > 0 && Date.now() - createdAt < 1000) {
+      console.warn('Token rapid-reuse detected — created < 1s ago, rejecting');
+      return { valid: false };
+    }
+
     // Step 2: Revoke immediately, using a crypto-random nonce for race detection
+    const revokeNonce = generateNonce();
     const revokeNonce = generateNonce();
     try {
       await pb.collection(COLLECTION_NAME).update(record.id, {

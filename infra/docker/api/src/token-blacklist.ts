@@ -6,6 +6,15 @@ import { errMessage, errStatus } from './errors.js';
 
 const COLLECTION_NAME = 'token_blacklist';
 
+// ─── Fail-open observability ─────────────────────────────────────────
+// Tracks how often blacklist checks fail open (PB unavailable).
+// Exported for monitoring/health check endpoints.
+export const failOpenMetrics = {
+  count: 0,
+  lastFailAt: 0,
+  reset() { this.count = 0; this.lastFailAt = 0; },
+};
+
 /**
  * 检查 Token 是否在黑名单中
  */
@@ -21,7 +30,14 @@ export async function isTokenBlacklisted(token: string): Promise<boolean> {
     // Fail-open for blacklist: PB down should not block ALL authenticated requests.
     // Blacklist is a secondary defense — primary defense is token expiry (7 days).
     // A temporarily usable revoked token is less harmful than blocking all users.
-    console.warn('Token blacklist check failed, allowing access (fail-open):', errMessage(err));
+    failOpenMetrics.count++;
+    failOpenMetrics.lastFailAt = Date.now();
+    if (failOpenMetrics.count % 100 === 1) {
+      // Log every 100th fail-open event to avoid log flooding
+      console.warn(`[TokenBlacklist] Fail-open ${failOpenMetrics.count}次, last=${new Date(failOpenMetrics.lastFailAt).toISOString()}:`, errMessage(err));
+    } else {
+      console.warn('Token blacklist check failed, allowing access (fail-open):', errMessage(err));
+    }
     return false;
   }
 }

@@ -64,9 +64,19 @@ app.use('*', async (c, next) => {
 // ── Readiness probe：初始化完成前返回 503 ──────────────────────
 let _ready = false;
 
+// Health endpoint with diagnostics
+import { failOpenMetrics } from './token-blacklist.js';
+
 app.get('/healthz', (c) => {
   if (!_ready) return c.json({ status: 'starting', service: 'egoless-auth-api' }, 503);
-  return c.json({ status: 'ok', service: 'egoless-auth-api' });
+  return c.json({
+    status: 'ok',
+    service: 'egoless-auth-api',
+    blacklist: {
+      failOpenCount: failOpenMetrics.count,
+      lastFailAt: failOpenMetrics.lastFailAt || null,
+    },
+  });
 });
 
 // Auth 路由挂载
