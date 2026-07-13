@@ -816,3 +816,36 @@ habits 表增加 vision_id 列（修复 SyncApply no such column 错误）；Pla
 ### Next Steps
 
 - None - task complete
+
+
+## Session 24: SSE 实时连接 token 修复
+
+**Date**: 2026-07-13
+**Task**: SSE 实时连接 token 修复
+**Branch**: `master`
+
+### Summary
+
+RealtimeAgent 改用 tokenProvider 动态获取 token，SSE 重连和心跳时自动使用最新 token，避免 token 刷新后 SSE 因过期 token 无限重连失败
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `7973876` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
