@@ -113,6 +113,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
   });
   const [localDone, setLocalDone] = useState<boolean | null>(() => existing?.done ?? null);
   const [showReasonModal, setShowReasonModal] = useState(false);
+  const [graceSuccess, setGraceSuccess] = useState(false);
   const [incompleteItems, setIncompleteItems] = useState<ReturnType<typeof getIncompleteItems>>([]);
   const [selectedReason, setSelectedReason] = useState('');
   const [reasonNote, setReasonNote] = useState('');
@@ -167,10 +168,11 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
     if (reasonNoteOverride?.trim()) noteData.incompleteNote = reasonNoteOverride.trim();
     const weightNum = parseWeight(weight);
     store.submitCheckin(done, JSON.stringify(noteData), isGraceMode ? targetDate : undefined, weightNum, isGraceMode);
-    // In grace mode, also record grace history and close directly
+    // In grace mode, show success then close after a brief delay
     if (isGraceMode) {
       store.addGraceRecord(targetDate);
-      onClose();
+      setGraceSuccess(true);
+      setTimeout(() => onClose(), 1500);
     } else {
       // Show reflection prompt instead of closing immediately
       setShowReflection(true);
@@ -308,7 +310,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
           </View>
 
           {/* Grace mode hint banner */}
-          {isGraceMode && (
+          {isGraceMode && !graceSuccess && (
             <View style={{
               flexDirection: 'row', alignItems: 'center', gap: 8,
               padding: 12, borderRadius: 10, marginBottom: 12,
@@ -321,6 +323,23 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             </View>
           )}
 
+          {/* Grace success overlay */}
+          {graceSuccess ? (
+            <View style={{
+              flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 60,
+            }}>
+              <View style={{
+                width: 80, height: 80, borderRadius: 40,
+                backgroundColor: '#10B98120', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
+              }}>
+                <Text style={{ fontSize: 36 }}>✅</Text>
+              </View>
+              <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#10B981', marginBottom: 8 }}>
+                {T('graceSuccess')}
+              </Text>
+              <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{targetDate}</Text>
+            </View>
+          ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
 
             {/* Status buttons - TOP (hidden in grace mode) */}
@@ -573,6 +592,7 @@ export default function CheckinModal({ onClose, graceDate }: { onClose: () => vo
             </TouchableOpacity>
 
           </ScrollView>
+          )}
         </View>
       </KeyboardAvoidingView>
 
