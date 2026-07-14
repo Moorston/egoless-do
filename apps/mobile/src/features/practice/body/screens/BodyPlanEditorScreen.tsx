@@ -110,7 +110,7 @@ export default function BodyPlanEditorScreen() {
             <Text style={{ fontWeight: '600', fontSize: FONT_BODY(), color: TH.text }}>{T('bodyGoal')}</Text>
           </View>
           {/* Strategy */}
-          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('bodyStrategy')}</Text>
+          <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('bodyStrategyLabel')}</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
             {BODY_STRATEGIES.map(s => (
               <TouchableOpacity key={s.key} onPress={() => setStrategy(strategy === s.key ? '' : s.key)}

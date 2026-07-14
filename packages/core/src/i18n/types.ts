@@ -868,6 +868,10 @@ export interface I18nKeys {
   bodyStrategyLabel: string; bodyProgress: string;
   bodyPlanNotSet: string; bodyPlanEdit: string; bodyPlanTitle: string; bodyPlanSave: string;
   bodyPlanNote: string; bodyPlanRestDay: string;
+  bodyPlanCreate: string; bodyPlanName: string; bodyPlanNamePlaceholder: string;
+  bodyPlanDateRange: string; bodyPlanStart: string; bodyPlanEnd: string;
+  bodyPlanGoalNote: string; bodyGoalNotePlaceholder: string;
+  bodyWeeklyPlan: string; bodySelectExercise: string;
   bodyExecNotSet: string; bodyCompletedDays: string; bodyKcal: string;
   bodyDayComplete: string; bodyDayIncomplete: string; bodyDayPending: string; bodyDayRest: string;
   bodyWeekMon: string; bodyWeekTue: string; bodyWeekWed: string; bodyWeekThu: string;
