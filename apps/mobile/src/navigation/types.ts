@@ -4,7 +4,7 @@ export type RootStackParamList = {
   Register: undefined;
   ForgotPassword: undefined;
   GlobalMap: { icon?: string; title?: string; type?: 'exercise' | 'fasting' | 'meditation' } | undefined;
-  Sport: { key: string; icon: string; color: string; gps?: boolean };
+  Sport: { key: string; icon: string; color: string; gps?: boolean; planId?: string; planTaskWeekday?: number };
   FastHistory: undefined;
   FastCalendar: undefined;
   MedHistory: undefined;

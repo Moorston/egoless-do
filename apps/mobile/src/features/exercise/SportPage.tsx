@@ -53,9 +53,9 @@ export default function SportPage() {
   const route = useRoute<Route>();
   const TH    = useTheme();
   const T     = useT();
-  const { auth, userProfile, addExercise, exerciseLog } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog }));
+  const { auth, userProfile, addExercise, exerciseLog, updateBodyTrainingPlan } = useShallowStore(s => ({ auth: s.auth, userProfile: s.userProfile, addExercise: s.addExercise, exerciseLog: s.exerciseLog, updateBodyTrainingPlan: s.updateBodyTrainingPlan }));
   const { MapView, Polyline, ready: amapReady } = useAmapComponents();
-  const { key: sportName, icon, color, gps: gpsParam } = route.params;
+  const { key: sportName, icon, color, gps: gpsParam, planId, planTaskWeekday } = route.params;
 
   const isGpsSport = gpsParam ?? false;
   const weight = userProfile?.weight ?? 70;
@@ -307,7 +307,7 @@ export default function SportPage() {
       stopGpsTracking();
       const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
       if (timer.sec > 0 || (finalReps && finalReps > 0)) {
-        const entry = {
+        const entry: Record<string, unknown> = {
           sportKey: sportName, sportIcon: icon, durationSec: timer.sec,
           timestamp: Date.now(), isGpsSport,
           distanceKm: isGpsSport ? distKm : undefined,
@@ -320,6 +320,8 @@ export default function SportPage() {
           reps: finalReps,
           sets: sets.sets.length > 0 ? sets.sets : undefined,
           met: MET_MAP[sportName],
+          planId,
+          planTaskWeekday,
         };
         addExercise(entry);
         if (useAppStore.getState().healthSyncEnabled) {
@@ -334,7 +336,7 @@ export default function SportPage() {
       return;
     }
     try { nav.goBack(); } catch { savingRef.current = false; }
-  }, [timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking]);
+  }, [timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday]);
 
   // Stop music and ambient audio when entering report page (exercise ended)
   useEffect(() => {
