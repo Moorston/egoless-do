@@ -1,14 +1,23 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, type BodyTrainingPlan, EXERCISE_CATEGORIES, type Theme } from '@egoless-do/core';
-import { Target, Calendar, Dumbbell, Plus, Play } from 'lucide-react-native';
+import { Target, Calendar, Dumbbell, Plus, Play, CheckCircle2 } from 'lucide-react-native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 
+interface PlanProgress {
+  weekComplete: number;
+  weekTotal: number;
+  todayDone: boolean;
+  totalDuration: number;
+  totalCal: number;
+}
+
 interface Props {
   TH: Theme;
   T: (key: string) => string;
   plan: BodyTrainingPlan | undefined;
+  progress: PlanProgress | null;
   onEdit: () => void;
   onStart: (planId: string) => void;
 }
@@ -18,7 +27,7 @@ function resolveSport(key: string, T: (k: string) => string) {
   return cat ? { icon: cat.icon, label: T(cat.i18nKey) } : { icon: '🏋️', label: key };
 }
 
-export default function BodyTrainingPlanSection({ TH, T, plan, onEdit, onStart }: Props) {
+export default function BodyTrainingPlanSection({ TH, T, plan, progress, onEdit, onStart }: Props) {
   const P = '#f59e0b';
 
   if (!plan) {
@@ -64,6 +73,26 @@ export default function BodyTrainingPlanSection({ TH, T, plan, onEdit, onStart }
 
       {/* Tasks */}
       <View style={{ padding: 16 }}>
+        {/* Progress bar */}
+        {progress && (
+          <View style={{ marginBottom: 12 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                {progress.todayDone ? <CheckCircle2 size={14} color="#10b981" /> : null}
+                <Text style={{ fontSize: FONT_SMALL(), color: progress.todayDone ? '#10b981' : TH.sub }}>
+                  {progress.todayDone ? T('bodyDayComplete') : T('bodyToday')}
+                </Text>
+              </View>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
+                {progress.weekComplete}/{progress.weekTotal} · {progress.totalDuration}min · {progress.totalCal}kcal
+              </Text>
+            </View>
+            <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
+              <View style={{ height: 6, borderRadius: 3, width: `${progress.weekTotal > 0 ? (progress.weekComplete / progress.weekTotal) * 100 : 0}%`, backgroundColor: P }} />
+            </View>
+          </View>
+        )}
+
         {plan.tasks.length > 0 && (
           <>
             <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.sub, marginBottom: 8 }}>{T('bodyWeeklyPlan')}</Text>

@@ -1,5 +1,5 @@
-import { ALL_SPORTS, type AgeBracket, type BodyGoal, type BodyPlan, type BodyTrainingPlan } from '@egoless-do/core';
-import React, { useState, useCallback, useMemo } from 'react';
+import { ALL_SPORTS, dateStr, type AgeBracket, type BodyGoal, type BodyPlan, type BodyTrainingPlan, type ExerciseEntry } from '@egoless-do/core';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { View } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
@@ -59,6 +59,44 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const activePlans = useMemo(() => (bodyPlans ?? []).filter((p: BodyPlan) => !p.deleted), [bodyPlans]);
   const activeTrainingPlan = useMemo(() => (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active'), [bodyTrainingPlans]);
 
+  // Auto-mark expired plans as completed
+  useEffect(() => {
+    const today = dateStr();
+    for (const plan of bodyTrainingPlans ?? []) {
+      if (plan.status === 'active' && plan.endDate < today && !plan.deleted) {
+        updateBodyTrainingPlan(plan.id, { status: 'completed' });
+      }
+    }
+  }, [bodyTrainingPlans, updateBodyTrainingPlan]);
+
+  // Calculate plan progress
+  const planProgress = useMemo(() => {
+    if (!activeTrainingPlan || !exerciseLog) return null;
+    const today = new Date().getDay() || 7;
+    const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1);
+    const weekStartStr = dateStr(weekStart);
+    const weekEnd = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 6);
+    const weekEndStr = dateStr(weekEnd);
+
+    const planExercises = (exerciseLog ?? []).filter((e: ExerciseEntry) => !e.deleted && e.planId === activeTrainingPlan.id);
+    const weekLogs = planExercises.filter((e: ExerciseEntry) => {
+      const d = dateStr(new Date(e.timestamp));
+      return d >= weekStartStr && d <= weekEndStr;
+    });
+
+    const activeTasks = activeTrainingPlan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest');
+    const weekDoneTasks = activeTasks.filter(t => weekLogs.some((l: ExerciseEntry) => l.planTaskWeekday === t.weekday));
+    const todayDone = weekLogs.some((l: ExerciseEntry) => l.planTaskWeekday === today);
+
+    return {
+      weekComplete: weekDoneTasks.length,
+      weekTotal: activeTasks.length,
+      todayDone,
+      totalDuration: Math.round(weekLogs.reduce((s: number, e: ExerciseEntry) => s + (e.durationSec ?? 0), 0) / 60),
+      totalCal: weekLogs.reduce((s: number, e: ExerciseEntry) => s + (e.calories ?? 0), 0),
+    };
+  }, [activeTrainingPlan, exerciseLog]);
+
   const handleSaveAssessment = useCallback((text: string, tags: string[]) => {
     updateUserProfile({ selfAssessment: text, bodyTags: tags });
   }, [updateUserProfile]);
@@ -114,7 +152,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       <BodyTrainingPlanSection
         TH={TH} T={T}
         plan={activeTrainingPlan}
-        onEdit={() => nav.navigate('BodyPlanEditor' as never)}
+        progress={planProgress}
+        onEdit={() => nav.navigate('BodyPlanEditor' as never, { planId: activeTrainingPlan?.id } as never)}
         onStart={(planId) => onFlowStartWithPlan?.(planId)}
       />
 

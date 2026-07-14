@@ -41,7 +41,7 @@ export type RootStackParamList = {
   Profile: undefined;
   Insight: undefined;
   Review: { period: 'week' | 'month'; startDate: string; endDate: string } | undefined;
-  BodyPlanEditor: undefined;
+  BodyPlanEditor: { planId?: string } | undefined;
   StrategyLibrary: undefined;
   MantraHistory: { mantraId?: string };
   SutraHistory: { sutraId?: string };

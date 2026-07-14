@@ -1,21 +1,30 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, EXERCISE_CATEGORIES, BODY_STRATEGIES, buildExerciseLibrary, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef } from '@egoless-do/core';
 import { ChevronLeft, Target, ClipboardList, Save, Plus, X, Search, Dumbbell, ChevronDown, ChevronUp } from 'lucide-react-native';
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRoute, RouteProp } from '@react-navigation/native';
 
 import { useTheme, useT } from '../../../../components/UI';
-import { useRootNavigation } from '../../../../navigation/hooks';
+import { useRootNavigation, type RootStackParamList } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const P = '#f59e0b';
+type EditorRoute = RouteProp<RootStackParamList, 'BodyPlanEditor'>;
 
 export default function BodyPlanEditorScreen() {
   const TH = useTheme();
   const T = useT();
   const nav = useRootNavigation();
-  const addBodyTrainingPlan = useShallowStore(s => s.addBodyTrainingPlan);
+  const route = useRoute<EditorRoute>();
+  const editPlanId = route.params?.planId;
+  const isEditing = !!editPlanId;
+  const { addBodyTrainingPlan, updateBodyTrainingPlan, bodyTrainingPlans } = useShallowStore(s => ({
+    addBodyTrainingPlan: s.addBodyTrainingPlan,
+    updateBodyTrainingPlan: s.updateBodyTrainingPlan,
+    bodyTrainingPlans: s.bodyTrainingPlans,
+  }));
   const exerciseLibrary = useMemo(() => buildExerciseLibrary(), []);
 
   // ── State ──
@@ -36,6 +45,26 @@ export default function BodyPlanEditorScreen() {
   const [customExSets, setCustomExSets] = useState('');
   const [customExReps, setCustomExReps] = useState('');
   const [showCustomEx, setShowCustomEx] = useState<number | null>(null);
+
+  // Load existing plan for editing
+  useEffect(() => {
+    if (!editPlanId) return;
+    const plan = (bodyTrainingPlans ?? []).find(p => p.id === editPlanId);
+    if (!plan) return;
+    setName(plan.name);
+    setStartDate(plan.startDate);
+    setEndDate(plan.endDate);
+    if (plan.strategy) setStrategy(plan.strategy);
+    if (plan.targetWeight) setTargetWeight(String(plan.targetWeight));
+    if (plan.targetBodyFat) setTargetBodyFat(String(plan.targetBodyFat));
+    if (plan.goalNote) setGoalNote(plan.goalNote);
+    if (plan.tasks.length > 0) {
+      setTasks(prev => prev.map((t, i) => {
+        const existing = plan.tasks.find(pt => pt.weekday === t.weekday);
+        return existing ?? t;
+      }));
+    }
+  }, [editPlanId, bodyTrainingPlans]);
 
   // ── Derived ──
   const exercisesByCategory = useMemo(() => {
@@ -107,15 +136,20 @@ export default function BodyPlanEditorScreen() {
 
   const handleSave = () => {
     if (!name.trim()) return;
-    addBodyTrainingPlan({
+    const data = {
       name: name.trim(), startDate, endDate,
       strategy: strategy || undefined,
       targetWeight: targetWeight ? parseFloat(targetWeight) : undefined,
       targetBodyFat: targetBodyFat ? parseFloat(targetBodyFat) : undefined,
       goalNote: goalNote || undefined,
       tasks: tasks.filter(t => t.sportKey && t.sportKey !== 'rest'),
-      status: 'active',
-    });
+      status: 'active' as const,
+    };
+    if (isEditing && editPlanId) {
+      updateBodyTrainingPlan(editPlanId, data);
+    } else {
+      addBodyTrainingPlan(data);
+    }
     nav.goBack();
   };
 
@@ -124,7 +158,7 @@ export default function BodyPlanEditorScreen() {
       {/* ── Header ── */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => nav.goBack()}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
-        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>{T('bodyPlanCreate')}</Text>
+        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>{isEditing ? T('bodyPlanEdit') : T('bodyPlanCreate')}</Text>
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
