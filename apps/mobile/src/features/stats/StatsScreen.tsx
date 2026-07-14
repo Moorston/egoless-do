@@ -1,4 +1,4 @@
-import {COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, countItemDoneDays, countItemDoneDays, dateStr, FONT_BODY, FONT_SUB, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
+import {COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, countItemDoneDays, dateStr, FONT_BODY, FONT_SUB, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -37,7 +37,7 @@ type ChartKey = typeof CHART_TABS[number];
 export default function StatsScreen() {
   const TH = useTheme();
   const T = useT();
-  const { exerciseLog: rawExerciseLog, fastingHistory: rawFastingHistory, userProfile, totalMedMinutes: rawTotalMedMinutes, medHistory: rawMedHistory, reflections: rawReflections, plans: rawPlans, planItems: rawPlanItems, habits: rawHabits, graceHistory, checkinHistory: rawCheckinHistory, foodLog: rawFoodLog, streak } = useShallowStore(s => ({
+  const { exerciseLog: rawExerciseLog, fastingHistory: rawFastingHistory, userProfile, totalMedMinutes: rawTotalMedMinutes, medHistory: rawMedHistory, reflections: rawReflections, plans: rawPlans, planItems: rawPlanItems, planItemCheckins, habits: rawHabits, graceHistory, checkinHistory: rawCheckinHistory, foodLog: rawFoodLog, streak } = useShallowStore(s => ({
     exerciseLog: s.exerciseLog,
     fastingHistory: s.fastingHistory,
     userProfile: s.userProfile,

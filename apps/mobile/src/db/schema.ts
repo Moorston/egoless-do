@@ -1025,6 +1025,20 @@ export async function migrateDatabase(db: SQLite.SQLiteDatabase): Promise<void> 
     await db.execAsync('CREATE INDEX IF NOT EXISTS idx_body_plans_weekday ON body_plans(weekday)');
   }
 
+  // Ensure body_training_plans table exists
+  const trainingPlanCheck = await db.getFirstAsync<{ name: string }>(
+    "SELECT name FROM sqlite_master WHERE type='table' AND name='body_training_plans'"
+  );
+  if (!trainingPlanCheck) {
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS body_training_plans (
+      id TEXT PRIMARY KEY, name TEXT NOT NULL, start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL, strategy TEXT, target_weight REAL,
+      target_body_fat REAL, goal_note TEXT, tasks TEXT NOT NULL DEFAULT '[]',
+      status TEXT NOT NULL DEFAULT 'active',
+      updated_at INTEGER, deleted INTEGER NOT NULL DEFAULT 0, synced INTEGER NOT NULL DEFAULT 0
+    )`);
+  }
+
   // Ensure body_weight_records table exists
   const bodyWeightCheck = await db.getFirstAsync<{ name: string }>(
     "SELECT name FROM sqlite_master WHERE type='table' AND name='body_weight_records'"
