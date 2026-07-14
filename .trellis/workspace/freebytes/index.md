@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 28
+- **Total Sessions**: 29
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~984 | Active |
+| `journal-1.md` | ~1019 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 29 | 2026-07-14 | token 反复退出根因排查 + 完整修复 | `4701626`, `ee6c171`, `bcc6d58` | `master` |
 | 28 | 2026-07-14 | 自定义食物预设持久化 + token 7天宽限期 | `d560723`, `ee6c171` | `master` |
 | 27 | 2026-07-14 | 修复 foodPreset storeKey 警告 | `04e0e9b` | `master` |
 | 26 | 2026-07-13 | auth 深度修复 | `de7ef51` | `master` |

@@ -982,3 +982,38 @@ infra/docker/api token-refresh-rotation.ts 第90行重复声明 revokeNonce 导�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 29: token 反复退出根因排查 + 完整修复
+
+**Date**: 2026-07-14
+**Task**: token 反复退出根因排查 + 完整修复
+**Branch**: `master`
+
+### Summary
+
+expiresAt未持久化到SecureStore修复；refreshAuth服务器拒绝时不再清除auth状态；SyncEngine token recovery失败不再触发kicked-out；7天注销宽限期
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4701626` | (see git log) |
+| `ee6c171` | (see git log) |
+| `bcc6d58` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
