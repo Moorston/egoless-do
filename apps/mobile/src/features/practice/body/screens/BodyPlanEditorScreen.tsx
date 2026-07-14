@@ -8,6 +8,8 @@ import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
 
+const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
+
 type PageStep = 'template' | 'editor';
 
 export default function BodyPlanEditorScreen() {
