@@ -875,6 +875,11 @@ export interface I18nKeys {
   bodyPlanTemplateChoose: string; bodyPlanUseTemplate: string; bodyPlanCustom: string;
   bodyPlanAddExercise: string; bodyPlanNoExercises: string;
   bodyLevelBeginner: string; bodyLevelIntermediate: string; bodyLevelAdvanced: string; bodyDays: string;
+  planTemplateTraditional: string; planTemplateTraditionalDesc: string;
+  planTemplatePPL: string; planTemplatePPLDesc: string;
+  planTemplateFatLoss: string; planTemplateFatLossDesc: string;
+  planTemplateBodyweight: string; planTemplateBodyweightDesc: string;
+  bodyPlanOverwriteTitle: string; bodyPlanOverwriteMsg: string; bodyPlanOverwriteConfirm: string;
   bodyExecNotSet: string; bodyCompletedDays: string; bodyKcal: string;
   bodyDayComplete: string; bodyDayIncomplete: string; bodyDayPending: string; bodyDayRest: string;
   bodyWeekMon: string; bodyWeekTue: string; bodyWeekWed: string; bodyWeekThu: string;

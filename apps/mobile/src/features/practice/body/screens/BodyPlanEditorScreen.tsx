@@ -1,14 +1,12 @@
 import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, EXERCISE_CATEGORIES, BODY_STRATEGIES, PLAN_TEMPLATES, buildExerciseLibrary, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type PlanTemplate, type ExerciseDef } from '@egoless-do/core';
 import { ChevronLeft, Target, ClipboardList, Save, Dumbbell, LayoutTemplate } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
-
-const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 
 type PageStep = 'template' | 'editor';
 
@@ -34,10 +32,29 @@ export default function BodyPlanEditorScreen() {
   );
   const [pickDay, setPickDay] = useState<number | null>(null);
   const [pickExerciseDay, setPickExerciseDay] = useState<number | null>(null);
+  const [hasEdited, setHasEdited] = useState(false);
 
-  // Select a template → populate editor
+  // Track edits for overwrite confirmation
+  const markEdited = () => { if (!hasEdited) setHasEdited(true); };
+
+  // Select a template → populate editor (with overwrite confirmation)
   const applyTemplate = (tmpl: PlanTemplate) => {
-    setName(tmpl.name);
+    if (hasEdited) {
+      Alert.alert(
+        T('bodyPlanOverwriteTitle'),
+        T('bodyPlanOverwriteMsg'),
+        [
+          { text: T('bodyCancel'), style: 'cancel' },
+          { text: T('bodyPlanOverwriteConfirm'), style: 'destructive', onPress: () => doApplyTemplate(tmpl) },
+        ]
+      );
+    } else {
+      doApplyTemplate(tmpl);
+    }
+  };
+
+  const doApplyTemplate = (tmpl: PlanTemplate) => {
+    setName(T(tmpl.nameI18nKey) || tmpl.name);
     if (tmpl.strategy) setStrategy(tmpl.strategy);
     setTasks(tmpl.weekSchedule.map(day => ({
       weekday: day.weekday,
@@ -58,6 +75,7 @@ export default function BodyPlanEditorScreen() {
         difficulty: 'beginner' as const,
       })) ?? [],
     })));
+    setHasEdited(false);
     setStep('editor');
   };
 
@@ -109,10 +127,12 @@ export default function BodyPlanEditorScreen() {
   const setTaskSportKey = (weekday: number, sportKey: string) => {
     setTasks(prev => prev.map(t => t.weekday === weekday ? { ...t, sportKey } : t));
     setPickDay(null);
+    markEdited();
   };
 
   const setTaskNote = (weekday: number, note: string) => {
     setTasks(prev => prev.map(t => t.weekday === weekday ? { ...t, note } : t));
+    markEdited();
   };
 
   const handleSave = () => {
@@ -146,13 +166,13 @@ export default function BodyPlanEditorScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                 <Text style={{ fontSize: 28 }}>{tmpl.icon}</Text>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{tmpl.name}</Text>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T(tmpl.nameI18nKey)}</Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>
                     {tmpl.durationDays}{T('bodyDays')} · {tmpl.intensity === 'beginner' ? T('bodyLevelBeginner') : tmpl.intensity === 'intermediate' ? T('bodyLevelIntermediate') : T('bodyLevelAdvanced')}
                   </Text>
                 </View>
               </View>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, lineHeight: 20 }}>{tmpl.description}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, lineHeight: 20 }}>{T(tmpl.descriptionI18nKey)}</Text>
               {tmpl.weekSchedule.filter(d => d.sportKey !== 'rest').slice(0, 3).map(d => {
                 const cat = EXERCISE_CATEGORIES.find(c => c.key === d.sportKey);
                 return (
@@ -182,8 +202,11 @@ export default function BodyPlanEditorScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-        <TouchableOpacity onPress={() => nav.goBack()}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
-        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>{name || T('bodyPlanCreate')}</Text>
+        <TouchableOpacity onPress={() => { setHasEdited(false); setStep('template'); }}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
+        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12, flex: 1 }}>{name || T('bodyPlanCreate')}</Text>
+        <TouchableOpacity onPress={() => { setHasEdited(false); setStep('template'); }}>
+          <LayoutTemplate size={20} color={P} />
+        </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
 
