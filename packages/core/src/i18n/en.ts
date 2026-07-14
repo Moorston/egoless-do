@@ -1031,7 +1031,7 @@ export const en: I18nKeys = {
   bodyWeeklyPlan:'Weekly Tasks', bodySelectExercise:'Select Exercise',
   bodyPlanTemplateChoose:'Choose a template or start from scratch',
   bodyPlanUseTemplate:'Use Template', bodyPlanCustom:'Start from Scratch',
-  bodyPlanAddExercise:'Add Exercise', bodyPlanNoExercises:'No exercises found',
+  bodyPlanAddExercise:'Add Exercise', bodyPlanNoExercises:'No exercises found', bodyPlanChange:'Change', bodyPlanAddCustom:'Custom Exercise',
   bodyLevelBeginner:'Beginner', bodyLevelIntermediate:'Intermediate', bodyLevelAdvanced:'Advanced', bodyDays:' days',
   planTemplateTraditional:'28-Day Traditional Wellness', planTemplateTraditionalDesc:'Daily rotation of Baduanjin, Wuqinxi, Tai Chi, Zhanzhuang with meridian tapping and walking meditation. Based on National Sports Administration Qigong standards.',
   planTemplatePPL:'Push/Pull/Legs (PPL)', planTemplatePPLDesc:'NSCA classic split. Mon/Wed/Fri push, Tue/Thu/Sat pull & legs, Sun rest. 6 days/week for intermediate trainees.',

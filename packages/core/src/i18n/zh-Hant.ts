@@ -1026,7 +1026,7 @@ export const zhHant: I18nKeys = {
   bodyWeeklyPlan:'週計劃任務', bodySelectExercise:'選擇運動',
   bodyPlanTemplateChoose:'選擇模板快速建立，或從空白開始自訂',
   bodyPlanUseTemplate:'使用此模板', bodyPlanCustom:'從空白建立',
-  bodyPlanAddExercise:'添加動作', bodyPlanNoExercises:'暫無推薦動作',
+  bodyPlanAddExercise:'添加動作', bodyPlanNoExercises:'暫無推薦動作', bodyPlanChange:'更換', bodyPlanAddCustom:'自定義動作',
   bodyLevelBeginner:'初級', bodyLevelIntermediate:'中級', bodyLevelAdvanced:'高級', bodyDays:'天',
   planTemplateTraditional:'傳統養生28天', planTemplateTraditionalDesc:'八段錦、五禽戲、太極、站樁每日輪訓，配合經絡拍打和散步行禪。源自國家體育總局健身氣功推廣功法。',
   planTemplatePPL:'推拉腿六練 (PPL)', planTemplatePPLDesc:'源自NSCA經典訓練分化。週一三五推(胸肩三頭)，二四六拉(背二頭腿)，週日休息。每週6練，適合中級訓練者。',

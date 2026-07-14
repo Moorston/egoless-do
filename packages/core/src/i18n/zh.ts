@@ -1029,7 +1029,7 @@ export const zh: I18nKeys = {
   bodyWeeklyPlan:'周计划任务', bodySelectExercise:'选择运动',
   bodyPlanTemplateChoose:'选择模板快速创建，或从空白开始自定义',
   bodyPlanUseTemplate:'使用此模板', bodyPlanCustom:'从空白创建',
-  bodyPlanAddExercise:'添加动作', bodyPlanNoExercises:'暂无推荐动作',
+  bodyPlanAddExercise:'添加动作', bodyPlanNoExercises:'暂无推荐动作', bodyPlanChange:'更换', bodyPlanAddCustom:'自定义动作',
   bodyLevelBeginner:'初级', bodyLevelIntermediate:'中级', bodyLevelAdvanced:'高级', bodyDays:'天',
   planTemplateTraditional:'传统养生28天', planTemplateTraditionalDesc:'八段锦、五禽戏、太极、站桩每日轮训，配合经络拍打和散步行禅。源自国家体育总局健身气功推广功法。',
   planTemplatePPL:'推拉腿六练 (PPL)', planTemplatePPLDesc:'源自NSCA经典训练分化。周一三五推(胸肩三头)，二四六拉(背二头腿)，周日休息。每周6练，适合中级训练者。',
