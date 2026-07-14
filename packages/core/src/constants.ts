@@ -1,4 +1,4 @@
-import type { Theme, ThemeName, SportGroup, GlobalUser, FoodCategory, PlanItemLink } from './types';
+import type { Theme, ThemeName, SportGroup, GlobalUser, FoodCategory, PlanItemLink, ExerciseDef, ExerciseCategoryKey, PlanTemplate } from './types';
 
 export const THEMES: Record<ThemeName, Theme> = {
   cosmos: { name:'星空 ✨', nameEn:'Cosmos ✨', bg:'#050510', card:'rgba(255,255,255,.06)', cardSolid:'rgba(10,10,25,0.95)', text:'#fff', sub:'rgba(180,170,255,.5)',   border:'rgba(150,120,255,.12)', primary:'#8B5CF6', accent:'#18CEFF', navBg:'rgba(5,5,16,.97)',    starfield:true  },
@@ -420,4 +420,169 @@ export const LANG_LIST: { code: string; flag: string; name: string }[] = [
   { code:'zh',      flag:'🇨🇳', name:'简体中文' },
   { code:'zh-Hant', flag:'🇹🇼', name:'繁體中文' },
   { code:'en',      flag:'🇺🇸', name:'English'  },
+];
+
+// ─── ExerciseLibrary — 统一动作库 ──────────────────────────────
+// 合并 SPORT_GROUPS 的具体运动 + EXERCISE_CATEGORIES 的训练类别
+
+const SPORT_TO_CATEGORY: Record<string, ExerciseCategoryKey> = {
+  '俯卧撑': 'chest_triceps', '引体向上': 'back_biceps', '深蹲': 'legs_core',
+  '平板支撑': 'legs_core', '波比跳': 'hiit', '跳绳': 'cardio',
+  '瑜伽': 'yoga', '太极': 'taiji', '游泳': 'cardio', '爬楼梯': 'cardio',
+  '户外骑行': 'cardio', '室内跑步': 'cardio', '滑板': 'full_body',
+  '羽毛球': 'full_body', '足球': 'full_body', '篮球': 'full_body',
+  '乒乓球': 'full_body', '网球': 'full_body',
+};
+
+export function buildExerciseLibrary(): ExerciseDef[] {
+  const seen = new Set<string>();
+  const library: ExerciseDef[] = [];
+
+  // 1. 从 SPORT_GROUPS 导入
+  for (const sport of ALL_SPORTS) {
+    if (seen.has(sport.key)) continue;
+    seen.add(sport.key);
+    const category = SPORT_TO_CATEGORY[sport.key] ?? 'full_body';
+    library.push({
+      id: `sport_${sport.key}`,
+      nameZh: sport.key,
+      nameI18nKey: '',
+      icon: sport.icon,
+      category,
+      type: category === 'cardio' ? 'cardio' : 'strength',
+      muscleGroups: [],
+      difficulty: 'beginner',
+      met: MET_MAP[sport.key],
+    });
+  }
+
+  // 2. 添加传统养生项目（未在 SPORTS 中的）
+  const traditionalItems: ExerciseDef[] = [
+    { id: 'ex_baduanjin', nameZh: '八段锦', nameI18nKey: 'bodyPartBaduanjin', icon: '🧘', category: 'baduanjin', type: 'traditional', muscleGroups: ['全身'], difficulty: 'beginner', defaultDurationSec: 1800, met: 3 },
+    { id: 'ex_wuqinxi', nameZh: '五禽戏', nameI18nKey: 'bodyPartWuqinxi', icon: '🦌', category: 'wuqinxi', type: 'traditional', muscleGroups: ['全身'], difficulty: 'beginner', defaultDurationSec: 1800, met: 3.5 },
+    { id: 'ex_zhanzhuang', nameZh: '站桩', nameI18nKey: 'bodyPartZhanzhuang', icon: '🧍', category: 'zhanzhuang', type: 'traditional', muscleGroups: ['下肢', '核心'], difficulty: 'beginner', defaultDurationSec: 1200, met: 2.5 },
+    { id: 'ex_jingluo', nameZh: '经络拍打', nameI18nKey: 'bodyPartJingluo', icon: '👋', category: 'jingluo', type: 'flexibility', muscleGroups: ['全身'], difficulty: 'beginner', defaultDurationSec: 600, met: 2 },
+    { id: 'ex_walking', nameZh: '散步行禅', nameI18nKey: 'bodyPartWalking', icon: '🚶', category: 'walking', type: 'cardio', muscleGroups: ['下肢'], difficulty: 'beginner', defaultDurationSec: 1800, met: 3.5 },
+  ];
+  for (const item of traditionalItems) {
+    if (!seen.has(item.nameZh)) { seen.add(item.nameZh); library.push(item); }
+  }
+
+  // 3. 增强力量训练动作（扩展）
+  const strengthExtensions: ExerciseDef[] = [
+    { id: 'ex_bench_press', nameZh: '杠铃卧推', nameI18nKey: '', icon: '🏋️', category: 'chest_triceps', type: 'strength', muscleGroups: ['胸', '三头'], difficulty: 'intermediate', defaultSets: 4, defaultReps: 10, defaultWeight: 40, defaultRestSec: 90, met: 8 },
+    { id: 'ex_dumbbell_fly', nameZh: '哑铃飞鸟', nameI18nKey: '', icon: '🏋️', category: 'chest_triceps', type: 'strength', muscleGroups: ['胸'], difficulty: 'intermediate', defaultSets: 3, defaultReps: 12, defaultWeight: 12, defaultRestSec: 60, met: 6 },
+    { id: 'ex_cable_pushdown', nameZh: '绳索下压', nameI18nKey: '', icon: '🏋️', category: 'chest_triceps', type: 'strength', muscleGroups: ['三头'], difficulty: 'beginner', defaultSets: 3, defaultReps: 15, defaultWeight: 20, defaultRestSec: 60, met: 5 },
+    { id: 'ex_barbell_row', nameZh: '杠铃划船', nameI18nKey: '', icon: '🏋️', category: 'back_biceps', type: 'strength', muscleGroups: ['背', '二头'], difficulty: 'intermediate', defaultSets: 4, defaultReps: 10, defaultWeight: 40, defaultRestSec: 90, met: 7 },
+    { id: 'ex_pullup', nameZh: '引体向上', nameI18nKey: '', icon: '🤸', category: 'back_biceps', type: 'strength', muscleGroups: ['背', '二头'], difficulty: 'advanced', defaultSets: 4, defaultReps: 8, defaultRestSec: 90, met: 8 },
+    { id: 'ex_dumbbell_curl', nameZh: '哑铃弯举', nameI18nKey: '', icon: '💪', category: 'back_biceps', type: 'strength', muscleGroups: ['二头'], difficulty: 'beginner', defaultSets: 3, defaultReps: 12, defaultWeight: 10, defaultRestSec: 60, met: 4 },
+    { id: 'ex_squat', nameZh: '杠铃深蹲', nameI18nKey: '', icon: '🦵', category: 'legs_core', type: 'strength', muscleGroups: ['腿', '臀', '核心'], difficulty: 'intermediate', defaultSets: 4, defaultReps: 10, defaultWeight: 50, defaultRestSec: 120, met: 8 },
+    { id: 'ex_deadlift', nameZh: '硬拉', nameI18nKey: '', icon: '🏋️', category: 'legs_core', type: 'strength', muscleGroups: ['背', '腿', '臀'], difficulty: 'advanced', defaultSets: 3, defaultReps: 8, defaultWeight: 60, defaultRestSec: 120, met: 9 },
+    { id: 'ex_leg_press', nameZh: '腿举', nameI18nKey: '', icon: '🦵', category: 'legs_core', type: 'strength', muscleGroups: ['腿', '臀'], difficulty: 'beginner', defaultSets: 3, defaultReps: 12, defaultWeight: 60, defaultRestSec: 90, met: 6 },
+    { id: 'ex_lunge', nameZh: '弓步蹲', nameI18nKey: '', icon: '🦵', category: 'legs_core', type: 'strength', muscleGroups: ['腿', '臀'], difficulty: 'beginner', defaultSets: 3, defaultReps: 12, defaultRestSec: 60, met: 5 },
+    { id: 'ex_overhead_press', nameZh: '哑铃推举', nameI18nKey: '', icon: '🏋️', category: 'shoulders_arms', type: 'strength', muscleGroups: ['肩'], difficulty: 'intermediate', defaultSets: 3, defaultReps: 12, defaultWeight: 15, defaultRestSec: 60, met: 6 },
+    { id: 'ex_lateral_raise', nameZh: '侧平举', nameI18nKey: '', icon: '🏋️', category: 'shoulders_arms', type: 'strength', muscleGroups: ['肩'], difficulty: 'beginner', defaultSets: 3, defaultReps: 15, defaultWeight: 8, defaultRestSec: 45, met: 4 },
+    { id: 'ex_plank', nameZh: '平板支撑', nameI18nKey: '', icon: '🧱', category: 'legs_core', type: 'strength', muscleGroups: ['核心'], difficulty: 'beginner', defaultSets: 3, defaultDurationSec: 60, defaultRestSec: 30, met: 4 },
+    { id: 'ex_crunch', nameZh: '卷腹', nameI18nKey: '', icon: '🤰', category: 'legs_core', type: 'strength', muscleGroups: ['腹部'], difficulty: 'beginner', defaultSets: 3, defaultReps: 20, defaultRestSec: 30, met: 4 },
+    { id: 'ex_burpee', nameZh: '波比跳', nameI18nKey: '', icon: '🔥', category: 'hiit', type: 'cardio', muscleGroups: ['全身'], difficulty: 'intermediate', defaultSets: 5, defaultReps: 15, defaultRestSec: 30, met: 10 },
+    { id: 'ex_jumping_jack', nameZh: '开合跳', nameI18nKey: '', icon: '🤸', category: 'hiit', type: 'cardio', muscleGroups: ['全身'], difficulty: 'beginner', defaultSets: 5, defaultReps: 30, defaultRestSec: 20, met: 8 },
+    { id: 'ex_mountain_climber', nameZh: '登山者', nameI18nKey: '', icon: '🤸', category: 'hiit', type: 'cardio', muscleGroups: ['全身', '核心'], difficulty: 'intermediate', defaultSets: 4, defaultReps: 20, defaultRestSec: 20, met: 8 },
+  ];
+  for (const item of strengthExtensions) {
+    if (!seen.has(item.nameZh)) { seen.add(item.nameZh); library.push(item); }
+  }
+
+  return library;
+}
+
+// ─── PLAN_TEMPLATES — 预置健身模板 ─────────────────────────────
+// 依据: ACSM Guidelines for Exercise Testing and Prescription (11th ed.)
+//       NSCA Essentials of Strength Training and Conditioning (4th ed.)
+//       国家体育总局《健身气功推广功法》标准
+
+export const PLAN_TEMPLATES: PlanTemplate[] = [
+  {
+    id: 'template_traditional_28d',
+    name: '传统养生28天',
+    nameI18nKey: 'planTemplateTraditional',
+    description: '八段锦、五禽戏、太极、站桩每日轮训，配合经络拍打和散步行禅。源自国家体育总局健身气功推广功法。',
+    descriptionI18nKey: 'planTemplateTraditionalDesc',
+    category: 'traditional',
+    durationDays: 28,
+    strategy: 'maintain',
+    intensity: 'beginner',
+    icon: '🧘',
+    weekSchedule: [
+      { weekday: 1, sportKey: 'baduanjin', exercises: [{ name: '八段锦全套', targetDurationSec: 1800 }, { name: '散步行禅', targetDurationSec: 1800 }] },
+      { weekday: 2, sportKey: 'wuqinxi', exercises: [{ name: '五禽戏全套', targetDurationSec: 1800 }] },
+      { weekday: 3, sportKey: 'zhanzhuang', exercises: [{ name: '混元桩', targetDurationSec: 1200 }, { name: '经络拍打', targetDurationSec: 600 }] },
+      { weekday: 4, sportKey: 'taiji', exercises: [{ name: '24式简化太极拳', targetDurationSec: 1800 }] },
+      { weekday: 5, sportKey: 'jingluo', exercises: [{ name: '穴位按摩拍打', targetDurationSec: 900 }, { name: '全身拉伸', targetDurationSec: 900 }] },
+      { weekday: 6, sportKey: 'walking', exercises: [{ name: '快步走', targetDurationSec: 3600 }] },
+      { weekday: 7, sportKey: 'rest' },
+    ],
+  },
+  {
+    id: 'template_ppl_6day',
+    name: '推拉腿六练 (PPL)',
+    nameI18nKey: 'planTemplatePPL',
+    description: '源自NSCA经典训练分化。周一三五推(胸肩三头)，二四六拉(背二头腿)，周日休息。每周6练，适合中级训练者。',
+    descriptionI18nKey: 'planTemplatePPLDesc',
+    category: 'modern',
+    durationDays: 28,
+    strategy: 'gain_muscle',
+    intensity: 'intermediate',
+    icon: '💪',
+    weekSchedule: [
+      { weekday: 1, sportKey: 'chest_triceps', exercises: [{ name: '杠铃卧推', targetSets: 4, targetReps: 10, targetWeight: 40, restSec: 90 }, { name: '哑铃飞鸟', targetSets: 3, targetReps: 12, targetWeight: 12, restSec: 60 }, { name: '绳索下压', targetSets: 3, targetReps: 15, targetWeight: 20, restSec: 60 }] },
+      { weekday: 2, sportKey: 'back_biceps', exercises: [{ name: '引体向上', targetSets: 4, targetReps: 8, restSec: 90 }, { name: '杠铃划船', targetSets: 4, targetReps: 10, targetWeight: 40, restSec: 90 }, { name: '哑铃弯举', targetSets: 3, targetReps: 12, targetWeight: 10, restSec: 60 }] },
+      { weekday: 3, sportKey: 'legs_core', exercises: [{ name: '杠铃深蹲', targetSets: 4, targetReps: 10, targetWeight: 50, restSec: 120 }, { name: '硬拉', targetSets: 3, targetReps: 8, targetWeight: 60, restSec: 120 }, { name: '卷腹', targetSets: 3, targetReps: 20, restSec: 30 }] },
+      { weekday: 4, sportKey: 'chest_triceps', exercises: [{ name: '哑铃推举', targetSets: 3, targetReps: 12, targetWeight: 15, restSec: 60 }, { name: '侧平举', targetSets: 3, targetReps: 15, targetWeight: 8, restSec: 45 }, { name: '俯卧撑', targetSets: 4, targetReps: 15, restSec: 60 }] },
+      { weekday: 5, sportKey: 'back_biceps', exercises: [{ name: '深蹲', targetSets: 4, targetReps: 12, restSec: 90 }, { name: '弓步蹲', targetSets: 3, targetReps: 12, restSec: 60 }, { name: '平板支撑', targetSets: 3, targetDurationSec: 60, restSec: 30 }] },
+      { weekday: 6, sportKey: 'legs_core', exercises: [{ name: '腿举', targetSets: 3, targetReps: 12, targetWeight: 60, restSec: 90 }, { name: '哑铃弯举', targetSets: 3, targetReps: 12, targetWeight: 10, restSec: 60 }, { name: '开合跳', targetSets: 5, targetReps: 30, restSec: 20 }] },
+      { weekday: 7, sportKey: 'rest' },
+    ],
+  },
+  {
+    id: 'template_fat_loss_4week',
+    name: '四週減脂衝刺',
+    nameI18nKey: 'planTemplateFatLoss',
+    description: 'ACSM减脂运动指南推荐：每周≥250分钟中高强度运动。结合HIIT+力量训练最大化EPOC效应。',
+    descriptionI18nKey: 'planTemplateFatLossDesc',
+    category: 'modern',
+    durationDays: 28,
+    strategy: 'lose_fat',
+    intensity: 'intermediate',
+    icon: '🔥',
+    weekSchedule: [
+      { weekday: 1, sportKey: 'hiit', exercises: [{ name: '波比跳', targetSets: 5, targetReps: 15, restSec: 30 }, { name: '开合跳', targetSets: 5, targetReps: 30, restSec: 20 }, { name: '登山者', targetSets: 4, targetReps: 20, restSec: 20 }] },
+      { weekday: 2, sportKey: 'cardio', exercises: [{ name: '跳绳', targetSets: 5, targetReps: 100, restSec: 30 }, { name: '室内跑步', targetDurationSec: 1800 }] },
+      { weekday: 3, sportKey: 'full_body', exercises: [{ name: '俯卧撑', targetSets: 4, targetReps: 15, restSec: 45 }, { name: '深蹲', targetSets: 4, targetReps: 20, restSec: 45 }, { name: '平板支撑', targetSets: 4, targetDurationSec: 60, restSec: 30 }] },
+      { weekday: 4, sportKey: 'hiit', exercises: [{ name: '跳绳', targetSets: 10, targetReps: 50, restSec: 30 }, { name: '波比跳', targetSets: 5, targetReps: 15, restSec: 30 }] },
+      { weekday: 5, sportKey: 'cardio', exercises: [{ name: '户外骑行', targetDurationSec: 3600 }, { name: '散步行禅', targetDurationSec: 1800 }] },
+      { weekday: 6, sportKey: 'full_body', exercises: [{ name: '引体向上', targetSets: 3, targetReps: 8, restSec: 90 }, { name: '杠铃深蹲', targetSets: 4, targetReps: 10, targetWeight: 40, restSec: 120 }, { name: '卷腹', targetSets: 3, targetReps: 20, restSec: 30 }] },
+      { weekday: 7, sportKey: 'rest' },
+    ],
+  },
+  {
+    id: 'template_bodyweight_3day',
+    name: '居家自重三练',
+    nameI18nKey: 'planTemplateBodyweight',
+    description: '无需器械的全身训练方案，适合初学者/居家。每周3次，每次30分钟，ACSM推荐最低训练频率。',
+    descriptionI18nKey: 'planTemplateBodyweightDesc',
+    category: 'modern',
+    durationDays: 28,
+    strategy: 'tone',
+    intensity: 'beginner',
+    icon: '🏠',
+    weekSchedule: [
+      { weekday: 1, sportKey: 'full_body', exercises: [{ name: '俯卧撑', targetSets: 3, targetReps: 12, restSec: 60 }, { name: '深蹲', targetSets: 3, targetReps: 15, restSec: 60 }, { name: '平板支撑', targetSets: 3, targetDurationSec: 45, restSec: 30 }] },
+      { weekday: 2, sportKey: 'rest' },
+      { weekday: 3, sportKey: 'full_body', exercises: [{ name: '波比跳', targetSets: 3, targetReps: 10, restSec: 45 }, { name: '弓步蹲', targetSets: 3, targetReps: 12, restSec: 60 }, { name: '开合跳', targetSets: 3, targetReps: 30, restSec: 20 }] },
+      { weekday: 4, sportKey: 'rest' },
+      { weekday: 5, sportKey: 'full_body', exercises: [{ name: '引体向上(或替代)', targetSets: 3, targetReps: 5, restSec: 90 }, { name: '卷腹', targetSets: 3, targetReps: 15, restSec: 30 }, { name: '平板支撑', targetSets: 3, targetDurationSec: 60, restSec: 30 }] },
+      { weekday: 6, sportKey: 'rest' },
+      { weekday: 7, sportKey: 'cardio', exercises: [{ name: '散步行禅', targetDurationSec: 3600 }] },
+    ],
+  },
 ];

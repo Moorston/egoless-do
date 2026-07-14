@@ -104,6 +104,8 @@ export interface BodyPlanTask {
   weekday: number;  // 1-7 (Mon-Sun)
   sportKey: string;
   note?: string;
+  // v2: 该日的具体动作列表
+  exercises?: ExerciseDef[];
 }
 
 export interface BodyTrainingPlan extends Syncable {
@@ -117,4 +119,49 @@ export interface BodyTrainingPlan extends Syncable {
   goalNote?: string;
   tasks: BodyPlanTask[];
   status: BodyTrainingPlanStatus;
+}
+
+// ─── ExerciseDefinition ──────────────────────────────────────────
+// 统一动作库：合并 SPORT_GROUPS 和 EXERCISE_CATEGORIES
+
+export type ExerciseCategoryKey = typeof EXERCISE_CATEGORIES[number]['key'];
+export type ExerciseDifficulty = 'beginner' | 'intermediate' | 'advanced';
+
+export interface ExerciseDef {
+  id: string;
+  nameZh: string;         // 中文名
+  nameI18nKey: string;    // i18n key（如有）
+  icon: string;
+  category: ExerciseCategoryKey;  // 所属训练类别
+  type: 'traditional' | 'strength' | 'cardio' | 'flexibility';
+  muscleGroups: string[];
+  equipment?: string;
+  difficulty: ExerciseDifficulty;
+  defaultSets?: number;
+  defaultReps?: number;
+  defaultWeight?: number;
+  defaultDurationSec?: number;
+  defaultRestSec?: number;
+  met?: number;
+}
+
+// ─── PlanTemplate ────────────────────────────────────────────────
+// 预置健身模板（基于ACSM/NSCA标准）
+
+export interface PlanTemplate {
+  id: string;
+  name: string;
+  nameI18nKey: string;
+  description: string;
+  descriptionI18nKey: string;
+  category: 'traditional' | 'modern' | 'mixed';
+  durationDays: number;
+  strategy?: BodyStrategy;
+  intensity: 'beginner' | 'intermediate' | 'advanced';
+  weekSchedule: {
+    weekday: number;
+    sportKey: string;
+    exercises?: { name: string; targetSets?: number; targetReps?: number; targetWeight?: number; targetDurationSec?: number; restSec?: number }[];
+  }[];
+  icon: string;
 }
