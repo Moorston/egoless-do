@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 31
+- **Total Sessions**: 32
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1085 | Active |
+| `journal-1.md` | ~1119 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 32 | 2026-07-14 | profile 持久化/测试修复 + auth 退出根因修复 | `e4560fb`, `fb3ed62` | `master` |
 | 31 | 2026-07-14 | 实现 DayCheckinScreen 补打卡全功能页面 | `09ada0f` | `master` |
 | 30 | 2026-07-14 | 补打卡成功提示 + 重复登录根因修复 | `5c821ed` | `master` |
 | 29 | 2026-07-14 | token 反复退出根因排查 + 完整修复 | `4701626`, `ee6c171`, `bcc6d58` | `master` |

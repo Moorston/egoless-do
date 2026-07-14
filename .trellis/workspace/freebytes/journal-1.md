@@ -1083,3 +1083,37 @@ expiresAt未持久化到SecureStore修复；refreshAuth服务器拒绝时不再�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 32: profile 持久化/测试修复 + auth 退出根因修复
+
+**Date**: 2026-07-14
+**Task**: profile 持久化/测试修复 + auth 退出根因修复
+**Branch**: `master`
+
+### Summary
+
+Realtime踢出不再直接logout；修复useAppStore profile persistence 4个测试（flushProfileSettings默认state早返）
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e4560fb` | (see git log) |
+| `fb3ed62` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
