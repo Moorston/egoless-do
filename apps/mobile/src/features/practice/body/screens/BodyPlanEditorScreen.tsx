@@ -1,7 +1,7 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, EXERCISE_CATEGORIES, BODY_STRATEGIES, PLAN_TEMPLATES, buildExerciseLibrary, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type PlanTemplate, type ExerciseDef } from '@egoless-do/core';
-import { ChevronLeft, Target, ClipboardList, Save, Dumbbell, LayoutTemplate } from 'lucide-react-native';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, EXERCISE_CATEGORIES, BODY_STRATEGIES, buildExerciseLibrary, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef } from '@egoless-do/core';
+import { ChevronLeft, Target, ClipboardList, Save, Dumbbell } from 'lucide-react-native';
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTheme, useT } from '../../../../components/UI';
@@ -9,8 +9,6 @@ import { useRootNavigation } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
-
-type PageStep = 'template' | 'editor';
 
 export default function BodyPlanEditorScreen() {
   const TH = useTheme();
@@ -21,7 +19,6 @@ export default function BodyPlanEditorScreen() {
 
   const exerciseLibrary = useMemo(() => buildExerciseLibrary(), []);
 
-  const [step, setStep] = useState<PageStep>('template');
   const [name, setName] = useState('');
   const [startDate, setStartDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [endDate, setEndDate] = useState(() => { const d = new Date(); d.setDate(d.getDate() + 28); return d.toISOString().slice(0, 10); });
@@ -34,52 +31,6 @@ export default function BodyPlanEditorScreen() {
   );
   const [pickDay, setPickDay] = useState<number | null>(null);
   const [pickExerciseDay, setPickExerciseDay] = useState<number | null>(null);
-  const [hasEdited, setHasEdited] = useState(false);
-
-  // Track edits for overwrite confirmation
-  const markEdited = () => { if (!hasEdited) setHasEdited(true); };
-
-  // Select a template → populate editor (with overwrite confirmation)
-  const applyTemplate = (tmpl: PlanTemplate) => {
-    if (hasEdited) {
-      Alert.alert(
-        T('bodyPlanOverwriteTitle'),
-        T('bodyPlanOverwriteMsg'),
-        [
-          { text: T('bodyCancel'), style: 'cancel' },
-          { text: T('bodyPlanOverwriteConfirm'), style: 'destructive', onPress: () => doApplyTemplate(tmpl) },
-        ]
-      );
-    } else {
-      doApplyTemplate(tmpl);
-    }
-  };
-
-  const doApplyTemplate = (tmpl: PlanTemplate) => {
-    setName(T(tmpl.nameI18nKey) || tmpl.name);
-    if (tmpl.strategy) setStrategy(tmpl.strategy);
-    setTasks(tmpl.weekSchedule.map(day => ({
-      weekday: day.weekday,
-      sportKey: day.sportKey,
-      note: '',
-      exercises: day.exercises?.map(ex => ({
-        id: `planex_${day.weekday}_${ex.name}`,
-        name: ex.name,
-        category: 'strength' as const,
-        targetSets: ex.targetSets,
-        targetReps: ex.targetReps,
-        targetWeight: ex.targetWeight,
-        targetDurationSec: ex.targetDurationSec,
-        restSec: ex.restSec,
-        sortOrder: 1,
-        type: 'strength' as const,
-        muscleGroups: [],
-        difficulty: 'beginner' as const,
-      })) ?? [],
-    })));
-    setHasEdited(false);
-    setStep('editor');
-  };
 
   // Group exercises by category for picker
   const exercisesByCategory = useMemo(() => {
@@ -152,63 +103,12 @@ export default function BodyPlanEditorScreen() {
     nav.goBack();
   };
 
-  // ── Template selection screen ──
-  if (step === 'template') {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-          <TouchableOpacity onPress={() => nav.goBack()}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
-          <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>{T('bodyPlanCreate')}</Text>
-        </View>
-        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
-          <Text style={{ fontSize: FONT_BODY(), color: TH.sub, marginBottom: 16, textAlign: 'center' }}>{T('bodyPlanTemplateChoose')}</Text>
-          {PLAN_TEMPLATES.map(tmpl => (
-            <TouchableOpacity key={tmpl.id} onPress={() => applyTemplate(tmpl)}
-              style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: TH.border }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-                <Text style={{ fontSize: 28 }}>{tmpl.icon}</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T(tmpl.nameI18nKey)}</Text>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>
-                    {tmpl.durationDays}{T('bodyDays')} · {tmpl.intensity === 'beginner' ? T('bodyLevelBeginner') : tmpl.intensity === 'intermediate' ? T('bodyLevelIntermediate') : T('bodyLevelAdvanced')}
-                  </Text>
-                </View>
-              </View>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, lineHeight: 20 }}>{T(tmpl.descriptionI18nKey)}</Text>
-              {tmpl.weekSchedule.filter(d => d.sportKey !== 'rest').slice(0, 3).map(d => {
-                const cat = EXERCISE_CATEGORIES.find(c => c.key === d.sportKey);
-                return (
-                  <View key={d.weekday} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 6 }}>
-                    <Text style={{ fontSize: FONT_SMALL() }}>{cat?.icon ?? '🏋️'}</Text>
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.text }}>
-                      {T(WEEKDAY_KEYS[d.weekday - 1])} · {cat ? T(cat.i18nKey) : d.sportKey}
-                    </Text>
-                  </View>
-                );
-              })}
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 10 }}>
-                <Text style={{ fontSize: FONT_SMALL(), color: P, fontWeight: '600' }}>{T('bodyPlanUseTemplate')} →</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-          <TouchableOpacity onPress={() => setStep('editor')}
-            style={{ paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderColor: TH.border, alignItems: 'center', marginTop: 4 }}>
-            <Text style={{ color: TH.sub, fontSize: FONT_BODY() }}>{T('bodyPlanCustom')}</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  }
-
-  // ── Editor screen (with template data or custom) ──
+  // ── Editor ──
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: TH.border }}>
-        <TouchableOpacity onPress={() => { setHasEdited(false); setStep('template'); }}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
+        <TouchableOpacity onPress={() => nav.goBack()}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
         <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12, flex: 1 }}>{name || T('bodyPlanCreate')}</Text>
-        <TouchableOpacity onPress={() => { setHasEdited(false); setStep('template'); }}>
-          <LayoutTemplate size={20} color={P} />
-        </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
 
