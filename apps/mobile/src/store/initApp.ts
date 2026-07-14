@@ -284,7 +284,12 @@ export async function initApp(): Promise<void> {
 
     // ── Step 6c: Wire realtime controller callbacks ──────────
     // Avoids circular import: SyncRealtimeController → useAppStore
-    setRealtimeLogoutHandler(() => { void store().logout(); });
+    // Note: do NOT call store().logout() here — that would force the user out
+    // immediately on any network hiccup. The SyncEngine's kicked-out handler
+    // (wired in useSync.ts) shows a modal and lets the user decide.
+    setRealtimeLogoutHandler(() => {
+      log.warn('Realtime kicked-out signal received — ignoring to preserve auth');
+    });
     setRealtimeUserIdProvider(() => store().auth.user?.id ?? undefined);
 
     // ── Step 7: Create DailyResetManager with SQLite storage ──
