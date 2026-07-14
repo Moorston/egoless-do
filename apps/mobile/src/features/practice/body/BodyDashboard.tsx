@@ -1,4 +1,4 @@
-import { ALL_SPORTS, type AgeBracket, type BodyGoal, type BodyPlan } from '@egoless-do/core';
+import { ALL_SPORTS, type AgeBracket, type BodyGoal, type BodyPlan, type BodyTrainingPlan } from '@egoless-do/core';
 import React, { useState, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 
@@ -8,6 +8,7 @@ import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 import BodyAwarenessCard from './BodyAwarenessCard';
 import BodyProfileCard from './BodyProfileCard';
+import BodyTrainingPlanSection from './components/BodyTrainingPlanSection';
 import BodyWeekPlanCard from './BodyWeekPlanCard';
 import GoalCard from './GoalCard';
 import WeightTrendChart from './WeightTrendChart';
@@ -26,7 +27,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { userProfile, bodyGoals, bodyPlans, bodyCheckins, exerciseLog, weightRecords,
+  const { userProfile, bodyGoals, bodyPlans, bodyCheckins, exerciseLog, weightRecords, bodyTrainingPlans,
     updateUserProfile, updateBodyGoal, addBodyGoal, removeBodyPlan, addBodyPlan,
     upsertBodyCheckin, addWeight } = useShallowStore(s => ({
     userProfile: s.userProfile,
@@ -35,6 +36,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
     bodyCheckins: s.bodyCheckins,
     exerciseLog: s.exerciseLog,
     weightRecords: s.weightRecords,
+    bodyTrainingPlans: s.bodyTrainingPlans,
     updateUserProfile: s.updateUserProfile,
     updateBodyGoal: s.updateBodyGoal,
     addBodyGoal: s.addBodyGoal,
@@ -54,6 +56,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
 
   const activeGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
   const activePlans = useMemo(() => (bodyPlans ?? []).filter((p: BodyPlan) => !p.deleted), [bodyPlans]);
+  const activeTrainingPlan = useMemo(() => (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active'), [bodyTrainingPlans]);
 
   const handleSaveAssessment = useCallback((text: string, tags: string[]) => {
     updateUserProfile({ selfAssessment: text, bodyTags: tags });
@@ -105,6 +108,13 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
         onEditAssessment={() => setShowAssessment(true)}
         onRecordWeight={() => setShowWeightRecord(true)}
         onPickAgeBracket={handlePickAgeBracket}
+      />
+
+      <BodyTrainingPlanSection
+        TH={TH} T={T}
+        plan={activeTrainingPlan}
+        onEdit={() => nav.navigate('BodyPlanEditor' as never)}
+        onStart={() => nav.navigate('BodyPlanEditor' as never)}
       />
 
       <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />

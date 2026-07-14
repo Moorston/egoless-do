@@ -312,6 +312,7 @@ export interface SyncDataMap {
   bodyPlan: import('../types').BodyPlan;
   weightRecord: import('../types').WeightRecord;
   bodyCheckin: import('../types').BodyCheckin;
+  bodyTrainingPlan: import('../types').BodyTrainingPlan;
   breath: import('../types/breath').BreathingRecord;
   sleep: SleepEntry;
   give: GiveEntry;

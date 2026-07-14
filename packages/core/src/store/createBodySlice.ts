@@ -1,7 +1,8 @@
-import type { BodyGoal, BodyPlan, BodyCheckin, WeightRecord } from '../types';
+import type { BodyGoal, BodyPlan, BodyCheckin, WeightRecord, BodyTrainingPlan, BodyTrainingPlanStatus } from '../types';
 import type { StorageAdapter } from './types';
 import type { SliceCreator } from './sliceHelper';
 import { createLogger } from '../logger';
+import { uid } from '../utils';
 import { createBodyGoal, createBodyPlan, createBodyCheckin, createWeightRecord } from '../business/body';
 const log = createLogger('Store');
 
@@ -29,6 +30,12 @@ export interface BodySlice {
   bodyCheckins: BodyCheckin[];
   upsertBodyCheckin: (data: Parameters<typeof createBodyCheckin>[0]) => void;
   removeBodyCheckin: (id: string) => void;
+
+  // Body training plans
+  bodyTrainingPlans: BodyTrainingPlan[];
+  addBodyTrainingPlan: (plan: Omit<BodyTrainingPlan, 'id' | 'updatedAt' | 'deleted'>) => void;
+  updateBodyTrainingPlan: (id: string, updates: Partial<BodyTrainingPlan>) => void;
+  removeBodyTrainingPlan: (id: string) => void;
 }
 
 export function createBodySlice(
@@ -160,6 +167,40 @@ export function createBodySlice(
         bodyCheckins: (s.bodyCheckins ?? []).map(c => c.id === id ? { ...c, deleted: true, updatedAt: Date.now() } : c),
       }));
       adapter.markDeleted('bodyCheckin', id).catch(e => log.error(e));
+      onSync?.();
+    },
+
+    // ── Body training plans ────────────────────────────────────────────
+    bodyTrainingPlans: [],
+
+    addBodyTrainingPlan(plan) {
+      const id = uid();
+      const entry: BodyTrainingPlan = { ...plan, id, updatedAt: Date.now(), deleted: false };
+      set(s => ({ bodyTrainingPlans: [...(s.bodyTrainingPlans ?? []), entry] }));
+      adapter.persistChange('bodyTrainingPlan', id, entry).catch(e => log.error(e));
+      onSync?.();
+    },
+
+    updateBodyTrainingPlan(id, updates) {
+      let entry: BodyTrainingPlan | undefined;
+      set(s => {
+        const newList = (s.bodyTrainingPlans ?? []).map(p =>
+          p.id === id ? { ...p, ...updates, updatedAt: Date.now() } : p
+        );
+        entry = newList.find(p => p.id === id);
+        return { bodyTrainingPlans: newList };
+      });
+      if (entry) adapter.persistChange('bodyTrainingPlan', id, entry).catch(e => log.error(e));
+      onSync?.();
+    },
+
+    removeBodyTrainingPlan(id) {
+      set(s => ({
+        bodyTrainingPlans: (s.bodyTrainingPlans ?? []).map(p =>
+          p.id === id ? { ...p, deleted: true, updatedAt: Date.now() } : p
+        ),
+      }));
+      adapter.markDeleted('bodyTrainingPlan', id).catch(e => log.error(e));
       onSync?.();
     },
   });

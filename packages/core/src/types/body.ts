@@ -95,3 +95,26 @@ export interface BodyCheckin extends Syncable {
   note?: string;
   synced?: boolean;   // whether synced to remote
 }
+
+// ─── BodyTrainingPlan ──────────────────────────────────────────────
+
+export type BodyTrainingPlanStatus = 'active' | 'completed' | 'cancelled';
+
+export interface BodyPlanTask {
+  weekday: number;  // 1-7 (Mon-Sun)
+  sportKey: string;
+  note?: string;
+}
+
+export interface BodyTrainingPlan extends Syncable {
+  id: string;
+  name: string;
+  startDate: string;   // YYYY-MM-DD
+  endDate: string;     // YYYY-MM-DD
+  strategy?: BodyStrategy;
+  targetWeight?: number;
+  targetBodyFat?: number;
+  goalNote?: string;
+  tasks: BodyPlanTask[];
+  status: BodyTrainingPlanStatus;
+}

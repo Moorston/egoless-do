@@ -8,6 +8,7 @@ export const SYNC_ENTITIES = [
   'plan', 'planItem', 'planItemCheckin', 'dailyCustomTodo', 'dailyTodoHistory', 'grace',
   'thoughtTrail', 'trailNote', 'reflectionLink', 'aiConfig', 'checkinReview',
   'bodyGoal', 'bodyPlan', 'weightRecord', 'bodyCheckin', 'sleep', 'give',
+  'bodyTrainingPlan',
   'motivationEntry', 'customWuxing', 'foodPreset',
   'vision', 'visionPractice', 'dedication',
   'mantraDef', 'mantraSession',

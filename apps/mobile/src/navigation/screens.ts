@@ -28,6 +28,7 @@ export {
 // ─── Lazy-loaded screens ────────────────────────────────────────────────────
 export const AISettingsScreen       = React.lazy(() => import('../features/settings/AISettingsScreen'));
 export const BodyScreen             = React.lazy(() => import('../features/practice/BodyScreen'));
+export const BodyPlanEditorScreen   = React.lazy(() => import('../features/practice/body/screens/BodyPlanEditorScreen'));
 export const BreathHistoryPage      = React.lazy(() => import('../features/breathing/BreathHistoryPage'));
 export const BreathingScreen        = React.lazy(() => import('../features/breathing/BreathingScreen'));
 export const CheckinDetailScreen    = React.lazy(() => import('../features/home/screens/CheckinDetailScreen'));

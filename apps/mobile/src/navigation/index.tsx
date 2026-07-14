@@ -41,7 +41,7 @@ import {
   ThoughtTrailDetailScreen, QuickCreateTrailScreen,
   ReflectionDetailScreen, InsightScreen, ReviewScreen,
   StrategyLibrary, RelationMapView,
-  AISettingsScreen, BodyScreen, BreathHistoryPage, BreathingScreen,
+  AISettingsScreen, BodyScreen, BodyPlanEditorScreen, BreathHistoryPage, BreathingScreen,
   CheckinDetailScreen, CheckinHistoryScreen, DayCheckinScreen, DietScreen,
   ExerciseHistoryScreen, FastHistoryModule, FoodLogPage,
   ForgotPasswordScreen, GiveHistoryPage, GiveScreen,
@@ -338,6 +338,7 @@ export default function AppNavigator() {
         <Stack.Screen name="SutraHistory" component={withErrorBoundary(SutraHistoryScreen)} />
         <Stack.Screen name="Zhiguan" component={ZhiguanScreen} />
         <Stack.Screen name="ZhiguanHistory" component={withErrorBoundary(ZhiguanHistoryScreen)} />
+        <Stack.Screen name="BodyPlanEditor" component={withErrorBoundary(BodyPlanEditorScreen)} />
       </Stack.Navigator>
     </NavigationContainer>
     <KickOutModal

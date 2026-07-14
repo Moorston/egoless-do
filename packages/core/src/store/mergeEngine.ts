@@ -25,6 +25,7 @@ export const ENTITY_MERGE_MAP: Array<[string, string, string]> = [
   ['checkinReview',   'checkinReviews',    'id'],
   ['bodyGoal',        'bodyGoals',         'id'],
   ['bodyPlan',        'bodyPlans',         'id'],
+  ['bodyTrainingPlan','bodyTrainingPlans',  'id'],
   ['weightRecord',    'weightRecords',     'id'],
   ['bodyCheckin',     'bodyCheckins',      'id'],
   ['sleep',           'sleepHistory',      'id'],

@@ -762,6 +762,25 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     ],
   },
 
+  bodyTrainingPlan: {
+    sqlite: { table: 'body_training_plans', pk: 'id' },
+    pocketbase: { collection: 'body_training_plans', serverIdField: 'plan_id' },
+    fields: [
+      { entity: 'id',          col: 'id',           server: 'id',           fallback: null },
+      { entity: 'name',        col: 'name',         server: 'name',         fallback: '' },
+      { entity: 'startDate',   col: 'start_date',   server: 'startDate',    fallback: '' },
+      { entity: 'endDate',     col: 'end_date',     server: 'endDate',      fallback: '' },
+      { entity: 'strategy',    col: 'strategy',      server: 'strategy',     fallback: '', optional: true },
+      { entity: 'targetWeight',col: 'target_weight', server: 'targetWeight', type: 'num', optional: true },
+      { entity: 'targetBodyFat',col: 'target_body_fat',server: 'targetBodyFat', type: 'num', optional: true },
+      { entity: 'goalNote',    col: 'goal_note',     server: 'goalNote',     fallback: '', optional: true },
+      { entity: 'tasks',       col: 'tasks',         server: 'tasks',        type: 'json' },
+      { entity: 'status',      col: 'status',        server: 'status',       fallback: 'active' },
+      { entity: 'updatedAt',   col: 'updated_at',    server: 'updatedAt',    fallback: () => Date.now() },
+      { entity: 'deleted',     col: 'deleted',        type: 'bool' },
+    ],
+  },
+
   weightRecord: {
     sqlite: { table: 'body_weight_records', pk: 'id' },
     pocketbase: { collection: 'weight_records', serverIdField: 'weight_id' },
