@@ -173,7 +173,7 @@ export function createAuthSlice(
             // beyond the grace period (7 days). Prevents forced logout from transient network issues.
             const currentAuth = get().auth;
             const LOGOUT_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
-            const isPastGrace = currentAuth.expiresAt > 0 ? currentAuth.expiresAt + LOGOUT_GRACE_MS < Date.now() : true;
+            const isPastGrace = currentAuth.expiresAt > 0 ? currentAuth.expiresAt + LOGOUT_GRACE_MS < Date.now() : false;
             if (currentAuth.refreshToken && isPastGrace) {
               log.warn('Token refresh failed after 2 attempts and past grace period, clearing auth', { context: 'refreshAuth' });
               set({ auth: defaultAuthState });

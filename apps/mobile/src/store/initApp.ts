@@ -188,10 +188,13 @@ export async function initApp(): Promise<void> {
         if (secureTokens.token && secureTokens.refreshToken) {
           // Try to verify the token is still valid by calling getMe
           // If it fails, keep the token anyway — refreshAuth() will handle it later
-          const authPatch = {
+          const authPatch: Record<string, unknown> = {
             token: secureTokens.token,
             refreshToken: secureTokens.refreshToken,
           };
+          if (secureTokens.expiresAt) {
+            authPatch.expiresAt = secureTokens.expiresAt;
+          }
 
           // Verify token validity in background — don't block app startup
           apiGetMe(secureTokens.token).then(({ user }) => {
@@ -246,7 +249,7 @@ export async function initApp(): Promise<void> {
       const oldToken = prevState.auth.token;
       const oldRefresh = prevState.auth.refreshToken;
       if (newToken && newRefresh && (newToken !== oldToken || newRefresh !== oldRefresh)) {
-        saveSecureTokens(newToken, newRefresh).catch(e => log.error(e, { phase: 'saveSecureTokens' }));
+        saveSecureTokens(newToken, newRefresh, state.auth.expiresAt).catch(e => log.error(e, { phase: 'saveSecureTokens' }));
       } else if (!newToken && oldToken) {
         clearSecureTokens().catch(e => log.error(e, { phase: 'clearSecureTokens' }));
       }
