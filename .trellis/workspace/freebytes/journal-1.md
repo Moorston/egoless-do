@@ -1017,3 +1017,36 @@ expiresAt未持久化到SecureStore修复；refreshAuth服务器拒绝时不再�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 30: 补打卡成功提示 + 重复登录根因修复
+
+**Date**: 2026-07-14
+**Task**: 补打卡成功提示 + 重复登录根因修复
+**Branch**: `master`
+
+### Summary
+
+补打卡提交后显示'已补卡成功'绿色成功覆盖层(1.5秒)再自动关闭
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5c821ed` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
