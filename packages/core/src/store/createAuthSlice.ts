@@ -106,6 +106,7 @@ export function createAuthSlice(
     },
 
     async logout() {
+      log.warn('logout called', { trace: new Error().stack?.split('\n').slice(2, 8).join(' | ') });
       const { auth } = get();
       if (auth.token && auth.refreshToken) {
         try {
