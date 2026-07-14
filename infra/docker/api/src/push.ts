@@ -162,7 +162,9 @@ app.put('/push', async (c) => {
     if (failedTokenIds.length > 0) {
       await Promise.all(
         failedTokenIds.map((id) =>
-          pb.collection('push_tokens').delete(id).catch(() => {})
+          pb.collection('push_tokens').delete(id).catch((e: unknown) => {
+            console.warn('[push] Failed to delete invalid token:', e instanceof Error ? e.message : e);
+          })
         )
       );
     }
@@ -198,7 +200,9 @@ app.delete('/push', async (c) => {
     });
 
     for (const token of tokens) {
-      await pb.collection('push_tokens').delete(token.id).catch(() => {});
+      await pb.collection('push_tokens').delete(token.id).catch((e: unknown) => {
+      console.warn('[push] Delete token error:', e instanceof Error ? e.message : e);
+    });
     }
 
     return c.json({ ok: true, deleted: tokens.length });

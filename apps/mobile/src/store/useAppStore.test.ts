@@ -239,6 +239,8 @@ describe('Profile persistence', () => {
     expect(mockSetMusicSyncCallback).toHaveBeenCalled();
     const profilePersistFn = mockSetMusicSyncCallback.mock.calls[0][0];
 
+    // Set non-default state so flushProfileSettings doesn't early-return
+    useAppStore.setState({ waterGoal: 2500 } as Partial<MobileStore>);
     profilePersistFn();
 
     // Not yet flushed (500ms debounce)
@@ -305,6 +307,8 @@ describe('Profile persistence', () => {
 
   it('AppState background triggers profile flush', () => {
     mockPersistChange.mockClear();
+    // Set non-default state so flushProfileSettings doesn't early-return
+    useAppStore.setState({ waterGoal: 2500 } as Partial<MobileStore>);
     const listener = getAppStateListener();
     listener('background');
 
@@ -375,6 +379,8 @@ describe('AI Config persistence', () => {
 
   it('both profile and AI config are flushed on background', () => {
     mockPersistChange.mockClear();
+    // Set non-default state so flushProfileSettings doesn't early-return
+    useAppStore.setState({ waterGoal: 2500 } as Partial<MobileStore>);
     const listener = getAppStateListener();
     listener('background');
 
@@ -510,6 +516,8 @@ describe('handleAppStateChange via AppState listener', () => {
   });
 
   it('flushes profile, AI config, and writes when state is background', async () => {
+    // Set non-default state so flushProfileSettings doesn't early-return
+    useAppStore.setState({ waterGoal: 2500 } as Partial<MobileStore>);
     const listener = getAppStateListener();
     await listener('background');
 

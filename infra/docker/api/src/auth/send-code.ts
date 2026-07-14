@@ -82,7 +82,9 @@ app.post('/send-code', async (c) => {
     await saveVerificationCode(email, code, expiresAt);
 
     // 异步清理过期验证码（不阻塞主流程）
-    cleanupExpiredCodes().catch(() => {});
+    cleanupExpiredCodes().catch((e: unknown) => {
+      console.warn('[send-code] Cleanup error:', e instanceof Error ? e.message : e);
+    });
 
     const transporter = getTransporter();
     const subject = type === 'reset' ? '【心流纪】密码重置验证码' : '【心流纪】邮箱验证码';
