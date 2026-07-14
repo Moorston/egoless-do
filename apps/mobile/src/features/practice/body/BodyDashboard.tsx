@@ -21,9 +21,10 @@ import WeightRecordModal from './modals/WeightRecordModal';
 
 interface DashboardProps {
   onFlowStart?: () => void;
+  onFlowStartWithPlan?: (planId: string) => void;
 }
 
-export default function BodyDashboard({ onFlowStart }: DashboardProps) {
+export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: DashboardProps) {
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
@@ -114,7 +115,7 @@ export default function BodyDashboard({ onFlowStart }: DashboardProps) {
         TH={TH} T={T}
         plan={activeTrainingPlan}
         onEdit={() => nav.navigate('BodyPlanEditor' as never)}
-        onStart={() => nav.navigate('BodyPlanEditor' as never)}
+        onStart={(planId) => onFlowStartWithPlan?.(planId)}
       />
 
       <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />

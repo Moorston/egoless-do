@@ -17,6 +17,7 @@ interface FlowProps {
   T: (key: string) => string;
   onExit: () => void;
   todayPlan?: BodyPlan;
+  trainingPlanTask?: { planId: string; planName: string; task: BodyPlanTask } | null;
   store: Record<string, unknown> & Pick<BodySlice, 'upsertBodyCheckin'>;
   returnTick?: number;
   onGoToSport?: (sportKey: string) => void;
@@ -99,7 +100,7 @@ function ExercisePicker({ TH, T, onSelect }: { TH: Theme; T: (key: string) => st
   );
 }
 
-export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, onGoToSport, onGoToBreathing }: FlowProps) {
+export default function BodyFlow({ TH, T, onExit, todayPlan, trainingPlanTask, store, returnTick, onGoToSport, onGoToBreathing }: FlowProps) {
   const [step, setStep] = useState<FlowStep>('practice');
   const startTimeRef = useRef(Date.now());
   const practiceStartRef = useRef(0);
@@ -108,7 +109,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
   const [breathingCompleted, setBreathingCompleted] = useState(false);
   const [breathingDurationMs, setBreathingDurationMs] = useState(0);
   const [awarenessData, setAwarenessData] = useState<BodyCheckin | null>(null);
-  const [selectedSportKey, setSelectedSportKey] = useState<string | undefined>(todayPlan?.sportKey || todayPlan?.part);
+  const [selectedSportKey, setSelectedSportKey] = useState<string | undefined>(todayPlan?.sportKey || todayPlan?.part || trainingPlanTask?.task.sportKey);
 
   const prevReturnTick = useRef(returnTick);
   useEffect(() => {
@@ -169,8 +170,10 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
   }
 
   if (step === 'practice') {
-    const isTodayRestDay = todayPlan?.part === 'rest';
-    const hasTodayPlan = !!todayPlan?.part && todayPlan.part !== 'rest';
+    const isTodayRestDay = todayPlan?.part === 'rest' || trainingPlanTask?.task.sportKey === 'rest';
+    const hasTodayPlan = trainingPlanTask ? !isTodayRestDay : (!!todayPlan?.part && todayPlan.part !== 'rest');
+    const activeSportKey = trainingPlanTask?.task.sportKey ?? todayPlan?.sportKey ?? todayPlan?.part;
+    const planExercises = trainingPlanTask?.task.exercises ?? [];
 
     return (
       <View>
@@ -190,6 +193,25 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
             </View>
           ) : hasTodayPlan ? (
             <>
+              {trainingPlanTask ? (
+                <View style={{ marginBottom: 16 }}>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{trainingPlanTask.planName}</Text>
+                  {planExercises.length > 0 ? (
+                    planExercises.map((ex, i) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: `${TH.border}40`, marginBottom: 4 }}>
+                        <Text style={{ fontSize: FONT_SMALL(), color: TH.text, flex: 1 }}>
+                          {ex.icon} {ex.nameZh || ex.name}
+                          {ex.defaultSets && ex.defaultReps ? `  ${ex.defaultSets}×${ex.defaultReps}` : ''}
+                          {ex.defaultWeight ? `  ${ex.defaultWeight}kg` : ''}
+                          {ex.defaultDurationSec ? `  ${Math.round(ex.defaultDurationSec / 60)}min` : ''}
+                        </Text>
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginBottom: 8 }}>{T('bodyPlanNoExercises')}</Text>
+                  )}
+                </View>
+              ) : null}
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
                 <Text style={{ fontSize: FONT_STAT_SECTION() }}>{sportInfo && 'icon' in sportInfo ? (sportInfo as { icon: string }).icon : '🏋️'}</Text>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
@@ -198,7 +220,7 @@ export default function BodyFlow({ TH, T, onExit, todayPlan, store, returnTick, 
               </View>
               <PrimaryButton
                 label={T('bodyFlowStartBreathing')}
-                onPress={() => navigateToSport(selectedSportKey || todayPlan?.sportKey || todayPlan?.part || '')}
+                onPress={() => navigateToSport(selectedSportKey || activeSportKey || '')}
                 color="#f59e0b"
                 icon={<Activity size={18} color="#fff" />}
               />

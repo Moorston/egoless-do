@@ -10,7 +10,7 @@ interface Props {
   T: (key: string) => string;
   plan: BodyTrainingPlan | undefined;
   onEdit: () => void;
-  onStart: () => void;
+  onStart: (planId: string) => void;
 }
 
 function resolveSport(key: string, T: (k: string) => string) {
@@ -83,7 +83,7 @@ export default function BodyTrainingPlanSection({ TH, T, plan, onEdit, onStart }
         )}
 
         {/* Start button */}
-        <TouchableOpacity onPress={onStart} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 12, borderRadius: 10, backgroundColor: P, marginTop: 12 }}>
+        <TouchableOpacity onPress={() => onStart(plan.id)} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 12, borderRadius: 10, backgroundColor: P, marginTop: 12 }}>
           <Play size={18} color="#fff" />
           <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('bodyStartToday')}</Text>
         </TouchableOpacity>
