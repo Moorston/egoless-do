@@ -42,7 +42,7 @@ import {
   ReflectionDetailScreen, InsightScreen, ReviewScreen,
   StrategyLibrary, RelationMapView,
   AISettingsScreen, BodyScreen, BreathHistoryPage, BreathingScreen,
-  CheckinDetailScreen, CheckinHistoryScreen, DietScreen,
+  CheckinDetailScreen, CheckinHistoryScreen, DayCheckinScreen, DietScreen,
   ExerciseHistoryScreen, FastHistoryModule, FoodLogPage,
   ForgotPasswordScreen, GiveHistoryPage, GiveScreen,
   GlobalPulseScreen, GracePage, HabitDetailScreen, HabitsScreen,
@@ -310,6 +310,7 @@ export default function AppNavigator() {
         <Stack.Screen name="StreakBreak" component={StreakBreakScreen} />
         <Stack.Screen name="CheckinHistory" component={withErrorBoundary(CheckinHistoryScreen)} />
         <Stack.Screen name="CheckinDetail" component={withErrorBoundary(CheckinDetailScreen)} />
+<Stack.Screen name="DayCheckin" component={withErrorBoundary(DayCheckinScreen)} />
         <Stack.Screen name="ReviewHistory" component={withErrorBoundary(ReviewHistoryScreen)} />
         <Stack.Screen name="ReviewDetail" component={ReviewDetailScreen} />
         <Stack.Screen name="ExerciseHistory" component={withErrorBoundary(ExerciseHistoryScreen)} />

@@ -1,14 +1,13 @@
 import { COLORS, yesterday, dateStr, FONT_BODY, FONT_TITLE, FONT_SUB, FONT_SMALL, FONT_TINY,
   getMonthGraceCount, getRemainingGrace, isGraceAvailable } from '@egoless-do/core';
 import { Shield, ShieldCheck, CheckCircle2, Clock, Calendar, Settings } from 'lucide-react-native';
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Card, useTheme, useT, ScreenHeader } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
-import { useAppStore, useShallowStore } from '../../../store/useAppStore';
-import CheckinModal from '../components/CheckinModal';
+import { useShallowStore } from '../../../store/useAppStore';
 
 export default function GracePage() {
   const nav   = useRootNavigation();
@@ -21,8 +20,6 @@ export default function GracePage() {
     graceHistory: s.graceHistory,
     updateUserProfile: s.updateUserProfile,
   }));
-
-  const [showCheckin, setShowCheckin] = useState(false);
 
   const yStr = yesterday();
   const currentMonth = dateStr().slice(0, 7); // "2026-06"
@@ -45,12 +42,8 @@ export default function GracePage() {
 
   const handleRestore = useCallback(() => {
     if (!available) return;
-    setShowCheckin(true);
-  }, [available]);
-
-  const handleCheckinClose = useCallback(() => {
-    setShowCheckin(false);
-  }, []);
+    nav.navigate('DayCheckin', { date: yStr, graceMode: true });
+  }, [available, nav, yStr]);
 
   const updateQuota = useCallback((q: number) => {
     updateUserProfile({ graceMonthlyQuota: q });
@@ -58,10 +51,6 @@ export default function GracePage() {
 
   // Quota selector options
   const quotaOptions = [0, 1, 2, 3, 4, 5];
-
-  if (showCheckin) {
-    return <CheckinModal onClose={handleCheckinClose} graceDate={yStr} />;
-  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: TH.bg }}>

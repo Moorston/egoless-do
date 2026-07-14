@@ -15,6 +15,7 @@ export type RootStackParamList = {
   GiveHistory: undefined;
   FoodLog: undefined;
   Grace: undefined;
+  DayCheckin: { date: string; graceMode?: boolean };
   StreakBreak: undefined;
   CheckinHistory: undefined;
   CheckinDetail: { date: string };

@@ -32,6 +32,7 @@ export const BreathHistoryPage      = React.lazy(() => import('../features/breat
 export const BreathingScreen        = React.lazy(() => import('../features/breathing/BreathingScreen'));
 export const CheckinDetailScreen    = React.lazy(() => import('../features/home/screens/CheckinDetailScreen'));
 export const CheckinHistoryScreen   = React.lazy(() => import('../features/home/screens/CheckinHistoryScreen'));
+export const DayCheckinScreen       = React.lazy(() => import('../features/home/screens/DayCheckinScreen'));
 export const DietScreen             = React.lazy(() => import('../features/diet/DietScreen'));
 export const ExerciseHistoryScreen  = React.lazy(() => import('../features/exercise/ExerciseHistoryScreen'));
 export const FastHistoryModule      = React.lazy(() => import('../features/fasting/FastHistoryPage'));
