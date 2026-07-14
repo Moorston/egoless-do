@@ -168,17 +168,11 @@ export function createAuthSlice(
               await new Promise(r => setTimeout(r, 1000));
               continue;
             }
-            // 401/400 etc: don't retry, fall through to check token expiry
-            // Second failure or non-retryable error: only clear auth if token has been expired
-            // beyond the grace period (7 days). Prevents forced logout from transient network issues.
-            const currentAuth = get().auth;
-            const LOGOUT_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
-            const isPastGrace = currentAuth.expiresAt > 0 ? currentAuth.expiresAt + LOGOUT_GRACE_MS < Date.now() : false;
-            if (currentAuth.refreshToken && isPastGrace) {
-              log.warn('Token refresh failed after 2 attempts and past grace period, clearing auth', { context: 'refreshAuth' });
-              set({ auth: defaultAuthState });
-            }
-            // If token is still valid, keep the auth state — network error is transient
+            // Server rejected refresh token or network error persisted.
+            // Do NOT clear auth — removing auth state forces a disruptive logout.
+            // The caller (SyncEngine, API calls) will handle auth failures via
+            // kicked-out mechanism when the next authenticated request fails.
+            // User can continue using cached data until they explicitly re-login.
           }
         }
         // After retry loop completes without success, propagate the error

@@ -422,7 +422,7 @@ describe('SyncEngine', () => {
       expect(mockDrainQueue).toHaveBeenCalled();
     });
 
-    it('calls logout when refreshAuth fails to produce a token (user was logged in)', async () => {
+    it('does NOT call logout when refreshAuth fails (preserve auth state)', async () => {
       mockAppStore._auth = { token: null, refreshToken: 'refresh-123', user: { id: 'u1' } };
       mockAppStore.getState.mockReturnValue(mockAppStore);
       mockAppStore.refreshAuth.mockResolvedValue(undefined);
@@ -436,7 +436,7 @@ describe('SyncEngine', () => {
 
       await engine.runSync();
 
-      expect(mockAppStore.logout).toHaveBeenCalled();
+      expect(mockAppStore.logout).not.toHaveBeenCalled();
       expect(mockDrainQueue).not.toHaveBeenCalled();
     });
 

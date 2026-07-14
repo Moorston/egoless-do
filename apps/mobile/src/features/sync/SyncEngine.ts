@@ -633,13 +633,10 @@ export class SyncEngine {
         if (!token) {
           log.warn('No recovery possible');
           this.clearSyncTrigger();
-          // Only show "kicked out" if user was actually logged in (had a userId).
-          // If userId is also null, the user was never logged in — silently skip.
-          const userId = this._userIdProvider?.();
-          if (userId) {
-            log.warn('User was logged in but token recovery failed — triggering kicked out');
-            this._onKickedOut?.();
-          }
+          // Don't trigger kicked-out here — the auth state is still valid,
+          // and the user may have a token that still works for read operations.
+          // If the server rejects the token during push/pull, the kicked-out
+          // handler will fire then. This prevents premature logout on startup.
           this._syncing = false;
           return;
         }
