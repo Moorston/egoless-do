@@ -405,11 +405,11 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     sqlite: { table: 'user_profiles', pk: 'profile_id' },
     pocketbase: { collection: 'user_profiles', serverIdField: 'profile_id' },
     customToRow: (d) => {
-      const { profileId, data, ...rest } = d as Record<string, unknown>;
+      const { profileId, updatedAt, data, ...rest } = d as Record<string, unknown>;
       return {
         profile_id: profileId ?? 'self',
         data: typeof data === 'string' ? data : JSON.stringify(rest),
-        updated_at: d.updatedAt ?? Date.now(),
+        updated_at: updatedAt ?? Date.now(),
         deleted: bool(d.deleted),
       };
     },
@@ -431,7 +431,10 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
     },
     customRowToEntity: (r) => {
       const data = parseJson<Record<string, unknown>>(r.data, {});
-      return { ...data, updatedAt: (r.updated_at as number) ?? (data.updatedAt as number) };
+      // Convert updated_at to number at runtime (handles both number and ISO string from server pull)
+      const rawUpdatedAt = r.updated_at != null ? Number(r.updated_at) : undefined;
+      const dataUpdatedAt = data.updatedAt != null ? Number(data.updatedAt) : undefined;
+      return { ...data, updatedAt: rawUpdatedAt ?? dataUpdatedAt ?? Date.now() };
     },
     fields: [],
   },

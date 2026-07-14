@@ -67,6 +67,12 @@ function flushProfileSettings() {
     _settingsPersistTimer = null;
   }
   const s = useAppStore.getState();
+  const profile = s.userProfile ?? {};
+  // Skip flush if profile is empty (e.g., after clearLocalData reset) to avoid overwriting real data
+  const hasRealData = Object.keys(profile).length > 1 || (Object.keys(profile).length === 1 && !('updatedAt' in profile));
+  if (!hasRealData && s.waterGoal === 2000 && s.waterMl === 0 && s.weightUnit === 'kg') {
+    return;
+  }
   const ms = useMusicStore.getState();
   adapter.persistChange('profile', 'self', {
     ...s.userProfile,
