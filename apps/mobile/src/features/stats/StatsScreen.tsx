@@ -1,4 +1,4 @@
-import {COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, dateStr, FONT_BODY, FONT_SUB, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
+import {COLORS, aggregateWeightData, aggregateDailyCalories, aggregateWeeklyKm, aggregateDailyWater, estimateFastingKcal, getTodayMedMinutes, computeExpectedDays, computePlanProgress, countItemDoneDays, countItemDoneDays, dateStr, FONT_BODY, FONT_SUB, activeOnly , FONT_TITLE, FONT_STAT_CARD} from '@egoless-do/core';
 import {
   Flame, Sparkles, Target, Star, Utensils, Shield,
   CalendarDays, Zap, Dumbbell, TrendingUp, BarChart3,
@@ -46,6 +46,7 @@ export default function StatsScreen() {
     reflections: s.reflections,
     plans: s.plans,
     planItems: s.planItems,
+    planItemCheckins: s.planItemCheckins,
     habits: s.habits,
     graceHistory: s.graceHistory,
     checkinHistory: s.checkinHistory,
@@ -269,8 +270,7 @@ export default function StatsScreen() {
               {items.length > 0 && (
                 <View style={{ marginLeft: 8 }}>
                   {items.map((item, idx) => {
-                    const checkedDays = item.totalCheckinDays;
-                    const expectedDays = computeExpectedDays(item.frequency, item.startDate, item.endDate, today);
+                    const { doneCount: checkedDays, expectedDays } = countItemDoneDays(item, planItemCheckins, today);
                     const itemPct = expectedDays > 0 ? Math.min(Math.round((checkedDays / expectedDays) * 100), 100) : 0;
                     const isLast = idx === items.length - 1;
                     return (
