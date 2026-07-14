@@ -1050,3 +1050,36 @@ expiresAt未持久化到SecureStore修复；refreshAuth服务器拒绝时不再�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 31: 实现 DayCheckinScreen 补打卡全功能页面
+
+**Date**: 2026-07-14
+**Task**: 实现 DayCheckinScreen 补打卡全功能页面
+**Branch**: `master`
+
+### Summary
+
+新建 DayCheckinScreen 全屏可编辑打卡页，替代 Modal 式补打卡。GracePage 从弹出 CheckinModal 改为导航到 DayCheckinScreen。支持完整表单（计划/习惯/体重/饮水/饮食/笔记），提交自动标记 grace:true + addGraceRecord。移除修行记录和状态按钮简化流程。
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `09ada0f` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
