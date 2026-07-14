@@ -47,6 +47,10 @@ export const mobileStorageAdapter: StorageAdapter = {
    */
   async persistChange<K extends SyncEntity>(entity: K, id: string, data: SyncDataMap[K]): Promise<void> {
     _batcher.write(entity, id, data as Record<string, unknown>);
+    // Force immediate SQLite write for profile data to prevent loss on app kill
+    if (entity === 'profile') {
+      await _batcher.flushNow();
+    }
   },
 
   async markDeleted(entity: SyncEntity, id: string) {

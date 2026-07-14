@@ -175,6 +175,12 @@ export const useAppStore = create<MobileStore>()(
           }
         }
         useAppStore.setState(dbPatch as PartialMobileStore);
+        // Restore non-array fields (userProfile, aiMode, aiModels) after array-only loop
+        if (dbPatch.userProfile && typeof dbPatch.userProfile === 'object' && Object.keys(dbPatch.userProfile as Record<string, unknown>).length > 1) {
+          const current = useAppStore.getState();
+          const merged = { ...(current.userProfile ?? {}), ...dbPatch.userProfile as Record<string, unknown> };
+          useAppStore.setState({ userProfile: merged } as PartialMobileStore);
+        }
         if (dbPatch.medHistory) useAppStore.getState().calculateTotalMedMin();
         if (dbPatch.checkinHistory) useAppStore.getState().calculateStreak();
       }
