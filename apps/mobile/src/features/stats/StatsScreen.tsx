@@ -449,3 +449,20 @@ export default function StatsScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  statGridRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  cardMarginBottom: {
+    marginBottom: 12,
+  },
+  chartTabRow: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 8,
+  },
+});
