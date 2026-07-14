@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 33
+- **Total Sessions**: 34
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1152 | Active |
+| `journal-1.md` | ~1187 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 34 | 2026-07-14 | StatsScreen 进度修复 + body_training_plans + logout 追踪 | `0175568`, `2a164b1`, `d80d0e9` | `master` |
 | 33 | 2026-07-14 | StatsScreen 缺失 StyleSheet 修复 | `e99e74c` | `master` |
 | 32 | 2026-07-14 | profile 持久化/测试修复 + auth 退出根因修复 | `e4560fb`, `fb3ed62` | `master` |
 | 31 | 2026-07-14 | 实现 DayCheckinScreen 补打卡全功能页面 | `09ada0f` | `master` |

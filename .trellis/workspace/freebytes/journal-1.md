@@ -1150,3 +1150,38 @@ StatsScreen 补全缺失的 StyleSheet styles 定义（statGridRow/cardMarginBot
 ### Next Steps
 
 - None - task complete
+
+
+## Session 34: StatsScreen 进度修复 + body_training_plans + logout 追踪
+
+**Date**: 2026-07-14
+**Task**: StatsScreen 进度修复 + body_training_plans + logout 追踪
+**Branch**: `master`
+
+### Summary
+
+StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planItemCheckins解构赋值；body_training_plans表创建；logout添加堆栈追踪定位自动退出根因
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0175568` | (see git log) |
+| `2a164b1` | (see git log) |
+| `d80d0e9` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
