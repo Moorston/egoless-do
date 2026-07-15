@@ -27,11 +27,13 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
   const viewShotRef = useRef<ViewShot>(null);
   const [capturing, setCapturing] = useState(false);
 
+  const parsedColors = useMemo(() => {
+    if (!reflection) return null;
+    return typeof reflection.colors === 'string' ? (() => { try { return JSON.parse(reflection.colors); } catch { return null; } })() : reflection.colors;
+  }, [reflection?.colors]);
+
   if (!reflection) return null;
 
-  const parsedColors = useMemo(() => {
-    return typeof reflection.colors === 'string' ? (() => { try { return JSON.parse(reflection.colors); } catch { return null; } })() : reflection.colors;
-  }, [reflection.colors]);
   const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (parsedColors?.[0]));
   const bgColor = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[0] ?? MIND_COLORS_EXTENDED[0][0];
   const bgColor2 = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[1] ?? MIND_COLORS_EXTENDED[0][1];
