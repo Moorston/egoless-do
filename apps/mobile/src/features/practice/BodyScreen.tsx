@@ -111,20 +111,6 @@ export default function BodyScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Body" />
-      {/* Quick overview header */}
-      <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12 }}>
-        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, marginBottom: 4 }}>{T('bodySubtitle')}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
-            {new Date().toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' })}
-          </Text>
-          {todayPlan && todayPlan.part !== 'rest' && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#f59e0b15', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-              <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b', fontWeight: '600' }}>📋 {todayPlan.part}</Text>
-            </View>
-          )}
-        </View>
-      </View>
       <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
           {page === 'flow' ? (
