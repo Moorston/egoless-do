@@ -67,7 +67,7 @@ export default function AppHeader({ activeTab, onTabChange }: AppHeaderProps) {
         <View style={styles.streakBox}>
           <Text style={[styles.streakLabel, { color: TH.sub }]}>{T('streak')}</Text>
           <Text style={styles.streakValue}>
-            {streak} <Text style={styles.streakUnit}>{T('days')} </Text><Flame size={20} color="#EA6060" />
+            {`${String(streak)} ${T('days')} `}<Flame size={20} color="#EA6060" />
           </Text>
         </View>
       </View>
