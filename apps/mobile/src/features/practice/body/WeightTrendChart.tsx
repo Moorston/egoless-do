@@ -1,4 +1,4 @@
-import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, type WeightRecord, type Theme , FONT_TINY } from '@egoless-do/core';
+import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_TINY, type CheckinEntry, type Theme } from '@egoless-do/core';
 import { TrendingDown, TrendingUp, Minus } from 'lucide-react-native';
 import React from 'react';
 import { View, Text } from 'react-native';
@@ -6,13 +6,13 @@ import { View, Text } from 'react-native';
 interface Props {
   TH: Theme;
   T: (key: string) => string;
-  weightRecords: WeightRecord[];
+  checkins: CheckinEntry[];
 }
 
-export default function WeightTrendChart({ TH, T, weightRecords }: Props) {
-  // Filter non-deleted, sort by date desc, take last 30
-  const validRecords = weightRecords
-    .filter(r => !r.deleted)
+export default function WeightTrendChart({ TH, T, checkins }: Props) {
+  // Filter non-deleted checkins that have a weight value, sort by date
+  const validRecords = checkins
+    .filter(r => !r.deleted && r.weight != null && r.weight > 0)
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const last30 = validRecords.slice(-30);

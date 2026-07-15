@@ -29,7 +29,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { userProfile, bodyGoals, bodyCheckins, exerciseLog, weightRecords, bodyTrainingPlans,
+  const { userProfile, bodyGoals, bodyCheckins, exerciseLog, checkinHistory, bodyTrainingPlans,
     updateUserProfile, updateBodyGoal, addBodyGoal,
     upsertBodyCheckin, addWeight,
     updateBodyTrainingPlan } = useShallowStore(s => ({
@@ -37,7 +37,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     bodyGoals: s.bodyGoals,
     bodyCheckins: s.bodyCheckins,
     exerciseLog: s.exerciseLog,
-    weightRecords: s.weightRecords,
+    checkinHistory: s.checkinHistory,
     bodyTrainingPlans: s.bodyTrainingPlans,
     updateUserProfile: s.updateUserProfile,
     updateBodyGoal: s.updateBodyGoal,
@@ -189,7 +189,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onPickAgeBracket={handlePickAgeBracket}
         />
         <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />
-        <WeightTrendChart TH={TH} T={T} weightRecords={weightRecords ?? []} />
+        <WeightTrendChart TH={TH} T={T} checkins={checkinHistory ?? []} />
       </CollapsibleSection>
 
       {/* ── Section 3: 训练计划 ── */}
