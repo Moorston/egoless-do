@@ -145,12 +145,12 @@ export default function PracticeScreen() {
           <Text style={[styles.summaryTitle, { color: TH.text }]}>{T('practiceWeekly')}</Text>
           <View style={styles.summaryRow}>
             {[
-              { Icon: Binary, color: '#8B5CF6', value: totalMedMinutes, unit: T('medMinutes') },
-              { Icon: Dumbbell, color: '#10B981', value: weeklyStats.exerciseMin, unit: T('medMinutes') },
-              { Icon: Timer, color: '#F59E0B', value: weeklyStats.fastingCount, unit: T('fastTimes') },
-              { Icon: Shield, color: '#F59E0B', value: weeklyStats.preceptDays, unit: T('preceptDays') || '天' },
-              { Icon: HandHeart, color: '#FDE68A', value: weeklyStats.giveCount, unit: T('giveTotal') || '次' },
-              { Icon: Flame, color: '#EF4444', value: weeklyStats.checkinDays, unit: T('calendarDays') },
+              { Icon: Binary, color: '#8B5CF6', value: String(totalMedMinutes), unit: T('medMinutes') },
+              { Icon: Dumbbell, color: '#10B981', value: String(weeklyStats.exerciseMin), unit: T('medMinutes') },
+              { Icon: Timer, color: '#F59E0B', value: String(weeklyStats.fastingCount), unit: T('fastTimes') },
+              { Icon: Shield, color: '#F59E0B', value: String(weeklyStats.preceptDays), unit: T('preceptDays') || '天' },
+              { Icon: HandHeart, color: '#FDE68A', value: String(weeklyStats.giveCount), unit: T('giveTotal') || '次' },
+              { Icon: Flame, color: '#EF4444', value: String(weeklyStats.checkinDays), unit: T('calendarDays') },
             ].map((s, i) => (
               <View key={i} style={styles.summaryItem}>
                 <s.Icon size={18} color={s.color} />
