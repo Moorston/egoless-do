@@ -4,8 +4,8 @@ import React, { useState, useRef, useMemo } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, FlatList } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const CHART_HEIGHT = 120;
-const CHART_PADDING = 20; // space for weight labels above points
+const CHART_HEIGHT = 180;
+const CHART_PADDING = 30; // space for weight labels above points
 
 interface Props {
   TH: Theme;
@@ -105,7 +105,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
     return (
       <View style={{ width: SCREEN_WIDTH - 32, paddingHorizontal: 4 }}>
         {/* Line chart */}
-        <View style={{ height: CHART_HEIGHT + 30, position: 'relative' }}>
+        <View style={{ height: CHART_HEIGHT + 40, position: 'relative' }}>
           {/* Line segments */}
           {points.map((point, i) => {
             if (i === 0) return null;
@@ -123,7 +123,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
                   left: prevPoint.x,
                   top: prevPoint.y,
                   width: length,
-                  height: 2,
+                  height: 3,
                   backgroundColor: isActive ? '#10b981' : '#10b98160',
                   transform: [{ rotate: `${angle}deg` }],
                   transformOrigin: '0 0',
@@ -140,12 +140,12 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
                 {/* Weight label above point */}
                 <Text style={{
                   position: 'absolute',
-                  left: point.x - 15,
-                  top: point.y - 20,
-                  fontSize: FONT_TINY(),
+                  left: point.x - 18,
+                  top: point.y - 22,
+                  fontSize: FONT_SMALL(),
                   color: isActive ? TH.text : TH.sub,
-                  fontWeight: isLast ? '700' : '500',
-                  width: 30,
+                  fontWeight: isLast ? '700' : '600',
+                  width: 36,
                   textAlign: 'center',
                 }}>
                   {point.weight}
@@ -153,13 +153,13 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
                 {/* Point dot */}
                 <View style={{
                   position: 'absolute',
-                  left: point.x - 4,
-                  top: point.y - 4,
-                  width: isLast ? 10 : 8,
-                  height: isLast ? 10 : 8,
-                  borderRadius: isLast ? 5 : 4,
+                  left: point.x - 6,
+                  top: point.y - 6,
+                  width: isLast ? 14 : 12,
+                  height: isLast ? 14 : 12,
+                  borderRadius: isLast ? 7 : 6,
                   backgroundColor: isLast ? '#10b981' : (isActive ? '#10b98180' : '#10b98140'),
-                  borderWidth: isLast ? 2 : 0,
+                  borderWidth: isLast ? 3 : 0,
                   borderColor: '#fff',
                 }} />
               </React.Fragment>
