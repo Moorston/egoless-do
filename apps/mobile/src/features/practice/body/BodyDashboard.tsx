@@ -426,7 +426,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                       </View>
                     </View>
                     {/* Line chart - last 7 days */}
-                    <View style={{ height: 60 }}>
+                    <View style={{ height: 80, marginTop: 4 }}>
                       {(() => {
                         const records = (checkinHistory ?? [])
                           .filter(r => !r.deleted && r.weight != null && r.weight > 0)
@@ -438,19 +438,21 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                         const maxW = Math.max(...weights);
                         const range = maxW - minW || 1;
                         const chartHeight = 50;
-                        const chartWidth = BANNER_WIDTH - 60; // account for padding
+                        const labelHeight = 20;
+                        const totalHeight = chartHeight + labelHeight;
+                        const chartWidth = BANNER_WIDTH - 80;
                         const stepX = chartWidth / (records.length - 1);
 
                         return (
-                          <View style={{ position: 'relative', height: chartHeight + 10 }}>
+                          <View style={{ position: 'relative', height: totalHeight }}>
                             {/* Line segments */}
                             {records.map((r, i) => {
                               if (i === 0) return null;
                               const prevR = records[i - 1];
                               const x1 = (i - 1) * stepX;
-                              const y1 = chartHeight - ((prevR.weight - minW) / range) * (chartHeight - 10);
+                              const y1 = chartHeight - ((prevR.weight - minW) / range) * (chartHeight - 15);
                               const x2 = i * stepX;
-                              const y2 = chartHeight - ((r.weight - minW) / range) * (chartHeight - 10);
+                              const y2 = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
                               const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
                               const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
                               return (
@@ -469,15 +471,28 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                                 />
                               );
                             })}
-                            {/* Data points */}
+                            {/* Data points with weight labels */}
                             {records.map((r, i) => {
                               const x = i * stepX;
-                              const y = chartHeight - ((r.weight - minW) / range) * (chartHeight - 10);
+                              const y = chartHeight - ((r.weight - minW) / range) * (chartHeight - 15);
                               const isLast = i === records.length - 1;
                               return (
-                                <View
-                                  key={`point-${i}`}
-                                  style={{
+                                <React.Fragment key={`point-${i}`}>
+                                  {/* Weight value above point */}
+                                  <Text style={{
+                                    position: 'absolute',
+                                    left: x - 15,
+                                    top: y - 18,
+                                    fontSize: FONT_SMALL(),
+                                    color: '#fff',
+                                    fontWeight: isLast ? '700' : '500',
+                                    width: 30,
+                                    textAlign: 'center',
+                                  }}>
+                                    {r.weight}
+                                  </Text>
+                                  {/* Point */}
+                                  <View style={{
                                     position: 'absolute',
                                     left: x - 5,
                                     top: y - 5,
@@ -485,21 +500,21 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                                     height: isLast ? 12 : 8,
                                     borderRadius: isLast ? 6 : 4,
                                     backgroundColor: isLast ? '#fff' : 'rgba(255,255,255,0.7)',
-                                  }}
-                                />
+                                  }} />
+                                </React.Fragment>
                               );
                             })}
-                            {/* Date labels */}
+                            {/* Date labels at bottom */}
                             {records.map((r, i) => (
                               <Text
                                 key={`label-${i}`}
                                 style={{
                                   position: 'absolute',
-                                  left: i * stepX - 10,
-                                  top: chartHeight - 2,
+                                  left: i * stepX - 12,
+                                  top: chartHeight + 4,
                                   fontSize: FONT_SMALL(),
                                   color: 'rgba(255,255,255,0.8)',
-                                  width: 20,
+                                  width: 24,
                                   textAlign: 'center',
                                 }}
                               >

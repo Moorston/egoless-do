@@ -87,7 +87,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
   };
 
   const renderMonthPage = ({ item, index }: { item: MonthData; index: number }) => {
-    const barMaxHeight = 80;
+    const barMaxHeight = 100;
     const range = item.maxW - item.minW || 1;
     const isActive = index === currentIndex;
 
@@ -96,11 +96,11 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
         {/* Month chart */}
         <View style={{ flexDirection: 'row', height: barMaxHeight, alignItems: 'flex-end', gap: 2 }}>
           {item.records.map((r) => {
-            const normalizedHeight = Math.max(4, ((r.weight - item.minW) / range) * (barMaxHeight - 4) + 4);
+            const normalizedHeight = Math.max(8, ((r.weight - item.minW) / range) * (barMaxHeight - 20) + 8);
             const day = r.date.slice(8); // "01"..."31"
             return (
               <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                <Text style={{ fontSize: FONT_TINY(), color: isActive ? TH.text : TH.sub, fontWeight: '600', marginBottom: 2 }}>
+                <Text style={{ fontSize: FONT_TINY(), color: isActive ? TH.text : TH.sub, fontWeight: '600', marginBottom: 4 }}>
                   {r.weight}
                 </Text>
                 <View style={{
