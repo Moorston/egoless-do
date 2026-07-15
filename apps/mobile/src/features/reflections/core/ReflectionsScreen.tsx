@@ -319,10 +319,8 @@ export default function ReflectionsScreen() {
   };
 
   const onShare = async (r: MindReflection) => {
-    // Close action menu, wait for Modal close animation, then open ShareCard.
-    // Avoids Alert.alert inside Modal (unreliable native stack on Android).
     setActionMenuId(null);
-    setTimeout(() => setShareReflection(r), 350);
+    setShareReflection(r);
   };
 
   const handleCreatePlanItem = useCallback((id: string) => {

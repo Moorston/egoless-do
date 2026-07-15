@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { X, Download, Share2, MessageSquare } from 'lucide-react-native';
 import React, { useRef, useState, useMemo } from 'react';
-import { View, Text, Modal, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
 import { useTheme, useT } from '../../../components/UI';
@@ -43,7 +43,7 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
     return { bgColor, timeStr };
   }, [reflection, parsedColors]);
 
-  if (!reflection) return null;
+  if (!visible || !reflection) return null;
 
   const handleCapture = async () => {
     try {
@@ -85,8 +85,7 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
   };
 
   return (
-    <Modal visible={visible} transparent animationType="none">
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.8)', justifyContent: 'center', alignItems: 'center', padding: 24 }}>
+    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,.8)', justifyContent: 'center', alignItems: 'center', padding: 24, zIndex: 9999 }}>
         {/* Close button */}
         <View style={{ position: 'absolute', top: 60, right: 24, zIndex: 10 }}>
           <TouchableOpacity onPress={onClose} style={{ padding: 8 }}>
@@ -159,7 +158,6 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
             <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('shareCardSave')}</Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </Modal>
+    </View>
   );
 }
