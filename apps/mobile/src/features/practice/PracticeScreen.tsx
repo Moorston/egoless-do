@@ -135,7 +135,7 @@ export default function PracticeScreen() {
             end={{ x: 1, y: 1 }}
             style={styles.mottoGradient}
           >
-            <Text style={styles.mottoText}>终极愿景：{visionText}</Text>
+            <Text style={[styles.mottoText]}>终极愿景：{String(visionText)}</Text>
             <Text style={styles.visionText}>「知者行之始，行者知之成」</Text>
           </LinearGradient>
         </View>

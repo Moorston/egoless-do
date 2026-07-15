@@ -307,7 +307,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                       { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#fff' },
                     ].map((item, i) => (
                       <View key={i} style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{item.value}</Text>
+                        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
                       </View>
                     ))}
@@ -399,7 +399,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                         { label: T('bodySleepQuality') || '睡眠', value: latestCheckin.sleep, color: '#fff' },
                       ].map((item, i) => (
                         <View key={i} style={{ alignItems: 'center' }}>
-                          <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{item.value}</Text>
+                          <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
                           <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
                         </View>
                       ))}
