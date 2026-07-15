@@ -47,6 +47,7 @@ export default function BodyPlanEditorScreen() {
   const [customExReps, setCustomExReps] = useState('');
   const [showCustomEx, setShowCustomEx] = useState<number | null>(null);
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
+  const [selectedExIds, setSelectedExIds] = useState<Set<string>>(new Set());
 
   // Load existing plan for editing
   useEffect(() => {
@@ -118,6 +119,34 @@ export default function BodyPlanEditorScreen() {
       t.weekday === weekday ? { ...t, exercises: (t.exercises ?? []).filter(e => e.id !== exId) } : t
     ));
   };
+
+  const addSelectedExercises = useCallback(() => {
+    if (!activeDay || selectedExIds.size === 0) return;
+    const selected = searchedExs.filter(ex => selectedExIds.has(ex.id));
+    setTasks(prev => prev.map(t =>
+      t.weekday === activeDay ? {
+        ...t,
+        exercises: [
+          ...(t.exercises ?? []),
+          ...selected.map((ex, i) => ({
+            ...ex,
+            id: `planex_${activeDay}_${Date.now()}_${i}`,
+            sortOrder: (t.exercises?.length ?? 0) + i + 1,
+          })),
+        ],
+      } : t
+    ));
+    setSelectedExIds(new Set());
+  }, [activeDay, selectedExIds, searchedExs]);
+
+  const toggleExSelect = useCallback((exId: string) => {
+    setSelectedExIds(prev => {
+      const next = new Set(prev);
+      if (next.has(exId)) next.delete(exId);
+      else next.add(exId);
+      return next;
+    });
+  }, []);
 
   const groupedCategories = useMemo(() => {
     const map = new Map<string, { key: string; icon: string; label: string; count: number }[]>();
@@ -360,26 +389,39 @@ export default function BodyPlanEditorScreen() {
                       </View>
                     )}
 
-                    {/* Exercise list */}
+                    {/* Exercise list — multi-select mode */}
                     {searchedExs.length > 0 ? (
-                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
-                        {searchedExs.map(ex => {
-                          const alreadyAdded = hasExs && (task.exercises ?? []).some(e => e.nameZh === ex.nameZh);
-                          return (
-                            <TouchableOpacity key={ex.id} onPress={() => !alreadyAdded && addExercise(activeDay, ex)}
-                              style={[styles.exChip, {
-                                borderColor: alreadyAdded ? `${P}40` : P,
-                                backgroundColor: alreadyAdded ? `${P}08` : `${P}12`,
-                                opacity: alreadyAdded ? 0.5 : 1,
-                              }]}>
-                              <Text style={{ fontSize: FONT_SMALL(), color: alreadyAdded ? `${P}80` : P, fontWeight: '600' }}>{ex.icon} {ex.nameZh}</Text>
-                              {ex.defaultSets && ex.defaultReps ? (
-                                <Text style={{ fontSize: 10, color: alreadyAdded ? `${P}60` : `${P}cc`, marginLeft: 2 }}>{ex.defaultSets}×{ex.defaultReps}</Text>
-                              ) : null}
-                              {alreadyAdded ? <Text style={{ fontSize: 10, color: `${P}60`, marginLeft: 2 }}>✓</Text> : null}
-                            </TouchableOpacity>
-                          );
-                        })}
+                      <View style={{ marginBottom: 8 }}>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
+                          {searchedExs.map(ex => {
+                            const alreadyAdded = hasExs && (task.exercises ?? []).some(e => e.nameZh === ex.nameZh);
+                            const isSelected = selectedExIds.has(ex.id);
+                            return (
+                              <TouchableOpacity key={ex.id}
+                                onPress={() => alreadyAdded ? null : toggleExSelect(ex.id)}
+                                style={[styles.exChip, {
+                                  borderColor: isSelected ? P : alreadyAdded ? `${P}40` : TH.border,
+                                  backgroundColor: isSelected ? `${P}20` : alreadyAdded ? `${P}08` : `${P}06`,
+                                  opacity: alreadyAdded ? 0.5 : 1,
+                                }]}>
+                                <Text style={{ fontSize: FONT_SMALL(), color: isSelected ? P : alreadyAdded ? `${P}80` : TH.text, fontWeight: isSelected ? '700' : '500' }}>
+                                  {isSelected ? '☑ ' : alreadyAdded ? '✓ ' : ''}{ex.icon} {ex.nameZh}
+                                </Text>
+                                {ex.defaultSets && ex.defaultReps ? (
+                                  <Text style={{ fontSize: 10, color: isSelected ? P : `${P}80`, marginLeft: 2 }}>{ex.defaultSets}×{ex.defaultReps}</Text>
+                                ) : null}
+                              </TouchableOpacity>
+                            );
+                          })}
+                        </View>
+                        {selectedExIds.size > 0 && (
+                          <TouchableOpacity onPress={addSelectedExercises}
+                            style={{ backgroundColor: P, borderRadius: 8, paddingVertical: 10, alignItems: 'center' }}>
+                            <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BODY() }}>
+                              {T('bodyPlanAddSelected') || `添加选中的 ${selectedExIds.size} 个动作`}
+                            </Text>
+                          </TouchableOpacity>
+                        )}
                       </View>
                     ) : currentExs.length > 0 && exSearch ? (
                       <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 8 }}>{T('bodyPlanNoExercises')}</Text>

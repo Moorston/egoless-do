@@ -1,5 +1,5 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, getSportType, formatPace } from '@egoless-do/core';
-import type { ExerciseEntry, Theme } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs } from '@egoless-do/core';
+import type { ExerciseEntry, Theme, PRRecord } from '@egoless-do/core';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -92,7 +92,7 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
 
 // ── Flattened data item ──
 interface FlatItem {
-  type: 'header' | 'statCards' | 'sportFilter' | 'monthlyBar' | 'emptyText' | 'monthHeader' | 'entry';
+  type: 'header' | 'statCards' | 'prCards' | 'sportFilter' | 'monthlyBar' | 'emptyText' | 'monthHeader' | 'entry';
   key: string;
   monthKey?: string;
   items?: ExerciseEntry[];
@@ -115,6 +115,10 @@ export default function ExerciseHistoryScreen() {
     [...(exerciseLog ?? [])].filter(e => !e.deleted && e.sportKey).sort((a, b) => (b.timestamp ?? 0) - (a.timestamp ?? 0)),
     [exerciseLog]
   );
+
+  // Compute PRs
+  const prs = useMemo(() => computePRs(sorted), [sorted]);
+  const topPRs = useMemo(() => prs.slice(0, 6), [prs]); // Show top 6 PRs
 
   // Unique sport keys for filter
   const sportKeys = useMemo(() => {
@@ -180,8 +184,11 @@ export default function ExerciseHistoryScreen() {
   const flatData = useMemo((): FlatItem[] => {
     const items: FlatItem[] = [
       { type: 'statCards', key: 'statCards' },
-      { type: 'sportFilter', key: 'sportFilter' },
     ];
+    if (topPRs.length > 0) {
+      items.push({ type: 'prCards', key: 'prCards' });
+    }
+    items.push({ type: 'sportFilter', key: 'sportFilter' });
     if (monthlyStats.length > 1) {
       items.push({ type: 'monthlyBar', key: 'monthlyBar' });
     }
@@ -238,6 +245,41 @@ export default function ExerciseHistoryScreen() {
             <Text style={[styles.subFont, { color: TH.sub }]}>{T('exerciseTotalCount')}</Text>
           </Card>
         </View>
+      );
+    }
+    if (item.type === 'prCards') {
+      return (
+        <Card style={{ marginBottom: 14 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+            <Text style={{ fontSize: FONT_STAT_SECTION() }}>🏆</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exercisePR') || '个人最佳'}</Text>
+          </View>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10 }}>
+            {topPRs.map(pr => (
+              <View key={pr.sportKey} style={{ backgroundColor: `${P}10`, borderRadius: 10, padding: 10, minWidth: 90, alignItems: 'center' }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 4 }}>{pr.sportKey}</Text>
+                {pr.bestDistance && (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{pr.bestDistance.value.toFixed(1)}</Text>
+                    <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>km · {pr.bestDistance.date.slice(5)}</Text>
+                  </View>
+                )}
+                {pr.bestReps && !pr.bestDistance && (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{pr.bestReps.value}</Text>
+                    <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>次 · {pr.bestReps.date.slice(5)}</Text>
+                  </View>
+                )}
+                {pr.bestDuration && !pr.bestDistance && !pr.bestReps && (
+                  <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: P }}>{Math.floor(pr.bestDuration.value / 60)}</Text>
+                    <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>min · {pr.bestDuration.date.slice(5)}</Text>
+                  </View>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+        </Card>
       );
     }
     if (item.type === 'sportFilter') return renderSportFilter();
@@ -319,7 +361,7 @@ export default function ExerciseHistoryScreen() {
         </TouchableOpacity>
       </View>
     );
-  }, [P, TH, T, totalMin, filtered.length, monthlyStats, expandedId, MapView, Polyline, renderSportFilter]);
+  }, [P, TH, T, totalMin, filtered.length, monthlyStats, expandedId, MapView, Polyline, renderSportFilter, topPRs]);
 
   const ListHeader = useMemo(() => (
     <ScreenHeader title={T('exerciseHistory')} onBack={() => nav.goBack()} />

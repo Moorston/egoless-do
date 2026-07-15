@@ -1,6 +1,7 @@
-import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry } from '@egoless-do/core';
+import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_BODY, FONT_SUB } from '@egoless-do/core';
+import { ChevronRight } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -190,6 +191,18 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         />
         <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />
         <WeightTrendChart TH={TH} T={T} checkins={checkinHistory ?? []} />
+        {/* 运动历史入口 */}
+        <TouchableOpacity
+          onPress={() => nav.navigate('ExerciseHistory' as never)}
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12, paddingHorizontal: 4 }}
+          activeOpacity={0.7}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{T('exerciseHistory') || '运动历史'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('exerciseViewAll') || '查看全部'}</Text>
+          </View>
+          <ChevronRight size={18} color={TH.sub} />
+        </TouchableOpacity>
       </CollapsibleSection>
 
       {/* ── Section 3: 训练计划 ── */}

@@ -145,6 +145,8 @@ export interface ExerciseDef {
   defaultDurationSec?: number;
   defaultRestSec?: number;
   met?: number;
+  description?: string;       // 动作要领文字描述
+  descriptionI18nKey?: string; // i18n key for description
 }
 
 // ─── PlanTemplate ────────────────────────────────────────────────

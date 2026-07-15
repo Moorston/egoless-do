@@ -1,5 +1,5 @@
 // ─── Body regulation business logic (pure functions) ──────────
-import type { BodyStrategy } from '../types';
+import type { BodyStrategy, ExerciseEntry } from '../types';
 import { uid } from '../utils';
 
 export function calcBMI(weight: number, heightCm: number): number {
@@ -114,4 +114,42 @@ export function createBodyCheckin(partial: {
     updatedAt: Date.now(),
     deleted: false,
   };
+}
+
+// ─── PR Records (Personal Records) ───────────────────────────
+
+export interface PRRecord {
+  sportKey: string;
+  bestDuration?: { value: number; date: string };
+  bestDistance?: { value: number; date: string };
+  bestReps?: { value: number; date: string };
+  bestPace?: { value: number; date: string };
+  bestCalories?: { value: number; date: string };
+}
+
+/**
+ * 计算每个运动类型的个人最佳记录
+ * 纯函数，基于 exerciseLog 计算
+ */
+export function computePRs(exerciseLog: ExerciseEntry[]): PRRecord[] {
+  const map = new Map<string, PRRecord>();
+  for (const e of exerciseLog) {
+    if (e.deleted) continue;
+    const date = new Date(e.timestamp).toISOString().slice(0, 10);
+    const existing = map.get(e.sportKey) ?? { sportKey: e.sportKey };
+
+    if (e.durationSec > (existing.bestDuration?.value ?? 0))
+      existing.bestDuration = { value: e.durationSec, date };
+    if ((e.distanceKm ?? 0) > (existing.bestDistance?.value ?? 0))
+      existing.bestDistance = { value: e.distanceKm!, date };
+    if ((e.reps ?? 0) > (existing.bestReps?.value ?? 0))
+      existing.bestReps = { value: e.reps!, date };
+    if (e.avgPace && e.avgPace > 0 && e.avgPace < (existing.bestPace?.value ?? Infinity))
+      existing.bestPace = { value: e.avgPace, date };
+    if ((e.calories ?? 0) > (existing.bestCalories?.value ?? 0))
+      existing.bestCalories = { value: e.calories!, date };
+
+    map.set(e.sportKey, existing);
+  }
+  return Array.from(map.values());
 }

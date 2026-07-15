@@ -34,6 +34,8 @@ export interface ExerciseEntry extends Syncable {
   sets?: ExerciseSet[];
   met?: number;
   healthSynced?: boolean; // 本地标记：是否已同步到 HealthKit/Health Connect
+  planId?: string;           // 关联的训练计划 ID
+  planTaskWeekday?: number;  // 关联的计划任务星期 (1-7)
 }
 
 export interface SportItem {
