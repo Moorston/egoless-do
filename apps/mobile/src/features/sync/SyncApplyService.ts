@@ -38,7 +38,7 @@ export const ENTITY_STORE_KEY: Record<string, string> = {
   grace: 'graceHistory', dailyCustomTodo: 'dailyCustomTodos', dailyTodoHistory: 'dailyTodoHistory',
   thoughtTrail: 'thoughtTrails', trailNote: 'trailNotes',
   reflectionLink: 'reflectionLinks', checkinReview: 'checkinReviews',
-  bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans',
+  bodyGoal: 'bodyGoals', bodyPlan: 'bodyPlans', bodyTrainingPlan: 'bodyTrainingPlans',
   weightRecord: 'weightRecords', bodyCheckin: 'bodyCheckins',
   sleep: 'sleepHistory',
   give: 'giveHistory',
