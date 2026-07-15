@@ -51,25 +51,9 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const [showCheckin, setShowCheckin] = useState(false);
   const [showWeightRecord, setShowWeightRecord] = useState(false);
 
-  // Banner carousel state
+  // Banner carousel state (no auto-rotate, user manual swipe)
   const [currentBanner, setCurrentBanner] = useState(0);
   const bannerScrollRef = useRef<ScrollView>(null);
-  const bannerTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Auto-rotate banner every 4 seconds
-  useEffect(() => {
-    bannerTimerRef.current = setInterval(() => {
-      setCurrentBanner(prev => {
-        const next = (prev + 1) % 4;
-        bannerScrollRef.current?.scrollTo({ x: next * BANNER_WIDTH, animated: true });
-        return next;
-      });
-    }, 4000);
-
-    return () => {
-      if (bannerTimerRef.current) clearInterval(bannerTimerRef.current);
-    };
-  }, []);
 
   const activeGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
   const activeTrainingPlan = useMemo(() => (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active'), [bodyTrainingPlans]);
@@ -287,30 +271,38 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             )}
           </View>
 
-          {/* Banner 2: 身体档案（自我评估） */}
+          {/* Banner 2: 身体档案 */}
           <View style={[styles.bannerCard, { backgroundColor: '#8b5cf6' }]}>
             <View style={styles.bannerHeader}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Text style={{ fontSize: 20 }}>🗣️</Text>
-                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodySelfAssessment') || '自我评估'}</Text>
+                <Text style={{ fontSize: 20 }}>📋</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyProfile') || '身体档案'}</Text>
               </View>
             </View>
             <View style={styles.bannerContent}>
               <View style={styles.bannerIconCircle}>
-                <Text style={{ fontSize: 28 }}>📋</Text>
+                <Text style={{ fontSize: 28 }}>📊</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.9)', lineHeight: 22 }} numberOfLines={3}>
-                  {profile.selfAssessment || T('bodySelfAssessmentPlaceholder') || '记录你的身体状态和感受...'}
-                </Text>
-                {(profile.bodyTags as string[] ?? []).length > 0 && (
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
-                    {(profile.bodyTags as string[]).slice(0, 3).map((tag: string) => (
-                      <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
-                        <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
-                      </View>
-                    ))}
-                  </View>
+                {/* Body metrics grid */}
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 8 }}>
+                  {[
+                    { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') || '体重' },
+                    { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') || '身高' },
+                    { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
+                    { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') || '体脂' },
+                  ].map((item, i) => (
+                    <View key={i} style={{ minWidth: 60 }}>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{item.value}{item.unit}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                    </View>
+                  ))}
+                </View>
+                {/* Self assessment preview */}
+                {profile.selfAssessment && (
+                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 4 }} numberOfLines={1}>
+                    🗣️ {profile.selfAssessment}
+                  </Text>
                 )}
               </View>
             </View>
@@ -380,24 +372,47 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               </View>
             </View>
             <View style={styles.bannerContent}>
-              <View style={styles.bannerIconCircle}>
-                <Text style={{ fontSize: 28 }}>📊</Text>
-              </View>
               <View style={{ flex: 1 }}>
                 {weightTrend ? (
                   <>
-                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '900', color: '#fff' }}>
-                      {weightTrend.current} kg
-                    </Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                      <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
-                      <Text style={{ fontSize: FONT_SMALL(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399' }}>
-                        {weightTrend.diff > 0 ? '+' : ''}{weightTrend.diff.toFixed(1)} kg
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginBottom: 8 }}>
+                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '900', color: '#fff' }}>
+                        {weightTrend.current} kg
                       </Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
+                        <Text style={{ fontSize: FONT_SMALL(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399' }}>
+                          {weightTrend.diff > 0 ? '+' : ''}{weightTrend.diff.toFixed(1)} kg
+                        </Text>
+                      </View>
                     </View>
-                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 4 }}>
-                      {weightTrend.date}
-                    </Text>
+                    {/* Mini bar chart - last 7 days */}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 40, gap: 3 }}>
+                      {(checkinHistory ?? [])
+                        .filter(r => !r.deleted && r.weight != null && r.weight > 0)
+                        .sort((a, b) => a.date.localeCompare(b.date))
+                        .slice(-7)
+                        .map((r, i, arr) => {
+                          const weights = arr.map(x => x.weight);
+                          const minW = Math.min(...weights);
+                          const maxW = Math.max(...weights);
+                          const range = maxW - minW || 1;
+                          const height = Math.max(8, ((r.weight - minW) / range) * 32 + 8);
+                          return (
+                            <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                              <View style={{
+                                width: '80%',
+                                height,
+                                backgroundColor: i === arr.length - 1 ? '#fff' : 'rgba(255,255,255,0.5)',
+                                borderRadius: 3,
+                              }} />
+                              <Text style={{ fontSize: 8, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
+                                {r.date.slice(8)}
+                              </Text>
+                            </View>
+                          );
+                        })}
+                    </View>
                   </>
                 ) : (
                   <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
@@ -428,6 +443,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             />
           ))}
         </View>
+        {/* Guide text */}
+        <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'center', marginTop: 6 }}>
+          ← 左右滑动查看更多 →
+        </Text>
       </View>
 
       {/* ── 快捷操作 ── */}
