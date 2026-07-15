@@ -636,8 +636,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             <View style={styles.goalMetrics}>
               {activeGoal.targetWeight && (
                 <View style={styles.goalMetricItem}>
-                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{activeGoal.targetWeight}</Text>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>kg {T('bodyTargetWeight')}</Text>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{activeGoal.targetWeight}kg</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetWeight')}</Text>
                 </View>
               )}
               {activeGoal.targetBodyFat && (
@@ -649,7 +649,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               {activeGoal.strategy && (
                 <View style={styles.goalMetricItem}>
                   <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#8b5cf6' }}>
-                    {T(`bodyStrategy${activeGoal.strategy.charAt(0).toUpperCase() + activeGoal.strategy.slice(1)}` as never) || activeGoal.strategy}
+                    {T(`bodyStrategy${activeGoal.strategy.charAt(0).toUpperCase() + activeGoal.strategy.slice(1)}` as never)}
                   </Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyStrategyLabel')}</Text>
                 </View>
