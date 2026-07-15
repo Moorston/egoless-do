@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import {
   Pencil, Flame, Target, CalendarDays, Brain, Scale, Droplets,
-  Database, LogOut, ChevronRight, Check, X, Camera, Lock,
+  Database, LogOut, ChevronRight, Check, X, Camera, Lock, RotateCcw,
   Trophy, Timer, Utensils, Quote, Footprints, ClipboardList, ListChecks,
 } from 'lucide-react-native';
 import React, { useState, useMemo, useCallback } from 'react';
@@ -59,6 +59,7 @@ export default function ProfileScreen() {
   const [editGender, setEditGender] = useState<'male' | 'female' | 'private'>(userProfile.gender ?? 'private');
   const [editWaterGoal, setEditWaterGoal] = useState(String(waterGoal));
   const [clearing, setClearing] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [pwdModalVisible, setPwdModalVisible] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -438,6 +439,45 @@ export default function ProfileScreen() {
           >
             <Lock size={18} color={P} style={{ marginRight: 12 }} />
             <Text style={{ color: P, fontSize: FONT_BODY(), flex: 1 }}>{T('profileChangePassword')}</Text>
+          </TouchableOpacity>
+          <View style={{ height: 1, backgroundColor: TH.border }} />
+          <TouchableOpacity
+            accessibilityLabel={T('settingsResetData')}
+            disabled={resetting}
+            onPress={() => {
+              Alert.alert(
+                T('settingsResetConfirmTitle'),
+                T('settingsResetConfirmMsg'),
+                [
+                  { text: T('commonCancel'), style: 'cancel' },
+                  {
+                    text: T('settingsResetData'),
+                    style: 'destructive',
+                    onPress: async () => {
+                      try {
+                        setResetting(true);
+                        const { forceFullSync } = await import('../sync/SyncService');
+                        await forceFullSync();
+                        Alert.alert(T('settingsResetDone'), T('settingsResetDoneMsg'));
+                      } catch (e) {
+                        Alert.alert(T('error') || '错误', String(e));
+                      } finally {
+                        setResetting(false);
+                      }
+                    },
+                  },
+                ],
+              );
+            }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}
+          >
+            {resetting
+              ? <ActivityIndicator size="small" color={COLORS.RED} style={{ marginRight: 12 }} />
+              : <RotateCcw size={18} color={COLORS.RED} style={{ marginRight: 12 }} />
+            }
+            <Text style={{ color: resetting ? TH.sub : COLORS.RED, fontSize: FONT_BODY(), flex: 1 }}>
+              {resetting ? T('clearDataLoading') : T('settingsResetData')}
+            </Text>
           </TouchableOpacity>
           <View style={{ height: 1, backgroundColor: TH.border }} />
           <TouchableOpacity
