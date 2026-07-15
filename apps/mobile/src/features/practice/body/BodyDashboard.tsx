@@ -1,7 +1,7 @@
-import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY } from '@egoless-do/core';
-import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings } from 'lucide-react-native';
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET } from '@egoless-do/core';
+import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -13,6 +13,9 @@ import AssessmentModal from './modals/AssessmentModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';
 import GoalEditModal from './modals/GoalEditModal';
 import WeightRecordModal from './modals/WeightRecordModal';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
 
 interface DashboardProps {
   onFlowStart?: () => void;
@@ -47,6 +50,26 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const [showGoalEdit, setShowGoalEdit] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
   const [showWeightRecord, setShowWeightRecord] = useState(false);
+
+  // Banner carousel state
+  const [currentBanner, setCurrentBanner] = useState(0);
+  const bannerScrollRef = useRef<ScrollView>(null);
+  const bannerTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Auto-rotate banner every 4 seconds
+  useEffect(() => {
+    bannerTimerRef.current = setInterval(() => {
+      setCurrentBanner(prev => {
+        const next = (prev + 1) % 4;
+        bannerScrollRef.current?.scrollTo({ x: next * BANNER_WIDTH, animated: true });
+        return next;
+      });
+    }, 4000);
+
+    return () => {
+      if (bannerTimerRef.current) clearInterval(bannerTimerRef.current);
+    };
+  }, []);
 
   const activeGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
   const activeTrainingPlan = useMemo(() => (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active'), [bodyTrainingPlans]);
@@ -145,6 +168,28 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       .slice(0, 3);
   }, [exerciseLog]);
 
+  // Latest body checkin for banner
+  const latestCheckin = useMemo(() => {
+    return (bodyCheckins ?? [])
+      .filter(c => !c.deleted)
+      .sort((a, b) => b.date.localeCompare(a.date))[0];
+  }, [bodyCheckins]);
+
+  // Weight trend data for banner
+  const weightTrend = useMemo(() => {
+    const records = (checkinHistory ?? [])
+      .filter(r => !r.deleted && r.weight != null && r.weight > 0)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    if (records.length < 2) return null;
+    const last = records[records.length - 1];
+    const prev = records[records.length - 2];
+    return {
+      current: last.weight,
+      diff: last.weight - prev.weight,
+      date: last.date,
+    };
+  }, [checkinHistory]);
+
   // Resolve today's plan display
   const todayPlanDisplay = useMemo(() => {
     if (!todayPlan || !todayPlan.part || todayPlan.part === 'rest') return null;
@@ -179,69 +224,217 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   return (
     <View>
-      {/* ── Hero: 今日计划 ── */}
-      <View style={[styles.heroCard, { backgroundColor: '#f59e0b' }]}>
-        <View style={styles.heroHeader}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Text style={{ fontSize: 20 }}>📋</Text>
-            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
+      {/* ── Banner Carousel ── */}
+      <View style={styles.bannerContainer}>
+        <ScrollView
+          ref={bannerScrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={(e) => {
+            const index = Math.round(e.nativeEvent.contentOffset.x / BANNER_WIDTH);
+            setCurrentBanner(index);
+          }}
+          style={{ width: BANNER_WIDTH }}
+        >
+          {/* Banner 1: 今日方案 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#f59e0b' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>📋</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
+              </View>
+              <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)' }}>
+                {new Date().toLocaleDateString('zh-CN', { weekday: 'long' })}
+              </Text>
+            </View>
+            {todayPlanDisplay ? (
+              <>
+                <View style={styles.bannerContent}>
+                  <View style={styles.bannerIconCircle}>
+                    <Text style={{ fontSize: 28 }}>{todayPlanDisplay.icon}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{todayPlanDisplay.label}</Text>
+                    {todayPlanDisplay.note && (
+                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }} numberOfLines={1}>
+                        {todayPlanDisplay.note}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => onFlowStart?.()}
+                  activeOpacity={0.85}
+                  style={styles.bannerButton}
+                >
+                  <Play size={20} color="#f59e0b" />
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyStartToday')}</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <View style={styles.bannerContent}>
+                <View style={styles.bannerIconCircle}>
+                  <Text style={{ fontSize: 28 }}>😴</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
+                    {T('bodyFlowChooseExercise') || '也可以选择其他运动'}
+                  </Text>
+                </View>
+              </View>
+            )}
           </View>
-          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)' }}>
-            {new Date().toLocaleDateString('zh-CN', { weekday: 'long' })}
-          </Text>
-        </View>
 
-        {todayPlanDisplay ? (
-          <>
-            <View style={styles.heroContent}>
-              <View style={styles.heroIconCircle}>
-                <Text style={{ fontSize: 28 }}>{todayPlanDisplay.icon}</Text>
+          {/* Banner 2: 身体档案（自我评估） */}
+          <View style={[styles.bannerCard, { backgroundColor: '#8b5cf6' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>🗣️</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodySelfAssessment') || '自我评估'}</Text>
+              </View>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={styles.bannerIconCircle}>
+                <Text style={{ fontSize: 28 }}>📋</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{todayPlanDisplay.label}</Text>
-                {todayPlanDisplay.note && (
-                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }} numberOfLines={1}>
-                    {todayPlanDisplay.note}
+                <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.9)', lineHeight: 22 }} numberOfLines={3}>
+                  {profile.selfAssessment || T('bodySelfAssessmentPlaceholder') || '记录你的身体状态和感受...'}
+                </Text>
+                {(profile.bodyTags as string[] ?? []).length > 0 && (
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 8 }}>
+                    {(profile.bodyTags as string[]).slice(0, 3).map((tag: string) => (
+                      <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 8 }}>
+                        <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowAssessment(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#8b5cf6' }}>{T('bodyGoalEdit') || '编辑评估'}</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Banner 3: 身体觉知 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#10b981' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>🧘</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness') || '身体觉知'}</Text>
+              </View>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={styles.bannerIconCircle}>
+                <Text style={{ fontSize: 28 }}>✨</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                {latestCheckin ? (
+                  <>
+                    <View style={{ flexDirection: 'row', gap: 16, marginBottom: 8 }}>
+                      {[
+                        { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fbbf24' },
+                        { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#f87171' },
+                        { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#34d399' },
+                        { label: T('bodySleepQuality') || '睡眠', value: latestCheckin.sleep, color: '#60a5fa' },
+                      ].map((item, i) => (
+                        <View key={i} style={{ alignItems: 'center' }}>
+                          <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{item.value}</Text>
+                          <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                        </View>
+                      ))}
+                    </View>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                      {latestCheckin.date}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
+                    {T('bodyAwarenessNoData') || '暂无觉知记录'}
                   </Text>
                 )}
               </View>
             </View>
             <TouchableOpacity
-              onPress={() => onFlowStart?.()}
+              onPress={() => setShowCheckin(true)}
               activeOpacity={0.85}
-              style={styles.heroButton}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
             >
-              <Play size={20} color="#f59e0b" />
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#f59e0b' }}>{T('bodyStartToday')}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#10b981' }}>{T('bodyFlowAwareness') || '记录觉知'}</Text>
             </TouchableOpacity>
-          </>
-        ) : (
-          <View style={styles.heroContent}>
-            <View style={styles.heroIconCircle}>
-              <Text style={{ fontSize: 28 }}>😴</Text>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
-              <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
-                {T('bodyFlowChooseExercise') || '也可以选择其他运动'}
-              </Text>
-            </View>
           </View>
-        )}
 
-        {/* 训练建议 */}
-        {suggestions.length > 0 && suggestions[0].priority === 'high' && (
-          <View style={styles.heroSuggestion}>
-            <Text style={{ fontSize: FONT_SMALL(), color: '#92400e' }}>{suggestions[0].icon} {suggestions[0].message}</Text>
+          {/* Banner 4: 体重趋势 */}
+          <View style={[styles.bannerCard, { backgroundColor: '#3b82f6' }]}>
+            <View style={styles.bannerHeader}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Text style={{ fontSize: 20 }}>⚖️</Text>
+                <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend') || '体重趋势'}</Text>
+              </View>
+            </View>
+            <View style={styles.bannerContent}>
+              <View style={styles.bannerIconCircle}>
+                <Text style={{ fontSize: 28 }}>📊</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                {weightTrend ? (
+                  <>
+                    <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '900', color: '#fff' }}>
+                      {weightTrend.current} kg
+                    </Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                      <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
+                      <Text style={{ fontSize: FONT_SMALL(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399' }}>
+                        {weightTrend.diff > 0 ? '+' : ''}{weightTrend.diff.toFixed(1)} kg
+                      </Text>
+                    </View>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)', marginTop: 4 }}>
+                      {weightTrend.date}
+                    </Text>
+                  </>
+                ) : (
+                  <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
+                    {T('bodyWeightNoData') || '暂无体重记录'}
+                  </Text>
+                )}
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowWeightRecord(true)}
+              activeOpacity={0.85}
+              style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
+            >
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#3b82f6' }}>{T('bodyRecordWeight') || '记录体重'}</Text>
+            </TouchableOpacity>
           </View>
-        )}
+        </ScrollView>
+
+        {/* Banner indicators */}
+        <View style={styles.bannerIndicators}>
+          {[0, 1, 2, 3].map(i => (
+            <View
+              key={i}
+              style={[
+                styles.bannerDot,
+                { backgroundColor: i === currentBanner ? '#fff' : 'rgba(255,255,255,0.4)' }
+              ]}
+            />
+          ))}
+        </View>
       </View>
 
       {/* ── 快捷操作 ── */}
       <View style={styles.quickActions}>
         {[
           { icon: <Scale size={20} color={TH.primary} />, label: T('bodyRecordWeight') || '记录体重', onPress: () => setShowWeightRecord(true) },
-          { icon: <History size={20} color={TH.primary} />, label: T('exerciseHistory') || '训练历史', onPress: () => nav.navigate('ExerciseHistory' as never) },
+          { icon: <History size={20} color={TH.primary} />, label: T('exerciseHistory') || '锻炼记录', onPress: () => nav.navigate('ExerciseHistory' as never) },
           { icon: <Dumbbell size={20} color={TH.primary} />, label: T('bodyPlanManagement') || '计划管理', onPress: () => nav.navigate('PlanManagement' as never) },
           { icon: <Target size={20} color={TH.primary} />, label: T('bodyGoal') || '目标设定', onPress: () => setShowGoalEdit(true) },
         ].map((item, i) => (
@@ -300,7 +493,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('exerciseRecentActivity') || '最近训练'}</Text>
             </View>
             <TouchableOpacity onPress={() => nav.navigate('ExerciseHistory' as never)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.primary }}>{T('exerciseViewAll') || '查看全部'}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.primary }}>{T('exerciseHistory') || '锻炼记录'}</Text>
               <ChevronRight size={14} color={TH.primary} />
             </TouchableOpacity>
           </View>
@@ -321,30 +514,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </View>
       )}
 
-      {/* ── 身体数据概览 ── */}
-      <View style={[styles.bodyDataCard, { backgroundColor: TH.card }]}>
-        <View style={styles.bodyDataHeader}>
-          <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyProfile') || '身体数据'}</Text>
-          <TouchableOpacity onPress={() => setShowWeightRecord(true)}>
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.primary }}>{T('bodyRecordWeight') || '记录'}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.bodyDataGrid}>
-          {[
-            { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') || '体重' },
-            { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') || '身高' },
-            { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
-            { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') || '体脂' },
-          ].map((item, i) => (
-            <View key={i} style={styles.bodyDataItem}>
-              <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: TH.text }}>{item.value}</Text>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{item.unit}</Text>
-              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{item.label}</Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
       <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
       <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
@@ -363,25 +532,29 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 }
 
 const styles = StyleSheet.create({
-  heroCard: {
+  bannerContainer: {
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  bannerCard: {
+    width: BANNER_WIDTH,
     borderRadius: 20,
     padding: 20,
-    marginBottom: 16,
     overflow: 'hidden',
   },
-  heroHeader: {
+  bannerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
   },
-  heroContent: {
+  bannerContent: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
     marginBottom: 16,
   },
-  heroIconCircle: {
+  bannerIconCircle: {
     width: 56,
     height: 56,
     borderRadius: 28,
@@ -389,7 +562,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heroButton: {
+  bannerButton: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 14,
@@ -398,11 +571,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
   },
-  heroSuggestion: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 8,
-    padding: 10,
-    marginTop: 8,
+  bannerIndicators: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 10,
+  },
+  bannerDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   quickActions: {
     flexDirection: 'row',
@@ -467,25 +645,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
-  },
-  bodyDataCard: {
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.06)',
-  },
-  bodyDataHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  bodyDataGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  bodyDataItem: {
-    alignItems: 'center',
   },
 });
