@@ -230,9 +230,12 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 <Text style={{ fontSize: 20 }}>📋</Text>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyTodayPlan')}</Text>
               </View>
-              <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)' }}>
-                {new Date().toLocaleDateString('zh-CN', { weekday: 'long' })}
-              </Text>
+              <TouchableOpacity
+                onPress={() => nav.navigate('ExerciseHistory' as never)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('exerciseHistory') || '锻炼记录'}</Text>
+              </TouchableOpacity>
             </View>
             {todayPlanDisplay ? (
               <>
