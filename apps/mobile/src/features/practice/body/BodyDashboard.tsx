@@ -259,17 +259,51 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 </TouchableOpacity>
               </>
             ) : (
-              <View style={styles.bannerContent}>
-                <View style={styles.bannerIconCircle}>
-                  <Text style={{ fontSize: 24 }}>😴</Text>
+              <>
+                <View style={styles.bannerContent}>
+                  <View style={styles.bannerIconCircle}>
+                    <Text style={{ fontSize: 24 }}>😴</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
+                      {T('bodyFlowChooseExercise') || '也可以选择其他运动'}
+                    </Text>
+                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
-                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
-                    {T('bodyFlowChooseExercise') || '也可以选择其他运动'}
-                  </Text>
+                {/* Rest day suggestions */}
+                <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
+                  {[
+                    { icon: '🧘', label: T('bodyPartWalking') || '散步行禅' },
+                    { icon: '🧘‍♀️', label: T('bodyPartYoga') || '拉伸/瑜伽' },
+                    { icon: '🌬️', label: T('bodyFlowBreathing') || '呼吸引导' },
+                  ].map((item, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      onPress={() => onFlowStart?.()}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
+                    >
+                      <Text style={{ fontSize: 14 }}>{item.icon}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{item.label}</Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
-              </View>
+                {/* Body awareness quick stats */}
+                {latestCheckin && (
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8 }}>
+                    {[
+                      { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fbbf24' },
+                      { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#f87171' },
+                      { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#34d399' },
+                    ].map((item, i) => (
+                      <View key={i} style={{ alignItems: 'center' }}>
+                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: item.color }}>{item.value}</Text>
+                        <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </>
             )}
           </View>
 
