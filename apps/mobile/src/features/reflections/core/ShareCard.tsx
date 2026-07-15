@@ -45,10 +45,17 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
 
   if (!visible || !reflection) return null;
 
+  const doCapture = async (): Promise<string> => {
+    // Wait for native layout to settle
+    await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+    if (!viewShotRef.current) throw new Error('view not ready');
+    return captureRef(viewShotRef, { format: 'png', quality: 1 });
+  };
+
   const handleCapture = async () => {
     try {
       setCapturing(true);
-      const uri = await captureRef(viewShotRef, { format: 'png', quality: 1 });
+      const uri = await doCapture();
       const isAvailable = await Sharing.isAvailableAsync();
       if (isAvailable) {
         await Sharing.shareAsync(uri, { mimeType: 'image/png', dialogTitle: T('shareCardShare') });
@@ -65,7 +72,7 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
   const handleSave = async () => {
     try {
       setCapturing(true);
-      const uri = await captureRef(viewShotRef, { format: 'png', quality: 1 });
+      const uri = await doCapture();
       const result = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
       if (result.granted) {
         const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
