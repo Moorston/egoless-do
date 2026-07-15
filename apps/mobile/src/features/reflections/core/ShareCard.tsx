@@ -67,7 +67,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
       if (result.granted) {
         const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
         const fileUri = await FileSystem.StorageAccessFramework.createFileAsync(
-          FileSystem.cacheDirectory ?? '',
+          result.uri,
           `reflection-${Date.now()}`,
           'image/png',
         );

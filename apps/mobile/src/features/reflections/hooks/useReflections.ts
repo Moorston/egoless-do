@@ -323,7 +323,7 @@ export function useReflections() {
     });
   }, []);
 
-  const handleShare = useCallback(async (r: MindReflection, mode?: 'text' | 'image') => {
+  const handleShare = useCallback(async (r: MindReflection, mode?: 'text' | 'image', lang?: string) => {
     try {
       if (mode === 'image') {
         // Return the reflection for ShareCard to handle
@@ -332,7 +332,7 @@ export function useReflections() {
       const tagsStr = r.tags?.length ? `\n🏷️ ${r.tags.join(' ')}` : '';
       const moodStr = r.mood ? `\n💭 ${r.mood}` : '';
       const linkStr = r.link ? `\n🔗 ${r.link}` : '';
-      const timeStr = formatDate(new Date(r.timestamp ?? 0), 'zh', { year: 'numeric', month: 'long', day: 'numeric' });
+      const timeStr = formatDate(new Date(r.timestamp ?? 0), lang ?? 'zh', { year: 'numeric', month: 'long', day: 'numeric' });
       await Share.share({
         message: `「${r.content}」${tagsStr}${moodStr}${linkStr}\n\n📅 ${timeStr}\n— 来自心流纪 · Egoless Do\nhttps://egoless-do.app`,
       });

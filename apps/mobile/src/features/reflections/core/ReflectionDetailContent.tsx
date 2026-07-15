@@ -174,7 +174,7 @@ export default function ReflectionDetailContent({
                   <Text style={{ color: '#fff', fontSize: FONT_BUTTON() }}>{T('reflRelationMap')}</Text>
                 </TouchableOpacity>
                 {onShare && (
-                  <TouchableOpacity onPress={() => { setShowMore(false); onClose(); onShare(r); }}
+                  <TouchableOpacity onPress={() => { setShowMore(false); onShare(r); }}
                     style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 16 }}>
                     <ExternalLink size={16} color="#fff" />
                     <Text style={{ color: '#fff', fontSize: FONT_BUTTON() }}>{T('reflShare')}</Text>

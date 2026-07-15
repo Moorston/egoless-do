@@ -322,7 +322,7 @@ export default function ReflectionsScreen() {
     setActionMenuId(null);
     // Show share choice: text or image
     Alert.alert(T('reflShare'), '', [
-      { text: T('shareTextShare'), onPress: () => handleShare(r) },
+      { text: T('shareTextShare'), onPress: () => handleShare(r, undefined, language) },
       { text: T('shareImageShare'), onPress: () => setShareReflection(r) },
       { text: T('cancel'), style: 'cancel' },
     ]);
