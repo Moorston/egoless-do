@@ -292,12 +292,12 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 {latestCheckin && (
                   <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 8 }}>
                     {[
-                      { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fbbf24' },
-                      { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#f87171' },
-                      { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#34d399' },
+                      { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fff' },
+                      { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#fff' },
+                      { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#fff' },
                     ].map((item, i) => (
                       <View key={i} style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: item.color }}>{item.value}</Text>
+                        <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{item.value}</Text>
                         <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
                       </View>
                     ))}
