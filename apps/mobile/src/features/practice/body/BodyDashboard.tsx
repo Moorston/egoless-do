@@ -192,6 +192,13 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     updateUserProfile({ selfAssessment: text, bodyTags: tags });
   }, [updateUserProfile]);
 
+  // Convert snake_case strategy to camelCase for i18n key
+  const getStrategyLabel = useCallback((strategy: string) => {
+    // 'lose_fat' -> 'LoseFat' -> 'bodyStrategyLoseFat'
+    const camelCase = strategy.split('_').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
+    return T(`bodyStrategy${camelCase}` as never) || strategy;
+  }, [T]);
+
   const handleSaveGoal = useCallback((data: Partial<BodyGoal>) => {
     if (activeGoal) {
       updateBodyGoal(activeGoal.id, data);
@@ -649,7 +656,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               {activeGoal.strategy && (
                 <View style={styles.goalMetricItem}>
                   <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#8b5cf6' }}>
-                    {T(`bodyStrategy${activeGoal.strategy.charAt(0).toUpperCase() + activeGoal.strategy.slice(1)}` as never)}
+                    {getStrategyLabel(activeGoal.strategy)}
                   </Text>
                   <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyStrategyLabel')}</Text>
                 </View>

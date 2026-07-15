@@ -17,9 +17,15 @@ const INTENSITY_COLORS: Record<string, string> = {
   advanced: '#ef4444',
 };
 
+const INTENSITY_I18N: Record<string, string> = {
+  beginner: 'bodyLevelBeginner',
+  intermediate: 'bodyLevelIntermediate',
+  advanced: 'bodyLevelAdvanced',
+};
+
 function TemplateCard({ template, T, TH, onPress }: { template: PlanTemplate; T: (key: string) => string; TH: Theme; onPress: () => void }) {
   const intensityColor = INTENSITY_COLORS[template.intensity] ?? TH.sub;
-  const intensityLabel = T(`exerciseDifficulty${template.intensity.charAt(0).toUpperCase() + template.intensity.slice(1)}` as never) || template.intensity;
+  const intensityLabel = T(INTENSITY_I18N[template.intensity]) || template.intensity;
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}
