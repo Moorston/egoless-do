@@ -1027,6 +1027,7 @@ export const zhHant: I18nKeys = {
   bodyGoalNotSet:'尚未設定調身目標', bodyGoalEdit:'編輯', bodyGoalSet:'設定', bodyGoalTitle:'設定調身目標',
   bodyTargetWeight:'目標體重 (kg)', bodyTargetBodyFat:'目標體脂率 (%) 可選', bodyTargetDate:'目標日期 (YYYY-MM-DD)',
   bodyStrategyLabel:'調身策略', bodyProgress:'進度',
+  bodyWeeklyProgress:'本週進度',
   bodyPlanNotSet:'尚未設定訓練方案', bodyPlanEdit:'編輯', bodyPlanTitle:'調身方案', bodyPlanSave:'儲存方案',
   bodyPlanNote:'備註 (可選)', bodyPlanRestDay:'休息',
   bodyPlanCreate:'新建調身計劃', bodyPlanName:'計劃名稱', bodyPlanNamePlaceholder:'如"7月減脂計劃"',

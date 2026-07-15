@@ -875,6 +875,7 @@ export interface I18nKeys {
   bodyGoalNotSet: string; bodyGoalEdit: string; bodyGoalSet: string; bodyGoalTitle: string;
   bodyTargetWeight: string; bodyTargetBodyFat: string; bodyTargetDate: string;
   bodyStrategyLabel: string; bodyProgress: string;
+  bodyWeeklyProgress: string;
   bodyPlanNotSet: string; bodyPlanEdit: string; bodyPlanTitle: string; bodyPlanSave: string;
   bodyPlanNote: string; bodyPlanRestDay: string;
   bodyPlanCreate: string; bodyPlanName: string; bodyPlanNamePlaceholder: string;

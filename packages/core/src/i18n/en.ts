@@ -1032,6 +1032,7 @@ export const en: I18nKeys = {
   bodyGoalNotSet:'No goal set yet', bodyGoalEdit:'Edit', bodyGoalSet:'Set', bodyGoalTitle:'Set Body Goal',
   bodyTargetWeight:'Target Weight (kg)', bodyTargetBodyFat:'Target Body Fat (%) optional', bodyTargetDate:'Target Date (YYYY-MM-DD)',
   bodyStrategyLabel:'Strategy', bodyProgress:'Progress',
+  bodyWeeklyProgress:'Weekly Progress',
   bodyPlanNotSet:'No plan set yet', bodyPlanEdit:'Edit', bodyPlanTitle:'Body Plan', bodyPlanSave:'Save Plan',
   bodyPlanNote:'Note (optional)', bodyPlanRestDay:'Rest',
   bodyPlanCreate:'New Body Plan', bodyPlanName:'Plan Name', bodyPlanNamePlaceholder:'e.g. July Fat Loss',

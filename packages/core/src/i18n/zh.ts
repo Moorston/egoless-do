@@ -1030,6 +1030,7 @@ export const zh: I18nKeys = {
   bodyGoalNotSet:'尚未设置调身目标', bodyGoalEdit:'编辑', bodyGoalSet:'设置', bodyGoalTitle:'设置调身目标',
   bodyTargetWeight:'目标体重 (kg)', bodyTargetBodyFat:'目标体脂率 (%) 可选', bodyTargetDate:'目标日期 (YYYY-MM-DD)',
   bodyStrategyLabel:'调身策略', bodyProgress:'进度',
+  bodyWeeklyProgress:'本周进度',
   bodyPlanNotSet:'尚未设置训练方案', bodyPlanEdit:'编辑', bodyPlanTitle:'调身方案', bodyPlanSave:'保存方案',
   bodyPlanNote:'备注 (可选)', bodyPlanRestDay:'休息',
   bodyPlanCreate:'新建调身计划', bodyPlanName:'计划名称', bodyPlanNamePlaceholder:'如"7月减脂计划"',
