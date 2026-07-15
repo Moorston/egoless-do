@@ -1,7 +1,7 @@
 import { MIND_COLORS_EXTENDED, FONT_BODY, FONT_SUB, FONT_SMALL, formatDate , FONT_HERO } from '@egoless-do/core';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { X, Download, Share2 } from 'lucide-react-native';
+import { X, Download, Share2, MessageSquare } from 'lucide-react-native';
 import React, { useRef, useState, useMemo } from 'react';
 import { View, Text, Modal, TouchableOpacity, Alert } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
@@ -19,9 +19,10 @@ interface ShareCardProps {
     timestamp: number;
     colors?: readonly [string, string];
   } | null;
+  onTextShare?: () => void;
 }
 
-export default function ShareCard({ visible, onClose, reflection }: ShareCardProps) {
+export default function ShareCard({ visible, onClose, reflection, onTextShare }: ShareCardProps) {
   const TH = useTheme();
   const T = useT();
   const viewShotRef = useRef<View>(null);
@@ -139,14 +140,21 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
         </View>
 
         {/* Action buttons */}
-        <View style={{ flexDirection: 'row', gap: 16, marginTop: 24 }}>
+        <View style={{ flexDirection: 'row', gap: 12, marginTop: 24 }}>
+          {onTextShare && (
+            <TouchableOpacity onPress={() => { onClose(); onTextShare(); }}
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 24 }}>
+              <MessageSquare size={18} color="#fff" />
+              <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('shareTextShare')}</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={handleCapture} disabled={capturing}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24, opacity: capturing ? 0.5 : 1 }}>
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 24, opacity: capturing ? 0.5 : 1 }}>
             <Share2 size={18} color="#fff" />
-            <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('shareCardShare')}</Text>
+            <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('shareImageShare')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleSave} disabled={capturing}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 24, opacity: capturing ? 0.5 : 1 }}>
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: 'rgba(255,255,255,.15)', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 24, opacity: capturing ? 0.5 : 1 }}>
             <Download size={18} color="#fff" />
             <Text style={{ color: '#fff', fontSize: FONT_BODY(), fontWeight: '600' }}>{T('shareCardSave')}</Text>
           </TouchableOpacity>

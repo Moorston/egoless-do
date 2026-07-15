@@ -319,18 +319,10 @@ export default function ReflectionsScreen() {
   };
 
   const onShare = async (r: MindReflection) => {
-    Alert.alert(T('reflShare'), '', [
-      { text: T('shareTextShare'), onPress: () => {
-        setActionMenuId(null);
-        handleShare(r, undefined, language);
-      }},
-      { text: T('shareImageShare'), onPress: () => {
-        // Close action menu Modal first; wait for fade-out before opening ShareCard
-        setActionMenuId(null);
-        setTimeout(() => setShareReflection(r), 350);
-      }},
-      { text: T('cancel'), style: 'cancel', onPress: () => setActionMenuId(null) },
-    ]);
+    // Close action menu, wait for Modal close animation, then open ShareCard.
+    // Avoids Alert.alert inside Modal (unreliable native stack on Android).
+    setActionMenuId(null);
+    setTimeout(() => setShareReflection(r), 350);
   };
 
   const handleCreatePlanItem = useCallback((id: string) => {
@@ -736,6 +728,9 @@ export default function ReflectionsScreen() {
         visible={!!shareReflection}
         onClose={() => setShareReflection(null)}
         reflection={shareReflection}
+        onTextShare={shareReflection ? () => {
+          handleShare(shareReflection, undefined, language);
+        } : undefined}
       />
 
       {/* Confirm delete modal */}
