@@ -319,12 +319,19 @@ export default function ReflectionsScreen() {
   };
 
   const onShare = async (r: MindReflection) => {
-    setActionMenuId(null);
     // Show share choice: text or image
+    // NOTE: Don't close action menu before Alert — the native dialog may
+    // conflict with the Modal lifecycle when it dismisses.
     Alert.alert(T('reflShare'), '', [
-      { text: T('shareTextShare'), onPress: () => handleShare(r, undefined, language) },
-      { text: T('shareImageShare'), onPress: () => setShareReflection(r) },
-      { text: T('cancel'), style: 'cancel' },
+      { text: T('shareTextShare'), onPress: () => {
+        setActionMenuId(null);
+        handleShare(r, undefined, language);
+      }},
+      { text: T('shareImageShare'), onPress: () => {
+        setActionMenuId(null);
+        setShareReflection(r);
+      }},
+      { text: T('cancel'), style: 'cancel', onPress: () => setActionMenuId(null) },
     ]);
   };
 
