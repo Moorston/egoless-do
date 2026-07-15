@@ -460,12 +460,12 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   <>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 10 }}>
                       <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>
-                        {weightTrend.current}<Text style={{ fontSize: FONT_BODY() }}> kg</Text>
+                        {weightTrend.current} kg
                       </Text>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                         <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
                         <Text style={{ fontSize: FONT_BODY(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399', fontWeight: '600' }}>
-                          {weightTrend.diff > 0 ? '+' : ''}{weightTrend.diff.toFixed(1)}<Text> kg</Text>
+                          {weightTrend.diff > 0 ? '+' : ''}{weightTrend.diff.toFixed(1)} kg
                         </Text>
                       </View>
                     </View>
