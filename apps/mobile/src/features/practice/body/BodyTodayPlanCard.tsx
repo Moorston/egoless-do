@@ -1,7 +1,7 @@
-import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme , scaleFontSize, FONT_STAT_SECTION} from '@egoless-do/core';
-import { Play } from 'lucide-react-native';
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_SMALL, type BodyPlan, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, type Theme, scaleFontSize, FONT_STAT_SECTION} from '@egoless-do/core';
+import { Play, ChevronRight } from 'lucide-react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, Animated } from 'react-native';
 
 interface Props {
   TH: Theme;
@@ -28,6 +28,19 @@ const WEEKDAY_LABELS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekTh
 export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onStart }: Props) {
   const display = resolvePlanDisplay(todayPlan, T);
   const dayLabel = T(WEEKDAY_LABELS[todayWeekday - 1]);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  // Pulse animation for start button
+  useEffect(() => {
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1.05, duration: 1000, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 1000, useNativeDriver: true }),
+      ])
+    );
+    pulse.start();
+    return () => pulse.stop();
+  }, [pulseAnim]);
 
   // Rest day or no plan → render a small muted hint (no actionable button since user can use WeekPlanCard)
   if (!display || display.isRest) {
@@ -73,9 +86,17 @@ export default function BodyTodayPlanCard({ TH, T, todayPlan, todayWeekday, onSt
 
           <TouchableOpacity onPress={onStart} activeOpacity={0.85}
             style={{ backgroundColor: '#f59e0b', borderRadius: 14, padding: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-            <Play size={20} color="#fff" />
+            <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+              <Play size={20} color="#fff" />
+            </Animated.View>
             <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: '#fff' }}>{T('bodyStartToday')}</Text>
           </TouchableOpacity>
+
+          {/* 计划提示 */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, marginTop: 8 }}>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyFlowChooseExercise') || '也可选择其他运动'}</Text>
+            <ChevronRight size={12} color={TH.sub} />
+          </View>
         </View>
       </View>
     </View>

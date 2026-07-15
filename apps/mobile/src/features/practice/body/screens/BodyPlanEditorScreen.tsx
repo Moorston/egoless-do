@@ -307,18 +307,28 @@ export default function BodyPlanEditorScreen() {
             {tasks.map((task, i) => {
               const cat = EXERCISE_CATEGORIES.find(c => c.key === task.sportKey);
               const filled = !!task.sportKey;
+              const exCount = (task.exercises ?? []).length;
+              const isRest = task.sportKey === 'rest';
               return (
                 <TouchableOpacity key={i} onPress={() => {
                   setActiveDay(activeDay === task.weekday ? null : task.weekday);
                   setExSearch('');
                 }} style={[styles.dayDot, {
-                  backgroundColor: filled ? (task.sportKey === 'rest' ? `${P}30` : P) : TH.bg,
-                  borderColor: activeDay === task.weekday ? P : TH.border
+                  backgroundColor: filled ? (isRest ? `${P}20` : `${P}15`) : TH.bg,
+                  borderColor: activeDay === task.weekday ? P : filled ? `${P}40` : TH.border,
                 }]}>
-                  <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: filled ? '#fff' : TH.sub }}>
+                  <Text style={{ fontSize: FONT_SMALL(), fontWeight: '600', color: filled ? (isRest ? TH.sub : P) : TH.sub }}>
                     {['', '一', '二', '三', '四', '五', '六', '日'][task.weekday]}
                   </Text>
-                  {filled && <Text style={{ fontSize: 10 }}>{cat?.icon ?? ''}</Text>}
+                  {filled && !isRest && (
+                    <Text style={{ fontSize: 12 }}>{cat?.icon ?? '🏋️'}</Text>
+                  )}
+                  {filled && isRest && (
+                    <Text style={{ fontSize: 12 }}>😴</Text>
+                  )}
+                  {exCount > 0 && (
+                    <Text style={{ fontSize: 9, color: P, fontWeight: '700' }}>{exCount}</Text>
+                  )}
                 </TouchableOpacity>
               );
             })}

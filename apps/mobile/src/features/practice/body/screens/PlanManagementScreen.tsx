@@ -97,16 +97,23 @@ export default function PlanManagementScreen() {
             const activeDays = plan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length;
 
             return (
-              <View key={plan.id} style={[styles.planCard, { backgroundColor: TH.card, borderColor: isActive ? '#f59e0b' : TH.border }]}>
+              <View key={plan.id} style={[styles.planCard, {
+                backgroundColor: TH.card,
+                borderColor: isActive ? '#f59e0b' : config.color + '40',
+                borderLeftWidth: 4,
+                borderLeftColor: config.color,
+              }]}>
                 {/* Status badge */}
                 <View style={styles.cardHeader}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-                    <Text style={{ fontSize: FONT_STAT_SECTION() }}>{config.icon}</Text>
+                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: config.color + '15', alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ fontSize: 20 }}>{config.icon}</Text>
+                    </View>
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }} numberOfLines={1}>{plan.name}</Text>
                       <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{plan.startDate} ~ {plan.endDate}</Text>
                     </View>
-                    <View style={[styles.statusBadge, { backgroundColor: `${config.color}20` }]}>
+                    <View style={[styles.statusBadge, { backgroundColor: `${config.color}15` }]}>
                       <Text style={{ fontSize: FONT_SMALL(), color: config.color, fontWeight: '600' }}>{T(config.labelKey)}</Text>
                     </View>
                   </View>

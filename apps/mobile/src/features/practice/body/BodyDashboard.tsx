@@ -179,20 +179,28 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       <CollapsibleSection title={T('bodyToday')} icon="📋" color="#f59e0b" TH={TH} defaultExpanded>
         {/* 训练建议 */}
         {suggestions.length > 0 && (
-          <View style={{ marginBottom: 12 }}>
-            {suggestions.slice(0, 2).map((s, i) => (
-              <View key={i} style={{
-                flexDirection: 'row', alignItems: 'center', gap: 8,
-                paddingVertical: 8, paddingHorizontal: 12,
-                borderRadius: 10, marginBottom: 6,
-                backgroundColor: s.priority === 'high' ? '#fef3c7' : '#f0fdf4',
-                borderWidth: 1,
-                borderColor: s.priority === 'high' ? '#fbbf24' : '#86efac',
-              }}>
-                <Text style={{ fontSize: FONT_SMALL() }}>{s.icon}</Text>
-                <Text style={{ fontSize: FONT_SMALL(), color: s.priority === 'high' ? '#92400e' : '#166534', flex: 1 }}>{s.message}</Text>
-              </View>
-            ))}
+          <View style={{ marginBottom: 14 }}>
+            {suggestions.slice(0, 2).map((s, i) => {
+              const isHigh = s.priority === 'high';
+              return (
+                <View key={i} style={{
+                  flexDirection: 'row', alignItems: 'flex-start', gap: 10,
+                  paddingVertical: 10, paddingHorizontal: 14,
+                  borderRadius: 12, marginBottom: 8,
+                  backgroundColor: isHigh ? '#fef3c7' : '#f0fdf4',
+                  borderWidth: 1,
+                  borderColor: isHigh ? '#fbbf24' : '#86efac',
+                }}>
+                  <Text style={{ fontSize: 18 }}>{s.icon}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: FONT_BODY(), color: isHigh ? '#92400e' : '#166534', fontWeight: '600', marginBottom: 2 }}>{s.message}</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: isHigh ? '#b45309' : '#15803d', opacity: 0.8 }}>
+                      {s.type === 'rest' ? '恢复是训练的一部分' : s.type === 'decrease' ? '倾听身体的声音' : '保持节奏，循序渐进'}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
           </View>
         )}
         <BodyTodayPlanCard
@@ -204,7 +212,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       </CollapsibleSection>
 
       {/* ── Section 2: 身体档案 ── */}
-      <CollapsibleSection title={T('bodyProfile')} icon="📋" color="#d97706" TH={TH} defaultExpanded>
+      <CollapsibleSection title={T('bodyProfile')} icon="📋" color="#d97706" TH={TH} defaultExpanded={false}>
         <BodyProfileCard
           TH={TH} T={T}
           profile={profile}
