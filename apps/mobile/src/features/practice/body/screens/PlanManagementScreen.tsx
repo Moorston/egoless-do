@@ -99,21 +99,26 @@ export default function PlanManagementScreen() {
             return (
               <View key={plan.id} style={[styles.planCard, {
                 backgroundColor: TH.card,
-                borderColor: isActive ? '#f59e0b' : config.color + '40',
+                borderColor: isActive ? '#f59e0b30' : config.color + '20',
                 borderLeftWidth: 4,
                 borderLeftColor: config.color,
+                shadowColor: isActive ? '#f59e0b' : '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: isActive ? 0.15 : 0.05,
+                shadowRadius: 8,
+                elevation: isActive ? 4 : 1,
               }]}>
                 {/* Status badge */}
                 <View style={styles.cardHeader}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
-                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: config.color + '15', alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style={{ fontSize: 20 }}>{config.icon}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
+                    <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: config.color + '15', alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{ fontSize: 22 }}>{config.icon}</Text>
                     </View>
                     <View style={{ flex: 1 }}>
                       <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }} numberOfLines={1}>{plan.name}</Text>
-                      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{plan.startDate} ~ {plan.endDate}</Text>
+                      <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{plan.startDate} ~ {plan.endDate}</Text>
                     </View>
-                    <View style={[styles.statusBadge, { backgroundColor: `${config.color}15` }]}>
+                    <View style={[styles.statusBadge, { backgroundColor: `${config.color}15`, borderWidth: 1, borderColor: `${config.color}30` }]}>
                       <Text style={{ fontSize: FONT_SMALL(), color: config.color, fontWeight: '600' }}>{T(config.labelKey)}</Text>
                     </View>
                   </View>
