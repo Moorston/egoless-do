@@ -98,6 +98,28 @@ export interface BodyCheckin extends Syncable {
   synced?: boolean;   // whether synced to remote
 }
 
+// ─── DayOverride ─────────────────────────────────────────────────
+// 当日覆盖：临时调整某天的训练，不影响原计划的周循环
+// 覆盖只影响指定日期，可撤销
+
+export type DayOverrideType = 'skip' | 'swap' | 'adjust' | 'custom';
+
+export interface DayOverrideExerciseAdjustment {
+  exerciseId: string;
+  sets?: number;
+  reps?: number;
+  durationSec?: number;
+}
+
+export interface DayOverride {
+  type: DayOverrideType;
+  swapSportKey?: string;                    // type='swap': 新运动类型 key
+  exerciseAdjustments?: DayOverrideExerciseAdjustment[];  // type='adjust': 组数/次数调整
+  exercises?: ExerciseDef[];                // type='custom': 完整动作列表
+  note?: string;                            // 用户备注
+  createdAt: number;                        // 创建时间戳
+}
+
 // ─── BodyTrainingPlan ──────────────────────────────────────────────
 
 export type BodyTrainingPlanStatus = 'active' | 'completed' | 'cancelled';
@@ -121,6 +143,7 @@ export interface BodyTrainingPlan extends Syncable {
   goalNote?: string;
   tasks: BodyPlanTask[];
   status: BodyTrainingPlanStatus;
+  overrides?: Record<string, DayOverride>;  // "2026-07-15" → 当日覆盖
 }
 
 // ─── ExerciseDefinition ──────────────────────────────────────────

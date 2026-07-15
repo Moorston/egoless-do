@@ -775,6 +775,7 @@ export const SCHEMAS: Record<SyncEntity, EntitySchema> = {
       { entity: 'targetBodyFat',col: 'target_body_fat',server: 'targetBodyFat', type: 'num', optional: true },
       { entity: 'goalNote',    col: 'goal_note',     server: 'goalNote',     fallback: '', optional: true },
       { entity: 'tasks',       col: 'tasks',         server: 'tasks',        type: 'json' },
+      { entity: 'overrides', col: 'overrides',     server: 'overrides',    type: 'json', optional: true },
       { entity: 'status',      col: 'status',        server: 'status',       fallback: 'active' },
       { entity: 'updatedAt',   col: 'updated_at',    server: 'updatedAt',    fallback: () => Date.now() },
       { entity: 'deleted',     col: 'deleted',        type: 'bool' },

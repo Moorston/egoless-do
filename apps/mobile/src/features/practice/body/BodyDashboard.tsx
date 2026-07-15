@@ -1,7 +1,7 @@
-import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET } from '@egoless-do/core';
+import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, type DayOverride, type ExerciseDef } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Animated, Alert } from 'react-native';
 
 import { useT, useTheme } from '../../../components/UI';
 import { useRootNavigation } from '../../../navigation/hooks';
@@ -14,6 +14,10 @@ import BodyCheckinModal from './modals/BodyCheckinModal';
 import GoalEditModal from './modals/GoalEditModal';
 import WeightRecordModal from './modals/WeightRecordModal';
 import WeightTrendModal from './modals/WeightTrendModal';
+import QuickSwapModal from './modals/QuickSwapModal';
+import AdjustExerciseModal from './modals/AdjustExerciseModal';
+import DayActionSheet from './modals/DayActionSheet';
+import GoalEditLightModal from './modals/GoalEditLightModal';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
@@ -45,13 +49,18 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
   }));
   const profile = (userProfile ?? {}) as Record<string, unknown>;
-  const { todayPlan, weekday: todayWeekday } = useTodayPlan();
+  const { todayPlan, weekday: todayWeekday, todayOverride, hasOverride, todayExercises, dateStr: todayDateStr } = useTodayPlan();
 
   const [showAssessment, setShowAssessment] = useState(false);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
   const [showWeightRecord, setShowWeightRecord] = useState(false);
   const [showWeightTrend, setShowWeightTrend] = useState(false);
+  const [showQuickSwap, setShowQuickSwap] = useState(false);
+  const [showAdjustExercise, setShowAdjustExercise] = useState(false);
+  const [showDayAction, setShowDayAction] = useState(false);
+  const [showGoalEditLight, setShowGoalEditLight] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   // Banner carousel state (no auto-rotate, user manual swipe)
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -214,6 +223,68 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const handleSaveWeight = useCallback((data: { date: string; weight: number; bodyFat?: number }) => {
     addWeight(data);
   }, [addWeight]);
+
+  // ── Override handlers ──
+  const setOverride = useCallback((date: string, override: DayOverride) => {
+    if (!activeTrainingPlan) return;
+    const newOverrides = { ...(activeTrainingPlan.overrides ?? {}), [date]: override };
+    updateBodyTrainingPlan(activeTrainingPlan.id, { overrides: newOverrides });
+  }, [activeTrainingPlan, updateBodyTrainingPlan]);
+
+  const clearOverride = useCallback((date: string) => {
+    if (!activeTrainingPlan) return;
+    const newOverrides = { ...(activeTrainingPlan.overrides ?? {}) };
+    delete newOverrides[date];
+    updateBodyTrainingPlan(activeTrainingPlan.id, { overrides: newOverrides });
+  }, [activeTrainingPlan, updateBodyTrainingPlan]);
+
+  const handleSkipToday = useCallback(() => {
+    setOverride(todayDateStr, { type: 'skip', createdAt: Date.now() });
+  }, [setOverride, todayDateStr]);
+
+  const handleUndoOverride = useCallback(() => {
+    clearOverride(todayDateStr);
+  }, [clearOverride, todayDateStr]);
+
+  const handleSwapConfirm = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
+    setOverride(todayDateStr, {
+      type: exercises ? 'custom' : 'swap',
+      swapSportKey: exercises ? undefined : sportKey,
+      exercises,
+      createdAt: Date.now(),
+    });
+  }, [setOverride, todayDateStr]);
+
+  const handleAdjustConfirm = useCallback((adjustments: { exerciseId: string; sets: number; reps: number; durationSec?: number }[]) => {
+    setOverride(todayDateStr, {
+      type: 'adjust',
+      exerciseAdjustments: adjustments,
+      createdAt: Date.now(),
+    });
+  }, [setOverride, todayDateStr]);
+
+  const handleDaySwap = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
+    if (!selectedDay) return;
+    const dayDate = /* compute date for selectedDay */ todayDateStr; // TODO: compute actual date
+    setOverride(dayDate, {
+      type: exercises ? 'custom' : 'swap',
+      swapSportKey: exercises ? undefined : sportKey,
+      exercises,
+      createdAt: Date.now(),
+    });
+  }, [selectedDay, setOverride, todayDateStr]);
+
+  const handleDaySkip = useCallback(() => {
+    if (!selectedDay) return;
+    const dayDate = todayDateStr; // TODO: compute actual date
+    setOverride(dayDate, { type: 'skip', createdAt: Date.now() });
+  }, [selectedDay, setOverride, todayDateStr]);
+
+  const handleSaveGoalLight = useCallback((data: { strategy?: string; targetWeight?: number; targetBodyFat?: number; goalNote?: string }) => {
+    if (activeTrainingPlan) {
+      updateBodyTrainingPlan(activeTrainingPlan.id, data);
+    }
+  }, [activeTrainingPlan, updateBodyTrainingPlan]);
 
   return (
     <View>
@@ -793,6 +864,36 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
       <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
       <WeightTrendModal visible={showWeightTrend} TH={TH} T={T} checkins={checkinHistory ?? []} onClose={() => setShowWeightTrend(false)} />
+
+      {/* Override modals */}
+      <QuickSwapModal visible={showQuickSwap} onClose={() => setShowQuickSwap(false)} onConfirm={handleSwapConfirm} TH={TH} T={T} />
+      {todayExercises && (
+        <AdjustExerciseModal visible={showAdjustExercise} onClose={() => setShowAdjustExercise(false)} onConfirm={handleAdjustConfirm} exercises={todayExercises} TH={TH} T={T} />
+      )}
+      <DayActionSheet
+        visible={showDayAction}
+        onClose={() => setShowDayAction(false)}
+        dayLabel={selectedDay ? T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][selectedDay - 1]}`) : ''}
+        isRest={false}
+        hasOverride={false}
+        onSwap={() => { setShowDayAction(false); setShowQuickSwap(true); }}
+        onSkip={handleDaySkip}
+        onSwapDays={() => {/* TODO: implement day swap picker */}}
+        onAdjust={() => { setShowDayAction(false); setShowAdjustExercise(true); }}
+        TH={TH} T={T}
+      />
+      {activeTrainingPlan && (
+        <GoalEditLightModal
+          visible={showGoalEditLight}
+          onClose={() => setShowGoalEditLight(false)}
+          onConfirm={handleSaveGoalLight}
+          initialStrategy={activeTrainingPlan.strategy}
+          initialTargetWeight={activeTrainingPlan.targetWeight}
+          initialTargetBodyFat={activeTrainingPlan.targetBodyFat}
+          initialGoalNote={activeTrainingPlan.goalNote}
+          TH={TH} T={T}
+        />
+      )}
 
       {celebrationData && (
         <CelebrationOverlay
