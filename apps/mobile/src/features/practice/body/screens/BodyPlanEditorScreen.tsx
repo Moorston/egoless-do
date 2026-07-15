@@ -258,7 +258,7 @@ export default function BodyPlanEditorScreen() {
               <TextInput value={endDate} onChangeText={setEndDate} style={[styles.dateInput, { backgroundColor: TH.bg, color: TH.text, borderColor: TH.border }]} />
             </View>
           </View>
-          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, textAlign: 'center' }}>约 {durationWeeks} 周</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 6, textAlign: 'center' }}>{`约 ${durationWeeks} 周`}</Text>
         </View>
 
         {/* ── Goal (collapsible) ── */}

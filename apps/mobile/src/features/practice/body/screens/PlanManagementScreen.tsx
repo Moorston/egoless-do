@@ -139,7 +139,7 @@ export default function PlanManagementScreen() {
                 <View style={{ flexDirection: 'row', gap: 16, marginBottom: 12 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <Clock size={14} color={TH.sub} />
-                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{weeks}周 · {activeDays}天/周</Text>
+                    <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{`${weeks}周 · ${activeDays}天/周`}</Text>
                   </View>
                   {plan.strategy && (
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
