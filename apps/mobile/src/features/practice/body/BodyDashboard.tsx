@@ -188,11 +188,11 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onRecordWeight={() => setShowWeightRecord(true)}
           onPickAgeBracket={handlePickAgeBracket}
         />
-        <GoalCard TH={TH} T={T} goal={activeGoal} profile={profile} onEdit={() => setShowGoalEdit(true)} />
       </CollapsibleSection>
 
       {/* ── Section 3: 训练计划 ── */}
       <CollapsibleSection title={T('bodyPlan')} icon="💪" color="#8b5cf6" TH={TH} defaultExpanded badge={trainingBadge}>
+        <GoalCard TH={TH} T={T} goal={activeGoal} profile={profile} onEdit={() => setShowGoalEdit(true)} />
         <BodyTrainingPlanSection
           TH={TH} T={T}
           plan={activeTrainingPlan}
