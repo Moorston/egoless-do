@@ -1,4 +1,4 @@
-import { FONT_TITLE, ALL_SPORTS, type BodyPlanTask } from '@egoless-do/core';
+import { FONT_TITLE, FONT_SUB, FONT_SMALL, ALL_SPORTS, type BodyPlanTask } from '@egoless-do/core';
 import { useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { View, Text, ScrollView, Animated } from 'react-native';
