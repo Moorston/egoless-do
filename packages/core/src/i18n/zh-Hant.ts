@@ -1034,6 +1034,8 @@ export const zhHant: I18nKeys = {
   bodyPlanGoalNote:'目標備註', bodyGoalNotePlaceholder:'如"減到70kg以下"',
   bodyWeeklyPlan:'週計劃任務', bodySelectExercise:'選擇運動',
   bodyPlanTemplateChoose:'選擇模板快速建立，或從空白開始自訂',
+  bodyPlanTemplate:'從模板匯入',
+  bodyTemplateHint:'選擇一個預設訓練計劃，建立後可在編輯器中微調。',
   bodyPlanUseTemplate:'使用此模板', bodyPlanCustom:'從空白建立',
   bodyPlanAddExercise:'添加動作', bodyPlanNoExercises:'暫無推薦動作', bodyPlanChange:'更換', bodyPlanAddCustom:'自定義動作',
   bodyLevelBeginner:'初級', bodyLevelIntermediate:'中級', bodyLevelAdvanced:'高級', bodyDays:'天',

@@ -1039,6 +1039,8 @@ export const en: I18nKeys = {
   bodyPlanGoalNote:'Goal Note', bodyGoalNotePlaceholder:'e.g. reach 70kg',
   bodyWeeklyPlan:'Weekly Tasks', bodySelectExercise:'Select Exercise',
   bodyPlanTemplateChoose:'Choose a template or start from scratch',
+  bodyPlanTemplate:'Import from Template',
+  bodyTemplateHint:'Choose a preset training plan. You can customize it in the editor after creation.',
   bodyPlanUseTemplate:'Use Template', bodyPlanCustom:'Start from Scratch',
   bodyPlanAddExercise:'Add Exercise', bodyPlanNoExercises:'No exercises found', bodyPlanChange:'Change', bodyPlanAddCustom:'Custom Exercise',
   bodyLevelBeginner:'Beginner', bodyLevelIntermediate:'Intermediate', bodyLevelAdvanced:'Advanced', bodyDays:' days',

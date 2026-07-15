@@ -1037,6 +1037,8 @@ export const zh: I18nKeys = {
   bodyPlanGoalNote:'目标备注', bodyGoalNotePlaceholder:'如"减到70kg以下"',
   bodyWeeklyPlan:'周计划任务', bodySelectExercise:'选择运动',
   bodyPlanTemplateChoose:'选择模板快速创建，或从空白开始自定义',
+  bodyPlanTemplate:'从模板导入',
+  bodyTemplateHint:'选择一个预设训练计划，创建后可在编辑器中微调。',
   bodyPlanUseTemplate:'使用此模板', bodyPlanCustom:'从空白创建',
   bodyPlanAddExercise:'添加动作', bodyPlanNoExercises:'暂无推荐动作', bodyPlanChange:'更换', bodyPlanAddCustom:'自定义动作',
   bodyLevelBeginner:'初级', bodyLevelIntermediate:'中级', bodyLevelAdvanced:'高级', bodyDays:'天',

@@ -882,6 +882,7 @@ export interface I18nKeys {
   bodyPlanGoalNote: string; bodyGoalNotePlaceholder: string;
   bodyWeeklyPlan: string; bodySelectExercise: string;
   bodyPlanTemplateChoose: string; bodyPlanUseTemplate: string; bodyPlanCustom: string;
+  bodyPlanTemplate: string; bodyTemplateHint: string;
   bodyPlanAddExercise: string; bodyPlanNoExercises: string; bodyPlanChange: string; bodyPlanAddCustom: string;
   bodyLevelBeginner: string; bodyLevelIntermediate: string; bodyLevelAdvanced: string; bodyDays: string;
   planTemplateTraditional: string; planTemplateTraditionalDesc: string;
