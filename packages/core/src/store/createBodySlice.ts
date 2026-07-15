@@ -242,21 +242,20 @@ export function createBodySlice(
             awarenessData: null,
             activePlanId: null,
             startedAt: Date.now(),
-            updatedAt: Date.now(),
             ...current,
             ...updates,
             updatedAt: Date.now(),
           },
         };
       });
-      // Persist for cross-session recovery (no sync — local only)
+      // Persist for cross-session recovery (local settings, no sync)
       const state = get().bodyFlowState;
-      if (state) adapter.persistChange('_bodyFlow', '_session', state).catch(e => log.error(e));
+      if (state) adapter.persistSettings('_bodyFlow', state).catch(e => log.error(e));
     },
 
     resetBodyFlowState() {
       set({ bodyFlowState: null });
-      adapter.markDeleted('_bodyFlow', '_session').catch(e => log.error(e));
+      adapter.persistSettings('_bodyFlow', null).catch(e => log.error(e));
     },
   });
 }

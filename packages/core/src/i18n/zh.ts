@@ -207,7 +207,7 @@ export const zh: I18nKeys = {
   bodyPlanAddSelected:'添加选中的动作',
   bodyPlanManagement:'我的训练计划', bodyPlanActive:'进行中', bodyPlanCompleted:'已完成', bodyPlanCancelled:'已暂停',
   bodyPlanActivate:'激活', bodyPlanPause:'暂停', bodyPlanDeleteConfirm:'确认删除', bodyPlanDeleteMsg:'删除计划？此操作不可撤销。',
-  bodyDelete:'删除', bodyCancel:'取消',
+  bodyDelete:'删除',
   exerciseTargetProgress:'目标: {value} — {percent}%', exerciseConfirmFinishMsg:'确定要结束吗？',
   exerciseStop:'停止', exerciseTooShort:'运动时间过短',
   exerciseTooShortMsg:'本次运动时间过短，无法保存记录，确定结束吗？',

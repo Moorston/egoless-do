@@ -177,6 +177,11 @@ export interface I18nKeys {
   exerciseRepsTarget: string; exerciseBreathGuide: string; exerciseBgSound: string;
   exerciseSoftTargetMin: string; exerciseSoftTargetReps: string;
   exerciseLastTime: string; exerciseFloors: string; exerciseHeartRate: string;
+  exercisePR: string; exerciseFrequency: string; exerciseMuscleDistribution: string;
+  bodyPlanAddSelected: string;
+  bodyPlanManagement: string; bodyPlanActive: string; bodyPlanCompleted: string; bodyPlanCancelled: string;
+  bodyPlanActivate: string; bodyPlanPause: string; bodyPlanDeleteConfirm: string; bodyPlanDeleteMsg: string;
+  bodyDelete: string;
   exerciseTargetProgress: string; exerciseConfirmFinishMsg: string;
   exerciseStop: string; exerciseTooShort: string;
   exerciseTooShortMsg: string;
