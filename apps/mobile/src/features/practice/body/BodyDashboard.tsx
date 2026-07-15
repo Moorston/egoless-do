@@ -1,4 +1,4 @@
-import { ALL_SPORTS, dateStr, type AgeBracket, type BodyGoal, type BodyPlan, type BodyTrainingPlan, type ExerciseEntry } from '@egoless-do/core';
+import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry } from '@egoless-do/core';
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { View } from 'react-native';
 
@@ -10,7 +10,6 @@ import BodyAwarenessCard from './BodyAwarenessCard';
 import BodyProfileCard from './BodyProfileCard';
 import BodyTodayPlanCard from './BodyTodayPlanCard';
 import BodyTrainingPlanSection from './components/BodyTrainingPlanSection';
-import BodyWeekPlanCard from './BodyWeekPlanCard';
 import GoalCard from './GoalCard';
 import WeightTrendChart from './WeightTrendChart';
 import CollapsibleSection from './components/CollapsibleSection';
@@ -19,7 +18,6 @@ import { useTodayPlan } from './hooks/useTodayPlan';
 import AssessmentModal from './modals/AssessmentModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';
 import GoalEditModal from './modals/GoalEditModal';
-import PlanEditModal from './modals/PlanEditModal';
 import WeightRecordModal from './modals/WeightRecordModal';
 
 interface DashboardProps {
@@ -31,13 +29,12 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
-  const { userProfile, bodyGoals, bodyPlans, bodyCheckins, exerciseLog, weightRecords, bodyTrainingPlans,
-    updateUserProfile, updateBodyGoal, addBodyGoal, removeBodyPlan, addBodyPlan,
+  const { userProfile, bodyGoals, bodyCheckins, exerciseLog, weightRecords, bodyTrainingPlans,
+    updateUserProfile, updateBodyGoal, addBodyGoal,
     upsertBodyCheckin, addWeight,
     updateBodyTrainingPlan } = useShallowStore(s => ({
     userProfile: s.userProfile,
     bodyGoals: s.bodyGoals,
-    bodyPlans: s.bodyPlans,
     bodyCheckins: s.bodyCheckins,
     exerciseLog: s.exerciseLog,
     weightRecords: s.weightRecords,
@@ -45,8 +42,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     updateUserProfile: s.updateUserProfile,
     updateBodyGoal: s.updateBodyGoal,
     addBodyGoal: s.addBodyGoal,
-    removeBodyPlan: s.removeBodyPlan,
-    addBodyPlan: s.addBodyPlan,
     upsertBodyCheckin: s.upsertBodyCheckin,
     addWeight: s.addWeight,
     updateBodyTrainingPlan: s.updateBodyTrainingPlan,
@@ -56,12 +51,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   const [showAssessment, setShowAssessment] = useState(false);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
-  const [showPlanEdit, setShowPlanEdit] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
   const [showWeightRecord, setShowWeightRecord] = useState(false);
 
   const activeGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
-  const activePlans = useMemo(() => (bodyPlans ?? []).filter((p: BodyPlan) => !p.deleted), [bodyPlans]);
   const activeTrainingPlan = useMemo(() => (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active'), [bodyTrainingPlans]);
 
   // Auto-mark expired plans as completed
@@ -157,24 +150,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     }
   }, [activeGoal, updateBodyGoal, addBodyGoal]);
 
-  const handleSavePlans = useCallback((newPlans: BodyPlan[]) => {
-    for (const p of activePlans) {
-      removeBodyPlan(p.id);
-    }
-    for (const p of newPlans) {
-      addBodyPlan({ weekday: p.weekday, part: p.part, sportKey: p.sportKey, note: p.note, goalId: activeGoal?.id });
-    }
-  }, [activePlans, activeGoal, removeBodyPlan, addBodyPlan]);
-
-  const handlePressSport = useCallback((sportKey: string) => {
-    const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
-    (nav as { navigate: (name: string, params?: Record<string, unknown>) => void }).navigate('Sport', {
-      key: sportKey,
-      icon: sport?.icon ?? '🏃',
-      color: sport?.color ?? '#f59e0b',
-    });
-  }, [nav]);
-
   const handleSaveCheckin = useCallback((data: { date: string; energy: number; pain: number; comfort: number; sleep: number; tags: string[]; note?: string }) => {
     upsertBodyCheckin(data);
   }, [upsertBodyCheckin]);
@@ -225,13 +200,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onEdit={() => nav.navigate('BodyPlanEditor' as never, { planId: activeTrainingPlan?.id } as never)}
           onStart={(planId) => onFlowStartWithPlan?.(planId)}
         />
-        <BodyWeekPlanCard
-          TH={TH} T={T}
-          plans={activePlans}
-          exerciseLog={exerciseLog ?? []}
-          onEdit={() => setShowPlanEdit(true)}
-          onPressSport={handlePressSport}
-        />
       </CollapsibleSection>
 
       {/* ── Section 4: 数据趋势 ── */}
@@ -242,7 +210,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
       <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
       <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
-      <PlanEditModal visible={showPlanEdit} TH={TH} T={T} plans={activePlans} onClose={() => setShowPlanEdit(false)} onSave={handleSavePlans} />
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
       <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
 
