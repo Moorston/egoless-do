@@ -1,7 +1,7 @@
 import { FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_TINY, type CheckinEntry, type Theme } from '@egoless-do/core';
 import { TrendingDown, TrendingUp, Minus } from 'lucide-react-native';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 
 interface Props {
   TH: Theme;
@@ -33,7 +33,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
   const minW = Math.min(...weights);
   const maxW = Math.max(...weights);
   const range = maxW - minW || 1;
-  const barMaxHeight = 80;
+  const barMaxHeight = 72;
 
   // Trend direction
   const first = last30[0].weight;
@@ -41,6 +41,10 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
   const diff = last - first;
   const TrendIcon = diff > 0.1 ? TrendingUp : diff < -0.1 ? TrendingDown : Minus;
   const trendColor = diff > 0.1 ? '#ef4444' : diff < -0.1 ? '#10b981' : TH.sub;
+
+  // Recent 7 for the label row (only show labels for last 7 to keep it readable)
+  const recent7 = last30.slice(-7);
+  const recentDates = new Set(recent7.map(r => r.date));
 
   return (
     <View style={{ backgroundColor: TH.card, borderRadius: 16, padding: 16, marginBottom: 16 }}>
@@ -60,25 +64,36 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
         <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>kg</Text>
       </View>
 
-      {/* Bar chart */}
-      <View style={{ flexDirection: 'row', height: barMaxHeight, alignItems: 'flex-end', gap: 1 }}>
-        {last30.map((r, idx) => {
+      {/* Bar chart with date + weight labels */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ flexDirection: 'row', alignItems: 'flex-end', gap: 2, paddingBottom: 20 }}>
+        {last30.map((r) => {
           const normalizedHeight = Math.max(4, ((r.weight - minW) / range) * (barMaxHeight - 4) + 4);
+          const isRecent = recentDates.has(r.date);
           return (
-            <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+            <View key={r.date} style={{ alignItems: 'center', justifyContent: 'flex-end', width: 28 }}>
+              {/* Weight value label (only for recent 7) */}
+              {isRecent && (
+                <Text style={{ fontSize: FONT_TINY(), color: TH.text, fontWeight: '600', marginBottom: 2 }}>
+                  {r.weight}
+                </Text>
+              )}
+              {/* Bar */}
               <View style={{
-                width: '80%',
+                width: '70%',
                 height: normalizedHeight,
-                backgroundColor: '#10b981' + '60',
+                backgroundColor: isRecent ? '#10b981' : '#10b98140',
                 borderRadius: 2,
               }} />
-              {idx % 5 === 0 && (
-                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 2 }}>{r.date.slice(5)}</Text>
+              {/* Date label (only for recent 7) */}
+              {isRecent && (
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub, marginTop: 4 }} numberOfLines={1}>
+                  {r.date.slice(5).replace('-', '/')}
+                </Text>
               )}
             </View>
           );
         })}
-      </View>
+      </ScrollView>
     </View>
   );
 }
