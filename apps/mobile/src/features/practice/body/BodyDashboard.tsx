@@ -405,29 +405,29 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               </View>
               <TouchableOpacity
                 onPress={() => setShowWeightRecord(true)}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 }}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8 }}
               >
-                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{T('bodyRecordWeight') || '记录体重'}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('bodyRecordWeight') || '记录体重'}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.bannerContent}>
               <View style={{ flex: 1 }}>
                 {weightTrend ? (
                   <>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginBottom: 10 }}>
-                      <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '900', color: '#fff' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginBottom: 14 }}>
+                      <Text style={{ fontSize: 32, fontWeight: '900', color: '#fff' }}>
                         {weightTrend.current} kg
                       </Text>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                        <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
-                        <Text style={{ fontSize: FONT_SMALL(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399' }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 4 }}>
+                        <TrendingUp size={18} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
+                        <Text style={{ fontSize: FONT_BODY(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399', fontWeight: '600' }}>
                           {weightTrend.diff > 0 ? '+' : ''}{weightTrend.diff.toFixed(1)} kg
                         </Text>
                       </View>
                     </View>
-                    {/* Curve chart - last 7 days */}
-                    <View style={{ height: 50, marginBottom: 4 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 40, gap: 2 }}>
+                    {/* Bar chart - last 7 days */}
+                    <View style={{ height: 100, marginBottom: 4 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 80, gap: 6 }}>
                         {(checkinHistory ?? [])
                           .filter(r => !r.deleted && r.weight != null && r.weight > 0)
                           .sort((a, b) => a.date.localeCompare(b.date))
@@ -437,28 +437,32 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                             const minW = Math.min(...weights);
                             const maxW = Math.max(...weights);
                             const range = maxW - minW || 1;
-                            const height = Math.max(4, ((r.weight - minW) / range) * 36 + 4);
+                            const height = Math.max(12, ((r.weight - minW) / range) * 68 + 12);
                             const isLast = i === arr.length - 1;
                             return (
                               <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                {/* Weight value above bar */}
+                                <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600', marginBottom: 4 }}>
+                                  {r.weight}
+                                </Text>
                                 <View style={{
-                                  width: isLast ? 10 : 6,
+                                  width: isLast ? 16 : 12,
                                   height,
-                                  backgroundColor: isLast ? '#fff' : 'rgba(255,255,255,0.5)',
-                                  borderRadius: isLast ? 5 : 3,
+                                  backgroundColor: isLast ? '#fff' : 'rgba(255,255,255,0.6)',
+                                  borderRadius: isLast ? 8 : 6,
                                 }} />
                               </View>
                             );
                           })}
                       </View>
                       {/* Date labels */}
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 }}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
                         {(checkinHistory ?? [])
                           .filter(r => !r.deleted && r.weight != null && r.weight > 0)
                           .sort((a, b) => a.date.localeCompare(b.date))
                           .slice(-7)
                           .map((r) => (
-                            <Text key={r.date} style={{ fontSize: 8, color: 'rgba(255,255,255,0.6)', flex: 1, textAlign: 'center' }}>
+                            <Text key={r.date} style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', flex: 1, textAlign: 'center' }}>
                               {r.date.slice(8)}
                             </Text>
                           ))}
@@ -466,9 +470,12 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                     </View>
                   </>
                 ) : (
-                  <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
-                    {T('bodyWeightNoData') || '暂无体重记录'}
-                  </Text>
+                  <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+                    <Text style={{ fontSize: 40, marginBottom: 8 }}>📊</Text>
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)' }}>
+                      {T('bodyWeightNoData') || '暂无体重记录'}
+                    </Text>
+                  </View>
                 )}
               </View>
             </View>
