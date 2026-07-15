@@ -265,26 +265,46 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   const handleDaySwap = useCallback((sportKey: string, exercises?: ExerciseDef[]) => {
     if (!selectedDay) return;
-    const dayDate = /* compute date for selectedDay */ todayDateStr; // TODO: compute actual date
-    setOverride(dayDate, {
+    setOverride(selectedDayDate, {
       type: exercises ? 'custom' : 'swap',
       swapSportKey: exercises ? undefined : sportKey,
       exercises,
       createdAt: Date.now(),
     });
-  }, [selectedDay, setOverride, todayDateStr]);
+  }, [selectedDay, selectedDayDate, setOverride]);
 
   const handleDaySkip = useCallback(() => {
     if (!selectedDay) return;
-    const dayDate = todayDateStr; // TODO: compute actual date
-    setOverride(dayDate, { type: 'skip', createdAt: Date.now() });
-  }, [selectedDay, setOverride, todayDateStr]);
+    setOverride(selectedDayDate, { type: 'skip', createdAt: Date.now() });
+  }, [selectedDay, selectedDayDate, setOverride]);
 
   const handleSaveGoalLight = useCallback((data: { strategy?: string; targetWeight?: number; targetBodyFat?: number; goalNote?: string }) => {
     if (activeTrainingPlan) {
       updateBodyTrainingPlan(activeTrainingPlan.id, data);
     }
   }, [activeTrainingPlan, updateBodyTrainingPlan]);
+
+  // Open DayActionSheet for a specific day
+  const openDayAction = useCallback((day: number) => {
+    setSelectedDay(day);
+    setShowDayAction(true);
+  }, []);
+
+  // Resolve selected day's state for DayActionSheet
+  const selectedDayTask = selectedDay ? activeTrainingPlan?.tasks.find(t => t.weekday === selectedDay) : undefined;
+  const selectedDayIsRest = selectedDayTask?.sportKey === 'rest' || !selectedDayTask?.sportKey;
+  // Compute the date for the selected day (offset from today)
+  const getSelectedDayDate = useCallback(() => {
+    if (!selectedDay) return todayDateStr;
+    const today = new Date();
+    const todayDow = today.getDay() === 0 ? 7 : today.getDay();
+    const diff = selectedDay - todayDow;
+    const target = new Date(today);
+    target.setDate(today.getDate() + diff);
+    return dateStr(target);
+  }, [selectedDay, todayDateStr]);
+  const selectedDayDate = getSelectedDayDate();
+  const selectedDayOverride = activeTrainingPlan?.overrides?.[selectedDayDate];
 
   return (
     <View>
@@ -315,6 +335,20 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600' }}>{T('exerciseHistory') || '锻炼记录'}</Text>
               </TouchableOpacity>
             </View>
+            {/* Override status bar */}
+            {hasOverride && todayOverride && (
+              <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, padding: 8, marginBottom: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>
+                  {todayOverride.type === 'skip' ? (T('bodyOverrideSkip') || '已标记跳过')
+                    : todayOverride.type === 'swap' ? (T('bodyOverrideSwap') || '已换动作')
+                    : todayOverride.type === 'adjust' ? (T('bodyOverrideAdjust') || '已调整组数')
+                    : (T('bodyOverrideCustom') || '已自定义')}
+                </Text>
+                <TouchableOpacity onPress={handleUndoOverride} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: '#fff', fontWeight: '600', textDecorationLine: 'underline' }}>{T('bodyUndo') || '撤销'}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             {todayPlanDisplay ? (
               <>
                 <View style={styles.bannerContent}>
@@ -874,8 +908,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         visible={showDayAction}
         onClose={() => setShowDayAction(false)}
         dayLabel={selectedDay ? T(`bodyWeek${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][selectedDay - 1]}`) : ''}
-        isRest={false}
-        hasOverride={false}
+        isRest={selectedDayIsRest}
+        hasOverride={!!selectedDayOverride}
         onSwap={() => { setShowDayAction(false); setShowQuickSwap(true); }}
         onSkip={handleDaySkip}
         onSwapDays={() => {/* TODO: implement day swap picker */}}
