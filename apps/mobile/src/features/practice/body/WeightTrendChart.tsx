@@ -65,7 +65,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
         {last30.map((r, idx) => {
           const normalizedHeight = Math.max(4, ((r.weight - minW) / range) * (barMaxHeight - 4) + 4);
           return (
-            <View key={r.id} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+            <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
               <View style={{
                 width: '80%',
                 height: normalizedHeight,
@@ -79,26 +79,6 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
           );
         })}
       </View>
-
-      {/* Body fat if available */}
-      {last30.some(r => r.bodyFat != null) && (
-        <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: TH.border }}>
-          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginBottom: 4 }}>{T('bodyBodyFat')}</Text>
-          <View style={{ flexDirection: 'row', gap: 2 }}>
-            {last30.filter(r => r.bodyFat != null).slice(-14).map(r => {
-              const bfMax = Math.max(...last30.filter(x => x.bodyFat != null).map(x => x.bodyFat!));
-              const bfMin = Math.min(...last30.filter(x => x.bodyFat != null).map(x => x.bodyFat!));
-              const bfRange = bfMax - bfMin || 1;
-              const h = Math.max(4, ((r.bodyFat! - bfMin) / bfRange) * 30 + 4);
-              return (
-                <View key={r.id} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', height: 34 }}>
-                  <View style={{ width: '80%', height: h, backgroundColor: '#6366f1' + '60', borderRadius: 2 }} />
-                </View>
-              );
-            })}
-          </View>
-        </View>
-      )}
     </View>
   );
 }
