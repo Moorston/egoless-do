@@ -188,6 +188,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onRecordWeight={() => setShowWeightRecord(true)}
           onPickAgeBracket={handlePickAgeBracket}
         />
+        <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />
+        <WeightTrendChart TH={TH} T={T} weightRecords={weightRecords ?? []} />
       </CollapsibleSection>
 
       {/* ── Section 3: 训练计划 ── */}
@@ -200,12 +202,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onEdit={() => nav.navigate('BodyPlanEditor' as never, { planId: activeTrainingPlan?.id } as never)}
           onStart={(planId) => onFlowStartWithPlan?.(planId)}
         />
-      </CollapsibleSection>
-
-      {/* ── Section 4: 数据趋势 ── */}
-      <CollapsibleSection title={T('bodyWeightTrend')} icon="📊" color="#10b981" TH={TH} defaultExpanded={false}>
-        <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />
-        <WeightTrendChart TH={TH} T={T} weightRecords={weightRecords ?? []} />
       </CollapsibleSection>
 
       <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
