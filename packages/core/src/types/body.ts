@@ -147,6 +147,7 @@ export interface ExerciseDef {
   met?: number;
   description?: string;       // 动作要领文字描述
   descriptionI18nKey?: string; // i18n key for description
+  videoUrl?: string;           // 外部视频链接 (YouTube/B站)
 }
 
 // ─── PlanTemplate ────────────────────────────────────────────────

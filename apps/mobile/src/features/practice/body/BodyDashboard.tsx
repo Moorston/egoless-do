@@ -1,5 +1,5 @@
-import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_BODY, FONT_SUB } from '@egoless-do/core';
-import { ChevronRight } from 'lucide-react-native';
+import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_BODY, FONT_SUB, FONT_SMALL, generateSuggestions } from '@egoless-do/core';
+import { ChevronRight, Lightbulb } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
@@ -57,6 +57,11 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   const activeGoal = useMemo(() => (bodyGoals ?? []).find((g: BodyGoal) => !g.deleted), [bodyGoals]);
   const activeTrainingPlan = useMemo(() => (bodyTrainingPlans ?? []).find((p: BodyTrainingPlan) => !p.deleted && p.status === 'active'), [bodyTrainingPlans]);
+
+  // Compute training suggestions
+  const suggestions = useMemo(() =>
+    generateSuggestions(exerciseLog ?? [], bodyCheckins ?? [], activeTrainingPlan),
+  [exerciseLog, bodyCheckins, activeTrainingPlan]);
 
   // Auto-mark expired plans as completed
   useEffect(() => {
@@ -172,6 +177,24 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     <View>
       {/* ── Section 1: 今日训练 ── */}
       <CollapsibleSection title={T('bodyToday')} icon="📋" color="#f59e0b" TH={TH} defaultExpanded>
+        {/* 训练建议 */}
+        {suggestions.length > 0 && (
+          <View style={{ marginBottom: 12 }}>
+            {suggestions.slice(0, 2).map((s, i) => (
+              <View key={i} style={{
+                flexDirection: 'row', alignItems: 'center', gap: 8,
+                paddingVertical: 8, paddingHorizontal: 12,
+                borderRadius: 10, marginBottom: 6,
+                backgroundColor: s.priority === 'high' ? '#fef3c7' : '#f0fdf4',
+                borderWidth: 1,
+                borderColor: s.priority === 'high' ? '#fbbf24' : '#86efac',
+              }}>
+                <Text style={{ fontSize: FONT_SMALL() }}>{s.icon}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: s.priority === 'high' ? '#92400e' : '#166534', flex: 1 }}>{s.message}</Text>
+              </View>
+            ))}
+          </View>
+        )}
         <BodyTodayPlanCard
           TH={TH} T={T}
           todayPlan={todayPlan}

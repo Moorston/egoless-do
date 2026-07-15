@@ -239,3 +239,120 @@ export function computeMonthFrequency(
   }
   return result;
 }
+
+// ─── Training Suggestions (Rule Engine) ──────────────────────
+
+export interface TrainingSuggestion {
+  type: 'rest' | 'switch' | 'increase' | 'decrease' | 'streak' | 'pr';
+  icon: string;
+  message: string;
+  priority: 'high' | 'medium' | 'low';
+}
+
+/**
+ * 基于规则引擎生成训练建议
+ * 纯函数，基于运动记录 + 身体觉知 + 训练计划
+ */
+export function generateSuggestions(
+  exerciseLog: ExerciseEntry[],
+  bodyCheckins: { date: string; energy: number; pain: number; deleted?: boolean }[],
+  activePlan?: { endDate: string; tasks: { weekday: number; sportKey: string }[] } | null,
+): TrainingSuggestion[] {
+  const suggestions: TrainingSuggestion[] = [];
+  const now = Date.now();
+  const DAY = 86400000;
+  const today = new Date(now).toISOString().slice(0, 10);
+
+  // 规则 1: 连续训练天数
+  const recentLogs = exerciseLog
+    .filter(e => !e.deleted && (now - e.timestamp) < 30 * DAY)
+    .sort((a, b) => b.timestamp - a.timestamp);
+
+  let consecutiveDays = 0;
+  let checkDate = new Date(now);
+  for (let i = 0; i < 30; i++) {
+    const dateStr = checkDate.toISOString().slice(0, 10);
+    const hasExercise = recentLogs.some(e => new Date(e.timestamp).toISOString().slice(0, 10) === dateStr);
+    if (hasExercise) {
+      consecutiveDays++;
+    } else if (i > 0) { // Allow today to be rest day
+      break;
+    }
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
+  if (consecutiveDays >= 5) {
+    suggestions.push({
+      type: 'rest', icon: '😴',
+      message: `已连续训练 ${consecutiveDays} 天，建议安排休息日`,
+      priority: 'high',
+    });
+  } else if (consecutiveDays >= 3) {
+    suggestions.push({
+      type: 'rest', icon: '💪',
+      message: `连续 ${consecutiveDays} 天训练，注意恢复`,
+      priority: 'medium',
+    });
+  }
+
+  // 规则 2: 能量评分趋势
+  const recentCheckins = bodyCheckins
+    .filter(c => !c.deleted)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 3);
+
+  if (recentCheckins.length >= 2) {
+    const avgEnergy = recentCheckins.reduce((s, c) => s + c.energy, 0) / recentCheckins.length;
+    if (avgEnergy <= 2) {
+      suggestions.push({
+        type: 'decrease', icon: '⚡',
+        message: '近期能量偏低，建议轻度运动或瑜伽',
+        priority: 'medium',
+      });
+    }
+  }
+
+  // 规则 3: 疼痛警告
+  const highPain = recentCheckins.some(c => c.pain >= 4);
+  if (highPain) {
+    suggestions.push({
+      type: 'decrease', icon: '⚠️',
+      message: '检测到较高疼痛评分，建议休息或咨询医生',
+      priority: 'high',
+    });
+  }
+
+  // 规则 4: 计划进度提醒
+  if (activePlan) {
+    const daysLeft = Math.ceil((new Date(activePlan.endDate).getTime() - now) / DAY);
+    if (daysLeft <= 3 && daysLeft > 0) {
+      suggestions.push({
+        type: 'streak', icon: '🎯',
+        message: `计划还剩 ${daysLeft} 天，加油完成！`,
+        priority: 'medium',
+      });
+    } else if (daysLeft < 0) {
+      suggestions.push({
+        type: 'streak', icon: '📋',
+        message: '当前计划已到期，可以创建新计划',
+        priority: 'low',
+      });
+    }
+  }
+
+  // 规则 5: 本周运动频率
+  const weekStart = new Date(now);
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1); // Monday
+  const weekLogs = recentLogs.filter(e => e.timestamp >= weekStart.getTime());
+  if (weekLogs.length === 0 && new Date().getDay() >= 3) { // Wednesday or later
+    suggestions.push({
+      type: 'increase', icon: '🏃',
+      message: '本周还没有运动记录，开始动起来吧！',
+      priority: 'medium',
+    });
+  }
+
+  // Sort by priority
+  const priorityOrder = { high: 0, medium: 1, low: 2 };
+  return suggestions.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+}

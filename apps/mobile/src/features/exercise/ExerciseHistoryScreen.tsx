@@ -9,6 +9,7 @@ import { useRootNavigation } from '../../navigation/hooks';
 import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 import { useAmapComponents } from './hooks/useAmapComponents';
+import TrainingCalendar from './TrainingCalendar';
 
 
 function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: Theme; P: string; T: (k: string) => string; MapView: React.ComponentType<Record<string, unknown>>; Polyline: React.ComponentType<Record<string, unknown>> }) {
@@ -92,7 +93,7 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
 
 // ── Flattened data item ──
 interface FlatItem {
-  type: 'header' | 'statCards' | 'prCards' | 'muscleCards' | 'heatmap' | 'sportFilter' | 'monthlyBar' | 'emptyText' | 'monthHeader' | 'entry';
+  type: 'header' | 'statCards' | 'prCards' | 'muscleCards' | 'heatmap' | 'calendar' | 'sportFilter' | 'monthlyBar' | 'emptyText' | 'monthHeader' | 'entry';
   key: string;
   monthKey?: string;
   items?: ExerciseEntry[];
@@ -215,6 +216,7 @@ export default function ExerciseHistoryScreen() {
     if (monthFrequency.length > 0) {
       items.push({ type: 'heatmap', key: 'heatmap' });
     }
+    items.push({ type: 'calendar', key: 'calendar' });
     items.push({ type: 'sportFilter', key: 'sportFilter' });
     if (monthlyStats.length > 1) {
       items.push({ type: 'monthlyBar', key: 'monthlyBar' });
@@ -396,6 +398,9 @@ export default function ExerciseHistoryScreen() {
           </View>
         </Card>
       );
+    }
+    if (item.type === 'calendar') {
+      return <TrainingCalendar TH={TH} T={T} exerciseLog={sorted} />;
     }
     if (item.type === 'sportFilter') return renderSportFilter();
     if (item.type === 'monthlyBar') {
