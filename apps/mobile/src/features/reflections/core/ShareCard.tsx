@@ -3,8 +3,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { X, Download, Share2 } from 'lucide-react-native';
 import React, { useRef, useState, useMemo } from 'react';
-import { View, Text, Modal, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import ViewShot from 'react-native-view-shot';
+import { View, Text, Modal, TouchableOpacity, Alert } from 'react-native';
+import { captureRef } from 'react-native-view-shot';
 
 import { useTheme, useT } from '../../../components/UI';
 
@@ -24,7 +24,7 @@ interface ShareCardProps {
 export default function ShareCard({ visible, onClose, reflection }: ShareCardProps) {
   const TH = useTheme();
   const T = useT();
-  const viewShotRef = useRef<ViewShot>(null);
+  const viewShotRef = useRef<View>(null);
   const [capturing, setCapturing] = useState(false);
 
   const parsedColors = useMemo(() => {
@@ -32,21 +32,22 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
     return typeof reflection.colors === 'string' ? (() => { try { return JSON.parse(reflection.colors); } catch { return null; } })() : reflection.colors;
   }, [reflection?.colors]);
 
+  const { bgColor, timeStr } = useMemo(() => {
+    if (!reflection) return { bgColor: MIND_COLORS_EXTENDED[0][0], timeStr: '' };
+    const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (parsedColors?.[0]));
+    const bgColor = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[0] ?? MIND_COLORS_EXTENDED[0][0];
+    const timeStr = formatDate(new Date(reflection.timestamp ?? 0), 'zh', {
+      year: 'numeric', month: 'long', day: 'numeric', weekday: 'short',
+    });
+    return { bgColor, timeStr };
+  }, [reflection, parsedColors]);
+
   if (!reflection) return null;
-
-  const bgIdx = MIND_COLORS_EXTENDED.findIndex(c => c[0] === (parsedColors?.[0]));
-  const bgColor = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[0] ?? MIND_COLORS_EXTENDED[0][0];
-  const bgColor2 = MIND_COLORS_EXTENDED[bgIdx >= 0 ? bgIdx : 0]?.[1] ?? MIND_COLORS_EXTENDED[0][1];
-
-  const timeStr = formatDate(new Date(reflection.timestamp ?? 0), 'zh', {
-    year: 'numeric', month: 'long', day: 'numeric', weekday: 'short',
-  });
 
   const handleCapture = async () => {
     try {
       setCapturing(true);
-      const uri = await viewShotRef.current?.capture?.();
-      if (!uri) return;
+      const uri = await captureRef(viewShotRef, { format: 'png', quality: 1 });
       const isAvailable = await Sharing.isAvailableAsync();
       if (isAvailable) {
         await Sharing.shareAsync(uri, { mimeType: 'image/png', dialogTitle: T('shareCardShare') });
@@ -63,8 +64,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
   const handleSave = async () => {
     try {
       setCapturing(true);
-      const uri = await viewShotRef.current?.capture?.();
-      if (!uri) return;
+      const uri = await captureRef(viewShotRef, { format: 'png', quality: 1 });
       const result = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
       if (result.granted) {
         const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
@@ -84,7 +84,7 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
+    <Modal visible={visible} transparent animationType="none">
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,.8)', justifyContent: 'center', alignItems: 'center', padding: 24 }}>
         {/* Close button */}
         <View style={{ position: 'absolute', top: 60, right: 24, zIndex: 10 }}>
@@ -94,57 +94,49 @@ export default function ShareCard({ visible, onClose, reflection }: ShareCardPro
         </View>
 
         {/* Card preview */}
-        {ViewShot ? (
-          <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1 }}>
-            <View style={{
-              width: 320, overflow: 'hidden',
-              backgroundColor: bgColor,
-            }}>
-              {/* Decorative circles */}
-              <View style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(255,255,255,.08)' }} />
-              <View style={{ position: 'absolute', bottom: -20, left: -20, width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,255,255,.05)' }} />
+        <View ref={viewShotRef} collapsable={false} style={{
+          width: 320, overflow: 'hidden',
+          backgroundColor: bgColor,
+        }}>
+          {/* Decorative circles */}
+          <View style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(255,255,255,.08)' }} />
+          <View style={{ position: 'absolute', bottom: -20, left: -20, width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,255,255,.05)' }} />
 
-              <View style={{ padding: 28 }}>
-                {/* Quote mark */}
-                <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: FONT_HERO(), lineHeight: 52, marginBottom: -8 }}>「</Text>
+          <View style={{ padding: 28 }}>
+            {/* Quote mark */}
+            <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: FONT_HERO(), lineHeight: 52, marginBottom: -8 }}>「</Text>
 
-                {/* Content */}
-                <Text style={{ color: '#fff', fontSize: FONT_BODY() + 2, lineHeight: 28, marginBottom: 8, fontWeight: '500' }}>
-                  {reflection.content}
-                </Text>
+            {/* Content */}
+            <Text style={{ color: '#fff', fontSize: FONT_BODY() + 2, lineHeight: 28, marginBottom: 8, fontWeight: '500' }}>
+              {reflection.content}
+            </Text>
 
-                {/* Closing quote */}
-                <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: FONT_HERO(), lineHeight: 52, marginTop: -16, marginBottom: 12, textAlign: 'right' }}>」</Text>
+            {/* Closing quote */}
+            <Text style={{ color: 'rgba(255,255,255,.2)', fontSize: FONT_HERO(), lineHeight: 52, marginTop: -16, marginBottom: 12, textAlign: 'right' }}>」</Text>
 
-                {/* Tags + Mood */}
-                {(reflection.tags.length > 0 || reflection.mood) && (
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-                    {reflection.tags.map(tag => (
-                      <View key={tag} style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.2)' }}>
-                        <Text style={{ color: 'rgba(255,255,255,.9)', fontSize: FONT_SMALL() }}>{tag}</Text>
-                      </View>
-                    ))}
-                    {reflection.mood && (
-                      <View style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.15)' }}>
-                        <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SMALL() }}>💭 {reflection.mood}</Text>
-                      </View>
-                    )}
+            {/* Tags + Mood */}
+            {(reflection.tags.length > 0 || reflection.mood) && (
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+                {reflection.tags.map(tag => (
+                  <View key={tag} style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.2)' }}>
+                    <Text style={{ color: 'rgba(255,255,255,.9)', fontSize: FONT_SMALL() }}>{tag}</Text>
+                  </View>
+                ))}
+                {reflection.mood && (
+                  <View style={{ paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(255,255,255,.15)' }}>
+                    <Text style={{ color: 'rgba(255,255,255,.8)', fontSize: FONT_SMALL() }}>💭 {reflection.mood}</Text>
                   </View>
                 )}
-
-                {/* Footer */}
-                <View style={{ borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)', paddingTop: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>📅 {timeStr}</Text>
-                  <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL() }}>❤️ 心流纪 · Egoless Do</Text>
-                </View>
               </View>
+            )}
+
+            {/* Footer */}
+            <View style={{ borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,.15)', paddingTop: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>📅 {timeStr}</Text>
+              <Text style={{ color: 'rgba(255,255,255,.7)', fontSize: FONT_SMALL() }}>❤️ 心流纪 · Egoless Do</Text>
             </View>
-          </ViewShot>
-        ) : (
-          <View style={{ width: 320, overflow: 'hidden', backgroundColor: bgColor, padding: 28, alignItems: 'center' }}>
-            <Text style={{ color: '#fff', fontSize: FONT_BODY() }}>{T('shareCardLoading')}</Text>
           </View>
-        )}
+        </View>
 
         {/* Action buttons */}
         <View style={{ flexDirection: 'row', gap: 16, marginTop: 24 }}>
