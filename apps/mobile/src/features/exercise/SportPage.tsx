@@ -306,6 +306,7 @@ export default function SportPage() {
       cleanupSession();
       stopGpsTracking();
       const finalReps = sportType === 'repetition' ? sets.totalReps : undefined;
+      const result: Record<string, unknown> = {};
       if (timer.sec > 0 || (finalReps && finalReps > 0)) {
         const entry: Record<string, unknown> = {
           sportKey: sportName, sportIcon: icon, durationSec: timer.sec,
@@ -324,6 +325,14 @@ export default function SportPage() {
           planTaskWeekday,
         };
         addExercise(entry);
+        // Prepare result for BodyFlow
+        result.sportResult = {
+          completed: true,
+          durationSec: timer.sec,
+          calories,
+          reps: finalReps ?? 0,
+          sportKey: sportName,
+        };
         if (useAppStore.getState().healthSyncEnabled) {
           import('../health/HealthService').then(({ writeWorkout }) => {
             return writeWorkout({ ...entry, id: '', updatedAt: 0, deleted: false });
@@ -335,7 +344,7 @@ export default function SportPage() {
       savingRef.current = false;
       return;
     }
-    try { nav.goBack(); } catch { savingRef.current = false; }
+    try { nav.navigate('Body', result); } catch { savingRef.current = false; }
   }, [timer.sec, sets, sportName, icon, sportType, isGpsSport, distKm, calories, coords, segmentPaces, mode, targetType, targetValue, addExercise, userProfile, auth, nav, musicStop, audio.stopAll, cleanupSession, stopGpsTracking, planId, planTaskWeekday]);
 
   // Stop music and ambient audio when entering report page (exercise ended)

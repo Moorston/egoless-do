@@ -6,6 +6,22 @@ import { uid } from '../utils';
 import { createBodyGoal, createBodyPlan, createBodyCheckin, createWeightRecord } from '../business/body';
 const log = createLogger('Store');
 
+// ─── BodyFlow persisted state ─────────────────────────────────
+export interface BodyFlowPersistedState {
+  step: 'practice' | 'breathing' | 'checkin' | 'success' | null;
+  selectedSportKey: string;
+  practiceCompleted: boolean;
+  practiceDurationSec: number;
+  breathingCompleted: boolean;
+  breathingDurationMs: number;
+  awarenessData: BodyCheckin | null;
+  activePlanId: string | null;
+  startedAt: number;
+  updatedAt: number;
+}
+
+export const BODY_FLOW_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 export interface BodySlice {
   // Body goals
   bodyGoals: BodyGoal[];
@@ -36,6 +52,11 @@ export interface BodySlice {
   addBodyTrainingPlan: (plan: Omit<BodyTrainingPlan, 'id' | 'updatedAt' | 'deleted'>) => void;
   updateBodyTrainingPlan: (id: string, updates: Partial<BodyTrainingPlan>) => void;
   removeBodyTrainingPlan: (id: string) => void;
+
+  // BodyFlow session state (persisted for progress recovery)
+  bodyFlowState: BodyFlowPersistedState | null;
+  setBodyFlowState: (updates: Partial<BodyFlowPersistedState>) => void;
+  resetBodyFlowState: () => void;
 }
 
 export function createBodySlice(
@@ -202,6 +223,40 @@ export function createBodySlice(
       }));
       adapter.markDeleted('bodyTrainingPlan', id).catch(e => log.error(e));
       onSync?.();
+    },
+
+    // ── BodyFlow session state ──────────────────────────────────────────
+    bodyFlowState: null,
+
+    setBodyFlowState(updates) {
+      set(s => {
+        const current = s.bodyFlowState;
+        return {
+          bodyFlowState: {
+            step: 'practice',
+            selectedSportKey: '',
+            practiceCompleted: false,
+            practiceDurationSec: 0,
+            breathingCompleted: false,
+            breathingDurationMs: 0,
+            awarenessData: null,
+            activePlanId: null,
+            startedAt: Date.now(),
+            updatedAt: Date.now(),
+            ...current,
+            ...updates,
+            updatedAt: Date.now(),
+          },
+        };
+      });
+      // Persist for cross-session recovery (no sync — local only)
+      const state = get().bodyFlowState;
+      if (state) adapter.persistChange('_bodyFlow', '_session', state).catch(e => log.error(e));
+    },
+
+    resetBodyFlowState() {
+      set({ bodyFlowState: null });
+      adapter.markDeleted('_bodyFlow', '_session').catch(e => log.error(e));
     },
   });
 }

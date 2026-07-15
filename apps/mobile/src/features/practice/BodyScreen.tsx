@@ -1,7 +1,7 @@
 import { FONT_TITLE, ALL_SPORTS, type BodyPlanTask } from '@egoless-do/core';
-import { useFocusEffect } from '@react-navigation/native';
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { useFocusEffect, useRoute, RouteProp } from '@react-navigation/native';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
+import { View, Text, ScrollView, Animated } from 'react-native';
 
 import { useTheme, useT } from '../../components/UI';
 import SimpleHeader from '../../navigation/SimpleHeader';
@@ -10,23 +10,50 @@ import { useAppStore, useShallowStore } from '../../store/useAppStore';
 
 import BodyDashboard from './body/BodyDashboard';
 import BodyFlow from './body/BodyFlow';
-import BodyTodayPlanCard from './body/BodyTodayPlanCard';
 import { useTodayPlan } from './body/hooks/useTodayPlan';
+import { useBodyFlowState } from './body/hooks/useBodyFlowState';
 
 // ── Page state machine ──
 type BodyPage = 'dashboard' | 'flow';
 
+const FADE_DURATION = 350;
+
 export default function BodyScreen() {
   const nav = useRootNavigation();
+  const route = useRoute<RouteProp<{ Body: { sportResult?: { completed: boolean; durationSec: number; calories: number; reps: number; sportKey: string }; breathingResult?: { completed: boolean; durationMs: number } } }, 'Body'>>();
   const TH = useTheme();
   const T = useT();
-  const { upsertBodyCheckin, bodyTrainingPlans } = useShallowStore(s => ({
+  const { upsertBodyCheckin, bodyTrainingPlans, setBodyFlowState } = useShallowStore(s => ({
     upsertBodyCheckin: s.upsertBodyCheckin,
     bodyTrainingPlans: s.bodyTrainingPlans,
+    setBodyFlowState: s.setBodyFlowState,
   }));
   const [page, setPage] = useState<BodyPage>('dashboard');
   const { todayPlan, weekday: todayWeekday } = useTodayPlan();
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const transitioningRef = useRef(false);
+
+  // Animated page transition
+  const transitionTo = useCallback((target: BodyPage, extra?: () => void) => {
+    if (transitioningRef.current) return;
+    transitioningRef.current = true;
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: FADE_DURATION / 2,
+      useNativeDriver: true,
+    }).start(() => {
+      setPage(target);
+      extra?.();
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: FADE_DURATION / 2,
+        useNativeDriver: true,
+      }).start(() => {
+        transitioningRef.current = false;
+      });
+    });
+  }, [fadeAnim]);
 
   // Find today's training plan task
   const todayTrainingTask = useMemo(() => {
@@ -38,16 +65,33 @@ export default function BodyScreen() {
     return { planId: plan.id, planName: plan.name, task };
   }, [activePlanId, bodyTrainingPlans, todayWeekday]);
 
-  // Tick that BodyFlow uses to detect return from Sport/Breathing
+  // Tick that BodyFlow uses to detect return from Sport/Breathing (fallback)
   const [returnTick, setReturnTick] = useState(0);
 
   useFocusEffect(useCallback(() => {
     setReturnTick(t => t + 1);
-  }, []));
+
+    // Check for navigation result params (primary mechanism)
+    const params = route.params as Record<string, unknown> | undefined;
+    if (params?.sportResult) {
+      const sr = params.sportResult as { completed: boolean; durationSec: number };
+      if (sr.completed) {
+        setBodyFlowState({ practiceCompleted: true, practiceDurationSec: sr.durationSec });
+      }
+      // Clear the param to avoid re-processing
+      (nav as { setParams: (p: Record<string, unknown>) => void }).setParams?.({ sportResult: undefined });
+    }
+    if (params?.breathingResult) {
+      const br = params.breathingResult as { completed: boolean; durationMs: number };
+      if (br.completed) {
+        setBodyFlowState({ breathingCompleted: true, breathingDurationMs: br.durationMs });
+      }
+      (nav as { setParams: (p: Record<string, unknown>) => void }).setParams?.({ breathingResult: undefined });
+    }
+  }, [route.params, setBodyFlowState, nav]));
 
   const handleGoToSport = useCallback((sportKey: string) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);
-    // Pass plan info to SportPage if we're in a training plan flow
     const navParams: Record<string, unknown> = {
       key: sportKey,
       icon: sport?.icon ?? '🏃',
@@ -66,46 +110,32 @@ export default function BodyScreen() {
 
   const startFlowWithPlan = useCallback((planId: string) => {
     setActivePlanId(planId);
-    setPage('flow');
-  }, []);
-
-  if (page === 'flow') {
-    return (
-      <View style={{ flex: 1, backgroundColor: TH.bg }}>
-        <SimpleHeader routeName="Body" />
-        <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('bodySubtitle')}</Text>
-        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-          <BodyFlow
-            TH={TH}
-            T={T}
-            store={{ upsertBodyCheckin }}
-            todayPlan={todayPlan}
-            trainingPlanTask={todayTrainingTask}
-            returnTick={returnTick}
-            onGoToSport={handleGoToSport}
-            onGoToBreathing={handleGoToBreathing}
-            onExit={() => { setActivePlanId(null); setPage('dashboard'); }}
-          />
-        </ScrollView>
-      </View>
-    );
-  }
+    transitionTo('flow');
+  }, [transitionTo]);
 
   return (
     <View style={{ flex: 1, backgroundColor: TH.bg }}>
       <SimpleHeader routeName="Body" />
       <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: TH.text, paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 }}>{T('bodySubtitle')}</Text>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
-        {/* Today's plan — most important info for the user */}
-        <BodyTodayPlanCard
-          TH={TH}
-          T={T}
-          todayPlan={todayPlan}
-          todayWeekday={todayWeekday}
-          onStart={() => setPage('flow')}
-        />
-        <BodyDashboard onFlowStart={() => setPage('flow')} onFlowStartWithPlan={startFlowWithPlan} />
-      </ScrollView>
+      <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+          {page === 'flow' ? (
+            <BodyFlow
+              TH={TH}
+              T={T}
+              store={{ upsertBodyCheckin }}
+              todayPlan={todayPlan}
+              trainingPlanTask={todayTrainingTask}
+              returnTick={returnTick}
+              onGoToSport={handleGoToSport}
+              onGoToBreathing={handleGoToBreathing}
+              onExit={() => { setActivePlanId(null); transitionTo('dashboard'); }}
+            />
+          ) : (
+            <BodyDashboard onFlowStart={() => transitionTo('flow')} onFlowStartWithPlan={startFlowWithPlan} />
+          )}
+        </ScrollView>
+      </Animated.View>
     </View>
   );
 }

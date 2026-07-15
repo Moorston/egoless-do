@@ -2,8 +2,8 @@ import {
   FONT_TITLE, FONT_SUB, FONT_BADGE, FONT_SMALL, FONT_STAT_SECTION,
   type BodyCheckin, type Theme, FONT_STAT_CARD } from '@egoless-do/core';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CheckCircle2 } from 'lucide-react-native';
-import React from 'react';
+import { CheckCircle2, Sparkles } from 'lucide-react-native';
+import React, { useMemo } from 'react';
 import { View, Text } from 'react-native';
 
 import { PrimaryButton, Card } from '../../../components/UI';
@@ -19,6 +19,24 @@ interface Props {
   onFinish: () => void;
 }
 
+// ── Encouraging quotes ──
+const ENCOURAGEMENTS = [
+  '身体是灵魂的殿堂，照顾好它，就是照顾好自己。',
+  '每一次练习，都是对自己的一次温柔。',
+  '不与他人比，只与昨日较。今日的你，比昨天更好。',
+  '运动不是惩罚，是身体对你的感谢。',
+  '呼吸之间，感受生命的流动。',
+  '坚持下去的意义，藏在每一次不想动却动了的时候。',
+  '身体知道答案，只是需要你去倾听。',
+  '最好的投资，是投资自己的健康。',
+  '千里之行，始于足下。今天这一步，你迈出去了。',
+  '让运动成为习惯，让习惯成就你。',
+];
+
+function randomEncouragement(): string {
+  return ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+}
+
 function formatElapsed(ms: number): string {
   const totalSec = Math.floor(ms / 1000);
   const m = Math.floor(totalSec / 60);
@@ -28,6 +46,8 @@ function formatElapsed(ms: number): string {
 
 function CheckinSuccessCard({ TH, T, awarenessData, practiceCompleted, breathingCompleted, breathingDurationMs, totalMs, onFinish }: Props) {
   const hasData = awarenessData != null;
+  const encouragement = useMemo(() => randomEncouragement(), []);
+
   const DIMENSIONS = hasData
     ? [
         { label: T('bodyEnergy'), value: awarenessData!.energy, color: '#f59e0b' },
@@ -39,6 +59,7 @@ function CheckinSuccessCard({ TH, T, awarenessData, practiceCompleted, breathing
 
   return (
     <View>
+      {/* ── Header ── */}
       <View style={{ borderRadius: 20, overflow: 'hidden', marginBottom: 16 }}>
         <LinearGradient colors={['#10b981', '#059669']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ padding: 24, alignItems: 'center' }}>
           <CheckCircle2 size={56} color="#fff" />
@@ -51,6 +72,17 @@ function CheckinSuccessCard({ TH, T, awarenessData, practiceCompleted, breathing
         </LinearGradient>
       </View>
 
+      {/* ── Encouragement ── */}
+      <Card style={{ marginBottom: 16, backgroundColor: '#10b98110', borderColor: '#10b98130' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
+          <Sparkles size={16} color="#10b981" style={{ marginTop: 2 }} />
+          <Text style={{ fontSize: FONT_SUB(), color: '#10b981', lineHeight: 20, flex: 1, fontStyle: 'italic' }}>
+            {encouragement}
+          </Text>
+        </View>
+      </Card>
+
+      {/* ── Stats summary ── */}
       <Card style={{ marginBottom: 16 }}>
         <View style={{
           flexDirection: 'row', justifyContent: 'space-around',

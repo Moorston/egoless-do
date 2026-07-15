@@ -177,12 +177,15 @@ export default function PausedPage(props: ExercisePageProps) {
             </View>
           </TouchableOpacity>
 
-          {/* Continue — right */}
+          {/* Continue — right (larger, more prominent) */}
           <TouchableOpacity onPress={handleContinue}
-            style={{ width: 88, height: 88, borderRadius: 44, backgroundColor: COLORS.GREEN, alignItems: 'center', justifyContent: 'center' }}>
-            <Play size={36} color="#fff" />
+            style={{ width: 100, height: 100, borderRadius: 50, backgroundColor: COLORS.GREEN, alignItems: 'center', justifyContent: 'center', shadowColor: COLORS.GREEN, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 8, elevation: 8 }}>
+            <Play size={40} color="#fff" />
           </TouchableOpacity>
         </View>
+        <Text style={{ fontSize: FONT_SUB(), color: 'rgba(255,255,255,.4)', marginTop: 16, textAlign: 'center' }}>
+          {T('exerciseHoldToEnd') || '长按红色按钮结束 · 点击绿色按钮继续'}
+        </Text>
       </View>
     </View>
   );

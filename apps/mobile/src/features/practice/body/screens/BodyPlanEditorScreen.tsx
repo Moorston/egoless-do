@@ -1,6 +1,6 @@
-import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, EXERCISE_CATEGORIES, BODY_STRATEGIES, buildExerciseLibrary, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef } from '@egoless-do/core';
-import { ChevronLeft, Target, ClipboardList, Save, Plus, X, Search, Dumbbell, ChevronDown, ChevronUp } from 'lucide-react-native';
-import React, { useState, useMemo, useEffect } from 'react';
+import { FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BUTTON, FONT_SMALL, FONT_LABEL, EXERCISE_CATEGORIES, BODY_STRATEGIES, PLAN_TEMPLATES, buildExerciseLibrary, type BodyTrainingPlan, type BodyPlanTask, type BodyStrategy, type ExerciseDef, type PlanTemplate } from '@egoless-do/core';
+import { ChevronLeft, Target, ClipboardList, Save, Plus, X, Search, Dumbbell, ChevronDown, ChevronUp, Download } from 'lucide-react-native';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useTheme, useT } from '../../../../components/UI';
 import { useRootNavigation, type RootStackParamList } from '../../../../navigation/hooks';
 import { useShallowStore } from '../../../../store/useAppStore';
+import TemplatePickerModal from '../modals/TemplatePickerModal';
 
 const WEEKDAY_KEYS = ['bodyWeekMon', 'bodyWeekTue', 'bodyWeekWed', 'bodyWeekThu', 'bodyWeekFri', 'bodyWeekSat', 'bodyWeekSun'];
 const P = '#f59e0b';
@@ -45,6 +46,7 @@ export default function BodyPlanEditorScreen() {
   const [customExSets, setCustomExSets] = useState('');
   const [customExReps, setCustomExReps] = useState('');
   const [showCustomEx, setShowCustomEx] = useState<number | null>(null);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
 
   // Load existing plan for editing
   useEffect(() => {
@@ -134,6 +136,51 @@ export default function BodyPlanEditorScreen() {
     return Math.max(1, Math.round((e.getTime() - s.getTime()) / 604800000));
   }, [startDate, endDate]);
 
+  const handleSelectTemplate = useCallback((template: PlanTemplate) => {
+    setName(T(template.nameI18nKey as never));
+    setStrategy(template.strategy ?? '');
+    if (template.targetWeight) setTargetWeight(String(template.targetWeight));
+    if (template.targetBodyFat) setTargetBodyFat(String(template.targetBodyFat));
+
+    // Calculate end date from duration
+    const start = new Date(startDate);
+    const end = new Date(start);
+    end.setDate(end.getDate() + template.durationDays);
+    setEndDate(end.toISOString().slice(0, 10));
+
+    // Map week schedule to tasks
+    setTasks(prev => prev.map((t, i) => {
+      const scheduleDay = template.weekSchedule.find(s => s.weekday === t.weekday);
+      if (!scheduleDay) return t;
+      const exercises = (scheduleDay.exercises ?? []).map(ex => {
+        // Try to find matching ExerciseDef in the library
+        const def = exerciseLibrary.find(e => e.nameZh === ex.name);
+        if (def) return { ...def, id: `template_${template.id}_${t.weekday}_${ex.name}` };
+        // Fallback: create a minimal ExerciseDef
+        return {
+          id: `template_${template.id}_${t.weekday}_${ex.name}`,
+          nameZh: ex.name,
+          nameI18nKey: '',
+          icon: EXERCISE_CATEGORIES.find(c => c.key === scheduleDay.sportKey)?.icon ?? '🏋️',
+          category: scheduleDay.sportKey as ExerciseDef['category'],
+          type: 'strength' as const,
+          muscleGroups: [],
+          difficulty: template.intensity,
+          defaultSets: ex.targetSets,
+          defaultReps: ex.targetReps,
+          defaultWeight: ex.targetWeight,
+          defaultDurationSec: ex.targetDurationSec,
+          defaultRestSec: ex.restSec,
+        };
+      });
+      return {
+        ...t,
+        sportKey: scheduleDay.sportKey,
+        exercises,
+      };
+    }));
+  }, [T, startDate, exerciseLibrary]);
+
   const handleSave = () => {
     if (!name.trim()) return;
     const data = {
@@ -158,7 +205,13 @@ export default function BodyPlanEditorScreen() {
       {/* ── Header ── */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => nav.goBack()}><ChevronLeft size={24} color={TH.text} /></TouchableOpacity>
-        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12 }}>{isEditing ? T('bodyPlanEdit') : T('bodyPlanCreate')}</Text>
+        <Text style={{ color: TH.text, fontWeight: '700', fontSize: FONT_TITLE(), marginLeft: 12, flex: 1 }}>{isEditing ? T('bodyPlanEdit') : T('bodyPlanCreate')}</Text>
+        {!isEditing ? (
+          <TouchableOpacity onPress={() => setShowTemplatePicker(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 8, backgroundColor: `${P}15` }}>
+            <Download size={16} color={P} />
+            <Text style={{ fontSize: FONT_SMALL(), color: P, fontWeight: '600' }}>{T('bodyPlanTemplate') || '模板'}</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
 
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
@@ -397,6 +450,13 @@ export default function BodyPlanEditorScreen() {
           <Text style={{ color: '#fff', fontWeight: '700', fontSize: FONT_BUTTON() }}>{T('bodyPlanSave')}</Text>
         </TouchableOpacity>
       </View>
+
+      <TemplatePickerModal
+        visible={showTemplatePicker}
+        TH={TH} T={T}
+        onClose={() => setShowTemplatePicker(false)}
+        onSelect={handleSelectTemplate}
+      />
     </SafeAreaView>
   );
 }

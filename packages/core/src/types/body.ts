@@ -17,6 +17,8 @@ export interface BodyGoal extends Syncable {
   id: string;
   targetWeight?: number;
   targetBodyFat?: number;
+  initialWeight?: number;
+  initialBodyFat?: number;
   targetDate?: string;
   strategy?: BodyStrategy;
   note?: string;

@@ -8,10 +8,13 @@ import { useAppStore, useShallowStore } from '../../../store/useAppStore';
 
 import BodyAwarenessCard from './BodyAwarenessCard';
 import BodyProfileCard from './BodyProfileCard';
+import BodyTodayPlanCard from './BodyTodayPlanCard';
 import BodyTrainingPlanSection from './components/BodyTrainingPlanSection';
 import BodyWeekPlanCard from './BodyWeekPlanCard';
 import GoalCard from './GoalCard';
 import WeightTrendChart from './WeightTrendChart';
+import CollapsibleSection from './components/CollapsibleSection';
+import CelebrationOverlay from './screens/CelebrationOverlay';
 import { useTodayPlan } from './hooks/useTodayPlan';
 import AssessmentModal from './modals/AssessmentModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';
@@ -30,7 +33,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const T = useT();
   const { userProfile, bodyGoals, bodyPlans, bodyCheckins, exerciseLog, weightRecords, bodyTrainingPlans,
     updateUserProfile, updateBodyGoal, addBodyGoal, removeBodyPlan, addBodyPlan,
-    upsertBodyCheckin, addWeight } = useShallowStore(s => ({
+    upsertBodyCheckin, addWeight,
+    updateBodyTrainingPlan } = useShallowStore(s => ({
     userProfile: s.userProfile,
     bodyGoals: s.bodyGoals,
     bodyPlans: s.bodyPlans,
@@ -45,9 +49,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     addBodyPlan: s.addBodyPlan,
     upsertBodyCheckin: s.upsertBodyCheckin,
     addWeight: s.addWeight,
+    updateBodyTrainingPlan: s.updateBodyTrainingPlan,
   }));
   const profile = (userProfile ?? {}) as Record<string, unknown>;
-  const { todayPlan } = useTodayPlan();
+  const { todayPlan, weekday: todayWeekday } = useTodayPlan();
 
   const [showAssessment, setShowAssessment] = useState(false);
   const [showGoalEdit, setShowGoalEdit] = useState(false);
@@ -68,6 +73,48 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       }
     }
   }, [bodyTrainingPlans, updateBodyTrainingPlan]);
+
+  // ── Celebration overlay ──
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebratedPlanId, setCelebratedPlanId] = useState<string | null>(null);
+
+  // Detect newly completed plans
+  const recentlyCompletedPlans = useMemo(() =>
+    (bodyTrainingPlans ?? []).filter((p: BodyTrainingPlan) =>
+      !p.deleted && p.status === 'completed' && p.endDate >= dateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
+    ),
+  [bodyTrainingPlans]);
+
+  // Compute celebration data
+  const celebrationData = useMemo(() => {
+    const plan = recentlyCompletedPlans[0];
+    if (!plan) return null;
+    const planExercises = (exerciseLog ?? []).filter((e: ExerciseEntry) =>
+      !e.deleted && e.planId === plan.id
+    );
+    const totalMin = Math.round(planExercises.reduce((s: number, e: ExerciseEntry) => s + (e.durationSec ?? 0), 0) / 60);
+    const totalCal = planExercises.reduce((s: number, e: ExerciseEntry) => s + (e.calories ?? 0), 0);
+    const completedDays = new Set(planExercises.map((e: ExerciseEntry) => dateStr(new Date(e.timestamp)))).size;
+    const totalTasks = plan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length;
+    const weeks = Math.max(1, Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 604800000));
+    const totalDays = weeks * 7;
+
+    return {
+      planName: plan.name,
+      totalDays,
+      completedDays,
+      totalDurationMin: totalMin,
+      totalCalories: totalCal,
+    };
+  }, [recentlyCompletedPlans, exerciseLog]);
+
+  // Show celebration once when a completed plan is detected
+  useEffect(() => {
+    if (celebrationData && recentlyCompletedPlans[0]?.id !== celebratedPlanId) {
+      setCelebratedPlanId(recentlyCompletedPlans[0].id);
+      setShowCelebration(true);
+    }
+  }, [celebrationData, recentlyCompletedPlans, celebratedPlanId]);
 
   // Calculate plan progress
   const planProgress = useMemo(() => {
@@ -139,40 +186,73 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     updateUserProfile({ ageBracket: bracket });
   }, [updateUserProfile]);
 
+  // Compute collapsible badges
+  const trainingBadge = planProgress
+    ? `${planProgress.weekComplete}/${planProgress.weekTotal}`
+    : activeTrainingPlan ? '0/0' : undefined;
+
   return (
     <View>
-      <BodyProfileCard
-        TH={TH} T={T}
-        profile={profile}
-        onEditAssessment={() => setShowAssessment(true)}
-        onRecordWeight={() => setShowWeightRecord(true)}
-        onPickAgeBracket={handlePickAgeBracket}
-      />
+      {/* ── Section 1: 今日训练 ── */}
+      <CollapsibleSection title={T('bodyToday')} icon="📋" color="#f59e0b" TH={TH} defaultExpanded>
+        <BodyTodayPlanCard
+          TH={TH} T={T}
+          todayPlan={todayPlan}
+          todayWeekday={todayWeekday}
+          onStart={() => onFlowStart?.()}
+        />
+      </CollapsibleSection>
 
-      <BodyTrainingPlanSection
-        TH={TH} T={T}
-        plan={activeTrainingPlan}
-        progress={planProgress}
-        onEdit={() => nav.navigate('BodyPlanEditor' as never, { planId: activeTrainingPlan?.id } as never)}
-        onStart={(planId) => onFlowStartWithPlan?.(planId)}
-      />
+      {/* ── Section 2: 身体档案 ── */}
+      <CollapsibleSection title={T('bodyProfile')} icon="📋" color="#d97706" TH={TH} defaultExpanded>
+        <BodyProfileCard
+          TH={TH} T={T}
+          profile={profile}
+          onEditAssessment={() => setShowAssessment(true)}
+          onRecordWeight={() => setShowWeightRecord(true)}
+          onPickAgeBracket={handlePickAgeBracket}
+        />
+        <GoalCard TH={TH} T={T} goal={activeGoal} profile={profile} onEdit={() => setShowGoalEdit(true)} />
+      </CollapsibleSection>
 
-      <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />
-      <GoalCard TH={TH} T={T} goal={activeGoal} profile={profile} onEdit={() => setShowGoalEdit(true)} />
-      <BodyWeekPlanCard
-        TH={TH} T={T}
-        plans={activePlans}
-        exerciseLog={exerciseLog ?? []}
-        onEdit={() => setShowPlanEdit(true)}
-        onPressSport={handlePressSport}
-      />
-      <WeightTrendChart TH={TH} T={T} weightRecords={weightRecords ?? []} />
+      {/* ── Section 3: 训练计划 ── */}
+      <CollapsibleSection title={T('bodyPlan')} icon="💪" color="#8b5cf6" TH={TH} defaultExpanded badge={trainingBadge}>
+        <BodyTrainingPlanSection
+          TH={TH} T={T}
+          plan={activeTrainingPlan}
+          progress={planProgress}
+          onEdit={() => nav.navigate('BodyPlanEditor' as never, { planId: activeTrainingPlan?.id } as never)}
+          onStart={(planId) => onFlowStartWithPlan?.(planId)}
+        />
+        <BodyWeekPlanCard
+          TH={TH} T={T}
+          plans={activePlans}
+          exerciseLog={exerciseLog ?? []}
+          onEdit={() => setShowPlanEdit(true)}
+          onPressSport={handlePressSport}
+        />
+      </CollapsibleSection>
+
+      {/* ── Section 4: 数据趋势 ── */}
+      <CollapsibleSection title={T('bodyWeightTrend')} icon="📊" color="#10b981" TH={TH} defaultExpanded={false}>
+        <BodyAwarenessCard TH={TH} T={T} checkins={bodyCheckins ?? []} onRecordPress={() => setShowCheckin(true)} />
+        <WeightTrendChart TH={TH} T={T} weightRecords={weightRecords ?? []} />
+      </CollapsibleSection>
 
       <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
       <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
       <PlanEditModal visible={showPlanEdit} TH={TH} T={T} plans={activePlans} onClose={() => setShowPlanEdit(false)} onSave={handleSavePlans} />
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
       <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
+
+      {celebrationData && (
+        <CelebrationOverlay
+          visible={showCelebration}
+          TH={TH} T={T}
+          data={celebrationData}
+          onDismiss={() => setShowCelebration(false)}
+        />
+      )}
     </View>
   );
 }

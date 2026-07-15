@@ -39,6 +39,8 @@ export function recommendStrategy(bodyTags: string[]): BodyStrategy | null {
 export function createBodyGoal(partial: {
   targetWeight?: number;
   targetBodyFat?: number;
+  initialWeight?: number;
+  initialBodyFat?: number;
   targetDate?: string;
   strategy?: BodyStrategy;
   note?: string;
@@ -47,6 +49,8 @@ export function createBodyGoal(partial: {
     id: uid(),
     targetWeight: partial.targetWeight,
     targetBodyFat: partial.targetBodyFat,
+    initialWeight: partial.initialWeight,
+    initialBodyFat: partial.initialBodyFat,
     targetDate: partial.targetDate ?? '',
     strategy: partial.strategy,
     note: partial.note ?? '',

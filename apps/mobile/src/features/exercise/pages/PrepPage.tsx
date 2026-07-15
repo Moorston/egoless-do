@@ -4,15 +4,13 @@ import { X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
-import MeditationMusicBar from '../../../components/MeditationMusicBar';
-
 import type { ExercisePageProps } from './types';
 
 export default function PrepPage(props: ExercisePageProps) {
   const {
     sportName, sportType, bg, mode, setMode, targetType, setTargetType, targetValue, setTargetValue,
     breathGuideEnabled, setBreathGuideEnabled, isMeditative,
-    handleGo, onGoBack, exerciseLog, T, TH,
+    handleGo, onGoBack, exerciseLog, T,
     musicTrack, onPressMusic,
   } = props;
 
@@ -49,15 +47,14 @@ export default function PrepPage(props: ExercisePageProps) {
           </TouchableOpacity>
         </View>
 
-        {/* Music selector — same style as meditation page */}
+        {/* Music selector — inline compact */}
         <View style={styles.musicBar}>
-          <MeditationMusicBar
-            track={musicTrack ?? null}
-            isActive={false}
-            isPlaying={false}
-            primaryColor={TH.primary}
-            onPress={onPressMusic}
-          />
+          <TouchableOpacity onPress={onPressMusic} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: 'rgba(255,255,255,.12)' }}>
+            <Text style={{ fontSize: FONT_SUB(), color: musicTrack ? '#fff' : 'rgba(255,255,255,.6)' }}>
+              {musicTrack ? `🎵 ${musicTrack.name}` : '🎵 ' + (T('exerciseAddMusic') || '添加音乐')}
+            </Text>
+            <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,.4)' }}>▸</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Mode toggle */}
@@ -234,11 +231,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   musicBar: {
-    marginTop: 16,
+    marginTop: 10,
   },
   modeToggle: {
     flexDirection: 'row',
-    marginTop: 24,
+    marginTop: 20,
     backgroundColor: 'rgba(0,0,0,.2)',
     borderRadius: 12,
     padding: 3,
