@@ -338,10 +338,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                       🗣️ {profile.selfAssessment}
                     </Text>
                     {(profile.bodyTags as string[] ?? []).length > 0 && (
-                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                         {(profile.bodyTags as string[]).map((tag: string) => (
-                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
-                            <Text style={{ fontSize: 10, color: '#fff' }}>#{tag}</Text>
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
                           </View>
                         ))}
                       </View>
@@ -383,10 +383,10 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                   <>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
                       {[
-                        { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fbbf24' },
-                        { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#f87171' },
-                        { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#34d399' },
-                        { label: T('bodySleepQuality') || '睡眠', value: latestCheckin.sleep, color: '#60a5fa' },
+                        { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fff' },
+                        { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#fff' },
+                        { label: T('bodyComfort') || '舒适', value: latestCheckin.comfort, color: '#fff' },
+                        { label: T('bodySleepQuality') || '睡眠', value: latestCheckin.sleep, color: '#fff' },
                       ].map((item, i) => (
                         <View key={i} style={{ alignItems: 'center' }}>
                           <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: item.color }}>{item.value}</Text>
@@ -396,21 +396,21 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                     </View>
                     {/* Tags */}
                     {latestCheckin.tags && latestCheckin.tags.length > 0 && (
-                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
                         {latestCheckin.tags.map((tag: string) => (
-                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
-                            <Text style={{ fontSize: 10, color: '#fff' }}>#{tag}</Text>
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 }}>
+                            <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>#{tag}</Text>
                           </View>
                         ))}
                       </View>
                     )}
                     {/* Note */}
                     {latestCheckin.note && (
-                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginBottom: 4 }} numberOfLines={2}>
+                      <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.8)', marginBottom: 4 }} numberOfLines={2}>
                         📝 {latestCheckin.note}
                       </Text>
                     )}
-                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.6)' }}>
+                    <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,0.6)' }}>
                       {latestCheckin.date}
                     </Text>
                   </>
