@@ -4,6 +4,8 @@ import React, { useState, useRef, useMemo } from 'react';
 import { View, Text, Dimensions, TouchableOpacity, FlatList } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const CHART_HEIGHT = 120;
+const CHART_PADDING = 20; // space for weight labels above points
 
 interface Props {
   TH: Theme;
@@ -87,32 +89,84 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
   };
 
   const renderMonthPage = ({ item, index }: { item: MonthData; index: number }) => {
-    const barMaxHeight = 100;
     const range = item.maxW - item.minW || 1;
     const isActive = index === currentIndex;
+    const chartWidth = SCREEN_WIDTH - 64; // padding
+    const pointSpacing = item.records.length > 1 ? chartWidth / (item.records.length - 1) : chartWidth;
+
+    // Calculate point positions
+    const points = item.records.map((r, i) => ({
+      x: i * pointSpacing,
+      y: CHART_HEIGHT - ((r.weight - item.minW) / range) * (CHART_HEIGHT - CHART_PADDING) - CHART_PADDING / 2,
+      weight: r.weight,
+      date: r.date,
+    }));
 
     return (
       <View style={{ width: SCREEN_WIDTH - 32, paddingHorizontal: 4 }}>
-        {/* Month chart */}
-        <View style={{ flexDirection: 'row', height: barMaxHeight, alignItems: 'flex-end', gap: 2 }}>
-          {item.records.map((r) => {
-            const normalizedHeight = Math.max(8, ((r.weight - item.minW) / range) * (barMaxHeight - 20) + 8);
-            const day = r.date.slice(8); // "01"..."31"
+        {/* Line chart */}
+        <View style={{ height: CHART_HEIGHT + 30, position: 'relative' }}>
+          {/* Line segments */}
+          {points.map((point, i) => {
+            if (i === 0) return null;
+            const prevPoint = points[i - 1];
+            const dx = point.x - prevPoint.x;
+            const dy = point.y - prevPoint.y;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
             return (
-              <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                <Text style={{ fontSize: FONT_TINY(), color: isActive ? TH.text : TH.sub, fontWeight: '600', marginBottom: 4 }}>
-                  {r.weight}
-                </Text>
-                <View style={{
-                  width: '70%',
-                  height: normalizedHeight,
+              <View
+                key={`line-${i}`}
+                style={{
+                  position: 'absolute',
+                  left: prevPoint.x,
+                  top: prevPoint.y,
+                  width: length,
+                  height: 2,
                   backgroundColor: isActive ? '#10b981' : '#10b98160',
-                  borderRadius: 2,
+                  transform: [{ rotate: `${angle}deg` }],
+                  transformOrigin: '0 0',
+                }}
+              />
+            );
+          })}
+
+          {/* Data points with weight labels */}
+          {points.map((point, i) => {
+            const isLast = i === points.length - 1;
+            return (
+              <React.Fragment key={`point-${i}`}>
+                {/* Weight label above point */}
+                <Text style={{
+                  position: 'absolute',
+                  left: point.x - 15,
+                  top: point.y - 20,
+                  fontSize: FONT_TINY(),
+                  color: isActive ? TH.text : TH.sub,
+                  fontWeight: isLast ? '700' : '500',
+                  width: 30,
+                  textAlign: 'center',
+                }}>
+                  {point.weight}
+                </Text>
+                {/* Point dot */}
+                <View style={{
+                  position: 'absolute',
+                  left: point.x - 4,
+                  top: point.y - 4,
+                  width: isLast ? 10 : 8,
+                  height: isLast ? 10 : 8,
+                  borderRadius: isLast ? 5 : 4,
+                  backgroundColor: isLast ? '#10b981' : (isActive ? '#10b98180' : '#10b98140'),
+                  borderWidth: isLast ? 2 : 0,
+                  borderColor: '#fff',
                 }} />
-              </View>
+              </React.Fragment>
             );
           })}
         </View>
+
         {/* X-axis: day numbers */}
         <View style={{ flexDirection: 'row', marginTop: 4 }}>
           {item.records.map((r) => (
