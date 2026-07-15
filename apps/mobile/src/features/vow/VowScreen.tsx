@@ -191,7 +191,7 @@ export default function VowScreen() {
           </View>
           <View>
             <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('vowActive')}</Text>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{activeCount}</Text>
+            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{String(activeCount)}</Text>
           </View>
         </View>
 
