@@ -319,17 +319,15 @@ export default function ReflectionsScreen() {
   };
 
   const onShare = async (r: MindReflection) => {
-    // Show share choice: text or image
-    // NOTE: Don't close action menu before Alert — the native dialog may
-    // conflict with the Modal lifecycle when it dismisses.
     Alert.alert(T('reflShare'), '', [
       { text: T('shareTextShare'), onPress: () => {
         setActionMenuId(null);
         handleShare(r, undefined, language);
       }},
       { text: T('shareImageShare'), onPress: () => {
+        // Close action menu Modal first; wait for fade-out before opening ShareCard
         setActionMenuId(null);
-        setShareReflection(r);
+        setTimeout(() => setShareReflection(r), 350);
       }},
       { text: T('cancel'), style: 'cancel', onPress: () => setActionMenuId(null) },
     ]);
