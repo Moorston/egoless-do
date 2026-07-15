@@ -42,7 +42,7 @@ export default function SimpleHeader({ routeName }: { routeName?: string }) {
         <View style={{ alignItems: 'flex-end' }}>
           <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{t('streak', language)}</Text>
           <Text style={{ fontWeight: '800', fontSize: FONT_STAT_SECTION(), lineHeight: 42, color: '#EA6060' }}>
-            {String(streak)} <Text style={{ fontSize: FONT_LABEL() }}>{t('days', language)} </Text><Flame size={20} color="#EA6060" />
+            {String(streak)} <Text style={{ fontSize: FONT_LABEL() }}>{t('days', language)} </Text><Text><Flame size={20} color="#EA6060" /></Text>
           </Text>
         </View>
       </View>
