@@ -1045,7 +1045,7 @@ export const zh: I18nKeys = {
   bodyLevelBeginner:'初级', bodyLevelIntermediate:'中级', bodyLevelAdvanced:'高级', bodyDays:'天',
   planTemplateTraditional:'传统养生28天', planTemplateTraditionalDesc:'八段锦、五禽戏、太极、站桩每日轮训，配合经络拍打和散步行禅。源自国家体育总局健身气功推广功法。',
   planTemplatePPL:'推拉腿六练 (PPL)', planTemplatePPLDesc:'源自NSCA经典训练分化。周一三五推(胸肩三头)，二四六拉(背二头腿)，周日休息。每周6练，适合中级训练者。',
-  planTemplateFatLoss:'四週減脂衝刺', planTemplateFatLossDesc:'ACSM减脂运动指南推荐：每周≥250分钟中高强度运动。结合HIIT+力量训练最大化EPOC效应。',
+  planTemplateFatLoss:'四周减脂冲刺', planTemplateFatLossDesc:'ACSM减脂运动指南推荐：每周≥250分钟中高强度运动。结合HIIT+力量训练最大化EPOC效应。',
   planTemplateBodyweight:'居家自重三练', planTemplateBodyweightDesc:'无需器械的全身训练方案，适合初学者/居家。每周3次，每次30分钟，ACSM推荐最低训练频率。',
   bodyPlanOverwriteTitle:'确认覆盖', bodyPlanOverwriteMsg:'当前编辑内容将被模板数据覆盖，确认继续？', bodyPlanOverwriteConfirm:'覆盖',
   bodyExecNotSet:'设置训练方案后自动跟踪', bodyCompletedDays:'完成天数', bodyKcal:'消耗 kcal',
