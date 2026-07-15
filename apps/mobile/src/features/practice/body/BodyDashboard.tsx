@@ -616,6 +616,102 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         ))}
       </View>
 
+      {/* ── 调身目标 ── */}
+      <TouchableOpacity
+        onPress={() => setShowGoalEdit(true)}
+        activeOpacity={0.85}
+        style={[styles.goalCard, { backgroundColor: TH.card }]}
+      >
+        <View style={styles.goalHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={[styles.goalIconCircle, { backgroundColor: '#8b5cf6' }]}>
+              <Target size={18} color="#fff" />
+            </View>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyGoal') || '调身目标'}</Text>
+          </View>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#8b5cf6' }}>{activeGoal ? T('bodyGoalEdit') : T('bodyGoalSet')}</Text>
+        </View>
+        {activeGoal ? (
+          <View style={styles.goalContent}>
+            <View style={styles.goalMetrics}>
+              {activeGoal.targetWeight && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{activeGoal.targetWeight}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>kg {T('bodyTargetWeight')}</Text>
+                </View>
+              )}
+              {activeGoal.targetBodyFat && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{activeGoal.targetBodyFat}%</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyTargetBodyFat')}</Text>
+                </View>
+              )}
+              {activeGoal.strategy && (
+                <View style={styles.goalMetricItem}>
+                  <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: '#8b5cf6' }}>
+                    {T(`bodyStrategy${activeGoal.strategy.charAt(0).toUpperCase() + activeGoal.strategy.slice(1)}` as never) || activeGoal.strategy}
+                  </Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyStrategyLabel')}</Text>
+                </View>
+              )}
+            </View>
+            {activeGoal.targetDate && (
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 8 }}>{T('bodyTargetDate')}: {activeGoal.targetDate}</Text>
+            )}
+          </View>
+        ) : (
+          <View style={styles.goalEmpty}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyGoalNotSet') || '设定目标，开始调身之旅'}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
+      {/* ── 我的训练计划 ── */}
+      <TouchableOpacity
+        onPress={() => nav.navigate('PlanManagement' as never)}
+        activeOpacity={0.85}
+        style={[styles.planCard, { backgroundColor: TH.card }]}
+      >
+        <View style={styles.planHeader}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={[styles.planIconCircle, { backgroundColor: '#f59e0b' }]}>
+              <Dumbbell size={18} color="#fff" />
+            </View>
+            <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyPlanManagement') || '我的训练计划'}</Text>
+          </View>
+          <Text style={{ fontSize: FONT_SMALL(), color: '#f59e0b' }}>{activeTrainingPlan ? T('bodyPlanEdit') : T('bodyPlanCreate')}</Text>
+        </View>
+        {activeTrainingPlan ? (
+          <View style={styles.planContent}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{activeTrainingPlan.name}</Text>
+              <View style={[styles.planBadge, { backgroundColor: '#10b98115' }]}>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#10b981', fontWeight: '600' }}>{T('bodyPlanActive') || '进行中'}</Text>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 12, marginBottom: 8 }}>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{activeTrainingPlan.startDate} ~ {activeTrainingPlan.endDate}</Text>
+              <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{activeTrainingPlan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length}天/周</Text>
+            </View>
+            {planProgress && (
+              <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyProgress') || '本周进度'}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.text, fontWeight: '600' }}>{planProgress.weekComplete}/{planProgress.weekTotal}</Text>
+                </View>
+                <View style={[styles.progressBarBg, { backgroundColor: TH.border, height: 6 }]}>
+                  <View style={[styles.progressBarFill, { backgroundColor: '#f59e0b', height: 6, width: `${planProgress.weekTotal > 0 ? (planProgress.weekComplete / planProgress.weekTotal) * 100 : 0}%` }]} />
+                </View>
+              </View>
+            )}
+          </View>
+        ) : (
+          <View style={styles.planEmpty}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.sub }}>{T('bodyPlanNotSet') || '创建训练计划，开始系统训练'}</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
       {/* ── 本周进度 ── */}
       {planProgress && (
         <View style={[styles.progressCard, { backgroundColor: TH.card }]}>
@@ -817,5 +913,71 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 10,
+  },
+  goalCard: {
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.06)',
+  },
+  goalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  goalIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  goalContent: {
+    marginBottom: 4,
+  },
+  goalMetrics: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  goalMetricItem: {
+    alignItems: 'center',
+  },
+  goalEmpty: {
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  planCard: {
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.06)',
+  },
+  planHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  planIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  planContent: {
+    marginBottom: 4,
+  },
+  planBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  planEmpty: {
+    alignItems: 'center',
+    paddingVertical: 16,
   },
 });
