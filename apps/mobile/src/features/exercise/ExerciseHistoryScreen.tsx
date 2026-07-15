@@ -1,5 +1,5 @@
-import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs } from '@egoless-do/core';
-import type { ExerciseEntry, Theme, PRRecord } from '@egoless-do/core';
+import { COLORS, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_BADGE, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_EMPTY, FONT_SMALL, FONT_TINY, getSportType, formatPace, computePRs, computeMuscleGroupStats, buildExerciseLibrary, computeMonthFrequency } from '@egoless-do/core';
+import type { ExerciseEntry, Theme, PRRecord, MuscleGroupStat, DayFrequency } from '@egoless-do/core';
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -92,7 +92,7 @@ function DetailCard({ e, TH, P, T, MapView, Polyline }: { e: ExerciseEntry; TH: 
 
 // ── Flattened data item ──
 interface FlatItem {
-  type: 'header' | 'statCards' | 'prCards' | 'sportFilter' | 'monthlyBar' | 'emptyText' | 'monthHeader' | 'entry';
+  type: 'header' | 'statCards' | 'prCards' | 'muscleCards' | 'heatmap' | 'sportFilter' | 'monthlyBar' | 'emptyText' | 'monthHeader' | 'entry';
   key: string;
   monthKey?: string;
   items?: ExerciseEntry[];
@@ -119,6 +119,27 @@ export default function ExerciseHistoryScreen() {
   // Compute PRs
   const prs = useMemo(() => computePRs(sorted), [sorted]);
   const topPRs = useMemo(() => prs.slice(0, 6), [prs]); // Show top 6 PRs
+
+  // Compute muscle group stats
+  const exerciseLibrary = useMemo(() => buildExerciseLibrary(), []);
+  const muscleStats = useMemo(() => computeMuscleGroupStats(sorted, exerciseLibrary), [sorted, exerciseLibrary]);
+  const topMuscles = useMemo(() => muscleStats.slice(0, 8), [muscleStats]);
+
+  // Compute frequency heatmap for current month
+  const currentMonth = useMemo(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }, []);
+  const monthFrequency = useMemo(() => computeMonthFrequency(sorted, currentMonth), [sorted, currentMonth]);
+  const activeDays = useMemo(() => monthFrequency.filter(d => d.count > 0).length, [monthFrequency]);
+  const streakDays = useMemo(() => {
+    let streak = 0;
+    for (let i = monthFrequency.length - 1; i >= 0; i--) {
+      if (monthFrequency[i].count > 0) streak++;
+      else break;
+    }
+    return streak;
+  }, [monthFrequency]);
 
   // Unique sport keys for filter
   const sportKeys = useMemo(() => {
@@ -187,6 +208,12 @@ export default function ExerciseHistoryScreen() {
     ];
     if (topPRs.length > 0) {
       items.push({ type: 'prCards', key: 'prCards' });
+    }
+    if (topMuscles.length > 0) {
+      items.push({ type: 'muscleCards', key: 'muscleCards' });
+    }
+    if (monthFrequency.length > 0) {
+      items.push({ type: 'heatmap', key: 'heatmap' });
     }
     items.push({ type: 'sportFilter', key: 'sportFilter' });
     if (monthlyStats.length > 1) {
@@ -279,6 +306,94 @@ export default function ExerciseHistoryScreen() {
               </View>
             ))}
           </ScrollView>
+        </Card>
+      );
+    }
+    if (item.type === 'muscleCards') {
+      const maxCount = Math.max(...topMuscles.map(m => m.count), 1);
+      return (
+        <Card style={{ marginBottom: 14 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+            <Text style={{ fontSize: FONT_STAT_SECTION() }}>💪</Text>
+            <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exerciseMuscleDistribution') || '肌群训练分布'}</Text>
+          </View>
+          {topMuscles.map(stat => (
+            <View key={stat.muscle} style={{ marginBottom: 6 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.text }}>{stat.muscle}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{stat.count}次 · {stat.lastTrained.slice(5)}</Text>
+              </View>
+              <View style={{ height: 6, backgroundColor: `${P}15`, borderRadius: 3, overflow: 'hidden' }}>
+                <View style={{ height: 6, width: `${(stat.count / maxCount) * 100}%`, backgroundColor: P, borderRadius: 3 }} />
+              </View>
+            </View>
+          ))}
+        </Card>
+      );
+    }
+    if (item.type === 'heatmap') {
+      const LEVEL_COLORS = ['#0F172A', '#065F46', '#059669', '#10B981'];
+      const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+      // Pad to start on Monday
+      const firstDay = new Date(monthFrequency[0].date).getDay();
+      const padDays = firstDay === 0 ? 6 : firstDay - 1; // Monday=0
+      const padded = Array(padDays).fill(null).concat(monthFrequency);
+      const rows: (DayFrequency | null)[][] = [];
+      for (let i = 0; i < padded.length; i += 7) {
+        rows.push(padded.slice(i, i + 7));
+      }
+      return (
+        <Card style={{ marginBottom: 14 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={{ fontSize: FONT_STAT_SECTION() }}>📅</Text>
+              <Text style={{ fontSize: FONT_SUB(), fontWeight: '700', color: TH.text }}>{T('exerciseFrequency') || '运动频率'}</Text>
+            </View>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
+              {activeDays}天运动 · 连续{streakDays}天 🔥
+            </Text>
+          </View>
+          {/* Weekday headers */}
+          <View style={{ flexDirection: 'row', marginBottom: 4 }}>
+            {weekdays.map(w => (
+              <View key={w} style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>{w}</Text>
+              </View>
+            ))}
+          </View>
+          {/* Grid */}
+          {rows.map((row, ri) => (
+            <View key={ri} style={{ flexDirection: 'row', marginBottom: 3 }}>
+              {row.map((day, ci) => (
+                <View key={ci} style={{ flex: 1, alignItems: 'center', paddingVertical: 2 }}>
+                  {day ? (
+                    <View style={{
+                      width: 28, height: 28, borderRadius: 6,
+                      backgroundColor: LEVEL_COLORS[day.level],
+                      alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <Text style={{ fontSize: FONT_TINY(), color: day.level > 0 ? '#fff' : TH.sub, fontWeight: day.level > 0 ? '600' : '400' }}>
+                        {day.date.slice(8).replace(/^0/, '')}
+                      </Text>
+                    </View>
+                  ) : (
+                    <View style={{ width: 28, height: 28 }} />
+                  )}
+                </View>
+              ))}
+            </View>
+          ))}
+          {/* Legend */}
+          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 12, marginTop: 8 }}>
+            {LEVEL_COLORS.map((c, i) => (
+              <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: c }} />
+                <Text style={{ fontSize: FONT_TINY(), color: TH.sub }}>
+                  {i === 0 ? '无' : i === 1 ? '<20m' : i === 2 ? '20-60m' : '>60m'}
+                </Text>
+              </View>
+            ))}
+          </View>
         </Card>
       );
     }

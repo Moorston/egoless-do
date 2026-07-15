@@ -1,5 +1,5 @@
 // ─── Body regulation business logic (pure functions) ──────────
-import type { BodyStrategy, ExerciseEntry } from '../types';
+import type { BodyStrategy, ExerciseEntry, ExerciseDef } from '../types';
 import { uid } from '../utils';
 
 export function calcBMI(weight: number, heightCm: number): number {
@@ -152,4 +152,90 @@ export function computePRs(exerciseLog: ExerciseEntry[]): PRRecord[] {
     map.set(e.sportKey, existing);
   }
   return Array.from(map.values());
+}
+
+// ─── Muscle Group Stats ──────────────────────────────────────
+
+export interface MuscleGroupStat {
+  muscle: string;
+  count: number;
+  lastTrained: string; // YYYY-MM-DD
+}
+
+/**
+ * 计算每个肌群的训练次数和最近训练日期
+ * @param exerciseLog 运动记录
+ * @param exerciseLibrary 动作库（包含 muscleGroups）
+ */
+export function computeMuscleGroupStats(
+  exerciseLog: ExerciseEntry[],
+  exerciseLibrary: ExerciseDef[],
+): MuscleGroupStat[] {
+  const stats = new Map<string, { count: number; lastTrained: string }>();
+
+  for (const entry of exerciseLog) {
+    if (entry.deleted) continue;
+    const date = new Date(entry.timestamp).toISOString().slice(0, 10);
+    const def = exerciseLibrary.find(
+      d => d.nameZh === entry.sportKey || d.id === entry.sportKey
+    );
+    if (!def) continue;
+
+    for (const muscle of def.muscleGroups) {
+      const existing = stats.get(muscle) ?? { count: 0, lastTrained: date };
+      existing.count++;
+      if (date > existing.lastTrained) existing.lastTrained = date;
+      stats.set(muscle, existing);
+    }
+  }
+
+  return Array.from(stats.entries())
+    .map(([muscle, data]) => ({ muscle, ...data }))
+    .sort((a, b) => b.count - a.count);
+}
+
+// ─── Exercise Frequency Heatmap ──────────────────────────────
+
+export interface DayFrequency {
+  date: string;      // YYYY-MM-DD
+  count: number;     // 运动次数
+  totalMin: number;  // 总时长(分钟)
+  level: 0 | 1 | 2 | 3; // 0=无, 1=轻度(<20min), 2=正常(20-60min), 3=高强度(>60min)
+}
+
+/**
+ * 计算指定月份每天的运动频率
+ * @param exerciseLog 运动记录
+ * @param yearMonth "YYYY-MM" 格式的月份
+ */
+export function computeMonthFrequency(
+  exerciseLog: ExerciseEntry[],
+  yearMonth: string,
+): DayFrequency[] {
+  // Get days in month
+  const [year, month] = yearMonth.split('-').map(Number);
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  // Aggregate by date
+  const byDate = new Map<string, { count: number; totalMin: number }>();
+  for (const entry of exerciseLog) {
+    if (entry.deleted) continue;
+    const date = new Date(entry.timestamp).toISOString().slice(0, 10);
+    if (!date.startsWith(yearMonth)) continue;
+    const existing = byDate.get(date) ?? { count: 0, totalMin: 0 };
+    existing.count++;
+    existing.totalMin += Math.round(entry.durationSec / 60);
+    byDate.set(date, existing);
+  }
+
+  // Build result for each day
+  const result: DayFrequency[] = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${yearMonth}-${String(d).padStart(2, '0')}`;
+    const data = byDate.get(dateStr);
+    const totalMin = data?.totalMin ?? 0;
+    const level: DayFrequency['level'] = totalMin === 0 ? 0 : totalMin < 20 ? 1 : totalMin <= 60 ? 2 : 3;
+    result.push({ date: dateStr, count: data?.count ?? 0, totalMin, level });
+  }
+  return result;
 }

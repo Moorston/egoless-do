@@ -41,7 +41,7 @@ import {
   ThoughtTrailDetailScreen, QuickCreateTrailScreen,
   ReflectionDetailScreen, InsightScreen, ReviewScreen,
   StrategyLibrary, RelationMapView,
-  AISettingsScreen, BodyScreen, BodyPlanEditorScreen, BreathHistoryPage, BreathingScreen,
+  AISettingsScreen, BodyScreen, BodyPlanEditorScreen, PlanManagementScreen, BreathHistoryPage, BreathingScreen,
   CheckinDetailScreen, CheckinHistoryScreen, DayCheckinScreen, DietScreen,
   ExerciseHistoryScreen, FastHistoryModule, FoodLogPage,
   ForgotPasswordScreen, GiveHistoryPage, GiveScreen,
@@ -339,6 +339,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Zhiguan" component={ZhiguanScreen} />
         <Stack.Screen name="ZhiguanHistory" component={withErrorBoundary(ZhiguanHistoryScreen)} />
         <Stack.Screen name="BodyPlanEditor" component={withErrorBoundary(BodyPlanEditorScreen)} />
+        <Stack.Screen name="PlanManagement" component={withErrorBoundary(PlanManagementScreen)} />
       </Stack.Navigator>
     </NavigationContainer>
     <KickOutModal

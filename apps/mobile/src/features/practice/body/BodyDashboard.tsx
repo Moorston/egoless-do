@@ -215,6 +215,18 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onEdit={() => nav.navigate('BodyPlanEditor' as never, { planId: activeTrainingPlan?.id } as never)}
           onStart={(planId) => onFlowStartWithPlan?.(planId)}
         />
+        {/* 计划管理入口 */}
+        <TouchableOpacity
+          onPress={() => nav.navigate('PlanManagement' as never)}
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12, paddingHorizontal: 4 }}
+          activeOpacity={0.7}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={{ fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{T('bodyPlanManagement') || '我的训练计划'}</Text>
+            <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('bodyPlanManage') || '管理'}</Text>
+          </View>
+          <ChevronRight size={18} color={TH.sub} />
+        </TouchableOpacity>
       </CollapsibleSection>
 
       <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
