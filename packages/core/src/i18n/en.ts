@@ -1027,6 +1027,7 @@ export const en: I18nKeys = {
   bodyBmiThin:'Underweight', bodyBmiNormal:'Normal', bodyBmiOverweight:'Overweight', bodyBmiObese:'Obese',
   bodySelfAssessment:'Self Assessment', bodySelfAssessmentPlaceholder:'Tap to add self assessment...',
   bodySelfAssessmentHint:'Describe your current physical condition', bodySelfAssessmentInputPlaceholder:'Fitness, pain areas, habits...',
+  bodyAwarenessRecords:'Awareness Records', bodyMoreWeightTrend:'More Weight Trends',
   bodyTagsLabel:'Body Tags (optional)', bodyCategory:'Category',
   bodyGoalNotSet:'No goal set yet', bodyGoalEdit:'Edit', bodyGoalSet:'Set', bodyGoalTitle:'Set Body Goal',
   bodyTargetWeight:'Target Weight (kg)', bodyTargetBodyFat:'Target Body Fat (%) optional', bodyTargetDate:'Target Date (YYYY-MM-DD)',

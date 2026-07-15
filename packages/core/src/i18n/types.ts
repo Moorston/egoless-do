@@ -870,6 +870,7 @@ export interface I18nKeys {
   bodyBmiThin: string; bodyBmiNormal: string; bodyBmiOverweight: string; bodyBmiObese: string;
   bodySelfAssessment: string; bodySelfAssessmentPlaceholder: string;
   bodySelfAssessmentHint: string; bodySelfAssessmentInputPlaceholder: string;
+  bodyAwarenessRecords: string; bodyMoreWeightTrend: string;
   bodyTagsLabel: string; bodyCategory: string;
   bodyGoalNotSet: string; bodyGoalEdit: string; bodyGoalSet: string; bodyGoalTitle: string;
   bodyTargetWeight: string; bodyTargetBodyFat: string; bodyTargetDate: string;

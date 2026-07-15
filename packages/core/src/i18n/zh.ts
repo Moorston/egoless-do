@@ -1025,6 +1025,7 @@ export const zh: I18nKeys = {
   bodyBmiThin:'偏瘦', bodyBmiNormal:'正常', bodyBmiOverweight:'偏胖', bodyBmiObese:'肥胖',
   bodySelfAssessment:'身体自评', bodySelfAssessmentPlaceholder:'点击添加身体自评...',
   bodySelfAssessmentHint:'描述你目前的身体状况', bodySelfAssessmentInputPlaceholder:'体能状况、疼痛部位、生活习惯...',
+  bodyAwarenessRecords:'觉知记录', bodyMoreWeightTrend:'更多体重趋势',
   bodyTagsLabel:'身体标签 (可选)', bodyCategory:'类别',
   bodyGoalNotSet:'尚未设置调身目标', bodyGoalEdit:'编辑', bodyGoalSet:'设置', bodyGoalTitle:'设置调身目标',
   bodyTargetWeight:'目标体重 (kg)', bodyTargetBodyFat:'目标体脂率 (%) 可选', bodyTargetDate:'目标日期 (YYYY-MM-DD)',

@@ -30,6 +30,7 @@ export const AISettingsScreen       = React.lazy(() => import('../features/setti
 export const BodyScreen             = React.lazy(() => import('../features/practice/BodyScreen'));
 export const BodyPlanEditorScreen   = React.lazy(() => import('../features/practice/body/screens/BodyPlanEditorScreen'));
 export const PlanManagementScreen   = React.lazy(() => import('../features/practice/body/screens/PlanManagementScreen'));
+export const BodyCheckinHistoryScreen = React.lazy(() => import('../features/practice/body/screens/BodyCheckinHistoryScreen'));
 export const BreathHistoryPage      = React.lazy(() => import('../features/breathing/BreathHistoryPage'));
 export const BreathingScreen        = React.lazy(() => import('../features/breathing/BreathingScreen'));
 export const CheckinDetailScreen    = React.lazy(() => import('../features/home/screens/CheckinDetailScreen'));

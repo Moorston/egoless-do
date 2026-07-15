@@ -1022,6 +1022,7 @@ export const zhHant: I18nKeys = {
   bodyBmiThin:'偏瘦', bodyBmiNormal:'正常', bodyBmiOverweight:'偏胖', bodyBmiObese:'肥胖',
   bodySelfAssessment:'身體自評', bodySelfAssessmentPlaceholder:'點擊添加身體自評...',
   bodySelfAssessmentHint:'描述你目前的身體狀況', bodySelfAssessmentInputPlaceholder:'體能狀況、疼痛部位、生活習慣...',
+  bodyAwarenessRecords:'覺知記錄', bodyMoreWeightTrend:'更多體重趨勢',
   bodyTagsLabel:'身體標籤 (可選)', bodyCategory:'類別',
   bodyGoalNotSet:'尚未設定調身目標', bodyGoalEdit:'編輯', bodyGoalSet:'設定', bodyGoalTitle:'設定調身目標',
   bodyTargetWeight:'目標體重 (kg)', bodyTargetBodyFat:'目標體脂率 (%) 可選', bodyTargetDate:'目標日期 (YYYY-MM-DD)',

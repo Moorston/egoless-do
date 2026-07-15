@@ -13,6 +13,7 @@ import AssessmentModal from './modals/AssessmentModal';
 import BodyCheckinModal from './modals/BodyCheckinModal';
 import GoalEditModal from './modals/GoalEditModal';
 import WeightRecordModal from './modals/WeightRecordModal';
+import WeightTrendModal from './modals/WeightTrendModal';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const BANNER_WIDTH = SCREEN_WIDTH - 32; // 16px padding on each side
@@ -50,6 +51,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const [showGoalEdit, setShowGoalEdit] = useState(false);
   const [showCheckin, setShowCheckin] = useState(false);
   const [showWeightRecord, setShowWeightRecord] = useState(false);
+  const [showWeightTrend, setShowWeightTrend] = useState(false);
 
   // Banner carousel state (no auto-rotate, user manual swipe)
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -280,28 +282,40 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               </View>
             </View>
             <View style={styles.bannerContent}>
-              <View style={styles.bannerIconCircle}>
-                <Text style={{ fontSize: 28 }}>📊</Text>
-              </View>
               <View style={{ flex: 1 }}>
-                {/* Body metrics grid */}
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 8 }}>
+                {/* Body metrics - single row */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
                   {[
                     { value: profile.weight ? `${profile.weight}` : '-', unit: 'kg', label: T('bodyWeight') || '体重' },
                     { value: profile.height ? `${profile.height}` : '-', unit: 'cm', label: T('bodyHeight') || '身高' },
                     { value: profile.weight && profile.height ? `${(profile.weight / ((profile.height / 100) ** 2)).toFixed(1)}` : '-', unit: '', label: 'BMI' },
                     { value: profile.bodyFat ? `${profile.bodyFat}` : '-', unit: '%', label: T('bodyBodyFat') || '体脂' },
                   ].map((item, i) => (
-                    <View key={i} style={{ minWidth: 60 }}>
+                    <View key={i} style={{ alignItems: 'center' }}>
                       <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#fff' }}>{item.value}{item.unit}</Text>
                       <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>{item.label}</Text>
                     </View>
                   ))}
                 </View>
-                {/* Self assessment preview */}
-                {profile.selfAssessment && (
-                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginTop: 4 }} numberOfLines={1}>
-                    🗣️ {profile.selfAssessment}
+                {/* Self assessment full content */}
+                {profile.selfAssessment ? (
+                  <View style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: 10 }}>
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.9)', lineHeight: 18 }}>
+                      🗣️ {profile.selfAssessment}
+                    </Text>
+                    {(profile.bodyTags as string[] ?? []).length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginTop: 6 }}>
+                        {(profile.bodyTags as string[]).map((tag: string) => (
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                            <Text style={{ fontSize: 10, color: '#fff' }}>#{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                ) : (
+                  <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                    {T('bodySelfAssessmentPlaceholder') || '记录你的身体状态和感受...'}
                   </Text>
                 )}
               </View>
@@ -311,7 +325,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               activeOpacity={0.85}
               style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
             >
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#8b5cf6' }}>{T('bodyGoalEdit') || '编辑评估'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#8b5cf6' }}>{T('bodySelfAssessment') || '自我评估'}</Text>
             </TouchableOpacity>
           </View>
 
@@ -322,15 +336,18 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 <Text style={{ fontSize: 20 }}>🧘</Text>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyAwareness') || '身体觉知'}</Text>
               </View>
+              <TouchableOpacity
+                onPress={() => nav.navigate('BodyCheckinHistory' as never)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{T('bodyAwarenessRecords') || '记录'}</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.bannerContent}>
-              <View style={styles.bannerIconCircle}>
-                <Text style={{ fontSize: 28 }}>✨</Text>
-              </View>
               <View style={{ flex: 1 }}>
                 {latestCheckin ? (
                   <>
-                    <View style={{ flexDirection: 'row', gap: 16, marginBottom: 8 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
                       {[
                         { label: T('bodyEnergy') || '能量', value: latestCheckin.energy, color: '#fbbf24' },
                         { label: T('bodyPain') || '疼痛', value: latestCheckin.pain, color: '#f87171' },
@@ -343,7 +360,23 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                         </View>
                       ))}
                     </View>
-                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.7)' }}>
+                    {/* Tags */}
+                    {latestCheckin.tags && latestCheckin.tags.length > 0 && (
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+                        {latestCheckin.tags.map((tag: string) => (
+                          <View key={tag} style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 }}>
+                            <Text style={{ fontSize: 10, color: '#fff' }}>#{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                    {/* Note */}
+                    {latestCheckin.note && (
+                      <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.8)', marginBottom: 4 }} numberOfLines={2}>
+                        📝 {latestCheckin.note}
+                      </Text>
+                    )}
+                    <Text style={{ fontSize: FONT_SMALL(), color: 'rgba(255,255,255,0.6)' }}>
                       {latestCheckin.date}
                     </Text>
                   </>
@@ -370,12 +403,18 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                 <Text style={{ fontSize: 20 }}>⚖️</Text>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#fff' }}>{T('bodyWeightTrend') || '体重趋势'}</Text>
               </View>
+              <TouchableOpacity
+                onPress={() => setShowWeightRecord(true)}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 }}
+              >
+                <Text style={{ fontSize: FONT_SMALL(), color: '#fff' }}>{T('bodyRecordWeight') || '记录体重'}</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.bannerContent}>
               <View style={{ flex: 1 }}>
                 {weightTrend ? (
                   <>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginBottom: 8 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginBottom: 10 }}>
                       <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '900', color: '#fff' }}>
                         {weightTrend.current} kg
                       </Text>
@@ -386,32 +425,44 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                         </Text>
                       </View>
                     </View>
-                    {/* Mini bar chart - last 7 days */}
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 40, gap: 3 }}>
-                      {(checkinHistory ?? [])
-                        .filter(r => !r.deleted && r.weight != null && r.weight > 0)
-                        .sort((a, b) => a.date.localeCompare(b.date))
-                        .slice(-7)
-                        .map((r, i, arr) => {
-                          const weights = arr.map(x => x.weight);
-                          const minW = Math.min(...weights);
-                          const maxW = Math.max(...weights);
-                          const range = maxW - minW || 1;
-                          const height = Math.max(8, ((r.weight - minW) / range) * 32 + 8);
-                          return (
-                            <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                              <View style={{
-                                width: '80%',
-                                height,
-                                backgroundColor: i === arr.length - 1 ? '#fff' : 'rgba(255,255,255,0.5)',
-                                borderRadius: 3,
-                              }} />
-                              <Text style={{ fontSize: 8, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
-                                {r.date.slice(8)}
-                              </Text>
-                            </View>
-                          );
-                        })}
+                    {/* Curve chart - last 7 days */}
+                    <View style={{ height: 50, marginBottom: 4 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 40, gap: 2 }}>
+                        {(checkinHistory ?? [])
+                          .filter(r => !r.deleted && r.weight != null && r.weight > 0)
+                          .sort((a, b) => a.date.localeCompare(b.date))
+                          .slice(-7)
+                          .map((r, i, arr) => {
+                            const weights = arr.map(x => x.weight);
+                            const minW = Math.min(...weights);
+                            const maxW = Math.max(...weights);
+                            const range = maxW - minW || 1;
+                            const height = Math.max(4, ((r.weight - minW) / range) * 36 + 4);
+                            const isLast = i === arr.length - 1;
+                            return (
+                              <View key={r.date} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+                                <View style={{
+                                  width: isLast ? 10 : 6,
+                                  height,
+                                  backgroundColor: isLast ? '#fff' : 'rgba(255,255,255,0.5)',
+                                  borderRadius: isLast ? 5 : 3,
+                                }} />
+                              </View>
+                            );
+                          })}
+                      </View>
+                      {/* Date labels */}
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 }}>
+                        {(checkinHistory ?? [])
+                          .filter(r => !r.deleted && r.weight != null && r.weight > 0)
+                          .sort((a, b) => a.date.localeCompare(b.date))
+                          .slice(-7)
+                          .map((r) => (
+                            <Text key={r.date} style={{ fontSize: 8, color: 'rgba(255,255,255,0.6)', flex: 1, textAlign: 'center' }}>
+                              {r.date.slice(8)}
+                            </Text>
+                          ))}
+                      </View>
                     </View>
                   </>
                 ) : (
@@ -422,11 +473,11 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               </View>
             </View>
             <TouchableOpacity
-              onPress={() => setShowWeightRecord(true)}
+              onPress={() => setShowWeightTrend(true)}
               activeOpacity={0.85}
               style={[styles.bannerButton, { backgroundColor: 'rgba(255,255,255,0.9)' }]}
             >
-              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#3b82f6' }}>{T('bodyRecordWeight') || '记录体重'}</Text>
+              <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: '#3b82f6' }}>{T('bodyMoreWeightTrend') || '更多体重趋势'}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -537,6 +588,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
       <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
+      <WeightTrendModal visible={showWeightTrend} TH={TH} T={T} checkins={checkinHistory ?? []} onClose={() => setShowWeightTrend(false)} />
 
       {celebrationData && (
         <CelebrationOverlay
