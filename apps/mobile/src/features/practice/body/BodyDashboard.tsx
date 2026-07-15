@@ -238,7 +238,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               <>
                 <View style={styles.bannerContent}>
                   <View style={styles.bannerIconCircle}>
-                    <Text style={{ fontSize: 28 }}>{todayPlanDisplay.icon}</Text>
+                    <Text style={{ fontSize: 24 }}>{todayPlanDisplay.icon}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{todayPlanDisplay.label}</Text>
@@ -261,7 +261,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
             ) : (
               <View style={styles.bannerContent}>
                 <View style={styles.bannerIconCircle}>
-                  <Text style={{ fontSize: 28 }}>😴</Text>
+                  <Text style={{ fontSize: 24 }}>😴</Text>
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>{T('bodyTodayPlanRest')}</Text>
@@ -414,12 +414,12 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               <View style={{ flex: 1 }}>
                 {weightTrend ? (
                   <>
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginBottom: 12 }}>
-                      <Text style={{ fontSize: 32, fontWeight: '900', color: '#fff' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 10 }}>
+                      <Text style={{ fontSize: FONT_TITLE(), fontWeight: '800', color: '#fff' }}>
                         {weightTrend.current} kg
                       </Text>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 4 }}>
-                        <TrendingUp size={18} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <TrendingUp size={16} color={weightTrend.diff > 0 ? '#fbbf24' : '#34d399'} style={weightTrend.diff < 0 ? { transform: [{ scaleY: -1 }] } : undefined} />
                         <Text style={{ fontSize: FONT_BODY(), color: weightTrend.diff > 0 ? '#fbbf24' : '#34d399', fontWeight: '600' }}>
                           {weightTrend.diff > 0 ? '+' : ''}{weightTrend.diff.toFixed(1)} kg
                         </Text>
@@ -668,43 +668,43 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
 const styles = StyleSheet.create({
   bannerContainer: {
-    marginBottom: 16,
+    marginBottom: 12,
     alignItems: 'center',
   },
   bannerCard: {
     width: BANNER_WIDTH,
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 16,
+    padding: 16,
     overflow: 'hidden',
   },
   bannerHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   bannerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-    marginBottom: 16,
+    gap: 12,
+    marginBottom: 12,
   },
   bannerIconCircle: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   bannerButton: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 14,
+    borderRadius: 10,
+    padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 6,
   },
   bannerIndicators: {
     flexDirection: 'row',

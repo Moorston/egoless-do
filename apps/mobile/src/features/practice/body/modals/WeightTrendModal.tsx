@@ -1,7 +1,7 @@
 import { FONT_TITLE, FONT_BODY, FONT_SMALL, type CheckinEntry, type Theme } from '@egoless-do/core';
 import { X } from 'lucide-react-native';
 import React from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
 
 import WeightTrendChart from '../WeightTrendChart';
 
@@ -16,27 +16,19 @@ interface Props {
 export default function WeightTrendModal({ visible, TH, T, checkins, onClose }: Props) {
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' }}>
-        <View style={{
-          backgroundColor: TH.cardSolid,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          maxHeight: '90%',
-          paddingTop: 16,
-        }}>
-          {/* Header */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 16 }}>
-            <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyWeightTrend') || '体重趋势'}</Text>
-            <TouchableOpacity onPress={onClose} style={{ padding: 4 }}>
-              <X size={24} color={TH.sub} />
-            </TouchableOpacity>
-          </View>
-
-          {/* WeightTrendChart with extra top padding for weight labels */}
-          <View style={{ paddingHorizontal: 16, paddingBottom: 24, paddingTop: 8 }}>
-            <WeightTrendChart TH={TH} T={T} checkins={checkins} />
-          </View>
+      <View style={{ flex: 1, backgroundColor: TH.cardSolid }}>
+        {/* Header */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 56, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: TH.border }}>
+          <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text }}>{T('bodyWeightTrend') || '体重趋势'}</Text>
+          <TouchableOpacity onPress={onClose} style={{ padding: 8 }}>
+            <X size={24} color={TH.sub} />
+          </TouchableOpacity>
         </View>
+
+        {/* WeightTrendChart - scrollable */}
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingBottom: 40 }}>
+          <WeightTrendChart TH={TH} T={T} checkins={checkins} />
+        </ScrollView>
       </View>
     </Modal>
   );
