@@ -77,13 +77,14 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   // ── Celebration overlay ──
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedPlanId, setCelebratedPlanId] = useState<string | null>(null);
+  const sevenDaysAgo = useMemo(() => dateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)), []);
 
   // Detect newly completed plans
   const recentlyCompletedPlans = useMemo(() =>
     (bodyTrainingPlans ?? []).filter((p: BodyTrainingPlan) =>
-      !p.deleted && p.status === 'completed' && p.endDate >= dateStr(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
+      !p.deleted && p.status === 'completed' && p.endDate >= sevenDaysAgo
     ),
-  [bodyTrainingPlans]);
+  [bodyTrainingPlans, sevenDaysAgo]);
 
   // Compute celebration data
   const celebrationData = useMemo(() => {
@@ -95,12 +96,11 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
     const totalMin = Math.round(planExercises.reduce((s: number, e: ExerciseEntry) => s + (e.durationSec ?? 0), 0) / 60);
     const totalCal = planExercises.reduce((s: number, e: ExerciseEntry) => s + (e.calories ?? 0), 0);
     const completedDays = new Set(planExercises.map((e: ExerciseEntry) => dateStr(new Date(e.timestamp)))).size;
-    const totalTasks = plan.tasks.filter(t => t.sportKey && t.sportKey !== 'rest').length;
     const weeks = Math.max(1, Math.round((new Date(plan.endDate).getTime() - new Date(plan.startDate).getTime()) / 604800000));
     const totalDays = weeks * 7;
 
     return {
-      planName: plan.name,
+      planName: plan.name ?? '',
       totalDays,
       completedDays,
       totalDurationMin: totalMin,
@@ -109,12 +109,13 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   }, [recentlyCompletedPlans, exerciseLog]);
 
   // Show celebration once when a completed plan is detected
+  const recentPlanId = recentlyCompletedPlans[0]?.id ?? null;
   useEffect(() => {
-    if (celebrationData && recentlyCompletedPlans[0]?.id !== celebratedPlanId) {
-      setCelebratedPlanId(recentlyCompletedPlans[0].id);
+    if (celebrationData && recentPlanId && recentPlanId !== celebratedPlanId) {
+      setCelebratedPlanId(recentPlanId);
       setShowCelebration(true);
     }
-  }, [celebrationData, recentlyCompletedPlans, celebratedPlanId]);
+  }, [celebrationData, recentPlanId, celebratedPlanId]);
 
   // Calculate plan progress
   const planProgress = useMemo(() => {
@@ -187,9 +188,9 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   }, [updateUserProfile]);
 
   // Compute collapsible badges
-  const trainingBadge = planProgress
+  const trainingBadge = planProgress && planProgress.weekTotal > 0
     ? `${planProgress.weekComplete}/${planProgress.weekTotal}`
-    : activeTrainingPlan ? '0/0' : undefined;
+    : undefined;
 
   return (
     <View>

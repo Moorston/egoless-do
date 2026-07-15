@@ -10,7 +10,7 @@ export default function PrepPage(props: ExercisePageProps) {
   const {
     sportName, sportType, bg, mode, setMode, targetType, setTargetType, targetValue, setTargetValue,
     breathGuideEnabled, setBreathGuideEnabled, isMeditative,
-    handleGo, onGoBack, exerciseLog, T,
+    handleGo, onGoBack, exerciseLog, T, TH,
     musicTrack, onPressMusic,
   } = props;
 
@@ -49,11 +49,11 @@ export default function PrepPage(props: ExercisePageProps) {
 
         {/* Music selector — inline compact */}
         <View style={styles.musicBar}>
-          <TouchableOpacity onPress={onPressMusic} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, backgroundColor: 'rgba(255,255,255,.12)' }}>
-            <Text style={{ fontSize: FONT_SUB(), color: musicTrack ? '#fff' : 'rgba(255,255,255,.6)' }}>
+          <TouchableOpacity onPress={onPressMusic} style={styles.musicBarButton}>
+            <Text style={[styles.musicBarText, { color: musicTrack ? '#fff' : 'rgba(255,255,255,.6)' }]}>
               {musicTrack ? `🎵 ${musicTrack.name}` : '🎵 ' + (T('exerciseAddMusic') || '添加音乐')}
             </Text>
-            <Text style={{ fontSize: FONT_BODY(), color: 'rgba(255,255,255,.4)' }}>▸</Text>
+            <Text style={styles.musicBarArrow}>▸</Text>
           </TouchableOpacity>
         </View>
 
@@ -232,6 +232,22 @@ const styles = StyleSheet.create({
   },
   musicBar: {
     marginTop: 10,
+  },
+  musicBarButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255,255,255,.12)',
+  },
+  musicBarText: {
+    fontSize: FONT_SUB(),
+  },
+  musicBarArrow: {
+    fontSize: FONT_BODY(),
+    color: 'rgba(255,255,255,.4)',
   },
   modeToggle: {
     flexDirection: 'row',

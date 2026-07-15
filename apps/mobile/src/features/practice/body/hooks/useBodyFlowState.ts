@@ -17,6 +17,7 @@ export interface FlowState {
   awarenessData: BodyCheckin | null;
   activePlanId: string | null;
   startedAt: number;
+  updatedAt: number;
 }
 
 export function useBodyFlowState() {
@@ -35,7 +36,7 @@ export function useBodyFlowState() {
     if (bodyFlowState && Date.now() - bodyFlowState.updatedAt > BODY_FLOW_EXPIRY_MS) {
       resetBodyFlowState();
     }
-  }, [bodyFlowState, resetBodyFlowState]);
+  }, [bodyFlowState, resetBodyFlowState, BODY_FLOW_EXPIRY_MS]);
 
   const setStep = useCallback((step: FlowState['step']) => {
     setBodyFlowState({ step });

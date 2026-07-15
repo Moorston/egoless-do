@@ -72,23 +72,18 @@ export default function BodyScreen() {
     setReturnTick(t => t + 1);
 
     // Check for navigation result params (primary mechanism)
-    const params = route.params as Record<string, unknown> | undefined;
-    if (params?.sportResult) {
-      const sr = params.sportResult as { completed: boolean; durationSec: number };
-      if (sr.completed) {
-        setBodyFlowState({ practiceCompleted: true, practiceDurationSec: sr.durationSec });
-      }
-      // Clear the param to avoid re-processing
-      (nav as { setParams: (p: Record<string, unknown>) => void }).setParams?.({ sportResult: undefined });
+    // Using route.params?.xxx directly — no dependency on the params object reference
+    const sr = route.params?.sportResult as { completed?: boolean; durationSec?: number } | undefined;
+    if (sr?.completed) {
+      setBodyFlowState({ practiceCompleted: true, practiceDurationSec: sr.durationSec ?? 0 });
+      (nav as { setParams?: (p: Record<string, unknown>) => void }).setParams?.({ sportResult: undefined });
     }
-    if (params?.breathingResult) {
-      const br = params.breathingResult as { completed: boolean; durationMs: number };
-      if (br.completed) {
-        setBodyFlowState({ breathingCompleted: true, breathingDurationMs: br.durationMs });
-      }
-      (nav as { setParams: (p: Record<string, unknown>) => void }).setParams?.({ breathingResult: undefined });
+    const br = route.params?.breathingResult as { completed?: boolean; durationMs?: number } | undefined;
+    if (br?.completed) {
+      setBodyFlowState({ breathingCompleted: true, breathingDurationMs: br.durationMs ?? 0 });
+      (nav as { setParams?: (p: Record<string, unknown>) => void }).setParams?.({ breathingResult: undefined });
     }
-  }, [route.params, setBodyFlowState, nav]));
+  }, [setBodyFlowState, nav]));
 
   const handleGoToSport = useCallback((sportKey: string) => {
     const sport = ALL_SPORTS.find(s => s.key === sportKey || s.keyEn === sportKey);

@@ -20,15 +20,16 @@ export default function CollapsibleSection({
   const [expanded, setExpanded] = useState(defaultExpanded);
   const animValue = useRef(new Animated.Value(defaultExpanded ? 1 : 0)).current;
   const [contentHeight, setContentHeight] = useState(0);
-  const [measuring, setMeasuring] = useState(true);
+  const heightRef = useRef(0);
 
-  // Measure content height on first render
+  // Always update content height when layout changes
   const onContentLayout = useCallback((e: { nativeEvent: { layout: { height: number } } }) => {
-    if (measuring) {
-      setContentHeight(e.nativeEvent.layout.height);
-      setMeasuring(false);
+    const h = e.nativeEvent.layout.height;
+    if (Math.abs(h - heightRef.current) > 1) {
+      heightRef.current = h;
+      setContentHeight(h);
     }
-  }, [measuring]);
+  }, []);
 
   const toggle = useCallback(() => {
     const toValue = expanded ? 0 : 1;
@@ -83,20 +84,7 @@ export default function CollapsibleSection({
 
       {/* Collapsible content */}
       <Animated.View style={[styles.content, { maxHeight, opacity, overflow: 'hidden' }]}>
-        {/* Invisible measurement view for first render */}
-        {measuring ? (
-          <View
-            style={styles.measurer}
-            onLayout={onContentLayout}
-          >
-            {children}
-          </View>
-        ) : null}
-        {/* Visible content (always rendered for state consistency) */}
-        <View
-          style={!measuring ? undefined : styles.hidden}
-          onLayout={measuring ? undefined : onContentLayout}
-        >
+        <View onLayout={onContentLayout}>
           {children}
         </View>
       </Animated.View>
@@ -143,16 +131,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 16,
-  },
-  measurer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    opacity: 0,
-  },
-  hidden: {
-    opacity: 0,
-    position: 'absolute',
   },
 });

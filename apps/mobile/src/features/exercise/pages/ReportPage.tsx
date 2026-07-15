@@ -28,6 +28,7 @@ export default function ReportPage(props: ExercisePageProps) {
     const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
     return logs
       .filter((e: Record<string, unknown>) => (e.timestamp as number) >= sevenDaysAgo)
+      .sort((a, b) => ((a.timestamp as number) ?? 0) - ((b.timestamp as number) ?? 0))
       .slice(-7)
       .map((e: Record<string, unknown>) => ({
         date: dateStr(new Date(e.timestamp as number)),
