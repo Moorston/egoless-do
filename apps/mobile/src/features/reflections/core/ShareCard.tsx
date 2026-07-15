@@ -4,7 +4,8 @@ import * as Sharing from 'expo-sharing';
 import { X, Download, Share2, MessageSquare } from 'lucide-react-native';
 import React, { useRef, useState, useMemo } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { captureRef } from 'react-native-view-shot';
+import ViewShot from 'react-native-view-shot';
+import type { ViewShotRef } from 'react-native-view-shot';
 
 import { useTheme, useT } from '../../../components/UI';
 
@@ -25,7 +26,7 @@ interface ShareCardProps {
 export default function ShareCard({ visible, onClose, reflection, onTextShare }: ShareCardProps) {
   const TH = useTheme();
   const T = useT();
-  const viewShotRef = useRef<View>(null);
+  const viewShotRef = useRef<ViewShotRef>(null);
   const [capturing, setCapturing] = useState(false);
 
   const parsedColors = useMemo(() => {
@@ -46,10 +47,8 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
   if (!visible || !reflection) return null;
 
   const doCapture = async (): Promise<string> => {
-    // Wait for native layout to settle
-    await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
     if (!viewShotRef.current) throw new Error('view not ready');
-    return captureRef(viewShotRef, { format: 'png', quality: 1 });
+    return viewShotRef.current.capture();
   };
 
   const handleCapture = async () => {
@@ -101,10 +100,11 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
         </View>
 
         {/* Card preview */}
-        <View ref={viewShotRef} collapsable={false} style={{
-          width: 320, overflow: 'hidden',
-          backgroundColor: bgColor,
-        }}>
+        <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1 }}>
+          <View style={{
+            width: 320, overflow: 'hidden',
+            backgroundColor: bgColor,
+          }}>
           {/* Decorative circles */}
           <View style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(255,255,255,.08)' }} />
           <View style={{ position: 'absolute', bottom: -20, left: -20, width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,255,255,.05)' }} />
@@ -144,6 +144,7 @@ export default function ShareCard({ visible, onClose, reflection, onTextShare }:
             </View>
           </View>
         </View>
+        </ViewShot>
 
         {/* Action buttons */}
         <View style={{ flexDirection: 'row', gap: 12, marginTop: 24 }}>
