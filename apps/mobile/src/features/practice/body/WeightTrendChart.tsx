@@ -148,7 +148,7 @@ export default function WeightTrendChart({ TH, T, checkins }: Props) {
                   width: 36,
                   textAlign: 'center',
                 }}>
-                  {point.weight}
+                  {String(point.weight)}
                 </Text>
                 {/* Point dot */}
                 <View style={{

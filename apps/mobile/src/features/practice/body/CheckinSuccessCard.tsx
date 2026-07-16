@@ -116,7 +116,7 @@ function CheckinSuccessCard({ TH, T, awarenessData, practiceCompleted, breathing
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             {DIMENSIONS.map(item => (
               <View key={item.label} style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: item.color }}>{item.value}</Text>
+                <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '800', color: item.color }}>{String(item.value)}</Text>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginTop: 2 }}>{item.label}</Text>
               </View>
             ))}

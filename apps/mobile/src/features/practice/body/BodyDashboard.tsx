@@ -638,7 +638,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
                                     width: 30,
                                     textAlign: 'center',
                                   }}>
-                                    {r.weight}
+                                    {String(r.weight)}
                                   </Text>
                                   {/* Point */}
                                   <View style={{
@@ -848,15 +848,15 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           </View>
           <View style={styles.progressStats}>
             <View style={styles.progressStatItem}>
-              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#f59e0b' }}>{planProgress.totalDuration}</Text>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#f59e0b' }}>{String(planProgress.totalDuration)}</Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('exerciseMin') || '分钟'}</Text>
             </View>
             <View style={styles.progressStatItem}>
-              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#ef4444' }}>{planProgress.totalCal}</Text>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#ef4444' }}>{String(planProgress.totalCal)}</Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>kcal</Text>
             </View>
             <View style={styles.progressStatItem}>
-              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#8b5cf6' }}>{planProgress.weekComplete}</Text>
+              <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: '#8b5cf6' }}>{String(planProgress.weekComplete)}</Text>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{T('bodyDayCompleted') || '天'}</Text>
             </View>
           </View>
@@ -882,7 +882,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               <View style={{ flex: 1, marginLeft: 10 }}>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>{e.sportKey}</Text>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-                  {Math.floor(e.durationSec / 60)}分钟 {e.calories ? `· ${e.calories}kcal` : ''}
+                  {String(Math.floor(e.durationSec / 60))}分钟 {e.calories ? `· ${e.calories}kcal` : ''}
                 </Text>
               </View>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
