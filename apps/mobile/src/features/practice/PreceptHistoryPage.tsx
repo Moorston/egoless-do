@@ -99,7 +99,7 @@ export default function PreceptHistoryPage() {
           <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
             {[
               { value: stats.totalDays, label: '累计天数' },
-              { value: stats.longestStreak, label: '最长连续' },
+              { value: String(stats.longestStreak), label: '最长连续' },
               { value: `${stats.monthRate}%`, label: '本月完成' },
               { value: stats.violationCount, label: '觉察记录' },
             ].map((s, i) => (
