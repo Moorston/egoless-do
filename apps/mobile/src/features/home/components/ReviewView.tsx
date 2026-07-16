@@ -366,7 +366,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       metrics.push({
         icon: '💧',
         label: T('reviewWater'),
-        value: `${review.metrics.avgWater}ml`,
+        value: `${String(review.metrics.avgWater)}ml`,
         change: review.comparison.waterDiff,
         unit: 'ml',
       });

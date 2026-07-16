@@ -264,7 +264,7 @@ export default function ReviewDetailScreen() {
                 <View style={{ width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>💧 {T('reviewWater')}</Text>
                   <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 4 }}>
-                    {review.metrics.avgWater}ml
+                    {String(review.metrics.avgWater)}ml
                   </Text>
                 </View>
               )}
