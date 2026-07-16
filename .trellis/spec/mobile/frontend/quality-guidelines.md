@@ -112,6 +112,25 @@ fontSize: scaleFontSize(32),
 
 > ⚠️ `scaleFontSize` 是运行时函数（非类型），不能用 `import type` 导入。
 
+### Text Strings Must Be Rendered Within Text Component
+React Native 要求所有在 `<Text>` 组件中渲染的值必须是字符串类型。数字、对象等非字符串值会导致 "Text strings must be rendered within a Text component" 错误。
+
+```tsx
+// ❌ 错误：直接渲染数字
+<Text>{count}</Text>
+<Text>{item.value}</Text>
+
+// ✅ 正确：使用 String() 转换
+<Text>{String(count)}</Text>
+<Text>{String(item.value)}</Text>
+
+// ✅ 正确：使用模板字面量
+<Text>{`${count}`}</Text>
+<Text>{`${item.value}`}</Text>
+```
+
+> ⚠️ 批量修复时容易遗漏，使用 `String()` 或模板字面量确保所有值都是字符串类型。
+
 ---
 
 ## Code Review Checklist

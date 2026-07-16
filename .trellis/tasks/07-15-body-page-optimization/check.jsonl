@@ -1,1 +1,8 @@
-{"_example": "Fill with {\"file\": \"<path>\", \"reason\": \"<why>\"}. Put spec/research files only — no code paths. Run `python .trellis/scripts/get_context.py --mode packages` to list available specs. Delete this line once real entries are added."}
+{"file": "apps/mobile/src/features/practice/body/BodyDashboard.tsx", "reason": "R1 implementation - CollapsibleSection, 4-section layout"}
+{"file": "apps/mobile/src/features/practice/body/BodyFlow.tsx", "reason": "R2 implementation - useBodyFlowState, navigation params, animations"}
+{"file": "apps/mobile/src/features/practice/body/modals/TemplatePickerModal.tsx", "reason": "R3 implementation - preset template selector"}
+{"file": "apps/mobile/src/features/exercise/pages/ReportPage.tsx", "reason": "R4 implementation - 7-day comparison, calorie ratio"}
+{"file": "apps/mobile/src/features/practice/body/CheckinSuccessCard.tsx", "reason": "R2 - enhanced with more data and encouragement quotes"}
+{"file": "apps/mobile/src/features/practice/body/components/CollapsibleSection.tsx", "reason": "R1 - new component for collapsible sections"}
+{"file": "apps/mobile/src/features/practice/body/hooks/useBodyFlowState.ts", "reason": "R2 - new hook for flow state management"}
+{"file": "apps/mobile/src/features/practice/body/screens/CelebrationOverlay.tsx", "reason": "R3 - celebration animation overlay"}
