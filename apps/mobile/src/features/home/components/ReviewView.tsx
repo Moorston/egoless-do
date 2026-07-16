@@ -386,7 +386,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       metrics.push({
         icon: '🏃',
         label: T('reviewExercise'),
-        value: `${review.metrics.totalExerciseMin}min`,
+        value: `${String(review.metrics.totalExerciseMin)}min`,
         change: review.comparison.exerciseMinDiff,
         unit: 'min',
       });
@@ -396,7 +396,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       metrics.push({
         icon: '🧘',
         label: T('reviewMeditation'),
-        value: `${review.metrics.totalMeditationMin}min`,
+        value: `${String(review.metrics.totalMeditationMin)}min`,
         change: undefined,
         unit: 'min',
       });
