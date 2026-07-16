@@ -833,7 +833,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
               <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text }}>{T('bodyWeeklyProgress') || '本周进度'}</Text>
             </View>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-              {planProgress.weekComplete}/{planProgress.weekTotal}
+              {String(planProgress.weekComplete)}/{String(planProgress.weekTotal)}
             </Text>
           </View>
           <View style={styles.progressBarContainer}>
