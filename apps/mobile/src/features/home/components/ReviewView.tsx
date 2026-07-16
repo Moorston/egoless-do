@@ -376,7 +376,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       metrics.push({
         icon: '🍽️',
         label: T('reviewCalories'),
-        value: `${review.metrics.avgCalories}kcal`,
+        value: `${String(review.metrics.avgCalories)}kcal`,
         change: review.comparison.caloriesDiff,
         unit: 'kcal',
       });
