@@ -104,7 +104,7 @@ export default function PreceptHistoryPage() {
               { value: stats.violationCount, label: '觉察记录' },
             ].map((s, i) => (
               <View key={i} style={{ alignItems: 'center', gap: 2 }}>
-                <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: i === 3 ? '#EF4444' : TH.text }}>{s.value}</Text>
+                <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: i === 3 ? '#EF4444' : TH.text }}>{String(s.value)}</Text>
                 <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{s.label}</Text>
               </View>
             ))}
@@ -161,7 +161,7 @@ export default function PreceptHistoryPage() {
                 <View key={h.id} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: `${TH.border}20` }}>
                   <Text style={{ fontSize: FONT_LABEL(), marginRight: 8 }}>{isAvoid ? '🚫' : '✨'}</Text>
                   <Text style={{ flex: 1, fontSize: FONT_BODY(), color: TH.text, fontWeight: '600' }}>{name}</Text>
-                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginRight: 8 }}>{h.doneDays}天 🔥{h.streak}</Text>
+                  <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, marginRight: 8 }}>{String(h.doneDays)}天 🔥{String(h.streak)}</Text>
                   {violations.length > 0 && (
                     <Text style={{ fontSize: FONT_SMALL(), color: '#EF4444' }}>违{violations.length}</Text>
                   )}

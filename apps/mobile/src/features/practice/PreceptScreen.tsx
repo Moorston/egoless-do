@@ -154,7 +154,7 @@ export default function PreceptScreen() {
             {habit.goal ? <Text style={[styles.preceptGoal, { color: TH.sub }]}>{habit.goal}</Text> : null}
           </View>
           <View style={styles.streakBadge}>
-            <Text style={[styles.streakText, { color: '#F59E0B' }]}>🔥 {habit.streak}</Text>
+            <Text style={[styles.streakText, { color: '#F59E0B' }]}>🔥 {String(habit.streak)}</Text>
           </View>
         </View>
         <View style={styles.preceptActions}>
@@ -198,11 +198,11 @@ export default function PreceptScreen() {
         <Text style={[styles.quoteText, { color: TH.sub }]}>{T('preceptQuote') || '持戒清净，禅定现前'}</Text>
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: '#F59E0B' }]}>{stats.streak}</Text>
+            <Text style={[styles.statValue, { color: '#F59E0B' }]}>{String(stats.streak)}</Text>
             <Text style={[styles.statLabel, { color: TH.sub }]}>🔥 {T('preceptStreak') || '连续'}</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: TH.text }]}>{stats.totalDays}</Text>
+            <Text style={[styles.statValue, { color: TH.text }]}>{String(stats.totalDays)}</Text>
             <Text style={[styles.statLabel, { color: TH.sub }]}>{T('preceptTotalDays') || '累计'}</Text>
           </View>
           <View style={styles.statItem}>
@@ -274,7 +274,7 @@ export default function PreceptScreen() {
                     {h.goal ? <Text style={[styles.preceptGoal, { color: TH.sub }]}>{h.goal}</Text> : null}
                   </View>
                   <View style={styles.streakBadge}>
-                    <Text style={[styles.streakText, { color: '#F59E0B' }]}>🔥 {h.streak}</Text>
+                    <Text style={[styles.streakText, { color: '#F59E0B' }]}>🔥 {String(h.streak)}</Text>
                   </View>
                 </View>
                 <View style={styles.preceptActions}>
