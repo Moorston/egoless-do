@@ -356,7 +356,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       metrics.push({
         icon: '⚖️',
         label: T('reviewWeight'),
-        value: `${review.metrics.avgWeight}kg`,
+        value: `${String(review.metrics.avgWeight)}kg`,
         change: review.comparison.weightDiff,
         unit: 'kg',
       });
