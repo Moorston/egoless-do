@@ -80,7 +80,7 @@ export default function HabitDetailScreen() {
             {[
               { v: String(habit.streak), l: T('habitStreakDays') },
               { v: String(habit.doneDays), l: T('habitTotalDays') },
-              { v: habit.targetDays, l: T('habitTargetDays') },
+              { v: String(habit.targetDays), l: T('habitTargetDays') },
             ].map(({ v, l }) => (
               <View key={l} style={styles.statItem}>
                 <Text style={[styles.statNumber, { color: P }]}>{v}</Text>

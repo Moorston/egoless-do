@@ -60,7 +60,7 @@ function HabitCard({
 
           {/* Meta: start date + target days */}
           <Text style={{ color: TH.sub, fontSize: FONT_BODY(), marginBottom: 8 }}>
-            {T('habitStart')} {h.startDate} · {T('habitGoal')} {h.targetDays} {T('habitDays')}
+            {T('habitStart')} {h.startDate} · {T('habitGoal')} {String(h.targetDays)} {T('habitDays')}
           </Text>
 
           {/* Alarm */}
