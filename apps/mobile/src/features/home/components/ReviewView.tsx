@@ -159,7 +159,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       {
         value: `${review.completionRate}%`,
         label: T('reviewCompletionRate'),
-        subLabel: `${review.doneDays}/${review.totalDays} ${T('days')}`,
+        subLabel: `${String(review.doneDays)}/${String(review.totalDays)} ${T('days')}`,
         trend: review.comparison.completionRateDiff,
       },
       {
