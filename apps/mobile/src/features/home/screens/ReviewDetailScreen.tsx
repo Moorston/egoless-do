@@ -251,11 +251,11 @@ export default function ReviewDetailScreen() {
                 <View style={{ width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>⚖️ {T('reviewWeight')}</Text>
                   <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 4 }}>
-                    {review.metrics.avgWeight}kg
+                    {String(review.metrics.avgWeight)}kg
                   </Text>
                   {review.comparison.weightDiff !== undefined && review.comparison.weightDiff !== 0 && (
                     <Text style={{ fontSize: FONT_SUB(), color: review.comparison.weightDiff > 0 ? COLORS.RED : COLORS.GREEN }}>
-                      {review.comparison.weightDiff > 0 ? '+' : ''}{review.comparison.weightDiff}kg
+                      {review.comparison.weightDiff > 0 ? '+' : ''}{String(review.comparison.weightDiff)}kg
                     </Text>
                   )}
                 </View>
