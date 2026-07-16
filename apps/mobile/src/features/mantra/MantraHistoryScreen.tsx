@@ -214,7 +214,7 @@ export default function MantraHistoryScreen() {
           </View>
           <View style={styles.statItemCenter}>
             <Text style={styles.streakNumber}>
-              🔥 {stats.streak}
+              🔥 {String(stats.streak)}
             </Text>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>连续</Text>
           </View>

@@ -172,7 +172,7 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
               <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
                 <Text style={styles.statIcon}>🔥</Text>
                 <Text style={[styles.statValue, { color: theme.text }]}>
-                  {checkin.streak}
+                  {String(checkin.streak)}
                 </Text>
                 <Text style={[styles.statLabel, { color: theme.sub }]}>
                   {t('globalPulse.currentStreak')}

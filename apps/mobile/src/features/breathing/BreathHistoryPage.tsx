@@ -140,7 +140,7 @@ export default function BreathHistoryPage() {
             {[
               { value: stats.total, label: T('breathTotalSessions'), color: TH.text },
               { value: `${stats.totalMin}${T('bodyMin') || 'min'}`, label: T('breathTotalMinutes'), color: TH.text },
-              { value: stats.streak, label: T('breathStreak'), color: '#F59E0B' },
+              { value: String(stats.streak), label: T('breathStreak'), color: '#F59E0B' },
               { value: `${stats.distressImprove}%`, label: T('breathDistressImprove'), color: '#10B981' },
             ].map((s, i) => (
               <View key={i} style={{ alignItems: 'center', gap: 2 }}>

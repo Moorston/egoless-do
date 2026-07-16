@@ -126,7 +126,7 @@ function HabitCard({
             <View style={{ flexDirection: 'row', gap: 20, marginBottom: 12 }}>
               {[
                 { v: h.doneDays, l: T('habitCumDays'), c: P },
-                { v: h.streak, l: T('habitStreakDays'), c: COLORS.ORANGE },
+                { v: String(h.streak), l: T('habitStreakDays'), c: COLORS.ORANGE },
                 { v: h.interrupted, l: T('habitInterrupted'), c: COLORS.RED },
                 { v: Math.max(0, h.targetDays - h.doneDays), l: T('habitRemainDays'), c: COLORS.GREEN },
               ].map(({ v, l, c }) => (

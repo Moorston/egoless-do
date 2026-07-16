@@ -62,7 +62,7 @@ export const PodiumItem: React.FC<PodiumItemProps> = React.memo(({
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: theme.primary }]}>
-            {entry.streak}
+            {String(entry.streak)}
           </Text>
           <Text style={[styles.statLabel, { color: theme.sub }]}>
             🔥{t('globalPulse.currentStreak')}
