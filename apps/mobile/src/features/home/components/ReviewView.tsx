@@ -406,7 +406,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       metrics.push({
         icon: '🔥',
         label: T('reviewFasting'),
-        value: `${review.metrics.fastingCount}${T('reviewTimes')}`,
+        value: `${String(review.metrics.fastingCount)}${T('reviewTimes')}`,
         change: undefined,
         unit: '',
       });
