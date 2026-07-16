@@ -142,7 +142,7 @@ export default function ReviewDetailScreen() {
                   {r.icon} {r.code}
                 </Text>
                 <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.primary }}>
-                  {r.count} {T('reviewTimes')} ({r.percentage}%)
+                  {String(r.count)} {T('reviewTimes')} ({String(r.percentage)}%)
                 </Text>
               </View>
             ))}

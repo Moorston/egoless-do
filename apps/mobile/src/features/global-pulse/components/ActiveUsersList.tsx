@@ -69,7 +69,7 @@ export const ActiveUsersList: React.FC<ActiveUsersListProps> = ({
       </Text>
       <View style={[styles.countBadge, { backgroundColor: `${section.color}20` }]}>
         <Text style={[styles.countText, { color: section.color }]}>
-          {section.count}
+          {String(section.count)}
         </Text>
       </View>
     </View>

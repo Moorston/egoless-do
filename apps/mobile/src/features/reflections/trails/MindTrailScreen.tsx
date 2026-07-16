@@ -464,7 +464,7 @@ export default function MindTrailScreen() {
               </TouchableOpacity>
             </View>
             <Text style={[styles.trailInfo, { color: TH.sub }]}>
-              {stats.count} {T('thoughtTrailReflections')}
+              {String(stats.count)} {T('thoughtTrailReflections')}
               {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
             </Text>
             {stats.moodChanges.length > 0 && (
@@ -508,7 +508,7 @@ export default function MindTrailScreen() {
               </TouchableOpacity>
             </View>
             <Text style={[styles.trailInfo, { color: TH.sub }]}>
-              {stats.count} {T('thoughtTrailReflections')}
+              {String(stats.count)} {T('thoughtTrailReflections')}
               {stats.dateRange ? ` · ${stats.dateRange.start} ~ ${stats.dateRange.end}` : ''}
             </Text>
             {stats.moodChanges.length > 0 && (

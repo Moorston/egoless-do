@@ -87,7 +87,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
         {r.icon} {T(`incompleteReason${r.code.charAt(0).toUpperCase() + r.code.slice(1)}`)}
       </Text>
       <Text style={styles.reasonCount}>
-        {r.count} {T('reviewTimes')} ({r.percentage}%)
+        {String(r.count)} {T('reviewTimes')} ({String(r.percentage)}%)
       </Text>
     </View>
   ), [styles, TH, T]);
@@ -98,7 +98,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
         {item.name}
       </Text>
       <Text style={styles.incompleteItemCount}>
-        {item.count} {T('reviewTimes')}
+        {String(item.count)} {T('reviewTimes')}
       </Text>
     </View>
   ), [styles, TH, T]);

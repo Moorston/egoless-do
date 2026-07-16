@@ -99,7 +99,7 @@ export default function TrailPickerModal({ visible, reflectionId, onClose, onTog
                   <View style={styles.trailInfo}>
                     <Text style={[styles.trailName, { color: TH.text }]}>{trail.name}</Text>
                     <Text style={[styles.trailCount, { color: TH.sub }]}>
-                      {stats.count} {T('thoughtTrailReflections')}
+                      {String(stats.count)} {T('thoughtTrailReflections')}
                     </Text>
                   </View>
                   {isLinked && <Check size={18} color={P} />}

@@ -182,7 +182,7 @@ export default function ReflectionStatsScreen() {
               <View key={idx} style={styles.barWrapper}>
                 {item.count > 0 && (
                   <Text style={[styles.barValue, { color: P }]}>
-                    {item.count}
+                    {String(item.count)}
                   </Text>
                 )}
                 <View
