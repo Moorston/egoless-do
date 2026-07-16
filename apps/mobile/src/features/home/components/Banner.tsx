@@ -69,7 +69,7 @@ export default function Banner({
         <View style={{ width: 1, height: 40, backgroundColor: 'rgba(255,255,255,.2)' }} />
         <TouchableOpacity style={{ alignItems: 'center', flex: 1 }} onPress={onStatsPress} activeOpacity={0.7}>
           <Text style={{ color: 'rgba(255,255,255,.6)', fontSize: FONT_SUB() }}>{T('streak')}</Text>
-          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD() }}>{isToday ? streak : viewDateStats.streak}</Text>
+          <Text style={{ color: '#fff', fontWeight: '800', fontSize: FONT_STAT_CARD() }}>{String(isToday ? streak : viewDateStats.streak)}</Text>
           <Text style={{ color: 'rgba(255,255,255,.5)', fontSize: FONT_SMALL() }}>{T('days')}</Text>
           {isToday && showGrace && graceAvailable ? (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 4 }}>

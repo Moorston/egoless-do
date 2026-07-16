@@ -87,7 +87,7 @@ export default function ReviewDetailScreen() {
             alignItems: 'center', borderWidth: 1, borderColor: TH.border,
           }}>
             <Text style={{ fontSize: FONT_STAT_SECTION(), fontWeight: '700', color: TH.primary }}>
-              {review.streakDays}
+              {String(review.streakDays)}
             </Text>
             <Text style={{ fontSize: FONT_BODY(), color: TH.text, marginTop: 4 }}>
               {T('reviewStreakDays')}
@@ -186,7 +186,7 @@ export default function ReviewDetailScreen() {
                     {habit.doneDays}/{habit.targetDays} {T('days')}
                   </Text>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
-                    {T('reviewStreak')}: {habit.streak} {T('days')}
+                    {T('reviewStreak')}: {String(habit.streak)} {T('days')}
                   </Text>
                 </View>
               </View>

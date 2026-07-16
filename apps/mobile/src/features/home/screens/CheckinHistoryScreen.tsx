@@ -212,8 +212,8 @@ export default function CheckinHistoryScreen() {
                 )}
 
                 <View style={[styles.streakRow, styles.gap12]}>
-                  {h.streak > 0 && <Text style={[styles.streakText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{T('checkinStreak')}: {h.streak} {T('days')}</Text>}
-                  {h.weight ? <Text style={[styles.streakText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{h.weight} {T('checkinKg')}</Text> : null}
+                  {h.streak > 0 && <Text style={[styles.streakText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{T('checkinStreak')}: {String(h.streak)} {T('days')}</Text>}
+                  {h.weight ? <Text style={[styles.streakText, { fontSize: FONT_BADGE(), color: TH.sub }]}>{String(h.weight)} {T('checkinKg')}</Text> : null}
                 </View>
               </TouchableOpacity>
             </View>

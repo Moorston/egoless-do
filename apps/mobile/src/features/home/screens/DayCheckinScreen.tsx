@@ -210,7 +210,7 @@ export default function DayCheckinScreen() {
       <Checkbox on={!!habitCheckins[h.id]} onChange={() => setHabitCheckins(c => ({ ...c, [h.id]:!c[h.id] }))} accessibilityLabel={`${habitCheckins[h.id] ? '取消' : '打卡'} ${h.name}`} />
       <View style={{ flex:1, marginLeft:8 }}>
         <Text style={{ fontSize:FONT_BODY(), color:TH.text }}>{h.name}</Text>
-        <Text style={{ fontSize:FONT_SUB(), color:TH.sub }}>{h.streak} {T('checkinStreak')}</Text>
+        <Text style={{ fontSize:FONT_SUB(), color:TH.sub }}>{String(h.streak)} {T('checkinStreak')}</Text>
       </View>
     </View>
   ), [habitCheckins, setHabitCheckins, TH, T]);

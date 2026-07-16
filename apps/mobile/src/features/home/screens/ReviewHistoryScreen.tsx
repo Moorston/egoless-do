@@ -106,7 +106,7 @@ export default function ReviewHistoryScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>{T('reviewStreakDays')}:</Text>
               <Text style={{ fontSize: FONT_BODY(), fontWeight: '600', color: TH.text }}>
-                {review.streakDays}{T('days')}
+                {String(review.streakDays)}{T('days')}
               </Text>
             </View>
           </View>

@@ -124,7 +124,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
           {habit.doneDays}/{habit.targetDays} {T('days')}
         </Text>
         <Text style={styles.subText}>
-          {T('reviewStreak')}: {habit.streak} {T('days')}
+          {T('reviewStreak')}: {String(habit.streak)} {T('days')}
         </Text>
       </View>
     </View>
@@ -145,7 +145,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
       </View>
       <View style={styles.historyRight}>
         <Text style={styles.habitProgressPercent}>
-          {r.streakDays} {T('days')}
+          {String(r.streakDays)} {T('days')}
         </Text>
         <Text style={styles.subText}>{T('reviewStreak')}</Text>
       </View>

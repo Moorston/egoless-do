@@ -359,7 +359,7 @@ export default function HomeScreen() {
           <Star size={16} color={P} />
           <View>
             <Text style={{ color: isReadOnly && !habitDone ? TH.sub : TH.text, fontSize: FONT_BODY(), opacity: isReadOnly && !habitDone ? 0.5 : 1 }}>{h.name}</Text>
-            <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{h.streak} {T('checkinStreak')}</Text>
+            <Text style={{ color: TH.sub, fontSize: FONT_SUB() }}>{String(h.streak)} {T('checkinStreak')}</Text>
           </View>
         </View>
         {isReadOnly ? (
