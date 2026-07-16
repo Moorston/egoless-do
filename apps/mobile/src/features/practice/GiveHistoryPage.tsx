@@ -134,7 +134,7 @@ export default function GiveHistoryPage() {
             <ChevronLeft size={20} color={TH.sub} />
           </TouchableOpacity>
           <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text }}>
-            {year}年{month + 1}月 · {stats.monthCount}次
+            {year}年{String(month + 1)}月 · {String(stats.monthCount)}次
           </Text>
           <TouchableOpacity onPress={() => setMonthOffset(o => Math.min(o + 1, 0))}>
             <ChevronRight size={20} color={TH.sub} />
