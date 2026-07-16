@@ -40,7 +40,7 @@ export const CityCallout: React.FC<CityCalloutProps> = ({ checkin }) => {
         </Text>
       ) : null}
       <Text style={[styles.info, { color: theme.sub }]}>
-        连续 {checkin.streak} 天 · 累计 {checkin.total_days} 天
+        连续 {String(checkin.streak)} 天 · 累计 {String(checkin.total_days)} 天
       </Text>
     </View>
   );

@@ -79,7 +79,7 @@ export default function ReviewDetailScreen() {
               {T('reviewCompletionRate')}
             </Text>
             <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 2 }}>
-              {review.doneDays}/{review.totalDays} {T('days')}
+              {String(review.doneDays)}/{String(review.totalDays)} {T('days')}
             </Text>
           </View>
           <View style={{
@@ -227,7 +227,7 @@ export default function ReviewDetailScreen() {
                   }} />
                 </View>
                 <Text style={{ fontSize: FONT_SUB(), color: TH.sub, marginTop: 4 }}>
-                  {plan.completedItems}/{plan.totalItems} {T('reviewTasks')}
+                  {String(plan.completedItems)}/{String(plan.totalItems)} {T('reviewTasks')}
                 </Text>
               </View>
             ))}
@@ -280,7 +280,7 @@ export default function ReviewDetailScreen() {
                 <View style={{ width: '48%', backgroundColor: TH.bg, borderRadius: 12, padding: 12, borderWidth: 1, borderColor: TH.border }}>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>🏃 {T('reviewExercise')}</Text>
                   <Text style={{ fontSize: FONT_TITLE(), fontWeight: '700', color: TH.text, marginTop: 4 }}>
-                    {review.metrics.totalExerciseMin}min
+                    {String(review.metrics.totalExerciseMin)}min
                   </Text>
                 </View>
               )}

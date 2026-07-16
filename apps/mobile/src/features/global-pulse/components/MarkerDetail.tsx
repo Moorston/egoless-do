@@ -182,7 +182,7 @@ export const MarkerDetail: React.FC<MarkerDetailProps> = ({
               <View style={[styles.statItem, { backgroundColor: theme.bg }]}>
                 <Text style={styles.statIcon}>📅</Text>
                 <Text style={[styles.statValue, { color: theme.text }]}>
-                  {checkin.total_days}
+                  {String(checkin.total_days)}
                 </Text>
                 <Text style={[styles.statLabel, { color: theme.sub }]}>
                   {t('globalPulse.totalDays')}

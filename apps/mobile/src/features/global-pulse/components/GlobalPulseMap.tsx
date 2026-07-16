@@ -301,11 +301,11 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
           {stats && (
             <View style={styles.statsBar}>
               <Text style={styles.statsItem}>
-                👥 {stats.total_users} {t('globalPulse.totalUsers')}
+                👥 {String(stats.total_users)} {t('globalPulse.totalUsers')}
               </Text>
               <Text style={styles.statsDot}>·</Text>
               <Text style={styles.statsItem}>
-                🔥 {stats.active_today} {t('globalPulse.activeToday')}
+                🔥 {String(stats.active_today)} {t('globalPulse.activeToday')}
               </Text>
             </View>
           )}

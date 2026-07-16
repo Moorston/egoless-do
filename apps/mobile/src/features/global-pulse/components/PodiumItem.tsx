@@ -70,7 +70,7 @@ export const PodiumItem: React.FC<PodiumItemProps> = React.memo(({
         </View>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: theme.primary }]}>
-            {entry.total_days}
+            {String(entry.total_days)}
           </Text>
           <Text style={[styles.statLabel, { color: theme.sub }]}>
             📅{t('globalPulse.totalDays')}

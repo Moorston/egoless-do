@@ -471,7 +471,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                       <View style={styles.inlineRowGap4}>
                         <MessageCircle size={14} color={P} />
                         <Text style={[styles.textSubDim, { color: TH.sub }]}>
-                          {relatedReflections.total} {T('planRelatedReflections')}
+                          {String(relatedReflections.total)} {T('planRelatedReflections')}
                         </Text>
                       </View>
                     )}
@@ -557,7 +557,7 @@ export default function PlanDetailContent({ planId, onClose, addReflectionId }: 
                   {relatedReflections.total > 3 && (
                     <TouchableOpacity onPress={() => nav.navigate('MindTrail')} accessibilityLabel={`查看更多关联感悟 (+${relatedReflections.total - 3})`}>
                       <Text style={[styles.textMoreLink, { color: TH.sub }]}>
-                        +{relatedReflections.total - 3}
+                        +{String(relatedReflections.total - 3)}
                       </Text>
                     </TouchableOpacity>
                   )}
