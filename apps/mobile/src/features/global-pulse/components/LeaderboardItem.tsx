@@ -97,7 +97,7 @@ export const LeaderboardItem: React.FC<LeaderboardItemProps> = React.memo(({
           </View>
           <View style={styles.detailItem}>
             <Text style={[styles.detailLabel, { color: theme.sub }]}>📅 {t('globalPulse.totalDays')}</Text>
-            <Text style={[styles.detailValue, { color: theme.text }]}>{entry.total_days}{t('globalPulse.days')}</Text>
+            <Text style={[styles.detailValue, { color: theme.text }]}>{String(entry.total_days)}{t('globalPulse.days')}</Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={[styles.detailLabel, { color: theme.sub }]}>🗓️ {t('globalPulse.startDate')}</Text>

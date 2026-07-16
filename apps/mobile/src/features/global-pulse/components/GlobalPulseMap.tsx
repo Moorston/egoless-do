@@ -153,7 +153,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
               longitude: checkin.lng
             }}
             title={markerTitle}
-            description={`🔥${checkin.streak}天 📅${checkin.total_days}天`}
+            description={`🔥${String(checkin.streak)}天 📅${String(checkin.total_days)}天`}
             onPress={() => handleMarkerPress(checkin)}
             opacity={isSelected ? 1 : 0.9}
             tracksViewChanges={true}
@@ -285,7 +285,7 @@ export const GlobalPulseMap: React.FC<GlobalPulseMapProps> = ({
                 key="my-marker"
                 coordinate={{ latitude: myCheckin.lat, longitude: myCheckin.lng }}
                 title={t('globalPulse.me')}
-                description={`🔥${myCheckin.streak}${t('globalPulse.days')} 📅${myCheckin.total_days}${t('globalPulse.days')}`}
+                description={`🔥${String(myCheckin.streak)}${t('globalPulse.days')} 📅${String(myCheckin.total_days)}${t('globalPulse.days')}`}
                 onPress={() => handleMarkerPress(myCheckin)}
                 tracksViewChanges={false}
               >
