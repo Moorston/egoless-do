@@ -119,11 +119,11 @@ export default function DedicationWriteScreen({ onBack }: Props) {
                   <Text style={[styles.bodyText, { color: TH.text }]}>{h.name}</Text>
                   <View style={styles.statCountRow}>
                     <Text style={styles.completedCount}>
-                      {h.completed}/{h.total}
+                      {String(h.completed)}/{String(h.total)}
                     </Text>
                     {h.prevCompleted !== undefined && h.completed > h.prevCompleted && (
                       <Text style={styles.prevDelta}>
-                        +{h.completed - h.prevCompleted}
+                        +{String(h.completed - h.prevCompleted)}
                       </Text>
                     )}
                   </View>

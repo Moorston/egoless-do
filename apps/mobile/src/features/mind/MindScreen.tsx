@@ -167,9 +167,9 @@ export default function MindScreen() {
         {/* 统计卡片 */}
         <View style={{ flexDirection: 'row', gap: 8, marginBottom: 12 }}>
           {[
-            { label: T('mindFearCount'), value: stats.total, color: '#8B5CF6' },
-            { label: T('mindClassificationIrrational'), value: stats.irrational, color: '#EF4444' },
-            { label: T('mindCourageRecord'), value: stats.totalCourage, color: '#10B981' },
+            { label: T('mindFearCount'), value: String(stats.total), color: '#8B5CF6' },
+            { label: T('mindClassificationIrrational'), value: String(stats.irrational), color: '#EF4444' },
+            { label: T('mindCourageRecord'), value: String(stats.totalCourage), color: '#10B981' },
           ].map((s, i) => (
             <View key={i} style={{ flex: 1, backgroundColor: TH.card, borderRadius: 12, padding: 12, alignItems: 'center', borderWidth: 1, borderColor: TH.border }}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: s.color }}>{s.value}</Text>

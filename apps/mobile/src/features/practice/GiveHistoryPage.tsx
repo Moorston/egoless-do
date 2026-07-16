@@ -115,9 +115,9 @@ export default function GiveHistoryPage() {
       <View style={{ borderRadius: 16, borderWidth: 1, borderColor: `${TH.primary}30`, padding: 16, marginBottom: 16 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
           {[
-            { value: stats.total, label: '累计' },
-            { value: stats.monthCount, label: '本月' },
-            { value: stats.longest, label: '最长连续' },
+            { value: String(stats.total), label: '累计' },
+            { value: String(stats.monthCount), label: '本月' },
+            { value: String(stats.longest), label: '最长连续' },
           ].map((s, i) => (
             <View key={i} style={{ alignItems: 'center', gap: 2 }}>
               <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: TH.text }}>{s.value}</Text>

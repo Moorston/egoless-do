@@ -64,7 +64,7 @@ function DedicationCard({ TH, T, dedication, expanded, onToggle }: Props) {
                 <View key={h.habitId} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
                   <Text style={{ fontSize: FONT_BODY(), color: TH.text }}>{h.name}</Text>
                   <Text style={{ fontSize: FONT_BODY(), color: '#8B5CF6', fontWeight: '600' }}>
-                    {h.completed}/{h.total}
+                    {String(h.completed)}/{String(h.total)}
                   </Text>
                 </View>
               ))}

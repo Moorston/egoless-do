@@ -84,7 +84,7 @@ export default function BodyTrainingPlanSection({ TH, T, plan, progress, onEdit,
                 </Text>
               </View>
               <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>
-                {progress.weekComplete}/{progress.weekTotal} · {progress.totalDuration}min · {progress.totalCal}kcal
+                {String(progress.weekComplete)}/{String(progress.weekTotal)} · {String(progress.totalDuration)}min · {String(progress.totalCal)}kcal
               </Text>
             </View>
             <View style={{ height: 6, backgroundColor: TH.border, borderRadius: 3, overflow: 'hidden' }}>
