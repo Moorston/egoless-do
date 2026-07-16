@@ -107,7 +107,7 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
                       { color: isActive ? '#fff' : theme.primary },
                     ]}
                   >
-                    {onlineCount.total}
+                    {String(onlineCount.total)}
                   </Text>
                 </View>
               )}
@@ -139,17 +139,17 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
               <Text style={[styles.myCardTitle, { color: theme.text }]}>{t('globalPulse.myJourney')}</Text>
               <View style={styles.myStatsRow}>
                 <View style={styles.myStatItem}>
-                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{streak ?? 0}</Text>
+                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{String(streak ?? 0)}</Text>
                   <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('checkinStreak')}</Text>
                 </View>
                 <View style={styles.myStatItem}>
                   <Text style={[styles.myStatValue, { color: theme.primary }]}>
-                    {(checkinHistory ?? []).filter(c => c.done && !c.deleted).length}
+                    {String((checkinHistory ?? []).filter(c => c.done && !c.deleted).length)}
                   </Text>
                   <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.totalDays')}</Text>
                 </View>
                 <View style={styles.myStatItem}>
-                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{totalMedMinutes ?? 0}</Text>
+                  <Text style={[styles.myStatValue, { color: theme.primary }]}>{String(totalMedMinutes ?? 0)}</Text>
                   <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('accMed')}</Text>
                 </View>
               </View>
@@ -161,11 +161,11 @@ export const BottomPanel: React.FC<BottomPanelProps> = ({
                 <Text style={[styles.myCardTitle, { color: theme.text }]}>{t('globalPulse.globalRank')}</Text>
                 <View style={styles.myStatsRow}>
                   <View style={styles.myStatItem}>
-                    <Text style={[styles.myStatValue, { color: theme.primary }]}>#{myRankInfo.rank}</Text>
+                    <Text style={[styles.myStatValue, { color: theme.primary }]}>#{String(myRankInfo.rank)}</Text>
                     <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.rank')}</Text>
                   </View>
                   <View style={styles.myStatItem}>
-                    <Text style={[styles.myStatValue, { color: theme.primary }]}>{myRankInfo.percentile}%</Text>
+                    <Text style={[styles.myStatValue, { color: theme.primary }]}>{String(myRankInfo.percentile)}%</Text>
                     <Text style={[styles.myStatLabel, { color: theme.sub }]}>{t('globalPulse.exceedPercent')}</Text>
                   </View>
                   <View style={styles.myStatItem}>
