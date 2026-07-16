@@ -125,10 +125,10 @@ function HabitCard({
           <TouchableOpacity onPress={() => onCalendar(h.id)}>
             <View style={{ flexDirection: 'row', gap: 20, marginBottom: 12 }}>
               {[
-                { v: h.doneDays, l: T('habitCumDays'), c: P },
+                { v: String(h.doneDays), l: T('habitCumDays'), c: P },
                 { v: String(h.streak), l: T('habitStreakDays'), c: COLORS.ORANGE },
                 { v: h.interrupted, l: T('habitInterrupted'), c: COLORS.RED },
-                { v: Math.max(0, h.targetDays - h.doneDays), l: T('habitRemainDays'), c: COLORS.GREEN },
+                { v: String(Math.max(0, h.targetDays - h.doneDays)), l: T('habitRemainDays'), c: COLORS.GREEN },
               ].map(({ v, l, c }) => (
                 <View key={l} style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: FONT_STAT_CARD(), fontWeight: '800', color: c }}>{v}</Text>

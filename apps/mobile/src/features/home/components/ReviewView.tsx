@@ -121,7 +121,7 @@ export default function ReviewView({ period }: ReviewViewProps) {
 
       <View style={styles.habitMetaRow}>
         <Text style={styles.subText}>
-          {habit.doneDays}/{habit.targetDays} {T('days')}
+          {String(habit.doneDays)}/{String(habit.targetDays)} {T('days')}
         </Text>
         <Text style={styles.subText}>
           {T('reviewStreak')}: {String(habit.streak)} {T('days')}

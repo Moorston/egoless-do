@@ -183,7 +183,7 @@ export default function ReviewDetailScreen() {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
-                    {habit.doneDays}/{habit.targetDays} {T('days')}
+                    {String(habit.doneDays)}/{String(habit.targetDays)} {T('days')}
                   </Text>
                   <Text style={{ fontSize: FONT_SUB(), color: TH.sub }}>
                     {T('reviewStreak')}: {String(habit.streak)} {T('days')}
