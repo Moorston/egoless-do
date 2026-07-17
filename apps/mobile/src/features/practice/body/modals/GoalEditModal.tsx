@@ -48,7 +48,7 @@ export default function GoalEditModal({ visible, TH, T, goal, profile, onClose, 
             </View>
             {recommended && !strategy && (
               <View style={{ backgroundColor: '#8b5cf610', borderRadius: 8, padding: 10, marginBottom: 16 }}>
-                <Text style={{ fontSize: FONT_SMALL(), color: '#8b5cf6' }}>{'💡 ' + T('bodyRecommendLabel') + ' ' + recommended}</Text>
+                <Text style={{ fontSize: FONT_SMALL(), color: '#8b5cf6' }}>{'💡 ' + T('bodyRecommendLabel') + ' ' + String(recommended)}</Text>
               </View>
             )}
           </ScrollView>

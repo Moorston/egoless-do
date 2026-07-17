@@ -75,7 +75,7 @@ export default function AdjustExerciseModal({ visible, onClose, onConfirm, exerc
                       <TouchableOpacity onPress={() => updateAdjustment(ex.id, 'sets', -1)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: TH.border + '60', alignItems: 'center', justifyContent: 'center' }}>
                         <Minus size={16} color={TH.text} />
                       </TouchableOpacity>
-                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, minWidth: 24, textAlign: 'center' }}>{adj.sets}</Text>
+                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, minWidth: 24, textAlign: 'center' }}>{String(adj.sets)}</Text>
                       <TouchableOpacity onPress={() => updateAdjustment(ex.id, 'sets', 1)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#f59e0b20', alignItems: 'center', justifyContent: 'center' }}>
                         <Plus size={16} color="#f59e0b" />
                       </TouchableOpacity>
@@ -89,7 +89,7 @@ export default function AdjustExerciseModal({ visible, onClose, onConfirm, exerc
                       <TouchableOpacity onPress={() => updateAdjustment(ex.id, 'reps', -1)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: TH.border + '60', alignItems: 'center', justifyContent: 'center' }}>
                         <Minus size={16} color={TH.text} />
                       </TouchableOpacity>
-                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, minWidth: 24, textAlign: 'center' }}>{adj.reps}</Text>
+                      <Text style={{ fontSize: FONT_BODY(), fontWeight: '700', color: TH.text, minWidth: 24, textAlign: 'center' }}>{String(adj.reps)}</Text>
                       <TouchableOpacity onPress={() => updateAdjustment(ex.id, 'reps', 1)} style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: '#f59e0b20', alignItems: 'center', justifyContent: 'center' }}>
                         <Plus size={16} color="#f59e0b" />
                       </TouchableOpacity>

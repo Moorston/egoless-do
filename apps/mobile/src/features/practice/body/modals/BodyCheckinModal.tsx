@@ -128,7 +128,7 @@ export default function BodyCheckinModal({ visible, TH, T, todayPlan, onClose, o
               multiline maxLength={500} value={note} onChangeText={setNote}
               placeholder={T('bodySelfAssessmentInputPlaceholder')} placeholderTextColor={TH.sub}
             />
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'right', marginTop: 4, marginBottom: 8 }}>{note.length}/500</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'right', marginTop: 4, marginBottom: 8 }}>{String(note.length)}/500</Text>
           </ScrollView>
 
           <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>

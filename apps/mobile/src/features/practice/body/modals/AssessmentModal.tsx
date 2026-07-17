@@ -36,7 +36,7 @@ export default function AssessmentModal({ visible, TH, T, profile, onClose, onSa
             multiline maxLength={500} value={text} onChangeText={setText}
             placeholder={T('bodySelfAssessmentInputPlaceholder')} placeholderTextColor={TH.sub}
           />
-          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'right', marginBottom: 16 }}>{text.length}/500</Text>
+          <Text style={{ fontSize: FONT_SMALL(), color: TH.sub, textAlign: 'right', marginBottom: 16 }}>{String(text.length)}/500</Text>
           <Text style={{ fontSize: FONT_SUB(), fontWeight: '600', color: TH.text, marginBottom: 8 }}>{T('bodyTagsLabel')}</Text>
           <ScrollView style={{ maxHeight: 200 }}>
             {BODY_TAGS_PRESET.map(group => (

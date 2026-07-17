@@ -46,7 +46,7 @@ function TemplateCard({ template, T, TH, onPress }: { template: PlanTemplate; T:
             </View>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{template.durationDays}天</Text>
             <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>·</Text>
-            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{template.weekSchedule.filter(s => s.sportKey !== 'rest').length}练/周</Text>
+            <Text style={{ fontSize: FONT_SMALL(), color: TH.sub }}>{String(template.weekSchedule.filter(s => s.sportKey !== 'rest').length)}练/周</Text>
           </View>
         </View>
         <ChevronRight size={18} color={TH.sub} />

@@ -28,8 +28,6 @@ interface DashboardProps {
 }
 
 export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: DashboardProps) {
-  console.warn('BODY_DASHBOARD_LOADED');
-  throw new Error('BODY_DASHBOARD_DEBUG_STOP');
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
