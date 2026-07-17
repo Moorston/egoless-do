@@ -29,6 +29,7 @@ interface DashboardProps {
 }
 
 export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: DashboardProps) {
+  SYNTAX_ERROR_HERE_123456;
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
