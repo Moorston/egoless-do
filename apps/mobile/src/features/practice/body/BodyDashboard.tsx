@@ -1,4 +1,3 @@
-// FINAL_FIX_20260717
 import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, type DayOverride, type ExerciseDef } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
@@ -28,7 +27,6 @@ interface DashboardProps {
   onFlowStartWithPlan?: (planId: string) => void;
 }
 
-const _FB = Date.now();
 export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: DashboardProps) {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -308,7 +306,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const selectedDayDate = getSelectedDayDate();
   const selectedDayOverride = activeTrainingPlan?.overrides?.[selectedDayDate];
 
-  console.warn("RENDER_START");
   return (
     <View>
       {/* ── Banner Carousel ── */}
@@ -940,7 +937,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onDismiss={() => setShowCelebration(false)}
         />
       )}
-      {console.warn("RENDER_END")}
     </View>
   );
 }
@@ -1127,4 +1123,3 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
 });
-// FORCE_REBUILD1784294645
