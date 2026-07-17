@@ -308,14 +308,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   return (
     <View>
-      <Text style={{ fontSize: 24, color: '#fff', textAlign: 'center' }}>DASHBOARD_REDUCED_TEST</Text>
-    </View>
-  );
-}
-
-function OldContent(props: any) {
-  return (
-    <View>
       {/* ── Banner Carousel ── */}
       <View style={styles.bannerContainer}>
         <ScrollView
@@ -721,7 +713,8 @@ function OldContent(props: any) {
         </Text>
       </View>
 
-      {/* ── 快捷操作 ── */}
+      {false && (
+      )}}
       <View style={styles.quickActions}>
         {[
           { icon: <Scale size={20} color={TH.primary} />, label: T('bodyRecordWeight') || '记录体重', onPress: () => setShowWeightRecord(true) },
@@ -944,6 +937,7 @@ function OldContent(props: any) {
           data={celebrationData}
           onDismiss={() => setShowCelebration(false)}
         />
+      )}
       )}
     </View>
   );
