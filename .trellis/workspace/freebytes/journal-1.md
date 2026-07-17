@@ -1185,3 +1185,36 @@ StatsScreen计划任务进度改为countItemDoneDays动态计算；补全planIte
 ### Next Steps
 
 - None - task complete
+
+
+## Session 35: iOS Text strings warning 修复 + 同源排查 + ESLint 规则
+
+**Date**: 2026-07-17
+**Task**: iOS Text strings warning 修复 + 同源排查 + ESLint 规则
+**Branch**: `master`
+
+### Summary
+
+修复 BodyDashboard 裸数字触发 iOS Text strings warning，同源排查修 17 处裸数字，加 ESLint 规则 local/no-raw-number-in-text 防再发
+
+### Main Changes
+
+- Detailed change bullets were not supplied; see the summary above.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5f62fc1` | (see git log) |
+
+### Testing
+
+- Validation was not recorded for this session.
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
