@@ -308,6 +308,14 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
 
   return (
     <View>
+      <Text style={{ fontSize: 24, color: '#fff', textAlign: 'center' }}>DASHBOARD_REDUCED_TEST</Text>
+    </View>
+  );
+}
+
+function OldContent(props: any) {
+  return (
+    <View>
       {/* ── Banner Carousel ── */}
       <View style={styles.bannerContainer}>
         <ScrollView
