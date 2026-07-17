@@ -714,7 +714,6 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
       </View>
 
       {false && (
-      )}}
       <View style={styles.quickActions}>
         {[
           { icon: <Scale size={20} color={TH.primary} />, label: T('bodyRecordWeight') || '记录体重', onPress: () => setShowWeightRecord(true) },
