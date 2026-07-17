@@ -782,7 +782,8 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </View>
       )}
 
-      {null}
+      
+
     </View>
   );
 }
