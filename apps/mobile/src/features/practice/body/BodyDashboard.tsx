@@ -308,6 +308,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
   const selectedDayDate = getSelectedDayDate();
   const selectedDayOverride = activeTrainingPlan?.overrides?.[selectedDayDate];
 
+  console.warn("RENDER_START");
   return (
     <View>
       {/* ── Banner Carousel ── */}
@@ -895,8 +896,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         </View>
       )}
 
-      {console.warn("START_SECTION:modals")}
-<AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
+      <AssessmentModal visible={showAssessment} TH={TH} T={T} profile={profile} onClose={() => setShowAssessment(false)} onSave={handleSaveAssessment} />
       <GoalEditModal visible={showGoalEdit} TH={TH} T={T} goal={activeGoal} profile={profile} onClose={() => setShowGoalEdit(false)} onSave={handleSaveGoal} />
       <BodyCheckinModal visible={showCheckin} TH={TH} T={T} todayPlan={todayPlan} onClose={() => setShowCheckin(false)} onSave={handleSaveCheckin} />
       <WeightRecordModal visible={showWeightRecord} TH={TH} T={T} currentWeight={profile.weight as number | undefined} currentBodyFat={profile.bodyFat as number | undefined} onClose={() => setShowWeightRecord(false)} onSave={handleSaveWeight} />
@@ -940,6 +940,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
           onDismiss={() => setShowCelebration(false)}
         />
       )}
+      {console.warn("RENDER_END")}
     </View>
   );
 }
