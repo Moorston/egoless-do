@@ -1,4 +1,3 @@
-// BodyDashboard v4 - fixed bare numbers
 import { dateStr, type AgeBracket, type BodyGoal, type BodyTrainingPlan, type ExerciseEntry, FONT_TITLE, FONT_BODY, FONT_SUB, FONT_SMALL, FONT_STAT_CARD, FONT_STAT_SECTION, FONT_BADGE, generateSuggestions, EXERCISE_CATEGORIES, PART_STRING_TO_KEY, BODY_TAGS_PRESET, type DayOverride, type ExerciseDef } from '@egoless-do/core';
 import { ChevronRight, Play, Calendar, Target, Dumbbell, TrendingUp, Activity, Scale, History, Settings, ChevronLeft, ChevronDown } from 'lucide-react-native';
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
@@ -29,7 +28,6 @@ interface DashboardProps {
 }
 
 export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: DashboardProps) {
-  SYNTAX_ERROR_HERE_123456;
   const nav = useRootNavigation();
   const TH = useTheme();
   const T = useT();
