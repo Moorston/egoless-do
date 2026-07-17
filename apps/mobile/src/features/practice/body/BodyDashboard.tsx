@@ -916,7 +916,7 @@ export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: Dash
         onAdjust={() => { setShowDayAction(false); setShowAdjustExercise(true); }}
         TH={TH} T={T}
       />
-      {activeTrainingPlan && (
+      {null && activeTrainingPlan && (
         <GoalEditLightModal
           visible={showGoalEditLight}
           onClose={() => setShowGoalEditLight(false)}
