@@ -28,6 +28,7 @@ interface DashboardProps {
   onFlowStartWithPlan?: (planId: string) => void;
 }
 
+const _FB = Date.now();
 export default function BodyDashboard({ onFlowStart, onFlowStartWithPlan }: DashboardProps) {
   const nav = useRootNavigation();
   const TH = useTheme();
@@ -1124,4 +1125,4 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
 });
-// FORCE_REBUILD_1784294645
+// FORCE_REBUILD1784294645
